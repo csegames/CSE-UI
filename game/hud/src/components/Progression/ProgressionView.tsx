@@ -11,7 +11,6 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { Spinner } from '@csegames/camelot-unchained';
 import { GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import { toSentenceCase } from '@csegames/camelot-unchained/lib/utils/textUtils';
 import RewardsView from './RewardsView';
 import {
   LoadingContainer,
@@ -208,10 +207,10 @@ class ProgressionView extends React.Component<Props, State> {
                     <li key={damageKey + damageType}>
                       <div className='ProgressionInfo'>
                         <div className='ProgressionLabel'>
-                          {toSentenceCase(damageKey)} ({
+                          {damageKey.toSentenceCase()} ({
                             damageType === 'playerCharacter' ? 'Player' :
                             damageType === 'nonPlayerCharacter' ? 'NPC' :
-                            toSentenceCase(damageType)
+                            damageType.toSentenceCase()
                           }):
                         </div>
                         <div className='ProgressionValue'>{damage[damageKey][damageType]}</div>
@@ -228,7 +227,7 @@ class ProgressionView extends React.Component<Props, State> {
                 plotDetails.push(
                   <li key={plotKey}>
                     <div className='ProgressionInfo'>
-                      <div className='ProgressionLabel'>{toSentenceCase(plotKey)}: </div>
+                      <div className='ProgressionLabel'>{plotKey.toSentenceCase()}: </div>
                       <div className='ProgressionValue'>{plots[plotKey]}</div>
                     </div>
                   </li>
@@ -244,7 +243,7 @@ class ProgressionView extends React.Component<Props, State> {
                     <li key={craftingKey + craftingType}>
                       <div className='ProgressionInfo'>
                         <div className='ProgressionLabel'>
-                          {toSentenceCase(craftingKey)} ({toSentenceCase(craftingType)}):
+                          {craftingKey.toSentenceCase()} ({craftingType.toSentenceCase()}):
                         </div>
                         <div className='ProgressionValue'>{crafting[craftingKey][craftingType]}</div>
                       </div>

@@ -4,8 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { BuildingBlock, BuildingMaterial, buildUIMode, building } from '@csegames/camelot-unchained';
-
+import { building } from '../../../../../../lib/old-library';
 import { selectFromMaterial, selectToMaterial, setBlockMode } from './materials-replace';
 import assign from 'object-assign';
 
@@ -14,49 +13,49 @@ const SELECT_BLOCK = 'buildpanel/panes/SELECT_BLOCK';
 
 const SET_MATERIALS = 'buildpanel/panes/SET_MATERIALS';
 
-export const DEFAULT_MATERIAL: BuildingMaterial = new BuildingMaterial({
+export const DEFAULT_MATERIAL: Material = {
   id: -1,
   icon: '',
   tags: ['default'],
   blocks: [],
-} as BuildingMaterial);
+} as Material;
 
 export function initialize(dispatch: (action: any) => void) {
 
-  game.on(building.BuildingEventTopics.handlesBlocks, (info: { materials: BuildingMaterial[] }) => {
-    const mats: BuildingMaterial[] = info.materials;
+  game.on(building.BuildingEventTopics.handlesBlocks, (info: { materials: Material[] }) => {
+    const mats: Material[] = info.materials;
     dispatch(setMaterials(mats));
     dispatch(selectFromMaterial(mats[0]));
     dispatch(selectToMaterial(mats[0]));
   });
 
   game.on(
-    building.BuildingEventTopics.handlesBlockSelect, (info: { material: BuildingMaterial, block: BuildingBlock }) => {
+    building.BuildingEventTopics.handlesBlockSelect, (info: { material: Material, block: Block }) => {
       dispatch(selectBlock(info.block));
       dispatch(selectFromMaterial(info.material));
     });
 
-  game.on(building.BuildingEventTopics.handlesBuildingMode, (info: { mode: buildUIMode }) => {
-    dispatch(setBlockMode(info.mode === buildUIMode.BLOCKSELECTED));
+  game.on(building.BuildingEventTopics.handlesBuildingMode, (info: { mode: BuildingMode }) => {
+    dispatch(setBlockMode(info.mode === window.BuildingMode.BlocksSelected));
   });
 
 }
 
-function selectBlock(block: BuildingBlock) {
+function selectBlock(block: Block) {
   return {
     type: SELECT_BLOCK,
     selectedBlock: block,
   };
 }
 
-function setMaterials(materials: BuildingMaterial[]) {
+function setMaterials(materials: Material[]) {
   return {
     type: SET_MATERIALS,
     materials,
   };
 }
 
-function getMaterialById(matId: number, materials: BuildingMaterial[]) {
+function getMaterialById(matId: number, materials: Material[]) {
   for (const m in materials) {
     if (materials[m].id === matId) {
       return materials[m];
@@ -66,15 +65,15 @@ function getMaterialById(matId: number, materials: BuildingMaterial[]) {
 }
 
 export interface MaterialsState {
-  materials?: BuildingMaterial[];
-  selectedMaterial?: BuildingMaterial;
-  selectedBlock: BuildingBlock;
+  materials?: Material[];
+  selectedMaterial?: Material;
+  selectedBlock: Block;
 }
 
 const initialState: MaterialsState = {
   materials: [],
   selectedMaterial: DEFAULT_MATERIAL,
-  selectedBlock: {} as BuildingBlock,
+  selectedBlock: {} as Block,
 };
 
 export default function reducer(state: MaterialsState = initialState, action: any = {}) {
@@ -90,10 +89,10 @@ export default function reducer(state: MaterialsState = initialState, action: an
         selectedMaterial: action.selectedMaterial,
       });
     case SELECT_BLOCK:
-      const block: BuildingBlock = action.selectedBlock;
+      const block: Block = action.selectedBlock;
       const newState: MaterialsState = { selectedBlock: block } as MaterialsState;
-      if (state.selectedMaterial.id !== block.materialId) {
-        newState.selectedMaterial = getMaterialById(block.materialId, state.materials);
+      if (state.selectedMaterial.id !== window.materialIDFromBlock(block)) {
+        newState.selectedMaterial = getMaterialById(window.materialIDFromBlock(block), state.materials);
       }
       return assign({}, state, newState);
     default: return state;

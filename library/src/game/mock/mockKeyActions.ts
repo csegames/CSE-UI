@@ -1,0 +1,150 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+/// <reference> ../coherent.d.ts
+import { KeyActions_Update } from '../GameClientModels/KeyActions';
+
+enum MockKeyActions {
+  // Cube
+  CubeScreenShot,
+  CubeBuildingCopy,
+  CubeBuildingPaste,
+  CubeFlipBlockX,
+  CubeFlipBlockY,
+  CubeFlipBlockZ,
+  CubeRotateBlockX,
+  CubeRotateBlockY,
+  CubeRotateBlockZ,
+  CubeCycleSelectedBlockShape,
+  CubeCycleSelectedBlockSubstance,
+  CubeRedoBlockPlacement,
+  CubeUndoBlockPlacement,
+  CubeCommitBlock,
+  CubeSelectBlocks,
+  CubeSaveBuilding,
+  CubePlotWindow,
+  CubeBlockLeftMove,
+  CubeBlockRightMove,
+  CubeBlockForwardMove,
+  CubeBlockBackwardMove,
+  CubeBlockUpMove,
+  CubeBlockDownMove,
+  CubeMouseCapture,
+  CubeShowStability,
+  CubeHideStability,
+  // CubeApplyStability,
+
+  // UI
+  UIMenu,
+  UIChat,
+  UIInventoryWindow,
+  UIEquippedGearWindow,
+  UIMapWindow,
+  UIAbilityBuilderWindow,
+  UISpellbookWindow,
+  UIToggleBuildingMode,
+  UICommand,
+  UIChatModifier,
+  UIToggleTileDebug,
+  UIPerfReset,
+  UIToggleDiagnostic,
+  UIRecordingToggle,
+
+  // Player
+  PlayerTargetSelf,
+  PlayerTargetClearTargets,
+  PlayerTargetClosestFriend,
+  PlayerTargetCycleFriends,
+  PlayerTargetClosestEnemy,
+  PlayerTargetCycleEnemies,
+  PlayerClickTarget,
+  PlayerClickInteract,
+  PlayerTriggerAbility,
+  PlayerCancel,
+  PlayerBandage,
+  PlayerJump,
+  PlayerTurnRight,
+  PlayerTurnLeft,
+  PlayerRight,
+  PlayerLeft,
+  PlayerBack,
+  PlayerForward,
+  PlayerAutorun,
+  PlayerFly,
+  PlayerPickup,
+  PlayerUp,
+  PlayerDown,
+  PlayerMovementModifier,
+  PlayerMoveBoost,
+  PlayerToggleAiming,
+  CameraToggleAimingCursor,
+  CameraCaptureAimingCursor,
+  PlayerCameraFreeToggle,
+  PlayerCameraFreePlayerToggle,
+  PlayerAbility1,
+  PlayerAbility2,
+  PlayerAbility3,
+  PlayerAbility4,
+  PlayerAbility5,
+  PlayerAbility6,
+  PlayerAbility7,
+  PlayerAbility8,
+  PlayerAbility9,
+  PlayerAbility10,
+  PlayerAbility11,
+  PlayerAbility12,
+  PlayerAbility13,
+  PlayerAbility14,
+  PlayerAbility15,
+  PlayerAbility16,
+  PlayerAbility17,
+  PlayerAbility18,
+  PlayerAbility19,
+  PlayerAbility20,
+  PlayerAbility21,
+  PlayerAbility22,
+  PlayerAbility23,
+  PlayerAbility24,
+  PlayerAbility25,
+  PlayerAbility26,
+  PlayerAbility27,
+  PlayerAbility28,
+  PlayerAbility29,
+  PlayerAbility30,
+
+  // camera
+  CameraMouseCameraCapture,
+  CameraMouseMoveCapture,
+
+  // editor
+  EditorFocus,
+  EditorToggleMove,
+  EditorRotate,
+  EditorScale,
+  EditorMouseLeft,
+  EditorMouseRight,
+  EditorMouseMiddle,
+  EditorUp,
+  EditorDown,
+  EditorRight,
+  EditorLeft,
+  EditorBack,
+  EditorForward,
+  EditorModifier,
+  EditorBoost,
+
+  // gizmos
+  GizmoDrag,
+}
+
+export function mockKeyActions() {
+  console.log('MOCK.keyActions', 'initialize');
+  _devGame.keyActions = {
+    ..._devGame.keyActions,
+    ...MockKeyActions,
+  };
+  engine.trigger(KeyActions_Update, _devGame.keyActions);
+}

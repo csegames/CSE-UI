@@ -339,8 +339,7 @@ interface EquipmentSlotsTabData {
 }
 
 class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, EquipmentSlotsState> {
-  private equipItemListener: EventHandle;
-  private onUnequipItemListener: EventHandle;
+  private eventHandles: EventHandle[] = [];
 
   constructor(props: EquipmentSlotsComponentProps) {
     super(props);
@@ -395,13 +394,12 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
   }
 
   public componentDidMount() {
-    this.equipItemListener = game.on(eventNames.onEquipItem, this.onEquipItem);
-    this.onUnequipItemListener = game.on(eventNames.onUnequipItem, this.onUnequipItem);
+    this.eventHandles.push(game.on(eventNames.onEquipItem, this.onEquipItem));
+    this.eventHandles.push(game.on(eventNames.onUnequipItem, this.onUnequipItem));
   }
 
   public componentWillUnmount() {
-    game.off(this.equipItemListener);
-    game.off(this.onUnequipItemListener);
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private onUnequipItem = (payload: UnequipItemPayload) => {

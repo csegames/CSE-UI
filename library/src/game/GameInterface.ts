@@ -12,6 +12,7 @@ import { FriendlyTargetState } from './GameClientModels/FriendlyTargetState';
 import { EnemyTargetState } from './GameClientModels/EnemyTargetState';
 import { Plot } from './GameClientModels/Plot';
 import { KeyActions } from './GameClientModels/KeyActions';
+import { PlayerStateModel, AnyEntityStateModel, SiegeStateModel } from './GameClientModels/_EntityState';
 
 /**
  * Export all models
@@ -19,6 +20,9 @@ import { KeyActions } from './GameClientModels/KeyActions';
 export {
   Callback,
   LoadingState,
+  PlayerStateModel,
+  AnyEntityStateModel,
+  SiegeStateModel,
   SelfPlayerState,
   FriendlyTargetState,
   EnemyTargetState,

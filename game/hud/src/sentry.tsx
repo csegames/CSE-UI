@@ -6,8 +6,6 @@
 
 import Raven from 'raven-js';
 
-declare var cuAPI: any;
-
 if (process.env.ENABLE_SENTRY) {
   Raven.config('https://f7710348f19c4a0f8f8cd83ea0aa343f@sentry.io/1259561', {
     release: process.env.GIT_REVISION, // use git revision as release? {{process.env.GIT_REVISION}}
@@ -17,20 +15,20 @@ if (process.env.ENABLE_SENTRY) {
     },
   }).install();
 
-  if (cuAPI) {
+  if (game) {
     Raven.setTagsContext({
-      shard: cuAPI.shardID,
+      shard: game.shardID,
     });
     Raven.setUserContext({
-      id: cuAPI.characterID,
+      id: game.selfPlayerState.characterID,
     });
   }
   setTimeout(() => {
     Raven.setTagsContext({
-      shard: cuAPI.shardID,
+      shard: game.shardID,
     });
     Raven.setUserContext({
-      id: cuAPI.characterID,
+      id: game.selfPlayerState.characterID,
     });
   }, 1000);
 }

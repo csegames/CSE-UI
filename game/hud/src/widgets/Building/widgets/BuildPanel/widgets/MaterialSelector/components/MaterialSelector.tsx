@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { BuildingMaterial } from '@csegames/camelot-unchained';
 import { GlobalState } from '../services/session/reducer';
 import { setSelectedMaterial, setHoverMaterial } from '../services/session/materials-by-type';
 
@@ -23,8 +22,8 @@ function select(state: GlobalState) {
 export interface MaterialSelectorProps {
   dispatch: (action: any) => void;
   materialsByType: MaterialsByType;
-  selectMaterial: (mat: BuildingMaterial) => void;
-  selected: BuildingMaterial;
+  selectMaterial: (mat: Material) => void;
+  selected: Material;
 }
 
 export interface MaterialSelectorState {
@@ -42,25 +41,25 @@ class MaterialSelector extends React.Component<MaterialSelectorProps, MaterialSe
     return (
       <div className='materials'>
         <header>Stone Blocks</header>
-        {this.props.materialsByType.stoneBlocks.map((mat: BuildingMaterial) => this.generateMaterialIcon(mat, selectedId)) }
+        {this.props.materialsByType.stoneBlocks.map((mat: Material) => this.generateMaterialIcon(mat, selectedId)) }
 
         <header>Stone Tiles & Sheets</header>
-        {this.props.materialsByType.stoneTilesAndSheets.map((mat: BuildingMaterial) =>
+        {this.props.materialsByType.stoneTilesAndSheets.map((mat: Material) =>
           this.generateMaterialIcon(mat, selectedId))}
 
         <header>Wood & Organic</header>
-        {this.props.materialsByType.woodAndOrganic.map((mat: BuildingMaterial) =>
+        {this.props.materialsByType.woodAndOrganic.map((mat: Material) =>
           this.generateMaterialIcon(mat, selectedId))}
       </div>
     );
   }
 
-  private selectMaterial = (mat: BuildingMaterial) => {
+  private selectMaterial = (mat: Material) => {
     this.props.selectMaterial(mat);
     this.props.dispatch(setSelectedMaterial(mat));
   }
 
-  private generateMaterialIcon = (mat: BuildingMaterial, selectedId: number) => {
+  private generateMaterialIcon = (mat: Material, selectedId: number) => {
     return (
       <img key={mat.id}
         className={mat.id === selectedId ? 'active' : ''}
@@ -72,7 +71,7 @@ class MaterialSelector extends React.Component<MaterialSelectorProps, MaterialSe
     );
   }
 
-  private onHover = (material: BuildingMaterial) => {
+  private onHover = (material: Material) => {
     this.props.dispatch(setHoverMaterial(material));
   }
 }

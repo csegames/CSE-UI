@@ -8,7 +8,8 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { utils, client, PlayerState } from '@csegames/camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
+import { PlayerState } from 'components/HealthBar';
 
 const Container = styled('div')`
   position: absolute;
@@ -33,6 +34,7 @@ export interface DistanceTextState {
 
 class DistanceText extends React.Component<DistanceTextProps, DistanceTextState> {
   private mounted: boolean;
+  private eventHandles: EventHandle[] = [];
   constructor(props: DistanceTextProps) {
     super(props);
     this.state = {
@@ -62,17 +64,24 @@ class DistanceText extends React.Component<DistanceTextProps, DistanceTextState>
 
   public componentWillUnmount() {
     this.mounted = false;
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private init = () => {
-    client.OnPlayerStateChanged(this.setMyPosition);
+    this.eventHandles.push(game.selfPlayerState.onUpdated(
+      () => this.setMyPosition(game.selfPlayerState),
+    ));
     switch (this.props.targetType) {
       case 'enemy': {
-        client.OnEnemyTargetStateChanged(this.setTheirPosition);
+        this.eventHandles.push(game.enemyTargetState.onUpdated(
+          () => this.setTheirPosition(game.enemyTargetState),
+        ));
         break;
       }
       case 'friendly': {
-        client.OnFriendlyTargetStateChanged(this.setTheirPosition);
+        this.eventHandles.push(game.friendlyTargetState.onUpdated(
+          () => this.setTheirPosition(game.friendlyTargetState),
+        ));
         break;
       }
     }

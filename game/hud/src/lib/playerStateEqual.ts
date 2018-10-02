@@ -5,16 +5,16 @@
  *
  */
 
-import { PlayerState } from '@csegames/camelot-unchained/lib/core/clientInterface';
 import { numEqualsCloseEnough } from '@csegames/camelot-unchained/lib/utils';
 import { BodyParts } from './PlayerStatus';
+import { PlayerState } from 'components/HealthBar';
 
-export function isEqualPlayerState(a: PlayerState | GroupMemberState, b: PlayerState | GroupMemberState) {
+export function isEqualPlayerState(a: PlayerState, b: PlayerState) {
   if (!a || !b) {
     return false;
   }
 
-  if (a.id !== b.id) {
+  if (a.characterID !== b.characterID) {
     return false;
   }
 

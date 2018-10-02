@@ -83,9 +83,7 @@ interface CompassTooltipState {
 
 class CompassTooltip extends React.Component<CompassTooltipProps, CompassTooltipState> {
 
-  private showListener: EventHandle;
-  private updateListener: EventHandle;
-  private hideListener: EventHandle;
+  private eventHandles: EventHandle[] = [];
 
   public state = {
     data: null as any,
@@ -135,15 +133,13 @@ class CompassTooltip extends React.Component<CompassTooltipProps, CompassTooltip
   }
 
   public componentDidMount() {
-    this.showListener = game.on('compass-tooltip--show', this.showTooltip);
-    this.updateListener = game.on('compass-tooltip--update', this.updateTooltip);
-    this.hideListener = game.on('compass-tooltip--hide', this.hideTooltip);
+    this.eventHandles.push(game.on('compass-tooltip--show', this.showTooltip));
+    this.eventHandles.push(game.on('compass-tooltip--update', this.updateTooltip));
+    this.eventHandles.push(game.on('compass-tooltip--hide', this.hideTooltip));
   }
 
   public componentWillUnmount() {
-    this.showListener.clear();
-    this.updateListener.clear();
-    this.hideListener.clear();
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private showTooltip = (data: CompassTooltipData) => {

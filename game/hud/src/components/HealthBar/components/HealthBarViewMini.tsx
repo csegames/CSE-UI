@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { PlayerState } from '@csegames/camelot-unchained';
 
 import { isEqualPlayerState } from 'lib/playerStateEqual';
 import { BodyParts } from 'lib/PlayerStatus';
@@ -17,13 +16,14 @@ import SmallBar from './SmallBar';
 import BigBar from './BigBar';
 import Status from './Status';
 import { LeaderIcon } from './LeaderIcon';
+import { PlayerState } from 'components/HealthBar';
 
 const Container = styled('div')`
   position: relative;
   height: ${({ scale }: {scale: number}) => (242 * scale).toFixed(1)}px;
   width: ${({ scale }: {scale: number}) => (392 * scale).toFixed(1)}px;
-  -webkit-animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''}
-  animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''}
+  -webkit-animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''};
+  animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''};
   filter: ${(props: any) => props.isAlive ? 'grayscale(0%)' : 'grayscale(100%)'};
   -webkit-filter: ${(props: any) => props.isAlive ? 'grayscale(0%)' : 'grayscale(100%)'};
 `;
@@ -103,7 +103,7 @@ const HealthBars = styled('div')`
   position: absolute;
   top: ${({ scale }: {scale: number}) => (74 * scale).toFixed(1)}px;
   left: ${({ scale }: {scale: number}) => (118 * scale).toFixed(1)}px;
-  display: flex:
+  display: flex;
   flex-direction: column;
 `;
 
@@ -141,7 +141,7 @@ const StaminaBar = styled('div')`
 
 export interface HealthBarViewProps {
   shouldShake: boolean;
-  playerState: PlayerState | GroupMemberState;
+  playerState: PlayerState;
 }
 
 export interface HealthBarViewState {

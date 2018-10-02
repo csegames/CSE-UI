@@ -1,41 +1,45 @@
-import client from '../core/client';
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 
-export function changeMode(mode: number) {
-  client.SetBuildingMode(mode);
+export function changeMode(mode: BuildingMode) {
+  game.plot.setBuildingMode(mode);
 }
 
 export function commit() {
-  client.CommitBlock();
+  game.triggerKeyAction(game.keyActions.CubeCommitBlock);
 }
 
 export function undo() {
-  client.UndoCube();
+  game.triggerKeyAction(game.keyActions.CubeUndoBlockPlacement);
 }
 
 export function redo() {
-  client.RedoCube();
+  game.triggerKeyAction(game.keyActions.CubeRedoBlockPlacement);
 }
 
 export function rotateX() {
-  client.BlockRotateX();
+  game.triggerKeyAction(game.keyActions.CubeRotateBlockX);
 }
 
 export function rotateY() {
-  client.BlockRotateY();
+  game.triggerKeyAction(game.keyActions.CubeRotateBlockY);
 }
 
 export function rotateZ() {
-  client.BlockRotateZ();
+  game.triggerKeyAction(game.keyActions.CubeRotateBlockZ);
 }
 
 export function flipX() {
-  client.BlockFlipX();
+  game.triggerKeyAction(game.keyActions.CubeFlipBlockX);
 }
 
 export function flipY() {
-  client.BlockFlipY();
+  game.triggerKeyAction(game.keyActions.CubeFlipBlockY);
 }
 
 export function flipZ() {
-  client.BlockFlipZ();
+  game.triggerKeyAction(game.keyActions.CubeFlipBlockZ);
 }

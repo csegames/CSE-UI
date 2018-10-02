@@ -8,7 +8,7 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { isEqual } from 'lodash';
-import { client, webAPI } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import ProgressionView from './ProgressionView';
 import { ProgressionGQL } from 'gql/interfaces';
@@ -201,12 +201,10 @@ class Progression extends React.Component<Props, State> {
   }
 
   private show = () => {
-    client.RequestInputOwnership();
     this.setState({ visible: true });
   }
 
   private hide = () => {
-    client.ReleaseInputOwnership();
     this.setState({ visible: false, collected: false });
   }
 
@@ -224,8 +222,8 @@ class Progression extends React.Component<Props, State> {
     try {
       const res = await webAPI.ProgressionAPI.CollectCharacterDayProgression(
         webAPI.defaultConfig,
-        client.shardID,
-        client.characterID,
+        game.shardID,
+        game.selfPlayerState.characterID,
         this.state.logIDs[logIDIndex],
       );
       if (!res.ok) {

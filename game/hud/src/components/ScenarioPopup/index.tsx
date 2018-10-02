@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client, soundEvents } from '@csegames/camelot-unchained';
 
 import Victory from './components/Victory';
 import Defeat from './components/Defeat';
@@ -40,7 +39,8 @@ export interface ScenarioPopupState {
 }
 
 class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupState> {
-  private scenarioNoneTimeout: any;
+  private eventHandles: EventHandle[] = [];
+  private timeouts: NodeJS.Timer[] = [];
 
   constructor(props: ScenarioPopupProps) {
     super(props);
@@ -78,16 +78,16 @@ class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupSta
   }
 
   public componentDidMount() {
-    client.ScenarioRoundEnded((scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => {
-      this.handleScenarioType(scenarioEnded, didWin);
-    });
+    this.eventHandles.push(game.onScenarioRoundEnded(
+      (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => {
+        this.handleScenarioType(scenarioEnded, didWin);
+      },
+    ));
   }
 
   public componentWillUnmount() {
-    if (this.scenarioNoneTimeout) {
-      clearTimeout(this.scenarioNoneTimeout);
-      this.scenarioNoneTimeout = null;
-    }
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
+    this.timeouts.forEach(timeout => clearTimeout(timeout));
   }
 
   private handleScenarioType = (scenarioEnded: boolean, didWin: boolean) => {
@@ -97,34 +97,33 @@ class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupSta
         this.playSound('victory');
         // Add delay so widget can match up with music
         this.setState({ type: ScenarioPopupType.Victory });
-        this.scenarioNoneTimeout = setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500);
+        this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500));
       } else {
         this.playSound('defeat');
         // Add delay so widget can match up with music
         this.setState({ type: ScenarioPopupType.Defeat });
-        this.scenarioNoneTimeout = setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500);
+        this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500));
       }
     } else {
       // Just show round over
-      client.ReleaseInputOwnership();
       this.playSound('roundover');
       this.setState({ type: ScenarioPopupType.RoundOver });
-      this.scenarioNoneTimeout = setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500);
+      this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500));
     }
   }
 
   private playSound = (sound: 'victory' | 'defeat' | 'roundover') => {
     switch (sound) {
       case 'victory': {
-        client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_VICTORY);
+        game.playGameSound(SoundEvent.PLAY_SCENARIO_MUSIC_VICTORY);
         break;
       }
       case 'defeat': {
-        client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_DEFEAT);
+        game.playGameSound(SoundEvent.PLAY_SCENARIO_MUSIC_DEFEAT);
         break;
       }
       case 'roundover': {
-        client.PlaySoundEvent(soundEvents.PLAY_SCENARIO_UI_WIDGET_ROUNDOVER);
+        game.playGameSound(SoundEvent.PLAY_SCENARIO_UI_WIDGET_ROUNDOVER);
         break;
       }
       default: break;

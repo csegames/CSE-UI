@@ -6,13 +6,11 @@
 
 import * as React from 'react';
 
-import { BuildingBlueprint } from '@csegames/camelot-unchained';
-
 export interface BlueprintListProps {
-  blueprints: BuildingBlueprint[];
-  selected: BuildingBlueprint;
-  selectBlueprint: (blueprint: BuildingBlueprint) => void;
-  hoverBlueprint: (blueprint: BuildingBlueprint) => void;
+  blueprints: Blueprint[];
+  selected: Blueprint;
+  selectBlueprint: (blueprint: Blueprint) => void;
+  hoverBlueprint: (blueprint: Blueprint) => void;
 }
 
 export interface BlueprintListState {
@@ -38,7 +36,7 @@ class BlueprintList extends React.Component<BlueprintListProps, BlueprintListSta
     );
   }
 
-  private generateBlueprintItem = (bp: BuildingBlueprint) => {
+  private generateBlueprintItem = (bp: Blueprint) => {
     return (
       <li key={bp.name}
         onClick={() => this.props.selectBlueprint(bp) }

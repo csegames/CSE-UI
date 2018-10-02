@@ -35,10 +35,14 @@ export interface PlotModel {
   buildingMode: BuildingMode;
 
   /**
-   * Returns block info from the client
-   * @return {Material[]} An array of material objects that contain associated blocks
+   * The active selected block
    */
-  getBlocks: () => Material[];
+  activeBlock: Block;
+
+  /**
+   * An array of material objects that contain associated blocks
+   */
+  materials: Material[];
 
   /**
    * Sets the building mode, used to toggle between tools or turn build mode on / off
@@ -115,6 +119,7 @@ export type Plot = PlotModel & Updatable;
 export const PlotState_Update = 'plotState.update';
 
 function noOp(...args: any[]): any {}
+function noOpSuccess(...args: any[]): Success { return { success: true }; }
 
 function initDefault(): Plot {
   return {
@@ -122,21 +127,22 @@ function initDefault(): Plot {
     permissions: 0,
     ownerCharacterID: '',
     ownerEntityID: '',
-    buildingMode: BuildingMode.NotBuilding,
+    buildingMode: window.BuildingMode.NotBuilding,
 
-    getBlocks: noOp,
-    setBuildingMode: noOp,
-    selectBlock: noOp,
+    materials: [],
+    activeBlock: {} as Block,
+    setBuildingMode: noOpSuccess,
+    selectBlock: noOpSuccess,
 
-    replaceMaterials: noOp,
-    replaceMaterialsInSelection: noOp,
-    replaceShapes: noOp,
-    replaceShapesInSelection: noOp,
+    replaceMaterials: noOpSuccess,
+    replaceMaterialsInSelection: noOpSuccess,
+    replaceShapes: noOpSuccess,
+    replaceShapesInSelection: noOpSuccess,
 
     countBlocks: noOp,
 
     getBlueprints: noOp,
-    selectBlueprint: noOp,
+    selectBlueprint: noOpSuccess,
     createBlueprintFromSelection: noOp,
     deleteBlueprint: noOp,
 
@@ -146,7 +152,7 @@ function initDefault(): Plot {
 
     // Updatable
     isReady: false,
-    name: PlotState_Update,
+    _name: PlotState_Update,
     onUpdated: createDefaultOnUpdated(PlotState_Update),
     onReady: createDefaultOnReady(PlotState_Update),
   };

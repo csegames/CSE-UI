@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client, webAPI } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 
 const ZoneContainer = styled('div')`
 margin-top:40px;
@@ -37,39 +37,53 @@ const ZoneNameEnd = styled('div')`
 `;
 
 export interface ZoneNameState {
+  zoneID: string;
   name: string;
 }
 
 export class ZoneName extends React.Component<{}, ZoneNameState> {
+  private mounted: boolean = true;
+  private eventHandles: EventHandle[] = [];
 
   constructor(props: {}) {
     super(props);
     this.state = {
+      zoneID: '',
       name: '',
     };
   }
 
   public componentDidMount() {
     // initializing shardID when component mounts because client.shardID gives me random number onCharacterZoneChanged
-    const { shardID } = client;
-    client.OnCharacterZoneChanged((id: string) => {
-      const _id = id;
-      this.setState({ name: '' });
-
-      // CHANGE THIS TO USE GetZoneInfo
-      webAPI.ServersAPI.GetAvailableZones(
-        webAPI.defaultConfig,
-        shardID,
-      ).then((res) => {
-        if (!res.ok) return;
-        const data = JSON.parse(res.data);
-        data.forEach((zone: any) => {
-          if (zone.ID === _id) {
-            this.setState({ name: zone.Name });
-          }
+    const { shardID } = game;
+    this.eventHandles.push(game.selfPlayerState.onUpdated(() => {
+      if (this.state.zoneID !== game.selfPlayerState.zoneID) {
+        this.setState({
+          zoneID: game.selfPlayerState.zoneID,
+          name: '',
         });
-      });
-    });
+        // CHANGE THIS TO USE GetZoneInfo
+        webAPI.ServersAPI.GetAvailableZones(
+          webAPI.defaultConfig,
+          shardID,
+        ).then((res) => {
+          if (!res.ok) return;
+          const data = JSON.parse(res.data);
+          data.forEach((zone: any) => {
+            if (zone.ID === game.selfPlayerState.zoneID) {
+              if (this.mounted) {
+                this.setState({ name: zone.Name });
+              }
+            }
+          });
+        });
+      }
+    }));
+  }
+
+  public componentWillUnmount() {
+    this.mounted = false;
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   public render() {

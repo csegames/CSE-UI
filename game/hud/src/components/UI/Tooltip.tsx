@@ -59,8 +59,7 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
   private tooltipRef: HTMLDivElement;
   private windowDimensions: { innerHeight: number, innerWidth: number };
   private tooltipDimensions: { width: number, height: number };
-  private onShowTooltipListener: EventHandle;
-  private onHideTooltipListener: EventHandle;
+  private eventHandles: EventHandle[] = [];
 
   constructor(props: TooltipProps) {
     super(props);
@@ -95,14 +94,13 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
   public componentDidMount() {
     this.initWindowDimensions();
     window.addEventListener('resize', this.initWindowDimensions);
-    this.onShowTooltipListener = onShowTooltip(this.handleShowTooltip);
-    this.onHideTooltipListener = onHideTooltip(this.handleHideTooltip);
+    this.eventHandles.push(onShowTooltip(this.handleShowTooltip));
+    this.eventHandles.push(onHideTooltip(this.handleHideTooltip));
   }
 
   public componentWillUnmount() {
     window.removeEventListener('resize', this.initWindowDimensions);
-    this.onShowTooltipListener.clear();
-    this.onHideTooltipListener.clear();
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private initWindowDimensions = () => {

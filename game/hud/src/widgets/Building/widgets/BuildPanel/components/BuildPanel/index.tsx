@@ -26,8 +26,7 @@ export interface BuildPanelState {
 }
 
 class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
-  private activateListener: EventHandle;
-  private deactivateListener: EventHandle;
+  private eventHandles: EventHandle[] = [];
 
   constructor(props: BuildPanelProps) {
     super(props);
@@ -56,13 +55,12 @@ class BuildPanel extends React.Component<BuildPanelProps, BuildPanelState> {
 
 
   public componentDidMount() {
-    this.activateListener = game.on(ACTIVATE_MATERIAL_SELECTOR, this.materialSelectorActivated);
-    this.deactivateListener = game.on(DEACTIVATE_MATERIAL_SELECTOR, this.materialSelectorDeactivated);
+    this.eventHandles.push(game.on(ACTIVATE_MATERIAL_SELECTOR, this.materialSelectorActivated));
+    this.eventHandles.push(game.on(DEACTIVATE_MATERIAL_SELECTOR, this.materialSelectorDeactivated));
   }
 
   public componentWillUnmount() {
-    this.activateListener.clear();
-    this.deactivateListener.clear();
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private materialSelectorActivated = () => {

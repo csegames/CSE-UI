@@ -7,10 +7,9 @@
 // IMPORTANT: This component is the shared code between the EditFilterButtonMenu and FilterButtonList components.
 
 import * as _ from 'lodash';
-import { client } from '@csegames/camelot-unchained';
 import { defaultFilterButtonIcons, InventoryFilterButton } from '../../../lib/constants';
 
-const inventoryFilterButtonLocalStorageKey =  `inventoryFilterButton${client.characterID}`;
+const inventoryFilterButtonLocalStorageKey =  `inventoryFilterButton${game.selfPlayerState.characterID}`;
 
 export interface FilterButtonState {
   filterButtons: InventoryFilterButton[]; // Describes which filter buttons to display in InventoryHeader.

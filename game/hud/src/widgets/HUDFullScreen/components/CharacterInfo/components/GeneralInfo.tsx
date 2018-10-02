@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client, webAPI } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 import { getMyPaperDollBG, getMyPaperDollIcon } from '../../../lib/utils';
 
 interface ContainerProps {
@@ -161,12 +161,12 @@ class GeneralInfo extends React.PureComponent<GeneralInfoProps, GeneralInfoState
         <TopRightOrnament />
         <BottomRightOrnament />
         <Content>
-          <Name>{client.playerState.name}</Name>
+          <Name>{game.selfPlayerState.name}</Name>
           <InfoContainer>
             <CharacterInfo>
-              <Text>{Faction[client.playerState.faction]}</Text>
-              <Text>{Gender[client.playerState.gender]} {webAPI.raceString(client.playerState.race)}</Text>
-              <Text>{Archetype[client.playerState.class]}</Text>
+              <Text>{Faction[game.selfPlayerState.faction]}</Text>
+              <Text>{Gender[game.selfPlayerState.gender]} {webAPI.raceString(game.selfPlayerState.race)}</Text>
+              <Text>{Archetype[game.selfPlayerState.class]}</Text>
             </CharacterInfo>
             <InfoDivider />
             <BiographyInfo>
@@ -183,8 +183,8 @@ class GeneralInfo extends React.PureComponent<GeneralInfoProps, GeneralInfoState
   }
 
   private shouldZoom = () => {
-    const race = client.playerState.race;
-    const archetype = client.playerState.class;
+    const race = game.selfPlayerState.race;
+    const archetype = game.selfPlayerState.class;
 
     if (race === Race.Luchorpan || archetype === Archetype.WintersShadow) {
       return false;

@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client, webAPI } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 import TradeActionButton from './TradeActionButton';
 import { tradeActionButtonIcons } from '../../../lib/constants';
 import { SecureTradeState } from 'gql/interfaces';
@@ -151,8 +151,8 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
     try {
       const res = await webAPI.SecureTradeAPI.Lock(
         webAPI.defaultConfig,
-        client.shardID,
-        client.characterID,
+        game.shardID,
+        game.selfPlayerState.characterID,
       );
       if (res.ok) {
         // Handle successful Lock
@@ -170,8 +170,8 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
     try {
       const res = await webAPI.SecureTradeAPI.Unlock(
         webAPI.defaultConfig,
-        client.shardID,
-        client.characterID,
+        game.shardID,
+        game.selfPlayerState.characterID,
       );
       if (res.ok) {
         // Handle successful Unlock
@@ -192,8 +192,8 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
     try {
       const res = await webAPI.SecureTradeAPI.Confirm(
         webAPI.defaultConfig,
-        client.shardID,
-        client.characterID,
+        game.shardID,
+        game.selfPlayerState.characterID,
       );
       if (res.ok) {
         // Handle successful Confirm
@@ -211,8 +211,8 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
     try {
       const res = await webAPI.SecureTradeAPI.CancelTradeConfirmation(
         webAPI.defaultConfig,
-        client.shardID,
-        client.characterID,
+        game.shardID,
+        game.selfPlayerState.characterID,
       );
       if (res.ok) {
         // Handle successful Cancel Confirmation

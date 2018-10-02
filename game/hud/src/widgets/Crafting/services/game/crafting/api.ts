@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, webAPI } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 
 
 export interface VoxResponse {
@@ -40,8 +40,8 @@ function run(startRequest: () => any) {
 export function setVoxJob(type: any) {
   return run(() => webAPI.CraftingAPI.SetVoxJob(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     type,
   ));
 }
@@ -49,40 +49,40 @@ export function setVoxJob(type: any) {
 export function startVoxJob() {
   return run(() => webAPI.CraftingAPI.StartVoxJob(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
   ));
 }
 
 export function collectVoxJob() {
   return run(() => webAPI.CraftingAPI.CollectFinishedVoxJob(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
   ));
 }
 
 export function clearVoxJob() {
   return run(() => webAPI.CraftingAPI.ClearVoxJob(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
   ));
 }
 
 export function cancelVoxJob() {
   return run(() => webAPI.CraftingAPI.CancelVoxJob(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
   ));
 }
 
 export function setVoxQuality(quality: number) {
   return run(() => webAPI.CraftingAPI.SetQuality(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     (quality / 100),
   ));
 }
@@ -90,8 +90,8 @@ export function setVoxQuality(quality: number) {
 export function setVoxItemCount(count: number) {
   return run(() => webAPI.CraftingAPI.SetVoxItemCount(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     count,
   ));
 }
@@ -99,8 +99,8 @@ export function setVoxItemCount(count: number) {
 export function setVoxName(name: string) {
   return run(() => webAPI.CraftingAPI.SetCustomItemName(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     name,
   ));
 }
@@ -108,8 +108,8 @@ export function setVoxName(name: string) {
 export function setVoxRecipe(id: string) {
   return run(() => webAPI.CraftingAPI.SetRecipeID(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     id,
   ));
 }
@@ -117,8 +117,8 @@ export function setVoxRecipe(id: string) {
 export function addVoxIngredient(id: string, qty: number, slot: number = 0) {
   return run(() => webAPI.CraftingAPI.AddIngredient(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     id,
     qty,
     slot,
@@ -128,8 +128,8 @@ export function addVoxIngredient(id: string, qty: number, slot: number = 0) {
 export function removeVoxIngredient(id: string, qty: number) {
   return run(() => webAPI.CraftingAPI.RemoveVoxIngredient(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     id,
     qty,
   ));

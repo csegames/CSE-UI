@@ -3,22 +3,18 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-'use strict';
-
+import { utils } from '@csegames/camelot-unchained';
 
 import BuildingEventTopics from './BuildingEventTopics';
-import { EventEmitter } from '../../utils/EventEmitter';
-import client from '../../core/client';
-import buildUIMode from '../../core/constants/buildUIMode';
 
-import { getBlockForBlockId, getMaterialForBlockId } from '../../building/building';
-
-function run(emitter: EventEmitter, topic: string) {
-  if (client.OnBlockSelected) {
-    client.OnBuildingModeChanged((mode: buildUIMode) => {
+function run(emitter: utils.EventEmitter, topic: string) {
+  let mode = game.plot.buildingMode;
+  game.plot.onUpdated(() => {
+    if (mode !== game.plot.buildingMode) {
+      mode = game.plot.buildingMode;
       emitter.emit(topic, { mode });
-    });
-  }
+    }
+  });
 }
 
 export default class BuildingModeListener {
@@ -26,7 +22,7 @@ export default class BuildingModeListener {
   public ktype: string;
   public topic: string = BuildingEventTopics.handlesBuildingMode;
 
-  public start(emitter: EventEmitter) {
+  public start(emitter: utils.EventEmitter) {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);

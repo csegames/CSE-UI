@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { buildUIMode } from '@csegames/camelot-unchained';
 
 import buildingActions from '../../services/session/requester';
 import { GlobalState } from '../../services/session/reducer';
@@ -14,7 +13,7 @@ import ActionButton from './components/ActionButton';
 import SavedDraggable, { Anchor } from '../SavedDraggable';
 
 export interface ActionBarProps {
-  buildingMode: buildUIMode;
+  buildingMode: BuildingMode;
   dispatch: (action: any) => void;
 }
 
@@ -127,10 +126,10 @@ class ActionBar extends React.Component<ActionBarProps, ActionBarState> {
   }
 
   private onSelect() {
-    if (this.props.buildingMode !== buildUIMode.SELECTINGBLOCK) {
-      buildingActions.changeMode(buildUIMode.SELECTINGBLOCK);
+    if (this.props.buildingMode !== window.BuildingMode.SelectingBlocks) {
+      buildingActions.changeMode(window.BuildingMode.SelectingBlocks);
     } else {
-      buildingActions.changeMode(buildUIMode.PLACINGPHANTOM);
+      buildingActions.changeMode(window.BuildingMode.PlacingPhantom);
     }
   }
 
@@ -178,4 +177,3 @@ function select(state: GlobalState) {
 }
 
 export default connect(select)(ActionBar);
-

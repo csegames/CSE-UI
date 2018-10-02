@@ -23,7 +23,7 @@ function initDefault(): LoadingState {
     message: '',
     visible: false,
     isReady: false,
-    name: LoadingState_Update,
+    _name: LoadingState_Update,
     onUpdated: createDefaultOnUpdated(LoadingState_Update),
     onReady: createDefaultOnReady(LoadingState_Update),
   };

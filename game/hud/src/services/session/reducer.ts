@@ -10,12 +10,11 @@ import invites, { InvitesState } from './invites';
 import { createBatchingNetworkInterface, toIdValue } from 'apollo-client';
 import { ApolloClient } from 'react-apollo';
 import { crashReporterMiddleware, thunkMiddleware } from '../../lib/reduxUtils';
-import { client } from '@csegames/camelot-unchained';
 // Apollo Setup
 
 // define network address
 const networkInterface = createBatchingNetworkInterface({
-  uri: client.apiHost + '/graphql',
+  uri: game.webAPIHost + '/graphql',
   batchInterval: 100,
 });
 
@@ -36,9 +35,9 @@ const authHeaders = {
     if (!req.options.headers) {
       req.options.headers = {};
     }
-    req.options.headers['accessToken'] = `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`;
-    req.options.headers['shardID'] = client.shardID;
-    req.options.headers['characterID'] = client.characterID;
+    req.options.headers['accessToken'] = `Bearer ${game.accessToken}`;
+    req.options.headers['shardID'] = game.shardID;
+    req.options.headers['characterID'] = game.selfPlayerState.characterID;
     next();
   },
 };

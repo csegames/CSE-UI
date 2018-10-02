@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client } from '@csegames/camelot-unchained';
-
 export interface CompassData {
   facing: number;
   facingNorth: number;
@@ -13,50 +11,79 @@ export interface CompassData {
 }
 
 export function getCompassData() {
-  let facing: number = client.facing % 360;
-  if (facing < 0) {
-    facing = 360 - Math.abs(facing);
+  if (game.selfPlayerState.isReady) {
+    let facing: number = game.selfPlayerState.facing % 360;
+    if (facing < 0) {
+      facing = 360 - Math.abs(facing);
+    }
+    facing = Math.round(facing);
+    const facingNorth = Math.round((360 - (facing - 90)) % 360);
+    const x = Math.round(game.selfPlayerState.position.x);
+    const y = Math.round(game.selfPlayerState.position.y);
+    const z = Math.round(game.selfPlayerState.position.z);
+    return {
+      facing,
+      facingNorth,
+      position: {
+        x,
+        y,
+        z,
+      },
+    };
+  } else {
+    return {
+      facing: 0,
+      facingNorth: 0,
+      position: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
+    };
   }
-  facing = Math.round(facing);
-  const facingNorth = Math.round((360 - (facing - 90)) % 360);
-  const x = Math.round(client.locationX);
-  const y = Math.round(client.locationY);
-  const z = Math.round(client.locationZ);
-  return {
-    facing,
-    facingNorth,
-    position: {
-      x,
-      y,
-      z,
-    },
-  };
 }
 
 export function getCompassFacingData() {
-  let facing: number = client.facing % 360;
-  if (facing < 0) {
-    facing = 360 - Math.abs(facing);
+  if (game.selfPlayerState.isReady) {
+    let facing: number = game.selfPlayerState.facing % 360;
+    if (facing < 0) {
+      facing = 360 - Math.abs(facing);
+    }
+    facing = Math.round(facing);
+    const facingNorth = Math.round((360 - (facing - 90)) % 360);
+    return {
+      facing,
+      facingNorth,
+    };
+  } else {
+    return {
+      facing: 0,
+      facingNorth: 0,
+    };
   }
-  facing = Math.round(facing);
-  const facingNorth = Math.round((360 - (facing - 90)) % 360);
-  return {
-    facing,
-    facingNorth,
-  };
 }
 
 export function getCompassPositionData() {
-  const x = Math.round(client.locationX);
-  const y = Math.round(client.locationY);
-  const z = Math.round(client.locationZ);
-  return {
-    position: {
-      x,
-      y,
-      z,
-    },
-  };
+  if (game.selfPlayerState.isReady) {
+    const x = Math.round(game.selfPlayerState.position.x);
+    const y = Math.round(game.selfPlayerState.position.y);
+    const z = Math.round(game.selfPlayerState.position.z);
+    return {
+      position: {
+        x,
+        y,
+        z,
+      },
+    };
+  } else {
+    return {
+      position: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
+    };
+  }
 }
 
 export function isVec3f(value: any): value is Vec3f {

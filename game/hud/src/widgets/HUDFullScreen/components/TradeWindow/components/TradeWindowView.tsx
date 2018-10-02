@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { webAPI, client } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 
 import TabHeader from '../../TabHeader';
 import TabSubHeader from '../../TabSubHeader';
@@ -192,8 +192,8 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
     try {
       const res = await webAPI.SecureTradeAPI.AbortSecureTrade(
         webAPI.defaultConfig,
-        client.shardID,
-        client.characterID,
+        game.shardID,
+        game.selfPlayerState.characterID,
       );
       if (res.ok) {
         // Handle aborting trade

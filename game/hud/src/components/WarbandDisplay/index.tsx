@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { groupsHub, hubEvents } from '@csegames/camelot-unchained/lib/signalR/hubs/groupsHub';
-import client from '@csegames/camelot-unchained/lib/core/client';
 import styled from 'react-emotion';
 
 import { addOrUpdate, removeWhere } from '../../lib/reduxUtils';
@@ -142,7 +141,7 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
       member.avatar = WarbandDisplay.getAvatar(member.gender, member.race);
       return member;
     } catch (e) {
-      if (client.debug) {
+      if (process.env.IS_DEVELOPMENT) {
         console.error(`WarbandMemberJoined Failed to parse WarbandMember. | ${e}`);
       }
       return;
@@ -214,7 +213,7 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
   }
 
   private onWarbandMemberRemoved = (characterID: string) => {
-    if (characterID === client.characterID) {
+    if (characterID === game.selfPlayerState.characterID) {
       this.onWarbandQuit(this.state.warbandID);
       return;
     }

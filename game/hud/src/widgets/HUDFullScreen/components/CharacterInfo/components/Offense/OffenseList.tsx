@@ -72,7 +72,7 @@ export interface OffenseListProps extends GraphQLInjectedProps<OffenseListGQL.Qu
 }
 
 class OffenseList extends React.PureComponent<OffenseListProps> {
-  private updateCharStatsListener: EventHandle;
+  private eventHandles: EventHandle[] = [];
   public render() {
     const myEquippedItems = this.props.graphql.data && this.props.graphql.data.myEquippedItems;
     if (myEquippedItems && myEquippedItems.items) {
@@ -133,13 +133,13 @@ class OffenseList extends React.PureComponent<OffenseListProps> {
   }
 
   public componentDidMount() {
-    this.updateCharStatsListener = game.on(eventNames.updateCharacterStats, () => {
+    this.eventHandles.push(game.on(eventNames.updateCharacterStats, () => {
       this.props.graphql.refetch();
-    });
+    }));
   }
 
   public componentWillUnmount() {
-    game.off(this.updateCharStatsListener);
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private getWeaponSlotArray = () => {

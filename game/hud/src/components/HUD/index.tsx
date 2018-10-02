@@ -7,7 +7,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import styled from 'react-emotion';
-import { client, PlayerState } from '@csegames/camelot-unchained';
 import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 import { hot } from 'react-hot-loader';
 
@@ -25,7 +24,7 @@ import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
 import Watermark from '../Watermark';
 import HUDFullScreen from '../../widgets/HUDFullScreen';
 import DevUI from '../DevUI';
-import SkillBar from '../SkillBar';
+// import SkillBar from '../SkillBar';
 import ScenarioPopup from '../ScenarioPopup';
 import ScenarioResults from '../ScenarioResults';
 
@@ -83,6 +82,8 @@ export interface HUDState extends HUDContextState {
 }
 
 class HUD extends React.Component<HUDProps, HUDState> {
+  private eventHandles: EventHandle[] = [];
+
   constructor(props: HUDProps) {
     super(props);
     this.state = {
@@ -120,7 +121,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
           <HUDFullScreen />
           <SkillBarContainer>
-            <SkillBar />
+            {/* <SkillBar /> */}
           </SkillBarContainer>
           <ContextMenu />
           <Tooltip />
@@ -147,18 +148,11 @@ class HUD extends React.Component<HUDProps, HUDState> {
     this.props.dispatch(initializeInvites());
     this.initGraphQLContext();
 
-    if (client && client.OnPlayerStateChanged) {
+    this.eventHandles.push(game.selfPlayerState.onUpdated(this.handleSelfPlayerStateUpdated));
+  }
 
-      client.OnPlayerStateChanged((playerState: PlayerState) => {
-        const alive = playerState.isAlive;
-        const respawn = this.props.layout.widgets.get('respawn');
-        if (!alive && respawn && !respawn.position.visibility) {
-          this.setVisibility('respawn', true);
-        } else if (respawn && respawn.position.visibility) {
-          this.setVisibility('respawn', false);
-        }
-      });
-    }
+  public componentWillUnmount() {
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   public componentWillReceiveProps(props: HUDProps) {
@@ -174,6 +168,16 @@ class HUD extends React.Component<HUDProps, HUDState> {
         // we left our order, leave chat room
         game.trigger('chat-show-room', props.data.myOrder.name);
       }
+    }
+  }
+
+  private handleSelfPlayerStateUpdated = () => {
+    const alive = game.selfPlayerState.isAlive;
+    const respawn = this.props.layout.widgets.get('respawn');
+    if (!alive && respawn && !respawn.position.visibility) {
+      this.setVisibility('respawn', true);
+    } else if (respawn && respawn.position.visibility) {
+      this.setVisibility('respawn', false);
     }
   }
 

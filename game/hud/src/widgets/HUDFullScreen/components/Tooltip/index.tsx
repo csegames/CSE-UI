@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { client } from '@csegames/camelot-unchained';
 
 import TooltipHeader from './components/TooltipHeader';
 import TooltipArmorInfo from './components/TooltipArmorInfo';
@@ -92,7 +91,7 @@ class TooltipContent extends React.Component<TooltipContentProps> {
     const itemInfo = item && item.staticDefinition && item.staticDefinition;
 
     return itemInfo ? (
-      <Container factionColor={getTooltipColor(client.playerState.faction)}>
+      <Container factionColor={getTooltipColor(game.selfPlayerState.faction)}>
         <TooltipHeader item={item} slotType={slotType} stackedItems={stackedItems} />
         {isArmorItem(item) && <TooltipArmorInfo item={item} equippedItems={equippedItems} />}
         {isWeaponItem(item) && <TooltipWeaponInfo item={item} equippedItems={equippedItems} />}

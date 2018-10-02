@@ -151,13 +151,18 @@ export const KeyActions_Update = 'keyActions.update';
 function initDefault(): KeyActions {
   return new Proxy({
     isReady: false,
-    name: KeyActions_Update,
+    _name: KeyActions_Update,
     onUpdated: createDefaultOnUpdated(KeyActions_Update),
     onReady: createDefaultOnReady(KeyActions_Update),
   }, {
     // default any unassigned value as 0
     get: (obj, key) => {
-      return key in obj ? obj[key] : 0;
+      if (key in obj) {
+        return obj[key];
+      } else {
+        console.error('missing keyAction', key);
+        return 0;
+      }
     },
   }) as KeyActions;
 }

@@ -7,7 +7,6 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client } from '@csegames/camelot-unchained';
 import hash from 'object-hash';
 import {
   CompassPOIProviderProps,
@@ -63,13 +62,18 @@ interface MapPoiContainerProps {
 interface MapPoiContainerState {
   hoverCount: number;
   hover: boolean;
+  zoneID: string;
 }
 
 class MapPoiContainer extends React.Component<MapPoiContainerProps, MapPoiContainerState> {
 
+  private eventHandles: EventHandle[] = [];
+  private timeouts: NodeJS.Timer[] = [];
+
   public state = {
     hover: false,
     hoverCount: 0,
+    zoneID: '',
   };
 
   public render() {
@@ -108,9 +112,7 @@ class MapPoiContainer extends React.Component<MapPoiContainerProps, MapPoiContai
   }
 
   public componentDidMount() {
-    client.OnCharacterZoneChanged((id) => {
-      this.props.compass.removePOIByType('map');
-    });
+    this.eventHandles.push(game.selfPlayerState.onUpdated(this.onSelfPlayerStateUpdated));
   }
 
   public componentDidUpdate() {
@@ -121,6 +123,26 @@ class MapPoiContainer extends React.Component<MapPoiContainerProps, MapPoiContai
 
   public componentWillUnmount() {
     hideCompassTooltip(this.props.poi.id);
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
+    this.timeouts.forEach(timeout => clearTimeout(timeout));
+  }
+
+  private onSelfPlayerStateUpdated = () => {
+    this.setState((prevState: MapPoiContainerState) => {
+      if (prevState.zoneID === '') {
+        this.props.compass.removePOIByType('map');
+        return {
+          zoneID: game.selfPlayerState.zoneID,
+        };
+      } else if (prevState.zoneID !== game.selfPlayerState.zoneID) {
+        this.props.compass.removePOIByType('map');
+        return {
+          zoneID: game.selfPlayerState.zoneID,
+        };
+      } else {
+        return null;
+      }
+    });
   }
 
   private getTooltipData = (): CompassTooltipData => {
@@ -150,7 +172,7 @@ class MapPoiContainer extends React.Component<MapPoiContainerProps, MapPoiContai
 
   private handleMouseLeave = () => {
     const hoverCount = this.state.hoverCount;
-    setTimeout(() => {
+    this.timeouts.push(setTimeout(() => {
       this.setState((prevState: MapPoiContainerState) => {
         if (hoverCount === prevState.hoverCount) {
           hideCompassTooltip(this.props.poi.id);
@@ -162,7 +184,7 @@ class MapPoiContainer extends React.Component<MapPoiContainerProps, MapPoiContai
           return null;
         }
       });
-    }, 1000);
+    }, 1000));
   }
 }
 

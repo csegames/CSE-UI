@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { client } from '@csegames/camelot-unchained';
 import styled, { css } from 'react-emotion';
 import { CloseButton } from 'UI/CloseButton';
 
@@ -13,7 +12,7 @@ const OuterContainer = styled('div')`
   position: relative;
 `;
 
-const Container = styled('div')` {
+const Container = styled('div')`
   position: relative;
   pointer-events: all;
   width: 257px;
@@ -27,7 +26,7 @@ const Container = styled('div')` {
   box-shadow: 0 0 30px 0 #000;
 `;
 
-const MenuTitle = styled('div')` {
+const MenuTitle = styled('div')`
   text-align: center;
   background: url(images/gamemenu/gamemenu-top-title.png) center top no-repeat;
   margin: 0 auto -9px auto;
@@ -46,7 +45,7 @@ const MenuTitle = styled('div')` {
   }
 `;
 
-const MenuCorner = styled('div')` {
+const MenuCorner = styled('div')`
   position: absolute;
   width: 100%;
   height: 100%;
@@ -64,7 +63,7 @@ const CloseButtonPosition = css`
   right: 7px;
 `;
 
-const MenuContent = styled('div')` {
+const MenuContent = styled('div')`
   height: 115px;
   margin-top: 30px;
   max-height: 345px;
@@ -155,8 +154,11 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
   }
 
   public componentDidMount() {
-    client.OnOpenUI(this.fireVisibilityEvent);
-    client.OnCloseUI(this.fireVisibilityEvent);
+    game.onNavigate((target: string) => {
+      if (target === 'gamemenu.open' || target === 'gamemenu.close') {
+        this.fireVisibilityEvent();
+      }
+    });
     game.on('hudnav--navigate', this.handleVisibilityEvent);
   }
 
@@ -166,14 +168,13 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
   }
 
   private onQuitGameClick = () => {
-    client.Quit();
+    game.quit();
   }
 
   private handleVisibilityEvent = (name: string) => {
     if (name === 'gamemenu') {
       this.setState((state, props) => {
         if (state.visible) {
-          client.ReleaseInputOwnership();
           return {
             visible: false,
             showOptions: false,
@@ -192,4 +193,3 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
 }
 
 export default GameMenu;
-

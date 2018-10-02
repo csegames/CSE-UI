@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { client } from '@csegames/camelot-unchained';
 
 const HUDNAV_NAVIGATE = 'hudnav--navigate';
 
@@ -42,7 +41,6 @@ export class HudNavWindow extends React.PureComponent<HudNavWindowProps, HudNavW
 
   private onnavigate = (name: string) => {
     if (name === this.props.name) {
-      if (this.state.visible) client.ReleaseInputOwnership();
       this.setState({ visible: !this.state.visible });
     }
   }

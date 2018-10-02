@@ -6,7 +6,6 @@
  */
 
 import { find, filter } from 'lodash';
-import { client } from '@csegames/camelot-unchained';
 import { TeamInterface } from '../components/ScenarioResultsContainer';
 import { ScenarioOutcome } from 'gql/interfaces';
 
@@ -65,13 +64,13 @@ export function getMainWinningTeam(winningTeams: TeamInterface[]) {
 export function teamIdIsMyFaction(teamID: string) {
   switch (teamID) {
     case 'Arthurian': {
-      return client.playerState.faction === Faction.Arthurian;
+      return game.selfPlayerState.faction === Faction.Arthurian;
     }
     case 'Tuatha': {
-      return client.playerState.faction === Faction.TDD;
+      return game.selfPlayerState.faction === Faction.TDD;
     }
     case 'Viking': {
-      return client.playerState.faction === Faction.Viking;
+      return game.selfPlayerState.faction === Faction.Viking;
     }
     default: {
       return false;

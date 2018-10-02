@@ -6,14 +6,9 @@
 
 import * as React from 'react';
 import RefillButton from './components/RefillButton';
-import { client, hasClientAPI } from '@csegames/camelot-unchained';
 
 const RefillAmmo = () => <RefillButton refill={() => {
-  if (hasClientAPI()) {
-    client.SendSlashCommand('refillammo');
-  } else {
-    console.log('would have sent /refillammo to server');
-  }
+  game.sendSlashCommand('refillammo');
 }}/>;
 
 export default RefillAmmo;

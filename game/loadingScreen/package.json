@@ -31,7 +31,7 @@
   },
   "scripts": {
     "start": "nps",
-    "postinstall": "rimraf typings && typings install"
+    "prepare": "rimraf typings && typings install"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
@@ -82,7 +82,7 @@
     "get-graphql-schema": "^2.1.1",
     "graphql-code-generator": "^0.10.7",
     "graphql-codegen-typescript-no-pascal-template": "^0.10.10",
-    "graphql-document-collector": "0.0.0",
+    "graphql-document-collector": "^0.2.1",
     "graphql-tag": "^2.9.2",
     "handlebars-loader": "^1.7.0",
     "html-webpack-plugin": "^4.0.0-alpha",

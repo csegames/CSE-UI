@@ -3,30 +3,21 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-'use strict';
-
+import { utils } from '@csegames/camelot-unchained';
 
 import BuildingEventTopics from './BuildingEventTopics';
-import { EventEmitter } from '../../utils/EventEmitter';
-import client from '../../core/client';
 
-import * as building from '../../building/building';
-import BuildingMaterial from '../../building/classes/BuildingMaterial';
-import BuildingBlock from '../../building/classes/BuildingBlock';
+import * as building from '../building';
 
-function run(emitter: EventEmitter, topic: string) {
+function run(emitter: utils.EventEmitter, topic: string) {
 
-  if (client.OnBlockSelected) {
-    client.OnBlockSelected((blockid: number) => {
-      const material = building.getMaterialForBlockId(blockid);
-      const block = building.getBlockForBlockId(blockid);
-      if (material) {
-        emitter.emit(topic, { material, block });
-      } else {
-        emitter.emit(topic, building.getMissingMaterial(blockid));
-      }
-    });
-  }
+  game.plot.onUpdated(() => {
+    const block = game.plot.activeBlock;
+    if (block.id) {
+      const material = building.getMaterialForBlockId(block.id);
+      emitter.emit(topic, { material, block });
+    }
+  });
 }
 
 export default class BlockSelectListener {
@@ -34,7 +25,7 @@ export default class BlockSelectListener {
   public type: string;
   public topic: string = BuildingEventTopics.handlesBlockSelect;
 
-  public start(emitter: EventEmitter): void {
+  public start(emitter: utils.EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);

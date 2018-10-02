@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { client, webAPI } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 import { Container, InputContainer, Button, ButtonOverlay } from './lib/styles';
 import { IInteractiveAlert, TradeAlert } from 'gql/interfaces';
 
@@ -92,8 +92,8 @@ export class TradeAlertView extends React.Component<TradeAlertProps> {
     try {
       const res = await webAPI.SecureTradeAPI.AcceptInvite(
         webAPI.defaultConfig,
-        client.shardID,
-        client.characterID,
+        game.shardID,
+        game.selfPlayerState.characterID,
         alert.otherEntityID,
       );
       if (res.ok) {
@@ -118,8 +118,8 @@ export class TradeAlertView extends React.Component<TradeAlertProps> {
     try {
       const res = await webAPI.SecureTradeAPI.RejectInvite(
         webAPI.defaultConfig,
-        client.shardID,
-        client.characterID,
+        game.shardID,
+        game.selfPlayerState.characterID,
         alert.otherEntityID,
       );
       // remove this alert from our ui

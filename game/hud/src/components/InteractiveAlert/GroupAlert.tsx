@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import {  client, webAPI } from '@csegames/camelot-unchained';
+import {  webAPI } from '@csegames/camelot-unchained';
 import { InteractiveAlertView } from './index';
 import { Container, InputContainer, Button, ButtonOverlay } from './lib/styles';
 import { GroupAlert, IInteractiveAlert } from 'gql/interfaces';
@@ -58,8 +58,8 @@ export class GroupAlertView extends React.Component<GroupAlertProps> {
     try {
       const res = await webAPI.GroupsAPI.JoinV1(
         webAPI.defaultConfig,
-        client.shardID,
-        client.characterID,
+        game.shardID,
+        game.selfPlayerState.characterID,
         alert.forGroup,
         alert.code);
       if (res.ok) {

@@ -4,16 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-
-import { client } from '@csegames/camelot-unchained';
-
 export function gql({ query, variables }: { query: string, variables?: any }) {
-  const url = client.apiHost + '/graphql';
+  const url = game.webAPIHost + '/graphql';
   const headers: any = {};
-  headers['api-version'] = client.apiVersion;
-  headers['Authorization'] = `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`;
-  headers['characterId'] = client.characterID;
-  headers['shardId'] = client.shardID;
+  headers['api-version'] = game.apiVersion;
+  headers['Authorization'] = `Bearer ${game.accessToken}`;
+  headers['characterId'] = game.selfPlayerState.characterID;
+  headers['shardId'] = game.shardID;
   headers['Accept'] = headers['Content-Type'] = 'application/json';
   const body: string = JSON.stringify({ query, variables });
   return new Promise((resolve, reject) => {

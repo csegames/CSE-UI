@@ -60,7 +60,7 @@ export interface InventoryFooterState {
 }
 
 class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFooterState> {
-  private onDropItemListener: EventHandle;
+  private eventHandles: EventHandle[] = [];
 
   constructor(props: InventoryFooterProps) {
     super(props);
@@ -109,7 +109,7 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
   }
 
   public componentDidMount() {
-    this.onDropItemListener = game.on(eventNames.onDropItem, this.onDropItem);
+    this.eventHandles.push(game.on(eventNames.onDropItem, this.onDropItem));
     this.setBottomInfo();
   }
 
@@ -122,7 +122,7 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
   }
 
   public componentWillUnmount() {
-    this.onDropItemListener.clear();
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private setBottomInfo = () => {

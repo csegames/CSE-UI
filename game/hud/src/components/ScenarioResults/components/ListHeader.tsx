@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client } from '@csegames/camelot-unchained';
 import { Name, KDAContainer, Divider, Kills, Deaths, Assists, Team } from './ListItem';
 import ListHeaderItem, { SortBy } from './ListHeaderItem';
 
@@ -56,8 +55,6 @@ class ListHeader extends React.PureComponent<ListHeaderProps> {
           <SearchIcon className='fa fa-search' onClick={this.onSearchIconClick} />
           <NameSearchInput
             innerRef={(r: HTMLInputElement) => this.nameInputRef = r}
-            onClick={() => client.RequestInputOwnership()}
-            onBlur={() => client.ReleaseInputOwnership()}
             value={this.props.searchValue}
             onChange={this.onSearchChange}
           />
@@ -91,7 +88,6 @@ class ListHeader extends React.PureComponent<ListHeaderProps> {
 
   private onSearchIconClick = () => {
     this.nameInputRef.focus();
-    client.RequestInputOwnership();
   }
 }
 

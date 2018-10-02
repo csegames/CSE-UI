@@ -35,7 +35,7 @@ export interface DefenseListState {
 }
 
 class DefenseList extends React.PureComponent<DefenseListProps> {
-  private updateCharacterStatsListener: EventHandle;
+  private eventHandles: EventHandle[] = [];
   public render() {
     const myEquippedItems = this.props.graphql.data && this.props.graphql.data.myEquippedItems;
 
@@ -69,13 +69,13 @@ class DefenseList extends React.PureComponent<DefenseListProps> {
   }
 
   public componentDidMount() {
-    this.updateCharacterStatsListener = game.on(eventNames.updateCharacterStats, () => {
+    this.eventHandles.push(game.on(eventNames.updateCharacterStats, () => {
       this.props.graphql.refetch();
-    });
+    }));
   }
 
   public componentWillUnmount() {
-    game.off(this.updateCharacterStatsListener);
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 }
 

@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { client, jsKeyCodes } from '@csegames/camelot-unchained';
 import { StyleSheet, cssAphrodite, merge, input, InputStyles } from '../styles';
 
 interface InputProps {
@@ -40,7 +39,6 @@ class Input extends React.Component<InputProps, InputState> {
 
   public componentWillUnmount() {
     window.removeEventListener('mousedown', this.releaseOwnership);
-    client.ReleaseInputOwnership();
   }
 
   public render() {
@@ -105,38 +103,38 @@ class Input extends React.Component<InputProps, InputState> {
   }
 
   private onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    if (client.debug) console.log(`Input: on focus ${this.props.name} grab ownership`);
-    client.RequestInputOwnership();
+    if (process.env.IS_DEVELOPMENT) console.log(`Input: on focus ${this.props.name} grab ownership`);
     window.addEventListener('mousedown', this.releaseOwnership);
   }
 
   private releaseOwnership = (e: MouseEvent) => {
     if (e.srcElement !== this.refs['input'] as HTMLInputElement) {
-      if (client.debug) console.log(`Input: mousedown elsewhere ${this.props.name} release ownership`);
-      client.ReleaseInputOwnership();
+      if (process.env.IS_DEVELOPMENT) console.log(`Input: mousedown elsewhere ${this.props.name} release ownership`);
       window.removeEventListener('mousedown', this.releaseOwnership);
     }
   }
 
   private onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    if (client.debug) console.log(`Input: onBlur ${this.props.name}`);
+    if (process.env.IS_DEVELOPMENT) console.log(`Input: onBlur ${this.props.name}`);
     if (this.state.changed) {
-      if (client.debug) console.log(`Input: fireOnChange ${this.props.name}`);
+      if (process.env.IS_DEVELOPMENT) console.log(`Input: fireOnChange ${this.props.name}`);
       this.fireOnChange();
     }
   }
 
   private onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (this.props.numeric) {
-      if (e.keyCode >= jsKeyCodes.ZERO && e.keyCode <= jsKeyCodes.NINE) return;
-      if (e.keyCode === jsKeyCodes.BACKSPACE || e.keyCode === jsKeyCodes.ENTER) return;
+      try {
+        if (parseInt(e.key, 10) >= 0 && parseInt(e.key, 10) <= 9) return;
+      } catch (e) {}
+      if (e.key.toUpperCase() === 'BACKSPACE' || e.key.toUpperCase() === 'ENTER') return;
       e.preventDefault();
     }
   }
 
   private onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (this.state.changed) {
-      if (e.keyCode >= jsKeyCodes.SPACE || e.keyCode === jsKeyCodes.ENTER) {
+      if (e.key.toUpperCase() >= 'SPACE' || e.keyCode === 'ENTER') {
         this.fireOnChange();
       }
     }

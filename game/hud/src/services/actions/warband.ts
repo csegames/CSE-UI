@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client } from '@csegames/camelot-unchained';
 import { defaultConfig } from '@csegames/camelot-unchained/lib/webAPI/config';
 import { GroupsAPI } from '@csegames/camelot-unchained/lib/webAPI/definitions';
 
@@ -22,8 +21,8 @@ async function inviteToWarband(characterID: string, characterName: string, warba
   try {
     const result = await GroupsAPI.InviteV1(
       defaultConfig,
-      client.shardID,
-      client.characterID,
+      game.shardID,
+      game.selfPlayerState.characterID,
       warbandID,
       characterID,
       characterName,
@@ -56,8 +55,8 @@ async function kickFromWarband(targetEntityID: string, targetCharacterID: string
   try {
     const result = await GroupsAPI.KickV1(
       defaultConfig,
-      client.shardID,
-      client.characterID,
+      game.shardID,
+      game.selfPlayerState.characterID,
       warbandID,
       targetEntityID,
       targetCharacterID,
@@ -94,8 +93,8 @@ export async function quitWarband() {
   try {
     const result = await GroupsAPI.QuitV1(
       defaultConfig,
-      client.shardID,
-      client.characterID,
+      game.shardID,
+      game.selfPlayerState.characterID,
       getStateObject().id,
     );
 

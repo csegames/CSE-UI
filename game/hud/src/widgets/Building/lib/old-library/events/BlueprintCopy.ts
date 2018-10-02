@@ -3,18 +3,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-'use strict';
+import { utils } from '@csegames/camelot-unchained';
 
 import BuildingEventTopics from './BuildingEventTopics';
-import { EventEmitter } from '../../utils/EventEmitter';
-import client from '../../core/client';
 
-function run(emitter: EventEmitter, topic: string) {
-  if (client.OnBlockSelected) {
-    client.OnCopyBlueprint(() => {
-      emitter.emit(BuildingEventTopics.handlesBlueprintCopy, {});
-    });
-  }
+function run(emitter: utils.EventEmitter, topic: string) {
+  game.on('building-copy', () => {
+    emitter.emit(BuildingEventTopics.handlesBlueprintCopy, {});
+  });
 }
 
 export default class BlueprintCopyListener {
@@ -22,7 +18,7 @@ export default class BlueprintCopyListener {
   public type: string;
   public topic: string = BuildingEventTopics.handlesBlueprintCopy;
 
-  public start(emitter: EventEmitter): void {
+  public start(emitter: utils.EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
       run(emitter, this.topic);

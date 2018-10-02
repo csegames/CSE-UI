@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { client, hasClientAPI, PlayerState } from '@csegames/camelot-unchained';
 import RespawnLocation from './RespawnLocation';
 
 export interface RespawnProps {
@@ -16,6 +15,7 @@ export interface RespawnState {
 }
 
 class Respawn extends React.Component<RespawnProps, RespawnState> {
+  private eventHandles: EventHandle[] = [];
   public name: string = 'Respawn';
   public home: RespawnLocation = new RespawnLocation(-1, 0, 0);
   public faction: string = null;
@@ -28,8 +28,6 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
   }
 
   public render() {
-    if (!hasClientAPI()) return null;
-
     const buttons: JSX.Element[] = [];
     if (this.state.nearest) {
       this.state.nearest.forEach((spawn: RespawnLocation): void => {
@@ -48,16 +46,17 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
   }
 
   public componentDidMount() {
-
-    if (!hasClientAPI()) return;
-
-    client.OnPlayerStateChanged((playerState: PlayerState) => {
-      switch (playerState.faction) {
+    this.eventHandles.push(game.selfPlayerState.onUpdated(() => {
+      switch (game.selfPlayerState.faction) {
         case Faction.Arthurian: this.faction = 'A'; break;
         case Faction.TDD: this.faction = 'T'; break;
         case Faction.Viking: this.faction = 'V'; break;
       }
-    });
+    }));
+  }
+
+  public componentWillUnmount() {
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private renderButton = (location: RespawnLocation, label: string) => {
@@ -69,7 +68,7 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
         </div>;
     }
     return (
-      <div className='respawn__button' onClick={() => client.Respawn(location.id + '')}>
+      <div className='respawn__button' onClick={() => game.selfPlayerState.respawn(location.id + '')}>
         <div className='label'>
           {distance}
           {label}

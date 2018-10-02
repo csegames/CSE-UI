@@ -16,7 +16,7 @@ import { ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR } from '../../
 import { BuildingItem, BuildingItemType } from '../../../../../../lib/BuildingItem';
 import { fireBuildingItemSelected } from '../../../../../../services/events';
 
-import { BuildingBlock, BuildingMaterial, building } from '@csegames/camelot-unchained';
+import { building } from '../../../../../../lib/old-library';
 
 import MaterialView from '../MaterialView';
 import ShapesView from '../ShapesView';
@@ -44,7 +44,7 @@ export interface MaterialAndShapePaneState {
 
 class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, MaterialAndShapePaneState> {
 
-  private handlesBlockSelectListener: EventHandle;
+  private eventHandles: EventHandle[] = [];
 
   constructor(props: MaterialAndShapePaneProps) {
     super(props);
@@ -53,8 +53,8 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
 
   public render() {
 
-    const selectedMaterial: BuildingMaterial = this.props.materialsState.selectedMaterial;
-    const selectedShape: BuildingBlock = this.props.materialsState.selectedBlock;
+    const selectedMaterial: Material = this.props.materialsState.selectedMaterial;
+    const selectedShape: Block = this.props.materialsState.selectedBlock;
 
     return (
       <div className='build-panel__material-and-shape'>
@@ -75,31 +75,30 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
           <ShapesView minimized={this.props.minimized}
             shapes={selectedMaterial.blocks}
             selected={selectedShape}
-            selectShape={(block: BuildingBlock) => { this.selectBlock(block); } }/>
+            selectShape={(block: Block) => { this.selectBlock(block); } }/>
         </div>
       </div>
     );
   }
 
   public componentDidMount() {
-    this.handlesBlockSelectListener =
-      game.on(building.BuildingEventTopics.handlesBlockSelect, this.blockSelectionListener);
+    this.eventHandles.push(game.on(building.BuildingEventTopics.handlesBlockSelect, this.blockSelectionListener));
   }
 
   public componentWillUnmount() {
-    game.off(this.handlesBlockSelectListener);
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
     game.trigger(DEACTIVATE_MATERIAL_SELECTOR, {});
   }
 
-  private blockSelectionListener = (info: { material: BuildingMaterial, block: BuildingBlock }) => {
+  private blockSelectionListener = (info: { material: Material, block: Block }) => {
     this.onBlockSelect(info.material, info.block);
   }
 
-  private onBlockSelect = (material: BuildingMaterial, block: BuildingBlock) => {
+  private onBlockSelect = (material: Material, block: Block) => {
     if (block != null) {
       const item = {
-        name: block.shapeId + '. ' + block.shapeTags.join(', '),
-        description: block.materialId + '. ' + block.materialTags.join(', '),
+        name: window.shapeIDFromBlock(block) + '. ' + block.shapeTags.join(', '),
+        description: window.materialIDFromBlock(block) + '. ' + material.tags.join(', '),
         matElement: (<img src={'data:image/png;base64,' + material.icon}/>),
         element: (<img src={'data:image/png;base64,' + block.icon}/>),
         id: material.id + '-' + BuildingItemType.Block,
@@ -115,7 +114,7 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
 
   private showMatSelector = (show: boolean) => {
     if (show) {
-      const selected: BuildingMaterial = this.props.materialsState.selectedMaterial;
+      const selected: Material = this.props.materialsState.selectedMaterial;
       game.trigger(ACTIVATE_MATERIAL_SELECTOR, { selection: selected, onSelect: this.selectMaterial });
     } else {
       game.trigger(DEACTIVATE_MATERIAL_SELECTOR, {});
@@ -123,13 +122,14 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
     this.setState((state, props) => ({ showMatSelect: show } as MaterialAndShapePaneState));
   }
 
-  private selectBlock(block: BuildingBlock) {
+  private selectBlock(block: Block) {
     blockRequester.changeBlockSelection(block);
   }
 
-  private selectMaterial = (mat: BuildingMaterial) => {
+  private selectMaterial = (mat: Material) => {
     const currentBlock = this.props.materialsState.selectedBlock;
-    const requestedBlock: BuildingBlock = mat.getBlockForShape(currentBlock.shapeId);
+    window.shapeIDFromBlock(currentBlock);
+    const requestedBlock: Block = building.getBlockForMaterialAndShapeId(mat, window.shapeIDFromBlock(currentBlock));
     blockRequester.changeBlockSelection(requestedBlock);
     this.setState((state, props) => ({ showMatSelect: false } as any));
     game.trigger(DEACTIVATE_MATERIAL_SELECTOR, {});

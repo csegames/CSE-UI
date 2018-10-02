@@ -11,7 +11,7 @@ import { LoadingState_Update } from '../GameClientModels/LoadingState';
 const __loadingState = { percent: 0, message: 'ready', visible: true };
 
 export function mockLoading() {
-  console.log('Loading mock begin.');
+  console.log('MOCK.loadingState', 'initialize');
   setTimeout(() => {
     engine.trigger(LoadingState_Update, __loadingState);
     setTimeout(loadingRun, 500);
@@ -131,7 +131,7 @@ const loadingMessages = [
 function loadingRun() {
 
   if (game.loadingState.percent >= 100) {
-    console.log('Loading mock complete.');
+    console.log('MOCK.loadingState', 'complete');
     _devGame.loadingState.message = 'Complete';
     engine.trigger(LoadingState_Update, game.loadingState);
     return;
@@ -139,7 +139,7 @@ function loadingRun() {
 
   _devGame.loadingState.percent += 1;
   _devGame.loadingState.message = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
-  console.log(`Loading run - ${game.loadingState.percent}% ${game.loadingState.message}`);
+  console.log('MOCK.loadingState', `run - ${game.loadingState.percent}% ${game.loadingState.message}`);
   engine.trigger(LoadingState_Update, game.loadingState);
 
   // update once every 500-2000 ms

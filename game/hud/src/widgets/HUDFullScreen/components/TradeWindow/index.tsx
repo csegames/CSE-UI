@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import { includes } from 'lodash';
-import { client } from '@csegames/camelot-unchained';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
@@ -66,11 +65,11 @@ const subscriptionQuery = gql`
   }
   ${InventoryItemFragment}
 `;
-const subscriptionUrl =  client.apiHost + '/graphql'.replace('http', 'ws');
+const subscriptionUrl =  game.webAPIHost + '/graphql'.replace('http', 'ws');
 const subscriptionInitPayload = {
-  shardID: client.shardID,
-  Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
-  characterID: client.characterID,
+  shardID: game.shardID,
+  Authorization: `Bearer ${game.accessToken}`,
+  characterID: game.selfPlayerState.characterID,
 };
 
 export interface InjectedTradeWindowProps {

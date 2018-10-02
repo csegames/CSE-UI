@@ -15,7 +15,7 @@ export interface Updatable {
   /**
    * Event name of the updatable
    */
-  name: string;
+  _name: string;
 
   /**
    * Add a function to be executed any time this model is updated by the game client.
@@ -53,13 +53,13 @@ function noOp(...params: any[]) {}
 export function initUpdatable(context: Updatable) {
   context.isReady = true;
   context.onUpdated = (cb: Callback) => {
-    return game.on(context.name, cb);
+    return game.on(context._name, cb);
   };
   context.onReady = (cb: Callback) => {
     // is already ready, call this callback on the next frame
     setTimeout(cb(context), 0);
     return {
-      name: context.name,
+      name: context._name,
       id: -1,
       clear: noOp,
     };
@@ -67,5 +67,5 @@ export function initUpdatable(context: Updatable) {
 }
 
 export function executeUpdateCallbacks(context: Updatable) {
-  game.trigger(context.name, context);
+  game.trigger(context._name, context);
 }

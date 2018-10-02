@@ -3,116 +3,55 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import BuildingBlueprint from './classes/BuildingBlueprint';
-import client from '../core/client';
-import * as restApi from '../restapi';
+
 import BuildingEventTopics from './events/BuildingEventTopics';
 
-let blueprintsLoaded: boolean = false;
-let blueprintsRequested: boolean = false;
-const blueprintsList: BuildingBlueprint[] = [];
-
-function loadBlueprints() {
-  client.OnNewBlueprint((index: number, name: string) => {
-    const current = new Date().getTime();
-
-    // special case, this is not a real blueprint
-    if (name === 'Small Control Island') {
-      return;
-    }
-
-    const blueprint = new BuildingBlueprint({
-      index,
-      name,
-    } as BuildingBlueprint);
-
-    blueprintsList.push(blueprint);
-
-    if (blueprintsLoaded) {
-      game.trigger(BuildingEventTopics.handlesBlueprints, { blueprints: blueprintsList });
-    }
-
-  });
-
-  client.RequestBlueprints();
-}
-
 function requestBlueprintCopy() {
-  client.CopyBlueprint();
+  game.triggerKeyAction(game.keyActions.CubeBuildingCopy);
+  game.trigger('building-copy');
 }
 
 function requestBlueprintPaste() {
-  client.PasteBlueprint();
+  game.triggerKeyAction(game.keyActions.CubeBuildingPaste);
+  game.trigger('building-paste');
 }
 
 function fireHandleBlueprints() {
-  game.trigger(BuildingEventTopics.handlesBlueprints, { blueprints: blueprintsList });
+  const result = game.plot.getBlueprints();
+  if (result.success) {
+    game.trigger(BuildingEventTopics.handlesBlueprints, { blueprints: result.blueprints });
+  }
 }
 
-function requestBlueprintDelete(blueprint: BuildingBlueprint) {
-  // no feedback on this delete, we just call it and cross our fingers
-  client.DeleteLocalBlueprint(blueprint.name);
-
-  // there is no client.OnDeleteBlueprint
-  // so we will just remove the blueprint and hope the delete really worked
-  for (let index = 0; index <= blueprintsList.length; index++) {
-    const bp: BuildingBlueprint = blueprintsList[index];
-    if (bp.name === blueprint.name) {
-      blueprintsList.splice(index, 1);
-      fireHandleBlueprints();
-      return;
-    }
-  }
+function requestBlueprintDelete(blueprint: Blueprint) {
+  game.plot.deleteBlueprint(blueprint.id);
+  fireHandleBlueprints();
 }
 
 function requestBlueprintSave(name: string) {
-  client.SaveBlueprint(name);
+  game.plot.createBlueprintFromSelection(name);
+  fireHandleBlueprints();
 }
 
-function requestBlueprintSelect(blueprint: BuildingBlueprint) {
-  client.SelectBlueprint(blueprint.index);
+function requestBlueprintSelect(blueprint: Blueprint) {
+  game.plot.selectBlueprint(blueprint.id);
   game.trigger(BuildingEventTopics.handlesBlueprintSelect, { blueprint });
 }
 
-function requestBlueprintIcon(blueprint: BuildingBlueprint) {
-  restApi.blueprints.getBlueprintIcon(blueprint.index).then((icon: string): void => {
-    blueprint.icon = icon;
-    fireHandleBlueprints();
-  }, (): void => {
-    fireHandleBlueprints();
-  });
+function requestBlueprintIcon(blueprint: Blueprint) {
+  fireHandleBlueprints();
 }
 
 function requestBlueprints() {
-  if (!blueprintsRequested) {
-    blueprintsRequested = false;
-    loadBlueprints();
-  }
-
-  if (blueprintsLoaded) {
-    fireHandleBlueprints();
-  } else {
-    // we are waiting till the blueprintsList has not updated for 2 seconds before declaring that the blueprints are loaded
-    // we are only firing off the event periodically to avoid re-rendering the list possibly 100s of times on startup.
-    // The blueprints are loaded using the client.OnNewBlueprint() event which fires for every blueprint
-    waitForBlueprintsToLoad();
-  }
-}
-
-function waitForBlueprintsToLoad() {
-  const lastSize = blueprintsList.length;
-  setTimeout(() => {
-    if (lastSize === blueprintsList.length) {
-      blueprintsLoaded = true;
-      fireHandleBlueprints();
-    } else {
-      waitForBlueprintsToLoad();
-    }
-  }, 2000);
+  fireHandleBlueprints();
 }
 
 export {
-  requestBlueprints, requestBlueprintIcon, requestBlueprintSelect,
-  requestBlueprintSave, requestBlueprintDelete,
-  requestBlueprintCopy, requestBlueprintPaste,
+  requestBlueprints,
+  requestBlueprintIcon,
+  requestBlueprintSelect,
+  requestBlueprintSave,
+  requestBlueprintDelete,
+  requestBlueprintCopy,
+  requestBlueprintPaste,
 };

@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client, utils } from '@csegames/camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 
 import HUDNav from 'components/HUDNav/index';
 import { LayoutMode } from 'components/HUDDrag';
@@ -14,11 +14,6 @@ import HUDZOrder from '../HUDZOrder';
 const { Orientation } = utils;
 
 const hideClientControlledUI = () => {
-  client.HideUI('spellbook');
-  client.HideUI('ability-builder');
-  client.HideUI('inventory');
-  client.HideUI('equippedgear');
-  client.HideUI('plotcontrol');
   game.trigger('hudnav--navigate', 'lockui');
 };
 
@@ -91,7 +86,7 @@ export default {
         hidden: false,
         onClick: () => {
           game.trigger('hudnav--navigate', 'building');
-          client.ToggleBuildingMode();
+          game.triggerKeyAction(game.keyActions.UIToggleBuildingMode);
         },
       },
       {
@@ -197,7 +192,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          client.SendSlashCommand('plot showui --nearby');
+          game.sendSlashCommand('plot showui --nearby');
         },
       },
       {
@@ -225,7 +220,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          client.SendSlashCommand('plot showui --owned');
+          game.sendSlashCommand('plot showui --owned');
         },
       },
       {
@@ -282,7 +277,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          client.SendSlashCommand('showscenarioui');
+          game.sendSlashCommand('showscenarioui');
         },
       },
       {
@@ -366,7 +361,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          client.ReloadAllUI();
+          game.reloadUI();
         },
       },
     ],

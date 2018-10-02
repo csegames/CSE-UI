@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { client, webAPI, Tooltip } from '@csegames/camelot-unchained';
+import { webAPI, Tooltip } from '@csegames/camelot-unchained';
 
 import * as base from '../../../ItemShared/InventoryBase';
 import { slotDimensions } from '../InventorySlot';
@@ -454,8 +454,8 @@ class Drawer extends React.Component<DrawerComponentProps, DrawerState> {
 
     webAPI.ItemAPI.BatchMoveItems(
       webAPI.defaultConfig,
-      client.shardID,
-      client.characterID,
+      game.shardID,
+      game.selfPlayerState.characterID,
       moveRequests,
     ).then((res) => {
       // If request fails for any reason

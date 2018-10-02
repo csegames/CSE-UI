@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { includes } from 'lodash';
-import { client, webAPI, ContextMenuContentProps } from '@csegames/camelot-unchained';
+import { webAPI, ContextMenuContentProps } from '@csegames/camelot-unchained';
 
 import ContextMenuAction from './ContextMenuAction';
 import eventNames, { UpdateInventoryItemsPayload, EquipItemPayload } from '../../../../lib/eventNames';
@@ -160,7 +160,9 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
       }
     });
 
-    client.StartPlacingItemByID(staticDefinition.numericItemDefID, id, action ? action.id : null);
+    // client.StartPlacingItemByID(staticDefinition.numericItemDefID, id, action ? action.id : null);
+    // TODO COHERENT verify this is correct
+    game.startItemPlacement(staticDefinition.numericItemDefID, id);
   }
 
   private onActionClick = (action: InventoryItem.Actions) => {
@@ -176,10 +178,10 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     try {
       const res = await webAPI.ItemAPI.PerformItemAction(
         webAPI.defaultConfig,
-        client.shardID,
-        client.characterID,
+        game.shardID,
+        game.selfPlayerState.characterID,
         this.props.item.id,
-        client.playerState.id,
+        game.selfPlayerState.entityID, // TODO COHERENT check if this is correct
         action.id,
         null,
       );

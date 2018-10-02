@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client } from '@csegames/camelot-unchained';
 import {
   merge,
   BaseAction,
@@ -108,7 +107,6 @@ export function initializeInvites(): AsyncAction<InvitesAction> {
     dispatch(initSignalR());
 
     try {
-      if (client.debug) console.log('initializeInvites called');
       // signalr.groupsHub.start(() => {
       //   dispatch(initSignalRSuccess());
       //   registerInviteEvents(dispatch);

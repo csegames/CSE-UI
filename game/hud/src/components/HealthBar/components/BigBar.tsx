@@ -7,9 +7,10 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils, PlayerState } from '@csegames/camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 import { BodyParts } from 'lib/PlayerStatus';
 import { getHealthPercent, getWoundsForBodyPart } from '../lib/healthFunctions';
+import { PlayerState } from 'components/HealthBar';
 
 const Container = styled('div')`
   position: relative;
@@ -68,7 +69,7 @@ export interface BigBarProps {
   left: number;
   height: number;
   bodyPart: BodyParts;
-  playerState: PlayerState | GroupMemberState;
+  playerState: PlayerState;
   scale: number;
 }
 

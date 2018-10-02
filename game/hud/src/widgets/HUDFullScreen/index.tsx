@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { client, TabPanel, TabItem, jsKeyCodes } from '@csegames/camelot-unchained';
+import { TabPanel, TabItem } from '@csegames/camelot-unchained';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
 
 import HudFullScreenView from './HUDFullScreenView';
@@ -78,7 +78,6 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     return (
       <FullScreenContext.Provider value={this.state}>
         <div
-          onMouseDown={() => client.RequestInputOwnership()}
           style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
           <BackgroundImage className={'left'} />
           <BackgroundImage className={'right'} />
@@ -121,23 +120,23 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private handleKeydownEvent = (e: KeyboardEvent) => {
-    switch (e.keyCode) {
-      case jsKeyCodes.ESC: {
+    switch (e.key.toUpperCase()) {
+      case 'ESCAPE': {
         // Close full screen UI
         this.onCloseFullScreen();
         break;
       }
-      case jsKeyCodes.I: {
+      case 'I': {
         // Open/Close inventory
         game.trigger('hudnav--navigate', 'inventory');
         break;
       }
-      case jsKeyCodes.C: {
+      case 'C': {
         // Open/Close paperdoll
         game.trigger('hudnav--navigate', 'equippedgear');
         break;
       }
-      case jsKeyCodes.M: {
+      case 'M': {
         // Open/Close map
         game.trigger('hudnav--navigate', 'map');
         break;
@@ -259,7 +258,6 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
     if (name !== '' && !_.includes(visibleComponent, name)) {
       window.addEventListener('keydown', this.handleKeydownEvent);
-      client.RequestInputOwnership();
       this.setState((state, props) => {
         if (side === 'right') {
           this.tabPanelRightRef.activeTabIndex = tabIndex;
@@ -285,7 +283,6 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
             visibleComponentLeft: '',
           };
         });
-        setTimeout(() => client.ReleaseInputOwnership(), 100);
       }
     }
   }
@@ -351,7 +348,6 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     game.trigger('hudnav--navigate', '');
     this.setActiveTab('');
     window.removeEventListener('keydown', this.handleKeydownEvent);
-    client.ReleaseInputOwnership();
     hideTooltip();
 
     if (this.state.myTradeState !== 'Confirmed' && this.state.myTradeState !== 'None') {

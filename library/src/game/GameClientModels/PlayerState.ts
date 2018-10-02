@@ -132,7 +132,7 @@ function initDefault(): SelfPlayerState {
 
     // Updatable
     isReady: false,
-    name: SelfPlayer_Update,
+    _name: SelfPlayer_Update,
     onUpdated: createDefaultOnUpdated(SelfPlayer_Update),
     onReady: createDefaultOnReady(SelfPlayer_Update),
   };

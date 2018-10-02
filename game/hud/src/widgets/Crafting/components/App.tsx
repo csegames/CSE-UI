@@ -7,7 +7,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { connect } from 'react-redux';
-import { client, jsKeyCodes, soundEvents } from '@csegames/camelot-unchained';
 import { craftingTimeToString } from '../services/util';
 import { expandError } from '../services/game/crafting/errors';
 
@@ -230,13 +229,12 @@ class App extends React.Component<AppProps, AppState> {
   // }
 
   private onKeyDown = (e: KeyboardEvent) => {
-    if (e.which === jsKeyCodes.ESC) {
+    if (e.key.toUpperCase() === 'ESCAPE') {
       this.close();
     }
   }
 
   private release = () => {
-    client.ReleaseInputOwnership();
   }
 
   private refresh = () => {
@@ -303,7 +301,8 @@ class App extends React.Component<AppProps, AppState> {
     props.dispatch(setLoading(true));
     props.dispatch(setMessage({ type: '', message: '' }));
 
-    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_GENERICBUTTON);
+    // TODO COHERENT missing PLAY_UI_VOX_GENERICBUTTON sound event
+    // game.playGameSound(SoundEvent.PLAY_UI_VOX_GENERICBUTTON);
 
     setVoxJob(type)
       .then((resonse: any) => {
@@ -321,31 +320,38 @@ class App extends React.Component<AppProps, AppState> {
   private playTypeSound = (type: string) => {
     switch (type) {
       case 'grind': {
-        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_GRIND);
+        // TODO COHERENT missing PLAY_UI_VOX_START_GRIND sound event
+        // game.playGameSound(SoundEvent.PLAY_UI_VOX_START_GRIND);
         break;
       }
       case 'purify': {
-        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_PURIFY);
+        // TODO COHERENT missing PLAY_UI_VOX_START_PURIFY sound event
+        // game.playGameSound(SoundEvent.PLAY_UI_VOX_START_PURIFY);
         break;
       }
       case 'shape': {
-        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_SHAPE);
+        // TODO COHERENT missing PLAY_UI_VOX_START_SHAPE sound event
+        // game.playGameSound(SoundEvent.PLAY_UI_VOX_START_SHAPE);
         break;
       }
       case 'block': {
-        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_BLOCK);
+        // TODO COHERENT missing PLAY_UI_VOX_START_BLOCK sound event
+        // game.playGameSound(SoundEvent.PLAY_UI_VOX_START_BLOCK);
         break;
       }
       case 'make': {
-        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_MAKE);
+        // TODO COHERENT missing PLAY_UI_VOX_START_MAKE sound event
+        // game.playGameSound(SoundEvent.PLAY_UI_VOX_START_MAKE);
         break;
       }
       case 'repair': {
-        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_REPAIR);
+        // TODO COHERENT missing PLAY_UI_VOX_START_REPAIR sound event
+        // game.playGameSound(SoundEvent.PLAY_UI_VOX_START_REPAIR);
         break;
       }
       case 'salvage': {
-        client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_START_SALVAGE);
+        // TODO COHERENT missing PLAY_UI_VOX_START_SALVAGE sound event
+        // game.playGameSound(SoundEvent.PLAY_UI_VOX_START_SALVAGE);
         break;
       }
     }
@@ -483,7 +489,8 @@ class App extends React.Component<AppProps, AppState> {
   private collectJob = () => {
     const props = this.props;
     const type = props.job.type;
-    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_COLLECT);
+    // TODO COHERENT missing PLAY_UI_VOX_COLLECT sound event
+    // game.playGameSound(SoundEvent.PLAY_UI_VOX_COLLECT);
     this.api(collectVoxJob, 'Job Collected', () => {
       // automatally start same job type
       setVoxJob(type)
@@ -501,7 +508,8 @@ class App extends React.Component<AppProps, AppState> {
 
     if (!this.props.job || this.props.job.type === 'invalid') return;
 
-    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_CLEAR);
+    // TODO COHERENT missing PLAY_UI_VOX_CLEAR sound event
+    // game.playGameSound(SoundEvent.PLAY_UI_VOX_CLEAR);
     this.api(clearVoxJob, 'Job Cleared', () => {
       this.checkJobStatus();
       return clearJob();

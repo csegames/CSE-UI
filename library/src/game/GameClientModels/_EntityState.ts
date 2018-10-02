@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Faction } from '../../graphql';
-
 export interface EntityStateModel {
   faction: Faction;
   entityID: string;
@@ -99,5 +97,3 @@ export function defaultSiegeStateModel(): SiegeStateModel {
     health: defaultHealth(),
   };
 }
-
-

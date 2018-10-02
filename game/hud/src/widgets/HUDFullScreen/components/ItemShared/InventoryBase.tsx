@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { webAPI, client } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 
 import { InventoryRow } from '../Inventory/components/InventoryRow';
 import { nullVal, InventoryFilterButton, emptyStackHash } from '../../lib/constants';
@@ -856,8 +856,8 @@ export function distributeItemsNoFilter(args: {
   if (moveRequests.length > 0) {
     webAPI.ItemAPI.BatchMoveItems(
       webAPI.defaultConfig,
-      client.shardID,
-      client.characterID,
+      game.shardID,
+      game.selfPlayerState.characterID,
       moveRequests,
     );
   }
@@ -1600,7 +1600,7 @@ export async function equipItemRequest(item: InventoryItem.Fragment,
     unitCount: -1,
     to: {
       entityID: nullVal,
-      characterID: client.characterID,
+      characterID: game.selfPlayerState.characterID,
       position: -1,
       containerID: nullVal,
       gearSlotIDs,
@@ -1609,7 +1609,7 @@ export async function equipItemRequest(item: InventoryItem.Fragment,
     },
     from: {
       entityID: nullVal,
-      characterID: client.characterID,
+      characterID: game.selfPlayerState.characterID,
       position: inventoryItemPosition,
       containerID: nullVal,
       gearSlotIDs: [] as any,
@@ -1619,15 +1619,15 @@ export async function equipItemRequest(item: InventoryItem.Fragment,
   };
   const res = await webAPI.ItemAPI.MoveItems(
       webAPI.defaultConfig,
-      client.shardID,
-      client.characterID,
+      game.shardID,
+      game.selfPlayerState.characterID,
       request as any,
     );
   setTimeout(() => game.trigger(eventNames.updateCharacterStats), 100);
 
   // TEMPORARY: If webAPI fails, then fall back to client command EquipItem
   if (!res.ok) {
-    client.EquipItem(item.id);
+    game.selfPlayerState.equipItem(item.id);
     return;
   }
 }
@@ -1642,7 +1642,7 @@ export async function unequipItemRequest(item: InventoryItem.Fragment,
     unitCount: -1,
     to: {
       entityID: nullVal,
-      characterID: client.characterID,
+      characterID: game.selfPlayerState.characterID,
       position: toSlot,
       containerID: nullVal,
       gearSlotIDs: [] as any,
@@ -1651,7 +1651,7 @@ export async function unequipItemRequest(item: InventoryItem.Fragment,
     },
     from: {
       entityID: nullVal,
-      characterID: client.characterID,
+      characterID: game.selfPlayerState.characterID,
       position: toSlot,
       containerID: nullVal,
       gearSlotIDs,
@@ -1661,14 +1661,14 @@ export async function unequipItemRequest(item: InventoryItem.Fragment,
   };
   const res = await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     request as any,
   );
   setTimeout(() => game.trigger(eventNames.updateCharacterStats), 100);
   // TEMPORARY: If webAPI fails, then fall back to client command UnequipItem
   if (!res.ok) {
-    client.UnequipItem(item.id);
+    game.selfPlayerState.unequipItem(item.id);
   }
 }
 
@@ -1687,7 +1687,7 @@ export async function dropItemRequest(item: InventoryItem.Fragment) {
     },
     from: {
       entityID: nullVal,
-      characterID: client.characterID,
+      characterID: game.selfPlayerState.characterID,
       position: getItemInventoryPosition(item),
       containerID: nullVal,
       gearSlotIDs: [] as any,
@@ -1697,13 +1697,14 @@ export async function dropItemRequest(item: InventoryItem.Fragment) {
   });
   const res = await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     request as any,
   );
   // TEMPORARY: If webAPI fails, then fall back to client command DropItem
   if (!res.ok) {
-    client.DropItem(item.id);
+    // TODO COHERENT DropItem is missing
+    // client.DropItem(item.id);
   }
 }
 
@@ -1711,8 +1712,8 @@ export function onCommitPlacedItem(item: InventoryItem.Fragment, position: Vec3F
   const moveItemReq = JSON.stringify(createMoveItemRequestToWorldPosition(item, position, rotation));
   webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     moveItemReq as any,
   );
 }
@@ -1778,8 +1779,8 @@ function moveInventoryItemToEmptySlot(args: {
   const moveItemReq = createMoveItemRequestToInventoryPosition(dragItem, dropZoneData.position);
   webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     moveItemReq as any,
   );
 
@@ -1839,9 +1840,9 @@ function moveInventoryItemToEmptySlot(args: {
 
         webAPI.ItemAPI.BatchMoveItems(
           webAPI.defaultConfig,
-  
-          client.shardID,
-          client.characterID,
+
+          game.shardID,
+          game.selfPlayerState.characterID,
           moveRequests,
         );
       } else {
@@ -2055,8 +2056,8 @@ function swapInventoryItems(args: {
   // Make move item requests to save the swapped positions to database
   webAPI.ItemAPI.BatchMoveItems(
     webAPI.defaultConfig,
-    client.shardID,
-    client.characterID,
+    game.shardID,
+    game.selfPlayerState.characterID,
     moveItemRequests,
   );
 
@@ -2122,7 +2123,7 @@ export function onMoveStack(args: {
 
   // Make request to api server
   const moveReq = createMoveItemRequestToInventoryPosition(item, newPos, amount);
-  webAPI.ItemAPI.MoveItems(webAPI.defaultConfig, client.shardID, client.characterID, moveReq);
+  webAPI.ItemAPI.MoveItems(webAPI.defaultConfig, game.shardID, game.selfPlayerState.characterID, moveReq);
 
   const originalItem: InventoryItem.Fragment = {
     ...item,

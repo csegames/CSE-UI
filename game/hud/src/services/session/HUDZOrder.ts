@@ -20,7 +20,6 @@ enum HUDZOrder {
   CompassTooltip,
   Crafting,
   Announcement,
-  PlotControl,
   ReleaseControl,
   Progression,
   DevUI,

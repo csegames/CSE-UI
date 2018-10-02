@@ -5,13 +5,12 @@
  */
 
 import * as React from 'react';
-import { BuildingBlock } from '@csegames/camelot-unchained';
 
 export interface ShapesViewProps {
   minimized: boolean;
-  selectShape?: (shape: BuildingBlock) => void;
-  shapes: BuildingBlock[];
-  selected: BuildingBlock;
+  selectShape?: (shape: Block) => void;
+  shapes: Block[];
+  selected: Block;
 }
 
 export interface ShapesViewState {
@@ -31,7 +30,7 @@ class ShapesView extends React.Component<ShapesViewProps, ShapesViewState> {
     );
   }
 
-  private generateShapeIcon = (block: BuildingBlock) => {
+  private generateShapeIcon = (block: Block) => {
     const selectedId = this.props.selected ? this.props.selected.id : -1;
     const selected: boolean = selectedId === block.id;
     return (

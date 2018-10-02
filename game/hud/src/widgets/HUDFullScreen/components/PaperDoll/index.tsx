@@ -7,7 +7,6 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
 import styled from 'react-emotion';
-import { bodyParts, client } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/BodyPartHealth';
@@ -109,7 +108,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
               <NameBackground />
               <PaperdollContainer>
                 <CharacterInfoContainer>
-                  <CharacterAndOrderName characterName={client.playerState.name} />
+                  <CharacterAndOrderName characterName={game.selfPlayerState.name} />
                   <BodyPartHealth maxHealthParts={this.state.maxHealthParts} />
                 </CharacterInfoContainer>
                 <EquipmentSlots onEquippedItemsChange={this.props.onEquippedItemsChange} />
@@ -145,8 +144,8 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
 
   private initializeMaxHealthParts = () => {
     const maxHealthParts = {};
-    client.playerState.health.forEach((part, i) => {
-      maxHealthParts[bodyParts[i]] = part.max;
+    game.selfPlayerState.health.forEach((part, i) => {
+      maxHealthParts[window.BodyPart[i]] = part.max;
     });
 
     this.setState({ maxHealthParts });

@@ -6,7 +6,6 @@
  */
 
 import * as React from 'react';
-import { PlayerState, damageTypes } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
 import { isEqualPlayerState } from '../../lib/playerStateEqual';
@@ -14,6 +13,9 @@ import HealthBarViewCompact from './components/HealthBarViewCompact';
 import HealthBarViewFull from './components/HealthBarViewFull';
 import HealthBarViewMini from './components/HealthBarViewMini';
 import DistanceText from './components/DistanceText';
+import { PlayerStateModel, SiegeStateModel, DeepImmutableObject } from '@csegames/camelot-unchained';
+
+export type PlayerState = DeepImmutableObject<PlayerStateModel | SiegeStateModel> | GroupMemberState;
 
 const Container = styled('div')`
 `;
@@ -21,7 +23,7 @@ const Container = styled('div')`
 export interface DamageEvent {
   kind: 'damage';
   id: string;
-  type: damageTypes;
+  type: DamageType;
   value: number;
   when: number;
 }
@@ -39,7 +41,7 @@ export type HealthBarType = 'full' | 'compact' | 'mini';
 
 export interface HealthBarProps {
   type: HealthBarType;
-  playerState: PlayerState | GroupMemberState;
+  playerState: PlayerState;
   target?: 'enemy' | 'friendly';
 }
 

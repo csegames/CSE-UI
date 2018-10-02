@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client } from '@csegames/camelot-unchained';
 
 import eventNames, { EquipItemPayload } from '../../../lib/eventNames';
 import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
@@ -87,7 +86,7 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
       newItem: inventoryItemDataTransfer,
       willEquipTo: this.props.gearSlots,
     };
-    client.EquipItem(item.id);
+    game.selfPlayerState.equipItem(item.id);
     game.trigger(eventNames.onDehighlightSlots);
     game.trigger(eventNames.onEquipItem, payload);
   }

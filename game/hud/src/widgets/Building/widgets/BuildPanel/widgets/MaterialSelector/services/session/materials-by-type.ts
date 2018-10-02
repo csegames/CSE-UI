@@ -4,8 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { BuildingMaterial, building } from '@csegames/camelot-unchained';
-
+import { building } from '../../../../../../lib/old-library';
 import { ACTIVATE_MATERIAL_SELECTOR, DEACTIVATE_MATERIAL_SELECTOR } from '../../../../lib/BuildPane';
 import MaterialsByType from '../../lib/MaterialsByType';
 import assign from 'object-assign';
@@ -17,7 +16,7 @@ const SET_MATERIAL_HOVER = 'buildpanel/panes/SET_MATERIAL_HOVER';
 
 export function initialize(dispatch: any) {
 
-  game.on(building.BuildingEventTopics.handlesBlocks, (info: { materials: BuildingMaterial[] }) => {
+  game.on(building.BuildingEventTopics.handlesBlocks, (info: { materials: Material[] }) => {
     const matsByType: MaterialsByType = new MaterialsByType(info.materials);
     dispatch(setMaterialsByType(matsByType));
   });
@@ -27,7 +26,7 @@ export function initialize(dispatch: any) {
   });
 
   game.on(ACTIVATE_MATERIAL_SELECTOR,
-                     (info: { selection: BuildingMaterial, onSelect: (material: BuildingMaterial) => void }) => {
+                     (info: { selection: Material, onSelect: (material: Material) => void }) => {
                        dispatch(updateMaterialSelector(info.selection, info.onSelect));
                      });
 }
@@ -39,21 +38,21 @@ export function setMaterialsByType(matsByType: MaterialsByType) {
   };
 }
 
-export function setSelectedMaterial(selection: BuildingMaterial) {
+export function setSelectedMaterial(selection: Material) {
   return {
     type: SET_MATERIAL_SELECTION,
     selection,
   };
 }
 
-export function setHoverMaterial(material: BuildingMaterial) {
+export function setHoverMaterial(material: Material) {
   return {
     type: SET_MATERIAL_HOVER,
     material,
   };
 }
 
-export function updateMaterialSelector(selection: BuildingMaterial, onSelect: (material: BuildingMaterial) => void) {
+export function updateMaterialSelector(selection: Material, onSelect: (material: Material) => void) {
   return {
     type: UPDATE_MATERIAL_SELECTOR,
     selection,
@@ -64,16 +63,16 @@ export function updateMaterialSelector(selection: BuildingMaterial, onSelect: (m
 export interface MaterialsByTypeState {
   materialsByType: MaterialsByType;
 
-  selectedMaterial: BuildingMaterial;
-  onMaterialSelected: (material: BuildingMaterial) => void;
+  selectedMaterial: Material;
+  onMaterialSelected: (material: Material) => void;
 
-  hoverMaterial: BuildingMaterial;
+  hoverMaterial: Material;
 }
 
 const initialState: MaterialsByTypeState = {
   materialsByType: new MaterialsByType([]),
-  selectedMaterial: {} as BuildingMaterial,
-  onMaterialSelected: (material: BuildingMaterial) => { },
+  selectedMaterial: {} as Material,
+  onMaterialSelected: (material: Material) => { },
   hoverMaterial: null,
 };
 

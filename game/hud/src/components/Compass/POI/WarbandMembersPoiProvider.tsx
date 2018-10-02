@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client, AnyEntityState } from '@csegames/camelot-unchained';
 import { hubEvents } from '@csegames/camelot-unchained/lib/signalR/hubs/groupsHub';
 import {
   CompassPOIProviderProps,
@@ -76,6 +75,7 @@ interface MemberPoiContainerState {
 }
 
 class MemberPoiContainer extends React.Component<MemberPoiContainerProps, MemberPoiContainerState> {
+  private timeouts: NodeJS.Timer[] = [];
 
   public state = {
     hover: false,
@@ -130,11 +130,12 @@ class MemberPoiContainer extends React.Component<MemberPoiContainerProps, Member
 
   public componentWillUnmount() {
     hideCompassTooltip(this.props.poi.id);
+    this.timeouts.forEach(timeout => clearTimeout(timeout));
   }
 
 
   public handleClick = () => {
-    client.RequestFriendlyTargetEntityID(this.props.poi.data.id);
+    game.selfPlayerState.requestFriendlyTarget(this.props.poi.data.id);
   }
 
   private getTooltipData = (): CompassTooltipData => {
@@ -160,7 +161,7 @@ class MemberPoiContainer extends React.Component<MemberPoiContainerProps, Member
 
   private handleMouseLeave = () => {
     const hoverCount = this.state.hoverCount;
-    setTimeout(() => {
+    this.timeouts.push(setTimeout(() => {
       this.setState((prevState: MemberPoiContainerState) => {
         if (hoverCount === prevState.hoverCount) {
           hideCompassTooltip(this.props.poi.id);
@@ -172,7 +173,7 @@ class MemberPoiContainer extends React.Component<MemberPoiContainerProps, Member
           return null;
         }
       });
-    }, 1000);
+    }, 1000));
   }
 }
 
@@ -192,10 +193,7 @@ export default class WarbandMembersPoiProvider extends React.Component<
     characterIdToIdMap: {},
     friendlyTarget: '',
   };
-
-  private eventUpdateHandle: EventHandle;
-  private eventJoinedHandle: EventHandle;
-  private eventRemovedHandle: EventHandle;
+  private eventHandles: EventHandle[] = [];
 
   public render() {
     return (
@@ -213,26 +211,14 @@ export default class WarbandMembersPoiProvider extends React.Component<
   }
 
   public componentDidMount() {
-    this.eventUpdateHandle = game.on(hubEvents.memberUpdate, this.onWarbandMemberUpdated);
-    this.eventJoinedHandle = game.on(hubEvents.memberJoined, this.onWarbandMemberJoined);
-    this.eventRemovedHandle = game.on(hubEvents.memberRemoved, this.onWarbandMemberRemoved);
-    client.OnFriendlyTargetStateChanged((state: AnyEntityState) => {
-      if (state) {
-        this.setState({
-          friendlyTarget: state.id,
-        });
-      } else {
-        this.setState({
-          friendlyTarget: '',
-        });
-      }
-    });
+    this.eventHandles.push(game.on(hubEvents.memberUpdate, this.onWarbandMemberUpdated));
+    this.eventHandles.push(game.on(hubEvents.memberJoined, this.onWarbandMemberJoined));
+    this.eventHandles.push(game.on(hubEvents.memberRemoved, this.onWarbandMemberRemoved));
+    this.eventHandles.push(game.friendlyTargetState.onUpdated(this.onFriendlyTargetStateUpdated));
   }
 
   public componentWillUnmount() {
-    this.eventUpdateHandle.clear();
-    this.eventJoinedHandle.clear();
-    this.eventRemovedHandle.clear();
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   public shouldComponentUpdate(
@@ -245,16 +231,28 @@ export default class WarbandMembersPoiProvider extends React.Component<
     return false;
   }
 
+  public onFriendlyTargetStateUpdated = () => {
+    if (game.friendlyTargetState.type === 'player' && game.friendlyTargetState.isActive) {
+      this.setState({
+        friendlyTarget: game.friendlyTargetState.characterID,
+      });
+    } else {
+      this.setState({
+        friendlyTarget: '',
+      });
+    }
+  }
+
   public onWarbandMemberUpdated = (rawNewMemberState: string) => {
     const newMemberState: GroupMemberState = JSON.parse(rawNewMemberState);
-    if (newMemberState.characterID !== client.characterID) {
+    if (newMemberState.characterID !== game.selfPlayerState.characterID) {
       this.props.compass.updatePOI('warband', this.getWarbandMemberPOI(newMemberState));
     }
   }
 
   public onWarbandMemberJoined = (rawNewMemberState: string) => {
     const newMemberState: GroupMemberState = JSON.parse(rawNewMemberState);
-    if (newMemberState.characterID !== client.characterID) {
+    if (newMemberState.characterID !== game.selfPlayerState.characterID) {
       this.setState((prevState: WarbandMembersPoiProviderState) => {
         return {
           characterIdToIdMap: {
@@ -268,7 +266,7 @@ export default class WarbandMembersPoiProvider extends React.Component<
   }
 
   public onWarbandMemberRemoved = (characterID: string) => {
-    if (characterID !== client.characterID) {
+    if (characterID !== game.selfPlayerState.characterID) {
       this.props.compass.removePOI('warband', `warband-${this.state.characterIdToIdMap[characterID]}`);
     } else {
       this.props.compass.removePOIByType('warband');

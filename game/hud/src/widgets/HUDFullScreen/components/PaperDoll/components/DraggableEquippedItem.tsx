@@ -82,8 +82,7 @@ const colors = {
 };
 
 class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, DraggableEquippedItemState> {
-  private onHighlightListener: EventHandle;
-  private onDehighlightListener: EventHandle;
+  private eventHandles: EventHandle[] = [];
 
   constructor(props: DraggableEquippedItemProps) {
     super(props);
@@ -163,8 +162,8 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
   }
 
   public componentDidMount() {
-    this.onHighlightListener = game.on(eventNames.onHighlightSlots, this.onHighlightSlots);
-    this.onDehighlightListener = game.on(eventNames.onDehighlightSlots, this.onDehighlightSlots);
+    this.eventHandles.push(game.on(eventNames.onHighlightSlots, this.onHighlightSlots));
+    this.eventHandles.push(game.on(eventNames.onDehighlightSlots, this.onDehighlightSlots));
   }
 
   public componentDidUpdate(prevProps: DraggableEquippedItemProps) {
@@ -178,8 +177,7 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
   }
 
   public componentWillUnmount() {
-    game.off(this.onHighlightListener);
-    game.off(this.onDehighlightListener);
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private onHighlightSlots = (gearSlots: GearSlotDefRef[]) => {

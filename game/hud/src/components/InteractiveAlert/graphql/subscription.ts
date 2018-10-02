@@ -5,15 +5,14 @@
  */
 
 import gql from 'graphql-tag';
-import { client } from '@csegames/camelot-unchained';
 import { GraphQLSubscriptionOptions } from '@csegames/camelot-unchained/lib/graphql/react';
 import { InteractiveAlertSubscriptionGQL } from 'gql/interfaces';
 
-const url =  (client.apiHost + '/graphql').replace('http', 'ws');
+const url =  (game.webAPIHost + '/graphql').replace('http', 'ws');
 const initPayload = {
-  shardID: client.shardID,
-  Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
-  characterID: client.characterID,
+  shardID: game.shardID,
+  Authorization: `Bearer ${game.accessToken}`,
+  characterID: game.selfPlayerState.characterID,
 };
 
 
