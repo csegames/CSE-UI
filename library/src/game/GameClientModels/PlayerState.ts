@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { PlayerStateModel, defaultPlayerStateModel } from './EntityState';
+import { defaultPlayerStateModel } from './EntityState';
 import { Updatable, createDefaultOnUpdated, createDefaultOnReady } from './_Updatable';
 
 import engineInit from './_Init';
@@ -15,6 +15,11 @@ export const SelfPlayer_Update = 'selfPlayerState.update';
  * State data extension of PlayerStateModel for the player
  */
 export interface SelfPlayerStateModel extends PlayerStateModel {
+
+  /**
+   * Character name
+   */
+  name: string;
 
   /**
    * Unique identification string for the player character.

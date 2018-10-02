@@ -8,13 +8,12 @@ import * as webAPI from '../webAPI';
 import * as graphQL from '../graphql';
 import * as signalR from '../signalR';
 
-import { Callback } from './GameClientModels/_Updatable';
 import { createEventEmitter } from '../utils/EventEmitter';
 import { GameModel, GameInterface } from './GameInterface';
 
 import initEventForwarding from './engineEvents';
 
-import initLoadingState, { LoadingState } from './GameClientModels/LoadingState';
+import initLoadingState from './GameClientModels/LoadingState';
 import initPlayerState from './GameClientModels/PlayerState';
 import initEnemytargetState from './GameClientModels/EnemytargetState';
 import initFriendlytargetState from './GameClientModels/FriendlytargetState';
