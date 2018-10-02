@@ -97,6 +97,22 @@ export const EE_OnNavigate = 'navigate';
 regMap[EE_OnNavigate] = 'onNavigate';
 
 /**
+ * Called when a keybind is changed.
+ *
+ * @param {Keybind} keybind The Keybind that changed
+ */
+export const EE_OnKeybindChanged = 'keybindChanged';
+regMap[EE_OnKeybindChanged] = 'onKeybindChanged';
+
+/**
+ * Called when an option is changed.
+ *
+ * @param {GameOption} option The changed option
+ */
+export const EE_OnOptionChanged = 'optionChanged';
+regMap[EE_OnOptionChanged] = 'onOptionChanged';
+
+/**
  * Initialize engine event forwarding
  */
 export default function() {

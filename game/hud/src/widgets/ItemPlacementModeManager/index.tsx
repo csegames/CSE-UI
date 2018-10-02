@@ -18,7 +18,7 @@ const iconClass = {
   commit: 'commit fa fa-check-circle',
   reset: 'reset fa fa-undo',
   cancel: 'cancel fa fa-ban',
-}
+};
 
 const Container = styled('div')`
   background-color: #444;

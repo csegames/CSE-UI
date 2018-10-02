@@ -4,18 +4,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, vkKeyCodes, Binding } from '@csegames/camelot-unchained';
-
-// Returns a clean keyname from keycode table
-export function getKeyLabel(keyCode: number) {
-  let label = vkKeyCodes[keyCode];
-  if (label) {
-    label = label.substr(3);
-  } else if (keyCode) {
-    label = `VK_{${keyCode}}`;
-  }
-  return label;
-}
+// // Returns a clean keyname from keycode table
+// export function getKeyLabel(keyCode: number) {
+//   let label = vkKeyCodes[keyCode];
+//   if (label) {
+//     label = label.substr(3);
+//   } else if (keyCode) {
+//     label = `VK_{${keyCode}}`;
+//   }
+//   return label;
+// }
 
 export interface BoundKey {
   name: string;
@@ -61,8 +59,7 @@ export function clearKeybinds() {
   keybinds = {};
 }
 
-export function updateKeybind(name: string, keybind: Binding) {
-  const { id, alias, boundKeyName, boundKeyValue } = keybind;
+export function updateKeybind(name: string, keybind: Keybind) {
   const bind = keybinds[name] || (keybinds[name] = { button: id, boundKeys: <BoundKey[]> [] });
   const boundKeys = bind.boundKeys;
   boundKeys[alias] = { name: boundKeyName, value: boundKeyValue };
@@ -83,15 +80,15 @@ function keyName(name: string) {
 }
 
 function characterKeyName() {
-  return `${PERSISTED_CHAR_KEYBIND_KEY}-${client.characterID}`;
+  return `${PERSISTED_CHAR_KEYBIND_KEY}-${game.selfPlayerState.characterID}`;
 }
 
 export function linkCharacterToKeybinds(name?: string) {
   if (name) {
-    if (client.debug) console.log('link char to keybind ' + name);
+    if (game.debug) console.log('link char to keybind ' + name);
     localStorage.setItem(characterKeyName(), name);
   } else {
-    if (client.debug) console.log('unlink char from keybind ' + name);
+    if (game.debug) console.log('unlink char from keybind ' + name);
     localStorage.removeItem(characterKeyName());
   }
 }
@@ -110,23 +107,23 @@ export function persistKeybinds(keybinds: Keybinds, name?: string) {
   linkCharacterToKeybinds(name);
 }
 
-export function restoreKeybinds(name?: string, ondone?: () => void) {
+export function restoreKeybinds(name?: string, onDone?: () => void) {
   if (!name) name = localStorage.getItem(characterKeyName());
-  if (client.debug) console.log(`restore keybinds ${name}`);
+  if (game.debug) console.log(`restore keybinds ${name}`);
   const keybinds: PersistedBinds = JSON.parse(localStorage.getItem(keyName(name)) || '{}');
   if (keybinds) {
     for (const key in keybinds) {
       const binds: number[] = keybinds[key];
       for (let i = 0; i < binds.length; i++) {
         const button = (key as any) | 0;
-        client.SetKeybind(button, i, binds[i]);
+        game.SetKeybind(button, i, binds[i]);
       }
     }
-    if (ondone) ondone();
+    if (onDone) onDone();
   }
 }
 
-// Client's CEF doesn'k know String.startsWith
+// game's CEF doesn'k know String.startsWith
 function startsWith(s: string, w: string) {
   const l = w.length;
   return s.length >= l && s.substr(0,l) === w;
@@ -134,7 +131,7 @@ function startsWith(s: string, w: string) {
 
 export function removeKeybinds(name?: string) {
   if (name) {
-    if (client.debug) console.log(`remove keybinds ${name}`);
+    if (game.debug) console.log(`remove keybinds ${name}`);
     // Remove the keybind definitions
     localStorage.removeItem(keyName(name));
     // and any character links to them
@@ -155,7 +152,7 @@ export function getKeybindNames() {
       names.push(key.substr(PERSISTED_CHAR_KEYBIND_KEY.length));
     }
   }
-  if (client.debug) console.log(`keybind names ${names.join(', ')}`);
+  if (game.debug) console.log(`keybind names ${names.join(', ')}`);
   return names;
 }
 

@@ -93,9 +93,14 @@ export interface GameModel {
   /* -------------------------------------------------- */
 
   /**
-   * Gets all Keybinds from the client
+   * All Keybinds from the client
    */
-  getKeybinds: () => Keybind[];
+  keybinds: Keybind[];
+
+  /**
+   * Called when a keybind is changed.
+   */
+  onKeybindChanged: (callback: (keybind: Keybind) => any) => EventHandle;
 
   /**
    * Request that the client listen for a key combination to bind a key value to.
@@ -113,9 +118,14 @@ export interface GameModel {
   clearKeybind: (id: number, index: number) => void;
 
   /**
-   * Get all options from the client
+   * All options from the client
    */
-  getOptions: () => GameOption[];
+  options: GameOption[];
+
+  /**
+   * Called when an option is changed.
+   */
+  onOptionChanged: (callback: (option: GameOption) => any) => EventHandle;
 
   /**
    * Batch set of all passed in options

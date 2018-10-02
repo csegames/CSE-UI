@@ -10,14 +10,19 @@ import styled from 'react-emotion';
 
 import { isEqualPlayerState } from 'lib/playerStateEqual';
 import { BodyParts } from 'lib/PlayerStatus';
-import { getBloodPercent, getStaminaPercent, getFaction, getBodyPartsCurrentHealth, getCurrentStamina } from '../lib/healthFunctions';
+import {
+  getBloodPercent,
+  getStaminaPercent,
+  getFaction,
+  getBodyPartsCurrentHealth,
+  getCurrentStamina,
+} from '../lib/healthFunctions';
 import ClassIndicator from './ClassIndicator';
 import SmallBar from './SmallBar';
 import BigBar from './BigBar';
 import HealthSlideOut from './HealthSlideOut';
 import Status from './Status';
 import { PlayerState } from 'components/HealthBar';
-import { SelfPlayerState } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`
   position: relative;

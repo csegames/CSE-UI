@@ -51,15 +51,30 @@ declare global {
 
   interface SelectValue {
     value: number;
-    description: string | number;
+    description: string;
   }
 
-  type GameOption = BooleanOption | NumberOption | RangeOption | SelectOption;
+  type IntOption = NumberOption;
+  type FloatOption = NumberOption;
+  type DoubleOption = NumberOption;
+
+  type IntRangeOption = RangeOption;
+  type FloatRangeOption = RangeOption;
+  type DoubleRangeOption = RangeOption;
+
+  type GameOption = BooleanOption |
+    IntOption | FloatOption | DoubleOption |
+    IntRangeOption | FloatRangeOption | DoubleRangeOption |
+    SelectOption;
 
   enum OptionKind {
     Boolean = 0,
-    Number = 1,
-    Range = 2,
+    IntOption = 1,
+    FloatOption = 1,
+    DoubleOption = 1,
+    IntRangeOption = 2,
+    FloatRangeOption = 2,
+    DoubleRangeOption = 2,
     Select = 3,
   }
 
@@ -84,8 +99,12 @@ declare global {
 
 enum OptionKind {
   Boolean = 0,
-  Number = 1,
-  Range = 2,
+  IntOption = 1,
+  FloatOption = 1,
+  DoubleOption = 1,
+  IntRangeOption = 2,
+  FloatRangeOption = 2,
+  DoubleRangeOption = 2,
   Select = 3,
 }
 window.OptionKind = OptionKind;
