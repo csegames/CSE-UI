@@ -160,9 +160,8 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
       }
     });
 
-    // client.StartPlacingItemByID(staticDefinition.numericItemDefID, id, action ? action.id : null);
-    // TODO COHERENT verify this is correct
     game.startItemPlacement(staticDefinition.numericItemDefID, id);
+    game.trigger('hudnav--navigate', 'placement-mode');
   }
 
   private onActionClick = (action: InventoryItem.Actions) => {

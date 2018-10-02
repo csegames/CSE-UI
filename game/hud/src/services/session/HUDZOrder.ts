@@ -18,6 +18,7 @@ enum HUDZOrder {
   Chat,
   Compass,
   CompassTooltip,
+  PlacementMode,
   Crafting,
   Announcement,
   ReleaseControl,

@@ -9,6 +9,7 @@ import './BodyPart';
 import './Building';
 import './CombatEvent';
 import './DamageType';
+import './ItemPlacementTransformMode';
 import './Keybind';
 import './Options';
 import './ResourceKind';
