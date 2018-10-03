@@ -10,7 +10,7 @@
 .react-draggable,  .react-resizable{
   top: 0px;
   left: 0px;
-  position: absolute;
+  position: fixed;
 
   .dragHandle {
     display: inline-block;
