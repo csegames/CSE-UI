@@ -70,6 +70,8 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     accessToken: 'developer',
     webAPIHost: 'https://hatcheryapi.camelotunchained.com',
     serverHost: 'hatcheryd.camelotunchained.com',
+    options: [],
+    keybinds: [],
 
     reloadUI: noOp,
     quit: noOp,
@@ -78,10 +80,8 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     playGameSound: noOp,
     takeScreenshot: noOp,
 
-    getKeybinds: noOp,
     bindKey: noOp,
     clearKeybind: noOp,
-    getOptions: noOp,
     setOptions: noOp,
     testOption: noOp,
     cancelTests: noOp,

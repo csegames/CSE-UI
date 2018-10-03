@@ -97,10 +97,6 @@ export interface GameModel {
    */
   keybinds: Keybind[];
 
-  /**
-   * Called when a keybind is changed.
-   */
-  onKeybindChanged: (callback: (keybind: Keybind) => any) => EventHandle;
 
   /**
    * Request that the client listen for a key combination to bind a key value to.
@@ -121,11 +117,6 @@ export interface GameModel {
    * All options from the client
    */
   options: GameOption[];
-
-  /**
-   * Called when an option is changed.
-   */
-  onOptionChanged: (callback: (option: GameOption) => any) => EventHandle;
 
   /**
    * Batch set of all passed in options
@@ -320,6 +311,16 @@ export interface GameInterface extends GameModel {
    * @param {String} target Navigation target
    */
   onNavigate: (callback: (target: string) => any) => EventHandle;
+
+  /**
+   * Called when an option is changed.
+   */
+  onOptionChanged: (callback: (option: GameOption) => any) => EventHandle;
+
+  /**
+   * Called when a keybind is changed.
+   */
+  onKeybindChanged: (callback: (keybind: Keybind) => any) => EventHandle;
 
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */
