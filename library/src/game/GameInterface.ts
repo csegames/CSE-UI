@@ -78,12 +78,6 @@ export interface GameModel {
   sendSlashCommand: (command: string) => void;
 
   /**
-   * Take a screenshot
-   * @return {Screenshot} Image & Path to screenshot
-   */
-  takeScreenshot: () => Screenshot[];
-
-  /**
    * Player a sound through the game audio engine
    * @param {Number} soundID ID of the sound to play
    */
@@ -109,21 +103,6 @@ export interface GameModel {
    * All options from the client
    */
   options: GameOption[];
-
-  /**
-   * Batch set of all passed in options
-   * @param {GameOption[]} options The options to set
-   * @return Whether or not the options all saved correctly
-   */
-  setOptions: (options: GameOption[]) => Success | Failure & { failures: [{ option: GameOption, reason: string }] };
-
-  /**
-   * Test a single option without saving it, this allows preview of changes without saving them immediately
-   * When called, this method should change the setting on the client without saving it to file or the server
-   * @param {GameOption} option The option to test
-   * @return Whether or not the option was valid to test
-   */
-  testOption: (option: GameOption) => Success | Failure;
 
   /**
    * Cancels all option tests and revert to the currently saved options
@@ -218,6 +197,29 @@ export interface GameModelTasks {
    * @returns {Binding} The newly bound key information
    */
   _cse_dev_bindKeyTask: (id: number, index: number) => Task<Binding>;
+
+  /**
+   * Batch set of all passed in options
+   * @param {GameOption[]} options The options to set
+   * @return Whether or not the options all saved correctly
+   */
+  _cse_dev_setOptions: (options: GameOption[]) =>
+   Task<Success | Failure & { failures: [{ option: GameOption, reason: string }] }>;
+
+  /**
+   * Test a single option without saving it, this allows preview of changes without saving them immediately
+   * When called, this method should change the setting on the client without saving it to file or the server
+   * @param {GameOption} option The option to test
+   * @return Whether or not the option was valid to test
+   */
+  _cse_dev_testOption: (option: GameOption) => Task<Success | Failure>;
+
+  /**
+   * Take a screenshot
+   * @return {Screenshot} Image & Path to screenshot
+   */
+  _cse_dev_takeScreenshot: () => Task<Screenshot>;
+
 }
 
 /**
@@ -372,7 +374,7 @@ export interface GameInterface extends GameModel {
   entities: { [entityID: string]: AnyEntityState };
 
   /* -------------------------------------------------- */
-  /* EVENTS                                             */
+  /* TASKS                                              */
   /* -------------------------------------------------- */
 
   /**
@@ -382,6 +384,30 @@ export interface GameInterface extends GameModel {
    * @returns {Binding} The newly bound key information
    */
   bindKeyAsync: (id: number, index: number) => CancellablePromise<Binding>;
+
+
+  /**
+   * Batch set of all passed in options
+   * @param {GameOption[]} options The options to set
+   * @return Whether or not the options all saved correctly
+   */
+  setOptionsAsync: (options: GameOption[]) =>
+   CancellablePromise<Success | Failure & { failures: [{ option: GameOption, reason: string }] }>;
+
+  /**
+   * Test a single option without saving it, this allows preview of changes without saving them immediately
+   * When called, this method should change the setting on the client without saving it to file or the server
+   * @param {GameOption} option The option to test
+   * @return Whether or not the option was valid to test
+   */
+  testOptionAsync: (option: GameOption) => CancellablePromise<Success | Failure>;
+
+  /**
+   * Take a screenshot
+   * @return {Screenshot} Image & Path to screenshot
+   */
+  takeScreenshotAsync: () => CancellablePromise<Screenshot>;
+
 
   /* -------------------------------------------------- */
   /* EVENTS                                             */

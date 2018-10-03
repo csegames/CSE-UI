@@ -38,6 +38,9 @@ export default function(isAttached: boolean) {
 
   // TASKS
   _devGame.bindKeyAsync = makeClientPromise(_devGame._cse_dev_bindKeyTask);
+  _devGame.setOptionsAsync = makeClientPromise(_devGame._cse_dev_setOptions);
+  _devGame.testOptionAsync = makeClientPromise(_devGame._cse_dev_testOption);
+  _devGame.takeScreenshotAsync = makeClientPromise(_devGame._cse_dev_takeScreenshot);
 
   // EVENTS
   _devGame._eventEmitter = oldEmitter || createEventEmitter();
