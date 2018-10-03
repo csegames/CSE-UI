@@ -7,6 +7,7 @@
 import * as webAPI from '../webAPI';
 import * as graphQL from '../graphql';
 import * as signalR from '../signalR';
+import { Task } from './clientTasks';
 
 /**
  * GameModel interface defines the structure and functionality of the global game object as presented by the game
@@ -96,15 +97,6 @@ export interface GameModel {
    * All Keybinds from the client
    */
   keybinds: Keybind[];
-
-
-  /**
-   * Request that the client listen for a key combination to bind a key value to.
-   * @param {Number} id Identifier of the Keybinding to be bound
-   * @param {Number} index Index of binds to set / replace with the new binding
-   * @returns {Binding} The newly bound key information
-   */
-  bindKey: (id: number, index: number) => Binding;
 
   /**
    * Request that the client clear a particular key bind
@@ -210,6 +202,22 @@ export interface GameModel {
    * Stops the currently active key trigger loop
    */
   _cse_dev_endTriggerKeyActionLoop: () => void;
+}
+
+/**
+ * The GameModelTasks interface defines methods that require proxy definitions for use in the UI. These are methods
+ * that return client tasks which are proxied by the library into promises.
+ *
+ * These are in a separate interface and prefixed with '_cse_dev_' to hide the from the TypeScript API.
+ */
+export interface GameModelTasks {
+  /**
+   * Request that the client listen for a key combination to bind a key value to.
+   * @param {Number} id Identifier of the Keybinding to be bound
+   * @param {Number} index Index of binds to set / replace with the new binding
+   * @returns {Binding} The newly bound key information
+   */
+  _cse_dev_bindKeyTask: (id: number, index: number) => Task<Binding>;
 }
 
 /**
@@ -362,6 +370,18 @@ export interface GameInterface extends GameModel {
    * Map of entities that the UI knows about by EntityID
    */
   entities: { [entityID: string]: AnyEntityState };
+
+  /* -------------------------------------------------- */
+  /* EVENTS                                             */
+  /* -------------------------------------------------- */
+
+  /**
+   * Request that the client listen for a key combination to bind a key value to.
+   * @param {Number} id Identifier of the Keybinding to be bound
+   * @param {Number} index Index of binds to set / replace with the new binding
+   * @returns {Binding} The newly bound key information
+   */
+  bindKeyAsync: (id: number, index: number) => CancellablePromise<Binding>;
 
   /* -------------------------------------------------- */
   /* EVENTS                                             */

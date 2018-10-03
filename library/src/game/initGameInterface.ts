@@ -9,7 +9,7 @@ import * as graphQL from '../graphql';
 import * as signalR from '../signalR';
 
 import { createEventEmitter } from '../utils/EventEmitter';
-import { GameModel, GameInterface } from './GameInterface';
+import { GameModel, GameInterface, GameModelTasks } from './GameInterface';
 
 import initEventForwarding from './engineEvents';
 
@@ -19,6 +19,7 @@ import initEnemytargetState from './GameClientModels/EnemytargetState';
 import initFriendlytargetState from './GameClientModels/FriendlytargetState';
 import initPlotState from './GameClientModels/Plot';
 import initKeyActions from './GameClientModels/KeyActions';
+import { makeClientPromise } from './clientTasks';
 
 export default function(isAttached: boolean) {
   let oldEmitter = null;
@@ -35,6 +36,8 @@ export default function(isAttached: boolean) {
 
   _devGame.signalRHost = signalRHost;
 
+  // TASKS
+  _devGame.bindKeyAsync = makeClientPromise(_devGame._cse_dev_bindKeyTask);
 
   // EVENTS
   _devGame._eventEmitter = oldEmitter || createEventEmitter();
@@ -80,7 +83,6 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     playGameSound: noOp,
     takeScreenshot: noOp,
 
-    bindKey: noOp,
     clearKeybind: noOp,
     setOptions: noOp,
     testOption: noOp,

@@ -6,6 +6,7 @@
 
 import { GameInterface } from './GameInterface';
 import { EventEmitter } from '../utils/EventEmitter';
+import { TaskResult } from './clientTasks';
 
 /**
  * This is an Extension of GameInterface for internal library use, mocking, and direct client communication
@@ -19,4 +20,5 @@ export interface InternalGameInterfaceExt extends GameInterface {
    */
   _eventEmitter: EventEmitter;
 
+  _activeTasks: { [id: number]: TaskResult<any> };
 }

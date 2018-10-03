@@ -8,14 +8,15 @@
 import initGameInterface, { initOutOfContextGame } from './initGameInterface';
 
 import { runMocks } from './mock';
-import { GameInterface, GameModel } from './GameInterface';
+import { GameInterface, GameModel, GameModelTasks } from './GameInterface';
 import { InternalGameInterfaceExt } from './InternalGameInterfaceExt';
+import initClientTasks from './clientTasks';
 
 declare global {
   interface Window {
     gameClient: GameModel;
     game: GameInterface;
-    _devGame: InternalGameInterfaceExt;
+    _devGame: InternalGameInterfaceExt & GameModelTasks;
   }
 }
 
@@ -30,7 +31,7 @@ function initUI() {
   }
 
   if (!window._devGame) {
-    window._devGame = window.game as InternalGameInterfaceExt;
+    window._devGame = window.game as InternalGameInterfaceExt & GameModelTasks;
   }
 
   if (game.ready) return;
@@ -51,4 +52,5 @@ export default function() {
     });
   }
   initUI();
+  initClientTasks();
 }
