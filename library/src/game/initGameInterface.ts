@@ -84,11 +84,8 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     sendSlashCommand: noOp,
     triggerKeyAction: noOp,
     playGameSound: noOp,
-    takeScreenshot: noOp,
 
     clearKeybind: noOp,
-    setOptions: noOp,
-    testOption: noOp,
     cancelTests: noOp,
     resetOptions: noOp,
 

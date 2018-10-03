@@ -33,8 +33,23 @@ export interface FriendlyTargetPlayerStateModel extends PlayerStateModel {
 
 }
 
+export interface FriendlyTargetSiegeStateModel extends SiegeStateModel {
+
+  /**
+   * Indicates whether the player currently has an active friendly target.
+   */
+  isActive: boolean;
+
+  /**
+   * Players coordinates in world space.
+   * NOTE: Only available during beta testing
+   */
+  position: Vec3;
+
+}
+
 declare global {
-  type FriendlyTargetState = (FriendlyTargetPlayerStateModel | SiegeStateModel) & Updatable;
+  type FriendlyTargetState = (FriendlyTargetPlayerStateModel | FriendlyTargetSiegeStateModel) & Updatable;
 }
 
 export const FriendlyTarget_Update = 'friendlyTargetPlayerState.update';

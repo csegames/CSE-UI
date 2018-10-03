@@ -32,8 +32,30 @@ export interface EnemyTargetPlayerStateModel extends PlayerStateModel {
   position: Vec3;
 }
 
+/**
+ * State data extension of PlayerStateModel for the Players enemy target
+ */
+export interface EnemyTargetSiegeStateModel extends SiegeStateModel {
+
+  /**
+   * Unique identification string for the player character.
+   */
+  characterID: string;
+
+  /**
+   * Indicates whether the player currently has an active friendly target.
+   */
+  isActive: boolean;
+
+  /**
+   * Players coordinates in world space.
+   * NOTE: Only available during beta testing
+   */
+  position: Vec3;
+}
+
 declare global {
-  type EnemyTargetState = (EnemyTargetPlayerStateModel | SiegeStateModel) & Updatable;
+  type EnemyTargetState = (EnemyTargetPlayerStateModel | EnemyTargetSiegeStateModel) & Updatable;
 }
 
 export const EnemyTarget_Update = 'enemyTargetPlayerState.update';
