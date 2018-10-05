@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client } from '@csegames/camelot-unchained';
 import * as CONFIG from 'UI/config';
 import { TabbedDialog, DialogTab, DialogButton } from 'UI/TabbedDialog';
 import { Box } from 'UI/Box';
@@ -47,12 +46,6 @@ export class SaveAs extends React.PureComponent<SaveAsProps, SaveAsState> {
   constructor(props: SaveAsProps) {
     super(props);
     this.state = { name: '' };
-  }
-  public componentDidMount() {
-    client.RequestInputOwnership();
-  }
-  public componentWillUnmount() {
-    client.ReleaseInputOwnership();
   }
   public render() {
     return (

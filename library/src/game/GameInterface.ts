@@ -93,11 +93,27 @@ export interface GameModel {
   keybinds: Keybind[];
 
   /**
+   * Set a keybind
+   * @param {Number} id Identifier of the Keybinding to be bound
+   * @param {Number} index Index of binds to set / replace with the new binding
+   * @param {Binding} bind Binding data for this key
+   * @returns {Success | Failure} Result whether the keybind was set
+   */
+  setKeybind: (id: number, index: number, bind: Binding) => Success | Failure;
+
+  setKeybinds: (keybinds: Keybind[]) => Success | Failure & { failures: { keybind: Keybind[], error: string }[] };
+
+  /**
    * Request that the client clear a particular key bind
    * @param {Number} id Identifier of the Keybinding to be cleared
    * @param {Number} index Index of bind to clear
    */
   clearKeybind: (id: number, index: number) => void;
+
+  /**
+   * Restores all keybinds to their default values
+   */
+  resetKeybinds: () => void;
 
   /**
    * All options from the client
@@ -196,7 +212,7 @@ export interface GameModelTasks {
    * @param {Number} index Index of binds to set / replace with the new binding
    * @returns {Binding} The newly bound key information
    */
-  _cse_dev_bindKeyTask: (id: number, index: number) => Task<Binding>;
+  _cse_dev_listenForKeyBindingTask: () => Task<Binding>;
 
   /**
    * Batch set of all passed in options
@@ -327,11 +343,6 @@ export interface GameInterface extends GameModel {
    */
   onOptionChanged: (callback: (option: GameOption) => any) => EventHandle;
 
-  /**
-   * Called when a keybind is changed.
-   */
-  onKeybindChanged: (callback: (keybind: Keybind) => any) => EventHandle;
-
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */
   /* -------------------------------------------------- */
@@ -383,7 +394,7 @@ export interface GameInterface extends GameModel {
    * @param {Number} index Index of binds to set / replace with the new binding
    * @returns {Binding} The newly bound key information
    */
-  bindKeyAsync: (id: number, index: number) => CancellablePromise<Binding>;
+  listenForKeyBindingAsync: () => CancellablePromise<Binding>;
 
 
   /**

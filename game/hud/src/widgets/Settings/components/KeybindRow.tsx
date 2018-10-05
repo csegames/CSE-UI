@@ -8,8 +8,7 @@ import * as React from 'react';
 import styled, { css } from 'react-emotion';
 import * as CSS from 'lib/css-helper';
 import { Box } from 'UI/Box';
-import { Key } from './Key';
-import { Bind, BoundKey } from '../utils/keyboard';
+import { Key } from 'widgets/Settings/components/Key';
 
 export function spacify(s: string) {
   return s
@@ -34,34 +33,30 @@ const InnerClass = css`
   align-items: center;
 `;
 
-interface KeyBindProps {
-  name: string;
-  bind: Bind;
-  toggleRebind?: (keybind: Bind, alias: number) => void;
+interface Props {
+  keybind: Keybind;
+  onRequestBind?: (keybind: Keybind, index: number) => void;
 }
 
 /* tslint:disable:function-name */
-export function KeyBind(props: KeyBindProps) {
-  const { bind } = props;
-  let i = 0;
+export function KeybindRow(props: Props) {
   return (
     <Box innerClassName={InnerClass} style={{ minHeight: '45px' }}>
-      { bind.boundKeys.map((bind: BoundKey) => {
-        const alias = i++;
+      { props.keybind.binds.map((binding, index) => {
         return (
-          <Bind key={i}
+          <Bind key={index}
             onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-              props.toggleRebind(props.bind, alias);
+              props.onRequestBind(this.props.keybind, index);
               e.stopPropagation();
               e.preventDefault();
             }}>
-            <Key className={bind.value ? 'assigned' : 'unassigned'}>
-              { bind.name || ' ' }
+            <Key className={binding.value ? 'assigned' : 'unassigned'}>
+              { binding.name || ' ' }
             </Key>
           </Bind>
         );
       })}
-      <Name>{spacify(props.name)}</Name>
+      <Name>{spacify(props.keybind.description)}</Name>
     </Box>
   );
 }

@@ -25,14 +25,11 @@ declare global {
     // status -- null / undefined if no status on entity
     statuses?: {
       id: number;
+      startTime: number;
       duration: number;
     }[];
 
-    // health per body part, ordered according to the bodyParts enum found
-    // in ../constants/bodyParts.ts -- TODO: use an enum from C# generated
-    // through webAPI definitions.ts file
-    // Nonplayers are an aray of size 1 for a single health bar
-    health: Health[];
+
   }
 
   interface SiegeStateModel extends EntityStateModel {
@@ -41,6 +38,12 @@ declare global {
      * EntityID of the entity controlling this Siege Engine
      */
     controllingEntityID?: string;
+
+    health: CurrentMax;
+  }
+
+  interface KinematicStateModel extends EntityStateModel {
+    type: 'kinematic';
   }
 
   interface PlayerStateModel extends EntityStateModel {
@@ -50,14 +53,22 @@ declare global {
     class: Archetype;
     stamina: CurrentMax;
     blood: CurrentMax;
+    characterID: string;
      /**
      * EntityID of an entity this Player is controlling, if any.
      * ie. a siege engine, vehicle, creature ect...
      */
     controlledEntityID?: string;
+
+    // health per body part, ordered according to the bodyParts enum found
+    // in ../constants/bodyParts.ts -- TODO: use an enum from C# generated
+    // through webAPI definitions.ts file
+    health: Health[];
   }
 
-  type AnyEntityState = (Readonly<PlayerStateModel> | Readonly<SiegeStateModel>) & Updatable;
+  type AnyEntityStateModel = PlayerStateModel | SiegeStateModel | KinematicStateModel;
+
+  type AnyEntityState = Readonly<AnyEntityStateModel> & Updatable;
 }
 
 function defaultEntityStateModel(): EntityStateModel {
@@ -66,7 +77,6 @@ function defaultEntityStateModel(): EntityStateModel {
     entityID: '',
     name: 'unknown',
     isAlive: false,
-    health: [defaultHealth()],
   };
 }
 
@@ -92,6 +102,7 @@ export function defaultPlayerStateModel(): PlayerStateModel {
     race: Race.HumanMaleA,
     gender: Gender.None,
     class: Archetype.Blackguard,
+    characterID: '',
     health: [defaultHealth(),defaultHealth(),defaultHealth(),defaultHealth(),defaultHealth(),defaultHealth()],
     stamina: defaultStamAndBlood(),
     blood: defaultStamAndBlood(),
@@ -102,6 +113,7 @@ export function defaultSiegeStateModel(): SiegeStateModel {
   return {
     ...defaultEntityStateModel(),
     type: 'siege',
+    health: defaultStamAndBlood(),
   };
 }
 

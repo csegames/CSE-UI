@@ -37,7 +37,7 @@ export default function(isAttached: boolean) {
   _devGame.signalRHost = signalRHost;
 
   // TASKS
-  _devGame.bindKeyAsync = makeClientPromise(_devGame._cse_dev_bindKeyTask);
+  _devGame.listenForKeyBindingAsync = makeClientPromise(_devGame._cse_dev_listenForKeyBindingTask);
   _devGame.setOptionsAsync = makeClientPromise(_devGame._cse_dev_setOptions);
   _devGame.testOptionAsync = makeClientPromise(_devGame._cse_dev_testOption);
   _devGame.takeScreenshotAsync = makeClientPromise(_devGame._cse_dev_takeScreenshot);
@@ -85,7 +85,10 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     triggerKeyAction: noOp,
     playGameSound: noOp,
 
+    setKeybind: noOp,
+    setKeybinds: noOp,
     clearKeybind: noOp,
+    resetKeybinds: noOp,
     cancelTests: noOp,
     resetOptions: noOp,
 
@@ -123,26 +126,6 @@ function withOverrides(model: Partial<GameInterface>) {
 }
 
 function noOp(...args: any[]): any {}
-
-// Augment Array with remove method.
-declare global {
-  interface Array<T> {
-    remove(element: T): T[];
-  }
-}
-
-/**
- * Removes the first instance of an element from an array.
- * @param {T} element The element to remove from the Array
- * @return {Array<T>} Returns a reference to the array with the removed item.
- */
-Array.prototype.remove = function<T>(element: T): T[] {
-  const index = this.findIndex(i => i === element);
-  if (index > -1) {
-    this.splice(index, 1);
-  }
-  return this;
-};
 
 /* -------------------------------------------------- */
 /* GAME                                               */

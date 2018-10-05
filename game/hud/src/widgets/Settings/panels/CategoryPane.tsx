@@ -6,68 +6,64 @@
 
 import * as React from 'react';
 import { SettingsPanel } from '../components/SettingsPanel';
-import { cancel, getInputConfig, ConfigIndex, sendConfigVarChangeMessage } from '../utils/configVars';
-import { CheckBoxField } from 'UI/CheckBoxField';
-import { SubHeading } from 'UI/SubHeading';
-import { Settings, settingsRenderer } from '../components/settingsRenderer';
+import { OptionView } from 'widgets/Settings/components/OptionView';
 
-const settings: Settings = {
-  'Graphics Settings': { type: SubHeading },
-  'Invert Right Stick Y': { type: CheckBoxField },
-  'Invert Right Stick X': { type: CheckBoxField },
-  'Invert Left Stick Y': { type: CheckBoxField },
-  'Invert Left Stick X': { type: CheckBoxField },
-  'Camera Settings': { type: SubHeading },
-  'Invert Camera Mouse Y': { type: CheckBoxField },
-  'Invert Camera Mouse X': { type: CheckBoxField },
-};
 
-interface InputSettingsProps {
+
+interface Props {
+  category: OptionCategory;
   onCancel: () => void;
 }
-interface InputSettingsState {
+
+interface State {
   changes: { [name: string]: GameOption };
-  errorMessage: string;
+  error: string;
 }
 
-export class InputSettings extends React.PureComponent<InputSettingsProps, InputSettingsState> {
-  private evh: EventHandle;
+export class CategoryPane extends React.PureComponent<Props, State> {
+  private settingsActionHandle: EventHandle;
 
   // promise when setting options as they are done async, and yes the type is really long
   private savePromise: CancellablePromise<Success | Failure & { failures: [{ option: GameOption, reason: string }] }> = null;
 
-  constructor(props: InputSettingsProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       changes: {},
-      errorMessage: '',
+      error: '',
     };
   }
 
   public componentDidMount() {
-    this.evh = game.on('settings--action', this.onAction);
+    this.settingsActionHandle = game.on('settings--action', this.onAction);
   }
 
   public componentWillUnmount() {
-    cancel(ConfigIndex.INPUT);
-    if (this.evh) game.off(this.evh);
+    if (this.settingsActionHandle) this.settingsActionHandle.clear();
   }
 
   public render() {
-    const inputOptions = game.options.filter(o => o.category === OptionCategory.Input);
+    const opts = game.options.filter(o => o.category === this.props.category);
     return (
       <SettingsPanel>
-        {settingsRenderer({
-          config: inputOptions,
-          settings,
-          onToggle: this.onToggle,
-        })}
+        {opts.map(opt => <OptionView key={opt.name} option={opt} onChange={this.onChange} />)}
       </SettingsPanel>
     );
   }
 
+  private onChange = (option: GameOption) => {
+    this.setState((state) => {
+      return {
+        ...state,
+        changes: {
+          ...state.changes,
+          [option.name]: option,
+        },
+      };
+    });
+  }
+
   private onAction = (args: any) => {
-    const type: any = ConfigIndex.INPUT;
     switch (args.id) {
       case 'apply':
         const values = Object.values(this.state.changes);
@@ -81,14 +77,14 @@ export class InputSettings extends React.PureComponent<InputSettingsProps, Input
 
             const res = result as Failure & { failures: [{ option: GameOption, reason: string }] };
             const changes = {};
-            let errorMessage = 'One ore more options failed to apply. ';
+            let error = 'One ore more options failed to apply. ';
             res.failures.forEach((fail, index) => {
               changes[fail.option.name] = fail.option;
-              errorMessage += fail.reason + (index === res.failures.length - 1 ? '' : ', ');
+              error += fail.reason + (index === res.failures.length - 1 ? '' : ', ');
             });
 
             this.setState({
-              errorMessage,
+              error,
               changes,
             });
           });
@@ -97,7 +93,7 @@ export class InputSettings extends React.PureComponent<InputSettingsProps, Input
       case 'cancel':
         this.setState({
           changes: {},
-          errorMessage: '',
+          error: '',
         });
         this.props.onCancel();
         break;
@@ -105,14 +101,5 @@ export class InputSettings extends React.PureComponent<InputSettingsProps, Input
         game.resetOptions(OptionCategory.Input);
         break;
     }
-  }
-
-  private onChanged = (option: GameOption) => {
-    this.setState({
-      changes: {
-        ...this.state.changes,
-        [option.name]: option,
-      },
-    });
   }
 }

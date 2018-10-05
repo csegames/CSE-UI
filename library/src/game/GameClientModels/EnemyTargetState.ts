@@ -5,57 +5,18 @@
  */
 
 import { defaultPlayerStateModel } from './EntityState';
-import { Updatable, createDefaultOnUpdated, createDefaultOnReady } from './_Updatable';
+import { createDefaultOnUpdated, createDefaultOnReady } from './_Updatable';
 
 import engineInit from './_Init';
 
-type Vec3 = { x: number; y: number; z: number; };
-/**
- * State data extension of PlayerStateModel for the Players enemy target
- */
-export interface EnemyTargetPlayerStateModel extends PlayerStateModel {
-
-  /**
-   * Unique identification string for the player character.
-   */
-  characterID: string;
-
-  /**
-   * Indicates whether the player currently has an active friendly target.
-   */
-  isActive: boolean;
-
-  /**
-   * Players coordinates in world space.
-   * NOTE: Only available during beta testing
-   */
-  position: Vec3;
-}
-
-/**
- * State data extension of PlayerStateModel for the Players enemy target
- */
-export interface EnemyTargetSiegeStateModel extends SiegeStateModel {
-
-  /**
-   * Unique identification string for the player character.
-   */
-  characterID: string;
-
-  /**
-   * Indicates whether the player currently has an active friendly target.
-   */
-  isActive: boolean;
-
-  /**
-   * Players coordinates in world space.
-   * NOTE: Only available during beta testing
-   */
-  position: Vec3;
-}
-
 declare global {
-  type EnemyTargetState = (EnemyTargetPlayerStateModel | EnemyTargetSiegeStateModel) & Updatable;
+  type EnemyTargetState = AnyEntityState &
+  {
+    /**
+     * Indicates whether the player currently has an active friendly target.
+     */
+    isActive: boolean;
+  };
 }
 
 export const EnemyTarget_Update = 'enemyTargetPlayerState.update';
@@ -84,6 +45,9 @@ export default function() {
     EnemyTarget_Update,
     () => _devGame.enemyTargetState = initDefault(),
     () => game.enemyTargetState,
-    (model: EnemyTargetPlayerStateModel) => _devGame.enemyTargetState = model as EnemyTargetState);
+    (model: AnyEntityState) => {
+      _devGame.enemyTargetState = model as EnemyTargetState;
+      _devGame.enemyTargetState.isActive = model.entityID.length > 0;
+    });
 
 }

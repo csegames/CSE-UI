@@ -16,6 +16,8 @@ declare global {
 }
 
 enum TaskStatus {
+  Pending,
+
   // Failed on the game client for any non-specific reason
   Failed,
 
@@ -30,7 +32,7 @@ export interface Task<T> {
   id: number;
   statusCode: TaskStatus;
   value: T;
-  errorMessage: string;
+  reason: string;
   cancel: () => void;
 }
 

@@ -15,57 +15,13 @@
 //   return label;
 // }
 
-export interface BoundKey {
-  name: string;
-  value: number;
-}
-
-export interface Bind {
-  button: number;
-  boundKeys: BoundKey[];
-}
-
-export interface Keybinds {
-  [key: string]: Bind;
-}
-
-export const UNBOUND_KEY: BoundKey = { name: '', value: 0 };
-
-export interface NameMap {
-  [id: number]: string;
-}
-let buttonNameMap: NameMap = {};
-
-export function setButtonMap(map: NameMap) {
-  buttonNameMap = map;
-}
-
-export function getButtonNameFromId(id: number) {
-  return keyBindName(buttonNameMap[id]);
-}
-
-let keybinds: Keybinds = {};
-
-export function getKeybinds() {
-  return keybinds;
-}
-
-export function keyBindName(buttonName: string) {
-  const match = buttonName.match(/Key([^_]*)/);
-  return match ? match[1] : buttonName;
-}
-
-export function clearKeybinds() {
-  keybinds = {};
-}
-
 export function updateKeybind(name: string, keybind: Keybind) {
-  const bind = keybinds[name] || (keybinds[name] = { button: id, boundKeys: <BoundKey[]> [] });
-  const boundKeys = bind.boundKeys;
-  boundKeys[alias] = { name: boundKeyName, value: boundKeyValue };
-  while (boundKeys.length < 3) {
-    boundKeys.push(UNBOUND_KEY); // add unbound keys
-  }
+  // const bind = keybinds[name] || (keybinds[name] = { button: id, boundKeys: <BoundKey[]> [] });
+  // const boundKeys = bind.boundKeys;
+  // boundKeys[alias] = { name: boundKeyName, value: boundKeyValue };
+  // while (boundKeys.length < 3) {
+  //   boundKeys.push(UNBOUND_KEY); // add unbound keys
+  // }
 }
 
 const PERSISTED_KEYBINDS_KEY = 'cse-settings-keybinds-v3';
@@ -93,7 +49,7 @@ export function linkCharacterToKeybinds(name?: string) {
   }
 }
 
-export function persistKeybinds(keybinds: Keybinds, name?: string) {
+export function persistKeybinds(keybinds: Keybind[], name?: string) {
   const saved: PersistedBinds = {};
   for (const key in keybinds) {
     const binds = keybinds[key].boundKeys;
@@ -115,8 +71,8 @@ export function restoreKeybinds(name?: string, onDone?: () => void) {
     for (const key in keybinds) {
       const binds: number[] = keybinds[key];
       for (let i = 0; i < binds.length; i++) {
-        const button = (key as any) | 0;
-        game.SetKeybind(button, i, binds[i]);
+        // const button = (key as any) | 0;
+        // game.SetKeybind(button, i, binds[i]);
       }
     }
     if (onDone) onDone();

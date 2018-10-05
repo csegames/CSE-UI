@@ -5,51 +5,18 @@
  */
 
 import { defaultPlayerStateModel } from './EntityState';
-import { Updatable, createDefaultOnUpdated, createDefaultOnReady } from './_Updatable';
+import { createDefaultOnUpdated, createDefaultOnReady } from './_Updatable';
 
 import engineInit from './_Init';
 
-type Vec3 = { x: number; y: number; z: number; };
-/**
- * State data extension of PlayerStateModel for the Players friendly target
- */
-export interface FriendlyTargetPlayerStateModel extends PlayerStateModel {
-
-  /**
-   * Unique identification string for the player character.
-   */
-  characterID: string;
-
-  /**
-   * Indicates whether the player currently has an active friendly target.
-   */
-  isActive: boolean;
-
-  /**
-   * Players coordinates in world space.
-   * NOTE: Only available during beta testing
-   */
-  position: Vec3;
-
-}
-
-export interface FriendlyTargetSiegeStateModel extends SiegeStateModel {
-
-  /**
-   * Indicates whether the player currently has an active friendly target.
-   */
-  isActive: boolean;
-
-  /**
-   * Players coordinates in world space.
-   * NOTE: Only available during beta testing
-   */
-  position: Vec3;
-
-}
-
 declare global {
-  type FriendlyTargetState = (FriendlyTargetPlayerStateModel | FriendlyTargetSiegeStateModel) & Updatable;
+  type FriendlyTargetState = AnyEntityState &
+  {
+    /**
+     * Indicates whether the player currently has an active friendly target.
+     */
+    isActive: boolean;
+  };
 }
 
 export const FriendlyTarget_Update = 'friendlyTargetPlayerState.update';
@@ -78,6 +45,9 @@ export default function() {
     FriendlyTarget_Update,
     () => _devGame.friendlyTargetState = initDefault(),
     () => game.friendlyTargetState,
-    (model: FriendlyTargetPlayerStateModel) => _devGame.friendlyTargetState = model as FriendlyTargetState);
+    (model: AnyEntityState) => {
+      _devGame.friendlyTargetState = model as FriendlyTargetState;
+      _devGame.friendlyTargetState.isActive = model.entityID.length > 0;
+    });
 
 }

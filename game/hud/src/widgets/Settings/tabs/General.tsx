@@ -5,10 +5,9 @@
  */
 
 import * as React from 'react';
-import { DisplayModeConfig } from '@csegames/camelot-unchained';
 import { DialogTab, DialogButton } from 'UI/TabbedDialog';
 import { SideMenu, MenuOption } from 'UI/SideMenu';
-import { KeybindSettings } from '../panels/KeybindSettings';
+import { KeybindSettings } from 'widgets/Settings/panels/KeybindSettings';
 import { InputSettings } from '../panels/InputSettings';
 import { GraphicSettings } from '../panels/GraphicSettings';
 import { AudioSettings } from '../panels/AudioSettings';
@@ -30,12 +29,12 @@ function getButtonsForOption(option: MenuOption) {
     case OPTION.GRAPHICS:
       return [BUTTON.DEFAULT, BUTTON.APPLY, BUTTON.CANCEL];
     case OPTION.KEYS:
-      return [BUTTON.DEFAULT, BUTTON.APPLY, BUTTON.CANCEL, BUTTON.SAVEAS, BUTTON.LOAD];
+      return [BUTTON.DEFAULT, BUTTON.SAVEAS, BUTTON.LOAD];
   }
   return [BUTTON.CANCEL];
 }
 
-export interface SelectedDisplayMode extends DisplayModeConfig {
+export interface SelectedDisplayMode {
   fullScreen: boolean;
 }
 

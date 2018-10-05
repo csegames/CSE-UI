@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { client } from '@csegames/camelot-unchained';
 
 import { TabbedDialog, DialogButton } from 'UI/TabbedDialog';
 import { GeneralSettings } from './tabs/General';
@@ -72,10 +71,8 @@ export class Settings extends React.Component<SettingsProps, SettingsState> {
 
   private onnavigate = (name: string) => {
     if (name === 'gamemenu' && this.state.visible) {
-      client.ReleaseInputOwnership();
       this.setState({ visible: false });
     } else if (name === ME) {
-      if (this.state.visible) client.ReleaseInputOwnership();
       this.setState({ visible: !this.state.visible });
     }
   }

@@ -8,6 +8,7 @@ import './ObjectMap';
 import './objectUtils';
 import './typeUtils';
 import './withDefaults';
+import './arrayUtils';
 
 export * from './arrayUtils';
 export * from './eventMapper';

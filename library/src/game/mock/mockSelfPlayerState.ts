@@ -16,7 +16,8 @@ export function mockSelfPlayerState() {
     y: 0,
     z: 0,
   };
-  _devGame.selfPlayerState.facing = 0;
+  _devGame.selfPlayerState.facing = { yaw: 0, pitch: 0 };
+  _devGame.selfPlayerState.cameraFacing = { yaw: 0, pitch: 0 };
   engine.trigger(SelfPlayer_Update, _devGame.selfPlayerState);
   console.log('MOCK.selfPlayerState', _devGame.selfPlayerState, game.selfPlayerState.name);
 }

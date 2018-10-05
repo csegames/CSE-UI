@@ -11,56 +11,21 @@ import engineInit from './_Init';
 
 export const SelfPlayer_Update = 'selfPlayerState.update';
 
+declare global {
+  type facing2f = {
+    yaw: number;
+    pitch: number;
+  };
+}
+
 /**
  * State data extension of PlayerStateModel for the player
  */
 export interface SelfPlayerStateModel extends PlayerStateModel {
 
-  /**
-   * Character name
-   */
-  name: string;
-
-  /**
-   * Unique identification string for the player character.
-   */
-  characterID: string;
-
-  /**
-   * Players coordinates in world space according to the server.
-   */
-  serverPosition: Vec3F;
-
-  /**
-   * Players facing direction in radians?.
-   */
-  facing: number;
-
-  /**
-   * Players velocity.
-   */
-  velocity: Vec3F;
-
-  /**
-   * Players speed in meters / second.
-   */
-  speed: number;
-
-  /**
-   * Players speed in x & z direction only, in meters / second.
-   */
-  horizontalSpeed: number;
-
-  /**
-   * The angle between the collision object and a vector pointing straight down from the Player origin
-   */
-  downCollisionAngle: number;
-  terrainCollisionAngle: number;
-
-  /**
-   * Identifer of the zone the player is in
-   */
   zoneID: string;
+  facing: facing2f;
+  cameraFacing: facing2f;
 
   /**
    * Request to respawn at a specific location if a spawnLocationID is provided.
@@ -111,23 +76,15 @@ declare global {
   type SelfPlayerState = SelfPlayerStateModel & Updatable;
 }
 
-
-
 function noOp(...args: any[]): any {}
 
 function initDefault(): SelfPlayerState {
   return {
     ...defaultPlayerStateModel(),
 
-    characterID: '',
-    serverPosition: { x: 0, y: 0, z: 0 },
-    facing: 0,
-    velocity: { x: 0, y: 0, z: 0 },
-    speed: 0,
-    horizontalSpeed: 0,
-    downCollisionAngle: 0,
-    terrainCollisionAngle: 0,
     zoneID: 'unknown',
+    facing: { yaw: 0, pitch: 0 },
+    cameraFacing: { yaw: 0, pitch: 0 },
 
     respawn: noOp,
     stuck: noOp,
