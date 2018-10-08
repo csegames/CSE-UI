@@ -1,3 +1,10 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ */
+
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as events from '@csegames/camelot-unchained/lib/events';
@@ -148,12 +155,13 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     const { equippedItem, slotName, itemMenuVisible } = this.props;
     const iconUrl = (equippedItem && equippedItem.item.staticDefinition && equippedItem.item.staticDefinition.iconUrl) ||
       `${defaultSlotIcons[slotName]} \ ${defaultIconStyle}`;
-    const isRightSlot = _.includes(slotName.toLowerCase(), 'right');
+    const isRightSlot = _.includes(slotName.toLowerCase(), 'left');
     const flipIcon = isRightSlot ? { transform: 'scaleX(-1)', WebkitTransform: 'scaleX(-1)' } : {};
+    const flipSlotPlaceholderIcon = !isRightSlot ? { transform: 'scaleX(-1)', WebkitTransform: 'scaleX(-1)' } : {};
     return (
       <Container opacity={this.state.opacity}>
         {this.props.equippedItem ? <ItemIcon style={flipIcon} src={iconUrl || placeholderIcon} /> :
-          <div style={flipIcon} className={`${iconUrl}`} />}
+          <div style={flipSlotPlaceholderIcon} className={`${iconUrl}`} />}
         <SlotOverlay
           className={`${itemMenuVisible ? 'item-menu-visible' : ''} ${this.state.highlightSlot ? 'highlight-slot' : ''}`}
           backgroundColor={this.state.backgroundColor}
