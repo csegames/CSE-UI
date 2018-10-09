@@ -37,7 +37,7 @@ declare global {
     Arcane = 1 << 21,
     MagicalTypes = Life | Mind | Spirit | Radiant | Death | Shadow | Chaos | Void | Arcane,
     All = ~0,
-    System = 1 << 31, // Unavoidable damage type, should not be used in skills.
+    System = 1 << 31, // Unavoidable damage type, should not be used in abilities.
   }
   interface Window {
     DamageType: typeof DamageType;
@@ -73,6 +73,6 @@ enum DamageType {
   Arcane = 1 << 21,
   MagicalTypes = Life | Mind | Spirit | Radiant | Death | Shadow | Chaos | Void | Arcane,
   All = ~0,
-  System = 1 << 31, // Unavoidable damage type, should not be used in skills.
+  System = 1 << 31, // Unavoidable damage type, should not be used in abilities.
 }
 window.DamageType = DamageType;

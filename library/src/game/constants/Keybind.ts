@@ -48,5 +48,5 @@ declare global {
     value: number;
   }
 
-  type KeybindCategory = 'skills' | 'interface' | 'game' | 'miscellaneous';
+  type KeybindCategory = 'abilities' | 'interface' | 'game' | 'miscellaneous';
 }

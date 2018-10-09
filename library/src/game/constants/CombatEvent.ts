@@ -25,7 +25,7 @@ declare global {
     disruption?: {
       sent: number;
       received: number;
-      tracksInterrupted?: SkillTrack;
+      tracksInterrupted?: AbilityTrack;
       source: string;
     };
 

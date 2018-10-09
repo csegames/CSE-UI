@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import './Ability';
 import './ActiveEffectAction';
 import './BodyPart';
 import './Building';
@@ -14,7 +15,5 @@ import './Keybind';
 import './Options';
 import './ResourceKind';
 import './Screenshot';
-import './SkillTrack';
-import './Skillbar';
 import './SoundEvent';
 import './SuccessFailure';

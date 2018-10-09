@@ -19,6 +19,8 @@ import initEnemytargetState from './GameClientModels/EnemytargetState';
 import initFriendlytargetState from './GameClientModels/FriendlytargetState';
 import initPlotState from './GameClientModels/Plot';
 import initKeyActions from './GameClientModels/KeyActions';
+import initAbilityState from './GameClientModels/AbilityState';
+import initAbilityBarState from './GameClientModels/AbilityBarState';
 import { makeClientPromise } from './clientTasks';
 
 export default function(isAttached: boolean) {
@@ -59,6 +61,8 @@ export default function(isAttached: boolean) {
   initFriendlytargetState();
   initPlotState();
   initKeyActions();
+  initAbilityState();
+  initAbilityBarState();
 
   // READY!
   _devGame.ready = true;
