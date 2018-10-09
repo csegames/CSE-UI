@@ -379,6 +379,16 @@ export interface GameInterface extends GameModel {
    */
   entities: { [entityID: string]: AnyEntityState };
 
+  /**
+   * Map of skill states that the UI knows about by skill id
+   */
+  skillStates: { [id: string]: SkillState };
+
+  /**
+   * Current state of the skillbar, temp - this defines the exact skill bar layout for now
+   */
+  skillBarState: SkillBarState;
+
   /* -------------------------------------------------- */
   /* TASKS                                              */
   /* -------------------------------------------------- */

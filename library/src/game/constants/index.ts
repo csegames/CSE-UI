@@ -15,5 +15,6 @@ import './Options';
 import './ResourceKind';
 import './Screenshot';
 import './SkillTrack';
+import './Skillbar';
 import './SoundEvent';
 import './SuccessFailure';

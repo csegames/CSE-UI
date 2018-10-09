@@ -12,3 +12,4 @@ export * from './KeyActions';
 export * from './LoadingState';
 export * from './PlayerState';
 export * from './Plot';
+export * from './Skills';

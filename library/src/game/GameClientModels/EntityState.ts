@@ -23,11 +23,9 @@ declare global {
     };
 
     // status -- null / undefined if no status on entity
-    statuses?: {
+    statuses?: [{
       id: number;
-      startTime: number;
-      duration: number;
-    }[];
+    } & Timing];
 
 
   }
@@ -131,7 +129,7 @@ function onReceiveEntityStateUpdate(state: AnyEntityState) {
 
   if (!_devGame.entities[state.entityID]) {
     _devGame.entities[state.entityID] = state;
-    _devGame.entities[state.entityID].updateEventName = name;
+    _devGame.entities[state.entityID].updateEventName = EntityState_Update;
     // init Updatable.
     initUpdatable(state);
   }
