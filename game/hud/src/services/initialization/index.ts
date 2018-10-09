@@ -38,25 +38,25 @@ export default () => {
       output += `::orange::${log.disruption.received.toFixed(0)}(${Math.abs(log.disruption.sent - log.disruption.received)
         .toFixed(0)}) DISRUPTION ${log.disruption.source} `;
 
-      if (log.disruption.tracksInterrupted === SkillTrack.None) {
+      if (log.disruption.tracksInterrupted === AbilityTrack.None) {
         output += ` | `;
 
       } else {
 
-        if (log.disruption.tracksInterrupted & SkillTrack.BothWeapons) {
-          output += ` ${SkillTrack[SkillTrack.BothWeapons]}`;
-        } else if (log.disruption.tracksInterrupted & SkillTrack.PrimaryWeapon) {
-          output += ` ${SkillTrack[SkillTrack.PrimaryWeapon]} `;
-        } else if (log.disruption.tracksInterrupted & SkillTrack.SecondaryWeapon) {
-          output += ` ${SkillTrack[SkillTrack.SecondaryWeapon]} `;
+        if (log.disruption.tracksInterrupted & AbilityTrack.BothWeapons) {
+          output += ` ${AbilityTrack[AbilityTrack.BothWeapons]}`;
+        } else if (log.disruption.tracksInterrupted & AbilityTrack.PrimaryWeapon) {
+          output += ` ${AbilityTrack[AbilityTrack.PrimaryWeapon]} `;
+        } else if (log.disruption.tracksInterrupted & AbilityTrack.SecondaryWeapon) {
+          output += ` ${AbilityTrack[AbilityTrack.SecondaryWeapon]} `;
         }
 
-        if (log.disruption.tracksInterrupted & SkillTrack.Voice) {
-          output += ` ${SkillTrack[SkillTrack.Voice]} `;
+        if (log.disruption.tracksInterrupted & AbilityTrack.Voice) {
+          output += ` ${AbilityTrack[AbilityTrack.Voice]} `;
         }
 
-        if (log.disruption.tracksInterrupted & SkillTrack.Mind) {
-          output += ` ${SkillTrack[SkillTrack.Mind]} `;
+        if (log.disruption.tracksInterrupted & AbilityTrack.Mind) {
+          output += ` ${AbilityTrack[AbilityTrack.Mind]} `;
         }
 
         output += ` INTERRUPTED | `;

@@ -86,8 +86,8 @@ export function isEqualPlayerState(a: Player, b: Player) {
       return false;
     }
 
-    const aStatuses = (a.statuses as { id: number }[]).sort(statusSortMethod);
-    const bStatuses = (b.statuses as { id: number }[]).sort(statusSortMethod);
+    const aStatuses = (a.statuses as any[]).sort(statusSortMethod);
+    const bStatuses = (b.statuses as any[]).sort(statusSortMethod);
     for (let i = 0; i < aStatuses.length; ++i) {
       if (aStatuses[i] !== bStatuses[i]) {
         return false;
