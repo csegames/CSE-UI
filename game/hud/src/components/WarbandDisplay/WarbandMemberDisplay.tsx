@@ -34,10 +34,10 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
     if (!this.props.member) return null;
     return (
       <Container
-        key={this.props.member.id}
+        key={this.props.member.entityID}
         onClick={this.onClickContainer}
         onContextMenu={this.handleContextMenu}>
-        <HealthBar type='mini' playerState={this.props.member} />
+        <HealthBar type='mini' playerState={this.props.member as any} />
       </Container>
     );
   }
@@ -47,7 +47,7 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
     if (event.button === 2) return;
 
     event.preventDefault();
-    game.selfPlayerState.requestFriendlyTarget(this.props.member.id);
+    game.selfPlayerState.requestFriendlyTarget(this.props.member.entityID);
   }
 
   private handleContextMenu = (event: MouseEvent) => {

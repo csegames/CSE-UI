@@ -10,13 +10,8 @@ import { createDefaultOnUpdated, createDefaultOnReady } from './_Updatable';
 import engineInit from './_Init';
 
 declare global {
-  type EnemyTargetState = AnyEntityState &
-  {
-    /**
-     * Indicates whether the player currently has an active friendly target.
-     */
-    isActive: boolean;
-  };
+  type EnemyTargetState = AnyEntityState;
+  type ImmutableEnemyTargetState = ImmutableEntityState;
 }
 
 export const EnemyTarget_Update = 'enemyTargetPlayerState.update';
@@ -26,7 +21,6 @@ function initDefault(): EnemyTargetState {
     ...defaultPlayerStateModel(),
 
     characterID: '',
-    isActive: false,
     position: { x: 0, y: 0, z: 0 },
 
     isReady: false,
@@ -47,7 +41,6 @@ export default function() {
     () => game.enemyTargetState,
     (model: AnyEntityState) => {
       _devGame.enemyTargetState = model as EnemyTargetState;
-      _devGame.enemyTargetState.isActive = model.entityID.length > 0;
     });
 
 }

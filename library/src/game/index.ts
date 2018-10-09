@@ -14,26 +14,7 @@ import initializeGame from './initializeGame';
 export * from './GameInterface';
 export * from './coherent';
 
-// Recursively makes an type readonly
-// thanks to this Github issue post - https://github.com/Microsoft/TypeScript/issues/13923#issuecomment-402901005
-export type Primitive = undefined | null | boolean | string | number | Function;
-
-export type Immutable<T> =
-  T extends Primitive ? T :
-    T extends [infer U] ? ReadonlyArray<U> :
-      T extends Map<infer K, infer V> ? ReadonlyMap<K, V> : Readonly<T>;
-
-export type DeepImmutable<T> =
-  T extends Primitive ? T :
-    T extends [infer U] ? DeepImmutableArray<U> :
-      T extends Map<infer K, infer V> ? DeepImmutableMap<K, V> : DeepImmutableObject<T>;
-
-export interface DeepImmutableArray<T> extends ReadonlyArray<DeepImmutable<T>> {}
-export interface DeepImmutableMap<K, V> extends ReadonlyMap<DeepImmutable<K>, DeepImmutable<V>> {}
-export type DeepImmutableObject<T> = {
-  readonly [K in keyof T]: DeepImmutable<T[K]>
-};
-
+export * from './GameClientModels';
 
 // Let anyone including this library know that game and __devGame are globally available.
 declare global {

@@ -3,20 +3,18 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { BuildingMaterial } from '@csegames/camelot-unchained';
-
 export default class MaterialsByType {
 
-  public stoneBlocks: BuildingMaterial[] = [];
-  public stoneTilesAndSheets: BuildingMaterial[] = [];
-  public woodAndOrganic: BuildingMaterial[] = [];
+  public stoneBlocks: any[] = [];
+  public stoneTilesAndSheets: any[] = [];
+  public woodAndOrganic: any[] = [];
 
-  constructor(materials: BuildingMaterial[]) {
+  constructor(materials: any[]) {
     this.organizeMaterialByType(materials);
   }
 
-  private organizeMaterialByType(materials: BuildingMaterial[]) {
-    materials.forEach((material: BuildingMaterial) => {
+  private organizeMaterialByType(materials: any[]) {
+    materials.forEach((material: any) => {
       const type: MaterialType = getTypeFromTags(material.tags);
       if (type === MaterialType.STONE_BLOCK) {
         this.stoneBlocks.push(material);

@@ -50,7 +50,7 @@ declare global {
     type: 'player';
     race: Race;
     gender: Gender;
-    class: Archetype;
+    classID: Archetype;
     stamina: CurrentMax;
     blood: CurrentMax;
     characterID: string;
@@ -68,8 +68,16 @@ declare global {
 
   type AnyEntityStateModel = PlayerStateModel | SiegeStateModel | KinematicStateModel;
 
+  type PlayerState = Readonly<PlayerStateModel> & Updatable;
   type AnyEntityState = Readonly<AnyEntityStateModel> & Updatable;
+
+  type ImmutableSiegeState = DeepImmutableObject<SiegeStateModel & Updatable>;
+  type ImmutableKinematicState = DeepImmutableObject<KinematicStateModel & Updatable>;
+
+  type ImmutablePlayerState = DeepImmutableObject<PlayerStateModel & Updatable>;
+  type ImmutableEntityState = DeepImmutableObject<AnyEntityStateModel & Updatable>;
 }
+
 
 function defaultEntityStateModel(): EntityStateModel {
   return {
@@ -101,7 +109,7 @@ export function defaultPlayerStateModel(): PlayerStateModel {
     type: 'player',
     race: Race.HumanMaleA,
     gender: Gender.None,
-    class: Archetype.Blackguard,
+    classID: Archetype.Blackguard,
     characterID: '',
     health: [defaultHealth(),defaultHealth(),defaultHealth(),defaultHealth(),defaultHealth(),defaultHealth()],
     stamina: defaultStamAndBlood(),

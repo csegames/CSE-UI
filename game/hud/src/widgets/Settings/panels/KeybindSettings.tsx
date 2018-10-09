@@ -418,7 +418,12 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
       case KeybindMode.Save:
         return <SaveAs label='Save keybinds as' saveAs={this.saveAs} onClose={this.resetToIdle}/>;
       case KeybindMode.Load:
-        return <Load load={this.loadSet} remove={this.deleteSet} onClose={this.resetToIdle}/>;
+        return <Load
+          names={this.getSetNames()}
+          onLoad={this.loadSet}
+          onRemove={this.deleteSet}
+          onClose={this.resetToIdle}
+        />;
       case KeybindMode.ListeningForKey: {
         return (
           <ConfirmDialog

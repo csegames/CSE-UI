@@ -32,14 +32,14 @@ declare global {
   }
 
   type BooleanOption = BaseOption<boolean>;
-  type NumberOption = BaseOption<number>;
 
   /**
    * Range option defines a value that has a min and max, typically displayed using a slider
    */
-  interface RangeOption extends NumberOption {
+  interface RangeOption extends BaseOption<number> {
     minValue: number;
     maxValue: number;
+    increment: number;
   }
 
   /**
@@ -54,28 +54,20 @@ declare global {
     description: string;
   }
 
-  type IntOption = NumberOption;
-  type FloatOption = NumberOption;
-  type DoubleOption = NumberOption;
-
   type IntRangeOption = RangeOption;
   type FloatRangeOption = RangeOption;
   type DoubleRangeOption = RangeOption;
 
   type GameOption = BooleanOption |
-    IntOption | FloatOption | DoubleOption |
     IntRangeOption | FloatRangeOption | DoubleRangeOption |
     SelectOption;
 
   enum OptionKind {
     Boolean = 0,
-    IntOption = 1,
-    FloatOption = 1,
-    DoubleOption = 1,
-    IntRangeOption = 2,
-    FloatRangeOption = 2,
-    DoubleRangeOption = 2,
-    Select = 3,
+    IntRangeOption = 1,
+    FloatRangeOption = 1,
+    DoubleRangeOption = 1,
+    Select = 2,
   }
 
   enum OptionCategory {
@@ -99,13 +91,10 @@ declare global {
 
 enum OptionKind {
   Boolean = 0,
-  IntOption = 1,
-  FloatOption = 1,
-  DoubleOption = 1,
-  IntRangeOption = 2,
-  FloatRangeOption = 2,
-  DoubleRangeOption = 2,
-  Select = 3,
+  IntRangeOption = 1,
+  FloatRangeOption = 1,
+  DoubleRangeOption = 1,
+  Select = 2,
 }
 window.OptionKind = OptionKind;
 

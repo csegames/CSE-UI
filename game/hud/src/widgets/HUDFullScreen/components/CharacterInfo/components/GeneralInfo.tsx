@@ -166,7 +166,7 @@ class GeneralInfo extends React.PureComponent<GeneralInfoProps, GeneralInfoState
             <CharacterInfo>
               <Text>{Faction[game.selfPlayerState.faction]}</Text>
               <Text>{Gender[game.selfPlayerState.gender]} {webAPI.raceString(game.selfPlayerState.race)}</Text>
-              <Text>{Archetype[game.selfPlayerState.class]}</Text>
+              <Text>{Archetype[game.selfPlayerState.classID]}</Text>
             </CharacterInfo>
             <InfoDivider />
             <BiographyInfo>
@@ -184,7 +184,7 @@ class GeneralInfo extends React.PureComponent<GeneralInfoProps, GeneralInfoState
 
   private shouldZoom = () => {
     const race = game.selfPlayerState.race;
-    const archetype = game.selfPlayerState.class;
+    const archetype = game.selfPlayerState.classID;
 
     if (race === Race.Luchorpan || archetype === Archetype.WintersShadow) {
       return false;

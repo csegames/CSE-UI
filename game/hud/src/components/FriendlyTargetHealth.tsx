@@ -11,7 +11,6 @@ import styled from 'react-emotion';
 import { isEqualPlayerState } from '../lib/playerStateEqual';
 import HealthBar from './HealthBar';
 import { showFriendlyTargetContextMenu } from 'actions/contextMenu';
-import { FriendlyTargetState, DeepImmutableObject } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`
   cursor: pointer;
@@ -27,7 +26,7 @@ export interface PlayerHealthProps {
 }
 
 export interface PlayerHealthState {
-  playerState: DeepImmutableObject<FriendlyTargetState>;
+  playerState: Player;
   showContextMenu: boolean;
 }
 
@@ -54,7 +53,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
 
   public componentDidMount() {
     this.eventHandles.push(game.friendlyTargetState.onUpdated(() => {
-      this.setPlayerState(game.friendlyTargetState);
+      this.setPlayerState(game.friendlyTargetState as Player);
     }));
   }
 
@@ -67,7 +66,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
       nextState.showContextMenu !== this.state.showContextMenu;
   }
 
-  private setPlayerState = (playerState: DeepImmutableObject<FriendlyTargetState>) => {
+  private setPlayerState = (playerState: Player) => {
     this.setState({ playerState });
   }
 

@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { EnemyTargetState, DeepImmutableObject } from '@csegames/camelot-unchained';
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
@@ -25,7 +24,7 @@ export interface PlayerHealthProps {
 }
 
 export interface PlayerHealthState {
-  playerState: DeepImmutableObject<EnemyTargetState>;
+  playerState: Player;
 }
 
 class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
@@ -50,7 +49,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
 
   public componentDidMount() {
     this.eventHandles.push(game.enemyTargetState.onUpdated(() => {
-      this.setPlayerState(game.enemyTargetState);
+      this.setPlayerState(game.enemyTargetState as Player);
     }));
   }
 
@@ -62,7 +61,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     return !isEqualPlayerState(nextState.playerState, this.state.playerState);
   }
 
-  private setPlayerState = (playerState: DeepImmutableObject<EnemyTargetState>) => {
+  private setPlayerState = (playerState: Player) => {
     this.setState({ playerState });
   }
 

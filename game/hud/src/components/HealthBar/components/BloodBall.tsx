@@ -9,7 +9,6 @@ import * as React from 'react';
 import styled from 'react-emotion';
 import { utils } from '@csegames/camelot-unchained';
 import { getBloodPercent } from '../lib/healthFunctions';
-import { PlayerState } from 'components/HealthBar';
 
 const Container = styled('div')`
   position: absolute;
@@ -44,7 +43,7 @@ const Ball = styled('div')`
 // `;
 
 export interface BloodBallProps {
-  playerState: PlayerState;
+  playerState: Player;
   scale?: number;
 }
 

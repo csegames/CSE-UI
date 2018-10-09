@@ -69,7 +69,7 @@ export default function() {
     if (task.statusCode === TaskStatus.Success) {
       task.resolve(task.value);
     } else {
-      task.reject({ statusCode: task.statusCode, errorMessage: task.errorMessage });
+      task.reject({ statusCode: task.statusCode, errorMessage: task.reason });
     }
     delete _devGame._activeTasks[task.id];
   });

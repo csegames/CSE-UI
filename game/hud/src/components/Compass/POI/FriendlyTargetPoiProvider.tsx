@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { FriendlyTargetState, DeepImmutableObject } from '@csegames/camelot-unchained';
 import {
   CompassPOIProviderProps,
   CompassPOI,
@@ -253,10 +252,10 @@ export default class FriendlyTargetPoiProvider extends React.Component<
   }
 
   private getFriendlyTargetPOI = (
-    state: DeepImmutableObject<FriendlyTargetState>,
+    state: ImmutableFriendlyTargetState,
   ): CompassPOIPartial<FriendlyTargetData> => {
     return withCompassPOIPartialDefaults({
-      id: `friendly-${state.type === 'siege' ? state.entityID : state.characterID}`,
+      id: `friendly-${state.type === 'siege' ? state.entityID : (state as Player).characterID}`,
       type: 'friendly',
       position: state.position,
       offset: 18,
@@ -266,12 +265,12 @@ export default class FriendlyTargetPoiProvider extends React.Component<
   }
 
   private getFriendlyTargetData = (
-    state: DeepImmutableObject<FriendlyTargetState>,
+    state: ImmutableFriendlyTargetState,
   ): FriendlyTargetData => {
     return {
-      id: state.type === 'siege' ? state.entityID : state.characterID,
+      id: state.type === 'siege' ? state.entityID : (state as Player).characterID,
       name: state.name,
-      isActive: state.type === 'siege' ? true : state.isActive,
+      isActive: state.type === 'siege' ? true : state.entityID !== '',
       isAlive: state.isAlive,
       position: state.position,
     };

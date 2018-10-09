@@ -13,9 +13,6 @@ import HealthBarViewCompact from './components/HealthBarViewCompact';
 import HealthBarViewFull from './components/HealthBarViewFull';
 import HealthBarViewMini from './components/HealthBarViewMini';
 import DistanceText from './components/DistanceText';
-import { PlayerStateModel, SiegeStateModel, DeepImmutableObject } from '@csegames/camelot-unchained';
-
-export type PlayerState = DeepImmutableObject<PlayerStateModel | SiegeStateModel> | GroupMemberState;
 
 const Container = styled('div')`
 `;
@@ -41,7 +38,7 @@ export type HealthBarType = 'full' | 'compact' | 'mini';
 
 export interface HealthBarProps {
   type: HealthBarType;
-  playerState: PlayerState;
+  playerState: Player;
   target?: 'enemy' | 'friendly';
 }
 

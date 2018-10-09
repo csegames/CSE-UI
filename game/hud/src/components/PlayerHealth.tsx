@@ -12,7 +12,6 @@ import { isEqualPlayerState } from '../lib/playerStateEqual';
 import HealthBar from './HealthBar';
 import { showSelfContextMenu } from 'actions/contextMenu';
 import { setPlayerState } from 'actions/player';
-import { SelfPlayerState, DeepImmutableObject } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`
   transform: scale(0.45);
@@ -26,7 +25,7 @@ export interface PlayerHealthProps {
 }
 
 export interface PlayerHealthState {
-  playerState: DeepImmutableObject<SelfPlayerState>;
+  playerState: ImmutableSelfPlayerState;
 }
 
 class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
@@ -43,7 +42,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     if (!this.state.playerState || this.state.playerState.type !== 'player') return null;
     return (
       <Container onContextMenu={this.handleContextMenu}>
-        <HealthBar type='compact' playerState={this.state.playerState} />
+        <HealthBar type='compact' playerState={this.state.playerState as any} />
       </Container>
     );
   }
@@ -62,7 +61,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     return !isEqualPlayerState(nextState.playerState, this.state.playerState);
   }
 
-  private setPlayerState = (playerState: DeepImmutableObject<SelfPlayerState>) => {
+  private setPlayerState = (playerState: ImmutableSelfPlayerState) => {
     setPlayerState(playerState);
     this.setState({ playerState });
   }

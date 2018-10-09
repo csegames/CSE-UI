@@ -64,7 +64,8 @@ class ReleaseControl extends React.Component<ReleaseControlButtonProps, ReleaseC
 
   public componentDidMount() {
     this.eventHandles.push(game.selfPlayerState.onUpdated(() => {
-      if (game.selfPlayerState.controllingEntityState && game.selfPlayerState.controllingEntityState.type === 'siege') {
+      if (game.selfPlayerState.controlledEntityID &&
+        game.entities[game.selfPlayerState.controlledEntityID].type === 'siege') {
         this.setState({ visible: true });
       }
     }));

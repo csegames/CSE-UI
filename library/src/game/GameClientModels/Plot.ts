@@ -116,6 +116,7 @@ export interface PlotModel {
 
 declare global {
   type Plot = PlotModel & Updatable;
+  type ImmutablePlot = DeepImmutableObject<Plot>;
 }
 
 export const PlotState_Update = 'plotState.update';

@@ -5,18 +5,10 @@
  *
  */
 
-import { SelfPlayerState, EnemyTargetState, FriendlyTargetState } from '@csegames/camelot-unchained';
 import { numEqualsCloseEnough } from '@csegames/camelot-unchained/lib/utils';
 import { BodyParts } from './PlayerStatus';
-import { PlayerState } from 'components/HealthBar';
 
-type PlayerState = SelfPlayerState | EnemyTargetState | FriendlyTargetState;
-
-export function isEqualPlayerState(a: PlayerState, b: PlayerState) {
-  if (a.type === 'siege' || b.type === 'siege') {
-    return false;
-  }
-
+export function isEqualPlayerState(a: Player, b: Player) {
   if (!a || !b) {
     return false;
   }

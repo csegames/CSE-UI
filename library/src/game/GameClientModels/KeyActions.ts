@@ -146,6 +146,7 @@ export interface KeyActionsModel {
 
 declare global {
   type KeyActions = KeyActionsModel & Updatable;
+  type ImmutableKeyActions = DeepImmutableObject<KeyActions>;
 }
 
 

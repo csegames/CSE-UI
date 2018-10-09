@@ -4,32 +4,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {
-  client,
-  signalr,
-  CombatLog,
-  bodyParts,
-  damageTypes,
-  skillTracks,
-  resourceTypes,
-  activeEffectActions,
-} from '@csegames/camelot-unchained';
 import slashCommands from './slashCommands';
 
 export default () => {
   slashCommands();
 
-  signalr.initializeSignalR();
+  game.signalR.initializeSignalR();
 
-  client.OnToggleHUDItem((name: string) => {
-    game.trigger('hudnav--navigate', name);
-  });
-
-  client.OnCharacterZoneChanged((id: string) => {
-    window['zoneID'] = id;
-  });
-
-  function combatLogToString(log: CombatLog): string {
+  function combatLogToString(log: CombatEvent): string {
     // fromName (fromFaction) > toName
     // (toFaction) | {damages} | {disruption} | {heals} | {cures} | {resources} | {impulse} | {activeEffects}
     //
@@ -46,8 +28,8 @@ export default () => {
     if (log.damages) {
       for (let i = 0; i < log.damages.length; ++i) {
         const d = log.damages[i];
-        output += `::red::${d.received.toFixed(0)}(${Math.abs(d.sent - d.received).toFixed(0)}) ${bodyParts[d.part]}
-        ${damageTypes[d.type]} | `;
+        output += `::red::${d.received.toFixed(0)}(${Math.abs(d.sent - d.received).toFixed(0)}) ${BodyPart[d.part]}
+        ${DamageType[d.type]} | `;
       }
     }
 
@@ -56,25 +38,25 @@ export default () => {
       output += `::orange::${log.disruption.received.toFixed(0)}(${Math.abs(log.disruption.sent - log.disruption.received)
         .toFixed(0)}) DISRUPTION ${log.disruption.source} `;
 
-      if (log.disruption.tracksInterrupted === skillTracks.NONE) {
+      if (log.disruption.tracksInterrupted === SkillTrack.None) {
         output += ` | `;
 
       } else {
 
-        if (log.disruption.tracksInterrupted & skillTracks.BOTHWEAPONS) {
-          output += ` ${skillTracks[skillTracks.BOTHWEAPONS]}`;
-        } else if (log.disruption.tracksInterrupted & skillTracks.PRIMARYWEAPON) {
-          output += ` ${skillTracks[skillTracks.PRIMARYWEAPON]} `;
-        } else if (log.disruption.tracksInterrupted & skillTracks.SECONDARYWEAPON) {
-          output += ` ${skillTracks[skillTracks.SECONDARYWEAPON]} `;
+        if (log.disruption.tracksInterrupted & SkillTrack.BothWeapons) {
+          output += ` ${SkillTrack[SkillTrack.BothWeapons]}`;
+        } else if (log.disruption.tracksInterrupted & SkillTrack.PrimaryWeapon) {
+          output += ` ${SkillTrack[SkillTrack.PrimaryWeapon]} `;
+        } else if (log.disruption.tracksInterrupted & SkillTrack.SecondaryWeapon) {
+          output += ` ${SkillTrack[SkillTrack.SecondaryWeapon]} `;
         }
 
-        if (log.disruption.tracksInterrupted & skillTracks.VOICE) {
-          output += ` ${skillTracks[skillTracks.VOICE]} `;
+        if (log.disruption.tracksInterrupted & SkillTrack.Voice) {
+          output += ` ${SkillTrack[SkillTrack.Voice]} `;
         }
 
-        if (log.disruption.tracksInterrupted & skillTracks.MIND) {
-          output += ` ${skillTracks[skillTracks.MIND]} `;
+        if (log.disruption.tracksInterrupted & SkillTrack.Mind) {
+          output += ` ${SkillTrack[SkillTrack.Mind]} `;
         }
 
         output += ` INTERRUPTED | `;
@@ -85,7 +67,7 @@ export default () => {
       for (let i = 0; i < log.heals.length; ++i) {
         const h = log.heals[i];
         output += `::green::HEALED ${h.received.toFixed(0)}(${Math.abs(h.sent - h.received).toFixed(0)})
-        ${bodyParts[h.part]} | `;
+        ${BodyPart[h.part]} | `;
       }
     }
 
@@ -98,7 +80,7 @@ export default () => {
 
       for (let i = 0; i < curedParts.length; ++i) {
         if (curedParts[i] > 0) {
-          output += ` ${bodyParts[i]}(${curedParts[i]}) `;
+          output += ` ${BodyPart[i]}(${curedParts[i]}) `;
         }
       }
 
@@ -109,7 +91,7 @@ export default () => {
       for (let i = 0; i < log.resources.length; ++i) {
         const d = log.resources[i];
         output += `::yellow::${d.received.toFixed(0)}(${Math.abs(d.sent - d.received).toFixed(0)})
-        ${resourceTypes[d.type]} | `;
+        ${ResourceKind[d.type]} | `;
       }
     }
 
@@ -120,8 +102,8 @@ export default () => {
 
     if (log.activeEffects) {
       for (let i = 0; i < log.activeEffects.length; ++i) {
-        output += `::violet::${log.activeEffects[i].name} ${activeEffectActions[log.activeEffects[i].action]} `;
-        if (log.activeEffects[i].action === activeEffectActions.APPLIED) output += `${log.activeEffects[i].duration} `;
+        output += `::violet::${log.activeEffects[i].name} ${ActiveEffectAction[log.activeEffects[i].action]} `;
+        if (log.activeEffects[i].action === ActiveEffectAction.Applied) output += `${log.activeEffects[i].duration} `;
       }
       output += '|';
     }
@@ -138,7 +120,7 @@ export default () => {
 
   let combatLogTimeout: number = null;
   let batchedCombatLogs: string[] = [];
-  client.OnCombatLogEvent((logs: CombatLog[]) => {
+  game.onCombatEvent((logs: CombatEvent[]) => {
     const combatLogs = logs.map(combatLogToString);
     batchedCombatLogs.concat(combatLogs);
 
@@ -163,7 +145,7 @@ export default () => {
   // hook up for console messages to system messages
   let consoleLogTimeout: number = null;
   let batchedConsoleLogs: string[] = [];
-  client.OnConsoleText((text: string) => {
+  game.onConsoleText((text: string) => {
     batchedConsoleLogs = batchedConsoleLogs.concat(text);
 
     if (consoleLogTimeout) {

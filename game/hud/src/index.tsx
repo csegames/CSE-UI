@@ -9,6 +9,7 @@ import './third-party/animate.css';
 import 'ol/ol.css';
 import './third-party/toastr.min.css';
 import './index.scss';
+import './services/types';
 
 // TODO: AUDIT IF WE NEED THESE
 import 'core-js/es6/map';

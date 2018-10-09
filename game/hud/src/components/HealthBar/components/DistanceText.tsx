@@ -9,7 +9,6 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { utils } from '@csegames/camelot-unchained';
-import { PlayerState } from 'components/HealthBar';
 
 const Container = styled('div')`
   position: absolute;
@@ -74,20 +73,20 @@ class DistanceText extends React.Component<DistanceTextProps, DistanceTextState>
     switch (this.props.targetType) {
       case 'enemy': {
         this.eventHandles.push(game.enemyTargetState.onUpdated(
-          () => this.setTheirPosition(game.enemyTargetState),
+          () => this.setTheirPosition(game.enemyTargetState as Player),
         ));
         break;
       }
       case 'friendly': {
         this.eventHandles.push(game.friendlyTargetState.onUpdated(
-          () => this.setTheirPosition(game.friendlyTargetState),
+          () => this.setTheirPosition(game.friendlyTargetState as Player),
         ));
         break;
       }
     }
   }
 
-  private setTheirPosition = (playerState: PlayerState) => {
+  private setTheirPosition = (playerState: Player) => {
     if (this.mounted && playerState) {
       const { position } = playerState;
       if (position && position.x && position.y && position.z) {
@@ -96,7 +95,7 @@ class DistanceText extends React.Component<DistanceTextProps, DistanceTextState>
     }
   }
 
-  private setMyPosition = (playerState: PlayerState) => {
+  private setMyPosition = (playerState: Player) => {
     if (this.mounted && playerState) {
       const { position } = playerState;
       if (position && position.x && position.y && position.z) {

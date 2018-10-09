@@ -10,13 +10,8 @@ import { createDefaultOnUpdated, createDefaultOnReady } from './_Updatable';
 import engineInit from './_Init';
 
 declare global {
-  type FriendlyTargetState = AnyEntityState &
-  {
-    /**
-     * Indicates whether the player currently has an active friendly target.
-     */
-    isActive: boolean;
-  };
+  type FriendlyTargetState = AnyEntityState;
+  type ImmutableFriendlyTargetState = ImmutableEntityState;
 }
 
 export const FriendlyTarget_Update = 'friendlyTargetPlayerState.update';
@@ -26,7 +21,6 @@ function initDefault(): FriendlyTargetState {
     ...defaultPlayerStateModel(),
 
     characterID: '',
-    isActive: false,
     position: { x: 0, y: 0, z: 0 },
 
     isReady: false,
@@ -47,7 +41,6 @@ export default function() {
     () => game.friendlyTargetState,
     (model: AnyEntityState) => {
       _devGame.friendlyTargetState = model as FriendlyTargetState;
-      _devGame.friendlyTargetState.isActive = model.entityID.length > 0;
     });
 
 }

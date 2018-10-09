@@ -6,10 +6,8 @@
  */
 
 import { BodyParts } from 'lib/PlayerStatus';
-import { PlayerState } from 'components/HealthBar';
-import { DeepImmutableObject, PlayerStateModel, SiegeStateModel } from '@csegames/camelot-unchained';
 
-export function getHealthPercent(playerState: PlayerState, bodyPart: BodyParts) {
+export function getHealthPercent(playerState: Player, bodyPart: BodyParts) {
   if (!playerState || !playerState.health || !playerState.health[bodyPart]) {
     return 0;
   }
@@ -18,7 +16,7 @@ export function getHealthPercent(playerState: PlayerState, bodyPart: BodyParts) 
   return (bodyPartHealth.current / bodyPartHealth.max) * 100;
 }
 
-export function getWoundsForBodyPart(playerState: PlayerState, bodyPart: BodyParts) {
+export function getWoundsForBodyPart(playerState: Player, bodyPart: BodyParts) {
   if (!playerState || !playerState.health || !playerState.health[bodyPart]) {
     return 0;
   }
@@ -26,7 +24,7 @@ export function getWoundsForBodyPart(playerState: PlayerState, bodyPart: BodyPar
   return playerState.health[bodyPart].wounds;
 }
 
-export function getBloodPercent(playerState: PlayerState) {
+export function getBloodPercent(playerState: Player) {
   if (isPlayer(playerState)) {
     if (playerState) {
       if (!playerState || !playerState.blood) {
@@ -39,7 +37,7 @@ export function getBloodPercent(playerState: PlayerState) {
   }
 }
 
-export function getCurrentStamina(playerState: PlayerState) {
+export function getCurrentStamina(playerState: Player) {
   if (isPlayer(playerState)) {
     return playerState.stamina.current;
   } else {
@@ -47,7 +45,7 @@ export function getCurrentStamina(playerState: PlayerState) {
   }
 }
 
-export function getStaminaPercent(playerState: PlayerState) {
+export function getStaminaPercent(playerState: Player) {
   if (isPlayer(playerState)) {
     if (!playerState || !playerState.stamina) {
       return 0;
@@ -58,7 +56,7 @@ export function getStaminaPercent(playerState: PlayerState) {
   }
 }
 
-export function getFaction(playerState: PlayerState) {
+export function getFaction(playerState: Entity) {
   if (!playerState || !playerState.faction) {
     return Faction.Factionless;
   }
@@ -66,22 +64,10 @@ export function getFaction(playerState: PlayerState) {
   return playerState.faction;
 }
 
-export function getBodyPartsCurrentHealth(playerState: PlayerState) {
+export function getBodyPartsCurrentHealth(playerState: Entity) {
   if (isPlayer(playerState)) {
     return playerState.health.map(bodypart => bodypart.current);
-  } else {
+  } else if (isSiege(playerState)) {
     return [playerState.health.current];
   }
-}
-
-export function isPlayer(
-  playerState: PlayerState,
-): playerState is (DeepImmutableObject<PlayerStateModel> | GroupMemberState) {
-  return playerState.type !== 'siege';
-}
-
-export function isSiege(
-  playerState: PlayerState,
-): playerState is (DeepImmutableObject<SiegeStateModel>) {
-  return playerState.type === 'siege';
 }

@@ -134,7 +134,7 @@ class Input extends React.Component<InputProps, InputState> {
 
   private onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (this.state.changed) {
-      if (e.key.toUpperCase() >= 'SPACE' || e.keyCode === 'ENTER') {
+      if (e.key.toUpperCase() >= 'SPACE' || e.key.toUpperCase() === 'ENTER') {
         this.fireOnChange();
       }
     }

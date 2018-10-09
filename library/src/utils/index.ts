@@ -22,6 +22,8 @@ export * from './distance';
 export * from './compareNumbers';
 export * from './time';
 export * from './EventEmitter';
+export * from './immutableType';
+
 
 import * as KeyCodes from './keyCodes';
 

@@ -18,7 +18,6 @@ import StaminaBar from './StaminaBar';
 import BloodBall from './BloodBall';
 import HealthSlideOut from './HealthSlideOut';
 import Status from './Status';
-import { PlayerState } from 'components/HealthBar';
 
 const Container = styled('div')`
   position: relative;
@@ -97,7 +96,7 @@ const HealthPillsContainer = styled('div')`
 
 export interface HealthBarViewProps {
   shouldShake: boolean;
-  playerState: PlayerState;
+  playerState: Player;
 }
 
 export interface HealthBarViewState {
@@ -146,7 +145,8 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
           <StaminaBar playerState={playerState} />
         </HealthPillsContainer>
         {
-          (this.props.playerState as GroupMemberState).isLeader ? <LeaderContainerOverlay /> : <ContainerOverlay />
+          isGroupMemberState(this.props.playerState) ? this.props.playerState.isLeader ? <LeaderContainerOverlay />
+            : <ContainerOverlay /> : <ContainerOverlay />
         }
       </Container>
     );

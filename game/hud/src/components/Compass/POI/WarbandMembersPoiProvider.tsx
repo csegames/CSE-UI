@@ -232,7 +232,7 @@ export default class WarbandMembersPoiProvider extends React.Component<
   }
 
   public onFriendlyTargetStateUpdated = () => {
-    if (game.friendlyTargetState.type === 'player' && game.friendlyTargetState.isActive) {
+    if (game.friendlyTargetState.type === 'player' && game.friendlyTargetState.entityID) {
       this.setState({
         friendlyTarget: game.friendlyTargetState.characterID,
       });
@@ -257,7 +257,7 @@ export default class WarbandMembersPoiProvider extends React.Component<
         return {
           characterIdToIdMap: {
             ...prevState.characterIdToIdMap,
-            [newMemberState.characterID]: newMemberState.id,
+            [newMemberState.characterID]: newMemberState.entityID,
           },
         };
       });
@@ -275,7 +275,7 @@ export default class WarbandMembersPoiProvider extends React.Component<
 
   private getWarbandMemberPOI = (state: GroupMemberState): CompassPOIPartial<WarbandMemberData> => {
     return withCompassPOIPartialDefaults({
-      id: `warband-${state.id}`,
+      id: `warband-${state.entityID}`,
       type: 'warband',
       position: state.position,
       offset: 18,
@@ -286,7 +286,7 @@ export default class WarbandMembersPoiProvider extends React.Component<
 
   private getWarbandMemberData = (state: GroupMemberState): WarbandMemberData => {
     return {
-      id: state.id,
+      id: state.entityID,
       characterID: state.characterID,
       name: state.name,
       isAlive: state.isAlive,

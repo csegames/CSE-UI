@@ -121,11 +121,6 @@ export interface GameModel {
   options: GameOption[];
 
   /**
-   * Cancels all option tests and revert to the currently saved options
-   */
-  cancelTests: () => void;
-
-  /**
    * Restores options to their default values based on category
    * @param {OptionCategory} The category of options to reset
    */

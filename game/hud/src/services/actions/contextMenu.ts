@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { EnemyTargetState, FriendlyTargetState, SelfPlayerState, DeepImmutableObject } from '@csegames/camelot-unchained';
-
 import { getPlayerEntityID } from './player';
 
 import {
@@ -55,11 +53,11 @@ export function offHideContextMenu(handle: number) {
 // SPECIFIC CONTEXT MENUS
 
 export function showFriendlyTargetContextMenu(
-  state: DeepImmutableObject<EnemyTargetState | FriendlyTargetState | SelfPlayerState> | GroupMemberState,
+  state: Entity,
   event: MouseEvent,
 ) {
   // is friendly target self?
-  const id = (state as GroupMemberState).id || (state as SelfPlayerState).entityID;
+  const id = (state as GroupMemberState).entityID;
   if (getPlayerEntityID() === id) {
     showSelfContextMenu(state, event);
   } else {
@@ -68,14 +66,14 @@ export function showFriendlyTargetContextMenu(
 }
 
 export function showSelfContextMenu(
-  state: DeepImmutableObject<EnemyTargetState | FriendlyTargetState | SelfPlayerState> | GroupMemberState,
+  state: Entity,
   event: MouseEvent,
 ) {
   showContextMenu(getSelfMenuItems(state), event);
 }
 
 export function showEnemyTargetContextMenu(
-  state: DeepImmutableObject<EnemyTargetState | FriendlyTargetState | SelfPlayerState> | GroupMemberState,
+  state: Entity,
   event: MouseEvent,
 ) {
   showContextMenu(getEnemyTargetMenuItems(state), event);
@@ -84,7 +82,7 @@ export function showEnemyTargetContextMenu(
 // CONTEXT MENU GENERATION
 
 export function getSelfMenuItems(
-  state: DeepImmutableObject<EnemyTargetState | FriendlyTargetState | SelfPlayerState> | GroupMemberState,
+  state: Entity,
 ) {
   const items: MenuItem[] = [
   ];
@@ -100,9 +98,9 @@ export function getSelfMenuItems(
 }
 
 export function getFriendlyTargetMenuItems(
-  state: DeepImmutableObject<EnemyTargetState | FriendlyTargetState | SelfPlayerState> | GroupMemberState,
+  state: Entity,
 ) {
-  const id = (state as GroupMemberState).id || (state as SelfPlayerState).entityID;
+  const id = (state as any).entityID;
   const items: MenuItem[] = [
     { title: 'Invite to Trade', onSelected: () => inviteToTrade(id) },
   ];
@@ -136,7 +134,7 @@ export function getFriendlyTargetMenuItems(
 }
 
 export function getEnemyTargetMenuItems(
-  state: DeepImmutableObject<EnemyTargetState | FriendlyTargetState | SelfPlayerState> | GroupMemberState,
+  state: Entity,
 ) {
   const items: MenuItem[] = [
   ];

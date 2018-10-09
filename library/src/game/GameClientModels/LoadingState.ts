@@ -15,6 +15,7 @@ export interface LoadingStateModel {
 
 declare global {
   type LoadingState = LoadingStateModel & Updatable;
+  type ImmutableLoadingState = DeepImmutableObject<LoadingState>;
 }
 
 export const LoadingState_Update = 'loadingState.update';

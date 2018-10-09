@@ -74,6 +74,7 @@ export interface SelfPlayerStateModel extends PlayerStateModel {
 
 declare global {
   type SelfPlayerState = SelfPlayerStateModel & Updatable;
+  type ImmutableSelfPlayerState = DeepImmutableObject<SelfPlayerState>;
 }
 
 function noOp(...args: any[]): any {}

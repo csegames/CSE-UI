@@ -71,7 +71,7 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
       <Container>
         {
           this.state.activeMembers &&
-            this.state.activeMembers.map(m => <WarbandMemberDisplay key={m.id} member={m as any} />)
+            this.state.activeMembers.map(m => <WarbandMemberDisplay key={m.entityID} member={m as any} />)
         }
       </Container>
     );

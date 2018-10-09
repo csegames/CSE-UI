@@ -8,12 +8,10 @@ import * as React from 'react';
 import { DialogTab, DialogButton } from 'UI/TabbedDialog';
 import { SideMenu, MenuOption } from 'UI/SideMenu';
 import { KeybindSettings } from 'widgets/Settings/panels/KeybindSettings';
-import { InputSettings } from '../panels/InputSettings';
-import { GraphicSettings } from '../panels/GraphicSettings';
-import { AudioSettings } from '../panels/AudioSettings';
 import { ComingSoon } from '../panels/ComingSoon';
 import * as BUTTON from './buttons';
 import * as OPTION from './options';
+import { CategoryPane } from 'widgets/Settings/panels/CategoryPane';
 
 const options: MenuOption[] = [
   OPTION.KEYS,
@@ -65,11 +63,11 @@ export class GeneralSettings extends React.PureComponent<GeneralSettingsProps, G
               case OPTION.KEYS:
                 return <KeybindSettings onCancel={this.cancel}/>;
               case OPTION.INPUT:
-                return <InputSettings onCancel={this.cancel}/>;
+                return <CategoryPane category={OptionCategory.Input} onCancel={this.cancel} />;
               case OPTION.GRAPHICS:
-                return <GraphicSettings onCancel={this.cancel}/>;
+                return <CategoryPane category={OptionCategory.Rendering} onCancel={this.cancel} />;
               case OPTION.AUDIO:
-                return <AudioSettings onCancel={this.cancel}/>;
+                return <CategoryPane category={OptionCategory.Audio} onCancel={this.cancel} />;
             }
             return <ComingSoon/>;
           }

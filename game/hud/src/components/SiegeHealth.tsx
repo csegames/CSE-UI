@@ -5,7 +5,6 @@
  */
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { SiegeStateModel, FriendlyTargetState, EnemyTargetState, SelfPlayerState } from '@csegames/camelot-unchained';
 import { isEqual } from 'lodash';
 
 const ProgressBar = (props: {current: number, max: number, foreground: string, background: string}) => {
@@ -199,19 +198,20 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
       case 'player': {
         if (this.state.entity.type !== 'player') return true;
 
-        const thisControlled = this.state.entity.controllingEntityState;
-        const nextControlled = next.controllingEntityState;
+        const thisControlled = this.state.entity.controlledEntityID;
+        const nextControlled = next.controlledEntityID;
 
-        if (!thisControlled && !nextControlled) return false;
+        if (thisControlled !== nextControlled) return true;
 
-        if (!thisControlled && nextControlled) return true;
-        if (thisControlled && !nextControlled) return true;
+        const currentControlledEntity = game.entities[thisControlled];
+        const nextControlledEntity = game.entities[nextControlled];
 
-        if (thisControlled.type === 'siege' && nextControlled.type !== 'siege') return true;
-        if (thisControlled.type !== 'siege' && nextControlled.type === 'siege') return true;
+        if (!currentControlledEntity && !nextControlledEntity) return false;
+        if (!currentControlledEntity && nextControlledEntity) return true;
+        if (currentControlledEntity && !nextControlledEntity) return true;
 
-        if (thisControlled.type === 'siege' && nextControlled.type === 'siege') {
-          return isEqual(thisControlled, nextControlled) === false;
+        if (currentControlledEntity.type === 'siege' && nextControlledEntity.type === 'siege') {
+          return isEqual(currentControlledEntity, nextControlledEntity) === false;
         }
         return false;
       }
@@ -223,11 +223,11 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
 
   public render() {
     if (this.state.entity === null) return null;
-    if (this.state.entity.type === 'player' && this.state.entity.controllingEntityState === null) return null;
+    if (this.state.entity.type === 'player' && this.state.entity.controlledEntityID === '') return null;
 
     switch (this.state.entity.type) {
       case 'player': {
-        const controlled = this.state.entity.controllingEntityState;
+        const controlled = game.entities[this.state.entity.controlledEntityID];
         if (!controlled || controlled.type !== 'siege') return null;
         return (
           <SiegeHealthBar

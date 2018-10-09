@@ -16,7 +16,6 @@ import SmallBar from './SmallBar';
 import BigBar from './BigBar';
 import Status from './Status';
 import { LeaderIcon } from './LeaderIcon';
-import { PlayerState } from 'components/HealthBar';
 
 const Container = styled('div')`
   position: relative;
@@ -141,7 +140,7 @@ const StaminaBar = styled('div')`
 
 export interface HealthBarViewProps {
   shouldShake: boolean;
-  playerState: PlayerState;
+  playerState: Player;
 }
 
 export interface HealthBarViewState {
@@ -156,7 +155,7 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
     const faction = getFaction(playerState);
     const scale = 0.33;
 
-    const isLeader = !!(this.props.playerState as GroupMemberState).isLeader;
+    const isLeader = isGroupMemberState(this.props.playerState) ? this.props.playerState.isLeader : false;
     return (
       <Container shouldShake={this.props.shouldShake} isAlive={playerState.isAlive} scale={scale}>
         <NameContainer scale={scale}>

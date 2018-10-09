@@ -993,7 +993,7 @@ export function getMyPaperDollIcon() {
   return getPaperDollIcon(
     Gender[game.selfPlayerState.gender] as GraphQLGender,
     Race[game.selfPlayerState.race] as GraphQLRace,
-    Archetype[game.selfPlayerState.class] as GraphQLArchetype,
+    Archetype[game.selfPlayerState.classID] as GraphQLArchetype,
   );
 }
 

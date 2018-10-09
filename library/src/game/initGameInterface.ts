@@ -89,7 +89,6 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     setKeybinds: noOp,
     clearKeybind: noOp,
     resetKeybinds: noOp,
-    cancelTests: noOp,
     resetOptions: noOp,
 
     startItemPlacement: noOp,
