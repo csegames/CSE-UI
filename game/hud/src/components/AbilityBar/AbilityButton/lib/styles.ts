@@ -6,7 +6,7 @@
  */
 
 import { css, keyframes } from 'react-emotion';
-import { AbilityStateInfo } from './index';
+import { AbilityButtonInfo } from '../AbilityButtonView';
 
 const MODAL_STATE = 'modalState';
 const UNAVAILABLE_STATE = 'unavailableState';
@@ -407,9 +407,9 @@ export const NoWeaponState = css`
   }
 `;
 
-export const getClassNames = (abilityState: AbilityStateInfo) => {
+export const getClassNames = (abilityState: AbilityButtonInfo) => {
   const classNames: string[] = [];
-  if (abilityState.info.type === AbilityButtonType.Modal) {
+  if (abilityState.type === AbilityButtonType.Modal) {
     classNames.push(MODAL_STATE);
   }
   const status = abilityState.status;

@@ -46,13 +46,13 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
     return (
       <Container>
         {clientAbilities.map((clientAbility: AbilityBarItem, index: number) => {
-          const AbilityInfo = {
+          const abilityInfo = {
             ..._.find(apiAbilities.data, (s: ApiAbilityInfo) => s.id === clientAbility.id),
             ...clientAbility,
           };
 
-          return AbilityInfo ? (
-            <AbilityButton key={index} AbilityInfo={AbilityInfo} index={index + 1} />
+          return abilityInfo ? (
+            <AbilityButton key={index} abilityInfo={abilityInfo} index={index + 1} />
           ) : null;
         })}
       </Container>
@@ -89,9 +89,9 @@ class AbilityBarWithInjectedContext extends React.Component<{}> {
   public render() {
     return (
       <HUDContext.Consumer>
-        {({ Abilities }) => {
+        {({ skills }) => {
           return (
-            <AbilityBar apiAbilities={Abilities} />
+            <AbilityBar apiAbilities={skills} />
           );
         }}
       </HUDContext.Consumer>

@@ -7,6 +7,7 @@
 
 export * from './styles';
 
+
 // Arc logic
 export const PIo180 = Math.PI / 180;
 
@@ -44,4 +45,12 @@ export function makeGlowPathFor(end: number,
   const degrees = time2circleDegrees(current, end);
   const path = arc2path(x, y, radius, 0, clockwise ? 360 - degrees : degrees);
   return path;
+}
+
+export function getTimingEnd(timing: DeepImmutableObject<Timing>) {
+  return timing.start + timing.duration;
+}
+
+export function getDisruptionEnd(disruption: DeepImmutableObject<Timing>) {
+  return disruption.start + disruption.duration;
 }

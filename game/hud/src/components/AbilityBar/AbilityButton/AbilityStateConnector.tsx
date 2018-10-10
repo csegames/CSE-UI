@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { AbilityStateInfo } from 'components/AbilityBar/AbilityButton/lib';
+import { AbilityButtonInfo } from './AbilityButtonView';
 
 export interface AbilityStateConnectorProps {
   abilityInfo: any;
@@ -15,7 +15,7 @@ export interface AbilityStateConnectorProps {
 }
 
 export interface AbilityStateConnectorState {
-  abilityState: AbilityStateInfo;
+  abilityState: AbilityButtonInfo;
 }
 
 export interface BasicButtonInfo {
@@ -34,15 +34,15 @@ function abilityStateConnector<PropsTypes extends any>() {
       }
 
       public render() {
-        const abilityState: AbilityStateInfo = this.state.abilityState || {
+        const abilityState = this.state.abilityState || {
           id: this.props.abilityInfo.id,
-          info: {
-            type: AbilityButtonType.Standard,
-            keybind: this.props.abilityInfo.boundKeyName,
-            icon: this.props.abilityInfo.icon,
-          },
+          type: AbilityButtonType.Standard,
+          keybind: 0,
+          boundKeyName: this.props.abilityInfo.boundKeyName,
+          icon: this.props.abilityInfo.icon,
           track: AbilityTrack.PrimaryWeapon,
           status: AbilityButtonState.Unusable,
+          isReady: false,
         };
         return (
           <WrappedComponent
@@ -52,6 +52,10 @@ function abilityStateConnector<PropsTypes extends any>() {
             description={this.props.abilityInfo.notes}
           />
         );
+      }
+
+      public componentDidMount() {
+        game.abilityStates[Number(this.props.abilityInfo.id)].onUpdated(this.handleClientAbilityStateChanged);
       }
 
       public shouldComponentUpdate(nextProps: AbilityStateConnectorProps, nextState: AbilityStateConnectorState) {
@@ -73,40 +77,30 @@ function abilityStateConnector<PropsTypes extends any>() {
 
       public componentWillUpdate(nextProps: AbilityStateConnectorProps, nextState: AbilityStateConnectorState) {
         if (nextState.abilityState) {
-          game.trigger('abilitysbutton-' + nextProps.abilityInfo.id, nextState.abilityState);
+          game.trigger('abilitybutton-' + nextProps.abilityInfo.id, nextState.abilityState);
         }
       }
 
       private handleApiAbilityStateChange = () => {
         const { abilityState } = this.state;
         if (abilityState) {
-          const newAbilityState: AbilityStateInfo = {
+          const newAbilityState = {
             ...abilityState,
-            info: {
-              type: abilityState.info ? abilityState.info.type : AbilityButtonType.Standard,
-              keybind: abilityState.info ? abilityState.info.keybind : this.props.abilityInfo.boundKeyName,
-              icon: this.props.abilityInfo.icon,
-            },
+            type: abilityState ? abilityState.type : AbilityButtonType.Standard,
+            keybind: abilityState ? abilityState.keybind : this.props.abilityInfo.boundKeyName,
+            icon: this.props.abilityInfo.icon,
           };
 
           this.setState({ abilityState: newAbilityState });
         }
       }
 
-      private handleClientAbilityStateChanged = (clientAbilityState: AbilityState) => {
-        if (clientAbilityState.id === this.props.abilityInfo.id) {
-          const abilityState: AbilityStateInfo = {
-            id: clientAbilityState.id.toString(),
-            info: {
-              type: clientAbilityState.type,
-              keybind: clientAbilityState.boundKeyName,
-              icon: this.props.abilityInfo.icon,
-            },
-            track: AbilityTrack.PrimaryWeapon,
-            status: clientAbilityState.status,
-            error: clientAbilityState.error,
-            timing: clientAbilityState.timing,
-            disruption: clientAbilityState.disruption,
+      private handleClientAbilityStateChanged = () => {
+        const ability = game.abilityStates[this.props.abilityInfo.id];
+        if (ability) {
+          const abilityState = {
+            ...ability,
+            icon: this.props.abilityInfo.icon,
           };
 
           this.setState({ abilityState });

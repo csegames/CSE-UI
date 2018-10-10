@@ -12,7 +12,6 @@ import styled, { css } from 'react-emotion';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { overlayPseudo } from 'components/AbilityBar/AbilityButton/lib/styles';
 import {
-  AbilityStateInfo,
   ReadyState,
   HeldState,
   QueuedState,
