@@ -6,6 +6,9 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
+import gql from 'graphql-tag';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 import {
   CompassPOIProviderProps,
   CompassPOI,
@@ -15,6 +18,14 @@ import {
 } from 'components/Compass/CompassPOIManager';
 import { CompassTooltipData } from 'components/CompassTooltip';
 import { showCompassTooltip, hideCompassTooltip, updateCompassTooltip } from 'actions/compassTooltip';
+import { WarbandMemberStateFragment } from 'gql/fragments/WarbandMemberStateFragment';
+import {
+  WarbandMembersPoiQuery,
+  WarbandMembersPoiSubscription,
+  GroupUpdateType,
+  GroupMemberUpdate,
+  GroupMemberRemovedUpdate,
+} from 'gql/interfaces';
 
 const MemberPoi = styled('div')`
   position: absolute;
@@ -46,6 +57,43 @@ const StyledSvg = styled('svg')`
   display: block;
   margin: 0 auto;
 `;
+
+const query = gql`
+  query WarbandMembersPoiQuery {
+    myWarband {
+      info {
+        id
+      }
+      membersState {
+        ...WarbandMemberState
+      }
+    }
+  }
+  ${WarbandMemberStateFragment}
+`;
+
+const subscriptionQuery = gql`
+  subscription WarbandMembersPoiSubscription {
+    groupUpdates {
+      updateType
+      groupID
+
+      ... on GroupMemberUpdate {
+        memberState
+      }
+
+      ... on GroupMemberRemovedUpdate {
+        characterID
+      }
+    }
+  }
+`;
+const subscriptionUrl =  (game.webAPIHost + '/graphql').replace('http', 'ws');
+const subscriptionInitPayload = {
+  shardID: game.shardID,
+  Authorization: `Bearer ${game.accessToken}`,
+  characterID: game.selfPlayerState.characterID,
+};
 
 // from https://material.io/tools/icons/?icon=person&style=baseline
 const MemberIcon = () => (
@@ -177,6 +225,7 @@ class MemberPoiContainer extends React.Component<MemberPoiContainerProps, Member
 }
 
 export interface WarbandMembersPoiProviderState {
+  warbandID: string;
   characterIdToIdMap: {
     [characterId: string]: string;
   };
@@ -189,31 +238,44 @@ export default class WarbandMembersPoiProvider extends React.Component<
 > {
 
   public state = {
+    warbandID: '',
     characterIdToIdMap: {},
     friendlyTarget: '',
   };
+  private graphql: GraphQLResult<WarbandMembersPoiQuery.Query>;
   private eventHandles: EventHandle[] = [];
 
   public render() {
     return (
-      <>
-        {this.props.pois.filter(poi => (poi.data.isAlive)).map(poi => (
-          <MemberPoiContainer
-            key={poi.id}
-            compass={this.props.compass}
-            poi={poi}
-            friendlyTarget={this.state.friendlyTarget}
-          />
-        ))}
-      </>
+      <GraphQL query={query} onQueryResult={this.handleQueryResult}>
+        {() => (
+          this.state.warbandID &&
+            <GraphQL
+              subscription={{
+                query: subscriptionQuery,
+                url: subscriptionUrl,
+                initPayload: subscriptionInitPayload,
+              }}
+              subscriptionHandler={this.handleSubscription}>
+              {() => (
+                this.props.pois.filter(poi => (poi.data.isAlive)).map(poi => (
+                  <MemberPoiContainer
+                    key={poi.id}
+                    compass={this.props.compass}
+                    poi={poi}
+                    friendlyTarget={this.state.friendlyTarget}
+                  />
+                ))
+              )}
+            </GraphQL>
+        )}
+      </GraphQL>
     );
   }
 
   public componentDidMount() {
-    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.memberUpdate, this.onWarbandMemberUpdated));
-    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.memberJoined, this.onWarbandMemberJoined));
-    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.memberRemoved, this.onWarbandMemberRemoved));
     this.eventHandles.push(game.friendlyTargetState.onUpdated(this.onFriendlyTargetStateUpdated));
+    this.eventHandles.push(game.on('warband-joined', this.onWarbandJoined));
   }
 
   public componentWillUnmount() {
@@ -242,7 +304,64 @@ export default class WarbandMembersPoiProvider extends React.Component<
     }
   }
 
-  public onWarbandMemberUpdated = (rawNewMemberState: string) => {
+  private handleQueryResult = (graphql: GraphQLResult<WarbandMembersPoiQuery.Query>) => {
+    this.graphql = graphql;
+    if (!graphql.data) return graphql;
+
+    const warband = graphql.data.myWarband;
+    if (warband) {
+      this.initializeWarband(warband.info.id, warband.membersState as GroupMemberState[]);
+    }
+  }
+
+  private handleSubscription = (result: SubscriptionResult<WarbandMembersPoiSubscription.Subscription>,
+    data: WarbandMembersPoiQuery.Query) => {
+    if (!result.data || !result.ok) {
+      return data;
+    }
+
+    const resultData = result.data;
+    switch (resultData.groupUpdates.updateType) {
+      case GroupUpdateType.MemberJoined: {
+        this.onWarbandMemberJoined((resultData.groupUpdates as GroupMemberUpdate).memberState);
+        break;
+      }
+      case GroupUpdateType.MemberRemoved: {
+        this.onWarbandMemberRemoved((resultData.groupUpdates as GroupMemberRemovedUpdate).characterID);
+        break;
+      }
+      case GroupUpdateType.MemberUpdate: {
+        this.onWarbandMemberUpdated((resultData.groupUpdates as GroupMemberUpdate).memberState);
+        break;
+      }
+    }
+  }
+
+  private initializeWarband = (warbandID: string, membersState: GroupMemberState[]) => {
+    const characterIdToIdMap = {};
+    membersState.forEach((member) => {
+      if (member.characterID !== game.selfPlayerState.characterID) {
+        characterIdToIdMap[member.characterID] = member.entityID;
+        this.props.compass.addPOI('warband', this.getWarbandMemberPOI(member));
+      }
+    });
+
+    this.setState((prevState: WarbandMembersPoiProviderState) => {
+      return {
+        warbandID,
+        characterIdToIdMap: {
+          ...prevState.characterIdToIdMap,
+          ...characterIdToIdMap,
+        },
+      };
+    });
+  }
+
+  private onWarbandJoined = () => {
+    this.graphql.refetch();
+  }
+
+  private onWarbandMemberUpdated = (rawNewMemberState: string) => {
     const newMemberState: GroupMemberState = JSON.parse(rawNewMemberState);
     if (newMemberState.characterID !== game.selfPlayerState.characterID) {
       if (
@@ -266,7 +385,7 @@ export default class WarbandMembersPoiProvider extends React.Component<
     }
   }
 
-  public onWarbandMemberJoined = (rawNewMemberState: string) => {
+  private onWarbandMemberJoined = (rawNewMemberState: string) => {
     const newMemberState: GroupMemberState = JSON.parse(rawNewMemberState);
     if (newMemberState.characterID !== game.selfPlayerState.characterID) {
       if (
@@ -290,11 +409,12 @@ export default class WarbandMembersPoiProvider extends React.Component<
     }
   }
 
-  public onWarbandMemberRemoved = (characterID: string) => {
+  private onWarbandMemberRemoved = (characterID: string) => {
     if (characterID !== game.selfPlayerState.characterID) {
       this.props.compass.removePOI('warband', `warband-${this.state.characterIdToIdMap[characterID]}`);
     } else {
       this.props.compass.removePOIByType('warband');
+      this.setState({ warbandID: null });
     }
   }
 

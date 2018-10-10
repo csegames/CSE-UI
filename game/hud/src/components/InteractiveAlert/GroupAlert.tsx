@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import {  webAPI } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 import { InteractiveAlertView } from './index';
 import { Container, InputContainer, Button, ButtonOverlay } from './lib/styles';
 import { GroupAlert, IInteractiveAlert } from 'gql/interfaces';
@@ -47,7 +47,7 @@ export class GroupAlertView extends React.Component<GroupAlertProps> {
         </h6>
         <InputContainer>
           <Button onClick={this.joinGroup}><ButtonOverlay>Join {alert.kind.replace('Invite', '')}</ButtonOverlay></Button>
-            <Button onClick={this.onDecline}><ButtonOverlay>Decline</ButtonOverlay></Button>
+          <Button onClick={this.onDecline}><ButtonOverlay>Decline</ButtonOverlay></Button>
         </InputContainer>
       </Container>
     );
@@ -64,6 +64,7 @@ export class GroupAlertView extends React.Component<GroupAlertProps> {
         alert.code);
       if (res.ok) {
         this.props.remove(alert);
+        game.trigger('warband-joined');
       } else {
         const data = JSON.parse(res.data);
         if (data.FieldCodes && data.FieldCodes.length > 0) {

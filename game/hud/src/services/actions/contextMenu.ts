@@ -137,10 +137,13 @@ export function getFriendlyTargetMenuItems(
   }
 
   if (!hasActiveWarband()) {
-
     items.push({
       title: 'Invite to Warband',
-      onSelected: () => inviteToWarbandByName(state.name, ''),
+      onSelected: () => {
+        inviteToWarbandByName(state.name, '').then(() => {
+          game.trigger('warband-joined');
+        });
+      },
     });
 
   }

@@ -5,7 +5,17 @@
  */
 
 import * as React from 'react';
+import gql from 'graphql-tag';
 import styled from 'react-emotion';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
+import {
+  WarbandDisplayQuery,
+  WarbandDisplaySubscription,
+  GroupUpdateType,
+  GroupMemberUpdate,
+  GroupMemberRemovedUpdate,
+} from 'gql/interfaces';
 
 import { addOrUpdate, removeWhere } from '../../lib/reduxUtils';
 import WarbandMemberDisplay from './WarbandMemberDisplay';
@@ -15,6 +25,7 @@ import {
   onWarbandMemberUpdate,
   onWarbandMemberRemoved,
 } from '../../services/actions/warband';
+import { WarbandMemberStateFragment } from 'gql/fragments/WarbandMemberStateFragment';
 
 const Container = styled('div')`
   user-select: none;
@@ -36,6 +47,43 @@ const characterImages = {
   humanmaletF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png',
 };
 
+const query = gql`
+  query WarbandDisplayQuery {
+    myWarband {
+      info {
+        id
+      }
+      membersState {
+        ...WarbandMemberState
+      }
+    }
+  }
+  ${WarbandMemberStateFragment}
+`;
+
+const subscriptionQuery = gql`
+  subscription WarbandDisplaySubscription {
+    groupUpdates {
+      updateType
+      groupID
+
+      ... on GroupMemberUpdate {
+        memberState
+      }
+
+      ... on GroupMemberRemovedUpdate {
+        characterID
+      }
+    }
+  }
+`;
+const subscriptionUrl =  (game.webAPIHost + '/graphql').replace('http', 'ws');
+const subscriptionInitPayload = {
+  shardID: game.shardID,
+  Authorization: `Bearer ${game.accessToken}`,
+  characterID: game.selfPlayerState.characterID,
+};
+
 export interface WarbandDisplayProps {
   isMini?: boolean;
 }
@@ -49,7 +97,8 @@ export interface WarbandDisplayState {
 
 export class WarbandDisplay extends React.Component<WarbandDisplayProps, WarbandDisplayState> {
 
-  private eventHandles: EventHandle[] = [];
+  private graphql: GraphQLResult<WarbandDisplayQuery.Query>;
+  private eventJoinedHandle: EventHandle;
   private receivedMemberUpdate: boolean = false;
 
   constructor(props: WarbandDisplayProps) {
@@ -57,28 +106,40 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
     this.state = {
       ...(WarbandDisplay.emptyWarband()),
     };
-
-    this.registerWarbandEvents();
-    game.signalR.groupsHub.start().then(() => {
-      game.signalR.groupsHub.invoke('invalidate');
-    });
   }
 
   public render() {
     return (
-      <Container>
-        {
-          this.state.activeMembers &&
-            this.state.activeMembers.map(m => <WarbandMemberDisplay key={m.entityID} member={m as any} />)
-        }
-      </Container>
+      <GraphQL query={query} onQueryResult={this.handleQuery}>
+        {() => this.state.warbandID ? (
+          <GraphQL
+            subscription={{
+              query: subscriptionQuery,
+              url: subscriptionUrl,
+              initPayload: subscriptionInitPayload,
+            }}
+            subscriptionHandler={this.handleSubscription}>
+            {() => (
+              <Container>
+                {
+                  this.state.activeMembers &&
+                    this.state.activeMembers.map(m => <WarbandMemberDisplay key={m.entityID} member={m as any} />)
+                }
+              </Container>
+            )}
+          </GraphQL>
+        ) : null}
+      </GraphQL>
     );
   }
 
-  public componentWillUnmount() {
-    this.unregisterWarbandEvents();
+  public componentDidMount() {
+    this.eventJoinedHandle = game.on('warband-joined', this.onJoinWarband);
   }
 
+  public componentWillUnmount() {
+    this.eventJoinedHandle.clear();
+  }
 
   public shouldComponentUpdate(nextProps: Readonly<WarbandDisplayProps>, nextState: Readonly<WarbandDisplayState>) {
 
@@ -96,6 +157,43 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
     }
 
     return false;
+  }
+
+  private handleQuery = (graphql: GraphQLResult<WarbandDisplayQuery.Query>) => {
+    this.graphql = graphql;
+    if (!graphql.data || !graphql.ok) {
+      return graphql;
+    }
+
+    const warband = graphql.data.myWarband;
+    if (warband) {
+      this.onInitializeWarband(warband.info.id, warband.membersState as GroupMemberState[]);
+    }
+  }
+
+  private handleSubscription = (result: SubscriptionResult<WarbandDisplaySubscription.Subscription>,
+                                data: WarbandDisplayQuery.Query) => {
+    if (!result.data || !result.ok) {
+      return data;
+    }
+
+    const resultData = result.data;
+    switch (resultData.groupUpdates.updateType) {
+      case GroupUpdateType.MemberJoined: {
+        const member = WarbandDisplay.deserializeMember((resultData.groupUpdates as GroupMemberUpdate).memberState);
+        this.onWarbandMemberJoined(member);
+        break;
+      }
+      case GroupUpdateType.MemberRemoved: {
+        this.onWarbandMemberRemoved((resultData.groupUpdates as GroupMemberRemovedUpdate).characterID);
+        break;
+      }
+      case GroupUpdateType.MemberUpdate: {
+        const member = WarbandDisplay.deserializeMember((resultData.groupUpdates as GroupMemberUpdate).memberState);
+        this.onWarbandMemberUpdated(member);
+        break;
+      }
+    }
   }
 
   private static emptyWarband() {
@@ -139,35 +237,25 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
       member.avatar = WarbandDisplay.getAvatar(member.gender, member.race);
       return member;
     } catch (e) {
-      if (process.env.IS_DEVELOPMENT) {
+      if  (process.env.IS_DEVELOPMENT) {
         console.error(`WarbandMemberJoined Failed to parse WarbandMember. | ${e}`);
       }
       return;
     }
   }
 
-  private registerWarbandEvents = () => {
-    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.joined, this.onWarbandJoined));
-    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.update, this.onWarbandJoined));
-    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.quit, this.onWarbandQuit));
-    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.abandoned, this.onWarbandQuit));
-    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.memberJoined, this.onWarbandMemberJoined));
-    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.memberUpdate, this.onWarbandMemberUpdated));
-    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.memberRemoved, this.onWarbandMemberRemoved));
+  private onJoinWarband = (id: string) => {
+    this.graphql.refetch();
   }
 
-  private unregisterWarbandEvents = () => {
-    for (const handle of this.eventHandles) {
-      handle.clear();
-    }
-  }
-
-  private onWarbandJoined = (id: string) => {
+  private onInitializeWarband = (id: string, members: GroupMemberState[]) => {
     this.setState({
       ...(WarbandDisplay.emptyWarband()),
       warbandID: id,
+      activeMembers: members,
     });
     setActiveWarbandID(id);
+    members.forEach(member => onWarbandMemberUpdate(member));
   }
 
   private onWarbandQuit = (id: string) => {
@@ -183,8 +271,7 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
     });
   }
 
-  private onWarbandMemberJoined = (memberJSON: string) => {
-    const member = WarbandDisplay.deserializeMember(memberJSON);
+  private onWarbandMemberJoined = (member: GroupMemberState) => {
     if (!member) return;
     onWarbandMemberUpdate(member);
     this.receivedMemberUpdate = true;
@@ -196,9 +283,8 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
     });
   }
 
-  private onWarbandMemberUpdated = (memberJSON: string) => {
+  private onWarbandMemberUpdated = (member: GroupMemberState) => {
     if (!this.state.warbandID) return;
-    const member = WarbandDisplay.deserializeMember(memberJSON);
     if (!member) return;
     onWarbandMemberUpdate(member);
     this.receivedMemberUpdate = true;
@@ -229,3 +315,4 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
     });
   }
 }
+

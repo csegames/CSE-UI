@@ -30,7 +30,7 @@ async function inviteToWarband(characterID: string, characterName: string, warba
 
     if (result.ok) {
       sendSystemMessage(`Warband invite sent successfully!`);
-      return;
+      return result;
     }
 
     sendSystemMessage(`Failed to send Warband invite.`);

@@ -65,7 +65,7 @@ const subscriptionQuery = gql`
   }
   ${InventoryItemFragment}
 `;
-const subscriptionUrl =  game.webAPIHost + '/graphql'.replace('http', 'ws');
+const subscriptionUrl =  (game.webAPIHost + '/graphql').replace('http', 'ws');
 const subscriptionInitPayload = {
   shardID: game.shardID,
   Authorization: `Bearer ${game.accessToken}`,

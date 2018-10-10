@@ -8,7 +8,6 @@ import { findIndexWhere } from '../utils/arrayUtils';
 import { SignalRHub } from './SignalRHub';
 
 export * from './SignalRHub';
-import initGroupsHub, { groupsHubEvents } from './hubs/groupsHub';
 import initPatcherHub, { createPatcherHub, getPatcherEventName } from './hubs/patcherHub';
 
 declare const $: any;
