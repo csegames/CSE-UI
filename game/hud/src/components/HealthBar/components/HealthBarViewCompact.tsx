@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Faction, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 
 import { getFaction, getBodyPartsCurrentHealth } from '../lib/healthFunctions';
 import { isEqualPlayerState } from 'lib/playerStateEqual';
@@ -24,8 +23,8 @@ const Container = styled('div')`
   position: relative;
   height: 301px;
   width: 506px;
-  -webkit-animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''}
-  animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''}
+  -webkit-animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''};
+  animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''};
   filter: ${(props: any) => props.isAlive ? 'grayscale(0%)' : 'grayscale(100%)'};
   -webkit-filter: ${(props: any) => props.isAlive ? 'grayscale(0%)' : 'grayscale(100%)'};
 `;
@@ -97,7 +96,7 @@ const HealthPillsContainer = styled('div')`
 
 export interface HealthBarViewProps {
   shouldShake: boolean;
-  playerState: PlayerState | GroupMemberState;
+  playerState: Player;
 }
 
 export interface HealthBarViewState {
@@ -146,7 +145,8 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
           <StaminaBar playerState={playerState} />
         </HealthPillsContainer>
         {
-          (this.props.playerState as GroupMemberState).isLeader ? <LeaderContainerOverlay /> : <ContainerOverlay />
+          isGroupMemberState(this.props.playerState) ? this.props.playerState.isLeader ? <LeaderContainerOverlay />
+            : <ContainerOverlay /> : <ContainerOverlay />
         }
       </Container>
     );

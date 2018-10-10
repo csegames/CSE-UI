@@ -8,9 +8,9 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 
-import { client, webAPI, Vec3F, Euler3f } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import * as events from '@csegames/camelot-unchained/lib/events';
+
 
 import * as base from '../../ItemShared/InventoryBase';
 import InventoryFooter from './InventoryFooter';
@@ -135,8 +135,7 @@ export interface InventoryBodyState extends base.InventoryBaseState {
 
 class InventoryBody extends React.Component<InventoryBodyComponentProps, InventoryBodyState> {
   private static minSlots = 200;
-  private updateInventoryItemsHandler: number;
-  private dropItemHandler: number;
+  private eventHandles: EventHandle[] = [];
   private bodyRef: HTMLDivElement;
   private graphql: GraphQLResult<InventoryBodyGQL.Query>;
 
@@ -208,11 +207,23 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   public componentDidMount() {
     setTimeout(() => this.initializeBodyDimensions(), 1);
     window.addEventListener('resize', () => this.initializeBodyDimensions(true));
-    this.updateInventoryItemsHandler = events.on(eventNames.updateInventoryItems, this.onUpdateInventoryOnEquip);
-    this.dropItemHandler = events.on(eventNames.onDropItem, (payload: DropItemPayload) =>
-      base.dropItemRequest(payload.inventoryItem.item));
+    this.eventHandles.push(game.on(eventNames.updateInventoryItems, this.onUpdateInventoryOnEquip));
+    this.eventHandles.push(game.on(eventNames.onDropItem, (payload: DropItemPayload) =>
+      base.dropItemRequest(payload.inventoryItem.item)));
     window.addEventListener('resize', this.initializeInventory);
-    client.SendCommitItemRequest(this.handleCommitItemRequest);
+    try {
+      const result = game.commitItemPlacement();
+      if (result.success) {
+        this.handleCommitItemRequest(
+          result.placement.itemInstanceID, // TODO COHERENT check this is correct item id
+          result.placement.position,
+          result.placement.rotation,
+          result.placement.actionID,
+        );
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   public componentDidUpdate(prevProps: InventoryBodyComponentProps, prevState: InventoryBodyState) {
@@ -240,8 +251,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   }
 
   public componentWillUnmount() {
-    events.off(this.updateInventoryItemsHandler);
-    events.off(this.dropItemHandler);
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
     window.removeEventListener('resize', () => this.initializeBodyDimensions(true));
   }
 
@@ -258,7 +268,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   private refetch = async () => {
     if (!this.graphql) return;
     this.graphql.refetch();
-    events.fire('refetch-character-info');
+    game.trigger('refetch-character-info');
   }
 
   private handleCommitItemRequest = (itemId: string, position: Vec3F, rotation: Euler3f, actionId?: string) => {
@@ -277,10 +287,10 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     try {
       const res = await webAPI.ItemAPI.PerformItemAction(
         webAPI.defaultConfig,
-        client.shardID,
-        client.characterID,
+        game.shardID,
+        game.selfPlayerState.characterID,
         itemId,
-        client.playerState.id,
+        game.selfPlayerState.entityID,
         actionId,
         { WorldPosition: position, Rotation: rotation },
       );

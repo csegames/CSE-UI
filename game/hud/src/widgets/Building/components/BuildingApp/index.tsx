@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { buildUIMode } from '@csegames/camelot-unchained';
 
 import ActionBar from '../../widgets/Actionbar';
 import BuildingPanel from '../../widgets/BuildPanel';
@@ -16,7 +15,7 @@ import { BuildingItem } from '../../lib/BuildingItem';
 
 export interface BuildingAppProps {
   dispatch: (action: any) => void;
-  buildingMode: buildUIMode;
+  buildingMode: BuildingMode;
   selectedItem: BuildingItem;
 }
 

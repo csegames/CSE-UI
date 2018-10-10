@@ -7,7 +7,6 @@
 import * as React from 'react';
 import { Map } from 'immutable';
 import { Module } from 'redux-typed-modules';
-import { client, events, RUNTIME_ASSERT } from '@csegames/camelot-unchained';
 
 import { cloneDeep } from 'lodash';
 import { HUDDragOptions, LayoutMode } from '../../components/HUDDrag';
@@ -24,7 +23,6 @@ import EnemyTarget from './layoutItems/EnemyTarget';
 import PlayerHealth from './layoutItems/PlayerHealth';
 import FriendlyTarget from './layoutItems/FriendlyTarget';
 import ErrorMessages from './layoutItems/ErrorMessages';
-import PlotControl from './layoutItems/PlotControl';
 import Progression from './layoutItems/Progression';
 // import RefillAmmo from './layoutItems/RefillAmmo';
 import Announcement from './layoutItems/Announcement';
@@ -34,9 +32,10 @@ import PlayerSiegeHealth from './layoutItems/PlayerSiegeHealth';
 import EnemyTargetSiegeHealth from './layoutItems/EnemyTargetSiegeHealth';
 import FriendlyTargetSiegeHealth from './layoutItems/FriendlyTargetSiegeHealth';
 import GameMenu from './layoutItems/GameMenu';
-import Settings from './layoutItems/Settings';
+// import Settings from './layoutItems/Settings';
 import GameInfo from './layoutItems/GameInfo';
-import SkillQueue from './layoutItems/SkillQueue';
+import ItemPlacementModeManager from './layoutItems/ItemPlacementModeManager';
+// import SkillQueue from './layoutItems/SkillQueue';
 
 const localStorageKey = 'cse_hud_layout-state';
 const FORCE_RESET_CODE = '0.7.10'; // if the local storage value for the reset code doesn't match this, then force a reset
@@ -152,9 +151,6 @@ function initialState(): LayoutState {
     //   'refillAmmo', cloneDeep(RefillAmmo),
     // ],
     [
-      'plotControl', cloneDeep(PlotControl),
-    ],
-    [
       'progression', cloneDeep(Progression),
     ],
     [
@@ -178,11 +174,14 @@ function initialState(): LayoutState {
     [
       'gameMenu', cloneDeep(GameMenu),
     ],
+    // [
+    //   'settings', cloneDeep(Settings),
+    // ],
+    // [
+    //   'skillqueue', cloneDeep(SkillQueue),
+    // ],
     [
-      'settings', cloneDeep(Settings),
-    ],
-    [
-      'skillqueue', cloneDeep(SkillQueue),
+      'itemPlacementModeManager', cloneDeep(ItemPlacementModeManager),
     ],
     [
       'gameInfo', cloneDeep(GameInfo),
@@ -306,7 +305,7 @@ export function initialize() {
     };
 
     // hook up to event triggers
-    events.on('hudnav--navigate', (name: string) => {
+    game.on('hudnav--navigate', (name: string) => {
       switch (name) {
         case 'chat':
           return dispatch(toggleVisibility(name));
@@ -337,7 +336,6 @@ export const lockHUD = module.createAction({
   },
   reducer: (s, a) => {
     a.removeEvent();
-    if (typeof client.RequestInputOwnership === 'function') client.RequestInputOwnership();
     return {
       locked: true,
     };
@@ -348,7 +346,6 @@ export const unlockHUD = module.createAction({
   type: 'layout/UNLOCK_HUD',
   action: () => null,
   reducer: (s, a) => {
-    if (typeof client.ReleaseInputOwnership === 'function') client.ReleaseInputOwnership();
     return {
       locked: false,
     };
@@ -366,10 +363,8 @@ export const toggleHUDLock = module.createAction({
   reducer: (s, a) => {
     if (s.locked) {
       a.addEvent();
-      if (typeof client.RequestInputOwnership === 'function') client.RequestInputOwnership();
     } else {
       a.removeEvent();
-      if (typeof client.ReleaseInputOwnership === 'function') client.ReleaseInputOwnership();
     }
     return {
       locked: !s.locked,
@@ -416,7 +411,6 @@ export const resize = module.createAction({
     return {};
   },
   reducer: (s, a) => {
-    RUNTIME_ASSERT(screen.width >= 640 && screen.height >= 480, 'ignoring resize event for small window');
     let onScreenWidgets = Map<string, Widget<any>>();
     s.widgets.forEach((value, key) => {
       onScreenWidgets = onScreenWidgets.set(key, {

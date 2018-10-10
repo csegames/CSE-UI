@@ -8,7 +8,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css, cx } from 'react-emotion';
 import { ContentItem, TabItem, TabPanel } from '@csegames/camelot-unchained';
-import * as events from '@csegames/camelot-unchained/lib/events';
+
 
 import EquippedItemSlot from './EquippedItemSlot';
 import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
@@ -339,8 +339,7 @@ interface EquipmentSlotsTabData {
 }
 
 class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, EquipmentSlotsState> {
-  private equipItemListener: number;
-  private onUnequipItemListener: number;
+  private eventHandles: EventHandle[] = [];
 
   constructor(props: EquipmentSlotsComponentProps) {
     super(props);
@@ -395,13 +394,12 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
   }
 
   public componentDidMount() {
-    this.equipItemListener = events.on(eventNames.onEquipItem, this.onEquipItem);
-    this.onUnequipItemListener = events.on(eventNames.onUnequipItem, this.onUnequipItem);
+    this.eventHandles.push(game.on(eventNames.onEquipItem, this.onEquipItem));
+    this.eventHandles.push(game.on(eventNames.onUnequipItem, this.onUnequipItem));
   }
 
   public componentWillUnmount() {
-    events.off(this.equipItemListener);
-    events.off(this.onUnequipItemListener);
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private onUnequipItem = (payload: UnequipItemPayload) => {
@@ -420,7 +418,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
         type: 'Unequip',
         equippedItem: item,
       };
-      events.fire(eventNames.updateInventoryItems, updateInventoryItemsPayload);
+      game.trigger(eventNames.updateInventoryItems, updateInventoryItemsPayload);
     }
   }
 
@@ -498,7 +496,7 @@ class EquipmentSlots extends React.Component<EquipmentSlotsComponentProps, Equip
         equippedItem: itemToBeReplaced.length > 0 ? itemToBeReplaced : null,
       };
 
-      events.fire(eventNames.updateInventoryItems, updateInventoryItemsPayload);
+      game.trigger(eventNames.updateInventoryItems, updateInventoryItemsPayload);
     }
   }
 

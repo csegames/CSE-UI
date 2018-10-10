@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, IGroupInvite } from '@csegames/camelot-unchained';
 import {
   merge,
   BaseAction,
@@ -32,7 +31,7 @@ const DECLINE_INVITE = 'hud/invites/DECLINE_INVITE';
  */
 
 // function registerInviteEvents(dispatch: (action: InvitesAction) => any) {
-//   // events.on(signalr.GROUP_EVENTS_INVITE_RECEIVED, (invite: IGroupInvite) => dispatch(inviteReceived(invite)));
+//   // game.on(signalr.GROUP_EVENTS_INVITE_RECEIVED, (invite: IGroupInvite) => dispatch(inviteReceived(invite)));
 // }
 
 export interface InvitesAction extends BaseAction {
@@ -108,7 +107,6 @@ export function initializeInvites(): AsyncAction<InvitesAction> {
     dispatch(initSignalR());
 
     try {
-      if (client.debug) console.log('initializeInvites called');
       // signalr.groupsHub.start(() => {
       //   dispatch(initSignalRSuccess());
       //   registerInviteEvents(dispatch);

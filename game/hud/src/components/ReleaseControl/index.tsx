@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`
   width: 140px;
@@ -44,6 +43,8 @@ export interface ReleaseControlButtonState {
 
 class ReleaseControl extends React.Component<ReleaseControlButtonProps, ReleaseControlButtonState> {
 
+  private eventHandles: EventHandle[] = [];
+
   constructor(props: ReleaseControlButtonProps) {
     super(props);
     this.state = {
@@ -62,13 +63,20 @@ class ReleaseControl extends React.Component<ReleaseControlButtonProps, ReleaseC
   }
 
   public componentDidMount() {
-    client.OnCharacterCanReleaseControlChanged((canRelease: boolean) => {
-      this.setState((state, props) => { return { visible: canRelease }; });
-    });
+    this.eventHandles.push(game.selfPlayerState.onUpdated(() => {
+      if (game.selfPlayerState.controlledEntityID &&
+        game.entities[game.selfPlayerState.controlledEntityID].type === 'siege') {
+        this.setState({ visible: true });
+      }
+    }));
+  }
+
+  public componentWillUnmount() {
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private sendCommand = (): void => {
-    client.SendSlashCommand('siege exit');
+    game.sendSlashCommand('siege exit');
   }
 }
 

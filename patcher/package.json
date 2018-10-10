@@ -43,7 +43,6 @@
     "emotion": "^9.2.3",
     "es6-promise": "^3.0.2",
     "eventemitter3": "^1.1.1",
-    "isomorphic-fetch": "^2.2.1",
     "moment": "^2.19.1",
     "node-xmpp-client": "^2.1.0",
     "normalizr": "^2.0.0",

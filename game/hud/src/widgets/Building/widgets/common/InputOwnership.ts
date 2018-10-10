@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { client } from '@csegames/camelot-unchained';
 
 // Ahh... input owenrship
 //
@@ -53,17 +52,14 @@ export const inputOwnership = (e: React.FocusEvent<any> | React.MouseEvent<any>)
       clearTimeout(timer);
       timer = undefined;
     } else {
-      client.RequestInputOwnership();
     }
   } else if (e.type === 'blur') {
     // release input ownership after short delay allowing next field
     // to cancel the release
     timer = setTimeout(() => {
-      client.ReleaseInputOwnership();
       timer = undefined;
     },                 10);
   } else if (e.type === 'click' && (e.target as HTMLElement).nodeName === 'BUTTON') {
-    client.ReleaseInputOwnership();
     if (timer) {  // we released it already
       clearTimeout(timer);
       timer = undefined;

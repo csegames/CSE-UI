@@ -6,7 +6,6 @@
  */
 
 import * as React from 'react';
-import { client } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { GraphQLQuery } from '@csegames/camelot-unchained/lib/graphql/query';
 import ScenarioResultsContainer from './components/ScenarioResultsContainer';
@@ -16,7 +15,7 @@ const query = (scenarioID: string): Partial<GraphQLQuery> => ({
   namedQuery: 'scenarioSummary',
   variables: {
     scenarioID,
-    shardID: client.shardID,
+    shardID: game.shardID,
   },
 });
 
@@ -29,6 +28,7 @@ export interface ScenarioResultsState {
 }
 
 class ScenarioResults extends React.Component<ScenarioResultsProps, ScenarioResultsState> {
+  private eventHandles: EventHandle[] = [];
   constructor(props: ScenarioResultsProps) {
     super(props);
     this.state = {
@@ -50,7 +50,11 @@ class ScenarioResults extends React.Component<ScenarioResultsProps, ScenarioResu
   }
 
   public componentDidMount() {
-    client.ScenarioRoundEnded(this.handleScenarioRoundEnded);
+    this.eventHandles.push(game.onScenarioRoundEnded(this.handleScenarioRoundEnded));
+  }
+
+  public componentWillUnmount() {
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private handleScenarioRoundEnded = (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => {

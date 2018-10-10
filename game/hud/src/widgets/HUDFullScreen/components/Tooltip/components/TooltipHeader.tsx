@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client } from '@csegames/camelot-unchained';
 
 import { SlotType } from '../../../lib/itemInterfaces';
 import { TOOLTIP_PADDING } from '../../../lib/constants';
@@ -123,7 +122,7 @@ class TooltipHeader extends React.PureComponent<TooltipHeaderProps, TooltipHeade
 
     return (
       <Container>
-        <HeaderOverlay factionColor={getTooltipColor(client.playerState.faction)} />
+        <HeaderOverlay factionColor={getTooltipColor(game.selfPlayerState.faction)} />
         <InfoContainer>
           <ItemName>{item.givenName ? `${item.givenName} (${itemInfo.name})` : itemInfo.name}</ItemName>
           {this.state.showAdminInfo && <ItemSubtitle>{item.id}</ItemSubtitle>}

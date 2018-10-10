@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { client, Vec3f, AnyEntityState, PlayerState } from '@csegames/camelot-unchained';
 import {
   CompassPOIProviderProps,
   CompassPOI,
@@ -67,6 +66,7 @@ interface FriendlyTargetData {
   id: string;
   name: string;
   isAlive: boolean;
+  isActive: boolean;
   position: Vec3f;
 }
 
@@ -84,6 +84,8 @@ class FriendlyTargetPOIContainer extends React.Component<
   FriendlyTargetPoiContainerProps,
   FriendlyTargetPoiContainerState
 > {
+  private timeouts: NodeJS.Timer[] = [];
+
   public state = {
     hover: false,
     hoverCount: 0,
@@ -115,6 +117,11 @@ class FriendlyTargetPOIContainer extends React.Component<
     );
   }
 
+  public componentWillUnmount() {
+    hideCompassTooltip(this.props.poi.id);
+    this.timeouts.forEach(timeout => clearTimeout(timeout));
+  }
+
   public shouldComponentUpdate(nextProps: FriendlyTargetPoiContainerProps, nextState: FriendlyTargetPoiContainerState) {
     if (nextProps.compass.renderTimestamp !== this.props.compass.renderTimestamp) {
       return true;
@@ -126,10 +133,6 @@ class FriendlyTargetPOIContainer extends React.Component<
     if (this.state.hover) {
       updateCompassTooltip(this.getTooltipData());
     }
-  }
-
-  public componentWillUnmount() {
-    hideCompassTooltip(this.props.poi.id);
   }
 
   private getTooltipData = (): CompassTooltipData => {
@@ -155,7 +158,7 @@ class FriendlyTargetPOIContainer extends React.Component<
 
   private handleMouseLeave = () => {
     const hoverCount = this.state.hoverCount;
-    setTimeout(() => {
+    this.timeouts.push(setTimeout(() => {
       this.setState((prevState: FriendlyTargetPoiContainerState) => {
         if (hoverCount === prevState.hoverCount) {
           hideCompassTooltip(this.props.poi.id);
@@ -167,7 +170,7 @@ class FriendlyTargetPOIContainer extends React.Component<
           return null;
         }
       });
-    }, 1000);
+    }, 1000));
   }
 }
 
@@ -179,6 +182,7 @@ export default class FriendlyTargetPoiProvider extends React.Component<
   CompassPOIProviderProps<FriendlyTargetData>,
   FriendlyTargetPoiProviderState
 > {
+  private eventHandles: EventHandle[] = [];
 
   public state = {
     playerId: '',
@@ -188,7 +192,7 @@ export default class FriendlyTargetPoiProvider extends React.Component<
     return (
       <>
         {this.props.pois.filter(
-          poi => poi.data.isAlive && !this.props.compass.hasPOI('warband', `warband-${poi.data.id}`),
+          poi => (poi.data.isActive) && !this.props.compass.hasPOI('warband', `warband-${poi.data.id}`),
         ).map(poi => (
           <FriendlyTargetPOIContainer
             key={poi.id}
@@ -201,32 +205,12 @@ export default class FriendlyTargetPoiProvider extends React.Component<
   }
 
   public componentDidMount() {
-    client.OnFriendlyTargetStateChanged((state: AnyEntityState) => {
-      if (state) {
-        const poi = this.getFriendlyTargetPOI(state);
-        if (poi.data.id && poi.data.id !== this.state.playerId) {
-          if (!this.props.compass.hasPOI('friendly', `friendly-${poi.data.id}`)) {
-            this.props.compass.removePOIByType('friendly');
-          }
-          this.props.compass.addPOI('friendly', poi);
-        } else {
-          this.props.compass.removePOIByType('friendly');
-        }
-      } else {
-        this.props.compass.removePOIByType('friendly');
-      }
-    });
-    client.OnPlayerStateChanged((state: PlayerState) => {
-      this.setState((prevState: FriendlyTargetPoiProviderState) => {
-        if (prevState.playerId !== state.id) {
-          return {
-            playerId: state.id,
-          };
-        } else {
-          return null;
-        }
-      });
-    });
+    this.eventHandles.push(game.friendlyTargetState.onUpdated(this.onSelfPlayerStateUpdated));
+    this.eventHandles.push(game.selfPlayerState.onUpdated(this.onFriendlyTargetStateUpdated));
+  }
+
+  public componentWillUnmount() {
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   public shouldComponentUpdate(
@@ -239,9 +223,39 @@ export default class FriendlyTargetPoiProvider extends React.Component<
     return false;
   }
 
-  private getFriendlyTargetPOI = (state: AnyEntityState): CompassPOIPartial<FriendlyTargetData> => {
+  private onSelfPlayerStateUpdated = () => {
+    if (game.friendlyTargetState.isAlive) {
+      const poi = this.getFriendlyTargetPOI(game.friendlyTargetState);
+      if (poi.data.id && poi.data.id !== this.state.playerId) {
+        if (!this.props.compass.hasPOI('friendly', `friendly-${poi.data.id}`)) {
+          this.props.compass.removePOIByType('friendly');
+        }
+        this.props.compass.addPOI('friendly', poi);
+      } else {
+        this.props.compass.removePOIByType('friendly');
+      }
+    } else {
+      this.props.compass.removePOIByType('friendly');
+    }
+  }
+
+  private onFriendlyTargetStateUpdated = () => {
+    this.setState((prevState: FriendlyTargetPoiProviderState) => {
+      if (prevState.playerId !== game.selfPlayerState.characterID) {
+        return {
+          playerId: game.selfPlayerState.characterID,
+        };
+      } else {
+        return null;
+      }
+    });
+  }
+
+  private getFriendlyTargetPOI = (
+    state: ImmutableFriendlyTargetState,
+  ): CompassPOIPartial<FriendlyTargetData> => {
     return withCompassPOIPartialDefaults({
-      id: `friendly-${state.id}`,
+      id: `friendly-${state.type === 'siege' ? state.entityID : (state as Player).characterID}`,
       type: 'friendly',
       position: state.position,
       offset: 18,
@@ -250,10 +264,13 @@ export default class FriendlyTargetPoiProvider extends React.Component<
     });
   }
 
-  private getFriendlyTargetData = (state: AnyEntityState): FriendlyTargetData => {
+  private getFriendlyTargetData = (
+    state: ImmutableFriendlyTargetState,
+  ): FriendlyTargetData => {
     return {
-      id: state.id,
+      id: state.type === 'siege' ? state.entityID : (state as Player).characterID,
       name: state.name,
+      isActive: state.type === 'siege' ? true : state.entityID !== '',
       isAlive: state.isAlive,
       position: state.position,
     };

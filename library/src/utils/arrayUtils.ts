@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { clone } from './objectUtils';
-
 export function cloneArray<T>(array: T[]): T[] {
   return array.slice();
 }
@@ -92,3 +90,23 @@ export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): { result
 
   return { result, removed };
 }
+
+// Augment Array with remove method.
+declare global {
+  interface Array<T> {
+    remove(element: T): T[];
+  }
+}
+
+/**
+ * Removes the first instance of an element from an array.
+ * @param {T} element The element to remove from the Array
+ * @return {Array<T>} Returns a reference to the array with the removed item.
+ */
+Array.prototype.remove = function<T>(element: T): T[] {
+  const index = this.findIndex(i => i === element);
+  if (index > -1) {
+    this.splice(index, 1);
+  }
+  return this;
+};

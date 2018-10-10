@@ -7,11 +7,16 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 
 import { isEqualPlayerState } from 'lib/playerStateEqual';
 import { BodyParts } from 'lib/PlayerStatus';
-import { getBloodPercent, getStaminaPercent, getFaction, getBodyPartsCurrentHealth } from '../lib/healthFunctions';
+import {
+  getBloodPercent,
+  getStaminaPercent,
+  getFaction,
+  getBodyPartsCurrentHealth,
+  getCurrentStamina,
+} from '../lib/healthFunctions';
 import ClassIndicator from './ClassIndicator';
 import SmallBar from './SmallBar';
 import BigBar from './BigBar';
@@ -22,8 +27,8 @@ const Container = styled('div')`
   position: relative;
   height: 301px;
   width: 623px;
-  -webkit-animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''}
-  animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''}
+  -webkit-animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''};
+  animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''};
   filter: ${(props: any) => props.isAlive ? 'grayscale(0%)' : 'grayscale(100%)'};
   -webkit-filter: ${(props: any) => props.isAlive ? 'grayscale(0%)' : 'grayscale(100%)'};
 `;
@@ -139,7 +144,7 @@ const StaminaBar = styled('div')`
 
 export interface HealthBarViewProps {
   shouldShake: boolean;
-  playerState: PlayerState | GroupMemberState;
+  playerState: Player;
 }
 
 export interface HealthBarViewState {
@@ -177,7 +182,7 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
             valueOpacity={this.state.mouseOver ? 1 : 0}
             right={this.state.mouseOver ? 70 : 100}
             height={208}
-            currentStamina={playerState.stamina.current}
+            currentStamina={getCurrentStamina(playerState)}
             bodyPartsCurrentHealth={getBodyPartsCurrentHealth(playerState)}
           />
           <HealthPillsContainer onMouseOver={this.handleMouseOver} onMouseLeave={this.handleMouseOut}>

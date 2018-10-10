@@ -28,6 +28,7 @@ module.exports = {
     },
     copies: 'nps copy.definitions && nps copy.thirdParty && nps copy.misc',
     build: 'nps clean -s && tsc && nps sass && nps copies && nps babel && nps browserify && rimraf tmp',
+    rebuild: 'tsc && nps sass && nps copies && nps babel && nps browserify && rimraf tmp',
     //docs: 'typedoc --out docs/ --excludeExternals --module commonjs --exclude node_modules --ignoreCompilerErrors --experimentalDecorators --target ES6 --jsx react ./src/',
     test: {
       default: {

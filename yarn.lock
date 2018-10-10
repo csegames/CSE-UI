@@ -675,6 +675,30 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+"@csegames/camelot-unchained@^0.1.64":
+  version "0.1.64"
+  resolved "http://registry.camelotunchained.com/@csegames%2fcamelot-unchained/-/camelot-unchained-0.1.64.tgz#d577fb48dbac6657d882a1b4d8c474130b3161e8"
+  dependencies:
+    "@types/graphql" "^0.13.4"
+    aphrodite "^1.2.3"
+    cwd-in-node-modules "^1.0.1"
+    emotion "^9.2.3"
+    es6-promise "^3.0.2"
+    fuzzysearch "^1.0.3"
+    graphql "^0.13.2"
+    graphql-tag "^1.2.4"
+    isomorphic-fetch "^2.2.1"
+    jquery "^3.0.0"
+    lodash "^4.17.4"
+    moment "^2.17.1"
+    node-xmpp-client "2.1.0"
+    randomstring "^1.1.5"
+    react "^16.4.1"
+    react-dom "^16.4.1"
+    react-emotion "^9.2.3"
+    react-transition-group "1.x"
+    redux-typed-modules "^2.2.1"
+
 "@emotion/babel-utils@^0.6.4":
   version "0.6.9"
   resolved "https://registry.yarnpkg.com/@emotion/babel-utils/-/babel-utils-0.6.9.tgz#bb074fadad65c443a575d3379488415fd194fc75"
@@ -1471,6 +1495,10 @@
   version "0.0.32"
   resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-0.0.32.tgz#449abcd9a826807811ef101e58df9f83cfc61713"
 
+"@types/classnames@^2.2.6":
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.2.6.tgz#dbe8a666156d556ed018e15a4c65f08937c3f628"
+
 "@types/color-convert@*":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@types/color-convert/-/color-convert-1.9.0.tgz#bfa8203e41e7c65471e9841d7e306a7cd8b5172d"
@@ -1529,6 +1557,10 @@
   version "0.12.6"
   resolved "http://registry.npmjs.org/@types/graphql/-/graphql-0.12.6.tgz#3d619198585fcabe5f4e1adfb5cf5f3388c66c13"
 
+"@types/graphql@^0.11.7":
+  version "0.11.8"
+  resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-0.11.8.tgz#53ff3604e99db810dd43347f19fcd1c59725a7bb"
+
 "@types/graphql@^0.13.4":
   version "0.13.4"
   resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-0.13.4.tgz#55ae9c29f0fd6b85ee536f5c72b4769d5c5e06b1"
@@ -1545,14 +1577,6 @@
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/is-glob/-/is-glob-4.0.0.tgz#fb8a2bff539025d4dcd6d5efe7689e03341b876d"
 
-"@types/isomorphic-fetch@0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.33.tgz#3ea1b86f8b73e6a7430d01d4dbd5b1f63fd72718"
-
-"@types/isomorphic-fetch@^0.0.34":
-  version "0.0.34"
-  resolved "https://registry.yarnpkg.com/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.34.tgz#3c3483e606c041378438e951464f00e4e60706d6"
-
 "@types/jest@^19.2.2":
   version "19.2.4"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-19.2.4.tgz#543651712535962b7dc615e18e4a381fc2687442"
@@ -1561,7 +1585,7 @@
   version "4.14.66"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.66.tgz#3dbb83477becf130611f8fac82a8fdb199805981"
 
-"@types/lodash@^4.14.109":
+"@types/lodash@^4.14.109", "@types/lodash@^4.14.116":
   version "4.14.116"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.116.tgz#5ccf215653e3e8c786a58390751033a9adca0eb9"
 
@@ -5921,6 +5945,10 @@ functional-red-black-tree@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
 
+fuse.js@^3.2.1:
+  version "3.2.1"
+  resolved "http://registry.camelotunchained.com/fuse.js/-/fuse.js-3.2.1.tgz#6320cb94ce56ec9755c89ade775bcdbb0358d425"
+
 fuzzysearch@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/fuzzysearch/-/fuzzysearch-1.0.3.tgz#dffc80f6d6b04223f2226aa79dd194231096d008"
@@ -6382,6 +6410,14 @@ graphql-config@^2.0.1:
     lodash "^4.17.4"
     minimatch "^3.0.4"
 
+graphql-document-collector@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/graphql-document-collector/-/graphql-document-collector-0.2.1.tgz#1e206f949fdb3a72e9a86ef4da4b27cc353f6c10"
+  dependencies:
+    "@types/graphql" "^0.11.7"
+    glob "^7.1.0"
+    graphql "^0.11.7"
+
 graphql-extensions@0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/graphql-extensions/-/graphql-extensions-0.1.2.tgz#d289cbddcf52364c066d8241a78d359c93c79c30"
@@ -6424,6 +6460,12 @@ graphql@^0.10.0, graphql@^0.10.3:
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.10.5.tgz#c9be17ca2bdfdbd134077ffd9bbaa48b8becd298"
   dependencies:
     iterall "^1.1.0"
+
+graphql@^0.11.7:
+  version "0.11.7"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.11.7.tgz#e5abaa9cb7b7cccb84e9f0836bf4370d268750c6"
+  dependencies:
+    iterall "1.1.3"
 
 graphql@^0.13.2:
   version "0.13.2"
@@ -7548,6 +7590,10 @@ isurl@^1.0.0-alpha5:
   dependencies:
     has-to-string-tag-x "^1.2.0"
     is-object "^1.0.1"
+
+iterall@1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.1.3.tgz#1cbbff96204056dde6656e2ed2e2226d0e6d72c9"
 
 iterall@^1.0.0, iterall@^1.1.0, iterall@^1.1.3, iterall@^1.2.1:
   version "1.2.2"

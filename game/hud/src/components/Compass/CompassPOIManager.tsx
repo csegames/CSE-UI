@@ -13,7 +13,6 @@ import {
   calculateElevation,
   convertToMinusAngle,
 } from 'actions/compass';
-import { Vec2f, Vec3f } from '@csegames/camelot-unchained';
 import { easeLinear } from 'd3-ease';
 import Animate from 'react-move/Animate';
 

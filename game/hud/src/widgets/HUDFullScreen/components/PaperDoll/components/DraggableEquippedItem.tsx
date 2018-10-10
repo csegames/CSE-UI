@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import * as events from '@csegames/camelot-unchained/lib/events';
+
 import styled, { css } from 'react-emotion';
 
 import eventNames, { EquipItemPayload, InventoryDataTransfer, EquippedItemDataTransfer } from '../../../lib/eventNames';
@@ -89,8 +89,7 @@ const colors = {
 };
 
 class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, DraggableEquippedItemState> {
-  private onHighlightListener: number;
-  private onDehighlightListener: number;
+  private eventHandles: EventHandle[] = [];
 
   constructor(props: DraggableEquippedItemProps) {
     super(props);
@@ -171,8 +170,8 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
   }
 
   public componentDidMount() {
-    this.onHighlightListener = events.on(eventNames.onHighlightSlots, this.onHighlightSlots);
-    this.onDehighlightListener = events.on(eventNames.onDehighlightSlots, this.onDehighlightSlots);
+    this.eventHandles.push(game.on(eventNames.onHighlightSlots, this.onHighlightSlots));
+    this.eventHandles.push(game.on(eventNames.onDehighlightSlots, this.onDehighlightSlots));
   }
 
   public componentDidUpdate(prevProps: DraggableEquippedItemProps) {
@@ -186,8 +185,7 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
   }
 
   public componentWillUnmount() {
-    events.off(this.onHighlightListener);
-    events.off(this.onDehighlightListener);
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private onHighlightSlots = (gearSlots: GearSlotDefRef[]) => {
@@ -269,7 +267,7 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     };
 
     if (willEquipTo) {
-      events.fire(eventNames.onEquipItem, payload);
+      game.trigger(eventNames.onEquipItem, payload);
     }
   }
 }

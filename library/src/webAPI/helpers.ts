@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as def from './definitions';
-
 export function parseResponseData(res: any) {
   if (!res.data) {
     return res;
@@ -22,80 +20,80 @@ export function parseResponseData(res: any) {
   return res;
 }
 
-export function accessLevelToPatchPermission(access: def.AccessType) {
+export function accessLevelToPatchPermission(access: AccessType) {
   switch (access) {
-    case def.AccessType.Public:
-      return def.PatchPermissions.Public;
-    case def.AccessType.Beta3:
-      return def.PatchPermissions.Beta3;
-    case def.AccessType.Beta2:
-      return def.PatchPermissions.Beta2;
-    case def.AccessType.Beta1:
-      return def.PatchPermissions.Beta1;
-    case def.AccessType.Alpha:
-      return def.PatchPermissions.Alpha;
-    case def.AccessType.InternalTest:
-      return def.PatchPermissions.InternalTest;
-    case def.AccessType.Employees:
-      return def.PatchPermissions.Development;
+    case AccessType.Public:
+      return PatchPermissions.Public;
+    case AccessType.Beta3:
+      return PatchPermissions.Beta3;
+    case AccessType.Beta2:
+      return PatchPermissions.Beta2;
+    case AccessType.Beta1:
+      return PatchPermissions.Beta1;
+    case AccessType.Alpha:
+      return PatchPermissions.Alpha;
+    case AccessType.InternalTest:
+      return PatchPermissions.InternalTest;
+    case AccessType.Employees:
+      return PatchPermissions.Development;
   }
 }
 
-export function accessLevelString(access: def.AccessType) {
+export function accessLevelString(access: AccessType) {
   switch (access) {
-    case def.AccessType.Public:
+    case AccessType.Public:
       return 'Everyone';
-    case def.AccessType.Beta3:
+    case AccessType.Beta3:
       return 'All Backers';
-    case def.AccessType.Beta2:
+    case AccessType.Beta2:
       return 'Beta 1-2, Alpha, IT';
-    case def.AccessType.Beta1:
+    case AccessType.Beta1:
       return 'Beta 1, Alpha, IT';
-    case def.AccessType.Alpha:
+    case AccessType.Alpha:
       return 'Alpha, IT';
-    case def.AccessType.InternalTest:
+    case AccessType.InternalTest:
       return 'IT';
-    case def.AccessType.Employees:
+    case AccessType.Employees:
       return 'CSE';
   }
 }
 
-export function raceString(race: def.Race) {
+export function raceString(race: Race) {
   switch (race) {
-    case def.Race.Luchorpan:
+    case Race.Luchorpan:
       return 'Luchorpán';
-    case def.Race.Valkyrie:
+    case Race.Valkyrie:
       return 'Valkyrie';
-    case def.Race.HumanMaleV:
+    case Race.HumanMaleV:
       return 'Human';
-    case def.Race.HumanMaleA:
+    case Race.HumanMaleA:
       return 'Human';
-    case def.Race.HumanMaleT:
+    case Race.HumanMaleT:
       return 'Human';
-    case def.Race.Pict:
+    case Race.Pict:
       return 'Pict';
   }
 }
 
-export function archetypeString(archetype: def.Archetype) {
+export function archetypeString(archetype: Archetype) {
   switch (archetype) {
-    case def.Archetype.BlackKnight:
+    case Archetype.BlackKnight:
       return 'Black Knight';
-    case def.Archetype.Fianna:
+    case Archetype.Fianna:
       return 'Fianna';
-    case def.Archetype.Mjolnir:
+    case Archetype.Mjolnir:
       return 'Mjölnir';
-    case def.Archetype.Physician:
+    case Archetype.Physician:
       return 'Physician';
-    case def.Archetype.Empath:
+    case Archetype.Empath:
       return 'Empath';
-    case def.Archetype.Stonehealer:
+    case Archetype.Stonehealer:
       return 'Stonehealer';
-    case def.Archetype.Blackguard:
+    case Archetype.Blackguard:
       return 'Black Guard';
-    case def.Archetype.ForestStalker:
+    case Archetype.ForestStalker:
       return 'Forest Stalker';
-    case def.Archetype.WintersShadow:
+    case Archetype.WintersShadow:
       return 'Winter\'s Shadow';
   }
 }

@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { events, ItemPermissions } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
 import ItemStack from '../../ItemShared/ItemStack';
@@ -116,7 +115,7 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
       gearSlotSets.forEach((gearSlotSet) => {
         allGearSlots = [...allGearSlots, ...gearSlotSet.gearSlots as any];
       });
-      events.fire(eventNames.onHighlightSlots, allGearSlots);
+      game.trigger(eventNames.onHighlightSlots, allGearSlots);
     }
     this.setState({ opacity: 0.3 });
     this.props.onDragStart();
@@ -171,7 +170,7 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
 
   public onDragEnd() {
     this.setState({ opacity: 1 });
-    events.fire(eventNames.onDehighlightSlots);
+    game.trigger(eventNames.onDehighlightSlots);
     this.props.onDragEnd();
   }
 

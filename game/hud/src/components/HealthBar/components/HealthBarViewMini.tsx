@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
 
 import { isEqualPlayerState } from 'lib/playerStateEqual';
 import { BodyParts } from 'lib/PlayerStatus';
@@ -22,8 +21,8 @@ const Container = styled('div')`
   position: relative;
   height: ${({ scale }: {scale: number}) => (242 * scale).toFixed(1)}px;
   width: ${({ scale }: {scale: number}) => (392 * scale).toFixed(1)}px;
-  -webkit-animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''}
-  animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''}
+  -webkit-animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''};
+  animation: ${(props: any) => props.shouldShake ? 'shake-hard 0.15s forwards' : ''};
   filter: ${(props: any) => props.isAlive ? 'grayscale(0%)' : 'grayscale(100%)'};
   -webkit-filter: ${(props: any) => props.isAlive ? 'grayscale(0%)' : 'grayscale(100%)'};
 `;
@@ -103,7 +102,7 @@ const HealthBars = styled('div')`
   position: absolute;
   top: ${({ scale }: {scale: number}) => (74 * scale).toFixed(1)}px;
   left: ${({ scale }: {scale: number}) => (118 * scale).toFixed(1)}px;
-  display: flex:
+  display: flex;
   flex-direction: column;
 `;
 
@@ -141,7 +140,7 @@ const StaminaBar = styled('div')`
 
 export interface HealthBarViewProps {
   shouldShake: boolean;
-  playerState: PlayerState | GroupMemberState;
+  playerState: Player;
 }
 
 export interface HealthBarViewState {
@@ -156,7 +155,7 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
     const faction = getFaction(playerState);
     const scale = 0.33;
 
-    const isLeader = !!(this.props.playerState as GroupMemberState).isLeader;
+    const isLeader = isGroupMemberState(this.props.playerState) ? this.props.playerState.isLeader : false;
     return (
       <Container shouldShake={this.props.shouldShake} isAlive={playerState.isAlive} scale={scale}>
         <NameContainer scale={scale}>

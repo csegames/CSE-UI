@@ -7,7 +7,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { client, bodyParts } from '@csegames/camelot-unchained';
 
 export interface BodyPartHealthStyles {
   healthInfoContainer: React.CSSProperties;
@@ -113,7 +112,7 @@ export const healthBodyParts = {
 
 interface BodyPartItemProps {
   isRightPart: boolean;
-  bodyPart: bodyParts;
+  bodyPart: BodyPart;
   iconName: string;
   marginBottom?: number;
 }
@@ -136,8 +135,8 @@ class BodyPartItem extends React.PureComponent<BodyPartItemProps> {
 
   private getMaxHealth = () => {
     const { bodyPart } = this.props;
-    if (client.playerState.health[bodyPart]) {
-      return client.playerState.health[bodyPart].max;
+    if (game.selfPlayerState.health[bodyPart]) {
+      return game.selfPlayerState.health[bodyPart].max;
     }
 
     return 'N/A';
@@ -149,18 +148,28 @@ class BodyPartHealth extends React.Component<BodyPartHealthProps, {}> {
     return (
       <HealthInfoContainer>
         <SectionContainer>
-          <BodyPartItem marginBottom={5} isRightPart={false} bodyPart={bodyParts.LEFTARM} iconName={'icon-health-arm'} />
-          <BodyPartItem isRightPart={true} bodyPart={bodyParts.RIGHTARM} iconName={'icon-health-arm'} />
+          <BodyPartItem
+            marginBottom={5}
+            isRightPart={false}
+            bodyPart={window.BodyPart.LeftArm}
+            iconName={'icon-health-arm'}
+          />
+          <BodyPartItem isRightPart={true} bodyPart={window.BodyPart.RightArm} iconName={'icon-health-arm'} />
         </SectionContainer>
 
         <SectionContainer>
-          <BodyPartItem marginBottom={5} isRightPart={false} bodyPart={bodyParts.HEAD} iconName={'icon-health-head'} />
-          <BodyPartItem isRightPart={false} bodyPart={bodyParts.TORSO} iconName={'icon-health-torso'} />
+          <BodyPartItem marginBottom={5} isRightPart={false} bodyPart={window.BodyPart.Head} iconName={'icon-health-head'} />
+          <BodyPartItem isRightPart={false} bodyPart={window.BodyPart.Torso} iconName={'icon-health-torso'} />
         </SectionContainer>
 
         <SectionContainer>
-          <BodyPartItem marginBottom={5} isRightPart={false} bodyPart={bodyParts.LEFTLEG} iconName={'icon-health-leg'} />
-          <BodyPartItem isRightPart={true} bodyPart={bodyParts.RIGHTLEG} iconName={'icon-health-leg'} />
+          <BodyPartItem
+            marginBottom={5}
+            isRightPart={false}
+            bodyPart={window.BodyPart.LeftLeg}
+            iconName={'icon-health-leg'}
+          />
+          <BodyPartItem isRightPart={true} bodyPart={window.BodyPart.RightLeg} iconName={'icon-health-leg'} />
         </SectionContainer>
       </HealthInfoContainer>
     );

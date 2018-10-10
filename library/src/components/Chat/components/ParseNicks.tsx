@@ -3,8 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { events } from '../../../';
-
 import * as React from 'react';
 
 import ChatSession from './ChatSession';
@@ -15,7 +13,7 @@ function fromText(text: string, keygen: () => number): JSX.Element[] {
     <span
       key={ keygen() }
       className='chat-nickname'
-      onClick={ () => { events.fire('cse-chat-private-message', text); } }>
+      onClick={ () => { game.trigger('cse-chat-private-message', text); } }>
         { text }
     </span>,
   ];

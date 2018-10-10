@@ -9,7 +9,6 @@ import * as _ from 'lodash';
 import styled from 'react-emotion';
 
 import { isEqualPlayerState } from '../lib/playerStateEqual';
-import { client, PlayerState } from '@csegames/camelot-unchained';
 import HealthBar from './HealthBar';
 import { showFriendlyTargetContextMenu } from 'actions/contextMenu';
 
@@ -27,11 +26,12 @@ export interface PlayerHealthProps {
 }
 
 export interface PlayerHealthState {
-  playerState: PlayerState;
+  playerState: Player;
   showContextMenu: boolean;
 }
 
 class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
+  private eventHandles: EventHandle[] = [];
   constructor(props: PlayerHealthProps) {
     super(props);
     this.state = {
@@ -52,7 +52,13 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 
   public componentDidMount() {
-    client.OnFriendlyTargetStateChanged(this.setPlayerState);
+    this.eventHandles.push(game.friendlyTargetState.onUpdated(() => {
+      this.setPlayerState(game.friendlyTargetState as Player);
+    }));
+  }
+
+  public componentWillUnmount() {
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   public shouldComponentUpdate(nextProps: PlayerHealthProps, nextState: PlayerHealthState) {
@@ -60,7 +66,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
       nextState.showContextMenu !== this.state.showContextMenu;
   }
 
-  private setPlayerState = (playerState: PlayerState) => {
+  private setPlayerState = (playerState: Player) => {
     this.setState({ playerState });
   }
 

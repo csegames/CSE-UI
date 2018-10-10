@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import client from '../core/client';
 
 export interface InputStyle {
   inputWrapper: React.CSSProperties;
@@ -60,8 +59,6 @@ export const Input = (props: Partial<InputProps>) => {
       {props.label ? <Label style={customStyles.label}>{props.label}</Label> : null}
       <InputView
         innerRef={r => props.inputRef ? props.inputRef(r) : null}
-        onClick={() => client.RequestInputOwnership()}
-        onBlur={() => client.ReleaseInputOwnership()}
         style={styles.input}
         {...inputProps}
       />

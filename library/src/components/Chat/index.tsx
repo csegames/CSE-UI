@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { events, client, parseMessageForSlashCommand } from '../../';
+import { parseMessageForSlashCommand } from '../../';
 
 import ChatSession from './components/ChatSession';
 import ChatRoomInfo from './components/ChatRoomInfo';
@@ -30,7 +30,7 @@ export interface ChatProps {
 }
 
 export class Chat extends React.Component<ChatProps, ChatState> {
-  private _eventHandlers: number[] = [];
+  private _eventHandlers: EventHandle[] = [];
   constructor(props: ChatProps) {
     super(props);
     this.state = this.initialState();
@@ -39,11 +39,11 @@ export class Chat extends React.Component<ChatProps, ChatState> {
     chatConfig.refresh();
 
     // handle updates to chat session
-    this._eventHandlers.push(events.on('chat-session-update', this.update));
-    this._eventHandlers.push(events.on('chat-show-room', this.joinRoom));
-    this._eventHandlers.push(events.on('chat-leave-room', (name: string) =>
+    this._eventHandlers.push(game.on('chat-session-update', this.update));
+    this._eventHandlers.push(game.on('chat-show-room', this.joinRoom));
+    this._eventHandlers.push(game.on('chat-leave-room', (name: string) =>
       this.leaveRoom(new RoomId(name, chatType.GROUP))));
-    this._eventHandlers.push(events.on('chat-options-update', this.optionsUpdated));
+    this._eventHandlers.push(game.on('chat-options-update', this.optionsUpdated));
 
     // Initialize chat settings in localStorage
     initLocalStorage();
@@ -62,8 +62,8 @@ export class Chat extends React.Component<ChatProps, ChatState> {
   }
 
   public componentWillUnmount() {
-    this._eventHandlers.forEach((value: any) => {
-      events.off(value);
+    this._eventHandlers.forEach((handle: EventHandle) => {
+      handle.clear();
     });
   }
 
@@ -135,7 +135,7 @@ export class Chat extends React.Component<ChatProps, ChatState> {
     if (parseMessageForSlashCommand(command)) return true;
     const cmd = new SlashCommand(command);
     if (cmd.exec(this.state.chat)) return true;
-    client.SendSlashCommand(command);
+    game.sendSlashCommand(command);
     return true;
   }
 

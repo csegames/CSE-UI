@@ -4,17 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, hasClientAPI } from '@csegames/camelot-unchained';
-
 export function slash(command: string, callback?: (response: any) => void) {
-  if (hasClientAPI()) {
-    // If the / command includes a callback, then send the response
-    // back to the caller
-    if (callback) listen(callback);
-    client.SendSlashCommand(command);
-  } else {
-    if (callback) callback({ type: 'complete', complete: 'Simulated completion' });
-  }
+  if (callback) listen(callback);
+  game.sendSlashCommand(command);
 }
 
 let listening = 0;
@@ -39,54 +31,52 @@ function delaySend() {
 }
 
 export function listen(cb: any) {
-  if (hasClientAPI()) {
-    callbacks[++listening] = cb;
-    function cancel() {
-      delete callbacks[this.id];
-    }
-    const res = {
-      id: listening,
-      cancel,
-    };
-    if (listening > 1) return res;
-    client.OnConsoleText((text: string) => {
-      const lines = text.split(/[\r\n]/g);
-      const what = lines[0];
-      switch (what) {
-        default:
-          // ERROR: prefixed errors
-          if (text.match(/^ERROR: /)) {
-            response.type = 'error';
-            const errors = text.substr(7).split('\n');
-            response.errors = (response.errors || []).concat(errors);
-            return;
-          }
-
-          // Errors possibly
-          if (text.match(/^Tried /)
-            || text.match(/^No nearby /)                    // for /harvest
-            || text.match(/^Failed /)
-          ) {
-            response.type = 'error';
-            (response.errors = response.errors || []).push(text);
-            return;
-          }
-
-          // Signals the end of the / command
-          if (text.match(/^Running /)) {
-            response.complete = text;
-            delaySend();
-            return;
-          }
-
-          (response.unknown = response.unknown || []).push(text);
-          break;
-      }
-    });
-    return res;
+  callbacks[++listening] = cb;
+  function cancel() {
+    delete callbacks[this.id];
   }
+  const res = {
+    id: listening,
+    cancel,
+  };
+  if (listening > 1) return res;
+  game.onConsoleText((text: string) => {
+    const lines = text.split(/[\r\n]/g);
+    const what = lines[0];
+    switch (what) {
+      default:
+        // ERROR: prefixed errors
+        if (text.match(/^ERROR: /)) {
+          response.type = 'error';
+          const errors = text.substr(7).split('\n');
+          response.errors = (response.errors || []).concat(errors);
+          return;
+        }
+
+        // Errors possibly
+        if (text.match(/^Tried /)
+          || text.match(/^No nearby /)                    // for /harvest
+          || text.match(/^Failed /)
+        ) {
+          response.type = 'error';
+          (response.errors = response.errors || []).push(text);
+          return;
+        }
+
+        // Signals the end of the / command
+        if (text.match(/^Running /)) {
+          response.complete = text;
+          delaySend();
+          return;
+        }
+
+        (response.unknown = response.unknown || []).push(text);
+        break;
+    }
+  });
+  return res;
 }
 
 export const isClient = () => {
-  return hasClientAPI();
+  return true;
 };

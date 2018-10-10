@@ -5,8 +5,6 @@
  */
 
 import { request as httpRequest, RequestOptions } from '../utils/request';
-import { withDefaults } from '../utils/withDefaults';
-import { ObjectMap } from '../utils/ObjectMap';
 import { DocumentNode } from 'graphql';
 import * as Raven from 'raven-js';
 
@@ -51,7 +49,7 @@ export interface GraphQLQuery {
   operationName: string | null;
   namedQuery: string | null;
   query: string | LegacyGraphqlDocumentNode | DocumentNode;
-  variables: ObjectMap<any> | null;
+  variables: Dictionary<any> | null;
 }
 
 export const defaultQuery: GraphQLQuery = {

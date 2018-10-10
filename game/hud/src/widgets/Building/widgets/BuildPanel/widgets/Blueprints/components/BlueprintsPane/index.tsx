@@ -7,8 +7,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { BuildingBlueprint } from '@csegames/camelot-unchained';
-
 import { GlobalState } from '../../services/session/reducer';
 import blueprintService from '../../services/session/requester';
 import { BlueprintsState } from '../../services/session/blueprints';
@@ -75,7 +73,7 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
     );
   }
 
-  private onBlueprintSelect = (blueprint: BuildingBlueprint) => {
+  private onBlueprintSelect = (blueprint: Blueprint) => {
     if (blueprint != null && blueprint.icon == null) {
       blueprintService.loadIcon(blueprint);
     }
@@ -84,7 +82,7 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
       name: 'Blueprint',
       description: blueprint.name,
       element: (<img src={'data:image/png;base64,' + blueprint.icon}/>),
-      id: blueprint.index + '-' + BuildingItemType.Blueprint,
+      id: blueprint.id + '-' + BuildingItemType.Blueprint,
       type: BuildingItemType.Blueprint,
       select: () => { this.selectBlueprint(blueprint); },
 
@@ -118,12 +116,12 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
     blueprintService.paste();
   }
 
-  private selectBlueprint = (blueprint: BuildingBlueprint) => {
+  private selectBlueprint = (blueprint: Blueprint) => {
     blueprintService.select(blueprint);
     this.onBlueprintSelect(blueprint);
   }
 
-  private hoverBlueprint = (blueprint: BuildingBlueprint) => {
+  private hoverBlueprint = (blueprint: Blueprint) => {
     if (blueprint != null && blueprint.icon == null) {
       blueprintService.loadIcon(blueprint);
     }
@@ -133,7 +131,7 @@ class BlueprintsPane extends React.Component<BlueprintsPaneProps, BlueprintsPane
 
   private createSaveView(bpState: BlueprintsState) {
     if (this.state.saveMode) {
-      const blueprintNames: string[] = bpState.blueprints.map((bp: BuildingBlueprint) => { return bp.name; });
+      const blueprintNames: string[] = bpState.blueprints.map((bp: Blueprint) => { return bp.name; });
       return (<BlueprintSaveView
         onSave={(name: string) => this.triggerSaveBlueprint(name) }
         onCancel={() => this.triggerCancelSave() }

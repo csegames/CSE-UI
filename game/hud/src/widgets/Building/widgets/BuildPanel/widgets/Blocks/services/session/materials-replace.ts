@@ -4,29 +4,28 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { BuildingMaterial } from '@csegames/camelot-unchained';
 import assign from 'object-assign';
 
 const BLOCKS_SELECTED = 'buildpanel/panes/BLOCKS_SELECTED';
 const SELECT_FROM_MATERIAL = 'buildpanel/panes/SELECT_FROM_MATERIAL';
 const SELECT_TO_MATERIAL = 'buildpanel/panes/SELECT_TO_MATERIAL';
 
-const DEFAULT_MATERIAL: BuildingMaterial = new BuildingMaterial({
+const DEFAULT_MATERIAL: Material = {
   id: -1,
   icon: '',
   tags: ['default'],
   blocks: [],
-} as BuildingMaterial);
+} as Material;
 
 
-export function selectFromMaterial(material: BuildingMaterial) {
+export function selectFromMaterial(material: Material) {
   return {
     type: SELECT_FROM_MATERIAL,
     selectedMaterial: material,
   };
 }
 
-export function selectToMaterial(material: BuildingMaterial) {
+export function selectToMaterial(material: Material) {
   return {
     type: SELECT_TO_MATERIAL,
     selectedMaterial: material,
@@ -41,8 +40,8 @@ export function setBlockMode(blocksSelected: boolean) {
 }
 
 export interface MaterialsReplaceState {
-  from: BuildingMaterial;
-  to: BuildingMaterial;
+  from: Material;
+  to: Material;
   blocksSelected: boolean;
 }
 

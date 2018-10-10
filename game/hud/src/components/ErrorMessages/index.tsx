@@ -4,85 +4,62 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, events } from '@csegames/camelot-unchained';
 import * as React from 'react';
 
-interface ErrorMessageAppProps { }
+export interface ErrorMessagesProps {}
 
-class ErrorMessagesAppState {
-  public items: string[];
-
-  constructor() {
-    this.items = [];
-  }
+interface ErrorMessagesState {
+  messages: string[];
 }
 
-class ErrorMessagesApp extends React.Component<ErrorMessageAppProps, ErrorMessagesAppState> {
-  constructor(props: any) {
-    super(props);
 
-    this.state = new ErrorMessagesAppState();
+class ErrorMessages extends React.Component<ErrorMessagesProps, ErrorMessagesState> {
+  private eventHandles: EventHandle[] = [];
+  private timeouts: NodeJS.Timer[] = [];
 
-    this.init = this.init.bind(this);
-    this.removeMessage = this.removeMessage.bind(this);
-    events.on('init', this.init);
-  }
+  public state = {
+    messages: [] as string[],
+  };
 
   public render() {
     return (
       <ul id='messages'>
-        {this.state.items.map(this.getMessageNodes)}
+        {this.state.messages.map((message, index) => (
+          <li className='message' key={index}>{message}</li>
+        ))}
       </ul>
     );
   }
 
-  private init() {
-    client.OnAbilityError((message: any) => {
-      const newErrorMessage = this.getMessageText(parseInt(message, 10));
-
-      if (!newErrorMessage) {
-        return;
-      }
-
-      // add the new error to the top of the array
-      const nextItems = [...newErrorMessage].concat(this.state.items);
-      this.setState({ items: nextItems });
-
-      setTimeout(this.removeMessage, 3000);
-    });
+  public componentDidMount() {
+    this.eventHandles.push(game.onCombatEvent((events: CombatEvent[]) => {
+      const messages = events.reduce((errors: string[], event) => {
+        if (event.errors) {
+          return errors.concat(event.errors.map(item => item.msg));
+        }
+        return errors;
+      }, [] as string[]);
+      this.setState((prevState: ErrorMessagesState) => ({
+        messages: messages.concat(prevState.messages),
+      }));
+      this.timeouts.push(setTimeout(() => {
+        this.setState((prevState: ErrorMessagesState) => {
+          const nextMessages = [].concat(prevState.messages);
+          for (let i = 0; i < messages.length; i++) {
+            nextMessages.pop();
+          }
+          return {
+            messages: nextMessages,
+          };
+        });
+      }, 3000));
+    }));
   }
 
-  private removeMessage() {
-    // remove the bottom item from the array
-    if (0 === this.state.items.length) {
-      return;
-    }
-
-    const nextItems = this.state.items;
-    const startIndex = nextItems.length - 1;
-    nextItems.splice(startIndex, 1);
-    this.setState({ items: nextItems });
-  }
-
-  private getMessageText(mId: number): string {
-    switch (mId) {
-      case 1: return 'Your target is out of range.';
-      case 2: return 'Your target is invalid.';
-      case 3: return 'Your target is not in line of sight.';
-      case 4: return 'That ability is still on cooldown.';
-      case 5: return 'You don\'t have a target.';
-      case 6: return 'You were interrupted!';
-      case 7: return 'You do not have enough stamina.';
-      case 8: return 'You aren\'t in the right stance.';
-      default: return '';
-    }
-  }
-
-  private getMessageNodes(message: string, index: number) {
-    return (
-      <li className='message' key={index}>{message}</li>
-    );
+  public componentWillUnmount() {
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
+    this.timeouts.forEach(timeout => clearTimeout(timeout));
   }
 }
 
-export default ErrorMessagesApp;
+export default ErrorMessages;

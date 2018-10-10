@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'react-emotion';
-import { toTitleCase } from '@csegames/camelot-unchained/lib/utils/textUtils';
 
 import { States, DataMapper } from './types';
 import ObjectDisplay from '.';
@@ -51,7 +50,7 @@ class StatusObject extends React.Component<Props, State> {
           onClick={this.toggleCollapsed}
         >
           <Indicator>{this.state.collapsed ? '+' : '-'}</Indicator>
-          {toTitleCase(this.props.title)}
+          {this.props.title.toTitleCase()}
         </Title>
         {
           this.state.collapsed ? null :

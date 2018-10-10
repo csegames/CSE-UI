@@ -4,9 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, events } from '@csegames/camelot-unchained';
 import { defaultConfig } from '@csegames/camelot-unchained/lib/webAPI/config';
-import { GroupsAPI, GroupMemberState } from '@csegames/camelot-unchained/lib/webAPI/definitions';
+import { GroupsAPI } from '@csegames/camelot-unchained/lib/webAPI/definitions';
 
 import { sendSystemMessage } from './system';
 
@@ -22,8 +21,8 @@ async function inviteToWarband(characterID: string, characterName: string, warba
   try {
     const result = await GroupsAPI.InviteV1(
       defaultConfig,
-      client.shardID,
-      client.characterID,
+      game.shardID,
+      game.selfPlayerState.characterID,
       warbandID,
       characterID,
       characterName,
@@ -56,8 +55,8 @@ async function kickFromWarband(targetEntityID: string, targetCharacterID: string
   try {
     const result = await GroupsAPI.KickV1(
       defaultConfig,
-      client.shardID,
-      client.characterID,
+      game.shardID,
+      game.selfPlayerState.characterID,
       warbandID,
       targetEntityID,
       targetCharacterID,
@@ -94,8 +93,8 @@ export async function quitWarband() {
   try {
     const result = await GroupsAPI.QuitV1(
       defaultConfig,
-      client.shardID,
-      client.characterID,
+      game.shardID,
+      game.selfPlayerState.characterID,
       getStateObject().id,
     );
 
@@ -138,11 +137,11 @@ export function getActiveWarbandID() {
 export function setActiveWarbandID(id: string) {
   const stateObjectID = getStateObject().id;
   if (stateObjectID) {
-    events.fire('chat-leave-room', stateObjectID);
+    game.trigger('chat-leave-room', stateObjectID);
   }
 
   if (typeof id === 'string') {
-    events.fire('chat-show-room', id, 'Warband');
+    game.trigger('chat-show-room', id, 'Warband');
   }
   getStateObject().id = id;
   getStateObject().membersMap = {};
@@ -151,8 +150,8 @@ export function setActiveWarbandID(id: string) {
 
 export function onWarbandMemberUpdate(member: GroupMemberState) {
   getStateObject().membersMap[member.characterID] = member;
-  if (member.id) {
-    getStateObject().membersEntityIDMap[member.id] = member;
+  if (member.entityID) {
+    getStateObject().membersEntityIDMap[member.entityID] = member;
   }
 }
 
@@ -160,7 +159,7 @@ export function onWarbandMemberRemoved(characterID: string) {
   const m = getStateObject().membersMap[characterID];
   if (m) {
     delete getStateObject().membersMap[characterID];
-    delete getStateObject().membersEntityIDMap[m.id];
+    delete getStateObject().membersEntityIDMap[m.entityID];
   }
 }
 

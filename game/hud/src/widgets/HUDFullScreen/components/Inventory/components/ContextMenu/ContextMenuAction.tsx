@@ -9,7 +9,7 @@ import gql from 'graphql-tag';
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { utils, client } from '@csegames/camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { InventoryItem, ContextMenuActionGQL } from 'gql/interfaces';
 
@@ -83,7 +83,7 @@ class ContextMenuAction extends React.Component<Props, State> {
     const { name, action } = this.props;
     const variables: ContextMenuActionGQL.Variables = {
       id: this.props.itemId,
-      shardID: client.shardID,
+      shardID: game.shardID,
     };
     return (action && !action.enabled && !action.showWhenDisabled) ? null : (
       <Button disabled={shouldQuery || cooldownLeft !== '' || (action && !action.enabled)} onClick={this.onActionClick}>

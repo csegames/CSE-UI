@@ -8,8 +8,6 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { setDragStoreInfo, getDragStore, defaultDragStoreState } from './DragStore';
 
-import { Omit } from '@csegames/camelot-unchained/lib/utils/typeUtils';
-
 export interface PositionInformation {
   top: number;
   left: number;

@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import { filter } from 'lodash';
-import { events } from '@csegames/camelot-unchained';
 import { Container, InputContainer, Button, ButtonOverlay } from './lib/styles';
 import { IInteractiveAlert, ProgressionAlert } from 'gql/interfaces';
 
@@ -44,7 +43,7 @@ export class ProgressionAlertView extends React.Component<Props, State> {
   }
 
   private onOpenProgressionClick = () => {
-    events.fire('hudnav--navigate', 'progression', true);
+    game.trigger('hudnav--navigate', 'progression', true);
     this.props.remove(this.props.alert);
   }
 

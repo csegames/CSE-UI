@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ContextMenu, events } from '@csegames/camelot-unchained';
+import { ContextMenu } from '@csegames/camelot-unchained';
 
 import { DrawerCurrentStats } from './Containers/Drawer';
 import ContextMenuContent from './ContextMenu/ContextMenuContent';
@@ -196,10 +196,10 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
           (isRightOrLeftItem(gearSlotSets[0].gearSlots) && isRightOrLeftItem(gearSlotSets[1].gearSlots))) {
 
           this.props.onRightOrLeftItemAction(item, (gearSlots) => {
-            events.fire(eventNames.onHighlightSlots, gearSlots);
+            game.trigger(eventNames.onHighlightSlots, gearSlots);
           });
         } else {
-          events.fire(eventNames.onHighlightSlots, this.props.item.item.staticDefinition.gearSlotSets[0].gearSlots);
+          game.trigger(eventNames.onHighlightSlots, this.props.item.item.staticDefinition.gearSlotSets[0].gearSlots);
         }
       }
     }
@@ -208,7 +208,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
   private onMouseLeave = () => {
     this.mouseOver = false;
     this.props.hideTooltip();
-    events.fire(eventNames.onDehighlightSlots);
+    game.trigger(eventNames.onDehighlightSlots);
   }
 
   private onEquipItem = () => {
@@ -250,8 +250,8 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
             newItem: inventoryItemDataTransfer,
             willEquipTo: gearSlots,
           };
-          events.fire(eventNames.onEquipItem, payload);
-          events.fire(eventNames.onDehighlightSlots);
+          game.trigger(eventNames.onEquipItem, payload);
+          game.trigger(eventNames.onDehighlightSlots);
         });
         return;
       }
@@ -261,8 +261,8 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
         newItem: inventoryItemDataTransfer,
         willEquipTo: this.props.item.item.staticDefinition.gearSlotSets[0].gearSlots,
       };
-      events.fire(eventNames.onEquipItem, payload);
-      events.fire(eventNames.onDehighlightSlots);
+      game.trigger(eventNames.onEquipItem, payload);
+      game.trigger(eventNames.onDehighlightSlots);
     }
   }
 }

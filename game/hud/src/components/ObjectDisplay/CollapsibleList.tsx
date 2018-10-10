@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'react-emotion';
-import { toTitleCase } from '@csegames/camelot-unchained/lib/utils/textUtils';
 
 import { States, DataMapper } from './types';
 import ObjectDisplay from '.';
@@ -128,7 +127,7 @@ class CollapsibleList extends React.Component<Props, { collapsed: boolean }> {
           collapsed={this.state.collapsed}
         >
           <Indicator>{this.state.collapsed ? '+' : '-'}</Indicator>
-          {toTitleCase(this.props.keyName)}
+          {this.props.keyName.toTitleCase()}
           {warnings ? <Warn><i className='fas fa-exclamation-triangle'></i></Warn> : null }
           <Count>{this.props.data.length}</Count>
         </Title>

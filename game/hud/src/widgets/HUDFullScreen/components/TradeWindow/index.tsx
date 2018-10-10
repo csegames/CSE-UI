@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import { includes } from 'lodash';
-import { client, events } from '@csegames/camelot-unchained';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
@@ -66,11 +65,11 @@ const subscriptionQuery = gql`
   }
   ${InventoryItemFragment}
 `;
-const subscriptionUrl =  client.apiHost + '/graphql'.replace('http', 'ws');
+const subscriptionUrl =  game.webAPIHost + '/graphql'.replace('http', 'ws');
 const subscriptionInitPayload = {
-  shardID: client.shardID,
-  Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
-  characterID: client.characterID,
+  shardID: game.shardID,
+  Authorization: `Bearer ${game.accessToken}`,
+  characterID: game.selfPlayerState.characterID,
 };
 
 export interface InjectedTradeWindowProps {
@@ -203,18 +202,18 @@ class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindow
     this.props.onMyTradeItemsChange([]);
     this.onTheirTradeItemsChange([]);
 
-    events.fire('hudnav--navigate', 'trade', false);
+    game.trigger('hudnav--navigate', 'trade', false);
     this.sendCompleteMessage(reason);
   }
 
   private sendCompleteMessage = (reason: SecureTradeDoneReason) => {
     switch (reason) {
       case SecureTradeDoneReason.Completed: {
-        events.fire('passivealert--newmessage', 'Trade Complete');
+        game.trigger('passivealert--newmessage', 'Trade Complete');
         break;
       }
       case SecureTradeDoneReason.Canceled: {
-        events.fire('passivealert--newmessage', 'Trade Canceled');
+        game.trigger('passivealert--newmessage', 'Trade Canceled');
         break;
       }
     }

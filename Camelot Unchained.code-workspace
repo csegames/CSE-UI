@@ -10,6 +10,9 @@
       "path": "game\\hud"
     },
     {
+      "path": "game\\loadingScreen"
+    },
+    {
       "path": "game\\perfhud"
     },
     {

@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { webAPI, client } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 
 import LockedOverlay from './LockedOverlay';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
@@ -219,8 +219,8 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
         const tradeItem = { ItemID: item.id, UnitCount: item.stats.item.unitCount };
         const res = await webAPI.SecureTradeAPI.RemoveItem(
           webAPI.defaultConfig,
-          client.shardID,
-          client.characterID,
+          game.shardID,
+          game.selfPlayerState.characterID,
           tradeItem.ItemID,
           tradeItem.UnitCount,
         );
@@ -261,8 +261,8 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
         const tradeItem = { ItemID: _tradeItem.id, UnitCount: _tradeItem.stats.item.unitCount };
         const res = webAPI.SecureTradeAPI.AddItem(
           webAPI.defaultConfig,
-          client.shardID,
-          client.characterID,
+          game.shardID,
+          game.selfPlayerState.characterID,
           tradeItem.ItemID,
           tradeItem.UnitCount,
         );
@@ -286,8 +286,8 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
       const tradeItem = { ItemID: e.dataTransfer.item.id, UnitCount: e.dataTransfer.item.stats.item.unitCount };
       const res = await webAPI.SecureTradeAPI.AddItem(
         webAPI.defaultConfig,
-        client.shardID,
-        client.characterID,
+        game.shardID,
+        game.selfPlayerState.characterID,
         tradeItem.ItemID,
         tradeItem.UnitCount,
       );

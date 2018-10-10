@@ -5,11 +5,9 @@
  */
 
 import * as React from 'react';
-import { client } from '@csegames/camelot-unchained';
 import { TabbedDialog, DialogTab, DialogButton } from 'UI/TabbedDialog';
 import { PopupDialog, Container } from './PopupDialog';
 import { CheckBoxField } from 'UI/CheckBoxField';
-import { getKeybindNames } from '../utils/keyboard';
 
 const DIALOG_SIZE: React.CSSProperties = {
   width: '400px',
@@ -19,14 +17,14 @@ const DIALOG_SIZE: React.CSSProperties = {
 };
 
 interface LoadProps {
-  load: (name: string) => void;
-  remove: (name: string) => void;
+  names: string[];
+  onLoad: (name: string) => void;
+  onRemove: (name: string) => void;
   onClose: () => void;
   style?: any;
 }
 
 interface LoadState {
-  names: string[];
   selected: string;
 }
 
@@ -36,24 +34,18 @@ const DELETE: DialogButton = { label: 'Delete' };
 export class Load extends React.PureComponent<LoadProps, LoadState> {
   constructor(props: LoadProps) {
     super(props);
-    this.state = { selected: null, names: [] };
-  }
-  public componentDidMount() {
-    this.setState({ names: getKeybindNames() });
-    client.RequestInputOwnership();
-  }
-  public componentWillUnmount() {
-    client.ReleaseInputOwnership();
+    this.state = { selected: '' };
   }
   public render() {
     const { selected } = this.state;
     return (
       <PopupDialog style={DIALOG_SIZE}>
-        <TabbedDialog title='load keybinds' heading={false} onClose={this.onClose}>
+        <TabbedDialog title='load keybinds' heading={false} onClose={this.props.onClose}>
         {(tab: DialogButton) =>
           <DialogTab buttons={[SAVE, DELETE]} onAction={this.onAction}>
             <Container>
-              { this.state.names.map((name: string) => (
+              { this.props.names.length === 0 ? <span>No Saved Keybind Sets</span> : null}
+              { this.props.names.map((name: string) => (
                 <CheckBoxField
                   key={name}
                   label={name}
@@ -72,19 +64,14 @@ export class Load extends React.PureComponent<LoadProps, LoadState> {
     const { selected } = this.state;
     switch (action) {
       case SAVE:
-        if (selected) this.props.load(selected);
+        if (selected) this.props.onLoad(selected);
         break;
       case DELETE:
         if (selected) {
-          this.props.remove(selected);
-          this.setState({ names: getKeybindNames() });
+          this.props.onRemove(selected);
         }
         break;
     }
-  }
-
-  private onClose = () => {
-    this.props.onClose();
   }
 }
 

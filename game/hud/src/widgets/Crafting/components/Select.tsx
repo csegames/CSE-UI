@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { client, soundEvents } from '@csegames/camelot-unchained';
 import { StyleSheet, cssAphrodite, merge, select, SelectStyles } from '../styles';
 
 export interface SelectProps {
@@ -77,7 +76,8 @@ class Select extends React.Component<SelectProps, SelectState> {
   private onClick = (e: React.MouseEvent<HTMLDivElement>, showList: boolean) => {
     if (!this.props.disabled) {
       this.showList(showList);
-      client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_GENERICBUTTON);
+      // TODO COHERENT missing PLAY_UI_VOX_GENERICBUTTON sound event
+      // game.playGameSound(SoundEvent.PLAY_UI_VOX_GENERICBUTTON);
     }
     e.stopPropagation();
   }
@@ -87,7 +87,8 @@ class Select extends React.Component<SelectProps, SelectState> {
   }
 
   private onItemSelect = (item: any, itemIndex: number) => {
-    client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_GENERICBUTTON);
+    // TODO COHERENT missing PLAY_UI_VOX_GENERICBUTTON sound event
+    // game.playGameSound(SoundEvent.PLAY_UI_VOX_GENERICBUTTON);
     this.setState({
       selectedIndex: itemIndex,
       showList: false,

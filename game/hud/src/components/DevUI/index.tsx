@@ -9,20 +9,16 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
 
-// @ts-ignore
-import { client, webAPI, events } from '@csegames/camelot-unchained';
+import { webAPI, GameInterface } from '@csegames/camelot-unchained';
 import { TabPanel } from '@csegames/camelot-unchained/lib/components';
-import { ObjectMap } from '@csegames/camelot-unchained/lib/utils/ObjectMap';
 import { GraphQL, GraphQLData } from '@csegames/camelot-unchained/lib/graphql/react';
 import { GraphQLQuery } from '@csegames/camelot-unchained/lib/graphql/query';
-import ClientInterface from '@csegames/camelot-unchained/lib/core/clientInterface';
 import HUDZOrder from 'services/session/HUDZOrder';
 
 type Content = string | ObjectMap<any>;
 
 // @ts-ignore:no-unused-locals
 window['webAPI'] = webAPI;
-window['events'] = events;
 
 export interface Button {
   title: string;
@@ -77,20 +73,20 @@ const Button = styled('div')`
   },
 `;
 
-function evalContext(namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any>, client: ClientInterface }) {
+function evalContext(namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any>, game: GameInterface }) {
   // @ts-ignore: no-unused-locals
   const data = namespaces.data;
   // @ts-ignore: no-unused-locals
   const graphql = namespaces.graphql;
   // @ts-ignore: no-unused-locals
-  const client = namespaces.client;
+  const game = namespaces.game;
   // tslint:disable-next-line
   return (s: string) => { return eval(s); };
 }
 
 // @ts-ignore: no-unused-locals
 function parseTemplate(template: any,
-    namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any>, client: ClientInterface  }) {
+    namespaces: { data: ObjectMap<any>, graphql: ObjectMap<any>, game: GameInterface  }) {
   const ctx = evalContext(namespaces);
 
   // Replace statements wrapped with %% with their retrieved data ex.) %% graphql.data.myCharacter.name %%
@@ -105,9 +101,9 @@ class DevUIButton extends React.PureComponent<Button> {
       <Button
           onClick={() => {
             if (this.props.command) {
-              client.SendSlashCommand(this.props.command);
+              game.sendSlashCommand(this.props.command);
             } else if (this.props.call) {
-              const fn = client[this.props.call];
+              const fn = game[this.props.call];
               if (this.props.params) {
                 fn(...this.props.params);
               } else {
@@ -151,7 +147,7 @@ class DevUIStringContent extends React.PureComponent<DevUIStringContentProps> {
                 graphql: {
                   data: graphql.data,
                 },
-                client,
+                game: game as GameInterface,
               });
               return <div dangerouslySetInnerHTML={{ __html: parsedContent }} />;
             } else {
@@ -164,7 +160,7 @@ class DevUIStringContent extends React.PureComponent<DevUIStringContentProps> {
       const parsedContent = parseTemplate(this.props.content, {
         data: this.props.data,
         graphql: null,
-        client,
+        game: game as GameInterface,
       });
       return <div dangerouslySetInnerHTML={{ __html: parsedContent }} />;
     }
@@ -438,8 +434,8 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
   }
 
   public componentDidMount() {
-    events.on('hudnav--navigate', this.onToggleUIVisibility);
-    client.OnUpdateDevUI(this.handleUpdateDevUI);
+    game.on('hudnav--navigate', this.onToggleUIVisibility);
+    game.onUpdateDevUI(this.handleUpdateDevUI);
   }
 
   public componentDidCatch(error: any, info: any) {

@@ -19,9 +19,9 @@
 
 (function () {
   window.cuOverrides = {
-    loginToken: 'developer',
-    characterID: 'ABCDEFG',
-    apiHost: 'https://api.camelotunchained.com',
+    accessToken: 'developer',
+    characterID: 'developer',
+    webAPIHost: 'https://api.camelotunchained.com',
     apiVersion: 1,
     shardID: 1,
     debug: true

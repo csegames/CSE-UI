@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, PlayerState, GroupMemberState } from '@csegames/camelot-unchained';
-
 import { getPlayerEntityID } from './player';
 
 import {
@@ -29,51 +27,63 @@ export type MenuItem = {
 };
 
 export function showContextMenu(items: MenuItem[], event: MouseEvent) {
-  if (items.length) events.fire(ACTIVATE_CONTEXT_MENU, items, event);
+  if (items.length) game.trigger(ACTIVATE_CONTEXT_MENU, items, event);
 }
 
 export function onShowContextMenu(callback: (items: MenuItem[], event: MouseEvent) => void) {
-  return events.on(ACTIVATE_CONTEXT_MENU, callback);
+  return game.on(ACTIVATE_CONTEXT_MENU, callback);
 }
 
 export function offShowContextMenu(handle: number) {
-  events.off(handle);
+  game.off(handle);
 }
 
 export function hideContextMenu() {
-  events.fire(HIDE_CONTEXT_MENU);
+  game.trigger(HIDE_CONTEXT_MENU);
 }
 
 export function onHideContextMenu(callback: () => void) {
-  return events.on(HIDE_CONTEXT_MENU, callback);
+  return game.on(HIDE_CONTEXT_MENU, callback);
 }
 
 export function offHideContextMenu(handle: number) {
-  events.off(handle);
+  game.off(handle);
 }
 
 // SPECIFIC CONTEXT MENUS
 
-export function showFriendlyTargetContextMenu(state: PlayerState | GroupMemberState, event: MouseEvent) {
+export function showFriendlyTargetContextMenu(
+  state: Entity,
+  event: MouseEvent,
+) {
   // is friendly target self?
-  if (getPlayerEntityID() === state.id) {
+  const id = (state as GroupMemberState).entityID;
+  if (getPlayerEntityID() === id) {
     showSelfContextMenu(state, event);
   } else {
     showContextMenu(getFriendlyTargetMenuItems(state), event);
   }
 }
 
-export function showSelfContextMenu(state: PlayerState | GroupMemberState, event: MouseEvent) {
+export function showSelfContextMenu(
+  state: Entity,
+  event: MouseEvent,
+) {
   showContextMenu(getSelfMenuItems(state), event);
 }
 
-export function showEnemyTargetContextMenu(state: PlayerState | GroupMemberState, event: MouseEvent) {
+export function showEnemyTargetContextMenu(
+  state: Entity,
+  event: MouseEvent,
+) {
   showContextMenu(getEnemyTargetMenuItems(state), event);
 }
 
 // CONTEXT MENU GENERATION
 
-export function getSelfMenuItems(state: PlayerState | GroupMemberState) {
+export function getSelfMenuItems(
+  state: Entity,
+) {
   const items: MenuItem[] = [
   ];
 
@@ -87,23 +97,26 @@ export function getSelfMenuItems(state: PlayerState | GroupMemberState) {
   return items;
 }
 
-export function getFriendlyTargetMenuItems(state: PlayerState | GroupMemberState) {
+export function getFriendlyTargetMenuItems(
+  state: Entity,
+) {
+  const id = (state as any).entityID;
   const items: MenuItem[] = [
-    { title: 'Invite to Trade', onSelected: () => inviteToTrade(state.id) },
+    { title: 'Invite to Trade', onSelected: () => inviteToTrade(id) },
   ];
 
-  if (hasActiveWarband() && !isEntityIDInWarband(state.id)) {
+  if (hasActiveWarband() && !isEntityIDInWarband(id)) {
     items.push({
       title: 'Invite to Warband',
       onSelected: () => inviteToWarbandByName(state.name, getActiveWarbandID()),
     });
   }
 
-  if (hasActiveWarband() && isEntityIDInWarband(state.id)) {
+  if (hasActiveWarband() && isEntityIDInWarband(id)) {
 
     items.push({
       title: 'Kick from Warband',
-      onSelected: () => kickFromWarbandByEntityID(state.id, getActiveWarbandID()),
+      onSelected: () => kickFromWarbandByEntityID(id, getActiveWarbandID()),
     });
 
   }
@@ -120,7 +133,9 @@ export function getFriendlyTargetMenuItems(state: PlayerState | GroupMemberState
   return items;
 }
 
-export function getEnemyTargetMenuItems(state: PlayerState | GroupMemberState) {
+export function getEnemyTargetMenuItems(
+  state: Entity,
+) {
   const items: MenuItem[] = [
   ];
   return items;

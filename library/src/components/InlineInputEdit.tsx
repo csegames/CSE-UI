@@ -10,7 +10,6 @@ import {
   FloatSpinner,
   Tooltip,
   Input,
-  events,
 } from '..';
 import { generateID } from 'redux-typed-modules';
 
@@ -148,11 +147,11 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
   }
 
   public componentDidMount() {
-    this.editModeListenerID = events.on(InlineInputEdit.editModeActiveEvent, this.onEditModeActiveEvent);
+    this.editModeListenerID = game.on(InlineInputEdit.editModeActiveEvent, this.onEditModeActiveEvent);
   }
 
   public componentWillUnmount() {
-    events.off(this.editModeListenerID);
+    game.off(this.editModeListenerID);
     this.editModeListenerID = null;
   }
 
@@ -221,7 +220,7 @@ export class InlineInputEdit extends React.Component<InlineInputEditProps, Inlin
     setTimeout(() => {
       if (this.inputRef) this.inputRef.focus();
     }, 200);
-    events.fire(InlineInputEdit.editModeActiveEvent, this.id);
+    game.trigger(InlineInputEdit.editModeActiveEvent, this.id);
   }
 
   private deactivateEditMode = () => {

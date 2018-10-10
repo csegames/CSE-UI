@@ -53,17 +53,17 @@ const ListItem = styled('li')`
   }
 `;
 
-interface DropDownProps {
-  items: string[];
-  selected: string;
-  onSelect: (item: string) => void;
+interface DropDownProps<TValue> {
+  items: TValue[];
+  selected: TValue;
+  onSelect: (item: TValue) => void;
 }
 interface DropDownState {
   open: boolean;
 }
 
-class DropDown extends React.PureComponent<DropDownProps, DropDownState>{
-  constructor(props: DropDownProps) {
+class DropDown<TValue> extends React.PureComponent<DropDownProps<TValue>, DropDownState>{
+  constructor(props: DropDownProps<TValue>) {
     super(props);
     this.state = { open: false };
   }
@@ -91,7 +91,7 @@ class DropDown extends React.PureComponent<DropDownProps, DropDownState>{
   private toggleOpen = (e: React.MouseEvent) => {
     this.setState({ open: !this.state.open });
   }
-  private selectItem = (e: React.MouseEvent, item: string) => {
+  private selectItem = (e: React.MouseEvent, item: TValue) => {
     const { onSelect } = this.props;
     this.setState({ open: false });
     if (onSelect) onSelect(item);
@@ -99,11 +99,10 @@ class DropDown extends React.PureComponent<DropDownProps, DropDownState>{
 }
 
 export interface DropDownFieldProps {
-  id: string;
   label: string;
-  selectedItem: string;
-  items: string[];
-  onSelectItem: (item: DropDownItem) => void;
+  selectedItem: SelectValue;
+  items: SelectValue[];
+  onSelectItem: (value: SelectValue) => void;
 }
 
 export interface DropDownFieldState {
@@ -111,14 +110,14 @@ export interface DropDownFieldState {
 
 export class DropDownField extends React.Component<DropDownFieldProps, DropDownFieldState> {
   public render() {
-    const { id, label, items, selectedItem, onSelectItem } = this.props;
+    const { label, items, selectedItem, onSelectItem } = this.props;
     return (
       <Box>
         <Field style={{ width: '85%' }}>{label}</Field>
         <Field style={{ width: '15%' }}>
         <DropDown
           selected={selectedItem} items={items}
-          onSelect={value => onSelectItem({ id, value })}/>
+          onSelect={value => onSelectItem(value)}/>
         </Field>
       </Box>
     );

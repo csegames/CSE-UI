@@ -5,7 +5,6 @@
  */
 
 import 'es6-promise';
-import 'isomorphic-fetch';
 import * as React from 'react';
 import * as _ from 'lodash';
 import { createStore, applyMiddleware } from 'redux';

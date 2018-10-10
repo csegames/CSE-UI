@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-declare const cuAPI: any;
 
 export default class RespawnLocation {
   public id: number;
@@ -16,7 +15,7 @@ export default class RespawnLocation {
     this.y = y;
   }
   public respawn = (): void => {
-    cuAPI.Respawn(this.id);
+    game.selfPlayerState.respawn(`${this.id}`);
   }
   public calcDistanceFromXY = (x: number, y: number): number => {
     const Dx: number = x - this.x;

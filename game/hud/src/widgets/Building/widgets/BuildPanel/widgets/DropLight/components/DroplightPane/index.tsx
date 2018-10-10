@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { client } from '@csegames/camelot-unchained';
 
 import { BuildingItem, BuildingItemType } from '../../../../../../lib/BuildingItem';
 import { fireBuildingItemSelected } from '../../../../../../services/events';
@@ -82,8 +81,7 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
   }
 
   private triggerDrop = (light: Light) => {
-    client.DropLight(light.intensity, light.radius,
-      light.color.red, light.color.green, light.color.blue);
+    game.plot.dropLight(light.intensity, light.radius, light.color.red, light.color.green, light.color.blue);
   }
 
   private selectLightAsBuildingItem(light: Light) {
@@ -110,11 +108,11 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
   }
 
   private triggerRemove = () => {
-    client.RemoveLight();
+    game.plot.removeLight();
   }
 
   private triggerClear = () => {
-    client.ResetLights();
+    game.plot.resetLights();
   }
 
   private toggleLightSelector = () => {

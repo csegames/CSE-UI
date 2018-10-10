@@ -9,7 +9,6 @@ import styled from 'react-emotion';
 import {
   FloatSpinner,
   Tooltip,
-  events,
   utils,
 } from '..';
 import { generateID } from 'redux-typed-modules';
@@ -168,11 +167,11 @@ export class InlineMultiSelectEdit extends React.Component<InlineMultiSelectEdit
   }
 
   public componentDidMount() {
-    this.editModeListenerID = events.on(InlineMultiSelectEdit.editModeActiveEvent, this.onEditModeActiveEvent);
+    this.editModeListenerID = game.on(InlineMultiSelectEdit.editModeActiveEvent, this.onEditModeActiveEvent);
   }
 
   public componentWillUnmount() {
-    events.off(this.editModeListenerID);
+    game.off(this.editModeListenerID);
     this.editModeListenerID = null;
   }
 
@@ -235,7 +234,7 @@ export class InlineMultiSelectEdit extends React.Component<InlineMultiSelectEdit
       editMode: true,
       showEditButton: false,
     });
-    events.fire(InlineMultiSelectEdit.editModeActiveEvent, this.id);
+    game.trigger(InlineMultiSelectEdit.editModeActiveEvent, this.id);
   }
 
   private deactivateEditMode = () => {

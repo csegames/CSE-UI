@@ -4,13 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import yargs from 'yargs-parser';
-import { fire } from '@csegames/camelot-unchained/lib/events';
 
 export const parseArgs = (args: string): any => yargs(args);
 export const systemMessage = (message: string | Object): void => {
   if (typeof message === 'string') {
-    fire('system_message', message);
+    game.trigger('system_message', message);
   } else {
-    fire('system_message', JSON.stringify(message));
+    game.trigger('system_message', JSON.stringify(message));
   }
 };

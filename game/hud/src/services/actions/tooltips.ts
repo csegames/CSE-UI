@@ -5,8 +5,6 @@
  *
  */
 
-import { events } from '@csegames/camelot-unchained';
-
 // BASIC MANAGEMENT
 
 export const ACTIVATE_TOOLTIP = 'active-tooltip';
@@ -26,25 +24,17 @@ export interface ShowTooltipPayload {
 }
 
 export function showTooltip(payload: ShowTooltipPayload) {
-  events.fire(ACTIVATE_TOOLTIP, payload);
+  game.trigger(ACTIVATE_TOOLTIP, payload);
 }
 
 export function hideTooltip() {
-  events.fire(HIDE_TOOLTIP);
+  game.trigger(HIDE_TOOLTIP);
 }
 
 export function onShowTooltip(callback: (payload: ShowTooltipPayload) => void) {
-  return events.on(ACTIVATE_TOOLTIP, callback);
-}
-
-export function offShowTooltip(handle: number) {
-  events.off(handle);
+  return game.on(ACTIVATE_TOOLTIP, callback);
 }
 
 export function onHideTooltip(callback: () => void) {
-  return events.on(HIDE_TOOLTIP, callback);
-}
-
-export function offHideTooltip(handle: number) {
-  events.off(handle);
+  return game.on(HIDE_TOOLTIP, callback);
 }

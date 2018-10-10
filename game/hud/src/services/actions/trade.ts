@@ -5,7 +5,7 @@
  *
  */
 
-import { webAPI, client } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 
 declare const toastr: any;
 
@@ -13,8 +13,8 @@ export async function inviteToTrade(targetID: string) {
   try {
     const res = await webAPI.SecureTradeAPI.Invite(
       webAPI.defaultConfig,
-      client.shardID,
-      client.characterID,
+      game.shardID,
+      game.selfPlayerState.characterID,
       targetID,
     );
 

@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Faction } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`
   display: flex;

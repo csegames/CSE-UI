@@ -4,12 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { RequestConfig } from './definitions';
-import client from '../core/client';
-
 export const defaultConfig: RequestConfig = () => ({
-  url: client.apiHost + '/',
+  url: game.webAPIHost + '/',
   headers: {
-    Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
+    Authorization: `Bearer ${game.accessToken}`,
   },
 });

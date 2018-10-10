@@ -84,9 +84,9 @@ export interface ConfirmDialogStyle {
 }
 
 export interface ConfirmDialogProps<ContentProps> {
-  onConfirm: () => void;
-  onCancel: () => void;
-  content: (props: ContentProps) => JSX.Element;
+  onConfirm: () => any;
+  onCancel: () => any;
+  // content: (props: ContentProps) => JSX.Element;
   cancelOnClickOutside?: boolean;
   contentProps?: ContentProps;
   styles?: Partial<ConfirmDialogStyle>;
@@ -122,7 +122,8 @@ export class ConfirmDialog<ContentProps> extends React.Component<ConfirmDialogPr
             <Container style={customStyles.container}>
               <Dialog style={customStyles.dialog} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseleave}>
                 <Content style={customStyles.content}>
-                  <this.props.content {...this.props.contentProps} />
+                  {this.props.children}
+                  {/* <this.props.content {...this.props.contentProps} /> */}
                 </Content>
                 <Buttons style={customStyles.buttons}>
                   <ConfirmButton style={customStyles.confirmButton} onClick={this.confirm}>

@@ -5,17 +5,19 @@
  *
  */
 
-import { PlayerState } from '@csegames/camelot-unchained/lib/core/clientInterface';
 import { numEqualsCloseEnough } from '@csegames/camelot-unchained/lib/utils';
-import { GroupMemberState } from '@csegames/camelot-unchained/lib/webAPI/definitions';
 import { BodyParts } from './PlayerStatus';
 
-export function isEqualPlayerState(a: PlayerState | GroupMemberState, b: PlayerState | GroupMemberState) {
+export function isEqualPlayerState(a: Player, b: Player) {
   if (!a || !b) {
     return false;
   }
 
-  if (a.id !== b.id) {
+  if (a.characterID !== b.characterID) {
+    return false;
+  }
+
+  if (a.entityID !== b.entityID) {
     return false;
   }
 
@@ -84,8 +86,8 @@ export function isEqualPlayerState(a: PlayerState | GroupMemberState, b: PlayerS
       return false;
     }
 
-    const aStatuses = (a.statuses as { id: number }[]).sort(statusSortMethod);
-    const bStatuses = (b.statuses as { id: number }[]).sort(statusSortMethod);
+    const aStatuses = (a.statuses as any[]).sort(statusSortMethod);
+    const bStatuses = (b.statuses as any[]).sort(statusSortMethod);
     for (let i = 0; i < aStatuses.length; ++i) {
       if (aStatuses[i] !== bStatuses[i]) {
         return false;

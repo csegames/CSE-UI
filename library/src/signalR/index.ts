@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import client from '../core/client';
 import { findIndexWhere } from '../utils/arrayUtils';
 
 export * from './SignalRHub';
@@ -29,10 +28,10 @@ export interface InitCallback {
 const initializedHubs: string[] = [];
 
 let initialized = false;
-export const initializeSignalR = (signalRHost: string = client.signalRHost) => {
+export const initializeSignalR = (signalRHost: string = game.signalRHost()) => {
   if (initialized) return;
   initialized = true;
-  if (client.debug) console.log('initializeSignalR called');
+  if (game.debug) console.log('initializeSignalR called');
   $(() => {
     ($ as any).connection(signalRHost);
     ($ as any).connection.hub.url = signalRHost;
@@ -40,13 +39,13 @@ export const initializeSignalR = (signalRHost: string = client.signalRHost) => {
   });
 };
 
-export const reinitializeSignalR = (signalRHost: string = client.signalRHost) => {
+export const reinitializeSignalR = (signalRHost: string = game.signalRHost()) => {
   initialized = false;
   initializeSignalR(signalRHost);
 };
 
 export const initializeSignalRHubs = (...hubs: { name: string, callback: InitCallback }[]) => {
-  if (client.debug) console.log(`initializeSignalRHubs called on hubs ${hubs.map(h => h.name).join(',')}`);
+  if (game.debug) console.log(`initializeSignalRHubs called on hubs ${hubs.map(h => h.name).join(',')}`);
   for (let i = 0; i < hubs.length; ++i) {
     if (findIndexWhere(initializedHubs, h => h === hubs[i].name) === -1) {
       const hub = hubs[i];
@@ -59,7 +58,7 @@ export const initializeSignalRHubs = (...hubs: { name: string, callback: InitCal
 };
 
 export const unregisterSignalRHubs = (...hubNames: string[]) => {
-  if (client.debug) console.log(`unregisterSignalRHubs called on hubs ${hubNames.join(',')}`);
+  if (game.debug) console.log(`unregisterSignalRHubs called on hubs ${hubNames.join(',')}`);
   for (let i = 0; i < hubNames.length; ++i) {
     const index = findIndexWhere(initializedHubs, name => name === hubNames[i]);
     if (index !== -1) {

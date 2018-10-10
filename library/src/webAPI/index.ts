@@ -7,4 +7,3 @@
 export * from './definitions';
 export * from './helpers';
 export * from './config';
-export * from './error';

@@ -64,6 +64,9 @@ module.exports = function (e, argv = {}) {
     GIT_REVISION,
     IS_WATCH,
   };
+  if (!EXPOSE_ENV.hasOwnProperty('CUUI_ENABLE_MOCK') && IS_BROWSER) {
+    EXPOSE_ENV.CUUI_ENABLE_MOCK = true;
+  }
 
   console.log(`CPUS: ${require('os').cpus().length}`)
   logEnv(EXPOSE_ENV);

@@ -7,7 +7,7 @@
 import * as React from 'react';
 
 function fromText(text: string, keygen: () => number): JSX.Element[] {
-  // events.fire('chat-play-sound-highlight');
+  // game.trigger('chat-play-sound-highlight');
   return [<span key={keygen()} className={'chat-room-highlight'}>{text}</span>];
 }
 

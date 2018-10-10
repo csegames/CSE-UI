@@ -4,18 +4,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events } from '@csegames/camelot-unchained';
-
 const SYSTEM_MESSAGE_EVENT = 'system_message';
 
 export function sendSystemMessage(message: string) {
-  events.fire(SYSTEM_MESSAGE_EVENT, message);
+  game.trigger(SYSTEM_MESSAGE_EVENT, message);
 }
 
 export function onSystemMessage(callback: (message: string) => void) {
-  return events.on(SYSTEM_MESSAGE_EVENT, callback);
+  return game.on(SYSTEM_MESSAGE_EVENT, callback);
 }
 
 export function offSystemMessage(handle: number) {
-  events.off(handle);
+  game.off(handle);
 }

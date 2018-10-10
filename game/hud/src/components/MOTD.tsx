@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { client } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { CloseButton } from 'UI/CloseButton';
 import { MessageOfTheDay, CUQuery } from 'gql/interfaces';
@@ -16,7 +15,7 @@ const STORAGE_PREFIX = 'cse-MOTD-hide-start';
 const query = {
   namedQuery: 'motd',
   variables: {
-    channel: client.patchResourceChannel,
+    channel: game.patchResourceChannel,
   },
 };
 
@@ -243,7 +242,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
     // manage visibility of motd widget based on localStorage
     try {
       const delayInMin: number = 24 * 60;
-      const motdStoragePayload = localStorage.getItem(`${STORAGE_PREFIX}-${client.characterID}`);
+      const motdStoragePayload = localStorage.getItem(`${STORAGE_PREFIX}-${game.selfPlayerState.characterID}`);
       if (motdStoragePayload) {
         const { hideDelayStart, storageInvalidate } = JSON.parse(motdStoragePayload);
 
@@ -279,7 +278,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
       hideDelayStart,
       storageInvalidate: motd ? motd.id : '',
     };
-    localStorage.setItem(`${STORAGE_PREFIX}-${client.characterID}`, JSON.stringify(motdStoragePayload));
+    localStorage.setItem(`${STORAGE_PREFIX}-${game.selfPlayerState.characterID}`, JSON.stringify(motdStoragePayload));
   }
 }
 

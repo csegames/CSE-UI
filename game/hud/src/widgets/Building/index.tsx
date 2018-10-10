@@ -16,18 +16,6 @@ import App from './components/BuildingApp';
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
-
-// #TODO Reminder: export a has api check from the camelot-unchained lib
-// interface for window cuAPI
-import { on } from '@csegames/camelot-unchained/lib/events';
-interface WindowInterface extends Window {
-  cuAPI: any;
-  opener: WindowInterface;
-}
-
-// declare window implements WindowInterface
-declare const window: WindowInterface;
-
 export interface BuildingState {
   visible: boolean;
 }
@@ -44,7 +32,7 @@ class Building extends React.Component<BuildingProps, BuildingState> {
   }
 
   public render() {
-    if (window.opener && !window.opener.cuAPI || !window.cuAPI) {
+    if (process.env.IS_BROWSER) {
       if (this.state.visible) document.body.style.backgroundImage = "url('../../images/building/cube-bg.jpg')";
       if (!this.state.visible) document.body.style.backgroundImage = '';
     }
@@ -56,7 +44,7 @@ class Building extends React.Component<BuildingProps, BuildingState> {
   }
 
   public componentDidMount() {
-    on('hudnav--navigate', (name: string) => {
+    game.on('hudnav--navigate', (name: string) => {
       if (name === 'building') {
         this.setState((state, props) => {
           if (state.visible) return { visible: false };
@@ -64,10 +52,8 @@ class Building extends React.Component<BuildingProps, BuildingState> {
         });
       }
     });
-    if (window.opener && window.opener.cuAPI || window.cuAPI) {
-      initializeBuilding(store.dispatch);
-      initializeSelections(store.dispatch);
-    }
+    initializeBuilding(store.dispatch);
+    initializeSelections(store.dispatch);
   }
 }
 

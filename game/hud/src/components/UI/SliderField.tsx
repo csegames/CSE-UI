@@ -78,19 +78,18 @@ function logposition(v: number, min: number, max: number) {
 }
 
 interface SliderFieldProps {
-  id: string;
   label: string;
   min: number;
   max: number;
   step?: number;
   current: number;
-  logrithmic?: boolean;
+  logarithmic?: boolean;
   updateInterval?: number;
-  onChange?: (id: string, value: number) => void;
+  onChange?: (value: number) => void;
 }
 
 interface SliderFieldState {
-  current: number;            // may be logrithmic
+  current: number;            // may be logarithmic
   position: number;           // slider position
 }
 
@@ -155,34 +154,34 @@ export class SliderField extends React.PureComponent<SliderFieldProps, SliderFie
     let position = current;
     if (current < min) current = min;
     if (current > max) current = max;
-    if (props.logrithmic) position = logposition(current, min, max);
+    if (props.logarithmic) position = logposition(current, min, max);
     this.setState({ current, position });
   }
 
   private handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (e.buttons & 1 || e.nativeEvent.which === 1) {
-      const { min, max, logrithmic } = this.props;
+      const { min, max, logarithmic } = this.props;
       let pcnt = e.nativeEvent.offsetX / e.currentTarget.offsetWidth * 100;
       if (pcnt < 0) pcnt = 0;
       else if (pcnt > 100) pcnt = 100;
       const position = Math.round(min + ((max - min) * pcnt / 100));
       let current = position;
       // only update parent element of change every so often
-      if (logrithmic) {
+      if (logarithmic) {
         current = Math.round(logslider(position, min, max));
       }
       this.setState({ position, current });
-      if (this.onChange) this.onChange(this.props.id, current);
+      if (this.onChange) this.onChange(current);
     }
   }
 
-  private onChange(id: string, value: number) {
+  private onChange(value: number) {
     if (this.props.onChange) {
       if (this.changeTimeout) clearTimeout(this.changeTimeout);
       this.changeTimeout = setTimeout(
         () => {
-          this.props.onChange(this.props.id, value);
+          this.props.onChange(value);
           this.changeTimeout = null;
         },
         this.props.updateInterval || 100,

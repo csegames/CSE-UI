@@ -4,9 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import client from '../../core/client';
 import { SignalRHub } from '../SignalRHub';
-import { eventMapper, EventMap } from '../../utils/eventMapper';
+import { EventMap } from '../../utils/eventMapper';
 
 // UI EVENT NAMES
 export const hubEvents = {
@@ -55,23 +54,23 @@ const groupsHubEventsMap: EventMap[] = [
   },
 ];
 
-export const groupsHub = new SignalRHub('groupsHub', groupsHubEventsMap, { debug: client.debug });
+export const groupsHub = new SignalRHub('groupsHub', groupsHubEventsMap, { debug: game.debug });
 
 function invokeIdentify(hub: SignalRHub) {
-  hub.invoke('identify', client.accessToken, client.shardID, client.characterID)
+  hub.invoke('identify', game.accessToken, game.shardID, game.selfPlayerState.characterID)
   .done((success: boolean) => {
     if (!success) {
-      if (client.debug) console.log(`groupsHub identify failed.`);
+      if (game.debug) console.log(`groupsHub identify failed.`);
       setTimeout(() => invokeIdentify(hub), 5000);
       return;
     }
-    if (client.debug) console.log(`groupsHub identify success!`);
+    if (game.debug) console.log(`groupsHub identify success!`);
     hub.invoke('invalidate');
   });
 }
 
 function onConnected(hub: SignalRHub) {
-  if (client.debug) console.log('groupsHub onConnected');
+  if (game.debug) console.log('groupsHub onConnected');
   invokeIdentify(hub);
 }
 

@@ -13,7 +13,6 @@ import ChatClient from '../lib/ChatClient';
 import messageType from '../lib/messageType';
 import { chatConfig } from './ChatConfig';
 import { chatState } from './ChatState';
-import { events } from '../../../';
 import { isArray } from 'util';
 
 interface LoginInfo {
@@ -77,7 +76,7 @@ class ChatSession {
 
   public onping(ping: any) {
     this.latency = (Date.now() - ping.now);
-    events.fire('chat-session-update', this);
+    game.trigger('chat-session-update', this);
     // this.diagnostics();
   }
 
@@ -172,7 +171,7 @@ class ChatSession {
   }
 
   public onrooms(items: Room[]) {
-    events.fire('chat-room-list', items);
+    game.trigger('chat-room-list', items);
   }
 
   // Broadcast a message to all rooms
@@ -184,7 +183,7 @@ class ChatSession {
       for (let i = 0; i < rooms.length; i++) {
         rooms[i].add(message);
       }
-      events.fire('chat-session-update', this);
+      game.trigger('chat-session-update', this);
     } else {
       // TODO: What to do here?
     }
@@ -209,7 +208,7 @@ class ChatSession {
           }
         }
       });
-      events.fire('chat-session-update', this);
+      game.trigger('chat-session-update', this);
       return;
     }
     // check for a broadcast message (private message sent by "")
@@ -227,7 +226,7 @@ class ChatSession {
       if (this.windowActive && this.currentRoom.same(roomId)) {
         room.seen();
       }
-      events.fire('chat-session-update', this);
+      game.trigger('chat-session-update', this);
     }
   }
 
@@ -245,13 +244,13 @@ class ChatSession {
         room.removeUser(user);
         room.add(new ChatMessage(chatType.UNAVAILABLE, '', user.name));
       }
-      events.fire('chat-session-update', this);
+      game.trigger('chat-session-update', this);
     }
   }
 
   public setCurrentRoom(roomId: RoomId): void {
     this.currentRoom = roomId;
-    events.fire('chat-session-update', this);
+    game.trigger('chat-session-update', this);
   }
 
   public findRoom(roomId: RoomId): ChatRoomInfo {
@@ -295,7 +294,7 @@ class ChatSession {
     const message = new ChatMessage(chatType.PRIVATE, user, this.me, text);
     this.getRoom(roomId).add(message);
     this.joinRoom(roomId);
-    events.fire('chat-session-update', this);
+    game.trigger('chat-session-update', this);
   }
 
   public joinRoom(roomId: RoomId): void {
@@ -333,7 +332,7 @@ class ChatSession {
           this.currentRoom = undefined;
         }
       }
-      events.fire('chat-session-update', this);
+      game.trigger('chat-session-update', this);
     }
   }
 
@@ -349,8 +348,8 @@ class ChatSession {
   }
 
   private internalConnect(login: LoginInfo) {
-    events.on('system_message', (msg: string) => this.onchat({ type: messageType.SYSTEM, message: msg }));
-    events.on('combatlog_message', (msg: string) => this.onchat({ type: messageType.COMBAT_LOG, message: msg }));
+    game.on('system_message', (msg: string) => this.onchat({ type: messageType.SYSTEM, message: msg }));
+    game.on('combatlog_message', (msg: string) => this.onchat({ type: messageType.COMBAT_LOG, message: msg }));
 
     if (!this.client) {
       this.client = new ChatClient();

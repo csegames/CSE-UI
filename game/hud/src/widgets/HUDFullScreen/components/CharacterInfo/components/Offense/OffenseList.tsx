@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
-import * as events from '@csegames/camelot-unchained/lib/events';
+
 
 import DescriptionItem from '../DescriptionItem';
 import StatListItem from '../StatListItem';
@@ -72,7 +72,7 @@ export interface OffenseListProps extends GraphQLInjectedProps<OffenseListGQL.Qu
 }
 
 class OffenseList extends React.PureComponent<OffenseListProps> {
-  private updateCharStatsListener: number;
+  private eventHandles: EventHandle[] = [];
   public render() {
     const myEquippedItems = this.props.graphql.data && this.props.graphql.data.myEquippedItems;
     if (myEquippedItems && myEquippedItems.items) {
@@ -133,13 +133,13 @@ class OffenseList extends React.PureComponent<OffenseListProps> {
   }
 
   public componentDidMount() {
-    this.updateCharStatsListener = events.on(eventNames.updateCharacterStats, () => {
+    this.eventHandles.push(game.on(eventNames.updateCharacterStats, () => {
       this.props.graphql.refetch();
-    });
+    }));
   }
 
   public componentWillUnmount() {
-    events.off(this.updateCharStatsListener);
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private getWeaponSlotArray = () => {

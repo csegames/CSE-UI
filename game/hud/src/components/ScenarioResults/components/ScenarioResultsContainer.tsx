@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { events, client, soundEvents } from '@csegames/camelot-unchained';
 import { GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import ScenarioResultsView from './ScenarioResultsView';
 import { CharacterOutcomeDBModel, ScenarioSummaryDBModel, ScenarioOutcome } from 'gql/interfaces';
@@ -57,7 +56,7 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
   }
 
   public componentDidMount() {
-    events.on('hudnav--navigate', (name: string) => {
+    game.on('hudnav--navigate', (name: string) => {
       if (name === 'scenario-results') {
         this.toggleVisibility();
       }
@@ -106,10 +105,8 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
 
   private toggleVisibility = () => {
     if (!this.state.visible) {
-      client.RequestInputOwnership();
     } else {
-      client.PlaySoundEvent(soundEvents.PLAY_MUSIC_SCENARIO_END_CLOSEWINDOW);
-      client.ReleaseInputOwnership();
+      game.playGameSound(SoundEvent.PLAY_SCENARIO_END_MUSIC_CLOSEWINDOW);
     }
     this.setState({ visible: !this.state.visible });
   }

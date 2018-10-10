@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { css } from 'react-emotion';
-import { Archetype } from '../';
 import SVGSprite from './SVGSprite';
 
 const Icon = css`

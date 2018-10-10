@@ -9,7 +9,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
-import * as events  from '@csegames/camelot-unchained/lib/events';
+
 import reducer from './services/session/reducer';
 import { initialize } from './services/session/materials';
 import { BuildPaneProps, DEACTIVATE_MATERIAL_SELECTOR } from '../../lib/BuildPane';
@@ -51,7 +51,7 @@ class Container extends React.Component<BuildPaneProps, ContainerState> {
   }
 
   private onTabChange = () => {
-    events.fire(DEACTIVATE_MATERIAL_SELECTOR, {});
+    game.trigger(DEACTIVATE_MATERIAL_SELECTOR, {});
   }
 }
 

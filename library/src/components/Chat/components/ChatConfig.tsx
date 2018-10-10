@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events } from '../../../';
 import { prefixes, display } from './settings/chat-defaults';
 
 export class ChatConfig {
@@ -42,7 +41,7 @@ export class ChatConfig {
     this.EMBED_VIDEOS   = LOAD(display.embedVideos);
     this.JOIN_PARTS     = LOAD(display.joinParts);
     this.TIMESTAMPS     = LOAD(display.timestamps);
-    events.fire('chat-options-update', this);
+    if (game && game.trigger) game.trigger('chat-options-update', this);
   }
 }
 

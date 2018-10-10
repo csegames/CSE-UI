@@ -13,17 +13,8 @@ import {
   Archetype as GraphQLArchetype,
 } from '@csegames/camelot-unchained/lib/graphql/schema';
 import {
-  client,
   utils,
-  events,
   TabItem,
-  Faction,
-  Vec3F,
-  Euler3f,
-  ItemPermissions,
-  Gender,
-  Race,
-  Archetype,
 } from '@csegames/camelot-unchained';
 
 import { inventoryFilterButtons, colors, nullVal, emptyStackHash } from './constants';
@@ -157,7 +148,7 @@ export function createMoveItemRequestToWorldPosition(item: InventoryItem.Fragmen
     },
     from: {
       entityID: nullVal,
-      characterID: client.characterID,
+      characterID: game.selfPlayerState.characterID,
       position: getItemInventoryPosition(item),
       containerID: nullVal,
       gearSlotIDs: [],
@@ -177,7 +168,7 @@ export function createMoveItemRequestToInventoryPosition(item: InventoryItem.Fra
     to: {
       position,
       entityID: nullVal,
-      characterID: client.characterID,
+      characterID: game.selfPlayerState.characterID,
       containerID: nullVal,
       gearSlotIDs: [] as any,
       location: 'Inventory',
@@ -185,7 +176,7 @@ export function createMoveItemRequestToInventoryPosition(item: InventoryItem.Fra
     },
     from: {
       entityID: nullVal,
-      characterID: client.characterID,
+      characterID: game.selfPlayerState.characterID,
       position: getItemInventoryPosition(item),
       containerID: nullVal,
       gearSlotIDs: [] as any,
@@ -209,7 +200,7 @@ export function createMoveItemRequestToContainerPosition(oldPosition: InventoryD
     unitCount: -1,
     to: {
       entityID: nullVal,
-      characterID: client.characterID,
+      characterID: game.selfPlayerState.characterID,
       position: newPosition.position,
       containerID: newPosContainerID,
       drawerID: newPosition.drawerID,
@@ -219,7 +210,7 @@ export function createMoveItemRequestToContainerPosition(oldPosition: InventoryD
     },
     from: {
       entityID: nullVal,
-      characterID: client.characterID,
+      characterID: game.selfPlayerState.characterID,
       position: oldItem.location.inContainer ? oldItem.location.inContainer.position : oldItem.location.inventory.position,
       containerID: oldPosContainerID,
       drawerID: oldPosition.drawerID,
@@ -925,12 +916,12 @@ export const FullScreenContext = React.createContext(defaultFullScreenState);
 
 export function requestUIKeydown() {
   const shouldFullscreenListen = false;
-  events.fire('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
+  game.trigger('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
 }
 
 export function releaseUIKeydown() {
   const shouldFullscreenListen = true;
-  events.fire('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
+  game.trigger('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
 }
 
 export function isRightOrLeftItem(gearSlots: GearSlotDefRef.Fragment[]) {
@@ -1000,16 +991,16 @@ export function getPaperDollBaseIcon(faction: GraphQLFaction) {
 
 export function getMyPaperDollIcon() {
   return getPaperDollIcon(
-    Gender[client.playerState.gender] as GraphQLGender,
-    Race[client.playerState.race] as GraphQLRace,
-    Archetype[client.playerState.class] as GraphQLArchetype,
+    Gender[game.selfPlayerState.gender] as GraphQLGender,
+    Race[game.selfPlayerState.race] as GraphQLRace,
+    Archetype[game.selfPlayerState.classID] as GraphQLArchetype,
   );
 }
 
 export function getMyPaperDollBG() {
-  return getPaperDollBG(client.playerState.faction);
+  return getPaperDollBG(game.selfPlayerState.faction);
 }
 
 export function getMyPaperDollBaseIcon() {
-  return getPaperDollBaseIcon(Faction[client.playerState.faction] as GraphQLFaction);
+  return getPaperDollBaseIcon(Faction[game.selfPlayerState.faction] as GraphQLFaction);
 }

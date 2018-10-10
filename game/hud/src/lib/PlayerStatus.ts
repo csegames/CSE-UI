@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Race, Gender, Archetype } from '@csegames/camelot-unchained';
-
 export interface PlayerStatus {
   name: string;
   avatar: string;

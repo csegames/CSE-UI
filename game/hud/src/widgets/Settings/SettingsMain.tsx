@@ -5,22 +5,17 @@
  */
 
 import * as React from 'react';
-import { client, events } from '@csegames/camelot-unchained';
 
 import { TabbedDialog, DialogButton } from 'UI/TabbedDialog';
 import { GeneralSettings } from './tabs/General';
 import { InterfaceSettings } from './tabs/Interface';
 import { AddonSettings } from './tabs/Addon';
-import { restoreKeybinds } from './utils/keyboard';
 
 const SETTINGS_DIALOG_WIDTH = 1040;
 const SETTINGS_DIALOG_HEIGHT = 710;
 
 const HUDNAV_NAVIGATE = 'hudnav--navigate';
 const ME = 'settings';
-
-// as we are loading, restore previously saved keybinds
-restoreKeybinds();
 
 interface Size {
   width: number;
@@ -56,10 +51,10 @@ export class Settings extends React.Component<SettingsProps, SettingsState> {
     this.state = { visible: false };
   }
   public componentDidMount() {
-    this.evh = events.on(HUDNAV_NAVIGATE, this.onnavigate);
+    this.evh = game.on(HUDNAV_NAVIGATE, this.onnavigate);
   }
   public componentWillUnmount() {
-    events.off(this.evh);
+    game.off(this.evh);
     this.evh = null;
   }
   public render() {
@@ -72,10 +67,8 @@ export class Settings extends React.Component<SettingsProps, SettingsState> {
 
   private onnavigate = (name: string) => {
     if (name === 'gamemenu' && this.state.visible) {
-      client.ReleaseInputOwnership();
       this.setState({ visible: false });
     } else if (name === ME) {
-      if (this.state.visible) client.ReleaseInputOwnership();
       this.setState({ visible: !this.state.visible });
     }
   }
@@ -92,7 +85,7 @@ export class Settings extends React.Component<SettingsProps, SettingsState> {
   }
 
   private onClose = () => {
-    events.fire(HUDNAV_NAVIGATE, ME);
+    game.trigger(HUDNAV_NAVIGATE, ME);
   }
 }
 

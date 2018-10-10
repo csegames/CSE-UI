@@ -5,10 +5,7 @@
  */
 
 import * as React from 'react';
-import * as events  from '@csegames/camelot-unchained/lib/events';
 import { groupsHub, hubEvents } from '@csegames/camelot-unchained/lib/signalR/hubs/groupsHub';
-import { GroupMemberState, Gender, Race } from '@csegames/camelot-unchained/lib/webAPI/definitions';
-import client from '@csegames/camelot-unchained/lib/core/client';
 import styled from 'react-emotion';
 
 import { addOrUpdate, removeWhere } from '../../lib/reduxUtils';
@@ -53,7 +50,7 @@ export interface WarbandDisplayState {
 
 export class WarbandDisplay extends React.Component<WarbandDisplayProps, WarbandDisplayState> {
 
-  private eventHandles: number[] = [];
+  private eventHandles: EventHandle[] = [];
   private receivedMemberUpdate: boolean = false;
 
   constructor(props: WarbandDisplayProps) {
@@ -74,7 +71,7 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
       <Container>
         {
           this.state.activeMembers &&
-            this.state.activeMembers.map(m => <WarbandMemberDisplay key={m.id} member={m as any} />)
+            this.state.activeMembers.map(m => <WarbandMemberDisplay key={m.entityID} member={m as any} />)
         }
       </Container>
     );
@@ -144,7 +141,7 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
       member.avatar = WarbandDisplay.getAvatar(member.gender, member.race);
       return member;
     } catch (e) {
-      if (client.debug) {
+      if (process.env.IS_DEVELOPMENT) {
         console.error(`WarbandMemberJoined Failed to parse WarbandMember. | ${e}`);
       }
       return;
@@ -152,18 +149,18 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
   }
 
   private registerWarbandEvents = () => {
-    this.eventHandles.push(events.on(hubEvents.joined, this.onWarbandJoined));
-    this.eventHandles.push(events.on(hubEvents.update, this.onWarbandJoined));
-    this.eventHandles.push(events.on(hubEvents.quit, this.onWarbandQuit));
-    this.eventHandles.push(events.on(hubEvents.abandoned, this.onWarbandQuit));
-    this.eventHandles.push(events.on(hubEvents.memberJoined, this.onWarbandMemberJoined));
-    this.eventHandles.push(events.on(hubEvents.memberUpdate, this.onWarbandMemberUpdated));
-    this.eventHandles.push(events.on(hubEvents.memberRemoved, this.onWarbandMemberRemoved));
+    this.eventHandles.push(game.on(hubEvents.joined, this.onWarbandJoined));
+    this.eventHandles.push(game.on(hubEvents.update, this.onWarbandJoined));
+    this.eventHandles.push(game.on(hubEvents.quit, this.onWarbandQuit));
+    this.eventHandles.push(game.on(hubEvents.abandoned, this.onWarbandQuit));
+    this.eventHandles.push(game.on(hubEvents.memberJoined, this.onWarbandMemberJoined));
+    this.eventHandles.push(game.on(hubEvents.memberUpdate, this.onWarbandMemberUpdated));
+    this.eventHandles.push(game.on(hubEvents.memberRemoved, this.onWarbandMemberRemoved));
   }
 
   private unregisterWarbandEvents = () => {
-    for (const listener of this.eventHandles) {
-      events.off(listener);
+    for (const handle of this.eventHandles) {
+      handle.clear();
     }
   }
 
@@ -216,7 +213,7 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
   }
 
   private onWarbandMemberRemoved = (characterID: string) => {
-    if (characterID === client.characterID) {
+    if (characterID === game.selfPlayerState.characterID) {
       this.onWarbandQuit(this.state.warbandID);
       return;
     }
@@ -225,7 +222,7 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
     this.setState((state) => {
       const removeResult = removeWhere(state.activeMembers, m => m.characterID === characterID);
       if (removeResult.removed.length > 0) {
-        events.fire('system_message', `${removeResult.removed[0].name} has left your warband.`);
+        game.trigger('system_message', `${removeResult.removed[0].name} has left your warband.`);
       }
       return {
         ...state,

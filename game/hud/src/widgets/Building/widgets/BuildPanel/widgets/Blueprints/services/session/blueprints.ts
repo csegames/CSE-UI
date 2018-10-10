@@ -4,9 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { events, buildUIMode, BuildingBlueprint } from '@csegames/camelot-unchained';
 import requester from './requester';
 import assign from 'object-assign';
+
+import { building } from '../../../../../../lib/old-library';
 
 const UPDATE_BLUEPRINTS = 'buildpanel/panes/UPDATE_BLUEPRINTS';
 const SELECT_BLUEPRINT = 'buildpanel/panes/SELECT_BLUEPRINT';
@@ -14,19 +15,19 @@ const MODE_CHANGED = 'buildpanel/panes/MODE_CHANGED';
 
 export function loadBlueprints(dispatch: (action: any) => void) {
 
-  events.addListener(events.buildingEventTopics.handlesBlueprints, (info: { blueprints: BuildingBlueprint[] }) => {
+  game.on(building.BuildingEventTopics.handlesBlueprints, (info: { blueprints: Blueprint[] }) => {
     dispatch(updateBlueprints(info.blueprints));
   });
 
-  events.addListener(events.buildingEventTopics.handlesBlueprintSelect, (info: { blueprint: BuildingBlueprint }) => {
+  game.on(building.BuildingEventTopics.handlesBlueprintSelect, (info: { blueprint: Blueprint }) => {
     dispatch(selectBlueprint(info.blueprint));
   });
 
-  events.addListener(events.buildingEventTopics.handlesBuildingMode, (info: { mode: buildUIMode }) => {
-    dispatch(copyModeChanged(info.mode === buildUIMode.BLOCKSELECTED));
+  game.on(building.BuildingEventTopics.handlesBuildingMode, (info: { mode: BuildingMode }) => {
+    dispatch(copyModeChanged(info.mode === window.BuildingMode.BlocksSelected));
   });
 
-  events.addListener(events.buildingEventTopics.handlesBlueprintCopy, () => {
+  game.on(building.BuildingEventTopics.handlesBlueprintCopy, () => {
     dispatch(pasteModeChanged(true));
   });
 
@@ -47,14 +48,14 @@ function pasteModeChanged(paste: boolean) {
   };
 }
 
-function updateBlueprints(blueprints: BuildingBlueprint[]) {
+function updateBlueprints(blueprints: Blueprint[]) {
   return {
     type: UPDATE_BLUEPRINTS,
     blueprints,
   };
 }
 
-function selectBlueprint(blueprint: BuildingBlueprint) {
+function selectBlueprint(blueprint: Blueprint) {
   return {
     type: SELECT_BLUEPRINT,
     blueprint,
@@ -62,8 +63,8 @@ function selectBlueprint(blueprint: BuildingBlueprint) {
 }
 
 export interface BlueprintsState {
-  blueprints?: BuildingBlueprint[];
-  selected?: BuildingBlueprint;
+  blueprints?: Blueprint[];
+  selected?: Blueprint;
   copyable: boolean;
   pastable: boolean;
 }

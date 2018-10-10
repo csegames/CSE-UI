@@ -6,28 +6,27 @@
  */
 
 import * as React from 'react';
-import { client } from '@csegames/camelot-unchained';
 import { query } from '@csegames/camelot-unchained/lib/graphql/query';
 import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
 import { StatusDef, Skill, CUQuery } from 'gql/interfaces';
 
 export const HUDGraphQLQueryConfig = () => ({
-  url: client.apiHost + '/graphql',
+  url: game.webAPIHost + '/graphql',
   requestOptions: {
     headers: {
-      Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
-      shardID: `${client.shardID}`,
-      characterID: client.characterID,
+      Authorization: `Bearer ${game.accessToken}`,
+      shardID: `${game.shardID}`,
+      characterID: game.selfPlayerState.characterID,
     },
   },
 });
 
 export const HUDGraphQLSubscriptionConfig = () => ({
-  url: client.apiHost.replace('http', 'ws') + '/graphql',
+  url: game.webAPIHost.replace('http', 'ws') + '/graphql',
   initPayload: {
-    shardID: client.shardID,
-    Authorization: `${client.ACCESS_TOKEN_PREFIX} ${client.accessToken}`,
-    characterID: client.characterID,
+    shardID: game.shardID,
+    Authorization: `Bearer ${game.accessToken}`,
+    characterID: game.selfPlayerState.characterID,
   },
 });
 

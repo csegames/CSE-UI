@@ -4,6 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export interface ObjectMap<T> {
-  [key: string]: T;
+export {};
+
+declare global {
+  interface ObjectMap<T> {
+    [key: string]: T;
+  }
 }

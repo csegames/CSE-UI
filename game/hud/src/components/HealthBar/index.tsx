@@ -6,7 +6,6 @@
  */
 
 import * as React from 'react';
-import { PlayerState, damageTypes, GroupMemberState } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
 import { isEqualPlayerState } from '../../lib/playerStateEqual';
@@ -21,7 +20,7 @@ const Container = styled('div')`
 export interface DamageEvent {
   kind: 'damage';
   id: string;
-  type: damageTypes;
+  type: DamageType;
   value: number;
   when: number;
 }
@@ -39,7 +38,7 @@ export type HealthBarType = 'full' | 'compact' | 'mini';
 
 export interface HealthBarProps {
   type: HealthBarType;
-  playerState: PlayerState | GroupMemberState;
+  playerState: Player;
   target?: 'enemy' | 'friendly';
 }
 
@@ -144,7 +143,7 @@ class HealthBar extends React.Component<HealthBarProps, HealthBarState> {
   //     if (stateEvents.length > 0 && (Date.now() - stateEvents[stateEvents.length - 1].when) > 200 && this.mounted
   //       ) {
   //       this.setState({
-  //         events,
+  //
   //       });
   //     } else if (this.mounted) {
   //       this.setState({

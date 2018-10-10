@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
-import { client, webAPI } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 import { CloseButton } from 'UI/CloseButton';
 
 import { nullVal } from '../../../../lib/constants';
@@ -194,8 +194,8 @@ class ContainerHeader extends React.Component<ContainerHeaderProps, ContainerHea
     const { containerItem } = this.props;
     webAPI.ItemAPI.RenameItem(
       webAPI.defaultConfig,
-      client.shardID,
-      client.characterID,
+      game.shardID,
+      game.selfPlayerState.characterID,
       containerItem.id,
       nullVal,
       newName,

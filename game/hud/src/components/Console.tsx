@@ -5,13 +5,9 @@
  */
 import * as React from 'react';
 import {
-  client,
   Input,
-  jsKeyCodes,
   parseMessageForSlashCommand,
 } from '@csegames/camelot-unchained';
-
-import * as events from '@csegames/camelot-unchained/lib/events';
 
 import styled from 'react-emotion';
 
@@ -107,8 +103,8 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
       show: false,
     };
 
-    events.on('system_message', this.onConsoleText);
-    events.on('hudnav--navigate', this.handleHUDNavNavigate);
+    game.on('system_message', this.onConsoleText);
+    game.on('hudnav--navigate', this.handleHUDNavNavigate);
   }
 
   public render() {
@@ -129,22 +125,11 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
                      },
                    }}
                    inputRef={r => this.inputRef = r}
-                   onClick={() => client.RequestInputOwnership()}
-                   onBlur={() => client.ReleaseInputOwnership()}
-                   onMouseEnter={() => client.RequestInputOwnership()}
-                   onMouseLeave={() => {
-                     client.ReleaseInputOwnership();
-                   }}
                    onKeyDown={this.onKeyDown} />
           </InputWrapper>
         </ConsoleWrapper>
 
-        <InfoWrapper onClick={() => client.RequestInputOwnership()}
-                   onBlur={() => client.ReleaseInputOwnership()}
-                   onMouseEnter={() => client.RequestInputOwnership()}
-                   onMouseLeave={() => {
-                     client.ReleaseInputOwnership();
-                   }}>
+        <InfoWrapper>
           <ObjectDisplay data={Console.getAPIData()} skipFunctions />
         </InfoWrapper>
       </Container>
@@ -156,7 +141,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
   }
 
   private static getAPIData() {
-    return (window as any).cuAPI;
+    return game;
   }
 
   private onConsoleText = (s: string) => {
@@ -170,7 +155,6 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
   private handleHUDNavNavigate = (navItem: string) => {
     if (navItem === 'console') {
       if (this.state.show) {
-        client.ReleaseInputOwnership();
       }
       this.setState({
         show: !this.state.show,
@@ -179,11 +163,11 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
   }
 
   private onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.keyCode === jsKeyCodes.ENTER) {
+    if (e.key.toUpperCase() === 'ENTER') {
       // submit command
       const text = this.inputRef.value.replace('/', '');
       if (!parseMessageForSlashCommand(text)) {
-        client.SendSlashCommand(text);
+        game.sendSlashCommand(text);
       }
 
       this.inputRef.value = '';

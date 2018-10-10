@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import 'isomorphic-fetch';
 import { client, Race, Gender, webAPI, RequestConfig } from '@csegames/camelot-unchained';
 import { patcher } from '../../../../services/patcher';
 

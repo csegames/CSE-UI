@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { client } from '@csegames/camelot-unchained';
 import NameInput from './NameInput';
 
 export interface BlueprintSaveViewProps {
@@ -57,14 +56,12 @@ class BlueprintSaveView extends React.Component<BlueprintSaveViewProps, Blueprin
 
     if (!duplicate && e.which === 13) {   // handle ENTER
       this.triggerSave();
-      client.ReleaseInputOwnership();
       e.preventDefault();
       return;
     }
 
     if (e.which === 27) {   // handle ESC
       this.triggerCancel();
-      client.ReleaseInputOwnership();
       e.preventDefault();
       return;
     }

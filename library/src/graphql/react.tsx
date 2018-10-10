@@ -25,9 +25,6 @@ import {
   defaultSubscriptionOpts,
   Options,
 } from './subscription';
-import { withDefaults } from '../utils/withDefaults';
-import { ObjectMap } from '../utils/ObjectMap';
-import { Omit } from '../utils/typeUtils';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 
 export interface GraphQLOptions extends QueryOptions {
@@ -50,8 +47,8 @@ export class GraphQLClient {
   private conf: QueryOptions;
   public lastQuery: {
     query: string;
-    variables: ObjectMap<any>;
-    headers?: ObjectMap<string> | null;
+    variables: Dictionary<any>;
+    headers?: Dictionary<string> | null;
     apiHost?: string;
     namedQuery?: string;
     operationName?: string;

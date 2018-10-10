@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import 'isomorphic-fetch';
 import { client, webAPI, RequestConfig, Archetype, Faction } from '@csegames/camelot-unchained';
 
 import ResponseError from '../../lib/ResponseError';

@@ -7,7 +7,7 @@
 import * as React from 'react';
 
 import styled from 'react-emotion';
-import { Tooltip, events } from '@csegames/camelot-unchained';
+import { Tooltip } from '@csegames/camelot-unchained';
 
 import InventoryRowActionButton from './InventoryRowActionButton';
 import { emptyStackHash, footerInfoIcons, rowActionIcons } from '../../../lib/constants';
@@ -60,7 +60,7 @@ export interface InventoryFooterState {
 }
 
 class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFooterState> {
-  private onDropItemListener: number;
+  private eventHandles: EventHandle[] = [];
 
   constructor(props: InventoryFooterProps) {
     super(props);
@@ -109,7 +109,7 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
   }
 
   public componentDidMount() {
-    this.onDropItemListener = events.on(eventNames.onDropItem, this.onDropItem);
+    this.eventHandles.push(game.on(eventNames.onDropItem, this.onDropItem));
     this.setBottomInfo();
   }
 
@@ -122,7 +122,7 @@ class InventoryFooter extends React.Component<InventoryFooterProps, InventoryFoo
   }
 
   public componentWillUnmount() {
-    events.off(this.onDropItemListener);
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   private setBottomInfo = () => {

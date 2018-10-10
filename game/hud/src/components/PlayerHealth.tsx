@@ -7,7 +7,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { client, PlayerState } from '@csegames/camelot-unchained';
 
 import { isEqualPlayerState } from '../lib/playerStateEqual';
 import HealthBar from './HealthBar';
@@ -26,10 +25,11 @@ export interface PlayerHealthProps {
 }
 
 export interface PlayerHealthState {
-  playerState: PlayerState;
+  playerState: ImmutableSelfPlayerState;
 }
 
 class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
+  private eventHandles: EventHandle[] = [];
   constructor(props: PlayerHealthProps) {
     super(props);
     this.state = {
@@ -42,20 +42,26 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     if (!this.state.playerState || this.state.playerState.type !== 'player') return null;
     return (
       <Container onContextMenu={this.handleContextMenu}>
-        <HealthBar type='compact' playerState={this.state.playerState} />
+        <HealthBar type='compact' playerState={this.state.playerState as any} />
       </Container>
     );
   }
 
   public componentDidMount() {
-    client.OnPlayerStateChanged(this.setPlayerState);
+    this.eventHandles.push(game.selfPlayerState.onUpdated(() => {
+      this.setPlayerState(game.selfPlayerState);
+    }));
+  }
+
+  public componentWillUnmount() {
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   public shouldComponentUpdate(nextProps: PlayerHealthProps, nextState: PlayerHealthState) {
     return !isEqualPlayerState(nextState.playerState, this.state.playerState);
   }
 
-  private setPlayerState = (playerState: PlayerState) => {
+  private setPlayerState = (playerState: ImmutableSelfPlayerState) => {
     setPlayerState(playerState);
     this.setState({ playerState });
   }

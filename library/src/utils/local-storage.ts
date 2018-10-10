@@ -26,6 +26,10 @@ export class Store {
     return data && JSON.parse(data) as T || undefined;
   }
 
+  public remove = (key: string) => {
+    localStorage.removeItem(this.prefixed(key));
+  }
+
   public clear = () => {
     if (this.prefix) {
       Object.keys(localStorage)

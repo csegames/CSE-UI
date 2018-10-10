@@ -5,7 +5,6 @@
  */
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { client, AnyEntityState, SiegeState, PlayerState } from '@csegames/camelot-unchained';
 import { isEqual } from 'lodash';
 
 const ProgressBar = (props: {current: number, max: number, foreground: string, background: string}) => {
@@ -89,7 +88,7 @@ const SiegeButton = (props: {
 
 const SiegeContextButton = (props: {}) => {
   return (
-    <SiegeButton enabled={true} onClick={() => client.SendSlashCommand('siege context')}>
+    <SiegeButton enabled={true} onClick={() => game.sendSlashCommand('siege context')}>
       <i className='fa fa-cog' aria-hidden='true'></i>
     </SiegeButton>
   );
@@ -99,7 +98,7 @@ const AlignRight = (props: {children: any}) => {
   return <div style={{ display: 'flex', justifyContent: 'flex-end' }}>{props.children}</div>;
 };
 
-export const SiegeHealthBar = (props: {state: SiegeState, controlledBy: string | null, showExit: boolean}) => {
+export const SiegeHealthBar = (props: {state: SiegeStateModel, controlledBy: string | null, showExit: boolean}) => {
   return (
     <div style={{
       width: '200px',
@@ -143,10 +142,11 @@ export interface SiegeHealthProps {
   for: HealthFor;
 }
 export interface SiegeHealthState {
-  entity: AnyEntityState;
+  entity: SelfPlayerState | FriendlyTargetState | EnemyTargetState;
 }
 
 export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthState> {
+  private eventHandles: EventHandle[] = [];
   constructor(props: SiegeHealthProps) {
     super(props);
     this.state = {
@@ -156,29 +156,33 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
   public componentDidMount() {
     switch (this.props.for) {
       case HealthFor.Self:
-        client.OnPlayerStateChanged((entity) => {
+        this.eventHandles.push(game.selfPlayerState.onUpdated(() => {
           try {
-            this.setState({ entity });
+            this.setState({ entity: game.selfPlayerState as SelfPlayerState });
           } catch (e) {}
-        });
+        }));
         break;
 
       case HealthFor.EnemyTarget:
-        client.OnEnemyTargetStateChanged((entity) => {
+        this.eventHandles.push(game.enemyTargetState.onUpdated(() => {
           try {
-            this.setState({ entity });
+            this.setState({ entity: game.enemyTargetState as EnemyTargetState });
           } catch (e) {}
-        });
+        }));
         break;
 
       case HealthFor.FriendlyTarget:
-        client.OnFriendlyTargetStateChanged((entity) => {
+        this.eventHandles.push(game.friendlyTargetState.onUpdated(() => {
           try {
-            this.setState({ entity });
+            this.setState({ entity: game.friendlyTargetState as FriendlyTargetState });
           } catch (e) {}
-        });
+        }));
         break;
     }
+  }
+
+  public componentWillUnmount() {
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   public shouldComponentUpdate(nextProps: SiegeHealthProps, nextState: SiegeHealthState) {
@@ -188,23 +192,26 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
 
     if (this.state.entity.type !== nextState.entity.type) return true;
 
-    switch (this.state.entity.type) {
+    const next: SelfPlayerState | FriendlyTargetState | EnemyTargetState = nextState.entity;
+
+    switch (next.type) {
       case 'player': {
-        const next = nextState.entity as PlayerState;
+        if (this.state.entity.type !== 'player') return true;
 
-        const thisControlled = this.state.entity.controllingEntityState;
-        const nextControlled = next.controllingEntityState;
+        const thisControlled = this.state.entity.controlledEntityID;
+        const nextControlled = next.controlledEntityID;
 
-        if (!thisControlled && !nextControlled) return false;
+        if (thisControlled !== nextControlled) return true;
 
-        if (!thisControlled && nextControlled) return true;
-        if (thisControlled && !nextControlled) return true;
+        const currentControlledEntity = game.entities[thisControlled];
+        const nextControlledEntity = game.entities[nextControlled];
 
-        if (thisControlled.type === 'siege' && nextControlled.type !== 'siege') return true;
-        if (thisControlled.type !== 'siege' && nextControlled.type === 'siege') return true;
+        if (!currentControlledEntity && !nextControlledEntity) return false;
+        if (!currentControlledEntity && nextControlledEntity) return true;
+        if (currentControlledEntity && !nextControlledEntity) return true;
 
-        if (thisControlled.type === 'siege' && nextControlled.type === 'siege') {
-          return isEqual(thisControlled, nextControlled) === false;
+        if (currentControlledEntity.type === 'siege' && nextControlledEntity.type === 'siege') {
+          return isEqual(currentControlledEntity, nextControlledEntity) === false;
         }
         return false;
       }
@@ -216,11 +223,11 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
 
   public render() {
     if (this.state.entity === null) return null;
-    if (this.state.entity.type === 'player' && this.state.entity.controllingEntityState === null) return null;
+    if (this.state.entity.type === 'player' && this.state.entity.controlledEntityID === '') return null;
 
     switch (this.state.entity.type) {
       case 'player': {
-        const controlled = this.state.entity.controllingEntityState;
+        const controlled = game.entities[this.state.entity.controlledEntityID];
         if (!controlled || controlled.type !== 'siege') return null;
         return (
           <SiegeHealthBar

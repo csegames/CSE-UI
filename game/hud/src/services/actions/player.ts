@@ -4,10 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { PlayerState } from '@csegames/camelot-unchained';
-
 const stateKey = 'player-state';
-function getStateObject(): PlayerState {
+function getStateObject(): Player {
   if (!window[stateKey]) {
     window[stateKey] = {
       id: '',
@@ -16,12 +14,12 @@ function getStateObject(): PlayerState {
   return window[stateKey];
 }
 
-export function setPlayerState(state: PlayerState) {
+export function setPlayerState(state: Player) {
   window[stateKey] = state;
 }
 
 export function getPlayerEntityID() {
-  return getStateObject().id;
+  return getStateObject().entityID;
 }
 
 export function getLastPlayerState() {

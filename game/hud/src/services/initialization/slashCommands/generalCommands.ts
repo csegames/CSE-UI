@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { client, registerSlashCommand, getSlashCommands } from '@csegames/camelot-unchained';
+import { registerSlashCommand, getSlashCommands } from '@csegames/camelot-unchained';
 import { systemMessage } from './utils';
 
 export default () => {
@@ -20,27 +20,28 @@ export default () => {
   /**
    * Unstuck! (kills you and respawns for now)
    */
-  registerSlashCommand('stuck', 'get your character unstuck', () => client.Stuck());
+  registerSlashCommand('stuck', 'get your character unstuck', () => game.selfPlayerState.stuck());
 
   /**
    * Change your zone -- Only works on Hatchery / Debug & Internal builds
    */
-  registerSlashCommand('zone', 'change your zone', (params: string) => client.ChangeZone(parseInt(params, 10)));
+  registerSlashCommand('zone', 'change your zone', (params: string) => game.selfPlayerState.changeZone(
+    parseInt(params, 10),
+  ));
 
   /**
    * Change camera mode
    */
-  registerSlashCommand('togglecamera', 'toggles the camera mode', () => client.ToggleCamera());
-
-  /**
-   * Crash the game -- Yes, this really just crashes the game
-   */
-  registerSlashCommand('crashthegame', 'CRASH the game client!!', () => client.CrashTheGame());
+  registerSlashCommand('togglecamera', 'toggles the camera mode', () => game.triggerKeyAction(
+    game.keyActions.PlayerCameraFreeToggle, // COHERENT TODO should this be something else?
+  ));
 
   /**
    * Get your characters current x, y, z coordinates -- ONLY DURING DEVELOPMENT
    */
   registerSlashCommand('loc', 'tells you your current location', () => {
-    setTimeout(() => systemMessage(`${client.locationX},${client.locationY},${client.locationZ}`), 100);
+    setTimeout(() => systemMessage(
+      `${game.selfPlayerState.position.x},${game.selfPlayerState.position.y},${game.selfPlayerState.position.z}`,
+    ), 100);
   });
 };

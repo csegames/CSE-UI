@@ -6,7 +6,6 @@
 
 
 import * as React from 'react';
-import { client, soundEvents } from '@csegames/camelot-unchained';
 import { StyleSheet, cssAphrodite, merge, button, ButtonStyles } from '../styles';
 
 interface ButtonProps {
@@ -25,7 +24,8 @@ export const Button = (props: ButtonProps) => {
       className={cssAphrodite(ss.button, props.disabled && ss.disabled)}
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         if (!props.disableSound) {
-          client.PlaySoundEvent(soundEvents.PLAY_UI_VOX_GENERICBUTTON);
+          // TODO COHERENT missing PLAY_UI_VOX_GENERICBUTTON sound event
+          // game.playGameSound(SoundEvent.PLAY_UI_VOX_GENERICBUTTON);
         }
         props.onClick(e);
       }}

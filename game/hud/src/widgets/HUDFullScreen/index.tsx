@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { events, client, TabPanel, TabItem, jsKeyCodes } from '@csegames/camelot-unchained';
+import { TabPanel, TabItem } from '@csegames/camelot-unchained';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
 
 import HudFullScreenView from './HUDFullScreenView';
@@ -63,8 +63,8 @@ const BackgroundImage = styled('div')`
 `;
 
 class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavState> {
-  private navigateListener: number;
-  private shouldKeydownListener: number;
+  private navigateListener: EventHandle;
+  private shouldKeydownListener: EventHandle;
   private tabPanelLeftRef: TabPanel<ITemporaryTab | HUDFullScreenTabData>;
   private tabPanelRightRef: TabPanel<ITemporaryTab | HUDFullScreenTabData>;
 
@@ -78,7 +78,6 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     return (
       <FullScreenContext.Provider value={this.state}>
         <div
-          onMouseDown={() => client.RequestInputOwnership()}
           style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
           <BackgroundImage className={'left'} />
           <BackgroundImage className={'right'} />
@@ -104,8 +103,8 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   public componentDidMount() {
-    this.navigateListener = events.on('hudnav--navigate', this.handleNavEvent);
-    this.shouldKeydownListener = events.on('hudfullscreen-shouldListenKeydown', this.handleShouldKeydownEvent);
+    this.navigateListener = game.on('hudnav--navigate', this.handleNavEvent);
+    this.shouldKeydownListener = game.on('hudfullscreen-shouldListenKeydown', this.handleShouldKeydownEvent);
   }
 
   public componentDidUpdate(prevProps: FullScreenNavProps, prevState: FullScreenNavState) {
@@ -116,30 +115,30 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   public componentWillUnmount() {
-    events.off(this.navigateListener);
-    events.off(this.shouldKeydownListener);
+    game.off(this.navigateListener);
+    game.off(this.shouldKeydownListener);
   }
 
   private handleKeydownEvent = (e: KeyboardEvent) => {
-    switch (e.keyCode) {
-      case jsKeyCodes.ESC: {
+    switch (e.key.toUpperCase()) {
+      case 'ESCAPE': {
         // Close full screen UI
         this.onCloseFullScreen();
         break;
       }
-      case jsKeyCodes.I: {
+      case 'I': {
         // Open/Close inventory
-        events.fire('hudnav--navigate', 'inventory');
+        game.trigger('hudnav--navigate', 'inventory');
         break;
       }
-      case jsKeyCodes.C: {
+      case 'C': {
         // Open/Close paperdoll
-        events.fire('hudnav--navigate', 'equippedgear');
+        game.trigger('hudnav--navigate', 'equippedgear');
         break;
       }
-      case jsKeyCodes.M: {
+      case 'M': {
         // Open/Close map
-        events.fire('hudnav--navigate', 'map');
+        game.trigger('hudnav--navigate', 'map');
         break;
       }
       default: break;
@@ -259,7 +258,6 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
     if (name !== '' && !_.includes(visibleComponent, name)) {
       window.addEventListener('keydown', this.handleKeydownEvent);
-      client.RequestInputOwnership();
       this.setState((state, props) => {
         if (side === 'right') {
           this.tabPanelRightRef.activeTabIndex = tabIndex;
@@ -285,7 +283,6 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
             visibleComponentLeft: '',
           };
         });
-        setTimeout(() => client.ReleaseInputOwnership(), 100);
       }
     }
   }
@@ -348,14 +345,13 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private onCloseFullScreen = () => {
-    events.fire('hudnav--navigate', '');
+    game.trigger('hudnav--navigate', '');
     this.setActiveTab('');
     window.removeEventListener('keydown', this.handleKeydownEvent);
-    client.ReleaseInputOwnership();
     hideTooltip();
 
     if (this.state.myTradeState !== 'Confirmed' && this.state.myTradeState !== 'None') {
-      events.fire('cancel-trade');
+      game.trigger('cancel-trade');
     }
   }
 

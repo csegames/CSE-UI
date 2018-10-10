@@ -8,8 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { webAPI, client } from '@csegames/camelot-unchained';
-import { fire, on, off } from '@csegames/camelot-unchained/lib/events';
+import { webAPI } from '@csegames/camelot-unchained';
 
 import TabHeader from '../../TabHeader';
 import TabSubHeader from '../../TabSubHeader';
@@ -154,7 +153,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
   }
 
   public componentDidMount() {
-    this.closeTradeListener = on('cancel-trade', this.onCancelClick);
+    this.closeTradeListener = game.on('cancel-trade', this.onCancelClick);
     window.addEventListener('resize', this.setDropContainerDimensions);
     setTimeout(() => {
       this.setDropContainerDimensions();
@@ -171,7 +170,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
     window.removeEventListener('resize', this.setDropContainerDimensions);
 
     if (this.closeTradeListener) {
-      off(this.closeTradeListener);
+      game.off(this.closeTradeListener);
       this.closeTradeListener = null;
     }
   }
@@ -193,12 +192,12 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
     try {
       const res = await webAPI.SecureTradeAPI.AbortSecureTrade(
         webAPI.defaultConfig,
-        client.shardID,
-        client.characterID,
+        game.shardID,
+        game.selfPlayerState.characterID,
       );
       if (res.ok) {
         // Handle aborting trade
-        fire('passivealert--newmessage', 'Trade Canceled');
+        game.trigger('passivealert--newmessage', 'Trade Canceled');
         this.closeTradeWindow();
         this.props.onMyTradeStateChange(SecureTradeState.None);
         this.props.onMyTradeItemsChange([]);
@@ -256,7 +255,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
   }
 
   private closeTradeWindow = () => {
-    fire('hudnav--navigate', 'trade', false);
+    game.trigger('hudnav--navigate', 'trade', false);
   }
 }
 

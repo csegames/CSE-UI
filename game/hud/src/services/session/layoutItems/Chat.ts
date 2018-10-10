@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { client, Chat } from '@csegames/camelot-unchained';
+import { Chat } from '@csegames/camelot-unchained';
 import { LayoutMode, Edge } from '../../../components/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 
@@ -30,6 +30,6 @@ export default {
   dragOptions: {},
   component: Chat,
   props: {
-    accessToken: client.accessToken,
+    accessToken: game.accessToken,
   },
 };

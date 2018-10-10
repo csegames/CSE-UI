@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as events  from '@csegames/camelot-unchained/lib/events';
+
 import { BuildingItem } from '../../../../../../lib/BuildingItem';
 import assign from 'object-assign';
 
@@ -12,7 +12,7 @@ const CHANGE_SELECTION = 'building/selection/CHANGE_SELECTION';
 const ITEM_SELECTED_EVENT = 'building/selection/ITEM_SELECTED_EVENT';
 
 export function initializeRecents(dispatch: any) {
-  events.addListener(ITEM_SELECTED_EVENT, (info: { item: BuildingItem }) => {
+  game.on(ITEM_SELECTED_EVENT, (info: { item: BuildingItem }) => {
     dispatch(selectItem(info.item));
   });
 }

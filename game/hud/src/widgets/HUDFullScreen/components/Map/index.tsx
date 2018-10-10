@@ -10,8 +10,7 @@ import styled from 'react-emotion';
 import OL from 'ol';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { request } from '@csegames/camelot-unchained/lib/utils/request';
-import * as events from '@csegames/camelot-unchained/lib/events';
-import client from '@csegames/camelot-unchained/lib/core/client';
+
 import { FullScreenContext } from '../../lib/utils';
 import { MapGQL } from 'gql/interfaces';
 
@@ -126,6 +125,7 @@ export interface State {
 type Coord = [number, number];
 
 export class GameMap extends React.Component<Props, State> {
+  private eventHandles: EventHandle[] = [];
   private mapRef: HTMLDivElement = null;
   private tooltipRef: HTMLDivElement = null;
   private map: ol.Map;
@@ -180,10 +180,12 @@ export class GameMap extends React.Component<Props, State> {
     this.initialized = true;
     this.zoneID = window['zoneID'];
     this.fetchMetaData();
-    client.OnCharacterZoneChanged((id) => {
-      this.zoneID = id;
-      this.fetchMetaData();
-    });
+    this.eventHandles.push(game.selfPlayerState.onUpdated(() => {
+      if (game.selfPlayerState.zoneID !== this.zoneID) {
+        this.zoneID = game.selfPlayerState.zoneID;
+        this.fetchMetaData();
+      }
+    }));
   }
 
   public componentWillUnmount() {
@@ -197,7 +199,8 @@ export class GameMap extends React.Component<Props, State> {
       this.staticVectorSource.clear();
     }
     this.initialized = false;
-    events.off(this.navigationEventHandle);
+    game.off(this.navigationEventHandle);
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   public shouldComponentUpdate(nextProps: Props, nextState: State) {
