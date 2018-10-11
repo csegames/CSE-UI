@@ -7,7 +7,7 @@
 enum HUDZOrder {
   Building,
   ErrorMessages,
-  SkillQueue,
+  AbilityQueue,
   FriendlyTargetSiegeHealth,
   EnemyTargetSiegeHealth,
   PlayerSiegeHealth,

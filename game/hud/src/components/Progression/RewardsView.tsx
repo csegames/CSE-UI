@@ -71,7 +71,7 @@ const progressionAdjustmentFragments = gql`
   }
 
   fragment RewardsViewPlayerStatAdjustment on CharacterAdjustmentPlayerStat {
-    playerStat
+    stat
     previousBonus
     newBonus
     previousProgressionPoints
@@ -257,7 +257,7 @@ class RewardsView extends React.Component<Props, State> {
               <li key={'adj' + adjustmentID}>
                 <div className='ProgressionInfo'>
                   <div className='RewardLabel'>
-                    Bonus +{playerStat.newBonus - playerStat.previousBonus} applied to {playerStat.playerStat}
+                    Bonus +{playerStat.newBonus - playerStat.previousBonus} applied to {playerStat.stat}
                   </div>
                   <div className='RewardValue'>{reasonDescription}</div>
                 </div>
@@ -298,7 +298,7 @@ class RewardsView extends React.Component<Props, State> {
             progressionList.push(
               <li key={'adj' + adjustmentID}>
                 <div className='ProgressionInfo'>
-                  <div className='ProgressionLabel'>{playerStat.playerStat}</div>
+                  <div className='ProgressionLabel'>{playerStat.stat}</div>
                   <div className='ProgressionValue2'>
                     {playerStat.newProgressionPoints - playerStat.previousProgressionPoints}
                   </div>

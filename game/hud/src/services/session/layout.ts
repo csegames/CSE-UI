@@ -35,7 +35,7 @@ import GameMenu from './layoutItems/GameMenu';
 // import Settings from './layoutItems/Settings';
 import GameInfo from './layoutItems/GameInfo';
 import ItemPlacementModeManager from './layoutItems/ItemPlacementModeManager';
-// import SkillQueue from './layoutItems/SkillQueue';
+import AbilityQueue from './layoutItems/AbilityQueue';
 
 const localStorageKey = 'cse_hud_layout-state';
 const FORCE_RESET_CODE = '0.7.10'; // if the local storage value for the reset code doesn't match this, then force a reset
@@ -177,9 +177,9 @@ function initialState(): LayoutState {
     // [
     //   'settings', cloneDeep(Settings),
     // ],
-    // [
-    //   'skillqueue', cloneDeep(SkillQueue),
-    // ],
+    [
+      'abilityqueue', cloneDeep(AbilityQueue),
+    ],
     [
       'itemPlacementModeManager', cloneDeep(ItemPlacementModeManager),
     ],

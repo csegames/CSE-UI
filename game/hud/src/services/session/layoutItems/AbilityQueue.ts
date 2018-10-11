@@ -6,8 +6,8 @@
  */
 
 import { LayoutMode } from 'components/HUDDrag';
-import SkillQueue from 'components/SkillQueue';
-import HUDZOrder from '../HUDZOrder';
+import AbilityQueue from 'components/AbilityQueue';
+import HUDZOrder from 'services/session/HUDZOrder';
 
 export default {
   position: {
@@ -26,13 +26,13 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: HUDZOrder.SkillQueue,
+    zOrder: HUDZOrder.AbilityQueue,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {
     lockHeight: true,
     lockWidth: true,
   },
-  component: SkillQueue,
+  component: AbilityQueue,
   props: {},
 };

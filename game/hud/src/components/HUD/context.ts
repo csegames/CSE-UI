@@ -115,7 +115,7 @@ export async function fetchStatuses() {
   }, HUDGraphQLQueryConfig());
   return {
     ...res,
-    data: res.data && res.data.status ? res.data.status.statuses : [],
+    data: res.data && res.data.status ? (res.data.status as any).statuses : [],
     refetch: fetchStatuses,
   };
 }
