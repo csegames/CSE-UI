@@ -89,7 +89,7 @@ export class InteractiveAlertView extends React.Component<Props, State> {
       <GraphQL
         query={query}
         onQueryResult={this.handleQueryResult}
-        subscription={subscription}
+        subscription={subscription()}
         subscriptionHandler={this.handleSubscription}
       >
         {() =>
@@ -123,6 +123,14 @@ export class InteractiveAlertView extends React.Component<Props, State> {
           ) : null}
       </GraphQL>
     );
+  }
+
+  public componentDidMount() {
+    console.log('interactive alert mounted');
+  }
+
+  public componentWillUnmount() {
+    console.log('interactive alert unmounted');
   }
 
   private removeAlert = (alert: IInteractiveAlert) => {

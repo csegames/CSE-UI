@@ -7,7 +7,7 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 import { Tooltip } from 'components/UI/Tooltip';
-
+import { Faction as GQLFaction, Archetype as GQLArchetype } from 'gql/interfaces';
 
 const PlayerFrameContainer = styled('div')`
   position: relative;
@@ -77,15 +77,15 @@ const HealthSubGrid = styled('div')`
   overflow: hidden;
   display: grid;
   grid-template-areas:
-   '. blood nameBG nameBG nameBG nameBG nameBG nameBG .'
-   '. blood . . . . . . .'
-   '. blood . . . health health health .'
-   '. blood . . . . . . .'
-   '. blood . . stamina stamina stamina . .'
-   '. blood . . . . . . .'
-   '. blood . panic panic panic . . .'
-   '. blood . . . . . . .'
-   '. . . . . . . . .';
+    '. blood nameBG nameBG nameBG nameBG nameBG nameBG .'
+    '. blood . . . . . . .'
+    '. blood . . . health health health .'
+    '. blood . . . . . . .'
+    '. blood . . stamina stamina stamina . .'
+    '. blood . . . . . . .'
+    '. blood . panic panic panic . . .'
+    '. blood . . . . . . .'
+    '. . . . . . . . .';
   grid-template-columns: 8px 30px 6px 3px 6px 293px 3px 85px 7px;
   grid-template-rows: 57px 4px 13px 6px 4px 1px 4px 3px 9px;
   @media (max-width: 2000px) {
@@ -219,7 +219,6 @@ export class PlayerFrame extends React.Component<Props, State> {
 
   private uiContextRender = (uiContext: UIContext) => {
     const { player } = this.props;
-    if (!player.health[0]) return null;
     const imgDir = 'images/unit-frames/' + (uiContext.use4kAssets() ? '4k/' : '1080/');
     const realmPrefix = this.realmPrefix(player.faction);
     const archetypePrefix = this.archetypePrefix(player.classID);
@@ -241,7 +240,7 @@ export class PlayerFrame extends React.Component<Props, State> {
                 backgroundColor: theme.unitFrames.color.blood,
               }} />
               <Health style={{
-                width: CurrentMax.cssPercent(player.health[0]),
+                width: player.health && player.health[0] ? CurrentMax.cssPercent(player.health[0]) : 0,
                 backgroundColor: theme.unitFrames.color.health,
               }} />
               <Stamina style={{
@@ -254,9 +253,9 @@ export class PlayerFrame extends React.Component<Props, State> {
             {/* Overlay */}
             <Image src={imgDir + realmPrefix + 'main-frame.png'} />
 
-            {this.state.hover &&
+            {this.state.hover && player.health && player.health[0] &&
               <HealthSubGrid>
-                <HealthText>{player.health[0].current + ' / ' + player.health[0].max}</HealthText>
+                <HealthText>{player.health[0].current.toFixed(0) + ' / ' + player.health[0].max}</HealthText>
               </HealthSubGrid >
             }
 
@@ -274,9 +273,11 @@ export class PlayerFrame extends React.Component<Props, State> {
           <Name>{player.name}</Name>
         </MainGrid>
 
-        <Statuses>
-          {Object.values(player.statuses).map(this.renderStatus)}
-        </Statuses>
+        {player.statuses &&
+          <Statuses>
+            {Object.values(player.statuses).map(this.renderStatus)}
+          </Statuses>
+        }
       </PlayerFrameContainer>
     );
   }
@@ -314,20 +315,50 @@ export class PlayerFrame extends React.Component<Props, State> {
     this.setState({ hover: false });
   }
 
-  private realmPrefix = (faction: Faction) => {
+  private realmPrefix = (faction: Faction | GQLFaction) => {
     switch (faction) {
-      case Faction.Arthurian: return 'art-';
-      case Faction.Viking: return 'vik-';
-      case Faction.TDD: return 'tdd-';
+      case Faction.Arthurian:
+      case GQLFaction.Arthurian: {
+        return 'art-';
+      }
+      case Faction.Viking:
+      case GQLFaction.Viking: {
+        return 'vik-';
+      }
+      case Faction.TDD:
+      case GQLFaction.TDD: {
+        return 'tdd-';
+      }
       default: return '';
     }
   }
 
-  private archetypePrefix = (archetype: Archetype) => {
+  private archetypePrefix = (archetype: Archetype | GQLArchetype) => {
     switch (archetype) {
-      case Archetype.BlackKnight: case Archetype.Fianna: case Archetype.Mjolnir: return 'heavy-fighter-';
-      case Archetype.Blackguard: case Archetype.ForestStalker: case Archetype.WintersShadow: return 'archer-';
-      case Archetype.Physician: case Archetype.Empath: case Archetype.Stonehealer: return 'healer-';
+      case Archetype.BlackKnight:
+      case Archetype.Fianna:
+      case Archetype.Mjolnir:
+      case GQLArchetype.BlackKnight:
+      case GQLArchetype.Fianna:
+      case GQLArchetype.Mjolnir: {
+        return 'heavy-fighter-';
+      }
+      case Archetype.Blackguard:
+      case Archetype.ForestStalker:
+      case Archetype.WintersShadow:
+      case GQLArchetype.Blackguard:
+      case GQLArchetype.ForestStalker:
+      case GQLArchetype.WintersShadow: {
+        return 'archer-';
+      }
+      case Archetype.Physician:
+      case Archetype.Empath:
+      case Archetype.Stonehealer:
+      case GQLArchetype.Physician:
+      case GQLArchetype.Empath:
+      case GQLArchetype.Stonehealer: {
+        return 'healer-';
+      }
       default: return '';
     }
   }

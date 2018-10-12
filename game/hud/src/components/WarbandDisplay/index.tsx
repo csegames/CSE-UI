@@ -7,14 +7,17 @@
 import * as React from 'react';
 import gql from 'graphql-tag';
 import styled from 'react-emotion';
+import { isEqual } from 'lodash';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
+import { SubscriptionResult, defaultSubscriptionOpts } from '@csegames/camelot-unchained/lib/graphql/subscription';
 import {
   WarbandDisplayQuery,
-  WarbandDisplaySubscription,
+  WarbandDisplayUpdateSubscription,
   GroupUpdateType,
   GroupMemberUpdate,
   GroupMemberRemovedUpdate,
+  WarbandNotificationSubscription,
+  GroupNotificationType,
 } from 'gql/interfaces';
 
 import { addOrUpdate, removeWhere } from '../../lib/reduxUtils';
@@ -26,6 +29,7 @@ import {
   onWarbandMemberRemoved,
 } from '../../services/actions/warband';
 import { WarbandMemberStateFragment } from 'gql/fragments/WarbandMemberStateFragment';
+import WarbandNotificationProvider from 'components/WarbandDisplay/WarbandNotificationProvider';
 
 const Container = styled('div')`
   user-select: none;
@@ -49,11 +53,11 @@ const characterImages = {
 
 const query = gql`
   query WarbandDisplayQuery {
-    myWarband {
+    myActiveWarband {
       info {
         id
       }
-      membersState {
+      members {
         ...WarbandMemberState
       }
     }
@@ -61,9 +65,9 @@ const query = gql`
   ${WarbandMemberStateFragment}
 `;
 
-const subscriptionQuery = gql`
-  subscription WarbandDisplaySubscription {
-    groupUpdates {
+const groupUpdateSubscriptionQuery = gql`
+  subscription WarbandDisplayUpdateSubscription($groupID: String!) {
+    activeGroupUpdates(groupID: $groupID) {
       updateType
       groupID
 
@@ -77,31 +81,23 @@ const subscriptionQuery = gql`
     }
   }
 `;
-const subscriptionUrl =  (game.webAPIHost + '/graphql').replace('http', 'ws');
-const subscriptionInitPayload = {
-  shardID: game.shardID,
-  Authorization: `Bearer ${game.accessToken}`,
-  characterID: game.selfPlayerState.characterID,
-};
 
-export interface WarbandDisplayProps {
+export interface Props {
   isMini?: boolean;
 }
 
-export interface WarbandDisplayState {
+export interface State {
   activeMembers?: GroupMemberState[];
   permanentMembers?: GroupMemberState[];
   name?: string;
   warbandID?: string;
 }
 
-export class WarbandDisplay extends React.Component<WarbandDisplayProps, WarbandDisplayState> {
-
-  private graphql: GraphQLResult<WarbandDisplayQuery.Query>;
-  private eventJoinedHandle: EventHandle;
+export class WarbandDisplay extends React.Component<Props, State> {
+  private myWarbandGQL: GraphQLResult<WarbandDisplayQuery.Query>;
   private receivedMemberUpdate: boolean = false;
 
-  constructor(props: WarbandDisplayProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       ...(WarbandDisplay.emptyWarband()),
@@ -111,37 +107,32 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
   public render() {
     return (
       <GraphQL query={query} onQueryResult={this.handleQuery}>
-        {() => this.state.warbandID ? (
-          <GraphQL
-            subscription={{
-              query: subscriptionQuery,
-              url: subscriptionUrl,
-              initPayload: subscriptionInitPayload,
-            }}
-            subscriptionHandler={this.handleSubscription}>
-            {() => (
-              <Container>
-                {
-                  this.state.activeMembers &&
-                    this.state.activeMembers.map(m => <WarbandMemberDisplay key={m.entityID} member={m as any} />)
-                }
-              </Container>
-            )}
-          </GraphQL>
-        ) : null}
+        {() => (
+          <Container>
+            {
+              this.state.activeMembers &&
+                this.state.activeMembers.map(m => <WarbandMemberDisplay key={m.entityID} member={m as any} />)
+            }
+            {this.state.warbandID &&
+              <GraphQL
+                subscription={{
+                  query: groupUpdateSubscriptionQuery,
+                  initPayload: defaultSubscriptionOpts().initPayload,
+                  variables: {
+                    groupID: this.state.warbandID,
+                  },
+                }}
+                subscriptionHandler={this.handleSubscription}
+              />
+            }
+            <WarbandNotificationProvider onNotification={this.handleWarbandNotification} />
+          </Container>
+        )}
       </GraphQL>
     );
   }
 
-  public componentDidMount() {
-    this.eventJoinedHandle = game.on('warband-joined', this.onJoinWarband);
-  }
-
-  public componentWillUnmount() {
-    this.eventJoinedHandle.clear();
-  }
-
-  public shouldComponentUpdate(nextProps: Readonly<WarbandDisplayProps>, nextState: Readonly<WarbandDisplayState>) {
+  public shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>) {
 
     if (this.props.isMini !== nextProps.isMini) {
       return true;
@@ -156,40 +147,58 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
       return true;
     }
 
+    if (!isEqual(nextState.activeMembers, this.state.activeMembers)) {
+      return true;
+    }
+
     return false;
   }
 
+  private handleWarbandNotification = (notification: WarbandNotificationSubscription.MyGroupNotifications) => {
+    switch (notification.type) {
+      case GroupNotificationType.Joined: {
+        this.onWarbandJoined(notification.groupID);
+        break;
+      }
+
+      case GroupNotificationType.Removed: {
+        this.onWarbandQuit(notification.groupID);
+        break;
+      }
+    }
+  }
+
   private handleQuery = (graphql: GraphQLResult<WarbandDisplayQuery.Query>) => {
-    this.graphql = graphql;
+    this.myWarbandGQL = graphql;
     if (!graphql.data || !graphql.ok) {
       return graphql;
     }
 
-    const warband = graphql.data.myWarband;
-    if (warband) {
-      this.onInitializeWarband(warband.info.id, warband.membersState as GroupMemberState[]);
+    const warband = graphql.data.myActiveWarband;
+    if (warband && warband.info) {
+      this.onInitializeWarband(warband.info.id, warband.members as GroupMemberState[]);
     }
   }
 
-  private handleSubscription = (result: SubscriptionResult<WarbandDisplaySubscription.Subscription>,
+  private handleSubscription = (result: SubscriptionResult<WarbandDisplayUpdateSubscription.Subscription>,
                                 data: WarbandDisplayQuery.Query) => {
     if (!result.data || !result.ok) {
       return data;
     }
 
     const resultData = result.data;
-    switch (resultData.groupUpdates.updateType) {
+    switch (resultData.activeGroupUpdates.updateType) {
       case GroupUpdateType.MemberJoined: {
-        const member = WarbandDisplay.deserializeMember((resultData.groupUpdates as GroupMemberUpdate).memberState);
+        const member = WarbandDisplay.deserializeMember((resultData.activeGroupUpdates as GroupMemberUpdate).memberState);
         this.onWarbandMemberJoined(member);
         break;
       }
       case GroupUpdateType.MemberRemoved: {
-        this.onWarbandMemberRemoved((resultData.groupUpdates as GroupMemberRemovedUpdate).characterID);
+        this.onWarbandMemberRemoved((resultData.activeGroupUpdates as GroupMemberRemovedUpdate).characterID);
         break;
       }
       case GroupUpdateType.MemberUpdate: {
-        const member = WarbandDisplay.deserializeMember((resultData.groupUpdates as GroupMemberUpdate).memberState);
+        const member = WarbandDisplay.deserializeMember((resultData.activeGroupUpdates as GroupMemberUpdate).memberState);
         this.onWarbandMemberUpdated(member);
         break;
       }
@@ -244,10 +253,6 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
     }
   }
 
-  private onJoinWarband = (id: string) => {
-    this.graphql.refetch();
-  }
-
   private onInitializeWarband = (id: string, members: GroupMemberState[]) => {
     this.setState({
       ...(WarbandDisplay.emptyWarband()),
@@ -256,6 +261,15 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
     });
     setActiveWarbandID(id);
     members.forEach(member => onWarbandMemberUpdate(member));
+  }
+
+  private onWarbandJoined = (id: string) => {
+    this.setState({
+      ...(WarbandDisplay.emptyWarband()),
+      warbandID: id,
+    });
+    setActiveWarbandID(id);
+    this.myWarbandGQL.refetch();
   }
 
   private onWarbandQuit = (id: string) => {
@@ -315,4 +329,3 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
     });
   }
 }
-

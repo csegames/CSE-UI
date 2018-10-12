@@ -18,6 +18,13 @@ export const WarbandMemberStateFragment = gql`
     isAlive
     race
     gender
+    classID
+    statuses {
+      id
+      icon
+      description
+      name
+    }
     health {
       current
       max

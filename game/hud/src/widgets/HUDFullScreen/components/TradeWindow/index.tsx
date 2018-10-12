@@ -9,7 +9,7 @@ import * as React from 'react';
 import { includes } from 'lodash';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
+import { SubscriptionResult, defaultSubscriptionOpts } from '@csegames/camelot-unchained/lib/graphql/subscription';
 
 import TradeWindowView from './components/TradeWindowView';
 import { FullScreenContext } from '../../lib/utils';
@@ -65,12 +65,6 @@ const subscriptionQuery = gql`
   }
   ${InventoryItemFragment}
 `;
-const subscriptionUrl =  (game.webAPIHost + '/graphql').replace('http', 'ws');
-const subscriptionInitPayload = {
-  shardID: game.shardID,
-  Authorization: `Bearer ${game.accessToken}`,
-  characterID: game.selfPlayerState.characterID,
-};
 
 export interface InjectedTradeWindowProps {
   isVisible: boolean;
@@ -109,8 +103,7 @@ class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindow
         onQueryResult={this.handleQueryResult}
         subscription={{
           query: subscriptionQuery,
-          url: subscriptionUrl,
-          initPayload: subscriptionInitPayload,
+          initPayload: defaultSubscriptionOpts().initPayload,
         }}
         subscriptionHandler={this.handleSubscription}>
         {(graphql: GraphQLResult<TradeWindowQuery.Query>) => {

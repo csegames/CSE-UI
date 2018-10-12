@@ -61,7 +61,15 @@ class PlayerStateExt {
       return false;
     }
 
-    if (!CurrentMax.equals(a.health[0], b.health[0])) {
+    if ((a.health && !b.health) || (!a.health && b.health)) {
+      return false;
+    }
+
+    if (a.health && b.health && ((a.health[0] && !b.health[0]) || (!a.health[0] && b.health[0]))) {
+      return false;
+    }
+
+    if (a.health && b.health && !CurrentMax.equals(a.health[0], b.health[0])) {
       return false;
     }
 
@@ -77,8 +85,8 @@ class PlayerStateExt {
       return false;
     }
 
-    const aStatuses = Object.values(a.statuses);
-    const bStatuses = Object.values(b.statuses);
+    const aStatuses = a.statuses ? Object.values(a.statuses) : [];
+    const bStatuses = b.statuses ? Object.values(b.statuses) : [];
     if (aStatuses.length !== bStatuses.length) {
       return false;
     }

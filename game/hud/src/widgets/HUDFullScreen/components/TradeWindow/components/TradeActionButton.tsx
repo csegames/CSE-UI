@@ -34,26 +34,35 @@ const ActionButton = styled('div')`
   font-family: Caudex;
   text-transform: uppercase;
   letter-spacing: 3px;
-  -webkit-filter: brightness(100%);
-  -webkit-transition: -webkit-filter 0.2s;
+  filter: brightness(100%);
+  transition: filter 0.2s;
   &:hover {
-    -webkit-filter: ${(props: any) => props.disabled ? '' : 'brightness(120%)'};
+    filter: ${(props: any) => props.disabled ? '' : 'brightness(120%)'};
   }
   &:active {
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
-    -webkit-filter: brightness(150%);
+    filter: brightness(150%);
   }
-  &:before {
-    content: '${(props: any) => props.text}';
-    color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: url(${(props: any) => props.backgroundImg}) no-repeat;
-    background-size: contain;
-    width: 177px;
-    height: 47px;
-  }
+`;
+
+const ButtonContent = styled('div')`
+  position: relative;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 177px;
+  height: 47px;
+`;
+
+const ButtonImage = styled('img')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  object-fit: contain;
+  z-index: -1;
 `;
 
 const ActionButtonOverlay = styled('div')`
@@ -81,12 +90,12 @@ class TradeActionButton extends React.Component<TradeActionButtonProps, TradeAct
   public render() {
     return (
       <Container>
-        <ActionButton
-          disabled={this.props.disabled}
-          text={this.props.text}
-          backgroundImg={this.props.backgroundImg}
-          onClick={this.props.onClick}
-        />
+        <ActionButton disabled={this.props.disabled} onClick={this.props.onClick}>
+          <ButtonContent>
+            <ButtonImage src={this.props.backgroundImg} />
+            {this.props.text}
+          </ButtonContent>
+        </ActionButton>
         <ActionButtonOverlay />
       </Container>
     );

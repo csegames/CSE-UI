@@ -110,13 +110,15 @@ export class SubscriptionManager {
   private keepAliveTimeoutHandler: number;
   private debug: boolean = false;
   private messageQueue: string[] = [];
+  private initMessages: string[] = [];
 
   constructor(options: Partial<Options<any>>) {
     this.debug = options.debug || false;
     if (this.debug) {
       this.log(`initiating web socket connection on ${options.url} with protocols '${options.protocols}'`);
     }
-    const opts =  withDefaults(options, defaultSubscriptionOpts());
+    const defaultOpts = defaultSubscriptionOpts();
+    const opts =  withDefaults(options, defaultOpts);
     this.socket = new ReconnectingWebSocket(opts);
     this.socket.onopen = this.init;
     this.socket.onmessage = this.messageHandler;
@@ -128,7 +130,6 @@ export class SubscriptionManager {
     subscription: Subscription,
     onData: OnData<T>,
     onError?: OnError) => {
-
     const id = this.idCounter++ + '';
 
     let payload;
@@ -189,7 +190,10 @@ export class SubscriptionManager {
       payload: this.initPayload,
     }));
     if (this.messageQueue.length > 0) {
-      this.messageQueue.forEach(m => this.socket.send(m));
+      this.messageQueue.forEach((m) => {
+        this.socket.send(m);
+        this.initMessages.push(m);
+      });
       this.messageQueue = [];
     }
   }
@@ -205,10 +209,13 @@ export class SubscriptionManager {
         _.values(this.subscriptions).forEach((s) => {
           // Check to see if the message has already been added to the messageQueue
           const inMessageQueue = _.findIndex(this.messageQueue, (message: string) => {
-            const messageIdentifier = getFrameIdentifier(message);
             return getFrameIdentifier(message) === getFrameIdentifier(s.start);
           }) !== -1;
-          if (!inMessageQueue) {
+          // Check to see if the start message has already been sent.
+          const inInitMessages = _.findIndex(this.initMessages, (message: string) => {
+            return getFrameIdentifier(message) === getFrameIdentifier(s.start);
+          }) !== -1;
+          if (!inMessageQueue && !inInitMessages) {
             this.send(s.start);
           }
         });

@@ -64,7 +64,6 @@ export class GroupAlertView extends React.Component<GroupAlertProps> {
         alert.code);
       if (res.ok) {
         this.props.remove(alert);
-        game.trigger('warband-joined');
       } else {
         const data = JSON.parse(res.data);
         if (data.FieldCodes && data.FieldCodes.length > 0) {

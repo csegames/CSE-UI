@@ -77,9 +77,6 @@ export interface SignalR {
   unregisterSignalRHubs: (...hubNames: string[]) => void;
 
   // Hubs
-  groupsHub: SignalRHub;
-  groupsHubEvents: typeof groupsHubEvents;
-
   patcherHub: SignalRHub;
   createPatcherHub: typeof createPatcherHub;
   getPatcherEventName: typeof getPatcherEventName;
@@ -87,14 +84,12 @@ export interface SignalR {
 
 export default function(): SignalR {
   return {
-    groupsHub: initGroupsHub(),
     patcherHub: initPatcherHub(),
 
     startSignalR,
     restartSignalR,
     initializeSignalRHubs,
     unregisterSignalRHubs,
-    groupsHubEvents,
     createPatcherHub,
     getPatcherEventName,
   };

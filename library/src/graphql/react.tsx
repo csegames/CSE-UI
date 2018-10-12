@@ -103,19 +103,6 @@ function setQueryOptions(queryOptions: QueryOptions) {
   queryConf = queryOptions;
 }
 
-let subsConf = withDefaults(null, defaultSubscriptionOpts());
-let getSubscriptionConf = () => null;
-function getSubscriptionOptions() {
-  return {
-    ...defaultSubscriptionOpts(),
-    ...withDefaults(getSubscriptionConf(), subsConf),
-  };
-}
-
-function setSubscriptionOptions(subscriptionOptions: SubscriptionOptions<any>) {
-  subsConf = subscriptionOptions;
-}
-
 export interface GraphQLData<T> {
   data: T;
   loading: boolean;
@@ -134,9 +121,7 @@ export interface GraphQLInjectedProps<T> {
 
 export function useConfig(getQueryConfig: () => Partial<GraphQLConfig>, getSubscriptionConfig: () => Partial<Options<any>>) {
   getQueryConf = getQueryConfig;
-  getSubscriptionConf = getSubscriptionConfig;
   queryConf = withDefaults(getQueryConfig(), queryConf);
-  subsConf = withDefaults(getSubscriptionConfig(), subsConf);
 }
 
 
@@ -193,7 +178,6 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
       if (typeof props.useConfig === 'function') {
         const config = props.useConfig();
         setQueryOptions(config.queryConf);
-        setSubscriptionOptions(config.subsConf);
       }
 
       this.queryOptions = withDefaults<GraphQLOptions>(qp, getQueryOptions());
@@ -213,7 +197,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
         s = props.subscription;
       }
       this.subscription = withDefaults(s, defaultSubscription);
-      this.subscriptionOptions = withDefaults<Options<any>>(s, getSubscriptionOptions());
+      this.subscriptionOptions = withDefaults<Options<any>>(s, defaultSubscriptionOpts());
     }
   }
 
@@ -327,18 +311,11 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     if (typeof this.props.useConfig === 'function') {
       const config = this.props.useConfig();
       const queryConfChanged = !_.isEqual(config.queryConf, queryConf);
-      const subsConfChanged = !_.isEqual(config.subsConf, subsConf);
-      if (queryConfChanged || subsConfChanged) {
+      if (queryConfChanged) {
         if (queryConfChanged) {
           // Only set query options if there is a difference
           setQueryOptions(config.queryConf);
           this.queryOptions = getQueryOptions();
-        }
-
-        if (subsConfChanged) {
-          // Only set subscription options if there is a difference
-          setSubscriptionOptions(config.subsConf);
-          this.subscriptionOptions = getSubscriptionOptions();
         }
 
         // Update graphql client
@@ -352,8 +329,6 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
         this.query = withDefaults(q, defaultQuery);
       }
     } else {
-      useConfig(getQueryConf, getSubscriptionConf);
-
       const defaultOpts = game.graphQL.defaultOptions();
       if (typeof this.props.query !== 'string') {
         // Update queryOptions but use props first

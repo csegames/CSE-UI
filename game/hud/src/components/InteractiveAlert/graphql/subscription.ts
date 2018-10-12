@@ -6,19 +6,12 @@
 
 import gql from 'graphql-tag';
 import { GraphQLSubscriptionOptions } from '@csegames/camelot-unchained/lib/graphql/react';
+import { defaultSubscriptionOpts } from '@csegames/camelot-unchained/lib/graphql/subscription';
 import { InteractiveAlertSubscriptionGQL } from 'gql/interfaces';
-
-const url =  (game.webAPIHost + '/graphql').replace('http', 'ws');
-const initPayload = {
-  shardID: game.shardID,
-  Authorization: `Bearer ${game.accessToken}`,
-  characterID: game.selfPlayerState.characterID,
-};
-
 
 export type SubscriptionData = InteractiveAlertSubscriptionGQL.Subscription;
 
-export const subscription: GraphQLSubscriptionOptions<SubscriptionData> = {
+export const subscription = (): GraphQLSubscriptionOptions<SubscriptionData> => ({
   query: gql`
     subscription InteractiveAlertSubscriptionGQL {
       interactiveAlerts {
@@ -42,7 +35,6 @@ export const subscription: GraphQLSubscriptionOptions<SubscriptionData> = {
       }
     }
     `,
-  url,
-  initPayload,
+  initPayload: defaultSubscriptionOpts().initPayload,
   debug: false,
-};
+});
