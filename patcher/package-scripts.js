@@ -173,7 +173,7 @@ module.exports = {
             codegen: {
               hiddenFromHelp: true,
               // script: 'gql-gen --schema src/gql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/gql/interfaces.ts "src/**/*.graphql"',
-              script: 'gql-gen --schema src/gql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/gql/interfaces.ts "src/**/*.graphql" "./src/**/*.tsx"',
+              script: 'gql-gen --schema src/gql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/gql/interfaces.ts "src/**/*.graphql" "./src/gql/fragments/**/*.ts" "./src/**/*.tsx"',
             },
           }
         }

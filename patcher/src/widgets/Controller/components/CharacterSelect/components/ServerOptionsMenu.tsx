@@ -8,7 +8,7 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 import { ChannelStatus, PatchChannelMode } from '../../../../../services/patcher';
-import { PatcherServer } from '../../../services/session/controller';
+import { PatcherServer } from '../../../ControllerContext';
 
 const MenuContainer = styled('div')`
   position: fixed;

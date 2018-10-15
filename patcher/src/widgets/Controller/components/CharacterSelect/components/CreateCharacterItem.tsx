@@ -10,8 +10,8 @@ import * as events  from '@csegames/camelot-unchained/lib/events';
 import styled, { keyframes, css } from 'react-emotion';
 
 import { patcher } from '../../../../../services/patcher';
-import { PatcherServer } from '../../../services/session/controller';
 import { view } from '../../../../../components/OverlayView';
+import { ControllerContext, PatcherServer } from '../../../ControllerContext';
 
 declare var toastr: any;
 
@@ -104,12 +104,18 @@ const SubText = styled('div')`
   text-transform: uppercase;
 `;
 
-export interface CreateCharacterItemProps {
+export interface ComponentProps {
   server: PatcherServer;
   apiServerOnline: 'Online' | 'Offline' | undefined;
 }
 
-class CreateCharacterItem extends React.Component<CreateCharacterItemProps> {
+export interface InjectedProps {
+  refetchCharacters: () => void;
+}
+
+export type Props = ComponentProps & InjectedProps;
+
+class CreateCharacterItem extends React.Component<Props> {
   public render() {
     const { apiServerOnline } = this.props;
     const backgroundImg = apiServerOnline === 'Online' ? 'images/controller/create-new-button.png' :
@@ -145,6 +151,7 @@ class CreateCharacterItem extends React.Component<CreateCharacterItemProps> {
       created: (c: any) => {
         events.fire('character-created', c.name);
         events.fire('view-content', view.NONE);
+        this.props.refetchCharacters();
       },
     });
     events.fire('play-sound', 'server-select');
@@ -173,4 +180,16 @@ class CreateCharacterItem extends React.Component<CreateCharacterItemProps> {
   }
 }
 
-export default CreateCharacterItem;
+class CreateCharacterItemWithInjectedContext extends React.Component<ComponentProps> {
+  public render() {
+    return (
+      <ControllerContext.Consumer>
+        {({ refetch }) => (
+          <CreateCharacterItem {...this.props} refetchCharacters={refetch} />
+        )}
+      </ControllerContext.Consumer>
+    );
+  }
+}
+
+export default CreateCharacterItemWithInjectedContext;

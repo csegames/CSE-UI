@@ -9,23 +9,19 @@ import * as React from 'react';
 import styled from 'react-emotion';
 import { webAPI } from '@csegames/camelot-unchained';
 
-import Login from '../../Login';
-import Alerts from '../../Alerts';
-import PatcherError from '../../PatcherError';
-import FatalError from '../../FatalError';
-import PatchButton from '../../PatchButton';
-import CharacterSelect from '../../CharacterSelect';
-import ProgressBar from '../../ProgressBar';
-import CharacterButton from '../../CharacterButton';
-import { patcher } from '../../../../../services/patcher';
-import { APIServerStatus } from '../index';
+import Login from '../Login';
+// import Alerts from '../Alerts';
+// import PatcherError from '../PatcherError';
+// import FatalError from '../FatalError';
+import PatchButton from '../PatchButton';
+import CharacterSelect from '../CharacterSelect';
+import ProgressBar from '../ProgressBar';
+import CharacterButton from '../CharacterButton';
+import { patcher } from '../../../../services/patcher';
+import { APIServerStatus } from '.';
 
-import { Routes } from '../../../../../services/session/routes';
-import {
-  ControllerState,
-  PatcherServer,
-  ServerType,
-} from '../../../services/session/controller';
+import { Routes } from '../../../../services/session/routes';
+import { ControllerContext, PatcherServer, ServerType } from '../../ControllerContext';
 
 
 const Container = styled('div')`
@@ -46,30 +42,32 @@ const ControllerBody = styled('div')`
   align-items: flex-end;
 `;
 
-export interface ControllerDisplayViewProps {
+export interface ComponentProps {
   activeRoute: Routes;
-  controllerState: ControllerState;
-  selectedServer: PatcherServer;
-  selectedCharacter: webAPI.SimpleCharacter;
   charSelectVisible: boolean;
   serverType: ServerType;
   apiServerStatus: APIServerStatus;
   onLogin: () => void;
-  onChooseCharacter: (character: webAPI.SimpleCharacter) => void;
   onToggleCharacterSelect: () => void;
   onDeleteCharacterSuccess: (id: string) => void;
-  selectCharacter: (character: webAPI.SimpleCharacter) => void;
-  selectServer: (server: PatcherServer) => void;
   selectServerType: (serverType: ServerType) => void;
-  onClearError: () => void;
 }
+
+export interface InjectedProps {
+  characters: {[id: string]: webAPI.SimpleCharacter};
+  servers: {[id: string]: PatcherServer};
+  selectedServer: PatcherServer;
+  selectedCharacter: webAPI.SimpleCharacter;
+}
+
+export type Props = ComponentProps & InjectedProps;
 
 export interface ControllerDisplayViewState {
   initialCharSelectOpen: boolean;
 }
 
-class ControllerDisplayView extends React.Component<ControllerDisplayViewProps, ControllerDisplayViewState> {
-  constructor(props: ControllerDisplayViewProps) {
+class ControllerDisplayView extends React.Component<Props, ControllerDisplayViewState> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       initialCharSelectOpen: true,
@@ -77,27 +75,28 @@ class ControllerDisplayView extends React.Component<ControllerDisplayViewProps, 
   }
 
   public render() {
-    const { activeRoute } = this.props;
-    const { alerts, servers, characters, errors } = this.props.controllerState;
+    const { activeRoute, servers, characters } = this.props;
+    // const { alerts, errors } = this.props.controllerState;
     const selectedServer = this.props.selectedServer ? servers[this.props.selectedServer.name] : null;
     const selectedCharacter = this.props.selectedCharacter ? characters[this.props.selectedCharacter.id] : null;
-    const alertArray: webAPI.PatcherAlert[] = [];
-    for (const key in alerts) alertArray.push(alerts[key]);
 
-    if (errors && errors.length) {
-      for (let i = 0; i < errors.length; i++) {
-        if (errors[i].fatal) {
-          return <FatalError errors={errors}/>;
-        }
-      }
-    }
+    // const alertArray: webAPI.PatcherAlert[] = [];
+    // for (const key in alerts) alertArray.push(alerts[key]);
+
+    // if (errors && errors.length) {
+    //   for (let i = 0; i < errors.length; i++) {
+    //     if (errors[i].fatal) {
+    //       return <FatalError errors={errors}/>;
+    //     }
+    //   }
+    // }
 
     if (!patcher.hasAccessToken() && activeRoute !== Routes.NEWS) {
       return (
         <Container style={{ pointerEvents: 'none' }}>
           <Login onLogin={this.props.onLogin} />
-          <Alerts alerts={alertArray} />
-          <PatcherError errors={errors} onClear={this.props.onClearError}/>
+          {/* <Alerts alerts={alertArray} /> */}
+          {/* <PatcherError errors={errors} onClear={this.props.onClearError}/> */}
         </Container>
       );
     }
@@ -108,11 +107,6 @@ class ControllerDisplayView extends React.Component<ControllerDisplayViewProps, 
           <div style={{ display: this.props.charSelectVisible ? 'block' : 'none' }}>
             <CharacterSelect
               charSelectVisible={this.props.charSelectVisible}
-              servers={this.props.controllerState.servers}
-              characters={this.props.controllerState.characters}
-              selectedCharacter={selectedCharacter}
-              selectedServer={selectedServer}
-              onChooseCharacter={this.props.onChooseCharacter}
               onCloseClick={this.props.onToggleCharacterSelect}
               onDeleteCharacterSuccess={this.props.onDeleteCharacterSuccess}
               apiServerStatus={this.props.apiServerStatus}
@@ -123,38 +117,50 @@ class ControllerDisplayView extends React.Component<ControllerDisplayViewProps, 
           activeRoute !== Routes.NEWS && activeRoute !== Routes.CHAT && activeRoute !== Routes.PATCHNOTES &&
           <ControllerBody>
             <CharacterButton
-              character={selectedCharacter}
-              characters={this.props.controllerState.characters}
-              selectedServer={selectedServer}
-              selectCharacter={this.props.selectCharacter}
-              servers={this.props.controllerState.servers}
               serverType={this.props.serverType}
-              selectServer={this.props.selectServer}
               selectServerType={this.props.selectServerType}
               onNavigateToCharacterSelect={this.props.onToggleCharacterSelect}
             />
             <PatchButton
-              servers={this.props.controllerState.servers}
+              servers={this.props.servers}
               selectedServer={selectedServer}
               selectedCharacter={selectedCharacter}
             />
           </ControllerBody>
         }
         <ProgressBar
-          servers={this.props.controllerState.servers}
+          servers={this.props.servers}
           selectedServer={selectedServer}
         />
-        <Alerts alerts={alertArray} />
-        <PatcherError errors={errors} onClear={this.props.onClearError}/>
+        {/* <Alerts alerts={alertArray} />
+        <PatcherError errors={errors} onClear={this.props.onClearError}/> */}
       </Container>
     );
   }
 
-  public componentWillReceiveProps(nextProps: ControllerDisplayViewProps) {
+  public componentWillReceiveProps(nextProps: Props) {
     if (this.state.initialCharSelectOpen && !this.props.charSelectVisible && nextProps.charSelectVisible) {
       this.setState({ initialCharSelectOpen: false });
     }
   }
 }
 
-export default ControllerDisplayView;
+class ControllerDisplayViewWithInjectedContext extends React.Component<ComponentProps> {
+  public render() {
+    return (
+      <ControllerContext.Consumer>
+        {({ characters, servers, selectedServer, selectedCharacter }) => (
+          <ControllerDisplayView
+            {...this.props}
+            characters={characters}
+            servers={servers}
+            selectedServer={selectedServer}
+            selectedCharacter={selectedCharacter}
+          />
+        )}
+      </ControllerContext.Consumer>
+    );
+  }
+}
+
+export default ControllerDisplayViewWithInjectedContext;

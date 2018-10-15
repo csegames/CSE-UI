@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import styled, { keyframes } from 'react-emotion';
 import { events, webAPI, Gender, Archetype, Race, Spinner } from '@csegames/camelot-unchained';
 import { getCharImage, shouldFlipCharImage } from '../../../../../lib/characterImages';
-import { PatcherServer } from '../../../services/session/controller';
+import { PatcherServer } from '../../../ControllerContext';
 import PlayerCounts from './PlayerCounts';
 
 declare const toastr: any;

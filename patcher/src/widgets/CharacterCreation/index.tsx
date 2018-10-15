@@ -57,7 +57,6 @@ import {
   fetchTraits,
 } from './services/session/banesAndBoons';
 import { patcher } from '../../services/patcher';
-
 export { CharacterCreationModel } from './services/session/character';
 
 const store = createStore(reducer, applyMiddleware(thunk as any));
@@ -99,6 +98,7 @@ export interface CharacterCreationProps {
   gender?: Gender;
   characterState?: CharacterState;
   banesAndBoonsState: BanesAndBoonsState;
+  refetchCharactersAndServers: () => void;
 }
 
 export interface CharacterCreationState {
@@ -628,6 +628,7 @@ export interface ContainerProps {
   apiVersion: number;
   shard: number;
   created: (created: CharacterCreationModel) => void;
+  refetchCharactersAndServers: () => void;
 }
 
 class Container extends React.Component<ContainerProps, any> {
@@ -635,11 +636,13 @@ class Container extends React.Component<ContainerProps, any> {
     return (
       <div id='cu-character-creation'>
         <Provider store={store}>
-          <ConnectedCharacterCreation apiKey={this.props.apiKey}
+          <ConnectedCharacterCreation
+            apiKey={this.props.apiKey}
             apiHost={this.props.apiHost}
             apiVersion={this.props.apiVersion}
             shard={this.props.shard}
-            created={this.props.created} />
+            created={this.props.created}
+          />
         </Provider>
         <div className='preloader' ></div>
         <div className='cu-character-creation__footer' />

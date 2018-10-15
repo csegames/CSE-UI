@@ -5,18 +5,24 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
+import { values } from 'lodash';
 import { webAPI, events, client, RequestConfig } from '@csegames/camelot-unchained';
 import CharacterDeleteModalView from './components/CharacterDeleteModalView';
-import { PatcherServer } from '../../services/session/controller';
 import { patcher } from '../../../../services/patcher';
+import { ControllerContext, PatcherServer } from '../../ControllerContext';
 
-export interface CharacterDeleteModalProps {
+export interface ComponentProps {
   servers: {[id: string]: PatcherServer};
   character: webAPI.SimpleCharacter;
   closeModal: () => void;
   onSuccess: (id: string) => void;
 }
+
+export interface InjectedProps {
+  refetchCharacters: () => void;
+}
+
+export type Props = ComponentProps & InjectedProps;
 
 export interface CharacterDeleteModalState {
   deleteEnabled: boolean;
@@ -25,9 +31,9 @@ export interface CharacterDeleteModalState {
   success: boolean;
 }
 
-class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, CharacterDeleteModalState> {
+class CharacterDeleteModal extends React.Component<Props, CharacterDeleteModalState> {
 
-  constructor(props: CharacterDeleteModalProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       deleteEnabled: false,
@@ -64,7 +70,7 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
     const character = this.props.character;
     try {
       const config: RequestConfig = () => ({
-        url: _.values(this.props.servers).find(server => server.shardID === character.shardID).apiHost + '/',
+        url: values(this.props.servers).find(server => server.shardID === character.shardID).apiHost + '/',
         headers: {
           Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
         },
@@ -78,6 +84,7 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
 
         setTimeout(() => {
           this.props.onSuccess(character.id);
+          this.props.refetchCharacters();
         }, 200);
         return;
       }
@@ -103,4 +110,16 @@ class CharacterDeleteModal extends React.Component<CharacterDeleteModalProps, Ch
   }
 }
 
-export default CharacterDeleteModal;
+class CharacterDeleteModalWithInjectedContext extends React.Component<ComponentProps> {
+  public render() {
+    return (
+      <ControllerContext.Consumer>
+        {({ refetch }) => (
+          <CharacterDeleteModal {...this.props} refetchCharacters={refetch} />
+        )}
+      </ControllerContext.Consumer>
+    );
+  }
+}
+
+export default CharacterDeleteModalWithInjectedContext;

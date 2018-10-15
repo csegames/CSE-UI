@@ -10,7 +10,7 @@ import * as events  from '@csegames/camelot-unchained/lib/events';
 
 import styled, { keyframes } from 'react-emotion';
 import GameSelectItem from './GameSelectItem';
-import { PatcherServer, ServerType, serverTypeToIcon } from '../../../services/session/controller';
+import { PatcherServer, ServerType, serverTypeToIcon } from '../../../ControllerContext';
 import { patcher, permissionsString } from '../../../../../services/patcher';
 
 const idleShine = keyframes`

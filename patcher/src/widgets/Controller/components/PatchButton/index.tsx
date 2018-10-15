@@ -10,13 +10,11 @@ import { webAPI, events, utils } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
 import { patcher, ChannelStatus } from '../../../../services/patcher';
-
 import Animate from '../../../../lib/Animate';
-
 import UpdateMessage from './components/UpdateMessage';
 import PatchButtonView from './components/PatchButtonView';
 import EualaModal from '../EualaModal';
-import { ServerType, PatcherServer } from '../../services/session/controller';
+import { ControllerContext, ServerType, PatcherServer } from '../../ControllerContext';
 
 const Container = styled('div')`
   display: flex;
@@ -47,11 +45,17 @@ const ButtonContainer = styled('div')`
   z-index: 10;
 `;
 
-export interface PatchButtonProps {
+export interface ComponentProps {
   servers: utils.Dictionary<PatcherServer>;
   selectedServer: PatcherServer;
   selectedCharacter: webAPI.SimpleCharacter;
 }
+
+export interface InjectedProps {
+  updateChannels: () => void;
+}
+
+export type Props = ComponentProps & InjectedProps;
 
 export interface PatchButtonState {
   showEuala: boolean;
@@ -59,11 +63,12 @@ export interface PatchButtonState {
   installingChannelName: string;
 }
 
-class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
+class PatchButton extends React.Component<Props, PatchButtonState> {
   private commands: string = '';
   private startDownload: number;
+  private channelUpdateTimeout: number;
 
-  constructor(props: PatchButtonProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showEuala: false,
@@ -118,7 +123,7 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     );
   }
 
-  public componentWillReceiveProps(nextProps: PatchButtonProps) {
+  public componentWillReceiveProps(nextProps: Props) {
     for (const key in nextProps.servers) {
       const s = nextProps.servers[key];
       if (s.channelStatus === ChannelStatus.Updating) {
@@ -130,6 +135,9 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     this.setState({ installingChannel: -1 });
   }
 
+  public componentWillUnmount() {
+    window.clearTimeout(this.channelUpdateTimeout);
+  }
 
   private playSound = (sound: string) => {
     events.fire('play-sound', sound);
@@ -222,12 +230,14 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
     }
 
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);
+    this.channelUpdateTimeout = window.setTimeout(() => this.props.updateChannels(), 200);
     this.playSound('select');
   }
 
   private install = () => {
     const { selectedServer } = this.props;
     patcher.installChannel(selectedServer.channelID | 0);
+    this.channelUpdateTimeout = window.setTimeout(this.props.updateChannels, 200);
     this.playSound('select');
   }
 
@@ -247,4 +257,18 @@ class PatchButton extends React.Component<PatchButtonProps, PatchButtonState> {
   }
 }
 
-export default PatchButton;
+class PatchButtonWithInjectedContext extends React.Component<ComponentProps> {
+  public render() {
+    return (
+      <ControllerContext.Consumer>
+        {({ updateChannels }) => {
+          return (
+            <PatchButton {...this.props} updateChannels={updateChannels} />
+          );
+        }}
+      </ControllerContext.Consumer>
+    );
+  }
+}
+
+export default PatchButtonWithInjectedContext;

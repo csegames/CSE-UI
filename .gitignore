@@ -25,6 +25,7 @@ npm-debug.log
 **/publish-cse
 **/.vs
 library/lib/
+library-old/lib/
 **/interface-lib/
 **/cu-boilerplate-module
 **/user-cu-build.config.js
@@ -40,6 +41,7 @@ patcher/PatchClient
 widgets/cu-xmpp-chat/lib/
 widgets/cu-character-creation/lib/
 library/docs/
+library-old/docs/
 .idea/
 dev.config.js
 dev.config

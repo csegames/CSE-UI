@@ -23,7 +23,10 @@ export interface PlayerClassVisualEffectsProps {
 export interface PlayerClassVisualEffectsState {
 }
 
-export class PlayerClassVisualEffects extends React.Component<PlayerClassVisualEffectsProps, PlayerClassVisualEffectsState> {
+export class PlayerClassVisualEffects extends React.PureComponent<
+  PlayerClassVisualEffectsProps,
+  PlayerClassVisualEffectsState
+> {
   public render() {
     const { selectedRace, selectedGender, selectedClass, hideCharImg } = this.props;
     const arthurianLayerInfo = [
@@ -123,7 +126,6 @@ export class PlayerClassVisualEffects extends React.Component<PlayerClassVisualE
     ];
 
     let layerInfo;
-    let miscInfo;
 
     switch (selectedRace.id) {
       case Race.HumanMaleA: {
@@ -136,22 +138,22 @@ export class PlayerClassVisualEffects extends React.Component<PlayerClassVisualE
       }
       case Race.HumanMaleV: {
         layerInfo = vikingLayerInfo;
-        miscInfo = () => <div className='clouds viking'></div>;
+        // miscInfo = () => <div className='clouds viking'></div>;
         break;
       }
       case Race.Valkyrie: {
         layerInfo = vikingValkyrieLayerInfo;
-        miscInfo = () => <div className='clouds viking'></div>;
+        // miscInfo = () => <div className='clouds viking'></div>;
         break;
       }
       case Race.HumanMaleT: {
         layerInfo = tddHumanLayerInfo;
-        miscInfo = () => <div className='clouds tdd'></div>;
+        // miscInfo = () => <div className='clouds tdd'></div>;
         break;
       }
       case Race.Luchorpan: {
         layerInfo = tddLayerInfo;
-        miscInfo = () => <div className='clouds tdd'></div>;
+        // miscInfo = () => <div className='clouds tdd'></div>;
         break;
       }
       default: {
@@ -165,7 +167,7 @@ export class PlayerClassVisualEffects extends React.Component<PlayerClassVisualE
         id={'playerclass-parallax'}
         effectsOff={this.props.effectsOff}
         layerInfo={layerInfo}
-        renderMisc={miscInfo}
+        renderMisc={() => null}
       />
     );
   }

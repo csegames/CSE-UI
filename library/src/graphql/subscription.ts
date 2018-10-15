@@ -253,9 +253,9 @@ export class SubscriptionManager {
       case GQL_COMPLETE: {
         const subscription = this.subscriptions[op.id];
         if (subscription) {
-          if (subscription[op.id].onError) {
+          if (subscription.onError) {
             const message = `SubscriptionManager | GQL_COMPLETE received for id ${op.id} without acknowledged stop request`;
-            subscription[op.id].onError(new ErrorEvent('GQL_COMPLETE', {
+            subscription.onError(new ErrorEvent('GQL_COMPLETE', {
               message,
               error: new Error(message),
             }));
@@ -314,9 +314,7 @@ export function subscribe<DataType>(
     throw new Error('WebSockets not supported by this browser');
   }
 
-  if (subscriptionManager === null) {
-    subscriptionManager = new SubscriptionManager(options);
-  }
+  subscriptionManager = new SubscriptionManager(options);
 
   return {
     id: subscriptionManager.subscribe(subscription, onData, onError),

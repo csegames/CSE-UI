@@ -1,9 +1,16 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ */
+
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { webAPI, events, jsKeyCodes } from '@csegames/camelot-unchained';
 
-import { PatcherServer, ServerType } from '../../services/session/controller';
+import { ControllerContext, ContextState, PatcherServer, ServerType } from '../../ControllerContext';
 import CharacterSelectList from './components/CharacterSelectList';
 import CharacterSelectBG from './components/CharacterSelectBG';
 import CharacterDeleteModal from '../CharacterDeleteModal';
@@ -103,26 +110,32 @@ const CloseButton = styled('div')`
   }
 `;
 
-export interface CharacterSelectProps {
-  servers: {[id: string]: PatcherServer};
-  characters: {[id: string]: webAPI.SimpleCharacter};
-  selectedCharacter: webAPI.SimpleCharacter;
-  selectedServer: PatcherServer;
-  onChooseCharacter: (character: webAPI.SimpleCharacter) => void;
+export interface ComponentProps {
   onDeleteCharacterSuccess: (id: string) => void;
   onCloseClick: () => void;
   charSelectVisible: boolean;
   apiServerStatus: APIServerStatus;
 }
 
+export interface InjectedProps {
+  characters: {[id: string]: webAPI.SimpleCharacter};
+  servers: {[id: string]: PatcherServer};
+
+  selectedCharacter: webAPI.SimpleCharacter;
+  selectedServer: PatcherServer;
+  onUpdateState: (state: Partial<ContextState>) => void;
+}
+
+export type Props = ComponentProps & InjectedProps;
+
 export interface CharacterSelectState {
   showDeleteModal: boolean;
   selectedCharacter: webAPI.SimpleCharacter;
 }
 
-class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSelectState> {
+class CharacterSelect extends React.Component<Props, CharacterSelectState> {
   private listRef: any;
-  constructor(props: CharacterSelectProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showDeleteModal: false,
@@ -153,7 +166,6 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
         <ListContainer innerRef={ref => this.listRef = ref}>
           <CharacterSelectList
             servers={servers}
-            characters={this.props.characters}
             selectedCharacter={selectedCharacter}
             selectedServer={this.props.selectedServer}
             onCharacterSelect={this.onSelectCharacter}
@@ -181,7 +193,7 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
     window.addEventListener('keydown', this.handleEscKey);
   }
 
-  public componentWillReceiveProps(nextProps: CharacterSelectProps) {
+  public componentWillReceiveProps(nextProps: Props) {
     if ((!this.state.selectedCharacter && nextProps.selectedCharacter) ||
         !_.isEqual(this.props.selectedCharacter, nextProps.selectedCharacter)) {
       if (this.listRef) {
@@ -210,7 +222,9 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
   }
 
   private onChooseCharacter = () => {
-    this.props.onChooseCharacter(this.state.selectedCharacter);
+    this.props.onCloseClick();
+    const characterServer = _.find(this.props.servers, server => server.shardID === this.state.selectedCharacter.shardID);
+    this.props.onUpdateState({ selectedCharacter: this.state.selectedCharacter, selectedServer: characterServer });
   }
 
   private toggleModal = () => {
@@ -235,4 +249,23 @@ class CharacterSelect extends React.Component<CharacterSelectProps, CharacterSel
   }
 }
 
-export default CharacterSelect;
+class CharacterSelectWithInjectedContext extends React.Component<ComponentProps> {
+  public render() {
+    return (
+      <ControllerContext.Consumer>
+        {({ characters, servers, selectedCharacter, selectedServer, onUpdateState }) => (
+          <CharacterSelect
+            {...this.props}
+            characters={characters}
+            servers={servers}
+            selectedCharacter={selectedCharacter}
+            selectedServer={selectedServer}
+            onUpdateState={onUpdateState}
+          />
+        )}
+      </ControllerContext.Consumer>
+    );
+  }
+}
+
+export default CharacterSelectWithInjectedContext;

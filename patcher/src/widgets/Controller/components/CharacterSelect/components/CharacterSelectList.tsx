@@ -10,8 +10,8 @@ import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { events, webAPI } from '@csegames/camelot-unchained';
 
+import { ControllerContext, PatcherServer } from '../../../ControllerContext';
 import { patcher, canAccessChannel, ChannelStatus, PatchChannelMode } from '../../../../../services/patcher';
-import { PatcherServer } from '../../../services/session/controller';
 import CharacterList from './CharacterList';
 import ServerOptionsMenu from './ServerOptionsMenu';
 import { APIServerStatus } from '../../ControllerDisplay/index';
@@ -35,9 +35,8 @@ const ArrowIcon = styled('i')`
   margin-right: 5px;
 `;
 
-export interface CharacterSelectListProps {
+export interface ComponentProps {
   servers: {[id: string]: PatcherServer};
-  characters: {[id: string]: webAPI.SimpleCharacter};
   selectedServer: PatcherServer;
   selectedCharacter: webAPI.SimpleCharacter;
   onCharacterSelect: (character: webAPI.SimpleCharacter) => void;
@@ -46,6 +45,13 @@ export interface CharacterSelectListProps {
   apiServerStatus: APIServerStatus;
 }
 
+export interface InjectedProps {
+  characters: {[id: string]: webAPI.SimpleCharacter};
+  updateChannels: () => void;
+}
+
+export type Props = ComponentProps & InjectedProps;
+
 export interface CharacterSelectListState {
   minimized: boolean;
   serverForOptions: PatcherServer;
@@ -53,8 +59,9 @@ export interface CharacterSelectListState {
   serversCollapsed: {[shardID: number]: boolean};
 }
 
-class CharacterSelectList extends React.Component<CharacterSelectListProps, CharacterSelectListState> {
-  constructor(props: CharacterSelectListProps) {
+class CharacterSelectList extends React.Component<Props, CharacterSelectListState> {
+  private channelUpdateTimeout: number;
+  constructor(props: Props) {
     super(props);
     this.state = {
       minimized: false,
@@ -120,10 +127,14 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
     this.onMaximizeAllClick();
   }
 
-  public componentWillReceiveProps(nextProps: CharacterSelectListProps) {
+  public componentWillReceiveProps(nextProps: Props) {
     if (this.props.charSelectVisible && !nextProps.charSelectVisible && this.state.serverForOptions) {
       this.setState({ serverForOptions: null });
     }
+  }
+
+  public componentWillUnmount() {
+    window.clearTimeout(this.channelUpdateTimeout);
   }
 
   private getServers = () => {
@@ -196,20 +207,24 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
     this.playSound('select');
     if (this.state.serverForOptions.mode === PatchChannelMode.Automatic) {
       patcher.setChannelMode(this.state.serverForOptions.channelID, PatchChannelMode.ThiryTwoBit);
+      this.channelUpdateTimeout = window.setTimeout(() => this.props.updateChannels(), 200);
     } else {
       patcher.setChannelMode(this.state.serverForOptions.channelID, PatchChannelMode.Automatic);
+      this.channelUpdateTimeout = window.setTimeout(() => this.props.updateChannels(), 200);
     }
   }
 
   private install = () => {
     const { serverForOptions } = this.state;
     patcher.installChannel(serverForOptions.channelID | 0);
+    this.channelUpdateTimeout = window.setTimeout(() => this.props.updateChannels(), 200);
     this.playSound('select');
   }
 
   private uninstall = () => {
     const { serverForOptions } = this.state;
     patcher.uninstallChannel(serverForOptions.channelID | 0);
+    this.channelUpdateTimeout = window.setTimeout(() => this.props.updateChannels(), 200);
     this.playSound('select');
   }
 
@@ -218,4 +233,16 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
   }
 }
 
-export default CharacterSelectList;
+class CharacterSelectListWithInjectedContext extends React.Component<ComponentProps> {
+  public render() {
+    return (
+      <ControllerContext.Consumer>
+        {({ characters, updateChannels }) => (
+          <CharacterSelectList {...this.props} characters={characters} updateChannels={updateChannels} />
+        )}
+      </ControllerContext.Consumer>
+    );
+  }
+}
+
+export default CharacterSelectListWithInjectedContext;

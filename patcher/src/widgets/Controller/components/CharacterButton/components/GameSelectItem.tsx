@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled, { keyframes } from 'react-emotion';
-import { serverTypeToIcon, ServerType } from '../../../services/session/controller';
+import { serverTypeToIcon, ServerType } from '../../../ControllerContext';
 
 const gameNameAnim = keyframes`
   from {

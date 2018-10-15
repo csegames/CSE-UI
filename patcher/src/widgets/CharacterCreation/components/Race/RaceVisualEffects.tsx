@@ -25,7 +25,7 @@ export interface RaceVisualEffectsProps {
 export interface RaceVisualEffectsState {
 }
 
-export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, RaceVisualEffectsState> {
+export class RaceVisualEffects extends React.PureComponent<RaceVisualEffectsProps, RaceVisualEffectsState> {
   public render() {
     const { selectedRace, selectedGender, hideCharImg } = this.props;
     const arthurianLayerInfo = [
@@ -121,7 +121,6 @@ export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, R
     ];
 
     let layerInfo;
-    let miscInfo;
 
     switch (selectedRace.id) {
       case Race.HumanMaleA: {
@@ -134,22 +133,22 @@ export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, R
       }
       case Race.HumanMaleV: {
         layerInfo = vikingLayerInfo;
-        miscInfo = () => <div className='clouds viking'></div>;
+        // miscInfo = () => <div className='clouds viking'></div>;
         break;
       }
       case Race.Valkyrie: {
         layerInfo = vikingValkyrieLayerInfo;
-        miscInfo = () => <div className='clouds viking'></div>;
+        // miscInfo = () => <div className='clouds viking'></div>;
         break;
       }
       case Race.HumanMaleT: {
         layerInfo = tddHumanLayerInfo;
-        miscInfo = () => <div className='clouds tdd'></div>;
+        // miscInfo = () => <div className='clouds tdd'></div>;
         break;
       }
       case Race.Luchorpan: {
         layerInfo = tddLayerInfo;
-        miscInfo = () => <div className='clouds tdd'></div>;
+        // miscInfo = () => <div className='clouds tdd'></div>;
         break;
       }
       default: {
@@ -163,7 +162,7 @@ export class RaceVisualEffects extends React.Component<RaceVisualEffectsProps, R
         id={'race-parallax'}
         effectsOff={this.props.effectsOff}
         layerInfo={layerInfo}
-        renderMisc={miscInfo}
+        renderMisc={() => null}
       />
     );
   }

@@ -7,14 +7,19 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
+import gql from 'graphql-tag';
 import styled, { css } from 'react-emotion';
 import { webAPI, events, CollapsingList } from '@csegames/camelot-unchained';
+import { GraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
+import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 
-import { PatcherServer } from '../../../services/session/controller';
+import { patcher } from '../../../../../services/patcher';
 import CharacterSelectListItem from './CharacterSelectListItem';
 import CreateCharacterItem from './CreateCharacterItem';
-
 import PlayerCounts from './PlayerCounts';
+import { ControllerContext, ContextState, PatcherServer } from '../../../ControllerContext';
+import { PatcherAlertFragment } from 'gql/fragments';
+import { PatcherAlert, CharacterListSubscription } from 'gql/interfaces';
 
 const Server = styled('div')`
   display: block;
@@ -89,7 +94,7 @@ const Body = css`
   padding: 0 0 0 15px;
 `;
 
-export interface CharacterListProps {
+export interface ComponentProps {
   index: number;
   collapsed: boolean;
   server: PatcherServer;
@@ -104,12 +109,32 @@ export interface CharacterListProps {
   apiServerOnline: 'Online' | 'Offline' | undefined;
 }
 
+export interface InjectedProps {
+  servers: {[id: string]: PatcherServer};
+  characters: {[id: string]: webAPI.SimpleCharacter};
+  patcherAlerts: PatcherAlert[];
+  onUpdateState: (stats: Partial<ContextState>) => void;
+}
+
+export type Props = ComponentProps & InjectedProps;
+
 export interface CharacterListState {
   initialHeight: number;
 }
 
-class CharacterList extends React.PureComponent<CharacterListProps, CharacterListState> {
-  constructor(props: CharacterListProps) {
+const subscription = gql`
+  subscription CharacterListSubscription {
+    patcherAlerts {
+      alert {
+        ...PatcherAlert
+      }
+    }
+  }
+  ${PatcherAlertFragment}
+`;
+
+class CharacterList extends React.PureComponent<Props, CharacterListState> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       initialHeight: null,
@@ -119,6 +144,18 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
     const { server, serverCharacters, sortedServers, index } = this.props;
     return (
       <div id={`character-list-${server.shardID}`} style={{ opacity: !this.state.initialHeight ? 0 : 1 }}>
+        {this.props.apiServerOnline === 'Online' &&
+          <GraphQL
+            subscription={{
+              query: subscription,
+              url: (this.props.server.apiHost + '/graphql').replace('http', 'ws'),
+              initPayload: {
+                Authorization: `Bearer ${patcher.getAccessToken()}`,
+              },
+            }}
+            subscriptionHandler={this.handleSubscription}
+          />
+        }
         <CollapsingList
           key={server.shardID}
           items={serverCharacters}
@@ -159,7 +196,11 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
                 </ServerOptionsButton>
               </ServerTitle>
               <ServerInfo>
-                <PlayerCounts shard={server.shardID} host={server.apiHost} apiServerOnline={this.props.apiServerOnline} />
+                <PlayerCounts
+                  shard={server.shardID}
+                  host={server.apiHost}
+                  apiServerOnline={this.props.apiServerOnline}
+                />
                 <p>Accessible to {webAPI.accessLevelString(server.accessLevel)}</p>
               </ServerInfo>
             </Server>
@@ -186,7 +227,7 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
     this.initHeight();
   }
 
-  public componentWillReceiveProps(nextProps: CharacterListProps) {
+  public componentWillReceiveProps(nextProps: Props) {
     if (this.props.server.shardID !== nextProps.server.shardID ||
         !_.isEqual(this.props.serverCharacters, nextProps.serverCharacters)) {
       this.setState({ initialHeight: null });
@@ -195,6 +236,17 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
         this.setState({ initialHeight: characterList.clientHeight - 40 });
       }, 300);
     }
+  }
+
+  private handleSubscription = (result: SubscriptionResult<CharacterListSubscription.Subscription>) => {
+    if (!result.data) return;
+
+    const patcherAlertUpdate = result.data.patcherAlerts;
+    if (!patcherAlertUpdate) return;
+
+    const patcherAlerts = [...this.props.patcherAlerts];
+    patcherAlerts.push(patcherAlertUpdate.alert);
+    this.props.onUpdateState({ patcherAlerts });
   }
 
   private initHeight = () => {
@@ -240,4 +292,22 @@ class CharacterList extends React.PureComponent<CharacterListProps, CharacterLis
   }
 }
 
-export default CharacterList;
+class CharacterListWithInjectedContext extends React.Component<ComponentProps> {
+  public render() {
+    return (
+      <ControllerContext.Consumer>
+        {({ servers, characters, patcherAlerts, onUpdateState }) => (
+          <CharacterList
+            {...this.props}
+            servers={servers}
+            characters={characters}
+            patcherAlerts={patcherAlerts}
+            onUpdateState={onUpdateState}
+          />
+        )}
+      </ControllerContext.Consumer>
+    );
+  }
+}
+
+export default CharacterListWithInjectedContext;

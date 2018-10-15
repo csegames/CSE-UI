@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
-import { PatcherServer, ServerType } from '../../../services/session/controller';
+import { ContextState, PatcherServer, ServerType } from '../../../ControllerContext';
 
 const InfoContainer = styled('div')`
   display: flex;
@@ -40,7 +40,7 @@ const activeTool = css`
 export interface ToolsSelectProps {
   servers: {[id: string]: PatcherServer};
   selectedServer: PatcherServer;
-  onSelectServer: (server: PatcherServer) => void;
+  onUpdateState: (state: Partial<ContextState>) => void;
 }
 
 class ToolsSelect extends React.Component<ToolsSelectProps> {
@@ -64,7 +64,7 @@ class ToolsSelect extends React.Component<ToolsSelectProps> {
   }
 
   private onToolClick = (tool: PatcherServer) => {
-    this.props.onSelectServer(tool);
+    this.props.onUpdateState({ selectedServer: tool });
   }
 }
 

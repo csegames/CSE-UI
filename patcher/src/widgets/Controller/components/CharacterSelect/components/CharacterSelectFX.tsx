@@ -23,7 +23,7 @@ export interface CharacterSelectEffectsProps {
 export interface CharacterSelectEffectsState {
 }
 
-export class CharacterSelectEffects extends React.Component<CharacterSelectEffectsProps, CharacterSelectEffectsState> {
+export class CharacterSelectEffects extends React.PureComponent<CharacterSelectEffectsProps, CharacterSelectEffectsState> {
   public render() {
     const { selectedRace, hidden } = this.props;
     const arthurianLayerInfo = [
@@ -101,7 +101,7 @@ export class CharacterSelectEffects extends React.Component<CharacterSelectEffec
     ];
 
     let layerInfo;
-    let miscInfo;
+    // let miscInfo;
 
     switch (selectedRace.id) {
       case Race.HumanMaleA: {
@@ -114,22 +114,22 @@ export class CharacterSelectEffects extends React.Component<CharacterSelectEffec
       }
       case Race.HumanMaleV: {
         layerInfo = vikingLayerInfo;
-        miscInfo = () => <div className='clouds viking'></div>;
+        // miscInfo = () => <div className='clouds viking'></div>;
         break;
       }
       case Race.Valkyrie: {
         layerInfo = vikingValkyrieLayerInfo;
-        miscInfo = () => <div className='clouds viking'></div>;
+        // miscInfo = () => <div className='clouds viking'></div>;
         break;
       }
       case Race.HumanMaleT: {
         layerInfo = tddHumanLayerInfo;
-        miscInfo = () => <div className='clouds tdd'></div>;
+        // miscInfo = () => <div className='clouds tdd'></div>;
         break;
       }
       case Race.Luchorpan: {
         layerInfo = tddLayerInfo;
-        miscInfo = () => <div className='clouds tdd'></div>;
+        // miscInfo = () => <div className='clouds tdd'></div>;
         break;
       }
       default: {
@@ -144,7 +144,7 @@ export class CharacterSelectEffects extends React.Component<CharacterSelectEffec
           id='character-select-fx-parallax'
           effectsOff={this.props.effectsOff}
           layerInfo={layerInfo}
-          renderMisc={miscInfo}
+          renderMisc={() => null}
         />
       </div>
     );

@@ -8,7 +8,7 @@ import * as React from 'react';
 import { utils } from '@csegames/camelot-unchained';
 
 import { patcher, ChannelStatus } from '../../../../services/patcher';
-import { PatcherServer } from '../../services/session/controller';
+import { PatcherServer } from '../../ControllerContext';
 import ProgressBarView from './components/ProgressBarView';
 
 export interface ProgressBarProps {

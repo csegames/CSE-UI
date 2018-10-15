@@ -12,7 +12,7 @@ import {
   ChannelStatus,
 //  PatchPermissions
 } from '../../../../../services/patcher';
-import { ServerType, PatcherServer } from '../../../services/session/controller';
+import { ServerType, PatcherServer } from '../../../ControllerContext';
 import PlayNowButton from './PlayNowButton';
 import DisabledButton from './DisabledButton';
 import DownloadingButton from './DownloadingButton';

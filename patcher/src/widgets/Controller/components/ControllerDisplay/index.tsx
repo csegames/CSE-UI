@@ -5,58 +5,54 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
-import { connect } from 'react-redux';
 import { client, events, webAPI, RequestConfig } from '@csegames/camelot-unchained';
 
-import ControllerDisplayView from './components/ControllerDisplayView';
-
+import ControllerDisplayView from './ControllerDisplayView';
 import { Routes } from '../../../../services/session/routes';
-import { GlobalState } from '../../services/session';
+import { patcher } from '../../../../services/patcher';
 import {
-  ControllerState,
+  ControllerContextProvider,
+  ControllerContext,
+  ContextState,
   PatcherServer,
   ServerType,
-  initialize,
-  characterRemoved,
-  listenForErrors,
-  clearError,
-} from '../../services/session/controller';
-import { patcher } from '../../../../services/patcher';
+} from '../../ControllerContext';
 
 export interface APIServerStatus {
   [apiHost: string]: 'Online' | 'Offline';
 }
 
-export interface ControllerDisplayReduxProps {
-  dispatch?: (action: any) => void;
-  ControllerState: ControllerState;
-}
-
-export interface ControllerDisplayProps extends ControllerDisplayReduxProps {
+export interface ComponentProps {
   activeRoute: Routes;
 }
+
+export interface InjectedProps {
+  servers: {[id: string]: PatcherServer};
+  selectedServer: PatcherServer;
+  selectedCharacter: webAPI.SimpleCharacter;
+
+  onUpdateState: (state: Partial<ContextState>) => void;
+  onLogin: () => void;
+}
+
+export type Props = ComponentProps & InjectedProps;
 
 export interface ControllerDisplayState {
   charSelectVisible: boolean;
   loggedIn: boolean;
   showCreation: boolean;
   serverType: ServerType;
-  selectedServer: PatcherServer;
-  selectedCharacter: webAPI.SimpleCharacter;
   apiServerStatus: APIServerStatus;
 }
 
-class ControllerDisplay extends React.PureComponent<ControllerDisplayProps, ControllerDisplayState> {
-  constructor(props: ControllerDisplayProps) {
+class ControllerDisplay extends React.PureComponent<Props, ControllerDisplayState> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       charSelectVisible: false,
       loggedIn: false,
       showCreation: false,
       serverType: ServerType.CUGAME,
-      selectedServer: null,
-      selectedCharacter: null,
       apiServerStatus: {},
     };
   }
@@ -65,34 +61,15 @@ class ControllerDisplay extends React.PureComponent<ControllerDisplayProps, Cont
     return (
       <ControllerDisplayView
         activeRoute={this.props.activeRoute}
-        controllerState={this.props.ControllerState}
-        selectedServer={this.state.selectedServer}
-        selectedCharacter={this.state.selectedCharacter}
         charSelectVisible={this.state.charSelectVisible}
         serverType={this.state.serverType}
-        onLogin={this.onLogin}
-        onChooseCharacter={this.onChooseCharacter}
+        onLogin={this.props.onLogin}
         onToggleCharacterSelect={this.toggleCharacterSelect}
         onDeleteCharacterSuccess={this.onDeleteCharacterSuccess}
-        onClearError={this.onClearError}
-        selectCharacter={this.selectCharacter}
-        selectServer={this.selectServer}
         selectServerType={this.selectServerType}
         apiServerStatus={this.state.apiServerStatus}
       />
     );
-  }
-
-  public componentDidMount() {
-    this.props.dispatch(listenForErrors());
-  }
-
-  private onLogin = () => {
-    this.props.dispatch(initialize());
-  }
-
-  private onClearError = () => {
-    this.props.dispatch(clearError());
   }
 
   private toggleCharacterSelect = () => {
@@ -101,7 +78,7 @@ class ControllerDisplay extends React.PureComponent<ControllerDisplayProps, Cont
   }
 
   private updateApiServerStatus = () => {
-    const { servers } = this.props.ControllerState;
+    const { servers } = this.props;
     const apiServerStatus = {};
     Object.keys(servers).forEach((_key) => {
       const config: RequestConfig = () => ({
@@ -126,51 +103,77 @@ class ControllerDisplay extends React.PureComponent<ControllerDisplayProps, Cont
     if (this.state.serverType === serverType) return;
     events.fire('play-sound', 'select');
     if (serverType === ServerType.CUBE) {
-      this.setState({
-        serverType,
-        selectedServer: this.props.ControllerState.servers['C.U.B.E.'],
+      this.setState({ serverType });
+      this.props.onUpdateState({
+        selectedServer: this.props.servers['C.U.B.E'],
       });
     } else {
       this.setState({ serverType });
     }
   }
 
-  private selectServer = (server: PatcherServer) => {
-    // Only check for undefined because selected server can be null
-    if (typeof server !== 'undefined' && !_.isEqual(server, this.state.selectedServer)) {
-      events.fire('play-sound', 'select');
-      this.setState({ selectedServer: server });
-    }
-  }
+  // private selectServer = (server: PatcherServer) => {
+  //   // Only check for undefined because selected server can be null
+  //   if (typeof server !== 'undefined' && !_.isEqual(server, this.state.selectedServer)) {
+  //     events.fire('play-sound', 'select');
+  //     this.setState({ selectedServer: server });
+  //   }
+  // }
 
-  private selectCharacter = (character: webAPI.SimpleCharacter) => {
-    // Only check for undefined because selected character can be null
-    if (typeof character !== 'undefined' && !_.isEqual(character, this.state.selectedCharacter)) {
-      if (character && character.id) {
-        // Save last selected character
-        localStorage.setItem('cu-patcher-last-selected-character-id', character.id);
-      }
-      events.fire('play-sound', 'select');
-      this.setState({ selectedCharacter: character });
-    }
-  }
+  // private selectCharacter = (character: webAPI.SimpleCharacter) => {
+  //   // Only check for undefined because selected character can be null
+  //   if (typeof character !== 'undefined' && !_.isEqual(character, this.state.selectedCharacter)) {
+  //     if (character && character.id) {
+  //       // Save last selected character
+  //       localStorage.setItem('cu-patcher-last-selected-character-id', character.id);
+  //     }
+  //     events.fire('play-sound', 'select');
+  //     this.setState({ selectedCharacter: character });
+  //   }
+  // }
 
-  private onChooseCharacter = (character: webAPI.SimpleCharacter) => {
-    this.toggleCharacterSelect();
-    const characterServer = _.find(this.props.ControllerState.servers, server => server.shardID === character.shardID);
-    this.selectServer(characterServer);
-    this.selectCharacter(character);
-  }
+  // private onChooseCharacter = (character: webAPI.SimpleCharacter) => {
+  //   this.toggleCharacterSelect();
+  //   const characterServer = _.find(this.props.ControllerState.servers, server => server.shardID === character.shardID);
+  //   this.selectServer(characterServer);
+  //   this.selectCharacter(character);
+  // }
 
   private onDeleteCharacterSuccess = (id: string) => {
-    this.props.dispatch(characterRemoved(id));
+    // this.props.dispatch(characterRemoved(id));
   }
 }
 
-function select(state: GlobalState): ControllerDisplayReduxProps {
-  return {
-    ControllerState: state.controller,
-  };
+class ControllerDisplayWithInjectedContext extends React.Component<ComponentProps, { loggedIn: boolean }> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      loggedIn: false,
+    };
+  }
+
+  public render() {
+    return (
+      <ControllerContextProvider loggedIn={this.state.loggedIn}>
+        <ControllerContext.Consumer>
+          {({ servers, selectedServer, selectedCharacter, onUpdateState }) => (
+            <ControllerDisplay
+              {...this.props}
+              servers={servers}
+              selectedServer={selectedServer}
+              selectedCharacter={selectedCharacter}
+              onUpdateState={onUpdateState}
+              onLogin={this.onLogin}
+            />
+          )}
+        </ControllerContext.Consumer>
+      </ControllerContextProvider>
+    );
+  }
+
+  private onLogin = () => {
+    this.setState({ loggedIn: true });
+  }
 }
 
-export default connect(select)(ControllerDisplay);
+export default ControllerDisplayWithInjectedContext;

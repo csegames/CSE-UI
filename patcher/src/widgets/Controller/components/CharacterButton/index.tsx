@@ -6,11 +6,12 @@
  */
 
 import * as React from 'react';
+import { find } from 'lodash';
 import styled from 'react-emotion';
 import { webAPI } from '@csegames/camelot-unchained';
 
-import { PatcherServer, ServerType } from '../../services/session/controller';
 import { patcher } from '../../../../services/patcher';
+import { ControllerContext, ContextState, PatcherServer, ServerType } from '../../ControllerContext';
 import GameSelect from './components/GameSelect';
 import CharacterInfo from './components/CharacterInfo';
 import ToolsSelect from './components/ToolsSelect';
@@ -30,24 +31,28 @@ const HoverArea = styled('div')`
   cursor: pointer;
 `;
 
-export interface CharacterButtonProps {
-  character: webAPI.SimpleCharacter;
-  selectedServer: PatcherServer;
-  characters: {[id: string]: webAPI.SimpleCharacter};
-  servers: {[id: string]: PatcherServer};
+export interface ComponentProps {
   serverType: ServerType;
-  selectCharacter: (character: webAPI.SimpleCharacter) => void;
-  selectServer: (server: PatcherServer) => void;
   selectServerType: (type: ServerType) => void;
   onNavigateToCharacterSelect: () => void;
 }
+
+export interface InjectedProps {
+  selectedServer: PatcherServer;
+  selectedCharacter: webAPI.SimpleCharacter;
+  characters: {[id: string]: webAPI.SimpleCharacter};
+  servers: {[id: string]: PatcherServer};
+  onUpdateState: (state: Partial<ContextState>) => void;
+}
+
+export type Props = ComponentProps & InjectedProps;
 
 export interface CharacterButtonState {
   hasAccess: boolean;
 }
 
-class CharacterButton extends React.PureComponent<CharacterButtonProps, CharacterButtonState> {
-  constructor(props: CharacterButtonProps) {
+class CharacterButton extends React.PureComponent<Props, CharacterButtonState> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       hasAccess: false,
@@ -57,21 +62,20 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
   public render() {
     const {
       servers,
-      character,
+      selectedCharacter,
       characters,
       selectedServer,
       onNavigateToCharacterSelect,
       serverType,
       selectServerType,
-      selectServer,
     } = this.props;
 
     if (selectedServer === null || typeof selectedServer === 'undefined' || selectedServer.type !== this.props.serverType) {
       this.initializeSelectedServer(this.props);
     }
 
-    if (!character || character === null || !characters[character.id] ||
-        (selectedServer && character.shardID !== selectedServer.shardID)) {
+    if (!selectedCharacter || selectedCharacter === null || !characters[selectedCharacter.id] ||
+        (selectedServer && selectedCharacter.shardID !== selectedServer.shardID)) {
       setTimeout(() => this.initializeSelectedCharacter(this.props), 100);
     }
 
@@ -88,13 +92,13 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
         {serverType === ServerType.CHANNEL &&
           <ToolsSelect
             servers={servers}
-            onSelectServer={selectServer}
+            onUpdateState={this.props.onUpdateState}
             selectedServer={selectedServer}
           />
         }
         {serverType === ServerType.CUGAME &&
           <CharacterInfo
-            character={character}
+            character={selectedCharacter}
             characters={characters}
             servers={servers}
             selectedServer={selectedServer}
@@ -111,8 +115,8 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
     console.log(info);
   }
 
-  private initializeSelectedServer = (props: CharacterButtonProps) => {
-    const values: any = [];
+  private initializeSelectedServer = (props: Props) => {
+    const values: PatcherServer[] = [];
     const servers = props.servers;
     Object.keys(servers).forEach((key: string) => {
       if (servers[key].type === props.serverType && patcher.getPermissions() & servers[key].channelPatchPermissions) {
@@ -122,24 +126,35 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
 
     if (values.length === 0) {
       this.setState({ hasAccess: false });
-      this.props.selectServer(null);
+      this.props.onUpdateState({ selectedServer: null });
       return;
     }
 
     if (props.serverType === ServerType.CHANNEL) {
-      this.props.selectServer(values.find((value: any) => value.name === 'Editor') || values[0]);
+      this.props.onUpdateState({ selectedServer: values.find((value: any) => value.name === 'Editor') || values[0] });
     } else {
+      const lastPlayString = localStorage.getItem('cse-patcher-lastplay');
+
+      let selectedServer = null;
+      if (lastPlayString) {
+        const lastPlay: { channelID: string, serverName: string, characterID: string } = JSON.parse(lastPlayString);
+        selectedServer = find(values, (s: PatcherServer) => s.name === lastPlay.serverName);
+      }
+
+      if (!selectedServer) {
+        selectedServer = values[0];
+      }
+
       this.setState({ hasAccess: true });
-      this.props.selectServer(values[0]);
+      this.props.onUpdateState({ selectedServer });
     }
   }
 
-  private initializeSelectedCharacter = (props: CharacterButtonProps) => {
-    const { selectedServer, character, characters } = props;
+  private initializeSelectedCharacter = (props: Props) => {
+    const { selectedServer, selectedCharacter, characters } = props;
     const serverCharacters: webAPI.SimpleCharacter[] = [];
 
     if (!selectedServer || !selectedServer.shardID) {
-      this.props.selectCharacter(null);
       return;
     }
 
@@ -155,14 +170,33 @@ class CharacterButton extends React.PureComponent<CharacterButtonProps, Characte
       });
     }
 
-    if (!character || character === null || !characters[character.id] ||
-        character.shardID.toString() !== selectedServer.shardID.toString()) {
+    if (!selectedCharacter || selectedCharacter === null || !characters[selectedCharacter.id] ||
+        selectedCharacter.shardID.toString() !== selectedServer.shardID.toString()) {
       const lastSelectedCharacterID = localStorage.getItem('cu-patcher-last-selected-character-id');
       const lastSelectedCharacter = serverCharacters.find((char: webAPI.SimpleCharacter) =>
         char.id === lastSelectedCharacterID);
-      this.props.selectCharacter(lastSelectedCharacter || serverCharacters[0]);
+      this.props.onUpdateState({ selectedCharacter: lastSelectedCharacter || serverCharacters[0] });
     }
   }
 }
 
-export default CharacterButton;
+class CharacterButtonWithInjectedContext extends React.Component<ComponentProps> {
+  public render() {
+    return (
+      <ControllerContext.Consumer>
+        {({ characters, servers, selectedCharacter, selectedServer, onUpdateState }) => (
+          <CharacterButton
+            {...this.props}
+            characters={characters}
+            servers={servers}
+            selectedCharacter={selectedCharacter}
+            selectedServer={selectedServer}
+            onUpdateState={onUpdateState}
+          />
+        )}
+      </ControllerContext.Consumer>
+    );
+  }
+}
+
+export default CharacterButtonWithInjectedContext;
