@@ -165,8 +165,8 @@ export default function() {
 
   engineInit(
     PlotState_Update,
-    () => _devGame.plot = initDefault(),
-    () => game.plot,
+    initDefault,
+    () => _devGame.plot,
     (model: PlotModel) => _devGame.plot = model as Plot);
 
 }

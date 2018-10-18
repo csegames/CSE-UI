@@ -6,7 +6,7 @@
 
 import * as webAPI from '../webAPI';
 import * as graphQL from '../graphql';
-import * as signalR from '../signalR';
+import initSignalR from '../signalR';
 
 import { createEventEmitter } from '../utils/EventEmitter';
 import { GameModel, GameInterface, GameModelTasks } from './GameInterface';
@@ -34,7 +34,6 @@ export default function(isAttached: boolean) {
 
   _devGame.webAPI = webAPI;
   _devGame.graphQL = graphQL;
-  _devGame.signalR = signalR;
 
   _devGame.signalRHost = signalRHost;
 
@@ -63,6 +62,10 @@ export default function(isAttached: boolean) {
   initKeyActions();
   initAbilityState();
   initAbilityBarState();
+
+  // INIT Services
+  _devGame.signalR = initSignalR();
+
 
   // READY!
   _devGame.ready = true;

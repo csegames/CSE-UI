@@ -7,23 +7,23 @@
 import { EventMap } from '../../utils/eventMapper';
 import { SignalRHub, ConnectionState } from '../SignalRHub';
 
-export const PATCHER_EVENTS_SERVERUPDATED = 'patcher/serverUpdated';
-export const PATCHER_EVENTS_SERVERUNAVAILABLE = 'patcher/serverUnavailable';
-export const PATCHER_EVENTS_ALERT = 'patcher/alert';
-export const PATCHER_EVENTS_CHARACTERREMOVED = 'patcher/characterRemoved';
-export const PATCHER_EVENTS_CHARACTERUPDATED = 'patcher/characterUpdated';
+const PATCHER_EVENTS_SERVERUPDATED = 'patcher/serverUpdated';
+const PATCHER_EVENTS_SERVERUNAVAILABLE = 'patcher/serverUnavailable';
+const PATCHER_EVENTS_ALERT = 'patcher/alert';
+const PATCHER_EVENTS_CHARACTERREMOVED = 'patcher/characterRemoved';
+const PATCHER_EVENTS_CHARACTERUPDATED = 'patcher/characterUpdated';
 
-export const PATCHER_LIFETIME_EVENT_STARTING = 'patcher/starting';
-export const PATCHER_LIFETIME_EVENT_CONNECTIONSLOW = 'patcher/connectionslow';
-export const PATCHER_LIFETIME_EVENT_RECONNECTING = 'patcher/reconnecting';
-export const PATCHER_LIFETIME_EVENT_RECONNECTED = 'patcher/reconnected';
-export const PATCHER_LIFETIME_EVENT_CONNECTING = 'patcher/connecting';
-export const PATCHER_LIFETIME_EVENT_CONNECTED = 'patcher/connected';
-export const PATCHER_LIFETIME_EVENT_DISCONNECTED = 'patcher/disconnected';
-export const PATCHER_LIFETIME_EVENT_IDENTIFIED = 'patcher/identified';
-export const PATCHER_LIFETIME_EVENT_STATECHANGED = 'patcher/statechanged';
+const PATCHER_LIFETIME_EVENT_STARTING = 'patcher/starting';
+const PATCHER_LIFETIME_EVENT_CONNECTIONSLOW = 'patcher/connectionslow';
+const PATCHER_LIFETIME_EVENT_RECONNECTING = 'patcher/reconnecting';
+const PATCHER_LIFETIME_EVENT_RECONNECTED = 'patcher/reconnected';
+const PATCHER_LIFETIME_EVENT_CONNECTING = 'patcher/connecting';
+const PATCHER_LIFETIME_EVENT_CONNECTED = 'patcher/connected';
+const PATCHER_LIFETIME_EVENT_DISCONNECTED = 'patcher/disconnected';
+const PATCHER_LIFETIME_EVENT_IDENTIFIED = 'patcher/identified';
+const PATCHER_LIFETIME_EVENT_STATECHANGED = 'patcher/statechanged';
 
-export const genericPatcherEventsMap: EventMap[] = [
+const genericPatcherEventsMap: EventMap[] = [
   {
     receive: 'characterUpdated',
     send: PATCHER_EVENTS_CHARACTERUPDATED,
@@ -34,7 +34,7 @@ export const genericPatcherEventsMap: EventMap[] = [
   },
 ];
 
-export const patcherEventsMap: EventMap[] = [
+const patcherEventsMap: EventMap[] = [
   ...genericPatcherEventsMap,
   {
     receive: 'serverUpdate',
@@ -149,6 +149,7 @@ export function createPatcherHub(opts?: { hostName?: string, isMainPatcherHub?: 
   return newPatcherHub;
 }
 
-export const patcherHub: SignalRHub = createPatcherHub({ isMainPatcherHub: true });
-
-export default patcherHub;
+// init
+export default function() {
+  return createPatcherHub({ isMainPatcherHub: true });
+}

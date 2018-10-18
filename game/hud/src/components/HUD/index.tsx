@@ -24,9 +24,10 @@ import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
 import Watermark from '../Watermark';
 import HUDFullScreen from '../../widgets/HUDFullScreen';
 import DevUI from '../DevUI';
-// import SkillBar from '../SkillBar';
+import AbilityBar from '../AbilityBar';
 import ScenarioPopup from '../ScenarioPopup';
 import ScenarioResults from '../ScenarioResults';
+import Settings from '../../widgets/Settings/SettingsMain';
 
 import { ZoneName } from '../ZoneName';
 import HUDEditor from './HUDEditor';
@@ -56,7 +57,7 @@ const ZoneNameContainer = styled('div')`
   left: 0;
 `;
 
-const SkillBarContainer = styled('div')`
+const AbilityBarContainer = styled('div')`
   position: fixed;
   left: 0;
   right: 0;
@@ -120,9 +121,9 @@ class HUD extends React.Component<HUDProps, HUDState> {
           <ScenarioResults />
 
           <HUDFullScreen />
-          <SkillBarContainer>
-            {/* <SkillBar /> */}
-          </SkillBarContainer>
+          <AbilityBarContainer>
+            <AbilityBar />
+          </AbilityBarContainer>
           <ContextMenu />
           <Tooltip />
           <PassiveAlert />
@@ -134,6 +135,8 @@ class HUD extends React.Component<HUDProps, HUDState> {
               setSelectedWidget={this.setSelectedWidget}
             />
           }
+
+          <Settings />
           <Watermark />
         </div>
       </HUDContext.Provider>

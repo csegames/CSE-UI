@@ -7,8 +7,8 @@ import './assert';
 import './ObjectMap';
 import './objectUtils';
 import './typeUtils';
-import './withDefaults';
 import './arrayUtils';
+import './withDefaults';
 
 export * from './arrayUtils';
 export * from './eventMapper';
@@ -23,6 +23,7 @@ export * from './compareNumbers';
 export * from './time';
 export * from './EventEmitter';
 export * from './immutableType';
+export * from './withDefaults';
 
 
 import * as KeyCodes from './keyCodes';

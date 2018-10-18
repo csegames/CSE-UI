@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { hubEvents } from '@csegames/camelot-unchained/lib/signalR/hubs/groupsHub';
 import {
   CompassPOIProviderProps,
   CompassPOI,
@@ -211,9 +210,9 @@ export default class WarbandMembersPoiProvider extends React.Component<
   }
 
   public componentDidMount() {
-    this.eventHandles.push(game.on(hubEvents.memberUpdate, this.onWarbandMemberUpdated));
-    this.eventHandles.push(game.on(hubEvents.memberJoined, this.onWarbandMemberJoined));
-    this.eventHandles.push(game.on(hubEvents.memberRemoved, this.onWarbandMemberRemoved));
+    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.memberUpdate, this.onWarbandMemberUpdated));
+    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.memberJoined, this.onWarbandMemberJoined));
+    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.memberRemoved, this.onWarbandMemberRemoved));
     this.eventHandles.push(game.friendlyTargetState.onUpdated(this.onFriendlyTargetStateUpdated));
   }
 

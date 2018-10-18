@@ -5,13 +5,13 @@
  */
 
 import { findIndexWhere } from '../utils/arrayUtils';
+import { SignalRHub } from './SignalRHub';
 
 export * from './SignalRHub';
-export * from './hubs/groupsHub';
-export * from './hubs/patcherHub';
+import initGroupsHub, { groupsHubEvents } from './hubs/groupsHub';
+import initPatcherHub, { createPatcherHub, getPatcherEventName } from './hubs/patcherHub';
 
 declare const $: any;
-
 const hubsDef: HubDef = {};
 
 interface HubDef {
@@ -21,14 +21,15 @@ interface HubDef {
   };
 }
 
-export interface InitCallback {
+interface InitCallback {
   (succeeded: boolean): any;
 }
 
 const initializedHubs: string[] = [];
 
 let initialized = false;
-export const initializeSignalR = (signalRHost: string = game.signalRHost()) => {
+const startSignalR = (signalRHost: string = game.signalRHost()) => {
+  return;
   if (initialized) return;
   initialized = true;
   if (game.debug) console.log('initializeSignalR called');
@@ -39,12 +40,12 @@ export const initializeSignalR = (signalRHost: string = game.signalRHost()) => {
   });
 };
 
-export const reinitializeSignalR = (signalRHost: string = game.signalRHost()) => {
+const restartSignalR = (signalRHost: string = game.signalRHost()) => {
   initialized = false;
-  initializeSignalR(signalRHost);
+  startSignalR(signalRHost);
 };
 
-export const initializeSignalRHubs = (...hubs: { name: string, callback: InitCallback }[]) => {
+const initializeSignalRHubs = (...hubs: { name: string, callback: InitCallback }[]) => {
   if (game.debug) console.log(`initializeSignalRHubs called on hubs ${hubs.map(h => h.name).join(',')}`);
   for (let i = 0; i < hubs.length; ++i) {
     if (findIndexWhere(initializedHubs, h => h === hubs[i].name) === -1) {
@@ -57,7 +58,7 @@ export const initializeSignalRHubs = (...hubs: { name: string, callback: InitCal
   }
 };
 
-export const unregisterSignalRHubs = (...hubNames: string[]) => {
+const unregisterSignalRHubs = (...hubNames: string[]) => {
   if (game.debug) console.log(`unregisterSignalRHubs called on hubs ${hubNames.join(',')}`);
   for (let i = 0; i < hubNames.length; ++i) {
     const index = findIndexWhere(initializedHubs, name => name === hubNames[i]);
@@ -70,3 +71,32 @@ export const unregisterSignalRHubs = (...hubNames: string[]) => {
   }
 };
 
+export interface SignalR {
+  startSignalR: (signalRHost: string) => void;
+  restartSignalR: (signalRHost: string) => void;
+  initializeSignalRHubs: (...hubs: { name: string, callback: InitCallback }[]) => void;
+  unregisterSignalRHubs: (...hubNames: string[]) => void;
+
+  // Hubs
+  groupsHub: SignalRHub;
+  groupsHubEvents: typeof groupsHubEvents;
+
+  patcherHub: SignalRHub;
+  createPatcherHub: typeof createPatcherHub;
+  getPatcherEventName: typeof getPatcherEventName;
+}
+
+export default function(): SignalR {
+  return {
+    groupsHub: initGroupsHub(),
+    patcherHub: initPatcherHub(),
+
+    startSignalR,
+    restartSignalR,
+    initializeSignalRHubs,
+    unregisterSignalRHubs,
+    groupsHubEvents,
+    createPatcherHub,
+    getPatcherEventName,
+  };
+}

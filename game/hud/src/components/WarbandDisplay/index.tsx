@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { groupsHub, hubEvents } from '@csegames/camelot-unchained/lib/signalR/hubs/groupsHub';
 import styled from 'react-emotion';
 
 import { addOrUpdate, removeWhere } from '../../lib/reduxUtils';
@@ -60,10 +59,9 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
     };
 
     this.registerWarbandEvents();
-    groupsHub.onConnected = function(hub) {
-      hub.invoke('invalidate');
-    };
-    groupsHub.start();
+    game.signalR.groupsHub.start().then(() => {
+      game.signalR.groupsHub.invoke('invalidate');
+    });
   }
 
   public render() {
@@ -149,13 +147,13 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
   }
 
   private registerWarbandEvents = () => {
-    this.eventHandles.push(game.on(hubEvents.joined, this.onWarbandJoined));
-    this.eventHandles.push(game.on(hubEvents.update, this.onWarbandJoined));
-    this.eventHandles.push(game.on(hubEvents.quit, this.onWarbandQuit));
-    this.eventHandles.push(game.on(hubEvents.abandoned, this.onWarbandQuit));
-    this.eventHandles.push(game.on(hubEvents.memberJoined, this.onWarbandMemberJoined));
-    this.eventHandles.push(game.on(hubEvents.memberUpdate, this.onWarbandMemberUpdated));
-    this.eventHandles.push(game.on(hubEvents.memberRemoved, this.onWarbandMemberRemoved));
+    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.joined, this.onWarbandJoined));
+    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.update, this.onWarbandJoined));
+    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.quit, this.onWarbandQuit));
+    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.abandoned, this.onWarbandQuit));
+    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.memberJoined, this.onWarbandMemberJoined));
+    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.memberUpdate, this.onWarbandMemberUpdated));
+    this.eventHandles.push(game.on(game.signalR.groupsHubEvents.memberRemoved, this.onWarbandMemberRemoved));
   }
 
   private unregisterWarbandEvents = () => {

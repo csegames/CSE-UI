@@ -37,8 +37,8 @@ export default function() {
 
   engineInit(
     FriendlyTarget_Update,
-    () => _devGame.friendlyTargetState = initDefault(),
-    () => game.friendlyTargetState,
+    initDefault,
+    () => _devGame.friendlyTargetState,
     (model: AnyEntityState) => {
       _devGame.friendlyTargetState = model as FriendlyTargetState;
     });

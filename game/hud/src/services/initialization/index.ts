@@ -9,8 +9,6 @@ import slashCommands from './slashCommands';
 export default () => {
   slashCommands();
 
-  game.signalR.initializeSignalR();
-
   function combatLogToString(log: CombatEvent): string {
     // fromName (fromFaction) > toName
     // (toFaction) | {damages} | {disruption} | {heals} | {cures} | {resources} | {impulse} | {activeEffects}

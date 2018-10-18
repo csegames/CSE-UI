@@ -6,8 +6,8 @@
 
 import * as webAPI from '../webAPI';
 import * as graphQL from '../graphql';
-import * as signalR from '../signalR';
 import { Task } from './clientTasks';
+import { SignalR } from '../signalR';
 
 /**
  * GameModel interface defines the structure and functionality of the global game object as presented by the game
@@ -267,7 +267,7 @@ export interface GameInterface extends GameModel {
 
   webAPI: typeof webAPI;
   graphQL: typeof graphQL;
-  signalR: typeof signalR;
+  signalR: SignalR;
 
   /**
    * Get the signalR host

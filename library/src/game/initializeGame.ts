@@ -28,6 +28,7 @@ function initUI() {
 
   if (!window.game) {
     (window as any).game = initOutOfContextGame();
+    console.log('initializing game out of context');
   }
 
   if (!window._devGame) {
@@ -45,6 +46,7 @@ function initUI() {
 }
 
 export default function() {
+  console.log('initializing game engine');
   if (engine.isAttached && !window.game) {
     engine.on('Ready', () => {
       _devGame.ready = false;

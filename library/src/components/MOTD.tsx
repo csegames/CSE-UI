@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils } from '../';
+import * as utils from '../utils';
 
 export interface Style {
   MOTD: React.CSSProperties;

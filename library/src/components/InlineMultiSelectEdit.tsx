@@ -9,11 +9,10 @@ import styled from 'react-emotion';
 import {
   FloatSpinner,
   Tooltip,
-  utils,
 } from '..';
 import { generateID } from 'redux-typed-modules';
 import MultiSelect, { MultiSelectStyle } from './MultiSelect';
-
+import * as utils from '../utils';
 const { KeyCodes } = utils;
 
 export interface InlineMultiSelectEditStyle {

@@ -6,9 +6,9 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Input, InputProps, utils } from '..';
+import { Input, InputProps } from '..';
 import { cloneDeep } from 'lodash';
-
+import * as utils from '../utils';
 const { KeyCodes } = utils;
 
 export interface MultiSelectStyle {

@@ -16,7 +16,6 @@ export * from './components';
 export * from './slashCommands';
 export * from './utils';
 
-
 // The below exports are available on the global game object. They are exported here so they may be used standalone for
 // non game applications as well.
 

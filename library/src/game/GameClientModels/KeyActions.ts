@@ -176,7 +176,7 @@ export default function() {
 
   engineInit(
     KeyActions_Update,
-    () => _devGame.keyActions = initDefault(),
+    initDefault,
     () => game.keyActions,
     (model: KeyActionsModel) => _devGame.keyActions = model as KeyActions);
 

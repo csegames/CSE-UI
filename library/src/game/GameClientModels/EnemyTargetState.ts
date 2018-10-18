@@ -37,8 +37,8 @@ export default function() {
 
   engineInit(
     EnemyTarget_Update,
-    () => _devGame.enemyTargetState = initDefault(),
-    () => game.enemyTargetState,
+    initDefault,
+    () => _devGame.enemyTargetState,
     (model: AnyEntityState) => {
       _devGame.enemyTargetState = model as EnemyTargetState;
     });

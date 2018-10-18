@@ -8,7 +8,7 @@ import { SignalRHub } from '../SignalRHub';
 import { EventMap } from '../../utils/eventMapper';
 
 // UI EVENT NAMES
-export const hubEvents = {
+export const groupsHubEvents = {
   joined: 'warbands/joined',
   update: 'warbands/update',
   quit: 'warbands/quit',
@@ -22,39 +22,37 @@ export const hubEvents = {
 const groupsHubEventsMap: EventMap[] = [
   {
     receive: 'warbandJoined',
-    send: hubEvents.joined,
+    send: groupsHubEvents.joined,
   },
   {
     receive: 'warbandUpdate',
-    send: hubEvents.update,
+    send: groupsHubEvents.update,
   },
   {
     receive: 'warbandQuit',
-    send: hubEvents.quit,
+    send: groupsHubEvents.quit,
   },
   {
     receive: 'warbandAbandoned',
-    send: hubEvents.abandoned,
+    send: groupsHubEvents.abandoned,
   },
   {
     receive: 'warbandMemberJoined',
-    send: hubEvents.memberJoined,
+    send: groupsHubEvents.memberJoined,
   },
   {
     receive: 'warbandMemberUpdated',
-    send: hubEvents.memberUpdate,
+    send: groupsHubEvents.memberUpdate,
   },
   {
     receive: 'warbandMemberRemoved',
-    send: hubEvents.memberRemoved,
+    send: groupsHubEvents.memberRemoved,
   },
   {
     receive: 'warbandInviteReceived',
-    send: hubEvents.inviteReceived,
+    send: groupsHubEvents.inviteReceived,
   },
 ];
-
-export const groupsHub = new SignalRHub('groupsHub', groupsHubEventsMap, { debug: game.debug });
 
 function invokeIdentify(hub: SignalRHub) {
   hub.invoke('identify', game.accessToken, game.shardID, game.selfPlayerState.characterID)
@@ -74,4 +72,9 @@ function onConnected(hub: SignalRHub) {
   invokeIdentify(hub);
 }
 
-groupsHub.addEventHandler('connected', onConnected);
+// initialize hub
+export default function() {
+  const groupsHub = new SignalRHub('groupsHub', groupsHubEventsMap, { debug: game.debug });
+  groupsHub.addEventHandler('connected', onConnected);
+  return groupsHub;
+}

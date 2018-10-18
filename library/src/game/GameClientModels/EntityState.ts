@@ -16,14 +16,14 @@ declare global {
     /**
      * Players coordinates in world space.
      */
-    position?: {
+    position: {
       x: number;
       y: number;
       z: number;
     };
 
     // status -- null / undefined if no status on entity
-    statuses?: [{
+    statuses: [{
       id: number;
     } & Timing];
 
@@ -83,6 +83,8 @@ function defaultEntityStateModel(): EntityStateModel {
     entityID: '',
     name: 'unknown',
     isAlive: false,
+    position: { x: NaN, y: NaN, z: NaN },
+    statuses: [] as any,
   };
 }
 

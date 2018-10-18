@@ -87,7 +87,7 @@ class App extends React.Component<AppProps, AppState> {
   public componentDidMount() {
 
     // Handle keyboard events (for ESC)
-    window.addEventListener('keydown', this.onKeyDown);
+    // window.addEventListener('keydown', this.onKeyDown);
 
     // Watch for navigation events (for open/close)
     this.navigationHandler = game.on('hudnav--navigate', (name: string) => {
@@ -105,7 +105,7 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   public componentWillUnmount() {
-    window.removeEventListener('keydown', this.onKeyDown);
+    // window.removeEventListener('keydown', this.onKeyDown);
     if (this.navigationHandler) {
       game.off(this.navigationHandler);
       this.navigationHandler = null;
@@ -228,11 +228,11 @@ class App extends React.Component<AppProps, AppState> {
   //   this.props.dispatch(setMinimized(!this.props.minimized));
   // }
 
-  private onKeyDown = (e: KeyboardEvent) => {
-    if (e.key.toUpperCase() === 'ESCAPE') {
-      this.close();
-    }
-  }
+  // private onKeyDown = (e: KeyboardEvent) => {
+  //   if (e.key.toUpperCase() === 'ESCAPE') {
+  //     this.close();
+  //   }
+  // }
 
   private release = () => {
   }

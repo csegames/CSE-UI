@@ -66,6 +66,7 @@ export class Settings extends React.Component<SettingsProps, SettingsState> {
   }
 
   private onnavigate = (name: string) => {
+    console.log(`settings | onnavigate : ${name}`);
     if (name === 'gamemenu' && this.state.visible) {
       this.setState({ visible: false });
     } else if (name === ME) {

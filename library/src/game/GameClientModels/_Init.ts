@@ -15,20 +15,32 @@ import { Updatable, initUpdatable, executeUpdateCallbacks } from './_Updatable';
  * @param propertySetter Function to set the UI reference handle to this model
  * @param onUpdated Function to handle registrations of update callbacks
  */
-export default function<TModel, TType extends Updatable>(
+export default function<TModel, TType extends TModel & Updatable>(
   name: string,
-  initAsDefault: () => void,
+  defaultObject: () => TType,
   propertyAccessor: () => TType | undefined,
   propertySetter: (model: TModel) => void,
 ) {
-  initAsDefault();
+  propertySetter(defaultObject());
   engine.on(name, (model: TModel) => {
+    // console.log(`received ${name} model | ${JSON.stringify(model)}`);
     if (!model) {
-      initAsDefault();
+      propertySetter(defaultObject());
     } else if (!propertyAccessor().isReady) {
-      propertySetter(model);
+      propertySetter(withDefaults(model, defaultObject()));
       propertyAccessor().updateEventName = name;
       initUpdatable(propertyAccessor());
+      if (name === 'selfPlayerState.update') {
+        console.log(`name: ${(model as any).name}`);
+        console.log(`entityID: ${(model as any).entityID}`);
+        console.log(`characterID: ${(model as any).characterID}`);
+        console.log(`zoneID: ${(model as any).zoneID}`);
+      }
+
+      if (name === 'loadingState.update') {
+        console.log(`message: ${(model as any).message}`);
+      }
+      console.log(`initialized ${name} model | ${JSON.stringify(propertyAccessor())}`);
     }
     executeUpdateCallbacks(propertyAccessor());
   });

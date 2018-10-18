@@ -111,8 +111,8 @@ export default function() {
 
   engineInit(
     SelfPlayer_Update,
-    () => _devGame.selfPlayerState = initDefault(),
-    () => game.selfPlayerState,
+    initDefault,
+    () => _devGame.selfPlayerState,
     (model: SelfPlayerStateModel) => _devGame.selfPlayerState = model as SelfPlayerState);
 
 }

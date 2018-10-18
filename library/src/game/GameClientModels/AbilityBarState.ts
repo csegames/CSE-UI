@@ -43,8 +43,8 @@ export default function() {
 
   engineInit(
     AbilityBarState_Update,
-    () => _devGame.abilityBarState = initDefault(),
-    () => game.abilityBarState,
+    initDefault,
+    () => _devGame.abilityBarState,
     (model: AbilityBarState) => {
       _devGame.abilityBarState = model;
     });
