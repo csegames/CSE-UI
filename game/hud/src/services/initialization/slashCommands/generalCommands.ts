@@ -18,11 +18,6 @@ export default () => {
   });
 
   /**
-   * Unstuck! (kills you and respawns for now)
-   */
-  registerSlashCommand('stuck', 'get your character unstuck', () => game.selfPlayerState.stuck());
-
-  /**
    * Change your zone -- Only works on Hatchery / Debug & Internal builds
    */
   registerSlashCommand('zone', 'change your zone', (params: string) => game.selfPlayerState.changeZone(
