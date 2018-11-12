@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { events, webAPI } from '@csegames/camelot-unchained';
 
-import { patcher, canAccessChannel, ChannelStatus } from '../../../../../services/patcher';
+import { patcher, canAccessChannel, ChannelStatus, PatchChannelMode } from '../../../../../services/patcher';
 import { PatcherServer } from '../../../services/session/controller';
 import CharacterList from './CharacterList';
 import ServerOptionsMenu from './ServerOptionsMenu';
@@ -82,6 +82,7 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
             charSelectVisible={this.props.charSelectVisible}
             serverForOptions={this.state.serverForOptions}
             handleInstallUninstall={this.handleInstallUninstall}
+            onToggleChannelMode={this.onToggleChannelMode}
             toggleMenu={this.toggleMenu}
           />
         }
@@ -187,6 +188,16 @@ class CharacterSelectList extends React.Component<CharacterSelectListProps, Char
       this.install();
     } else {
       this.uninstall();
+    }
+  }
+
+  private onToggleChannelMode = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    this.playSound('select');
+    if (this.state.serverForOptions.mode === PatchChannelMode.Automatic) {
+      patcher.setChannelMode(this.state.serverForOptions.channelID, PatchChannelMode.ThiryTwoBit);
+    } else {
+      patcher.setChannelMode(this.state.serverForOptions.channelID, PatchChannelMode.Automatic);
     }
   }
 

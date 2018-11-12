@@ -17,6 +17,11 @@ export enum PatchPermissions {
   Beta3 = 1 << 6,
 }
 
+export enum PatchChannelMode {
+  Automatic,
+  ThiryTwoBit,
+}
+
 export function permissionsString(p: PatchPermissions) {
   if ((p & PatchPermissions.Devs) !== 0) return 'Developer';
   if ((p & PatchPermissions.IT) !== 0) return 'IT';
@@ -57,6 +62,7 @@ export interface Channel {
   channelID: number;
   channelStatus: ChannelStatus;
   lastUpdated: number;
+  mode: PatchChannelMode;
 }
 
 export interface PatcherError {
@@ -208,6 +214,9 @@ export class PatcherAPI {
   }
   public uninstallChannel(channelID: number) {
     this._api.UninstallChannel(channelID);
+  }
+  public setChannelMode(channelID: number, mode: PatchChannelMode) {
+    this._api.SetChannelMode(channelID, mode);
   }
   public hasReadFAQ(): boolean {
     return this._hasReadFAQ || this._api.hasReadFAQ;

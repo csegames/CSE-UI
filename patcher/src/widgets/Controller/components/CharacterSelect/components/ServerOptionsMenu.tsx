@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { ChannelStatus } from '../../../../../services/patcher';
+import { ChannelStatus, PatchChannelMode } from '../../../../../services/patcher';
 import { PatcherServer } from '../../../services/session/controller';
 
 const MenuContainer = styled('div')`
@@ -50,22 +50,33 @@ const OptionsMenuOverlay = styled('div')`
   width: 100%;
 `;
 
+const CheckMark = styled('span')`
+  height: 20px;
+  margin-left: 5px;
+`;
+
 export interface ServerOptionsMenuProps {
   top: number;
   left: number;
   charSelectVisible: boolean;
   serverForOptions: PatcherServer;
   handleInstallUninstall: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onToggleChannelMode: (e: React.MouseEvent<HTMLDivElement>) => void;
   toggleMenu: (e: React.MouseEvent<HTMLDivElement>, server: PatcherServer) => void;
 }
 
 class ServerOptionsMenu extends React.Component<ServerOptionsMenuProps> {
   public render() {
+    const { serverForOptions } = this.props;
     return (
       <div>
         <MenuContainer topPos={this.props.top} leftPos={this.props.left}>
           <ListItem onClick={this.props.handleInstallUninstall} visible={this.props.charSelectVisible}>
             {this.props.serverForOptions.channelStatus === ChannelStatus.NotInstalled ? 'Install' : 'Uninstall'}
+          </ListItem>
+          <ListItem onClick={this.props.onToggleChannelMode} visible={this.props.charSelectVisible}>
+            Use 32-Bit
+            <CheckMark className={serverForOptions.mode === PatchChannelMode.ThiryTwoBit ? 'fa fa-check' : ''} />
           </ListItem>
         </MenuContainer>
         <OptionsMenuOverlay onClick={this.props.toggleMenu as React.MouseEventHandler} />

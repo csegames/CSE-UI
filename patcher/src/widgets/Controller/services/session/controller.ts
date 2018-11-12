@@ -7,7 +7,7 @@
 import { isEqual } from 'lodash';
 import { client, utils, signalr, events, webAPI } from '@csegames/camelot-unchained';
 import { Module } from 'redux-typed-modules';
-import { patcher, Channel, ChannelStatus, PatcherError } from '../../../../services/patcher';
+import { patcher, Channel, ChannelStatus, PatcherError, PatchChannelMode } from '../../../../services/patcher';
 
 declare const toastr: any;
 
@@ -81,6 +81,7 @@ export interface PatcherServer {
   characters?: webAPI.SimpleCharacter[];
   lastUpdated?: number;
   apiHost: string;
+  mode: PatchChannelMode;
 }
 
 // HELPER METHODS
@@ -156,6 +157,7 @@ function webAPIServerToPatcherServer(server: webAPI.ServerModel): PatcherServer 
     type: ServerType.CUGAME,
     channelStatus: channel ? channel.channelStatus : ChannelStatus.NotInstalled,
     apiHost: server.apiHost,
+    mode: channel.mode,
   }, server);
 }
 
@@ -178,6 +180,7 @@ function channelToPatcherServer(channel: Channel): PatcherServer {
     channelPatchPermissions: 4, // CSE only default
     apiHost: 'https://api.camelotunchained.com',
     lastUpdated: channel.lastUpdated || 0,
+    mode: channel.mode,
   };
 }
 
