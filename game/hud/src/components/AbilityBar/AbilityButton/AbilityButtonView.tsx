@@ -235,6 +235,7 @@ class AbilityButtonView extends React.Component<AbilityButtonViewProps, AbilityB
         onClick={this.props.onAbilityClick}
         onMouseOver={this.onMouseOver}
         onMouseLeave={this.onMouseLeave}
+        data-input-group='block'
       >
         <KeyBind keybindID={ability.keybind} />
         {ability.status & AbilityButtonState.Queued ? <QueuedStateTick /> : null}

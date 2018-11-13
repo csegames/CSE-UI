@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-const SYSTEM_MESSAGE_EVENT = 'system_message';
+const SYSTEM_MESSAGE_EVENT = 'systemMessage';
 
 export function sendSystemMessage(message: string) {
   game.trigger(SYSTEM_MESSAGE_EVENT, message);

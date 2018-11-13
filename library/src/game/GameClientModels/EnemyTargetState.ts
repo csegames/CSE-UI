@@ -20,9 +20,7 @@ function initDefault(): EnemyTargetState {
   return {
     ...defaultPlayerStateModel(),
 
-    characterID: '',
     position: { x: 0, y: 0, z: 0 },
-
     isReady: false,
     updateEventName: EnemyTarget_Update,
     onUpdated: createDefaultOnUpdated(EnemyTarget_Update),

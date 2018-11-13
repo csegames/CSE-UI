@@ -29,7 +29,7 @@ export interface PlayerHealthState {
 }
 
 class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
-  private eventHandles: EventHandle[] = [];
+  private playerUpdateHandle: EventHandle;
   constructor(props: PlayerHealthProps) {
     super(props);
     this.state = {
@@ -48,13 +48,13 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 
   public componentDidMount() {
-    this.eventHandles.push(game.selfPlayerState.onUpdated(() => {
-      this.setPlayerState(game.selfPlayerState);
-    }));
+    this.playerUpdateHandle = game.selfPlayerState.onUpdated(() => {
+      this.setPlayerState(cloneDeep(game.selfPlayerState));
+    });
   }
 
   public componentWillUnmount() {
-    this.eventHandles.forEach(eventHandle => eventHandle.clear());
+    this.playerUpdateHandle.clear();
   }
 
   public shouldComponentUpdate(nextProps: PlayerHealthProps, nextState: PlayerHealthState) {

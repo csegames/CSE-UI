@@ -166,8 +166,10 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
     const faction = getFaction(playerState);
     return (
       <Container
-      shouldShake={this.props.shouldShake}
-      isAlive={playerState.isAlive}>
+        shouldShake={this.props.shouldShake}
+        isAlive={playerState.isAlive}
+        data-input-group='block'
+        >
         <ContentContainer>
           <NameContainer>
             <Name>{playerState.name}</Name>

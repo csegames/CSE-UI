@@ -161,7 +161,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     });
 
     game.startItemPlacement(staticDefinition.numericItemDefID, id);
-    game.trigger('hudnav--navigate', 'placement-mode');
+    game.trigger('navigate', 'placement-mode');
   }
 
   private onActionClick = (action: InventoryItem.Actions) => {
@@ -218,11 +218,11 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
   }
 
   private closeInventory = () => {
-    game.trigger('hudnav--navigate', 'inventory');
+    game.trigger('navigate', 'inventory');
   }
 
   private openMiniMap = () => {
-    game.trigger('hudnav--navigate', 'map');
+    game.trigger('navigate', 'map');
   }
 
   private onHighlightSlots = (gearSlots: Partial<GearSlotDefRef>[]) => {

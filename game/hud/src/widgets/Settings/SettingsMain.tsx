@@ -5,6 +5,7 @@
  */
 
 import * as React from 'react';
+import styled from 'react-emotion';
 
 import { TabbedDialog, DialogButton } from 'UI/TabbedDialog';
 import { GeneralSettings } from './tabs/General';
@@ -14,7 +15,7 @@ import { AddonSettings } from './tabs/Addon';
 const SETTINGS_DIALOG_WIDTH = 1040;
 const SETTINGS_DIALOG_HEIGHT = 710;
 
-const HUDNAV_NAVIGATE = 'hudnav--navigate';
+const HUDNAV_NAVIGATE = 'navigate';
 const ME = 'settings';
 
 interface Size {
@@ -37,6 +38,16 @@ const tabs: DialogButton[] = [
   TAB_ADDONS,
 ];
 
+
+const SettingsWrapper = styled('div')`
+  position: absolute;
+  left: 10%;
+  top: 10%;
+  width: 80%;
+  height: 80%;
+  z-index: 9999;
+`;
+
 interface SettingsState {
   visible: boolean;
 }
@@ -45,13 +56,13 @@ interface SettingsProps {
 }
 
 export class Settings extends React.Component<SettingsProps, SettingsState> {
-  private evh: any;
+  private evh: EventHandle;
   constructor(props: SettingsProps) {
     super(props);
     this.state = { visible: false };
   }
   public componentDidMount() {
-    this.evh = game.on(HUDNAV_NAVIGATE, this.onnavigate);
+    this.evh = game.on(HUDNAV_NAVIGATE, this.onNavigate);
   }
   public componentWillUnmount() {
     game.off(this.evh);
@@ -59,17 +70,19 @@ export class Settings extends React.Component<SettingsProps, SettingsState> {
   }
   public render() {
     return this.state.visible ? (
-      <TabbedDialog name='settings' title='Settings' tabs={tabs} onClose={this.onClose}>
-        {this.renderTab}
-      </TabbedDialog>
+      <SettingsWrapper data-input-group='block'>
+        <TabbedDialog data-input-group='block' name='settings' title='Settings' tabs={tabs} onClose={this.onClose}>
+          {this.renderTab}
+        </TabbedDialog>
+      </SettingsWrapper>
     ) : null;
   }
 
-  private onnavigate = (name: string) => {
-    console.log(`settings | onnavigate : ${name}`);
+  private onNavigate = (name: string) => {
     if (name === 'gamemenu' && this.state.visible) {
       this.setState({ visible: false });
-    } else if (name === ME) {
+    }
+    if (name === ME) {
       this.setState({ visible: !this.state.visible });
     }
   }

@@ -26,10 +26,11 @@ declare global {
 export const AbilityState_Update = 'abilityState.update';
 
 function onReceiveAbilityStateUpdate(state: AbilityState) {
+  if (game.debug) console.log(`received abilityState.update with model | ${JSON.stringify(state)}`);
 
   if (!_devGame.abilityStates[state.id]) {
     _devGame.abilityStates[state.id] = state as AbilityState;
-    _devGame.abilityStates[state.id].updateEventName = AbilityState_Update;
+    _devGame.abilityStates[state.id].updateEventName = `${AbilityState_Update}_${state.id}`;
     // init Updatable.
     initUpdatable(state);
   }

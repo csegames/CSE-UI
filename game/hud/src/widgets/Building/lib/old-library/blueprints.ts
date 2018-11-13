@@ -17,24 +17,21 @@ function requestBlueprintPaste() {
 }
 
 function fireHandleBlueprints() {
-  const result = game.plot.getBlueprints();
-  if (result.success) {
-    game.trigger(BuildingEventTopics.handlesBlueprints, { blueprints: result.blueprints });
-  }
+  game.trigger(BuildingEventTopics.handlesBlueprints, { blueprints: game.building.blueprints });
 }
 
 function requestBlueprintDelete(blueprint: Blueprint) {
-  game.plot.deleteBlueprint(blueprint.id);
+  game.building.deleteBlueprintAsync(blueprint.id);
   fireHandleBlueprints();
 }
 
 function requestBlueprintSave(name: string) {
-  game.plot.createBlueprintFromSelection(name);
+  game.building.createBlueprintFromSelectionAsync(name);
   fireHandleBlueprints();
 }
 
 function requestBlueprintSelect(blueprint: Blueprint) {
-  game.plot.selectBlueprint(blueprint.id);
+  game.building.selectBlueprintAsync(blueprint.id);
   game.trigger(BuildingEventTopics.handlesBlueprintSelect, { blueprint });
 }
 

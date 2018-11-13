@@ -347,7 +347,11 @@ export class TabbedDialog extends React.PureComponent<DialogProps, DialogState> 
     }
     if (renderHeader) clsInner.push('no-bottom-border');
     return (
-      <DialogContainer className={`has-title cse-ui-scroller-thumbonly`} data-id='dialog-container'>
+      <DialogContainer
+        className={`has-title cse-ui-scroller-thumbonly`}
+        data-id='dialog-container'
+        data-input-group='block'
+      >
         <DialogTitle>{this.props.title}</DialogTitle>
         <DialogWindow data-id='dialog-window'>
           <OrnamentTopLeft/>

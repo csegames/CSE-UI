@@ -42,7 +42,9 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 
   public render() {
-    if (!this.state.playerState || this.state.playerState.type !== 'player') return null;
+    if (!this.state.playerState ||
+      this.state.playerState.type !== 'player' ||
+      !this.state.playerState.entityID) return null;
 
     return (
       <Container onContextMenu={this.handleContextMenu}>
@@ -53,7 +55,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
 
   public componentDidMount() {
     this.eventHandles.push(game.friendlyTargetState.onUpdated(() => {
-      this.setPlayerState(game.friendlyTargetState as Player);
+      this.setPlayerState(cloneDeep(game.friendlyTargetState as Player));
     }));
   }
 

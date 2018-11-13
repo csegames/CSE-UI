@@ -13,10 +13,16 @@ declare global {
     id: number;
     keybind: number;
     boundKeyName: string;
+
+    type: AbilityButtonType;
+    track: AbilityTrack;
+    error: string;
+    timing: Timing;
+    disruption: CurrentMax;
   }
 
   interface AbilityBarStateModel {
-    abilities: AbilityBarItem[];
+    abilities: ArrayMap<AbilityBarItem>;
   }
 
   type AbilityBarState = AbilityBarStateModel & Updatable;
@@ -27,7 +33,7 @@ export const AbilityBarState_Update = 'abilityBarState.update';
 
 function initDefault(): AbilityBarState {
   return {
-    abilities: [],
+    abilities: {},
 
     isReady: false,
     updateEventName: AbilityBarState_Update,

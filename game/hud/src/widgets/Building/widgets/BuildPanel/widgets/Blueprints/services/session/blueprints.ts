@@ -80,7 +80,7 @@ export default function reducer(state: BlueprintsState = initialState, action: a
   switch (action.type) {
     case UPDATE_BLUEPRINTS:
       return assign({}, state, {
-        blueprints: [...action.blueprints],
+        blueprints: cloneDeep(action.blueprints),
       });
     case SELECT_BLUEPRINT:
       return assign({}, state, {

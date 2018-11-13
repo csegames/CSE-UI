@@ -51,7 +51,7 @@ export class HUDNav extends React.Component<HUDNavProps, HUDNavState> {
 
   public render() {
     return (
-      <List>
+      <List data-input-group='block'>
         {
           this.state.collapsed ? (
             <HUDNavButton

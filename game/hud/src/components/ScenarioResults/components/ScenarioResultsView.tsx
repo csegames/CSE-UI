@@ -103,7 +103,7 @@ class ScenarioResultsView extends React.Component<ScenarioResultsViewProps> {
   public render() {
     const { visible, participants, teams, status, scenarioID } = this.props;
     return (
-      <Container display={this.props.visible ? 'block' : 'none'}>
+      <Container display={this.props.visible ? 'block' : 'none'} data-input-group='block'>
         <LeftOrnament />
         <CloseOrnament />
         <CloseButton width={30} height={30} className={CloseButtonPosition} onClick={this.props.onCloseClick} />

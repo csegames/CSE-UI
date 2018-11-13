@@ -37,7 +37,7 @@ class JoinRoomModal extends React.Component<JoinRoomModalProps, JoinRoomModalSta
     return (
       <div className='modal-dialog join-room-modal'>
         <div className='input-field'>
-          <input id='room' type='text' ref='roomInput' placeholder='Room Name'/>
+          <input data-input-group='block' id='room' type='text' ref='roomInput' placeholder='Room Name'/>
           <JoinRoomList rooms={this.state.rooms} filter={this.state.filter} selectRoom={this.selectRoom}/>
         </div>
         <button className='wave-effects btn-flat' onClick={this.joinRoom} ref='join'>JOIN ROOM</button>

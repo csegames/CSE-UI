@@ -14,8 +14,8 @@ const DEFAULT_MATERIAL: Material = {
   id: -1,
   icon: '',
   tags: ['default'],
-  blocks: [],
-} as Material;
+  blocks: {},
+};
 
 
 export function selectFromMaterial(material: Material) {

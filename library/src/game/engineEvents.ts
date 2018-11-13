@@ -113,6 +113,47 @@ export const EE_OnOptionChanged = 'optionChanged';
 regMap[EE_OnOptionChanged] = 'onOptionChanged';
 
 /**
+ * Called when the BuildingMode is changed.
+ *
+ * @param {BuildingMode} mode The new mode
+ */
+export const EE_OnBuildingModeChanged = 'buildingModeChanged';
+regMap[EE_OnBuildingModeChanged] = 'onBuildingModeChanged';
+
+/**
+ * Called when the active plot is changed.
+ *
+ * @param {String} plotID The new plot id
+ * @param {Boolean} canEdit Whether the player can edit the active plot
+ */
+export const EE_OnActivePlotChanged = 'activePlotChanged';
+regMap[EE_OnActivePlotChanged] = 'onActivePlotChanged';
+
+/**
+ * Called when the selected block is changed.
+ *
+ * @param {Number} blockID The new block id
+ */
+export const EE_OnSelectedBlockChanged = 'selectedBlockChanged';
+regMap[EE_OnSelectedBlockChanged] = 'onSelectedBlockChanged';
+
+/**
+ * Called when the selected material is changed.
+ *
+ * @param {Number} id The new material id
+ */
+export const EE_OnSelectedMaterialChanged = 'selectedMaterialChanged';
+regMap[EE_OnSelectedMaterialChanged] = 'onSelectedMaterialChanged';
+
+/**
+ * Called when the selected blueprint is changed.
+ *
+ * @param {Number} id The new blueprint id
+ */
+export const EE_OnSelectedBlueprintChanged = 'selectedBlueprintChanged';
+regMap[EE_OnSelectedBlueprintChanged] = 'onSelectedBlueprintChanged';
+
+/**
  * Initialize engine event forwarding
  */
 export default function() {

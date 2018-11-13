@@ -66,7 +66,7 @@ export function getFaction(playerState: Entity) {
 
 export function getBodyPartsCurrentHealth(playerState: Entity) {
   if (isPlayer(playerState)) {
-    return playerState.health.map(bodypart => bodypart.current);
+    return Object.values(playerState.health).map(h => h.current);
   } else if (isSiege(playerState)) {
     return [playerState.health.current];
   }

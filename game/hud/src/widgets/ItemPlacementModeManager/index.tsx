@@ -102,7 +102,7 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   }
 
   public componentDidMount() {
-    game.on('hudnav--navigate', this.handleNav);
+    game.on('navigate', this.handleNav);
   }
 
   private handleNav = (uiName: string) => {

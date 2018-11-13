@@ -938,6 +938,7 @@ export function isRightOrLeftItem(gearSlots: GearSlotDefRef.Fragment[]) {
 export function getPaperDollBG(faction: Faction) {
   let paperdollBG = '';
   switch (faction) {
+    default:
     case Faction.Arthurian: {
       paperdollBG = 'bg-art';
       break;

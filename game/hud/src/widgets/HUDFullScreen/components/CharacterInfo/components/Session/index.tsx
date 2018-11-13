@@ -81,7 +81,7 @@ class Session extends React.Component<SessionProps> {
   }
 
   public componentDidMount() {
-    this.eventHandles.push(game.on('hudnav--navigate', (name: string) => {
+    this.eventHandles.push(game.on('navigate', (name: string) => {
       if (name === 'equippedgear' || name === 'character' || name === 'inventory') {
         this.props.graphql.refetch();
       }

@@ -9,6 +9,7 @@ import './objectUtils';
 import './typeUtils';
 import './arrayUtils';
 import './withDefaults';
+import './textUtils';
 
 export * from './arrayUtils';
 export * from './eventMapper';

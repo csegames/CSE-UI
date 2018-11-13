@@ -13,10 +13,6 @@ export function isEqualPlayerState(a: Player, b: Player) {
     return false;
   }
 
-  if (a.characterID !== b.characterID) {
-    return false;
-  }
-
   if (a.entityID !== b.entityID) {
     return false;
   }
@@ -82,12 +78,8 @@ export function isEqualPlayerState(a: Player, b: Player) {
   }
 
   if (a.statuses) {
-    if (a.statuses.length !== b.statuses.length) {
-      return false;
-    }
-
-    const aStatuses = (a.statuses as any[]).sort(statusSortMethod);
-    const bStatuses = (b.statuses as any[]).sort(statusSortMethod);
+    const aStatuses = Object.values(a.statuses).sort(statusSortMethod);
+    const bStatuses = Object.values(b.statuses).sort(statusSortMethod);
     for (let i = 0; i < aStatuses.length; ++i) {
       if (aStatuses[i] !== bStatuses[i]) {
         return false;

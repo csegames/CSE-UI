@@ -255,7 +255,7 @@ export default class FriendlyTargetPoiProvider extends React.Component<
     state: ImmutableFriendlyTargetState,
   ): CompassPOIPartial<FriendlyTargetData> => {
     return withCompassPOIPartialDefaults({
-      id: `friendly-${state.type === 'siege' ? state.entityID : (state as Player).characterID}`,
+      id: `friendly-${state.type === 'siege' ? state.entityID : (state as Player).entityID}`,
       type: 'friendly',
       position: state.position,
       offset: 18,
@@ -268,7 +268,7 @@ export default class FriendlyTargetPoiProvider extends React.Component<
     state: ImmutableFriendlyTargetState,
   ): FriendlyTargetData => {
     return {
-      id: state.type === 'siege' ? state.entityID : (state as Player).characterID,
+      id: state.type === 'siege' ? state.entityID : (state as Player).entityID,
       name: state.name,
       isActive: state.type === 'siege' ? true : state.entityID !== '',
       isAlive: state.isAlive,

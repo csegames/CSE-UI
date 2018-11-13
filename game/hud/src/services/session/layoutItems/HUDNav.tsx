@@ -14,7 +14,7 @@ import HUDZOrder from '../HUDZOrder';
 const { Orientation } = utils;
 
 const hideClientControlledUI = () => {
-  game.trigger('hudnav--navigate', 'lockui');
+  game.trigger('navigate', 'lockui');
 };
 
 export default {
@@ -56,7 +56,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          game.trigger('hudnav--navigate', 'console');
+          game.trigger('navigate', 'console');
         },
       },
       {
@@ -70,7 +70,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          game.trigger('hudnav--navigate', 'gamemenu'),
+          game.trigger('navigate', 'gamemenu'),
           hideClientControlledUI();
         },
       },
@@ -85,7 +85,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          game.trigger('hudnav--navigate', 'building');
+          game.trigger('navigate', 'building');
           game.triggerKeyAction(game.keyActions.UIToggleBuildingMode);
         },
       },
@@ -100,7 +100,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          game.trigger('hudnav--navigate', 'character');
+          game.trigger('navigate', 'character');
           hideClientControlledUI();
         },
       },
@@ -115,8 +115,8 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          game.trigger('hudnav--navigate', 'equippedgear-left');
-          game.trigger('hudnav--navigate', 'inventory-right');
+          game.trigger('navigate', 'equippedgear-left');
+          game.trigger('navigate', 'inventory-right');
           hideClientControlledUI();
         },
       },
@@ -131,8 +131,8 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          game.trigger('hudnav--navigate', 'equippedgear-left');
-          game.trigger('hudnav--navigate', 'inventory-right');
+          game.trigger('navigate', 'equippedgear-left');
+          game.trigger('navigate', 'inventory-right');
           hideClientControlledUI();
         },
       },
@@ -147,7 +147,7 @@ export default {
       //   ),
       //   hidden: false,
       //   onClick: () => {
-      //     game.trigger('hudnav--navigate', 'spellbook');
+      //     game.trigger('navigate', 'spellbook');
       //     client.PlaySoundEvent(soundEvents.PLAY_UI_SPELLBOOK_OPEN);
       //     client.ShowUI('spellbook');
       //   },
@@ -163,7 +163,7 @@ export default {
       //   ),
       //   hidden: false,
       //   onClick: () => {
-      //     game.trigger('hudnav--navigate', 'skillbuilder');
+      //     game.trigger('navigate', 'skillbuilder');
       //     client.ShowUI('ability-builder');
       //   },
       // },
@@ -178,7 +178,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          game.trigger('hudnav--navigate', 'crafting');
+          game.trigger('navigate', 'crafting');
         },
       },
       {
@@ -206,7 +206,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          game.trigger('hudnav--navigate', 'gameinfo');
+          game.trigger('navigate', 'gameinfo');
         },
       },
       {
@@ -234,7 +234,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          game.trigger('hudnav--navigate', 'map');
+          game.trigger('navigate', 'map');
         },
       },
       // {
@@ -248,7 +248,7 @@ export default {
       //   ),
       //   hidden: false,
       //   onClick: () => {
-      //     game.trigger('hudnav--navigate', 'social');
+      //     game.trigger('navigate', 'social');
       //     hideClientControlledUI();
       //   },
       // },
@@ -263,7 +263,7 @@ export default {
       //   ),
       //   hidden: true,
       //   onClick: () => {
-      //     game.trigger('hudnav--navigate', 'plotcontrol');
+      //     game.trigger('navigate', 'plotcontrol');
       //   },
       // },
       {
@@ -291,7 +291,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          game.trigger('hudnav--navigate', 'scenario-results');
+          game.trigger('navigate', 'scenario-results');
         },
       },
       {
@@ -305,7 +305,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          game.trigger('hudnav--navigate', 'progression');
+          game.trigger('navigate', 'progression');
         },
       },
       // {
@@ -319,7 +319,7 @@ export default {
       //   ),
       //   hidden: false,
       //   onClick: () => {
-      //     game.trigger('hudnav--navigate', 'chat');
+      //     game.trigger('navigate', 'chat');
       //   }
       // },
       {
@@ -333,7 +333,7 @@ export default {
         ),
         hidden: false,
         onClick: () => {
-          game.trigger('hudnav--navigate', 'ui');
+          game.trigger('navigate', 'ui');
         },
       },
       // {
@@ -347,7 +347,7 @@ export default {
       //   ),
       //   hidden: false,
       //   onClick: () => {
-      //     game.trigger('hudnav--navigate', 'reset');
+      //     game.trigger('navigate', 'reset');
       //   },
       // },
       {

@@ -157,7 +157,12 @@ class HealthBarView extends React.Component<HealthBarViewProps, HealthBarViewSta
 
     const isLeader = isGroupMemberState(this.props.playerState) ? this.props.playerState.isLeader : false;
     return (
-      <Container shouldShake={this.props.shouldShake} isAlive={playerState.isAlive} scale={scale}>
+      <Container
+        shouldShake={this.props.shouldShake}
+        isAlive={playerState.isAlive}
+        scale={scale}
+        data-input-group='block'
+      >
         <NameContainer scale={scale}>
           <Name scale={scale}>{playerState.name}{isLeader && <LeaderIcon />}</Name>
         </NameContainer>

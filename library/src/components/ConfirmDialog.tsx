@@ -34,6 +34,7 @@ const Container = styled('div')`
   align-items: center;
   cursor: default;
   background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1;
 `;
 
 const Dialog = styled('div')`
@@ -42,6 +43,7 @@ const Dialog = styled('div')`
   min-height: 100px;
   display: flex;
   flex-direction: column;
+  z-index: 1;
 `;
 
 const Content = styled('div')`
@@ -86,7 +88,7 @@ export interface ConfirmDialogStyle {
 export interface ConfirmDialogProps<ContentProps> {
   onConfirm: () => any;
   onCancel: () => any;
-  // content: (props: ContentProps) => JSX.Element;
+  content: (props: ContentProps) => JSX.Element;
   cancelOnClickOutside?: boolean;
   contentProps?: ContentProps;
   styles?: Partial<ConfirmDialogStyle>;
@@ -122,8 +124,7 @@ export class ConfirmDialog<ContentProps> extends React.Component<ConfirmDialogPr
             <Container style={customStyles.container}>
               <Dialog style={customStyles.dialog} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseleave}>
                 <Content style={customStyles.content}>
-                  {this.props.children}
-                  {/* <this.props.content {...this.props.contentProps} /> */}
+                  {this.props.content(this.props.contentProps)}
                 </Content>
                 <Buttons style={customStyles.buttons}>
                   <ConfirmButton style={customStyles.confirmButton} onClick={this.confirm}>

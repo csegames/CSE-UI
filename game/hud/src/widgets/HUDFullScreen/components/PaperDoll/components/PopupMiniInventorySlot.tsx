@@ -86,7 +86,6 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
       newItem: inventoryItemDataTransfer,
       willEquipTo: this.props.gearSlots,
     };
-    game.selfPlayerState.equipItem(item.id);
     game.trigger(eventNames.onDehighlightSlots);
     game.trigger(eventNames.onEquipItem, payload);
   }

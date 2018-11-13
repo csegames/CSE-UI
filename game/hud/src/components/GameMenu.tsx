@@ -132,7 +132,7 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
 
   public render() {
     return this.state.visible ? (
-      <OuterContainer>
+      <OuterContainer data-input-group='block'>
         <MenuTitle><h6>Menu</h6></MenuTitle>
         <Container>
           <CloseButton onClick={this.fireVisibilityEvent} className={CloseButtonPosition} />
@@ -159,12 +159,12 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
         this.fireVisibilityEvent();
       }
     });
-    game.on('hudnav--navigate', this.handleVisibilityEvent);
+    game.on('navigate', this.handleVisibilityEvent);
   }
 
   private onOptionsClick = () => {
-    game.trigger('hudnav--navigate', 'settings');
-    game.trigger('hudnav--navigate', 'gamemenu');
+    game.trigger('navigate', 'gamemenu');
+    game.trigger('navigate', 'settings');
   }
 
   private onQuitGameClick = () => {
@@ -188,7 +188,7 @@ export class GameMenu extends React.Component<GameMenuProps, GameMenuState> {
   }
 
   private fireVisibilityEvent = () => {
-    game.trigger('hudnav--navigate', 'gamemenu');
+    game.trigger('navigate', 'gamemenu');
   }
 }
 

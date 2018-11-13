@@ -17,6 +17,8 @@ declare global {
      */
     name: string;
 
+    displayName: string;
+
     /**
      * Used for sorting displayed options into basic categories
      */
@@ -46,7 +48,7 @@ declare global {
    * Select option defines a set of values that the user can select from, typically displayed using a list select
    */
   interface SelectOption extends BaseOption<SelectValue> {
-    selectValues: SelectValue[];
+    selectValues: ArrayMap<SelectValue>;
   }
 
   interface SelectValue {
@@ -65,9 +67,9 @@ declare global {
   enum OptionKind {
     Boolean = 0,
     IntRangeOption = 1,
-    FloatRangeOption = 1,
-    DoubleRangeOption = 1,
-    Select = 2,
+    FloatRangeOption = 2,
+    DoubleRangeOption = 2,
+    Select = 3,
   }
 
   enum OptionCategory {
@@ -92,9 +94,9 @@ declare global {
 enum OptionKind {
   Boolean = 0,
   IntRangeOption = 1,
-  FloatRangeOption = 1,
-  DoubleRangeOption = 1,
-  Select = 2,
+  FloatRangeOption = 2,
+  DoubleRangeOption = 2,
+  Select = 3,
 }
 window.OptionKind = OptionKind;
 

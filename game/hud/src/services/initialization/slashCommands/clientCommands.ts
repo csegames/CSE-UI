@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import { registerSlashCommand } from '@csegames/camelot-unchained';
-import { parseArgs, systemMessage } from './utils';
+import { parseArgs } from './utils';
 
 export default () => {
 
@@ -24,7 +24,7 @@ export default () => {
         const red = argv._.length > 2 ? argv._[2] : 100;
         const green = argv._.length > 3 ? argv._[3] : 100;
         const blue = argv._.length > 4 ? argv._[4] : 100;
-        game.plot.dropLight(intensity, radius, red, green, blue);
+        game.dropLight.drop(intensity, radius, red, green, blue);
         return;
       }
 
@@ -33,28 +33,21 @@ export default () => {
       const red = argv.red > 2 ? argv.red : 100;
       const green = argv.green > 3 ? argv.green : 100;
       const blue = argv.blue > 4 ? argv.blue : 100;
-      game.plot.dropLight(intensity, radius, red, green, blue);
+      game.dropLight.drop(intensity, radius, red, green, blue);
     });
 
   /**
    * Remove the closest dropped light to the player
    */
   registerSlashCommand('removelight', 'removes the closest dropped light to the player', (params: string = '') => {
-    game.plot.removeLight();
+    game.dropLight.removeLast();
   });
 
   /**
    * Remove all lights placed with the drop light command
    */
   registerSlashCommand('resetlights', 'removes all dropped lights from the world', (params: string = '') => {
-    game.plot.resetLights();
-  });
-
-  /**
-   * Count all the placed blocks in the world
-   */
-  registerSlashCommand('countblocks', 'count all placed blocks in the world.', () => {
-    setTimeout(() => systemMessage(`There are ${game.plot.countBlocks()} blocks in this world.`), 1000);
+    game.dropLight.clearAll();
   });
 
   /**
@@ -68,7 +61,7 @@ export default () => {
       if (params.length === 0) return;
       const argv = parseArgs(params);
       if (argv._.length >= 2) {
-        game.plot.replaceMaterials(argv._[0], argv._[1]);
+        game.building.replaceMaterialsAsync(argv._[0], argv._[1], false);
       }
       return;
     });
@@ -78,7 +71,7 @@ export default () => {
       if (params.length === 0) return;
       const argv = parseArgs(params);
       if (argv._.length >= 2) {
-        game.plot.replaceShapes(argv._[0], argv._[1]);
+        game.building.replaceShapesAsync(argv._[0], argv._[1], false);
       }
       return;
     });
@@ -88,7 +81,7 @@ export default () => {
       if (params.length === 0) return;
       const argv = parseArgs(params);
       if (argv._.length >= 2) {
-        game.plot.replaceMaterialsInSelection(argv._[0], argv._[1]);
+        game.building.replaceMaterialsAsync(argv._[0], argv._[1], true);
       }
       return;
     });
@@ -98,7 +91,7 @@ export default () => {
       if (params.length === 0) return;
       const argv = parseArgs(params);
       if (argv._.length >= 2) {
-        game.plot.replaceShapesInSelection(argv._[0], argv._[1]);
+        game.building.replaceShapesAsync(argv._[0], argv._[1], true);
       }
       return;
     });

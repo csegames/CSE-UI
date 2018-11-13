@@ -70,19 +70,7 @@
       "check-accessor"
     ],
     "adjacent-overload-signatures": true,
-    "member-ordering": [
-      true,
-      {
-        "order": [
-          "static-field",
-          "instance-field",
-          "constructor",
-          "public-instance-method",
-          "protected-instance-method",
-          "private-instance-method"
-        ]
-      }
-    ],
+    "member-ordering": false,
     "max-line-length": [
       true,
       125

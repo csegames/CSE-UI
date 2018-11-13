@@ -149,7 +149,7 @@ export default () => {
     if (consoleLogTimeout) {
       window.clearTimeout(consoleLogTimeout);
       consoleLogTimeout = window.setTimeout(() => {
-        game.trigger('system_message', batchedConsoleLogs);
+        game.trigger('systemMessage', batchedConsoleLogs);
         batchedConsoleLogs = [];
         consoleLogTimeout = null;
       }, 500);
@@ -157,7 +157,7 @@ export default () => {
     }
 
     consoleLogTimeout = window.setTimeout(() => {
-      game.trigger('system_message', text);
+      game.trigger('systemMessage', text);
       consoleLogTimeout = null;
       batchedCombatLogs = [];
     }, 500);

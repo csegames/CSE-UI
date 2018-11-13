@@ -8,8 +8,8 @@ import yargs from 'yargs-parser';
 export const parseArgs = (args: string): any => yargs(args);
 export const systemMessage = (message: string | Object): void => {
   if (typeof message === 'string') {
-    game.trigger('system_message', message);
+    game.trigger('systemMessage', message);
   } else {
-    game.trigger('system_message', JSON.stringify(message));
+    game.trigger('systemMessage', JSON.stringify(message));
   }
 };

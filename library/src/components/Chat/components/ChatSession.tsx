@@ -348,7 +348,7 @@ class ChatSession {
   }
 
   private internalConnect(login: LoginInfo) {
-    game.on('system_message', (msg: string) => this.onchat({ type: messageType.SYSTEM, message: msg }));
+    game.on('systemMessage', (msg: string) => this.onchat({ type: messageType.SYSTEM, message: msg }));
     game.on('combatlog_message', (msg: string) => this.onchat({ type: messageType.COMBAT_LOG, message: msg }));
 
     if (!this.client) {

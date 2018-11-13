@@ -44,7 +44,7 @@ class Building extends React.Component<BuildingProps, BuildingState> {
   }
 
   public componentDidMount() {
-    game.on('hudnav--navigate', (name: string) => {
+    game.on('navigate', (name: string) => {
       if (name === 'building') {
         this.setState((state, props) => {
           if (state.visible) return { visible: false };

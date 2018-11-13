@@ -12,4 +12,11 @@ export default () => {
   registerSlashCommand('reloadui', 'reload the ui, or a single module if a name is provided', () => {
     game.reloadUI();
   });
+
+  /**
+   * Enables console debugging for the UI
+   */
+  registerSlashCommand('debugui', 'Toggle UI debug logging', () => {
+    _devGame.debug = !_devGame.debug;
+  });
 };

@@ -17,7 +17,7 @@ export const DEFAULT_MATERIAL: Material = {
   id: -1,
   icon: '',
   tags: ['default'],
-  blocks: [],
+  blocks: {},
 } as Material;
 
 export function initialize(dispatch: (action: any) => void) {

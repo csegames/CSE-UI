@@ -8,12 +8,8 @@ import { utils } from '@csegames/camelot-unchained';
 import BuildingEventTopics from './BuildingEventTopics';
 
 function run(emitter: utils.EventEmitter, topic: string) {
-  let mode = game.plot.buildingMode;
-  game.plot.onUpdated(() => {
-    if (mode !== game.plot.buildingMode) {
-      mode = game.plot.buildingMode;
-      emitter.emit(topic, { mode });
-    }
+  game.onBuildingModeChanged((mode) => {
+    emitter.emit(topic, { mode });
   });
 }
 

@@ -202,7 +202,7 @@ class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindow
     this.props.onMyTradeItemsChange([]);
     this.onTheirTradeItemsChange([]);
 
-    game.trigger('hudnav--navigate', 'trade', false);
+    game.trigger('navigate', 'trade', false);
     this.sendCompleteMessage(reason);
   }
 

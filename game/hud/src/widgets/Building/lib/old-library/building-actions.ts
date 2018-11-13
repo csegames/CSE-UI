@@ -5,7 +5,7 @@
  */
 
 export function changeMode(mode: BuildingMode) {
-  game.plot.setBuildingMode(mode);
+  game.building.setModeAsync(mode);
 }
 
 export function commit() {

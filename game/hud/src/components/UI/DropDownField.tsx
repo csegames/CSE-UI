@@ -57,6 +57,7 @@ interface DropDownProps<TValue> {
   items: TValue[];
   selected: TValue;
   onSelect: (item: TValue) => void;
+  renderItem?: (item: TValue) => JSX.Element;
 }
 interface DropDownState {
   open: boolean;
@@ -73,14 +74,14 @@ class DropDown<TValue> extends React.PureComponent<DropDownProps<TValue>, DropDo
     return (
       <ListBoxContainer>
         <ListBox onClick={this.toggleOpen}>
-          {selected}
+          {this.props.renderItem ? this.props.renderItem(selected) : selected + ''}
           <i className={`fa ${ open ? 'fa-caret-down' : 'fa-caret-up' }`}></i>
         </ListBox>
         { open &&
           <ListItems>
             { items.map((item, index) =>
               <ListItem key={index} onClick={(e: React.MouseEvent) => this.selectItem(e, item)}>
-                {item}
+                {this.props.renderItem ? this.props.renderItem(item) : item + ''}
               </ListItem>,
             )}
           </ListItems>
@@ -117,7 +118,9 @@ export class DropDownField extends React.Component<DropDownFieldProps, DropDownF
         <Field style={{ width: '15%' }}>
         <DropDown
           selected={selectedItem} items={items}
-          onSelect={value => onSelectItem(value)}/>
+          onSelect={value => onSelectItem(value)}
+          renderItem={item => <p>{item.description}</p>}
+          />
         </Field>
       </Box>
     );

@@ -43,7 +43,7 @@ export class ProgressionAlertView extends React.Component<Props, State> {
   }
 
   private onOpenProgressionClick = () => {
-    game.trigger('hudnav--navigate', 'progression', true);
+    game.trigger('navigate', 'progression', true);
     this.props.remove(this.props.alert);
   }
 

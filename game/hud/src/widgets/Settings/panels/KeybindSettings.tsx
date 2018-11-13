@@ -11,7 +11,7 @@ import { ConfirmDialog } from '@csegames/camelot-unchained/lib/components/Confir
 import { Store } from '@csegames/camelot-unchained/lib/utils/local-storage';
 
 import { SettingsPanel } from 'widgets/Settings/components/SettingsPanel';
-import { KeybindRow, spacify } from 'widgets/Settings/components/KeybindRow';
+import { KeybindRow } from 'widgets/Settings/components/KeybindRow';
 
 import { Box } from 'UI/Box';
 import { Field } from 'UI/Field';
@@ -21,14 +21,6 @@ import { Load } from 'widgets/Settings/components/Load';
 import * as CSS from 'lib/css-helper';
 import * as CONFIG from 'components/UI/config';
 
-import { Key } from 'widgets/Settings/components/Key';
-
-const Bind = styled('span')`
-  background-color: rgba(128,128,128,0.1);
-  border: 1px solid rgba(128,128,128,0.1);
-  margin: 2px 0 2px 3px;
-  padding: 0 3px;
-`;
 
 const KeyBindsSearchBar = styled('div')`
   ${CSS.IS_ROW} ${CSS.DONT_GROW}
@@ -83,11 +75,6 @@ const ListeningTitle = styled('div')`
   text-align: center;
 `;
 
-const ListeningKey = styled('div')`
-  text-align: center;
-  font-style: italic;
-`;
-
 const InstructionsText = styled('div')`
   margin-top: 20px;
   text-align: center;
@@ -97,34 +84,6 @@ const ListeningPopup = styled('div')`
   width: 400px;
   height: 250px;
   padding: 20px;
-`;
-
-const ConfirmBind = styled('div')`
-  padding: 20px;
-`;
-
-const ConfirmBindingText = styled('span')`
-  text-align: center;
-  font-size: 1.2em;
-`;
-
-const Clashed = styled('div')`
-  width: 400px;
-  height: 250px;
-  padding: 20px;
-  text-align: center;
-`;
-
-const ClashContent = styled('div')`
-  ${CSS.IS_COLUMN} ${CSS.DONT_GROW}
-  ${CSS.HORIZONTALLY_CENTERED}
-  min-height: 26px;
-  margin-right: 5px;
-  line-height: 26px;
-  .clash-key {
-    align-self: center;
-    pointer-events: none;
-  }
 `;
 
 const Error = styled('div')`
@@ -187,30 +146,8 @@ export const ModalButton = styled('div')`
   }
 `;
 
-/**
- * Check if there are any conflicts with other Keybinds
- * @param checkID ID of Keybind we are attempting to apply the Binding to
- * @param checkBind Binding value we wish to check against
- * @return {Keybind[]} Any keybinds that share the same Binding value as the ones to check
- */
-function checkForConflicts(checkID: number, checkBind: Binding): Keybind[] {
-  const sameAs: Keybind[] = [];
-  game.keybinds.forEach((keybind) => {
-    if (keybind.id === checkID) return;
-
-    keybind.binds.forEach((bind) => {
-      if (bind.value === checkBind.value) {
-        sameAs.push(keybind);
-      }
-    });
-  });
-  return sameAs;
-}
-
 enum KeybindMode {
   Idle,
-  ListeningForKey,
-  ConfirmBind,
   Save,
   Load,
   ConfirmReset,
@@ -225,26 +162,20 @@ interface State {
   searchText: string;
   error: string;
 
-  selectedKeybind: Keybind;
-  // Index into the selectedKeybind binds property we are setting
-  selectedKeybindIndex: number;
-
-  // Binding we received from the client after listening for binds
-  activeBinding: Binding;
-
   // If setName contains a value, then a keybind set is loaded
   setName: string;
+
+  // Binding changes waiting to be applied
+  bindingQueue: ObjectMap<{
+    keybindID: number;
+    index: number;
+    value: number;
+  }>;
 }
 
 export class KeybindSettings extends React.PureComponent<Props, State> {
 
   private listenPromise: CancellablePromise<Binding> = null;
-
-  /**
-   * Fuse - fuzzy searching library, uses this property for search that will
-   * return an array of keybinds that fuzzy match search terms
-   */
-  private fuse: Fuse;
 
   /**
    * Store class is an interface to localStorage with prefixed keys
@@ -258,23 +189,10 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
     this.state = {
       mode: KeybindMode.Idle,
       searchText: '',
-      selectedKeybind: null,
-      selectedKeybindIndex: -1,
-      activeBinding: null,
       setName: '',
       error: '',
+      bindingQueue: {},
     };
-    this.fuse = new Fuse(game.keybinds as any[], {
-      caseSensitive: false,
-      shouldSort: true,
-      keys: [{
-        name: 'description',
-        weight: 0.7,
-      }, {
-        name: 'category',
-        weight: 0.3,
-      }],
-    });
     this.store = new Store('cse-keybinds_');
   }
 
@@ -295,14 +213,6 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
         { this.renderSearchBar() }
         { this.renderKeyBinds() }
         { this.renderModal() }
-        {/* { listening ?
-          <ListeningModal
-            listening={listening}
-            clearBind={this.clearBind}
-            toggleRebind={this.toggleRebind}
-          /> : null
-        }
-        { clash ? <ClashModal clash={clash} onResolveClash={this.onResolveClash} /> : null } */}
       </SettingsPanel>
     );
   }
@@ -315,7 +225,9 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
         </Field>
         <Field className='expand'>
           <Box padding={false} style={{ margin: 0 }}>
-            <SearchBox spellcheck={false} placeholder='Search...'
+            <SearchBox
+              spellcheck={false}
+              placeholder='Search...'
               value={this.state.searchText}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 // because our keys don't have spaces in, we strip spaces from the search
@@ -340,81 +252,39 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
   }
 
   private renderKeyBinds = () => {
-    const matchingBinds = this.fuse.search(this.state.searchText.replace(/ /g, '').toLowerCase()) as Keybind[];
+    let binds = Object.values(game.keybinds);
+    if (this.state.searchText) {
+      const fuse = new Fuse(binds, {
+        caseSensitive: false,
+        shouldSort: true,
+        keys: [{
+          name: 'description',
+          weight: 0.7,
+        }, {
+          name: 'category',
+          weight: 0.3,
+        }],
+      });
+      binds = fuse.search(this.state.searchText.replace(/ /g, '').toLowerCase()) as Keybind[];
+    }
     return (
       <KeyBindsContainer className='cse-ui-scroller-thumbonly'>
         {
-          matchingBinds.map(
-            keybind => (<KeybindRow key={keybind.id} keybind={keybind} onRequestBind={this.onRequestBinding}/>))
+          binds.map(kb =>
+          <KeybindRow
+            key={kb.id}
+            keybind={kb as Keybind}
+            bindingQueue={this.state.bindingQueue}
+            requestBind={this.onRequestBinding}
+          />)
         }
       </KeyBindsContainer>
     );
   }
 
   private renderModal = () => {
+    console.log('modal state ' + KeybindMode[this.state.mode]);
     switch (this.state.mode) {
-      case KeybindMode.ListeningForKey: {
-        const { selectedKeybind, selectedKeybindIndex } = this.state;
-        return (
-          <ConfirmDialog
-            onConfirm={() => {
-              game.clearKeybind(selectedKeybind.id, selectedKeybindIndex);
-              this.resetToIdle();
-            }}
-            onCancel={() => {
-              this.listenPromise.cancel();
-              this.resetToIdle();
-            }}
-            confirmButtonContent={'Unbind'}
-            cancelButtonContent={'Cancel'}
-          >
-            <ListeningPopup>
-              <ListeningTitle>Press any key</ListeningTitle>
-              <ListeningKey>Binding: {spacify(selectedKeybind.description)}</ListeningKey>
-              <InstructionsText>
-                Press the key / key combination you wish to bind to {selectedKeybind.description}.
-              </InstructionsText>
-            </ListeningPopup>
-          </ConfirmDialog>
-        );
-      }
-      case KeybindMode.ConfirmBind: {
-        const { selectedKeybind, selectedKeybindIndex, activeBinding } = this.state;
-        const conflicts = checkForConflicts(selectedKeybind.id, activeBinding);
-        return (
-          <ConfirmDialog
-            confirmButtonContent={'Yes'}
-            cancelButtonContent={'Cancel'}
-            onConfirm={() => game.setKeybind(selectedKeybind.id, selectedKeybindIndex, activeBinding)}
-            onCancel={this.resetToIdle}
-          >
-            <ConfirmBind>
-              <ConfirmBindingText>
-                Bind&nbsp;
-                <Key className='clash-key'>{activeBinding.name}</Key>
-                &nbsp;to {selectedKeybind.description}?
-              </ConfirmBindingText>
-              {
-                conflicts.length > 1 ?
-                <Clashed>
-                <ClashContent>
-                  Warning! <Key className='clash-key'>{activeBinding.name}</Key> is also bound to
-                  <div>
-                    {conflicts.map((keybind, index) => (
-                      <span key={index}>
-                        <Bind>{spacify(keybind.description)}</Bind>
-                        {index !== conflicts.length - 1 ? ', ' : ''}
-                      </span>
-                    ))}
-                  </div>
-                  <i>Do you still want to rebind?</i>
-                </ClashContent>
-                </Clashed> : null
-              }
-            </ConfirmBind>
-          </ConfirmDialog>
-        );
-      }
       case KeybindMode.Save:
         return <SaveAs label='Save keybinds as' saveAs={this.saveAs} onClose={this.resetToIdle}/>;
       case KeybindMode.Load:
@@ -424,7 +294,7 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
           onRemove={this.deleteSet}
           onClose={this.resetToIdle}
         />;
-      case KeybindMode.ListeningForKey: {
+      case KeybindMode.ConfirmReset: {
         return (
           <ConfirmDialog
             onConfirm={() => {
@@ -436,6 +306,7 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
             }}
             confirmButtonContent={'Yes'}
             cancelButtonContent={'Cancel'}
+            content={() => <p></p>}
           >
             <ListeningPopup>
               <ListeningTitle>Reset Keybinds</ListeningTitle>
@@ -453,36 +324,31 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
   private resetToIdle = (error: string = '') => {
     this.setState({
       mode: KeybindMode.Idle,
-      selectedKeybind: null,
-      selectedKeybindIndex: -1,
-      activeBinding: null,
       error,
     });
   }
 
-  private onRequestBinding = (keybind: Keybind, index: number) => {
-    this.listenPromise = game.listenForKeyBindingAsync();
-    this.listenPromise.then(this.handleBindingResponse).catch(this.handleListenError);
-    this.setState({
-      mode: KeybindMode.ListeningForKey,
-      selectedKeybind: keybind,
-      selectedKeybindIndex: index,
-    });
+  private onRequestBinding = (keybindID: number, index: number, value: number) => {
+    this.setState(state => ({
+      ...state,
+      bindingQueue: {
+        ...state.bindingQueue,
+        [`${keybindID}-${index}`]: {
+          keybindID,
+          index,
+          value,
+        }},
+    }));
   }
 
-  private handleBindingResponse = (binding: Binding) => {
-    this.setState({
-      mode: KeybindMode.ConfirmBind,
-      activeBinding: binding,
-    });
-  }
-
-  private handleListenError = (error: { errorMessage: string }) => {
-    this.resetToIdle(error.errorMessage);
-  }
-
-  private onAction = (args: { id: 'default' | 'save' | 'load' | 'cancel' }) => {
+  private onAction = (args: { id: 'default' | 'save' | 'load' | 'cancel' | 'apply'}) => {
     switch (args.id) {
+      case 'apply':
+        Object.values(this.state.bindingQueue).forEach(b => game.setKeybind(b.keybindID, b.index, b.value));
+        this.setState({
+          bindingQueue: {},
+        });
+        break;
       case 'default':
         this.setState({
           mode: KeybindMode.ConfirmReset,
@@ -495,7 +361,7 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
         break;
       case 'load':
         this.setState({
-          mode: KeybindMode.Save,
+          mode: KeybindMode.Load,
         });
         break;
       case 'cancel':
@@ -532,20 +398,19 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
   private loadSet = (name: string) => {
     if (game.debug) console.log('loading keybind set ' + name);
 
-    const set = this.store.get<Keybind[]>(name);
+    const set = this.store.get<ArrayMap<Keybind>>(name);
     if (!set) {
       this.resetToIdle('failed to load set from local storage.');
       return;
     }
 
-    const result = game.setKeybinds(set);
+    Object.values(set).forEach((kb) => {
+      kb.binds.forEach((b, index) => {
+        game.setKeybind(kb.id, index, b.value);
+      });
+    });
 
-    if (result.success) {
-      this.resetToIdle();
-      return;
-    }
-
-    this.resetToIdle((result as Failure).reason);
+    this.resetToIdle();
   }
 
   private deleteSet = (name: string) => {

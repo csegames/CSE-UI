@@ -98,21 +98,21 @@ export class InteractiveAlertView extends React.Component<Props, State> {
               switch (a.category) {
                 case 'Trade': {
                   return (
-                    <Container key='Trade'>
+                    <Container key='Trade' data-input-group='block'>
                       <TradeAlertView key={i} alert={a as TradeAlert} remove={this.removeAlert} />
                     </Container>
                   );
                 }
                 case 'Group': {
                   return (
-                    <Container key='Group'>
+                    <Container key='Group' data-input-group='block'>
                       <GroupAlertView key={i} alert={a as GroupAlert} remove={this.removeAlert} />
                     </Container>
                   );
                 }
                 case 'Progression': {
                   return (
-                    <Container key='Progression'>
+                    <Container key='Progression' data-input-group='block'>
                       <ProgressionAlertView key={i} alert={a as ProgressionAlert} remove={this.removeAlert} />
                     </Container>
                   );

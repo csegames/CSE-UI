@@ -23,11 +23,7 @@ declare global {
     };
 
     // status -- null / undefined if no status on entity
-    statuses: [{
-      id: number;
-    } & Timing];
-
-
+    statuses: ArrayMap<{ id: number; } & Timing>;
   }
 
   interface SiegeStateModel extends EntityStateModel {
@@ -51,8 +47,8 @@ declare global {
     classID: Archetype;
     stamina: CurrentMax;
     blood: CurrentMax;
-    characterID: string;
-     /**
+
+    /**
      * EntityID of an entity this Player is controlling, if any.
      * ie. a siege engine, vehicle, creature ect...
      */
@@ -61,7 +57,7 @@ declare global {
     // health per body part, ordered according to the bodyParts enum found
     // in ../constants/bodyParts.ts -- TODO: use an enum from C# generated
     // through webAPI definitions.ts file
-    health: Health[];
+    health: ArrayMap<Health>;
   }
 
   type AnyEntityStateModel = PlayerStateModel | SiegeStateModel | KinematicStateModel;
@@ -84,7 +80,7 @@ function defaultEntityStateModel(): EntityStateModel {
     name: 'unknown',
     isAlive: false,
     position: { x: NaN, y: NaN, z: NaN },
-    statuses: [] as any,
+    statuses: {},
   };
 }
 
@@ -110,8 +106,14 @@ export function defaultPlayerStateModel(): PlayerStateModel {
     race: Race.HumanMaleA,
     gender: Gender.None,
     classID: Archetype.Blackguard,
-    characterID: '',
-    health: [defaultHealth(),defaultHealth(),defaultHealth(),defaultHealth(),defaultHealth(),defaultHealth()],
+    health: {
+      0: defaultHealth(),
+      1: defaultHealth(),
+      2: defaultHealth(),
+      3: defaultHealth(),
+      4: defaultHealth(),
+      5: defaultHealth(),
+    },
     stamina: defaultStamAndBlood(),
     blood: defaultStamAndBlood(),
   };
@@ -128,13 +130,54 @@ export function defaultSiegeStateModel(): SiegeStateModel {
 export const EntityState_Update = 'entityState.update';
 
 function onReceiveEntityStateUpdate(state: AnyEntityState) {
+  if (game.debug) console.log(`received entityState.update with model | ${JSON.stringify(state)}`);
 
-  if (!_devGame.entities[state.entityID]) {
+  if (typeof _devGame.entities[state.entityID] === 'undefined') {
     _devGame.entities[state.entityID] = state;
     _devGame.entities[state.entityID].updateEventName = EntityState_Update;
     // init Updatable.
     initUpdatable(state);
   }
+
+  if (state.entityID === game.selfPlayerState.entityID) {
+    for (const key in state) {
+      if (typeof(state[key]) === 'function') {
+        continue;
+      }
+      if (key === 'updateEventName' || key === 'isReady') {
+        continue;
+      }
+      _devGame.selfPlayerState[key] = state[key];
+    }
+    executeUpdateCallbacks(game.selfPlayerState);
+  }
+
+  if (state.entityID === game.friendlyTargetState.entityID) {
+    for (const key in state) {
+      if (typeof(state[key]) === 'function') {
+        continue;
+      }
+      if (key === 'updateEventName' || key === 'isReady') {
+        continue;
+      }
+      _devGame.friendlyTargetState[key] = state[key];
+    }
+    executeUpdateCallbacks(game.friendlyTargetState);
+  }
+
+  if (state.entityID === game.enemyTargetState.entityID) {
+    for (const key in state) {
+      if (typeof(state[key]) === 'function') {
+        continue;
+      }
+      if (key === 'updateEventName' || key === 'isReady') {
+        continue;
+      }
+      _devGame.enemyTargetState[key] = state[key];
+    }
+    executeUpdateCallbacks(game.enemyTargetState);
+  }
+
   executeUpdateCallbacks(_devGame.entities[state.entityID]);
 }
 

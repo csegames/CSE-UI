@@ -370,7 +370,7 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
       return (this.state[k].visible && this.state[k].maximized) ? true : p;
     }, false);
     return (
-      <Container style={{ zIndex: anyMaximized ? HUDZOrder.MaximizedDevUI : HUDZOrder.DevUI }}>
+      <Container data-input-group='block' style={{ zIndex: anyMaximized ? HUDZOrder.MaximizedDevUI : HUDZOrder.DevUI }}>
         {keys.map((k) => {
           const page = this.state[k];
           const isMaximized = page.maximized;
@@ -434,7 +434,7 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
   }
 
   public componentDidMount() {
-    game.on('hudnav--navigate', this.onToggleUIVisibility);
+    game.on('navigate', this.onToggleUIVisibility);
     game.onUpdateDevUI(this.handleUpdateDevUI);
   }
 

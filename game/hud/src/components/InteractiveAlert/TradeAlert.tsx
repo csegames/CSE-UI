@@ -22,7 +22,7 @@ export function removeTradeInvite(alertsList: IInteractiveAlert[], toRemove: Tra
 }
 
 function openTradeWindow() {
-  game.trigger('hudnav--navigate', 'trade', true);
+  game.trigger('navigate', 'trade', true);
 }
 
 export function handleNewTradeAlert(alertsList: IInteractiveAlert[], alert: TradeAlert) {

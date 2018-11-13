@@ -78,6 +78,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     return (
       <FullScreenContext.Provider value={this.state}>
         <div
+          data-input-group='block'
           style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
           <BackgroundImage className={'left'} />
           <BackgroundImage className={'right'} />
@@ -103,7 +104,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   public componentDidMount() {
-    this.navigateListener = game.on('hudnav--navigate', this.handleNavEvent);
+    this.navigateListener = game.on('navigate', this.handleNavEvent);
     this.shouldKeydownListener = game.on('hudfullscreen-shouldListenKeydown', this.handleShouldKeydownEvent);
   }
 
@@ -128,17 +129,17 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
       }
       case 'I': {
         // Open/Close inventory
-        game.trigger('hudnav--navigate', 'inventory');
+        game.trigger('navigate', 'inventory');
         break;
       }
       case 'C': {
         // Open/Close paperdoll
-        game.trigger('hudnav--navigate', 'equippedgear');
+        game.trigger('navigate', 'equippedgear');
         break;
       }
       case 'M': {
         // Open/Close map
-        game.trigger('hudnav--navigate', 'map');
+        game.trigger('navigate', 'map');
         break;
       }
       default: break;
@@ -345,7 +346,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   private onCloseFullScreen = () => {
-    game.trigger('hudnav--navigate', '');
+    game.trigger('navigate', '');
     this.setActiveTab('');
     window.removeEventListener('keydown', this.handleKeydownEvent);
     hideTooltip();

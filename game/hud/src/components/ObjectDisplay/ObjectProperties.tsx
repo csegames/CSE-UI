@@ -50,7 +50,7 @@ class StatusObject extends React.Component<Props, State> {
           onClick={this.toggleCollapsed}
         >
           <Indicator>{this.state.collapsed ? '+' : '-'}</Indicator>
-          {this.props.title.toTitleCase()}
+          {String(this.props.title).toTitleCase()}
         </Title>
         {
           this.state.collapsed ? null :

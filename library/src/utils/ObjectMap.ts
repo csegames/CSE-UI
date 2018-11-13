@@ -10,4 +10,8 @@ declare global {
   interface ObjectMap<T> {
     [key: string]: T;
   }
+
+  interface ArrayMap<T> {
+    [key: string]: T;
+  }
 }

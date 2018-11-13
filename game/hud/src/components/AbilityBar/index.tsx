@@ -43,8 +43,11 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
   public render() {
     const { apiAbilities } = this.props;
     const { clientAbilities } = this.state;
+
+    console.log(`apiAbilities: ${JSON.stringify(apiAbilities)}`);
+    console.log(`clientAbilities: ${JSON.stringify(clientAbilities)}`);
     return (
-      <Container>
+      <Container className={'ability-bar'}>
         {clientAbilities.map((clientAbility: AbilityBarItem, index: number) => {
           const abilityInfo = {
             ..._.find(apiAbilities.data, (s: ApiAbilityInfo) => s.id === clientAbility.id),
@@ -61,19 +64,24 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
 
   public componentDidMount() {
     game.abilityBarState.onUpdated(this.updateAbilities);
+
+    if (game.abilityBarState.isReady) {
+      this.updateAbilities();
+    }
   }
 
   public shouldComponentUpdate(nextProps: AbilityBarProps, nextState: AbilityBarState) {
-    return !_.isEqual(nextState.clientAbilities, this.state.clientAbilities) ||
-      !_.isEqual(nextProps.apiAbilities, this.props.apiAbilities);
+    return true;
+    // return !_.isEqual(nextState.clientAbilities, this.state.clientAbilities) ||
+    //   !_.isEqual(nextProps.apiAbilities, this.props.apiAbilities);
   }
 
   private updateAbilities = () => {
-    const sortedAbilities = game.abilityBarState.abilities.sort(this.sortByAbilityID);
+    const sortedAbilities = Object.values(game.abilityBarState.abilities).sort(this.sortByAbilityID);
 
     this.setState({ clientAbilities: sortedAbilities });
 
-    if (this.props.apiAbilities.refetch()) {
+    if (this.props.apiAbilities.refetch) {
       setTimeout(() => this.props.apiAbilities.refetch(), 50);
     }
   }

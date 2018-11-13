@@ -1,3 +1,5 @@
+import { DevGameInterface } from './GameInterface';
+
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -28,34 +30,35 @@ enum TaskStatus {
   UserCancelled,
 }
 
-export interface Task<T> {
+export interface TaskHandle {
   id: number;
-  statusCode: TaskStatus;
-  value: T;
-  reason: string;
   cancel: () => void;
 }
 
-export interface TaskResult<T> extends Task<T> {
+export interface Resolvable<T> extends TaskHandle {
   resolve: (value: T | PromiseLike<T>) => void;
   reject: (reason: any) => void;
 }
 
+interface TaskResult {
+  id: number;
+  statusCode: TaskStatus;
+  value: any;
+  reason: string;
+}
 
-export function makeClientPromise<T>(callMethod: (...args: any[]) => Task<T>) {
+export function makeClientPromise<T>(callFn: (game: DevGameInterface, ...args: any[]) => TaskHandle) {
   return function(...args: any[]) {
-    const task = callMethod(...args);
-    _devGame._activeTasks[task.id] = task as TaskResult<T>;
+    const handle = callFn(game as DevGameInterface, ...args);
+    _devGame._activeTasks[handle.id] = handle as Resolvable<T>;
     const promise =  new Promise<T>((resolve, reject) => {
-      if (_devGame._activeTasks[task.id]) {
-        _devGame._activeTasks[task.id].resolve = resolve;
-        _devGame._activeTasks[task.id].reject = reject;
+      if (_devGame._activeTasks[handle.id]) {
+        _devGame._activeTasks[handle.id].resolve = resolve;
+        _devGame._activeTasks[handle.id].reject = reject;
       }
     }) as CancellablePromise<T>;
     promise.cancel = () => {
-      if (_devGame._activeTasks[task.id]) {
-        _devGame._activeTasks[task.id].cancel();
-      }
+      engine.trigger('CancelTask', handle.id);
     };
     return promise;
   };
@@ -65,12 +68,16 @@ export function makeClientPromise<T>(callMethod: (...args: any[]) => Task<T>) {
  * Initializes client task handling
  */
 export default function() {
-  engine.on('taskComplete', (task: TaskResult<any>) => {
-    if (task.statusCode === TaskStatus.Success) {
-      task.resolve(task.value);
-    } else {
-      task.reject({ statusCode: task.statusCode, errorMessage: task.reason });
+  engine.on('taskComplete', (result: TaskResult) => {
+    if (game.debug) {
+      console.log(`taskComplete | ${JSON.stringify(result)}`);
     }
-    delete _devGame._activeTasks[task.id];
+    const resolver = _devGame._activeTasks[result.id];
+    if (result.statusCode === TaskStatus.Success) {
+      resolver.resolve && resolver.resolve(result.value);
+    } else {
+      resolver.reject && resolver.reject({ statusCode: result.statusCode, errorMessage: result.reason });
+    }
+    delete _devGame._activeTasks[resolver.id];
   });
 }

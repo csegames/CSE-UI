@@ -160,7 +160,7 @@ class Progression extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    game.on('hudnav--navigate', this.handleNav);
+    game.on('navigate', this.handleNav);
   }
 
   public componentWillUnmount() {

@@ -10,13 +10,10 @@ import BuildingEventTopics from './BuildingEventTopics';
 import * as building from '../building';
 
 function run(emitter: utils.EventEmitter, topic: string) {
-
-  game.plot.onUpdated(() => {
-    const block = game.plot.activeBlock;
-    if (block.id) {
-      const material = building.getMaterialForBlockId(block.id);
-      emitter.emit(topic, { material, block });
-    }
+  game.onSelectedBlockChanged((id) => {
+    const material = building.getMaterialForBlockId(id);
+    const block = building.getBlockForBlockId(id);
+    emitter.emit(topic, { material, block });
   });
 }
 

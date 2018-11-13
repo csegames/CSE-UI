@@ -305,7 +305,7 @@ export function initialize() {
     };
 
     // hook up to event triggers
-    game.on('hudnav--navigate', (name: string) => {
+    game.on('navigate', (name: string) => {
       switch (name) {
         case 'chat':
           return dispatch(toggleVisibility(name));

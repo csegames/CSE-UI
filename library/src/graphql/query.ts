@@ -115,7 +115,7 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
       if (result.errors) {
         // TODO log sentry error here?
         console.error(
-          'GraphQL Error:',
+          'GraphQL Server Error:',
           {
             errors: result.errors.map(getMessage).join(' '),
             query: q.query,
@@ -124,6 +124,14 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
             variables: JSON.stringify(q.variables),
           },
         );
+
+        if (game.debug) {
+          console.group('GraphQL Request');
+          console.log(JSON.stringify(opts));
+          console.log(JSON.stringify(q));
+          console.log(JSON.stringify(response));
+          console.groupEnd();
+        }
       }
       return {
         data: result.data as T,
@@ -135,7 +143,7 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
 
     // TODO log sentry error here?
     console.error(
-      'GraphQL Error:',
+      'GraphQL Request Error:',
       {
         errors: response.statusText,
         query: q.query,
@@ -144,6 +152,14 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
         variables: JSON.stringify(q.variables),
       },
     );
+
+    if (game.debug) {
+      console.group('GraphQL Request');
+      console.log(JSON.stringify(opts));
+      console.log(JSON.stringify(q));
+      console.log(JSON.stringify(response));
+      console.groupEnd();
+    }
     return errorResult(response.statusText);
 
   } catch (err) {

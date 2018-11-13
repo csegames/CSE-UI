@@ -153,36 +153,41 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
       entity: null,
     };
   }
-  public componentDidMount() {
+
+  public componentWillUnmount() {
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
+  }
+
+  public componentDidUpdate() {
     switch (this.props.for) {
       case HealthFor.Self:
         this.eventHandles.push(game.selfPlayerState.onUpdated(() => {
           try {
-            this.setState({ entity: game.selfPlayerState as SelfPlayerState });
+            this.setState({ entity: Object.assign({}, game.selfPlayerState as SelfPlayerState) });
           } catch (e) {}
         }));
         break;
 
       case HealthFor.EnemyTarget:
-        this.eventHandles.push(game.enemyTargetState.onUpdated(() => {
-          try {
-            this.setState({ entity: game.enemyTargetState as EnemyTargetState });
-          } catch (e) {}
-        }));
+        if (game.enemyTargetState.isReady) {
+          this.eventHandles.push(game.enemyTargetState.onUpdated(() => {
+            try {
+              this.setState({ entity: Object.assign({}, game.enemyTargetState as EnemyTargetState) });
+            } catch (e) {}
+          }));
+        }
         break;
 
       case HealthFor.FriendlyTarget:
-        this.eventHandles.push(game.friendlyTargetState.onUpdated(() => {
-          try {
-            this.setState({ entity: game.friendlyTargetState as FriendlyTargetState });
-          } catch (e) {}
-        }));
+        if (game.friendlyTargetState.isReady) {
+          this.eventHandles.push(game.friendlyTargetState.onUpdated(() => {
+            try {
+              this.setState({ entity: Object.assign({}, game.friendlyTargetState as FriendlyTargetState) });
+            } catch (e) {}
+          }));
+        }
         break;
     }
-  }
-
-  public componentWillUnmount() {
-    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   public shouldComponentUpdate(nextProps: SiegeHealthProps, nextState: SiegeHealthState) {
@@ -202,6 +207,9 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
         const nextControlled = next.controlledEntityID;
 
         if (thisControlled !== nextControlled) return true;
+
+
+        if (!game.entities) return false;
 
         const currentControlledEntity = game.entities[thisControlled];
         const nextControlledEntity = game.entities[nextControlled];
@@ -227,7 +235,7 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
 
     switch (this.state.entity.type) {
       case 'player': {
-        const controlled = game.entities[this.state.entity.controlledEntityID];
+        const controlled = game.entities && game.entities[this.state.entity.controlledEntityID];
         if (!controlled || controlled.type !== 'siege') return null;
         return (
           <SiegeHealthBar

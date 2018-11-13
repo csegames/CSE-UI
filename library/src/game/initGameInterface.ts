@@ -9,19 +9,21 @@ import * as graphQL from '../graphql';
 import initSignalR from '../signalR';
 
 import { createEventEmitter } from '../utils/EventEmitter';
-import { GameModel, GameInterface, GameModelTasks } from './GameInterface';
+import { GameModel, GameInterface } from './GameInterface';
 
 import initEventForwarding from './engineEvents';
 
 import initLoadingState from './GameClientModels/LoadingState';
 import initPlayerState from './GameClientModels/PlayerState';
+import initEntityState from './GameClientModels/EntityState';
 import initEnemytargetState from './GameClientModels/EnemytargetState';
 import initFriendlytargetState from './GameClientModels/FriendlytargetState';
-import initPlotState from './GameClientModels/Plot';
 import initKeyActions from './GameClientModels/KeyActions';
 import initAbilityState from './GameClientModels/AbilityState';
 import initAbilityBarState from './GameClientModels/AbilityBarState';
 import { makeClientPromise } from './clientTasks';
+
+import initCUAPIShim from './cuAPIShim';
 
 export default function(isAttached: boolean) {
   let oldEmitter = null;
@@ -37,11 +39,26 @@ export default function(isAttached: boolean) {
 
   _devGame.signalRHost = signalRHost;
 
+  _devGame.abilityStates = {};
+
   // TASKS
-  _devGame.listenForKeyBindingAsync = makeClientPromise(_devGame._cse_dev_listenForKeyBindingTask);
-  _devGame.setOptionsAsync = makeClientPromise(_devGame._cse_dev_setOptions);
-  _devGame.testOptionAsync = makeClientPromise(_devGame._cse_dev_testOption);
-  _devGame.takeScreenshotAsync = makeClientPromise(_devGame._cse_dev_takeScreenshot);
+  _devGame._activeTasks = {};
+  _devGame.listenForKeyBindingAsync = makeClientPromise(game => game._cse_dev_listenForKeyBindingTask());
+  _devGame.setOptionsAsync = makeClientPromise((game, options) => game._cse_dev_setOptions(options));
+  _devGame.testOptionAsync = makeClientPromise((game, option) => game._cse_dev_testOption(option));
+  _devGame.takeScreenshotAsync = makeClientPromise(game => game._cse_dev_takeScreenshot());
+
+  // Building API Tasks
+  _devGame.building.setModeAsync = makeClientPromise((game, mode) => game.building._cse_dev_setMode(mode));
+  _devGame.building.selectBlockAsync = makeClientPromise((game, id) => game.building._cse_dev_selectBlock(id));
+  _devGame.building.selectBlueprintAsync = makeClientPromise((game, id) => game.building._cse_dev_selectBlueprint(id));
+  _devGame.building.deleteBlueprintAsync = makeClientPromise((game, id) => game.building._cse_dev_deleteBlueprint(id));
+  _devGame.building.createBlueprintFromSelectionAsync
+    = makeClientPromise((game, name) => game.building._cse_dev_createBlueprintFromSelection(name));
+  _devGame.building.replaceMaterialsAsync
+    = makeClientPromise((game, sID, rID, inS) => game.building._cse_dev_replaceMaterials(sID, rID, inS));
+  _devGame.building.replaceShapesAsync
+    = makeClientPromise((game, sID, rID, inS) => game.building._cse_dev_replaceShapes(sID, rID, inS));
 
   // EVENTS
   _devGame._eventEmitter = oldEmitter || createEventEmitter();
@@ -53,12 +70,15 @@ export default function(isAttached: boolean) {
 
   initEventForwarding();
 
+  // Entity state
+  _devGame.entities = {};
+  initEntityState();
+
   // INIT MODELS
   initLoadingState();
   initPlayerState();
   initEnemytargetState();
   initFriendlytargetState();
-  initPlotState();
   initKeyActions();
   initAbilityState();
   initAbilityBarState();
@@ -66,6 +86,7 @@ export default function(isAttached: boolean) {
   // INIT Services
   _devGame.signalR = initSignalR();
 
+  initCUAPIShim();
 
   // READY!
   _devGame.ready = true;
@@ -83,8 +104,25 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     accessToken: 'developer',
     webAPIHost: 'https://hatcheryapi.camelotunchained.com',
     serverHost: 'hatcheryd.camelotunchained.com',
-    options: [],
-    keybinds: [],
+    options: {},
+    keybinds: {},
+
+    building: {
+      mode: BuildingMode.NotBuilding,
+      activePlotID: 'none',
+      canEditActivePlot: false,
+      activeBlockID: 0,
+      activeBlueprintID: 0,
+      activeMaterialID: 0,
+      blueprints: {},
+      materials: {},
+    },
+
+    dropLight: {
+      drop: noOp,
+      removeLast: noOp,
+      clearAll: noOp,
+    },
 
     reloadUI: noOp,
     quit: noOp,
@@ -93,7 +131,6 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     playGameSound: noOp,
 
     setKeybind: noOp,
-    setKeybinds: noOp,
     clearKeybind: noOp,
     resetKeybinds: noOp,
     resetOptions: noOp,
@@ -114,6 +151,19 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     isClientAttached: false,
     debug: false,
     apiVersion: 1,
+
+    entities: {},
+
+    building: {
+      ...model.building,
+      setModeAsync: noOp,
+      selectBlockAsync: noOp,
+      selectBlueprintAsync: noOp,
+      createBlueprintFromSelectionAsync: noOp,
+      deleteBlueprintAsync: noOp,
+      replaceMaterialsAsync: noOp,
+      replaceShapesAsync: noOp,
+    },
   });
 }
 

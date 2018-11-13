@@ -20,9 +20,7 @@ function initDefault(): FriendlyTargetState {
   return {
     ...defaultPlayerStateModel(),
 
-    characterID: '',
     position: { x: 0, y: 0, z: 0 },
-
     isReady: false,
     updateEventName: FriendlyTarget_Update,
     onUpdated: createDefaultOnUpdated(FriendlyTarget_Update),

@@ -6,8 +6,9 @@
 
 import * as webAPI from '../webAPI';
 import * as graphQL from '../graphql';
-import { Task } from './clientTasks';
+import { TaskHandle } from './clientTasks';
 import { SignalR } from '../signalR';
+import { InternalGameInterfaceExt } from './InternalGameInterfaceExt';
 
 /**
  * GameModel interface defines the structure and functionality of the global game object as presented by the game
@@ -90,18 +91,16 @@ export interface GameModel {
   /**
    * All Keybinds from the client
    */
-  keybinds: Keybind[];
+  keybinds: ArrayMap<Keybind>;
 
   /**
    * Set a keybind
    * @param {Number} id Identifier of the Keybinding to be bound
    * @param {Number} index Index of binds to set / replace with the new binding
-   * @param {Binding} bind Binding data for this key
+   * @param {NUmber} value Binding value to set
    * @returns {Success | Failure} Result whether the keybind was set
    */
-  setKeybind: (id: number, index: number, bind: Binding) => Success | Failure;
-
-  setKeybinds: (keybinds: Keybind[]) => Success | Failure & { failures: { keybind: Keybind[], error: string }[] };
+  setKeybind: (id: number, index: number, value: number) => Success | Failure;
 
   /**
    * Request that the client clear a particular key bind
@@ -118,7 +117,7 @@ export interface GameModel {
   /**
    * All options from the client
    */
-  options: GameOption[];
+  options: ArrayMap<GameOption>;
 
   /**
    * Restores options to their default values based on category
@@ -178,6 +177,21 @@ export interface GameModel {
   changeItemPlacementMode: (itemPlacementTransformMode: ItemPlacementTransformMode) => void;
 
   /* -------------------------------------------------- */
+  /* BUILDING API                                       */
+  /* -------------------------------------------------- */
+
+  building: BuildingAPIModel;
+
+  /**
+   * Drop light api
+   */
+  dropLight: {
+    drop: (brightness: number, radius: number, red: number, green: number, blue: number) => void;
+    removeLast: () => void;
+    clearAll: () => void;
+  };
+
+  /* -------------------------------------------------- */
   /* DEV COMMANDS - HATCHERY ONLY                       */
   /* -------------------------------------------------- */
 
@@ -194,20 +208,59 @@ export interface GameModel {
   _cse_dev_endTriggerKeyActionLoop: () => void;
 }
 
+interface BuildingAPIModel {
+  mode: BuildingMode;
+  activePlotID: string;
+  canEditActivePlot: boolean;
+  activeBlockID: number;
+  activeMaterialID: number;
+  activeBlueprintID: number;
+  blueprints: ArrayMap<Blueprint>;
+  materials: ArrayMap<Material>;
+}
+
+interface BuildingAPI extends BuildingAPIModel {
+  setModeAsync: (mode: BuildingMode) => CancellablePromise<Success | Failure>;
+
+  selectBlockAsync: (blockID: number) => CancellablePromise<Success | Failure>;
+  selectBlueprintAsync: (blueprintID: number) => CancellablePromise<Success | Failure>;
+
+  deleteBlueprintAsync: (blueprintID: number) => CancellablePromise<Success | Failure>;
+  createBlueprintFromSelectionAsync: (name: string) => CancellablePromise<(Success & { blueprint: Blueprint}) | Failure>;
+
+  replaceMaterialsAsync: (selectedID: number, replacementID: number, inSelection: boolean) =>
+    CancellablePromise<Success | Failure>;
+  replaceShapesAsync: (selectedID: number, replacementID: number, inSelection: boolean) =>
+    CancellablePromise<Success | Failure>;
+}
+
+interface BuildingAPIModelTasks {
+  _cse_dev_setMode: (mode: BuildingMode) => TaskHandle;
+
+  _cse_dev_selectBlock: (blockID: number) => TaskHandle;
+  _cse_dev_selectBlueprint: (blueprintID: number) => TaskHandle;
+
+  _cse_dev_deleteBlueprint: (blueprintID: number) => TaskHandle;
+  _cse_dev_createBlueprintFromSelection: (name: string) => TaskHandle;
+
+  _cse_dev_replaceMaterials: (selectedID: number, replacementID: number, inSelection: boolean) => TaskHandle;
+  _cse_dev_replaceShapes: (selectedID: number, replacementID: number, inSelection: boolean) => TaskHandle;
+}
+
 /**
  * The GameModelTasks interface defines methods that require proxy definitions for use in the UI. These are methods
  * that return client tasks which are proxied by the library into promises.
  *
  * These are in a separate interface and prefixed with '_cse_dev_' to hide the from the TypeScript API.
  */
-export interface GameModelTasks {
+interface GameModelTasks {
   /**
    * Request that the client listen for a key combination to bind a key value to.
    * @param {Number} id Identifier of the Keybinding to be bound
    * @param {Number} index Index of binds to set / replace with the new binding
    * @returns {Binding} The newly bound key information
    */
-  _cse_dev_listenForKeyBindingTask: () => Task<Binding>;
+  _cse_dev_listenForKeyBindingTask: () => TaskHandle;
 
   /**
    * Batch set of all passed in options
@@ -215,7 +268,7 @@ export interface GameModelTasks {
    * @return Whether or not the options all saved correctly
    */
   _cse_dev_setOptions: (options: GameOption[]) =>
-   Task<Success | Failure & { failures: [{ option: GameOption, reason: string }] }>;
+   TaskHandle;
 
   /**
    * Test a single option without saving it, this allows preview of changes without saving them immediately
@@ -223,14 +276,15 @@ export interface GameModelTasks {
    * @param {GameOption} option The option to test
    * @return Whether or not the option was valid to test
    */
-  _cse_dev_testOption: (option: GameOption) => Task<Success | Failure>;
+  _cse_dev_testOption: (option: GameOption) => TaskHandle;
 
   /**
    * Take a screenshot
    * @return {Screenshot} Image & Path to screenshot
    */
-  _cse_dev_takeScreenshot: () => Task<Screenshot>;
+  _cse_dev_takeScreenshot: () => TaskHandle;
 
+  building: BuildingAPI & BuildingAPIModelTasks;
 }
 
 /**
@@ -338,6 +392,17 @@ export interface GameInterface extends GameModel {
    */
   onOptionChanged: (callback: (option: GameOption) => any) => EventHandle;
 
+  onBuildingModeChanged: (callback: (mode: BuildingMode) => any) => EventHandle;
+
+  /**
+   * Called when the active plot is changed.
+   */
+  onActivePlotChanged: (callback: (plotID: string, canEdit: boolean) => any) => EventHandle;
+
+  onSelectedBlockChanged: (callback: (id: number) => any) => EventHandle;
+  onSelectedMaterialChanged: (callback: (id: number) => any) => EventHandle;
+  onSelectedBlueprintChanged: (callback: (id: number) => any) => EventHandle;
+
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */
   /* -------------------------------------------------- */
@@ -365,11 +430,6 @@ export interface GameInterface extends GameModel {
   loadingState: LoadingState;
 
   /**
-   * The state of the plot your character is currently on
-   */
-  plot: Plot;
-
-  /**
    * KeyActions are a mapping of key actions to key action id numbers
    */
   keyActions: KeyActions;
@@ -390,6 +450,12 @@ export interface GameInterface extends GameModel {
   abilityBarState: AbilityBarState;
 
   /* -------------------------------------------------- */
+  /* BUILDING API                                       */
+  /* -------------------------------------------------- */
+
+  building: BuildingAPI;
+
+  /* -------------------------------------------------- */
   /* TASKS                                              */
   /* -------------------------------------------------- */
 
@@ -408,7 +474,7 @@ export interface GameInterface extends GameModel {
    * @return Whether or not the options all saved correctly
    */
   setOptionsAsync: (options: GameOption[]) =>
-   CancellablePromise<Success | Failure & { failures: [{ option: GameOption, reason: string }] }>;
+   CancellablePromise<Success | Failure & { failures: ArrayMap<{ option: GameOption, reason: string }> }>;
 
   /**
    * Test a single option without saving it, this allows preview of changes without saving them immediately
@@ -458,3 +524,5 @@ export interface GameInterface extends GameModel {
    */
   off: (handle: number | EventHandle) => void;
 }
+
+export type DevGameInterface = InternalGameInterfaceExt & GameModelTasks;

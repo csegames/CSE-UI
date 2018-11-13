@@ -87,11 +87,12 @@ class HUDEditor extends React.Component<Props, State> {
         style={{
           right: `${this.state.editorPosition.x}px`,
           top: `${this.state.editorPosition.y}px`,
-        }}>
+        }}
+        data-input-group='block'>
         <HUDEditorTitle>
           <div className='editorDragHandle' onMouseDown={e => this.onMouseDown(e, EditMode.MOVEEDITOR)}>
             <b>UI Widgets</b>
-            <a href='#' onClick={ () => game.trigger('hudnav--navigate', 'reset') }>
+            <a href='#' onClick={ () => game.trigger('navigate', 'reset') }>
               <div className='resetHUDButton'><b>Reset All</b></div>
             </a>
           </div>

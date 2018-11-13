@@ -33,11 +33,11 @@ declare global {
   }
 
   interface Block extends CUBEItemBase {
-    shapeTags: string[];
+    shapeTags: ArrayMap<string>;
   }
 
   interface Material extends CUBEItemBase {
-    blocks: Block[];
+    blocks: ArrayMap<Block>;
   }
 
   interface Blueprint extends CUBEItemBase {

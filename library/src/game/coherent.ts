@@ -147,3 +147,11 @@ export interface Engine {
   hideOverlay(): void;
 
 }
+
+// initialize client triggered recording
+export default function() {
+  engine.on('beginEventRecording', () => engine.beginEventRecording());
+  engine.on('endEventRecording', () => engine.endEventRecording());
+  engine.on('saveEventRecord', (path?: string) => engine.saveEventRecord(path));
+  engine.on('replayEvents', (timeScale?: number, path?: string) => engine.replayEvents(timeScale, path));
+}

@@ -126,11 +126,11 @@ class MaterialReplacePane extends React.Component<MaterialReplacePaneProps, Mate
   }
 
   private materialReplace = () => {
-    game.plot.replaceMaterialsInSelection(this.props.from.id, this.props.to.id);
+    game.building.replaceMaterialsAsync(this.props.from.id, this.props.to.id, true);
   }
 
   private materialReplaceAll = () => {
-    game.plot.replaceMaterials(this.props.from.id, this.props.to.id);
+    game.building.replaceMaterialsAsync(this.props.from.id, this.props.to.id, false);
   }
 }
 

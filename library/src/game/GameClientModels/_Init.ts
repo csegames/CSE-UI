@@ -21,26 +21,21 @@ export default function<TModel, TType extends TModel & Updatable>(
   propertyAccessor: () => TType | undefined,
   propertySetter: (model: TModel) => void,
 ) {
-  propertySetter(defaultObject());
+  if (propertyAccessor()) {
+    propertySetter(toDefault(propertyAccessor(), defaultObject()));
+  } else {
+    propertySetter(defaultObject());
+  }
   engine.on(name, (model: TModel) => {
-    // console.log(`received ${name} model | ${JSON.stringify(model)}`);
+    if (game.debug) console.log(`received ${name} with model | ${JSON.stringify(model)}`);
     if (!model) {
-      propertySetter(defaultObject());
+      if (propertyAccessor()) {
+        propertySetter(toDefault(propertyAccessor(), defaultObject()));
+      }
     } else if (!propertyAccessor().isReady) {
-      propertySetter(withDefaults(model, defaultObject()));
+      propertySetter(withDefaults(model, defaultObject(), false));
       propertyAccessor().updateEventName = name;
       initUpdatable(propertyAccessor());
-      if (name === 'selfPlayerState.update') {
-        console.log(`name: ${(model as any).name}`);
-        console.log(`entityID: ${(model as any).entityID}`);
-        console.log(`characterID: ${(model as any).characterID}`);
-        console.log(`zoneID: ${(model as any).zoneID}`);
-      }
-
-      if (name === 'loadingState.update') {
-        console.log(`message: ${(model as any).message}`);
-      }
-      console.log(`initialized ${name} model | ${JSON.stringify(propertyAccessor())}`);
     }
     executeUpdateCallbacks(propertyAccessor());
   });

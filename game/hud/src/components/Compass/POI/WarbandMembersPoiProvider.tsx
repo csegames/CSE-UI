@@ -233,7 +233,7 @@ export default class WarbandMembersPoiProvider extends React.Component<
   public onFriendlyTargetStateUpdated = () => {
     if (game.friendlyTargetState.type === 'player' && game.friendlyTargetState.entityID) {
       this.setState({
-        friendlyTarget: game.friendlyTargetState.characterID,
+        friendlyTarget: game.friendlyTargetState.entityID,
       });
     } else {
       this.setState({

@@ -90,7 +90,7 @@ class App extends React.Component<AppProps, AppState> {
     // window.addEventListener('keydown', this.onKeyDown);
 
     // Watch for navigation events (for open/close)
-    this.navigationHandler = game.on('hudnav--navigate', (name: string) => {
+    this.navigationHandler = game.on('navigate', (name: string) => {
       const visible = !this.state.visible;
       if (name === 'crafting') {
         this.setState(() => ({ visible }));
@@ -219,7 +219,7 @@ class App extends React.Component<AppProps, AppState> {
 
   private close = () => {
     if (this.state.visible) {
-      game.trigger('hudnav--navigate', 'crafting');
+      game.trigger('navigate', 'crafting');
       this.release();
     }
   }

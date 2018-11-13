@@ -59,7 +59,7 @@ const innerRadius = 22;
 
 class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonState> {
   private rings: RingTimer[] = [undefined, undefined];
-  private listener: any;
+  private updateHandle: EventHandle;
   private prevEvent: AbilityButtonInfo;
   private startCastTimeout: any;
   private hitTimeout: any;
@@ -157,9 +157,8 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
   }
 
   public componentWillReceiveProps(nextProps: AbilityButtonProps) {
-    if (!this.listener) {
-      const { id } = (nextProps.ability);
-      this.listener = game.on('abilitybutton-' + id, (data: AbilityButtonInfo) => this.processEvent(data));
+    if (!this.updateHandle && nextProps.ability && nextProps.ability.id) {
+      this.updateHandle = game.abilityStates[nextProps.ability.id].onUpdated(this.processEvent);
     }
   }
 
@@ -174,9 +173,9 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
   }
 
   public componentWillUnmount() {
-    if (this.listener) {
-      game.off(this.listener);
-      this.listener = null;
+    if (this.updateHandle) {
+      this.updateHandle.clear();
+      this.updateHandle = null;
     }
   }
 

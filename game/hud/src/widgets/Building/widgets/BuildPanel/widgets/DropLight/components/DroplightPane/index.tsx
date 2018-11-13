@@ -81,7 +81,7 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
   }
 
   private triggerDrop = (light: Light) => {
-    game.plot.dropLight(light.intensity, light.radius, light.color.red, light.color.green, light.color.blue);
+    game.dropLight.drop(light.intensity, light.radius, light.color.red, light.color.green, light.color.blue);
   }
 
   private selectLightAsBuildingItem(light: Light) {
@@ -108,11 +108,11 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
   }
 
   private triggerRemove = () => {
-    game.plot.removeLight();
+    game.dropLight.removeLast();
   }
 
   private triggerClear = () => {
-    game.plot.resetLights();
+    game.dropLight.clearAll();
   }
 
   private toggleLightSelector = () => {

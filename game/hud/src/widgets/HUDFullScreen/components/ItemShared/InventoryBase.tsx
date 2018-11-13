@@ -1623,13 +1623,10 @@ export async function equipItemRequest(item: InventoryItem.Fragment,
       game.selfPlayerState.characterID,
       request as any,
     );
-  setTimeout(() => game.trigger(eventNames.updateCharacterStats), 100);
-
-  // TEMPORARY: If webAPI fails, then fall back to client command EquipItem
   if (!res.ok) {
-    game.selfPlayerState.equipItem(item.id);
-    return;
+    console.error('Failed to move item');
   }
+  setTimeout(() => game.trigger(eventNames.updateCharacterStats), 100);
 }
 
 export async function unequipItemRequest(item: InventoryItem.Fragment,
@@ -1665,11 +1662,10 @@ export async function unequipItemRequest(item: InventoryItem.Fragment,
     game.selfPlayerState.characterID,
     request as any,
   );
-  setTimeout(() => game.trigger(eventNames.updateCharacterStats), 100);
-  // TEMPORARY: If webAPI fails, then fall back to client command UnequipItem
   if (!res.ok) {
-    game.selfPlayerState.unequipItem(item.id);
+    console.error('Failed to move item');
   }
+  setTimeout(() => game.trigger(eventNames.updateCharacterStats), 100);
 }
 
 export async function dropItemRequest(item: InventoryItem.Fragment) {

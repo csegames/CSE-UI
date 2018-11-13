@@ -56,7 +56,7 @@ class ScenarioResultsContainer extends React.Component<ScenarioResultsContainerP
   }
 
   public componentDidMount() {
-    game.on('hudnav--navigate', (name: string) => {
+    game.on('navigate', (name: string) => {
       if (name === 'scenario-results') {
         this.toggleVisibility();
       }

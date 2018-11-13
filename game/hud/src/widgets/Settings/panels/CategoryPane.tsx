@@ -16,6 +16,7 @@ interface Props {
 }
 
 interface State {
+  options: { [name: string]: GameOption };
   changes: { [name: string]: GameOption };
   error: string;
 }
@@ -24,11 +25,13 @@ export class CategoryPane extends React.PureComponent<Props, State> {
   private settingsActionHandle: EventHandle;
 
   // promise when setting options as they are done async, and yes the type is really long
-  private savePromise: CancellablePromise<Success | Failure & { failures: [{ option: GameOption, reason: string }] }> = null;
+  private savePromise: CancellablePromise<Success |
+   Failure & { failures: ArrayMap<{ option: GameOption, reason: string }> }> = null;
 
   constructor(props: Props) {
     super(props);
     this.state = {
+      options: cloneDeep(game.options) as any,
       changes: {},
       error: '',
     };
@@ -43,10 +46,10 @@ export class CategoryPane extends React.PureComponent<Props, State> {
   }
 
   public render() {
-    const opts = game.options.filter(o => o.category === this.props.category);
+    const opts = Object.values(this.state.options).filter(o => o.category === this.props.category);
     return (
       <SettingsPanel>
-        {opts.map(opt => <OptionView key={opt.name} option={opt} onChange={this.onChange} />)}
+        {opts.map(opt => <OptionView key={opt.name} option={opt as GameOption} onChange={this.onChange} />)}
       </SettingsPanel>
     );
   }
@@ -75,12 +78,13 @@ export class CategoryPane extends React.PureComponent<Props, State> {
               return;
             }
 
-            const res = result as Failure & { failures: [{ option: GameOption, reason: string }] };
+            const res = result as Failure & { failures: ArrayMap<{ option: GameOption, reason: string }> };
             const changes = {};
             let error = 'One ore more options failed to apply. ';
-            res.failures.forEach((fail, index) => {
+            const failures = Object.values(res.failures);
+            failures.forEach((fail, index) => {
               changes[fail.option.name] = fail.option;
-              error += fail.reason + (index === res.failures.length - 1 ? '' : ', ');
+              error += fail.reason + (index === failures.length - 1 ? '' : ', ');
             });
 
             this.setState({

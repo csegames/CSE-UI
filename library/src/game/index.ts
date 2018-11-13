@@ -5,8 +5,7 @@
  */
 import './constants';
 
-import { GameInterface, GameModelTasks } from './GameInterface';
-import { InternalGameInterfaceExt } from './InternalGameInterfaceExt';
+import { GameInterface, DevGameInterface } from './GameInterface';
 import { Engine } from './coherent';
 import initializeGame from './initializeGame';
 
@@ -19,7 +18,7 @@ export * from './GameClientModels';
 // Let anyone including this library know that game and __devGame are globally available.
 declare global {
   const game: DeepImmutable<GameInterface>;
-  const _devGame: InternalGameInterfaceExt & GameModelTasks;
+  const _devGame: DevGameInterface;
   const engine: Engine;
 }
 

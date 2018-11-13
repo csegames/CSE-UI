@@ -103,15 +103,15 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
       show: false,
     };
 
-    game.on('system_message', this.onConsoleText);
-    game.on('hudnav--navigate', this.handleHUDNavNavigate);
+    game.on('systemMessage', this.onConsoleText);
+    game.on('navigate', this.handleHUDNavNavigate);
   }
 
   public render() {
     if (!this.state.show) return null;
 
     return (
-      <Container>
+      <Container data-input-group='block'>
         <ConsoleWrapper>
           <Messages>
             {this.renderTextLines()}

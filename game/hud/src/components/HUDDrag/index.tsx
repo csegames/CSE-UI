@@ -181,6 +181,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
       <div
         id={this.props.name}
         className={`HUDDrag`}
+        data-input-group='block'
         style={{
           position: 'fixed',
           height: `${this.state.height}px`,

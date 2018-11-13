@@ -121,7 +121,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
           <ScenarioResults />
 
           <HUDFullScreen />
-          <AbilityBarContainer>
+          <AbilityBarContainer id={'abilitybar'}>
             <AbilityBar />
           </AbilityBarContainer>
           <ContextMenu />

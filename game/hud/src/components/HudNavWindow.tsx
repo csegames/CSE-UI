@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-const HUDNAV_NAVIGATE = 'hudnav--navigate';
+const HUDNAV_NAVIGATE = 'navigate';
 
 interface HudNavWindowState {
   visible: boolean;

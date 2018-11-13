@@ -17,12 +17,9 @@ export default () => {
     }
   });
 
-  /**
-   * Change your zone -- Only works on Hatchery / Debug & Internal builds
-   */
-  registerSlashCommand('zone', 'change your zone', (params: string) => game.selfPlayerState.changeZone(
-    parseInt(params, 10),
-  ));
+  registerSlashCommand('respawn', 'respawn your character', (id?: string) => {
+    game.selfPlayerState.respawn(id);
+  });
 
   /**
    * Change camera mode

@@ -255,7 +255,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
   }
 
   private closeTradeWindow = () => {
-    game.trigger('hudnav--navigate', 'trade', false);
+    game.trigger('navigate', 'trade', false);
   }
 }
 

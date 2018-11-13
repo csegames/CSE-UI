@@ -8,15 +8,15 @@
 import initGameInterface, { initOutOfContextGame } from './initGameInterface';
 
 import { runMocks } from './mock';
-import { GameInterface, GameModel, GameModelTasks } from './GameInterface';
-import { InternalGameInterfaceExt } from './InternalGameInterfaceExt';
+import { GameInterface, GameModel, DevGameInterface } from './GameInterface';
 import initClientTasks from './clientTasks';
+import initCoherentRecording from './coherent';
 
 declare global {
   interface Window {
     gameClient: GameModel;
     game: GameInterface;
-    _devGame: InternalGameInterfaceExt & GameModelTasks;
+    _devGame: DevGameInterface;
   }
 }
 
@@ -32,7 +32,7 @@ function initUI() {
   }
 
   if (!window._devGame) {
-    window._devGame = window.game as InternalGameInterfaceExt & GameModelTasks;
+    window._devGame = window.game as DevGameInterface;
   }
 
   if (game.ready) return;
@@ -47,6 +47,7 @@ function initUI() {
 
 export default function() {
   console.log('initializing game engine');
+  initCoherentRecording();
   if (engine.isAttached && !window.game) {
     engine.on('Ready', () => {
       _devGame.ready = false;

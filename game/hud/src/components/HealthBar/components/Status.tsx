@@ -28,10 +28,10 @@ export interface InjectedStatusProps {
 }
 
 export interface StatusComponentProps {
-  statuses: {
+  statuses: ArrayMap<{
     id: number;
     duration: number;
-  }[];
+  }>;
 }
 
 export type StatusProps = InjectedStatusProps & StatusComponentProps;
@@ -47,7 +47,7 @@ class Status extends React.Component<StatusProps> {
     return (
       <StatusContainer>
         <div>
-          {this.props.statuses && this.props.statuses.map((status, index) => {
+          {this.props.statuses && Object.values(this.props.statuses).map((status, index) => {
             const statusInfo = this.getStatusInfo(status.id);
             return (
               <StatusIcon key={`${index}-${status.id}`} status={statusInfo} />

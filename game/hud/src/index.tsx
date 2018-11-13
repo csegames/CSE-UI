@@ -16,7 +16,9 @@ import 'core-js/es6/map';
 import 'core-js/es6/weak-map';
 import 'core-js/es6/set';
 // --------------------------
+
 import '@csegames/camelot-unchained';
+import initialize from './services/initialization';
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
@@ -33,10 +35,21 @@ if (process.env.CUUI_HUD_ENABLE_WHY_DID_YOU_UPDATE) {
   // tslint:enable
 }
 
-ReactDom.render(
+function readyCheck() {
+  if (!game.selfPlayerState.name || game.selfPlayerState.name === 'unknown') {
+    setTimeout(readyCheck, 100);
+    return;
+  }
+
+  initialize();
+
+  ReactDom.render(
   <ErrorBoundary outputErrorToConsole>
       <ApolloProvider store={store} client={apollo}>
       <HUD />
     </ApolloProvider>
   </ErrorBoundary>,
   document.getElementById('hud'));
+}
+
+readyCheck();

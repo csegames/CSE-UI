@@ -73,7 +73,7 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
             onClick={() => this.showMatSelector(!this.state.showMatSelect) }
             />
           <ShapesView minimized={this.props.minimized}
-            shapes={selectedMaterial.blocks}
+            shapes={Object.values(selectedMaterial.blocks)}
             selected={selectedShape}
             selectShape={(block: Block) => { this.selectBlock(block); } }/>
         </div>
@@ -97,7 +97,7 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
   private onBlockSelect = (material: Material, block: Block) => {
     if (block != null) {
       const item = {
-        name: window.shapeIDFromBlock(block) + '. ' + block.shapeTags.join(', '),
+        name: window.shapeIDFromBlock(block) + '. ' + Object.values(block.shapeTags).join(', '),
         description: window.materialIDFromBlock(block) + '. ' + material.tags.join(', '),
         matElement: (<img src={'data:image/png;base64,' + material.icon}/>),
         element: (<img src={'data:image/png;base64,' + block.icon}/>),

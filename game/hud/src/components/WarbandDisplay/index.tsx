@@ -220,7 +220,7 @@ export class WarbandDisplay extends React.Component<WarbandDisplayProps, Warband
     this.setState((state) => {
       const removeResult = removeWhere(state.activeMembers, m => m.characterID === characterID);
       if (removeResult.removed.length > 0) {
-        game.trigger('system_message', `${removeResult.removed[0].name} has left your warband.`);
+        game.trigger('systemMessage', `${removeResult.removed[0].name} has left your warband.`);
       }
       return {
         ...state,

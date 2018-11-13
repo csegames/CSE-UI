@@ -49,11 +49,12 @@ export function OptionView(props: Props) {
     case OptionKind.Select:
       {
         const opt = option as SelectOption;
+        const values = Object.values(opt.selectValues);
         return <DropDownField
                       key={opt.name}
-                      label={opt.name}
+                      label={opt.displayName}
                       selectedItem={opt.value}
-                      items={opt.selectValues}
+                      items={values}
                       onSelectItem={(value: SelectValue) => {
                         opt.value = value;
                         onChange(opt);

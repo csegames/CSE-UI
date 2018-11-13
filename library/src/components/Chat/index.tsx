@@ -72,7 +72,7 @@ export class Chat extends React.Component<ChatProps, ChatState> {
     const current: RoomId = this.state.chat.currentRoom;
     const room: ChatRoomInfo = current ? this.state.chat.getRoom(current) : undefined;
     return (
-      <div className='cse-chat no-select'>
+      <div className='cse-chat no-select' data-input-group='block'>
         <div className='chat-frame'>
           <Info
             chat={this.state.chat}

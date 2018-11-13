@@ -76,7 +76,7 @@ class HealthBar extends React.Component<HealthBarProps, HealthBarState> {
 
 
     return (
-      <Container>
+      <Container data-input-group='block'>
         {this.props.type === 'compact' && <HealthBarViewCompact shouldShake={false} playerState={playerState} />}
         {this.props.type === 'full' && <HealthBarViewFull shouldShake={false} playerState={playerState} />}
         {this.props.type === 'mini' && <HealthBarViewMini shouldShake={false} playerState={playerState} />}

@@ -71,11 +71,11 @@
     ],
     "adjacent-overload-signatures": true,
     "member-ordering": [
-      true,
+      false,
       {
         "order": [
           "static-field",
-          "instance-field",
+          "public-instance-field",
           "constructor",
           "public-instance-method",
           "protected-instance-method",

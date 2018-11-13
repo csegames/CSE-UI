@@ -55,7 +55,7 @@ function abilityStateConnector<PropsTypes extends any>() {
       }
 
       public componentDidMount() {
-        game.abilityStates[Number(this.props.abilityInfo.id)].onUpdated(this.handleClientAbilityStateChanged);
+        game.abilityStates[this.props.abilityInfo.id].onUpdated(this.handleClientAbilityStateChanged);
       }
 
       public shouldComponentUpdate(nextProps: AbilityStateConnectorProps, nextState: AbilityStateConnectorState) {
