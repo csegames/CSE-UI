@@ -106,7 +106,11 @@ export default function() {
         return obj[key];
       }
 
-      console.error('Attempted to access missing property on selfPlayerState', key);
+      if (key === '__isProxy') {
+        return true;
+      }
+
+      if (game.debug) console.warn('Attempted to access missing property on selfPlayerState', key);
       return undefined;
     },
 

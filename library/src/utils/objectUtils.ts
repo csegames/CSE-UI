@@ -38,7 +38,7 @@ window.clone = function<T>(source: T): T {
 };
 
 window.cloneDeep = function<T extends any>(source: T): T {
-  if (source == null || typeof source === 'object') {
+  if (source == null || typeof source !== 'object') {
     return source; // Not a reference
   }
 
@@ -61,9 +61,10 @@ window.cloneDeep = function<T extends any>(source: T): T {
 
   if (source instanceof Object) {
     const copy = {} as T;
-    for (const key in source) {
+    const keys = Object.keys(source);
+    keys.forEach((key) => {
       copy[key] = cloneDeep(source[key]);
-    }
+    });
     return copy;
   }
 
