@@ -36,7 +36,7 @@ if (process.env.CUUI_HUD_ENABLE_WHY_DID_YOU_UPDATE) {
 }
 
 function readyCheck() {
-  if (!game.selfPlayerState.name || game.selfPlayerState.name === 'unknown') {
+  if (!game.selfPlayerState.characterID || game.selfPlayerState.characterID === 'unknown') {
     setTimeout(readyCheck, 100);
     return;
   }
