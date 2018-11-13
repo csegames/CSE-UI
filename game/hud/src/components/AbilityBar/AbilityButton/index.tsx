@@ -19,7 +19,7 @@ import {
 export * from './lib';
 
 export interface AbilityButtonProps {
-  ability?: AbilityButtonInfo;
+  abilityInfo: AbilityButtonInfo;
   children?: React.ReactNode;
   name: string;
   description: any;
@@ -83,10 +83,10 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
 
   public render() {
     const props = this.props;
-    if (props.ability && props.ability.icon) {
+    if (props.abilityInfo && props.abilityInfo.icon) {
       // extract button state from props
-      const { timing, disruption } = props.ability;
-      const classNames: string[] = getClassNames(props.ability);
+      const { timing, disruption } = props.abilityInfo;
+      const classNames: string[] = getClassNames(props.abilityInfo);
       const outerDirection = this.rings[OUTER] && this.rings[OUTER].event.clockwise;
       const innerDirection = this.rings[INNER] && this.rings[INNER].event.clockwise;
 
@@ -110,8 +110,8 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
         }
         outerPath = makeGlowPathFor(disruptionEnd, this.state.outer.current || 0, x, y, outerRadius, outerDirection);
       } else {
-        if ((props.ability.status & AbilityButtonState.Held) ||
-            (props.ability.type & AbilityButtonType.Modal)) {
+        if ((props.abilityInfo.status & AbilityButtonState.Held) ||
+            (props.abilityInfo.type & AbilityButtonType.Modal)) {
           outerPath = makeGlowPathFor(360, 359.9, x, y, outerRadius, outerDirection);
         } else {
           outerPath = makeGlowPathFor(360, 0, x, y, outerRadius, outerDirection);
@@ -139,7 +139,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
       // output button
       return (
         <AbilityButtonView
-          ability={this.props.ability}
+          ability={this.props.abilityInfo}
           name={this.props.name}
           description={this.props.description}
           timer={this.state.label}
@@ -157,8 +157,8 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
   }
 
   public componentWillReceiveProps(nextProps: AbilityButtonProps) {
-    if (!this.updateHandle && nextProps.ability && nextProps.ability.id) {
-      this.updateHandle = game.abilityStates[nextProps.ability.id].onUpdated(this.processEvent);
+    if (!this.updateHandle && nextProps.abilityInfo && nextProps.abilityInfo.id) {
+      this.updateHandle = game.abilityStates[nextProps.abilityInfo.id].onUpdated(this.processEvent);
     }
   }
 
@@ -167,7 +167,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
       nextState.label !== this.state.label ||
       nextState.inner.current !== this.state.inner.current ||
       nextState.outer.current !== this.state.outer.current ||
-      !_.isEqual(nextProps.ability, this.props.ability) ||
+      !_.isEqual(nextProps.abilityInfo, this.props.abilityInfo) ||
       nextState.startCast !== this.state.startCast ||
       nextState.hit !== this.state.hit;
   }
@@ -180,7 +180,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
   }
 
   private performAbility = () => {
-    game.triggerKeyAction(this.props.ability.keybind);
+    game.triggerKeyAction(this.props.abilityInfo.keybind);
   }
 
   private setTimerRing = (info: {
@@ -238,9 +238,9 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
     };
     this.setState((state, props) => newState as any);
 
-    if (id === INNER && this.props.ability.status & AbilityButtonState.Preparation) {
+    if (id === INNER && this.props.abilityInfo.status & AbilityButtonState.Preparation) {
       // Fire off event for skill queue UI
-      game.trigger(`ability-button-timer-${this.props.ability.id}`, current);
+      game.trigger(`ability-button-timer-${this.props.abilityInfo.id}`, current);
     }
   }
 

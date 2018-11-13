@@ -44,8 +44,6 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
     const { apiAbilities } = this.props;
     const { clientAbilities } = this.state;
 
-    console.log(`apiAbilities: ${JSON.stringify(apiAbilities)}`);
-    console.log(`clientAbilities: ${JSON.stringify(clientAbilities)}`);
     return (
       <Container className={'ability-bar'}>
         {clientAbilities.map((clientAbility: AbilityBarItem, index: number) => {

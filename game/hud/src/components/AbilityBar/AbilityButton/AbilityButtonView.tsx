@@ -217,11 +217,6 @@ export interface AbilityButtonViewState {
 
 }
 
-const KeyBind = (props: { keybindID: number }) => {
-  const keybind = game.keybinds[props.keybindID];
-  return <KeybindInfo>{keybind.binds[0].name}</KeybindInfo>;
-};
-
 class AbilityButtonView extends React.Component<AbilityButtonViewProps, AbilityButtonViewState> {
   public render() {
     // output button
@@ -237,7 +232,7 @@ class AbilityButtonView extends React.Component<AbilityButtonViewProps, AbilityB
         onMouseLeave={this.onMouseLeave}
         data-input-group='block'
       >
-        <KeyBind keybindID={ability.keybind} />
+        <KeybindInfo>{ability.boundKeyName}</KeybindInfo>
         {ability.status & AbilityButtonState.Queued ? <QueuedStateTick /> : null}
         <svg width='100' height='100'>
           <path d={this.props.outer} fill='none' strokeWidth='3px' className='outer-bg-blur'></path>
