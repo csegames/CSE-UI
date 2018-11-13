@@ -82,10 +82,51 @@ function initDefault(): SelfPlayerState {
  */
 export default function() {
 
+  _devGame._cse_dev_defaultSelfPlayerState = initDefault();
+
+  _devGame.selfPlayerState = new Proxy({
+    isReady: true,
+    updateEventName: SelfPlayer_Update,
+    onUpdated: createDefaultOnUpdated(SelfPlayer_Update),
+    onReady: createDefaultOnReady(SelfPlayer_Update),
+  }, {
+    get: (obj, key) => {
+
+      if (key in _devGame._cse_dev_selfPlayerState) {
+        return _devGame._cse_dev_selfPlayerState[key];
+      }
+
+      const entityID = _devGame._cse_dev_selfPlayerState.entityID;
+      const entity = game.entities[entityID];
+      if (entity && key in entity) {
+        return entity[key];
+      }
+
+      if (key in obj) {
+        return obj[key];
+      }
+
+      console.error('Attempted to access missing property on selfPlayerState', key);
+      return undefined;
+    },
+
+    ownKeys: (target) => {
+      return Reflect.ownKeys(_devGame._cse_dev_defaultSelfPlayerState);
+    },
+
+    getOwnPropertyDescriptor: (target, prop) => {
+      const descriptor = Reflect.getOwnPropertyDescriptor(_devGame._cse_dev_defaultSelfPlayerState, prop);
+      descriptor.value = game[prop];
+      descriptor.writable = false;
+      // descriptor.configurable = false;
+      return descriptor;
+    },
+  }) as SelfPlayerState;
+
   engineInit(
     SelfPlayer_Update,
-    initDefault,
-    () => _devGame.selfPlayerState,
-    (model: SelfPlayerStateModel) => _devGame.selfPlayerState = model as SelfPlayerState);
+    () => ({} as any),
+    () => _devGame._cse_dev_selfPlayerState,
+    (model: SelfPlayerStateModel) => _devGame._cse_dev_selfPlayerState = model as SelfPlayerState);
 
 }

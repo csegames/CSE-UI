@@ -140,41 +140,14 @@ function onReceiveEntityStateUpdate(state: AnyEntityState) {
   }
 
   if (state.entityID === game.selfPlayerState.entityID) {
-    for (const key in state) {
-      if (typeof(state[key]) === 'function') {
-        continue;
-      }
-      if (key === 'updateEventName' || key === 'isReady') {
-        continue;
-      }
-      _devGame.selfPlayerState[key] = state[key];
-    }
     executeUpdateCallbacks(game.selfPlayerState);
   }
 
-  if (state.entityID === game.friendlyTargetState.entityID) {
-    for (const key in state) {
-      if (typeof(state[key]) === 'function') {
-        continue;
-      }
-      if (key === 'updateEventName' || key === 'isReady') {
-        continue;
-      }
-      _devGame.friendlyTargetState[key] = state[key];
-    }
+  if (game.friendlyTargetState && state.entityID === game.friendlyTargetState.entityID) {
     executeUpdateCallbacks(game.friendlyTargetState);
   }
 
-  if (state.entityID === game.enemyTargetState.entityID) {
-    for (const key in state) {
-      if (typeof(state[key]) === 'function') {
-        continue;
-      }
-      if (key === 'updateEventName' || key === 'isReady') {
-        continue;
-      }
-      _devGame.enemyTargetState[key] = state[key];
-    }
+  if (game.enemyTargetState && state.entityID === game.enemyTargetState.entityID) {
     executeUpdateCallbacks(game.enemyTargetState);
   }
 
