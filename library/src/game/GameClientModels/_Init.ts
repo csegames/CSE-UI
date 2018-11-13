@@ -32,6 +32,7 @@ export default function<TModel, TType extends TModel & Updatable>(
       if (propertyAccessor()) {
         propertySetter(toDefault(propertyAccessor(), defaultObject()));
       }
+      game.trigger(name);
     } else if (!propertyAccessor().isReady) {
       propertySetter(withDefaults(model, defaultObject(), false));
       propertyAccessor().updateEventName = name;

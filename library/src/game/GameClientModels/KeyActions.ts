@@ -88,36 +88,6 @@ export interface KeyActionsModel {
   CameraCaptureAimingCursor: number;
   PlayerCameraFreeToggle: number;
   PlayerCameraFreePlayerToggle: number;
-  PlayerAbility1: number;
-  PlayerAbility2: number;
-  PlayerAbility3: number;
-  PlayerAbility4: number;
-  PlayerAbility5: number;
-  PlayerAbility6: number;
-  PlayerAbility7: number;
-  PlayerAbility8: number;
-  PlayerAbility9: number;
-  PlayerAbility10: number;
-  PlayerAbility11: number;
-  PlayerAbility12: number;
-  PlayerAbility13: number;
-  PlayerAbility14: number;
-  PlayerAbility15: number;
-  PlayerAbility16: number;
-  PlayerAbility17: number;
-  PlayerAbility18: number;
-  PlayerAbility19: number;
-  PlayerAbility20: number;
-  PlayerAbility21: number;
-  PlayerAbility22: number;
-  PlayerAbility23: number;
-  PlayerAbility24: number;
-  PlayerAbility25: number;
-  PlayerAbility26: number;
-  PlayerAbility27: number;
-  PlayerAbility28: number;
-  PlayerAbility29: number;
-  PlayerAbility30: number;
 
   // camera
   CameraMouseCameraCapture: number;
