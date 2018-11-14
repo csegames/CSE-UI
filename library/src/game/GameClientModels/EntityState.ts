@@ -130,7 +130,13 @@ export function defaultSiegeStateModel(): SiegeStateModel {
 export const EntityState_Update = 'entityState.update';
 
 function onReceiveEntityStateUpdate(state: AnyEntityState) {
-  if (game.debug) console.log(`received entityState.update with model | ${JSON.stringify(state)}`);
+  if (game.debug) {
+    console.groupCollapsed(`Client Update received | ${EntityState_Update}`);
+    try {
+      console.log(JSON.stringify(state));
+    } catch {}
+    console.groupEnd();
+  }
 
   if (typeof _devGame.entities[state.entityID] === 'undefined') {
     _devGame.entities[state.entityID] = state;

@@ -27,7 +27,13 @@ export default function<TModel, TType extends TModel & Updatable>(
     propertySetter(defaultObject());
   }
   engine.on(name, (model: TModel) => {
-    if (game.debug) console.log(`received ${name} with model | ${JSON.stringify(model)}`);
+    if (game.debug) {
+      console.groupCollapsed(`Client Update received | ${name}`);
+      try {
+        console.log(JSON.stringify(model));
+      } catch {}
+      console.groupEnd();
+    }
     if (!model) {
       if (propertyAccessor()) {
         propertySetter(defaultObject());
