@@ -16,7 +16,7 @@ declare global {
     status: AbilityButtonState;
     error?: AbilityButtonErrorFlag;
     timing?: Timing;
-    disruption?: Timing;
+    disruption?: CurrentMax;
   }
 
   type AbilityState = AbilityStateModel & Updatable;
