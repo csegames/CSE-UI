@@ -73,6 +73,7 @@ export interface SmallBarState {
 }
 
 class SmallBar extends React.Component<SmallBarProps, SmallBarState> {
+  private healthPercentCache: number;
   public render() {
     const healthPercent = getHealthPercent(this.props.playerState, this.props.bodyPart);
     const wounds = getWoundsForBodyPart(this.props.playerState, this.props.bodyPart);
@@ -93,9 +94,9 @@ class SmallBar extends React.Component<SmallBarProps, SmallBarState> {
   }
 
   public shouldComponentUpdate(nextProps: SmallBarProps, nextState: SmallBarState) {
-    return !utils.numEqualsCloseEnough(
-      getHealthPercent(nextProps.playerState, this.props.bodyPart),
-      getHealthPercent(this.props.playerState, this.props.bodyPart)) ||
+    return !this.healthPercentCache ||
+      !utils.numEqualsCloseEnough(this.healthPercentCache,
+      getHealthPercent(nextProps.playerState, this.props.bodyPart)) ||
 
       // Check wounds
       getWoundsForBodyPart(nextProps.playerState, this.props.bodyPart) !==
@@ -103,6 +104,10 @@ class SmallBar extends React.Component<SmallBarProps, SmallBarState> {
 
       // Check isAlive
       nextProps.playerState.isAlive !== this.props.playerState.isAlive;
+  }
+
+  public componentDidUpdate() {
+    this.healthPercentCache = getHealthPercent(this.props.playerState, this.props.bodyPart);
   }
 }
 

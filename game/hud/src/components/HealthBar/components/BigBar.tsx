@@ -76,6 +76,7 @@ export interface BigBarState {
 }
 
 class BigBar extends React.Component<BigBarProps, BigBarState> {
+  private healthBarCache: number;
   public render() {
     const healthPercent = getHealthPercent(this.props.playerState, this.props.bodyPart);
     const wounds = getWoundsForBodyPart(this.props.playerState, this.props.bodyPart);
@@ -96,9 +97,10 @@ class BigBar extends React.Component<BigBarProps, BigBarState> {
   }
 
   public shouldComponentUpdate(nextProps: BigBarProps, nextState: BigBarState) {
-    return !utils.numEqualsCloseEnough(
-      getHealthPercent(nextProps.playerState, this.props.bodyPart),
-      getHealthPercent(this.props.playerState, this.props.bodyPart)) ||
+    return !this.healthBarCache ||
+      !utils.numEqualsCloseEnough(
+        getHealthPercent(nextProps.playerState, this.props.bodyPart),
+        this.healthBarCache) ||
 
       // Check wounds
       getWoundsForBodyPart(nextProps.playerState, this.props.bodyPart) !==
@@ -106,6 +108,10 @@ class BigBar extends React.Component<BigBarProps, BigBarState> {
 
       // Check isAlive
       nextProps.playerState.isAlive !== this.props.playerState.isAlive;
+  }
+
+  public componentDidUpdate() {
+    this.healthBarCache = getHealthPercent(this.props.playerState, this.props.bodyPart);
   }
 }
 

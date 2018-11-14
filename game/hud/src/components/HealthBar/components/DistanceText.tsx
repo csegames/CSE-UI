@@ -34,6 +34,8 @@ export interface DistanceTextState {
 class DistanceText extends React.Component<DistanceTextProps, DistanceTextState> {
   private mounted: boolean;
   private eventHandles: EventHandle[] = [];
+  private myPositionCache: Vec3f;
+  private theirPositionCache: Vec3f;
   constructor(props: DistanceTextProps) {
     super(props);
     this.state = {
@@ -57,8 +59,14 @@ class DistanceText extends React.Component<DistanceTextProps, DistanceTextState>
   }
 
   public shouldComponentUpdate(nextProps: DistanceTextProps, nextState: DistanceTextState) {
-    return !this.positionCloseEnough(this.state.myPosition, nextState.myPosition) ||
-      !this.positionCloseEnough(this.state.theirPosition, nextState.theirPosition);
+    return !this.myPositionCache || !this.theirPositionCache ||
+      !this.positionCloseEnough(this.myPositionCache, nextState.myPosition) ||
+      !this.positionCloseEnough(this.theirPositionCache, nextState.theirPosition);
+  }
+
+  public componentDidUpdate() {
+    this.myPositionCache = this.state.myPosition;
+    this.theirPositionCache = this.state.theirPosition;
   }
 
   public componentWillUnmount() {
