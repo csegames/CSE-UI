@@ -154,40 +154,33 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
     };
   }
 
-  public componentWillUnmount() {
-    this.eventHandles.forEach(eventHandle => eventHandle.clear());
-  }
-
-  public componentDidUpdate() {
+  public componentDidMount() {
     switch (this.props.for) {
-      case HealthFor.Self:
+      case HealthFor.Self: {
         this.eventHandles.push(game.selfPlayerState.onUpdated(() => {
-          try {
-            this.setState({ entity: Object.assign({}, game.selfPlayerState as SelfPlayerState) });
-          } catch (e) {}
+          this.setState({ entity: cloneDeep(game.selfPlayerState) });
         }));
         break;
+      }
 
-      case HealthFor.EnemyTarget:
-        if (game.enemyTargetState.isReady) {
-          this.eventHandles.push(game.enemyTargetState.onUpdated(() => {
-            try {
-              this.setState({ entity: Object.assign({}, game.enemyTargetState as EnemyTargetState) });
-            } catch (e) {}
-          }));
-        }
+      case HealthFor.EnemyTarget: {
+        this.eventHandles.push(game.enemyTargetState.onUpdated(() => {
+          this.setState({ entity: cloneDeep(game.enemyTargetState) });
+        }));
         break;
+      }
 
-      case HealthFor.FriendlyTarget:
-        if (game.friendlyTargetState.isReady) {
-          this.eventHandles.push(game.friendlyTargetState.onUpdated(() => {
-            try {
-              this.setState({ entity: Object.assign({}, game.friendlyTargetState as FriendlyTargetState) });
-            } catch (e) {}
-          }));
-        }
+      case HealthFor.FriendlyTarget: {
+        this.eventHandles.push(game.friendlyTargetState.onUpdated(() => {
+          this.setState({ entity: cloneDeep(game.friendlyTargetState) });
+        }));
         break;
+      }
     }
+  }
+
+  public componentWillUnmount() {
+    this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
   public shouldComponentUpdate(nextProps: SiegeHealthProps, nextState: SiegeHealthState) {
@@ -253,6 +246,9 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
             showExit={false}
           />
         );
+      }
+      default: {
+        return null;
       }
     }
   }
