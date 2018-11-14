@@ -91,8 +91,8 @@ export default function reducer(state: MaterialsState = initialState, action: an
     case SELECT_BLOCK:
       const block: Block = action.selectedBlock;
       const newState: MaterialsState = { selectedBlock: block } as MaterialsState;
-      if (state.selectedMaterial.id !== window.materialIDFromBlock(block)) {
-        newState.selectedMaterial = getMaterialById(window.materialIDFromBlock(block), state.materials);
+      if (state.selectedMaterial.id !== block.materialID) {
+        newState.selectedMaterial = getMaterialById(block.materialID, state.materials);
       }
       return assign({}, state, newState);
     default: return state;

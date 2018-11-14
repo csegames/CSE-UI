@@ -100,6 +100,7 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     serverHost: 'hatcheryd.camelotunchained.com',
     options: {},
     keybinds: {},
+    worldTime: 0,
 
     building: {
       mode: BuildingMode.NotBuilding,

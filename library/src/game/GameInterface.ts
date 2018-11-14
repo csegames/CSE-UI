@@ -56,6 +56,12 @@ export interface GameModel {
   pktHash: string;
 
   /**
+   * Time according to the game server, use for start / end times of abilities and other effects dictated by
+   * the game server.
+   */
+  worldTime: number;
+
+  /**
    * Forces the client to reload the entire UI.
    */
   reloadUI: () => void;

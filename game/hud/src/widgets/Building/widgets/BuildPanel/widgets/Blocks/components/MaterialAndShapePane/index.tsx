@@ -97,8 +97,8 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
   private onBlockSelect = (material: Material, block: Block) => {
     if (block != null) {
       const item = {
-        name: window.shapeIDFromBlock(block) + '. ' + Object.values(block.shapeTags).join(', '),
-        description: window.materialIDFromBlock(block) + '. ' + material.tags.join(', '),
+        name: block.shapeID + '. ' + Object.values(block.shapeTags).join(', '),
+        description: block.materialID + '. ' + material.tags.join(', '),
         matElement: (<img src={'data:image/png;base64,' + material.icon}/>),
         element: (<img src={'data:image/png;base64,' + block.icon}/>),
         id: material.id + '-' + BuildingItemType.Block,
@@ -128,8 +128,7 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
 
   private selectMaterial = (mat: Material) => {
     const currentBlock = this.props.materialsState.selectedBlock;
-    window.shapeIDFromBlock(currentBlock);
-    const requestedBlock: Block = building.getBlockForMaterialAndShapeId(mat, window.shapeIDFromBlock(currentBlock));
+    const requestedBlock: Block = building.getBlockForMaterialAndShapeId(mat, currentBlock.shapeID);
     blockRequester.changeBlockSelection(requestedBlock);
     this.setState((state, props) => ({ showMatSelect: false } as any));
     game.trigger(DEACTIVATE_MATERIAL_SELECTOR, {});

@@ -30,7 +30,7 @@ function getMaterialForBlockId(blockId: number) {
 
 function getBlockForMaterialAndShapeId(material: Material, shapeId: number) {
   for (const block in material.blocks) {
-    if (window.shapeIDFromBlock(material.blocks[block]) === shapeId) {
+    if (material.blocks[block].shapeID === shapeId) {
       return material.blocks[block];
     }
   }

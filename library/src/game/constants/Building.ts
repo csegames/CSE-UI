@@ -34,6 +34,8 @@ declare global {
 
   interface Block extends CUBEItemBase {
     shapeTags: ArrayMap<string>;
+    materialID: number;
+    shapeID: number;
   }
 
   interface Material extends CUBEItemBase {
@@ -46,9 +48,6 @@ declare global {
 
   interface Window {
     BuildingMode: typeof BuildingMode;
-
-    shapeIDFromBlock: (block: Block) => number;
-    materialIDFromBlock: (block: Block) => number;
   }
 }
 
@@ -61,10 +60,3 @@ enum BuildingMode {
 }
 window.BuildingMode = BuildingMode;
 
-window.shapeIDFromBlock = function(block: Block) {
-  return block.id >> 21 & 31;
-};
-
-window.materialIDFromBlock = function(block: Block) {
-  return block.id >> 2 & 4095;
-};
