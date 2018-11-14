@@ -112,7 +112,9 @@ function removeListener(em: InternalEmitter, id: number) {
 function emit(em: InternalEmitter, name: string, ...params: any[]) {
   if (game.debug) {
     console.groupCollapsed(`EventEmitter | emit : ${name}`);
-    console.log(JSON.stringify(params));
+    try {
+      console.log(JSON.stringify(params));
+    } catch {}
     console.groupEnd();
   }
   const listeners: Listener[] = em._events[name];

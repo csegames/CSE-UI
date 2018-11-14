@@ -30,7 +30,7 @@ export default function<TModel, TType extends TModel & Updatable>(
     if (game.debug) console.log(`received ${name} with model | ${JSON.stringify(model)}`);
     if (!model) {
       if (propertyAccessor()) {
-        propertySetter(toDefault(propertyAccessor(), defaultObject()));
+        propertySetter(defaultObject());
       }
     } else if (!propertyAccessor().isReady) {
       propertySetter(withDefaults(model, defaultObject(), false));
