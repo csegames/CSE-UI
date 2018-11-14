@@ -20,7 +20,7 @@ interface CUBEItemBase {
   /**
    * Tags used for sorting & searching for blocks
    */
-  tags: string[];
+  tags: ArrayMap<string>;
 }
 
 declare global {
@@ -33,7 +33,6 @@ declare global {
   }
 
   interface Block extends CUBEItemBase {
-    shapeTags: ArrayMap<string>;
     materialID: number;
     shapeID: number;
   }

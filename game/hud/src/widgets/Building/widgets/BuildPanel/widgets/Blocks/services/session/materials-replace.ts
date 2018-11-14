@@ -13,7 +13,7 @@ const SELECT_TO_MATERIAL = 'buildpanel/panes/SELECT_TO_MATERIAL';
 const DEFAULT_MATERIAL: Material = {
   id: -1,
   icon: '',
-  tags: ['default'],
+  tags: { 0: 'default' },
   blocks: {},
 };
 

@@ -16,7 +16,7 @@ const SET_MATERIALS = 'buildpanel/panes/SET_MATERIALS';
 export const DEFAULT_MATERIAL: Material = {
   id: -1,
   icon: '',
-  tags: ['default'],
+  tags: { 0: 'default' },
   blocks: {},
 } as Material;
 

@@ -97,8 +97,8 @@ class MaterialAndShapePane extends React.Component<MaterialAndShapePaneProps, Ma
   private onBlockSelect = (material: Material, block: Block) => {
     if (block != null) {
       const item = {
-        name: block.shapeID + '. ' + Object.values(block.shapeTags).join(', '),
-        description: block.materialID + '. ' + material.tags.join(', '),
+        name: block.shapeID + '. ' + Object.values(block.tags).join(', '),
+        description: block.materialID + '. ' + Object.values(material.tags).join(', '),
         matElement: (<img src={'data:image/png;base64,' + material.icon}/>),
         element: (<img src={'data:image/png;base64,' + block.icon}/>),
         id: material.id + '-' + BuildingItemType.Block,
