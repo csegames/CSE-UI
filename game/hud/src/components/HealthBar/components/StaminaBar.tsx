@@ -27,6 +27,9 @@ const Bar = styled('div')`
   left: 0;
   height: 100%;
   background: linear-gradient(to top, #C2FFC8, #4CB856);
+  &.isDead {
+    background: #555555;
+  }
 `;
 
 export interface StaminaBarProps {
@@ -43,14 +46,15 @@ class StaminaBar extends React.Component<StaminaBarProps> {
         style={{
           WebkitMaskImage: staminaPercent > 99.8 ? 'url(images/healthbar/regular/stamina_mask.png)' : '',
         }}>
-        <Bar style={{ width: staminaPercent + '%' }} />
+        <Bar style={{ width: staminaPercent + '%' }} className={!this.props.playerState.isAlive ? 'isDead' : ''} />
       </Container>
     );
   }
 
   public shouldComponentUpdate(nextProps: StaminaBarProps) {
     return !this.lastUpdatedStaminaPercent ||
-      !utils.numEqualsCloseEnough(this.lastUpdatedStaminaPercent, getStaminaPercent(nextProps.playerState), 1);
+      !utils.numEqualsCloseEnough(this.lastUpdatedStaminaPercent, getStaminaPercent(nextProps.playerState), 1) ||
+      nextProps.playerState.isAlive !== this.props.playerState.isAlive;
   }
 
   public componentDidUpdate() {

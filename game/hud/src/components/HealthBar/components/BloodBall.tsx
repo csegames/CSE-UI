@@ -23,6 +23,9 @@ const Ball = styled('div')`
   border-radius: 52.5px;
   background: linear-gradient(to bottom, #E30000, #2D0000);
   -webkit-mask-size: 100% 100%;
+  &.isDead {
+    background: #555555;
+  }
 `;
 
 // This is commented out because it will not be shown by default but will be a toggle in the options menu.
@@ -72,6 +75,7 @@ class BloodBall extends React.Component<BloodBallProps, BloodBallState> {
         height: this.state.scale * 105 + 'px',
       }}>
         <Ball
+          className={!this.props.playerState.isAlive ? 'isDead' : ''}
           style={{
             WebkitMaskImage: `linear-gradient(to top, black ${bloodPercent}%, transparent ${bloodPercent}%)`,
           }}
@@ -83,7 +87,8 @@ class BloodBall extends React.Component<BloodBallProps, BloodBallState> {
 
   public shouldComponentUpdate(nextProps: BloodBallProps) {
     return !this.lastUpdatedBloodPercent ||
-      !utils.numEqualsCloseEnough(this.lastUpdatedBloodPercent, getBloodPercent(nextProps.playerState), 1);
+      !utils.numEqualsCloseEnough(this.lastUpdatedBloodPercent, getBloodPercent(nextProps.playerState), 1) ||
+      nextProps.playerState.isAlive !== this.props.playerState.isAlive;
   }
 
   public componentDidUpdate() {

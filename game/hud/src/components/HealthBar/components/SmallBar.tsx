@@ -41,6 +41,10 @@ const Bar = styled('div')`
   height: 100%;
   background: linear-gradient(to bottom, #00A4F1, #00A4F1);
   box-shadow: inset 0 0 ${({ scale }: {scale: number}) => (5 * scale).toFixed(1)}px #4AD8FF;
+
+  &.isDead {
+    background: #555;
+  }
 `;
 
 const WoundContainer = styled('div')`
@@ -75,12 +79,17 @@ export interface SmallBarState {
 class SmallBar extends React.Component<SmallBarProps, SmallBarState> {
   private healthPercentCache: number;
   public render() {
-    const healthPercent = getHealthPercent(this.props.playerState, this.props.bodyPart);
-    const wounds = getWoundsForBodyPart(this.props.playerState, this.props.bodyPart);
+    const { playerState, bodyPart } = this.props;
+    const healthPercent = getHealthPercent(playerState, bodyPart);
+    const wounds = getWoundsForBodyPart(playerState, bodyPart);
     return (
       <Container height={this.props.height} scale={this.props.scale}>
         <BarContainer scale={this.props.scale}>
-          <Bar style={{ width: healthPercent + '%' }} scale={this.props.scale}/>
+          <Bar
+            style={{ width: healthPercent + '%' }}
+            scale={this.props.scale}
+            className={!playerState.isAlive ? 'isDead' : ''}
+          />
         </BarContainer>
         {wounds > 0 ?
           <WoundContainer scale={this.props.scale}>
