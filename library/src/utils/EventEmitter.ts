@@ -105,6 +105,7 @@ function removeListener(em: InternalEmitter, id: number) {
       }
     }
 
+    delete em._listenersById[id];
     em._events[listener.name] = listeners;
   }
 }
