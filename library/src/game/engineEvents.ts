@@ -165,6 +165,6 @@ export default function() {
 
 function createForwardingMethod(engineEvent: string, methodName: string) {
   _devGame[methodName] = function(callback: (...args: any[]) => any): EventHandle {
-    return _devGame._eventEmitter.addListener(engineEvent, false, callback);
+    return window._cse_dev_eventEmitter.addListener(engineEvent, false, callback);
   };
 }

@@ -66,6 +66,9 @@ function createListener(name: string, once: boolean, callback: Callback) {
 }
 
 function addListener(em: InternalEmitter, name: string, once: boolean = false, callback: Callback) {
+  if (game.debug) {
+    console.log(`EventEmitter | addListener : ${name}  (once? ${once})`);
+  }
   const listeners: Listener[] = em._events[name] = em._events[name] || [];
   const listener: Listener = createListener(name, once, callback);
   const i: number = listeners.indexOf(null);
@@ -88,6 +91,7 @@ function listenOnce(em: InternalEmitter, name: string, callback: Callback) {
 }
 
 function removeListener(em: InternalEmitter, id: number) {
+  if (game.debug) console.log(`removeListener | addListener : ${name} :: id ${id})`);
   const listener = em._listenersById[id];
   if (!listener) return;
 
@@ -106,6 +110,11 @@ function removeListener(em: InternalEmitter, id: number) {
 }
 
 function emit(em: InternalEmitter, name: string, ...params: any[]) {
+  if (game.debug) {
+    console.groupCollapsed(`EventEmitter | emit : ${name}`);
+    console.log(JSON.stringify(params));
+    console.groupEnd();
+  }
   const listeners: Listener[] = em._events[name];
   if (listeners && listeners.length) {
     for (let i = 0; i < listeners.length; i++) {

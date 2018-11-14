@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Updatable, initUpdatable, executeUpdateCallbacks } from './_Updatable';
+import { Updatable, initUpdatable } from './_Updatable';
 
 /**
  * Hook a model up to the game engine events & configure the Updatable.
@@ -32,12 +32,11 @@ export default function<TModel, TType extends TModel & Updatable>(
       if (propertyAccessor()) {
         propertySetter(toDefault(propertyAccessor(), defaultObject()));
       }
-      game.trigger(name);
     } else if (!propertyAccessor().isReady) {
       propertySetter(withDefaults(model, defaultObject(), false));
       propertyAccessor().updateEventName = name;
       initUpdatable(propertyAccessor());
     }
-    executeUpdateCallbacks(propertyAccessor());
+    game.trigger(name, propertyAccessor());
   });
 }

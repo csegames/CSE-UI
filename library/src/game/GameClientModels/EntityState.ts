@@ -144,11 +144,11 @@ function onReceiveEntityStateUpdate(state: AnyEntityState) {
   }
 
   if (game.friendlyTargetState && state.entityID === game.friendlyTargetState.entityID) {
-    executeUpdateCallbacks(game.friendlyTargetState);
+    game.trigger('friendlyTargetPlayerState.update', game.friendlyTargetState);
   }
 
   if (game.enemyTargetState && state.entityID === game.enemyTargetState.entityID) {
-    executeUpdateCallbacks(game.enemyTargetState);
+    game.trigger('enemyTargetPlayerState.update', game.enemyTargetState);
   }
 
   executeUpdateCallbacks(_devGame.entities[state.entityID]);

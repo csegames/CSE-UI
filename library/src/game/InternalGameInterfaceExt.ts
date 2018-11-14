@@ -14,14 +14,7 @@ import { Resolvable } from './clientTasks';
  * **DO NOT USE OUTSIDE OF LIBRARY DEVELOPMENT**
  */
 export interface InternalGameInterfaceExt extends GameInterface {
-
-  /**
-   * EventEmitter for managing CU event subscriptions.
-   */
-  _eventEmitter: EventEmitter;
-
   _activeTasks: { [id: number]: Resolvable<any> };
-
   _cse_dev_selfPlayerState: SelfPlayerState;
   _cse_dev_defaultSelfPlayerState: SelfPlayerState;
 

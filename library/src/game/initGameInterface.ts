@@ -8,7 +8,7 @@ import * as webAPI from '../webAPI';
 import * as graphQL from '../graphql';
 import initSignalR from '../signalR';
 
-import { createEventEmitter } from '../utils/EventEmitter';
+import { createEventEmitter, EventEmitter } from '../utils/EventEmitter';
 import { GameModel, GameInterface } from './GameInterface';
 
 import initEventForwarding from './engineEvents';
@@ -26,11 +26,6 @@ import { makeClientPromise } from './clientTasks';
 import initCUAPIShim from './cuAPIShim';
 
 export default function(isAttached: boolean) {
-  let oldEmitter = null;
-  if (window._devGame) {
-    // This is a re-initialization, so try and maintain the same event emitter
-    oldEmitter = _devGame._eventEmitter;
-  }
   _devGame.ready = false;
   _devGame.isClientAttached = isAttached;
 
@@ -61,7 +56,6 @@ export default function(isAttached: boolean) {
     = makeClientPromise((game, sID, rID, inS) => game.building._cse_dev_replaceShapes(sID, rID, inS));
 
   // EVENTS
-  _devGame._eventEmitter = oldEmitter || createEventEmitter();
   _devGame.onReady = onReady;
   _devGame.on = events_on;
   _devGame.once = events_once;
@@ -203,22 +197,31 @@ function signalRHost() {
 /* EVENTS                                             */
 /* -------------------------------------------------- */
 
+declare global {
+  interface Window {
+    _cse_dev_eventEmitter: EventEmitter;
+  }
+}
+if (!window._cse_dev_eventEmitter) {
+  window._cse_dev_eventEmitter = createEventEmitter();
+}
+
 function events_on(name: string, callback: Callback) {
-  return _devGame._eventEmitter.addListener(name, false, callback);
+  return window._cse_dev_eventEmitter.addListener(name, false, callback);
 }
 
 function events_once(name: string, callback: Callback) {
-  return _devGame._eventEmitter.addListener(name, true, callback);
+  return window._cse_dev_eventEmitter.addListener(name, true, callback);
 }
 
 function events_trigger(name: string, ...args: any[]) {
-  _devGame._eventEmitter.emit(name, ...args);
+  window._cse_dev_eventEmitter.emit(name, ...args);
 }
 
 function events_off(handle: number | EventHandle) {
   if (typeof handle === 'number') {
-    _devGame._eventEmitter.removeListener(handle);
+    window._cse_dev_eventEmitter.removeListener(handle);
   } else {
-    _devGame._eventEmitter.removeListener(handle.id);
+    window._cse_dev_eventEmitter.removeListener(handle.id);
   }
 }
