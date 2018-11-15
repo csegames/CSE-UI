@@ -40,6 +40,11 @@ declare global {
     type: 'kinematic';
   }
 
+  interface ResourceNodeStateModel extends EntityStateModel {
+    type: 'resourceNode';
+    health: CurrentMax;
+  }
+
   interface PlayerStateModel extends EntityStateModel {
     type: 'player';
     race: Race;
@@ -60,7 +65,7 @@ declare global {
     health: ArrayMap<Health>;
   }
 
-  type AnyEntityStateModel = PlayerStateModel | SiegeStateModel | KinematicStateModel;
+  type AnyEntityStateModel = PlayerStateModel | SiegeStateModel | KinematicStateModel | ResourceNodeStateModel;
 
   type PlayerState = Readonly<PlayerStateModel> & Updatable;
   type AnyEntityState = Readonly<AnyEntityStateModel> & Updatable;

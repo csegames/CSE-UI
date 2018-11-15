@@ -216,7 +216,8 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
         }
         return false;
       }
-      case 'siege': {
+      case 'siege':
+      case 'resourceNode': {
         return isEqual(this.state.entity, nextState.entity) === false;
       }
     }
@@ -238,10 +239,11 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
           />
         );
       }
-      case 'siege': {
+      case 'siege':
+      case 'resourceNode': {
         return (
           <SiegeHealthBar
-            state={this.state.entity}
+            state={this.state.entity as SiegeStateModel}
             controlledBy={null}
             showExit={false}
           />

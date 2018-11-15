@@ -34,6 +34,7 @@ export default function<TModel, TType extends TModel & Updatable>(
       } catch {}
       console.groupEnd();
     }
+
     if (!model) {
       if (propertyAccessor()) {
         propertySetter(defaultObject());
@@ -42,7 +43,10 @@ export default function<TModel, TType extends TModel & Updatable>(
       propertySetter(withDefaults(model, defaultObject(), false));
       propertyAccessor().updateEventName = name;
       initUpdatable(propertyAccessor());
+    } else {
+      propertySetter(withDefaults(model, defaultObject(), false));
+      propertyAccessor().updateEventName = name;
     }
-    game.trigger(name, propertyAccessor());
+    game.trigger(name, model);
   });
 }
