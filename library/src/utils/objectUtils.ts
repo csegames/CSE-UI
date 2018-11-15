@@ -79,7 +79,7 @@ window.tryParseJSON = function<T>(json: string, logError: boolean = false): T {
   try {
     return JSON.parse(json);
   } catch (e) {
-    if (logError) console.error(`Failed to parse json. | ${json}`);
+    if (logError || game.debug) console.error(`Failed to parse json. | ${json}`);
     return null;
   }
 };

@@ -136,7 +136,7 @@ export const EntityState_Update = 'entityState.update';
 
 function onReceiveEntityStateUpdate(state: AnyEntityState) {
   if (game.debug) {
-    console.groupCollapsed(`Client Update received | ${EntityState_Update}`);
+    console.groupCollapsed(`Client > ${EntityState_Update}`);
     try {
       console.log(JSON.stringify(state));
     } catch {}

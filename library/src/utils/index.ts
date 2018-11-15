@@ -10,6 +10,7 @@ import './typeUtils';
 import './arrayUtils';
 import './withDefaults';
 import './textUtils';
+import './numberUtils';
 
 export * from './arrayUtils';
 export * from './eventMapper';
@@ -19,6 +20,7 @@ export * from './compare';
 export * from './colorManipulation';
 export * from './searchUtils';
 export * from './textUtils';
+export * from './numberUtils';
 export * from './distance';
 export * from './compareNumbers';
 export * from './time';

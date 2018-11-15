@@ -28,7 +28,7 @@ export default function<TModel, TType extends TModel & Updatable>(
   }
   engine.on(name, (model: TModel) => {
     if (game.debug) {
-      console.groupCollapsed(`Client Update received | ${name}`);
+      console.groupCollapsed(`Client > ${name}`);
       try {
         console.log(JSON.stringify(model));
       } catch {}

@@ -87,7 +87,7 @@ function abilityStateConnector<PropsTypes extends any>() {
           const newAbilityState = {
             ...abilityState,
             type: abilityState ? abilityState.type : AbilityButtonType.Standard,
-            keybind: abilityState ? abilityState.keybind : this.props.abilityInfo.boundKeyName,
+            keybind: abilityState ? abilityState.keyActionID : this.props.abilityInfo.boundKeyName,
             icon: this.props.abilityInfo.icon,
           };
 

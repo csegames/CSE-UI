@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils } from '@csegames/camelot-unchained';
 import { getBloodPercent } from '../lib/healthFunctions';
 
 const Container = styled('div')`
@@ -87,7 +86,7 @@ class BloodBall extends React.Component<BloodBallProps, BloodBallState> {
 
   public shouldComponentUpdate(nextProps: BloodBallProps) {
     return !this.lastUpdatedBloodPercent ||
-      !utils.numEqualsCloseEnough(this.lastUpdatedBloodPercent, getBloodPercent(nextProps.playerState), 1) ||
+      !this.lastUpdatedBloodPercent.floatEquals(getBloodPercent(nextProps.playerState), 1) ||
       nextProps.playerState.isAlive !== this.props.playerState.isAlive;
   }
 

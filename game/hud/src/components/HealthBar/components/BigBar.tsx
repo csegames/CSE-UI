@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils } from '@csegames/camelot-unchained';
 import { BodyParts } from 'lib/PlayerStatus';
 import { getHealthPercent, getWoundsForBodyPart } from '../lib/healthFunctions';
 
@@ -107,9 +106,7 @@ class BigBar extends React.Component<BigBarProps, BigBarState> {
 
   public shouldComponentUpdate(nextProps: BigBarProps, nextState: BigBarState) {
     return !this.healthBarCache ||
-      !utils.numEqualsCloseEnough(
-        getHealthPercent(nextProps.playerState, this.props.bodyPart),
-        this.healthBarCache) ||
+      getHealthPercent(nextProps.playerState, this.props.bodyPart).floatEquals(this.healthBarCache) ||
 
       // Check wounds
       getWoundsForBodyPart(nextProps.playerState, this.props.bodyPart) !==

@@ -11,7 +11,7 @@ declare global {
     id: number;
     type: AbilityButtonType;
     track: AbilityTrack;
-    keybind: number;
+    keyActionID: number;
     boundKeyName: string;
     status: AbilityButtonState;
     error?: AbilityButtonErrorFlag;
@@ -26,7 +26,13 @@ declare global {
 export const AbilityState_Update = 'abilityState.update';
 
 function onReceiveAbilityStateUpdate(state: AbilityState) {
-  if (game.debug) console.log(`received abilityState.update with model | ${JSON.stringify(state)}`);
+  if (game.debug) {
+    console.groupCollapsed(`Client > ${AbilityState_Update}`);
+    try {
+      console.log(JSON.stringify(state));
+    } catch {}
+    console.groupEnd();
+  }
 
   if (!_devGame.abilityStates[state.id]) {
     _devGame.abilityStates[state.id] = state as AbilityState;

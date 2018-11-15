@@ -11,7 +11,7 @@ import engineInit from './_Init';
 declare global {
   interface AbilityBarItem {
     id: number;
-    keybind: number;
+    keyActionID: number;
     boundKeyName: string;
 
     type: AbilityButtonType;

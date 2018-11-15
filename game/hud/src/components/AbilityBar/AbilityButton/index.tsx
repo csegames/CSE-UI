@@ -179,7 +179,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
   }
 
   private performAbility = () => {
-    game.triggerKeyAction(this.props.abilityInfo.keybind);
+    game.triggerKeyAction(this.props.abilityInfo.keyActionID);
   }
 
   private setTimerRing = (info: {
