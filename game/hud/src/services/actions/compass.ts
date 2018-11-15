@@ -12,7 +12,7 @@ export interface CompassData {
 
 export function getCompassData() {
   if (game.selfPlayerState.isReady) {
-    let facing: number = game.selfPlayerState.facing.yaw % 360;
+    let facing: number = game.selfPlayerState.cameraFacing.yaw % 360;
     if (facing < 0) {
       facing = 360 - Math.abs(facing);
     }
@@ -45,7 +45,7 @@ export function getCompassData() {
 
 export function getCompassFacingData() {
   if (game.selfPlayerState.isReady) {
-    let facing: number = game.selfPlayerState.facing.yaw % 360;
+    let facing: number = game.selfPlayerState.cameraFacing.yaw % 360;
     if (facing < 0) {
       facing = 360 - Math.abs(facing);
     }
