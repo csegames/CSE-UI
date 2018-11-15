@@ -469,13 +469,29 @@ function cuAPIShim() {
     ClearKeybind: (button: number, alias: number) => {},
 
     apiVersion: 1,
-    characterID: 'unknown',
+    // characterID: 'unknown',
     debug: false,
     signalRHost: 'https://api.camelotunchained.com/signalr',
-    shardID: 1,
+    // shardID: 1,
   };
 }
 
 export default function() {
-  (window as any).cuAPI = cuAPIShim();
+  (window as any).cuAPI = new Proxy(cuAPIShim(), {
+    get: (obj, key) => {
+
+      if (key === 'characterID') {
+        return game.selfPlayerState.characterID;
+      }
+
+      if (key === 'shardID') {
+        return game.shardID;
+      }
+
+      if (key in obj) {
+        return obj[key];
+      }
+
+    },
+  });
 }

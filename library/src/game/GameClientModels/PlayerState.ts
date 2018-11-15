@@ -12,7 +12,7 @@ import engineInit from './_Init';
 export const SelfPlayer_Update = 'selfPlayerState.update';
 
 declare global {
-  type facing2f = {
+  type Facing2fDegrees = {
     yaw: number;
     pitch: number;
   };
@@ -24,8 +24,8 @@ declare global {
 export interface SelfPlayerStateModel extends PlayerStateModel {
   characterID: string;
   zoneID: string;
-  facing: facing2f;
-  cameraFacing: facing2f;
+  facing: Facing2fDegrees;
+  cameraFacing: Facing2fDegrees;
 
   /**
    * Request to respawn at a specific location if a spawnLocationID is provided.
