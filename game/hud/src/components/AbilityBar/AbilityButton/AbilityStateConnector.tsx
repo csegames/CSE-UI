@@ -35,16 +35,7 @@ function abilityStateConnector<PropsTypes extends any>() {
       }
 
       public render() {
-        const abilityState = this.state.abilityState || {
-          id: this.props.abilityInfo.id,
-          type: this.props.abilityInfo.type,
-          keybind: this.props.abilityInfo.keyActionID,
-          boundKeyName: this.props.abilityInfo.boundKeyName,
-          icon: this.props.abilityInfo.icon,
-          track: this.props.abilityInfo.track,
-          status: this.props.abilityInfo.status,
-          isReady: true,
-        };
+        const abilityState = this.state.abilityState || this.props.abilityInfo;
         return (
           <WrappedComponent
             {...this.props}
