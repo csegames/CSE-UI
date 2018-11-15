@@ -93,6 +93,11 @@ export default function() {
     get: (obj, key) => {
 
       if (key in _devGame._cse_dev_selfPlayerState) {
+        if (typeof _devGame._cse_dev_selfPlayerState[key] === 'function') {
+          return function(...args: any[]) {
+            return _devGame._cse_dev_selfPlayerState[key](...args);
+          };
+        }
         return _devGame._cse_dev_selfPlayerState[key];
       }
 

@@ -18,7 +18,7 @@ export default () => {
   });
 
   registerSlashCommand('respawn', 'respawn your character', (id?: string) => {
-    game.selfPlayerState.respawn(id);
+    game.selfPlayerState.respawn(id || '');
   });
 
   /**
