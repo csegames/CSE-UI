@@ -32,6 +32,8 @@ export interface AbilityBarState {
   clientAbilities: AbilityBarItem[];
 }
 
+export type InitialAbilityInfo = ApiAbilityInfo & AbilityBarItem;
+
 export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState> {
   constructor(props: AbilityBarProps) {
     super(props);
@@ -47,7 +49,7 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
     return (
       <Container className={'ability-bar'}>
         {clientAbilities.map((clientAbility: AbilityBarItem, index: number) => {
-          const abilityInfo = {
+          const abilityInfo: InitialAbilityInfo = {
             ..._.find(apiAbilities.data, (s: ApiAbilityInfo) => s.id === clientAbility.id),
             ...clientAbility,
           };

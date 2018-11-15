@@ -48,9 +48,5 @@ export function makeGlowPathFor(end: number,
 }
 
 export function getTimingEnd(timing: DeepImmutableObject<Timing>) {
-  return timing.start + timing.duration;
-}
-
-export function getDisruptionEnd(disruption: DeepImmutableObject<Timing>) {
-  return disruption.start + disruption.duration;
+  return timing.duration * 1000;
 }

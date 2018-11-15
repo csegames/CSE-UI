@@ -39,8 +39,12 @@ function onReceiveAbilityStateUpdate(state: AbilityState) {
     _devGame.abilityStates[state.id].updateEventName = `${AbilityState_Update}_${state.id}`;
     // init Updatable.
     initUpdatable(state);
+  } else {
+    _devGame.abilityStates[state.id] = state as AbilityState;
+    _devGame.abilityStates[state.id].updateEventName = `${AbilityState_Update}_${state.id}`;
   }
-  executeUpdateCallbacks(_devGame.abilityStates[state.id]);
+
+  executeUpdateCallbacks(state);
 }
 
 export default function() {

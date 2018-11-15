@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { includes } from 'lodash';
 import { Updatable, initUpdatable } from './_Updatable';
 
 /**
@@ -27,6 +28,10 @@ export default function<TModel, TType extends TModel & Updatable>(
     propertySetter(defaultObject());
   }
   engine.on(name, (model: TModel) => {
+    if (includes(name, 'ability')) {
+      console.log('CLIENNTT - ' + name);
+      console.log(JSON.stringify(model));
+    }
     if (game.debug) {
       console.groupCollapsed(`Client > ${name}`);
       try {

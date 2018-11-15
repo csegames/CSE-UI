@@ -7,10 +7,11 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
+import { InitialAbilityInfo } from '../index';
 import { AbilityButtonInfo } from './AbilityButtonView';
 
 export interface AbilityStateConnectorProps {
-  abilityInfo: any;
+  abilityInfo: InitialAbilityInfo;
   index: number;
 }
 
@@ -36,18 +37,18 @@ function abilityStateConnector<PropsTypes extends any>() {
       public render() {
         const abilityState = this.state.abilityState || {
           id: this.props.abilityInfo.id,
-          type: AbilityButtonType.Standard,
-          keybind: 0,
+          type: this.props.abilityInfo.type,
+          keybind: this.props.abilityInfo.keyActionID,
           boundKeyName: this.props.abilityInfo.boundKeyName,
           icon: this.props.abilityInfo.icon,
-          track: AbilityTrack.PrimaryWeapon,
-          status: AbilityButtonState.Unusable,
-          isReady: false,
+          track: this.props.abilityInfo.track,
+          status: this.props.abilityInfo.status,
+          isReady: true,
         };
         return (
           <WrappedComponent
             {...this.props}
-            AbilityState={abilityState}
+            abilityInfo={abilityState}
             name={this.props.abilityInfo.name}
             description={this.props.abilityInfo.notes}
           />
@@ -96,10 +97,10 @@ function abilityStateConnector<PropsTypes extends any>() {
       }
 
       private handleClientAbilityStateChanged = () => {
-        const ability = game.abilityStates[this.props.abilityInfo.id];
-        if (ability) {
+        const newAbilityState = game.abilityStates[this.props.abilityInfo.id];
+        if (newAbilityState) {
           const abilityState = {
-            ...ability,
+            ...newAbilityState,
             icon: this.props.abilityInfo.icon,
           };
 

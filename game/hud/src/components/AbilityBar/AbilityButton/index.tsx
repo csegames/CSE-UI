@@ -91,23 +91,21 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
 
       let outerPath;
       let innerPath;
-
       // Includes a timer, render timer in outer circle
-      const disruptionEnd = disruption.max;
       if (timing) {
-        if (!disruption || disruption.current < disruptionEnd) {
+        if (!disruption || disruption.max === 0 || disruption.current < disruption.max) {
           // Set timer ring
           innerPath = makeGlowPathFor(getTimingEnd(timing), this.state.inner.current, x, y, innerRadius, innerDirection);
         }
       }
 
-      if (disruption && disruptionEnd > 0) {
+      if (disruption && disruption.max > 0) {
         // Ability has been disrupted, override inner ring with disruption ring and show outer ring effect
-        if (disruption.current >= disruptionEnd) {
+        if (disruption.current >= disruption.max) {
           classNames.push(CLASS_NAMES.INTERRUPTED_STATE);
           innerPath = makeGlowPathFor(500, this.state.inner.current, x, y, innerRadius, innerDirection);
         }
-        outerPath = makeGlowPathFor(disruptionEnd, this.state.outer.current || 0, x, y, outerRadius, outerDirection);
+        outerPath = makeGlowPathFor(disruption.max, this.state.outer.current || 0, x, y, outerRadius, outerDirection);
       } else {
         if ((props.abilityInfo.status & AbilityButtonState.Held) ||
             (props.abilityInfo.type & AbilityButtonType.Modal)) {
@@ -156,7 +154,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
   }
 
   public componentWillReceiveProps(nextProps: AbilityButtonProps) {
-    if (!this.updateHandle && nextProps.abilityInfo && nextProps.abilityInfo.id) {
+    if (!this.updateHandle && nextProps.abilityInfo && typeof nextProps.abilityInfo.id === 'number') {
       this.updateHandle = game.abilityStates[nextProps.abilityInfo.id].onUpdated(this.processEvent);
     }
   }
@@ -191,7 +189,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
   }) => {
     const { id, timer, clockwise, shouldPlayHit, overrideCurrentTimer } = info;
     let ring = this.rings[id];
-    const timerEnd = getTimingEnd(timer);
+    const timerEnd = ((timer.start + timer.duration) - game.worldTime) * 1000;
 
     // Begin a new timer ring animation. If overrideCurrentTimer, then stop current timer, and begin new one.
     if (!ring || overrideCurrentTimer) {
@@ -204,9 +202,9 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
         this.innerTimeout = setTimeout(() => this.ringTimerTick(id, shouldPlayHit), 66);
       }
       ring = this.rings[id] = {
-        event: { when: Date.now(), remaining: timerEnd - timer.start, direction: 1, clockwise },
+        event: { when: Date.now(), remaining: timerEnd, direction: 1, clockwise },
       };
-      this.setRingState(id, timerEnd - timer.start);
+      this.setRingState(id, timerEnd);
     }
   }
 
@@ -289,14 +287,13 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
                               disruption: CurrentMax,
                               isClockwise: boolean,
                               shouldPlayHit?: boolean) => {
-    const disruptionEnd = disruption.max;
-    if (timing && (!disruption || disruption.current < disruptionEnd)) {
+    if (timing && (!disruption || disruption.current < disruption.max)) {
       // Run timer animation, skill has not been disrupted
       this.setTimerRing({ id: INNER, timer: timing, clockwise: isClockwise, shouldPlayHit });
     }
 
     if (disruption) {
-      if (disruption.current >= disruptionEnd) {
+      if (disruption.current >= disruption.max) {
         // Skill has been disrupted, override the inner ring data with disrupted effect
         this.setTimerRing({ id: INNER, timer: { start: 0, duration: 500 },
           clockwise: !CLOCKWISE, overrideCurrentTimer: true });
