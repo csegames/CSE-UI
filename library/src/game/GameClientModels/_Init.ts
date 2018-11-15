@@ -47,6 +47,6 @@ export default function<TModel, TType extends TModel & Updatable>(
       propertySetter(withDefaults(model, defaultObject(), false));
       propertyAccessor().updateEventName = name;
     }
-    game.trigger(name, model);
+    game.trigger(name, propertyAccessor());
   });
 }

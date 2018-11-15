@@ -101,7 +101,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
         }
       }
 
-      if (disruption) {
+      if (disruption && disruptionEnd > 0) {
         // Ability has been disrupted, override inner ring with disruption ring and show outer ring effect
         if (disruption.current >= disruptionEnd) {
           classNames.push(CLASS_NAMES.INTERRUPTED_STATE);
