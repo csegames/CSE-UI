@@ -13,7 +13,7 @@ declare global {
     id: number;
     keyActionID: number;
     boundKeyName: string;
-
+    status: AbilityButtonState;
     type: AbilityButtonType;
     track: AbilityTrack;
     error: string;
