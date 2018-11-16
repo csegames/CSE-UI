@@ -4,7 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { initUpdatable, Updatable, executeUpdateCallbacks } from './_Updatable';
+import {
+  initUpdatable,
+  Updatable,
+  executeUpdateCallbacks,
+} from './_Updatable';
 
 declare global {
   interface EntityStateModel {
@@ -144,10 +148,13 @@ function onReceiveEntityStateUpdate(state: AnyEntityState) {
   }
 
   if (typeof _devGame.entities[state.entityID] === 'undefined') {
-    _devGame.entities[state.entityID] = state;
+    _devGame.entities[state.entityID] = cloneDeep(state);
     _devGame.entities[state.entityID].updateEventName = EntityState_Update;
     // init Updatable.
-    initUpdatable(state);
+    initUpdatable(_devGame.entities[state.entityID]);
+  } else {
+    _devGame.entities[state.entityID] = cloneDeep(state);
+    _devGame.entities[state.entityID].updateEventName = EntityState_Update;
   }
 
   if (state.entityID === game.selfPlayerState.entityID) {

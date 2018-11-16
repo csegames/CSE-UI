@@ -112,7 +112,7 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
         className={isWeapon ? 'weapon-slot' : ''}
         onMouseOver={this.onMouseOverItemSlot}
         onMouseLeave={this.onMouseLeave}
-        onContextMenu={this.unequipItem}>
+        onMouseDown={this.unequipItem}>
           <DraggableEquippedItem
             disableDrag={this.props.disableDrag}
             slotName={this.props.slot.slotName}
@@ -127,7 +127,8 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     return !isEqual(this.state, nextState) || !isEqual(this.props, nextProps);
   }
 
-  private unequipItem = () => {
+  private unequipItem = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.button !== 2) return;
     // Fires off onUnequipItem event
     if (!this.props.providedEquippedItem) return;
 

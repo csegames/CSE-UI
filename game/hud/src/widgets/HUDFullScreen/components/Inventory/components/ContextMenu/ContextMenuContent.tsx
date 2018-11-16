@@ -6,9 +6,10 @@
 
 import * as React from 'react';
 import { includes } from 'lodash';
-import { webAPI, ContextMenuContentProps } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 
 import ContextMenuAction from './ContextMenuAction';
+import { hideContextMenu } from 'actions/contextMenu';
 import eventNames, { UpdateInventoryItemsPayload, EquipItemPayload } from '../../../../lib/eventNames';
 import {
   GearSlotDefRef,
@@ -31,11 +32,12 @@ export interface InjectedContextedMenuContentProps {
 
 export interface ContextMenuProps {
   item: InventoryItem.Fragment;
-  contextMenuProps: ContextMenuContentProps;
   syncWithServer: () => void;
   containerID: string[];
   drawerID: string;
   onMoveStack: (item: InventoryItem.Fragment, amount: number) => void;
+  onContextMenuShow: () => void;
+  onContextMenuHide: () => void;
 }
 
 export type ContextMenuComponentProps = InjectedContextedMenuContentProps & ContextMenuProps;
@@ -104,16 +106,24 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     );
   }
 
+  public componentDidMount() {
+    this.props.onContextMenuShow();
+  }
+
   public componentDidUpdate(prevProps: ContextMenuComponentProps) {
     const { visibleComponentLeft, visibleComponentRight } = this.props;
     if (includes(prevProps.visibleComponentRight, 'inventory') && !includes(visibleComponentRight, 'inventory') ||
         includes(prevProps.visibleComponentLeft, 'inventory') && !includes(visibleComponentLeft, 'inventory')) {
-      this.props.contextMenuProps.close();
+      hideContextMenu();
     }
   }
 
+  public componentWillUnmount() {
+    this.props.onContextMenuHide();
+  }
+
   private onEquipItem = (gearSlots: GearSlotDefRef.Fragment[]) => {
-    const { item, contextMenuProps } = this.props;
+    const { item } = this.props;
     const itemDataTransfer = getInventoryDataTransfer({
       item,
       position: item.location.inContainer ? item.location.inContainer.position : item.location.inventory.position,
@@ -127,11 +137,11 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     };
     game.trigger(eventNames.onEquipItem, payload);
     game.trigger(eventNames.onDehighlightSlots);
-    contextMenuProps.close();
+    hideContextMenu();
   }
 
   private onDropItem = () => {
-    const { item, contextMenuProps, containerID, drawerID } = this.props;
+    const { item, containerID, drawerID } = this.props;
     const position = item.location.inContainer ? item.location.inContainer.position : item.location.inventory.position;
     const dataTransfer = getInventoryDataTransfer({
       item,
@@ -147,7 +157,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     };
     game.trigger(eventNames.updateInventoryItems, payload);
     game.trigger(eventNames.onDropItem, payload);
-    contextMenuProps.close();
+    hideContextMenu();
   }
 
   private onDeployItem = (action?: InventoryItem.Actions) => {
@@ -204,7 +214,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     switch (action.uIReaction) {
       case 'CloseInventory': {
         this.closeInventory();
-        this.props.contextMenuProps.close();
+        hideContextMenu();
         break;
       }
 

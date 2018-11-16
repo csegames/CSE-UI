@@ -19,6 +19,7 @@ import { inviteToTrade } from './trade';
 // BASIC MANAGEMENT
 
 export const ACTIVATE_CONTEXT_MENU = 'activate-context-menu';
+export const ACTIVATE_CONTEXT_MENU_CONTENT = 'active-context-menu-content';
 export const HIDE_CONTEXT_MENU = 'hide-context-menu';
 
 export type MenuItem = {
@@ -37,6 +38,20 @@ export function onShowContextMenu(callback: (items: MenuItem[], event: MouseEven
 export function offShowContextMenu(handle: number) {
   game.off(handle);
 }
+
+// Show context menu content
+export function showContextMenuContent(content: JSX.Element, event: MouseEvent) {
+  if (content) game.trigger(ACTIVATE_CONTEXT_MENU_CONTENT, content, event);
+}
+
+export function onShowContextMenuContent(callback: (content: JSX.Element, event: MouseEvent) => void) {
+  return game.on(ACTIVATE_CONTEXT_MENU_CONTENT, callback);
+}
+
+export function offShowContextMenuContent(handle: number) {
+  game.off(handle);
+}
+
 
 export function hideContextMenu() {
   game.trigger(HIDE_CONTEXT_MENU);

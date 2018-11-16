@@ -26,15 +26,17 @@ const Menu = styled('ol')`
   position: fixed;
   margin: 0;
   padding: 0;
+  z-index: 10001;
 `;
 
 const Item = styled('li')`
   padding: 5px 10px;
   margin: 0;
   color: #ececec;
-  :hover {
-    background: #777;
-    cursor: pointer;
+  pointer-events: all;
+  cursor: pointer;
+  &:hover {
+    background-color: #888;
   }
 `;
 
@@ -56,6 +58,7 @@ export type Props = {
 export type State = {
   show: boolean;
   styledPosition: StylePosition;
+  content: JSX.Element;
   items: MenuItem[];
 };
 
@@ -93,12 +96,14 @@ export class ContextMenu extends React.Component<Props, State> {
     this.state = {
       show: false,
       items: [],
+      content: null,
       styledPosition: {
         right: '-1000px',
         bottom: '-1000px',
       },
     };
     this.eventHandles.push(actions.onShowContextMenu(this.onShowContextMenu));
+    this.eventHandles.push(actions.onShowContextMenuContent(this.onShowContextMenuContent));
     this.eventHandles.push(actions.onHideContextMenu(this.hide));
   }
 
@@ -110,15 +115,13 @@ export class ContextMenu extends React.Component<Props, State> {
     if (this.state.show === false) return null;
 
     return (
-      <Container onMouseDown={this.hide} onKeyDown={this.hide}>
-        <Menu style={this.state.styledPosition}>
+      <Container onMouseDown={this.hide}>
+        <Menu onMouseDown={(e: MouseEvent) => e.stopPropagation()} style={this.state.styledPosition}>
+          {this.state.content && this.state.content}
           {
             this.state.items &&
               this.state.items.map(item => <Item key={item.title}
                 onMouseDown={(event: MouseEvent) => {
-                  event.stopPropagation();
-                }}
-                onClick={(event: MouseEvent) => {
                   event.stopPropagation();
                   this.hide();
                   item.onSelected();
@@ -142,10 +145,31 @@ export class ContextMenu extends React.Component<Props, State> {
     });
   }
 
+  private onShowContextMenuContent = (content: JSX.Element, event: MouseEvent) => {
+    if (!content) return;
+
+    this.setState({
+      show: true,
+      styledPosition: this.getStyledPosition(event),
+      items: [],
+      content,
+    });
+  }
+
   private onShowContextMenu = (items: MenuItem[], event: MouseEvent) => {
     // If there are no items, dont show context menu
     if (isEmpty(items)) return;
 
+    this.setState({
+      show: true,
+      styledPosition: this.getStyledPosition(event),
+      items,
+      content: null,
+    });
+  }
+
+
+  private getStyledPosition = (event: MouseEvent) => {
     let styledPosition: StylePosition = {};
 
     // using props initialEvent figure out position
@@ -181,10 +205,6 @@ export class ContextMenu extends React.Component<Props, State> {
       }
     }
 
-    this.setState({
-      show: true,
-      styledPosition,
-      items,
-    });
+    return styledPosition;
   }
 }

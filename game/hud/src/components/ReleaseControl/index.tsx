@@ -55,9 +55,7 @@ class ReleaseControl extends React.Component<ReleaseControlButtonProps, ReleaseC
   public render() {
     if (this.state.visible) {
       return (
-        <Container className={this.props.className} onClick={this.sendCommand}>
-          Exit Siege Engine
-        </Container>
+        <Container className={this.props.className} onClick={this.sendCommand}>Exit Siege Engine</Container>
       );
     } else { return null; }
   }
@@ -65,8 +63,11 @@ class ReleaseControl extends React.Component<ReleaseControlButtonProps, ReleaseC
   public componentDidMount() {
     this.eventHandles.push(game.selfPlayerState.onUpdated(() => {
       if (game.selfPlayerState.controlledEntityID &&
-        game.entities[game.selfPlayerState.controlledEntityID].type === 'siege') {
+          game.entities[game.selfPlayerState.controlledEntityID] &&
+          game.entities[game.selfPlayerState.controlledEntityID].type === 'siege') {
         this.setState({ visible: true });
+      } else if (this.state.visible) {
+        this.setState({ visible: false });
       }
     }));
   }

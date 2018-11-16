@@ -7,7 +7,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { ContextMenu } from '@csegames/camelot-unchained';
 
 import { DrawerCurrentStats } from './Containers/Drawer';
 import ContextMenuContent from './ContextMenu/ContextMenuContent';
@@ -22,6 +21,7 @@ import {
 import { hasEquipmentPermissions, getInventoryDataTransfer, isRightOrLeftItem } from '../../../lib/utils';
 import eventNames, { EquipItemPayload, InventoryDataTransfer } from '../../../lib/eventNames';
 import { SlotType, SlotItemDefType } from '../../../lib/itemInterfaces';
+import { showContextMenuContent } from 'actions/contextMenu';
 
 declare const toastr: any;
 
@@ -92,45 +92,29 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     const id = item.itemID || item.groupStackHashID;
 
     return id ? (
-      <Container onContextMenu={this.onRightClick}>
-        <ContextMenu
-          onContextMenuContentShow={!this.props.onRightClick && this.onContextMenuContentShow}
-          onContextMenuContentHide={!this.props.onRightClick && this.onContextMenuContentHide}
-          content={props =>
-            !item.disableContextMenu &&
-              <ContextMenuContent
-                item={item.item || (item.stackedItems && item.stackedItems[0])}
-                onMoveStack={this.props.onMoveStack}
-                contextMenuProps={props}
-                syncWithServer={this.props.syncWithServer}
-                containerID={typeof item.slotIndex !== 'number' && item.slotIndex.containerID}
-                drawerID={typeof item.slotIndex !== 'number' && item.slotIndex.drawerID}
-              />
-          }
-        >
-          <ItemWrapper
-            onClick={usesContainer ? this.onToggleContainer : null}
-            onMouseOver={this.onMouseOver}
-            onMouseLeave={this.onMouseLeave}
-            onDoubleClick={!item.disableEquip && !item.disabled ? this.onEquipItem : () => {}}>
-              <ItemImage
-                src={this.props.showGraySlots ? 'images/inventory/item-slot-grey.png' : 'images/inventory/item-slot.png'}
-              />
-              <DraggableItemComponent
-                item={item}
-                filtering={this.props.filtering}
-                onDrop={this.props.onDropOnZone}
-                onDragStart={this.props.hideTooltip}
-                onDragEnd={() => this.mouseOver = false}
-                containerID={typeof item.slotIndex !== 'number' && item.slotIndex.containerID}
-                drawerID={typeof item.slotIndex !== 'number' && item.slotIndex.drawerID}
-                containerPermissions={item.containerPermissions}
-                containerIsOpen={this.props.containerIsOpen}
-                drawerMaxStats={this.props.drawerMaxStats}
-                drawerCurrentStats={this.props.drawerCurrentStats}
-              />
-          </ItemWrapper>
-        </ContextMenu>
+      <Container onMouseDown={this.onRightClick}>
+        <ItemWrapper
+          onClick={usesContainer ? this.onToggleContainer : null}
+          onMouseOver={this.onMouseOver}
+          onMouseLeave={this.onMouseLeave}
+          onDoubleClick={!item.disableEquip && !item.disabled ? this.onEquipItem : () => {}}>
+            <ItemImage
+              src={this.props.showGraySlots ? 'images/inventory/item-slot-grey.png' : 'images/inventory/item-slot.png'}
+            />
+            <DraggableItemComponent
+              item={item}
+              filtering={this.props.filtering}
+              onDrop={this.props.onDropOnZone}
+              onDragStart={this.props.hideTooltip}
+              onDragEnd={() => this.mouseOver = false}
+              containerID={typeof item.slotIndex !== 'number' && item.slotIndex.containerID}
+              drawerID={typeof item.slotIndex !== 'number' && item.slotIndex.drawerID}
+              containerPermissions={item.containerPermissions}
+              containerIsOpen={this.props.containerIsOpen}
+              drawerMaxStats={this.props.drawerMaxStats}
+              drawerCurrentStats={this.props.drawerCurrentStats}
+            />
+        </ItemWrapper>
       </Container>
     ) :
       <ItemWrapper>
@@ -159,10 +143,27 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     !_.isEqual(this.props.item, nextProps.item);
   }
 
-  private onRightClick = () => {
-    if (this.props.onRightClick) {
-      this.onMouseLeave();
-      this.props.onRightClick(this.props.item.item);
+  private onRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.button === 2) {
+      if (this.props.onRightClick) {
+        this.onMouseLeave();
+        this.props.onRightClick(this.props.item.item);
+      } else {
+        const { item } = this.props;
+        if (!item.disableContextMenu && !item.disabled) {
+          showContextMenuContent(
+            <ContextMenuContent
+              item={item.item || (item.stackedItems && item.stackedItems[0])}
+              syncWithServer={this.props.syncWithServer}
+              containerID={typeof item.slotIndex !== 'number' && item.slotIndex.containerID}
+              drawerID={typeof item.slotIndex !== 'number' && item.slotIndex.drawerID}
+              onMoveStack={() => {}}
+              onContextMenuShow={this.onContextMenuContentShow}
+              onContextMenuHide={this.onContextMenuContentHide}
+            />
+          , e as any);
+        }
+      }
     }
   }
 
@@ -230,9 +231,6 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
       if (!hasEquipmentPermissions(item)) {
         // Item does not have equip permissions
         if (item.equiprequirement && item.equiprequirement.requirementDescription) {
-          console.log('HELLOOOO');
-          console.log(item.equiprequirement.errorDescription);
-          console.log(item.equiprequirement.requirementDescription);
           toastr.error(item.equiprequirement.requirementDescription, 'Oh No!', { timeout: 3000 });
         } else {
           toastr.error('You do not have equip permissions on this item', 'Oh No!', { timeout: 3000 });

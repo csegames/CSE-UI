@@ -14,6 +14,7 @@ import { TabPanel } from '@csegames/camelot-unchained/lib/components';
 import { GraphQL, GraphQLData } from '@csegames/camelot-unchained/lib/graphql/react';
 import { GraphQLQuery } from '@csegames/camelot-unchained/lib/graphql/query';
 import HUDZOrder from 'services/session/HUDZOrder';
+import { CloseButton } from 'UI/CloseButton';
 
 type Content = string | ObjectMap<any>;
 
@@ -331,20 +332,10 @@ const Container = styled('div')`
   pointer-events: none;
 `;
 
-const CloseButton = styled('a')`
+const CloseButtonPosition = styled('div')`
   position: absolute;
-  right: 15px;
-  top: 0px;
-  display: flex;
-  color: #cccccc !important;
-  width: 18px;
-  height: 18px;
-  -webkit-transition: none !important;
-  transition: none !important;
-  &:hover {
-    color: white !important;
-    font-weight: bold;
-  }
+  top: 5px;
+  right: 5px;
 `;
 
 const MaximizeButton = styled('a')`
@@ -390,14 +381,15 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
             }}>
             <div style={{ position: 'relative' }}>
               {page.showCloseButton ?
+              <CloseButtonPosition>
                 <CloseButton
-                  href={'#'}
                   onClick={() => this.setState({
                     [k]: {
                       ...page,
                       visible: false,
                     },
-                  })}>✕</CloseButton> : null}
+                  })} />
+                </CloseButtonPosition> : null}
                 {page.showMaximizeButton ?
                   <MaximizeButton
                     href={'#'}

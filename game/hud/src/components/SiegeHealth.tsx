@@ -98,7 +98,10 @@ const AlignRight = (props: {children: any}) => {
   return <div style={{ display: 'flex', justifyContent: 'flex-end' }}>{props.children}</div>;
 };
 
-export const SiegeHealthBar = (props: {state: SiegeStateModel, controlledBy: string | null, showExit: boolean}) => {
+export const SiegeHealthBar = (props: {
+  state: SiegeStateModel | ResourceNodeStateModel,
+  controlledBy: string | null, showExit: boolean,
+}) => {
   return (
     <div style={{
       width: '200px',
@@ -226,7 +229,6 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
   public render() {
     if (this.state.entity === null) return null;
     if (this.state.entity.type === 'player' && this.state.entity.controlledEntityID === '') return null;
-
     switch (this.state.entity.type) {
       case 'player': {
         const controlled = game.entities && game.entities[this.state.entity.controlledEntityID];
@@ -239,11 +241,19 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
           />
         );
       }
-      case 'siege':
-      case 'resourceNode': {
+      case 'siege': {
         return (
           <SiegeHealthBar
             state={this.state.entity as SiegeStateModel}
+            controlledBy={this.state.entity.controllingEntityID}
+            showExit={this.state.entity.controllingEntityID === game.selfPlayerState.entityID}
+          />
+        );
+      }
+      case 'resourceNode': {
+        return (
+          <SiegeHealthBar
+            state={this.state.entity as ResourceNodeStateModel}
             controlledBy={null}
             showExit={false}
           />

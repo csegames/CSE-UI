@@ -41,7 +41,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   public render() {
     if (!this.state.playerState || this.state.playerState.type !== 'player') return null;
     return (
-      <Container onContextMenu={this.handleContextMenu}>
+      <Container onMouseDown={this.handleContextMenu}>
         <HealthBar type='compact' playerState={this.state.playerState} />
       </Container>
     );
@@ -67,8 +67,9 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 
   private handleContextMenu = (event: MouseEvent) => {
-    event.preventDefault();
-    showSelfContextMenu(this.state.playerState, event);
+    if (event.button === 2) {
+      showSelfContextMenu(this.state.playerState, event);
+    }
   }
 }
 

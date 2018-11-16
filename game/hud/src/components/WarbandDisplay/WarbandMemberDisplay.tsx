@@ -36,7 +36,7 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
       <Container
         key={this.props.member.entityID}
         onClick={this.onClickContainer}
-        onContextMenu={this.handleContextMenu}>
+        onMouseDown={this.handleContextMenu}>
         <HealthBar type='mini' playerState={this.props.member as any} />
       </Container>
     );
@@ -51,8 +51,9 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
   }
 
   private handleContextMenu = (event: MouseEvent) => {
-    event.preventDefault();
-    showFriendlyTargetContextMenu(this.props.member, event);
+    if (event.button === 2) {
+      showFriendlyTargetContextMenu(this.props.member, event);
+    }
   }
 }
 

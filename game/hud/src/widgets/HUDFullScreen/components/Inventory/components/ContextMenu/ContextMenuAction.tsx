@@ -12,6 +12,7 @@ import styled from 'react-emotion';
 import { utils } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { InventoryItem, ContextMenuActionGQL } from 'gql/interfaces';
+import { hideTooltip } from 'actions/tooltips';
 
 declare const toastr: any;
 
@@ -40,8 +41,7 @@ const Button = styled('div')`
   opacity: ${(props: any) => props.disabled ? 0.5 : 1};
 
   &:hover {
-    -webkit-filter: brightness(120%);
-    filter: brightness(120%);
+    background-color: #888;
   }
 
   &:active {
@@ -85,8 +85,9 @@ class ContextMenuAction extends React.Component<Props, State> {
       id: this.props.itemId,
       shardID: game.shardID,
     };
+    const isDisabled = shouldQuery || cooldownLeft !== '' || (action && !action.enabled);
     return (action && !action.enabled && !action.showWhenDisabled) ? null : (
-      <Button disabled={shouldQuery || cooldownLeft !== '' || (action && !action.enabled)} onClick={this.onActionClick}>
+      <Button disabled={isDisabled} onMouseDown={this.onActionClick}>
         <div>{name}</div>
         {shouldQuery && <GraphQL query={{ query, variables }} onQueryResult={this.handleQueryResult} />}
         <CooldownText>{cooldownLeft !== '' ? `${cooldownLeft}` : null}</CooldownText>
@@ -121,6 +122,7 @@ class ContextMenuAction extends React.Component<Props, State> {
 
   private onActionClick = () => {
     const { action } = this.props;
+    hideTooltip();
     if (action) {
       if (!action.enabled || this.state.cooldownLeft !== '') {
         // Handle disabled action button
