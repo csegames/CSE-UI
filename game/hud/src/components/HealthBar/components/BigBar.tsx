@@ -106,7 +106,7 @@ class BigBar extends React.Component<BigBarProps, BigBarState> {
 
   public shouldComponentUpdate(nextProps: BigBarProps, nextState: BigBarState) {
     return !this.healthBarCache ||
-      getHealthPercent(nextProps.playerState, this.props.bodyPart).floatEquals(this.healthBarCache) ||
+      !getHealthPercent(nextProps.playerState, this.props.bodyPart).floatEquals(this.healthBarCache) ||
 
       // Check wounds
       getWoundsForBodyPart(nextProps.playerState, this.props.bodyPart) !==

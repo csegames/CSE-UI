@@ -53,7 +53,7 @@ class StaminaBar extends React.Component<StaminaBarProps> {
 
   public shouldComponentUpdate(nextProps: StaminaBarProps) {
     return !this.lastUpdatedStaminaPercent ||
-      !utils.numEqualsCloseEnough(this.lastUpdatedStaminaPercent, getStaminaPercent(nextProps.playerState), 1) ||
+      !getStaminaPercent(nextProps.playerState).floatEquals(1) ||
       nextProps.playerState.isAlive !== this.props.playerState.isAlive;
   }
 

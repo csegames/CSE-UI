@@ -104,8 +104,7 @@ class SmallBar extends React.Component<SmallBarProps, SmallBarState> {
 
   public shouldComponentUpdate(nextProps: SmallBarProps, nextState: SmallBarState) {
     return !this.healthPercentCache ||
-      !utils.numEqualsCloseEnough(this.healthPercentCache,
-      getHealthPercent(nextProps.playerState, this.props.bodyPart)) ||
+      !getHealthPercent(nextProps.playerState, this.props.bodyPart).floatEquals(this.healthPercentCache) ||
 
       // Check wounds
       getWoundsForBodyPart(nextProps.playerState, this.props.bodyPart) !==
