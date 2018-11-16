@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { utils } from '@csegames/camelot-unchained';
 import { getStaminaPercent } from '../lib/healthFunctions';
 
 const Container = styled('div')`
@@ -53,7 +52,7 @@ class StaminaBar extends React.Component<StaminaBarProps> {
 
   public shouldComponentUpdate(nextProps: StaminaBarProps) {
     return !this.lastUpdatedStaminaPercent ||
-      !getStaminaPercent(nextProps.playerState).floatEquals(1) ||
+      !getStaminaPercent(nextProps.playerState).floatEquals(this.lastUpdatedStaminaPercent, 1) ||
       nextProps.playerState.isAlive !== this.props.playerState.isAlive;
   }
 
