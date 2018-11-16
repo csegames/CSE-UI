@@ -64,6 +64,8 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
   private hitTimeout: any;
   private outerTimeout: any;
   private innerTimeout: any;
+  private innerRingTimingEnd: number = 0;
+  private outerRingTimingEnd: number = 0;
 
   constructor(props: AbilityButtonProps) {
     super(props);
@@ -92,10 +94,10 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
       let outerPath;
       let innerPath;
       // Includes a timer, render timer in outer circle
-      if (timing) {
+      if (timing && this.innerRingTimingEnd > 0) {
         if (!disruption || disruption.max === 0 || disruption.current < disruption.max) {
           // Set timer ring
-          innerPath = makeGlowPathFor(getTimingEnd(timing), this.state.inner.current, x, y, innerRadius, innerDirection);
+          innerPath = makeGlowPathFor(this.innerRingTimingEnd, this.state.inner.current, x, y, innerRadius, innerDirection);
         }
       }
 
@@ -189,22 +191,27 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
   }) => {
     const { id, timer, clockwise, shouldPlayHit, overrideCurrentTimer } = info;
     let ring = this.rings[id];
-    const timerEnd = ((timer.start + timer.duration) - game.worldTime) * 1000;
 
     // Begin a new timer ring animation. If overrideCurrentTimer, then stop current timer, and begin new one.
     if (!ring || overrideCurrentTimer) {
       if (id === OUTER) {
         clearTimeout(this.outerTimeout);
         this.outerTimeout = setTimeout(() => this.ringTimerTick(id, shouldPlayHit), 66);
+        this.outerRingTimingEnd = getTimingEnd(timer);
+        ring = this.rings[id] = {
+          event: { when: Date.now(), remaining: this.outerRingTimingEnd, direction: 1, clockwise },
+        };
+        this.setRingState(id, this.outerRingTimingEnd);
       }
       if (id === INNER) {
         clearTimeout(this.innerTimeout);
         this.innerTimeout = setTimeout(() => this.ringTimerTick(id, shouldPlayHit), 66);
+        this.innerRingTimingEnd = getTimingEnd(timer);
+        ring = this.rings[id] = {
+          event: { when: Date.now(), remaining: this.innerRingTimingEnd, direction: 1, clockwise },
+        };
+        this.setRingState(id, this.innerRingTimingEnd);
       }
-      ring = this.rings[id] = {
-        event: { when: Date.now(), remaining: timerEnd, direction: 1, clockwise },
-      };
-      this.setRingState(id, timerEnd);
     }
   }
 
@@ -272,11 +279,13 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
       clearTimeout(this.outerTimeout);
       this.outerTimeout = null;
       this.rings[id] = undefined;
+      this.outerRingTimingEnd = 0;
     }
     if (id === INNER && this.innerTimeout) {
       clearTimeout(this.innerTimeout);
       this.innerTimeout = null;
       this.rings[id] = undefined;
+      this.innerRingTimingEnd = 0;
     }
     if (shouldPlayHit) {
       this.runHitAnimation();
@@ -286,10 +295,11 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
   private runTimerAnimation = (timing: Timing,
                               disruption: CurrentMax,
                               isClockwise: boolean,
-                              shouldPlayHit?: boolean) => {
+                              shouldPlayHit?: boolean,
+                              overrideCurrentTimer?: boolean) => {
     if (timing && (!disruption || disruption.current < disruption.max)) {
       // Run timer animation, skill has not been disrupted
-      this.setTimerRing({ id: INNER, timer: timing, clockwise: isClockwise, shouldPlayHit });
+      this.setTimerRing({ id: INNER, timer: timing, clockwise: isClockwise, shouldPlayHit, overrideCurrentTimer });
     }
 
     if (disruption) {
@@ -314,31 +324,17 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
   }
 
   private processEvent = (event: AbilityButtonInfo) => {
-    // Recovery
-    if (event.status & AbilityButtonState.Recovery) {
-      this.runTimerAnimation(event.timing, null, false);
-    }
-
     // Cooldown
     if (event.status & AbilityButtonState.Cooldown) {
-      const now = Date.now();
       const ring = this.rings[INNER];
-      if (ring) {
-        if (this.prevEvent && !_.isEqual(this.prevEvent.timing, event.timing)) {
-          this.rings[INNER] && this.ringStop(INNER);
-          this.runTimerAnimation(event.timing, null, false);
-          return;
-        }
-
-        const elapsed = now - ring.event.when;
-        const current = Math.floor(ring.event.remaining - elapsed);
-        if (current <= 0) {
-          this.rings[INNER] && this.ringStop(INNER);
-          this.runTimerAnimation(event.timing, null, false);
-        }
-      } else {
-        this.runTimerAnimation(event.timing, null, false);
+      if (!ring || !this.prevEvent || !(this.prevEvent.status & AbilityButtonState.Cooldown)) {
+        this.runTimerAnimation(event.timing, null, false, false, true);
       }
+    }
+
+    // Recovery
+    if (event.status & AbilityButtonState.Recovery) {
+      this.runTimerAnimation(event.timing, null, false, false, true);
     }
 
     // Channel
@@ -364,7 +360,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
       }
     }
 
-    this.prevEvent = event;
+    this.prevEvent = { ...event };
   }
 }
 
