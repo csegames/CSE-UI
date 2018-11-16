@@ -186,7 +186,7 @@ interface State {
   newBind: Binding;
 }
 
-export class KeybindRow extends React.PureComponent<Props, State> {
+export class KeybindRow extends React.Component<Props, State> {
 
   private listenPromise: CancellablePromise<Binding>;
 
@@ -201,10 +201,10 @@ export class KeybindRow extends React.PureComponent<Props, State> {
   }
 
   public render() {
-    const { keybind } = this.props;
+    const { keybind } = this.state;
     return (
       <Box innerClassName={InnerClass} style={{ minHeight: '45px' }}>
-        { this.props.keybind.binds.map((binding, index) => {
+        { keybind.binds.map((binding, index) => {
           return (
             <Bind key={index}
               data-input-group='block'
@@ -214,8 +214,8 @@ export class KeybindRow extends React.PureComponent<Props, State> {
                 e.preventDefault();
               }}
               >
-              <Key className={binding.value ? 'assigned' : 'unassigned'}>
-                { binding.name || ' ' }
+              <Key className={(binding && binding.value) ? 'assigned' : 'unassigned'}>
+                { (binding && binding.name) || ' ' }
               </Key>
             </Bind>
           );
@@ -224,6 +224,27 @@ export class KeybindRow extends React.PureComponent<Props, State> {
         {this.renderDialog()}
       </Box>
     );
+  }
+
+  public shouldComponentUpdate(nextProps: Props, nextState: State) {
+    for (let i = 0; i < nextProps.keybind.binds.length; ++i) {
+      if (this.props.keybind.binds[i].value !== nextProps.keybind.binds[i].value) {
+        return true;
+      }
+    }
+
+    if (this.state.mode !== nextState.mode) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public componentWillReceiveProps(nextProps: Props) {
+    this.setState({
+      ...this.state,
+      keybind: cloneDeep(nextProps.keybind),
+    });
   }
 
   private renderDialog = () => {
@@ -244,6 +265,19 @@ export class KeybindRow extends React.PureComponent<Props, State> {
             </InstructionsText>
           </ListeningPopup>
         );
+
+        confirm = <p>Remove Bind</p>;
+        clickConfirm = () => {
+          this.setState((state) => {
+            const newState = {
+              ...state,
+              mode: KeybindMode.Idle,
+            };
+            newState.keybind.binds[state.index] = null;
+            return newState;
+          });
+          game.clearKeybind(this.state.keybind.id, this.state.index);
+        };
       }
         break;
       case KeybindMode.ConfirmBind: {
@@ -275,7 +309,18 @@ export class KeybindRow extends React.PureComponent<Props, State> {
             </ConfirmBind>
         );
         confirm = <p>Yes</p>;
-        clickConfirm = () => this.props.requestBind(this.state.keybind.id, this.state.index, this.state.newBind.value);
+        clickConfirm = () => {
+          this.setState((state) => {
+            const newState = {
+              ...state,
+              mode: KeybindMode.Idle,
+            };
+            newState.keybind.binds[state.index] = cloneDeep(state.newBind);
+            return newState;
+          });
+          game.setKeybind(this.state.keybind.id, this.state.index, this.state.newBind.value);
+          this.props.requestBind(this.state.keybind.id, this.state.index, this.state.newBind.value);
+        };
         cancel = <p>No</p>;
       }
         break;
@@ -321,7 +366,6 @@ export class KeybindRow extends React.PureComponent<Props, State> {
   }
 
   private confirmBind = (newBind: Binding) => {
-    console.log(`new bind ${JSON.stringify(newBind)}`);
     this.setState((state) => {
       return {
         ...state,

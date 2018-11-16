@@ -409,6 +409,9 @@ export interface GameInterface extends GameModel {
   onSelectedMaterialChanged: (callback: (id: number) => any) => EventHandle;
   onSelectedBlueprintChanged: (callback: (id: number) => any) => EventHandle;
 
+
+  onKeybindChanged: (callback: (keybind: Keybind) => any) => EventHandle;
+
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */
   /* -------------------------------------------------- */

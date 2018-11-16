@@ -283,7 +283,6 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
   }
 
   private renderModal = () => {
-    console.log('modal state ' + KeybindMode[this.state.mode]);
     switch (this.state.mode) {
       case KeybindMode.Save:
         return <SaveAs label='Save keybinds as' saveAs={this.saveAs} onClose={this.resetToIdle}/>;
@@ -329,16 +328,17 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
   }
 
   private onRequestBinding = (keybindID: number, index: number, value: number) => {
-    this.setState(state => ({
-      ...state,
-      bindingQueue: {
-        ...state.bindingQueue,
-        [`${keybindID}-${index}`]: {
-          keybindID,
-          index,
-          value,
-        }},
-    }));
+    // setTimeout(() => this.forceUpdate(), 1000);
+    // this.setState(state => ({
+    //   ...state,
+    //   bindingQueue: {
+    //     ...state.bindingQueue,
+    //     [`${keybindID}-${index}`]: {
+    //       keybindID,
+    //       index,
+    //       value,
+    //     }},
+    // }));
   }
 
   private onAction = (args: { id: 'default' | 'save' | 'load' | 'cancel' | 'apply'}) => {

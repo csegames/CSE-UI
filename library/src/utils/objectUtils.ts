@@ -42,7 +42,9 @@ window.cloneDeep = function<T extends any>(source: T): T {
     return source; // Not a reference
   }
 
-  if (source instanceof Array) {
+  // extra length and slice check for coherent arrays which return false for
+  // instanceof Array
+  if (source instanceof Array || ('length' in source && 'slice' in source)) {
     return source.slice().map(e => cloneDeep(e)) as any;
   }
 
