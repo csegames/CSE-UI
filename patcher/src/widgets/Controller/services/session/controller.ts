@@ -150,7 +150,6 @@ function webAPIServerToPatcherServer(server: webAPI.ServerModel): PatcherServer 
   const channels = patcher.getAllChannels();
   const channelIndex = utils.findIndexWhere(channels, c => c.channelID === server.channelID);
   const channel = channels[channelIndex];
-
   return utils.merge({
     name: server.name,
     available: server.playerMaximum > 0,
@@ -409,8 +408,10 @@ export const getChannels = module.createAction({
       if (channel) {
         servers[key].channelStatus = channelDict[server.channelID].channelStatus;
         servers[key].lastUpdated = channelDict[server.channelID].lastUpdated;
+        servers[key].mode = channelDict[server.channelID].mode;
       } else {
         servers[key].channelStatus = ChannelStatus.NotInstalled;
+        servers[key].mode = PatchChannelMode.Automatic;
         servers[key].lastUpdated = 0;
       }
     }

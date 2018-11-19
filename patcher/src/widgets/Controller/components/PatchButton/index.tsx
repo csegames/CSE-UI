@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import * as moment from 'moment';
+import moment from 'moment';
 import { webAPI, events, utils } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 

@@ -80,7 +80,7 @@ class PlayerCounts extends React.PureComponent<PlayerCountsProps, PlayerCountsSt
           <GraphQL
             query={{
               query: query(this.props.shard),
-              pollInterval: 30000,
+              // pollInterval: 30000,
               url: this.props.host + '/graphql',
             }}
             onQueryResult={this.handleQueryResult}

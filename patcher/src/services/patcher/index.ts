@@ -62,6 +62,7 @@ export interface Channel {
   channelID: number;
   channelStatus: ChannelStatus;
   lastUpdated: number;
+  channelSupportedTypes: number;
   mode: PatchChannelMode;
 }
 
@@ -80,6 +81,7 @@ export class PatcherAPI {
   constructor() {
     if (API in window) {
       this._api = (<any> window)[API];
+      console.log(this._api.SetChannelMode);
     } else {
       // Install a dummy API (for testing)
       this._api = {
