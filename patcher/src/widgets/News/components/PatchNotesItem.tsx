@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import * as moment from 'moment';
+import moment from 'moment';
 import styled from 'react-emotion';
 import { PatchNote } from '@csegames/camelot-unchained/lib/graphql';
 
