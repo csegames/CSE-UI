@@ -4,7 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { initUpdatable, Updatable, executeUpdateCallbacks } from './_Updatable';
+import {
+  initUpdatable,
+  Updatable,
+  executeUpdateCallbacks,
+  createDefaultOnReady,
+  createDefaultOnUpdated,
+} from './_Updatable';
 
 declare global {
   interface AbilityStateModel {
@@ -25,6 +31,21 @@ declare global {
 
 export const AbilityState_Update = 'abilityState.update';
 
+const initDefaults = (eventName: string): AbilityState => {
+  return {
+    id: -1,
+    type: AbilityButtonType.Standard,
+    track: AbilityTrack.None,
+    keyActionID: -1,
+    boundKeyName: '',
+    status: AbilityButtonState.None,
+    isReady: true,
+    onUpdated: createDefaultOnUpdated(eventName),
+    onReady: createDefaultOnReady(eventName),
+    updateEventName: eventName,
+  };
+};
+
 function onReceiveAbilityStateUpdate(state: AbilityState) {
   if (game.debug) {
     console.groupCollapsed(`Client > ${AbilityState_Update}`);
@@ -34,17 +55,13 @@ function onReceiveAbilityStateUpdate(state: AbilityState) {
     console.groupEnd();
   }
 
+  const eventName = `${AbilityState_Update}_${state.id}`;
   if (!_devGame.abilityStates[state.id]) {
-    _devGame.abilityStates[state.id] = state as AbilityState;
-    _devGame.abilityStates[state.id].updateEventName = `${AbilityState_Update}_${state.id}`;
+    _devGame.abilityStates[state.id] = withDefaults(state, initDefaults(eventName), false);
     // init Updatable.
-    initUpdatable(state);
+    initUpdatable(_devGame.abilityStates[state.id]);
   } else {
-    _devGame.abilityStates[state.id] = {
-      ..._devGame.abilityStates[state.id],
-      ...state,
-    };
-    _devGame.abilityStates[state.id].updateEventName = `${AbilityState_Update}_${state.id}`;
+    _devGame.abilityStates[state.id] = withDefaults(state, initDefaults(eventName), false);
   }
 
   executeUpdateCallbacks(_devGame.abilityStates[state.id]);

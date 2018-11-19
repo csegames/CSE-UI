@@ -64,7 +64,7 @@ export function getCompassFacingData() {
 }
 
 export function getCompassPositionData() {
-  if (game.selfPlayerState.isReady) {
+  if (game.selfPlayerState.isReady && game.selfPlayerState.position) {
     const x = Math.round(game.selfPlayerState.position.x);
     const y = Math.round(game.selfPlayerState.position.y);
     const z = Math.round(game.selfPlayerState.position.z);

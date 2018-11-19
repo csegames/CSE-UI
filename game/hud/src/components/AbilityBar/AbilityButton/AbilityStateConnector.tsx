@@ -27,6 +27,7 @@ export interface BasicButtonInfo {
 function abilityStateConnector<PropsTypes extends any>() {
   return (WrappedComponent: React.ComponentClass<PropsTypes> | React.StatelessComponent<PropsTypes>) => {
     return class AbilityButtonWrapper extends React.Component<AbilityStateConnectorProps, AbilityStateConnectorState> {
+      private updateHandle: EventHandle;
       constructor(props: AbilityStateConnectorProps) {
         super(props);
         this.state = {
@@ -47,7 +48,7 @@ function abilityStateConnector<PropsTypes extends any>() {
       }
 
       public componentDidMount() {
-        game.abilityStates[this.props.abilityInfo.id].onUpdated(this.handleClientAbilityStateChanged);
+        this.updateHandle = game.abilityStates[this.props.abilityInfo.id].onUpdated(this.handleClientAbilityStateChanged);
       }
 
       public shouldComponentUpdate(nextProps: AbilityStateConnectorProps, nextState: AbilityStateConnectorState) {
@@ -71,6 +72,10 @@ function abilityStateConnector<PropsTypes extends any>() {
         if (nextState.abilityState) {
           game.trigger('abilitybutton-' + nextProps.abilityInfo.id, nextState.abilityState);
         }
+      }
+
+      public componentWillUnmount() {
+        this.updateHandle.clear();
       }
 
       private handleApiAbilityStateChange = () => {
