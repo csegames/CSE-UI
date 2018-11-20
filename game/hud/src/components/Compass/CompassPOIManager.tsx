@@ -407,7 +407,7 @@ export interface CompassPOIManagerState {
 
 class CompassPOIManager extends React.Component<CompassPOIManagerProps, CompassPOIManagerState> {
 
-  private updatePositionIntervalTime: number = 25;
+  private updatePositionIntervalTime: number = 200;
   private updatePositionInterval: NodeJS.Timer;
 
   public state = {

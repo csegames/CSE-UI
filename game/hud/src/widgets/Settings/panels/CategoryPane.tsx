@@ -26,7 +26,7 @@ export class CategoryPane extends React.PureComponent<Props, State> {
 
   // promise when setting options as they are done async, and yes the type is really long
   private savePromise: CancellablePromise<Success |
-   Failure & { failures: ArrayMap<{ option: GameOption, reason: string }> }> = null;
+    Failure & { failures: ArrayMap<{ option: GameOption, reason: string }> }> = null;
 
   constructor(props: Props) {
     super(props);

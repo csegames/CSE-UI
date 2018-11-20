@@ -7,7 +7,6 @@
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
 import Fuse from 'fuse.js';
-import { ConfirmDialog } from '@csegames/camelot-unchained/lib/components/ConfirmDialog';
 import { Store } from '@csegames/camelot-unchained/lib/utils/local-storage';
 
 import { SettingsPanel } from 'widgets/Settings/components/SettingsPanel';
@@ -16,8 +15,9 @@ import { KeybindRow } from 'widgets/Settings/components/KeybindRow';
 import { Box } from 'UI/Box';
 import { Field } from 'UI/Field';
 import { CloseButton } from 'UI/CloseButton';
-import { SaveAs } from 'widgets/Settings/components/SaveAs';
-import { Load } from 'widgets/Settings/components/Load';
+import { SaveAsDialog } from 'widgets/Settings/components/SaveAsDialog';
+import { LoadDialog } from 'widgets/Settings/components/LoadDialog';
+import { ResetKeybindsDialog } from 'widgets/Settings/components/ResetKeybindsDialog';
 import * as CSS from 'lib/css-helper';
 import * as CONFIG from 'components/UI/config';
 
@@ -63,27 +63,6 @@ const ConfigName = styled('h4')`
   margin-bottom: 0!important;
   padding: 4px 15px;
   color: ${CONFIG.NORMAL_TEXT_COLOR};
-`;
-
-const ListeningTitle = styled('div')`
-  font-size: 24px;
-  font-weight: 500;
-  color: rgba(255, 234, 194, 1);
-  text-transform: uppercase;
-  font-family: Caudex;
-  letter-spacing: 5px;
-  text-align: center;
-`;
-
-const InstructionsText = styled('div')`
-  margin-top: 20px;
-  text-align: center;
-`;
-
-const ListeningPopup = styled('div')`
-  width: 400px;
-  height: 250px;
-  padding: 20px;
 `;
 
 const Error = styled('div')`
@@ -285,39 +264,26 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
   private renderModal = () => {
     switch (this.state.mode) {
       case KeybindMode.Save:
-        return <SaveAs label='Save keybinds as' saveAs={this.saveAs} onClose={this.resetToIdle}/>;
+        return <SaveAsDialog label='Save keybinds as' saveAs={this.saveAs} onClose={this.resetToIdle}/>;
       case KeybindMode.Load:
-        return <Load
-          names={this.getSetNames()}
-          onLoad={this.loadSet}
-          onRemove={this.deleteSet}
-          onClose={this.resetToIdle}
-        />;
-      case KeybindMode.ConfirmReset: {
         return (
-          <ConfirmDialog
-            onConfirm={() => {
-              game.resetKeybinds();
-              this.resetToIdle();
-            }}
-            onCancel={() => {
-              this.resetToIdle();
-            }}
-            confirmButtonContent={'Yes'}
-            cancelButtonContent={'Cancel'}
-            content={() => <p></p>}
-          >
-            <ListeningPopup>
-              <ListeningTitle>Reset Keybinds</ListeningTitle>
-              <InstructionsText>
-                Clicking 'Yes' will reset all keybinds to their default values. Are you sure you wish to reset all keybinds?
-              </InstructionsText>
-            </ListeningPopup>
-          </ConfirmDialog>
+          <LoadDialog
+            names={this.getSetNames()}
+            onLoad={this.loadSet}
+            onRemove={this.deleteSet}
+            onClose={this.resetToIdle}
+          />
         );
+      case KeybindMode.ConfirmReset: {
+        return <ResetKeybindsDialog onYesClick={this.resetKeybinds} onCancelClick={this.resetToIdle} />;
       }
     }
     return null;
+  }
+
+  private resetKeybinds = () => {
+    game.resetKeybinds();
+    this.resetToIdle();
   }
 
   private resetToIdle = (error: string = '') => {

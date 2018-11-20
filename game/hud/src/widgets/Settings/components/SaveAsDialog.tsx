@@ -45,7 +45,7 @@ interface SaveAsState {
 
 const SAVE: DialogButton = { label: 'Save' };
 
-export class SaveAs extends React.PureComponent<SaveAsProps, SaveAsState> {
+export class SaveAsDialog extends React.PureComponent<SaveAsProps, SaveAsState> {
   constructor(props: SaveAsProps) {
     super(props);
     this.state = { name: '' };
@@ -86,4 +86,4 @@ export class SaveAs extends React.PureComponent<SaveAsProps, SaveAsState> {
   }
 }
 
-export default SaveAs;
+export default SaveAsDialog;

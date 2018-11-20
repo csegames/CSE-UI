@@ -125,7 +125,7 @@ export class SliderField extends React.PureComponent<SliderFieldProps, SliderFie
     }
     return (
       <Box>
-        <Field className={`${cls}`} style={{ width: '35%' }}>{label}</Field>
+        <Field className={`${cls}`} style={{ width: '35%' }}>{label.toTitleCase()}</Field>
         <Field className={`${cls}`} style={{ width: '50%' }}>
           <SliderContainer>
             <SlidingSpace

@@ -34,7 +34,7 @@ interface LoadState {
 const SAVE: DialogButton = { label: 'Load' };
 const DELETE: DialogButton = { label: 'Delete' };
 
-export class Load extends React.PureComponent<LoadProps, LoadState> {
+export class LoadDialog extends React.PureComponent<LoadProps, LoadState> {
   constructor(props: LoadProps) {
     super(props);
     this.state = { selected: '' };
@@ -78,4 +78,4 @@ export class Load extends React.PureComponent<LoadProps, LoadState> {
   }
 }
 
-export default Load;
+export default LoadDialog;

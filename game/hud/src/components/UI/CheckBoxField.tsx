@@ -78,7 +78,7 @@ export function CheckBoxField(props: CheckBoxFieldProps) {
   const cls = 'fixed-height';
   return (
     <Box onClick={props.onToggle}>
-      <Field className={`${cls} expand ellipsis`}>{props.label}</Field>
+      <Field className={`${cls} expand ellipsis`}>{props.label.toTitleCase()}</Field>
       <Field className={`${cls} right-align`} style={{ width: '100px' }}>
         <CheckBox on={props.on}/>
       </Field>

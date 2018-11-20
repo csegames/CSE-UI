@@ -8,29 +8,18 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 
-import { spacify } from 'lib/spacify';
 import { PopupDialog, Container } from './PopupDialog';
 import { TabbedDialog, DialogTab, DialogButton } from 'UI/TabbedDialog';
 
 const DIALOG_SIZE: React.CSSProperties = {
   width: '400px',
-  height: '330px',
+  height: '300px',
   top: '0',
   bottom: '0',
   left: '0',
   right: '0',
   margin: 'auto',
 };
-
-const InstructionsText = styled('div')`
-  margin-top: 20px;
-  text-align: center;
-`;
-
-const ListeningPopup = styled('div')`
-  padding: 20px;
-  z-index: 1;
-`;
 
 const ListeningTitle = styled('div')`
   font-size: 24px;
@@ -42,32 +31,37 @@ const ListeningTitle = styled('div')`
   text-align: center;
 `;
 
-const ListeningKey = styled('div')`
+const InstructionsText = styled('div')`
+  margin-top: 20px;
   text-align: center;
-  font-style: italic;
 `;
 
-const REMOVE: DialogButton = { label: 'Remove Bind' };
+const ListeningPopup = styled('div')`
+  width: 100%;
+  height: 100%;
+`;
+
+const YES: DialogButton = { label: 'Yes' };
+const CANCEL: DialogButton = { label: 'Cancel' };
 
 export interface Props {
-  keybind: Keybind;
-  onRemoveBind: () => void;
-  onClose: () => void;
+  onYesClick: () => void;
+  onCancelClick: () => void;
 }
 
-class Listening extends React.Component<Props> {
+export class ResetKeybindsDialog extends React.Component<Props> {
   public render() {
     return (
       <PopupDialog style={DIALOG_SIZE}>
-        <TabbedDialog title='Listening' heading={false} onClose={this.props.onClose}>
+        <TabbedDialog title='Confirm Bind' heading={false} onClose={this.props.onCancelClick}>
         {(tab: DialogButton) =>
-          <DialogTab buttons={[REMOVE]} onAction={this.onAction}>
+          <DialogTab buttons={[YES, CANCEL]} onAction={this.onAction}>
             <Container>
               <ListeningPopup>
-                <ListeningTitle>Press any key</ListeningTitle>
-                <ListeningKey>Binding: {spacify(this.props.keybind.description)}</ListeningKey>
+                <ListeningTitle>Reset Keybinds</ListeningTitle>
                 <InstructionsText>
-                  Press the key / key combination you wish to bind to {this.props.keybind.description}.
+                  Clicking 'Yes' will reset all keybinds to their default values.
+                  Are you sure you wish to reset all keybinds?
                 </InstructionsText>
               </ListeningPopup>
             </Container>
@@ -80,12 +74,17 @@ class Listening extends React.Component<Props> {
 
   private onAction = (action: DialogButton) => {
     switch (action) {
-      case REMOVE: {
-        this.props.onRemoveBind();
+      case YES: {
+        this.props.onYesClick();
+        break;
+      }
+      case CANCEL: {
+        this.props.onCancelClick();
         break;
       }
     }
   }
 }
 
-export default Listening;
+export default ResetKeybindsDialog;
+

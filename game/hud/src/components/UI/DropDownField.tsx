@@ -114,7 +114,7 @@ export class DropDownField extends React.Component<DropDownFieldProps, DropDownF
     const { label, items, selectedItem, onSelectItem } = this.props;
     return (
       <Box>
-        <Field style={{ width: '85%' }}>{label}</Field>
+        <Field style={{ width: '85%' }}>{label.toTitleCase()}</Field>
         <Field style={{ width: '15%' }}>
         <DropDown
           selected={selectedItem} items={items}

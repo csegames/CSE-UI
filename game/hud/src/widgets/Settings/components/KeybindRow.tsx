@@ -11,7 +11,8 @@ import * as CSS from 'lib/css-helper';
 import { spacify } from 'lib/spacify';
 import { Box } from 'UI/Box';
 import { Key } from 'widgets/Settings/components/Key';
-import Listening from './Listening';
+import ListeningDialog from './ListeningDialog';
+import ConfirmBindDialog from './ConfirmBindDialog';
 
 const Name = styled('div')`
   ${CSS.EXPAND_TO_FIT}
@@ -28,34 +29,6 @@ const Bind = styled('div')`
 const InnerClass = css`
   display: flex;
   align-items: center;
-`;
-
-const ConfirmBind = styled('div')`
-  padding: 20px;
-`;
-
-const ConfirmBindingText = styled('span')`
-  text-align: center;
-  font-size: 1.2em;
-`;
-
-const Clashed = styled('div')`
-  width: 400px;
-  height: 250px;
-  padding: 20px;
-  text-align: center;
-`;
-
-const ClashContent = styled('div')`
-  ${CSS.IS_COLUMN} ${CSS.DONT_GROW}
-  ${CSS.HORIZONTALLY_CENTERED}
-  min-height: 26px;
-  margin-right: 5px;
-  line-height: 26px;
-  .clash-key {
-    align-self: center;
-    pointer-events: none;
-  }
 `;
 
 const DialogContainer = styled('div')`
@@ -84,31 +57,6 @@ const Dialog = styled('div')`
 const Content = styled('div')`
   padding: 10px;
   flex: 1;
-`;
-
-const Buttons = styled('div')`
-  display: flex;
-  flex: 0;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-  padding: 10px 20px;
-`;
-
-const ConfirmButton = styled('div')`
-  padding: 5px 10px;
-  cursor: pointer;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
-`;
-
-const CancelButton = styled('div')`
-  padding: 5px 10px;
-  cursor: pointer;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
 `;
 
 enum KeybindMode {
@@ -216,61 +164,27 @@ export class KeybindRow extends React.Component<Props, State> {
   }
 
   private renderDialog = () => {
-
     let content: JSX.Element = null;
-    let confirm: JSX.Element | string = null;
-    let clickConfirm: () => any = null;
-    let cancel: JSX.Element | string = 'Cancel';
     switch (this.state.mode) {
       case KeybindMode.Idle: return null;
       case KeybindMode.ListeningForKey: {
         content = (
-          <Listening keybind={this.state.keybind} onRemoveBind={this.onRemoveBind} onClose={this.cancel} />
+          <ListeningDialog keybind={this.state.keybind} onRemoveBind={this.onRemoveBind} onClose={this.cancel} />
         );
       }
         break;
       case KeybindMode.ConfirmBind: {
         const conflicts = checkForConflicts(this.state.keybind.id, this.state.newBind);
         content = (
-          <ConfirmBind>
-              <ConfirmBindingText>
-                Bind&nbsp;
-                <Key className='clash-key'>{this.state.newBind.name}</Key>
-                &nbsp;to {this.state.keybind.description}?
-              </ConfirmBindingText>
-              {
-                conflicts.length > 1 ?
-                <Clashed>
-                <ClashContent>
-                  Warning! <Key className='clash-key'>{this.state.newBind.name}</Key> is also bound to
-                  <div>
-                    {conflicts.map((keybind, index) => (
-                      <span key={index}>
-                        <Bind>{spacify(keybind.description)}</Bind>
-                        {index !== conflicts.length - 1 ? ', ' : ''}
-                      </span>
-                    ))}
-                  </div>
-                  <i>Do you still want to rebind?</i>
-                </ClashContent>
-                </Clashed> : null
-              }
-            </ConfirmBind>
+          <ConfirmBindDialog
+            keybind={this.state.keybind}
+            newBind={this.state.newBind}
+            conflicts={conflicts}
+            onClose={this.cancel}
+            onYesClick={this.onYesClick}
+            onNoClick={this.cancel}
+          />
         );
-        confirm = <p>Yes</p>;
-        clickConfirm = () => {
-          this.setState((state) => {
-            const newState = {
-              ...state,
-              mode: KeybindMode.Idle,
-            };
-            newState.keybind.binds[state.index] = cloneDeep(state.newBind);
-            return newState;
-          });
-          game.setKeybind(this.state.keybind.id, this.state.index, this.state.newBind.value);
-          this.props.requestBind(this.state.keybind.id, this.state.index, this.state.newBind.value);
-        };
-        cancel = <p>No</p>;
       }
         break;
     }
@@ -281,19 +195,22 @@ export class KeybindRow extends React.Component<Props, State> {
           <Content>
             {content}
           </Content>
-          <Buttons>
-            {confirm && (
-              <ConfirmButton onClick={clickConfirm}>
-                {confirm}
-              </ConfirmButton>
-            )}
-            <CancelButton  onClick={this.cancel}>
-              {cancel}
-            </CancelButton>
-          </Buttons>
         </Dialog>
       </DialogContainer>
     );
+  }
+
+  private onYesClick = () => {
+    this.setState((state) => {
+      const newState = {
+        ...state,
+        mode: KeybindMode.Idle,
+      };
+      newState.keybind.binds[state.index] = cloneDeep(state.newBind);
+      return newState;
+    });
+    game.setKeybind(this.state.keybind.id, this.state.index, this.state.newBind.value);
+    this.props.requestBind(this.state.keybind.id, this.state.index, this.state.newBind.value);
   }
 
   private onRemoveBind = () => {
