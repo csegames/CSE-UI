@@ -102,9 +102,8 @@ export default function() {
       }
 
       const entityID = _devGame._cse_dev_selfPlayerState.entityID;
-      const entity = game.entities[entityID];
-      if (entity && key in entity) {
-        return entity[key];
+      if (game.entities[entityID] && key in game.entities[entityID]) {
+        return game.entities[entityID][key];
       }
 
       if (key in obj) {
