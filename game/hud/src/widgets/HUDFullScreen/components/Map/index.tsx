@@ -135,7 +135,6 @@ export class GameMap extends React.Component<Props, State> {
   private initialized = false;
   private zoneID: string;
   private metadata: MapMetadata;
-  private navigationEventHandle: number;
 
   constructor(props: Props) {
     super(props);
@@ -199,7 +198,6 @@ export class GameMap extends React.Component<Props, State> {
       this.staticVectorSource.clear();
     }
     this.initialized = false;
-    game.off(this.navigationEventHandle);
     this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 

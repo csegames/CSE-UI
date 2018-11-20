@@ -220,6 +220,10 @@ function events_trigger(name: string, ...args: any[]) {
 }
 
 function events_off(handle: number | EventHandle) {
+  if (typeof handle === 'undefined') {
+    console.error('Tried to remove a listener with an undefined handle');
+    return;
+  }
   if (typeof handle === 'number') {
     window._cse_dev_eventEmitter.removeListener(handle);
   } else {

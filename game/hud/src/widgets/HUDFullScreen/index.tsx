@@ -64,7 +64,6 @@ const BackgroundImage = styled('div')`
 
 class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavState> {
   private navigateListener: EventHandle;
-  private shouldKeydownListener: EventHandle;
   private tabPanelLeftRef: TabPanel<ITemporaryTab | HUDFullScreenTabData>;
   private tabPanelRightRef: TabPanel<ITemporaryTab | HUDFullScreenTabData>;
 
@@ -108,8 +107,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 
   public componentWillUnmount() {
-    game.off(this.navigateListener);
-    game.off(this.shouldKeydownListener);
+    this.navigateListener.clear();
   }
 
   private handleNavEvent = (name: string, shouldOpen?: boolean) => {
