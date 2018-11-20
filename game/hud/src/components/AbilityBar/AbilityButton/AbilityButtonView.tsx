@@ -221,7 +221,7 @@ class AbilityButtonView extends React.Component<AbilityButtonViewProps, AbilityB
   public render() {
     // output button
     const { ability } = this.props;
-    const icon = { backgroundImage: 'url(' + ability.icon + ')' };
+    const icon = { backgroundImage: 'url(' + this.getIcon() + ')' };
     return (
       <Button
         id={ability.id}
@@ -263,11 +263,29 @@ class AbilityButtonView extends React.Component<AbilityButtonViewProps, AbilityB
       nextProps.className !== this.props.className;
   }
 
+  private getIcon = () => {
+    const { ability } = this.props;
+    let icon = '';
+    if (ability.icon) {
+      icon = ability.icon;
+    }
+
+    return icon;
+  }
+
   private onMouseOver = (event: React.MouseEvent<HTMLDivElement>) => {
-    const content = <TooltipContentContainer>
-      <TooltipHeader>{this.props.name}</TooltipHeader>
-      <div dangerouslySetInnerHTML={{ __html: this.props.description }} />
-    </TooltipContentContainer>;
+    const { ability } = this.props;
+    let content = null;
+    if (ability.icon) {
+      content = <TooltipContentContainer>
+        <TooltipHeader>{this.props.name}</TooltipHeader>
+        <div dangerouslySetInnerHTML={{ __html: this.props.description }} />
+      </TooltipContentContainer>;
+    } else {
+      content = <TooltipContentContainer>
+        <TooltipHeader>Failed to retrieve data from API server</TooltipHeader>
+      </TooltipContentContainer>;
+    }
     showTooltip({ content, event, styles: DefaultTooltipStyles });
   }
 

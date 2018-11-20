@@ -84,7 +84,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
 
   public render() {
     const props = this.props;
-    if (props.abilityInfo && props.abilityInfo.icon) {
+    if (props.abilityInfo) {
       // extract button state from props
       const { timing, disruption } = props.abilityInfo;
       const classNames: string[] = getClassNames(props.abilityInfo);
