@@ -8,15 +8,10 @@ import * as React from 'react';
 import styled, { css } from 'react-emotion';
 
 import * as CSS from 'lib/css-helper';
+import { spacify } from 'lib/spacify';
 import { Box } from 'UI/Box';
 import { Key } from 'widgets/Settings/components/Key';
-
-export function spacify(s: string) {
-  return s
-    .replace(/([^A-Z])([A-Z]+)+/g, '$1 $2')
-    .replace(/([^0-9])([0-9]+)/g, '$1 $2')
-    .replace(/([A-Z]+)([A-Z])/g, '$1 $2');
-}
+import Listening from './Listening';
 
 const Name = styled('div')`
   ${CSS.EXPAND_TO_FIT}
@@ -33,33 +28,6 @@ const Bind = styled('div')`
 const InnerClass = css`
   display: flex;
   align-items: center;
-`;
-
-const ListeningPopup = styled('div')`
-  width: 400px;
-  height: 250px;
-  padding: 20px;
-  z-index: 1;
-`;
-
-const ListeningTitle = styled('div')`
-  font-size: 24px;
-  font-weight: 500;
-  color: rgba(255, 234, 194, 1);
-  text-transform: uppercase;
-  font-family: Caudex;
-  letter-spacing: 5px;
-  text-align: center;
-`;
-
-const ListeningKey = styled('div')`
-  text-align: center;
-  font-style: italic;
-`;
-
-const InstructionsText = styled('div')`
-  margin-top: 20px;
-  text-align: center;
 `;
 
 const ConfirmBind = styled('div')`
@@ -257,27 +225,8 @@ export class KeybindRow extends React.Component<Props, State> {
       case KeybindMode.Idle: return null;
       case KeybindMode.ListeningForKey: {
         content = (
-          <ListeningPopup>
-            <ListeningTitle>Press any key</ListeningTitle>
-            <ListeningKey>Binding: {spacify(this.state.keybind.description)}</ListeningKey>
-            <InstructionsText>
-              Press the key / key combination you wish to bind to {this.state.keybind.description}.
-            </InstructionsText>
-          </ListeningPopup>
+          <Listening keybind={this.state.keybind} onRemoveBind={this.onRemoveBind} onClose={this.cancel} />
         );
-
-        confirm = <p>Remove Bind</p>;
-        clickConfirm = () => {
-          this.setState((state) => {
-            const newState = {
-              ...state,
-              mode: KeybindMode.Idle,
-            };
-            newState.keybind.binds[state.index] = null;
-            return newState;
-          });
-          game.clearKeybind(this.state.keybind.id, this.state.index);
-        };
       }
         break;
       case KeybindMode.ConfirmBind: {
@@ -345,6 +294,18 @@ export class KeybindRow extends React.Component<Props, State> {
         </Dialog>
       </DialogContainer>
     );
+  }
+
+  private onRemoveBind = () => {
+    this.setState((state) => {
+      const newState = {
+        ...state,
+        mode: KeybindMode.Idle,
+      };
+      newState.keybind.binds[state.index] = null;
+      return newState;
+    });
+    game.clearKeybind(this.state.keybind.id, this.state.index);
   }
 
   private startBind = (index: number) => {

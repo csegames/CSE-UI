@@ -12,8 +12,11 @@ import { CheckBoxField } from 'UI/CheckBoxField';
 const DIALOG_SIZE: React.CSSProperties = {
   width: '400px',
   height: '330px',
-  top: '150px',
-  left: '340px',
+  top: '0',
+  bottom: '0',
+  left: '0',
+  right: '0',
+  margin: 'auto',
 };
 
 interface LoadProps {

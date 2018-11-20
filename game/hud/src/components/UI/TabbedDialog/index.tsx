@@ -25,6 +25,7 @@ import { CloseButton } from 'UI/CloseButton';
 
 /* Dialog Container */
 const DialogContainer = styled('div')`
+  pointer-events: none;
   ${CSS.IS_COLUMN}
   width: 100%;
   height: 100%;
@@ -87,6 +88,7 @@ const OrnamentTopRight = styled('div')`
   height: 48px;
   padding-left: 25px;
   box-sizing: border-box!important;
+  pointer-events: none;
   z-index: 2;
 `;
 

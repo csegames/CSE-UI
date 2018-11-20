@@ -14,8 +14,11 @@ import { PopupDialog, Container } from './PopupDialog';
 const DIALOG_SIZE: React.CSSProperties = {
   width: '400px',
   height: '230px',
-  top: '200px',
-  left: '340px',
+  top: '0',
+  bottom: '0',
+  left: '0',
+  right: '0',
+  margin: 'auto',
 };
 
 const Input = styled('input')`
