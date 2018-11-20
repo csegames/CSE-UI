@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { requestUIKeydown, releaseUIKeydown } from '../../../lib/utils';
 
 const Input = styled('input')`
   font-family:Titillium Web;
@@ -46,8 +45,6 @@ class SearchInput extends React.PureComponent<SearchInputProps> {
     return (
       <Input
         placeholder='Filter'
-        onClick={() => requestUIKeydown()}
-        onBlur={() => releaseUIKeydown()}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onSearchChange(e.target.value)}
         value={this.props.searchValue}
       />

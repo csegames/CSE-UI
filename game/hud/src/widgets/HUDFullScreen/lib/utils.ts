@@ -914,16 +914,6 @@ export const defaultFullScreenState: FullScreenNavState = {
 
 export const FullScreenContext = React.createContext(defaultFullScreenState);
 
-export function requestUIKeydown() {
-  const shouldFullscreenListen = false;
-  game.trigger('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
-}
-
-export function releaseUIKeydown() {
-  const shouldFullscreenListen = true;
-  game.trigger('hudfullscreen-shouldListenKeydown', shouldFullscreenListen);
-}
-
 export function isRightOrLeftItem(gearSlots: GearSlotDefRef.Fragment[]) {
   if (gearSlots.length === 1) {
     const firstGearSlotId = gearSlots[0].id;

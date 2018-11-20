@@ -13,7 +13,7 @@ import { PageController, PageInfo, Input } from '@csegames/camelot-unchained';
 
 import PopupMiniInventorySlot from './PopupMiniInventorySlot';
 import { displaySlotNames, colors } from '../../../lib/constants';
-import { getItemDefinitionName, requestUIKeydown, releaseUIKeydown } from '../../../lib/utils';
+import { getItemDefinitionName } from '../../../lib/utils';
 import {
   InventoryItem,
 } from 'gql/interfaces';
@@ -209,8 +209,6 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
               styles={{
                 input: defaultPopupMiniInventoryStyle.searchInput,
               }}
-              onClick={() => requestUIKeydown()}
-              onBlur={() => releaseUIKeydown()}
               onChange={this.onSearchChange}
               value={this.state.searchValue}
             />

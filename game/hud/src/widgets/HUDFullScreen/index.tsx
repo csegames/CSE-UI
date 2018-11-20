@@ -105,53 +105,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   public componentDidMount() {
     this.navigateListener = game.on('navigate', this.handleNavEvent);
-    this.shouldKeydownListener = game.on('hudfullscreen-shouldListenKeydown', this.handleShouldKeydownEvent);
-  }
-
-  public componentDidUpdate(prevProps: FullScreenNavProps, prevState: FullScreenNavState) {
-    if ((prevState.visibleComponentLeft === '' && this.state.visibleComponentLeft !== '') ||
-        (prevState.visibleComponentRight === '' && this.state.visibleComponentRight !== '')) {
-      window.addEventListener('keydown', this.handleKeydownEvent);
-    }
   }
 
   public componentWillUnmount() {
     game.off(this.navigateListener);
     game.off(this.shouldKeydownListener);
-  }
-
-  private handleKeydownEvent = (e: KeyboardEvent) => {
-    switch (e.key.toUpperCase()) {
-      case 'ESCAPE': {
-        // Close full screen UI
-        this.onCloseFullScreen();
-        break;
-      }
-      case 'I': {
-        // Open/Close inventory
-        game.trigger('navigate', 'inventory');
-        break;
-      }
-      case 'C': {
-        // Open/Close paperdoll
-        game.trigger('navigate', 'equippedgear');
-        break;
-      }
-      case 'M': {
-        // Open/Close map
-        game.trigger('navigate', 'map');
-        break;
-      }
-      default: break;
-    }
-  }
-
-  private handleShouldKeydownEvent = (shouldListen: boolean) => {
-    if (shouldListen) {
-      window.addEventListener('keydown', this.handleKeydownEvent);
-    } else {
-      window.removeEventListener('keydown', this.handleKeydownEvent);
-    }
   }
 
   private handleNavEvent = (name: string, shouldOpen?: boolean) => {
@@ -258,7 +216,6 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     const tabIndex = this.getTabIndex(name);
 
     if (name !== '' && !_.includes(visibleComponent, name)) {
-      window.addEventListener('keydown', this.handleKeydownEvent);
       this.setState((state, props) => {
         if (side === 'right') {
           this.tabPanelRightRef.activeTabIndex = tabIndex;
@@ -348,7 +305,6 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   private onCloseFullScreen = () => {
     game.trigger('navigate', '');
     this.setActiveTab('');
-    window.removeEventListener('keydown', this.handleKeydownEvent);
     hideTooltip();
 
     if (this.state.myTradeState !== 'Confirmed' && this.state.myTradeState !== 'None') {
