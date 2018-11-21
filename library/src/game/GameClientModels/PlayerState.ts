@@ -114,6 +114,10 @@ export default function() {
         return true;
       }
 
+      if (key in _devGame._cse_dev_defaultSelfPlayerState) {
+        return _devGame._cse_dev_defaultSelfPlayerState[key];
+      }
+
       if (game.debug) console.warn('Attempted to access missing property on selfPlayerState', key);
       return undefined;
     },
