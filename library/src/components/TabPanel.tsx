@@ -200,6 +200,14 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
   private renderActiveContent = (customStyles: Partial<TabPanelStyle>) => {
     const activeItem: ContentItem = _.find(this.props.content, content =>
       this.props.tabs[this.activeTabIndex].rendersContent === content.name);
+    if (!activeItem || !activeItem.content) {
+      console.warn(`Tab Panel activeItem has no content`);
+      return (
+        <Content className={customStyles.content}>
+          -
+        </Content>
+      );
+    }
     return (
       <Content className={customStyles.content}>
         <activeItem.content.render {...activeItem.content.props} />
