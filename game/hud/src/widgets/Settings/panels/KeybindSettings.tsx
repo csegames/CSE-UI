@@ -346,7 +346,7 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
       return;
     }
     if (game.debug) console.log('saving keybinds as ' + name);
-    this.store.set(name, game.keybinds);
+    this.store.set(name, this.getSavableKeybinds());
 
     const sets = this.getSetNames();
     sets.push(name);
@@ -390,5 +390,14 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
     }
 
     this.resetToIdle();
+  }
+
+  private getSavableKeybinds = () => {
+    const keybinds: ArrayMap<Keybind> =  cloneDeep(game.keybinds) as ArrayMap<Keybind>;
+    Object.keys(keybinds).forEach((kbKey) => {
+      const binds = keybinds[kbKey].binds;
+      keybinds[kbKey].binds = [binds['0'], binds['1'], binds['2']];
+    });
+    return keybinds;
   }
 }

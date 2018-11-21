@@ -43,6 +43,8 @@ export default function(isAttached: boolean) {
   _devGame.setOptionsAsync = makeClientPromise((game, options) => game._cse_dev_setOptions(options));
   _devGame.testOptionAsync = makeClientPromise((game, option) => game._cse_dev_testOption(option));
   _devGame.takeScreenshotAsync = makeClientPromise(game => game._cse_dev_takeScreenshot());
+  console.log(_devGame.resetKeybinds);
+  console.log(_devGame['_cse_dev_resetKeybinds']);
 
   // Building API Tasks
   _devGame.building.setModeAsync = makeClientPromise((game, mode) => game.building._cse_dev_setMode(mode));

@@ -119,7 +119,7 @@ export class DropDownField extends React.Component<DropDownFieldProps, DropDownF
         <DropDown
           selected={selectedItem} items={items}
           onSelect={value => onSelectItem(value)}
-          renderItem={item => <p>{item.description}</p>}
+          renderItem={item => <div>{item.description}</div>}
           />
         </Field>
       </Box>
