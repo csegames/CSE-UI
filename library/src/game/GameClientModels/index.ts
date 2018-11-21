@@ -13,3 +13,4 @@ export * from './LoadingState';
 export * from './PlayerState';
 export * from './AbilityState';
 export * from './AbilityBarState';
+export * from './OfflineZoneSelectState';

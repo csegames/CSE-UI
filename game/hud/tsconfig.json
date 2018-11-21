@@ -38,6 +38,6 @@
   },
   "resolution": "typings",
   "include": [
-    "src/**/*",
+    "src/**/*"
   ]
 }

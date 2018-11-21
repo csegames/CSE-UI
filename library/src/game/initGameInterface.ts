@@ -21,6 +21,7 @@ import initFriendlytargetState from './GameClientModels/FriendlytargetState';
 import initKeyActions from './GameClientModels/KeyActions';
 import initAbilityState from './GameClientModels/AbilityState';
 import initAbilityBarState from './GameClientModels/AbilityBarState';
+import initOfflineZoneSelectState from './GameClientModels/OfflineZoneSelectState';
 import { makeClientPromise } from './clientTasks';
 
 import initCUAPIShim from './cuAPIShim';
@@ -76,6 +77,7 @@ export default function(isAttached: boolean) {
   initKeyActions();
   initAbilityState();
   initAbilityBarState();
+  initOfflineZoneSelectState();
 
   // INIT Services
   _devGame.signalR = initSignalR();

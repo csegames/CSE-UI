@@ -23,6 +23,7 @@ import { SessionState } from '../../services/session/reducer';
 import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
 import Watermark from '../Watermark';
 import { LoadingScreen } from '../LoadingScreen';
+import { OfflineZoneSelect } from '../OfflineZoneSelect';
 import HUDFullScreen from '../../widgets/HUDFullScreen';
 import DevUI from '../DevUI';
 import AbilityBar from '../AbilityBar';
@@ -139,6 +140,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
           <Settings />
           <Watermark />
+          <OfflineZoneSelect />
           <LoadingScreen />
         </div>
       </HUDContext.Provider>

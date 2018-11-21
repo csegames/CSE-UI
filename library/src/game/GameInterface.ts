@@ -458,6 +458,11 @@ export interface GameInterface extends GameModel {
    */
   abilityBarState: AbilityBarState;
 
+  /**
+   * State data for running offline cube, includes available zones to build on
+   */
+  offlineZoneSelectState: OfflineZoneSelectState;
+
   /* -------------------------------------------------- */
   /* BUILDING API                                       */
   /* -------------------------------------------------- */

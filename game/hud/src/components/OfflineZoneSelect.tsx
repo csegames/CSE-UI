@@ -7,8 +7,7 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 
-import ParallaxBG from '../ParallaxBG';
-import { ProgressBar } from './ProgressBar';
+import ParallaxBG from './ParallaxBG';
 
 const Container = styled('div')`
   position: fixed;
@@ -17,11 +16,7 @@ const Container = styled('div')`
   z-index: 9999;
 `;
 
-const LoadingMessage = styled('div')`
-  position: absolute;
-  bottom: 50px;
-  left: 50%;
-  transform: translateX(-50%);
+const SelectMessage = styled('div')`
   color: white;
   font-family: 'TitilliumWeb';
   font-size: 24px;
@@ -32,56 +27,44 @@ const Overlay = styled('div')`
   z-index: 1;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 `;
 
-const ProgressBarWrapper = styled('div')`
-  position: absolute;
-  bottom: 0;
-  width: 100%;
+const ZoneSelectWrapper = styled('div')`
+  background: #111;
+  min-width: 600px;
 `;
 
-const TrademarkWrapper = styled('div')`
-  position: absolute;
-  bottom: 10px;
-  right: 0;
-  padding: 10px;
+const Zone = styled('div')`
   color: #aaa;
-  text-align: right;
+  text-align: center;
   font-family: 'TitilliumWeb';
   font-size: 14px;
-`;
-
-const TriRealm = styled('h3')`
-  margin: 0;
+  cursor: pointer;
+  border: 1px solid #222;
+  padding: 10px 5px;
+  &:hover {
+    background-color: #222;
+  }
 `;
 
 const Logo = styled('div')`
-  position: absolute;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%) scale(0.75);
   width: 462px;
   height: 171px;
   background: url(images/logo.png);
   background-repeat: no-repeat;
 `;
 
-const PoweredBy = styled('div')`
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  width: 453px;
-  height: 88px;
-  background: url(images/poweredby.png);
-`;
-
-export class LoadingScreen extends React.PureComponent<{}> {
+export class OfflineZoneSelect extends React.PureComponent<{}> {
 
   private faction: Faction;
   private class: Archetype;
   private race: Race;
 
-  private loadingStateEventHandle: EventHandle;
+  private eventHandle: EventHandle;
 
   constructor(props: {}) {
     super(props);
@@ -106,11 +89,11 @@ export class LoadingScreen extends React.PureComponent<{}> {
     }
 
     // Hook up to listen for loading state changes
-    this.loadingStateEventHandle = game.loadingState.onUpdated(this.loadingStateChanged);
+    this.eventHandle = game.offlineZoneSelectState.onUpdated(this.stateChanged);
   }
 
   public render() {
-    const { percent, message, visible } = game.loadingState;
+    const { zones, visible } = game.offlineZoneSelectState;
 
     if (!visible) {
       // nothing to render here when the loading screen is not visible;
@@ -127,16 +110,15 @@ export class LoadingScreen extends React.PureComponent<{}> {
         />
 
         <Overlay>
-          <ProgressBarWrapper>
-            <ProgressBar progress={percent} />
-          </ProgressBarWrapper>
-          <TrademarkWrapper>
-            <TriRealm>A TriRealm™ MMORPG</TriRealm>
-            Camelot Unchained and TriRealm are trademarks of City State Entertainment, LLC.
-          </TrademarkWrapper>
           <Logo />
-          <PoweredBy />
-          <LoadingMessage>{message}</LoadingMessage>
+          <SelectMessage>Select a zone</SelectMessage>
+          <ZoneSelectWrapper>
+            {
+              Object
+                .values(zones)
+                .map(z => <Zone key={z.id} onClick={() => game.offlineZoneSelectState.selectZone(z.id)}>{z.name}</Zone>)
+            }
+          </ZoneSelectWrapper>
         </Overlay>
 
       </Container>
@@ -144,10 +126,10 @@ export class LoadingScreen extends React.PureComponent<{}> {
   }
 
   public componentWillUnmount() {
-    this.loadingStateEventHandle && this.loadingStateEventHandle.clear();
+    this.eventHandle && this.eventHandle.clear();
   }
 
-  private loadingStateChanged = () => {
+  private stateChanged = () => {
     this.forceUpdate();
   }
 }
