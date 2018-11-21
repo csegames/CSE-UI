@@ -143,8 +143,8 @@ export class KeybindRow extends React.Component<Props, State> {
   }
 
   public shouldComponentUpdate(nextProps: Props, nextState: State) {
-    for (let i = 0; i < nextProps.keybind.binds.length; ++i) {
-      if (this.props.keybind.binds[i].value !== nextProps.keybind.binds[i].value) {
+    for (let i = 0; i < nextState.keybind.binds.length; ++i) {
+      if (this.state.keybind.binds[i].value !== nextState.keybind.binds[i].value) {
         return true;
       }
     }
