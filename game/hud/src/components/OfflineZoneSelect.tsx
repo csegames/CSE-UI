@@ -116,7 +116,10 @@ export class OfflineZoneSelect extends React.PureComponent<{}> {
             {
               Object
                 .values(zones)
-                .map(z => <Zone key={z.id} onClick={() => game.offlineZoneSelectState.selectZone(z.id)}>{z.name}</Zone>)
+                .map(z => <Zone
+                    key={z.id}
+                    data-input-group='block'
+                    onClick={() => game.offlineZoneSelectState.selectZone(z.id)}>{z.name}</Zone>)
             }
           </ZoneSelectWrapper>
         </Overlay>
