@@ -170,8 +170,14 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
       }
     });
 
-    game.startItemPlacement(staticDefinition.numericItemDefID, id);
-    game.trigger('navigate', 'placement-mode');
+    try {
+      const stringifiedDeploySettings = JSON.stringify(deploySettings);
+      game.startItemPlacement(staticDefinition.numericItemDefID, id, stringifiedDeploySettings);
+      game.trigger('navigate', 'placement-mode');
+      hideContextMenu();
+    } catch (e) {
+      console.error('Failed to start item placement.', e);
+    }
   }
 
   private onActionClick = (action: InventoryItem.Actions) => {

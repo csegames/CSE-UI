@@ -26,6 +26,7 @@ const Container = styled('div')`
 `;
 
 const ActionButton = styled('div')`
+  pointer-events: all;
   cursor: pointer;
   &:hover {
     -webkit-filter: brightness(120%);
@@ -74,7 +75,7 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   public render() {
     const { selectedTransformGizmoMode } = this.state;
     return this.state.visible ? (
-      <Container>
+      <Container data-input-group='block'>
         <ActionButton
           className={`${iconClass.translate} ${selectedTransformGizmoMode ===
             ItemPlacementTransformMode.Translate ? 'selected' : ''}`}
@@ -138,7 +139,7 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   private onCommitClick = () => {
     const result = game.commitItemPlacement();
     if (result.success) {
-      const { itemInstanceID, position, rotation, actionID } = result.placement;
+      const { itemInstanceID, position, rotation, actionID } = result;
       this.handleCommitItemRequest(itemInstanceID, position, rotation, actionID);
       this.hidePlacementMode();
     }

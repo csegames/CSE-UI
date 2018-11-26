@@ -141,7 +141,7 @@ export interface GameModel {
    * @param {String} itemInstanceID Instance ID of the deployable item
    * @return {Boolean} whether or not placement actually started in the client.
    */
-  startItemPlacement: (itemDefID: number, itemInstanceID: string) => boolean;
+  startItemPlacement: (itemDefID: number, itemInstanceID: string, extraParams: string) => boolean;
 
   /**
    * Commit active placed item with its current position & orientation
@@ -156,13 +156,11 @@ export interface GameModel {
    * }
    */
   commitItemPlacement: () => Failure | Success & {
-    placement: {
-      itemDefID: number;
-      itemInstanceID: string;
-      position: Vec3f;
-      rotation: Euler3f,
-      actionID: string
-    },
+    itemDefID: number;
+    itemInstanceID: string;
+    position: Vec3f;
+    rotation: Euler3f,
+    actionID: string
   };
 
   /**
