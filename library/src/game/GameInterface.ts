@@ -139,9 +139,10 @@ export interface GameModel {
    * Action used to begin deployment of a deployable item
    * @param {Number} itemDefID Item Definition ID of the deployable
    * @param {String} itemInstanceID Instance ID of the deployable item
+   * @param {String} actionID ID of the item action
    * @return {Boolean} whether or not placement actually started in the client.
    */
-  startItemPlacement: (itemDefID: number, itemInstanceID: string, extraParams: string) => boolean;
+  startItemPlacement: (itemDefID: number, itemInstanceID: string, actionID: string) => boolean;
 
   /**
    * Commit active placed item with its current position & orientation
