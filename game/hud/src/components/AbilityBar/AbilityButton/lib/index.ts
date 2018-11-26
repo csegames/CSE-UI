@@ -48,5 +48,6 @@ export function makeGlowPathFor(end: number,
 }
 
 export function getTimingEnd(timing: DeepImmutableObject<Timing>) {
-  return ((timing.start + timing.duration) - game.worldTime) * 1000;
+  const timingEnd = ((timing.start + timing.duration) - game.worldTime) * 1000;
+  return timingEnd;
 }

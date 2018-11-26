@@ -73,6 +73,7 @@ class AbilityQueue extends React.Component<AbilityQueueProps, AbilityQueueState>
 
   private getTracks = (track: AbilityTrack) => {
     let tracks: string[] = [];
+
     if (track & AbilityTrack.PrimaryWeapon) {
       tracks = [...tracks, 'PrimaryWeapon'];
     }
@@ -87,6 +88,10 @@ class AbilityQueue extends React.Component<AbilityQueueProps, AbilityQueueState>
 
     if (track & AbilityTrack.Mind) {
       tracks = [...tracks, 'Mind'];
+    }
+
+    if (track === 0) {
+      tracks = [...tracks, 'None'];
     }
 
     return tracks;

@@ -244,7 +244,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
 
     if (id === INNER && this.props.abilityInfo.status & AbilityButtonState.Preparation) {
       // Fire off event for skill queue UI
-      game.trigger(`ability-button-timer-${this.props.abilityInfo.id}`, current);
+      game.trigger(`ability-button-timer-${this.props.abilityInfo.id}`, current, this.innerRingTimingEnd);
     }
   }
 

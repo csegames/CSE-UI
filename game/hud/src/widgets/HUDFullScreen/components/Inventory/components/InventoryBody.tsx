@@ -203,11 +203,11 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
 
   public componentDidMount() {
     setTimeout(() => this.initializeBodyDimensions(), 1);
-    window.addEventListener('resize', () => this.initializeBodyDimensions(true));
+    window.addEventListener('resize', this.onWindowResize);
     this.eventHandles.push(game.on(eventNames.updateInventoryItems, this.onUpdateInventoryOnEquip));
     this.eventHandles.push(game.on(eventNames.onDropItem, (payload: DropItemPayload) =>
       base.dropItemRequest(payload.inventoryItem.item)));
-    window.addEventListener('resize', this.initializeInventory);
+    game.cancelItemPlacement();
   }
 
   public componentDidUpdate(prevProps: InventoryBodyComponentProps, prevState: InventoryBodyState) {
@@ -255,42 +255,10 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     game.trigger('refetch-character-info');
   }
 
-  // private handleCommitItemRequest = (itemId: string, position: Vec3F, rotation: Euler3f, actionId?: string) => {
-  //   // Calls a moveItem request to a world position.
-  //   // This then will call client.OnInventoryRemoved which will then sync the inventory with the server.
-  //   if (actionId) {
-  //     // Handle as an item action
-  //     this.makeItemActionRequest(itemId, actionId, position, rotation);
-  //   } else {
-  //     const item = _.find(this.props.inventoryItems, _item => _item.id === itemId);
-  //     base.onCommitPlacedItem(item, position, rotation);
-  //   }
-  // }
-
-  // private makeItemActionRequest = async (itemId: string, actionId: string, position: Vec3F, rotation: Euler3f) => {
-  //   try {
-  //     const res = await webAPI.ItemAPI.PerformItemAction(
-  //       webAPI.defaultConfig,
-  //       game.shardID,
-  //       game.selfPlayerState.characterID,
-  //       itemId,
-  //       game.selfPlayerState.entityID,
-  //       actionId,
-  //       { WorldPosition: position, Rotation: rotation },
-  //     );
-  //     if (!res.ok) {
-  //       const data = JSON.parse(res.data);
-  //       if (data.FieldCodes && data.FieldCodes.length > 0) {
-  //         toastr.error(data.FieldCodes[0].Message, 'Oh No!', { timeout: 3000 });
-  //       } else {
-  //         // This means api server failed perform item action request but did not provide a message about what happened
-  //         toastr.error('An error occured', 'Oh No!', { timeout: 3000 });
-  //       }
-  //     }
-  //   } catch (e) {
-  //     toastr.error('There was an unhandled error!', 'Oh No!!', { timeout: 5000 });
-  //   }
-  // }
+  private onWindowResize = () => {
+    this.initializeBodyDimensions(true);
+    this.initializeInventory();
+  }
 
   // set up rows from scratch / works as a re-initialize as well
   private initializeInventory = () => {

@@ -9,7 +9,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
 import { AbilityButtonInfo } from '../../AbilityBar/AbilityButton/AbilityButtonView';
-import { abilityStateColors, makeGlowPathFor, getTimingEnd } from '../../AbilityBar/AbilityButton/lib';
+import { abilityStateColors, makeGlowPathFor } from '../../AbilityBar/AbilityButton/lib';
 
 const Container = styled('div')`
   position: relative;
@@ -42,6 +42,7 @@ export interface SkillQueueItemProps {
 
 export interface SkillQueueItemState {
   current: number;
+  end: number;
 }
 
 class SkillQueueItem extends React.Component<SkillQueueItemProps, SkillQueueItemState> {
@@ -52,6 +53,7 @@ class SkillQueueItem extends React.Component<SkillQueueItemProps, SkillQueueItem
     super(props);
     this.state = {
       current: 0,
+      end: 0,
     };
   }
 
@@ -65,8 +67,8 @@ class SkillQueueItem extends React.Component<SkillQueueItemProps, SkillQueueItem
     let timerPath = defaultPath;
     let isQueued = false;
 
-    if (ability.timing && ability.status & AbilityButtonState.Preparation) {
-      timerPath = makeGlowPathFor(getTimingEnd(ability.timing), this.state.current, radius, x, y, true);
+    if (this.state.end > 0 && ability.timing && ability.status & AbilityButtonState.Preparation) {
+      timerPath = makeGlowPathFor(this.state.end, this.state.current, radius, x, y, true);
     }
 
     if (ability.status & AbilityButtonState.Queued) {
@@ -88,9 +90,9 @@ class SkillQueueItem extends React.Component<SkillQueueItemProps, SkillQueueItem
 
   public componentDidMount() {
     this.mounted = true;
-    this.timerListener = game.on(`skill-button-timer-${this.props.ability.id}`, (current: number) => {
+    this.timerListener = game.on(`ability-button-timer-${this.props.ability.id}`, (current: number, end: number) => {
       if (this.mounted) {
-        this.setState({ current });
+        this.setState({ current, end });
       }
     });
   }
