@@ -24,7 +24,7 @@ cseLoginTokenMechanism.prototype.authAttrs = function() {
   return {};
 };
 cseLoginTokenMechanism.prototype.auth = function() {
-  return this.access_token;
+  return game.accessToken;
 };
 cseLoginTokenMechanism.prototype.match = function(options: any) {
   if (options.loginToken) {
