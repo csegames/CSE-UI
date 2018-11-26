@@ -39,7 +39,12 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 
   public render() {
-    if (!this.state.playerState || this.state.playerState.type !== 'player') return null;
+    if (!this.state.playerState ||
+      this.state.playerState.type !== 'player' ||
+      this.state.playerState.name === '_offline_' ||
+      this.state.playerState.name === 'unknown') {
+      return null;
+    }
     return (
       <Container onMouseDown={this.handleContextMenu}>
         <HealthBar type='compact' playerState={this.state.playerState} />
