@@ -31,9 +31,7 @@ function initUI() {
     console.log('initializing game out of context');
   }
 
-  if (!window._devGame) {
-    window._devGame = window.game as DevGameInterface;
-  }
+  window._devGame = window.game as DevGameInterface;
 
   if (game.ready) return;
   initGameInterface(engine.isAttached);
