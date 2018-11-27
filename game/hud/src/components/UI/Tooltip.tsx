@@ -59,6 +59,8 @@ export class TooltipView extends React.Component<{}, TooltipState> {
   private tooltipDimensions: { width: number, height: number };
   private eventHandles: EventHandle[] = [];
 
+  private mousePos = { clientX: 0, clientY: 0 };
+
   constructor(props: {}) {
     super(props);
     this.state = {
@@ -92,12 +94,14 @@ export class TooltipView extends React.Component<{}, TooltipState> {
   public componentDidMount() {
     this.initWindowDimensions();
     window.addEventListener('resize', this.initWindowDimensions);
+    window.addEventListener('mousemove', this.onMouseMove);
     this.eventHandles.push(onShowTooltip(this.handleShowTooltip));
     this.eventHandles.push(onHideTooltip(this.handleHideTooltip));
   }
 
   public componentWillUnmount() {
     window.removeEventListener('resize', this.initWindowDimensions);
+    window.removeEventListener('mousemove', this.onMouseMove);
     this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
@@ -106,7 +110,15 @@ export class TooltipView extends React.Component<{}, TooltipState> {
     this.handleHideTooltip();
   }
 
-  private onMouseMove = (e: MouseEvent) => {
+  private onMouseMove = (e: { clientX: number, clientY: number }) => {
+    this.mousePos = {
+      clientX: e.clientX,
+      clientY: e.clientY,
+    };
+    this.updatePosition();
+  }
+
+  private updatePosition = () => {
     if (!this.tooltipDimensions && this.tooltipRef) {
       this.tooltipDimensions = {
         height: this.tooltipRef.clientHeight,
@@ -116,8 +128,8 @@ export class TooltipView extends React.Component<{}, TooltipState> {
 
     let computedStyle;
     computedStyle = this.computeStyle(
-      e.clientX,
-      e.clientY,
+      this.mousePos.clientX,
+      this.mousePos.clientY,
       this.state.offsetLeft,
       this.state.offsetTop,
       this.state.offsetRight,
@@ -126,7 +138,7 @@ export class TooltipView extends React.Component<{}, TooltipState> {
 
     if (this.tooltipRef && computedStyle) {
       if (computedStyle.bottom) {
-        const topScreenOverflow = e.clientY - this.tooltipDimensions.height;
+        const topScreenOverflow = this.mousePos.clientY - this.tooltipDimensions.height;
         if (topScreenOverflow < 0) {
           // Tooltip is overflowing the top of the viewport
           this.tooltipRef.style.bottom = `${computedStyle.bottom + topScreenOverflow}px`;
@@ -136,7 +148,8 @@ export class TooltipView extends React.Component<{}, TooltipState> {
       }
 
       if (computedStyle.top) {
-        const bottomScreenOverflow = this.windowDimensions.innerHeight - (e.clientY + this.tooltipDimensions.height);
+        const bottomScreenOverflow = this.windowDimensions.innerHeight -
+          (this.mousePos.clientY + this.tooltipDimensions.height);
         if (bottomScreenOverflow < 0) {
           // Tooltip is overflowing the bottom of the viewport
           this.tooltipRef.style.top = `${computedStyle.top + bottomScreenOverflow}px`;
@@ -152,7 +165,7 @@ export class TooltipView extends React.Component<{}, TooltipState> {
 
   private handleShowTooltip = (payload: ShowTooltipPayload) => {
     const { content, event, shouldAnimate, styles } = payload;
-    window.addEventListener('mousemove', this.onMouseMove);
+    this.updatePosition();
     this.setState({
       show: true,
       wndRegion: utils.windowQuadrant(event.clientX, event.clientY),
@@ -163,7 +176,6 @@ export class TooltipView extends React.Component<{}, TooltipState> {
   }
 
   private handleHideTooltip = () => {
-    window.removeEventListener('mousemove', this.onMouseMove);
     this.setState({ show: false, content: null, styles: {} });
   }
 
@@ -198,13 +210,19 @@ export class TooltipView extends React.Component<{}, TooltipState> {
   }
 }
 
+
 interface TooltipProps {
   content: JSX.Element | JSX.Element[] | string;
+  delayMS?: number;
   shouldAnimate?: boolean;
   styles?: Partial<ToolTipStyle>;
+  closeOnEvent?: string;
 }
 
-export class Tooltip extends React.Component<TooltipProps, {}> {
+export class Tooltip extends React.PureComponent<TooltipProps, {}> {
+  private isMouseOver: boolean = false;
+  private closeEventHandle: EventHandle = null;
+
   public render() {
     if (!this.props.children) {
       return null;
@@ -220,16 +238,47 @@ export class Tooltip extends React.Component<TooltipProps, {}> {
     });
   }
 
+
   private handleMouseOver = (event: React.MouseEvent) => {
+    if (this.isMouseOver) return;
+    this.isMouseOver = true;
+    const evt = {
+      clientX: event.clientX,
+      clientY: event.clientY,
+    };
+
+    if (this.props.delayMS) {
+      setTimeout(() => {
+        if (this.isMouseOver) this.showTooltip(evt);
+      }, this.props.delayMS);
+    } else {
+      this.showTooltip(evt);
+    }
+  }
+
+  private showTooltip = (event: { clientX: number, clientY: number}) => {
     showTooltip({
       content: this.props.content,
       shouldAnimate: this.props.shouldAnimate,
       styles: this.props.styles,
       event,
     });
+
+    if (this.props.closeOnEvent) {
+      this.closeEventHandle = game.on(this.props.closeOnEvent, () => {
+        if (this.isMouseOver) {
+          this.handleMouseLeave();
+        }
+      });
+    }
   }
 
   private handleMouseLeave = () => {
+    this.isMouseOver = false;
     hideTooltip();
+    if (this.closeEventHandle) {
+      this.closeEventHandle.clear();
+      this.closeEventHandle = null;
+    }
   }
 }

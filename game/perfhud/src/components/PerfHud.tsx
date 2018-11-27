@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client } from '@csegames/camelot-unchained';
 import * as React from 'react';
 
 export interface PerfPage {
@@ -19,9 +18,8 @@ export interface PerfHudState {
   pages: PerfPage[];
   minimized: boolean;
   currentPage: PerfPage;
+  visible: boolean;
 }
-
-declare const cuAPI: any;
 
 class PerfHud extends React.Component<PerfHudProps, PerfHudState> {
   public name: string = 'perfhud';
@@ -32,21 +30,19 @@ class PerfHud extends React.Component<PerfHudProps, PerfHudState> {
       pages: [],
       minimized: true,
       currentPage: null,
+      visible: true,
     };
   }
 
   public closeWindow(): void {
-    client.HideUI('perfhud');
+    game.sendSlashCommand('showPerfHUD 0');
   }
 
   public componentDidMount() {
-    cuAPI.OnPerfUpdate(() => {
-      this.updatePages();
-    });
+    game.onPerfHUDUpdate(this.updatePages);
   }
 
   public minMaxWindow = () => {
-    console.log('minmax');
     this.setState({
       pages: this.state.pages,
       minimized: !this.state.minimized,
@@ -54,8 +50,15 @@ class PerfHud extends React.Component<PerfHudProps, PerfHudState> {
     });
   }
 
-  public updatePages = () => {
-    const updates = JSON.parse(client.perfHUD);
+  public updatePages = (json: string) => {
+    if (json === '') {
+      this.setState({
+        visible: false,
+      });
+      return;
+    }
+
+    const updates = JSON.parse(json);
     const pages = this.state.pages
       // tslint:disable-next-line
       .filter((t: PerfPage) => updates.filter((ut: PerfPage) => ut.id === t.id) == [])
@@ -76,6 +79,7 @@ class PerfHud extends React.Component<PerfHudProps, PerfHudState> {
       pages,
       minimized: this.state.minimized,
       currentPage: current,
+      visible: true,
     });
   }
 
@@ -150,7 +154,9 @@ class PerfHud extends React.Component<PerfHudProps, PerfHudState> {
 
     const mini = this.state.minimized;
     return (
-      <div className={`${this.name} cu-window`}>
+      <div className={`${this.name} cu-window`}
+        style={{ maxWidth: '500px', right: '0', position: 'fixed' }}
+        data-input-group='block'>
         <div className='perfhud-select'>
           { this.createPerfMinimize(mini) }
           { this.state.pages.map((page, index) => this.createPerfSelect(page, index)) }

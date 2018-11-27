@@ -10,6 +10,8 @@ import { TaskHandle } from './clientTasks';
 import { SignalR } from '../signalR';
 import { InternalGameInterfaceExt } from './InternalGameInterfaceExt';
 
+import * as engineEvents from './engineEvents';
+
 /**
  * GameModel interface defines the structure and functionality of the global game object as presented by the game
  * client.
@@ -220,8 +222,10 @@ interface BuildingAPIModel {
   activeBlockID: number;
   activeMaterialID: number;
   activeBlueprintID: number;
+  activePotentialItemID: number;
   blueprints: ArrayMap<Blueprint>;
   materials: ArrayMap<Material>;
+  potentialItems: ArrayMap<PotentialItem>;
 }
 
 interface BuildingAPI extends BuildingAPIModel {
@@ -229,6 +233,7 @@ interface BuildingAPI extends BuildingAPIModel {
 
   selectBlockAsync: (blockID: number) => CancellablePromise<Success | Failure>;
   selectBlueprintAsync: (blueprintID: number) => CancellablePromise<Success | Failure>;
+  selectPotentialItemAsync: (potentialItemID: number) => CancellablePromise<Success | Failure>;
 
   deleteBlueprintAsync: (blueprintID: number) => CancellablePromise<Success | Failure>;
   createBlueprintFromSelectionAsync: (name: string) => CancellablePromise<(Success & { blueprint: Blueprint}) | Failure>;
@@ -244,6 +249,7 @@ interface BuildingAPIModelTasks {
 
   _cse_dev_selectBlock: (blockID: number) => TaskHandle;
   _cse_dev_selectBlueprint: (blueprintID: number) => TaskHandle;
+  _cse_dev_selectPotentialItem: (potentialItemID: number) => TaskHandle;
 
   _cse_dev_deleteBlueprint: (blueprintID: number) => TaskHandle;
   _cse_dev_createBlueprintFromSelection: (name: string) => TaskHandle;
@@ -411,6 +417,20 @@ export interface GameInterface extends GameModel {
 
   onKeybindChanged: (callback: (keybind: Keybind) => any) => EventHandle;
 
+  /**
+   * Called when the client keybind for "Toggle Build Selection Interface" is registered.
+   */
+  onToggleBuildSelector: (callback: () => any) => EventHandle;
+
+  /**
+   * Called when the client keybind for "Create Blueprint From Selection" is registered.
+   */
+  onWantCreateBlueprintFromSelection: (callback: () => any) => EventHandle;
+
+  onPerfHUDUpdate: (callback: (json: string) => any) => EventHandle;
+
+  getKeybindSafe: (id: number) => Keybind;
+
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */
   /* -------------------------------------------------- */
@@ -536,6 +556,8 @@ export interface GameInterface extends GameModel {
    * @param {number | EventHandle} handle Either the EventHandle or ID of an event to unsubscribe
    */
   off: (handle: number | EventHandle) => void;
+
+  engineEvents: typeof engineEvents;
 }
 
 export type DevGameInterface = InternalGameInterfaceExt & GameModelTasks;

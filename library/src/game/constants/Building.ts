@@ -41,6 +41,10 @@ declare global {
     blocks: ArrayMap<Block>;
   }
 
+  interface PotentialItem extends CUBEItemBase {
+    name: string;
+  }
+
   interface Blueprint extends CUBEItemBase {
     name: string;
   }

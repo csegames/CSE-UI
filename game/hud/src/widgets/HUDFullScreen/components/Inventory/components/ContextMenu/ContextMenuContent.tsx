@@ -170,7 +170,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
       }
     });
 
-    game.startItemPlacement(staticDefinition.numericItemDefID, id, action.id);
+    game.startItemPlacement(staticDefinition.numericItemDefID, id, (action && action.id) || '');
     game.trigger('navigate', 'placement-mode');
     hideContextMenu();
   }

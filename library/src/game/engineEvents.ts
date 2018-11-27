@@ -154,6 +154,25 @@ export const EE_OnSelectedBlueprintChanged = 'selectedBlueprintChanged';
 regMap[EE_OnSelectedBlueprintChanged] = 'onSelectedBlueprintChanged';
 
 /**
+ * Called when the client keybind for "Toggle Build Selection Interface" is registered.
+ */
+export const EE_OnToggleBuildSelector = 'toggleBuildSelector';
+regMap[EE_OnToggleBuildSelector] = 'onToggleBuildSelector';
+
+/**
+ * Called when the client keybind for "Create Blueprint From Selection" is registered.
+ */
+export const EE_OnWantCreateBlueprintFromSelection = 'wantCreateBlueprintFromSelection';
+regMap[EE_OnWantCreateBlueprintFromSelection] = 'onWantCreateBlueprintFromSelection';
+
+
+/**
+ * PerfHUD - Works on Protected HUD only
+ */
+export const EE_OnPerfHUDUpdate = 'perfhud.update';
+regMap[EE_OnPerfHUDUpdate] = 'onPerfHUDUpdate';
+
+/**
  * Initialize engine event forwarding
  */
 export default function() {

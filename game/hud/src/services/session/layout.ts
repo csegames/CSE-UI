@@ -14,6 +14,7 @@ import { HUDDragOptions, LayoutMode } from '../../components/HUDDrag';
 // layout items
 import Chat from './layoutItems/Chat';
 import MOTD from './layoutItems/MOTD';
+import Build from './layoutItems/Build';
 import Warband from './layoutItems/Warband';
 // import Respawn from './layoutItems/Respawn';
 import Compass from './layoutItems/Compass';
@@ -38,7 +39,7 @@ import ItemPlacementModeManager from './layoutItems/ItemPlacementModeManager';
 import AbilityQueue from './layoutItems/AbilityQueue';
 
 const localStorageKey = 'cse_hud_layout-state';
-const FORCE_RESET_CODE = '0.7.10'; // if the local storage value for the reset code doesn't match this, then force a reset
+const FORCE_RESET_CODE = '0.8.0'; // if the local storage value for the reset code doesn't match this, then force a reset
 
 const CURRENT_STATE_VERSION: number = 6;
 const MIN_STATE_VERSION_ANCHORED: number = 5;
@@ -122,6 +123,9 @@ function initialState(): LayoutState {
     // ],
     [
       'motd', cloneDeep(MOTD),
+    ],
+    [
+      'build', cloneDeep(Build),
     ],
     [
       'compass', cloneDeep(Compass),

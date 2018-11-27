@@ -12,6 +12,8 @@ import { createEventEmitter, EventEmitter } from '../utils/EventEmitter';
 import { GameModel, GameInterface } from './GameInterface';
 
 import initEventForwarding from './engineEvents';
+// tslint:disable-next-line:no-duplicate-imports
+import * as engineEvents from './engineEvents';
 
 import initLoadingState from './GameClientModels/LoadingState';
 import initPlayerState from './GameClientModels/PlayerState';
@@ -37,6 +39,10 @@ export default function(isAttached: boolean) {
 
   _devGame.abilityStates = {};
 
+  _devGame.engineEvents = engineEvents;
+
+  _devGame.getKeybindSafe = getKeybindSafe;
+
   // TASKS
   _devGame._activeTasks = {};
   _devGame.listenForKeyBindingAsync = makeClientPromise(game => game._cse_dev_listenForKeyBindingTask());
@@ -48,6 +54,8 @@ export default function(isAttached: boolean) {
   _devGame.building.setModeAsync = makeClientPromise((game, mode) => game.building._cse_dev_setMode(mode));
   _devGame.building.selectBlockAsync = makeClientPromise((game, id) => game.building._cse_dev_selectBlock(id));
   _devGame.building.selectBlueprintAsync = makeClientPromise((game, id) => game.building._cse_dev_selectBlueprint(id));
+  _devGame.building.selectPotentialItemAsync =
+    makeClientPromise((game, id) => game.building._cse_dev_selectPotentialItem(id));
   _devGame.building.deleteBlueprintAsync = makeClientPromise((game, id) => game.building._cse_dev_deleteBlueprint(id));
   _devGame.building.createBlueprintFromSelectionAsync
     = makeClientPromise((game, name) => game.building._cse_dev_createBlueprintFromSelection(name));
@@ -111,8 +119,10 @@ export function initOutOfContextGame(): Partial<GameInterface> {
       activeBlockID: 0,
       activeBlueprintID: 0,
       activeMaterialID: 0,
+      activePotentialItemID: 0,
       blueprints: {},
       materials: {},
+      potentialItems: {},
     },
 
     dropLight: {
@@ -156,6 +166,7 @@ export function initOutOfContextGame(): Partial<GameInterface> {
       setModeAsync: noOp,
       selectBlockAsync: noOp,
       selectBlueprintAsync: noOp,
+      selectPotentialItemAsync: noOp,
       createBlueprintFromSelectionAsync: noOp,
       deleteBlueprintAsync: noOp,
       replaceMaterialsAsync: noOp,
@@ -194,6 +205,18 @@ function onReady(callback: () => any) {
 
 function signalRHost() {
   return game.webAPIHost + '/signalr';
+}
+
+function getKeybindSafe(id: number): Keybind {
+  if (game.keybinds[id]) {
+    return cloneDeep(game.keybinds[id]) as Keybind;
+  }
+  return {
+    id,
+    description: 'unknown',
+    category: 'miscellaneous',
+    binds: [{ name: '', value: 0 },{ name: '', value: 0 },{ name: '', value: 0 }],
+  };
 }
 
 /* -------------------------------------------------- */

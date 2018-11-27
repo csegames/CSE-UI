@@ -352,7 +352,6 @@ export class TabbedDialog extends React.PureComponent<DialogProps, DialogState> 
       <DialogContainer
         className={`has-title cse-ui-scroller-thumbonly`}
         data-id='dialog-container'
-        data-input-group='block'
       >
         <DialogTitle>{this.props.title}</DialogTitle>
         <DialogWindow data-id='dialog-window'>

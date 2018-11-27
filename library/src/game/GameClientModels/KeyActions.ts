@@ -12,6 +12,7 @@ import engineInit from './_Init';
  * to the ID of a KeyBind
  */
 export interface KeyActionsModel {
+  SelectionModeToggle: number;
   CubeBuildingCopy: number;
   CubeBuildingPaste: number;
   CubeCommitBlock: number;
@@ -23,9 +24,12 @@ export interface KeyActionsModel {
   CubeRotateBlockY: number;
   CubeRotateBlockZ: number;
   CubeUndoBlockPlacement: number;
+  CubeCycleSelectedBlockShape: number;
+  CubeCycleSelectedBlockSubstance: number;
 
   PlayerCameraFreeToggle: number;
   UIToggleBuildingMode: number;
+  UIHideToggle: number;
 }
 
 declare global {

@@ -26,6 +26,7 @@ enum HUDZOrder {
   DevUI,
 
   // Widgets above all else
+  Build,
   MOTD,
   Scoreboard,
   Respawn,
