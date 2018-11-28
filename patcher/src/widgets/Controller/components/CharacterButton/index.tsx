@@ -110,12 +110,25 @@ class CharacterButton extends React.PureComponent<Props, CharacterButtonState> {
     );
   }
 
+  public componentDidMount() {
+    this.checkForAccess();
+  }
+
   public componentDidCatch(error: Error, info: any) {
     console.error(error);
     console.log(info);
   }
 
-  private initializeSelectedServer = (props: Props) => {
+  private checkForAccess = () => {
+    const servers = this.getServersWithPatchPermissions(this.props);
+    if (servers.length === 0) {
+      this.setState({ hasAccess: false });
+    } else if (this.props.serverType !== ServerType.CHANNEL) {
+      this.setState({ hasAccess: true });
+    }
+  }
+
+  private getServersWithPatchPermissions = (props: Props) => {
     const values: PatcherServer[] = [];
     const servers = props.servers;
     Object.keys(servers).forEach((key: string) => {
@@ -124,25 +137,31 @@ class CharacterButton extends React.PureComponent<Props, CharacterButtonState> {
       }
     });
 
-    if (values.length === 0) {
+    return values;
+  }
+
+  private initializeSelectedServer = (props: Props) => {
+    const servers: PatcherServer[] = this.getServersWithPatchPermissions(props);
+
+    if (servers.length === 0) {
       this.setState({ hasAccess: false });
       this.props.onUpdateState({ selectedServer: null });
       return;
     }
 
     if (props.serverType === ServerType.CHANNEL) {
-      this.props.onUpdateState({ selectedServer: values.find((value: any) => value.name === 'Editor') || values[0] });
+      this.props.onUpdateState({ selectedServer: servers.find((value: any) => value.name === 'Editor') || servers[0] });
     } else {
       const lastPlayString = localStorage.getItem('cse-patcher-lastplay');
 
       let selectedServer = null;
       if (lastPlayString) {
         const lastPlay: { channelID: string, serverName: string, characterID: string } = JSON.parse(lastPlayString);
-        selectedServer = find(values, (s: PatcherServer) => s.name === lastPlay.serverName);
+        selectedServer = find(servers, (s: PatcherServer) => s.name === lastPlay.serverName);
       }
 
       if (!selectedServer) {
-        selectedServer = values[0];
+        selectedServer = servers[0];
       }
 
       this.setState({ hasAccess: true });
