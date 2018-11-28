@@ -26,6 +26,7 @@ export enum ServerType {
   CUGAME,
   CUBE,
   CHANNEL,
+  HIDDEN,
   UNKNOWN,
 }
 
@@ -99,15 +100,21 @@ export function webAPIServerToPatcherServer(server: webAPI.ServerModel): Patcher
     type: ServerType.CUGAME,
     channelStatus: channel ? channel.channelStatus : ChannelStatus.NotInstalled,
     apiHost: server.apiHost,
-    mode: channel.mode,
+    mode: channel ? channel.mode : PatchChannelMode.Automatic,
   }, server);
 }
 
 function getServerTypeFromChannel(channelID: number): ServerType {
   switch (channelID) {
-    default: return ServerType.CHANNEL;
-    case 4: case 10: case 11: case 30: case 31: return ServerType.CUGAME;
+    case 4: return ServerType.CUGAME;
     case 27: return ServerType.CUBE;
+    case 1:
+    case 6:
+    case 10:
+    case 11: {
+      return ServerType.HIDDEN;
+    }
+    default: return ServerType.CHANNEL;
   }
 }
 
