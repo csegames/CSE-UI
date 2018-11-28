@@ -26,8 +26,8 @@ export enum ServerType {
   CUGAME,
   CUBE,
   CHANNEL,
-  HIDDEN,
   UNKNOWN,
+  HIDDEN,
 }
 
 // Server interface which the Controller will use for rendering
