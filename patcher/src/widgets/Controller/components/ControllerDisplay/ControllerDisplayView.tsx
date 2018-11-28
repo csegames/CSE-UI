@@ -42,6 +42,16 @@ const ControllerBody = styled('div')`
   align-items: flex-end;
 `;
 
+const VersionNumber = styled('div')`
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  font-size: 10px;
+  color: white;
+  z-index: 9999;
+  font-family: Caudex;
+`;
+
 export interface ComponentProps {
   activeRoute: Routes;
   charSelectVisible: boolean;
@@ -97,6 +107,7 @@ class ControllerDisplayView extends React.Component<Props, ControllerDisplayView
           <Login onLogin={this.props.onLogin} />
           {/* <Alerts alerts={alertArray} /> */}
           {/* <PatcherError errors={errors} onClear={this.props.onClearError}/> */}
+          <VersionNumber>v0.1.2</VersionNumber>
         </Container>
       );
     }
