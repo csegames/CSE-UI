@@ -9,7 +9,6 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { css } from 'react-emotion';
 
-import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { overlayPseudo } from 'components/AbilityBar/AbilityButton/lib/styles';
 import {
   ReadyState,
@@ -30,6 +29,7 @@ import {
   NoWeaponState,
   CLASS_NAMES,
 } from 'components/AbilityBar/AbilityButton/lib';
+import { Tooltip } from 'components/UI/Tooltip';
 
 const Button = styled('div')`
   position: relative;
@@ -222,14 +222,29 @@ class AbilityButtonView extends React.Component<AbilityButtonViewProps, AbilityB
     // output button
     const { ability } = this.props;
     const icon = { backgroundImage: 'url(' + this.getIcon() + ')' };
+
+    let tooltipContent = null;
+    if (ability.icon) {
+      tooltipContent = <TooltipContentContainer>
+        <TooltipHeader>{this.props.name}</TooltipHeader>
+        <div dangerouslySetInnerHTML={{ __html: this.props.description }} />
+      </TooltipContentContainer>;
+    } else {
+      tooltipContent = <TooltipContentContainer>
+        <TooltipHeader>Failed to retrieve data from API server</TooltipHeader>
+      </TooltipContentContainer>;
+    }
+
     return (
+      <Tooltip
+        content={tooltipContent}
+        styles={DefaultTooltipStyles}
+      >
       <Button
         id={ability.id}
         className={this.props.className}
         style={icon}
         onClick={this.props.onAbilityClick}
-        onMouseOver={this.onMouseOver}
-        onMouseLeave={this.onMouseLeave}
         data-input-group='block'
       >
         <KeybindInfo>{ability.boundKeyName}</KeybindInfo>
@@ -250,6 +265,7 @@ class AbilityButtonView extends React.Component<AbilityButtonViewProps, AbilityB
           </TimingOverlay>
         }
       </Button>
+      </Tooltip>
     );
   }
 
@@ -271,26 +287,6 @@ class AbilityButtonView extends React.Component<AbilityButtonViewProps, AbilityB
     }
 
     return icon;
-  }
-
-  private onMouseOver = (event: React.MouseEvent<HTMLDivElement>) => {
-    const { ability } = this.props;
-    let content = null;
-    if (ability.icon) {
-      content = <TooltipContentContainer>
-        <TooltipHeader>{this.props.name}</TooltipHeader>
-        <div dangerouslySetInnerHTML={{ __html: this.props.description }} />
-      </TooltipContentContainer>;
-    } else {
-      content = <TooltipContentContainer>
-        <TooltipHeader>Failed to retrieve data from API server</TooltipHeader>
-      </TooltipContentContainer>;
-    }
-    showTooltip({ content, event, styles: DefaultTooltipStyles });
-  }
-
-  private onMouseLeave = () => {
-    hideTooltip();
   }
 }
 

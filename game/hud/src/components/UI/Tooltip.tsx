@@ -12,6 +12,8 @@ import {
   onHideTooltip,
   ShowTooltipPayload,
   ToolTipStyle,
+  showTooltip,
+  hideTooltip,
 } from 'actions/tooltips';
 
 const fadeIn = keyframes`
@@ -28,7 +30,7 @@ const Container = styled('div')`
   position: relative;
 `;
 
-const TooltipView = styled('div')`
+const View = styled('div')`
   position: fixed;
   z-index: 9999;
   &.should-animate {
@@ -37,10 +39,6 @@ const TooltipView = styled('div')`
     -webkit-animation: ${fadeIn} 0.15s forwards;
   }
 `;
-
-export interface TooltipProps {
-
-}
 
 export interface TooltipState {
   wndRegion: utils.Quadrant;
@@ -55,13 +53,13 @@ export interface TooltipState {
   styles?: Partial<ToolTipStyle>;
 }
 
-export class Tooltip extends React.Component<TooltipProps, TooltipState> {
+export class TooltipView extends React.Component<{}, TooltipState> {
   private tooltipRef: HTMLDivElement;
   private windowDimensions: { innerHeight: number, innerWidth: number };
   private tooltipDimensions: { width: number, height: number };
   private eventHandles: EventHandle[] = [];
 
-  constructor(props: TooltipProps) {
+  constructor(props: {}) {
     super(props);
     this.state = {
       wndRegion: utils.Quadrant.TopLeft,
@@ -82,11 +80,11 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
 
     return this.state.show ? (
       <Container className={customStyles.Tooltip}>
-        <TooltipView
+        <View
           innerRef={(ref: HTMLDivElement) => this.tooltipRef = ref}
           className={`${customStyles.tooltip} ${this.state.shouldAnimate ? 'should-animate' : ''}`}>
             {this.state.content}
-        </TooltipView>
+        </View>
       </Container>
     ) : null;
   }
@@ -197,5 +195,41 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
           bottom: this.windowDimensions.innerHeight - y + offsetBottom,
         };
     }
+  }
+}
+
+interface TooltipProps {
+  content: JSX.Element | JSX.Element[] | string;
+  shouldAnimate?: boolean;
+  styles?: Partial<ToolTipStyle>;
+}
+
+export class Tooltip extends React.Component<TooltipProps, {}> {
+  public render() {
+    if (!this.props.children) {
+      return null;
+    }
+
+    if (typeof this.props.children === 'string') {
+      return <span onMouseOver={this.handleMouseOver} onMouseLeave={this.handleMouseLeave}>{this.props.children}</span>;
+    }
+
+    return React.cloneElement(this.props.children as any, {
+      onMouseOver: this.handleMouseOver,
+      onMouseLeave: this.handleMouseLeave,
+    });
+  }
+
+  private handleMouseOver = (event: React.MouseEvent) => {
+    showTooltip({
+      content: this.props.content,
+      shouldAnimate: this.props.shouldAnimate,
+      styles: this.props.styles,
+      event,
+    });
+  }
+
+  private handleMouseLeave = () => {
+    hideTooltip();
   }
 }

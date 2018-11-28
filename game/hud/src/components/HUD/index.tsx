@@ -39,7 +39,7 @@ import HUDNav from '../../services/session/layoutItems/HUDNav';
 import Console from '../Console';
 import { InteractiveAlertView } from '../InteractiveAlert';
 import { ContextMenu } from '../ContextMenu';
-import { Tooltip } from 'UI/Tooltip';
+import { TooltipView } from 'UI/Tooltip';
 import PassiveAlert from '../PassiveAlert';
 import { HUDContext, HUDContextState, defaultContextState, fetchSkills, fetchStatuses } from './context';
 
@@ -127,7 +127,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
             <AbilityBar />
           </AbilityBarContainer>
           <ContextMenu />
-          <Tooltip />
+          <TooltipView />
           <PassiveAlert />
           { locked ? null :
             <HUDEditor
