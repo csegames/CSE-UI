@@ -164,27 +164,10 @@ export const defaultControllerContextState: ContextState = {
 
 export const ControllerContext = React.createContext(defaultControllerContextState);
 
-const query = gql`
-  query ControllerContextQuery {
-    shardCharacters {
-      ...PatcherCharacter
-    }
-    connectedServices {
-      servers {
-        accessLevel
-        channelID
-        shardID
-        channelPatchPermissions
-        host
-        name
-        playerMaximum
-        status
-        apiHost
-      }
-    }
-  }
-  ${PatcherCharacterFragment}
-`;
+const query = {
+  namedQuery: 'patcherControllerContext',
+  namedQueryCache: false,
+};
 
 const subscription = gql`
   subscription ControllerContextSubscription {

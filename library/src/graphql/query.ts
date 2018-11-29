@@ -48,6 +48,7 @@ export const defaultQueryOpts: QueryOptions = {
 export interface GraphQLQuery {
   operationName: string | null;
   namedQuery: string | null;
+  useNamedQueryCache: boolean | null;
   query: string | LegacyGraphqlDocumentNode | DocumentNode;
   variables: Dictionary<any> | null;
 }
@@ -55,6 +56,7 @@ export interface GraphQLQuery {
 export const defaultQuery: GraphQLQuery = {
   operationName: null,
   namedQuery: null,
+  useNamedQueryCache: true,
   query: '{}',
   variables: null,
 };
@@ -121,6 +123,7 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
             query: q.query,
             operationName: q.operationName,
             namedQuery: q.namedQuery,
+            useNamedQueryCache: q.useNamedQueryCache,
             variables: JSON.stringify(q.variables),
           },
         );
@@ -149,6 +152,7 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
         query: q.query,
         operationName: q.operationName,
         namedQuery: q.namedQuery,
+        useNamedQueryCache: q.useNamedQueryCache,
         variables: JSON.stringify(q.variables),
       },
     );

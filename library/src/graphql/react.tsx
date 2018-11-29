@@ -51,6 +51,7 @@ export class GraphQLClient {
     headers?: Dictionary<string> | null;
     apiHost?: string;
     namedQuery?: string;
+    useNamedQueryCache?: boolean;
     operationName?: string;
   };
 
@@ -76,6 +77,7 @@ export class GraphQLClient {
       query: this.lastQuery.query,
       operationName: this.lastQuery.operationName,
       namedQuery: this.lastQuery.namedQuery,
+      useNamedQueryCache: this.lastQuery.useNamedQueryCache,
       variables: this.lastQuery.variables,
     }, this.conf);
   }
