@@ -14,7 +14,7 @@ import snowParticles from '../../particles/snowParticles';
 import glowyOrbsParticles from '../../particles/glowyOrbsParticles';
 import dustParticles from '../../particles/dustParticles';
 
-export interface RaceVisualEffectsProps {
+export interface Props {
   selectedRace: Partial<RaceInfo>;
   selectedFaction: Partial<FactionInfo>;
   selectedGender: Gender;
@@ -22,101 +22,101 @@ export interface RaceVisualEffectsProps {
   effectsOff?: boolean;
 }
 
-export interface RaceVisualEffectsState {
+export interface State {
 }
 
-export class RaceVisualEffects extends React.PureComponent<RaceVisualEffectsProps, RaceVisualEffectsState> {
+export class RaceVisualEffects extends React.PureComponent<Props, State> {
   public render() {
     const { selectedRace, selectedGender, hideCharImg } = this.props;
     const arthurianLayerInfo = [
-      { id: 'bg', extraClass: 'arthurian', resistance: 120 },
-      { id: 'layer1', extraClass: 'arthurian',resistance: 90 },
+      { src: '../images/visualfx/art/art-layer2.png', id: 'arthurian', resistance: 120 },
+      { src: '../images/visualfx/art/art-layer1.png', id: 'arthurian',resistance: 90 },
       { id: 'dust', particleEffect: dustParticles },
-      { id: 'ray1', extraClass: 'arthurian',resistance: 40 },
-      { id: 'ray2', extraClass: 'arthurian',resistance: -15 },
-      { id: 'ray3', extraClass: 'arthurian', resistance: -60 },
-      { id: 'veil', extraClass: 'arthurian' },
-      { id: 'veil2', extraClass: 'arthurian', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'base', extraClass: 'arthurian',resistance: 140 },
-      { id: 'char', extraClass: `standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`,
+      { src: '../images/visualfx/ray-1.png', id: 'ray1 arthurian',resistance: 40 },
+      { src: '../images/visualfx/ray-2.png', id: 'ray2 arthurian',resistance: -15 },
+      { src: '../images/visualfx/ray-3.png', id: 'ray3 arthurian', resistance: -60 },
+      { src: '../images/visualfx/art/art-veil.png', id: 'veil arthurian' },
+      { src: '../images/visualfx/art/art-veil2.png', id: 'veil2 arthurian', resistance: 200 },
+      { src: '../images/visualfx/art/art-particle.png', id: 'particle arthurian', resistance: -50 },
+      { id: 'base arthurian', isDiv: true, resistance: 140 },
+      { id: `char standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`, isDiv: true,
         resistance: 150, hidden: hideCharImg },
-      { id: 'particle', extraClass: 'arthurian', resistance: -50, shouldParallaxVertical: true },
     ];
 
     const arthurianPictLayerInfo = [
-      { id: 'bg', extraClass: 'arthurian-pict',resistance: 120 },
-      { id: 'layer1', extraClass: 'arthurian-pict',resistance: 90 },
+      { src: '../images/visualfx/art/pict/art2-bg.png', id: 'bg arthurian-pict',resistance: 120 },
+      { src: '../images/visualfx/art/pict/art2-layer1.png', id: 'layer1 arthurian-pict',resistance: 90 },
       { id: 'dust', particleEffect: dustParticles },
-      { id: 'ray1', extraClass: 'arthurian pict',resistance: 40 },
-      { id: 'ray2', extraClass: 'arthurian pict',resistance: -15 },
-      { id: 'ray3', extraClass: 'arthurian pict', resistance: -60 },
-      { id: 'veil', extraClass: 'arthurian' },
-      { id: 'veil2', extraClass: 'arthurian', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'base', extraClass: 'arthurian',resistance: 140 },
-      { id: 'char', extraClass: `standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`,
+      { src: '../images/visualfx/ray-1.png', id: 'ray1 arthurian pict',resistance: 40 },
+      { src: '../images/visualfx/ray-2.png', id: 'ray2 arthurian pict',resistance: -15 },
+      { src: '../images/visualfx/ray-3.png', id: 'ray3 arthurian pict', resistance: -60 },
+      { src: '../images/visualfx/art/art-veil.png', id: 'veil arthurian' },
+      { src: '../images/visualfx/art/art-veil2.png', id: 'veil2 arthurian', resistance: 200 },
+      { src: '../images/visualfx/art/art-particle.png', id: 'particle arthurian', resistance: -50 },
+      { id: 'base arthurian', isDiv: true, resistance: 140 },
+      { id: `char standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`, isDiv: true,
         resistance: 150, hidden: hideCharImg },
-      { id: 'particle', extraClass: 'arthurian', resistance: -50, shouldParallaxVertical: true },
     ];
 
     const vikingLayerInfo = [
-      { id: 'bg', extraClass: 'viking', resistance: 120 },
-      { id: 'layer2', extraClass: 'viking', resistance: 70 },
-      { id: 'layer1', extraClass: 'viking', resistance: 50 },
+      { src: '../images/visualfx/vik/vik-bg.png', id: 'bg viking', resistance: 120 },
+      { src: '../images/visualfx/vik/vik-layer2.png', id: 'layer2 viking', resistance: 70 },
+      { src: '../images/visualfx/vik/vik-layer1.png', id: 'layer1 viking', resistance: 50 },
       { id: 'snow', particleEffect: snowParticles },
-      { id: 'ray1', extraClass: 'viking', resistance: 40 },
-      { id: 'ray2', extraClass: 'viking', resistance: -15 },
-      { id: 'ray3', extraClass: 'viking', resistance: -60 },
-      { id: 'veil', extraClass: 'viking', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'veil2', extraClass: 'viking' },
-      { id: 'base', extraClass: 'viking', resistance: 140 },
-      { id: `char`, extraClass: `viking standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`,
+      { src: '../images/visualfx/ray-1.png', id: 'ray1 viking', resistance: 40 },
+      { src: '../images/visualfx/ray-2.png', id: 'ray2 viking', resistance: -15 },
+      { src: '../images/visualfx/ray-3.png', id: 'ray3 viking', resistance: -60 },
+      { src: '../images/visualfx/vik/vik-veil.png', id: 'veil viking', resistance: 200 },
+      { src: '../images/visualfx/vik/vik-veil2.png', id: 'veil2 viking' },
+      { src: '../images/visualfx/vik/vik-particle.png', id: 'particle viking', resistance: -50 },
+      { id: 'base viking', isDiv: true, resistance: 140 },
+      { id: `char viking standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`, isDiv: true,
         resistance: 150, hidden: hideCharImg },
-      { id: 'particle', extraClass: 'viking', resistance: -50, shouldParallaxVertical: true },
     ];
 
     const vikingValkyrieLayerInfo = [
-      { id: 'bg', extraClass: 'viking-valkyrie', resistance: 120 },
-      { id: 'layer2', extraClass: 'viking-valkyrie', resistance: 70 },
-      { id: 'layer1', extraClass: 'viking-valkyrie', resistance: 50 },
+      { src: '../images/visualfx/vik/valkyrie/vik2-bg.png', id: 'bg viking-valkyrie', resistance: 120 },
+      { src: '../images/visualfx/vik/valkyrie/vik2-layer2.png', id: 'layer2 viking-valkyrie', resistance: 70 },
+      { src: '../images/visualfx/vik/valkyrie/vik2-layer1.png', id: 'layer1 viking-valkyrie', resistance: 50 },
       { id: 'snow', particleEffect: snowParticles },
-      { id: 'ray1', extraClass: 'viking', resistance: 40 },
-      { id: 'ray2', extraClass: 'viking', resistance: -15 },
-      { id: 'ray3', extraClass: 'viking', resistance: -60 },
-      { id: 'veil', extraClass: 'viking-valkyrie', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'veil2', extraClass: 'viking', resistance: 200 },
-      { id: 'base', extraClass: 'viking', resistance: 140 },
-      { id: `char`, extraClass: `viking standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`,
+      { src: '../images/visualfx/ray-1.png', id: 'ray1 viking', resistance: 40 },
+      { src: '../images/visualfx/ray-2.png', id: 'ray2 viking', resistance: -15 },
+      { src: '../images/visualfx/ray-3.png', id: 'ray3 viking', resistance: -60 },
+      { src: '../images/visualfx/vik/vik-veil.png', id: 'veil viking', resistance: 200 },
+      { src: '../images/visualfx/vik/vik-veil2.png', id: 'veil2 viking' },
+      { src: '../images/visualfx/vik/vik-particle.png', id: 'particle viking', resistance: -50 },
+      { id: 'base viking', isDiv: true, resistance: 140 },
+      { id: `char viking standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`, isDiv: true,
         resistance: 150, hidden: hideCharImg },
-      { id: 'particle', extraClass: 'viking', resistance: -50, shouldParallaxVertical: true },
     ];
 
     const tddLayerInfo = [
-      { id: 'bg', extraClass: 'tdd', resistance: 70 },
-      { id: 'layer3', extraClass: 'tdd', resistance: 80 },
+      { src: '../images/visualfx/tdd/tdd-bg.png', id: 'bg tdd', resistance: 70 },
+      { src: '../images/visualfx/tdd/tdd-layer3.png', id: 'layer3 tdd', resistance: 80 },
       { id: 'glowOrbs', particleEffect: glowyOrbsParticles },
-      { id: 'layer2', extraClass: 'tdd', resistance: 100 },
-      { id: 'ray1', extraClass: 'tdd', resistance: 40 },
-      { id: 'ray2', extraClass: 'tdd', resistance: -15 },
-      { id: 'ray3', extraClass: 'tdd', resistance: -60 },
-      { id: 'veil', extraClass: 'tdd', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'veil2', extraClass: 'tdd' },
-      { id: 'base', extraClass: 'tdd', resistance: 140 },
-      { id: 'char', extraClass: `tdd luchorpan standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`,
+      { src: '../images/visualfx/tdd/tdd-layer2.png', id: 'layer2 tdd', resistance: 100 },
+      { src: '../images/visualfx/ray-1.png', id: 'ray1 tdd', resistance: 40 },
+      { src: '../images/visualfx/ray-2.png', id: 'ray2 tdd', resistance: -15 },
+      { src: '../images/visualfx/ray-3.png', id: 'ray3 tdd', resistance: -60 },
+      { src: '../images/visualfx/tdd/tdd-veil.png', id: 'veil tdd', resistance: 200,  shouldParallaxVertical: true },
+      { src: '../images/visualfx/tdd/tdd-veil2.png', id: 'veil2 tdd' },
+      { id: 'base tdd', isDiv: true, resistance: 140 },
+      { id: `char tdd luchorpan standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`, isDiv: true,
         resistance: 150, hidden: hideCharImg },
     ];
 
     const tddHumanLayerInfo = [
-      { id: 'bg', extraClass: 'tdd-human', resistance: 70 },
-      { id: 'layer2', extraClass: 'tdd-human', resistance: 80 },
+      { src: '../images/visualfx/tdd/human/tdd2-bg.png', id: 'bg tdd-human', resistance: 70 },
+      { src: '../images/visualfx/tdd/human/tdd2-layer2.png', id: 'layer2 tdd-human', resistance: 80 },
       { id: 'glowOrbs', particleEffect: glowyOrbsParticles },
-      { id: 'layer1', extraClass: 'tdd-human', resistance: 100 },
-      { id: 'ray1', extraClass: 'tdd', resistance: 40 },
-      { id: 'ray2', extraClass: 'tdd', resistance: -15 },
-      { id: 'ray3', extraClass: 'tdd', resistance: -60 },
-      { id: 'veil', extraClass: 'tdd-human', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'veil2', extraClass: 'tdd' },
-      { id: 'base', extraClass: 'tdd', resistance: 140 },
-      { id: 'char', extraClass: `tdd standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`,
+      { src: '../images/visualfx/tdd/human/tdd2-layer1.png', id: 'layer1 tdd-human', resistance: 100 },
+      { src: '../images/visualfx/ray-1.png', id: 'ray1 tdd', resistance: 40 },
+      { src: '../images/visualfx/ray-2.png', id: 'ray2 tdd', resistance: -15 },
+      { src: '../images/visualfx/ray-3.png', id: 'ray3 tdd', resistance: -60 },
+      { src: '../images/visualfx/tdd/human/tdd2-veil.png', id: 'veil tdd-human', resistance: 200 },
+      { src: '../images/visualfx/tdd/tdd-veil2.png', id: 'veil2 tdd' },
+      { id: 'base tdd', isDiv: true, resistance: 140 },
+      { id: `char standing__${Race[selectedRace.id]}--${Gender[selectedGender]}`, isDiv: true,
         resistance: 150, hidden: hideCharImg },
     ];
 

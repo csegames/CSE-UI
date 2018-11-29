@@ -150,7 +150,7 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
   public render() {
     const visualFXChar = this.state.visualFXChar || this.state.firstChar;
     const { selectedCharacter } = this.props;
-    if (visualFXChar && selectedCharacter) {
+    if (selectedCharacter) {
       const { faction } = selectedCharacter;
       const charImgClass = [`bgelement char`];
       const charBaseClass = [Faction[faction].toLowerCase()];
@@ -170,10 +170,9 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
         <div id='char-select-fx'>
           <CharacterSelectFX
             hidden={hidden}
-            key={visualFXChar.faction}
-            selectedFaction={{ id: visualFXChar.faction }}
-            selectedRace={{ id: visualFXChar.race }}
-            selectedClass={{ id: visualFXChar.archetype }}
+            selectedFaction={{ id: visualFXChar && visualFXChar.faction }}
+            selectedRace={{ id: visualFXChar && visualFXChar.race }}
+            selectedClass={{ id: visualFXChar && visualFXChar.archetype }}
           />
           <CharImg
             className={cx(charImgClass)}
@@ -206,9 +205,6 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
   }
 
   public componentWillReceiveProps(nextProps: CharacterSelectBGProps) {
-    if (!this.props.selectedCharacter && nextProps.selectedCharacter) {
-      this.updateVisualFXChar(nextProps.selectedCharacter);
-    }
     if (this.props.selectedCharacter && nextProps.selectedCharacter) {
       if (nextProps.selectedCharacter.name.length > 17) {
         this.setState({ characterNameFontSize: 1.5 });

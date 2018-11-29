@@ -6,7 +6,7 @@
  */
 
 import { includes } from 'lodash';
-import { webAPI, Archetype, Gender, Race } from '@csegames/camelot-unchained';
+import { webAPI, Archetype, Race } from '@csegames/camelot-unchained';
 
 export function shouldFlipCharImage(character: webAPI.SimpleCharacter) {
   return (character.archetype === Archetype.WintersShadow);
@@ -20,7 +20,7 @@ export function getCharImage(character: webAPI.SimpleCharacter) {
     race = 'human';
   }
 
-  const gender = character.gender === Gender.Male ? 'm' : 'f';
+  const gender = (character.gender as any) === 'Male' ? 'm' : 'f';
   const archetype = Archetype[character.archetype].toLowerCase();
 
   return `images/character-select/${race}-${gender}-${archetype}-select.png`;

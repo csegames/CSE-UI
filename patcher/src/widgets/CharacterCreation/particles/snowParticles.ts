@@ -9,7 +9,7 @@
 const snowParticles = {
   "particles": {
     "number": {
-      "value": 15,
+      "value": 40,
       "density": {
         "enable": false,
         "value_area": 800
@@ -28,7 +28,7 @@ const snowParticles = {
         "nb_sides": 3
       },
       "image": {
-        "src": "../images/controller/visualfx/particles/snow.png",
+        "src": "../images/visualfx/particles/snow.png",
         "width": 50,
         "height": 50
       }

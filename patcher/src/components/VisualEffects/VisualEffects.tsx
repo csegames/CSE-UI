@@ -6,37 +6,37 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { cx } from 'react-emotion';
 
-declare var particlesJS: any;
+// declare var particlesJS: any;
 declare var Parallax: any;
 
 export interface LayerInfo {
   id: string;
+  src?: string;
   resistance?: number;
-  extraClass?: string | string[];
   shouldParallaxVertical?: boolean;
   particleEffect?: any;
   hidden?: boolean;
+  isDiv?: boolean;
 }
 
-export interface VisualEffectsProps {
+export interface Props {
   layerInfo: LayerInfo[] | LayerInfo;
   id: string;
   renderMisc?: () => JSX.Element;
   effectsOff?: boolean;
+  disableParallax?: boolean;
+  disableParticles?: boolean;
 }
 
-class VisualEffects extends React.Component<VisualEffectsProps, {}> {
+class VisualEffects extends React.PureComponent<Props, {}> {
   private parallaxInstance: any;
   public render() {
     const { layerInfo } = this.props;
-
     return (
       <div className='videobg'>
         <div className='parallax' data-relative-input='true' id={this.props.id}>
           {_.isArray(layerInfo) ? layerInfo.map((layer, i) => {
-            const extraClass = layer.extraClass ? layer.extraClass : '';
             if (layer.particleEffect) {
               return (
                 <div
@@ -47,15 +47,20 @@ class VisualEffects extends React.Component<VisualEffectsProps, {}> {
                 />
               );
             } else if (layer.resistance) {
-              return (
+              return !layer.isDiv ? (
+                <img
+                  key={i}
+                  data-depth={layer.resistance / 1000}
+                  src={layer.src}
+                  className={`bgelement ${layer.id}`}
+                  style={{ opacity: layer.hidden ? 0 : 1 }}
+                />
+              ) :
                 <div
                   key={i}
                   data-depth={layer.resistance / 1000}
-                  className={_.isArray(layer.extraClass) ? cx([`bgelement ${layer.id}`, ...layer.extraClass]) :
-                    `bgelement ${layer.id} ${extraClass}`}
-                  style={{ opacity: layer.hidden ? 0 : 1 }}
-                />
-              );
+                  className={`bgelement ${layer.id}`}
+                />;
             }
           }) : null}
           {this.props.renderMisc && this.props.renderMisc()}
@@ -65,10 +70,20 @@ class VisualEffects extends React.Component<VisualEffectsProps, {}> {
   }
 
   public componentDidMount() {
-    const scene = document.getElementById(this.props.id);
-    this.parallaxInstance = new Parallax(scene);
-    if (!this.props.effectsOff) {
-      this.setParticles();
+    this.initialize();
+  }
+
+  public componentDidUpdate(prevProps: Props) {
+    if (!prevProps.disableParallax && this.props.disableParallax) {
+      this.disableParallax();
+    }
+
+    if (prevProps.disableParallax && !this.props.disableParallax) {
+      this.enableParallax();
+    }
+
+    if (!this.props.effectsOff && prevProps.layerInfo !== this.props.layerInfo) {
+      // this.setParticles();
     }
   }
 
@@ -79,22 +94,50 @@ class VisualEffects extends React.Component<VisualEffectsProps, {}> {
     }
   }
 
-  private setParticles = () => {
-    const { layerInfo } = this.props;
-    if (_.isArray(layerInfo)) {
-      // this.props.layerInfo is an array
-      layerInfo.forEach((layer) => {
-        if (layer.particleEffect) {
-          return particlesJS(layer.id, layer.particleEffect);
-        }
-      });
-    } else {
-      // this.props.layerInfo is an object
-      if (layerInfo.particleEffect) {
-        particlesJS(layerInfo.id, layerInfo.particleEffect);
-      }
+  private initialize = () => {
+    if (!this.props.disableParallax) {
+      this.initializeParallax();
+    }
+    if (!this.props.effectsOff) {
+      // this.setParticles();
     }
   }
+
+  private initializeParallax = () => {
+    const scene = document.getElementById(this.props.id);
+    this.parallaxInstance = new Parallax(scene);
+  }
+
+  private enableParallax = () => {
+    if (this.parallaxInstance) {
+      this.parallaxInstance.enable();
+    } else {
+      this.initializeParallax();
+    }
+  }
+
+  private disableParallax = () => {
+    if (this.parallaxInstance) {
+      this.parallaxInstance.disable();
+    }
+  }
+
+  // private setParticles = () => {
+  //   const { layerInfo } = this.props;
+  //   if (_.isArray(layerInfo)) {
+  //     // this.props.layerInfo is an array
+  //     layerInfo.forEach((layer) => {
+  //       if (layer.particleEffect) {
+  //         return particlesJS(layer.id, layer.particleEffect);
+  //       }
+  //     });
+  //   } else {
+  //     // this.props.layerInfo is an object
+  //     if (layerInfo.particleEffect) {
+  //       particlesJS(layerInfo.id, layerInfo.particleEffect);
+  //     }
+  //   }
+  // }
 }
 
 export default VisualEffects;

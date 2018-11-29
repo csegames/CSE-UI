@@ -30,96 +30,93 @@ export class PlayerClassVisualEffects extends React.PureComponent<
   public render() {
     const { selectedRace, selectedGender, selectedClass, hideCharImg } = this.props;
     const arthurianLayerInfo = [
-      { id: 'ray1', extraClass: 'arthurian', resistance: 40 },
-      { id: 'ray2', extraClass: 'arthurian', resistance: -15 },
-      { id: 'ray3', extraClass: 'arthurian', resistance: -60 },
-      { id: 'veil', extraClass: 'arthurian' },
-      { id: 'veil2', extraClass: 'arthurian', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'base', extraClass: 'arthurian', resistance: 140 },
+      { id: 'ray1 arthurian', src: '../images/visualfx/ray-1.png', resistance: 40 },
+      { id: 'ray2 arthurian', src: '../images/visualfx/ray-2.png', resistance: -15 },
+      { id: 'ray3 arthurian', src: '../images/visualfx/ray-3.png', resistance: -60 },
+      { id: 'veil arthurian', src: '../images/visualfx/art/art-veil.png' },
+      { id: 'veil2 arthurian', src: '../images/visualfx/art/art-veil2.png', resistance: 200 },
+      { id: 'base arthurian', isDiv: true, resistance: 140 },
       {
-        id: 'char',
-        extraClass: 'standing__' +
-          `${webAPI.raceString(selectedRace.id)}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
+        id: `char standing__${webAPI.raceString(selectedRace.id)}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
+        isDiv: true,
         resistance: 150,
         hidden: hideCharImg,
       },
     ];
 
     const arthurianPictLayerInfo = [
-      { id: 'ray1', extraClass: 'arthurian pict', resistance: 40 },
-      { id: 'ray2', extraClass: 'arthurian pict', resistance: -15 },
-      { id: 'ray3', extraClass: 'arthurian pict', resistance: -60 },
-      { id: 'veil', extraClass: 'arthurian' },
-      { id: 'veil2', extraClass: 'arthurian', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'base', extraClass: 'arthurian', resistance: 140 },
+      { id: 'ray1 arthurian pict', src: '../images/visualfx/ray-1.png', resistance: 40 },
+      { id: 'ray2 arthurian pict', src: '../images/visualfx/ray-2.png', resistance: -15 },
+      { id: 'ray3 arthurian pict', src: '../images/visualfx/ray-3.png', resistance: -60 },
+      { id: 'veil arthurian', src: '../images/visualfx/art/art-veil.png' },
+      { id: 'veil2 arthurian', src: '../images/visualfx/art/art-veil2.png', resistance: 200 },
+      { id: 'base arthurian', isDiv: true, resistance: 140 },
       {
-        id: 'char',
-        extraClass: 'standing__' +
-          `${webAPI.raceString(selectedRace.id)}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
+        id: `char standing__${webAPI.raceString(selectedRace.id)}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
+        isDiv: true,
         resistance: 150,
         hidden: hideCharImg,
       },
     ];
 
     const vikingLayerInfo = [
-      { id: 'ray1', extraClass: 'viking', resistance: 40 },
-      { id: 'ray2', extraClass: 'viking', resistance: -15 },
-      { id: 'ray3', extraClass: 'viking', resistance: -60 },
-      { id: 'veil', extraClass: 'viking', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'veil2', extraClass: 'viking' },
-      { id: 'base', extraClass: 'viking', resistance: 140 },
+      { id: 'ray1 viking', src: '../images/visualfx/ray-1.png', resistance: 40 },
+      { id: 'ray2 viking', src: '../images/visualfx/ray-2.png', resistance: -15 },
+      { id: 'ray3 viking', src: '../images/visualfx/ray-3.png', resistance: -60 },
+      { id: 'veil viking', src: '../images/visualfx/vik/vik-veil.png', resistance: 200,  shouldParallaxVertical: true },
+      { id: 'veil2 viking', src: '../images/visualfx/vik/vik-veil2.png' },
+      { id: 'base viking', isDiv: true, resistance: 140 },
       {
-        id: `char`,
-        extraClass: 'viking standing__'
-          + `${webAPI.raceString(selectedRace.id)}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
+        id: 'char viking standing' +
+        `__${webAPI.raceString(selectedRace.id)}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
+        isDiv: true,
         resistance: 150,
         hidden: hideCharImg,
       },
     ];
 
     const vikingValkyrieLayerInfo = [
-      { id: 'ray1', extraClass: 'viking', resistance: 40 },
-      { id: 'ray2', extraClass: 'viking', resistance: -15 },
-      { id: 'ray3', extraClass: 'viking', resistance: -60 },
-      { id: 'veil', extraClass: 'viking-valkyrie', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'veil2', extraClass: 'viking', resistance: 200 },
-      { id: 'base', extraClass: 'viking', resistance: 140 },
+      { id: 'ray1 viking', src: '../images/visualfx/ray-1.png', resistance: 40 },
+      { id: 'ray2 viking', src: '../images/visualfx/ray-2.png', resistance: -15 },
+      { id: 'ray3 viking', src: '../images/visualfx/ray-3.png', resistance: -60 },
+      { id: 'veil valkyrie viking', src: '../images/visualfx/vik/vik-veil.png', resistance: 200 },
+      { id: 'veil2 viking', src: '../images/visualfx/vik/vik-veil2.png', resistance: 200 },
+      { id: 'base viking', isDiv: true, resistance: 140 },
       {
-        id: `char`,
-        extraClass: 'viking standing__' +
-          `${webAPI.raceString(selectedRace.id)}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
+        id: 'char viking standing__' +
+        `${webAPI.raceString(selectedRace.id)}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
+        isDiv: true,
         resistance: 150,
         hidden: hideCharImg,
       },
     ];
 
     const tddLayerInfo = [
-      { id: 'ray1', extraClass: 'tdd', resistance: 40 },
-      { id: 'ray2', extraClass: 'tdd', resistance: -15 },
-      { id: 'ray3', extraClass: 'tdd', resistance: -60 },
-      { id: 'veil', extraClass: 'tdd', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'veil2', extraClass: 'tdd' },
-      { id: 'base', extraClass: 'tdd', resistance: 140 },
+      { id: 'ray1 tdd', src: '../images/visualfx/ray-1.png', resistance: 40 },
+      { id: 'ray2 tdd', src: '../images/visualfx/ray-2.png', resistance: -15 },
+      { id: 'ray3 tdd', src: '../images/visualfx/ray-3.png', resistance: -60 },
+      { id: 'veil tdd', src: '../images/visualfx/tdd/tdd-veil.png', resistance: 200,  shouldParallaxVertical: true },
+      { id: 'veil2 tdd', src: '../images/visualfx/tdd/tdd-veil2.png' },
+      { id: 'base tdd', isDiv: true, resistance: 140 },
       {
-        id: 'char',
-        extraClass: 'tdd luchorpan standing__' +
-          `${Race[selectedRace.id]}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
+        id: `char tdd luchorpan standing__${Race[selectedRace.id]}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
+        isDiv: true,
         resistance: 150,
         hidden: hideCharImg,
       },
     ];
 
     const tddHumanLayerInfo = [
-      { id: 'ray1', extraClass: 'tdd', resistance: 40 },
-      { id: 'ray2', extraClass: 'tdd', resistance: -15 },
-      { id: 'ray3', extraClass: 'tdd', resistance: -60 },
-      { id: 'veil', extraClass: 'tdd-human', resistance: 200,  shouldParallaxVertical: true },
-      { id: 'veil2', extraClass: 'tdd' },
-      { id: 'base', extraClass: 'tdd', resistance: 140 },
+      { id: 'ray1 tdd', src: '../images/visualfx/ray-1.png', resistance: 40 },
+      { id: 'ray2 tdd', src: '../images/visualfx/ray-2.png', resistance: -15 },
+      { id: 'ray3 tdd', src: '../images/visualfx/ray-3.png', resistance: -60 },
+      { id: 'veil tdd-human', src: '../images/visualfx/tdd/human/tdd2-veil.png', resistance: 200 },
+      { id: 'veil2 tdd', src: '../images/visualfx/tdd/tdd-veil2.png' },
+      { id: 'base tdd', isDiv: true, resistance: 140 },
       {
-        id: 'char',
-        extraClass: 'tdd standing__' +
-          `${webAPI.raceString(selectedRace.id)}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
+        id: 'char standing__' +
+        `${webAPI.raceString(selectedRace.id)}_${Gender[selectedGender]}_${Archetype[selectedClass.id]}`,
+        isDiv: true,
         resistance: 150,
         hidden: hideCharImg,
       },

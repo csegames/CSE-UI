@@ -189,6 +189,7 @@ class CharacterSelect extends React.Component<Props, CharacterSelectState> {
   }
 
   public componentDidMount() {
+    events.fire('pause-videos');
     events.on('character-select-show-delete', this.toggleModal);
     window.addEventListener('keydown', this.handleEscKey);
   }
@@ -245,6 +246,7 @@ class CharacterSelect extends React.Component<Props, CharacterSelectState> {
 
   private onClose = () => {
     events.fire('play-sound', 'select');
+    events.fire('resume-videos');
     this.props.onCloseClick();
   }
 }

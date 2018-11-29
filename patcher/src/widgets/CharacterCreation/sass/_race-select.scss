@@ -190,16 +190,12 @@
   }
 
   .ray1 {
-    background-image: url(../images/visualfx/ray-1.png);
-    background-position:1% top;
-    background-size:60%;
-    animation: rays 5s ease infinite;
+    opacity: 0.5;
+    // animation: rays 5s ease infinite;
     &.arthurian {
       -webkit-filter: hue-rotate(20deg) opacity(1);
       filter: hue-rotate(20deg) opacity(1);
-      background-position:100% top;
-      background-size:100%;
-      animation: rays 15s ease infinite;
+      // animation: rays 15s ease infinite;
       &.pict {
         -webkit-filter: saturate(0) opacity(1);
         filter: saturate(0) opacity(1);
@@ -208,27 +204,20 @@
     &.viking {
       -webkit-filter: grayscale(100%) brightness(150%) opacity(.5);
       filter: grayscale(100%) brightness(150%) opacity(.5);
-      background-position:150% top;
-      background-size:70%;
-      animation: rays 15s ease infinite;
+      // animation: rays 15s ease infinite;
     }
     &.tdd {
-      background-position:150% top;
-      background-size:70%;
-      animation: rays 15s ease infinite;
+      // animation: rays 15s ease infinite;
       -webkit-filter:hue-rotate(40deg);
       filter:hue-rotate(40deg);
     }
   }
 
   .ray2 {
-    background-image: url(../images/visualfx/ray-1.png);
-    background-position:50% top;
-    background-size:70%;  
-    animation: rays 3s ease infinite;
+    opacity: 0.5;
+    // animation: rays 3s ease infinite;
     &.arthurian {
-      background-position:80% top;
-      animation: rays 13s ease infinite;
+      // animation: rays 13s ease infinite;
       -webkit-filter: hue-rotate(20deg) opacity(.8);
       filter: hue-rotate(20deg) opacity(.8);
       &.pict {
@@ -237,30 +226,22 @@
       }
     }
     &.viking {
-      background-position:80% top;
-      animation: rays 13s ease infinite;
+      // animation: rays 13s ease infinite;
       -webkit-filter:saturate(0) brightness(150%) opacity(.8);
       filter:saturate(0) brightness(150%) opacity(.8);
     }
     &.tdd {
-      background-position:80% top;
-      background-size:70%;  
-      animation: rays 13s ease infinite;
+      // animation: rays 13s ease infinite;
       -webkit-filter:hue-rotate(40deg);
       filter:hue-rotate(40deg);
     }
   }
 
   .ray3 {
-    background-image: url(../images/visualfx/ray-3.png);
-    background-position:100% top;
-    background-size:80%;  
-    animation: rays 4s ease infinite;
+    opacity: 0.5;
+    // animation: rays 4s ease infinite;
     &.arthurian {
-      background-image: url(../images/visualfx/ray-1.png);
-      background-position:20% top;
-      background-size:100%;  
-      animation: rays 10s ease infinite;
+      // animation: rays 10s ease infinite;
       -webkit-filter: hue-rotate(20deg) opacity(1);
       filter: hue-rotate(20deg) opacity(1);
       &.pict {
@@ -269,32 +250,23 @@
       }
     }
     &.viking {
-      background-image: url(../images/visualfx/ray-1.png);
-      background-position:30% top;
-      background-size:50%;  
-      animation: rays 10s ease infinite;
+      // animation: rays 10s ease infinite;
       -webkit-filter:saturate(0) brightness(150%) opacity(.5);
       filter:saturate(0) brightness(150%) opacity(.5);
     }
     &.tdd {
-      background-image: url(../images/visualfx/ray-1.png);
-      background-position:30% top;
-      background-size:50%;  
-      animation: rays 10s ease infinite;
+      // animation: rays 10s ease infinite;
       -webkit-filter:hue-rotate(40deg);
       filter:hue-rotate(40deg);
     }
   }
 
   .particle {
-    background-image: url(../images/visualfx/particle.png);
     &.arthurian {
-      background-image: url(../images/visualfx/art/art-particle.png);
       -webkit-filter: opacity(.5);
       filter: opacity(.5);
     }
     &.viking {
-      background-image: url(../images/visualfx/vik/vik-particle.png);
       filter:invert(10%);
     }
     &.tdd {
@@ -351,159 +323,48 @@
   }
   
   .veil {
-    background-position: bottom;
-    background-size: cover;
     top: -10px !important;
     left: -30px !important;
     width: 110%;
     height: 110%;
-    &.arthurian {
-      z-index: 2;
-      background-image: url(../images/visualfx/art/art-veil.png);
-    }
-    &.viking {
-      background-image: url(../images/visualfx/vik/vik-veil.png);
-    }
-    &.tdd {
-      background-image: url(../images/visualfx/tdd/tdd-veil.png);
-    }
-    &.tdd-human {
-      background-image: url(../images/visualfx/tdd/human/tdd2-veil.png);
-    }
-    &.viking-valkyrie {
-      background-image: url(../images/visualfx/vik/humans/vik2-veil.png);
-    }
+    z-index: 2;
   }
 
   .veil2 {
-    background-position: bottom;
-    background-size: cover;   
     transform: scale(1.2);
     top: -10px !important;
     left: -30px !important;
     width: 110%;
     height: 110%;
-    &.arthurian {
-      z-index: 2;
-      background-image: url(../images/visualfx/art/art-veil2.png);
-    }
-    &.viking {
-      background-image: url(../images/visualfx/vik/vik-veil2.png);
-    }
-    &.tdd {
-      background-image: url(../images/visualfx/tdd/tdd-veil2.png);
-    }
+    z-index: 2;
   }
 
   .layer1 {
-    background-image: url(../images/visualfx/tdd4.png);
-    background-position: bottom;
-    background-size: cover;   
     top: -10px !important;
     left: -30px !important;
     width: 110%;
     height: 110%;
-    &.arthurian {
-      background-image: url(../images/visualfx/art/art-layer1.png); 
-      background-size: cover;
-      background-position: center; 
-    }
-    &.viking {
-      background-image: url(../images/visualfx/vik/vik-layer1.png);
-      background-position: right center;
-    }
-    &.tdd-human {
-      background-image: url(../images/visualfx/tdd/human/tdd2-layer1.png);
-      background-position: center;
-    }
-    &.viking-valkyrie {
-      background-image: url(../images/visualfx/vik/valkyrie/vik2-layer1.png);
-      background-position: right center;
-    }
-    &.arthurian-pict {
-      background-image: url(../images/visualfx/art/pict/art2-layer1.png);
-    }
   }
 
   .layer2 {
-    background-image: url(../images/visualfx/tdd3.png);
-    background-position: bottom;
-    background-size: cover;
     top: -10px !important;
     left: -30px !important;
     width: 110%;
     height: 110%;
-    &.arthurian {
-      background-image: url(../images/visualfx/art-grnd.png);
-      background-position: bottom right;
-    }
-    &.viking {
-      background-image: url(../images/visualfx/vik/vik-layer2.png);
-      background-position: right center;
-    }
-    &.tdd {
-      background-image: url(../images/visualfx/tdd/tdd-layer2.png);
-      background-position: right center;
-    }
-    &.tdd-human {
-      background-image: url(../images/visualfx/tdd/human/tdd2-layer2.png);
-      background-position: center;
-    }
-    &.viking-valkyrie {
-      background-image: url(../images/visualfx/vik/valkyrie/vik2-layer2.png);
-      background-position: right center;
-    }
   }
   
   .layer3 {
-    background-image: url(../images/visualfx/tdd2.png);
-    background-position: bottom;
-    background-size: cover;
     top: -10px !important;
     left: -30px !important;
     width: 110%;
     height: 110%;
-    &.arthurian {
-      background-image: url(../images/visualfx/art-castle.png);
-      background-position: bottom right;
-    }
-    &.viking {
-      background-image: url(../images/visualfx/viking-dragon.png);
-      background-position: center;
-    }
-    &.tdd {
-      background-image: url(../images/visualfx/tdd/tdd-layer3.png);
-      background-position: center;
-    }
   }
 
   .bg {
-    background-image: url(../images/visualfx/bg2.jpg); 
     top: -10px !important;
     left: -30px !important;
     width: 110%;
     height: 110%;
-    background-position: bottom;
-    background-size: cover;
-    &.arthurian {
-      background-image: url(../images/visualfx/art/art-layer2.png);
-      background-position: center;
-    }
-    &.viking {
-      background-image: url(../images/visualfx/vik/vik-bg.png);
-    }
-    &.tdd {
-      background-image: url(../images/visualfx/tdd/tdd-bg.png);       
-    }
-    &.tdd-human {
-      background-image: url(../images/visualfx/tdd/human/tdd2-bg.png);
-    }
-    &.viking-valkyrie {
-      background-image: url(../images/visualfx/vik/valkyrie/vik2-bg.png);
-    }
-    &.arthurian-pict {
-      background-image: url(../images/visualfx/art/pict/art2-bg.png);
-    }
     &.no-char {
       background-image: url(../images/controller/generic-bg.jpg);
     }
