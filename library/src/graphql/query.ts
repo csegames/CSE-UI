@@ -46,11 +46,11 @@ export const defaultQueryOpts: QueryOptions = {
 };
 
 export interface GraphQLQuery {
-  operationName: string | null;
-  namedQuery: string | null;
-  useNamedQueryCache: boolean | null;
-  query: string | LegacyGraphqlDocumentNode | DocumentNode;
-  variables: Dictionary<any> | null;
+  operationName?: string | null;
+  namedQuery?: string | null;
+  useNamedQueryCache?: boolean;
+  query?: string | LegacyGraphqlDocumentNode | DocumentNode;
+  variables?: Dictionary<any> | null;
 }
 
 export const defaultQuery: GraphQLQuery = {
