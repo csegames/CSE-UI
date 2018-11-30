@@ -372,6 +372,7 @@ class News extends React.Component<NewsProps, NewsState> {
       variables: { channel: 4, from, to },
       operationName: null,
       namedQuery: null,
+      useNamedQueryCache: false,
     }, {
       url: client.apiHost + '/graphql',
       requestOptions: {

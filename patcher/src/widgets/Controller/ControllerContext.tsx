@@ -172,7 +172,7 @@ export const ControllerContext = React.createContext(defaultControllerContextSta
 
 const query = {
   namedQuery: 'patcherControllerContext',
-  namedQueryCache: false,
+  userNamedQueryCache: false,
 };
 
 const subscription = gql`
@@ -215,7 +215,8 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
             onQueryResult={this.handleQueryResult}
             subscription={{
               query: subscription,
-              url: (patcher.apiHost() + '/graphql').replace('http', 'ws'),
+              // url: (patcher.apiHost() + '/graphql').replace('http', 'ws'),
+              url: ('http://localhost:1337/graphql').replace('http', 'ws'),
               initPayload: {
                 Authorization: `Bearer ${patcher.getAccessToken()}`,
               },
@@ -241,7 +242,8 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
 
   private getConfig = () => {
     const queryConf: QueryOptions = {
-      url: patcher.apiHost() + '/graphql',
+      // url: patcher.apiHost() + '/graphql',
+      url: 'http://localhost:1337/graphql',
       requestOptions: {
         headers: {
           Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
