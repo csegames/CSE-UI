@@ -12,15 +12,21 @@ import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 import { QueryOptions } from '@csegames/camelot-unchained/lib/graphql/query';
 import { patcher, ChannelStatus, Channel, PatchChannelMode } from '../../services/patcher';
-import { PatcherCharacterFragment, ServerModelFragment } from 'gql/fragments';
+import { ServerModelFragment } from 'gql/fragments';
 import {
-  ControllerContextQuery,
   SimpleCharacter,
   ServerModel,
   ControllerContextSubscription,
   ServerUpdateType,
   PatcherAlert,
 } from 'gql/interfaces';
+
+export interface ControllerContextQuery {
+  shardCharacters: SimpleCharacter[];
+  connectedServices: {
+    servers: ServerModel[];
+  };
+}
 
 export enum ServerType {
   CUGAME,
@@ -252,7 +258,7 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
     };
   }
 
-  private handleQueryResult = (graphql: GraphQLResult<ControllerContextQuery.Query>) => {
+  private handleQueryResult = (graphql: GraphQLResult<ControllerContextQuery>) => {
     if (!graphql.data) return graphql;
     const characters = this.getCharacters(graphql);
     const servers = this.getServers(graphql, characters);
@@ -260,7 +266,7 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
   }
 
   private handleSubscription = (result: SubscriptionResult<ControllerContextSubscription.Subscription>,
-                                data: ControllerContextQuery.Query) => {
+                                data: ControllerContextQuery) => {
     if (!result.data) return data;
     const serverUpdate = result.data.serverUpdates;
     this.handleServerUpdates(serverUpdate);
@@ -291,7 +297,7 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
     }
   }
 
-  private getCharacters = (graphql: GraphQLResult<ControllerContextQuery.Query>) => {
+  private getCharacters = (graphql: GraphQLResult<ControllerContextQuery>) => {
     const characters: {[id: string]: webAPI.SimpleCharacter} = {};
     graphql.data.shardCharacters.forEach((character) => {
       characters[character.id] = gqlSimpleCharacterToSimpleCharacter(character);
@@ -300,7 +306,7 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
     return characters;
   }
 
-  private getServers = (graphql: GraphQLResult<ControllerContextQuery.Query>,
+  private getServers = (graphql: GraphQLResult<ControllerContextQuery>,
                         characters: {[id: string]: webAPI.SimpleCharacter}) => {
     const servers: {[id: string]: PatcherServer} = {};
     graphql.data.connectedServices.servers.forEach((server) => {
