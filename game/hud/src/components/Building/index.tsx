@@ -123,9 +123,7 @@ export class Build extends React.PureComponent<BuildProps, BuildState> {
   }
 
   private onClose = () => {
-    this.setState({
-      visible: false,
-    });
+    game.trigger(game.engineEvents.EE_OnToggleBuildSelector);
   }
 
   private handleBuildingModeChanged = () => {

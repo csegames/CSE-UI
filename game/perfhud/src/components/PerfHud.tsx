@@ -153,7 +153,7 @@ class PerfHud extends React.Component<PerfHudProps, PerfHudState> {
     }
 
     const mini = this.state.minimized;
-    return (
+    return this.state.visible ? (
       <div className={`${this.name} cu-window`}
         style={{ maxWidth: '500px', right: '0', position: 'fixed' }}
         data-input-group='block'>
@@ -164,7 +164,7 @@ class PerfHud extends React.Component<PerfHudProps, PerfHudState> {
         </div>
         { this.createPerfContent(mini) }
       </div>
-    );
+    ) : null;
   }
 }
 

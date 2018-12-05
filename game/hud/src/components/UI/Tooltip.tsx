@@ -216,12 +216,12 @@ interface TooltipProps {
   delayMS?: number;
   shouldAnimate?: boolean;
   styles?: Partial<ToolTipStyle>;
-  closeOnEvent?: string;
+  closeOnEvents?: string[];
 }
 
 export class Tooltip extends React.PureComponent<TooltipProps, {}> {
   private isMouseOver: boolean = false;
-  private closeEventHandle: EventHandle = null;
+  private closeEventHandles: EventHandle[] = [];
 
   public render() {
     if (!this.props.children) {
@@ -264,11 +264,13 @@ export class Tooltip extends React.PureComponent<TooltipProps, {}> {
       event,
     });
 
-    if (this.props.closeOnEvent) {
-      this.closeEventHandle = game.on(this.props.closeOnEvent, () => {
-        if (this.isMouseOver) {
-          this.handleMouseLeave();
-        }
+    if (this.props.closeOnEvents) {
+      this.props.closeOnEvents.forEach((eventName) => {
+        this.closeEventHandles.push(game.on(eventName, () => {
+          if (this.isMouseOver) {
+            this.handleMouseLeave();
+          }
+        }));
       });
     }
   }
@@ -276,9 +278,9 @@ export class Tooltip extends React.PureComponent<TooltipProps, {}> {
   private handleMouseLeave = () => {
     this.isMouseOver = false;
     hideTooltip();
-    if (this.closeEventHandle) {
-      this.closeEventHandle.clear();
-      this.closeEventHandle = null;
+    if (this.closeEventHandles) {
+      this.closeEventHandles.forEach(h => h.clear());
+      this.closeEventHandles = [];
     }
   }
 }

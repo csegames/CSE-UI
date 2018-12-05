@@ -151,8 +151,8 @@ export const Help = function() {
         <Btn onClick={() => game.sendSlashCommand('fly 1')} >Fly Mode On</Btn>
         <Btn onClick={() => game.sendSlashCommand('fly 0')} >Fly Mode Off</Btn>
 
-        <Btn onClick={() => {}} >Show Perf HUD</Btn>
-        <Btn onClick={() => {}} >Hide Perf HUD</Btn>
+        <Btn onClick={() => game.sendSlashCommand('showPerfHUD 1')} >Show Perf HUD</Btn>
+        <Btn onClick={() => game.sendSlashCommand('showPerfHUD 0')} >Hide Perf HUD</Btn>
       </Buttons>
 
       <Extra>

@@ -94,8 +94,8 @@ const TooltipContainer = styled('div')`
   display: grid;
   max-width: 200px;
   grid-template:
-    'icon block-tags' auto
-    'icon mat-tags' auto
+    'icon name' auto
+    'icon .' auto
     / auto auto;
 `;
 
@@ -107,8 +107,8 @@ const TooltipIcon = styled('img')`
   justify-self: center;
 `;
 
-const TooltipBlockTags = styled('div')`
-  grid-area: block-tags;
+const TooltipName = styled('div')`
+  grid-area: name;
   padding: 5px;
   align-self: center;
 `;
@@ -158,11 +158,10 @@ export class Blueprints extends React.Component<BlueprintsProps, BlueprintsState
                 content={(
                   <TooltipContainer>
                     <TooltipIcon src={'data:image/png;base64,' + bp.icon} />
-                    <TooltipBlockTags>{Object.values(bp.name).join(' ')}</TooltipBlockTags>
-                    <TooltipBlockTags>{Object.values(bp.tags).join(' ')}</TooltipBlockTags>
+                    <TooltipName>{bp.name}</TooltipName>
                   </TooltipContainer>
                 )}
-                closeOnEvent={game.engineEvents.EE_OnToggleBuildSelector}
+                closeOnEvents={[game.engineEvents.EE_OnToggleBuildSelector]}
               >
               <BP
                 key={bp.id}
@@ -170,7 +169,10 @@ export class Blueprints extends React.Component<BlueprintsProps, BlueprintsState
               >
                 <Image src={'data:image/png;base64,' + bp.icon}/>
                 <ConfirmDialog
-                  onConfirm={() => game.building.deleteBlueprintAsync(bp.id).then(() => this.forceUpdate())}
+                  onConfirm={() => (
+                    game.building.deleteBlueprintAsync(bp.id)
+                    .then(() => setTimeout(() => this.forceUpdate()))
+                    .catch(() => setTimeout(() => this.forceUpdate())))}
                   onCancel={() => {}}
                   content={() => (<div>Are you sure you wish to delete the blueprint ({bp.name})?</div>)}
                 >

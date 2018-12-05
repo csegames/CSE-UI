@@ -116,7 +116,7 @@ export class Items extends React.Component<ItemsProps, ItemsState> {
                     <TooltipItemTags>{Object.values(i.tags).join(' ')}</TooltipItemTags>
                   </TooltipContainer>
                 )}
-                closeOnEvent={game.engineEvents.EE_OnToggleBuildSelector}
+                closeOnEvents={[game.engineEvents.EE_OnToggleBuildSelector]}
               >
               <I
                 key={i.id}

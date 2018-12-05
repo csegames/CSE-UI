@@ -113,7 +113,7 @@ export class Blocks extends React.Component<BlocksProps, BlocksState> {
                     <TooltipMatTags>{Object.values(m.tags).join(' ')}</TooltipMatTags>
                   </TooltipContainer>
                 )}
-                closeOnEvent={game.engineEvents.EE_OnToggleBuildSelector}
+                closeOnEvents={[game.engineEvents.EE_OnToggleBuildSelector]}
               >
               <B
                 key={b.id}
