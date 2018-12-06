@@ -26,10 +26,11 @@ interface CUBEItemBase {
 declare global {
   enum BuildingMode {
     NotBuilding = 0,
-    PlacingPhantom = 1,
-    PhantomPlaced = 2,
-    SelectingBlocks = 4,
-    BlocksSelected = 8,
+    PlacingPhantom = 1 << 0,
+    PhantomPlaced = 1 << 1,
+    SelectingBlocks = 1 << 2,
+    BlocksSelected = 1 << 3,
+    PlacingItem = 1 << 4,
   }
 
   interface Block extends CUBEItemBase {
@@ -56,10 +57,11 @@ declare global {
 
 enum BuildingMode {
   NotBuilding = 0,
-  PlacingPhantom = 1,
-  PhantomPlaced = 2,
-  SelectingBlocks = 4,
-  BlocksSelected = 8,
+  PlacingPhantom = 1 << 0,
+  PhantomPlaced = 1 << 1,
+  SelectingBlocks = 1 << 2,
+  BlocksSelected = 1 << 3,
+  PlacingItem = 1 << 4,
 }
 window.BuildingMode = BuildingMode;
 

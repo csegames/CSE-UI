@@ -67,6 +67,10 @@ export const Help = function() {
   return (
     <Container className='cse-ui-scroller-thumbonly'>
       <Controls>
+      <Control>
+          <ControlKeybind>Alt</ControlKeybind>
+          <ControlLabel>Toggle Building Selection Interface (this element).</ControlLabel>
+        </Control>
         <Control>
           <ControlKeybind>
             {game.getKeybindSafe(game.keyActions.SelectionModeToggle).binds[0].name}

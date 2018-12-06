@@ -104,6 +104,13 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
 
   public componentDidMount() {
     game.on('navigate', this.handleNav);
+    game.onBuildingModeChanged(this.handleBuildingModeChanged);
+  }
+
+  private handleBuildingModeChanged = (mode: BuildingMode) => {
+    if (mode === BuildingMode.PlacingItem) {
+      this.showPlacementMode();
+    }
   }
 
   private handleNav = (uiName: string) => {

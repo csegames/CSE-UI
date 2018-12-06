@@ -37,6 +37,7 @@ const Button = styled('div')`
   border-bottom: 1px solid #222;
   max-width: 300px;
   padding: 5px;
+  pointer-events: all;
   cursor: ${(props: any) => props.disabled ? 'not-allowed' : 'pointer'};
   opacity: ${(props: any) => props.disabled ? 0.5 : 1};
 
@@ -87,7 +88,7 @@ class ContextMenuAction extends React.Component<Props, State> {
     };
     const isDisabled = shouldQuery || cooldownLeft !== '' || (action && !action.enabled);
     return (action && !action.enabled && !action.showWhenDisabled) ? null : (
-      <Button disabled={isDisabled} onMouseDown={this.onActionClick}>
+      <Button data-input-group='block' disabled={isDisabled} onClick={this.onActionClick}>
         <div>{name}</div>
         {shouldQuery && <GraphQL query={{ query, variables }} onQueryResult={this.handleQueryResult} />}
         <CooldownText>{cooldownLeft !== '' ? `${cooldownLeft}` : null}</CooldownText>

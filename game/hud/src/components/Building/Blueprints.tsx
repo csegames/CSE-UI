@@ -60,7 +60,7 @@ const CreateBtnDisabled = styled(CreateBtn)`
 
 const Blueprint = styled('div')`
   position: relative;
-  display: inline-block;
+  display: flex;
   margin: 2px;
   border: 1px solid #444;
   &:hover {
@@ -73,14 +73,11 @@ const SelectedBlueprint = styled(Blueprint)`
 `;
 
 const Image = styled('img')`
-  width: 64px;
-  height: 64px;
+  width: 128px;
+  height: 128px;
 `;
 
 const Delete = styled('div')`
-  position: absolute;
-  bottom: 0;
-  right: 0;
   color: red;
   cursor: pointer;
   background: #777;
@@ -101,8 +98,8 @@ const TooltipContainer = styled('div')`
 
 const TooltipIcon = styled('img')`
   grid-area: icon;
-  width: 64px;
-  height: 64px;
+  width: 128px;
+  height: 128px;
   align-self: center;
   justify-self: center;
 `;
@@ -154,6 +151,11 @@ export class Blueprints extends React.Component<BlueprintsProps, BlueprintsState
         {blueprints.map((bp) => {
           const BP = bp.id === game.building.activeBlueprintID ? SelectedBlueprint : Blueprint;
           return (
+
+              <BP
+                key={bp.id}
+                onClick={() => game.building.selectBlueprintAsync(bp.id)}
+              >
               <Tooltip
                 content={(
                   <TooltipContainer>
@@ -163,11 +165,8 @@ export class Blueprints extends React.Component<BlueprintsProps, BlueprintsState
                 )}
                 closeOnEvents={[game.engineEvents.EE_OnToggleBuildSelector]}
               >
-              <BP
-                key={bp.id}
-                onClick={() => game.building.selectBlueprintAsync(bp.id)}
-              >
                 <Image src={'data:image/png;base64,' + bp.icon}/>
+              </Tooltip>
                 <ConfirmDialog
                   onConfirm={() => (
                     game.building.deleteBlueprintAsync(bp.id)
@@ -180,7 +179,6 @@ export class Blueprints extends React.Component<BlueprintsProps, BlueprintsState
                 </ConfirmDialog>
 
               </BP>
-              </Tooltip>
           );
         })}
         </Content>
