@@ -36,7 +36,7 @@ if (process.env.CUUI_HUD_ENABLE_WHY_DID_YOU_UPDATE) {
 }
 
 function readyCheck() {
-  if (!game.selfPlayerState.characterID || game.selfPlayerState.characterID === 'unknown') {
+  if ((!game.selfPlayerState.characterID || game.selfPlayerState.characterID === 'unknown') && game.isClientAttached) {
     setTimeout(readyCheck, 100);
     return;
   }

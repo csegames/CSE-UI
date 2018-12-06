@@ -11,11 +11,15 @@ import { LoadingState_Update } from '../GameClientModels/LoadingState';
 const __loadingState = { percent: 0, message: 'ready', visible: true };
 
 export function mockLoading() {
-  console.log('MOCK.loadingState', 'initialize');
-  setTimeout(() => {
-    engine.trigger(LoadingState_Update, __loadingState);
-    setTimeout(loadingRun, 500);
-  }, 1000);
+  if (process.env.CUUI_ENABLE_LOADING_MOCK) {
+    console.log('MOCK.loadingState', 'initialize');
+    setTimeout(() => {
+      engine.trigger(LoadingState_Update, __loadingState);
+      setTimeout(loadingRun, 500);
+    }, 1000);
+  } else {
+    console.log('MOCK.loadingState', 'disabled');
+  }
 }
 
 // SimCity loading messages

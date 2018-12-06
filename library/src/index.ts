@@ -7,6 +7,13 @@
 // Import definitions first to init a whole bunch of globals
 import './webAPI/definitions';
 
+export * from './utils';
+// utils
+import * as utils from './utils';
+export {
+  utils,
+};
+
 // Creates the global game and __devGame objects that are attached to the window object when the engine is ready
 import initializeGame from './game';
 initializeGame();
@@ -14,7 +21,6 @@ initializeGame();
 export * from './game';
 export * from './components';
 export * from './slashCommands';
-export * from './utils';
 
 // The below exports are available on the global game object. They are exported here so they may be used standalone for
 // non game applications as well.
@@ -34,8 +40,3 @@ export {
   ql,
 };
 
-// utils
-import * as utils from './utils';
-export {
-  utils,
-};
