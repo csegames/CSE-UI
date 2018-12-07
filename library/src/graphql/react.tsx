@@ -124,6 +124,37 @@ export function useConfig(getQueryConfig: () => Partial<GraphQLConfig>, getSubsc
   queryConf = withDefaults(getQueryConfig(), queryConf);
 }
 
+export type GraphQLQueryResult<QueryDataType> = {
+  data: Partial<QueryDataType>,
+  ok: boolean,
+  statusText: string,
+};
+
+export type MockQueryHandler<QueryDataType> = {
+  handle: (
+    query: GraphQLQuery | undefined,
+    options: GraphQLOptions,
+  ) => Promise<GraphQLQueryResult<QueryDataType>>;
+};
+
+export type MockQueryHandlerFactory<QueryDataType> = () => MockQueryHandler<QueryDataType>;
+
+export type MockSubscriptionHandler<SubscriptionDataType> = {
+  start: (
+    subscription: Subscription | undefined,
+    options: Options<any>,
+    sendResult: (result: SubscriptionResult<SubscriptionDataType>) => void,
+  ) => void;
+  update?: (
+    subscription: Subscription | undefined,
+    options: Options<any>,
+    sendResult: (result: SubscriptionResult<SubscriptionDataType>) => void,
+  ) => void;
+  stop: (
+  ) => void;
+};
+
+export type MockSubscriptionHandlerFactory<SubscriptionDataType> = () => MockSubscriptionHandler<SubscriptionDataType>;
 
 export type GraphQLQueryOptions = Partial<GraphQLQuery> &  Partial<GraphQLOptions>;
 export type GraphQLSubscriptionOptions<DataType> = Partial<Subscription> & Partial<SubscriptionOptions<DataType>>;
@@ -135,6 +166,10 @@ export interface GraphQLProps<QueryDataType, SubscriptionDataType> {
   onQueryResult?: (result: GraphQLResult<QueryDataType>) => void;
   subscriptionHandler?: (result: SubscriptionResult<SubscriptionDataType>, data: QueryDataType) => QueryDataType;
   useConfig?: () => { queryConf: QueryOptions, subsConf: SubscriptionOptions<any> };
+  mockQuery?: boolean;
+  mockQueryHandlerFactory?: MockQueryHandlerFactory<QueryDataType>;
+  mockSubscription?: boolean;
+  mockSubscriptionHandlerFactory?: MockSubscriptionHandlerFactory<SubscriptionDataType>;
 }
 
 export interface GraphQLState<T> extends GraphQLData<T> {
@@ -151,6 +186,8 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   private pollingTimeout: number | null = null;
   private subscriptionID: string;
   private subscriptionManager: SubscriptionManager;
+  private mockQueryHandler: MockQueryHandler<QueryDataType>;
+  private mockSubscriptionHandler: MockSubscriptionHandler<SubscriptionDataType>;
 
   constructor(props: GraphQLProps<QueryDataType, SubscriptionDataType>) {
     super(props);
@@ -187,6 +224,10 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
         requestOptions: this.queryOptions.requestOptions,
         stringifyVariables: this.queryOptions.stringifyVariables,
       });
+    }
+
+    if (props.mockQuery && props.mockQueryHandlerFactory) {
+      this.mockQueryHandler = props.mockQueryHandlerFactory();
     }
 
     if (props.subscription) {
@@ -229,7 +270,10 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
       this.refetch();
     }
 
-    if (this.props.subscription) {
+    if (this.props.mockSubscription && this.props.mockSubscriptionHandlerFactory) {
+      this.mockSubscriptionHandler = this.props.mockSubscriptionHandlerFactory();
+      this.mockSubscriptionHandler.start(this.subscription, this.subscriptionOptions, this.subscriptionHandler);
+    } else if (this.props.subscription) {
       const result = subscribe(this.subscription, this.subscriptionHandler,
         this.subscriptionOptions, this.subscriptionError);
       this.subscriptionID = result.id;
@@ -257,6 +301,9 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
 
     if (this.subscriptionManager) {
       this.subscriptionManager.stop(this.subscriptionID);
+    }
+    if (this.mockSubscriptionHandler) {
+      this.mockSubscriptionHandler.stop();
     }
   }
 
@@ -286,8 +333,12 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     if (this.state.loading === false) {
       this.setState({ loading: true });
     }
-
-    const result = await this.client.query(query || this.query);
+    let result: GraphQLQueryResult<QueryDataType>;
+    if (this.props.mockQuery && this.mockQueryHandler) {
+      result = await this.mockQueryHandler.handle(query || this.query, this.queryOptions);
+    } else {
+      result = await this.client.query(query || this.query);
+    }
     const state = {
       data: result.data as QueryDataType,
       loading: false,
@@ -316,6 +367,15 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
           // Only set query options if there is a difference
           setQueryOptions(config.queryConf);
           this.queryOptions = getQueryOptions();
+        }
+
+        if (subsConfChanged) {
+          // Only set subscription options if there is a difference
+          setSubscriptionOptions(config.subsConf);
+          this.subscriptionOptions = getSubscriptionOptions();
+          if (this.props.mockSubscription && this.mockSubscriptionHandler) {
+            this.mockSubscriptionHandler.update(this.subscription, this.subscriptionOptions, this.subscriptionHandler);
+          }
         }
 
         // Update graphql client
@@ -362,9 +422,11 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
 
 export function withGraphQL<
   PropsType extends GraphQLInjectedProps<QueryDataType | null>,
-  QueryDataType = any>(
+  QueryDataType = any
+>(
   query?: string | Partial<GraphQLQuery> | ((props: PropsType) => Partial<GraphQLQuery>),
-  options?: Partial<GraphQLOptions> | ((props: PropsType) => Partial<GraphQLOptions>)) {
+  options?: Partial<GraphQLOptions> | ((props: PropsType) => Partial<GraphQLOptions>),
+) {
 
   return (WrappedComponent: React.ComponentClass<PropsType> | React.StatelessComponent<PropsType>) => {
     return class extends React.Component<Omit<PropsType, keyof GraphQLInjectedProps<QueryDataType>>,
