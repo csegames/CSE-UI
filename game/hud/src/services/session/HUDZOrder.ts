@@ -29,6 +29,7 @@ enum HUDZOrder {
   Build,
   MOTD,
   Scoreboard,
+  ScenarioJoin,
   Respawn,
   HUDNav,
   RefillAmmo,

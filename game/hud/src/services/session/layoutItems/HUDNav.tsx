@@ -267,6 +267,20 @@ export default {
       //   },
       // },
       {
+        name: 'scenario-join',
+        tooltip: 'Join Scenario',
+        iconClass: 'icon-scenario',
+        icon: (
+          <span>
+            <i className='icon-scenario fa-stack-1x'></i>
+          </span>
+        ),
+        hidden: false,
+        onClick: () => {
+          game.trigger('navigate', 'scenario-join');
+        },
+      },
+      {
         name: 'scenario',
         tooltip: 'Scenario Management',
         iconClass: 'fa-gamepad',

@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import * as className from 'classnames';
+import className from 'classnames';
 import styled, { css } from 'react-emotion';
 import { utils } from '@csegames/camelot-unchained';
 import { showTooltip, hideTooltip, ShowTooltipPayload } from 'actions/tooltips';
@@ -38,6 +38,12 @@ const Item = styled('a')`
       font-size: 14px;
     }
   }
+  .glow & {
+    i {
+      font-size: 16px;
+      color: #e0ca91;
+    }
+  }
 `;
 
 const ListHorizontal = css`
@@ -51,6 +57,31 @@ const Tooltip = css`
   padding: 2px 5px;
 `;
 
+const Badge = styled('div')`
+  position: relative;
+  z-index: 1;
+  top: -25px;
+  left: 5px;
+  padding: 1px;
+  width: 10px;
+  height: 10px;
+  line-height: 10px;
+  text-align: center;
+  border-radius: 5px;
+  background-color: red;
+  color: white;
+  font-size: 10px;
+`;
+
+export interface HUDNavItemState {
+  glow?: boolean;
+  badge?: number;
+}
+
+export interface HUDNavBadgeEventArg extends HUDNavItemState {
+  id: string;
+}
+
 export interface Props {
   orientation: utils.Orientation;
   name: string;
@@ -61,13 +92,34 @@ export interface Props {
 }
 
 export interface State {
+  glow: boolean;
+  badge: number;
 }
 
 class HUDNavButton extends React.Component<Props, State> {
+  private badgeEvents: EventHandle;
+
+  constructor(props: Props) {
+    super(props);
+    this.state = { glow: false, badge: undefined };
+  }
+
+  public componentDidMount() {
+    this.badgeEvents = game.on('hudnav--badge', (state: HUDNavBadgeEventArg) => {
+      if (this.props.name === state.id) {
+        this.setState(() => ({ glow: state.glow, badge: state.badge }));
+      }
+    });
+  }
+
   public render() {
     const { orientation, onClick, name, icon, iconClass } = this.props;
+    const { glow, badge } = this.state;
+    const cls = [];
+    if (orientation === utils.Orientation.HORIZONTAL) cls.push(ListHorizontal);
+    if (glow) cls.push('glow');
     return (
-      <li className={orientation === utils.Orientation.HORIZONTAL ? ListHorizontal : ''}>
+      <li className={cls.join(' ')}>
         <div
           id={name}
           onClick={onClick}
@@ -80,12 +132,14 @@ class HUDNavButton extends React.Component<Props, State> {
             }
           </Item>
         </div>
+        { badge ? <Badge>{badge}</Badge> : null }
       </li>
     );
   }
 
   public componentWillUnmount() {
     hideTooltip();
+    game.off(this.badgeEvents);
   }
 
   private onMouseOver = (event: React.MouseEvent<HTMLDivElement>) => {
