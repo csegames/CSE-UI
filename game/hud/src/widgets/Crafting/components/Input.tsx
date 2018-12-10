@@ -6,6 +6,8 @@
 
 import * as React from 'react';
 import { StyleSheet, cssAphrodite, merge, input, InputStyles } from '../styles';
+import { TextInput } from 'UI/TextInput';
+import { isNumberKeycode, keycodeToNumber } from '../../../lib/numberKeycode';
 
 interface InputProps {
   name?: string;      // temp for debugging
@@ -54,7 +56,7 @@ class Input extends React.Component<InputProps, InputState> {
     }
     return (
       <div className={cssAphrodite(ss.input)}>
-        <input type='text'
+        <TextInput
           ref='input'
           className={cssAphrodite(ss.field)}
           size={this.props.size}
@@ -123,6 +125,9 @@ class Input extends React.Component<InputProps, InputState> {
   }
 
   private onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (isNumberKeycode(e.keyCode)) {
+      this.setState({ changed: true, value: this.state.value + keycodeToNumber(e.keyCode) });
+    }
     if (this.props.numeric) {
       try {
         if (parseInt(e.key, 10) >= 0 && parseInt(e.key, 10) <= 9) return;
