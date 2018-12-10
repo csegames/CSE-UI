@@ -146,8 +146,8 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   private onCommitClick = () => {
     const result = game.commitItemPlacement();
     if (result.success) {
-      const { itemInstanceID, position, rotation, actionID } = result;
-      this.handleCommitItemRequest(itemInstanceID, position, rotation, actionID);
+      const { itemInstanceID, position, rotation } = result;
+      this.handleCommitItemRequest(itemInstanceID, position, rotation, result.actionID ? result.actionID : null);
       this.hidePlacementMode();
     }
   }
@@ -165,7 +165,11 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
 
   private handleCommitItemRequest = (itemId: string, position: Vec3F, rotation: Euler3f, actionId?: string) => {
     // Calls a moveItem request to a world position.
-    this.makeItemActionRequest(itemId, actionId, position, rotation);
+    if (!actionId) {
+      this.makeMoveItemRequest(itemId, position, rotation);
+    } else {
+      this.makeItemActionRequest(itemId, actionId, position, rotation);
+    }
   }
 
   private makeItemActionRequest = async (itemId: string, actionId: string, position: Vec3F, rotation: Euler3f) => {
@@ -178,6 +182,52 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
         game.selfPlayerState.entityID,
         actionId,
         { WorldPosition: position, Rotation: rotation },
+      );
+      if (!res.ok) {
+        const data = JSON.parse(res.data);
+        if (data.FieldCodes && data.FieldCodes.length > 0) {
+          toastr.error(data.FieldCodes[0].Message, 'Oh No!', { timeout: 3000 });
+        } else {
+          // This means api server failed perform item action request but did not provide a message about what happened
+          toastr.error('An error occured', 'Oh No!', { timeout: 3000 });
+        }
+      }
+    } catch (e) {
+      toastr.error('There was an unhandled error!', 'Oh No!!', { timeout: 5000 });
+    }
+  }
+
+  private makeMoveItemRequest = async (itemId: string, position: Vec3F, rotation: Euler3f) => {
+    try {
+      const res = await webAPI.ItemAPI.MoveItems(
+        webAPI.defaultConfig,
+        game.shardID,
+        game.selfPlayerState.characterID,
+        {
+          moveItemID: itemId,
+          stackHash: '00000000000000000000000000000000',
+          unitCount: -1,
+          to: {
+            entityID: '0000000000000000000000',
+            characterID: '0000000000000000000000',
+            position: -1,
+            worldPosition: position,
+            rotation,
+            containerID: '0000000000000000000000',
+            gearSlotIDs: [] as any,
+            location: 'Ground',
+            voxSlot: 'Invalid',
+          },
+          from: {
+            entityID: '0000000000000000000000',
+            characterID: game.selfPlayerState.characterID,
+            position: -1,
+            containerID: '0000000000000000000000',
+            gearSlotIDs: [] as any,
+            location: 'Inventory',
+            voxSlot: 'Invalid',
+          },
+        } as any,
       );
       if (!res.ok) {
         const data = JSON.parse(res.data);
