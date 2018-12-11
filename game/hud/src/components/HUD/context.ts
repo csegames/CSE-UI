@@ -36,6 +36,7 @@ useConfig(HUDGraphQLQueryConfig, HUDGraphQLSubscriptionConfig);
 export interface HUDGraphQLQueryResult<T> {
   ok: boolean;
   statusText: string;
+  statusCode: number;
   data: T;
   refetch: () => void;
 }
@@ -49,6 +50,7 @@ const defaultQueryResultInfo = {
   ok: false,
   statusText: '',
   refetch: () => {},
+  statusCode: 0,
 };
 
 export const defaultContextState: HUDContextState = {

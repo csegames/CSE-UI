@@ -53,6 +53,13 @@ export interface GraphQLQuery {
   variables?: Dictionary<any> | null;
 }
 
+export interface GraphQLErrorResult {
+  data: any;
+  ok: boolean;
+  statusText: string;
+  statusCode: number;
+}
+
 export const defaultQuery: GraphQLQuery = {
   operationName: null,
   namedQuery: null,
@@ -76,11 +83,12 @@ export function parseQuery(query: string | LegacyGraphqlDocumentNode | DocumentN
   return queryString;
 }
 
-function errorResult(msg: string) {
+function errorResult(msg: string, statusCode: number): GraphQLErrorResult {
   return {
     data: <null> null,
     ok: false,
     statusText: msg,
+    statusCode,
   };
 }
 
@@ -140,15 +148,17 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
         data: result.data as T,
         ok: result.data !== undefined && result.errors === undefined,
         statusText: result.errors === undefined ? 'OK' : result.errors.map(getMessage).join(' '),
-      };
+        statusCode: result.status,
+      } as GraphQLErrorResult;
 
     }
 
     // TODO log sentry error here?
+    const errorMessage = response.statusText || response.data;
     console.error(
       'GraphQL Request Error:',
       {
-        errors: response.statusText,
+        errors: errorMessage,
         query: q.query,
         operationName: q.operationName,
         namedQuery: q.namedQuery,
@@ -164,10 +174,10 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
       console.log(JSON.stringify(response));
       console.groupEnd();
     }
-    return errorResult(response.statusText);
+    return errorResult(errorMessage, 408);
 
   } catch (err) {
     Raven.captureException(err);
-    return errorResult(err);
+    return errorResult(err, 400);
   }
 }

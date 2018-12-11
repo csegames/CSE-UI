@@ -195,6 +195,12 @@ class HUD extends React.Component<HUDProps, HUDState> {
   private initGraphQLContext = async () => {
     const skills = await fetchSkills();
     const statuses = await fetchStatuses();
+
+    if (skills.statusCode === 408 || statuses.statusCode === 408) {
+      this.initGraphQLContext();
+      return;
+    }
+
     this.setState(() => {
       return {
         skills,
