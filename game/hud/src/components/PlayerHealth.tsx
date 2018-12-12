@@ -9,16 +9,14 @@ import * as _ from 'lodash';
 import styled from 'react-emotion';
 
 import { isEqualPlayerState } from '../lib/playerStateEqual';
-import HealthBar from './HealthBar';
+import { UnitFrame } from './UnitFrame';
 import { showSelfContextMenu } from 'actions/contextMenu';
 import { setPlayerState } from 'actions/player';
 
-const Container = styled('div')`
-  transform: scale(0.45);
-  -webkit-transform: scale(0.45);
-  margin-left: -125px;
-  margin-top: -80px;
+const PlayerHealthContainer = styled('div')`
   pointer-events: auto;
+  width: 100%;
+  height: 100%;
 `;
 
 export interface PlayerHealthProps {
@@ -33,7 +31,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   constructor(props: PlayerHealthProps) {
     super(props);
     this.state = {
-      playerState: null,
+      playerState: cloneDeep(game.selfPlayerState),
     };
     this.setPlayerState = _.throttle(this.setPlayerState, 100);
   }
@@ -41,14 +39,13 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   public render() {
     if (!this.state.playerState ||
       this.state.playerState.type !== 'player' ||
-      this.state.playerState.name === '_offline_' ||
-      this.state.playerState.name === 'unknown') {
+      this.state.playerState.name === '_offline_') {
       return null;
     }
     return (
-      <Container onMouseDown={this.handleContextMenu}>
-        <HealthBar type='compact' playerState={this.state.playerState} />
-      </Container>
+      <PlayerHealthContainer onMouseDown={this.handleContextMenu}>
+        <UnitFrame entityState={this.state.playerState} />
+      </PlayerHealthContainer>
     );
   }
 

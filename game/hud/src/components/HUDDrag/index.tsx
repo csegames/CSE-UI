@@ -173,7 +173,7 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
 
   public render() {
     const position = this.getPosition();
-    const scale = this.state.scale !== 1 ? {
+    const scale = !Math.floatEquals(this.state.scale, 1, 0.01) ? {
       transform: `scale(${this.state.scale})`,
       WebkitTransform: `scale(${this.state.scale})`,
     } : {};

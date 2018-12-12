@@ -16,12 +16,11 @@ declare global {
     yaw: number;
     pitch: number;
   };
-}
 
-/**
+  /**
  * State data extension of PlayerStateModel for the player
  */
-export interface SelfPlayerStateModel extends PlayerStateModel {
+interface SelfPlayerStateModel extends PlayerStateModel {
   characterID: string;
   zoneID: string;
   facing: Facing2fDegrees;
@@ -49,8 +48,8 @@ export interface SelfPlayerStateModel extends PlayerStateModel {
   requestEnemyTarget: (entityID: string) => boolean;
 }
 
-declare global {
-  type SelfPlayerState = SelfPlayerStateModel & Updatable;
+  type SelfPlayerStateUpdatable = Readonly<SelfPlayerStateModel> & Updatable;
+  interface SelfPlayerState extends SelfPlayerStateUpdatable {}
   type ImmutableSelfPlayerState = DeepImmutableObject<SelfPlayerState>;
 }
 

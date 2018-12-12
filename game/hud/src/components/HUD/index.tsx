@@ -41,15 +41,8 @@ import { InteractiveAlertView } from '../InteractiveAlert';
 import { ContextMenu } from '../ContextMenu';
 import { TooltipView } from 'UI/Tooltip';
 import PassiveAlert from '../PassiveAlert';
-import { Skill, StatusDef } from 'gql/interfaces';
-import {
-  HUDContext,
-  HUDContextState,
-  HUDGraphQLQueryResult,
-  defaultContextState,
-  fetchSkills,
-  fetchStatuses,
-} from './context';
+import { HUDContext, HUDContextState, defaultContextState, fetchSkills, fetchStatuses } from './context';
+import { uiContextFromGame } from 'services/session/UIContext';
 
 const HUDNavContainer = styled('div')`
   position: fixed;
@@ -88,8 +81,10 @@ export interface HUDProps {
   data?: any;
 }
 
-export interface HUDState extends HUDContextState {
+export interface HUDState {
   selectedWidget: HUDWidget | null;
+  hudContext: HUDContextState;
+  uiContext: UIContext;
 }
 
 class HUD extends React.Component<HUDProps, HUDState> {
@@ -99,9 +94,11 @@ class HUD extends React.Component<HUDProps, HUDState> {
     super(props);
     this.state = {
       selectedWidget: null,
-      ...defaultContextState,
+      uiContext: uiContextFromGame(),
+      hudContext: defaultContextState,
     };
   }
+
   public render() {
     const widgets = this.props.layout.widgets.map((widget, name) => ({ widget, name })).toArray();
     const locked = this.props.layout.locked;
@@ -111,47 +108,49 @@ class HUD extends React.Component<HUDProps, HUDState> {
                       this.draggable(w.name, w.widget, w.widget.component, w.widget.dragOptions, w.widget.props));
 
     return (
-      <HUDContext.Provider value={this.state}>
-        <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
-          {renderWidgets}
-          <DragStore />
-          <ZoneNameContainer>
-            <ZoneName />
-          </ZoneNameContainer>
-          <Console />
+        <UIContext.Provider value={this.state.uiContext}>
+        <HUDContext.Provider value={this.state.hudContext}>
+          <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+            {renderWidgets}
+            <DragStore />
+            <ZoneNameContainer>
+              <ZoneName />
+            </ZoneNameContainer>
+            <Console />
 
-          <HUDNavContainer>
-            <HUDNav.component {...HUDNav.props} />
-          </HUDNavContainer>
+            <HUDNavContainer>
+              <HUDNav.component {...HUDNav.props} />
+            </HUDNavContainer>
 
-          <DevUI />
-          <InteractiveAlertView />
-          <ScenarioPopup />
+            <DevUI />
+            <InteractiveAlertView />
+            <ScenarioPopup />
 
-          <ScenarioResults />
+            <ScenarioResults />
 
-          <HUDFullScreen />
-          <AbilityBarContainer id={'abilitybar'}>
-            <AbilityBar />
-          </AbilityBarContainer>
-          <ContextMenu />
-          <TooltipView />
-          <PassiveAlert />
-          { locked ? null :
-            <HUDEditor
-              widgets={widgets}
-              selectedWidget={ this.state.selectedWidget ? this.state.selectedWidget : null }
-              dispatch={this.props.dispatch}
-              setSelectedWidget={this.setSelectedWidget}
-            />
-          }
+            <HUDFullScreen />
+            <AbilityBarContainer id={'abilitybar'}>
+              <AbilityBar />
+            </AbilityBarContainer>
+            <ContextMenu />
+            <TooltipView />
+            <PassiveAlert />
+            { locked ? null :
+              <HUDEditor
+                widgets={widgets}
+                selectedWidget={ this.state.selectedWidget ? this.state.selectedWidget : null }
+                dispatch={this.props.dispatch}
+                setSelectedWidget={this.setSelectedWidget}
+              />
+            }
 
-          <Settings />
-          <Watermark />
-          <OfflineZoneSelect />
-          <LoadingScreen />
-        </div>
+            <Settings />
+            <Watermark />
+            <OfflineZoneSelect />
+            <LoadingScreen />
+          </div>
       </HUDContext.Provider>
+      </UIContext.Provider>
     );
   }
 
@@ -164,10 +163,14 @@ class HUD extends React.Component<HUDProps, HUDState> {
     this.initGraphQLContext();
 
     this.eventHandles.push(game.selfPlayerState.onUpdated(this.handleSelfPlayerStateUpdated));
+
+    window.addEventListener('optimizedResize', this.onWindowResize);
   }
 
   public componentWillUnmount() {
     this.eventHandles.forEach(eventHandle => eventHandle.clear());
+
+    window.removeEventListener('optimizedResize', this.onWindowResize);
   }
 
   public componentWillReceiveProps(props: HUDProps) {
@@ -186,6 +189,22 @@ class HUD extends React.Component<HUDProps, HUDState> {
     }
   }
 
+  private onWindowResize = () => {
+    // update UIContext resolution on resize.
+    this.setState((state) => {
+      return {
+        ...state,
+        uiContext: {
+          ...state.uiContext,
+          resolution: {
+            width: window.innerWidth,
+            height: window.innerWidth,
+          },
+        },
+      };
+    });
+  }
+
   private handleSelfPlayerStateUpdated = () => {
     const alive = game.selfPlayerState.isAlive;
     const respawn = this.props.layout.widgets.get('respawn');
@@ -201,20 +220,16 @@ class HUD extends React.Component<HUDProps, HUDState> {
   }
 
   private initGraphQLContext = async () => {
-    const skillsQueryResult = await fetchSkills();
-    const statusesQueryResult = await fetchStatuses();
-
-    if (skillsQueryResult.statusCode === 408 || statusesQueryResult.statusCode === 408) {
-      this.initGraphQLContext();
-      return;
-    }
-
-    const skills = this.getContextSkills(skillsQueryResult);
-    const statuses = this.getContextStatuses(statusesQueryResult);
-    this.setState(() => {
+    const skills = await fetchSkills();
+    const statuses = await fetchStatuses();
+    this.setState((state) => {
       return {
-        skills,
-        statuses,
+        ...state,
+        hudContext: {
+          ...state.hudContext,
+          skills,
+          statuses,
+        },
       };
     });
   }

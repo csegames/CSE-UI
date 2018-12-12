@@ -16,17 +16,7 @@ declare global {
     entityID: string;
     name: string;
     isAlive: boolean;
-
-    /**
-     * Players coordinates in world space.
-     */
-    position: {
-      x: number;
-      y: number;
-      z: number;
-    };
-
-    // status -- null / undefined if no status on entity
+    position: Vec3f;
     statuses: ArrayMap<{ id: number; } & Timing>;
   }
 
@@ -70,17 +60,24 @@ declare global {
   }
 
   type AnyEntityStateModel = PlayerStateModel | SiegeStateModel | KinematicStateModel | ResourceNodeStateModel;
-
-  type PlayerState = Readonly<PlayerStateModel> & Updatable;
   type AnyEntityState = Readonly<AnyEntityStateModel> & Updatable;
 
-  type ImmutableSiegeState = DeepImmutableObject<SiegeStateModel & Updatable>;
+  type PlayerStateUpdatable = Readonly<PlayerStateModel> & Updatable;
+  interface PlayerState extends PlayerStateUpdatable {}
+
+  type SiegeStateUpdateble = Readonly<SiegeStateModel> & Updatable;
+  interface SiegeState extends SiegeStateUpdateble {}
+
+  type ResourceNodeStateUpdateble = Readonly<ResourceNodeStateModel> & Updatable;
+  interface ResourceNodeState extends ResourceNodeStateUpdateble {}
+
+  type ImmutableSiegeState = DeepImmutableObject<SiegeState>;
   type ImmutableKinematicState = DeepImmutableObject<KinematicStateModel & Updatable>;
 
-  type ImmutablePlayerState = DeepImmutableObject<PlayerStateModel & Updatable>;
+  type ImmutablePlayerState = DeepImmutableObject<PlayerState>;
   type ImmutableEntityState = DeepImmutableObject<AnyEntityStateModel & Updatable>;
-}
 
+}
 
 function defaultEntityStateModel(): EntityStateModel {
   return {
@@ -115,6 +112,7 @@ export function defaultPlayerStateModel(): PlayerStateModel {
     race: Race.HumanMaleA,
     gender: Gender.None,
     classID: Archetype.Blackguard,
+    faction: Faction.Arthurian,
     health: {
       0: defaultHealth(),
       1: defaultHealth(),

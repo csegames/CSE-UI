@@ -28,6 +28,8 @@ import HUD from './components/HUD';
 import { apollo, store } from './services/session/reducer';
 import { ApolloProvider } from 'react-apollo';
 
+import './services/session/UIContext';
+
 if (process.env.CUUI_HUD_ENABLE_WHY_DID_YOU_UPDATE) {
   // tslint:disable
   const { whyDidYouUpdate } = require('why-did-you-update');
@@ -46,7 +48,7 @@ function readyCheck() {
   ReactDom.render(
   <ErrorBoundary outputErrorToConsole>
       <ApolloProvider store={store} client={apollo}>
-      <HUD />
+        <HUD />
     </ApolloProvider>
   </ErrorBoundary>,
   document.getElementById('hud'));

@@ -11,6 +11,8 @@ import './arrayUtils';
 import './withDefaults';
 import './textUtils';
 import './numberUtils';
+import './compare';
+import './mathExtensions';
 
 export * from './arrayUtils';
 export * from './eventMapper';
@@ -22,11 +24,12 @@ export * from './searchUtils';
 export * from './textUtils';
 export * from './numberUtils';
 export * from './distance';
-export * from './compareNumbers';
 export * from './time';
 export * from './EventEmitter';
 export * from './immutableType';
 export * from './withDefaults';
+export * from './compare';
+export * from './mathExtensions';
 
 
 import * as KeyCodes from './keyCodes';

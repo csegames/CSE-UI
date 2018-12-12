@@ -7,7 +7,7 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 
-import HealthBar from '../HealthBar';
+import { UnitFrame } from '../UnitFrame';
 import { showFriendlyTargetContextMenu } from 'actions/contextMenu';
 
 const Container = styled('div')`
@@ -37,7 +37,7 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
         key={this.props.member.entityID}
         onClick={this.onClickContainer}
         onMouseDown={this.handleContextMenu}>
-        <HealthBar type='mini' playerState={this.props.member as any} />
+        <UnitFrame entityState={this.props.member as any} warband />
       </Container>
     );
   }

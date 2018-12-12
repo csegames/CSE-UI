@@ -18,8 +18,12 @@ export default {
       offset: -200,
     },
     size: {
-      width: 300,
-      height: 140,
+      width: 310,
+      height: 58.5,
+    },
+    size4k: {
+      width: 620,
+      height: 117,
     },
     scale: 1,
     opacity: 1,

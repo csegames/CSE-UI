@@ -5,7 +5,6 @@
  *
  */
 
-import { numEqualsCloseEnough } from '@csegames/camelot-unchained/lib/utils';
 import { BodyParts } from './PlayerStatus';
 
 export function isEqualPlayerState(a: Player, b: Player) {
@@ -38,21 +37,21 @@ export function isEqualPlayerState(a: Player, b: Player) {
   }
 
   if (a.blood) {
-    if (!numEqualsCloseEnough(a.blood.current, b.blood.current)) {
+    if (!Math.floatEquals(a.blood.current, b.blood.current)) {
       return false;
     }
 
-    if (!numEqualsCloseEnough(a.blood.max, b.blood.max)) {
+    if (!Math.floatEquals(a.blood.max, b.blood.max)) {
       return false;
     }
   }
 
   if (a.stamina) {
-    if (!numEqualsCloseEnough(a.stamina.current, b.stamina.current)) {
+    if (!Math.floatEquals(a.stamina.current, b.stamina.current)) {
       return false;
     }
 
-    if (!numEqualsCloseEnough(a.stamina.max, b.stamina.max)) {
+    if (!Math.floatEquals(a.stamina.max, b.stamina.max)) {
       return false;
     }
   }
@@ -64,11 +63,11 @@ export function isEqualPlayerState(a: Player, b: Player) {
           return false;
         }
 
-        if (!numEqualsCloseEnough(a.health[i].current, b.health[i].current)) {
+        if (!Math.floatEquals(a.health[i].current, b.health[i].current)) {
           return false;
         }
 
-        if (!numEqualsCloseEnough(a.health[i].max, b.health[i].max)) {
+        if (!Math.floatEquals(a.health[i].max, b.health[i].max)) {
           return false;
         }
       } else {

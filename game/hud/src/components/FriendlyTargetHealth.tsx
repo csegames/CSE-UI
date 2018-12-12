@@ -9,17 +9,13 @@ import * as _ from 'lodash';
 import styled from 'react-emotion';
 
 import { isEqualPlayerState } from '../lib/playerStateEqual';
-import HealthBar from './HealthBar';
+import { UnitFrame } from './UnitFrame';
 import { showFriendlyTargetContextMenu } from 'actions/contextMenu';
 
 const Container = styled('div')`
-  cursor: pointer;
-  pointer-events: all;
-  transform: scale(0.45);
-  -webkit-transform: scale(0.45);
-  margin-left: -125px;
-  margin-top: -80px;
   pointer-events: auto;
+  width: 100%;
+  height: 100%;
 `;
 
 export interface PlayerHealthProps {
@@ -48,7 +44,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
 
     return (
       <Container onMouseDown={this.handleContextMenu}>
-        <HealthBar type='compact' target='friendly' playerState={this.state.playerState} />
+        <UnitFrame entityState={this.state.playerState as any} target='friendly' />
       </Container>
     );
   }

@@ -334,6 +334,8 @@ export interface GameInterface extends GameModel {
   graphQL: typeof graphQL;
   signalR: SignalR;
 
+  store: GameDataStore;
+
   /**
    * Get the signalR host
    * essentially, just game.webAPIHost + '/signalr'

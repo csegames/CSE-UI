@@ -5,9 +5,12 @@
  */
 
 import slashCommands from './slashCommands';
+import windowEventThrottling from './windowEventThrottling';
 
 export default () => {
+  game.store.init();
   slashCommands();
+  windowEventThrottling();
 
   function combatLogToString(log: CombatEvent): string {
     // fromName (fromFaction) > toName

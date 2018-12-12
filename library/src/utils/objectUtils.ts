@@ -73,8 +73,8 @@ window.cloneDeep = function<T extends any>(source: T): T {
   throw new Error(`Unable to clone source. Unsupported type ${source}`);
 };
 
-window.merge = function<T>(source: T, ...args: any[]): T {
-  return Object.assign({}, source, ...args);
+window.merge = function<T extends {}>(source: T, ...args: any[]): T {
+  return Object.assign(source, ...args);
 };
 
 window.tryParseJSON = function<T>(json: string, logError: boolean = false): T {
