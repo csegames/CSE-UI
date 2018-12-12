@@ -15,12 +15,6 @@ const playerClasses = playerClassesReducer;
 import factionsReducer from './factions';
 const factions = factionsReducer;
 
-import attributesReducer from './attributes';
-const attributes = attributesReducer;
-
-import attributeOffsetsReducer from './attributeOffsets';
-const attributeOffsets = attributeOffsetsReducer;
-
 import gendersReducer from './genders';
 const gender = gendersReducer;
 
@@ -34,9 +28,7 @@ export default combineReducers({
   races,
   playerClasses,
   factions,
-  attributes,
   gender,
-  attributeOffsets,
   character,
   banesAndBoons,
 });

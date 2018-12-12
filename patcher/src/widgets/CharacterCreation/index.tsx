@@ -16,7 +16,7 @@ import { view } from '../../components/OverlayView';
 import FactionSelect from './components/FactionSelect';
 import PlayerClassSelect from './components/Class/PlayerClassSelect';
 import RaceSelect from './components/Race/RaceSelect';
-import AttributesSelect from './components/AttributesSelect';
+import StatsSelect from './components/StatsSelect';
 import BanesAndBoonsContainer from './components/BanesAndBoonsContainer';
 import Navigation, { NavigationPageInfo } from './components/Navigation';
 import CharacterSummary from './components/CharacterSummary';
@@ -26,6 +26,13 @@ import LoadingOverlay from './components/LoadingOverlay';
 
 // tslint:disable-next-line
 
+import {
+  StatsSelectContext,
+  StatsSelectContextProvider,
+  ContextState as StatsSelectContextState,
+  StatObjectInfo,
+  STATS_TOTAL_POINTS,
+} from './components/StatsSelect/StatsSelectContext';
 import reducer from './services/session/reducer';
 import { RacesState, fetchRaces, selectRace, RaceInfo, resetRace } from './services/session/races';
 import { FactionsState, fetchFactions, selectFaction, FactionInfo, resetFaction } from './services/session/factions';
@@ -36,19 +43,6 @@ import {
   PlayerClassInfo,
   resetClass,
 } from './services/session/playerClasses';
-import {
-  AttributesState,
-  fetchAttributes,
-  allocateAttributePoint,
-  AttributeInfo,
-  attributeType,
-  resetAttributes,
-} from './services/session/attributes';
-import {
-  AttributeOffsetsState,
-  fetchAttributeOffsets,
-  resetAttributeOffsets,
-} from './services/session/attributeOffsets';
 import { CharacterState, createCharacter, CharacterCreationModel, resetCharacter } from './services/session/character';
 import { selectGender, resetGender } from './services/session/genders';
 import {
@@ -66,8 +60,6 @@ function select(state: any): any {
     racesState: state.races,
     playerClassesState: state.playerClasses,
     factionsState: state.factions,
-    attributesState: state.attributes,
-    attributeOffsetsState: state.attributeOffsets,
     gender: state.gender,
     characterState: state.character,
     banesAndBoonsState: state.banesAndBoons,
@@ -78,7 +70,7 @@ export enum CharacterCreationPage {
   Faction,
   Race,
   Class,
-  Attributes,
+  Stats,
   BanesAndBoons,
   Summary,
 }
@@ -93,11 +85,10 @@ export interface CharacterCreationProps {
   racesState?: RacesState;
   playerClassesState?: PlayerClassesState;
   factionsState?: FactionsState;
-  attributesState?: AttributesState;
-  attributeOffsetsState?: AttributeOffsetsState;
   gender?: Gender;
   characterState?: CharacterState;
   banesAndBoonsState: BanesAndBoonsState;
+  statsSelectState: StatsSelectContextState;
   refetchCharactersAndServers: () => void;
 }
 
@@ -166,23 +157,14 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           />
         );
         break;
-      case CharacterCreationPage.Attributes:
-        const remainingPoints = this.props.attributesState.maxPoints - this.props.attributesState.pointsAllocated;
-        this.pushPagesVisited(CharacterCreationPage.Attributes);
-        if (this.pagesCompleted.find(pageNumber => pageNumber === CharacterCreationPage.Attributes) &&
-          remainingPoints !== 0) {
-          this.pagesCompleted.filter(pageNumber => pageNumber === CharacterCreationPage.Attributes);
+      case CharacterCreationPage.Stats:
+        this.pushPagesVisited(CharacterCreationPage.Stats);
+        if (this.pagesCompleted.find(pageNumber => pageNumber === CharacterCreationPage.Stats) &&
+          this.props.statsSelectState.remainingPoints !== 0) {
+          this.pagesCompleted.filter(pageNumber => pageNumber === CharacterCreationPage.Stats);
         }
         content = (
-          <AttributesSelect
-            attributes={this.props.attributesState.attributes}
-            attributeOffsets={this.props.attributeOffsetsState.offsets}
-            selectedGender={this.props.gender}
-            selectedRace={this.props.racesState.selected.id}
-            selectedClass={this.props.playerClassesState.selected.id}
-            allocatePoint={(name: string, value: number) => this.props.dispatch(allocateAttributePoint(name, value)) }
-            remainingPoints={remainingPoints}
-          />
+          <StatsSelect selectedClass={this.props.playerClassesState.selected.id} />
         );
         break;
       case CharacterCreationPage.BanesAndBoons:
@@ -203,12 +185,9 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         this.pushPagesVisited(CharacterCreationPage.Summary);
         content = (
           <CharacterSummary
-            attributes={this.props.attributesState.attributes}
-            attributeOffsets={this.props.attributeOffsetsState.offsets}
             selectedRace={this.props.racesState.selected.id}
             selectedGender={this.props.gender}
             selectedClass={this.props.playerClassesState.selected.id}
-            remainingPoints={remainingPoints}
             banesAndBoonsState={this.props.banesAndBoonsState}
             inputRef={ref => this.characterNameInputRef = ref}
             characterState={this.props.characterState}
@@ -241,12 +220,12 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         onClick: () => this.goToPage(CharacterCreationPage.Class),
       },
       {
-        pageNumber: CharacterCreationPage.Attributes,
+        pageNumber: CharacterCreationPage.Stats,
         pageComplete: this.pagesCompleted.findIndex(pageNumber =>
-          pageNumber === CharacterCreationPage.Attributes) !== -1,
+          pageNumber === CharacterCreationPage.Stats) !== -1,
         pageVisited: this.pagesVisited.findIndex(pageNumber =>
-          pageNumber === CharacterCreationPage.Attributes) !== -1,
-        onClick: () => this.goToPage(CharacterCreationPage.Attributes),
+          pageNumber === CharacterCreationPage.Stats) !== -1,
+        onClick: () => this.goToPage(CharacterCreationPage.Stats),
       },
       {
         pageNumber: CharacterCreationPage.BanesAndBoons,
@@ -323,11 +302,9 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     if (!_.isEqual(nextProps.factionsState.selected, this.props.factionsState.selected) ||
       !_.isEqual(nextProps.racesState.selected, this.props.racesState.selected) ||
       !_.isEqual(nextProps.playerClassesState.selected, this.props.playerClassesState.selected)) {
+      // Player changed faction or race or class so reset stat values to default
       this.filterVisitedAndCompletedPages(nextState.page);
-      this.props.dispatch(resetAttributeOffsets());
-      this.props.dispatch(resetAttributes());
-      this.props.dispatch(fetchAttributes(this.props.shard, this.props.apiHost));
-      this.props.dispatch(fetchAttributeOffsets(this.props.shard, this.props.apiHost));
+      this.props.statsSelectState.resetValues();
     }
   }
 
@@ -385,6 +362,13 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         ...Object.keys(banesAndBoonsState.addedBanes),
         ...Object.keys(banesAndBoonsState.addedBoons),
       ];
+
+      // Fill out primaryAttributesMap
+      const primaryAttributesMap: { [statId: string]: number } = {};
+      this.props.statsSelectState.primaryStats.forEach((primaryStat: StatObjectInfo) => {
+        primaryAttributesMap[primaryStat.statDef.id] = primaryStat.value - primaryStat.defaultValue;
+      });
+
       // try to create...
       const model: CharacterCreationModel = {
         name: modelName,
@@ -393,21 +377,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         faction: this.props.factionsState.selected.id,
         archetype: this.props.playerClassesState.selected.id,
         shardID: this.props.shard,
-        attributes: this.props.attributesState.attributes.reduce((acc: any, cur: AttributeInfo) => {
-          if (cur.type !== attributeType.PRIMARY) return acc;
-          if (typeof acc.name !== 'undefined') {
-            const name = acc.name;
-            const val = acc.allocatedPoints;
-            acc = {};
-            acc[name] = val;
-          }
-          if (typeof acc[cur.name] === 'undefined' || isNaN(acc[cur.name])) {
-            acc[cur.name] = cur.allocatedPoints;
-          } else {
-            acc[cur.name] += cur.allocatedPoints;
-          }
-          return acc;
-        }),
+        attributes: primaryAttributesMap,
         traitIDs,
       };
       this.props.dispatch(createCharacter(model,
@@ -486,10 +456,10 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     if (this.props.playerClassesState.selected == null) {
       classErrors.push('Choose a class to continue.');
     }
-    if (this.props.attributesState.pointsAllocated !== this.props.attributesState.maxPoints) {
+    if (this.props.statsSelectState.remainingPoints !== 0) {
       attributeErrors.push(
-        `You must spend all ${this.props.attributesState.maxPoints} points into your character's attributes.
-        You have only spent ${this.props.attributesState.pointsAllocated} points`);
+        `You must spend all ${STATS_TOTAL_POINTS} points into your character's attributes.
+        You have only spent ${STATS_TOTAL_POINTS - this.props.statsSelectState.remainingPoints} points`);
     }
     if (banesAndBoonsState.totalPoints !== 0) {
       banesAndBoonsErrors.push('You must equally distribute points into your Boons and Banes');
@@ -536,7 +506,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         this.setState({ page: CharacterCreationPage.Class, helpEnabled: false });
         break;
       }
-      case CharacterCreationPage.Attributes: {
+      case CharacterCreationPage.Stats: {
         const errors = [...factionErrors, ...raceErrors, ...classErrors];
         if (!_.isEmpty(errors)) {
           this.makeErrors(errors);
@@ -551,7 +521,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         }));
         this.pushPagesCompleted(CharacterCreationPage.Class);
         game.trigger('play-sound', 'select');
-        this.setState({ page: CharacterCreationPage.Attributes, helpEnabled: false });
+        this.setState({ page: CharacterCreationPage.Stats, helpEnabled: false });
         break;
       }
       case CharacterCreationPage.BanesAndBoons: {
@@ -560,7 +530,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           this.makeErrors(errors);
           return;
         }
-        this.pushPagesCompleted(CharacterCreationPage.Attributes);
+        this.pushPagesCompleted(CharacterCreationPage.Stats);
         game.trigger('play-sound', 'select');
         setTimeout(() => this.setState({ page: CharacterCreationPage.BanesAndBoons, helpEnabled: false }), 10);
         break;
@@ -600,14 +570,11 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     this.props.dispatch(resetRace());
     this.props.dispatch(resetGender());
     this.props.dispatch(resetClass());
-    this.props.dispatch(resetAttributeOffsets());
-    this.props.dispatch(resetAttributes());
     this.props.dispatch(resetCharacter());
     this.props.dispatch(fetchFactions(this.props.shard, apiHost));
     this.props.dispatch(fetchRaces(this.props.shard, apiHost));
     this.props.dispatch(fetchPlayerClasses(apiHost, this.props.shard, this.props.apiVersion));
-    this.props.dispatch(fetchAttributes(this.props.shard, apiHost));
-    this.props.dispatch(fetchAttributeOffsets(this.props.shard, apiHost));
+    this.props.statsSelectState.resetValues();
     this.setState({ page: CharacterCreationPage.Faction });
     this.pagesCompleted = [];
     this.pagesVisited = [];
@@ -620,7 +587,25 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 }
 
-const ConnectedCharacterCreation: React.ComponentType<any> = connect(select)(CharacterCreation);
+class CharacterCreationWithInjectedContext extends React.Component<CharacterCreationProps> {
+  public render() {
+    return (
+      <StatsSelectContextProvider
+        host={this.props.apiHost}
+        selectedGender={this.props.gender}
+        selectedRace={this.props.racesState.selected && this.props.racesState.selected.id}
+        selectedClass={this.props.playerClassesState.selected && this.props.playerClassesState.selected.id}>
+        <StatsSelectContext.Consumer>
+          {(statsSelectState: StatsSelectContextState) => (
+            <CharacterCreation {...this.props} statsSelectState={statsSelectState} />
+          )}
+        </StatsSelectContext.Consumer>
+      </StatsSelectContextProvider>
+    );
+  }
+}
+
+const ConnectedCharacterCreation: React.ComponentType<any> = connect(select)(CharacterCreationWithInjectedContext);
 
 export interface ContainerProps {
   apiKey: string;

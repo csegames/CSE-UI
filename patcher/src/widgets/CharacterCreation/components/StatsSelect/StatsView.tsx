@@ -1,7 +1,7 @@
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, You can obtain one at http://mozillstatInfo.org/MPL/2.0/.
  *
  */
 
@@ -9,14 +9,13 @@ import * as React from 'react';
 import styled, { css } from 'react-emotion';
 import { utils } from '@csegames/camelot-unchained';
 import { Tooltip, GridStats } from '@csegames/camelot-unchained/lib/components';
-
-import { AttributeInfo } from '../../services/session/attributes';
+import { StatDefinitionGQL } from 'gql/interfaces';
 
 export const colors = {
   filterBackgroundColor: '#372F2D',
 };
 
-export interface AttributeViewStyle {
+export interface StatsViewStyle {
   tooltip: React.CSSProperties;
 }
 
@@ -69,7 +68,7 @@ const TooltipContent = styled('div')`
   flex-direction: column;
 `;
 
-export const defaultAttributeViewStyle: AttributeViewStyle = {
+export const defaultAttributeViewStyle: StatsViewStyle = {
   tooltip: {
     border: '1px solid #352A22',
     boxShadow: 'inset 0 0 10px 2px rgba(40, 32, 20, 0.2)',
@@ -79,22 +78,22 @@ export const defaultAttributeViewStyle: AttributeViewStyle = {
   },
 };
 
-export interface AttributeObjectInfo {
-  attributeInfo: AttributeInfo;
+export interface StatObjectInfo {
+  statDef: StatDefinitionGQL;
   value: number;
 }
 
-export interface AttributeViewProps {
+export interface Props {
   howManyGrids?: number;
-  statArray: AttributeObjectInfo[];
+  statArray: StatObjectInfo[];
   title: string;
 }
 
-export interface AttributeViewState {
+export interface State {
 }
 
-export class AttributeView extends React.Component<AttributeViewProps, AttributeViewState> {
-  constructor(props: AttributeViewProps) {
+export class StatsView extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
     };
@@ -114,9 +113,9 @@ export class AttributeView extends React.Component<AttributeViewProps, Attribute
           styles={{
             listItemContainer: { display: 'flex' },
           }}
-          renderListItem={(a: AttributeObjectInfo, i: number) => {
+          renderListItem={(statInfo: StatObjectInfo, i: number) => {
             const isOdd = i % 2 !== 0;
-            if (a.attributeInfo) {
+            if (statInfo.statDef) {
               return (
                 <Tooltip
                   styles={{
@@ -126,18 +125,18 @@ export class AttributeView extends React.Component<AttributeViewProps, Attribute
 
                     tooltip: defaultAttributeViewStyle.tooltip,
                   }}
-                  content={() => a.attributeInfo &&
+                  content={() => statInfo.statDef &&
                     <TooltipContent>
-                      <div>{a.attributeInfo.name} {a.value}</div>
-                      <div>{a.attributeInfo.description}</div>
+                      <div>{statInfo.statDef.name} {statInfo.value}</div>
+                      <div>{statInfo.statDef.description}</div>
                     </TooltipContent>
                   }>
-                  <StatsListItem id={a.attributeInfo.name} className={isOdd ? LightListItem : ''}>
-                    <StatText id={`${a.attributeInfo.name}-title`}>
-                      {a.attributeInfo && a.attributeInfo.name}
+                  <StatsListItem id={statInfo.statDef.name} className={isOdd ? LightListItem : ''}>
+                    <StatText id={`${statInfo.statDef.name}-title`}>
+                      {statInfo.statDef && statInfo.statDef.name}
                     </StatText>
-                    <StatText id={`${a.attributeInfo.name}-value`} className={a.value ? StatValue : ''}>
-                      {a.value ? parseFloat(a.value.toFixed(2)) : ''}
+                    <StatText id={`${statInfo.statDef.name}-value`} className={statInfo.value ? StatValue : ''}>
+                      {statInfo.value ? parseFloat(statInfo.value.toFixed(2)) : ''}
                     </StatText>
                   </StatsListItem>
                 </Tooltip>
@@ -145,8 +144,10 @@ export class AttributeView extends React.Component<AttributeViewProps, Attribute
             } else {
               return (
                 <StatsListItem className={isOdd ? LightListItem : ''}>
-                  <StatText>{a.attributeInfo && a.attributeInfo.name}</StatText>
-                  <StatText className={a.value ? StatValue : ''}>{a.value ? parseFloat(a.value.toFixed(2)) : ''}</StatText>
+                  <StatText>{statInfo.statDef && statInfo.statDef.name}</StatText>
+                  <StatText className={statInfo.value ? StatValue : ''}>
+                    {statInfo.value ? parseFloat(statInfo.value.toFixed(2)) : ''}
+                  </StatText>
                 </StatsListItem>
               );
             }
@@ -157,5 +158,5 @@ export class AttributeView extends React.Component<AttributeViewProps, Attribute
   }
 }
 
-export default AttributeView;
+export default StatsView;
 

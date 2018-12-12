@@ -7,13 +7,11 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-
-import { AttributeInfo, attributeType } from '../../../services/session/attributes';
-import { AttributeOffsetInfo } from '../../../services/session/attributeOffsets';
 import { BanesAndBoonsState } from '../../../services/session/banesAndBoons';
 
-import AttributeView from '../../AttributesSelect/AttributeView';
+import StatsView from '../../StatsSelect/StatsView';
 import TraitsInfo from './TraitsInfo';
+import { StatsSelectContext, StatObjectInfo } from '../../StatsSelect/StatsSelectContext';
 
 export const colors = {
   filterBackgroundColor: '#372F2D',
@@ -26,73 +24,48 @@ const Container = styled('div')`
   padding: 10px;
 `;
 
-export interface LeftInfoPanelProps {
-  attributes: AttributeInfo[];
-  attributeOffsets: AttributeOffsetInfo[];
+export interface ComponentProps {
   selectedRace: Race;
   selectedGender: Gender;
   selectedClass: Archetype;
-  remainingPoints: number;
   banesAndBoonsState: BanesAndBoonsState;
 }
 
-export interface LeftInfoPanelState {
+export interface Props extends ComponentProps {
+  primaryStats: StatObjectInfo[];
+  secondaryStats: StatObjectInfo[];
+  derivedStats: StatObjectInfo[];
 }
 
-export class LeftInfoPanel extends React.Component<LeftInfoPanelProps, LeftInfoPanelState> {
-  constructor(props: LeftInfoPanelProps) {
-    super(props);
-    this.state = {
-
-    };
-  }
-
+export class LeftInfoPanel extends React.Component<Props> {
   public render() {
-    let offset = this.props.attributeOffsets.find((o: AttributeOffsetInfo) => o.gender === this.props.selectedGender &&
-    o.race === this.props.selectedRace);
-
-    if (typeof offset === 'undefined') offset = null;
-
-    const sortedAttributes = this.props.attributes.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-
-    const primaries = sortedAttributes.filter((a: AttributeInfo) => a.type === attributeType.PRIMARY)
-      .map((a: AttributeInfo) => ({
-        attributeInfo: a,
-        value: (offset.attributeOffsets[a.name] || 0) + a.baseValue + a.allocatedPoints,
-      }));
-    const secondaries = sortedAttributes.filter((a: AttributeInfo) => a.type === attributeType.SECONDARY)
-      .map((a: AttributeInfo) => ({
-        attributeInfo: a,
-        value: (offset.attributeOffsets[a.name] || 0) + a.baseValue,
-      }));
-    const derived = sortedAttributes.filter((a: AttributeInfo) => a.type === attributeType.DERIVED)
-      .map((a: AttributeInfo) => ({
-        attributeInfo: a,
-        value: this.calculateDerivedValue(a, offset),
-      }));
-
     return (
       <Container id='summary-panel'>
-        <AttributeView title='Primary' statArray={primaries} howManyGrids={2} />
-        <AttributeView title='Secondary' statArray={secondaries} howManyGrids={2} />
-        <AttributeView title='Derived' statArray={derived} howManyGrids={2} />
+        <StatsView title='Primary' statArray={this.props.primaryStats} howManyGrids={2} />
+        <StatsView title='Secondary' statArray={this.props.secondaryStats} howManyGrids={2} />
+        <StatsView title='Derived' statArray={this.props.derivedStats} howManyGrids={2} />
         <TraitsInfo banesAndBoonsState={this.props.banesAndBoonsState} />
       </Container>
     );
   }
+}
 
-  private calculateDerivedValue = (derivedInfo: AttributeInfo, offset: AttributeOffsetInfo) => {
-    const primaryInfo = this.props.attributes.find((a: AttributeInfo) => a.name === derivedInfo.derivedFrom);
-    const primaryOffsetValue = offset === null ? 0 : typeof offset.attributeOffsets[primaryInfo.name] === 'undefined' ?
-      0 : offset.attributeOffsets[primaryInfo.name];
-    const primaryValue = primaryInfo.baseValue + primaryInfo.allocatedPoints + primaryOffsetValue;
-
-    const derivedMax = derivedInfo.baseValue + derivedInfo.baseValue * derivedInfo.maxOrMultipler;
-
-    const derived = derivedInfo.baseValue + (derivedMax - derivedInfo.baseValue) / primaryInfo.maxOrMultipler * primaryValue;
-    return derived;
+class LeftInfoPanelWithInjectedContext extends React.Component<ComponentProps> {
+  public render() {
+    return (
+      <StatsSelectContext.Consumer>
+        {({ primaryStats, secondaryStats, derivedStats }) => (
+          <LeftInfoPanel
+            {...this.props}
+            primaryStats={primaryStats}
+            secondaryStats={secondaryStats}
+            derivedStats={derivedStats}
+          />
+        )}
+      </StatsSelectContext.Consumer>
+    );
   }
 }
 
-export default LeftInfoPanel;
+export default LeftInfoPanelWithInjectedContext;
 

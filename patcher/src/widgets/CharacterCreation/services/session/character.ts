@@ -14,7 +14,7 @@ export interface CharacterCreationModel {
   faction: Faction;
   archetype: Archetype;
   shardID: number;
-  attributes: {}; // primary attributes
+  attributes: { [statId: string]: number }; // primary attributes
   traitIDs: string[];
 }
 

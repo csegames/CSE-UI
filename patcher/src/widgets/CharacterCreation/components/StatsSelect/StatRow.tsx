@@ -8,19 +8,22 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { AttributeInfo, attributeType } from '../../services/session/attributes';
-import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
 import AllocatePointButton from './AllocatePointButton';
+import { StatsSelectContext } from './StatsSelectContext';
+import { StatDefinitionGQL } from 'gql/interfaces';
 
-export interface AttributeRowProps {
-  attributeInfo: AttributeInfo;
-  offset: AttributeOffsetInfo;
+export interface ComponentProps {
+  statDef: StatDefinitionGQL;
+  value: number;
   selectedClass: Archetype;
-  allocatePoint: (name: string, value: number) => void;
-  remainingPoints: number;
 }
 
-export interface AttributeRowState {
+export interface Props extends ComponentProps {
+  remainingPoints: number;
+  onAllocatePoint: (statId: string, amount: number) => void;
+}
+
+export interface State {
 }
 
 export const importantAttributes = {
@@ -41,31 +44,25 @@ export const importantAttributes = {
   [Archetype.WaveWeaver]: ['Dexterity', 'Agility', 'Endurance', 'Vitality', 'Strength'],
 };
 
-export class AttributeRow extends React.Component<AttributeRowProps, AttributeRowState> {
-  private initialValue: number;
+export class StatRow extends React.Component<Props, State> {
   private mouseDownTimeout: any;
   private mouseDownInterval: any;
 
   public render() {
-    const { attributeInfo, offset } = this.props;
-    const isImportant = _.includes(importantAttributes[this.props.selectedClass], attributeInfo.name);
+    const { statDef } = this.props;
+    const isImportant = _.includes(importantAttributes[this.props.selectedClass], statDef.name);
+    const disabled = this.props.remainingPoints === 0;
 
-    const offsetValue = offset === null ? 0 : typeof offset.attributeOffsets[attributeInfo.name] === 'undefined' ? 0 :
-      offset.attributeOffsets[attributeInfo.name];
-    const disabled = this.props.remainingPoints === 0 ||
-      this.initialValue === (attributeInfo.baseValue + attributeInfo.allocatedPoints + offsetValue);
-
-    if (attributeInfo.type !== attributeType.PRIMARY) return null;
     return (
-      <div key={attributeInfo.name} className={`attribute-row ${isImportant ? 'important' : ''}`}>
-        <span>{attributeInfo.name}</span>
+      <div key={statDef.name} className={`attribute-row ${isImportant ? 'important' : ''}`}>
+        <span>{statDef.name}</span>
         <AllocatePointButton
           direction='right'
           onMouseDown={this.increaseAttribute}
           onMouseUp={this.clearMouseDownInterval}>
         </AllocatePointButton>
         <span className={`attribute-points right ${isImportant ? 'important' : ''} ${disabled ? 'maxmin-points' : ''}`}>
-          {attributeInfo.baseValue + attributeInfo.allocatedPoints + offsetValue}
+          {this.props.value}
         </span>
         <AllocatePointButton
           direction='left'
@@ -76,29 +73,22 @@ export class AttributeRow extends React.Component<AttributeRowProps, AttributeRo
     );
   }
 
-  public componentDidMount() {
-    const { offset, attributeInfo } = this.props;
-    const offsetValue = offset === null ? 0 : typeof offset.attributeOffsets[attributeInfo.name] === 'undefined' ? 0 :
-      offset.attributeOffsets[attributeInfo.name];
-    this.initialValue = attributeInfo.baseValue + attributeInfo.allocatedPoints + offsetValue;
-  }
-
   private increaseAttribute = () => {
-    this.props.allocatePoint(this.props.attributeInfo.name, 1);
+    this.props.onAllocatePoint(this.props.statDef.name, 1);
 
     this.mouseDownTimeout = setTimeout(() => {
       this.mouseDownInterval = setInterval(() => {
-        this.props.allocatePoint(this.props.attributeInfo.name, 1);
+        this.props.onAllocatePoint(this.props.statDef.name, 1);
       }, 30);
     }, 500);
   }
 
   private decreaseAttribute = () => {
-    this.props.allocatePoint(this.props.attributeInfo.name, -1);
+    this.props.onAllocatePoint(this.props.statDef.name, -1);
 
     this.mouseDownTimeout = setTimeout(() => {
       this.mouseDownInterval = setInterval(() => {
-        this.props.allocatePoint(this.props.attributeInfo.name, -1);
+        this.props.onAllocatePoint(this.props.statDef.name, -1);
       }, 30);
     }, 500);
   }
@@ -110,5 +100,17 @@ export class AttributeRow extends React.Component<AttributeRowProps, AttributeRo
   }
 }
 
-export default AttributeRow;
+class StatRowWithInjectedContext extends React.Component<ComponentProps> {
+  public render() {
+    return (
+      <StatsSelectContext.Consumer>
+        {({ remainingPoints, onAllocatePoint }) => (
+          <StatRow {...this.props} remainingPoints={remainingPoints} onAllocatePoint={onAllocatePoint} />
+        )}
+      </StatsSelectContext.Consumer>
+    );
+  }
+}
+
+export default StatRowWithInjectedContext;
 

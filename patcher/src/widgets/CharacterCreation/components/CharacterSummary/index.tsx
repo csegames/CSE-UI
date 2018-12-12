@@ -8,9 +8,8 @@
 import * as React from 'react';
 import { includes } from 'lodash';
 import styled from 'react-emotion';
+import { webAPI } from '@csegames/camelot-unchained';
 
-import { AttributeInfo } from '../../services/session/attributes';
-import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
 import { BanesAndBoonsState } from '../../services/session/banesAndBoons';
 import { CharacterState } from '../../services/session/character';
 import LeftInfoPanel from './components/LeftInfoPanel';
@@ -33,6 +32,7 @@ const CharacterContainer = styled('div')`
 const StandingCharacter = styled('div')`
   position: relative !important;
   background-size: contain !important;
+  pointer-events: none;
   height: 120%;
   width: 120%;
   margin-top: -15%;
@@ -59,12 +59,12 @@ const VideoBG = styled('video')`
 `;
 
 export interface CharacterSummaryProps {
-  attributes: AttributeInfo[];
-  attributeOffsets: AttributeOffsetInfo[];
+  // attributes: AttributeInfo[];
+  // attributeOffsets: AttributeOffsetInfo[];
   selectedRace: Race;
   selectedGender: Gender;
   selectedClass: Archetype;
-  remainingPoints: number;
+  // remainingPoints: number;
   banesAndBoonsState: BanesAndBoonsState;
   characterState: CharacterState;
   inputRef: (ref: Element) => void;
@@ -81,20 +81,16 @@ export class CharacterSummary extends React.Component<CharacterSummaryProps, Cha
   }
 
   public render() {
-    const { selectedRace, selectedClass, selectedGender, attributes,
-      attributeOffsets, remainingPoints, banesAndBoonsState, inputRef } = this.props;
-    const race = includes(Race[selectedRace].toLowerCase(), 'human') ? 'Human' : Race[selectedRace];
+    const { selectedRace, selectedClass, selectedGender, banesAndBoonsState, inputRef } = this.props;
+    const race = includes(Race[selectedRace].toLowerCase(), 'human') ? webAPI.raceString(selectedRace) : Race[selectedRace];
     const videoTitle = this.getVideoTitle();
     return (
       <Container>
         <VideoBG src={`videos/${videoTitle}.webm`} poster={`videos/${videoTitle}.jpg`} autoPlay loop></VideoBG>
         <LeftInfoPanel
-          attributes={attributes}
-          attributeOffsets={attributeOffsets}
           selectedRace={selectedRace}
           selectedGender={selectedGender}
           selectedClass={selectedClass}
-          remainingPoints={remainingPoints}
           banesAndBoonsState={banesAndBoonsState}
         />
         <CharacterContainer>
