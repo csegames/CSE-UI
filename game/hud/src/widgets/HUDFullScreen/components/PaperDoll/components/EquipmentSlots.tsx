@@ -307,8 +307,9 @@ const innerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
 ];
 
 const weaponSlots: EquipmentSlotsAndInfo[] = [
-  { slotName: gearSlots.PrimaryHandWeapon, openingSide: Alignment.WTopRight },
-  { slotName: gearSlots.SecondaryHandWeapon, openingSide: Alignment.WTopLeft },
+  { slotName: gearSlots.OneHandedWeaponLeft, openingSide: Alignment.WTopRight },
+  { slotName: gearSlots.OneHandedWeaponRight, openingSide: Alignment.WTopLeft },
+  { slotName: gearSlots.TwoHandedWeapon, openingSide: Alignment.WTopLeft },
 ];
 
 export interface EquipmentSlotsInjectedProps {

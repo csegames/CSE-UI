@@ -115,7 +115,7 @@ export class ContextMenu extends React.Component<Props, State> {
     if (this.state.show === false) return null;
 
     return (
-      <Container onMouseDown={this.hide}>
+      <Container data-input-group='block' onMouseDown={this.hide}>
         <Menu onMouseDown={(e: MouseEvent) => e.stopPropagation()} style={this.state.styledPosition}>
           {this.state.content && this.state.content}
           {

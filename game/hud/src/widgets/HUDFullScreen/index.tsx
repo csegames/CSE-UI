@@ -9,6 +9,7 @@ import * as _ from 'lodash';
 import styled from 'react-emotion';
 import { TabPanel, TabItem } from '@csegames/camelot-unchained';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
+import { hideContextMenu } from 'actions/contextMenu';
 
 import HudFullScreenView from './HUDFullScreenView';
 import { ContainerIdToDrawerInfo } from './components/ItemShared/InventoryBase';
@@ -304,6 +305,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     game.trigger('navigate', '');
     this.setActiveTab('');
     hideTooltip();
+    hideContextMenu();
 
     if (this.state.myTradeState !== 'Confirmed' && this.state.myTradeState !== 'None') {
       game.trigger('cancel-trade');

@@ -82,7 +82,7 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
     this.setState({ clientAbilities: sortedAbilities });
 
     if (this.props.apiAbilities.refetch) {
-      setTimeout(() => this.props.apiAbilities.refetch(), 50);
+      window.setTimeout(() => this.props.apiAbilities.refetch(), 50);
     }
   }
 

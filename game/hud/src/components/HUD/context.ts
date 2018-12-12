@@ -87,9 +87,10 @@ export async function fetchSkills(): Promise<HUDGraphQLQueryResult<Skill[]>> {
     namedQuery: null,
     variables: {},
   }, HUDGraphQLQueryConfig());
+  const skills = res.data && res.data.myCharacter ? res.data.myCharacter.skills : [];
   return {
     ...res,
-    data: res.data && res.data.myCharacter ? res.data.myCharacter.skills : [],
+    data: skills,
     refetch: fetchSkills,
   };
 }
@@ -115,9 +116,10 @@ export async function fetchStatuses() {
     operationName: null,
     variables: null,
   }, HUDGraphQLQueryConfig());
+  const statuses = res.data && res.data.status ? (res.data.status as any).statuses : [];
   return {
     ...res,
-    data: res.data && res.data.status ? (res.data.status as any).statuses : [],
+    data: statuses,
     refetch: fetchStatuses,
   };
 }

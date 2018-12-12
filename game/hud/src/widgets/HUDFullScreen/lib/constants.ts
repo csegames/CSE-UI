@@ -142,8 +142,9 @@ export const gearSlots = {
   ShinsUnder: 'ShinsUnder',
   ThighsUnder: 'ThighsUnder',
   FeetUnder: 'FeetUnder',
-  PrimaryHandWeapon: 'PrimaryHandWeapon',
-  SecondaryHandWeapon: 'SecondaryHandWeapon',
+  OneHandedWeaponRight: 'OneHandedWeaponRight',
+  OneHandedWeaponLeft: 'OneHandedWeaponLeft',
+  TwoHandedWeapon: 'TwoHandedWeapon',
 };
 
 export const displaySlotNames = {
@@ -180,8 +181,9 @@ export const displaySlotNames = {
   ShinsUnder: 'SHINS',
   ThighsUnder: 'THIGHS',
   FeetUnder: 'FEET',
-  PrimaryHandWeapon: 'P WEAPON',
-  SecondaryHandWeapon: 'S WEAPON',
+  OneHandedWeaponRight: '1H RIGHT',
+  OneHandedWeaponLeft: '1H LEFT',
+  TwoHandedWeapon: '2H WEAPON',
 };
 
 export const armorCategories = {
@@ -252,8 +254,9 @@ export const defaultSlotIcons = {
   ShinsUnder: 'icon-slot-shin',
   ThighsUnder: 'icon-slot-thighs',
   FeetUnder: 'icon-slot-feet',
-  PrimaryHandWeapon: 'icon-filter-weapons',
-  SecondaryHandWeapon: 'icon-filter-weapons',
+  OneHandedWeaponRight: 'icon-slot-left-hand-weapon',
+  OneHandedWeaponLeft: 'icon-slot-left-hand-weapon',
+  TwoHandedWeapon: 'icon-slot-two-hand-weapon',
 };
 
 export const footerInfoIcons = {

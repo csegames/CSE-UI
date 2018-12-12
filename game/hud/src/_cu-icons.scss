@@ -24,6 +24,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-infusion:before {
+  content: "\e909";
+}
+.icon-make:before {
+  content: "\e903";
+}
+.icon-purify:before {
+  content: "\e904";
+}
+.icon-refine:before {
+  content: "\e905";
+}
+.icon-repair:before {
+  content: "\e906";
+}
+.icon-salvage:before {
+  content: "\e907";
+}
+.icon-shape:before {
+  content: "\e908";
+}
 .icon-left:before {
   content: "\3c";
 }
@@ -38,6 +59,12 @@
 }
 .icon-craft-anvil:before {
   content: "\e900";
+}
+.icon-slot-two-hand-weapon:before {
+  content: "\e90a";
+}
+.icon-slot-left-hand-weapon:before {
+  content: "\e90b";
 }
 .icon-filter-heavy-face:before {
   content: "\e000";

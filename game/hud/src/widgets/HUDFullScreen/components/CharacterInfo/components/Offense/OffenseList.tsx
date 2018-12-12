@@ -6,12 +6,10 @@
 
 import gql from 'graphql-tag';
 import * as React from 'react';
-import * as _ from 'lodash';
 
 import styled from 'react-emotion';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
-
 
 import DescriptionItem from '../DescriptionItem';
 import StatListItem from '../StatListItem';
@@ -20,7 +18,7 @@ import DataUnavailable from '../DataUnavailable';
 import { prettifyText } from '../../../../lib/utils';
 import eventNames from '../../../../lib/eventNames';
 import { WeaponStatsFragment } from 'gql/fragments/WeaponStatsFragment';
-import { OffenseListGQL } from 'gql/interfaces';
+import { OffenseListGQL, ItemType } from 'gql/interfaces';
 import TabSubHeader from '../../../TabSubHeader';
 
 const Container = styled('div')`
@@ -146,8 +144,7 @@ class OffenseList extends React.PureComponent<OffenseListProps> {
     const weaponItems = {};
     this.props.graphql.data.myEquippedItems.items.forEach((equippedItem) => {
       const weaponStats = equippedItem.item.stats.weapon;
-      const isWeapon = _.find(equippedItem.gearSlots, gearSlot =>
-        gearSlot.id === 'PrimaryHandWeapon' || gearSlot.id === 'SecondaryHandWeapon');
+      const isWeapon = equippedItem.item.staticDefinition.itemType === ItemType.Weapon;
 
       if (isWeapon) {
         let statItems = defaultStats;
@@ -206,6 +203,9 @@ const OffenseListWithQL = withGraphQL<OffenseListProps>({
           }
           item {
             id
+            staticDefinition {
+              itemType
+            }
             stats {
               weapon {
                 ...WeaponStats
