@@ -92,24 +92,38 @@ class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupSta
 
   private handleScenarioType = (scenarioEnded: boolean, didWin: boolean) => {
     if (scenarioEnded) {
-      // Show either Victory or Defeat
+      // Play round over popup, then play either Victory or Defeat
+      this.playRoundOverPopup();
       if (didWin) {
-        this.playSound('victory');
-        // Add delay so widget can match up with music
-        this.setState({ type: ScenarioPopupType.Victory });
-        this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500));
+        this.timeouts.push(setTimeout(() => this.playVictoryPopup(), 4500));
       } else {
-        this.playSound('defeat');
-        // Add delay so widget can match up with music
-        this.setState({ type: ScenarioPopupType.Defeat });
-        this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500));
+        this.timeouts.push(setTimeout(() => this.playDefeatPopup(), 4500));
       }
     } else {
       // Just show round over
-      this.playSound('roundover');
-      this.setState({ type: ScenarioPopupType.RoundOver });
-      this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500));
+      this.playRoundOverPopup();
     }
+  }
+
+  private playVictoryPopup = () => {
+    this.playSound('victory');
+    // Add delay so widget can match up with music
+    this.setState({ type: ScenarioPopupType.Victory });
+    this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500));
+  }
+
+  private playDefeatPopup = () => {
+    this.playSound('defeat');
+    // Add delay so widget can match up with music
+    this.setState({ type: ScenarioPopupType.Defeat });
+    this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500));
+  }
+
+  private playRoundOverPopup = () => {
+    // Just show round over
+    this.playSound('roundover');
+    this.setState({ type: ScenarioPopupType.RoundOver });
+    this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500));
   }
 
   private playSound = (sound: 'victory' | 'defeat' | 'roundover') => {
