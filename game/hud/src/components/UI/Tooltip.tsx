@@ -238,6 +238,9 @@ export class Tooltip extends React.PureComponent<TooltipProps, {}> {
     });
   }
 
+  public componentWillUnmount() {
+    this.handleMouseLeave();
+  }
 
   private handleMouseOver = (event: React.MouseEvent) => {
     if (this.isMouseOver) return;
@@ -276,6 +279,7 @@ export class Tooltip extends React.PureComponent<TooltipProps, {}> {
   }
 
   private handleMouseLeave = () => {
+    if (!this.isMouseOver) return;
     this.isMouseOver = false;
     hideTooltip();
     if (this.closeEventHandles) {
