@@ -36,7 +36,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@babel/runtime": "^7.0.0-rc.1",
-    "@csegames/camelot-unchained": "^0.1.64",
+    "@csegames/camelot-unchained": "^0.2.0",
     "aphrodite": "^1.1.0",
     "apollo": "^1.7.0",
     "apollo-client": "^1.9.0-1",
