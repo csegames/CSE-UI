@@ -8,46 +8,94 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 import { webAPI } from '@csegames/camelot-unchained';
+import { Dialog } from 'UI/Dialog';
 
 declare const toastr: any;
 
 const iconClass = {
   translate: 'translate fa fa-arrows',
-  rotate: 'rotate fa fa-sync',
-  scale: 'scale fa fa-expand-alt',
-  commit: 'commit fa fa-check-circle',
+  rotate: 'rotate fa fa-refresh',
+  scale: 'scale fa fa-expand',
   reset: 'reset fa fa-undo',
-  cancel: 'cancel fa fa-ban',
 };
 
 const Container = styled('div')`
-  background-color: #444;
-  padding: 5px 10px;
+  pointer-events: all;
+  display: flex;
+  flex-direction: column;
+  background: url(images/settings/bag-bg-grey.png);
+  background-size: cover;
+  width: 100%;
+  height: 100%;
 `;
 
-const ActionButton = styled('div')`
+const TopActionContainer = styled('div')`
+  padding-top: 15px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const BottomActionContainer = styled('div')`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ItemActionContainer = styled('div')`
+  margin-top: 10px;
   pointer-events: all;
   cursor: pointer;
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: gray;
   &:hover {
-    -webkit-filter: brightness(120%);
+    filter: brightness(120%);
   }
+  &.selected {
+    color: white;
+  }
+`;
 
-  &.rotate,
-  &.translate,
-  &.scale {
-    color: gray;
-    &.selected {
-      -webkit-filter: brightness(120%);
+const ItemActionText = styled('div')`
+  font-size: 9px;
+`;
+
+const MenuButton = styled('div')`
+  pointer-events: all;
+  position: relative;
+  background: url(images/gamemenu/button-big-off.png) no-repeat;
+  background-size: 100% 100%;
+  height: 30px;
+  width: 80px;
+  border: none;
+  cursor: pointer;
+  color: rgb(132,132,132);
+  font-family: 'Caudex',serif;
+  letter-spacing: 2px;
+  font-size: 9px;
+  text-transform: uppercase;
+  display: block;
+  line-height: 30px;
+  text-align: center;
+  margin: 0 5px;
+  &:hover {
+    color: rgb(204,204,204);
+    background: url(images/gamemenu/button-big-on.png) no-repeat;
+    &::before {
+      content: '';
+      position: absolute;
+      background-image: url(images/gamemenu/button-glow.png);
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-size: cover;
     }
-  }
-  &.commit {
-    color: green;
-  }
-  &.reset {
-    color: orange;
-  }
-  &.cancel {
-    color: red;
   }
 `;
 
@@ -75,36 +123,56 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   public render() {
     const { selectedTransformGizmoMode } = this.state;
     return this.state.visible ? (
-      <Container data-input-group='block'>
-        <ActionButton
-          className={`${iconClass.translate} ${selectedTransformGizmoMode ===
-            ItemPlacementTransformMode.Translate ? 'selected' : ''}`}
-          onClick={this.onTranslateClick}>
-          Translate
-        </ActionButton>
-        <ActionButton
-          className={`${iconClass.rotate} ${selectedTransformGizmoMode ===
-            ItemPlacementTransformMode.Rotate ? 'selected' : ''}`}
-          onClick={this.onRotateClick}>
-          Rotate
-        </ActionButton>
-        <ActionButton
-          className={`${iconClass.scale} ${selectedTransformGizmoMode ===
-            ItemPlacementTransformMode.Scale ? 'selected' : ''}`}
-          onClick={this.onScaleClick}>
-          Scale
-        </ActionButton>
-        <Divider />
-        <ActionButton className={iconClass.commit} onClick={this.onCommitClick}>Commit</ActionButton>
-        <ActionButton className={iconClass.reset} onClick={this.onResetClick}>Reset</ActionButton>
-        <ActionButton className={iconClass.cancel} onClick={this.onCancelClick}>Cancel</ActionButton>
-      </Container>
+      <Dialog useSmallTitle title='Placement' onClose={this.onCancelClick}>
+        <Container data-input-group='block'>
+          <TopActionContainer>
+            {this.renderItemActionButton(
+              'Translate',
+              iconClass.translate,
+              selectedTransformGizmoMode === ItemPlacementTransformMode.Translate,
+              this.onTranslateClick,
+            )}
+            {this.renderItemActionButton(
+              'Rotate',
+              iconClass.rotate,
+              selectedTransformGizmoMode === ItemPlacementTransformMode.Rotate,
+              this.onRotateClick,
+            )}
+            {this.renderItemActionButton(
+              'Scale',
+              iconClass.scale,
+              selectedTransformGizmoMode === ItemPlacementTransformMode.Scale,
+              this.onScaleClick,
+            )}
+            {this.renderItemActionButton(
+              'Reset',
+              iconClass.reset,
+              false,
+              this.onResetClick,
+            )}
+          </TopActionContainer>
+          <Divider />
+          <BottomActionContainer>
+            <MenuButton onClick={this.onCommitClick}>Commit</MenuButton>
+            <MenuButton onClick={this.onCancelClick}>Cancel</MenuButton>
+          </BottomActionContainer>
+        </Container>
+      </Dialog>
     ) : null;
   }
 
   public componentDidMount() {
     game.on('navigate', this.handleNav);
     game.onBuildingModeChanged(this.handleBuildingModeChanged);
+  }
+
+  private renderItemActionButton = (text: string, actionIcon: string, selected: boolean, onClick: () => void) => {
+    return (
+      <ItemActionContainer className={selected ? 'selected' : ''} onClick={onClick}>
+        <span className={actionIcon} />
+        <ItemActionText>{text}</ItemActionText>
+      </ItemActionContainer>
+    );
   }
 
   private handleBuildingModeChanged = (mode: BuildingMode) => {
@@ -128,19 +196,22 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   }
 
   private hidePlacementMode = () => {
-    this.setState({ visible: false });
+    this.setState({ visible: false, selectedTransformGizmoMode: ItemPlacementTransformMode.Translate });
   }
 
   private onTranslateClick = () => {
     game.changeItemPlacementMode(ItemPlacementTransformMode.Translate);
+    this.setState({ selectedTransformGizmoMode: ItemPlacementTransformMode.Translate });
   }
 
   private onRotateClick = () => {
     game.changeItemPlacementMode(ItemPlacementTransformMode.Rotate);
+    this.setState({ selectedTransformGizmoMode: ItemPlacementTransformMode.Rotate });
   }
 
   private onScaleClick = () => {
     game.changeItemPlacementMode(ItemPlacementTransformMode.Scale);
+    this.setState({ selectedTransformGizmoMode: ItemPlacementTransformMode.Scale });
   }
 
   private onCommitClick = () => {

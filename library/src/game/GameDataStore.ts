@@ -9,7 +9,7 @@
  */
 
 import { query } from '../graphql/query';
-import { CUQuery, StatusDef } from '../graphql/schema';
+import { CUQuery, StatusDef_Deprecated } from '../graphql/schema';
 
 const queryString = `
 {
@@ -56,7 +56,7 @@ declare global {
   interface GameDataStore extends QueryResult {
     init(): void;
     refetch(): Promise<GameDataStore>;
-    getStatusInfo(id: number): StatusDef | null;
+    getStatusInfo(id: number): StatusDef_Deprecated | null;
     onUpdated(callback: Callback): EventHandle;
   }
 

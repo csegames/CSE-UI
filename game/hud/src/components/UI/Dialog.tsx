@@ -38,12 +38,29 @@ const DialogContainer = styled('div')`
       position: relative;
       box-sizing: border-box;
     }
+    &.small-title::before {
+      ${CSS.DONT_GROW}
+      ${DIALOG_FONT}
+      content: '';
+      height: 18px;
+      width: calc(100% - 50px);
+      left: 25px;
+      top: -5px;
+      background-image: url(images/settings/top-title.png);
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      padding-top: 8px;
+      z-index: 2;
+      position: relative;
+      box-sizing: border-box;
+    }
   }
 `;
 
 const DialogTitle = styled('div')`
   position: absolute;
-  top: 7px;
+  top: 5px;
   text-transform: uppercase;
   color: ${NORMAL_TEXT_COLOR};
   text-align: center;
@@ -51,6 +68,7 @@ const DialogTitle = styled('div')`
   letter-spacing: 2px;
   width: 100%;
   z-index: 2;
+  font-family: Titillium Web Regular;
 `;
 
 // because the title div is positioned absolute, in the dialog container
@@ -131,10 +149,11 @@ interface DialogProps {
   heading?: boolean;
   renderHeader?: () => any;
   children: React.ReactNode;
+  useSmallTitle?: boolean;
 }
 
 export const Dialog = function(props: DialogProps) {
-  const { children, renderHeader, heading } = props;
+  const { children, renderHeader, heading, useSmallTitle } = props;
   const cls = [];
   const clsInner = [];
   if (heading === false) {
@@ -144,7 +163,7 @@ export const Dialog = function(props: DialogProps) {
   if (renderHeader) clsInner.push('no-bottom-border');
   return (
     <DialogContainer
-      className={`has-title cse-ui-scroller-thumbonly`}
+      className={`has-title cse-ui-scroller-thumbonly ${useSmallTitle ? 'small-title' : ''}`}
       data-id='dialog-container'
       data-input-group='block'
     >

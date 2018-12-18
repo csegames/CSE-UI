@@ -10,16 +10,16 @@ import HUDZOrder from '../HUDZOrder';
 export default {
   position: {
     x: {
-      anchor: 2,
+      anchor: 5,
       offset: 0,
     },
     y: {
-      anchor: 5,
-      offset: -100,
+      anchor: 7,
+      offset: 0,
     },
     size: {
-      width: 300,
-      height: 140,
+      width: 200,
+      height: 120,
     },
     scale: 1,
     opacity: 1,

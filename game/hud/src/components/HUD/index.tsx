@@ -41,8 +41,16 @@ import { InteractiveAlertView } from '../InteractiveAlert';
 import { ContextMenu } from '../ContextMenu';
 import { TooltipView } from 'UI/Tooltip';
 import PassiveAlert from '../PassiveAlert';
-import { HUDContext, HUDContextState, defaultContextState, fetchSkills, fetchStatuses } from './context';
 import { uiContextFromGame } from 'services/session/UIContext';
+import { StatusDef_Deprecated, Skill } from 'gql/interfaces';
+import {
+  HUDContext,
+  HUDContextState,
+  HUDGraphQLQueryResult,
+  defaultContextState,
+  fetchSkills,
+  fetchStatuses,
+} from './context';
 
 const HUDNavContainer = styled('div')`
   position: fixed;
@@ -220,8 +228,11 @@ class HUD extends React.Component<HUDProps, HUDState> {
   }
 
   private initGraphQLContext = async () => {
-    const skills = await fetchSkills();
-    const statuses = await fetchStatuses();
+    const skillsQueryResult = await fetchSkills();
+    const statusesQueryResult = await fetchStatuses();
+    const skills = this.getContextSkills(skillsQueryResult);
+    const statuses = this.getContextStatuses(statusesQueryResult);
+
     this.setState((state) => {
       return {
         ...state,
@@ -237,13 +248,29 @@ class HUD extends React.Component<HUDProps, HUDState> {
   private initSkills = async () => {
     const skillsQueryResult = await fetchSkills();
     const skills = this.getContextSkills(skillsQueryResult);
-    this.setState({ skills });
+    this.setState((state) => {
+      return {
+        ...state,
+        hudContext: {
+          ...state.hudContext,
+          skills,
+        },
+      };
+    });
   }
 
   private initStatuses = async () => {
     const statusesQueryResult = await fetchStatuses();
     const statuses = this.getContextStatuses(statusesQueryResult);
-    this.setState({ statuses });
+    this.setState((state) => {
+      return {
+        ...state,
+        hudContext: {
+          ...state.hudContext,
+          statuses,
+        },
+      };
+    });
   }
 
   private getContextSkills = (skillsQueryResult: HUDGraphQLQueryResult<Skill[]>) => {
@@ -253,7 +280,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
     };
   }
 
-  private getContextStatuses = (statusesQueryResult: HUDGraphQLQueryResult<StatusDef[]>) => {
+  private getContextStatuses = (statusesQueryResult: HUDGraphQLQueryResult<StatusDef_Deprecated[]>) => {
     return {
       ...statusesQueryResult,
       refetch: this.initStatuses,

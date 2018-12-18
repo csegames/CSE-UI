@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { query } from '@csegames/camelot-unchained/lib/graphql/query';
 import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
-import { StatusDef, Skill, CUQuery } from 'gql/interfaces';
+import { StatusDef_Deprecated, Skill, CUQuery } from 'gql/interfaces';
 
 export const HUDGraphQLQueryConfig = () => ({
   url: game.webAPIHost + '/graphql',
@@ -42,7 +42,7 @@ export interface HUDGraphQLQueryResult<T> {
 }
 
 export interface HUDContextState {
-  statuses: HUDGraphQLQueryResult<StatusDef[]>;
+  statuses: HUDGraphQLQueryResult<StatusDef_Deprecated[]>;
   skills: HUDGraphQLQueryResult<Skill[]>;
 }
 
