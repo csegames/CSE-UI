@@ -361,13 +361,14 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
       return (this.state[k].visible && this.state[k].maximized) ? true : p;
     }, false);
     return (
-      <Container data-input-group='block' style={{ zIndex: anyMaximized ? HUDZOrder.MaximizedDevUI : HUDZOrder.DevUI }}>
+      <Container id='DevUI' style={{ zIndex: anyMaximized ? HUDZOrder.MaximizedDevUI : HUDZOrder.DevUI }}>
         {keys.map((k) => {
           const page = this.state[k];
           const isMaximized = page.maximized;
           if (!page) return null;
-          return (
-            <div style={{
+
+          const pageProps = {
+            style: {
               width: isMaximized ? `100%` : `${page.width}px`,
               height: isMaximized ? `100%` : `${page.height}px`,
               top: isMaximized ? 0 : page.y,
@@ -378,7 +379,15 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
               visibility: page.visible ? 'visible' : 'hidden',
               background: page.background && page.background || '#111',
               pointerEvents: 'auto',
-            }}>
+            },
+          } as any;
+
+          if (k.toLowerCase() !== 'scoreboard') {
+            pageProps['data-input-group'] = 'block';
+          }
+
+          return (
+            <div id={'DevUI' + k} {...pageProps}>
             <div style={{ position: 'relative' }}>
               {page.showCloseButton ?
               <CloseButtonPosition>

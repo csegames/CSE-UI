@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { query } from '@csegames/camelot-unchained/lib/graphql/query';
 import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
-import { StatusDef_Deprecated, Skill, CUQuery } from 'gql/interfaces';
+import { Skill, CUQuery } from 'gql/interfaces';
 
 export const HUDGraphQLQueryConfig = () => ({
   url: game.webAPIHost + '/graphql',
@@ -42,7 +42,6 @@ export interface HUDGraphQLQueryResult<T> {
 }
 
 export interface HUDContextState {
-  statuses: HUDGraphQLQueryResult<StatusDef_Deprecated[]>;
   skills: HUDGraphQLQueryResult<Skill[]>;
 }
 
@@ -54,10 +53,6 @@ const defaultQueryResultInfo = {
 };
 
 export const defaultContextState: HUDContextState = {
-  statuses: {
-    ...defaultQueryResultInfo,
-    data: [],
-  },
   skills: {
     ...defaultQueryResultInfo,
     data: [],
@@ -92,34 +87,5 @@ export async function fetchSkills(): Promise<HUDGraphQLQueryResult<Skill[]>> {
     ...res,
     data: skills,
     refetch: fetchSkills,
-  };
-}
-
-export const statusesQuery = `
-  {
-    status {
-      statuses {
-        id
-        numericID
-        iconURL
-        description
-        name
-      }
-    }
-  }
-`;
-
-export async function fetchStatuses() {
-  const res = await query<Pick<CUQuery, 'status'>>({
-    query: '',
-    namedQuery: 'statusEffects',
-    operationName: null,
-    variables: null,
-  }, HUDGraphQLQueryConfig());
-  const statuses = res.data && res.data.status ? (res.data.status as any).statuses : [];
-  return {
-    ...res,
-    data: statuses,
-    refetch: fetchStatuses,
   };
 }
