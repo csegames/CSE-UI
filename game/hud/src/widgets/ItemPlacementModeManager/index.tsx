@@ -138,12 +138,12 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
               selectedTransformGizmoMode === ItemPlacementTransformMode.Rotate,
               this.onRotateClick,
             )}
-            {this.renderItemActionButton(
+            {/* {this.renderItemActionButton(
               'Scale',
               iconClass.scale,
               selectedTransformGizmoMode === ItemPlacementTransformMode.Scale,
               this.onScaleClick,
-            )}
+            )} */}
             {this.renderItemActionButton(
               'Reset',
               iconClass.reset,
@@ -209,10 +209,10 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
     this.setState({ selectedTransformGizmoMode: ItemPlacementTransformMode.Rotate });
   }
 
-  private onScaleClick = () => {
-    game.changeItemPlacementMode(ItemPlacementTransformMode.Scale);
-    this.setState({ selectedTransformGizmoMode: ItemPlacementTransformMode.Scale });
-  }
+  // private onScaleClick = () => {
+  //   game.changeItemPlacementMode(ItemPlacementTransformMode.Scale);
+  //   this.setState({ selectedTransformGizmoMode: ItemPlacementTransformMode.Scale });
+  // }
 
   private onCommitClick = () => {
     const result = game.commitItemPlacement();
