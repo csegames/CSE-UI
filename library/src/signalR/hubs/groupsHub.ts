@@ -74,6 +74,7 @@ function onConnected(hub: SignalRHub) {
 
 // initialize hub
 export default function() {
+  if (!game.signalRHost()) return;
   const groupsHub = new SignalRHub('groupsHub', groupsHubEventsMap, { debug: game.debug });
   groupsHub.addEventHandler('connected', onConnected);
   return groupsHub;

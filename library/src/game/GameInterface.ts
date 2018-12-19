@@ -338,7 +338,7 @@ export interface GameInterface extends GameModel {
 
   /**
    * Get the signalR host
-   * essentially, just game.webAPIHost + '/signalr'
+   * game.webAPIHost + '/signalr'
    */
   signalRHost: () => string;
 

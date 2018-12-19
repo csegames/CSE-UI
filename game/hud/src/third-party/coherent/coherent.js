@@ -14,7 +14,7 @@
 })(function (global, engine, hasOnLoad) {
 	'use strict';
 
-	var VERSION = [2, 6, 0, 2];
+	var VERSION = [2, 7, 0, 3];
 
 	/**
 	* Event emitter
@@ -173,103 +173,6 @@
 		};
 		setTimeout(async);
 	}
-
-	function Promise () {
-		this.emitter = new Emitter();
-		this.state = pending;
-		this.result = null;
-	}
-
-	Promise.prototype.resolve = function (result) {
-		this.state = fulfilled;
-		this.result = result;
-
-		this.emitter.trigger(fulfilled, result);
-	};
-
-	Promise.prototype.reject = function (result) {
-		this.state = broken;
-		this.result = result;
-
-		this.emitter.trigger(broken, result);
-	};
-
-	Promise.prototype.success = function (code, context) {
-		if (this.state !== fulfilled) {
-			this.emitter.on(fulfilled, code, context);
-		} else {
-			callAsync(code, context || this, this.result);
-		}
-		return this;
-	};
-
-	Promise.prototype.always = function (code, context) {
-		this.success(code, context);
-		this.otherwise(code, context);
-		return this;
-	};
-
-	Promise.prototype.otherwise = function (code, context) {
-		if (this.state !== broken) {
-			this.emitter.on(broken, code, context);
-		} else {
-			callAsync(code, context || this, this.result);
-		}
-		return this;
-	};
-
-	Promise.prototype.merge = function (other) {
-		if (this.state === pending) {
-			this.emitter.merge(other.emitter);
-		} else {
-			var handlers = other.emitter.events[this.state];
-			var self = this;
-			if (handlers !== undefined) {
-				handlers.forEach(function (handler) {
-					handler.code.call(handler.context, self.result);
-				});
-			}
-		}
-	};
-
-	Promise.prototype.make_chain = function (handler, promise, ok) {
-		return function (result) {
-			var handlerResult;
-			try {
-				handlerResult = handler.code.call(handler.context, result);
-				if (handlerResult instanceof Promise) {
-					handlerResult.merge(promise);
-				} else if (this.state === ok) {
-					promise.resolve(handlerResult);
-				} else {
-					promise.reject(handlerResult);
-				}
-			} catch (error) {
-				engine._ThrowError(error);
-				promise.reject(error);
-			}
-		};
-	};
-
-	function makeDefaultHandler(promise) {
-		return function () {
-			return promise;
-		};
-	}
-
-	Promise.prototype.then = function (callback, errback) {
-		var promise = new Promise();
-
-		var handler = new Handler(callback || makeDefaultHandler(this), this);
-
-		this.success(this.make_chain(handler, promise, fulfilled), this);
-
-		var errorHandler = new Handler(errback || makeDefaultHandler(this), this);
-		this.otherwise(this.make_chain(errorHandler, promise, broken), this);
-
-
-		return promise;
-	};
 
 	if (!engine.isAttached || engine.forceEnableMocking) {
 		Emitter.prototype.on = function (name, callback, context) {
@@ -494,31 +397,30 @@
 	engine._RequestId = 0;
 	engine._ActiveRequests = {};
 
-	/// @function engine.createDeferred
-	/// Create a new deferred object.
-	/// Use this to create deferred / promises that can be used together with `engine.call`.
-	/// @return {Deferred} a new deferred object
-	/// @see @ref CustomizingPromises
-	engine.createDeferred = (global.engineCreateDeferred === undefined) ?
-		function () { return new Promise(); }
-		: global.engineCreateDeferred;
+	if( global.engineCreateDeferred !== undefined) {
+		console.warning("engineCreateDeferred is deprecated");
+	}
 
 	/// @function engine.call
 	/// Call asynchronously a C++ handler and retrieve the result
 	/// The C++ handler must have been registered with `Coherent::UI::View::BindCall`
 	/// @param {String} name name of the C++ handler to be called
 	/// @param ... any extra parameters to be passed to the C++ handler
-	/// @return {Deferred} deferred object whose promise is resolved with the result of the C++ handler
+	/// @return ECMAScript 6 promise
 	engine.call = function () {
 		engine._RequestId++;
 		var id = engine._RequestId;
-
-		var deferred = engine.createDeferred();
-		engine._ActiveRequests[id] = deferred;
 		var messageArguments = Array.prototype.slice.call(arguments);
 		messageArguments.splice(1, 0, id);
-		engine.SendMessage.apply(this, messageArguments);
-		return deferred;
+
+		var promise = new Promise(function (resolve, reject) {
+				engine._ActiveRequests[id] = {
+						resolve: resolve,
+						reject: reject,
+				};
+				engine.SendMessage.apply(engine, messageArguments);
+		});
+		return promise;
 	};
 
 	engine._Result = function (requestId) {

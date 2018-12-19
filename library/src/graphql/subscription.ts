@@ -30,8 +30,8 @@ const subscriptionInitPayload = {
 export const defaultSubscriptionOpts: Options<any> = {
   url: subscriptionUrl,
   protocols: 'graphql-ws',
-  reconnectInterval: 1000,
-  connectTimeout: 2000,
+  reconnectInterval: 15000,
+  connectTimeout: 5000,
   initPayload: subscriptionInitPayload,
   debug: getBooleanEnv('CUUI_LIB_DEBUG_GRAPHQL_SUBSCRIPTION', false),
   onDataReceived: data => console.log(data),

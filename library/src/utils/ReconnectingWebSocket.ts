@@ -28,8 +28,8 @@ export interface WebSocketOptions {
 export const defaultWebSocketOptions: WebSocketOptions = {
   url: '/ws',
   protocols: '',
-  reconnectInterval: 5000,
-  connectTimeout: 2000,
+  reconnectInterval: 15000,
+  connectTimeout: 5000,
   debug: getBooleanEnv('CUUI_LIB_DEBUG_WEB_SOCKET', false),
 };
 
@@ -107,11 +107,12 @@ export class ReconnectingWebSocket {
     this.socket.onmessage = this.message;
     this.socket.onclose = this.closed;
     this.socket.onopen = this.open;
-    this.connectTimeoutHandle = window.setTimeout(() => {
+
+    setTimeout(() => {
       if (!this.isOpen) {
-        this.socket.close();
+        console.log('failed to connect to WebSocket within '
+        + this.connectTimeoutInterval +  ' ms. Reconnecting in ' + this.reconnectInterval + ' ms.');
         this.reconnect();
-        this.error(new Error('Connection Timeout'));
       }
     }, this.connectTimeoutInterval);
   }
@@ -124,7 +125,7 @@ export class ReconnectingWebSocket {
       this.log('reconnecting');
     }
 
-    this.socket.close();
+    this.socket = null;
     if (this.reconnectInterval < 0) return;
     setTimeout(() => {
       this.connect();
@@ -148,14 +149,8 @@ export class ReconnectingWebSocket {
       this.log(`error => ${JSON.stringify(e)}`);
     }
     if (!e) return;
-    switch (e.code) {
-      case 'ECONNREFUSED':
-        this.reconnect();
-        break;
-      default:
-        this.onerror(e);
-        break;
-    }
+    this.onerror(e);
+    this.reconnect();
   }
 
   private open = (e: Event) => {

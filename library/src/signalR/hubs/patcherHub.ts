@@ -151,5 +151,6 @@ export function createPatcherHub(opts?: { hostName?: string, isMainPatcherHub?: 
 
 // init
 export default function() {
+  if (!game.signalRHost()) return;
   return createPatcherHub({ isMainPatcherHub: true });
 }
