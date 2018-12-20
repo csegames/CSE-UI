@@ -35,16 +35,28 @@ export const slideDown = keyframes`
 }
 `;
 
-export const slideUp = keyframes`
+export const slideUpTitle = keyframes`
   0%, 10% {
     bottom: 0px;
     opacity: 0;
   }
 
   100% {
-    bottom: 20px;
+    bottom: 35px;
     opacity: 1;
   }
+`;
+
+export const slideUpMsg = keyframes`
+  0%, 10% {
+    bottom: 0px;
+    opacity: 0;
+  }
+
+  100% {
+    bottom: 30px;
+    opacity: 1;
+}
 `;
 
 export const fadeIn = keyframes`

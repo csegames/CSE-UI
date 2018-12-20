@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { slideDownBounceUp, blast, slideUp, glow, fadeIn, fadeOut, fadeInOut } from '../animations';
+import { slideDownBounceUp, blast, slideUpTitle, slideUpMsg, glow, fadeIn, fadeOut, fadeInOut } from '../animations';
 
 const slideBounceTime = 0.4;
 
@@ -81,6 +81,7 @@ const Background = styled('div')`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   position: absolute;
   width: 525px;
   height: 225px;
@@ -103,7 +104,7 @@ const Background = styled('div')`
   }
 `;
 
-const Text = styled('div')`
+const Title = styled('div')`
   z-index: 10;
   position: relative;
   font-family: Caudex;
@@ -112,8 +113,22 @@ const Text = styled('div')`
   font-size: 45px;
   letter-spacing: 25px;
   opacity: 0;
-  -webkit-animation: ${slideUp} 0.2s linear forwards;
-  animation: ${slideUp} 0.2s linear forwards;
+  -webkit-animation: ${slideUpTitle} 0.2s linear forwards;
+  animation: ${slideUpTitle} 0.2s linear forwards;
+  ${WaitTillBounce};
+`;
+
+const ResultMessage = styled('div')`
+  z-index: 11;
+  position: relative;
+  opacity: 0;
+  text-align: center;
+  font-size: 24px;
+  width: 450px;
+  font-family: Caudex;
+  color: white;
+  -webkit-animation: ${slideUpMsg} 0.2s linear forwards;
+  animation: ${slideUpMsg} 0.2s linear forwards;
   ${WaitTillBounce};
 `;
 
@@ -132,7 +147,7 @@ const BackgroundShadow = styled('div')`
 `;
 
 export interface DefeatProps {
-
+  scenarioResultMessage: string;
 }
 
 class Defeat extends React.Component<DefeatProps> {
@@ -144,7 +159,8 @@ class Defeat extends React.Component<DefeatProps> {
         <FrameLasers />
         <Frame />
         <Background>
-          <Text>Defeat</Text>
+          <Title>Defeat</Title>
+          <ResultMessage>{this.props.scenarioResultMessage}</ResultMessage>
         </Background>
         <BackgroundShadow />
       </Container>

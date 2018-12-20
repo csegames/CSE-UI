@@ -36,6 +36,8 @@ export interface ScenarioPopupProps {
 
 export interface ScenarioPopupState {
   type: ScenarioPopupType;
+  roundResultMessage: string;
+  scenarioResultMessage: string;
 }
 
 class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupState> {
@@ -46,6 +48,8 @@ class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupSta
     super(props);
     this.state = {
       type: ScenarioPopupType.None,
+      roundResultMessage: '',
+      scenarioResultMessage: '',
     };
   }
 
@@ -55,21 +59,21 @@ class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupSta
       case ScenarioPopupType.Victory: {
         return (
           <PopupContainer>
-            <Victory />
+            <Victory scenarioResultMessage={this.state.scenarioResultMessage} />
           </PopupContainer>
         );
       }
       case ScenarioPopupType.Defeat: {
         return (
           <PopupContainer>
-            <Defeat />
+            <Defeat scenarioResultMessage={this.state.scenarioResultMessage} />
           </PopupContainer>
         );
       }
       case ScenarioPopupType.RoundOver: {
         return (
           <PopupContainer>
-            <RoundOver />
+            <RoundOver roundResultMessage={this.state.roundResultMessage} />
           </PopupContainer>
         );
       }
@@ -79,8 +83,9 @@ class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupSta
 
   public componentDidMount() {
     this.eventHandles.push(game.onScenarioRoundEnded(
-      (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean) => {
-        this.handleScenarioType(scenarioEnded, didWin);
+      (scenarioID: string, roundID: string, scenarioEnded: boolean, didWin: boolean,
+        roundResultMessage: string, scenarioResultMessage: string) => {
+        this.handleScenarioType(scenarioEnded, didWin, roundResultMessage, scenarioResultMessage);
       },
     ));
   }
@@ -90,40 +95,40 @@ class ScenarioPopup extends React.Component<ScenarioPopupProps, ScenarioPopupSta
     this.timeouts.forEach(timeout => clearTimeout(timeout));
   }
 
-  private handleScenarioType = (scenarioEnded: boolean, didWin: boolean) => {
+  private handleScenarioType = (scenarioEnded: boolean, didWin: boolean, roundMsg: string, scenarioMsg: string) => {
     if (scenarioEnded) {
       // Play round over popup, then play either Victory or Defeat
-      this.playRoundOverPopup();
+      this.playRoundOverPopup(roundMsg);
       if (didWin) {
-        this.timeouts.push(setTimeout(() => this.playVictoryPopup(), 4500));
+        this.timeouts.push(setTimeout(() => this.playVictoryPopup(scenarioMsg), 4500));
       } else {
-        this.timeouts.push(setTimeout(() => this.playDefeatPopup(), 4500));
+        this.timeouts.push(setTimeout(() => this.playDefeatPopup(scenarioMsg), 4500));
       }
     } else {
       // Just show round over
-      this.playRoundOverPopup();
+      this.playRoundOverPopup(roundMsg);
     }
   }
 
-  private playVictoryPopup = () => {
+  private playVictoryPopup = (scenarioMsg: string) => {
     this.playSound('victory');
     // Add delay so widget can match up with music
-    this.setState({ type: ScenarioPopupType.Victory });
-    this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500));
+    this.setState({ type: ScenarioPopupType.Victory, scenarioResultMessage: scenarioMsg });
+    this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None, scenarioResultMessage: '' }), 4500));
   }
 
-  private playDefeatPopup = () => {
+  private playDefeatPopup = (scenarioMsg: string) => {
     this.playSound('defeat');
     // Add delay so widget can match up with music
-    this.setState({ type: ScenarioPopupType.Defeat });
-    this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500));
+    this.setState({ type: ScenarioPopupType.Defeat, scenarioResultMessage: scenarioMsg });
+    this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None, scenarioResultMessage: '' }), 4500));
   }
 
-  private playRoundOverPopup = () => {
+  private playRoundOverPopup = (roundMsg: string) => {
     // Just show round over
     this.playSound('roundover');
-    this.setState({ type: ScenarioPopupType.RoundOver });
-    this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None }), 4500));
+    this.setState({ type: ScenarioPopupType.RoundOver, roundResultMessage: roundMsg });
+    this.timeouts.push(setTimeout(() => this.setState({ type: ScenarioPopupType.None, roundResultMessage: '' }), 4500));
   }
 
   private playSound = (sound: 'victory' | 'defeat' | 'roundover') => {

@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { slideDownBounceUp, fadeIn, fadeOut, slideUp } from '../animations';
+import { slideDownBounceUp, fadeIn, fadeOut, slideUpTitle, slideUpMsg } from '../animations';
 
 const slideBounceTime = 0.4;
 
@@ -39,6 +39,7 @@ const Background = styled('div')`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   position: absolute;
   width: 525px;
   height: 225px;
@@ -48,7 +49,7 @@ const Background = styled('div')`
   z-index: 1;
 `;
 
-const Text = styled('div')`
+const Title = styled('div')`
   z-index: 10;
   position: relative;
   font-family: Caudex;
@@ -57,8 +58,22 @@ const Text = styled('div')`
   font-size: 35px;
   letter-spacing: 15px;
   opacity: 0;
-  -webkit-animation: ${slideUp} 0.2s linear forwards;
-  animation: ${slideUp} 0.2s linear forwards;
+  -webkit-animation: ${slideUpTitle} 0.2s linear forwards;
+  animation: ${slideUpTitle} 0.2s linear forwards;
+  ${WaitTillBounce};
+`;
+
+const ResultMessage = styled('div')`
+  z-index: 11;
+  position: relative;
+  opacity: 0;
+  text-align: center;
+  font-size: 24px;
+  width: 450px;
+  font-family: Caudex;
+  color: white;
+  -webkit-animation: ${slideUpMsg} 0.2s linear forwards;
+  animation: ${slideUpMsg} 0.2s linear forwards;
   ${WaitTillBounce};
 `;
 
@@ -76,7 +91,7 @@ const BackgroundShadow = styled('div')`
 `;
 
 export interface RoundOverProps {
-
+  roundResultMessage: string;
 }
 
 class RoundOver extends React.Component<RoundOverProps> {
@@ -85,7 +100,8 @@ class RoundOver extends React.Component<RoundOverProps> {
       <Container>
         <Frame />
         <Background>
-          <Text>Round Over</Text>
+          <Title>Round Over</Title>
+          <ResultMessage>{this.props.roundResultMessage}</ResultMessage>
         </Background>
         <BackgroundShadow />
       </Container>
