@@ -20,24 +20,23 @@ export interface Options<DataType> extends WebSocketOptions {
   onClosed: () => void;
 }
 
-const subscriptionUrl =  `${game.webAPIHost}/graphql`.replace(/(http)(s?:\/\/)/, 'ws$2');
-const subscriptionInitPayload = {
-  shardID: game.shardID,
-  token: game.accessToken,
-  characterID: game.selfPlayerState.characterID,
-};
-
-export const defaultSubscriptionOpts: Options<any> = {
-  url: subscriptionUrl,
-  protocols: 'graphql-ws',
-  reconnectInterval: 15000,
-  connectTimeout: 5000,
-  initPayload: subscriptionInitPayload,
-  debug: getBooleanEnv('CUUI_LIB_DEBUG_GRAPHQL_SUBSCRIPTION', false),
-  onDataReceived: data => console.log(data),
-  onError: e => console.error(e),
-  onClosed: () => null,
-};
+export function defaultSubscriptionOpts(): Options<any> {
+  return {
+    url: `${game.webAPIHost}/graphql`.replace(/(http)(s?:\/\/)/, 'ws$2'),
+    protocols: 'graphql-ws',
+    reconnectInterval: 15000,
+    connectTimeout: 5000,
+    initPayload: {
+      shardID: game.shardID,
+      token: game.accessToken,
+      characterID: game.selfPlayerState.characterID,
+    },
+    debug: getBooleanEnv('CUUI_LIB_DEBUG_GRAPHQL_SUBSCRIPTION', false),
+    onDataReceived: data => console.log(data),
+    onError: e => console.error(e),
+    onClosed: () => null,
+  };
+}
 
 
 // Follows Apollo GraphQL Protocol -- https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md
@@ -117,7 +116,7 @@ export class SubscriptionManager {
     if (this.debug) {
       this.log(`initiating web socket connection on ${options.url} with protocols '${options.protocols}'`);
     }
-    const opts =  withDefaults(options, defaultSubscriptionOpts);
+    const opts =  withDefaults(options, defaultSubscriptionOpts());
     this.socket = new ReconnectingWebSocket(opts);
     this.socket.onopen = this.init;
     this.socket.onmessage = this.messageHandler;

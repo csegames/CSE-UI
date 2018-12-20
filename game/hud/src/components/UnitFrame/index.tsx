@@ -10,6 +10,7 @@ import styled from 'react-emotion';
 
 import DistanceText from './DistanceText';
 import { PlayerFrame } from './PlayerFrame';
+import { NonPlayerFrame } from './NonPlayerFrame';
 
 const Container = styled('div')`
   width: 100%;
@@ -40,7 +41,6 @@ export class UnitFrame extends React.Component<UnitFrameProps> {
   }
 
   public shouldComponentUpdate(nextProps: UnitFrameProps) {
-
     if (Object.is(this.props, nextProps)) {
       return false;
     }
@@ -57,8 +57,9 @@ export class UnitFrame extends React.Component<UnitFrameProps> {
       case 'player': {
         return <PlayerFrame player={this.props.entityState as PlayerState} target={this.props.target} />;
       }
+      default:
       case 'siege': case 'resourceNode':
-        return null;
+        return <NonPlayerFrame entity={this.props.entityState as any} target={this.props.target} />;
     }
   }
 }

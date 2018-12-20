@@ -102,11 +102,16 @@ export class ReconnectingWebSocket {
     if (this.debug) {
       this.log(`connect => url: '${this.url}', protocols: '${this.protocols}'`);
     }
-    this.socket = new WebSocket(this.url, this.protocols);
-    this.socket.onerror = this.error;
-    this.socket.onmessage = this.message;
-    this.socket.onclose = this.closed;
-    this.socket.onopen = this.open;
+
+    try {
+      this.socket = new WebSocket(this.url, this.protocols);
+      this.socket.onerror = this.error;
+      this.socket.onmessage = this.message;
+      this.socket.onclose = this.closed;
+      this.socket.onopen = this.open;
+    } catch (e) {
+      console.error(e);
+    }
 
     setTimeout(() => {
       if (!this.isOpen) {

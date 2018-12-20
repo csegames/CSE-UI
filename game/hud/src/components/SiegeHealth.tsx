@@ -6,7 +6,7 @@
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
 import { isEqual } from 'lodash';
-
+import { UnitFrame } from './UnitFrame';
 const ProgressBar = (props: {current: number, max: number, foreground: string, background: string}) => {
   return (
     <div style={{
@@ -234,28 +234,22 @@ export class SiegeHealth extends React.Component<SiegeHealthProps, SiegeHealthSt
         const controlled = game.entities && game.entities[this.state.entity.controlledEntityID];
         if (!controlled || controlled.type !== 'siege') return null;
         return (
-          <SiegeHealthBar
-            state={(controlled || null) as any}
-            controlledBy={this.state.entity.name}
-            showExit={this.props.for === HealthFor.Self}
+          <UnitFrame
+            entityState={(controlled || null) as any}
           />
         );
       }
       case 'siege': {
         return (
-          <SiegeHealthBar
-            state={this.state.entity as SiegeStateModel}
-            controlledBy={this.state.entity.controllingEntityID}
-            showExit={this.state.entity.controllingEntityID === game.selfPlayerState.entityID}
+          <UnitFrame
+            entityState={this.state.entity as any}
           />
         );
       }
       case 'resourceNode': {
         return (
-          <SiegeHealthBar
-            state={this.state.entity as ResourceNodeStateModel}
-            controlledBy={null}
-            showExit={false}
+          <UnitFrame
+            entityState={this.state.entity as any}
           />
         );
       }

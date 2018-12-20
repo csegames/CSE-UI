@@ -99,11 +99,11 @@ function setQueryOptions(queryOptions: QueryOptions) {
   queryConf = queryOptions;
 }
 
-let subsConf = withDefaults(null, defaultSubscriptionOpts);
+let subsConf = withDefaults(null, defaultSubscriptionOpts());
 let getSubscriptionConf = () => null;
 function getSubscriptionOptions() {
   return {
-    ...defaultSubscriptionOpts,
+    ...defaultSubscriptionOpts(),
     ...withDefaults(getSubscriptionConf(), subsConf),
   };
 }
