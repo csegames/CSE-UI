@@ -15,7 +15,7 @@ export default {
     },
     y: {
       anchor: Edge.TOP,
-      offset: 90,
+      offset: 108,
     },
     size: {
       width: 400,

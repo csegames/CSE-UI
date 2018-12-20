@@ -41,6 +41,7 @@ import ScenarioJoin from './layoutItems/ScenarioJoin';
 import ScenarioButton from './layoutItems/ScenarioButton';
 import BattleGroups from './layoutItems/BattleGroups';
 import BattleGroupWatchList from './layoutItems/BattleGroupWatchList';
+import LiveScenarioScoreboard from './layoutItems/LiveScenarioScoreboard';
 
 const localStorageKey = 'cse_hud_layout-state';
 const FORCE_RESET_CODE = '0.8.1'; // if the local storage value for the reset code doesn't match this, then force a reset
@@ -206,6 +207,9 @@ function initialState(): LayoutState {
     [
       'battlegroupwatchlist', cloneDeep(BattleGroupWatchList),
     ],
+    [
+      'liveScenarioScoreboard', cloneDeep(LiveScenarioScoreboard),
+    ]
   ]);
 
   return {

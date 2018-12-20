@@ -14,7 +14,7 @@ const Watermark = styled('i')`
   position: fixed;
   margin: auto;
   left: 50%;
-  top: 15px;
+  top: 47px;
   text-align: center;
   transform: translateX(-50%);
   color: #FFF;

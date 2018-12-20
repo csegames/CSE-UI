@@ -25,7 +25,7 @@ const Container = styled('div')`
   background-position: center;
   background-size: cover;
   position: fixed;
-  top: -2px;
+  top: 68px;
   width: 700px;
   height: 140px;
   left: 50%;
