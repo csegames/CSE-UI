@@ -69,12 +69,10 @@ let watchers = 0;
 let timer: NodeJS.Timer;
 
 function onload(results: any) {
-  console.dir(results);
   if (results.ok && results.data) {
     const myScenarioQueue = results.data.myScenarioQueue;
     if (myScenarioQueue && myScenarioQueue.availableMatches) {
       scenarios = myScenarioQueue.availableMatches;
-      console.dir(scenarios);
       game.trigger('scenario-queue--update', scenarios);
     }
   } else {
