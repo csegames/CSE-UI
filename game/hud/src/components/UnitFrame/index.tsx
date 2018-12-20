@@ -58,7 +58,6 @@ export class UnitFrame extends React.Component<UnitFrameProps> {
         return <PlayerFrame player={this.props.entityState as PlayerState} target={this.props.target} />;
       }
       default:
-      case 'siege': case 'resourceNode':
         return <NonPlayerFrame entity={this.props.entityState as any} target={this.props.target} />;
     }
   }

@@ -37,7 +37,6 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
 
   public render() {
     if (!this.state.playerState ||
-      this.state.playerState.type !== 'player' ||
       !this.state.playerState.entityID) return null;
 
     return (

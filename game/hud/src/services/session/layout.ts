@@ -30,8 +30,8 @@ import Announcement from './layoutItems/Announcement';
 import Building from './layoutItems/Building';
 import ReleaseControl from './layoutItems/ReleaseControl';
 import PlayerSiegeHealth from './layoutItems/PlayerSiegeHealth';
-import EnemyTargetSiegeHealth from './layoutItems/EnemyTargetSiegeHealth';
-import FriendlyTargetSiegeHealth from './layoutItems/FriendlyTargetSiegeHealth';
+// import EnemyTargetSiegeHealth from './layoutItems/EnemyTargetSiegeHealth';
+// import FriendlyTargetSiegeHealth from './layoutItems/FriendlyTargetSiegeHealth';
 import GameMenu from './layoutItems/GameMenu';
 // import Settings from './layoutItems/Settings';
 import GameInfo from './layoutItems/GameInfo';
@@ -171,12 +171,12 @@ function initialState(): LayoutState {
     [
       'playerSiegeHealth', cloneDeep(PlayerSiegeHealth),
     ],
-    [
-      'enemySiegeHealth', cloneDeep(EnemyTargetSiegeHealth),
-    ],
-    [
-      'friendlySiegeHealth', cloneDeep(FriendlyTargetSiegeHealth),
-    ],
+    // [
+    //   'enemySiegeHealth', cloneDeep(EnemyTargetSiegeHealth),
+    // ],
+    // [
+    //   'friendlySiegeHealth', cloneDeep(FriendlyTargetSiegeHealth),
+    // ],
     [
       'gameMenu', cloneDeep(GameMenu),
     ],
