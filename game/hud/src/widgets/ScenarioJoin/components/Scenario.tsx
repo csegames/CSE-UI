@@ -97,9 +97,21 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
       <ScenarioContainer css={bg} data-id='scenario-container' style={this.props.style}>
         <ScenarioTitle>{scenario.name}</ScenarioTitle>
         <ScenarioStatus>{status}</ScenarioStatus>
-        <Button css={ScenarioButton}>Find Match</Button>
+        <Button css={ScenarioButton} onClick={scenario.isQueued ? this.leaveQueue : this.joinQueue}>
+          {scenario.isQueued ? 'Leave Queue' : 'Find Match'}
+        </Button>
       </ScenarioContainer>
     );
+  }
+
+  private joinQueue = () => {
+    game.webAPI.ScenarioAPI.AddToQueue(game.webAPI.defaultConfig, game.shardID, game.selfPlayerState.characterID,
+    this.props.scenario.id);
+  }
+
+  private leaveQueue = () => {
+    game.webAPI.ScenarioAPI.RemoveFromQueue(game.webAPI.defaultConfig, game.shardID, game.selfPlayerState.characterID,
+    this.props.scenario.id);
   }
 }
 

@@ -171,7 +171,7 @@ export class ScenarioButton extends React.Component<Props, State> {
                   url(${scenarios[hover].id})
                 ` }}>
               <ToolTipTitle>{scenarios[hover].name}</ToolTipTitle>
-              <ToolTipSubTitle>Click To Join</ToolTipSubTitle>
+              <ToolTipSubTitle>{scenarios[hover].isQueued ? 'Click To Leave Queue' : 'Click To Join'}</ToolTipSubTitle>
             </ToolTipContent>
           </ToolTip>
         )}
@@ -179,7 +179,8 @@ export class ScenarioButton extends React.Component<Props, State> {
         { open && (
           <IconMenu>
             { scenarios.map((scenario, index) => (
-                <IconButton onMouseOver={this.hover} onMouseOut={this.hover}>
+                <IconButton onMouseOver={this.hover} onMouseOut={this.hover}
+                  onClick={scenario.isQueued ? () => this.leaveQueue(scenario.id) : () => this.joinQueue(scenario.id)}>
                   <Icon
                     ref={(node: any) => this.nodes[index] = ReactDOM.findDOMNode(node)}
                     style={{ backgroundImage: `url(${scenario.icon})` }}
@@ -191,6 +192,16 @@ export class ScenarioButton extends React.Component<Props, State> {
         )}
       </Container>
     );
+  }
+
+  private joinQueue = (id: string) => {
+    game.webAPI.ScenarioAPI.AddToQueue(game.webAPI.defaultConfig, game.shardID, game.selfPlayerState.characterID,
+    id);
+  }
+
+  private leaveQueue = (id: string) => {
+    game.webAPI.ScenarioAPI.RemoveFromQueue(game.webAPI.defaultConfig, game.shardID, game.selfPlayerState.characterID,
+    id);
   }
 
   private click = () => {

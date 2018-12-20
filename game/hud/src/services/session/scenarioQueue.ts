@@ -112,7 +112,8 @@ export function stopPollingScenarioQueue() {
 }
 
 export function scenarioIsAvailable(scenario: ScenarioMatch) {
-  const needed = scenario.charactersNeededToStartNextGameByFaction;
+  const needed = scenario.gamesInProgress ? scenario.totalBackfillsNeededByFaction :
+    scenario.charactersNeededToStartNextGameByFaction;
   switch (game.selfPlayerState.faction) {
     case Faction.TDD:
       if (needed.tdd > 0) return needed;
