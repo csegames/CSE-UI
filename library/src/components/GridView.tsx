@@ -5,12 +5,11 @@
  */
 
 import * as React from 'react';
-import { merge, clone, cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash';
 import styled, { css } from 'react-emotion';
 
 import Flyout from './Flyout';
 import RaisedButton from './RaisedButton';
-import { ql } from '..';
 
 const Container = styled('div')`
   flex: 1;
@@ -132,7 +131,7 @@ export interface RowMenuFunc<T extends {}> {
 export interface GridViewProps {
   items: any[];
   columnDefinitions: ColumnDefinition[];
-  userPermissions?: ql.PermissionInfo[];
+  userPermissions?: GraphQL.Schema.PermissionInfo[];
   itemsPerPage?: number;
   styles?: Partial<GridViewStyle>;
   rowMenu?: RowMenuFunc<any>;

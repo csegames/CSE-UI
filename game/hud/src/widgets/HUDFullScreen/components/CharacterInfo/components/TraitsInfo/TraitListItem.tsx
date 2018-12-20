@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { ql, utils } from '@csegames/camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 
 const COLORS = {
   BOON_PRIMARY: '#41ACE9',
@@ -117,7 +117,7 @@ const Description = styled('div')`
 `;
 
 export interface TraitListItemProps {
-  trait: ql.Trait;
+  trait: GraphQL.Schema.Trait;
   searchValue: string;
 }
 

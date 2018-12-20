@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { CUQuery } from '@csegames/camelot-unchained/lib/graphql';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { getPaperDollIcon, getPaperDollBaseIcon } from '../../../lib/utils';
 
@@ -53,7 +52,7 @@ class PaperdollIcon extends React.Component<Props> {
   public render() {
     return (
       <GraphQL query={query}>
-        {(graphql: GraphQLResult<Pick<CUQuery, 'myCharacter'>>) => {
+        {(graphql: GraphQLResult<Pick<GraphQL.Schema.CUQuery, 'myCharacter'>>) => {
           if (graphql.loading || (graphql.lastError && graphql.lastError !== 'OK') || !graphql.data) {
             return (
               <div>Loading...</div>

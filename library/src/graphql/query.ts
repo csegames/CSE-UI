@@ -53,8 +53,8 @@ export interface GraphQLQuery {
   variables?: Dictionary<any> | null;
 }
 
-export interface GraphQLErrorResult {
-  data: any;
+export interface GraphQLQueryResult<T> {
+  data: T;
   ok: boolean;
   statusText: string;
   statusCode: number;
@@ -83,9 +83,9 @@ export function parseQuery(query: string | LegacyGraphqlDocumentNode | DocumentN
   return queryString;
 }
 
-function errorResult(msg: string, statusCode: number): GraphQLErrorResult {
+function errorResult<T>(msg: string, statusCode: number): GraphQLQueryResult<T> {
   return {
-    data: <null> null,
+    data: <T> null,
     ok: false,
     statusText: msg,
     statusCode,
@@ -96,7 +96,7 @@ function getMessage(obj: { message: string }) {
   return obj.message;
 }
 
-export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptions>) {
+export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptions>): Promise<GraphQLQueryResult<T>> {
 
   const q = withDefaults(query, defaultQuery);
   const opts = withDefaults(options, defaultQueryOpts);
@@ -149,7 +149,7 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
         ok: result.data !== undefined && result.errors === undefined,
         statusText: result.errors === undefined ? 'OK' : result.errors.map(getMessage).join(' '),
         statusCode: result.status,
-      } as GraphQLErrorResult;
+      } as GraphQLQueryResult<T>;
 
     }
 

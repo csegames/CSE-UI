@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { query, GraphQLQuery, GraphQLErrorResult } from '@csegames/camelot-unchained/lib/graphql/query';
+import { query, GraphQLQuery, GraphQLQueryResult } from '@csegames/camelot-unchained/lib/graphql/query';
 import { RequestOptions } from '@csegames/camelot-unchained/lib/utils/request';
 
 export function gqlQuery(q: GraphQLQuery, options: RequestOptions = {}) {
@@ -82,7 +82,7 @@ function onload(results: any) {
   }
 }
 
-function onerror(reason: GraphQLErrorResult) {
+function onerror(reason: GraphQLQueryResult<any>) {
   console.error(reason);
 }
 

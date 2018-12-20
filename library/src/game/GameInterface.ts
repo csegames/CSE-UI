@@ -5,12 +5,15 @@
  */
 
 import * as webAPI from '../webAPI';
-import * as graphQL from '../graphql';
 import { TaskHandle } from './clientTasks';
 import { SignalR } from '../signalR';
 import { InternalGameInterfaceExt } from './InternalGameInterfaceExt';
 
 import * as engineEvents from './engineEvents';
+
+import { query, QueryOptions } from '../graphql/query';
+import { subscribe } from '../graphql/subscription';
+
 
 /**
  * GameModel interface defines the structure and functionality of the global game object as presented by the game
@@ -331,7 +334,12 @@ export interface GameInterface extends GameModel {
   apiVersion: number;
 
   webAPI: typeof webAPI;
-  graphQL: typeof graphQL;
+  graphQL: {
+    query: typeof query;
+    subscribe: typeof subscribe;
+    defaultOptions(): Partial<QueryOptions>;
+    host(): string;
+  };
   signalR: SignalR;
 
   store: GameDataStore;

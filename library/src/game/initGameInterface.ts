@@ -5,7 +5,6 @@
  */
 
 import * as webAPI from '../webAPI';
-import * as graphQL from '../graphql';
 import initSignalR from '../signalR';
 
 import { createEventEmitter, EventEmitter } from '../utils/EventEmitter';
@@ -30,12 +29,21 @@ import initCUAPIShim from './cuAPIShim';
 
 import initGameDataStore from './GameDataStore';
 
+import { query, QueryOptions } from '../graphql/query';
+import { subscribe } from '../graphql/subscription';
+
 export default function(isAttached: boolean) {
   _devGame.ready = false;
   _devGame.isClientAttached = isAttached;
 
   _devGame.webAPI = webAPI;
-  _devGame.graphQL = graphQL;
+
+  _devGame.graphQL = {
+    query,
+    subscribe,
+    host: graphQLHost,
+    defaultOptions: defaultGraphQLOptions,
+  };
 
   _devGame.signalRHost = signalRHost;
 
@@ -220,6 +228,27 @@ function getKeybindSafe(id: number): Keybind {
     description: 'unknown',
     category: 'miscellaneous',
     binds: [{ name: '', value: 0 },{ name: '', value: 0 },{ name: '', value: 0 }],
+  };
+}
+
+/* -------------------------------------------------- */
+/* GRAPHQL                                            */
+/* -------------------------------------------------- */
+
+function graphQLHost() {
+  return game.webAPIHost + '/graphql';
+}
+
+function defaultGraphQLOptions(): Partial<QueryOptions> {
+  return {
+    url: game.graphQL.host(),
+    requestOptions: {
+      headers: {
+        Authorization: 'Bearer ' + game.accessToken,
+        characterID: game.selfPlayerState.characterID,
+        shardID: String(game.shardID),
+      },
+    },
   };
 }
 

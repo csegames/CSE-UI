@@ -35,8 +35,9 @@ export {
   signalr,
 };
 
-import * as ql from './graphql';
-export {
-  ql,
-};
-
+import { schema } from './graphql';
+declare global {
+  namespace GraphQL {
+    export import Schema = schema;
+  }
+}
