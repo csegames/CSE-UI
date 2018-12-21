@@ -165,6 +165,11 @@ regMap[EE_OnToggleBuildSelector] = 'onToggleBuildSelector';
 export const EE_OnWantCreateBlueprintFromSelection = 'wantCreateBlueprintFromSelection';
 regMap[EE_OnWantCreateBlueprintFromSelection] = 'onWantCreateBlueprintFromSelection';
 
+/**
+ * Called when the client keybind for "Replace Material" is registered.
+ */
+export const EE_OnWantReplaceMaterial = 'wantReplaceMaterial';
+regMap[EE_OnWantReplaceMaterial] = 'onWantReplaceMaterial';
 
 /**
  * PerfHUD - Works on Protected HUD only

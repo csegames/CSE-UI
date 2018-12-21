@@ -63,7 +63,7 @@ interface DropDownState {
   open: boolean;
 }
 
-class DropDown<TValue> extends React.PureComponent<DropDownProps<TValue>, DropDownState>{
+export class DropDown<TValue> extends React.PureComponent<DropDownProps<TValue>, DropDownState>{
   constructor(props: DropDownProps<TValue>) {
     super(props);
     this.state = { open: false };

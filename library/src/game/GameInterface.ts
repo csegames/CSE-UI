@@ -445,6 +445,11 @@ export interface GameInterface extends GameModel {
    */
   onWantCreateBlueprintFromSelection: (callback: () => any) => EventHandle;
 
+  /**
+   * Called when the client keybind for "Replace Materal" is registered.
+   */
+  onWantReplaceMaterial: (callback: () => any) => EventHandle;
+
   onPerfHUDUpdate: (callback: (json: string) => any) => EventHandle;
 
   getKeybindSafe: (id: number) => Keybind;

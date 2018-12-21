@@ -12,6 +12,7 @@ import { Blueprints } from './Blueprints';
 import { Items } from './Items';
 import { Help } from './Help';
 import { BlueprintNameDialog } from './BlueprintNameDialog';
+import { ReplaceDialog } from './ReplaceDialog';
 
 const OuterWrapper = styled('div')`
   height: 100%;
@@ -89,6 +90,7 @@ export class Build extends React.PureComponent<BuildProps, BuildState> {
         </OpenButton>
       )}
       <BlueprintNameDialog />
+      <ReplaceDialog />
       </OuterWrapper>
     ) : null;
   }

@@ -55,7 +55,6 @@
     "prepare": "cwd-in-node-modules || (rimraf typings && typings install && nps gql && nps definitions)"
   },
   "dependencies": {
-    "@types/graphql": "^0.13.4",
     "aphrodite": "^1.2.3",
     "cwd-in-node-modules": "^1.0.1",
     "emotion": "^9.2.10",
@@ -66,19 +65,20 @@
     "node-xmpp-client": "2.1.0",
     "randomstring": "^1.1.5",
     "raven-js": "^3.27.0",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
+    "react": "16.7.0-alpha.2",
+    "react-dom": "16.7.0-alpha.2",
     "react-emotion": "^9.2.10",
     "react-transition-group": "1.x",
     "redux-typed-modules": "^2.2.1"
   },
   "devDependencies": {
+    "@types/graphql": "^0.13.4",
     "@types/aphrodite": "^0.5.5",
     "@types/jest": "^19.2.2",
     "@types/lodash": "^4.14.109",
     "@types/randomstring": "^1.1.6",
-    "@types/react": "^16.3.17",
-    "@types/react-dom": "^16.0.6",
+    "@types/react": "^16.7.17",
+    "@types/react-dom": "^16.0.11",
     "@types/react-redux": "^4.4.46",
     "@types/react-transition-group": "1.x",
     "@types/redux": "^3.6.0",

@@ -5,7 +5,7 @@
  */
 import './types';
 import './typeExtensions';
-import './GameDataStore';
+import './store';
 
 import { GameInterface, DevGameInterface } from './GameInterface';
 import { Engine } from './coherent';

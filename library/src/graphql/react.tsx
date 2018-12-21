@@ -392,10 +392,12 @@ export function withGraphQL<
         }
       }
       public render() {
+        // to stop intellisense bitching for now
+        const WC = WrappedComponent as any;
         return (
           <GraphQL query={this.queryProp}>
             {
-              (graphql: GraphQLResult<QueryDataType>) => <WrappedComponent graphql={graphql} {...this.props} />
+              (graphql: GraphQLResult<QueryDataType>) => <WC graphql={graphql} {...this.props} />
             }
           </GraphQL>
         );

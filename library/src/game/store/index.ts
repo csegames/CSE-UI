@@ -7,9 +7,9 @@
 /**
  * Game Data Store holds mostly static game data that is initially fetched from the API server on UI load.
  */
-
-import { query } from '../graphql/query';
-import { CUQuery, StatusDef_Deprecated } from '../graphql/schema';
+import { useState } from 'react';
+import { query } from '../../graphql/query';
+import { CUQuery, StatusDef_Deprecated } from '../../graphql/schema';
 
 const queryString = `
 {

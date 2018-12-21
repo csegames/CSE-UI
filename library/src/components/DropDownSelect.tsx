@@ -26,10 +26,12 @@ const Container = styled('div')`
   align-content: stretch;
   position: relative;
   user-select: none;
+  pointer-events: auto !important;
 `;
 
 const ListWrapper = styled('div')`
   position: relative;
+  top: 100%;
   flex: 1;
   display: flex;
   width: 100%;
@@ -127,7 +129,11 @@ export class DropDownSelect<ItemType, DataType extends {} = {}>
 
     return (
       <Container style={customStyles.container} onKeyDown={this.onKeyDown}>
-        <Selected style={customStyles.selected} onClick={() => this.setState({ dropDownOpen: !this.state.dropDownOpen })}>
+        <Selected
+          data-input-group='block'
+          style={customStyles.selected}
+          onMouseDown={() => this.setState({ dropDownOpen: !this.state.dropDownOpen })}
+        >
           <SelectedItem style={customStyles.selectedItem}>
             {this.props.renderSelectedItem(this.state.selectedItem, this.props.renderData)}
           </SelectedItem>
@@ -138,8 +144,9 @@ export class DropDownSelect<ItemType, DataType extends {} = {}>
         <ListWrapper style={customStyles.listWrapper}>
           <div
             className={this.state.dropDownOpen ? List : ListMinimized}
-            style={this.state.dropDownOpen ? customStyles.list : customStyles.listMinimized}>
-            {
+            style={this.state.dropDownOpen ? customStyles.list : customStyles.listMinimized}
+            data-input-group='block'>
+            { this.state.dropDownOpen ?
               this.state.items.map((item, index) => {
                 if (item === this.state.selectedItem) return null;
                 return (
@@ -148,11 +155,11 @@ export class DropDownSelect<ItemType, DataType extends {} = {}>
                     className={this.state.keyboardIndex === index ? HighlightItem : ''}
                     style={this.state.keyboardIndex === index ?
                       { ...customStyles.listItem, ...customStyles.highlightItem } : customStyles.listItem}
-                    onClick={() => this.selectItem(item)}>
+                    onMouseDown={() => this.selectItem(item)}>
                       {this.props.renderListItem(item, this.props.renderData)}
                   </ListItem>
                 );
-              })
+              }) : null
             }
           </div>
         </ListWrapper>

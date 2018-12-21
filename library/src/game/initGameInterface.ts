@@ -27,7 +27,7 @@ import { makeClientPromise } from './clientTasks';
 
 import initCUAPIShim from './cuAPIShim';
 
-import initGameDataStore from './GameDataStore';
+import initGameDataStore from './store';
 
 import { query, QueryOptions } from '../graphql/query';
 import { subscribe } from '../graphql/subscription';

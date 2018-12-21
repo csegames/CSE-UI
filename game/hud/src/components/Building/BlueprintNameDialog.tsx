@@ -118,12 +118,10 @@ export class BlueprintNameDialog extends React.PureComponent<BlueprintNameDialog
   }
 
   private toggleVisibility = () => {
-    console.log('wantCreateBlueprintFromSelection');
     this.setState(state => ({ visible: !state.visible }));
   }
 
   private saveBP = () => {
-    console.log('saving bp with name ' + this.inputRef.value);
     game.building.createBlueprintFromSelectionAsync(this.inputRef.value)
     .then((result) => {
       if (result.success) {
