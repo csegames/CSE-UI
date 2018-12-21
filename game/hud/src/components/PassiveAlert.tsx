@@ -12,6 +12,7 @@ import { PassiveAlert as IPassiveAlert } from 'gql/interfaces';
 
 const fadeTime = 3000;
 const maxNumAlerts = 5;
+const shiftBy = 3;
 
 const fadeOut = keyframes`
   from { -webkit-opacity :1; }
@@ -35,15 +36,20 @@ const PassiveAlertItem = styled('li')`
   font-weight: medium;
   font-size: 13px;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000 !important;
+`;
+
+const FadeAlertItem = styled(PassiveAlertItem)`
   -webkit-animation: ${fadeOut} 500ms ease-in-out;
   -webkit-animation-delay: ${fadeTime - 500}ms;
   animation: ${fadeOut} 500ms ease-in-out;
   animation-delay: ${fadeTime - 500}ms;
 `;
 
+let alertId = 0;
+let updateId = 0;
 
 export interface Alert {
-  id: string;
+  id: number;
   message: string;
 }
 
@@ -51,7 +57,7 @@ export interface Props {
 }
 
 export interface State {
-  alerts: Alert[];
+  updated: number;
 }
 
 const subscription = `
@@ -69,23 +75,30 @@ type SubscriptionType = {
 
 class PassiveAlert extends React.Component<Props, State> {
   private passiveAlertListener: any;
+  private alerts: Alert[] = [];
+  private removeTimer: NodeJS.Timer;
   constructor(props: Props) {
     super(props);
     this.state = {
-      alerts: [],
+      updated: null,
     };
   }
 
+  // [1,2,3,4,5,6,7,8,9,10].forEach((n) => game.trigger('passivealert--newmessage', 'hello ' + n));
+
   public render() {
+    const alerts = this.alerts.slice(0, maxNumAlerts);
     return (
       <PassiveAlertContainer>
-        <ul>
-          {this.state.alerts.map((passiveAlertMessage: Alert) =>
-            <PassiveAlertItem key={passiveAlertMessage.id}>
-              {passiveAlertMessage.message}
-            </PassiveAlertItem>)
-          }
-        </ul>
+        { alerts.length === 0 ? null : (
+          <ul>
+            { alerts.map((alert: Alert, index) => (
+                index < shiftBy
+                  ? <FadeAlertItem key={alert.id}>{alert.message}</FadeAlertItem>
+                  : <PassiveAlertItem key={alert.id}>{alert.message}</PassiveAlertItem>
+            ))}
+          </ul>
+        )}
         <GraphQL subscription={subscription} subscriptionHandler={this.handleSubscription} />
       </PassiveAlertContainer>
     );
@@ -101,43 +114,25 @@ class PassiveAlert extends React.Component<Props, State> {
 
   private handleSubscription = (result: SubscriptionResult<SubscriptionType>) => {
     if (!result.data || !result.data.passiveAlerts) return;
-
     this.addAlertMessage(result.data.passiveAlerts.message);
   }
 
-  private removeAlertById = (id: string) => {
-    const tmpAlertArr = this.state.alerts.filter(alert => alert.id !== id);
-    this.setState({
-      alerts: tmpAlertArr,
-    });
-  }
-
-  private removeLastAlert = () => {
-    const tmpAlertArr = this.state.alerts;
-    tmpAlertArr.splice(tmpAlertArr.length - 1, 1);
-    this.setState({
-      alerts: tmpAlertArr,
-    });
-  }
-
   private addAlertMessage = (message: string) => {
-    const id = this.createAlertID();
-    this.setState({ alerts: [{ id, message }, ...this.state.alerts] });
-
-    // Set timer to remove the item by id
-    setTimeout(() => {
-      this.removeAlertById(id);
-    }, fadeTime);
-
-    // If the maximum of alerts is reached, remove the last item
-    if (this.state.alerts.length >= maxNumAlerts) {
-      this.removeLastAlert();
+    this.alerts.push({ id: alertId++, message });
+    this.setState({ updated: updateId++ });
+    if (!this.removeTimer) {
+      this.removeTimer = setInterval(this.removeAlert, fadeTime);
     }
   }
 
-  private createAlertID = () => {
-    const id = Math.random().toString().slice(2, 11);
-    return id;
+  private removeAlert = () => {
+    // Set timer to remove the item by id
+    this.alerts = this.alerts.slice(shiftBy);
+    this.setState({ updated: updateId++ });
+    if (this.alerts.length === 0) {
+      clearInterval(this.removeTimer);
+      this.removeTimer = null;
+    }
   }
 }
 
