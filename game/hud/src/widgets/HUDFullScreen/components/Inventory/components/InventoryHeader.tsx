@@ -23,7 +23,7 @@ const Container = styled('div')`
   padding: 10px 10px 5px 10px;
   background: url(images/inventory/bag-bg.png);
   background-size: cover;
-  z-index: 1;
+  z-index: 2;
   &:before {
     content: '';
     position: absolute;
