@@ -36,7 +36,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@babel/runtime": "^7.0.0-rc.1",
-    "@csegames/camelot-unchained": "^0.1.64",
+    "@csegames/camelot-unchained": "^0.2.2",
     "cwd-in-node-modules": "^1.0.1",
     "raven-js": "^3.27.0",
     "react": "^16.4.1",

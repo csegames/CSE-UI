@@ -370,8 +370,16 @@ export interface GameInterface extends GameModel {
    * @param {((scenarioID: string, roundID: string, didEnd: boolean, didWin: boolean) => any} callback
    * function to be executed when the scenario round ends
    */
-  onScenarioRoundEnded: (callback: (scenarioID: string, roundID: string, didEnd: boolean, didWin: boolean, roundResultMessage: string, scenarioResultMessage: string) => any)
-    => EventHandle;
+  onScenarioRoundEnded: (
+    callback: (
+      scenarioID: string,
+      roundID: string,
+      didEnd: boolean,
+      didWin: boolean,
+      roundResultMessage: string,
+      scenarioResultMessage: string,
+    ) => any,
+  ) => EventHandle;
 
 
   /**

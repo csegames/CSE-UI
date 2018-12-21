@@ -341,7 +341,7 @@ class News extends React.Component<NewsProps, NewsState> {
     mergedPosts = mergedPosts.concat(newsPostItems);
 
     if (res.ok) {
-      const patchNotePostItems = res.data.patchNotes.map((patchNote) => {
+      const patchNotePostItems = res.data.patchNotes.map((patchNote: PatchNote) => {
         return {
           type: PostFilter.PatchNotes,
           item: patchNote,
@@ -372,7 +372,6 @@ class News extends React.Component<NewsProps, NewsState> {
       variables: { channel: 4, from, to },
       operationName: null,
       namedQuery: null,
-      useNamedQueryCache: false,
     }, {
       url: client.apiHost + '/graphql',
       requestOptions: {

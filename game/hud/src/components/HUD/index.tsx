@@ -242,7 +242,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
       props = props();
     }
     return (
-      <ErrorBoundary key={widget.position.zOrder}>
+      <ErrorBoundary key={`${widget.position.zOrder}-${type}`}>
         <HUDDrag
           name={type}
           defaultHeight={widget.position.size.height}

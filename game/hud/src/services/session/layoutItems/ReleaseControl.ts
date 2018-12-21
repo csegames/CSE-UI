@@ -26,7 +26,7 @@ export default {
     scale: 1,
     opacity: 1,
     visibility: true,
-    zOrder: HUDZOrder,
+    zOrder: HUDZOrder.ReleaseControl,
     layoutMode: LayoutMode.GRID,
   },
   dragOptions: {

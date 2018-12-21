@@ -44,7 +44,7 @@ class Animate extends React.Component<AnimateProps, {}> {
 
       <CSSTransitionGroup
         key={this.props.key}
-        component={this.props.component ? this.props.component : 'div'}
+        component={this.props.component ? this.props.component : 'div' as any}
         transitionName={ {
           enter: 'default-enter',
           enterActive: animationEnter,

@@ -17,8 +17,8 @@
   "scripts": {
     "postinstall": "lerna run prepare --stream",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "lerna run --stream --scope \"@csegames/camelot-unchained\" start -- lint && lerna run --stream start -- build",
-    "build:ci": "lerna run --stream --scope \"@csegames/camelot-unchained\" start -- lint && lerna run --stream start -- build",
+    "build": "lerna run --stream --scope \"@csegames/camelot-unchained\" start -- lint && lerna run --stream --scope \"@csegames/camelot-unchained\" start -- build && lerna run --stream --scope \"cu-*\" start -- build",
+    "build:ci": "lerna run --stream --scope \"@csegames/camelot-unchained\" start -- lint && lerna run --stream --scope \"@csegames/camelot-unchained\" start -- build && lerna run --stream --scope \"cu-*\" start -- build",
     "lint": "lerna run --stream start -- lint"
   },
   "dependencies": {
