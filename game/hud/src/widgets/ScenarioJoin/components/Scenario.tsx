@@ -7,7 +7,7 @@
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
 import { Button } from 'UI/Button';
-import { ScenarioMatch, scenarioIsAvailable } from 'services/session/scenarioQueue';
+import { ScenarioMatch, scenarioIsAvailable, pollNow } from 'services/session/scenarioQueue';
 
 export const SCENARIO_FONT = `font-family: 'Caudex', serif;`;
 
@@ -71,15 +71,22 @@ interface ScenarioProps {
 }
 
 interface ScenarioState {
+  joinMessage: string;
 }
 
 export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> {
   constructor(props: ScenarioProps) {
     super(props);
-    this.state = {};
+    this.state = { joinMessage: null };
+  }
+  public componentWillReceiveProps(newProps: ScenarioProps) {
+    if (this.state.joinMessage && this.props.scenario.isQueued !== newProps.scenario.isQueued) {
+      this.setState(() => ({ joinMessage: null }));
+    }
   }
   public render() {
     const { scenario } = this.props;
+    const { joinMessage } = this.state;
     const bg = css(`
       background-image:
         linear-gradient(to right, #0000, #000 225px),
@@ -98,20 +105,32 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
         <ScenarioTitle>{scenario.name}</ScenarioTitle>
         <ScenarioStatus>{status}</ScenarioStatus>
         <Button css={ScenarioButton} onClick={scenario.isQueued ? this.leaveQueue : this.joinQueue}>
-          {scenario.isQueued ? 'Leave Queue' : 'Find Match'}
+          {joinMessage ? joinMessage : scenario.isQueued ? 'Leave Queue' : 'Find Match'}
         </Button>
       </ScenarioContainer>
     );
   }
 
   private joinQueue = () => {
-    game.webAPI.ScenarioAPI.AddToQueue(game.webAPI.defaultConfig, game.shardID, game.selfPlayerState.characterID,
-    this.props.scenario.id);
+    this.setState({ joinMessage: 'Joining ...' });
+    game.webAPI.ScenarioAPI.AddToQueue(
+      game.webAPI.defaultConfig,
+      game.shardID,
+      game.selfPlayerState.characterID,
+      this.props.scenario.id,
+    );
+    setTimeout(pollNow,2000);
   }
 
   private leaveQueue = () => {
-    game.webAPI.ScenarioAPI.RemoveFromQueue(game.webAPI.defaultConfig, game.shardID, game.selfPlayerState.characterID,
-    this.props.scenario.id);
+    this.setState({ joinMessage: 'Leaving ...' });
+    game.webAPI.ScenarioAPI.RemoveFromQueue(
+      game.webAPI.defaultConfig,
+      game.shardID,
+      game.selfPlayerState.characterID,
+      this.props.scenario.id,
+    );
+    setTimeout(pollNow,2000);
   }
 }
 

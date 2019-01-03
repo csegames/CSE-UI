@@ -15,6 +15,7 @@ import {
   startPollingScenarioQueue,
   stopPollingScenarioQueue,
   scenarioIsAvailable,
+  pollNow,
 } from 'services/session/scenarioQueue';
 
 const Container = styled('div')`
@@ -26,6 +27,7 @@ const IconMenu = styled('div')`
 
 const IconButton = styled('div')`
   ${CSS.ALLOW_MOUSE}
+  position: relative;
   box-sizing: border-box!important;
   width: 36px;
   height: 36px;
@@ -55,6 +57,9 @@ const IconButton = styled('div')`
     color: #cbcbcb;
     background-image: url(images/settings/button-off.png);
   }
+  &.not-available {
+    filter: grayscale(100%);
+  }
 `;
 
 const Icon = styled('div')`
@@ -72,7 +77,7 @@ const ToolTip = styled('div')`
   position: absolute;
   top: 0;
   right: 40px;
-  width: 200px;
+  width: 350px;
   height: 70px;
   z-index: 32000;
 `;
@@ -92,7 +97,7 @@ const ToolTipTitle = styled('div')`
   position: absolute;
   top: 15px;
   left: 20px;
-  font-size: 15px;
+  font-size: 13px;
   color: #f5d797;
   text-transform: uppercase;
   letter-spacing: 3px;
@@ -178,16 +183,19 @@ export class ScenarioButton extends React.Component<Props, State> {
         <IconButton className={cls.join(' ')} onClick={this.click}/>
         { open && (
           <IconMenu>
-            { scenarios.map((scenario, index) => (
-                <IconButton onMouseOver={this.hover} onMouseOut={this.hover}
-                  onClick={scenario.isQueued ? () => this.leaveQueue(scenario.id) : () => this.joinQueue(scenario.id)}>
+            { scenarios.map((scenario, index) => {
+              return (
+                <IconButton
+                  className={scenarioIsAvailable(scenario) ? '' : 'not-available'}
+                  onMouseOver={this.hover} onMouseOut={this.hover}
+                  onClick={(scenario.isQueued ? () => this.leaveQueue(scenario.id) : () => this.joinQueue(scenario.id))}>
                   <Icon
                     ref={(node: any) => this.nodes[index] = ReactDOM.findDOMNode(node)}
                     style={{ backgroundImage: `url(${scenario.icon})` }}
                     />
                 </IconButton>
-              ))
-            }
+              );
+            })}
           </IconMenu>
         )}
       </Container>
@@ -195,13 +203,23 @@ export class ScenarioButton extends React.Component<Props, State> {
   }
 
   private joinQueue = (id: string) => {
-    game.webAPI.ScenarioAPI.AddToQueue(game.webAPI.defaultConfig, game.shardID, game.selfPlayerState.characterID,
-    id);
+    game.webAPI.ScenarioAPI.AddToQueue(
+      game.webAPI.defaultConfig,
+      game.shardID,
+      game.selfPlayerState.characterID,
+      id,
+    );
+    setTimeout(pollNow, 2000);
   }
 
   private leaveQueue = (id: string) => {
-    game.webAPI.ScenarioAPI.RemoveFromQueue(game.webAPI.defaultConfig, game.shardID, game.selfPlayerState.characterID,
-    id);
+    game.webAPI.ScenarioAPI.RemoveFromQueue(
+      game.webAPI.defaultConfig,
+      game.shardID,
+      game.selfPlayerState.characterID,
+      id,
+    );
+    setTimeout(pollNow, 2000);
   }
 
   private click = () => {

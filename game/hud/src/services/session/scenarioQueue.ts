@@ -84,19 +84,23 @@ function onerror(reason: GraphQLQueryResult<any>) {
   console.error(reason);
 }
 
-function poll() {
+export function poll() {
   gqlQuery(scenarioQuery).then(onload, onerror);
 }
 
-// Incrememnt watchers, cancel current poll interval and start a new one.
-// This is so that the thing calling start gets the latest information now
-// rather than on next poll. We also return the current scenario data
-// immediately if we have any.
-export function startPollingScenarioQueue() {
-  watchers++;
+// Cancel current poll interval and start a new one. Sometimes we just want to get the
+// information now, not in N seconds time.
+export function pollNow() {
   if (timer) clearInterval(timer);
   poll();
   timer = setInterval(poll, 10000);
+}
+
+// Incrememnt watchers, and also return the current scenario data
+// immediately if we have any.
+export function startPollingScenarioQueue() {
+  watchers++;
+  pollNow();
   return scenarios;
 }
 
