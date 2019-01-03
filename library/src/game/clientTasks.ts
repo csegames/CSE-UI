@@ -38,6 +38,7 @@ export interface TaskHandle {
 export interface Resolvable<T> extends TaskHandle {
   resolve: (value: T | PromiseLike<T>) => void;
   reject: (reason: any) => void;
+  cancelled: boolean;
 }
 
 interface TaskResult {
@@ -50,15 +51,25 @@ interface TaskResult {
 export function makeClientPromise<T>(callFn: (game: DevGameInterface, ...args: any[]) => TaskHandle) {
   return function(...args: any[]) {
     const handle = callFn(game as DevGameInterface, ...args);
+    if (game.debug) {
+      console.log(`GAME TASK: NEW ACTIVE TASK ${handle.id} cancel=${typeof handle.cancel}`);
+    }
     _devGame._activeTasks[handle.id] = handle as Resolvable<T>;
     const promise =  new Promise<T>((resolve, reject) => {
       if (_devGame._activeTasks[handle.id]) {
         _devGame._activeTasks[handle.id].resolve = resolve;
         _devGame._activeTasks[handle.id].reject = reject;
+        if (game.debug) {
+          console.log(`GAME TASK: ACTIVE TASK ${JSON.stringify(_devGame._activeTasks[handle.id])}`);
+        }
       }
     }) as CancellablePromise<T>;
     promise.cancel = () => {
+      if (game.debug) {
+        console.log(`GAME TASK: CANCEL TASK ${handle.id}`);
+      }
       engine.trigger('CancelTask', handle.id);
+      _devGame._activeTasks[handle.id].cancelled = true;
     };
     return promise;
   };
@@ -70,14 +81,24 @@ export function makeClientPromise<T>(callFn: (game: DevGameInterface, ...args: a
 export default function() {
   engine.on('taskComplete', (result: TaskResult) => {
     if (game.debug) {
-      console.log(`taskComplete | ${JSON.stringify(result)}`);
+      console.log(`GAME TASK: taskComplete | ${JSON.stringify(result)}`);
     }
     const resolver = _devGame._activeTasks[result.id];
-    if (result.statusCode === TaskStatus.Success) {
-      resolver.resolve && resolver.resolve(result.value);
-    } else {
-      resolver.reject && resolver.reject({ statusCode: result.statusCode, errorMessage: result.reason });
+    if (game.debug) {
+      console.log(`GAME TASK: RESOLVE TASK ${JSON.stringify(_devGame._activeTasks[result.id])}`);
     }
+
+    if (!resolver.cancelled) {
+      if (result.statusCode === TaskStatus.Success) {
+        resolver.resolve && resolver.resolve(result.value);
+      } else {
+        resolver.reject && resolver.reject({ statusCode: result.statusCode, errorMessage: result.reason });
+      }
+    } else {
+      console.error('CancellablePromise: resolved after being cancelled');
+      resolver.reject && resolver.reject({ cancelled: true, errorMessage: 'promise has been cancelled' });
+    }
+
     delete _devGame._activeTasks[resolver.id];
   });
 }
