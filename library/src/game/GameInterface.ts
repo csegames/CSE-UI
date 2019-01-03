@@ -364,6 +364,7 @@ export interface GameInterface extends GameModel {
    * message to the ui.
    */
   onSystemMessage: (callback: (message: string) => any) => EventHandle;
+  sendSystemMessage: (message: string) => void;
 
   /**
    * Subscribes a function to be executed when a scenario round ends.
@@ -404,7 +405,7 @@ export interface GameInterface extends GameModel {
    * Subscribe to Announcements
    * @param {(message: string) => any} callback function to be executed when an announcement is received
    */
-  onAnnouncement: (callback: (message: string) => any) => EventHandle;
+  onAnnouncement: (callback: (type: AnnouncementType, message: string) => any) => EventHandle;
 
   /**
    * Client requests UI navigation for a specific target.
@@ -449,6 +450,12 @@ export interface GameInterface extends GameModel {
    * Called when the client keybind for "Replace Materal" is registered.
    */
   onWantReplaceMaterial: (callback: () => any) => EventHandle;
+
+  /**
+   * Called to display a passive alert message.
+   */
+  onPassiveAlert: (callback: (message: string) => any) => EventHandle;
+  sendPassiveAlert: (message: string) => void;
 
   onPerfHUDUpdate: (callback: (json: string) => any) => EventHandle;
 

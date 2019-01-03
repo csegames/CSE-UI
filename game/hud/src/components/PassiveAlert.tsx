@@ -105,7 +105,7 @@ class PassiveAlert extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    this.passiveAlertListener = game.on('passivealert--newmessage', this.addAlertMessage);
+    this.passiveAlertListener = game.onPassiveAlert(this.addAlertMessage);
   }
 
   public componentWillUnmount() {

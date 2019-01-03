@@ -5,7 +5,6 @@
  */
 
 import { GameInterface } from './GameInterface';
-import { EventEmitter } from '../utils/EventEmitter';
 import { Resolvable } from './clientTasks';
 
 /**
@@ -17,5 +16,5 @@ export interface InternalGameInterfaceExt extends GameInterface {
   _activeTasks: { [id: number]: Resolvable<any> };
   _cse_dev_selfPlayerState: SelfPlayerState;
   _cse_dev_defaultSelfPlayerState: SelfPlayerState;
-
+  _cse_dev_announcementRouterHandle: EventHandle;
 }

@@ -209,11 +209,11 @@ class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindow
   private sendCompleteMessage = (reason: SecureTradeDoneReason) => {
     switch (reason) {
       case SecureTradeDoneReason.Completed: {
-        game.trigger('passivealert--newmessage', 'Trade Complete');
+        game.sendPassiveAlert('Trade Complete');
         break;
       }
       case SecureTradeDoneReason.Canceled: {
-        game.trigger('passivealert--newmessage', 'Trade Canceled');
+        game.sendPassiveAlert('Trade Canceled');
         break;
       }
     }

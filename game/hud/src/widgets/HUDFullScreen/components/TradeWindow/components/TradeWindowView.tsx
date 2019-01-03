@@ -197,7 +197,7 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
       );
       if (res.ok) {
         // Handle aborting trade
-        game.trigger('passivealert--newmessage', 'Trade Canceled');
+        game.sendPassiveAlert('Trade Canceled');
         this.closeTradeWindow();
         this.props.onMyTradeStateChange(SecureTradeState.None);
         this.props.onMyTradeItemsChange([]);

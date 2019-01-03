@@ -42,7 +42,10 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
   }
 
   public componentDidMount() {
-    this.eventHandles.push(game.onAnnouncement((message: string) => {
+    this.eventHandles.push(game.onAnnouncement((type: AnnouncementType, message: string) => {
+      if ((type & AnnouncementType.PopUp) === 0) {
+        return;
+      }
       this.setState({ message });
       this.timeouts.push(setTimeout(() => {
         this.setState({ message: '' });

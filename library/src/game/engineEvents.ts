@@ -21,16 +21,6 @@ export const EE_BeginChat = 'beginChat';
 regMap[EE_BeginChat] = 'onBeginChat';
 
 /**
- * The client wishes to display a message in the system log.
- *
- * Expected behavior: the provided message id displayed in the system log.
- *
- * @param {String} message The text to display in the system log
- */
-export const EE_SystemMessage = 'systemMessage';
-regMap[EE_SystemMessage] = 'onSystemMessage';
-
-/**
  * A scenario round that the current player is in has ended.
  *
  * Expected behavior: Displays a notificaiton of win/loss for the round and if the
@@ -80,6 +70,7 @@ regMap[EE_OnUpdateDevUI] = 'onUpdateDevUI';
  *
  * Expected behavior: Displays announcement text on screen
  *
+ * @param {AnnouncementType} type Type of the announcement to display
  * @param {String} message Text contents of the announcement to display
  */
 export const EE_OnAnnouncement = 'announcement';

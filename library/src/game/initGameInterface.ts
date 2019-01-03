@@ -50,8 +50,8 @@ export default function(isAttached: boolean) {
   _devGame.abilityStates = {};
 
   _devGame.engineEvents = engineEvents;
-
   _devGame.getKeybindSafe = getKeybindSafe;
+
 
   // TASKS
   _devGame._activeTasks = {};
@@ -103,6 +103,7 @@ export default function(isAttached: boolean) {
   _devGame.store = initGameDataStore();
 
   initCUAPIShim();
+  initAnnouncementRouting();
 
   // READY!
   _devGame.ready = true;
@@ -287,4 +288,44 @@ function events_off(handle: number | EventHandle) {
   } else {
     window._cse_dev_eventEmitter.removeListener(handle.id);
   }
+}
+
+/**
+ * Announcement Handling
+ */
+
+function initAnnouncementRouting() {
+  if (_devGame._cse_dev_announcementRouterHandle) {
+    _devGame._cse_dev_announcementRouterHandle.clear();
+  }
+
+  _devGame.onPassiveAlert = onPassiveAlert;
+  _devGame.sendPassiveAlert = sendPassiveAlert;
+  _devGame.onSystemMessage = onSystemMessage;
+  _devGame.sendSystemMessage = sendSystemMessage;
+
+  game.on(game.engineEvents.EE_OnAnnouncement, (type: AnnouncementType, message: string) => {
+    if ((type & AnnouncementType.Text) !== 0) {
+      game.sendSystemMessage(message);
+    }
+    if ((type & AnnouncementType.PassiveAlert) !== 0) {
+      game.sendPassiveAlert(message);
+    }
+  });
+}
+
+function onPassiveAlert(callback: (message: string) => any) {
+  return game.on('passiveAlert', callback);
+}
+
+function sendPassiveAlert(message: string) {
+  game.trigger('passiveAlert', message);
+}
+
+function onSystemMessage(callback: (message: string) => any) {
+  return game.on('systemMessage', callback);
+}
+
+function sendSystemMessage(message: string) {
+  game.trigger('systemMessage', message);
 }
