@@ -52,7 +52,10 @@ const ClickDiv = styled('div')`
   pointer-events: auto;
 `;
 
-type Props = React.InputHTMLAttributes<HTMLInputElement> & { inputClassName?: string; };
+type Props = React.InputHTMLAttributes<HTMLInputElement> & {
+  inputClassName?: string;
+  getRef?: (r: HTMLInputElement) => void;
+};
 
 export class TextInput extends React.PureComponent<Props> {
   private inputRef: HTMLInputElement = null;
@@ -63,7 +66,7 @@ export class TextInput extends React.PureComponent<Props> {
         <input
           className={this.props.inputClassName + ' ' + inputStyle}
           type='text'
-          ref={r => this.inputRef = r }
+          ref={this.getRef}
           {...this.props}
         />
         <ClickDiv onClick={this.focus} />
@@ -77,5 +80,13 @@ export class TextInput extends React.PureComponent<Props> {
 
   public get value() {
     return this.inputRef.value;
+  }
+
+  private getRef = (r: HTMLInputElement) => {
+    this.inputRef = r;
+
+    if (this.props.getRef) {
+      this.props.getRef(r);
+    }
   }
 }

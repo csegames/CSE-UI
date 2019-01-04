@@ -7,10 +7,11 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { css } from 'react-emotion';
+import styled from 'react-emotion';
+import Infinite from 'react-infinite';
+import { doesSearchInclude } from '@csegames/camelot-unchained/lib/utils';
 
 import { FactionColors } from 'lib/factionColors';
-import SearchableList from '../../SearchableList';
 import { SortBy } from './ListHeaderItem';
 import ListHeader from './ListHeader';
 import ListItem from './ListItem';
@@ -28,8 +29,9 @@ const Container = styled('div')`
   -webkit-mask-repeat: no-repeat;
 `;
 
-const ListContainer = css`
+const ListContainer = styled('div')`
   height: 500px;
+  overflow: auto;
   &::-webkit-scrollbar {
     width: 7px !important;
   }
@@ -42,10 +44,10 @@ const ListContainer = css`
   }
 `;
 
-const ListItemsContainer = css`
-  padding: 0px 5px 0px 5px;
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 4%);
-`;
+// const ListItemsContainer = styled('div')`
+//   padding: 0px 5px 0px 5px;
+//   -webkit-mask-image: linear-gradient(to top, transparent 0%, black 4%);
+// `;
 
 const NoDataText = styled('div')`
   display: flex;
@@ -87,35 +89,30 @@ class List extends React.Component<ListProps, ListState> {
   }
 
   public render() {
-    const { players, teams, status, visible } = this.props;
+    const { players, teams, status } = this.props;
     if (!_.isEmpty(players) && !_.isEmpty(teams) && !status.loading && status.lastError === 'OK') {
       const displayedPlayers = this.getDisplayedPlayers();
       return (
         <Container>
           <TeamScore teams={this.props.teams} scenarioID={this.props.scenarioID} />
           <ListHeader onSearchChange={this.onSearchChange} onSortClick={this.onSortClick} {...this.state} />
-          <SearchableList
-            visible={visible}
-            containerClass={ListContainer}
-            listItemsContainerClass={ListItemsContainer}
-            searchValue={this.state.searchValue}
-            searchKey={'displayName'}
-            listItemsData={displayedPlayers}
-            listItemHeight={40}
-            extraItemsRendered={10}
-            renderListItem={(player: any, searchIncludes, isVisible, i) => {
-              const colors = FactionColors[player.teamID];
-              return (
-                <ListItem
-                  key={i}
-                  player={player}
-                  searchIncludes={searchIncludes}
-                  isVisible={isVisible}
-                  backgroundColor={colors ? colors.backgroundColor : 'transparent'}
-                />
-              );
-            }}>
-          </SearchableList>
+          <ListContainer>
+            <Infinite elementHeight={34} containerHeight={500}>
+              {displayedPlayers.map((player, i) => {
+                const colors = FactionColors[player.teamID];
+                const searchIncludes = doesSearchInclude(this.state.searchValue, player.displayName);
+                return (
+                  <ListItem
+                    key={i}
+                    player={player}
+                    searchIncludes={searchIncludes}
+                    isVisible={true}
+                    backgroundColor={colors ? colors.backgroundColor : 'transparent'}
+                  />
+                );
+              })}
+            </Infinite>
+          </ListContainer>
         </Container>
       );
     } else if (status.loading) {
@@ -162,6 +159,21 @@ class List extends React.Component<ListProps, ListState> {
     const players = [...this.props.players];
     const sortedPlayers = this.state.selectedSortBy !== SortBy.None ?
       players.sort((a: TeamPlayer, b: TeamPlayer) => this.sortPlayersByStat(a, b, this.state)) : players;
+
+    if (this.state.searchValue !== '') {
+      const searchIncludesPlayers: TeamPlayer[] = [];
+      const notIncludedSearchPlayers = sortedPlayers.filter((player) => {
+        const searchIncludes = doesSearchInclude(this.state.searchValue, player.displayName);
+        if (searchIncludes) {
+          searchIncludesPlayers.push(player);
+        }
+
+        return !searchIncludes;
+      });
+
+      return [...searchIncludesPlayers, ...notIncludedSearchPlayers];
+    }
+
     return sortedPlayers;
   }
 

@@ -6,7 +6,9 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import styled, { css } from 'react-emotion';
+
+import { TextInput } from 'UI/TextInput';
 import { Name, KDAContainer, Divider, Kills, Deaths, Assists, Team } from './ListItem';
 import ListHeaderItem, { SortBy } from './ListHeaderItem';
 
@@ -28,10 +30,10 @@ const SearchIcon = styled('span')`
   }
 `;
 
-const NameSearchInput = styled('input')`
+const NameSearchInput = css`
   background-color: transparent;
-  border: 0px;
-  outline: none;
+  border: 1px solid transparent;
+  padding: 0 5px;
 `;
 
 export interface ListHeaderProps {
@@ -53,8 +55,9 @@ class ListHeader extends React.PureComponent<ListHeaderProps> {
         <Name color='#7D7D7D'>
           <ListHeaderItem text='Name' sortBy={SortBy.Name} {...this.props} />
           <SearchIcon className='fa fa-search' onClick={this.onSearchIconClick} />
-          <NameSearchInput
-            innerRef={(r: HTMLInputElement) => this.nameInputRef = r}
+          <TextInput
+            getRef={(r: HTMLInputElement) => this.nameInputRef = r}
+            inputClassName={NameSearchInput}
             value={this.props.searchValue}
             onChange={this.onSearchChange}
           />
