@@ -5,6 +5,7 @@
  */
 
 import * as React from 'react';
+import { throttle } from 'lodash';
 import { parseMessageForSlashCommand } from '../../';
 
 import ChatSession from './components/ChatSession';
@@ -34,6 +35,9 @@ export class Chat extends React.Component<ChatProps, ChatState> {
   constructor(props: ChatProps) {
     super(props);
     this.state = this.initialState();
+
+    // throttle chat updates
+    this.update = throttle(this.update, 500);
 
     // load configuration (before subscribing to options updates!)
     chatConfig.refresh();

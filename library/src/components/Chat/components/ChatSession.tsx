@@ -244,6 +244,7 @@ class ChatSession {
         room.removeUser(user);
         room.add(new ChatMessage(chatType.UNAVAILABLE, '', user.name));
       }
+
       game.trigger('chat-session-update', this);
     }
   }
