@@ -6,16 +6,12 @@
  */
 
 import * as React from 'react';
-import { findIndex, isEmpty } from 'lodash';
-import { HUDContext, HUDGraphQLQueryResult } from 'HUDContext';
+import { findIndex } from 'lodash';
 
-import { ApiAbilityInfo } from '../AbilityBar';
 import { AbilityButtonInfo } from '../AbilityBar/AbilityButton/AbilityButtonView';
 import AbilityQueueList, { QueuedAbilities } from './components/AbilityQueueList';
-import { Skill } from 'gql/interfaces';
 
 export interface AbilityQueueProps {
-  abilities: HUDGraphQLQueryResult<Skill[]>;
 }
 
 export interface AbilityQueueState {
@@ -23,6 +19,7 @@ export interface AbilityQueueState {
 }
 
 class AbilityQueue extends React.Component<AbilityQueueProps, AbilityQueueState> {
+  private eventHandles: {[id: string]: EventHandle} = {};
   constructor(props: AbilityQueueProps) {
     super(props);
     this.state = {
@@ -36,12 +33,16 @@ class AbilityQueue extends React.Component<AbilityQueueProps, AbilityQueueState>
     );
   }
 
-  public componentDidUpdate(prevProps: AbilityQueueProps) {
-    if (isEmpty(prevProps.abilities.data) && !isEmpty(this.props.abilities.data)) {
-      this.props.abilities.data.forEach((ability: ApiAbilityInfo) => {
-        game.on('abilitybutton-' + ability.id, this.handleAbilityQueueEvent);
-      });
-    }
+  public componentDidMount() {
+    game.store.onUpdated(this.initAbilityButtonEvents);
+  }
+
+  public componentWillUnmount() {
+    Object.keys(this.eventHandles).forEach((eventKey) => {
+      // Clear events
+      this.eventHandles[eventKey].clear();
+      delete this.eventHandles[eventKey];
+    });
   }
 
   private handleAbilityQueueEvent = (ability: AbilityButtonInfo) => {
@@ -74,6 +75,16 @@ class AbilityQueue extends React.Component<AbilityQueueProps, AbilityQueueState>
     this.setState({ queuedAbilities });
   }
 
+  private initAbilityButtonEvents = () => {
+    if (game.store.myCharacter && game.store.myCharacter.skills) {
+      game.store.myCharacter.skills.forEach((ability) => {
+        if (ability && !this.eventHandles[ability.id]) {
+          this.eventHandles[ability.id] = game.on('abilitybutton-' + ability.id, this.handleAbilityQueueEvent);
+        }
+      });
+    }
+  }
+
   private getTrack = (track: AbilityTrack) => {
     if (track & AbilityTrack.BothWeapons) {
       return AbilityTrack[AbilityTrack.BothWeapons];
@@ -99,18 +110,4 @@ class AbilityQueue extends React.Component<AbilityQueueProps, AbilityQueueState>
   }
 }
 
-class AbilityQueueWithInjectedContext extends React.Component<{}> {
-  public render() {
-    return (
-      <HUDContext.Consumer>
-        {({ skills }) => {
-          return (
-            <AbilityQueue abilities={skills} />
-          );
-        }}
-      </HUDContext.Consumer>
-    );
-  }
-}
-
-export default AbilityQueueWithInjectedContext;
+export default AbilityQueue;

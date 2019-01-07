@@ -13,6 +13,7 @@ import { ScenarioSummaryDBModel } from 'gql/interfaces';
 
 const query = (scenarioID: string): Partial<GraphQLQuery> => ({
   namedQuery: 'scenarioSummary',
+  useNamedQueryCache: true,
   variables: {
     scenarioID,
     shardID: game.shardID,

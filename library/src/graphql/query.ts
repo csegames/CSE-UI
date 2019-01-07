@@ -35,16 +35,6 @@ export interface QueryOptions {
   stringifyVariables: boolean;
 }
 
-export const defaultQueryOpts: QueryOptions = {
-  url: '/graphql',
-  requestOptions: {
-    headers: {},
-    ignoreCache: false,
-    timeout: 5000,
-  },
-  stringifyVariables: false,
-};
-
 export interface GraphQLQuery {
   operationName?: string | null;
   namedQuery?: string | null;
@@ -99,7 +89,7 @@ function getMessage(obj: { message: string }) {
 export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptions>): Promise<GraphQLQueryResult<T>> {
 
   const q = withDefaults(query, defaultQuery);
-  const opts = withDefaults(options, defaultQueryOpts);
+  const opts = withDefaults(options, game.graphQL.defaultOptions());
 
   try {
 

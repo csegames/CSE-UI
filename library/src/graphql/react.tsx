@@ -12,7 +12,6 @@ import {
   QueryOptions,
   GraphQLQuery,
   parseQuery,
-  defaultQueryOpts,
   defaultQuery,
 } from './query';
 import {
@@ -38,7 +37,7 @@ export interface GraphQLOptions extends QueryOptions {
 }
 
 const defaultGraphQLOptions: GraphQLOptions = {
-  ...defaultQueryOpts,
+  ...game.graphQL.defaultOptions() as QueryOptions,
   pollInterval: 0,
   // useCache: true,
 };
@@ -73,6 +72,7 @@ export class GraphQLClient {
         statusText: 'No query to refetch.',
       };
     }
+
     return await query({
       query: this.lastQuery.query,
       operationName: this.lastQuery.operationName,
@@ -81,17 +81,21 @@ export class GraphQLClient {
       variables: this.lastQuery.variables,
     }, this.conf);
   }
+
+  public setConf = (options: QueryOptions) => {
+    this.conf = options;
+  }
 }
 
 export interface GraphQLConfig extends QueryOptions {
 }
 
-let queryConf = withDefaults(null, defaultQueryOpts);
+let queryConf = withDefaults(null, game.graphQL.defaultOptions());
 let getQueryConf = () => null;
 function getQueryOptions() {
   return {
     ...defaultGraphQLOptions,
-    ...withDefaults(getQueryConf(), queryConf),
+    ...withDefaults(getQueryConf(), withDefaults(null, queryConf)),
   };
 }
 
@@ -349,10 +353,28 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
       }
     } else {
       useConfig(getQueryConf, getSubscriptionConf);
-      this.queryOptions = withDefaults(getQueryConf(), this.queryOptions);
+
+      const defaultOpts = game.graphQL.defaultOptions();
+      if (typeof this.props.query !== 'string') {
+        // Update queryOptions but use props first
+        this.queryOptions = {
+          url: this.props.query.url || defaultOpts.url,
+          pollInterval: this.props.query.pollInterval || 0,
+          stringifyVariables: this.props.query.stringifyVariables || defaultOpts.stringifyVariables,
+          requestOptions: this.props.query.requestOptions || defaultOpts.requestOptions,
+        };
+      } else {
+        // User never passed in any special query options, just update the options with default ones.
+        this.queryOptions = {
+          url: defaultOpts.url,
+          pollInterval: 0,
+          stringifyVariables: defaultOpts.stringifyVariables,
+          requestOptions: defaultOpts.requestOptions,
+        };
+      }
 
       // Update graphql client
-      this.client = new GraphQLClient({
+      this.client.setConf({
         url: this.queryOptions.url,
         requestOptions: this.queryOptions.requestOptions,
         stringifyVariables: this.queryOptions.stringifyVariables,

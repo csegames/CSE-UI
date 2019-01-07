@@ -8,7 +8,6 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 import styled from 'react-emotion';
-import { HUDContext, HUDGraphQLQueryResult } from 'HUDContext';
 import AbilityButton from './AbilityButton';
 
 const Container = styled('div')`
@@ -25,7 +24,6 @@ export interface ApiAbilityInfo {
 }
 
 export interface AbilityBarProps {
-  apiAbilities: HUDGraphQLQueryResult<ApiAbilityInfo[]>;
 }
 
 export interface AbilityBarState {
@@ -43,16 +41,12 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
   }
 
   public render() {
-    const { apiAbilities } = this.props;
     const { clientAbilities } = this.state;
 
     return (
       <Container className={'ability-bar'}>
         {clientAbilities.map((clientAbility: AbilityBarItem, index: number) => {
-          const abilityInfo: InitialAbilityInfo = {
-            ..._.find(apiAbilities.data, (s: ApiAbilityInfo) => s.id === clientAbility.id),
-            ...clientAbility,
-          };
+          const abilityInfo = this.getAbility(clientAbility);
 
           return abilityInfo ? (
             <AbilityButton key={index} abilityInfo={abilityInfo} index={index + 1} />
@@ -64,6 +58,7 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
 
   public componentDidMount() {
     game.abilityBarState.onUpdated(this.updateAbilities);
+    game.store.onUpdated(() => this.forceUpdate());
 
     if (game.abilityBarState.isReady) {
       this.updateAbilities();
@@ -81,8 +76,8 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
 
     this.setState({ clientAbilities: sortedAbilities });
 
-    if (this.props.apiAbilities.refetch) {
-      window.setTimeout(() => this.props.apiAbilities.refetch(), 50);
+    if (game.store.refetch) {
+      window.setTimeout(() => game.store.refetch(), 50);
     }
   }
 
@@ -91,20 +86,14 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
     const bID = !_.isNumber(b.id) ? parseInt(b.id, 16) : b.id;
     return aID - bID;
   }
-}
 
-class AbilityBarWithInjectedContext extends React.Component<{}> {
-  public render() {
-    return (
-      <HUDContext.Consumer>
-        {({ skills }) => {
-          return (
-            <AbilityBar apiAbilities={skills} />
-          );
-        }}
-      </HUDContext.Consumer>
-    );
+  private getAbility = (clientAbility: AbilityBarItem) => {
+    const abilityInfo: InitialAbilityInfo = {
+      ...game.store.getSkillInfo(clientAbility.id),
+      ...clientAbility,
+    };
+    return abilityInfo;
   }
 }
 
-export default AbilityBarWithInjectedContext;
+export default AbilityBar;

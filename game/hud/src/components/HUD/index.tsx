@@ -41,7 +41,6 @@ import { InteractiveAlertView } from '../InteractiveAlert';
 import { ContextMenu } from '../ContextMenu';
 import { TooltipView } from 'UI/Tooltip';
 import PassiveAlert from '../PassiveAlert';
-import { HUDContext, HUDContextState, defaultContextState, fetchSkills } from './context';
 import { uiContextFromGame } from 'services/session/UIContext';
 
 const HUDNavContainer = styled('div')`
@@ -83,7 +82,6 @@ export interface HUDProps {
 
 export interface HUDState {
   selectedWidget: HUDWidget | null;
-  hudContext: HUDContextState;
   uiContext: UIContext;
 }
 
@@ -95,7 +93,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
     this.state = {
       selectedWidget: null,
       uiContext: uiContextFromGame(),
-      hudContext: defaultContextState,
     };
   }
 
@@ -108,48 +105,46 @@ class HUD extends React.Component<HUDProps, HUDState> {
                       this.draggable(w.name, w.widget, w.widget.component, w.widget.dragOptions, w.widget.props));
 
     return (
-        <UIContext.Provider value={this.state.uiContext}>
-        <HUDContext.Provider value={this.state.hudContext}>
-          <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
-            {renderWidgets}
-            <DragStore />
-            <ZoneNameContainer>
-              <ZoneName />
-            </ZoneNameContainer>
-            <Console />
+      <UIContext.Provider value={this.state.uiContext}>
+        <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+          {renderWidgets}
+          <DragStore />
+          <ZoneNameContainer>
+            <ZoneName />
+          </ZoneNameContainer>
+          <Console />
 
-          <HUDNavContainer id='hudnav'>
-            <HUDNav.component {...HUDNav.props} />
-          </HUDNavContainer>
+        <HUDNavContainer id='hudnav'>
+          <HUDNav.component {...HUDNav.props} />
+        </HUDNavContainer>
 
-            <DevUI />
-            <InteractiveAlertView />
-            <ScenarioPopup />
+          <DevUI />
+          <InteractiveAlertView />
+          <ScenarioPopup />
 
-            <ScenarioResults />
+          <ScenarioResults />
 
-          <HUDFullScreen />
-          <AbilityBarContainer id='abilitybar'>
-            <AbilityBar />
-          </AbilityBarContainer>
-          <ContextMenu />
-          <TooltipView />
-          <PassiveAlert />
-          { locked ? null :
-            <HUDEditor
-              widgets={widgets}
-              selectedWidget={ this.state.selectedWidget ? this.state.selectedWidget : null }
-              dispatch={this.props.dispatch}
-              setSelectedWidget={this.setSelectedWidget}
-            />
-          }
+        <HUDFullScreen />
+        <AbilityBarContainer id='abilitybar'>
+          <AbilityBar />
+        </AbilityBarContainer>
+        <ContextMenu />
+        <TooltipView />
+        <PassiveAlert />
+        { locked ? null :
+          <HUDEditor
+            widgets={widgets}
+            selectedWidget={ this.state.selectedWidget ? this.state.selectedWidget : null }
+            dispatch={this.props.dispatch}
+            setSelectedWidget={this.setSelectedWidget}
+          />
+        }
 
-            <Settings />
-            <Watermark />
-            <OfflineZoneSelect />
-            <LoadingScreen />
-          </div>
-      </HUDContext.Provider>
+          <Settings />
+          <Watermark />
+          <OfflineZoneSelect />
+          <LoadingScreen />
+        </div>
       </UIContext.Provider>
     );
   }
@@ -160,7 +155,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
     this.props.dispatch(initialize());
     this.props.dispatch(initializeInvites());
-    this.initGraphQLContext();
 
     this.eventHandles.push(game.selfPlayerState.onUpdated(this.handleSelfPlayerStateUpdated));
 
@@ -217,19 +211,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
 
   private setSelectedWidget = (selectedWidget: HUDWidget) => {
     this.setState({ selectedWidget });
-  }
-
-  private initGraphQLContext = async () => {
-    const skills = await fetchSkills();
-    this.setState((state) => {
-      return {
-        ...state,
-        hudContext: {
-          ...state.hudContext,
-          skills,
-        },
-      };
-    });
   }
 
   private setVisibility = (widgetName: string, vis: boolean) => {

@@ -14,6 +14,7 @@ const STORAGE_PREFIX = 'cse-MOTD-hide-start';
 
 const query = {
   namedQuery: 'motd',
+  useNamedQueryCache: true,
   variables: {
     channel: game.patchResourceChannel,
   },

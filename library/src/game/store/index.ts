@@ -9,10 +9,20 @@
  */
 import { useState } from 'react';
 import { query } from '../../graphql/query';
-import { CUQuery, StatusDef_Deprecated } from '../../graphql/schema';
+import { CUQuery, StatusDef_Deprecated, Skill } from '../../graphql/schema';
 
 const queryString = `
 {
+  myCharacter {
+    skills {
+      id
+      name
+      icon
+      notes
+      tracks
+    }
+  }
+
   status {
 	  statuses {
 	    id
@@ -50,13 +60,14 @@ const queryString = `
 }
 `;
 
-type QueryResult = Pick<CUQuery, 'status' | 'game'>;
+type QueryResult = Pick<CUQuery, 'status' | 'game' | 'myCharacter'>;
 
 declare global {
   interface GameDataStore extends QueryResult {
     init(): void;
     refetch(): Promise<GameDataStore>;
     getStatusInfo(id: number): StatusDef_Deprecated | null;
+    getSkillInfo(id: number): Skill | null;
     onUpdated(callback: Callback): EventHandle;
   }
 
@@ -79,6 +90,7 @@ async function fetchData(this: InternalGameDataStore) {
       url: game.webAPIHost + '/graphql',
       requestOptions: {
         headers: {
+          characterID: game.selfPlayerState.characterID,
           Authorization: 'Bearer ' + game.accessToken,
         },
       },
@@ -108,6 +120,12 @@ function getStatusInfo(this: InternalGameDataStore, id: number) {
   return info || null;
 }
 
+function getSkillInfo(this: InternalGameDataStore, id: number) {
+  if (!this.myCharacter || !this.myCharacter.skills) return null;
+  const info = this.myCharacter.skills.find(skill => skill.id === id);
+  return info || null;
+}
+
 function onUpdated(this: InternalGameDataStore, callback: Callback): EventHandle {
   return game.on(this._updatedEvent, callback);
 }
@@ -121,9 +139,11 @@ export default function(): GameDataStore {
     _updatedEvent: 'gameDataStore.update',
     init: initialize,
     refetch: fetchData,
+    myCharacter: null,
     status: null,
     game: null,
     getStatusInfo,
+    getSkillInfo,
     onUpdated,
   };
 
