@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { events } from '@csegames/camelot-unchained';
 
 const TextureWrapper = styled('div')`
   position: relative;
@@ -133,12 +132,12 @@ class Item extends React.Component<ItemProps> {
   }
 
   private onClick = () => {
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
     this.props.onClick();
   }
 
   private onMouseEnter = () => {
-    events.fire('play-sound', 'select-change');
+    game.trigger('play-sound', 'select-change');
   }
 }
 

@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { includes } from 'lodash';
-import { Archetype, Faction, Race, Gender, events, webAPI } from '@csegames/camelot-unchained';
 
 import PlayerClassVisualEffects from './PlayerClassVisualEffects';
 import { PlayerClassInfo } from '../../services/session/playerClasses';
@@ -83,6 +82,8 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
         case Archetype.Stonehealer: videoTitle = 'healers'; break;
       }
     }
+    const displayedClasses = this.props.classes.filter((c: any) => c.faction === this.props.selectedFaction.id ||
+      c.faction === Faction.Factionless);
 
     return (
       <div className='page'>
@@ -97,8 +98,7 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
         <div className='selection-box'>
           <h6>Choose your class</h6>
           <div className='class-selection-container'>
-            {this.props.classes.filter((c: any) => c.faction === this.props.selectedFaction.id ||
-              c.faction === Faction.Factionless).map(this.generateClassContent)}
+            {displayedClasses.map(this.generateClassContent)}
           </div>
           {text}
         </div>
@@ -107,14 +107,13 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
   }
 
   private selectClass = (info: PlayerClassInfo) => {
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
     this.props.selectClass(info);
   }
 
   private generateClassContent = (info: PlayerClassInfo, index: number) => {
     const { selectedRace, selectedGender, selectedClass } = this.props;
-    const race = includes(Race[selectedRace.id].toLowerCase(), 'human') ?
-      webAPI.raceString(selectedRace.id) : Race[selectedRace.id];
+    const race = includes(Race[selectedRace.id].toLowerCase(), 'human') ? 'Human' : Race[selectedRace.id];
     return (
       <div
         key={info.id}

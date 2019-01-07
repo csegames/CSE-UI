@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import * as events  from '@csegames/camelot-unchained/lib/events';
 import Animate from '../../lib/Animate';
 import { HeroContentItem } from '../../services/session/heroContent';
 import GettingStarted from '../GettingStarted';
@@ -63,8 +62,8 @@ class Hero extends React.Component<HeroProps, HeroState> {
   }
 
   public componentDidMount() {
-    events.on('pause-videos', this.pause);
-    events.on('resume-videos', this.resume);
+    game.on('pause-videos', this.pause);
+    game.on('resume-videos', this.resume);
   }
 
   private renderHeroItem = (item: HeroContentItem) => {
@@ -72,7 +71,7 @@ class Hero extends React.Component<HeroProps, HeroState> {
   }
 
   private onIndexClick = (index: number) => {
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
     this.selectIndex(index);
   }
 
@@ -115,7 +114,7 @@ class Hero extends React.Component<HeroProps, HeroState> {
   }
 
   private playSound = () => {
-    events.fire('play-sound', 'select-change');
+    game.trigger('play-sound', 'select-change');
   }
 }
 

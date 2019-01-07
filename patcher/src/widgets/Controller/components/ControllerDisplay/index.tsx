@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { client, events, webAPI, RequestConfig } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 
 import ControllerDisplayView from './ControllerDisplayView';
 import { Routes } from '../../../../services/session/routes';
@@ -17,6 +17,7 @@ import {
   PatcherServer,
   ServerType,
 } from '../../ControllerContext';
+import { SimpleCharacter } from 'gql/interfaces';
 
 export interface APIServerStatus {
   [apiHost: string]: 'Online' | 'Offline';
@@ -29,7 +30,7 @@ export interface ComponentProps {
 export interface InjectedProps {
   servers: {[id: string]: PatcherServer};
   selectedServer: PatcherServer;
-  selectedCharacter: webAPI.SimpleCharacter;
+  selectedCharacter: SimpleCharacter;
 
   onUpdateState: (state: Partial<ContextState>) => void;
   onLogin: () => void;
@@ -84,7 +85,7 @@ class ControllerDisplay extends React.PureComponent<Props, ControllerDisplayStat
       const config: RequestConfig = () => ({
         url: servers[_key].apiHost + '/',
         headers: {
-          Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+          Authorization: `Bearer ${patcher.getAccessToken()}`,
         },
       });
       webAPI.ServersAPI.GetServersV1(config)
@@ -101,7 +102,7 @@ class ControllerDisplay extends React.PureComponent<Props, ControllerDisplayStat
 
   private selectServerType = (serverType: ServerType) => {
     if (this.state.serverType === serverType) return;
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
     if (serverType === ServerType.CUBE) {
       this.setState({ serverType });
       this.props.onUpdateState({
@@ -115,24 +116,24 @@ class ControllerDisplay extends React.PureComponent<Props, ControllerDisplayStat
   // private selectServer = (server: PatcherServer) => {
   //   // Only check for undefined because selected server can be null
   //   if (typeof server !== 'undefined' && !_.isEqual(server, this.state.selectedServer)) {
-  //     events.fire('play-sound', 'select');
+  //     game.trigger('play-sound', 'select');
   //     this.setState({ selectedServer: server });
   //   }
   // }
 
-  // private selectCharacter = (character: webAPI.SimpleCharacter) => {
+  // private selectCharacter = (character: SimpleCharacter) => {
   //   // Only check for undefined because selected character can be null
   //   if (typeof character !== 'undefined' && !_.isEqual(character, this.state.selectedCharacter)) {
   //     if (character && character.id) {
   //       // Save last selected character
   //       localStorage.setItem('cu-patcher-last-selected-character-id', character.id);
   //     }
-  //     events.fire('play-sound', 'select');
+  //     game.trigger('play-sound', 'select');
   //     this.setState({ selectedCharacter: character });
   //   }
   // }
 
-  // private onChooseCharacter = (character: webAPI.SimpleCharacter) => {
+  // private onChooseCharacter = (character: SimpleCharacter) => {
   //   this.toggleCharacterSelect();
   //   const characterServer = _.find(this.props.ControllerState.servers, server => server.shardID === character.shardID);
   //   this.selectServer(characterServer);

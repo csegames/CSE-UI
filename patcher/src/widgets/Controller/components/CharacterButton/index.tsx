@@ -8,13 +8,13 @@
 import * as React from 'react';
 import { find } from 'lodash';
 import styled from 'react-emotion';
-import { webAPI } from '@csegames/camelot-unchained';
 
 import { patcher } from '../../../../services/patcher';
 import { ControllerContext, ContextState, PatcherServer, ServerType } from '../../ControllerContext';
 import GameSelect from './components/GameSelect';
 import CharacterInfo from './components/CharacterInfo';
 import ToolsSelect from './components/ToolsSelect';
+import { SimpleCharacter } from 'gql/interfaces';
 
 const ButtonContainer = styled('div')`
   display: flex;
@@ -39,8 +39,8 @@ export interface ComponentProps {
 
 export interface InjectedProps {
   selectedServer: PatcherServer;
-  selectedCharacter: webAPI.SimpleCharacter;
-  characters: {[id: string]: webAPI.SimpleCharacter};
+  selectedCharacter: SimpleCharacter;
+  characters: {[id: string]: SimpleCharacter};
   servers: {[id: string]: PatcherServer};
   onUpdateState: (state: Partial<ContextState>) => void;
 }
@@ -171,7 +171,7 @@ class CharacterButton extends React.PureComponent<Props, CharacterButtonState> {
 
   private initializeSelectedCharacter = (props: Props) => {
     const { selectedServer, selectedCharacter, characters } = props;
-    const serverCharacters: webAPI.SimpleCharacter[] = [];
+    const serverCharacters: SimpleCharacter[] = [];
 
     if (!selectedServer || !selectedServer.shardID) {
       return;
@@ -192,7 +192,7 @@ class CharacterButton extends React.PureComponent<Props, CharacterButtonState> {
     if (!selectedCharacter || selectedCharacter === null || !characters[selectedCharacter.id] ||
         selectedCharacter.shardID.toString() !== selectedServer.shardID.toString()) {
       const lastSelectedCharacterID = localStorage.getItem('cu-patcher-last-selected-character-id');
-      const lastSelectedCharacter = serverCharacters.find((char: webAPI.SimpleCharacter) =>
+      const lastSelectedCharacter = serverCharacters.find((char: SimpleCharacter) =>
         char.id === lastSelectedCharacterID);
       this.props.onUpdateState({ selectedCharacter: lastSelectedCharacter || serverCharacters[0] });
     }

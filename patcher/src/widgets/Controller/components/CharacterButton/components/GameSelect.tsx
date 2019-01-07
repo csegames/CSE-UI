@@ -6,7 +6,6 @@
  */
 
 import * as React from 'react';
-import * as events  from '@csegames/camelot-unchained/lib/events';
 
 import styled, { keyframes } from 'react-emotion';
 import GameSelectItem from './GameSelectItem';
@@ -231,7 +230,7 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
       clearTimeout(this.closeTimeout);
       this.closeTimeout = null;
     } else {
-      events.fire('play-sound', 'select-change');
+      game.trigger('play-sound', 'select-change');
     }
     this.setState({ isOpen: true });
   }

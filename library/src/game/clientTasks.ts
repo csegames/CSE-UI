@@ -79,26 +79,28 @@ export function makeClientPromise<T>(callFn: (game: DevGameInterface, ...args: a
  * Initializes client task handling
  */
 export default function() {
-  engine.on('taskComplete', (result: TaskResult) => {
-    if (game.debug) {
-      console.log(`GAME TASK: taskComplete | ${JSON.stringify(result)}`);
-    }
-    const resolver = _devGame._activeTasks[result.id];
-    if (game.debug) {
-      console.log(`GAME TASK: RESOLVE TASK ${JSON.stringify(_devGame._activeTasks[result.id])}`);
-    }
-
-    if (!resolver.cancelled) {
-      if (result.statusCode === TaskStatus.Success) {
-        resolver.resolve && resolver.resolve(result.value);
-      } else {
-        resolver.reject && resolver.reject({ statusCode: result.statusCode, errorMessage: result.reason });
+  if (typeof engine !== 'undefined') {
+    engine.on('taskComplete', (result: TaskResult) => {
+      if (game.debug) {
+        console.log(`GAME TASK: taskComplete | ${JSON.stringify(result)}`);
       }
-    } else {
-      console.error('CancellablePromise: resolved after being cancelled');
-      resolver.reject && resolver.reject({ cancelled: true, errorMessage: 'promise has been cancelled' });
-    }
+      const resolver = _devGame._activeTasks[result.id];
+      if (game.debug) {
+        console.log(`GAME TASK: RESOLVE TASK ${JSON.stringify(_devGame._activeTasks[result.id])}`);
+      }
 
-    delete _devGame._activeTasks[resolver.id];
-  });
+      if (!resolver.cancelled) {
+        if (result.statusCode === TaskStatus.Success) {
+          resolver.resolve && resolver.resolve(result.value);
+        } else {
+          resolver.reject && resolver.reject({ statusCode: result.statusCode, errorMessage: result.reason });
+        }
+      } else {
+        console.error('CancellablePromise: resolved after being cancelled');
+        resolver.reject && resolver.reject({ cancelled: true, errorMessage: 'promise has been cancelled' });
+      }
+
+      delete _devGame._activeTasks[resolver.id];
+    });
+  }
 }

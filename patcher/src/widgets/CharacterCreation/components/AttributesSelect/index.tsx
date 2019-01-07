@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import { Race, Gender, Archetype } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
 import { AttributeInfo, attributeType } from '../../services/session/attributes';

@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { PatchNote } from '@csegames/camelot-unchained/lib/graphql';
 import {
   TitleContainer,
   Title,
@@ -20,6 +19,7 @@ import {
   PATCH_NOTES_COLOR,
 } from '../lib/styles';
 import { PostItem } from '..';
+import { PatchNote } from 'gql/interfaces';
 
 const Divider = styled('div')`
   position: relative;

@@ -8,7 +8,6 @@
 import * as React from 'react';
 import { includes } from 'lodash';
 import styled from 'react-emotion';
-import { webAPI, Race, Gender, Archetype } from '@csegames/camelot-unchained';
 
 import { AttributeInfo } from '../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
@@ -84,7 +83,7 @@ export class CharacterSummary extends React.Component<CharacterSummaryProps, Cha
   public render() {
     const { selectedRace, selectedClass, selectedGender, attributes,
       attributeOffsets, remainingPoints, banesAndBoonsState, inputRef } = this.props;
-    const race = includes(Race[selectedRace].toLowerCase(), 'human') ? webAPI.raceString(selectedRace) : Race[selectedRace];
+    const race = includes(Race[selectedRace].toLowerCase(), 'human') ? selectedRace : Race[selectedRace];
     const videoTitle = this.getVideoTitle();
     return (
       <Container>

@@ -8,8 +8,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import { Archetype } from '@csegames/camelot-unchained';
-
 import { AttributeInfo, attributeType } from '../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../services/session/attributeOffsets';
 import AllocatePointButton from './AllocatePointButton';

@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import * as events  from '@csegames/camelot-unchained/lib/events';
 
 export interface QuickSelectProps {
   items: any[];
@@ -75,7 +74,7 @@ class QuickSelect extends React.Component<QuickSelectProps, QuickSelectState> {
   }
 
   private showList = (visible: boolean) => {
-    if (visible) events.fire('play-sound', 'select-change');
+    if (visible) game.trigger('play-sound', 'select-change');
     this.setState({ showList: visible });
   }
 

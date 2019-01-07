@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Race, Gender, Archetype } from '@csegames/camelot-unchained';
 
 import { AttributeInfo, attributeType } from '../../../services/session/attributes';
 import { AttributeOffsetInfo } from '../../../services/session/attributeOffsets';

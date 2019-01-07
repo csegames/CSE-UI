@@ -34,7 +34,12 @@ function initUI() {
   window._devGame = window.game as DevGameInterface;
 
   if (game.ready) return;
-  initGameInterface(engine.isAttached);
+
+  if (typeof engine !== 'undefined') {
+    initGameInterface(engine.isAttached);
+  } else {
+    initGameInterface(false);
+  }
 
   // Run mocks if mocking is enabled
   if (process.env.CUUI_ENABLE_MOCK) {
@@ -46,7 +51,7 @@ function initUI() {
 export default function() {
   console.log('initializing game engine');
   initCoherentRecording();
-  if (engine.isAttached && !window.game) {
+  if (typeof engine !== 'undefined' && engine.isAttached && !window.game) {
     engine.on('Ready', () => {
       _devGame.ready = false;
       initUI();

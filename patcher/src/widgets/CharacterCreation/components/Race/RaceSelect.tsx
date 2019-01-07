@@ -6,8 +6,6 @@
 
 import * as React from 'react';
 
-import { Race, Gender, events } from '@csegames/camelot-unchained';
-
 import { RaceInfo } from '../../services/session/races';
 import { FactionInfo } from '../../services/session/factions';
 import RaceVisualEffects from './RaceVisualEffects';
@@ -97,7 +95,7 @@ class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
 
   private selectRace = (race: RaceInfo) => {
     this.props.selectRace(race);
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
   }
 
   private generateRaceContent = (info: RaceInfo, index: number) => {
@@ -112,7 +110,7 @@ class RaceSelect extends React.Component<RaceSelectProps, RaceSelectState> {
 
   private selectGender = (gender: Gender) => {
     this.props.selectGender(gender);
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
   }
 }
 

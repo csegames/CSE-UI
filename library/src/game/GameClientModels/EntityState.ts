@@ -171,5 +171,7 @@ function onReceiveEntityStateUpdate(state: AnyEntityState) {
 }
 
 export default function() {
-  engine.on(EntityState_Update, onReceiveEntityStateUpdate);
+  if (typeof engine !== 'undefined') {
+    engine.on(EntityState_Update, onReceiveEntityStateUpdate);
+  }
 }

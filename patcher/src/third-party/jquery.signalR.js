@@ -90,7 +90,7 @@
             if (expectedState === connection.state) {
                 connection.state = newState;
 
-                $(connection).triggerHandler(events.onStateChanged, [{ oldState: expectedState, newState: newState }]);
+                $(connection).triggerHandler(game.onStateChanged, [{ oldState: expectedState, newState: newState }]);
                 return true;
             }
 
@@ -116,7 +116,7 @@
                 onReconnectTimeout = function (connection) {
                     var message = signalR._.format(signalR.resources.reconnectTimeout, connection.disconnectTimeout);
                     connection.log(message);
-                    $(connection).triggerHandler(events.onError, [signalR._.error(message, /* source */ "TimeoutException")]);
+                    $(connection).triggerHandler(game.onError, [signalR._.error(message, /* source */ "TimeoutException")]);
                     connection.stop(/* async */ false, /* notifyServer */ false);
                 };
 
@@ -214,7 +214,7 @@
         configurePingInterval: function (connection) {
             var config = connection._.config,
                 onFail = function (error) {
-                    $(connection).triggerHandler(events.onError, [error]);
+                    $(connection).triggerHandler(game.onError, [error]);
                 };
 
             if (config && !connection._.pingIntervalId && config.pingInterval) {
@@ -340,7 +340,7 @@
             this._ = {
                 keepAliveData: {},
                 connectingMessageBuffer: new ConnectingMessageBuffer(this, function (message) {
-                    $connection.triggerHandler(events.onReceived, [message]);
+                    $connection.triggerHandler(game.onReceived, [message]);
                 }),
                 lastMessageAt: new Date().getTime(),
                 lastActiveAt: new Date().getTime(),
@@ -543,7 +543,7 @@
 
             connection.ajaxDataType = config.jsonp ? "jsonp" : "text";
 
-            $(connection).bind(events.onStart, function (e, data) {
+            $(connection).bind(game.onStart, function (e, data) {
                 if ($.type(callback) === "function") {
                     callback.call(connection);
                 }
@@ -566,7 +566,7 @@
                     }
 
                     // No transport initialized successfully
-                    $(connection).triggerHandler(events.onError, [noTransportError]);
+                    $(connection).triggerHandler(game.onError, [noTransportError]);
                     deferred.reject(noTransportError);
                     // Stop the connection if it has connected and move it into the disconnected state
                     connection.stop();
@@ -613,7 +613,7 @@
                         // Drain any incoming buffered messages (messages that came in prior to connect)
                         connection._.connectingMessageBuffer.drain();
 
-                        $(connection).triggerHandler(events.onStart);
+                        $(connection).triggerHandler(game.onStart);
 
                         // wire the stop handler for when the user leaves the page
                         _pageWindow.bind("unload", function () {
@@ -645,13 +645,13 @@
                 onFailed = function (error, connection) {
                     var err = signalR._.error(resources.errorOnNegotiate, error, connection._.negotiateRequest);
 
-                    $(connection).triggerHandler(events.onError, err);
+                    $(connection).triggerHandler(game.onError, err);
                     deferred.reject(err);
                     // Stop the connection if negotiate failed
                     connection.stop();
                 };
 
-            $(connection).triggerHandler(events.onStarting);
+            $(connection).triggerHandler(game.onStarting);
 
             url = signalR.transports._logic.prepareQueryString(connection, url);
 
@@ -720,7 +720,7 @@
 
                     if (!res.ProtocolVersion || res.ProtocolVersion !== connection.clientProtocol) {
                         protocolError = signalR._.error(signalR._.format(resources.protocolIncompatible, connection.clientProtocol, res.ProtocolVersion));
-                        $(connection).triggerHandler(events.onError, [protocolError]);
+                        $(connection).triggerHandler(game.onError, [protocolError]);
                         deferred.reject(protocolError);
 
                         return;
@@ -757,7 +757,7 @@
             /// <param name="callback" type="Function">A callback function to execute before the connection is fully instantiated.</param>
             /// <returns type="signalR" />
             var connection = this;
-            $(connection).bind(events.onStarting, function (e, data) {
+            $(connection).bind(game.onStarting, function (e, data) {
                 callback.call(connection);
             });
             return connection;
@@ -789,7 +789,7 @@
             /// <param name="callback" type="Function">A callback function to execute when any data is received on the connection</param>
             /// <returns type="signalR" />
             var connection = this;
-            $(connection).bind(events.onReceived, function (e, data) {
+            $(connection).bind(game.onReceived, function (e, data) {
                 callback.call(connection, data);
             });
             return connection;
@@ -800,7 +800,7 @@
             /// <param name="callback" type="Function">A callback function to execute when the connection state changes</param>
             /// <returns type="signalR" />
             var connection = this;
-            $(connection).bind(events.onStateChanged, function (e, data) {
+            $(connection).bind(game.onStateChanged, function (e, data) {
                 callback.call(connection, data);
             });
             return connection;
@@ -811,7 +811,7 @@
             /// <param name="callback" type="Function">A callback function to execute when an error occurs on the connection</param>
             /// <returns type="signalR" />
             var connection = this;
-            $(connection).bind(events.onError, function (e, errorData, sendData) {
+            $(connection).bind(game.onError, function (e, errorData, sendData) {
                 connection.lastError = errorData;
                 // In practice 'errorData' is the SignalR built error object.
                 // In practice 'sendData' is undefined for all error events except those triggered by
@@ -826,7 +826,7 @@
             /// <param name="callback" type="Function">A callback function to execute when the connection is broken</param>
             /// <returns type="signalR" />
             var connection = this;
-            $(connection).bind(events.onDisconnect, function (e, data) {
+            $(connection).bind(game.onDisconnect, function (e, data) {
                 callback.call(connection);
             });
             return connection;
@@ -837,7 +837,7 @@
             /// <param name="callback" type="Function">A callback function to execute when the connection is slow</param>
             /// <returns type="signalR" />
             var connection = this;
-            $(connection).bind(events.onConnectionSlow, function (e, data) {
+            $(connection).bind(game.onConnectionSlow, function (e, data) {
                 callback.call(connection);
             });
 
@@ -849,7 +849,7 @@
             /// <param name="callback" type="Function">A callback function to execute when the connection enters a reconnecting state</param>
             /// <returns type="signalR" />
             var connection = this;
-            $(connection).bind(events.onReconnecting, function (e, data) {
+            $(connection).bind(game.onReconnecting, function (e, data) {
                 callback.call(connection);
             });
             return connection;
@@ -860,7 +860,7 @@
             /// <param name="callback" type="Function">A callback function to execute when the connection is restored</param>
             /// <returns type="signalR" />
             var connection = this;
-            $(connection).bind(events.onReconnect, function (e, data) {
+            $(connection).bind(game.onReconnect, function (e, data) {
                 callback.call(connection);
             });
             return connection;
@@ -947,7 +947,7 @@
 
             // Trigger the disconnect event
             changeState(connection, connection.state, signalR.connectionState.disconnected);
-            $(connection).triggerHandler(events.onDisconnect);
+            $(connection).triggerHandler(game.onDisconnect);
 
             return connection;
         },
@@ -1022,7 +1022,7 @@
                 // This is to assure that the user only gets a single warning
                 if (!keepAliveData.userNotified) {
                     connection.log("Keep alive has been missed, connection may be dead/slow.");
-                    $(connection).triggerHandler(events.onConnectionSlow);
+                    $(connection).triggerHandler(game.onConnectionSlow);
                     keepAliveData.userNotified = true;
                 }
             } else {
@@ -1138,7 +1138,7 @@
                 wrappedError = signalR._.error(signalR.resources.errorDuringStartRequest, error);
 
                 connection.log(transport.name + " transport failed during the start request. Stopping the connection.");
-                $(connection).triggerHandler(events.onError, [wrappedError]);
+                $(connection).triggerHandler(game.onError, [wrappedError]);
                 if (deferred) {
                     deferred.reject(wrappedError);
                 }
@@ -1357,7 +1357,7 @@
                 url = getAjaxUrl(connection, "/send"),
                 xhr,
                 onFail = function (error, connection) {
-                    $(connection).triggerHandler(events.onError, [signalR._.transportError(signalR.resources.sendFailed, connection.transport, error, xhr), data]);
+                    $(connection).triggerHandler(game.onError, [signalR._.transportError(signalR.resources.sendFailed, connection.transport, error, xhr), data]);
                 };
 
 
@@ -1428,7 +1428,7 @@
                 },
                 triggerStartError = function (error) {
                     connection.log("The start request failed. Stopping the connection.");
-                    $(connection).triggerHandler(events.onError, [error]);
+                    $(connection).triggerHandler(game.onError, [error]);
                     rejectDeferred(error);
                     connection.stop();
                 };
@@ -1491,7 +1491,7 @@
 
         triggerReceived: function (connection, data) {
             if (!connection._.connectingMessageBuffer.tryBuffer(data)) {
-                $(connection).triggerHandler(events.onReceived, [data]);
+                $(connection).triggerHandler(game.onReceived, [data]);
             }
         },
 
@@ -1536,7 +1536,7 @@
                 };
 
                 // Update Keep alive on reconnect
-                $(connection).bind(events.onReconnect, connection._.keepAliveData.reconnectKeepAliveUpdate);
+                $(connection).bind(game.onReconnect, connection._.keepAliveData.reconnectKeepAliveUpdate);
 
                 connection.log("Now monitoring keep alive with a warning timeout of " + keepAliveData.timeoutWarning + ", keep alive timeout of " + keepAliveData.timeout + " and disconnecting timeout of " + connection.disconnectTimeout);
             } else {
@@ -1553,7 +1553,7 @@
                 keepAliveData.monitoring = false;
 
                 // Remove the updateKeepAlive function from the reconnect event
-                $(connection).unbind(events.onReconnect, connection._.keepAliveData.reconnectKeepAliveUpdate);
+                $(connection).unbind(game.onReconnect, connection._.keepAliveData.reconnectKeepAliveUpdate);
 
                 // Clear all the keep alive data
                 connection._.keepAliveData = {};
@@ -1588,7 +1588,7 @@
             if (changeState(connection,
                         signalR.connectionState.connected,
                         signalR.connectionState.reconnecting) === true) {
-                $(connection).triggerHandler(events.onReconnecting);
+                $(connection).triggerHandler(game.onReconnecting);
             }
             return connection.state === signalR.connectionState.reconnecting;
         },
@@ -1604,7 +1604,7 @@
             if (new Date().getTime() - connection._.lastActiveAt >= connection.reconnectWindow) {
                 var message = signalR._.format(signalR.resources.reconnectWindowTimeout, new Date(connection._.lastActiveAt), connection.reconnectWindow);
                 connection.log(message);
-                $(connection).triggerHandler(events.onError, [signalR._.error(message, /* source */ "TimeoutException")]);
+                $(connection).triggerHandler(game.onError, [signalR._.error(message, /* source */ "TimeoutException")]);
                 connection.stop(/* async */ false, /* notifyServer */ false);
                 return false;
             }
@@ -1649,7 +1649,7 @@
             if (onFailed && onFailed(wrappedError)) {
                 connection.log("Failed to parse server response while attempting to connect.");
             } else {
-                $(connection).triggerHandler(events.onError, [wrappedError]);
+                $(connection).triggerHandler(game.onError, [wrappedError]);
                 connection.stop();
             }
         },
@@ -1691,7 +1691,7 @@
             try {
                 connection.socket.send(payload);
             } catch (ex) {
-                $(connection).triggerHandler(events.onError,
+                $(connection).triggerHandler(game.onError,
                     [signalR._.transportError(
                         signalR.resources.webSocketsInvalidState,
                         connection.transport,
@@ -1735,7 +1735,7 @@
                     if (changeState(connection,
                                     signalR.connectionState.reconnecting,
                                     signalR.connectionState.connected) === true) {
-                        $connection.triggerHandler(events.onReconnect);
+                        $connection.triggerHandler(game.onReconnect);
                     }
                 };
 
@@ -1762,7 +1762,7 @@
 
                         if (!onFailed || !onFailed(error)) {
                             if (error) {
-                                $(connection).triggerHandler(events.onError, [error]);
+                                $(connection).triggerHandler(game.onError, [error]);
                             }
 
                             that.reconnect(connection);
@@ -1878,7 +1878,7 @@
                     // The connection failed, call the failed callback
                     onFailed();
                 } else {
-                    $connection.triggerHandler(events.onError, [signalR._.transportError(signalR.resources.eventSourceFailedToConnect, connection.transport, e)]);
+                    $connection.triggerHandler(game.onError, [signalR._.transportError(signalR.resources.eventSourceFailedToConnect, connection.transport, e)]);
                     if (reconnecting) {
                         // If we were reconnecting, rather than doing initial connect, then try reconnect again
                         that.reconnect(connection);
@@ -1913,7 +1913,7 @@
                     if (changeState(connection,
                                          signalR.connectionState.reconnecting,
                                          signalR.connectionState.connected) === true) {
-                        $connection.triggerHandler(events.onReconnect);
+                        $connection.triggerHandler(game.onReconnect);
                     }
                 }
             }, false);
@@ -1966,7 +1966,7 @@
                 } else {
                     // connection error
                     connection.log("EventSource error.");
-                    $connection.triggerHandler(events.onError, [error]);
+                    $connection.triggerHandler(game.onError, [error]);
                 }
             }, false);
         },
@@ -2242,7 +2242,7 @@
                 signalR.connectionState.reconnecting,
                 signalR.connectionState.connected) === true) {
 
-                $(connection).triggerHandler(events.onReconnect);
+                $(connection).triggerHandler(game.onReconnect);
             }
         }
     };
@@ -2305,7 +2305,7 @@
                                     signalR.connectionState.connected) === true) {
                         // Successfully reconnected!
                         instance.log("Raising the reconnect event");
-                        $(instance).triggerHandler(events.onReconnect);
+                        $(instance).triggerHandler(game.onReconnect);
                     }
                 },
                 // 1 hour
@@ -2436,7 +2436,7 @@
 
                                 if (connection.state !== signalR.connectionState.reconnecting) {
                                     connection.log("An error occurred using longPolling. Status = " + textStatus + ".  Response = " + data.responseText + ".");
-                                    $(instance).triggerHandler(events.onError, [error]);
+                                    $(instance).triggerHandler(game.onError, [error]);
                                 }
 
                                 // We check the state here to verify that we're not in an invalid state prior to verifying Reconnect.

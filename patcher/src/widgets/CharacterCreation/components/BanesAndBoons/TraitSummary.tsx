@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import * as events  from '@csegames/camelot-unchained/lib/events';
 
 import { BanesAndBoonsInfo } from '../../services/session/banesAndBoons';
 import { colors } from '../../styleConstants';
@@ -133,7 +132,7 @@ class TraitSummary extends React.Component<TraitSummaryProps, {}> {
 
   private onCancelClick = () => {
     const { trait, onCancelClick, onCancelRankTrait } = this.props;
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
     if (trait.ranks) {
       if (trait.rank === 0) onCancelClick(trait);
       onCancelRankTrait(trait);

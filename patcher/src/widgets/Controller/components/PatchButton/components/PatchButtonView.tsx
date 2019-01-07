@@ -6,7 +6,6 @@
  */
 
 import * as React from 'react';
-import { webAPI } from '@csegames/camelot-unchained';
 import {
   // patcher,
   ChannelStatus,
@@ -17,10 +16,11 @@ import PlayNowButton from './PlayNowButton';
 import DisabledButton from './DisabledButton';
 import DownloadingButton from './DownloadingButton';
 import ErrorButton from './ErrorButton';
+import { SimpleCharacter } from 'gql/interfaces';
 
 export interface ButtonProps {
   selectedServer: PatcherServer;
-  selectedCharacter: webAPI.SimpleCharacter;
+  selectedCharacter: SimpleCharacter;
   onInstallClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   onPlayClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   onPlayOfflineClick: (e: React.MouseEvent<HTMLDivElement>) => void;

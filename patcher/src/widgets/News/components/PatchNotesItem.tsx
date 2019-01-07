@@ -8,11 +8,11 @@
 import * as React from 'react';
 import moment from 'moment';
 import styled from 'react-emotion';
-import { PatchNote } from '@csegames/camelot-unchained/lib/graphql';
 
 import Item from './Item';
 import { PostItem } from '..';
 import { PATCH_NOTES_COLOR } from '../lib/styles';
+import { PatchNote } from 'gql/interfaces';
 
 const Title = styled('div')`
   font-family: Caudex;

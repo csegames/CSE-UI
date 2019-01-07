@@ -9,7 +9,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import gql from 'graphql-tag';
 import styled, { css } from 'react-emotion';
-import { webAPI, events, CollapsingList } from '@csegames/camelot-unchained';
+import { webAPI, CollapsingList } from '@csegames/camelot-unchained';
 import { GraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 
@@ -19,7 +19,7 @@ import CreateCharacterItem from './CreateCharacterItem';
 import PlayerCounts from './PlayerCounts';
 import { ControllerContext, ContextState, PatcherServer } from '../../../ControllerContext';
 import { PatcherAlertFragment } from 'gql/fragments';
-import { PatcherAlert, CharacterListSubscription } from 'gql/interfaces';
+import { SimpleCharacter, PatcherAlert, CharacterListSubscription } from 'gql/interfaces';
 
 const Server = styled('div')`
   display: block;
@@ -99,10 +99,10 @@ export interface ComponentProps {
   collapsed: boolean;
   server: PatcherServer;
   sortedServers: PatcherServer[];
-  serverCharacters: webAPI.SimpleCharacter[];
-  selectedCharacter: webAPI.SimpleCharacter;
-  onCharacterSelect: (character: webAPI.SimpleCharacter) => void;
-  onChooseCharacter: (character: webAPI.SimpleCharacter) => void;
+  serverCharacters: SimpleCharacter[];
+  selectedCharacter: SimpleCharacter;
+  onCharacterSelect: (character: SimpleCharacter) => void;
+  onChooseCharacter: (character: SimpleCharacter) => void;
   toggleMenu: (e: React.MouseEvent<HTMLDivElement>, server: PatcherServer) => void;
   onToggleCollapse: (shardID: number, collapsed: boolean) => void;
   charSelectVisible: boolean;
@@ -111,7 +111,7 @@ export interface ComponentProps {
 
 export interface InjectedProps {
   servers: {[id: string]: PatcherServer};
-  characters: {[id: string]: webAPI.SimpleCharacter};
+  characters: {[id: string]: SimpleCharacter};
   patcherAlerts: PatcherAlert[];
   onUpdateState: (stats: Partial<ContextState>) => void;
 }
@@ -205,7 +205,7 @@ class CharacterList extends React.PureComponent<Props, CharacterListState> {
               </ServerInfo>
             </Server>
           }
-          renderListItem={(character: webAPI.SimpleCharacter, i: number) => (
+          renderListItem={(character: SimpleCharacter, i: number) => (
             <CharacterSelectListItem
               key={character.id}
               character={character}
@@ -259,12 +259,12 @@ class CharacterList extends React.PureComponent<Props, CharacterListState> {
   }
 
   private onToggleMenu = (e: React.MouseEvent<HTMLDivElement>, server: PatcherServer) => {
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
     this.props.toggleMenu(e, server);
   }
 
   private onToggleCollapse = (collapsed: boolean) => {
-    events.fire('play-sound', 'select-change');
+    game.trigger('play-sound', 'select-change');
 
     this.props.onToggleCollapse(this.props.server.shardID, collapsed);
   }

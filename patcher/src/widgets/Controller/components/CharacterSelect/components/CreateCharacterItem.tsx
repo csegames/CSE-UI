@@ -6,7 +6,6 @@
  */
 
 import * as React from 'react';
-import * as events  from '@csegames/camelot-unchained/lib/events';
 import styled, { keyframes, css } from 'react-emotion';
 
 import { patcher } from '../../../../../services/patcher';
@@ -142,19 +141,19 @@ class CreateCharacterItem extends React.Component<Props> {
   }
 
   private onClick = (isOnline?: boolean) => {
-    events.fire('view-content', view.CHARACTERCREATION, {
+    game.trigger('view-content', view.CHARACTERCREATION, {
       selectedServer: this.props.server.name,
       apiHost: this.props.server.apiHost + '/',
       apiVersion: 1,
       shard: this.props.server.shardID,
       apiKey: patcher.getAccessToken(),
       created: (c: any) => {
-        events.fire('character-created', c.name);
-        events.fire('view-content', view.NONE);
+        game.trigger('character-created', c.name);
+        game.trigger('view-content', view.NONE);
         this.props.refetchCharacters();
       },
     });
-    events.fire('play-sound', 'server-select');
+    game.trigger('play-sound', 'server-select');
   }
 
   private onClickOffline = () => {
@@ -176,7 +175,7 @@ class CreateCharacterItem extends React.Component<Props> {
   }
 
   private onMouseEnter = () => {
-    events.fire('play-sound', 'select-change');
+    game.trigger('play-sound', 'select-change');
   }
 }
 

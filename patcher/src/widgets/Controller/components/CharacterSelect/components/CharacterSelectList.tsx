@@ -8,13 +8,13 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { events, webAPI } from '@csegames/camelot-unchained';
 
 import { ControllerContext, PatcherServer } from '../../../ControllerContext';
 import { patcher, canAccessChannel, ChannelStatus, PatchChannelMode } from '../../../../../services/patcher';
 import CharacterList from './CharacterList';
 import ServerOptionsMenu from './ServerOptionsMenu';
 import { APIServerStatus } from '../../ControllerDisplay/index';
+import { SimpleCharacter } from 'gql/interfaces';
 
 const MinimizeAll = styled('div')`
   cursor: pointer;
@@ -38,15 +38,15 @@ const ArrowIcon = styled('i')`
 export interface ComponentProps {
   servers: {[id: string]: PatcherServer};
   selectedServer: PatcherServer;
-  selectedCharacter: webAPI.SimpleCharacter;
-  onCharacterSelect: (character: webAPI.SimpleCharacter) => void;
-  onChooseCharacter: (character: webAPI.SimpleCharacter) => void;
+  selectedCharacter: SimpleCharacter;
+  onCharacterSelect: (character: SimpleCharacter) => void;
+  onChooseCharacter: (character: SimpleCharacter) => void;
   charSelectVisible: boolean;
   apiServerStatus: APIServerStatus;
 }
 
 export interface InjectedProps {
-  characters: {[id: string]: webAPI.SimpleCharacter};
+  characters: {[id: string]: SimpleCharacter};
   updateChannels: () => void;
 }
 
@@ -95,7 +95,7 @@ class CharacterSelectList extends React.Component<Props, CharacterSelectListStat
         }
         {_.values(sortedServers).map((server, index) => {
           const apiServerOnline = this.props.apiServerStatus[server.apiHost];
-          const serverCharacters: webAPI.SimpleCharacter[] = [];
+          const serverCharacters: SimpleCharacter[] = [];
           Object.keys(this.props.characters).forEach((key) => {
             if (this.props.characters[key].shardID === server.shardID) {
               serverCharacters.push(this.props.characters[key]);
@@ -229,7 +229,7 @@ class CharacterSelectList extends React.Component<Props, CharacterSelectListStat
   }
 
   private playSound = (sound: string) => {
-    events.fire('play-sound', sound);
+    game.trigger('play-sound', sound);
   }
 }
 

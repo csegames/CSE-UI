@@ -7,9 +7,9 @@
 
 import * as React from 'react';
 import { includes } from 'lodash';
-import { webAPI, Race, Gender, Archetype, events } from '@csegames/camelot-unchained';
 import styled, { css, keyframes } from 'react-emotion';
 import { getCharImage } from '../../../../../lib/characterImages';
+import { SimpleCharacter, Race, Gender, Archetype } from 'gql/interfaces';
 
 const goldenColor = 'rgba(192, 173, 124, 0.4)';
 
@@ -170,11 +170,11 @@ const DeleteButton = styled('div')`
 `;
 
 export interface CharacterSelectListItemProps {
-  character: webAPI.SimpleCharacter;
+  character: SimpleCharacter;
   selected: boolean;
   charSelectVisible: boolean;
-  onCharacterSelect: (character: webAPI.SimpleCharacter) => void;
-  onChooseCharacter: (character: webAPI.SimpleCharacter) => void;
+  onCharacterSelect: (character: SimpleCharacter) => void;
+  onChooseCharacter: (character: SimpleCharacter) => void;
   marginTop?: string;
   marginBottom?: string;
 }
@@ -192,7 +192,7 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
   }
   public render() {
     const { character } = this.props;
-    const race = includes(Race[character.race].toLowerCase(), 'human') ? webAPI.raceString(character.race) :
+    const race = includes(Race[character.race].toLowerCase(), 'human') ? character.race :
       Race[character.race];
 
     const charIdentifier = `${race}${Gender[character.gender]}${Archetype[character.archetype]}`;
@@ -210,7 +210,7 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
           <CharacterName fontSize={this.state.fontSize}>
             {character.name}
           </CharacterName>
-          <CharacterMetaData>{Archetype[character.archetype]} - {webAPI.raceString(character.race)}</CharacterMetaData>
+          <CharacterMetaData>{Archetype[character.archetype]} - {character.race}</CharacterMetaData>
           <DeleteButton visible={this.props.charSelectVisible} onClick={this.toggleDeleteModal}>X</DeleteButton>
         </Container>
     );
@@ -224,7 +224,7 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
 
   private onMouseEnter = () => {
     this.props.onCharacterSelect(this.props.character);
-    events.fire('play-sound', 'select-change');
+    game.trigger('play-sound', 'select-change');
   }
 
   private onClick = () => {
@@ -233,7 +233,7 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
 
   private toggleDeleteModal = (e?: React.MouseEvent<HTMLDivElement>) => {
     if (e) e.stopPropagation();
-    events.fire('character-select-show-delete');
+    game.trigger('character-select-show-delete');
   }
 
   private renderCharImg = (charIdentifier: string, classImg: string) => {

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, webAPI, RequestConfig, Archetype, Faction } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 
 import ResponseError from '../../lib/ResponseError';
 import { patcher } from '../../../../services/patcher';
@@ -61,7 +61,7 @@ async function getArchetypes(dispatch: (action: any) => any, apiHost: string) {
   const config: RequestConfig = () => ({
     url: apiHost,
     headers: {
-      Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+      Authorization: `Bearer ${patcher.getAccessToken()}`,
     },
   });
   const res = await webAPI.GameDataAPI.GetArchetypesV1(config);
@@ -74,7 +74,7 @@ async function getArchetypes(dispatch: (action: any) => any, apiHost: string) {
 }
 
 export function fetchPlayerClasses(
-  apiUrl: string = client.apiHost,
+  apiUrl: string = game.webAPIHost,
   shard: number = 1,
   apiVersion: number = 1) {
   return (dispatch: (action: any) => any) => {

@@ -6,7 +6,6 @@
  */
 
 import * as React from 'react';
-import * as events  from '@csegames/camelot-unchained/lib/events';
 import styled from 'react-emotion';
 import { PatchButtonStyle, ButtonText, ButtonGlow, shine } from '../styles';
 
@@ -81,7 +80,7 @@ class PlayNowButton extends React.Component<PlayNowButtonProps> {
   }
 
   private playSound = () => {
-    events.fire('play-sound', 'select-change');
+    game.trigger('play-sound', 'select-change');
   }
 }
 

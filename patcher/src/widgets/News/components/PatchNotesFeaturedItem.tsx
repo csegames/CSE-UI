@@ -8,7 +8,6 @@
 import * as React from 'react';
 import moment from 'moment';
 import styled from 'react-emotion';
-import { PatchNote } from '@csegames/camelot-unchained/lib/graphql';
 import {
   FeaturedContainer,
   TitleContainer,
@@ -22,6 +21,7 @@ import {
   PATCH_NOTES_COLOR,
 } from '../lib/styles';
 import { PostItem } from '..';
+import { PatchNote } from 'gql/interfaces';
 
 const Divider = styled('div')`
   position: relative;

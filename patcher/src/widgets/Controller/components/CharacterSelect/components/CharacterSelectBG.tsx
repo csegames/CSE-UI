@@ -7,10 +7,10 @@
 
 import * as React from 'react';
 import styled, { css, keyframes, cx } from 'react-emotion';
-import { webAPI, Race, Archetype, Faction } from '@csegames/camelot-unchained';
 import CharacterSelectFX from './CharacterSelectFX';
 import NoCharacterSelectFX from './NoCharacterSelectFX';
 import { getCharImage } from '../../../../../lib/characterImages';
+import { SimpleCharacter, Race, Archetype, Faction } from 'gql/interfaces';
 
 const charTransitionAnim = keyframes`
   from {
@@ -119,12 +119,12 @@ const CharBase = styled('div')`
 `;
 
 export interface CharacterSelectBGProps {
-  selectedCharacter: webAPI.SimpleCharacter;
+  selectedCharacter: SimpleCharacter;
 }
 
 export interface CharacterSelectBGState {
-  firstChar: webAPI.SimpleCharacter;
-  visualFXChar: webAPI.SimpleCharacter;
+  firstChar: SimpleCharacter;
+  visualFXChar: SimpleCharacter;
   shouldTransition: boolean;
   visualFXTransition: boolean;
   characterNameFontSize: number;
@@ -185,7 +185,7 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
           <CharacterInfoOverlay className={cx(charNameClass)} opacity={this.state.visualFXChar === null ? 1 : 0}>
             <CharacterName fontSize={this.state.characterNameFontSize}>{selectedCharacter.name}</CharacterName>
             <CharacterMetaInfo>
-              {Archetype[selectedCharacter.archetype]} - {webAPI.raceString(selectedCharacter.race)}
+              {Archetype[selectedCharacter.archetype]} - {selectedCharacter.race}
             </CharacterMetaInfo>
           </CharacterInfoOverlay>
         </div>
@@ -221,7 +221,7 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
     }
   }
 
-  private updateVisualFXChar = (nextChar: webAPI.SimpleCharacter) => {
+  private updateVisualFXChar = (nextChar: SimpleCharacter) => {
     if (this.vfxCharTimeout) {
       clearTimeout(this.vfxCharTimeout);
       this.vfxCharTimeout = null;

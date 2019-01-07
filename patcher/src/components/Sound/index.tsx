@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import * as events  from '@csegames/camelot-unchained/lib/events';
 import { generateID } from 'redux-typed-modules';
 
 import { SoundsState } from '../../services/session/sounds';
@@ -36,7 +35,7 @@ const sounds = {
 export class Sound extends React.Component<SoundProps, SoundState> {
 
   private bgRef: HTMLAudioElement = null;
-  private evhs: any[] = [];       // event handlers
+  private evhs: EventHandle[] = [];       // event handlers
   private audioRefs: { [id: string]: HTMLAudioElement } = {};
 
   constructor(props: SoundProps) {
@@ -86,12 +85,12 @@ export class Sound extends React.Component<SoundProps, SoundState> {
         this.bgRef.volume = 0.5;
       }
     }
-    this.evhs.push(events.on('play-sound', (name: string) => this.playSound(name)));
-    this.evhs.push(events.on('pause-music', (paused: boolean) => this.pauseMusic(paused)));
+    this.evhs.push(game.on('play-sound', (name: string) => this.playSound(name)));
+    this.evhs.push(game.on('pause-music', (paused: boolean) => this.pauseMusic(paused)));
   }
 
   public componentWillUnmount() {
-    this.evhs.map((h: any) => events.off(h));
+    this.evhs.forEach((h: EventHandle) => h.clear());
   }
 
   private setStateAsync = (sparseState: any) => {

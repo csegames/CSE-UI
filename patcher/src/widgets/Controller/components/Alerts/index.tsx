@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { webAPI } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`
   overflow: hidden;
@@ -18,7 +17,7 @@ const Container = styled('div')`
 `;
 
 export interface AlertsProps {
-  alerts: webAPI.PatcherAlert[];
+  alerts: PatcherAlert[];
 }
 
 export class Alerts extends React.Component<AlertsProps, {}> {

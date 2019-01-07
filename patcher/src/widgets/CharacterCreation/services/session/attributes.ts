@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { RequestConfig, client, webAPI, events } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 import { patcher } from '../../../../services/patcher';
 
 const totalPoints = 30;
@@ -84,7 +84,7 @@ async function getAttributeInfo(dispatch: (action: any) => any, shard: number, a
     const config: RequestConfig = () => ({
       url: apiHost,
       headers: {
-        Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+        Authorization: `Bearer ${patcher.getAccessToken()}`,
       },
     });
     const res = await webAPI.GameDataAPI.GetAttributeInfoV1(config, shard);
@@ -148,7 +148,7 @@ export default function reducer(state: AttributesState = initialState, action: a
             state.pointsAllocated + action.value + allocated <= totalPoints) {
             a.allocatedPoints += action.value;
             allocated += action.value;
-            events.fire('play-sound', 'select');
+            game.trigger('play-sound', 'select');
           }
           return a;
         }),

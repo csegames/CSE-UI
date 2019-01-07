@@ -5,15 +5,15 @@
  */
 
 import * as React from 'react';
-import * as events from '@csegames/camelot-unchained/lib/events';
 import styled from 'react-emotion';
 
-import { ql, Chat } from '@csegames/camelot-unchained';
+import { Chat } from '@csegames/camelot-unchained';
 import { patcher } from '../../services/patcher';
 
 // views
 import CharacterCreation from '../../widgets/CharacterCreation';
 import News from '../../widgets/News';
+import { ServerModel } from 'gql/interfaces';
 
 const NewsContainer = styled('div')`
   background: url(images/news/bg.png) no-repeat, black;
@@ -29,7 +29,7 @@ export interface OverlayViewState {
   currentView: view;
   currentProps: any;
   inTransition: boolean;
-  selectedServer: ql.schema.ServerModel;
+  selectedServer: ServerModel;
 }
 
 export enum view {
@@ -46,8 +46,8 @@ export enum view {
 }
 
 class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
-  private patcherSelectListener: number;
-  private viewContentListener: number;
+  private patcherSelectListener: EventHandle;
+  private viewContentListener: EventHandle;
   constructor(props: OverlayViewProps) {
     super(props);
     this.state = {
@@ -85,15 +85,15 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
   }
 
   public componentDidMount() {
-    this.patcherSelectListener = events.on('patcher--select-server', (server) => {
+    this.patcherSelectListener = game.on('patcher--select-server', (server) => {
       this.setState({ selectedServer: server });
     });
-    this.viewContentListener = events.on('view-content', (v: view, props: any) => {
+    this.viewContentListener = game.on('view-content', (v: view, props: any) => {
       if (v === this.state.currentView) return;
       if (v === view.NONE) {
-        events.fire('resume-videos');
+        game.trigger('resume-videos');
       } else {
-        events.fire('pause-videos');
+        game.trigger('pause-videos');
       }
 
       this.setState({
@@ -112,8 +112,15 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
   }
 
   public componentWillUnmount() {
-    events.off(this.patcherSelectListener);
-    events.off(this.viewContentListener);
+    if (this.patcherSelectListener) {
+      this.patcherSelectListener.clear();
+      this.patcherSelectListener = null;
+    }
+
+    if (this.viewContentListener) {
+      this.viewContentListener.clear();
+      this.viewContentListener = null;
+    }
   }
 
   private renderView = (current: boolean): JSX.Element => {

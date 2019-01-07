@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import moment from 'moment';
-import { webAPI, events, utils } from '@csegames/camelot-unchained';
 import styled from 'react-emotion';
 
 import { patcher, ChannelStatus } from '../../../../services/patcher';
@@ -15,6 +14,7 @@ import UpdateMessage from './components/UpdateMessage';
 import PatchButtonView from './components/PatchButtonView';
 import EualaModal from '../EualaModal';
 import { ControllerContext, ServerType, PatcherServer } from '../../ControllerContext';
+import { SimpleCharacter } from 'gql/interfaces';
 
 const Container = styled('div')`
   display: flex;
@@ -46,9 +46,9 @@ const ButtonContainer = styled('div')`
 `;
 
 export interface ComponentProps {
-  servers: utils.Dictionary<PatcherServer>;
+  servers: Dictionary<PatcherServer>;
   selectedServer: PatcherServer;
-  selectedCharacter: webAPI.SimpleCharacter;
+  selectedCharacter: SimpleCharacter;
 }
 
 export interface InjectedProps {
@@ -140,11 +140,11 @@ class PatchButton extends React.Component<Props, PatchButtonState> {
   }
 
   private playSound = (sound: string) => {
-    events.fire('play-sound', sound);
+    game.trigger('play-sound', sound);
   }
 
   private pauseMusic = (paused: boolean) => {
-    events.fire('pause-music', paused);
+    game.trigger('pause-music', paused);
   }
 
   private playOffline = (evt: React.MouseEvent<HTMLDivElement>) => {

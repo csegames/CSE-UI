@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { webAPI } from '@csegames/camelot-unchained';
 
 import Login from '../Login';
 // import Alerts from '../Alerts';
@@ -22,7 +21,7 @@ import { APIServerStatus } from '.';
 
 import { Routes } from '../../../../services/session/routes';
 import { ControllerContext, PatcherServer, ServerType } from '../../ControllerContext';
-
+import { SimpleCharacter } from 'gql/interfaces';
 
 const Container = styled('div')`
   position: relative;
@@ -64,10 +63,10 @@ export interface ComponentProps {
 }
 
 export interface InjectedProps {
-  characters: {[id: string]: webAPI.SimpleCharacter};
+  characters: {[id: string]: SimpleCharacter};
   servers: {[id: string]: PatcherServer};
   selectedServer: PatcherServer;
-  selectedCharacter: webAPI.SimpleCharacter;
+  selectedCharacter: SimpleCharacter;
 }
 
 export type Props = ComponentProps & InjectedProps;
@@ -107,7 +106,7 @@ class ControllerDisplayView extends React.Component<Props, ControllerDisplayView
           <Login onLogin={this.props.onLogin} />
           {/* <Alerts alerts={alertArray} /> */}
           {/* <PatcherError errors={errors} onClear={this.props.onClearError}/> */}
-          <VersionNumber>v0.1.3</VersionNumber>
+          <VersionNumber>v0.1.7</VersionNumber>
         </Container>
       );
     }

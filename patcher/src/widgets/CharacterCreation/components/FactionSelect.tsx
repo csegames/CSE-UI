@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { events, Faction, Spinner } from '@csegames/camelot-unchained';
+import { Spinner } from '@csegames/camelot-unchained';
 import { FactionInfo } from '../services/session/factions';
 
 export interface FactionSelectProps {
@@ -45,7 +45,7 @@ class FactionSelect extends React.Component<FactionSelectProps, FactionSelectSta
 
   private selectFaction = (faction: FactionInfo) => {
     this.props.selectFaction(faction);
-    events.fire('play-sound', 'realm-select');
+    game.trigger('play-sound', 'realm-select');
   }
 
   private generateFactionContent = (info: FactionInfo) => {

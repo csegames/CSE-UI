@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import gql from 'graphql-tag';
-import { client, webAPI, utils } from '@csegames/camelot-unchained';
+import { utils } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 import { QueryOptions } from '@csegames/camelot-unchained/lib/graphql/query';
@@ -19,6 +19,10 @@ import {
   ControllerContextSubscription,
   ServerUpdateType,
   PatcherAlert,
+  ServerStatus,
+  Archetype,
+  Faction,
+  Race,
 } from 'gql/interfaces';
 
 export interface ControllerContextQuery {
@@ -43,7 +47,7 @@ export interface PatcherServer {
   channelStatus: number;
   available: boolean;
   channelPatchPermissions?: number;
-  accessLevel?: webAPI.AccessType;
+  accessLevel?: AccessType;
   host?: string;
   playerMaximum?: number;
   channelID?: number;
@@ -53,8 +57,8 @@ export interface PatcherServer {
   vikings?: number;
   max?: number;
   characterCount?: number;
-  selectedCharacter?: webAPI.SimpleCharacter;
-  characters?: webAPI.SimpleCharacter[];
+  selectedCharacter?: SimpleCharacter;
+  characters?: SimpleCharacter[];
   lastUpdated?: number;
   apiHost: string;
   mode: PatchChannelMode;
@@ -69,40 +73,40 @@ export function serverTypeToIcon(t: ServerType) {
   }
 }
 
-export function gqlSimpleCharacterToSimpleCharacter(gqlCharacter: SimpleCharacter): webAPI.SimpleCharacter {
+export function gqlSimpleCharacterToSimpleCharacter(gqlCharacter: SimpleCharacter): SimpleCharacter {
   const gqlArchetype = gqlCharacter.archetype;
   const gqlRace = gqlCharacter.race;
   const gqlFaction = gqlCharacter.faction;
 
   const character = {
     ...gqlCharacter,
-    archetype: webAPI.Archetype[gqlArchetype],
-    race: webAPI.Race[gqlRace],
-    faction: webAPI.Faction[gqlFaction],
+    archetype: Archetype[gqlArchetype],
+    race: Race[gqlRace],
+    faction: Faction[gqlFaction],
   };
 
   return character;
 }
 
-export function gqlServerModelToServerModel(gqlServerModel: ServerModel): webAPI.ServerModel {
+export function gqlServerModelToServerModel(gqlServerModel: ServerModel): ServerModel {
   const gqlAccessLevel = gqlServerModel.accessLevel;
 
   const server = {
     ...gqlServerModel,
-    accessLevel: webAPI.AccessType[gqlAccessLevel],
+    accessLevel: AccessType[gqlAccessLevel],
   };
 
   return server;
 }
 
-export function webAPIServerToPatcherServer(server: webAPI.ServerModel): PatcherServer {
+export function webAPIServerToPatcherServer(server: ServerModel): PatcherServer {
   const channels = patcher.getAllChannels();
   const channelIndex = utils.findIndexWhere(channels, c => c.channelID === server.channelID);
   const channel = channels[channelIndex];
 
-  return utils.merge({
+  return merge({
     name: server.name,
-    available: server.playerMaximum > 0,
+    available: (server.status as any) === ServerStatus.Online,
     type: ServerType.CUGAME,
     channelStatus: channel ? channel.channelStatus : ChannelStatus.NotInstalled,
     apiHost: server.apiHost,
@@ -144,9 +148,9 @@ export interface Props {
 }
 
 export interface ContextState {
-  characters: {[id: string]: webAPI.SimpleCharacter};
+  characters: {[id: string]: SimpleCharacter};
   servers: {[serverName: string]: PatcherServer};
-  selectedCharacter: webAPI.SimpleCharacter;
+  selectedCharacter: SimpleCharacter;
   selectedServer: PatcherServer;
   patcherAlerts: PatcherAlert[];
 
@@ -196,7 +200,9 @@ const subscription = gql`
 `;
 
 export class ControllerContextProvider extends React.Component<Props, ContextState> {
+  private graphql: GraphQLResult<ControllerContextQuery>;
   private channelUpdateInterval: number;
+  private queryRefetchInterval: number;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -215,8 +221,7 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
             onQueryResult={this.handleQueryResult}
             subscription={{
               query: subscription,
-              // url: (patcher.apiHost() + '/graphql').replace('http', 'ws'),
-              url: ('http://localhost:1337/graphql').replace('http', 'ws'),
+              url: (patcher.apiHost() + '/graphql').replace('http', 'ws'),
               initPayload: {
                 Authorization: `Bearer ${patcher.getAccessToken()}`,
               },
@@ -237,18 +242,25 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
   }
 
   public componentWillUnmount() {
-    window.clearInterval(this.channelUpdateInterval);
+    if (this.channelUpdateInterval) {
+      window.clearInterval(this.channelUpdateInterval);
+      this.channelUpdateInterval = null;
+    }
+
+    if (this.queryRefetchInterval) {
+      window.clearInterval(this.queryRefetchInterval);
+      this.queryRefetchInterval = null;
+    }
   }
 
   private getConfig = () => {
     const queryConf: QueryOptions = {
-      // url: patcher.apiHost() + '/graphql',
-      url: 'http://localhost:1337/graphql',
+      url: patcher.apiHost() + '/graphql',
       requestOptions: {
         headers: {
-          Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
-          shardID: `${client.shardID}`,
-          characterID: client.characterID,
+          Authorization: `Bearer ${patcher.getAccessToken()}`,
+          shardID: `${game.shardID}`,
+          characterID: '',
         },
       },
       stringifyVariables: false,
@@ -261,6 +273,11 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
   }
 
   private handleQueryResult = (graphql: GraphQLResult<ControllerContextQuery>) => {
+    if (!this.queryRefetchInterval) {
+      this.graphql = graphql;
+      this.queryRefetchInterval = window.setInterval(this.graphql.refetch, 5000);
+    }
+
     if (!graphql.data) return graphql;
     const characters = this.getCharacters(graphql);
     const servers = this.getServers(graphql, characters);
@@ -300,7 +317,7 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
   }
 
   private getCharacters = (graphql: GraphQLResult<ControllerContextQuery>) => {
-    const characters: {[id: string]: webAPI.SimpleCharacter} = {};
+    const characters: {[id: string]: SimpleCharacter} = {};
     graphql.data.shardCharacters.forEach((character) => {
       characters[character.id] = gqlSimpleCharacterToSimpleCharacter(character);
     });
@@ -309,8 +326,8 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
   }
 
   private getServers = (graphql: GraphQLResult<ControllerContextQuery>,
-                        characters: {[id: string]: webAPI.SimpleCharacter}) => {
-    const servers: {[id: string]: PatcherServer} = {};
+                        characters: {[id: string]: SimpleCharacter}) => {
+    const servers: {[id: string]: PatcherServer} = { ...this.state.servers };
     graphql.data.connectedServices.servers.forEach((server) => {
       servers[server.name] = webAPIServerToPatcherServer(gqlServerModelToServerModel(server));
     });
@@ -327,10 +344,10 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
     });
   }
 
-  private getServersWithCharacterCounts(servers: utils.Dictionary<PatcherServer>,
-                                characters: utils.Dictionary<webAPI.SimpleCharacter>): utils.Dictionary<PatcherServer> {
+  private getServersWithCharacterCounts(servers: Dictionary<PatcherServer>,
+                                characters: Dictionary<SimpleCharacter>): Dictionary<PatcherServer> {
     // get character count by shardID
-    const characterCounts: utils.Dictionary<number> = {};
+    const characterCounts: Dictionary<number> = {};
     for (const key in characters) {
       const shard = characters[key].shardID;
       if (characterCounts[shard]) {
@@ -348,8 +365,8 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
 
   private updateChannels = () => {
     const channels = patcher.getAllChannels() || [];
-    const channelServers: utils.Dictionary<PatcherServer> = {};
-    const channelDict: utils.Dictionary<Channel> = {};
+    const channelServers: Dictionary<PatcherServer> = {};
+    const channelDict: Dictionary<Channel> = {};
     for (let i = 0; i < channels.length; ++i) {
       const c = channels[i];
       // check if we have a server with a matching name to a channel, if not the channel becomes it's own 'server'.
@@ -368,7 +385,7 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
       }
     }
 
-    const servers = utils.clone(this.state.servers);
+    const servers = clone(this.state.servers);
     for (const key in servers) {
       const server = servers[key];
       const channel = channelDict[server.channelID];

@@ -29,7 +29,7 @@ export function defaultSubscriptionOpts(): Options<any> {
     initPayload: {
       shardID: game.shardID,
       token: game.accessToken,
-      characterID: game.selfPlayerState.characterID,
+      characterID: game.selfPlayerState ? game.selfPlayerState.characterID : '',
     },
     debug: getBooleanEnv('CUUI_LIB_DEBUG_GRAPHQL_SUBSCRIPTION', false),
     onDataReceived: data => console.log(data),

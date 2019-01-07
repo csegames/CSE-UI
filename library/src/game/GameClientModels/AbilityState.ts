@@ -68,5 +68,7 @@ function onReceiveAbilityStateUpdate(state: AbilityState) {
 }
 
 export default function() {
-  engine.on(AbilityState_Update, onReceiveAbilityStateUpdate);
+  if (typeof engine !== 'undefined') {
+    engine.on(AbilityState_Update, onReceiveAbilityStateUpdate);
+  }
 }

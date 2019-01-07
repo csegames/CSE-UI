@@ -8,10 +8,11 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled, { keyframes } from 'react-emotion';
-import { events, webAPI, Gender, Archetype, Race, Spinner } from '@csegames/camelot-unchained';
+import { webAPI, Spinner } from '@csegames/camelot-unchained';
 import { getCharImage, shouldFlipCharImage } from '../../../../../lib/characterImages';
 import { PatcherServer } from '../../../ControllerContext';
 import PlayerCounts from './PlayerCounts';
+import { SimpleCharacter, Gender, Race, Archetype } from 'gql/interfaces';
 
 declare const toastr: any;
 
@@ -245,8 +246,8 @@ const SpinnerContainer = styled('div')`
 `;
 
 export interface CharacterInfoProps {
-  character: webAPI.SimpleCharacter;
-  characters: {[id: string]: webAPI.SimpleCharacter};
+  character: SimpleCharacter;
+  characters: {[id: string]: SimpleCharacter};
   servers: {[id: string]: PatcherServer};
   selectedServer: PatcherServer;
   onNavigateToCharacterSelect: () => void;
@@ -314,7 +315,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
               <CharacterName longName={isLongName}>
                 {character.name}
                 <CharacterMetaInfo>
-                  {Archetype[character.archetype]} - {webAPI.raceString(character.race)}
+                  {Archetype[character.archetype]} - {character.race}
                 </CharacterMetaInfo>
               </CharacterName>
               {selectedServer &&
@@ -404,7 +405,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
   }
 
   private playSound = () => {
-    events.fire('play-sound', 'select-change');
+    game.trigger('play-sound', 'select-change');
   }
 
   private noAccessError = () => {

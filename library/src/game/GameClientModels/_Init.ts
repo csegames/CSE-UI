@@ -27,27 +27,29 @@ export default function<TModel, TType extends TModel & Updatable>(
   } else {
     propertySetter(defaultObject());
   }
-  engine.on(name, (model: TModel) => {
-    if (game.debug) {
-      console.groupCollapsed(`Client > ${name}`);
-      try {
-        console.log(JSON.stringify(model));
-      } catch {}
-      console.groupEnd();
-    }
-
-    if (!model) {
-      if (propertyAccessor()) {
-        propertySetter(defaultObject());
+  if (typeof engine !== 'undefined') {
+    engine.on(name, (model: TModel) => {
+      if (game.debug) {
+        console.groupCollapsed(`Client > ${name}`);
+        try {
+          console.log(JSON.stringify(model));
+        } catch {}
+        console.groupEnd();
       }
-    } else if (!propertyAccessor().isReady) {
-      propertySetter(withDefaults(model, defaultObject(), false));
-      propertyAccessor().updateEventName = name;
-      initUpdatable(propertyAccessor());
-    } else {
-      propertySetter(withDefaults(model, defaultObject(), false));
-      propertyAccessor().updateEventName = name;
-    }
-    game.trigger(name, propertyAccessor());
-  });
+
+      if (!model) {
+        if (propertyAccessor()) {
+          propertySetter(defaultObject());
+        }
+      } else if (!propertyAccessor().isReady) {
+        propertySetter(withDefaults(model, defaultObject(), false));
+        propertyAccessor().updateEventName = name;
+        initUpdatable(propertyAccessor());
+      } else {
+        propertySetter(withDefaults(model, defaultObject(), false));
+        propertyAccessor().updateEventName = name;
+      }
+      game.trigger(name, propertyAccessor());
+    });
+  }
 }

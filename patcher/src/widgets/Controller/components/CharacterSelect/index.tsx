@@ -8,13 +8,14 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import styled from 'react-emotion';
-import { webAPI, events, jsKeyCodes } from '@csegames/camelot-unchained';
 
 import { ControllerContext, ContextState, PatcherServer, ServerType } from '../../ControllerContext';
 import CharacterSelectList from './components/CharacterSelectList';
 import CharacterSelectBG from './components/CharacterSelectBG';
 import CharacterDeleteModal from '../CharacterDeleteModal';
 import { APIServerStatus } from '../ControllerDisplay/index';
+import { SimpleCharacter } from 'gql/interfaces';
+import { KeyCodes } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`
   position: relative;
@@ -118,10 +119,10 @@ export interface ComponentProps {
 }
 
 export interface InjectedProps {
-  characters: {[id: string]: webAPI.SimpleCharacter};
+  characters: {[id: string]: SimpleCharacter};
   servers: {[id: string]: PatcherServer};
 
-  selectedCharacter: webAPI.SimpleCharacter;
+  selectedCharacter: SimpleCharacter;
   selectedServer: PatcherServer;
   onUpdateState: (state: Partial<ContextState>) => void;
 }
@@ -130,7 +131,7 @@ export type Props = ComponentProps & InjectedProps;
 
 export interface CharacterSelectState {
   showDeleteModal: boolean;
-  selectedCharacter: webAPI.SimpleCharacter;
+  selectedCharacter: SimpleCharacter;
 }
 
 class CharacterSelect extends React.Component<Props, CharacterSelectState> {
@@ -189,8 +190,8 @@ class CharacterSelect extends React.Component<Props, CharacterSelectState> {
   }
 
   public componentDidMount() {
-    events.fire('pause-videos');
-    events.on('character-select-show-delete', this.toggleModal);
+    game.trigger('pause-videos');
+    game.on('character-select-show-delete', this.toggleModal);
     window.addEventListener('keydown', this.handleEscKey);
   }
 
@@ -212,11 +213,11 @@ class CharacterSelect extends React.Component<Props, CharacterSelectState> {
     window.removeEventListener('keydown', this.handleEscKey);
   }
 
-  private setSelectedCharacter = (character: webAPI.SimpleCharacter) => {
+  private setSelectedCharacter = (character: SimpleCharacter) => {
     this.setState({ selectedCharacter: character });
   }
 
-  private onSelectCharacter = (character?: webAPI.SimpleCharacter) => {
+  private onSelectCharacter = (character?: SimpleCharacter) => {
     if (character) {
       this.setSelectedCharacter(character);
     }
@@ -239,14 +240,14 @@ class CharacterSelect extends React.Component<Props, CharacterSelectState> {
   }
 
   private handleEscKey = (e: KeyboardEvent) => {
-    if (e.which === jsKeyCodes.ESC && this.props.charSelectVisible) {
+    if (e.which === KeyCodes.KEY_Escape && this.props.charSelectVisible) {
       this.onClose();
     }
   }
 
   private onClose = () => {
-    events.fire('play-sound', 'select');
-    events.fire('resume-videos');
+    game.trigger('play-sound', 'select');
+    game.trigger('resume-videos');
     this.props.onCloseClick();
   }
 }

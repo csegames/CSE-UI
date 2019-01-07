@@ -6,14 +6,15 @@
 
 import * as React from 'react';
 import { values } from 'lodash';
-import { webAPI, events, client, RequestConfig } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 import CharacterDeleteModalView from './components/CharacterDeleteModalView';
 import { patcher } from '../../../../services/patcher';
 import { ControllerContext, PatcherServer } from '../../ControllerContext';
+import { SimpleCharacter } from 'gql/interfaces';
 
 export interface ComponentProps {
   servers: {[id: string]: PatcherServer};
-  character: webAPI.SimpleCharacter;
+  character: SimpleCharacter;
   closeModal: () => void;
   onSuccess: (id: string) => void;
 }
@@ -64,7 +65,7 @@ class CharacterDeleteModal extends React.Component<Props, CharacterDeleteModalSt
   }
 
   private deleteCharacter = async () => {
-    await events.fire('play-sound', 'select');
+    await game.trigger('play-sound', 'select');
     await this.setState({ deleting: true });
 
     const character = this.props.character;
@@ -72,7 +73,7 @@ class CharacterDeleteModal extends React.Component<Props, CharacterDeleteModalSt
       const config: RequestConfig = () => ({
         url: values(this.props.servers).find(server => server.shardID === character.shardID).apiHost + '/',
         headers: {
-          Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+          Authorization: `Bearer ${patcher.getAccessToken()}`,
         },
       });
       const res = await webAPI.CharactersAPI.DeleteCharacterV1(config, character.shardID, character.id);
@@ -106,7 +107,7 @@ class CharacterDeleteModal extends React.Component<Props, CharacterDeleteModalSt
 
   private cancelDelete = (): void => {
     this.props.closeModal();
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
   }
 }
 

@@ -174,7 +174,9 @@ regMap[EE_OnPerfHUDUpdate] = 'onPerfHUDUpdate';
 export default function() {
   for (const key in regMap) {
     createForwardingMethod(key, regMap[key]);
-    engine.on(key, (...args: any[]) => game.trigger(key, ...args));
+    if (typeof engine !== 'undefined') {
+      engine.on(key, (...args: any[]) => game.trigger(key, ...args));
+    }
   }
 }
 

@@ -9,7 +9,6 @@ import BanesAndBoons from '../../components/BanesAndBoons';
 import { RacesState } from '../../services/session/races';
 import { FactionsState } from '../../services/session/factions';
 import { PlayerClassesState } from '../../services/session/playerClasses';
-import { Race, Faction, Archetype } from '@csegames/camelot-unchained';
 import {
   BanesAndBoonsInfo,
   BanesAndBoonsState,

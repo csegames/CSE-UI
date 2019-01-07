@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { toTitleCase } from '@csegames/camelot-unchained/lib/utils/textUtils';
 import { CharacterCreationPage } from '../index';
 
 const Header = styled('div')`
@@ -78,7 +77,7 @@ class CharCreationHeader extends React.Component<CharCreationHeaderProps> {
     return (
       <Header>
         <span>[ {this.props.selectedServerName} ] Character Creation -
-          {toTitleCase(CharacterCreationPage[this.props.page])}
+          {CharacterCreationPage[this.props.page].toTitleCase()}
         </span>
         <ActionContainer>
           <Button onClick={this.props.onHelpClick}>

@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as events  from '@csegames/camelot-unchained/lib/events';
 
 // Session
 import { GlobalState } from '../../services/session';
@@ -79,14 +78,14 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
       if (!this.props.heroContentState.isFetching) this.props.dispatch(fetchHeroContent());
     }, 60000 * 30);
 
-    events.on('view-content', (v: view) => {
+    game.on('view-content', (v: view) => {
       if ((this.props.currentRoute === Routes.NEWS && v !== view.NEWS) ||
         (this.props.currentRoute === Routes.PATCHNOTES && v !== view.PATCHNOTES)) {
         this.props.dispatch(changeRoute(Routes.HERO));
       }
     });
 
-    events.on('logged-in', () => {
+    game.on('logged-in', () => {
       this.setState({} as any);
     });
   }
@@ -102,41 +101,41 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
   private onRouteChanged = (route: Routes) => {
     switch (route) {
       case Routes.HERO: {
-        events.fire('view-content', view.NONE, null);
-        events.fire('resume-videos');
+        game.trigger('view-content', view.NONE, null);
+        game.trigger('resume-videos');
         break;
       }
       case Routes.NEWS: {
-        events.fire('view-content', view.NEWS, {
+        game.trigger('view-content', view.NEWS, {
           news: this.props.newsState,
           fetchPage: this.fetchNewsPage,
         });
-        events.fire('pause-videos');
+        game.trigger('pause-videos');
         break;
       }
       case Routes.CHAT: {
-        events.fire('view-content', view.CHAT, null);
-        events.fire('pause-videos');
+        game.trigger('view-content', view.CHAT, null);
+        game.trigger('pause-videos');
         break;
       }
       case Routes.PATCHNOTES: {
-        events.fire('view-content', view.PATCHNOTES, null);
-        events.fire('pause-videos');
+        game.trigger('view-content', view.PATCHNOTES, null);
+        game.trigger('pause-videos');
         break;
       }
     }
     this.props.dispatch(changeRoute(route));
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
   }
 
   private showChat = () => {
     this.props.dispatch(showChat());
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
   }
 
   private fetchNewsPage = (page: number) => {
     this.props.dispatch(fetchPage(page));
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
   }
 
   private onLogIn = () => {

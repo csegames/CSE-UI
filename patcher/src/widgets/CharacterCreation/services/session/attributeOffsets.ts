@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, Race, Gender, webAPI, RequestConfig } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 import { patcher } from '../../../../services/patcher';
 
 export interface AttributeOffsetInfo {
@@ -49,7 +49,7 @@ export function fetchAttributeOffsetsFailed(error: any) {
 export function fetchAttributeOffsets(shard: number = 1, apiHost: string) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestAttributeOffsets());
-    return getAttributeOffsets(dispatch, client.shardID, apiHost);
+    return getAttributeOffsets(dispatch, game.shardID, apiHost);
   };
 }
 
@@ -58,7 +58,7 @@ async function getAttributeOffsets(dispatch: (action: any) => any, shard: number
     const config: RequestConfig = () => ({
       url: apiHost,
       headers: {
-        Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+        Authorization: `Bearer ${patcher.getAccessToken()}`,
       },
     });
     const res = await webAPI.GameDataAPI.GetAttributeOffsetsV1(config, shard);

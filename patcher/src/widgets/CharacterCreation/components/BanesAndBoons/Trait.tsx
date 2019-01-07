@@ -7,7 +7,7 @@
 import * as React from 'react';
 import styled, { css, cx } from 'react-emotion';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
-import { events, Tooltip } from '@csegames/camelot-unchained';
+import { Tooltip } from '@csegames/camelot-unchained';
 import { colors } from '../../styleConstants';
 
 const TraitView = styled('div')`
@@ -302,7 +302,7 @@ class Trait extends React.Component<TraitProps, {}> {
   private onTraitClick = () => {
     const { trait, onTraitClick, onCancelTrait } = this.props;
     if (trait.selected && onCancelTrait) {
-      events.fire('play-sound', 'select');
+      game.trigger('play-sound', 'select');
       onCancelTrait(trait);
     } else {
       if (onTraitClick) {

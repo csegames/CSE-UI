@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import * as events  from '@csegames/camelot-unchained/lib/events';
 
 import TraitSummary from './TraitSummary';
 import SummaryListHeader from './SummaryListHeader';
@@ -141,24 +140,24 @@ class SummaryList extends React.Component<SummaryListProps, SummaryListState> {
   }
 
   private onResetBoonsClick = () => {
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
     this.props.onResetBoonsClick();
   }
 
   private onResetBanesClick = () => {
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
     this.props.onResetBanesClick();
   }
 
   private onResetAllClick = () => {
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
     this.props.onResetBoonsClick();
     this.props.onResetBanesClick();
 
   }
 
   private onResetClick = (initType: 'banes' | 'boons' | 'both') => {
-    events.fire('play-sound', 'reset-traits');
+    game.trigger('play-sound', 'reset-traits');
     this.props.onHideAllAlertDialog();
     switch (initType) {
       case 'banes': {

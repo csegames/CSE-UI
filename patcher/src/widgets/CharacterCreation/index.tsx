@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import { createStore, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { client, events, webAPI, Gender, Archetype, Race, Faction, HelpInfo } from '@csegames/camelot-unchained';
+import { webAPI, HelpInfo } from '@csegames/camelot-unchained';
 
 import { view } from '../../components/OverlayView';
 import FactionSelect from './components/FactionSelect';
@@ -306,7 +306,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 
   public componentDidMount() {
-    events.on('view-content', (View: any, props: any) => {
+    game.on('view-content', (View: any, props: any) => {
       if (view.CHARACTERCREATION === View) {
         this.resetAndInit(props.apiHost);
         this.setState({ selectedServerName: props.selectedServer });
@@ -360,7 +360,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 
   private create = () => {
-    events.fire('play-sound', 'create-character');
+    game.trigger('play-sound', 'create-character');
     // validate name
     const { banesAndBoonsState } = this.props;
     const modelName = (this.characterNameInputRef as any).value.trim();
@@ -429,24 +429,24 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     this.props.dispatch(selectPlayerClass(factionClasses[0]));
     this.props.dispatch(selectRace(factionRaces[0]));
 
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
   }
 
   private raceSelect = (selected: RaceInfo) => {
     this.props.dispatch(selectRace(selected));
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
     this.pushPagesCompleted(CharacterCreationPage.Race);
   }
 
   private classSelect = (selected: PlayerClassInfo) => {
     this.props.dispatch(selectPlayerClass(selected));
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
     this.pushPagesCompleted(CharacterCreationPage.Class);
   }
 
   private previousPage = () => {
     this.setState({ page: this.state.page - 1, helpEnabled: false });
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
   }
 
   private goToPage = (page: CharacterCreationPage) => {
@@ -480,7 +480,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     if (this.props.racesState.selected == null) {
       raceErrors.push('Choose a race to continue.');
     }
-    if (this.props.gender === 0) {
+    if (this.props.gender === Gender.None) {
       raceErrors.push('Choose a gender to continue.');
     }
     if (this.props.playerClassesState.selected == null) {
@@ -510,7 +510,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
 
     switch (page) {
       case CharacterCreationPage.Faction: {
-        events.fire('play-sound', 'select');
+        game.trigger('play-sound', 'select');
         this.setState({ page: CharacterCreationPage.Faction });
         break;
       }
@@ -521,7 +521,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           return;
         }
         this.pushPagesCompleted(CharacterCreationPage.Faction);
-        events.fire('play-sound', 'select');
+        game.trigger('play-sound', 'select');
         this.setState({ page: CharacterCreationPage.Race, helpEnabled: false });
         break;
       }
@@ -532,7 +532,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           return;
         }
         this.pushPagesCompleted(CharacterCreationPage.Race);
-        events.fire('play-sound', 'select');
+        game.trigger('play-sound', 'select');
         this.setState({ page: CharacterCreationPage.Class, helpEnabled: false });
         break;
       }
@@ -550,7 +550,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           initType: 'both',
         }));
         this.pushPagesCompleted(CharacterCreationPage.Class);
-        events.fire('play-sound', 'select');
+        game.trigger('play-sound', 'select');
         this.setState({ page: CharacterCreationPage.Attributes, helpEnabled: false });
         break;
       }
@@ -561,7 +561,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           return;
         }
         this.pushPagesCompleted(CharacterCreationPage.Attributes);
-        events.fire('play-sound', 'select');
+        game.trigger('play-sound', 'select');
         setTimeout(() => this.setState({ page: CharacterCreationPage.BanesAndBoons, helpEnabled: false }), 10);
         break;
       }
@@ -572,7 +572,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           return;
         }
         this.pushPagesCompleted(CharacterCreationPage.BanesAndBoons);
-        events.fire('play-sound', 'select');
+        game.trigger('play-sound', 'select');
         this.setState({ page: CharacterCreationPage.Summary, helpEnabled: false });
         break;
       }
@@ -583,7 +583,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
     const config = () => ({
       url: this.props.apiHost,
       headers: {
-        Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+        Authorization: `Bearer ${patcher.getAccessToken()}`,
       },
     });
     const res = await webAPI.ServersAPI.GetServersV1(config);
@@ -614,8 +614,8 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 
   private onCloseClick = () => {
-    events.fire('play-sound', 'select');
-    events.fire('view-content', view.NONE);
+    game.trigger('play-sound', 'select');
+    game.trigger('view-content', view.NONE);
     this.resetAndInit();
   }
 }

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, webAPI, Race, Faction, Gender, Archetype, RequestConfig } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 import { patcher } from '../../../../services/patcher';
 
 export interface CharacterCreationModel {
@@ -37,7 +37,7 @@ export function resetCharacter() {
 
 export function createCharacter(model: CharacterCreationModel,
                                 apiKey: string,
-                                apiUrl: string = client.apiHost,
+                                apiUrl: string = game.webAPIHost,
                                 shard: number = 1,
                                 apiVersion: number = 1) {
   return async (dispatch: (action: any) => any) => {
@@ -46,7 +46,7 @@ export function createCharacter(model: CharacterCreationModel,
       const config: RequestConfig = () => ({
         url: apiUrl,
         headers: {
-          Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+          Authorization: `Bearer ${patcher.getAccessToken()}`,
         },
       });
       const res = await webAPI.CharactersAPI.CreateCharacterV2(config, shard, model);

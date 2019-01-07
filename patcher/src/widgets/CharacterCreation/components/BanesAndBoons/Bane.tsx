@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import * as events  from '@csegames/camelot-unchained/lib/events';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 import Trait from './Trait';
 
@@ -40,7 +39,7 @@ const Bane = (props: {
   const onBaneSelect = (trait: BanesAndBoonsInfo) => {
     if (onBaneClick) {
       onBaneClick(trait);
-      events.fire('play-sound', 'bane-select');
+      game.trigger('play-sound', 'bane-select');
     }
   };
   return (

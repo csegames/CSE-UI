@@ -41,31 +41,33 @@ function cuAPIShim() {
 }
 
 export default function() {
-  (window as any).cuAPI = new Proxy(cuAPIShim(), {
-    get: (obj, key) => {
-
-      if (key === 'characterID') {
-        return game.selfPlayerState.characterID;
-      }
-
-      if (key === 'shardID') {
-        return game.shardID;
-      }
-
-      if (key in game) {
-        return game[key];
-      }
-
-      if (key in obj) {
-        return obj[key];
-      }
-
-      return function() {
-        const args = Array.prototype.slice.call(arguments);
-        console.warn(
-          `A method was called on cuAPI shim that has not been implemented | ${String(key)} : ${args.join(', ')}`);
-        return -1;
-      };
-    },
-  });
+  if (typeof Proxy !== 'undefined') {
+    (window as any).cuAPI = new Proxy(cuAPIShim(), {
+      get: (obj, key) => {
+  
+        if (key === 'characterID') {
+          return game.selfPlayerState.characterID;
+        }
+  
+        if (key === 'shardID') {
+          return game.shardID;
+        }
+  
+        if (key in game) {
+          return game[key];
+        }
+  
+        if (key in obj) {
+          return obj[key];
+        }
+  
+        return function() {
+          const args = Array.prototype.slice.call(arguments);
+          console.warn(
+            `A method was called on cuAPI shim that has not been implemented | ${String(key)} : ${args.join(', ')}`);
+          return -1;
+        };
+      },
+    });
+  }
 }

@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import * as events  from '@csegames/camelot-unchained/lib/events';
 
 import { Routes } from '../../services/session/routes';
 import { patcher } from '../../services/patcher';
@@ -52,7 +51,7 @@ class Header extends React.Component<HeaderProps, {}> {
 
   private externalLink = (url: string) => {
     window.open(url, '_blank');
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
   }
 
   private internalLink = (route: Routes) => {

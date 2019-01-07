@@ -6,13 +6,13 @@
  */
 
 import { includes } from 'lodash';
-import { webAPI, Archetype, Race } from '@csegames/camelot-unchained';
+import { SimpleCharacter, Archetype, Race } from 'gql/interfaces';
 
-export function shouldFlipCharImage(character: webAPI.SimpleCharacter) {
+export function shouldFlipCharImage(character: SimpleCharacter) {
   return (character.archetype === Archetype.WintersShadow);
 }
 
-export function getCharImage(character: webAPI.SimpleCharacter) {
+export function getCharImage(character: SimpleCharacter) {
   if (!character || !character.race || !character.gender || !character.archetype) return '';
 
   let race = Race[character.race].toLowerCase();

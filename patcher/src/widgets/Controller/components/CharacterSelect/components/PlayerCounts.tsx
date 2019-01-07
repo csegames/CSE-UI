@@ -7,7 +7,6 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Faction } from '@csegames/camelot-unchained';
 import { MetricsData } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 

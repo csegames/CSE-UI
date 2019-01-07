@@ -8,9 +8,8 @@
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
 import { has, uniqBy } from 'lodash';
-import { utils, client } from '@csegames/camelot-unchained';
-import { CUQuery, PatchNote } from '@csegames/camelot-unchained/lib/graphql';
 import { query } from '@csegames/camelot-unchained/lib/graphql/query';
+import { CUQuery } from '@csegames/camelot-unchained/lib/graphql/schema';
 
 import Animate from '../../lib/Animate';
 import ResponseError from '../../lib/ResponseError';
@@ -27,6 +26,7 @@ import PatchNotesFeaturedItem from './components/PatchNotesFeaturedItem';
 import NewsFullArticle from './components/NewsFullArticle';
 import PatchNotesFullArticle from './components/PatchNotesFullArticle';
 import { FullWrapper } from './lib/styles';
+import { PatchNote } from 'gql/interfaces';
 
 const patchNotesQuery = `
   query PatchNotesQuery($channel: Int!, $from: Date!, $to: Date!) {
@@ -209,7 +209,7 @@ function makePostsUrl(page: number): string {
   return `http://camelotunchained.com/v3/wp-json/wp/v2/posts?per_page=${postsPerPage}&page=${page}`;
 }
 
-let stateCache: NewsState = utils.merge(defaultFetchStatus, {
+let stateCache: NewsState = merge(defaultFetchStatus, {
   activeFilter: PostFilter.All,
   didInvalidate: false,
   nextPage: 1,
@@ -321,7 +321,7 @@ class News extends React.Component<NewsProps, NewsState> {
     fetchJSON(makePostsUrl(page))
       .then(this.onFetchNewsPosts)
       .catch((error: ResponseError) => {
-        this.setState(utils.merge(this.state, {
+        this.setState(merge(this.state, {
           isFetching: false,
           error,
         }));
@@ -341,7 +341,7 @@ class News extends React.Component<NewsProps, NewsState> {
     mergedPosts = mergedPosts.concat(newsPostItems);
 
     if (res.ok) {
-      const patchNotePostItems = res.data.patchNotes.map((patchNote: PatchNote) => {
+      const patchNotePostItems = res.data.patchNotes.map((patchNote) => {
         return {
           type: PostFilter.PatchNotes,
           item: patchNote,
@@ -354,7 +354,7 @@ class News extends React.Component<NewsProps, NewsState> {
       const bDate = this.getPostItemDate(b.item);
       return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
     });
-    stateCache = utils.merge(this.state, {
+    stateCache = merge(this.state, {
       isFetching: false,
       didInvalidate: false,
       nextPage: this.state.nextPage + 1,
@@ -372,13 +372,13 @@ class News extends React.Component<NewsProps, NewsState> {
       variables: { channel: 4, from, to },
       operationName: null,
       namedQuery: null,
+      useNamedQueryCache: false,
     }, {
-      url: client.apiHost + '/graphql',
+      url: game.webAPIHost + '/graphql',
       requestOptions: {
         headers: {
-          loginToken: client.loginToken,
-          shardID: `${client.shardID}`,
-          characterID: client.characterID,
+          Authorization: `Bearer ${game.accessToken}`,
+          shardID: `${game.shardID}`,
         },
       },
     });

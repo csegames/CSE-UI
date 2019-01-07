@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { client, RequestConfig, Race, Faction, webAPI } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/camelot-unchained';
 import { patcher } from '../../../../services/patcher';
 
 export interface RaceInfo {
@@ -60,7 +60,7 @@ async function getRaces(dispatch: (action: any) => any, apiHost: string) {
     const config: RequestConfig = () => ({
       url: apiHost,
       headers: {
-        Authorization: `${client.ACCESS_TOKEN_PREFIX} ${patcher.getAccessToken()}`,
+        Authorization: `Bearer ${patcher.getAccessToken()}`,
       },
     });
     const res = await webAPI.GameDataAPI.GetRacesV1(config);

@@ -5,7 +5,6 @@
  */
 
 import * as React from 'react';
-import * as events  from '@csegames/camelot-unchained/lib/events';
 
 import LoginView from './components/LoginView';
 import { patcher } from '../../../../services/patcher';
@@ -116,11 +115,11 @@ class Login extends React.Component<LoginProps, LoginState> {
       // Resets form fields when remember me is unchecked
       this.setState({ email: null, password: null });
     }
-    events.fire('play-sound', 'select');
+    game.trigger('play-sound', 'select');
   }
 
   private login = () => {
-    events.fire('play-sound', 'server-select');
+    game.trigger('play-sound', 'server-select');
     this.setState({ status: LoginStatus.WORKING });
     patcher.login({
       email: this.emailRef.value,
@@ -136,7 +135,7 @@ class Login extends React.Component<LoginProps, LoginState> {
       // success! notify, then trigger switch
       setTimeout(() => this.props.onLogin(), 1000);
       this.setState({ status: LoginStatus.SUCCESS } as any);
-      events.fire('logged-in');
+      game.trigger('logged-in');
       return;
     } else if (waitTime > 5000 || patcher.hasLoginError()) {
       switch (patcher.getLoginError()) {
