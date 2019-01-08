@@ -21,7 +21,7 @@ export interface SoundState {
 
 const sounds = {
   select: 'sounds/UI_Menu_GenericSelect_v1_02.ogg',
-  launchGame: 'sounds/UI_Patcher_PlayButton_v3.ogg',
+  launchGame: 'sounds/UI_Patcher_PlayButton_v4.ogg',
   patchComplete: 'sounds/patch-complete.ogg',
   selectChange: 'sounds/UI_Menu_CharacterSelect_Change_v1_01.ogg',
   createCharacter: 'sounds/UI_Menu_CreateNewCharacter_v1_01.ogg',
