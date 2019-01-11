@@ -92,6 +92,7 @@ async function fetchData(this: InternalGameDataStore) {
         headers: {
           characterID: game.selfPlayerState.characterID,
           Authorization: 'Bearer ' + game.accessToken,
+          shardID: String(game.shardID),
         },
       },
     });
