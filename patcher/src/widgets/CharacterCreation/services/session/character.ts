@@ -55,8 +55,11 @@ export function createCharacter(model: CharacterCreationModel,
         return;
       }
       const errorData = JSON.parse(res.data);
-      const error = errorData.FieldCodes && errorData.FieldCodes[0] ? errorData.FieldCodes[0].Message :
-        errorData.Message ? errorData.Message : 'There was an error with character creation!';
+      let error = 'There was an error with character creation!';
+      if (errorData.FieldCodes && errorData.FieldCodes[0] && errorData.FieldCodes[0].Message) {
+        const potentialError = JSON.parse(errorData.FieldCodes[0].Message);
+        error = potentialError.Errors ? potentialError.Errors : error;
+      }
       dispatch(createCharacterFailed(error));
     } catch (e) {
       dispatch(createCharacterFailed('There was an unexpected error!'));
@@ -78,10 +81,10 @@ export function createCharacterSuccess(model: CharacterCreationModel) {
   };
 }
 
-export function createCharacterFailed(error: any) {
+export function createCharacterFailed(error: string | string[]) {
   return {
     type: CREATE_CHARACTER_FAILED,
-    error: JSON.parse(error),
+    error,
   };
 }
 
@@ -114,7 +117,7 @@ export default function reducer(state: CharacterState = initialState, action: an
         created: action.model,
       });
     case CREATE_CHARACTER_FAILED:
-      const errors: any =  action.error.Errors;
+      const errors: any =  action.error;
       if (!errors) {
         toastr.error('An unexpected error occured! Try restarting your patcher', 'Oh No!!', { timeout: 5000 });
       } else {

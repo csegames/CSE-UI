@@ -83,7 +83,7 @@ export class CharacterSummary extends React.Component<CharacterSummaryProps, Cha
   public render() {
     const { selectedRace, selectedClass, selectedGender, attributes,
       attributeOffsets, remainingPoints, banesAndBoonsState, inputRef } = this.props;
-    const race = includes(Race[selectedRace].toLowerCase(), 'human') ? selectedRace : Race[selectedRace];
+    const race = includes(Race[selectedRace].toLowerCase(), 'human') ? 'Human' : Race[selectedRace];
     const videoTitle = this.getVideoTitle();
     return (
       <Container>
