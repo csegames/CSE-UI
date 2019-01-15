@@ -270,7 +270,7 @@ export class PlayerFrame extends React.Component<Props, State> {
             <Image src={imgDir + realmPrefix + archetypePrefix + 'frame.png'} />
           </ArchetypeFrameContainer>
 
-          <Name>{player.name}</Name>
+          <Name>{player.name}{!player.isAlive ? ' (Corpse)' : ''}</Name>
         </MainGrid>
 
         {player.statuses &&
