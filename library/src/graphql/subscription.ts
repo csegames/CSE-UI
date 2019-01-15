@@ -320,7 +320,9 @@ export function subscribe<DataType>(
     throw new Error('WebSockets not supported by this browser');
   }
 
-  subscriptionManager = new SubscriptionManager(options);
+  if (subscriptionManager === null) {
+    subscriptionManager = new SubscriptionManager(options);
+  }
 
   return {
     id: subscriptionManager.subscribe(subscription, onData, onError),
