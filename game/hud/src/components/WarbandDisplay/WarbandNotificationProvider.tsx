@@ -85,6 +85,7 @@ class WarbandNotificationProvider extends React.PureComponent<Props, State> {
 
         case GroupNotificationType.Removed: {
           this.setState({ groupID: '' });
+          game.trigger('chat-leave-room', notification.groupID);
           break;
         }
       }
