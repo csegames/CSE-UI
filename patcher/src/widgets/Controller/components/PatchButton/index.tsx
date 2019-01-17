@@ -229,6 +229,10 @@ class PatchButton extends React.Component<Props, PatchButtonState> {
       launchString += ' autoconnect=1';
     }
 
+    if (selectedServer.name === 'Editor') {
+      launchString += ' debugSuppressNonFatal=true';
+    }
+
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);
     this.channelUpdateTimeout = window.setTimeout(() => this.props.updateChannels(), 200);
     this.playSound('select');

@@ -246,7 +246,7 @@ function defaultGraphQLOptions(): Partial<QueryOptions> {
     requestOptions: {
       headers: {
         Authorization: 'Bearer ' + game.accessToken,
-        characterID: game.selfPlayerState.characterID,
+        characterID: game.selfPlayerState ? game.selfPlayerState.characterID : '',
         shardID: String(game.shardID),
       },
     },
