@@ -18,6 +18,7 @@ import {
   GroupMemberRemovedUpdate,
   WarbandNotificationSubscription,
   GroupNotificationType,
+  GroupMemberState,
 } from 'gql/interfaces';
 
 import { addOrUpdate, removeWhere } from '../../lib/reduxUtils';

@@ -120,7 +120,7 @@ export class Items extends React.Component<ItemsProps, ItemsState> {
               >
               <I
                 key={i.id}
-                onClick={() => game.building.selectPotentialItemAsync(i.id)}
+                onClick={() => this.onClick(i)}
               >
                 <Image src={i.icon}/>
               </I>
@@ -140,6 +140,13 @@ export class Items extends React.Component<ItemsProps, ItemsState> {
     if (this.itemChangeHandle) {
       this.itemChangeHandle.clear();
       this.itemChangeHandle = null;
+    }
+  }
+
+  private onClick = async (item: PotentialItem) => {
+    const result = await game.building.selectPotentialItemAsync(item.id);
+    if (result.success) {
+      game.trigger(game.engineEvents.EE_OnToggleBuildSelector);
     }
   }
 }

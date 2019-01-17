@@ -8,6 +8,7 @@ import { defaultConfig } from '@csegames/camelot-unchained/lib/webAPI/config';
 import { GroupsAPI } from '@csegames/camelot-unchained/lib/webAPI/definitions';
 
 import { sendSystemMessage } from './system';
+import { GroupMemberState } from 'gql/interfaces';
 
 export interface WarbandState {
   id: string;

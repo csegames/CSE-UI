@@ -28,6 +28,7 @@ import {
   GroupMemberRemovedUpdate,
   WarbandNotificationSubscription,
   GroupNotificationType,
+  GroupMemberState,
 } from 'gql/interfaces';
 
 const MemberPoi = styled('div')`

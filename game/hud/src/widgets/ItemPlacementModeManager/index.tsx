@@ -244,6 +244,7 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   }
 
   private makeItemActionRequest = async (itemId: string, actionId: string, position: Vec3F, rotation: Euler3f) => {
+    if (!itemId) return;
     try {
       const res = await webAPI.ItemAPI.PerformItemAction(
         webAPI.defaultConfig,
@@ -269,6 +270,7 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   }
 
   private makeMoveItemRequest = async (itemId: string, position: Vec3F, rotation: Euler3f) => {
+    if (!itemId) return;
     try {
       const res = await webAPI.ItemAPI.MoveItems(
         webAPI.defaultConfig,
