@@ -13,6 +13,7 @@ import { Items } from './Items';
 import { Help } from './Help';
 import { BlueprintNameDialog } from './BlueprintNameDialog';
 import { ReplaceDialog } from './ReplaceDialog';
+import { SearchInput } from './SearchInput';
 
 const OuterWrapper = styled('div')`
   height: 100%;
@@ -23,6 +24,17 @@ const Container = styled('div')`
   pointer-events: all;
   height: 100%;
   width: 100%;
+`;
+
+const Content = styled('div')`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  background-image: url(images/settings/bag-bg-grey.png);
+  background-repeat: no-repeat;
+  background-position: top center;
+  margin-top: -10px;
 `;
 
 const OpenButton = styled('div')`
@@ -55,6 +67,7 @@ export interface BuildProps {
 }
 
 export interface BuildState {
+  searchValue: string;
   visible: boolean;
   open: boolean;
 }
@@ -65,6 +78,7 @@ export class Build extends React.PureComponent<BuildProps, BuildState> {
   constructor(props: BuildProps) {
     super(props);
     this.state = {
+      searchValue: '',
       visible: game.building.mode !== BuildingMode.NotBuilding,
       open: true,
     };
@@ -81,7 +95,12 @@ export class Build extends React.PureComponent<BuildProps, BuildState> {
             tabs={tabs}
             onClose={this.onClose}
           >
-            {this.renderTab}
+            {tab => (
+              <Content className={'cse-ui-scroller-thumbonly'}>
+                {tab !== helpTab && <SearchInput value={this.state.searchValue} onChange={this.onSearchChange} />}
+                {this.renderTab(tab)}
+              </Content>
+            )}
           </TabbedDialog>
         </Container>
       ) : (
@@ -113,9 +132,9 @@ export class Build extends React.PureComponent<BuildProps, BuildState> {
 
   private renderTab = (tab: DialogButton) => {
     switch (tab) {
-      case blocksTab: return <Blocks />;
-      case bpTab: return <Blueprints />;
-      case itemsTab: return <Items />;
+      case blocksTab: return <Blocks searchValue={this.state.searchValue} />;
+      case bpTab: return <Blueprints searchValue={this.state.searchValue} />;
+      case itemsTab: return <Items searchValue={this.state.searchValue} />;
       case helpTab: return <Help />;
     }
   }
@@ -126,6 +145,10 @@ export class Build extends React.PureComponent<BuildProps, BuildState> {
 
   private onClose = () => {
     game.trigger(game.engineEvents.EE_OnToggleBuildSelector);
+  }
+
+  private onSearchChange = (val: string) => {
+    this.setState({ searchValue: val });
   }
 
   private handleBuildingModeChanged = () => {

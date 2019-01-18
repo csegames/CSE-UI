@@ -28,9 +28,6 @@ const Content = styled('div')`
   justify-content: space-around;
   color: #ececec;
   padding-top: 10px;
-  background-image: url(images/settings/bag-bg-grey.png);
-  background-repeat: no-repeat;
-  background-position: top center;
   overflow: visible;
   box-sizing: border-box!important;
   min-height: 150px;

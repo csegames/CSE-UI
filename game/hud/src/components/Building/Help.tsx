@@ -10,11 +10,7 @@ import { Btn } from './BlueprintNameDialog';
 
 const Container = styled('div')`
   flex: 1 1 auto;
-  margin-top: -10px;
   padding-top: 10px;
-  background-image: url(images/settings/bag-bg-grey.png);
-  background-repeat: no-repeat;
-  background-position: top center;
   overflow: auto;
   box-sizing: border-box!important;
   pointer-events: auto;

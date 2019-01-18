@@ -7,15 +7,13 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 import { Tooltip } from 'components/UI/Tooltip';
+import { doesSearchInclude } from '@csegames/camelot-unchained';
 import { ConfirmDialog } from '@csegames/camelot-unchained/lib/components/ConfirmDialog';
 
 const Container = styled('div')`
   flex: 1 1 auto;
   margin-top: -10px;
   padding-top: 10px;
-  background-image: url(images/settings/bag-bg-grey.png);
-  background-repeat: no-repeat;
-  background-position: top center;
   overflow: auto;
   box-sizing: border-box!important;
   pointer-events: auto;
@@ -111,6 +109,7 @@ const TooltipName = styled('div')`
 `;
 
 export interface BlueprintsProps {
+  searchValue: string;
 }
 
 export interface BlueprintsState {
@@ -132,7 +131,7 @@ export class Blueprints extends React.Component<BlueprintsProps, BlueprintsState
   }
 
   public render() {
-    const blueprints = Object.values(game.building.blueprints);
+    const blueprints = this.getFilteredBlueprints();
     return (
       <Container className='cse-ui-scroller-thumbonly'>
         <Controller>
@@ -187,7 +186,7 @@ export class Blueprints extends React.Component<BlueprintsProps, BlueprintsState
   }
 
   public shouldComponentUpdate(nextProps: BlueprintsProps, nextState: BlueprintsState) {
-    return false;
+    return this.props.searchValue !== nextProps.searchValue;
   }
 
   public componentWillUnmount() {
@@ -205,4 +204,24 @@ export class Blueprints extends React.Component<BlueprintsProps, BlueprintsState
     }
   }
 
+  private getFilteredBlueprints = () => {
+    const blueprints = Object.values(game.building.blueprints);
+    if (this.props.searchValue === '') return blueprints;
+
+    const filteredBlueprints = blueprints.filter((item) => {
+      if (doesSearchInclude(this.props.searchValue, item.name)) {
+        return true;
+      }
+
+      const tags = Object.values(item.tags);
+      for (let i = 0; i < tags.length; i++) {
+        if (doesSearchInclude(this.props.searchValue, tags[i])) {
+          return true;
+        }
+      }
+
+      return false;
+    });
+    return filteredBlueprints;
+  }
 }

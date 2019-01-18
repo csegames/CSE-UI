@@ -7,14 +7,12 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 import { Tooltip } from 'components/UI/Tooltip';
+import { doesSearchInclude } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`
   flex: 1 1 auto;
   margin-top: -10px;
   padding-top: 10px;
-  background-image: url(images/settings/bag-bg-grey.png);
-  background-repeat: no-repeat;
-  background-position: top center;
   overflow: auto;
   box-sizing: border-box!important;
   pointer-events: auto;
@@ -83,6 +81,7 @@ const TooltipName = styled('div')`
 
 
 export interface ItemsProps {
+  searchValue: string;
 }
 
 export interface ItemsState {
@@ -100,40 +99,40 @@ export class Items extends React.Component<ItemsProps, ItemsState> {
   }
 
   public render() {
-    const items = game.building.potentialItems && Object.values(game.building.potentialItems) || [];
+    const items = this.getFilteredItems();
     return (
       <Container className='cse-ui-scroller-thumbonly'>
         <Content>
-        {items.length === 0 ? 'No Potential Items Available.' : null}
-        {items.map((i) => {
-          const I = i.id === game.building.activePotentialItemID ? SelectedItem : Item;
-          return (
-              <Tooltip
-                content={(
-                  <TooltipContainer>
-                    <TooltipIcon src={i.icon} />
-                    <TooltipName>{i.name}</TooltipName>
-                    <TooltipItemTags>{Object.values(i.tags).join(' ')}</TooltipItemTags>
-                  </TooltipContainer>
-                )}
-                closeOnEvents={[game.engineEvents.EE_OnToggleBuildSelector]}
-              >
-              <I
-                key={i.id}
-                onClick={() => this.onClick(i)}
-              >
-                <Image src={i.icon}/>
-              </I>
-              </Tooltip>
-          );
-        })}
+          {items.length === 0 ? 'No Potential Items Available.' : null}
+          {items.map((i) => {
+            const I = i.id === game.building.activePotentialItemID ? SelectedItem : Item;
+            return (
+                <Tooltip
+                  content={(
+                    <TooltipContainer>
+                      <TooltipIcon src={i.icon} />
+                      <TooltipName>{i.name}</TooltipName>
+                      <TooltipItemTags>{Object.values(i.tags).join(' ')}</TooltipItemTags>
+                    </TooltipContainer>
+                  )}
+                  closeOnEvents={[game.engineEvents.EE_OnToggleBuildSelector]}
+                >
+                <I
+                  key={i.id}
+                  onClick={() => this.onClick(i)}
+                >
+                  <Image src={i.icon}/>
+                </I>
+                </Tooltip>
+            );
+          })}
         </Content>
       </Container>
     );
   }
 
   public shouldComponentUpdate(nextProps: ItemsProps, nextState: ItemsState) {
-    return false;
+    return this.props.searchValue !== nextProps.searchValue;
   }
 
   public componentWillUnmount() {
@@ -148,5 +147,26 @@ export class Items extends React.Component<ItemsProps, ItemsState> {
     if (result.success) {
       game.trigger(game.engineEvents.EE_OnToggleBuildSelector);
     }
+  }
+
+  private getFilteredItems = () => {
+    const items = game.building.potentialItems && Object.values(game.building.potentialItems) || [];
+    if (this.props.searchValue === '') return items;
+
+    const filteredItems = items.filter((item) => {
+      if (doesSearchInclude(this.props.searchValue, item.name)) {
+        return true;
+      }
+
+      const tags = Object.values(item.tags);
+      for (let i = 0; i < tags.length; i++) {
+        if (doesSearchInclude(this.props.searchValue, tags[i])) {
+          return true;
+        }
+      }
+
+      return false;
+    });
+    return filteredItems;
   }
 }

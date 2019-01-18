@@ -7,14 +7,12 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 import { Tooltip } from 'components/UI/Tooltip';
+import { doesSearchInclude } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`
   flex: 1 1 auto;
   margin-top: -10px;
   padding-top: 10px;
-  background-image: url(images/settings/bag-bg-grey.png);
-  background-repeat: no-repeat;
-  background-position: top center;
   overflow: auto;
   box-sizing: border-box!important;
   pointer-events: auto;
@@ -81,6 +79,7 @@ const TooltipMatTags = styled('div')`
 `;
 
 export interface BlocksProps {
+  searchValue: string;
 }
 
 export interface BlocksState {
@@ -101,7 +100,7 @@ export class Blocks extends React.Component<BlocksProps, BlocksState> {
     return (
       <Container className='cse-ui-scroller-thumbonly'>
         <Content>
-        {Object.values(game.building.materials).map((m) => {
+        {Object.values(this.getFilteredBlocks()).map((m) => {
           return Object.values(m.blocks).map((b) => {
             const B = b.id === game.building.activeBlockID ? SelectedBlock : Block;
             return (
@@ -131,12 +130,65 @@ export class Blocks extends React.Component<BlocksProps, BlocksState> {
   }
 
   public shouldComponentUpdate(nextProps: BlocksProps, nextState: BlocksState) {
-    return false;
+    return this.props.searchValue !== nextProps.searchValue;
   }
 
   public componentWillUnmount() {
     if (this.blockChangeHandle) {
       this.blockChangeHandle.clear();
     }
+  }
+
+  private getFilteredBlocks = () => {
+    if (this.props.searchValue === '') return game.building.materials;
+
+    const materials = game.building.materials;
+    const filteredMaterials = {};
+    Object.keys(materials).forEach((mKey) => {
+      let searchIncludesMaterial = false;
+      let mTagFilter = '';
+      Object.values(materials[mKey].tags).forEach((mTag) => {
+        // Search against concatenated materials tag
+        mTagFilter += mTag;
+      });
+
+      if (doesSearchInclude(this.props.searchValue, mTagFilter)) {
+        searchIncludesMaterial = true;
+      }
+
+      Object.keys(materials[mKey].blocks).forEach((bKey) => {
+        let searchIncludesBlock = false;
+        let bTagFilter = '';
+        Object.values(materials[mKey].blocks[bKey].tags).forEach((bTag) => {
+          // Search against concatenated block tags
+          bTagFilter += bTag;
+        });
+
+        if (doesSearchInclude(this.props.searchValue, bTagFilter)) {
+          searchIncludesBlock = true;
+        }
+
+        if (searchIncludesMaterial || searchIncludesBlock) {
+          if (filteredMaterials[mKey]) {
+            filteredMaterials[mKey] = {
+              ...filteredMaterials[mKey],
+              blocks: {
+                ...filteredMaterials[mKey].blocks,
+                [bKey]: materials[mKey].blocks[bKey],
+              },
+            };
+          } else {
+            filteredMaterials[mKey] = {
+              ...materials[mKey],
+              blocks: {
+                [bKey]: materials[mKey].blocks[bKey],
+              },
+            };
+          }
+        }
+      });
+    });
+
+    return filteredMaterials;
   }
 }

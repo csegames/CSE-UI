@@ -53,6 +53,7 @@ const ClickDiv = styled('div')`
 `;
 
 type Props = React.InputHTMLAttributes<HTMLInputElement> & {
+  wrapperClassName?: string;
   inputClassName?: string;
   getRef?: (r: HTMLInputElement) => void;
 };
@@ -62,7 +63,7 @@ export class TextInput extends React.PureComponent<Props> {
 
   public render() {
     return (
-      <Wrapper>
+      <Wrapper className={this.props.wrapperClassName}>
         <input
           className={this.props.inputClassName + ' ' + inputStyle}
           type='text'
