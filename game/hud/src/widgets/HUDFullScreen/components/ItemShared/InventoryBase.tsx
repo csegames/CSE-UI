@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-
+import Fuse, { FuseOptions } from 'fuse.js';
 import { webAPI } from '@csegames/camelot-unchained';
 
 import { InventoryRow } from '../Inventory/components/InventoryRow';
@@ -960,6 +960,18 @@ export function getContainerIdToDrawerInfo(containerItems: InventoryItem.Fragmen
   };
 }
 
+export const fuseSearchOptions: FuseOptions<any> = {
+  shouldSort: true,
+  threshold: 0.3,
+  distance: 50,
+  maxPatternLength: 32,
+  minMatchCharLength: 1,
+  includeScore: true,
+  keys: [
+    'staticDefinition.name',
+  ],
+};
+
 // we're filtering items here, put items into slots without regard to position
 // defined on the item
 export function distributeFilteredItems(args: {
@@ -976,48 +988,30 @@ export function distributeFilteredItems(args: {
   props: Partial<InventoryBaseWithQLProps>,
 }): InventoryBaseState {
   const { slotsData, itemData, state, props } = args;
-  const oldItemIdToInfo = _.merge({}, state.itemIdToInfo);
-  const oldSlotNumberToItem = Object.assign({}, state.slotNumberToItem);
   const stackGroupIdToItemIDs = Object.assign({}, args.stackGroupIdToItemIDs);
   const itemIDToStackGroupID = Object.assign({}, state.itemIDToStackGroupID);
   const craftingNameToItemIDs = Object.assign({}, state.craftingNameToItemIDs);
 
   const itemIdToInfo: {[id: string]: {slot: number, icon: string}} = {};
   const slotNumberToItem: SlotNumberToItem = {};
-  const filteredItems = _.keyBy(itemData.items.filter(i =>
-    shouldShowItem(i, props.activeFilters, props.searchValue)), i => i.id);
 
-  let indexCounter = 0;
-  for (let i = 0; i < state.slotCount; ++i) {
-    const itemDef = oldSlotNumberToItem[i];
-    if (!itemDef) continue;
+  const activeFilteredItems = itemData.items.filter(i => shouldShowItem(i, props.activeFilters));
+  const fuseSearch = new Fuse(activeFilteredItems, fuseSearchOptions);
+  const searchAndFilteredItems: InventoryItem.Fragment[] = fuseSearch.search(props.searchValue)
+    .sort((a, b) => {
+      return a.score - b.score === 0 ?
+        a.item.staticDefinition.name.length - b.item.staticDefinition.name.length :
+        a.score - b.score;
+    }).map(item => item.item);
 
-    let itemID = itemDef.id;
-    if ((itemDef.isStack || itemDef.isCrafting) && !_.isEmpty(stackGroupIdToItemIDs[itemDef.id])) {
-      itemID = stackGroupIdToItemIDs[itemDef.id][0];
-    }
-
-    if (!filteredItems[itemID]) {
-      continue;
-    }
-    const oldItem = oldItemIdToInfo[itemID];
-    slotNumberToItem[indexCounter] = itemDef;
-    itemIdToInfo[itemDef.id] = { slot: indexCounter, icon: oldItem ? oldItem.icon : '' };
-    itemIdToInfo[itemID] = { slot: indexCounter, icon: oldItem ? oldItem.icon : '' };
-
-    indexCounter++;
-  }
-
-  for (const key in filteredItems) {
-    if (itemIdToInfo[key]) continue;
-
-    const item = filteredItems[key];
+  for (let i = 0; i < searchAndFilteredItems.length; i++) {
+    const item = searchAndFilteredItems[i];
 
     const isCrafting = isCraftingItem(item);
     const isStack = isStackedItem(item);
     const isContainer = isContainerItem(item);
 
-    const id = isCrafting || isStack ? itemIDToStackGroupID[item.id] : item.id;
+    const id = getItemMapID(item);
 
     const itemDef = {
       id,
@@ -1032,13 +1026,9 @@ export function distributeFilteredItems(args: {
       itemID = stackGroupIdToItemIDs[itemDef.id][0];
     }
 
-    if (itemIdToInfo[itemID]) continue;
-
-    slotNumberToItem[indexCounter] = itemDef;
-
-    itemIdToInfo[itemDef.id] = { slot: indexCounter, icon: getIcon(item) };
-    itemIdToInfo[itemID] = { slot: indexCounter, icon: getIcon(item) };
-    indexCounter++;
+    slotNumberToItem[i] = itemDef;
+    itemIdToInfo[itemDef.id] = { slot: i, icon: getIcon(item) };
+    itemIdToInfo[itemID] = { slot: i, icon: getIcon(item) };
   }
 
   return {
@@ -1046,7 +1036,7 @@ export function distributeFilteredItems(args: {
     itemIdToInfo,
     slotNumberToItem,
     itemIDToStackGroupID,
-    firstEmptyIndex: indexCounter,
+    firstEmptyIndex: searchAndFilteredItems.length,
     craftingNameToItemIDs,
   };
 }

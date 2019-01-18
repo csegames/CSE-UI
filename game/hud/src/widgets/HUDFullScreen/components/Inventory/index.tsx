@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
+import { debounce } from 'lodash';
 
 import TabHeader from '../TabHeader';
 import InventoryHeader from './components/InventoryHeader';
@@ -63,6 +64,8 @@ class Inventory extends React.Component<InventoryProps, InventoryState> {
       filterText: '',
       activeFilters: {},
     };
+
+    this.onFilterTextChanged = debounce(this.onFilterTextChanged, 300);
   }
 
   public render() {

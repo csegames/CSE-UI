@@ -641,33 +641,24 @@ export function hasFilterText(searchValue: string) {
   return searchValue && searchValue.trim() !== '';
 }
 
-export function shouldShowItem(item: InventoryItem.Fragment, activeFilters: ActiveFilters, searchValue: string) {
+export function shouldShowItem(item: InventoryItem.Fragment, activeFilters: ActiveFilters) {
   const hasFilter = hasActiveFilterButtons(activeFilters);
-  const hasSearch = hasFilterText(searchValue);
-  const itemName = getItemDefinitionName(item);
 
     // Active filters compared to item gearSlots
   const doActiveFiltersIncludeItem = _.findIndex(_.values(activeFilters), (filter) => {
     return inventoryFilterButtons[filter.name].filter(item);
   }) > -1;
 
-    // Search text compared to itemName
-  const doesSearchValueIncludeItem = utils.doesSearchInclude(searchValue, itemName);
-
+  if (hasFilter) {
     // Do active filters and search include item?
-  if (hasFilter && hasSearch) {
-    return doActiveFiltersIncludeItem && doesSearchValueIncludeItem;
-
-      // Do active filters include item?
-  } else if (hasFilter && !hasSearch) {
     return doActiveFiltersIncludeItem;
 
-    // Does search value include item?
-  } else if (!hasFilter && hasSearch) {
-    return doesSearchValueIncludeItem;
+  } else if (hasFilter) {
+    // Do active filters include item?
+    return doActiveFiltersIncludeItem;
 
-    // If there are no filters or searchValue, every item should be shown.
   } else {
+    // If there are no filters or searchValue, every item should be shown.
     return true;
   }
 }

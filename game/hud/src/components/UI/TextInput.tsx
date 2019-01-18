@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { css } from 'emotion';
-import styled from 'react-emotion';
+import styled, { cx } from 'react-emotion';
 
 const Wrapper = styled('div')`
   display: inline-block;
@@ -36,8 +36,11 @@ const inputStyle = css`
     border: 1px solid #d7bb4d !important;
     box-shadow: 0 1px 2px #d7bb4d !important;
     outline: none;
+    &::placeholder {
+      color: transparent;
+    }
   }
-  &::-webkit-input-placeholder {
+  &::placeholder {
     color: rgba(200, 200, 200, 0.2);
   }
 `;
@@ -52,20 +55,24 @@ const ClickDiv = styled('div')`
   pointer-events: auto;
 `;
 
-type Props = React.InputHTMLAttributes<HTMLInputElement> & {
-  wrapperClassName?: string;
+export interface ComponentProps {
   inputClassName?: string;
+  wrapperClassName?: string;
+  overrideInputStyles?: boolean;
   getRef?: (r: HTMLInputElement) => void;
-};
+}
+
+type Props = React.InputHTMLAttributes<HTMLInputElement> & ComponentProps;
 
 export class TextInput extends React.PureComponent<Props> {
   private inputRef: HTMLInputElement = null;
 
   public render() {
+    const { overrideInputStyles } = this.props;
     return (
       <Wrapper className={this.props.wrapperClassName}>
         <input
-          className={this.props.inputClassName + ' ' + inputStyle}
+          className={overrideInputStyles ? this.props.inputClassName : cx(inputStyle, this.props.inputClassName)}
           type='text'
           ref={this.getRef}
           {...this.props}
@@ -85,7 +92,6 @@ export class TextInput extends React.PureComponent<Props> {
 
   private getRef = (r: HTMLInputElement) => {
     this.inputRef = r;
-
     if (this.props.getRef) {
       this.props.getRef(r);
     }
