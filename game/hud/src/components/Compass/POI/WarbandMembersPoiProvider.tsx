@@ -315,7 +315,7 @@ export default class WarbandMembersPoiProvider extends React.Component<
     if (!graphql.data) return graphql;
 
     const warband = graphql.data.myActiveWarband;
-    if (warband) {
+    if (warband && warband.info) {
       this.initializeWarband(warband.info.id, warband.members as GroupMemberState[]);
     }
   }

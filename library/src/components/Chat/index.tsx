@@ -37,7 +37,7 @@ export class Chat extends React.Component<ChatProps, ChatState> {
     this.state = this.initialState();
 
     // throttle chat updates
-    this.update = throttle(this.update, 500);
+    this.update = throttle(this.update, 200);
 
     // load configuration (before subscribing to options updates!)
     chatConfig.refresh();

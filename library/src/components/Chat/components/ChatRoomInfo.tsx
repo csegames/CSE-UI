@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { isEqual } from 'lodash';
 import { UserInfo } from './User';
 import { ChatMessage, chatType } from './ChatMessage';
 import { chatConfig } from './ChatConfig';
@@ -48,6 +49,12 @@ class ChatRoomInfo {
 
   public addUser = (user: UserInfo): void => {
     let sortIndex: number = this.users.length;
+    const foundUser = this.users.find(u => u.info.name === user.name);
+    if (foundUser && isEqual(foundUser.info, user)) {
+      // We already have information about this user and their info hasnt been updated. No need to add user.
+      return;
+    }
+
     for (let i = 0; i < this.users.length; i++) {
       if (user.isCSE) {
         if (! this.users[i].info.isCSE) {
