@@ -39,6 +39,7 @@ const Collapsed = css`
 export interface CollapsingListStyle {
   container: string;
   title: string;
+  collapsedTitle: string;
   collapseButton: string;
   body: string;
   listContainer: string;
@@ -83,11 +84,15 @@ export class CollapsingList extends React.Component<CollapsingListProps, Collaps
       <Container className={customStyle.container}>
         <div>
           {typeof this.props.title === 'string' ?
-            <Title className={customStyle.title} onClick={this.onToggleCollapse}>
+            <Title
+              className={collapsed ? cx(customStyle.title, customStyle.collapsedTitle) : customStyle.title}
+              onClick={this.onToggleCollapse}>
               <CollapseButton className={customStyle.collapseButton}>{collapsed ? '+' : '-'}</CollapseButton>
               {this.props.title}
             </Title> :
-              <Title className={customStyle.title} onClick={this.onToggleCollapse}>
+              <Title
+                className={collapsed ? cx(customStyle.title, customStyle.collapsedTitle) : customStyle.title}
+                onClick={this.onToggleCollapse}>
                 {this.props.title(collapsed)}
               </Title>
           }

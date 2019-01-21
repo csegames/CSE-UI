@@ -9,7 +9,6 @@ import * as React from 'react';
 import styled, { css } from 'react-emotion';
 import { isEqual } from 'lodash';
 import gql from 'graphql-tag';
-import { utils } from '@csegames/camelot-unchained';
 import { CollapsingList } from '@csegames/camelot-unchained/lib/components';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult, defaultSubscriptionOpts } from '@csegames/camelot-unchained/lib/graphql/subscription';
@@ -69,30 +68,83 @@ export interface BattleGroupWatchListStyles {
 }
 
 const Container = styled('div')`
-  height: 100%;
+  position: relative;
+  user-select: none;
+  pointer-events: all;
+  width: 100%;
+  padding: 3px;
+  background:
+    linear-gradient(
+      to bottom left,
+      rgba(196, 157, 108, 0.1),
+      rgba(196, 157, 108, 0.25),
+      rgba(0, 0, 0, 0.5) 70%,
+      rgba(0, 0, 0, 0.9) 90%
+    ),
+    url(images/battlegroups/battlegroup-bg.png);
+  box-shadow: inset 0 -5px 50px 7px rgba(0,0,0,0.8);
+  border-image: linear-gradient(to bottom, rgba(65, 65, 65, 1), rgba(0, 0, 0, 0));
+  border-image-slice: 1;
+  border-width: 1px;
+  border-style: solid;
+`;
+
+const TopLeftOrnament = styled('div')`
+  position: absolute;
+  top: -1px;
+  left: -2px;
+  width: 43px;
+  height: 43px;
+  background: url(images/battlegroups/ornament-top-left.png) no-repeat;
+`;
+
+const TopRightOrnament = styled('div')`
+  position: absolute;
+  top: -1px;
+  right: -2px;
+  width: 43px;
+  height: 43px;
+  background: url(images/battlegroups/ornament-top-right.png) no-repeat;
+`;
+
+const BottomLeftOrnament = styled('div')`
+  position: absolute;
+  bottom: -1px;
+  left: -2px;
+  width: 43px;
+  height: 43px;
+  background: url(images/battlegroups/ornament-bottom-left.png) no-repeat;
+`;
+
+const BottomRightOrnament = styled('div')`
+  position: absolute;
+  bottom: -1px;
+  right: -2px;
+  width: 43px;
+  height: 43px;
+  background: url(images/battlegroups/ornament-bottom-right.png) no-repeat;
 `;
 
 export const defaultBattleGroupWatchListStyles: BattleGroupWatchListStyles = {
   body: css`
-    height: calc(100% - 30px);
-    background: url(images/battlegroups/bg-watchlist-pattern.jpg),
-      linear-gradient(to bottom left, rgba(0,0,0,0.4), rgba(255,255,255,0.02), rgba(0,0,0,0.4));
-    border: 1px solid #242424;
-    box-shadow: inset 0 0 15px 5px rgba(0,0,0,0.3);
-    padding: 10px;
+    height: 220px;
+    padding: 0 10px;
   `,
 
   title: css`
+    position: relative;
     display: flex;
     align-items: center;
+    padding: 0 10px;
     height: 30px;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
-    background: url(images/battlegroups/header-chrome.png) no-repeat, url(images/battlegroups/header.png) 100% no-repeat;
-    border-bottom: 1px solid ${utils.lightenColor('#202020', 30)};
+    border-image: linear-gradient(to right, rgba(176, 176, 175, 0) 5%, rgba(176, 176, 175, 0.7), rgba(176, 176, 175, 0) 95%);
+    border-image-slice: 1;
+    border-width: 1px;
     color: white;
     cursor: pointer;
     font-size: 14px;
-    padding: 0 15px;
+    letter-spacing: 1px;
   `,
 
   listHeader: css`
@@ -132,10 +184,15 @@ class BattleGroupWatchList extends React.Component<Props, State> {
     return (
       <GraphQL query={query} onQueryResult={this.handleQueryResult}>
         {() => (
-          <Container>
-            <WarbandNotificationProvider onNotification={this.handleWarbandNotification} />
-            <BattleGroupNotificationProvider onNotification={this.handleBattlegroupNotification} />
-            {this.state.battlegroupID && this.state.warbandID &&
+          <>
+          <WarbandNotificationProvider onNotification={this.handleWarbandNotification} />
+          <BattleGroupNotificationProvider onNotification={this.handleBattlegroupNotification} />
+          {this.state.battlegroupID && this.state.warbandID ?
+            <Container>
+              <TopLeftOrnament />
+              <TopRightOrnament />
+              <BottomLeftOrnament />
+              <BottomRightOrnament />
               <GraphQL
                 subscription={{
                   query: groupUpdateSubscriptionQuery,
@@ -146,10 +203,8 @@ class BattleGroupWatchList extends React.Component<Props, State> {
                 }}
                 subscriptionHandler={this.handleSubscription}
               />
-            }
-            {this.state.battlegroupID && this.state.warbandID &&
               <CollapsingList
-                title='Watch'
+                title={`Watch (${this.state.warbandMembers.length})`}
                 items={this.state.warbandMembers}
                 styles={{
                   body: defaultBattleGroupWatchListStyles.body,
@@ -159,8 +214,9 @@ class BattleGroupWatchList extends React.Component<Props, State> {
                   <WatchListItem item={item} />
                 }
               />
-            }
-          </Container>
+            </Container> :
+              null}
+          </>
         )}
       </GraphQL>
     );
@@ -168,6 +224,10 @@ class BattleGroupWatchList extends React.Component<Props, State> {
 
   public shouldComponentUpdate(nextProps: Props, nextState: State) {
     if (this.state.warbandID !== nextState.warbandID) {
+      return true;
+    }
+
+    if (this.state.battlegroupID !== nextState.battlegroupID) {
       return true;
     }
 

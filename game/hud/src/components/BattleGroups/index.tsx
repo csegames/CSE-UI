@@ -60,6 +60,11 @@ export interface WarbandIdToGroupWithinBattlegroup {
   [groupId: string]: GroupWithinBattlegroup;
 }
 
+export interface GroupArray {
+  title: string;
+  items: GroupMemberState[];
+}
+
 export interface Props {
 }
 
@@ -83,9 +88,9 @@ class BattleGroups extends React.Component<Props, State> {
 
   public render() {
     const groups = this.state.groups;
-    const arrayOfGroups: any = [];
+    const arrayOfGroups: GroupArray[] = [];
     Object.keys(groups).forEach((group) => {
-      const correctFormatGroup: any = {
+      const correctFormatGroup: GroupArray = {
         title: groups[group].title,
         items: [],
       };

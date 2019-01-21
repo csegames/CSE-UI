@@ -20,7 +20,7 @@ export default {
       offset: 80,
     },
     size: {
-      width: 350,
+      width: 250,
       height: 250,
     },
     scale: 1,

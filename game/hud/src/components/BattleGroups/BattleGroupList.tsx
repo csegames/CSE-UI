@@ -6,53 +6,73 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
-import { utils } from '@csegames/camelot-unchained';
+import styled, { css, cx } from 'react-emotion';
 import { CollapsingList } from '@csegames/camelot-unchained/lib/components';
+import { GroupArray } from './index';
 import BattleGroupListItem from './BattleGroupListItem';
 
 const Container = styled('div')`
-  webkit-user-select: none;
+  position: relative;
   user-select: none;
   pointer-events: all;
-  color: white;
   width: 100%;
-  height: 100%;
-`;
-
-const WarbandTitle = styled('div')`
-  display: ${(props: any) => props.display};
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  font-size: 18px;
-  font-weight: bold;
-  color: #EED07B;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
-  &:hover {
-    color: ${utils.lightenColor('#EED07B', 20)};
-  };
-`;
-
-const FooterContainer = styled('div')`
-  width: 100%;
-`;
-
-const FooterDivider = styled('div')`
-  height: 1px;
-  width: 100%;
-  background: linear-gradient(left, transparent, #737257, transparent);
-  marginTop: 5px;
-  marginBottom: 5px;
-`;
-
-const AddNewGroupButton = styled('div')`
-  cursor: pointer;
-  font-size: 16px;
-  color: #C4C4C4;
-  margin-left: 10px;
-  &:hover {
-    color: ${utils.lightenColor('#C4C4C4', 20)}
+  padding: 3px;
+  background:
+    linear-gradient(
+      to bottom left,
+      rgba(196, 157, 108, 0.1),
+      rgba(196, 157, 108, 0.25),
+      rgba(0, 0, 0, 0.5) 70%,
+      rgba(0, 0, 0, 0.9) 90%
+    ),
+    url(images/battlegroups/battlegroup-bg.png);
+  box-shadow: inset 0 -5px 50px 7px rgba(0,0,0,0.8);
+  border-image: linear-gradient(to bottom, rgba(65, 65, 65, 1), rgba(0, 0, 0, 0));
+  border-image-slice: 1;
+  border-width: 1px;
+  border-style: solid;
+  &:before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -2px;
+    width: 43px;
+    height: 43px;
+    background: url(images/battlegroups/ornament-top-left.png) no-repeat;
   }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: -2px;
+    width: 43px;
+    height: 43px;
+    background: url(images/battlegroups/ornament-top-right.png) no-repeat;
+  }
+`;
+
+const BottomTear = styled('div')`
+  position: absolute;
+  right: -1px;
+  left: -1px;
+  bottom: -40px;
+  height: 40px;
+  background: url(images/battlegroups/bottom-tear.png) no-repeat;
+  background-size: cover;
+`;
+
+const WarbandName = styled('span')`
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+`;
+
+const CollapseButton = styled('div')`
+  font-family: Caudex;
+  color: white;
+  width: 15px;
 `;
 
 export interface BattleGroupListStyle {
@@ -61,35 +81,40 @@ export interface BattleGroupListStyle {
   listBody: string;
   listContainer: string;
   warbandTitle: string;
+  collapsedWarbandTitle: string;
   warbandList: string;
+  collapseButton: string;
 }
 
 export const defaultBattleGroupListStyle: BattleGroupListStyle = {
   collapsingList: css`
+    width: 100%;
     height: 100%;
+    border-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+    border-image-slice: 1;
+    border-width: 1px;
+    border-style: solid;
   `,
 
   title: css`
+    position: relative;
     display: flex;
     align-items: center;
-    padding: 0 15px;
+    padding: 0 10px;
     height: 30px;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
-    background: url(images/battlegroups/header-chrome.png) no-repeat, url(images/battlegroups/header.png) 100% no-repeat;
-    border-bottom: 1px solid ${utils.lightenColor('#202020', 30)};
+    border-image: linear-gradient(to right, rgba(176, 176, 175, 0) 5%, rgba(176, 176, 175, 0.7), rgba(176, 176, 175, 0) 95%);
+    border-image-slice: 1;
+    border-width: 1px;
     color: white;
     cursor: pointer;
     font-size: 14px;
-  `,
+    letter-spacing: 1px;
+    `,
 
   listBody: css`
-    height: 100%;
-    padding: 0 0 70px 0;
-    background: linear-gradient(to bottom left, rgba(0,0,0,1), rgba(0,0,0,0.7), rgba(0,0,0,0.3), rgba(0,0,0,0.2),
-      rgba(0,0,0,0.3), rgba(0,0,0,0.5), rgba(0,0,0,1)), url(images/battlegroups/bg-pattern.jpg);
-    box-shadow: inset 0 0 40px 5px rgba(0,0,0,0.6);
-    mask-image: url(images/battlegroups/bg-mask.png);
-    mask-size: 140px 100%;
+    height: 300px;
+    padding: 0 5px 0 10px;
   `,
 
   listContainer: css`
@@ -97,37 +122,38 @@ export const defaultBattleGroupListStyle: BattleGroupListStyle = {
     height: 100%;
     max-height: 45vh;
     min-width: 125px;
-    overflow: auto;
-    background: url(images/battlegroups/left-side-bar.png) no-repeat;
-    &::-webkit-scrollbar: {
-      width: 2px;
-    };
-    &::-webkit-scrollbar-track: {
-      background-color: transparent;
-    };
-    &::-webkit-scrollbar-thumb: {
-      background-color: linear-gradient(rgba(0,0,0,1), rgba(144,137,116,1), rgba(0,0,0,1));
-    };
+    padding-right: 5px;
+    overflow-y: scroll;
   `,
 
   warbandTitle: css`
-    font-size: 18px;
-    font-weight: bold;
-    color: #EED07B;
+    display: flex;
+    width: 100%;
+    font-size: 12px;
+    font-family: TitilliumWeb;
+    color: #FFDD88;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
     &:hover: {
-      color: ${utils.lightenColor('#EED07B', 20)};
+      color: #FFD156;
     };
+  `,
+
+  collapsedWarbandTitle: css`
+    color: #AB945B;
   `,
 
   warbandList: css`
     margin-left: 15px;
   `,
+
+  collapseButton: css`
+    font-family: Caudex;
+  `,
 };
 
 export interface BattleGroupListProps {
   styles?: Partial<BattleGroupListStyle>;
-  groups: any[];
+  groups: GroupArray[];
 }
 
 export interface BattleGroupListState {
@@ -143,42 +169,54 @@ export class BattleGroupList extends React.PureComponent<BattleGroupListProps, B
   }
 
   public render() {
+    const memberCount = this.getMemberCount();
     return (
       <Container>
         <CollapsingList
-          title='Battlegroup'
+          title={`Battlegroup (${memberCount})`}
           items={this.props.groups}
           onToggleCollapse={this.onToggleCollapse}
           styles={{
             container: defaultBattleGroupListStyle.collapsingList,
-            listContainer: defaultBattleGroupListStyle.listContainer,
+            listContainer: cx('cse-ui-scroller-thumbonly', defaultBattleGroupListStyle.listContainer),
             title: defaultBattleGroupListStyle.title,
             body: defaultBattleGroupListStyle.listBody,
+            collapseButton: defaultBattleGroupListStyle.collapseButton,
           }}
-          renderListItem={(listItem) => {
+          renderListItem={(listItem: GroupArray, i) => {
             return (
-              <WarbandTitle display={this.state.collapsed ? 'none' : 'block'}>
-                <CollapsingList
-                  key={listItem}
-                  title={listItem.title}
-                  items={listItem.items}
-                  renderListItem={listItem => <BattleGroupListItem item={listItem} />}
-                  styles={{
-                    title: defaultBattleGroupListStyle.warbandTitle,
-                  }}
-                />
-              </WarbandTitle>
+              <CollapsingList
+                key={listItem.title + i}
+                title={collapsed => (
+                  <>
+                    <CollapseButton>{collapsed ? '+' : '-'}</CollapseButton>
+                    <WarbandName>{listItem.title}</WarbandName> ({listItem.items.length})
+                  </>
+                )}
+                items={listItem.items}
+                renderListItem={(listItem: GroupMemberState) => (
+                  <BattleGroupListItem item={listItem} />
+                )}
+                styles={{
+                  title: defaultBattleGroupListStyle.warbandTitle,
+                  collapsedTitle: defaultBattleGroupListStyle.collapsedWarbandTitle,
+                }}
+              />
             );
           }}
-          renderListFooter={() => (
-            <FooterContainer>
-              <FooterDivider />
-              <AddNewGroupButton>+ Add New Group</AddNewGroupButton>
-            </FooterContainer>
-          )}
         />
+        {!this.state.collapsed && <BottomTear />}
       </Container>
     );
+  }
+
+  private getMemberCount = () => {
+    let memberCount = 0;
+    this.props.groups.forEach((group) => {
+      memberCount += group.items.length;
+    });
+
+    return memberCount;
   }
 
   private onToggleCollapse = () => {

@@ -6,32 +6,47 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { isEqual } from 'lodash';
+import styled from 'react-emotion';
 import { utils } from '@csegames/camelot-unchained';
-import BodyPartHealthBar from './BodyPartHealthBar';
 import { GroupMemberState } from 'gql/interfaces';
 
 const Container = styled('div')`
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  border-bottom: 1px solid #454545;
-  padding: 3px 0px 10px;
+  border-image: linear-gradient(to right, rgba(176, 176, 175, 0) 5%, rgba(176, 176, 175, 0.7), rgba(176, 176, 175, 0) 95%);
+  border-image-slice: 1;
+  border-width: 1px;
+  padding: 3px 0px 5px;
 `;
 
-const BodyPartHealthContainer = styled('div')`
-  flex: 1;
+const Name = styled('div')`
+  cursor: default;
+  color: white;
+  font-size: 12px;
+  font-family: TitilliumWeb;
+  width: 50%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-right: 5px;
+`;
+
+const Resources = styled('div')`
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  width: 50%;
 `;
 
-const HealthBarContainer = styled('div')`
-  height: 25px;
-  margin-left: 5px;
+const HealthContainer = styled('div')`
+  height: 7px;
+  margin-bottom: 2px;
+  flex: 1;
+  background-color: ${(props: any) => props.backgroundColor};
 `;
 
 const ResourceContainer = styled('div')`
   height: 2px;
+  margin-bottom: ${(props: any) => props.marginBottom || '2px'};
   flex: 1;
   background-color: ${(props: any) => props.backgroundColor};
 `;
@@ -49,45 +64,50 @@ export interface WatchListItemState {
 
 }
 
-class WatchListItem extends React.PureComponent<WatchListItemProps, WatchListItemState> {
+class WatchListItem extends React.Component<WatchListItemProps, WatchListItemState> {
   public render() {
     const item = this.props.item;
+    if (!item.health || !item.health[0]) return null;
+
+    const currentHealth = item.health[0].current;
+    const healthBarColor = Math.floor(currentHealth) === 0 ? 'transparent' : Math.floor(currentHealth) < 33 ? '#D10000' :
+      Math.floor(currentHealth) < 66 ? '#F9B800' : '#39ABCE';
     return (
       <Container>
-        <div className={css`flex: 2;`}>
-          <header>{item.name}</header>
-          <div className={css`display: flex;`}>
-            {item.blood &&
-              <ResourceContainer backgroundColor={utils.darkenColor('#A80009', 100)}>
-                <ResourceBar
-                  style={{ width: `${(item.blood.current / item.blood.max) * 100}%` }}
-                  backgroundColor={'#A80009'}
-                />
-              </ResourceContainer>
-            }
-            {item.stamina &&
-              <ResourceContainer backgroundColor={'#000000'}>
-                <ResourceBar
-                  style={{ width: `${(item.stamina.current / item.stamina.max) * 100}%` }}
-                  backgroundColor={utils.darkenColor('#AEEEB4', 100)}
-                />
-              </ResourceContainer>
-            }
-          </div>
-        </div>
-        {item.health && item.health[0] &&
-          <BodyPartHealthContainer>
-            <HealthBarContainer>
-              <BodyPartHealthBar
-                value={item.health[0].current}
-                maxValue={item.health[0].max}
-                width={12}
+        <Name>{item.name}</Name>
+        <Resources>
+          <HealthContainer backgroundColor='rgba(0, 0, 0, 0.7)'>
+            <ResourceBar
+              style={{ width: `${((currentHealth / item.health[0].max) * 100).toFixed(1)}%` }}
+              backgroundColor={healthBarColor}
+            />
+          </HealthContainer>
+          {item.blood &&
+            <ResourceContainer backgroundColor={utils.darkenColor('#A80009', 100)}>
+              <ResourceBar
+                style={{ width: `${(item.blood.current / item.blood.max) * 100}%` }}
+                backgroundColor={'#A80009'}
               />
-            </HealthBarContainer>
-          </BodyPartHealthContainer>
-        }
+            </ResourceContainer>
+          }
+          {item.stamina &&
+            <ResourceContainer marginBottom='0px' backgroundColor='rgba(0, 0, 0, 0.7)'>
+              <ResourceBar
+                style={{ width: `${(item.stamina.current / item.stamina.max) * 100}%` }}
+                backgroundColor={'#AEEEB4'}
+              />
+            </ResourceContainer>
+          }
+        </Resources>
       </Container>
     );
+  }
+
+  public shouldComponentUpdate(nextProps: WatchListItemProps) {
+    return nextProps.item.name !== this.props.item.name ||
+      !isEqual(nextProps.item.health, this.props.item.health) ||
+      !isEqual(nextProps.item.blood, this.props.item.blood) ||
+      !isEqual(nextProps.item.stamina, this.props.item.stamina);
   }
 }
 
