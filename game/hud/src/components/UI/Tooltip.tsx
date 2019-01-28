@@ -28,6 +28,7 @@ const fadeIn = keyframes`
 const Container = styled('div')`
   display: inline-block;
   position: relative;
+  pointer-events: none;
 `;
 
 const View = styled('div')`

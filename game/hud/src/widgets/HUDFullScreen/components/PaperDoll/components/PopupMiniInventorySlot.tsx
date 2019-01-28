@@ -23,6 +23,7 @@ export const itemDimensions = {
 };
 
 const Slot = styled('div')`
+  pointer-events: all;
   width: ${itemDimensions.width}px;
   height: ${itemDimensions.height}px;
   border: 1px solid white;
