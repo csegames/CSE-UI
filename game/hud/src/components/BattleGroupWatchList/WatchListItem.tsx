@@ -66,10 +66,10 @@ class WatchListItem extends React.PureComponent<WatchListItemProps, WatchListIte
               </ResourceContainer>
             }
             {item.stamina &&
-              <ResourceContainer backgroundColor={utils.darkenColor('#AEEEB4', 100)}>
+              <ResourceContainer backgroundColor={'#000000'}>
                 <ResourceBar
                   style={{ width: `${(item.stamina.current / item.stamina.max) * 100}%` }}
-                  backgroundColor={'#000000'}
+                  backgroundColor={utils.darkenColor('#AEEEB4', 100)}
                 />
               </ResourceContainer>
             }

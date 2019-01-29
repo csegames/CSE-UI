@@ -27,6 +27,7 @@ async function inviteToWarband(characterID: string, characterName: string, warba
       warbandID,
       characterID,
       characterName,
+      GroupTypes.Warband,
     );
 
     if (result.ok) {

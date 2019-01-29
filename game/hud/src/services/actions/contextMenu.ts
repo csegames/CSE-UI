@@ -23,6 +23,7 @@ import {
   getActiveBattlegroupID,
   getBattlegroupMemberByCharacterID,
   kickFromBattlegroupByEntityID,
+  quitBattlegroup,
 } from './battlegroups';
 
 // BASIC MANAGEMENT
@@ -118,6 +119,13 @@ export function getSelfMenuItems(
     });
   }
 
+  if (hasActiveBattlegroup()) {
+    items.push({
+      title: 'Quit Battlegroup',
+      onSelected: quitBattlegroup,
+    });
+  }
+
   return items;
 }
 
@@ -154,7 +162,7 @@ export function getFriendlyTargetMenuItems(
     });
   }
 
-  if (hasActiveBattlegroup() && !isEntityIDInBattlegroup(id) && myBattlegroupInfo && myBattlegroupInfo.canInvite) {
+  if (!hasActiveBattlegroup() || (!isEntityIDInBattlegroup(id) && myBattlegroupInfo && myBattlegroupInfo.canInvite)) {
     items.push({
       title: 'Invite to Battlegroup',
       onSelected: () => inviteToBattlegroupByName(state.name, getActiveBattlegroupID()),

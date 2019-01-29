@@ -70,6 +70,7 @@ export interface State {
 }
 
 class BattleGroups extends React.Component<Props, State> {
+  private receivedMemberUpdate: boolean = false;
   private myBattlegroupsGQL: GraphQLResult<BattleGroupsListQuery.Query>;
   constructor(props: Props) {
     super(props);
@@ -126,6 +127,11 @@ class BattleGroups extends React.Component<Props, State> {
     }
 
     if (this.state.battlegroupID !== nextState.battlegroupID) {
+      return true;
+    }
+
+    if (this.receivedMemberUpdate) {
+      this.receivedMemberUpdate = false;
       return true;
     }
 
@@ -188,6 +194,7 @@ class BattleGroups extends React.Component<Props, State> {
     const groups: WarbandIdToGroupWithinBattlegroup = {};
     const warbandIdToMembers: { [id: string]: CharacterIdToGroupMemberState } = {};
 
+    setActiveBattlegroupID(myBattlegroup.battlegroup.id);
     myBattlegroup.members.forEach((member) => {
       onBattlegroupMemberUpdate(member as GroupMemberState);
       if (warbandIdToMembers[member.warbandID]) {
@@ -209,7 +216,6 @@ class BattleGroups extends React.Component<Props, State> {
       };
     });
 
-    setActiveBattlegroupID(myBattlegroup.battlegroup.id);
     this.setState({ groups, battlegroupID: myBattlegroup.battlegroup.id });
   }
 
@@ -260,48 +266,63 @@ class BattleGroups extends React.Component<Props, State> {
         },
       },
     };
+
+    this.receivedMemberUpdate = true;
     this.setState({ groups });
   }
 
   private onMemberRemove = (characterId: string) => {
-    onBattlegroupMemberRemoved(characterId);
-    const groups = { ...this.state.groups };
-    let groupId = '';
-    Object.keys(groups).forEach((gId) => {
-      Object.keys(groups[gId].items).forEach((id) => {
-        if (characterId === id) {
-          groupId = gId;
-        }
+    this.setState((state) => {
+      onBattlegroupMemberRemoved(characterId);
+      const groups = cloneDeep(state.groups);
+      let groupId = '';
+      Object.keys(groups).forEach((gId) => {
+        Object.keys(groups[gId].items).forEach((id) => {
+          if (characterId === id) {
+            groupId = gId;
+          }
+        });
       });
+
+      if (characterId === game.selfPlayerState.characterID) {
+        this.hide();
+        this.setState({ groups: {} });
+        return;
+      }
+
+      if (groups[groupId] && groups[groupId].items[characterId]) {
+        delete groups[groupId].items[characterId];
+      }
+      if (groups[groupId] && Object.keys(groups[groupId].items).length === 0) {
+        delete groups[groupId];
+      }
+
+      if (Object.keys(groups).length === 0) {
+        this.hide();
+      }
+
+      this.receivedMemberUpdate = true;
+      return {
+        ...state,
+        groups,
+      };
     });
-
-    if (characterId === game.selfPlayerState.characterID) {
-      this.hide();
-      this.setState({ groups: {} });
-      return;
-    }
-
-    if (groups[groupId] && groups[groupId].items[characterId]) {
-      delete groups[groupId].items[characterId];
-    }
-    if (groups[groupId] && Object.keys(groups[groupId].items).length === 0) {
-      delete groups[groupId];
-    }
-
-    if (Object.keys(groups).length === 0) {
-      this.hide();
-    }
-
-    this.setState({ groups });
   }
 
   private onMemberUpdate = (member: GroupMemberState) => {
-    onBattlegroupMemberUpdate(member);
-    const groups = { ...this.state.groups };
-    if (groups[member.warbandID] && groups[member.warbandID].items[member.characterID].name !== member.name) {
-      groups[member.warbandID].items[member.characterID] = member;
-      this.setState({ groups });
-    }
+    this.setState((state) => {
+      onBattlegroupMemberUpdate(member);
+      const groups = cloneDeep(state.groups);
+      if (groups[member.warbandID] && groups[member.warbandID].items && groups[member.warbandID].items[member.characterID] &&
+          groups[member.warbandID].items[member.characterID].name !== member.name) {
+        groups[member.warbandID].items[member.characterID] = member;
+        this.receivedMemberUpdate = true;
+        return {
+          ...state,
+          groups,
+        };
+      }
+    });
   }
 }
 

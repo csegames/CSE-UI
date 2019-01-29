@@ -15,6 +15,8 @@ export interface BattlegroupState {
   membersEntityIDMap: { [entityID: string]: GroupMemberState };
 }
 
+const invalidID = '0000000000000000000000';
+
 // API CALLS
 
 export async function createBattlegroup() {
@@ -53,9 +55,10 @@ async function inviteToBattlegroup(characterID: string, characterName: string, b
       defaultConfig,
       game.shardID,
       game.selfPlayerState.characterID,
-      battlegroupID,
-      characterID,
+      battlegroupID || invalidID,
+      characterID || invalidID,
       characterName,
+      GroupTypes.Battlegroup,
     );
 
     if (result.ok) {
@@ -73,11 +76,11 @@ async function inviteToBattlegroup(characterID: string, characterName: string, b
 }
 
 export function inviteToBattlegroupByID(characterID: string, battlegroupID: string) {
-  return inviteToBattlegroup(characterID, '', battlegroupID);
+  return inviteToBattlegroup(characterID, null, battlegroupID);
 }
 
 export function inviteToBattlegroupByName(characterName: string, battlegroupID: string) {
-  return inviteToBattlegroup('', characterName, battlegroupID);
+  return inviteToBattlegroup(null, characterName, battlegroupID);
 }
 
 async function kickFromBattlegroup(targetEntityID: string, targetCharacterID: string,
@@ -117,6 +120,29 @@ export function kickFromBattlegroupByCharacterID(characterID: string, battlegrou
 
 export function kickFromBattlegroupByEntityID(entityID: string, battlegroupID: string) {
   return kickFromBattlegroup(entityID, '', '', battlegroupID);
+}
+
+export async function quitBattlegroup() {
+  try {
+    const result = await GroupsAPI.QuitV1(
+      defaultConfig,
+      game.shardID,
+      game.selfPlayerState.characterID,
+      getStateObject().id,
+    );
+
+    if (result.ok) {
+      sendSystemMessage(`Battlegroup quit!`);
+      return;
+    }
+
+    sendSystemMessage(`Failed to quit Battlegroup.`);
+    console.error('Failed to quit Battlegroup.\n' + JSON.stringify(result.data));
+
+  } catch (error) {
+    // failed!!
+    console.error('Failed to quit Battlegroup.\n' + error);
+  }
 }
 
 // BATTLEGROUP STATE MANAGEMENT
