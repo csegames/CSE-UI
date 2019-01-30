@@ -11,7 +11,7 @@ import eventNames, { EquipItemPayload } from '../../../lib/eventNames';
 import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
 import ItemComponent from '../../ItemShared/Item';
 import EmptyItem from '../../ItemShared/EmptyItem';
-import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
+import ItemTooltipContent, { defaultTooltipStyle } from '../../Tooltip';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { InventoryItem, GearSlotDefRef } from 'gql/interfaces';
 
@@ -94,7 +94,7 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
   private onMouseEnter = (event: React.MouseEvent<HTMLDivElement>) => {
     const { item } = this.props;
     game.trigger(eventNames.onHighlightSlots, this.props.gearSlots);
-    const content = <TooltipContent item={item} instructions='Left click to equip' />;
+    const content = <ItemTooltipContent item={item} instructions='Left click to equip' />;
     showTooltip({ content, event, styles: defaultTooltipStyle });
   }
 

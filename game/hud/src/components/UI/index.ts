@@ -10,5 +10,5 @@ export { SubHeading } from './SubHeading';
 export { Field } from './Field';
 export { CheckBoxField } from './CheckBoxField';
 export { SliderField } from './SliderField';
-export { TooltipView } from './Tooltip';
+export { TooltipView } from '../Tooltip';
 export { CloseButton } from './CloseButton';

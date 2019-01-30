@@ -51,10 +51,6 @@ const ListHorizontal = css`
 `;
 
 const Tooltip = css`
-  background-color: #020405;
-  color: white;
-  border: 1px solid #4A4A4A;
-  padding: 2px 5px;
 `;
 
 const Badge = styled('div')`

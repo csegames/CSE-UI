@@ -8,7 +8,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import styled from 'react-emotion';
 import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
-import { hot } from 'react-hot-loader';
+// import { hot, setConfig } from 'react-hot-loader';
 
 import DragStore from '../DragAndDrop/DragStore';
 import {
@@ -40,11 +40,14 @@ import HUDEditor from './HUDEditor';
 import HUDNav from '../../services/session/layoutItems/HUDNav';
 import Console from '../Console';
 import { InteractiveAlertView } from '../InteractiveAlert';
-import { ContextMenu } from '../ContextMenu';
-import { TooltipView } from 'UI/Tooltip';
+import { ContextMenuView } from '../ContextMenu';
+import { TooltipView } from 'components/Tooltip';
 import PassiveAlert from '../PassiveAlert';
 import { ActionAlert } from '../ActionAlert';
 import { uiContextFromGame } from 'services/session/UIContext';
+
+// import { AbilitiesView } from '../AbilityBarV2/BarsView';
+import { DragAndDropV2Renderer } from 'components/Utilities/DragAndDropV2';
 
 const HUDNavContainer = styled('div')`
   position: fixed;
@@ -111,7 +114,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
       <UIContext.Provider value={this.state.uiContext}>
         <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
           {renderWidgets}
-          <DragStore />
           <ZoneNameContainer>
             <ZoneName />
           </ZoneNameContainer>
@@ -121,17 +123,17 @@ class HUD extends React.Component<HUDProps, HUDState> {
             <HUDNav.component {...HUDNav.props} />
           </HUDNavContainer>
 
-          <DevUI />
-          <InteractiveAlertView />
-          <ScenarioPopup />
+            <DevUI />
+            <InteractiveAlertView />
+            <ScenarioPopup />
 
-          <ScenarioResults />
+            <ScenarioResults />
 
           <HUDFullScreen />
-          <AbilityBarContainer id='abilitybar'>
+          <AbilityBarContainer id='abilitybar-old'>
             <AbilityBar />
           </AbilityBarContainer>
-          <ContextMenu />
+          <ContextMenuView />
           <TooltipView />
           <ActionAlert />
           <PassiveAlert />
@@ -144,10 +146,14 @@ class HUD extends React.Component<HUDProps, HUDState> {
             />
           }
 
+          {/* <AbilitiesView /> */}
+
           <Settings />
           <Watermark />
           <OfflineZoneSelect />
           <LoadingScreen />
+          <DragStore />
+          <DragAndDropV2Renderer />
         </div>
       </UIContext.Provider>
     );
@@ -282,4 +288,6 @@ function select(state: SessionState) {
   };
 }
 
-export default hot(module)(connect(select)(HUD));
+// setConfig({ pureSFC: true });
+// export default hot(module)(connect(select)(HUD));
+export default connect(select)(HUD);

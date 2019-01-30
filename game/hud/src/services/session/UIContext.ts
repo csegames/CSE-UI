@@ -16,10 +16,10 @@ declare global {
 
   interface UIContext {
     resolution: Resolution;
-    use4kAssets(): boolean;
+    isUHD(): boolean;
     // Optional Settings a user can configure
     uiScale: number; // default 1, (0 - 1)
-    forceUse4kAssets: boolean; // default false
+    forceUHD: boolean; // default false
 
 
     themes: ObjectMap<Theme>;
@@ -32,8 +32,8 @@ declare global {
   }
 }
 
-function use4kAssets(this: UIContext) {
-  return this.forceUse4kAssets || this.resolution.width > 2000;
+function isUHD(this: UIContext) {
+  return this.forceUHD || this.resolution.width > 1920;
 }
 
 function currentTheme(this: UIContext) {
@@ -57,8 +57,8 @@ export function uiContextFromGame(): UIContext {
       height: window.innerHeight,
     },
     uiScale: 1,
-    forceUse4kAssets: false,
-    use4kAssets,
+    forceUHD: false,
+    isUHD,
 
     themes,
     currentTheme,
@@ -66,4 +66,6 @@ export function uiContextFromGame(): UIContext {
   });
 }
 
-window.UIContext = React.createContext<UIContext>(uiContextFromGame());
+if (!window.UIContext) {
+  window.UIContext = React.createContext<UIContext>(uiContextFromGame());
+}

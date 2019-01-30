@@ -64,7 +64,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
     this.setState({ playerState });
   }
 
-  private handleContextMenu = (event: MouseEvent) => {
+  private handleContextMenu = (event: React.MouseEvent) => {
     if (event.button === 2) {
       showEnemyTargetContextMenu(this.state.playerState, event);
     }

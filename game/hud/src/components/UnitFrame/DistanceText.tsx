@@ -16,7 +16,7 @@ const Container = styled('div')`
   bottom: -41px;
   z-index: -1;
   font-size: 24px;
-  @media(max-width: 2000px) {
+  @media(max-width: 1920px) {
     font-size: 14px;
     left: 70px;
     bottom: -29px;

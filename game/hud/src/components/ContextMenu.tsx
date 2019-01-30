@@ -5,10 +5,12 @@
  */
 
 import * as React from 'react';
+import { css } from 'emotion';
 import styled from 'react-emotion';
 import { isEmpty } from 'lodash';
 
 import * as actions from 'actions/contextMenu';
+import { getViewportSize } from 'lib/viewport';
 
 const Container = styled('div')`
   background: rgba(0, 0, 0, 0.01);
@@ -20,23 +22,38 @@ const Container = styled('div')`
   z-index: 10000;
 `;
 
-const Menu = styled('ol')`
-  background: #444;
-  list-style: none;
-  position: fixed;
-  margin: 0;
-  padding: 0;
-  z-index: 10001;
-`;
-
 const Item = styled('li')`
-  padding: 5px 10px;
+  padding: 2px 5px;
   margin: 0;
   color: #ececec;
   pointer-events: all;
   cursor: pointer;
   &:hover {
-    background-color: #888;
+    color: ${(props: {color: string}) => props.color};
+  }
+`;
+
+const HeaderOverlay = styled('div')`
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  background: linear-gradient(to right, ${(props: {color: string}) => props.color}, transparent);
+  box-shadow: inset 0 0 20px 2px rgba(0,0,0,0.8);
+  height: 106px;
+  &:after {
+    content: '';
+    position: absolute;
+    height: 106px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url(images/item-tooltips/title_viel.png);
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 `;
 
@@ -60,34 +77,10 @@ export type State = {
   styledPosition: StylePosition;
   content: JSX.Element;
   items: MenuItem[];
+  clientPosition: Vec2f;
 };
 
-function getViewportWidth() {
-  if (window.innerWidth) {
-    return window.innerWidth;
-  } else if (document.body && document.body.offsetWidth) {
-    return document.body.offsetWidth;
-  } else {
-    return 0;
-  }
-}
-
-function getViewportHeight() {
-  if (window.innerHeight) {
-    return window.innerHeight;
-  } else if (document.body && document.body.offsetHeight) {
-    return document.body.offsetHeight;
-  } else {
-    return 0;
-  }
-}
-
-export class ContextMenu extends React.Component<Props, State> {
-
-  private mouseOffset = {
-    x: 10,
-    y: 0,
-  };
+export class ContextMenuView extends React.Component<Props, State> {
 
   private eventHandles: EventHandle[] = [];
 
@@ -100,6 +93,10 @@ export class ContextMenu extends React.Component<Props, State> {
       styledPosition: {
         right: '-1000px',
         bottom: '-1000px',
+      },
+      clientPosition: {
+        x: -1000,
+        y: -1000,
       },
     };
     this.eventHandles.push(actions.onShowContextMenu(this.onShowContextMenu));
@@ -115,21 +112,115 @@ export class ContextMenu extends React.Component<Props, State> {
     if (this.state.show === false) return null;
 
     return (
-      <Container data-input-group='block' onMouseDown={this.hide}>
-        <Menu onMouseDown={(e: MouseEvent) => e.stopPropagation()} style={this.state.styledPosition}>
-          {this.state.content && this.state.content}
-          {
-            this.state.items &&
-              this.state.items.map(item => <Item key={item.title}
-                onMouseDown={(event: MouseEvent) => {
-                  event.stopPropagation();
-                  this.hide();
-                  item.onSelected();
-                }}>{item.title}</Item>)
+      <UIContext.Consumer>
+        {
+          (ui) => {
+            const color = ui.currentTheme().toolTips.color[game.selfPlayerState.faction];
+            return (
+              <Container
+                id='context-menu'
+                data-input-group='block'
+                onMouseDown={this.hide}
+              >
+                <ol
+                  onMouseDown={(e: React.MouseEvent) => e.stopPropagation()}
+                  color={color}
+                  ref={this.refCallback}
+                  style={{
+                    position: 'fixed',
+                    ...this.state.styledPosition,
+                  }}
+                  className={css`
+                    list-style: none;
+                    position: fixed;
+                    margin: 0;
+                    padding: 0;
+                    z-index: 10001;
+                    display: flex;
+                    flex-direction: column;
+                    pointer-events: none;
+                    border-width: 2px;
+                    border-style: solid;
+                    border-image: linear-gradient(to bottom, ${color}, transparent);
+                    border-image-slice: 1;
+                    background: url(images/item-tooltips/bg.png);
+                    background-size: cover;
+                    -webkit-mask-image: url(images/item-tooltips/ui-mask.png);
+                    -webkit-mask-size: cover;
+                    color: #ABABAB;
+                    width: auto;
+                    overflow: hidden;
+                    &:before {
+                      content: '';
+                      position: absolute;
+                      top: 0px;
+                      left: 0px;
+                      background: url(images/item-tooltips/ornament_left.png);
+                      width: 35px;
+                      height: 35px;
+                    }
+                    &:after {
+                      content: '';
+                      position: absolute;
+                      top: 0px;
+                      right: 0px;
+                      background: url(images/item-tooltips/ornament_right.png);
+                      width: 35px;
+                      height: 35px;
+                    }
+                    padding: 5px;
+                  `}
+                >
+                  <HeaderOverlay color={color} />
+                  {this.state.content && this.state.content}
+                  {
+                    this.state.items &&
+                      this.state.items.map(item => (
+                        <Item
+                          key={item.title}
+                          color={'yellow'}
+                          onMouseDown={(event: React.MouseEvent) => {
+                            event.stopPropagation();
+                            this.hide();
+                            item.onSelected();
+                          }}>
+                          {item.title}
+                        </Item>
+                      ))
+                  }
+                </ol>
+              </Container>
+            );
           }
-        </Menu>
-      </Container>
+        }
+      </UIContext.Consumer>
     );
+  }
+
+  private refCallback = (element: HTMLOListElement) => {
+    if (!element) return;
+
+    const bounds = element.getBoundingClientRect();
+    const viewport = getViewportSize();
+
+
+    let left = this.state.clientPosition.x - (bounds.width * .5);
+    let top = this.state.clientPosition.y + 5;
+
+    if (left + bounds.width > viewport.width) {
+      left -= viewport.width - left + bounds.width;
+    }
+
+    if (top + bounds.height > viewport.height) {
+      top -= viewport.height - top + bounds.height + 5;
+    }
+
+    this.setState({
+      styledPosition: {
+        left: left + 'px',
+        top: top + 'px',
+      },
+    });
   }
 
   private hide = () => {
@@ -145,66 +236,88 @@ export class ContextMenu extends React.Component<Props, State> {
     });
   }
 
-  private onShowContextMenuContent = (content: JSX.Element, event: MouseEvent) => {
+  private onShowContextMenuContent = (content: JSX.Element, event: React.MouseEvent) => {
     if (!content) return;
 
     this.setState({
       show: true,
-      styledPosition: this.getStyledPosition(event),
       items: [],
       content,
+      clientPosition: {
+        x: event.clientX,
+        y: event.clientY,
+      },
     });
   }
 
-  private onShowContextMenu = (items: MenuItem[], event: MouseEvent) => {
+  private onShowContextMenu = (items: MenuItem[], event: React.MouseEvent) => {
     // If there are no items, dont show context menu
     if (isEmpty(items)) return;
 
     this.setState({
       show: true,
-      styledPosition: this.getStyledPosition(event),
       items,
       content: null,
+      clientPosition: {
+        x: event.clientX,
+        y: event.clientY,
+      },
     });
   }
+}
 
 
-  private getStyledPosition = (event: MouseEvent) => {
-    let styledPosition: StylePosition = {};
 
-    // using props initialEvent figure out position
-    if (event.clientX + event.clientX < getViewportWidth()) {
-      // left side
-      if (event.clientY + event.clientY < getViewportHeight()) {
-        // top
-        styledPosition = {
-          left: event.clientX + this.mouseOffset.x + 'px',
-          top: event.clientY + this.mouseOffset.y + 'px',
-        };
+interface ContentMenuItemsProps {
+  type: 'items';
+  getItems: () => MenuItem[];
+  children: React.ReactNode;
+}
+
+interface ContentMenuContentProps {
+  type: 'content';
+  getContent: () => JSX.Element;
+  children: React.ReactNode;
+}
+
+type ContextMenuProps = ContentMenuItemsProps | ContentMenuContentProps;
+
+// tslint:disable-next-line:function-name
+export function ContextMenu(props: ContextMenuProps) {
+
+  function handleMouseDown(e: React.MouseEvent) {
+    if (e.button === 2) {
+      if (props.type === 'items') {
+        actions.showContextMenu(props.getItems(), e);
       } else {
-        // bottom
-        styledPosition = {
-          left: event.clientX + this.mouseOffset.x + 'px',
-          bottom: getViewportHeight() - event.clientY + this.mouseOffset.y + 'px',
-        };
-      }
-    } else {
-      // right side
-      if (event.clientY + event.clientY < getViewportHeight()) {
-        // top
-        styledPosition = {
-          right: getViewportWidth() - event.clientX + this.mouseOffset.x + 'px',
-          top: event.clientY + this.mouseOffset.y + 'px',
-        };
-      } else {
-        // bottom
-        styledPosition = {
-          right: getViewportWidth() - event.clientX + this.mouseOffset.x + 'px',
-          bottom: getViewportHeight() - event.clientY + this.mouseOffset.y + 'px',
-        };
+        actions.showContextMenuContent(props.getContent(), e);
       }
     }
-
-    return styledPosition;
   }
+
+  const { children } = props as any;
+
+  if (!children) {
+    return null;
+  }
+
+  if (typeof children === 'string') {
+    return <span onMouseDown={handleMouseDown}>{children}</span>;
+  }
+
+  if (Array.isArray(children)) {
+    console.warn('ContextMenu can only have one child element!');
+    return null;
+  }
+
+  const newElement = React.cloneElement(children as any, {
+    onMouseDown: (e) => {
+      handleMouseDown(e);
+      if (children.props && children.props.onMouseDown) {
+        children.props.onMouseDown.call(newElement, e);
+      }
+    },
+  });
+  return newElement;
 }
+

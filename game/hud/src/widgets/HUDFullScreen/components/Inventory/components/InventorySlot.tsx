@@ -144,6 +144,7 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
   }
 
   private onRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     if (e.button === 2) {
       if (this.props.onRightClick) {
         this.onMouseLeave();

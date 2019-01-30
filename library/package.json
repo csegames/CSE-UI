@@ -1,6 +1,6 @@
 {
   "name": "@csegames/camelot-unchained",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Camelot Unchained Client Library",
   "license": "MPL-2.0",
   "main": "lib/index.js",
@@ -65,15 +65,15 @@
     "node-xmpp-client": "2.1.0",
     "randomstring": "^1.1.5",
     "raven-js": "^3.27.0",
-    "react": "16.7.0-alpha.2",
-    "react-dom": "16.7.0-alpha.2",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
     "react-emotion": "^9.2.10",
     "react-transition-group": "1.x",
     "redux-typed-modules": "^2.2.1"
   },
   "devDependencies": {
-    "@types/graphql": "^0.13.4",
     "@types/aphrodite": "^0.5.5",
+    "@types/graphql": "^0.13.4",
     "@types/jest": "^19.2.2",
     "@types/lodash": "^4.14.109",
     "@types/randomstring": "^1.1.6",

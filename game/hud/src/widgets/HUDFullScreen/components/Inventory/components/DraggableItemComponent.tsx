@@ -13,7 +13,7 @@ import ItemStack from '../../ItemShared/ItemStack';
 import CraftingItem from './CraftingItem';
 import { ContainerPermissionDef } from '../../ItemShared/InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
-import dragAndDrop, { DragAndDropInjectedProps, DragEvent } from 'components/DragAndDrop/DragAndDrop';
+import enableDragAndDrop, { DragAndDropInjectedProps, DragEvent } from 'components/DragAndDrop/DragAndDrop';
 import { placeholderIcon } from '../../../lib/constants';
 import eventNames, { InventoryDataTransfer } from '../../../lib/eventNames';
 import { InventorySlotItemDef, CraftingSlotItemDef, SlotType } from '../../../lib/itemInterfaces';
@@ -306,7 +306,7 @@ class ItemComponent extends React.Component<ItemComponentProps, ItemComponentSta
   }
 }
 
-const DraggableItemComponent = dragAndDrop<ItemComponentProps>(
+const DraggableItemComponent = enableDragAndDrop<ItemComponentProps>(
   (props: ItemComponentProps) => {
     const item = props.item;
     const id = item.stackedItems && item.stackedItems[0] ? item.stackedItems[0].id : item.itemID;

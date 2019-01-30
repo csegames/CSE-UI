@@ -10,6 +10,11 @@ export {
   cse,
 };
 
+interface DisplayOpts<T> {
+  hd: T;
+  uhd: T;
+}
+
 declare global {
   interface Theme {
 
@@ -23,6 +28,41 @@ declare global {
         blood: string;
         stamina: string;
         panic: string;
+      };
+    };
+
+    abilityButtons: {
+      color: {
+        ready: string;
+        unavailable: string;
+        error: string;
+        queued: string;
+        coolDown: string;
+        modalOn: string;
+
+        beginCast: string;
+        preparation: string;
+        recovery: string;
+        active: string;
+        disruption: string;
+        hit: string;
+        channelling: string;
+
+        bgOuterRing: string;
+        bgInnerRing: string;
+      };
+      display: DisplayOpts<{
+        ringStrokeWidth: number,
+        radius: number;
+      }>;
+    };
+
+    toolTips: {
+      color: {
+        [Faction.Arthurian]: string;
+        [Faction.TDD]: string;
+        [Faction.Viking]: string;
+        [Faction.Factionless]: string;
       };
     };
   }

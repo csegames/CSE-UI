@@ -20,7 +20,7 @@ import {
   SecureTradeState,
 } from 'gql/interfaces';
 import { SlotItemDefType, SlotType } from './lib/itemInterfaces';
-import TooltipContent, { defaultTooltipStyle } from './components/Tooltip';
+import ItemTooltipContent, { defaultTooltipStyle } from './components/Tooltip';
 import {
   FullScreenNavState,
   FullScreenContext,
@@ -351,7 +351,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
       instructions = 'Left click to open container | Right click item for more actions';
     }
 
-    const content = <TooltipContent
+    const content = <ItemTooltipContent
       item={item.item || (item.stackedItems && item.stackedItems[0])}
       slotType={item.slotType}
       stackedItems={item.stackedItems}

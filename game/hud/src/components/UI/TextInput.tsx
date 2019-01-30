@@ -68,14 +68,14 @@ export class TextInput extends React.PureComponent<Props> {
   private inputRef: HTMLInputElement = null;
 
   public render() {
-    const { overrideInputStyles } = this.props;
+    const { inputClassName, wrapperClassName, overrideInputStyles, getRef, ...extra } = this.props;
     return (
-      <Wrapper className={this.props.wrapperClassName}>
+      <Wrapper className={wrapperClassName}>
         <input
-          className={overrideInputStyles ? this.props.inputClassName : cx(inputStyle, this.props.inputClassName)}
+          className={overrideInputStyles ? inputClassName : cx(inputStyle, inputClassName)}
           type='text'
           ref={this.getRef}
-          {...this.props}
+          {...extra}
         />
         <ClickDiv onClick={this.focus} />
       </Wrapper>

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
+import React from 'react';
 import styled, { keyframes } from 'react-emotion';
 import { utils } from '@csegames/camelot-unchained';
 import {
@@ -15,6 +15,7 @@ import {
   showTooltip,
   hideTooltip,
 } from 'actions/tooltips';
+import { getViewportSize } from 'lib/viewport';
 
 const fadeIn = keyframes`
   from {
@@ -41,23 +42,80 @@ const View = styled('div')`
   }
 `;
 
+const DefaultTooltipWrapper = styled('div')`
+  pointer-events: none;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-width: 2px;
+  border-style: solid;
+  border-image: linear-gradient(to bottom, ${(props: {color: string}) => props.color}, transparent);
+  border-image-slice: 1;
+  background: url(images/item-tooltips/bg.png);
+  background-size: cover;
+  -webkit-mask-image: url(images/item-tooltips/ui-mask.png);
+  -webkit-mask-size: cover;
+  color: #ABABAB;
+  width: auto;
+  overflow: hidden;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: url(images/item-tooltips/ornament_left.png);
+    width: 35px;
+    height: 35px;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background: url(images/item-tooltips/ornament_right.png);
+    width: 35px;
+    height: 35px;
+  }
+  padding: 5px;
+`;
+
+const HeaderOverlay = styled('div')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  background: linear-gradient(to right, ${(props: {color: string}) => props.color}, transparent);
+  box-shadow: inset 0 0 20px 2px rgba(0,0,0,0.8);
+  height: 106px;
+  &:after {
+    content: '';
+    position: absolute;
+    height: 106px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url(images/item-tooltips/title_viel.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+`;
+
 export interface TooltipState {
   wndRegion: utils.Quadrant;
   show: boolean;
   ttClassName: string;
   offsetLeft: number;
-  offsetRight: number;
   offsetTop: number;
-  offsetBottom: number;
   content: JSX.Element | JSX.Element[] | string;
   shouldAnimate: boolean;
   styles?: Partial<ToolTipStyle>;
+  simple?: boolean;
 }
 
 export class TooltipView extends React.Component<{}, TooltipState> {
   private tooltipRef: HTMLDivElement;
-  private windowDimensions: { innerHeight: number, innerWidth: number };
-  private tooltipDimensions: { width: number, height: number };
   private eventHandles: EventHandle[] = [];
 
   private mousePos = { clientX: 0, clientY: 0 };
@@ -69,46 +127,57 @@ export class TooltipView extends React.Component<{}, TooltipState> {
       show: false,
       ttClassName: 'Tooltip',
       offsetLeft: 10,
-      offsetTop: 10,
-      offsetRight: 5,
-      offsetBottom: 5,
+      offsetTop: 20,
       content: null,
       shouldAnimate: false,
       styles: {},
+      simple: false,
     };
   }
 
   public render() {
     const customStyles = this.state.styles || {};
-
+    const useStandardWrapper = !this.state.simple;
     return this.state.show ? (
-      <Container className={customStyles.Tooltip}>
-        <View
-          innerRef={(ref: HTMLDivElement) => this.tooltipRef = ref}
-          className={`${customStyles.tooltip} ${this.state.shouldAnimate ? 'should-animate' : ''}`}>
-            {this.state.content}
-        </View>
-      </Container>
+      <UIContext.Consumer>
+        {
+          (ui) => {
+            const color = ui.currentTheme().toolTips.color[game.selfPlayerState.faction];
+            return (
+            <Container id='tooltip-view' className={customStyles.Tooltip}>
+              <View
+                innerRef={this.handleRef}
+                className={`${customStyles.tooltip} ${this.state.shouldAnimate ? 'should-animate' : ''}`}>
+                  {useStandardWrapper ? (
+                    <DefaultTooltipWrapper color={color}>
+                      <HeaderOverlay color={color} />
+                      {this.state.content}
+                    </DefaultTooltipWrapper>
+                    ) : this.state.content}
+              </View>
+            </Container>
+            );
+          }
+
+        }
+      </UIContext.Consumer>
     ) : null;
   }
 
   public componentDidMount() {
-    this.initWindowDimensions();
-    window.addEventListener('resize', this.initWindowDimensions);
     window.addEventListener('mousemove', this.onMouseMove);
     this.eventHandles.push(onShowTooltip(this.handleShowTooltip));
     this.eventHandles.push(onHideTooltip(this.handleHideTooltip));
   }
 
   public componentWillUnmount() {
-    window.removeEventListener('resize', this.initWindowDimensions);
     window.removeEventListener('mousemove', this.onMouseMove);
     this.eventHandles.forEach(eventHandle => eventHandle.clear());
   }
 
-  private initWindowDimensions = () => {
-    this.windowDimensions = { innerHeight: window.innerHeight, innerWidth: window.innerWidth };
-    this.handleHideTooltip();
+  private handleRef = (ref: HTMLDivElement) => {
+    this.tooltipRef = ref;
+    this.updatePosition();
   }
 
   private onMouseMove = (e: { clientX: number, clientY: number }) => {
@@ -120,53 +189,30 @@ export class TooltipView extends React.Component<{}, TooltipState> {
   }
 
   private updatePosition = () => {
-    if (!this.tooltipDimensions && this.tooltipRef) {
-      this.tooltipDimensions = {
-        height: this.tooltipRef.clientHeight,
-        width: this.tooltipRef.clientWidth,
-      };
+    if (!this.tooltipRef) return;
+
+    const bounds = this.tooltipRef.getBoundingClientRect();
+    const viewport = getViewportSize();
+
+    let left = this.mousePos.clientX - this.state.offsetLeft;
+    let top = this.mousePos.clientY + this.state.offsetTop;
+
+    if (left + bounds.width - this.state.offsetLeft > viewport.width) {
+      // flip tooltip to the left of the mouse
+      left = Math.max(this.mousePos.clientX - bounds.width - this.state.offsetLeft, 0);
     }
 
-    let computedStyle;
-    computedStyle = this.computeStyle(
-      this.mousePos.clientX,
-      this.mousePos.clientY,
-      this.state.offsetLeft,
-      this.state.offsetTop,
-      this.state.offsetRight,
-      this.state.offsetBottom,
-    );
-
-    if (this.tooltipRef && computedStyle) {
-      if (computedStyle.bottom) {
-        const topScreenOverflow = this.mousePos.clientY - this.tooltipDimensions.height;
-        if (topScreenOverflow < 0) {
-          // Tooltip is overflowing the top of the viewport
-          this.tooltipRef.style.bottom = `${computedStyle.bottom + topScreenOverflow}px`;
-        } else {
-          this.tooltipRef.style.bottom = `${computedStyle.bottom}px`;
-        }
-      }
-
-      if (computedStyle.top) {
-        const bottomScreenOverflow = this.windowDimensions.innerHeight -
-          (this.mousePos.clientY + this.tooltipDimensions.height);
-        if (bottomScreenOverflow < 0) {
-          // Tooltip is overflowing the bottom of the viewport
-          this.tooltipRef.style.top = `${computedStyle.top + bottomScreenOverflow}px`;
-        } else {
-          this.tooltipRef.style.top = `${computedStyle.top}px`;
-        }
-      }
-
-      this.tooltipRef.style.left = computedStyle.left ? `${computedStyle.left}px` : 'auto';
-      this.tooltipRef.style.right = computedStyle.right ? `${computedStyle.right}px` : 'auto';
+    if (top + this.state.offsetTop + bounds.height > viewport.height) {
+      top = Math.max(this.mousePos.clientY - bounds.height - this.state.offsetTop, 0);
     }
+
+    this.tooltipRef.style.left = left + 'px';
+    this.tooltipRef.style.top = top + 'px';
   }
 
   private handleShowTooltip = (payload: ShowTooltipPayload) => {
     const { content, event, shouldAnimate, styles } = payload;
-    this.updatePosition();
+    // this.updatePosition();
     this.setState({
       show: true,
       wndRegion: utils.windowQuadrant(event.clientX, event.clientY),
@@ -179,36 +225,6 @@ export class TooltipView extends React.Component<{}, TooltipState> {
   private handleHideTooltip = () => {
     this.setState({ show: false, content: null, styles: {} });
   }
-
-  private computeStyle = (x: number,
-                          y: number,
-                          offsetLeft: number,
-                          offsetTop: number,
-                          offsetRight: number,
-                          offsetBottom: number) => {
-    switch (this.state.wndRegion) {
-      case utils.Quadrant.TopLeft:
-        return {
-          left: x + offsetLeft,
-          top: y + offsetTop,
-        };
-      case utils.Quadrant.TopRight:
-        return {
-          right: this.windowDimensions.innerWidth - x + offsetRight,
-          top: y + offsetTop,
-        };
-      case utils.Quadrant.BottomLeft:
-        return {
-          left: x + offsetLeft,
-          bottom: this.windowDimensions.innerHeight - y + offsetBottom,
-        };
-      case utils.Quadrant.BottomRight:
-        return {
-          right: this.windowDimensions.innerWidth - x + offsetRight,
-          bottom: this.windowDimensions.innerHeight - y + offsetBottom,
-        };
-    }
-  }
 }
 
 
@@ -218,6 +234,7 @@ interface TooltipProps {
   shouldAnimate?: boolean;
   styles?: Partial<ToolTipStyle>;
   closeOnEvents?: string[];
+  children: React.ReactNode;
 }
 
 export class Tooltip extends React.PureComponent<TooltipProps, {}> {
@@ -233,10 +250,27 @@ export class Tooltip extends React.PureComponent<TooltipProps, {}> {
       return <span onMouseOver={this.handleMouseOver} onMouseLeave={this.handleMouseLeave}>{this.props.children}</span>;
     }
 
-    return React.cloneElement(this.props.children as any, {
-      onMouseOver: this.handleMouseOver,
-      onMouseLeave: this.handleMouseLeave,
+    if (Array.isArray(this.props.children)) {
+      console.warn('Tooltip can only have one child element!');
+      return null;
+    }
+
+    const children = this.props.children as any;
+    const newElement = React.cloneElement(this.props.children as any, {
+      onMouseOver: (e) => {
+        this.handleMouseOver(e);
+        if (children.props && children.props.onMouseOver) {
+          children.props.onMouseOver.call(newElement, e);
+        }
+      },
+      onMouseLeave: (e) => {
+        this.handleMouseLeave();
+        if (children.props && children.props.onMouseLeave) {
+          children.props.onMouseLeave.call(newElement, e);
+        }
+      },
     });
+    return newElement;
   }
 
   public componentWillUnmount() {

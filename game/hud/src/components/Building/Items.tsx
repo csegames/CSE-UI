@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Tooltip } from 'components/UI/Tooltip';
+import { Tooltip } from 'components/Tooltip';
 import { doesSearchInclude } from '@csegames/camelot-unchained';
 
 const Container = styled('div')`

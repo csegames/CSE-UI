@@ -13,6 +13,7 @@ import './textUtils';
 import './numberUtils';
 import './compare';
 import './mathExtensions';
+import './idGen';
 
 export * from './arrayUtils';
 export * from './eventMapper';
@@ -30,6 +31,7 @@ export * from './immutableType';
 export * from './withDefaults';
 export * from './compare';
 export * from './mathExtensions';
+export * from './idGen';
 
 
 import * as KeyCodes from './keyCodes';

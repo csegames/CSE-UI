@@ -37,11 +37,11 @@ export type MenuItem = {
   onSelected: () => void;
 };
 
-export function showContextMenu(items: MenuItem[], event: MouseEvent) {
+export function showContextMenu(items: MenuItem[], event: React.MouseEvent) {
   if (items.length) game.trigger(ACTIVATE_CONTEXT_MENU, items, event);
 }
 
-export function onShowContextMenu(callback: (items: MenuItem[], event: MouseEvent) => void) {
+export function onShowContextMenu(callback: (items: MenuItem[], event: React.MouseEvent) => void) {
   return game.on(ACTIVATE_CONTEXT_MENU, callback);
 }
 
@@ -50,11 +50,11 @@ export function offShowContextMenu(handle: number) {
 }
 
 // Show context menu content
-export function showContextMenuContent(content: JSX.Element, event: MouseEvent) {
+export function showContextMenuContent(content: JSX.Element, event: React.MouseEvent) {
   if (content) game.trigger(ACTIVATE_CONTEXT_MENU_CONTENT, content, event);
 }
 
-export function onShowContextMenuContent(callback: (content: JSX.Element, event: MouseEvent) => void) {
+export function onShowContextMenuContent(callback: (content: JSX.Element, event: React.MouseEvent) => void) {
   return game.on(ACTIVATE_CONTEXT_MENU_CONTENT, callback);
 }
 
@@ -79,7 +79,7 @@ export function offHideContextMenu(handle: number) {
 
 export function showFriendlyTargetContextMenu(
   state: Entity,
-  event: MouseEvent,
+  event: React.MouseEvent,
 ) {
   // is friendly target self?
   const id = (state as GroupMemberState).entityID;
@@ -92,14 +92,14 @@ export function showFriendlyTargetContextMenu(
 
 export function showSelfContextMenu(
   state: Entity,
-  event: MouseEvent,
+  event: React.MouseEvent,
 ) {
   showContextMenu(getSelfMenuItems(state), event);
 }
 
 export function showEnemyTargetContextMenu(
   state: Entity,
-  event: MouseEvent,
+  event: React.MouseEvent,
 ) {
   showContextMenu(getEnemyTargetMenuItems(state), event);
 }

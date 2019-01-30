@@ -31,10 +31,8 @@ const query = gql`
 const Button = styled('div')`
   display: flex;
   justify-content: space-between;
-  background-color: ${(props: any) => props.disabled ? '#434343' : 'gray' };
-  color: white;
+  color: ${(props: any) => props.disabled ? '#666' : 'white' };
   pointer-events: all;
-  border-bottom: 1px solid #222;
   max-width: 300px;
   padding: 5px;
   pointer-events: all;
@@ -42,7 +40,7 @@ const Button = styled('div')`
   opacity: ${(props: any) => props.disabled ? 0.5 : 1};
 
   &:hover {
-    background-color: #888;
+    color: ${(props: any) => props.disabled ? '#666' : 'yellow' };
   }
 
   &:active {

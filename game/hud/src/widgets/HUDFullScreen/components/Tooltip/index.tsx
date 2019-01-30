@@ -20,7 +20,6 @@ import {
   isBuildingBlockItem,
   isArmorItem,
   isWeaponItem,
-  getTooltipColor,
   isAlloyItem,
 } from '../../lib/utils';
 import { SlotType } from '../../lib/itemInterfaces';
@@ -42,39 +41,6 @@ export const defaultTooltipStyle: { tooltip: string } = {
 };
 
 const Container = styled('div')`
-  pointer-events: none;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  border-width: 2px;
-  border-style: solid;
-  border-image: linear-gradient(to bottom, ${(props: any) => props.factionColor}, transparent);
-  border-image-slice: 1;
-  background: url(images/item-tooltips/bg.png);
-  background-size: cover;
-  -webkit-mask-image: url(images/item-tooltips/ui-mask.png);
-  -webkit-mask-size: cover;
-  color: #ABABAB;
-  width: auto;
-  overflow: hidden;
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    background: url(images/item-tooltips/ornament_left.png);
-    width: 35px;
-    height: 35px;
-  }
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    background: url(images/item-tooltips/ornament_right.png);
-    width: 35px;
-    height: 35px;
-  }
 `;
 
 export interface TooltipContentProps {
@@ -85,13 +51,13 @@ export interface TooltipContentProps {
   slotType?: SlotType;
 }
 
-class TooltipContent extends React.Component<TooltipContentProps> {
+class ItemTooltipContent extends React.Component<TooltipContentProps> {
   public render() {
     const { item, slotType, equippedItems, stackedItems, instructions } = this.props;
     const itemInfo = item && item.staticDefinition && item.staticDefinition;
 
     return itemInfo ? (
-      <Container factionColor={getTooltipColor(game.selfPlayerState.faction)}>
+      <Container>
         <TooltipHeader item={item} slotType={slotType} stackedItems={stackedItems} />
         {isArmorItem(item) && <TooltipArmorInfo item={item} equippedItems={equippedItems} />}
         {isWeaponItem(item) && <TooltipWeaponInfo item={item} equippedItems={equippedItems} />}
@@ -105,4 +71,4 @@ class TooltipContent extends React.Component<TooltipContentProps> {
   }
 }
 
-export default TooltipContent;
+export default ItemTooltipContent;

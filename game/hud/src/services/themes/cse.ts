@@ -18,5 +18,46 @@ export default function(): Theme {
         panic: '#FFF153',
       },
     },
+
+    abilityButtons: {
+      color: {
+        ready: 'cyan',
+        unavailable: '#C1000E',
+        error: 'red',
+        queued: '#FF7C24',
+        coolDown: 'white',
+        modalOn: '#aaa',
+
+        beginCast: '#ffdf00',
+        preparation: '#FF9F19',
+        recovery: '#19abff',
+        active: '#fff570',
+        disruption: '#d700ff',
+        hit: '#fff570',
+        channelling: '#C5FFC5',
+
+        bgOuterRing: '#111',
+        bgInnerRing: 'transparent',
+      },
+      display: {
+        hd: {
+          ringStrokeWidth: 2,
+          radius: 22,
+        },
+        uhd: {
+          ringStrokeWidth: 4,
+          radius: 44,
+        },
+      },
+    },
+
+    toolTips: {
+      color: {
+        [Faction.Arthurian]: 'rgba(247, 33, 33, 0.25)',
+        [Faction.TDD]: 'rgba(196, 216, 1, 0.25)',
+        [Faction.Viking]: 'rgba(35, 155, 242, 0.25)',
+        [Faction.Factionless]: 'rgba(20, 20, 20, 0.25)',
+      },
+    },
   };
 }

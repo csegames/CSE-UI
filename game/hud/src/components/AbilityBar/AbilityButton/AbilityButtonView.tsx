@@ -29,7 +29,7 @@ import {
   NoWeaponState,
   CLASS_NAMES,
 } from 'components/AbilityBar/AbilityButton/lib';
-import { Tooltip } from 'components/UI/Tooltip';
+import { Tooltip } from 'components/Tooltip';
 
 const Button = styled('div')`
   position: relative;

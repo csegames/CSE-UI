@@ -49,7 +49,6 @@ function initUI() {
 }
 
 export default function() {
-  console.log('initializing game engine');
   initCoherentRecording();
   if (typeof engine !== 'undefined' && engine.isAttached && !window.game) {
     engine.on('Ready', () => {

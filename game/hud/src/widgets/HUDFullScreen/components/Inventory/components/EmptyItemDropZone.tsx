@@ -11,7 +11,7 @@ import styled from 'react-emotion';
 import EmptyItem, { EmptyItemProps } from '../../ItemShared/EmptyItem';
 import { ContainerPermissionDef } from '../../ItemShared/InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
-import dragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
+import enableDragAndDrop, { DragAndDropInjectedProps, DragEvent } from '../../../../../components/DragAndDrop/DragAndDrop';
 import { InventoryDataTransfer } from '../../../lib/eventNames';
 import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
 import {
@@ -183,7 +183,7 @@ class EmptyItemWrapper extends React.Component<EmptyItemDropZoneProps, EmptyItem
   }
 }
 
-const EmptyItemDropZone = dragAndDrop<EmptyItemProps & EmptyItemDropZoneProps>(
+const EmptyItemDropZone = enableDragAndDrop<EmptyItemProps & EmptyItemDropZoneProps>(
   (props: EmptyItemProps & EmptyItemDropZoneProps) => {
     return {
       id: 'emptyDropZone',

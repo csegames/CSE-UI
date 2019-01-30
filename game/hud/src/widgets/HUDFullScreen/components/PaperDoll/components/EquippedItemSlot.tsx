@@ -13,7 +13,7 @@ import eventNames, { UnequipItemPayload } from '../../../lib/eventNames';
 import { getEquippedDataTransfer } from '../../../lib/utils';
 import { Alignment } from './PopupMiniInventory';
 import DraggableEquippedItem from './DraggableEquippedItem';
-import TooltipContent, { defaultTooltipStyle } from '../../Tooltip';
+import ItemTooltipContent, { defaultTooltipStyle } from '../../Tooltip';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
 import {
   EquippedItem,
@@ -151,7 +151,7 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     const itemId = equippedItem && equippedItem.item.id;
     const shouldShowTooltip = !this.props.itemMenuVisible && itemId;
     if (shouldShowTooltip) {
-      const content = <TooltipContent
+      const content = <ItemTooltipContent
         item={this.props.providedEquippedItem.item}
         instructions='Right click to unequip'
       />;

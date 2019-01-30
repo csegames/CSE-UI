@@ -42,7 +42,7 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
     );
   }
 
-  private onClickContainer = (event: MouseEvent) => {
+  private onClickContainer = (event: React.MouseEvent) => {
     // if right click, return
     if (event.button === 2) return;
 
@@ -50,7 +50,7 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
     game.selfPlayerState.requestFriendlyTarget(this.props.member.entityID);
   }
 
-  private handleContextMenu = (event: MouseEvent) => {
+  private handleContextMenu = (event: React.MouseEvent) => {
     if (event.button === 2) {
       showFriendlyTargetContextMenu(this.props.member, event);
     }

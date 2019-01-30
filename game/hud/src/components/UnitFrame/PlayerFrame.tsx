@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Tooltip } from 'components/UI/Tooltip';
+import { Tooltip } from 'components/Tooltip';
 import { Faction as GQLFaction, Archetype as GQLArchetype } from 'gql/interfaces';
 
 const PlayerFrameContainer = styled('div')`
@@ -25,7 +25,7 @@ const MainGrid = styled('div')`
   cursor: pointer !important;
   grid-template-columns: 32px 70px 339px;
   grid-template-rows: 16px 63px 38px;
-  @media (max-width: 2000px) {
+  @media (max-width: 1920px) {
     grid-template-columns: 16px 35px 170px;
     grid-template-rows: 8px 32px 19px;
   }
@@ -50,7 +50,7 @@ const Name = styled('div')`
   z-index: 1;
   padding: 15px 0 0 10px;
   font-size: 22px;
-  @media (max-width: 2000px) {
+  @media (max-width: 1920px) {
     font-size: 14px;
     padding: 7px 0 0 5px;
   }
@@ -88,7 +88,7 @@ const HealthSubGrid = styled('div')`
     '. . . . . . . . .';
   grid-template-columns: 8px 30px 6px 3px 6px 293px 3px 85px 7px;
   grid-template-rows: 57px 4px 13px 6px 4px 1px 4px 3px 9px;
-  @media (max-width: 2000px) {
+  @media (max-width: 1920px) {
     grid-template-columns: 4px 15px 3px 1px 3px 147px 1px 43px 3px;
     grid-template-rows: 29px 2px 7px 2px 2px 1px 2px 1px 4px;
   }
@@ -118,7 +118,7 @@ const HealthText = styled('div')`
   width: 100%;
   color: white;
   line-height: 12px;
-  @media (max-width: 2000px) {
+  @media (max-width: 1920px) {
     font-size: 16px;
     line-height: 6px;
   }
@@ -137,7 +137,7 @@ const Statuses = styled('div')`
   justify-content: flex-start;
   align-content: flex-start;
   min-width: 180px;
-  @media (max-width: 2000px) {
+  @media (max-width: 1920px) {
     min-width: 85px;
   }
 `;
@@ -150,7 +150,7 @@ const Status = styled('div')`
   width: 32px;
   height: 32px;
   margin: 4px;
-  @media (max-width: 2000px) {
+  @media (max-width: 1920px) {
     width: 16px;
     height: 16px;
     margin: 2px;
@@ -219,7 +219,7 @@ export class PlayerFrame extends React.Component<Props, State> {
 
   private uiContextRender = (uiContext: UIContext) => {
     const { player } = this.props;
-    const imgDir = 'images/unit-frames/' + (uiContext.use4kAssets() ? '4k/' : '1080/');
+    const imgDir = 'images/unit-frames/' + (uiContext.isUHD() ? '4k/' : '1080/');
     const realmPrefix = this.realmPrefix(player.faction);
     const archetypePrefix = this.archetypePrefix(player.classID);
     const theme = uiContext.currentTheme();

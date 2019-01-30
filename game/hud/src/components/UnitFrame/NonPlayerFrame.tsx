@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import styled from 'react-emotion';
-import { Tooltip } from 'components/UI/Tooltip';
+import { Tooltip } from 'components/Tooltip';
 
 
 const NonPlayerFrameContainer = styled('div')`
@@ -32,7 +32,7 @@ const MainGrid = styled('div')`
   cursor: pointer !important;
   grid-template-columns: 1px 16px 11px 41px 338px 8px;
   grid-template-rows: 13px 43px 19px 4px 13px 5px;
-  @media (max-width: 2000px) {
+  @media (max-width: 1920px) {
     grid-template-columns: 1px 8px 5px 21px 169px 4px;
     grid-template-rows: 7px 21px 10px 1px 7px 2px;
   }
@@ -65,7 +65,7 @@ const Name = styled('div')`
   z-index: 1;
   padding: 15px 0 0 10px;
   font-size: 22px;
-  @media (max-width: 2000px) {
+  @media (max-width: 1920px) {
     font-size: 14px;
     padding: 7px 0 0 5px;
   }
@@ -100,7 +100,7 @@ const HealthText = styled('div')`
   width: 100%;
   color: white;
   line-height: 12px;
-  @media (max-width: 2000px) {
+  @media (max-width: 1920px) {
     font-size: 16px;
     line-height: 6px;
   }
@@ -112,7 +112,7 @@ const Statuses = styled('div')`
    justify-content: flex-start;
    align-content: flex-start;
    min-width: 180px;
-   @media (max-width: 2000px) {
+   @media (max-width: 1920px) {
      min-width: 85px;
    }
 `;
@@ -125,7 +125,7 @@ const Status = styled('div')`
   width: 32px;
   height: 32px;
   margin: 4px;
-  @media (max-width: 2000px) {
+  @media (max-width: 1920px) {
     width: 16px;
     height: 16px;
     margin: 2px;
@@ -191,7 +191,7 @@ export class NonPlayerFrame extends React.Component<Props, State> {
   private uiContextRender = (uiContext: UIContext) => {
     const { entity } = this.props;
     if (!entity.health) return null;
-    const imgDir = 'images/unit-frames/' + (uiContext.use4kAssets() ? '4k/' : '1080/');
+    const imgDir = 'images/unit-frames/' + (uiContext.isUHD() ? '4k/' : '1080/');
     const realmPrefix = this.realmPrefix(entity.faction);
     const theme = uiContext.currentTheme();
 

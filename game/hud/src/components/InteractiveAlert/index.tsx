@@ -125,14 +125,6 @@ export class InteractiveAlertView extends React.Component<Props, State> {
     );
   }
 
-  public componentDidMount() {
-    console.log('interactive alert mounted');
-  }
-
-  public componentWillUnmount() {
-    console.log('interactive alert unmounted');
-  }
-
   private removeAlert = (alert: IInteractiveAlert) => {
     let alerts = [...this.state.alerts];
     switch (alert.category) {
