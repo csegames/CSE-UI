@@ -88,10 +88,22 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
   }
 
   private getAbility = (clientAbility: AbilityBarItem) => {
+    const apiAbilityInfo = game.store.getSkillInfo(clientAbility.id);
     const abilityInfo: InitialAbilityInfo = {
-      ...game.store.getSkillInfo(clientAbility.id),
       ...clientAbility,
+      ...apiAbilityInfo,
     };
+
+    if (apiAbilityInfo) {
+      Object.keys(apiAbilityInfo).forEach((key) => {
+        // If client has same key, check if it's a truthy value. If so, override API data. Otherwise, don't.
+        if (clientAbility[key]) {
+          // Value is truthy, override.
+          abilityInfo[key] = clientAbility[key];
+        }
+      });
+    }
+
     return abilityInfo;
   }
 }
