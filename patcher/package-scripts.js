@@ -20,8 +20,10 @@ module.exports = {
   scripts: {
 
     debug: 'nps build.patcher.dev && nps patcher',
+    debugLocal: 'nps build.patcher.dev && nps patcherLocal',
     debugProduction: 'nps build.patcher && nps patcher',
     patcher: 'cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0',
+    patcherLocal: 'cd Patchclient && start CamelotUnchained.exe canPatchSelf=0 outputUI=0 apiHost=http://localhost:1337',
 
     build: {
       default: {
