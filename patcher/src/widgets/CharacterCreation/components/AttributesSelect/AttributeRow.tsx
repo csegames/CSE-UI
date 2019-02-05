@@ -35,6 +35,10 @@ export const importantAttributes = {
   [Archetype.Blackguard]: ['Dexterity', 'Agility', 'Endurance', 'Vitality', 'Strength'],
   [Archetype.ForestStalker]: ['Dexterity', 'Agility', 'Endurance', 'Vitality', 'Strength'],
   [Archetype.WintersShadow]: ['Dexterity', 'Agility', 'Endurance', 'Vitality', 'Strength'],
+
+  [Archetype.FireMage]: ['Dexterity', 'Agility', 'Endurance', 'Vitality', 'Strength'],
+  [Archetype.EarthMage]: ['Dexterity', 'Agility', 'Endurance', 'Vitality', 'Strength'],
+  [Archetype.WaterMage]: ['Dexterity', 'Agility', 'Endurance', 'Vitality', 'Strength'],
 };
 
 export class AttributeRow extends React.Component<AttributeRowProps, AttributeRowState> {

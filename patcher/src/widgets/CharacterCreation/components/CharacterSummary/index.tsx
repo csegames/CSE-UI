@@ -124,6 +124,9 @@ export class CharacterSummary extends React.Component<CharacterSummaryProps, Cha
       case Archetype.Physician: return 'healers';
       case Archetype.Empath: return 'healers';
       case Archetype.Stonehealer: return 'healers';
+      case Archetype.FireMage: return 'healers';
+      case Archetype.EarthMage: return 'healers';
+      case Archetype.WaterMage: return 'healers';
     }
   }
 }
