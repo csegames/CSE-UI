@@ -45,15 +45,15 @@
     @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-wintersshadow.png');
 }
 
-.thumb__Human_Male_FireMage {
+.thumb__Human_Male_FlameWarden {
     @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-wintersshadow.png');
 }
 
-.thumb__Human_Male_EarthMage {
+.thumb__Human_Male_Druid {
     @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-wintersshadow.png');
 }
 
-.thumb__Human_Male_WaterMage {
+.thumb__Human_Male_WaveWeaver {
     @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-wintersshadow.png');
 }
 
@@ -94,15 +94,15 @@
     @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-wintersshadow.png');
 }
 
-.thumb__Human_Female_WaterMage{
+.thumb__Human_Female_WaveWeaver{
     @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-wintersshadow.png');
 }
 
-.thumb__Human_Female_EarthMage{
+.thumb__Human_Female_Druid{
     @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-wintersshadow.png');
 }
 
-.thumb__Human_Female_FireMage{
+.thumb__Human_Female_FlameWarden{
     @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-wintersshadow.png');
 }
 
@@ -119,7 +119,7 @@
     @include selection-thumbnail('../images/classes/profile/profile-icon-luchorpan-m-foreststalker.png');
 }
 
-.thumb__Luchorpan_Male_EarthMage {
+.thumb__Luchorpan_Male_Druid {
     @include selection-thumbnail('../images/classes/profile/profile-icon-luchorpan-m-foreststalker.png');
 }
 
@@ -136,7 +136,7 @@
     @include selection-thumbnail('../images/classes/profile/profile-icon-luchorpan-f-foreststalker.png');
 }
 
-.thumb__Luchorpan_Female_EarthMage{
+.thumb__Luchorpan_Female_Druid{
     @include selection-thumbnail('../images/classes/profile/profile-icon-luchorpan-f-foreststalker.png');
 }
 
@@ -153,7 +153,7 @@
     @include selection-thumbnail('../images/classes/profile/profile-icon-pict-m-blackguard.png');
 }
 
-.thumb__Pict_Male_FireMage{
+.thumb__Pict_Male_FlameWarden{
     @include selection-thumbnail('../images/classes/profile/profile-icon-pict-m-blackguard.png');
 }
 
@@ -170,7 +170,7 @@
     @include selection-thumbnail('../images/classes/profile/profile-icon-pict-f-blackguard.png');
 }
 
-.thumb__Pict_Female_FireMage{
+.thumb__Pict_Female_FlameWarden{
     @include selection-thumbnail('../images/classes/profile/profile-icon-pict-f-blackguard.png');
 }
 
@@ -188,7 +188,7 @@
     @include selection-thumbnail('../images/classes/profile/profile-icon-valk-m-wintersshadow.png');
 }
 
-.thumb__Valkyrie_Male_WaterMage{
+.thumb__Valkyrie_Male_WaveWeaver{
     @include selection-thumbnail('../images/classes/profile/profile-icon-valk-m-wintersshadow.png');
 }
 
@@ -205,7 +205,7 @@
     @include selection-thumbnail('../images/classes/profile/profile-icon-valk-f-wintersshadow.png');
 }
 
-.thumb__Valkyrie_Female_WaterMage{
+.thumb__Valkyrie_Female_WaveWeaver{
     @include selection-thumbnail('../images/classes/profile/profile-icon-valk-f-wintersshadow.png');
 }
 
@@ -254,17 +254,17 @@
     @include winters-shadow-height();
 }
 
-.standing__Human_Male_FireMage {
+.standing__Human_Male_FlameWarden {
     @include view-standing('../images/classes/human-m-wintershadow.png');
     @include winters-shadow-height();
 }
 
-.standing__Human_Male_EarthMage {
+.standing__Human_Male_Druid {
     @include view-standing('../images/classes/human-m-wintershadow.png');
     @include winters-shadow-height();
 }
 
-.standing__Human_Male_WaterMage {
+.standing__Human_Male_WaveWeaver {
     @include view-standing('../images/classes/human-m-wintershadow.png');
     @include winters-shadow-height();
 }
@@ -307,17 +307,17 @@
     @include winters-shadow-height();
 }
 
-.standing__Human_Female_FireMage{
+.standing__Human_Female_FlameWarden{
     @include view-standing('../images/classes/human-f-wintershadow.png');
     @include winters-shadow-height();
 }
 
-.standing__Human_Female_EarthMage{
+.standing__Human_Female_Druid{
     @include view-standing('../images/classes/human-f-wintershadow.png');
     @include winters-shadow-height();
 }
 
-.standing__Human_Female_WaterMage{
+.standing__Human_Female_WaveWeaver{
     @include view-standing('../images/classes/human-f-wintershadow.png');
     @include winters-shadow-height();
 }
@@ -335,7 +335,7 @@
     @include view-standing('../images/classes/luchorpan-m-foreststalker.png');
 }
 
-.standing__Luchorpan_Male_EarthMage {
+.standing__Luchorpan_Male_Druid {
     @include view-standing('../images/classes/luchorpan-m-foreststalker.png');
 }
 
@@ -352,7 +352,7 @@
     @include view-standing('../images/classes/luchorpan-f-foreststalker.png');
 }
 
-.standing__Luchorpan_Female_EarthMage {
+.standing__Luchorpan_Female_Druid {
     @include view-standing('../images/classes/luchorpan-f-foreststalker.png');
 }
 
@@ -369,7 +369,7 @@
     @include view-standing('../images/classes/pict-m-physician.png');
 }
 
-.standing__Pict_Male_FireMage {
+.standing__Pict_Male_FlameWarden {
     @include view-standing('../images/classes/pict-m-physician.png');
 }
 
@@ -386,7 +386,7 @@
     @include view-standing('../images/classes/pict-f-physician.png');
 }
 
-.standing__Pict_Female_FireMage {
+.standing__Pict_Female_FlameWarden {
     @include view-standing('../images/classes/pict-f-physician.png');
 }
 
@@ -404,7 +404,7 @@
     @include view-standing('../images/classes/valk-m-stonehealer.png');
 }
 
-.standing__Valkyrie_Male_WaterMage {
+.standing__Valkyrie_Male_WaveWeaver {
     @include view-standing('../images/classes/valk-m-stonehealer.png');
 }
 
@@ -422,7 +422,7 @@
     @include view-standing('../images/classes/valk-f-stonehealer.png');
 }
 
-.standing__Valkyrie_Female_WaterMage {
+.standing__Valkyrie_Female_WaveWeaver {
     @include view-standing('../images/classes/valk-f-stonehealer.png');
 }
 

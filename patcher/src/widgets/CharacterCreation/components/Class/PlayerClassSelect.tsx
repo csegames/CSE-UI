@@ -34,11 +34,11 @@ const classText: any = {
   
   Empath: 'Empaths believe that their bodies should be used to heal those in need. They pay a great price for choosing this noble way, for they take the wounds of others onto their own bodies. The more serious the wounds they deal with, the greater the likelihood that the Empath suffers additional side effects from their healing. The reward for this sacrifice is equally impressive: Empaths have access to some of the most powerful heals of all the classes in all the Realms.',
 
-  FireMage: 'Does Magic tricks with fire.',
+  FlameWarden: 'Does Magic tricks with fire.',
 
-  EarthMage: 'I use magic.',
+  Druid: 'I use magic.',
 
-  WaterMage: 'Seems a bit damp in here.',
+  WaveWeaver: 'Seems a bit damp in here.',
 };
 /* tslint:enable */
 
@@ -86,9 +86,9 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
         case Archetype.Physician: videoTitle = 'healers'; break;
         case Archetype.Empath: videoTitle = 'healers'; break;
         case Archetype.Stonehealer: videoTitle = 'healers'; break;
-        case Archetype.FireMage: videoTitle = 'healers'; break;
-        case Archetype.EarthMage: videoTitle = 'healers'; break;
-        case Archetype.WaterMage: videoTitle = 'healers'; break;
+        case Archetype.FlameWarden: videoTitle = 'healers'; break;
+        case Archetype.Druid: videoTitle = 'healers'; break;
+        case Archetype.WaveWeaver: videoTitle = 'healers'; break;
       }
     }
     const displayedClasses = this.props.classes.filter((c: any) => c.faction === this.props.selectedFaction.id ||
