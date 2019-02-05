@@ -10,16 +10,16 @@ declare global {
   class Status {
     public static equals(a: Status, b: Status): boolean;
   }
-  class StatusExt {
+  class StatusEffectExt {
     public static equals(a: Status, b: Status): boolean;
   }
   interface Window {
-    Status: typeof StatusExt;
+    Status: typeof StatusEffectExt;
   }
 }
 
-class StatusExt {
-  public static equals(a: Status, b: Status) {
+class StatusEffectExt {
+  public static equals(a: StatusEffect, b: StatusEffect) {
     if (Object.is(a, b)) {
       return true;
     }
@@ -28,4 +28,4 @@ class StatusExt {
       && Math.equals(a.duration, b.duration);
   }
 }
-window.Status = StatusExt;
+window.Status = StatusEffectExt;
