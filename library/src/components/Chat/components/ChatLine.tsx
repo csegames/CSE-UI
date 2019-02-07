@@ -33,16 +33,24 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
       case chatType.AVAILABLE:
         if (!chatConfig.JOIN_PARTS) break;
         element = (
-          <div className={chatLineClassName}>
-            <span className='chat-line-entry'>{this.props.message.nick} entered the room</span>
+          <div data-input-group='block' className={chatLineClassName}>
+            <span
+              onClick={this.onChatLineClick}
+              className='chat-line-entry'>
+              {this.props.message.nick} entered the room
+            </span>
           </div>
         );
         break;
       case chatType.UNAVAILABLE:
         if (!chatConfig.JOIN_PARTS) break;
         element = (
-          <div className={chatLineClassName}>
-            <span className='chat-line-exit'>{this.props.message.nick} left the room</span>
+          <div data-input-group='block' className={chatLineClassName}>
+            <span
+              onClick={this.onChatLineClick}
+              className='chat-line-exit'>
+              {this.props.message.nick} left the room
+            </span>
           </div>
         );
         break;
@@ -55,30 +63,36 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
       case chatType.COMBAT:
         const cbparser = new CombatLogParser();
         element = (
-          <div className={chatLineClassName}>
+          <div data-input-group='block' className={chatLineClassName}>
             {timestamp}
-            <span key='0' className='chat-line-message'>{cbparser.parse(this.props.message.text)}</span>
+            <span
+              key='0'
+              onClick={this.onChatLineClick}
+              className='chat-line-message'>
+              {cbparser.parse(this.props.message.text)}
+            </span>
           </div>
         );
         break;
       case chatType.SYSTEM:
       case chatType.BROADCAST:
         element = (
-          <div className={chatLineClassName}>
+          <div data-input-group='block' className={chatLineClassName}>
             {timestamp}
-            <span className='chat-line-system'>{this.props.message.text}</span>
+            <span onClick={this.onChatLineClick} className='chat-line-system'>{this.props.message.text}</span>
           </div>
         );
         break;
       default:
         element = (
-          <div className={chatLineClassName}>
+          <div data-input-group='block' className={chatLineClassName}>
             {timestamp}
             <span className='chat-line-system'>[ Unrecognised chat message type ]</span>
-            <span className='chat-line-message'>{JSON.stringify(this.props.message)}</span>
+            <span onClick={this.onChatLineClick} className='chat-line-message'>{JSON.stringify(this.props.message)}</span>
           </div>
         );
     }
+
     return element;
   }
 
@@ -99,18 +113,40 @@ class ChatLine extends React.Component<ChatLineProps, ChatLineState> {
       elements = parser.parseAction(text);
     } else {
       nick += ':';
-      elements = [<span key='0' className='chat-line-message'>{parser.parse(text)}</span>];
+      elements = [
+        <span
+          key='0'
+          onClick={this.onChatLineClick}
+          data-input-group='block'
+          className='chat-line-message'>
+          {parser.parse(text)}
+        </span>,
+      ];
     }
     const chatLineClassName = this.props.message.isCSE ? 'chat-line cse-chat-line' : 'chat-line';
     return (
-      <div className={chatLineClassName + (classes ? ' ' + classes : '') }>
-            {timestamp}
-            <span className={`chat-line-nick ${this.props.message.isCSE ? 'cse' : ''}`} onClick={this.PM.bind(this) }>
-              {nick}
-            </span>
-            {elements}
+      <div data-input-group='block' className={chatLineClassName + (classes ? ' ' + classes : '') }>
+        {timestamp}
+        <span className={`chat-line-nick ${this.props.message.isCSE ? 'cse' : ''}`} onClick={this.PM.bind(this) }>
+          {nick}
+        </span>
+        {elements}
       </div>
     );
+  }
+
+  private onChatLineClick = (e: React.MouseEvent<HTMLSpanElement>) => {
+    if (typeof engine !== 'undefined') {
+      const range = document.createRange();
+      range.selectNode(e.currentTarget);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      const copySuccess = document.execCommand('copy');
+
+      if (copySuccess) {
+        game.trigger('show-action-alert', 'Copied successfully', { clientX: e.clientX, clientY: e.clientY });
+      }
+    }
   }
 
   private PM = (): void => {

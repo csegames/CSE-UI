@@ -5,11 +5,21 @@
  */
 
 import * as React from 'react';
+import { cx, css } from 'react-emotion';
 
 import ChatSession from './ChatSession';
 import { chatState } from './ChatState';
 import AtUserList from './AtUserList';
 import { ChatRoomInfoUser } from './ChatRoomInfo';
+import { TextArea } from '../../TextArea';
+
+const TextAreaWrapper = css`
+  width: 100%;
+`;
+
+const TextAreaInput = css`
+  width: 100%;
+`;
 
 export interface ChatInputState {
   atUsers: string[];
@@ -30,6 +40,7 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
   private tabUserIndex: number = null;
   private sentMessages: string[] = [];
   private sentMessageIndex: number = null;
+  private inputRef: HTMLTextAreaElement;
   constructor(props: ChatInputProps) {
     super(props);
     this.state = this.initialState();
@@ -66,30 +77,32 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
       'chat-' + (this.state.expanded ? 'expanded' : 'normal'),
     ];
     return (
-      <div className={inputClass.join(' ')}>
+      <div data-input-group='block' className={inputClass.join(' ')}>
         <AtUserList users={this.state.atUsers} selectedIndex={this.state.atUsersIndex} selectUser={this.selectAtUser}/>
-        <textarea className='materialize-textarea'
-                  id='chat-text'
-                  ref='new-text'
-                  placeholder='Say something!'
-                  onKeyDown={this.keyDown}
-                  onKeyUp={this.keyUp}
-                  onChange={this.parseInput}>
-        </textarea>
+        <TextArea
+          ref={r => r && (this.inputRef = r.ref)}
+          wrapperClassName={TextAreaWrapper}
+          inputClassName={cx(TextAreaInput, 'materialize-textarea')}
+          id='chat-text'
+          placeholder='Say something!'
+          onKeyDown={this.keyDown}
+          onKeyUp={this.keyUp}
+          onChange={this.parseInput}
+        />
       </div>
     );
   }
 
   private selectAtUser = (user: string) => {
-    const input: HTMLInputElement = this.getInputNode();
+    const input: HTMLTextAreaElement = this.getInputNode();
     const lastWord: RegExpMatchArray = input.value.match(/@([\S]*)$/);
     input.value = input.value.substring(0, lastWord.index + 1) + user + ' ';
     input.focus();
     this.setState({ atUsers: [], atUsersIndex: 0 });
   }
 
-  private getInputNode = (): HTMLInputElement => {
-    return this.refs['new-text'] as HTMLInputElement;
+  private getInputNode = (): HTMLTextAreaElement => {
+    return this.inputRef;
   }
 
   private keyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
@@ -241,7 +254,7 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
   }
 
   private send = (): void => {
-    const input: HTMLInputElement = this.getInputNode();
+    const input: HTMLTextAreaElement = this.getInputNode();
     let value: string = input.value;
     // remove leading space (not newline) and trailing white space
     while (value[0] === ' ') value = value.substr(1);
@@ -264,7 +277,7 @@ class ChatInput extends React.Component<ChatInputProps, ChatInputState> {
   }
 
   private privateMessage = (name: string): void => {
-    const input: HTMLInputElement = this.getInputNode();
+    const input: HTMLTextAreaElement = this.getInputNode();
     input.value = '/w ' + name + ' ';
     input.focus();
   }

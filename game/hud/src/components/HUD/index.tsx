@@ -43,6 +43,7 @@ import { InteractiveAlertView } from '../InteractiveAlert';
 import { ContextMenu } from '../ContextMenu';
 import { TooltipView } from 'UI/Tooltip';
 import PassiveAlert from '../PassiveAlert';
+import { ActionAlert } from '../ActionAlert';
 import { uiContextFromGame } from 'services/session/UIContext';
 
 const HUDNavContainer = styled('div')`
@@ -132,6 +133,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
           </AbilityBarContainer>
           <ContextMenu />
           <TooltipView />
+          <ActionAlert />
           <PassiveAlert />
           { locked ? null :
             <HUDEditor
