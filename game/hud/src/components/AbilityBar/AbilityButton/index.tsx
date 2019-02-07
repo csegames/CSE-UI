@@ -59,6 +59,7 @@ const innerRadius = 22;
 class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonState> {
   private rings: RingTimer[] = [undefined, undefined];
   private updateHandle: EventHandle;
+  private activateHandle: EventHandle;
   private prevEvent: AbilityButtonInfo;
   private startCastTimeout: any;
   private hitTimeout: any;
@@ -155,6 +156,10 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
     return null;
   }
 
+  public componentDidMount() {
+    this.activateHandle = game.abilityStates[this.props.abilityInfo.id].onActivated(this.handleClientActivation);
+  }
+
   public componentWillReceiveProps(nextProps: AbilityButtonProps) {
     if (!this.updateHandle && nextProps.abilityInfo && typeof nextProps.abilityInfo.id === 'number') {
       this.updateHandle = game.abilityStates[nextProps.abilityInfo.id].onUpdated(this.processEvent);
@@ -176,6 +181,15 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
       this.updateHandle.clear();
       this.updateHandle = null;
     }
+
+    if (this.activateHandle) {
+      this.activateHandle.clear();
+      this.activateHandle = null;
+    }
+  }
+
+  private handleClientActivation = () => {
+    this.runStartCastAnimation();
   }
 
   private performAbility = () => {

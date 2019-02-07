@@ -25,13 +25,20 @@ declare global {
     disruption?: CurrentMax;
   }
 
-  type AbilityState = AbilityStateModel & Updatable;
+  type AbilityState = AbilityStateModel & Updatable & { onActivated: (callback: Callback) => EventHandle };
   type ImmutableAbilityState = DeepImmutableObject<AbilityState>;
 }
 
-export const AbilityState_Update = 'abilityState.update';
+function createDefaultOnActivated(name: string) {
+  return function(cb: Callback) {
+    return game.on(name, cb);
+  };
+}
 
-const initDefaults = (eventName: string): AbilityState => {
+export const AbilityState_Update = 'abilityState.update';
+export const AbilityState_Activate = 'abilityState.activate';
+
+const initDefaults = (eventName: string, activatedEventName: string): AbilityState => {
   return {
     id: -1,
     type: AbilityButtonType.Standard,
@@ -42,6 +49,7 @@ const initDefaults = (eventName: string): AbilityState => {
     isReady: true,
     onUpdated: createDefaultOnUpdated(eventName),
     onReady: createDefaultOnReady(eventName),
+    onActivated: createDefaultOnActivated(activatedEventName),
     updateEventName: eventName,
   };
 };
@@ -56,19 +64,32 @@ function onReceiveAbilityStateUpdate(state: AbilityState) {
   }
 
   const eventName = `${AbilityState_Update}_${state.id}`;
+  const activatedEventName = `${AbilityState_Activate}_${state.id}`;
   if (!_devGame.abilityStates[state.id]) {
-    _devGame.abilityStates[state.id] = withDefaults(state, initDefaults(eventName), false);
+    _devGame.abilityStates[state.id] = withDefaults(state, initDefaults(eventName, activatedEventName), false);
     // init Updatable.
     initUpdatable(_devGame.abilityStates[state.id]);
   } else {
-    _devGame.abilityStates[state.id] = withDefaults(state, initDefaults(eventName), false);
+    _devGame.abilityStates[state.id] = withDefaults(state, initDefaults(eventName, activatedEventName), false);
   }
 
   executeUpdateCallbacks(_devGame.abilityStates[state.id]);
 }
 
+function onReceiveAbilityActivate(id: string) {
+  if (game.debug) {
+    console.groupCollapsed(`Client > ${AbilityState_Activate}`);
+    console.log(id);
+    console.groupEnd();
+  }
+
+  const eventName = `${AbilityState_Activate}_${id}`;
+  game.trigger(eventName);
+}
+
 export default function() {
   if (typeof engine !== 'undefined') {
     engine.on(AbilityState_Update, onReceiveAbilityStateUpdate);
+    engine.on(AbilityState_Activate, onReceiveAbilityActivate);
   }
 }
