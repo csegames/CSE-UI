@@ -131,20 +131,24 @@ export function simpleMergeUnique<T>(...arrays: T[]) {
 }
 
 export function hashMerge<T>(hashFn: (o: T) => string, ...arrays: T[][]) {
-  const map: any = [];
+  const map: any = {};
   let i = arrays.length;
   while (--i >= 0) {
     if (!arrays[i]) continue;
     let j = arrays[i].length;
     while (--j >= 0) {
       const hash = hashFn(arrays[i][j]);
-      if (!map[hash]) map[hash] = arrays[i][j];
+      if (!map[hash]) {
+        map[hash] = arrays[i][j];
+      }
     }
   }
+
   const result: T[] = [];
-  for (const key in map) {
+  Object.keys(map).forEach((key) => {
     result.push(map[key]);
-  }
+  });
+
   return result;
 }
 
