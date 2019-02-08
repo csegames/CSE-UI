@@ -10,7 +10,7 @@ import { webAPI } from '@csegames/camelot-unchained';
 import {
   patcher,
   ChannelStatus,
-//  PatchPermissions
+  // PatchPermissions
 } from '../../../../../services/patcher';
 import { ServerType, PatcherServer } from '../../../ControllerContext';
 import PlayNowButton from './PlayNowButton';
@@ -76,7 +76,7 @@ class Button extends React.Component<ButtonProps, ButtonState> {
           //   );
           // } else
           if (!selectedServer.available ||
-              (permissions & webAPI.accessLevelToPatchPermission(selectedServer.accessLevel)) === 0) {
+            hasAccess(webAPI.accessLevelToPatchPermission(selectedServer.accessLevel), permissions)) {
             return (
               <DisabledButton text='Play Offline' onClick={this.props.onPlayOfflineClick} />
             );
@@ -119,6 +119,27 @@ class Button extends React.Component<ButtonProps, ButtonState> {
           <ErrorButton text='Update Failed' onClick={this.props.onInstallClick} />
         );
     }
+  }
+}
+
+function hasAccess(required: PatchPermissions, have: number) {
+  switch (have) {
+    case PatchPermissions.Public:
+      return true;
+    case PatchPermissions.AllBackers:
+      return required >= PatchPermissions.AllBackers;
+    case PatchPermissions.Alpha:
+      return required >= PatchPermissions.Alpha;
+    case PatchPermissions.Beta1:
+      return required >= PatchPermissions.Beta1;
+    case PatchPermissions.Beta2:
+      return required >= PatchPermissions.Beta2;
+    case PatchPermissions.Beta3:
+      return required >= PatchPermissions.Beta3;
+    case PatchPermissions.InternalTest:
+      return (required & PatchPermissions.InternalTest) !== 0 || required >= PatchPermissions.Alpha;
+    case PatchPermissions.Development:
+      return true;
   }
 }
 
