@@ -6,7 +6,9 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { ScenarioInstanceID, Date, RoundOutcome } from 'gql/interfaces';
+import gql from 'graphql-tag';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+import { LiveScenarioScoreboardQuery } from 'gql/interfaces';
 
 const Wrapper = styled('div')`
   width: 100%;
@@ -118,74 +120,88 @@ const TddBackground: React.SFC<BackgroundProps> = styled('div')`
 // MOCK GQL TYPE ---------------------------------------------
 // TODO remove this mock data, and replace with gql/interfaces
 // tslint:disable-next-line no-namespace
-namespace MockLiveScenarioScoreboard {
-  export interface Subscription {
-    myActiveScenario: MyActiveScenario;
-  }
-  export interface MyActiveScenario {
-    id: ScenarioInstanceID;
-    shardID: ShardID;
-    startTime: Date;
-    rounds: RoundOutcome[];
-    activeRound: number;
-    teams: Team[];
-  }
-  export interface Team {
-    id: ScenarioTeamID;
-    name: ScenarioTeamID;
-    score: number;
-    players: Player[];
-  }
-  export interface Player {
-    entityID: EntityID;
-    name: string;
-    score: number;
-  }
-}
+// namespace MockLiveScenarioScoreboard {
+//   export interface Subscription {
+//     myActiveScenario: MyActiveScenario;
+//   }
+//   export interface MyActiveScenario {
+//     id: ScenarioInstanceID;
+//     shardID: ShardID;
+//     startTime: Date;
+//     rounds: RoundOutcome[];
+//     activeRound: number;
+//     teams: Team[];
+//   }
+//   export interface Team {
+//     id: ScenarioTeamID;
+//     name: ScenarioTeamID;
+//     score: number;
+//     players: Player[];
+//   }
+//   export interface Player {
+//     entityID: EntityID;
+//     name: string;
+//     score: number;
+//   }
+// }
 // END MOCK GQL TYPE -----------------------------------------
 
-const subscription = `
-  subscription LiveScenarioScoreboard {
-    myActiveScenario {
+const query = gql`
+  query LiveScenarioScoreboardQuery {
+    myActiveScenarioScoreboard {
       id
-      shardID
-      startTime
-      rounds [RoundOutcome]
-      activeRound [Number]
-      teams [List<Team>] {
-        id [TeamID]
-        name [TeamID]
-        score [Number]
-        players [TeamPlayer] {
-          entityID [EntityID]
-          name [String]
-          score [Number]
+      teams {
+        tdd {
+          score
+        }
+        viking {
+          score
+        }
+        arthurian {
+          score
         }
       }
     }
   }
 `;
 
-export interface LiveScenarioScoreboardProps {}
+export interface Props {}
 
-interface LiveScenarioScoreboardState {
-  foo?: MockLiveScenarioScoreboard.Subscription;
+interface State {
+  inScenario: boolean;
 }
 
-class LiveScenarioScoreboard extends React.Component<LiveScenarioScoreboardProps, LiveScenarioScoreboardState> {
+class LiveScenarioScoreboard extends React.Component<Props, State> {
   public render() {
     return (
-      <Wrapper>
-        <Container>
-          <ArthurianBackground active={game.selfPlayerState.faction === Faction.Arthurian}>24</ArthurianBackground>
-          <VikingBackground active={game.selfPlayerState.faction === Faction.Viking}>14</VikingBackground>
-          <TddBackground active={game.selfPlayerState.faction === Faction.TDD}>20</TddBackground>
-        </Container>
-      </Wrapper>
+      <GraphQL query={{ query, pollInterval: 5000 }}>
+        {(graphql: GraphQLResult<LiveScenarioScoreboardQuery.Query>) => {
+          if (!graphql.data || !graphql.data.myActiveScenarioScoreboard) {
+            return null;
+          }
+
+          const scoreboard = graphql.data.myActiveScenarioScoreboard;
+          return (
+            <Wrapper>
+              <Container>
+                <ArthurianBackground active={game.selfPlayerState.faction === Faction.Arthurian}>
+                  {scoreboard.teams.arthurian.score}
+                </ArthurianBackground>
+                <VikingBackground active={game.selfPlayerState.faction === Faction.Viking}>
+                  {scoreboard.teams.viking.score}
+                </VikingBackground>
+                <TddBackground active={game.selfPlayerState.faction === Faction.TDD}>
+                  {scoreboard.teams.tdd.score}
+                </TddBackground>
+              </Container>
+            </Wrapper>
+          );
+        }}
+      </GraphQL>
     );
   }
 
-  public shouldComponentUpdate(nextProps: LiveScenarioScoreboardProps, nextState: LiveScenarioScoreboardState) {
+  public shouldComponentUpdate(nextProps: Props, nextState: State) {
     return false;
   }
 }

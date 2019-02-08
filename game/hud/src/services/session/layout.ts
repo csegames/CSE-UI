@@ -209,7 +209,7 @@ function initialState(): LayoutState {
     ],
     [
       'liveScenarioScoreboard', cloneDeep(LiveScenarioScoreboard),
-    ]
+    ],
   ]);
 
   return {
