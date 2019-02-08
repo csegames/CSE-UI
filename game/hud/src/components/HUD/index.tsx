@@ -44,7 +44,10 @@ import { ContextMenuView } from '../ContextMenu';
 import { TooltipView } from 'components/Tooltip';
 import PassiveAlert from '../PassiveAlert';
 import { ActionAlert } from '../ActionAlert';
+import { MiniScenarioScoreboard } from '../LiveScenarioScoreboard/MiniScenarioScoreboard';
+import { FullScenarioScoreboard } from '../LiveScenarioScoreboard/FullScenarioScoreboard';
 import { uiContextFromGame } from 'services/session/UIContext';
+import HUDZOrder from 'services/session/HUDZOrder';
 
 // import { AbilitiesView } from '../AbilityBarV2/BarsView';
 import { DragAndDropV2Renderer } from 'components/Utilities/DragAndDropV2';
@@ -72,6 +75,29 @@ const AbilityBarContainer = styled('div')`
   bottom: 10px;
   margin: 0 auto;
   pointer-events: none;
+`;
+
+const MiniScenarioScoreboardContainer = styled('div')`
+  position: fixed;
+  top: 0px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  z-index: ${HUDZOrder.MiniScenarioScoreboard};
+`;
+
+const FullScenarioScoreboardContainer = styled('div')`
+  position: fixed;
+  top: 200px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  z-index: ${HUDZOrder.FullScenarioScoreboard};
 `;
 
 interface HUDWidget<T = any> {
@@ -134,6 +160,14 @@ class HUD extends React.Component<HUDProps, HUDState> {
             <AbilityBar />
           </AbilityBarContainer>
           <ContextMenuView />
+
+          <MiniScenarioScoreboardContainer id='miniscenarioscoreboard'>
+            <MiniScenarioScoreboard />
+          </MiniScenarioScoreboardContainer>
+          <FullScenarioScoreboardContainer id='scenarioscoreboard'>
+            <FullScenarioScoreboard />
+          </FullScenarioScoreboardContainer>
+
           <TooltipView />
           <ActionAlert />
           <PassiveAlert />

@@ -7,18 +7,13 @@
 import * as React from 'react';
 import styled from 'react-emotion';
 
-const Watermark = styled('i')`
-  width: 340px;
-  height: 20px;
-  line-height: 20px;
+const Watermark = styled('div')`
   position: fixed;
   margin: auto;
   left: 50%;
-  top: 47px;
   text-align: center;
   transform: translateX(-50%);
   color: #FFF;
-  font-size: 13px;
   font-family: 'Merriweather Sans', sans-serif;
   font-weight: bold;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
@@ -27,6 +22,19 @@ const Watermark = styled('i')`
   cursor: default;
   z-index: 9999;
   pointer-events: none;
+  top: 94px;
+  font-size: 26px;
+  width: 680px;
+  height: 40px;
+  line-height: 40px;
+
+  @media (max-width: 1920px) {
+    font-size: 13px;
+    top: 47px;
+    width: 340px;
+    height: 20px;
+    line-height: 20px;
+  }
 `;
 
 export interface WatermarkStyle {

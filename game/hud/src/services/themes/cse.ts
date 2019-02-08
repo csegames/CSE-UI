@@ -59,5 +59,20 @@ export default function(): Theme {
         [Faction.Factionless]: 'rgba(20, 20, 20, 0.25)',
       },
     },
+    scenarioScoreboard: {
+      color: {
+        background: {
+          [Faction.Arthurian]: 'rgba(247, 33, 33, 0.15)',
+          [Faction.TDD]: 'rgba(196, 216, 1, 0.15)',
+          [Faction.Viking]: 'rgba(35, 155, 242, 0.15)',
+        },
+        text: {
+          progress: '#FEF4CB',
+          [Faction.Arthurian]: '#FF9F9F',
+          [Faction.Viking]: '#AADAFF',
+          [Faction.TDD]: '#E7FF9F',
+        },
+      },
+    },
   };
 }

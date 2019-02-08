@@ -223,6 +223,14 @@ class HUDDrag extends React.Component<HUDDragProps, HUDDragState> {
     // update min & max height if needed
     const stateUpdate: any = {};
 
+    if (this.props.defaultX !== nextProps.defaultX && this.state.x === this.props.defaultX) {
+      stateUpdate.x = nextProps.defaultX;
+    }
+
+    if (this.props.defaultY !== nextProps.defaultY && this.state.y === this.props.defaultY) {
+      stateUpdate.y = nextProps.defaultY;
+    }
+
     if (this.props.minHeight !== nextProps.minHeight) {
       stateUpdate.minHeight = nextProps.minHeight || nextProps.defaultHeight / 4;
     }

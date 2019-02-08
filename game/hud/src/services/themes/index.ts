@@ -63,6 +63,22 @@ declare global {
         [Faction.TDD]: string;
         [Faction.Viking]: string;
         [Faction.Factionless]: string;
+      }
+    };
+
+    scenarioScoreboard: {
+      color: {
+        background: {
+          [Faction.Arthurian]: string;
+          [Faction.TDD]: string;
+          [Faction.Viking]: string;
+        },
+        text: {
+          progress: string;
+          [Faction.Arthurian]: string;
+          [Faction.TDD]: string;
+          [Faction.Viking]: string;
+        },
       };
     };
   }

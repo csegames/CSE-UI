@@ -17,6 +17,7 @@ import { TradeAlertView, handleNewTradeAlert, removeTradeInvite } from './TradeA
 import { GroupAlertView, handleNewGroupAlert } from './GroupAlert';
 import { ProgressionAlertView } from './ProgressionAlert';
 import { IInteractiveAlert, TradeAlert, GroupAlert, ProgressionAlert } from 'gql/interfaces';
+import HUDZOrder from 'services/session/HUDZOrder';
 
 const Container = styled('div')`
   border-image-slice: 1;
@@ -25,14 +26,14 @@ const Container = styled('div')`
   background-position: center;
   background-size: cover;
   position: fixed;
-  top: 68px;
+  top: 0px;
   width: 700px;
   height: 140px;
   left: 50%;
   margin-left: -350px;
   -webkit-transition: height 1s;
   transition: height 1s;
-  z-index: 16;
+  z-index: ${HUDZOrder.InteractiveAlert};
   &:before {
     position: relative;
     display: flex;

@@ -24,10 +24,13 @@ enum HUDZOrder {
   CompassTooltip,
   PlacementMode,
   Crafting,
-  LiveScenarioScoreboard,
+  MiniScenarioScoreboard,
+  FullScenarioScoreboard,
+  ScenarioPopup,
   Announcement,
   ReleaseControl,
   Progression,
+  InteractiveAlert,
   DevUI,
 
   // Widgets above all else

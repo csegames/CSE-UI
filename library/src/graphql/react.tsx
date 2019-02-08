@@ -369,15 +369,6 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
           this.queryOptions = getQueryOptions();
         }
 
-        if (subsConfChanged) {
-          // Only set subscription options if there is a difference
-          setSubscriptionOptions(config.subsConf);
-          this.subscriptionOptions = getSubscriptionOptions();
-          if (this.props.mockSubscription && this.mockSubscriptionHandler) {
-            this.mockSubscriptionHandler.update(this.subscription, this.subscriptionOptions, this.subscriptionHandler);
-          }
-        }
-
         // Update graphql client
         this.client = new GraphQLClient({
           url: this.queryOptions.url,

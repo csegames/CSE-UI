@@ -11,6 +11,7 @@ import styled from 'react-emotion';
 import Victory from './components/Victory';
 import Defeat from './components/Defeat';
 import RoundOver from './components/RoundOver';
+import HUDZOrder from 'services/session/HUDZOrder';
 
 const PopupContainer = styled('div')`
   display: block;
@@ -22,6 +23,7 @@ const PopupContainer = styled('div')`
   display: flex;
   justify-content: center;
   pointer-events: none;
+  z-index: ${HUDZOrder.ScenarioPopup};
 `;
 
 export enum ScenarioPopupType {
