@@ -16,7 +16,6 @@ import Chat from './layoutItems/Chat';
 import MOTD from './layoutItems/MOTD';
 import Build from './layoutItems/Build';
 import Warband from './layoutItems/Warband';
-// import Respawn from './layoutItems/Respawn';
 import Compass from './layoutItems/Compass';
 import CompassTooltip from './layoutItems/CompassTooltip';
 import Crafting from './layoutItems/Crafting';
@@ -41,6 +40,7 @@ import ScenarioJoin from './layoutItems/ScenarioJoin';
 import ScenarioButton from './layoutItems/ScenarioButton';
 import BattleGroups from './layoutItems/BattleGroups';
 import BattleGroupWatchList from './layoutItems/BattleGroupWatchList';
+import Respawn from './layoutItems/Respawn';
 
 const localStorageKey = 'cse_hud_layout-state';
 const FORCE_RESET_CODE = '0.8.1'; // if the local storage value for the reset code doesn't match this, then force a reset
@@ -71,7 +71,10 @@ interface AnchoredAxis {
 interface Position {
   x: AnchoredAxis;
   y: AnchoredAxis;
+  xUHD?: AnchoredAxis;
+  yUHD?: AnchoredAxis;
   size: Size;
+  sizeUHD?: Size;
   scale: number;
   visibility: boolean;
   opacity: number;
@@ -99,15 +102,36 @@ function forceOnScreen(current: Readonly<Position>, screen: Readonly<Size>): Pos
   // is 200 pixels wide, scaled to 0.5 and positioned at the edge of the screen, the x position
   // is actually -50px.  ie -((width/2)*scale), so we need to work out the margin amount based
   // on the scale amount.
-  const xmargin: number = (current.size.width / 2) * current.scale;
-  const ymargin: number = (current.size.height / 2) * current.scale;
+  const uhd = window.innerWidth > 1920;
+  const size = uhd && current.sizeUHD ? current.sizeUHD : current.size;
+  const xmargin: number = (size.width / 2) * current.scale;
+  const ymargin: number = (size.height / 2) * current.scale;
   const pos = current;
+
   if (pos.x.offset < -xmargin) pos.x.offset = -xmargin;
   if (pos.y.offset < -ymargin) pos.y.offset = -ymargin;
-  if (pos.x.offset + pos.size.width > screen.width + xmargin) pos.x.offset = screen.width - pos.size.width + xmargin;
-  if (pos.y.offset + pos.size.height > screen.height + ymargin) pos.y.offset = screen.height - pos.size.height + ymargin;
-  if (pos.x.offset < -xmargin) { pos.x.offset = -xmargin; pos.size.width = screen.width + xmargin; }
-  if (pos.y.offset < -ymargin) { pos.y.offset = -ymargin; pos.size.height = screen.height + ymargin; }
+  if (pos.x.offset + size.width > screen.width + xmargin) pos.x.offset = screen.width - size.width + xmargin;
+  if (pos.y.offset + size.height > screen.height + ymargin) pos.y.offset = screen.height - size.height + ymargin;
+  if (pos.x.offset < -xmargin) { pos.x.offset = -xmargin; size.width = screen.width + xmargin; }
+  if (pos.y.offset < -ymargin) { pos.y.offset = -ymargin; size.height = screen.height + ymargin; }
+
+  if (uhd) {
+    if (pos.xUHD && pos.xUHD.offset < -xmargin) pos.xUHD.offset = -xmargin;
+    if (pos.yUHD && pos.yUHD.offset < -ymargin) pos.yUHD.offset = -ymargin;
+    if (pos.xUHD && pos.xUHD.offset + size.width > screen.width + xmargin) {
+      pos.xUHD.offset = screen.width - size.width + xmargin;
+    }
+    if (pos.yUHD && pos.yUHD.offset + size.height > screen.height + ymargin) {
+      pos.yUHD.offset = screen.height - size.height + ymargin;
+    }
+    if (pos.xUHD && pos.xUHD.offset < -xmargin) {
+      pos.xUHD.offset = -xmargin; size.width = screen.width + xmargin;
+    }
+    if (pos.yUHD && pos.yUHD.offset < -ymargin) {
+      pos.yUHD.offset = -ymargin; size.height = screen.height + ymargin;
+    }
+  }
+
   return pos;
 }
 
@@ -137,9 +161,6 @@ function initialState(): LayoutState {
     [
       'compassTooltip', cloneDeep(CompassTooltip),
     ],
-    // [
-    //   'respawn', cloneDeep(Respawn),
-    // ],
     [
       'warband', cloneDeep(Warband),
     ],
@@ -205,6 +226,9 @@ function initialState(): LayoutState {
     ],
     [
       'battlegroupwatchlist', cloneDeep(BattleGroupWatchList),
+    ],
+    [
+      'respawn', cloneDeep(Respawn),
     ],
   ]);
 

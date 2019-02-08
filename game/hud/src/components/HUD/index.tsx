@@ -118,8 +118,6 @@ export interface HUDState {
 }
 
 class HUD extends React.Component<HUDProps, HUDState> {
-  private eventHandles: EventHandle[] = [];
-
   constructor(props: HUDProps) {
     super(props);
     this.state = {
@@ -135,7 +133,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
                     .sort((a, b) => a.widget.position.zOrder - b.widget.position.zOrder)
                     .map((w, idx) =>
                       this.draggable(w.name, w.widget, w.widget.component, w.widget.dragOptions, w.widget.props));
-
     return (
       <UIContext.Provider value={this.state.uiContext}>
         <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
@@ -200,14 +197,10 @@ class HUD extends React.Component<HUDProps, HUDState> {
     this.props.dispatch(initialize());
     this.props.dispatch(initializeInvites());
 
-    this.eventHandles.push(game.selfPlayerState.onUpdated(this.handleSelfPlayerStateUpdated));
-
     window.addEventListener('optimizedResize', this.onWindowResize);
   }
 
   public componentWillUnmount() {
-    this.eventHandles.forEach(eventHandle => eventHandle.clear());
-
     window.removeEventListener('optimizedResize', this.onWindowResize);
   }
 
@@ -243,16 +236,6 @@ class HUD extends React.Component<HUDProps, HUDState> {
     });
   }
 
-  private handleSelfPlayerStateUpdated = () => {
-    const alive = game.selfPlayerState.isAlive;
-    const respawn = this.props.layout.widgets.get('respawn');
-    if (!alive && respawn && !respawn.position.visibility) {
-      this.setVisibility('respawn', true);
-    } else if (respawn && respawn.position.visibility) {
-      this.setVisibility('respawn', false);
-    }
-  }
-
   private setSelectedWidget = (selectedWidget: HUDWidget) => {
     this.setState({ selectedWidget });
   }
@@ -266,17 +249,22 @@ class HUD extends React.Component<HUDProps, HUDState> {
     if (typeof props === 'function') {
       props = props();
     }
+    const isUHD = this.state.uiContext.isUHD();
+    const size = isUHD && widget.position.sizeUHD ? widget.position.sizeUHD : widget.position.size;
+    const posX = isUHD && widget.position.xUHD ? widget.position.xUHD : widget.position.x;
+    const posY = isUHD && widget.position.yUHD ? widget.position.yUHD : widget.position.y;
+
     return (
       <ErrorBoundary key={`${widget.position.zOrder}-${type}`}>
         <HUDDrag
           name={type}
-          defaultHeight={widget.position.size.height}
-          defaultWidth={widget.position.size.width}
+          defaultHeight={size.height}
+          defaultWidth={size.width}
           defaultScale={widget.position.scale}
-          defaultX={widget.position.x.offset}
-          defaultY={widget.position.y.offset}
-          defaultXAnchor={widget.position.x.anchor}
-          defaultYAnchor={widget.position.y.anchor}
+          defaultX={posX.offset}
+          defaultY={posY.offset}
+          defaultXAnchor={posX.anchor}
+          defaultYAnchor={posY.anchor}
           defaultOpacity={widget.position.opacity}
           defaultMode={widget.position.layoutMode}
           defaultVisible={widget.position.visibility}
@@ -288,16 +276,7 @@ class HUD extends React.Component<HUDProps, HUDState> {
             this.props.dispatch(setPosition({
               name: type,
               widget,
-              position: {
-                x: { anchor: s.xAnchor, offset: s.x },
-                y: { anchor: s.yAnchor, offset: s.y },
-                size: { width: s.width, height: s.height },
-                scale: s.scale,
-                opacity: s.opacity,
-                visibility: s.visible,
-                zOrder: widget.position.zOrder,
-                layoutMode: widget.position.layoutMode,
-              },
+              position: this.getStatePosition(s, widget),
             }));
           }}
           render={() => {
@@ -311,6 +290,41 @@ class HUD extends React.Component<HUDProps, HUDState> {
         />
       </ErrorBoundary>
     );
+  }
+
+  private getStatePosition = (s: HUDDragState, widget: Widget<any>) => {
+    const isUHD = this.state.uiContext.isUHD();
+
+    const pos = widget.position;
+    if (isUHD && pos.sizeUHD && pos.xUHD && pos.yUHD) {
+      return {
+        x: { anchor: s.xAnchor, offset: s.x },
+        y: { anchor: s.yAnchor, offset: s.y },
+        xUHD: { anchor: s.xAnchor, offset: s.x },
+        yUHD: { anchor: s.yAnchor, offset: s.y },
+        sizeUHD: pos.sizeUHD,
+        size: pos.size,
+        scale: s.scale,
+        opacity: s.opacity,
+        visibility: s.visible,
+        zOrder: widget.position.zOrder,
+        layoutMode: widget.position.layoutMode,
+      };
+    }
+
+    // Once we move a widget that's not UHD, we don't need to save the xUHD and yUHD positions since
+    // they're only used for the default position of the widget.
+    return {
+      x: { anchor: s.xAnchor, offset: s.x },
+      y: { anchor: s.yAnchor, offset: s.y },
+      size: { width: s.width, height: s.height },
+      sizeUHD: pos.sizeUHD,
+      scale: s.scale,
+      opacity: s.opacity,
+      visibility: s.visible,
+      zOrder: widget.position.zOrder,
+      layoutMode: widget.position.layoutMode,
+    };
   }
 
 }

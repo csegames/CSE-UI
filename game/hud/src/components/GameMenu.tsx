@@ -108,7 +108,6 @@ const MenuButton = styled('div')`
   }
 `;
 
-
 export const GameMenuDimensions = {
   width: 257,
   height: 168,
