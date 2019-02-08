@@ -26,6 +26,7 @@ import OverlayView, { view } from '../OverlayView';
 
 // Widgets
 import Controller from '../../widgets/Controller';
+import { patcher } from '../../services/patcher';
 
 export interface PatcherAppProps {
   dispatch?: (action: any) => void;
@@ -87,6 +88,10 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
 
     game.on('logged-in', () => {
       this.setState({} as any);
+
+      if ((window as any).game) {
+        (window as any).game.accessToken = patcher.getAccessToken();
+      }
     });
   }
 
