@@ -7,16 +7,15 @@
 
 import * as React from 'react';
 import styled, { css } from 'react-emotion';
-import { isEqual } from 'lodash';
+import { isEqual, isEmpty } from 'lodash';
 import gql from 'graphql-tag';
 import { CollapsingList } from '@csegames/camelot-unchained/lib/components';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import { SubscriptionResult, defaultSubscriptionOpts } from '@csegames/camelot-unchained/lib/graphql/subscription';
 
-import WarbandNotificationProvider from '../WarbandDisplay/WarbandNotificationProvider';
-import BattleGroupNotificationProvider from '../BattleGroups/BattleGroupNotificationProvider';
+import { BattleGroupNotificationProvider } from '../BattleGroups/BattleGroupNotificationProvider';
+import { WarbandNotificationProvider } from '../WarbandDisplay/WarbandNotificationProvider';
 import WatchListItem from './WatchListItem';
-import { WarbandDisplay, groupUpdateSubscriptionQuery } from '../WarbandDisplay';
+import { WarbandDisplay } from '../WarbandDisplay';
 import { removeWhere } from '../../lib/reduxUtils';
 import { GroupMemberFragment } from '../../gql/fragments/GroupMemberFragment';
 import {
@@ -26,7 +25,6 @@ import {
   onWarbandMemberRemoved,
 } from 'actions/warband';
 import {
-  WarbandDisplayUpdateSubscription,
   WarbandNotificationSubscription,
   BattleGroupWatchListQuery,
   GroupNotificationType,
@@ -35,6 +33,7 @@ import {
   GroupMemberRemovedUpdate,
   GroupMemberState,
   BattleGroupNotificationSubscription,
+  WarbandUpdateSubscription,
 } from 'gql/interfaces';
 
 const query = gql`
@@ -169,6 +168,7 @@ export interface State {
 class BattleGroupWatchList extends React.Component<Props, State> {
   private receivedMemberUpdate: boolean = false;
   private myGroupsGQL: GraphQLResult<BattleGroupWatchListQuery.Query>;
+  private evh: EventHandle[] = [];
 
   constructor(props: Props) {
     super(props);
@@ -184,25 +184,12 @@ class BattleGroupWatchList extends React.Component<Props, State> {
     return (
       <GraphQL query={query} onQueryResult={this.handleQueryResult}>
         {() => (
-          <>
-          <WarbandNotificationProvider onNotification={this.handleWarbandNotification} />
-          <BattleGroupNotificationProvider onNotification={this.handleBattlegroupNotification} />
-          {this.state.battlegroupID && this.state.warbandID ?
+          this.state.battlegroupID && this.state.warbandID ?
             <Container>
               <TopLeftOrnament />
               <TopRightOrnament />
               <BottomLeftOrnament />
               <BottomRightOrnament />
-              <GraphQL
-                subscription={{
-                  query: groupUpdateSubscriptionQuery,
-                  initPayload: defaultSubscriptionOpts().initPayload,
-                  variables: {
-                    groupID: this.state.warbandID,
-                  },
-                }}
-                subscriptionHandler={this.handleSubscription}
-              />
               <CollapsingList
                 title={`Watch (${this.state.warbandMembers.length})`}
                 items={this.state.warbandMembers}
@@ -214,12 +201,16 @@ class BattleGroupWatchList extends React.Component<Props, State> {
                   <WatchListItem item={item} />
                 }
               />
-            </Container> :
-              null}
-          </>
+            </Container> : null
         )}
       </GraphQL>
     );
+  }
+
+  public componentDidMount() {
+    this.evh.push(game.on(WarbandNotificationProvider.notificationEventName, this.handleWarbandNotification));
+    this.evh.push(game.on(WarbandNotificationProvider.updateEventName, this.handleWarbandUpdate));
+    this.evh.push(game.on(BattleGroupNotificationProvider.notificationEventName, this.handleBattlegroupNotification));
   }
 
   public shouldComponentUpdate(nextProps: Props, nextState: State) {
@@ -243,13 +234,16 @@ class BattleGroupWatchList extends React.Component<Props, State> {
     return false;
   }
 
+  public componentWillUnmount() {
+    this.evh.forEach(ev => ev.clear());
+  }
+
   private handleWarbandNotification = (notification: WarbandNotificationSubscription.MyGroupNotifications) => {
     switch (notification.type) {
       case GroupNotificationType.Joined: {
         this.onWarbandJoined(notification.groupID);
         break;
       }
-
       case GroupNotificationType.Removed: {
         this.onWarbandQuit(notification.groupID);
         break;
@@ -263,7 +257,6 @@ class BattleGroupWatchList extends React.Component<Props, State> {
         this.setState({ battlegroupID: notification.groupID });
         break;
       }
-
       case GroupNotificationType.Removed: {
         this.setState({ battlegroupID: '' });
         break;
@@ -278,43 +271,39 @@ class BattleGroupWatchList extends React.Component<Props, State> {
     }
 
     const myBattlegroup = graphql.data.myBattlegroup;
+    const stateUpdate: Partial<State> = {};
     if (myBattlegroup && myBattlegroup.battlegroup) {
-      this.setState({ battlegroupID: myBattlegroup.battlegroup.id });
+      stateUpdate['battlegroupID'] = myBattlegroup.battlegroup.id;
     }
 
     const warband = graphql.data.myActiveWarband;
     if (warband && warband.info) {
-      this.onInitializeWarband(warband.info.id, warband.members as GroupMemberState[]);
+      stateUpdate['warbandID'] = warband.info.id;
+      stateUpdate['warbandMembers'] = warband.members as GroupMemberState[];
+    }
+
+    if (!isEmpty(stateUpdate)) {
+      this.setState(state => ({ ...state, ...stateUpdate }));
     }
   }
 
-  private handleSubscription = (result: SubscriptionResult<WarbandDisplayUpdateSubscription.Subscription>,
-                                data: BattleGroupWatchListQuery.Query) => {
-    if (!result.data || !result.ok) {
-      return data;
-    }
-
-    const resultData = result.data;
-    switch (resultData.activeGroupUpdates.updateType) {
+  private handleWarbandUpdate = (update: WarbandUpdateSubscription.ActiveGroupUpdates) => {
+    switch (update.updateType) {
       case GroupUpdateType.MemberJoined: {
-        const member = WarbandDisplay.deserializeMember((resultData.activeGroupUpdates as GroupMemberUpdate).memberState);
+        const member = WarbandDisplay.deserializeMember((update as GroupMemberUpdate).memberState);
         this.onWarbandMemberJoined(member);
         break;
       }
       case GroupUpdateType.MemberRemoved: {
-        this.onWarbandMemberRemoved((resultData.activeGroupUpdates as GroupMemberRemovedUpdate).characterID);
+        this.onWarbandMemberRemoved((update as GroupMemberRemovedUpdate).characterID);
         break;
       }
       case GroupUpdateType.MemberUpdate: {
-        const member = WarbandDisplay.deserializeMember((resultData.activeGroupUpdates as GroupMemberUpdate).memberState);
+        const member = WarbandDisplay.deserializeMember((update as GroupMemberUpdate).memberState);
         this.onWarbandMemberUpdated(member);
         break;
       }
     }
-  }
-
-  private onInitializeWarband = (id: string, members: GroupMemberState[]) => {
-    this.setState({ warbandID: id, warbandMembers: members });
   }
 
   private onWarbandJoined = (id: string) => {
@@ -329,7 +318,7 @@ class BattleGroupWatchList extends React.Component<Props, State> {
     }
 
     if (this.state.warbandID === id) {
-      this.setState({ warbandID: '' });
+      this.setState({ warbandID: '', battlegroupID: '' });
     }
   }
 
@@ -353,7 +342,7 @@ class BattleGroupWatchList extends React.Component<Props, State> {
     onWarbandMemberRemoved(characterId);
     let warbandMembers = [...this.state.warbandMembers];
     if (characterId === game.selfPlayerState.characterID) {
-      this.setState({ warbandMembers: [], warbandID: '' });
+      this.onWarbandQuit(this.state.warbandID);
       return;
     }
 

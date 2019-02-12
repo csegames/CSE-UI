@@ -9,10 +9,15 @@ import * as React from 'react';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult, defaultSubscriptionOpts } from '@csegames/camelot-unchained/lib/graphql/subscription';
-import { WarbandNotificationSubscription, WarbandGroupIDQuery, GroupNotificationType } from 'gql/interfaces';
+import {
+  WarbandNotificationSubscription,
+  GroupNotificationType,
+  WarbandUpdateSubscription,
+  WarbandIDQuery,
+} from 'gql/interfaces';
 
-const query = gql`
-  query WarbandGroupIDQuery {
+const warbandQuery = gql`
+  query WarbandIDQuery {
     myActiveWarband {
       info {
         id
@@ -21,7 +26,7 @@ const query = gql`
   }
 `;
 
-const subscription = gql`
+const notificationSubscription = gql`
   subscription WarbandNotificationSubscription {
     myGroupNotifications {
       type
@@ -32,71 +37,104 @@ const subscription = gql`
   }
 `;
 
+const updateSubscription = gql`
+  subscription WarbandUpdateSubscription($groupID: String!) {
+    activeGroupUpdates(groupID: $groupID) {
+      updateType
+      groupID
+
+      ... on GroupMemberUpdate {
+        memberState
+      }
+
+      ... on GroupMemberRemovedUpdate {
+        characterID
+      }
+    }
+  }
+`;
+
 export interface Props {
-  onNotification?: (notification: WarbandNotificationSubscription.MyGroupNotifications) => void;
 }
 
 export interface State {
-  groupID: string;
+  activeWarbandID: string;
 }
 
-class WarbandNotificationProvider extends React.PureComponent<Props, State> {
+
+export class WarbandNotificationProvider extends React.Component<Props, State> {
+  public static notificationEventName = 'warband-notification';
+  public static updateEventName = 'warband-update';
   constructor(props: Props) {
     super(props);
     this.state = {
-      groupID: '',
+      activeWarbandID: '',
     };
   }
 
   public render() {
     return (
-      <GraphQL
-        query={query}
-        onQueryResult={this.handleQueryResult}
-        subscription={{
-          query: subscription,
-          initPayload: defaultSubscriptionOpts().initPayload,
-        }}
-        subscriptionHandler={this.handleSubscription}
-      />
+      <>
+        <GraphQL
+          query={warbandQuery}
+          onQueryResult={this.handleWarbandQueryResult}
+          subscription={{
+            query: notificationSubscription,
+            initPayload: defaultSubscriptionOpts().initPayload,
+          }}
+          subscriptionHandler={this.handleNotificationSubscription}
+        />
+        {this.state.activeWarbandID &&
+          <GraphQL
+            subscription={{
+              query: updateSubscription,
+              initPayload: defaultSubscriptionOpts().initPayload,
+              variables: {
+                groupID: this.state.activeWarbandID,
+              },
+            }}
+            subscriptionHandler={this.handleUpdateSubscription}
+          />
+        }
+      </>
     );
   }
 
-  private handleQueryResult = (graphql: GraphQLResult<WarbandGroupIDQuery.Query>) => {
-    if (!graphql.data) return graphql;
+  private handleWarbandQueryResult = (graphql: GraphQLResult<WarbandIDQuery.Query>) => {
+    if (!graphql.data || !graphql.data.myActiveWarband || !graphql.data.myActiveWarband.info) return graphql;
 
-    const myActiveWarband = graphql.data.myActiveWarband;
-    if (myActiveWarband && myActiveWarband.info) {
-      this.setState({ groupID: myActiveWarband.info.id });
-    }
+    this.setState({ activeWarbandID: graphql.data.myActiveWarband.info.id });
   }
 
-  private handleSubscription = (result: SubscriptionResult<WarbandNotificationSubscription.Subscription>,
-                                data: WarbandGroupIDQuery.Query) => {
+  private handleNotificationSubscription = (result: SubscriptionResult<WarbandNotificationSubscription.Subscription>,
+                                            data: any) => {
     if (!result.data) return data;
 
     const notification = result.data.myGroupNotifications;
     if (notification.groupType === 'Warband') {
       switch (notification.type) {
-        case GroupNotificationType.Joined: {
-          this.setState({ groupID: notification.groupID });
-          break;
-        }
-
         case GroupNotificationType.Removed: {
-          this.setState({ groupID: '' });
           game.trigger('chat-leave-room', notification.groupID);
+          this.setState({ activeWarbandID: '' });
+          break;
+        }
+        case GroupNotificationType.Joined: {
+          this.setState({ activeWarbandID: notification.groupID });
           break;
         }
       }
 
-      if (this.props.onNotification) {
-        this.props.onNotification(notification);
-      }
+      game.trigger(WarbandNotificationProvider.notificationEventName, notification);
     }
 
     return data;
   }
-}
 
-export default WarbandNotificationProvider;
+  private handleUpdateSubscription = (result: SubscriptionResult<WarbandUpdateSubscription.Subscription>,
+                                      data: any) => {
+    if (!result.data) return data;
+
+    const update = result.data.activeGroupUpdates;
+    game.trigger(WarbandNotificationProvider.updateEventName, update);
+  }
+}

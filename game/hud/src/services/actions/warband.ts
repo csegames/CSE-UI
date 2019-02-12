@@ -178,5 +178,6 @@ export function isCharacterIDInWarband(characterID: string) {
 }
 
 export function isEntityIDInWarband(entityID: string) {
+  console.log(getStateObject());
   return !!getStateObject().membersEntityIDMap[entityID];
 }

@@ -8,7 +8,6 @@ import * as React from 'react';
 import styled from 'react-emotion';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import { SubscriptionResult, defaultSubscriptionOpts } from '@csegames/camelot-unchained/lib/graphql/subscription';
 import {
   CompassPOIProviderProps,
   CompassPOI,
@@ -16,19 +15,19 @@ import {
   withCompassPOIPartialDefaults,
   CompassContext,
 } from 'components/Compass/CompassPOIManager';
-import WarbandNotificationProvider from '../../WarbandDisplay/WarbandNotificationProvider';
+import { WarbandNotificationProvider } from '../../WarbandDisplay/WarbandNotificationProvider';
 import { CompassTooltipData } from 'components/CompassTooltip';
 import { showCompassTooltip, hideCompassTooltip, updateCompassTooltip } from 'actions/compassTooltip';
 import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
 import {
   WarbandMembersPoiQuery,
-  WarbandMembersPoiSubscription,
   GroupUpdateType,
   GroupMemberUpdate,
   GroupMemberRemovedUpdate,
   WarbandNotificationSubscription,
   GroupNotificationType,
   GroupMemberState,
+  WarbandUpdateSubscription,
 } from 'gql/interfaces';
 
 const MemberPoi = styled('div')`
@@ -79,23 +78,6 @@ const query = gql`
     }
   }
   ${GroupMemberFragment}
-`;
-
-const subscriptionQuery = gql`
-  subscription WarbandMembersPoiSubscription($groupID: String!) {
-    activeGroupUpdates(groupID: $groupID) {
-      updateType
-      groupID
-
-      ... on GroupMemberUpdate {
-        memberState
-      }
-
-      ... on GroupMemberRemovedUpdate {
-        characterID
-      }
-    }
-  }
 `;
 
 // from https://material.io/tools/icons/?icon=person&style=baseline
@@ -261,19 +243,6 @@ export default class WarbandMembersPoiProvider extends React.Component<
                 friendlyTarget={this.state.friendlyTarget}
               />
             ))}
-            <WarbandNotificationProvider onNotification={this.handleNotification} />
-            {this.state.warbandID &&
-              <GraphQL
-                subscription={{
-                  query: subscriptionQuery,
-                  initPayload: defaultSubscriptionOpts().initPayload,
-                  variables: {
-                    groupID: this.state.warbandID,
-                  },
-                }}
-                subscriptionHandler={this.handleSubscription}
-              />
-            }
           </Container>
         )}
       </GraphQL>
@@ -282,6 +251,8 @@ export default class WarbandMembersPoiProvider extends React.Component<
 
   public componentDidMount() {
     this.eventHandles.push(game.friendlyTargetState.onUpdated(this.onFriendlyTargetStateUpdated));
+    this.eventHandles.push(game.on(WarbandNotificationProvider.notificationEventName, this.handleNotification));
+    this.eventHandles.push(game.on(WarbandNotificationProvider.updateEventName, this.handleSubscription));
   }
 
   public componentWillUnmount() {
@@ -320,24 +291,18 @@ export default class WarbandMembersPoiProvider extends React.Component<
     }
   }
 
-  private handleSubscription = (result: SubscriptionResult<WarbandMembersPoiSubscription.Subscription>,
-    data: WarbandMembersPoiQuery.Query) => {
-    if (!result.data || !result.ok) {
-      return data;
-    }
-
-    const resultData = result.data;
-    switch (resultData.activeGroupUpdates.updateType) {
+  private handleSubscription = (update: WarbandUpdateSubscription.ActiveGroupUpdates) => {
+    switch (update.updateType) {
       case GroupUpdateType.MemberJoined: {
-        this.onWarbandMemberJoined((resultData.activeGroupUpdates as GroupMemberUpdate).memberState);
+        this.onWarbandMemberJoined((update as GroupMemberUpdate).memberState);
         break;
       }
       case GroupUpdateType.MemberRemoved: {
-        this.onWarbandMemberRemoved((resultData.activeGroupUpdates as GroupMemberRemovedUpdate).characterID);
+        this.onWarbandMemberRemoved((update as GroupMemberRemovedUpdate).characterID);
         break;
       }
       case GroupUpdateType.MemberUpdate: {
-        this.onWarbandMemberUpdated((resultData.activeGroupUpdates as GroupMemberUpdate).memberState);
+        this.onWarbandMemberUpdated((update as GroupMemberUpdate).memberState);
         break;
       }
     }

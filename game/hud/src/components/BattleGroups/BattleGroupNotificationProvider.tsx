@@ -6,11 +6,27 @@
 
 import * as React from 'react';
 import gql from 'graphql-tag';
-import { GraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
+import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult, defaultSubscriptionOpts } from '@csegames/camelot-unchained/lib/graphql/subscription';
-import { BattleGroupNotificationSubscription, GroupTypes, GroupNotificationType } from 'gql/interfaces';
+import {
+  BattleGroupsIDQuery,
+  BattleGroupNotificationSubscription,
+  GroupTypes,
+  GroupNotificationType,
+  BattleGroupUpdateSubscription,
+} from 'gql/interfaces';
 
-const subscription = gql`
+const query = gql`
+  query BattleGroupsIDQuery {
+    myBattlegroup {
+      battlegroup {
+        id
+      }
+    }
+  }
+`;
+
+const notificationSubscription = gql`
   subscription BattleGroupNotificationSubscription {
     myGroupNotifications {
       type
@@ -21,41 +37,105 @@ const subscription = gql`
   }
 `;
 
+const updateSubscription = gql`
+  subscription BattleGroupUpdateSubscription($groupID: String!) {
+    activeGroupUpdates(groupID: $groupID) {
+      updateType
+      groupID
+
+      ... on GroupMemberUpdate {
+        memberState
+      }
+
+      ... on GroupMemberRemovedUpdate {
+        characterID
+      }
+    }
+  }
+`;
+
 export interface Props {
-  onNotification?: (notification: BattleGroupNotificationSubscription.MyGroupNotifications) => void;
 }
 
-class BattleGroupNotificationProvider extends React.PureComponent<Props> {
+export interface State {
+  activeBattlegroupID: string;
+}
+
+export class BattleGroupNotificationProvider extends React.Component<Props, State> {
+  public static notificationEventName = 'battlegroup-notification';
+  public static updateEventName = 'battlegroup-update';
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      activeBattlegroupID: '',
+    };
+  }
+
   public render() {
     return (
-      <GraphQL
-        subscription={{
-          query: subscription,
-          initPayload: defaultSubscriptionOpts().initPayload,
-        }}
-        subscriptionHandler={this.handleSubscription}
-      />
+      <>
+        <GraphQL
+          query={query}
+          onQueryResult={this.handleQueryResult}
+          subscription={{
+            query: notificationSubscription,
+            initPayload: defaultSubscriptionOpts().initPayload,
+          }}
+          subscriptionHandler={this.handleNotificationSubscription}
+        />
+        {this.state.activeBattlegroupID &&
+          <GraphQL
+            subscription={{
+              query: updateSubscription,
+              initPayload: defaultSubscriptionOpts().initPayload,
+              variables: {
+                groupID: this.state.activeBattlegroupID,
+              },
+            }}
+            subscriptionHandler={this.handleUpdateSubscription}
+          />
+        }
+      </>
     );
   }
 
-  private handleSubscription = (result: SubscriptionResult<BattleGroupNotificationSubscription.Subscription>,
-                                data: any) => {
+  private handleQueryResult = (graphql: GraphQLResult<BattleGroupsIDQuery.Query>) => {
+    if (!graphql.data || !graphql.data.myBattlegroup || !graphql.data.myBattlegroup.battlegroup) return graphql;
+
+    this.setState({ activeBattlegroupID: graphql.data.myBattlegroup.battlegroup.id });
+  }
+
+  private handleNotificationSubscription = (result: SubscriptionResult<BattleGroupNotificationSubscription.Subscription>,
+                                            data: any) => {
     if (!result.data) return data;
 
     const notification = result.data.myGroupNotifications;
     if (notification.groupType === GroupTypes.Battlegroup) {
-      if (this.props.onNotification) {
-        this.props.onNotification(notification);
-      }
+      game.trigger(BattleGroupNotificationProvider.notificationEventName, notification);
 
-      if (notification.type === GroupNotificationType.Removed) {
-        game.trigger('chat-leave-room', notification.groupID);
+      switch (notification.type) {
+        case GroupNotificationType.Removed: {
+          game.trigger('chat-leave-room', notification.groupID);
+          this.setState({ activeBattlegroupID: '' });
+          break;
+        }
+
+        case GroupNotificationType.Joined: {
+          this.setState({ activeBattlegroupID: notification.groupID });
+          break;
+        }
       }
     }
 
     return data;
   }
-}
 
-export default BattleGroupNotificationProvider;
+  private handleUpdateSubscription = (result: SubscriptionResult<BattleGroupUpdateSubscription.Subscription>,
+                                      data: any) => {
+    if (!result.data) return data;
+
+    const update = result.data.activeGroupUpdates;
+    game.trigger(BattleGroupNotificationProvider.updateEventName, update);
+  }
+}
 

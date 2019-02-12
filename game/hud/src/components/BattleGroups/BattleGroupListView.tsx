@@ -160,7 +160,7 @@ export interface BattleGroupListState {
   collapsed: boolean;
 }
 
-export class BattleGroupList extends React.PureComponent<BattleGroupListProps, BattleGroupListState> {
+export class BattleGroupListView extends React.PureComponent<BattleGroupListProps, BattleGroupListState> {
   constructor(props: BattleGroupListProps) {
     super(props);
     this.state = {
@@ -236,5 +236,5 @@ export class BattleGroupList extends React.PureComponent<BattleGroupListProps, B
   }
 }
 
-export default BattleGroupList;
+export default BattleGroupListView;
 

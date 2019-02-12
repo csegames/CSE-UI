@@ -51,6 +51,8 @@ import HUDZOrder from 'services/session/HUDZOrder';
 
 // import { AbilitiesView } from '../AbilityBarV2/BarsView';
 import { DragAndDropV2Renderer } from 'components/Utilities/DragAndDropV2';
+import { WarbandNotificationProvider } from '../WarbandDisplay/WarbandNotificationProvider';
+import { BattleGroupNotificationProvider } from '../BattleGroups/BattleGroupNotificationProvider';
 
 const HUDNavContainer = styled('div')`
   position: fixed;
@@ -185,6 +187,11 @@ class HUD extends React.Component<HUDProps, HUDState> {
           <LoadingScreen />
           <DragStore />
           <DragAndDropV2Renderer />
+
+          {/* GraphQL Subscription providers */}
+          <WarbandNotificationProvider />
+          <BattleGroupNotificationProvider />
+
         </div>
       </UIContext.Provider>
     );

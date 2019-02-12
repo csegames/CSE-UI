@@ -2,35 +2,39 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
  */
 
 import * as React from 'react';
+import styled from 'react-emotion';
 import gql from 'graphql-tag';
 import { isEqual } from 'lodash';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import { SubscriptionResult, defaultSubscriptionOpts } from '@csegames/camelot-unchained/lib/graphql/subscription';
 
-import BattleGroupList from './BattleGroupList';
-import { GroupMemberFragment } from '../../gql/fragments/GroupMemberFragment';
-import { WarbandDisplay, groupUpdateSubscriptionQuery } from '../WarbandDisplay';
-import BattlegroupNotificationProvider from './BattleGroupNotificationProvider';
+import { WarbandDisplay } from '../WarbandDisplay';
+import BattleGroupsListView from './BattleGroupListView';
+import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
 import {
-  getActiveBattlegroupID,
   setActiveBattlegroupID,
   onBattlegroupMemberUpdate,
   onBattlegroupMemberRemoved,
+  getActiveBattlegroupID,
 } from 'actions/battlegroups';
 import {
-  WarbandDisplayUpdateSubscription,
   BattleGroupsListQuery,
-  GroupMemberState,
   GroupUpdateType,
-  GroupMemberUpdate,
   GroupMemberRemovedUpdate,
+  GroupMemberUpdate,
+  GroupMemberState,
+  BattleGroupUpdateSubscription,
   BattleGroupNotificationSubscription,
   GroupNotificationType,
 } from 'gql/interfaces';
+import { BattleGroupNotificationProvider } from './BattleGroupNotificationProvider';
+
+const Container = styled('div')`
+  width: 100%;
+  height: 100%;
+`;
 
 const query = gql`
   query BattleGroupsListQuery {
@@ -69,24 +73,25 @@ export interface Props {
 }
 
 export interface State {
-  visible: boolean;
-  groups: WarbandIdToGroupWithinBattlegroup;
   battlegroupID: string;
+  groups: WarbandIdToGroupWithinBattlegroup;
 }
 
-class BattleGroups extends React.Component<Props, State> {
+class BattleGroupsList extends React.Component<Props, State> {
   private receivedMemberUpdate: boolean = false;
-  private myBattlegroupsGQL: GraphQLResult<BattleGroupsListQuery.Query>;
+  private evh: EventHandle[] = [];
   constructor(props: Props) {
     super(props);
     this.state = {
       groups: {},
-      visible: false,
       battlegroupID: '',
     };
   }
-
   public render() {
+    if (!this.state.battlegroupID) {
+      return null;
+    }
+
     const groups = this.state.groups;
     const arrayOfGroups: GroupArray[] = [];
     Object.keys(groups).forEach((group) => {
@@ -101,36 +106,23 @@ class BattleGroups extends React.Component<Props, State> {
 
       arrayOfGroups.push(correctFormatGroup);
     });
-
     return (
-      <GraphQL query={query} onQueryResult={this.handleQueryResult}>
-        {() => (
-          <>
-            <BattlegroupNotificationProvider onNotification={this.handleBattlegroupNotification} />
-            {this.state.battlegroupID && <BattleGroupList groups={arrayOfGroups} />}
-            {this.state.battlegroupID &&
-              <GraphQL
-                subscription={{
-                  query: groupUpdateSubscriptionQuery,
-                  initPayload: defaultSubscriptionOpts().initPayload,
-                  variables: {
-                    groupID: this.state.battlegroupID,
-                  },
-                }}
-                subscriptionHandler={this.handleSubscription}
-              />
-            }
-          </>
-        )}
-      </GraphQL>
+      <Container>
+        <BattleGroupsListView groups={arrayOfGroups} />
+        <GraphQL
+          query={query}
+          onQueryResult={this.handleQueryResult}
+        />
+      </Container>
     );
   }
 
-  public shouldComponentUpdate(nextProps: Props, nextState: State) {
-    if (this.state.visible !== nextState.visible) {
-      return true;
-    }
+  public componentDidMount() {
+    this.evh.push(game.on(BattleGroupNotificationProvider.notificationEventName, this.handleBattlegroupNotification));
+    this.evh.push(game.on(BattleGroupNotificationProvider.updateEventName, this.handleBattlegroupUpdate));
+  }
 
+  public shouldComponentUpdate(nextProps: Props, nextState: State) {
     if (this.state.battlegroupID !== nextState.battlegroupID) {
       return true;
     }
@@ -148,7 +140,6 @@ class BattleGroups extends React.Component<Props, State> {
   }
 
   private handleQueryResult = (graphql: GraphQLResult<BattleGroupsListQuery.Query>) => {
-    this.myBattlegroupsGQL = graphql;
     if (graphql.loading || !graphql.data || !graphql.data.myBattlegroup || !graphql.data.myBattlegroup.battlegroup) {
       return graphql;
     }
@@ -156,29 +147,8 @@ class BattleGroups extends React.Component<Props, State> {
     this.initBattlegroup(graphql.data.myBattlegroup);
   }
 
-  private handleSubscription = (result: SubscriptionResult<WarbandDisplayUpdateSubscription.Subscription>,
-                                data: any) => {
-    if (!result.data || !result.ok) {
-      return data;
-    }
-
-    const resultData = result.data;
-    switch (resultData.activeGroupUpdates.updateType) {
-      case GroupUpdateType.MemberJoined: {
-        const member = WarbandDisplay.deserializeMember((resultData.activeGroupUpdates as GroupMemberUpdate).memberState);
-        this.onMemberJoin(member);
-        break;
-      }
-      case GroupUpdateType.MemberRemoved: {
-        this.onMemberRemove((resultData.activeGroupUpdates as GroupMemberRemovedUpdate).characterID);
-        break;
-      }
-      case GroupUpdateType.MemberUpdate: {
-        const member = WarbandDisplay.deserializeMember((resultData.activeGroupUpdates as GroupMemberUpdate).memberState);
-        this.onMemberUpdate(member);
-        break;
-      }
-    }
+  public componentWillUnmount() {
+    this.evh.forEach(ev => ev.clear());
   }
 
   private handleBattlegroupNotification = (notification: BattleGroupNotificationSubscription.MyGroupNotifications) => {
@@ -190,6 +160,43 @@ class BattleGroups extends React.Component<Props, State> {
 
       case GroupNotificationType.Removed: {
         this.onBattlegroupQuit(notification.groupID);
+        break;
+      }
+    }
+  }
+
+  private onBattlegroupJoin = (groupId: string) => {
+    this.setState({ battlegroupID: groupId });
+    setActiveBattlegroupID(groupId);
+  }
+
+  private onBattlegroupQuit = (groupId: string) => {
+    if (getActiveBattlegroupID() === groupId) {
+      setActiveBattlegroupID(null);
+    }
+
+    this.setState((state: State) => {
+      if (state.battlegroupID !== groupId) return state;
+      return {
+        battlegroupID: '',
+      };
+    });
+  }
+
+  private handleBattlegroupUpdate = (update: BattleGroupUpdateSubscription.ActiveGroupUpdates) => {
+    switch (update.updateType) {
+      case GroupUpdateType.MemberJoined: {
+        const member = WarbandDisplay.deserializeMember((update as GroupMemberUpdate).memberState);
+        this.onMemberJoin(member);
+        break;
+      }
+      case GroupUpdateType.MemberRemoved: {
+        this.onMemberRemove((update as GroupMemberRemovedUpdate).characterID);
+        break;
+      }
+      case GroupUpdateType.MemberUpdate: {
+        const member = WarbandDisplay.deserializeMember((update as GroupMemberUpdate).memberState);
+        this.onMemberUpdate(member);
         break;
       }
     }
@@ -221,44 +228,11 @@ class BattleGroups extends React.Component<Props, State> {
       };
     });
 
-    this.setState({ groups, battlegroupID: myBattlegroup.battlegroup.id });
-  }
-
-  private show = () => {
-    if (!this.state.visible) {
-      this.setState({ visible: true });
-    }
-  }
-
-  private hide = () => {
-    if (this.state.visible) {
-      this.setState({ visible: false });
-    }
-  }
-
-  private onBattlegroupJoin = (groupId: string) => {
-    this.setState({ battlegroupID: groupId });
-    setActiveBattlegroupID(groupId);
-    this.myBattlegroupsGQL.refetch();
-  }
-
-  private onBattlegroupQuit = (groupId: string) => {
-    if (getActiveBattlegroupID() === groupId) {
-      setActiveBattlegroupID(null);
-    }
-
-    this.setState((state) => {
-      if (state.battlegroupID !== groupId) return state;
-      return {
-        groups: {},
-        battlegroupID: '',
-        visible: false,
-      };
-    });
+    this.setState({ groups });
   }
 
   private onMemberJoin = (member: GroupMemberState) => {
-    this.show();
+    if (member.warbandID === '0000000000000000000000') return;
     onBattlegroupMemberUpdate(member);
     const groupItems = this.state.groups[member.warbandID] ? this.state.groups[member.warbandID].items : {};
     const groups = {
@@ -290,7 +264,6 @@ class BattleGroups extends React.Component<Props, State> {
       });
 
       if (characterId === game.selfPlayerState.characterID) {
-        this.hide();
         this.setState({ groups: {} });
         return;
       }
@@ -300,10 +273,6 @@ class BattleGroups extends React.Component<Props, State> {
       }
       if (groups[groupId] && Object.keys(groups[groupId].items).length === 0) {
         delete groups[groupId];
-      }
-
-      if (Object.keys(groups).length === 0) {
-        this.hide();
       }
 
       this.receivedMemberUpdate = true;
@@ -331,4 +300,4 @@ class BattleGroups extends React.Component<Props, State> {
   }
 }
 
-export default BattleGroups;
+export default BattleGroupsList;

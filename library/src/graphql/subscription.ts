@@ -7,6 +7,8 @@
 import * as _ from 'lodash';
 import { ReconnectingWebSocket, WebSocketOptions } from '../utils/ReconnectingWebSocket';
 import { getBooleanEnv } from '../utils/env';
+import { isCompositeType } from 'graphql';
+import { generateID } from 'redux-typed-modules';
 // issues with graphql .mjs file usage
 // tslint:disable-next-line
 const { print } = require('graphql/language/printer.js');
@@ -104,13 +106,13 @@ function getFrameIdentifier(frame: OperationMessage | string) {
 
 export class SubscriptionManager {
   private socket: ReconnectingWebSocket;
-  private idCounter = 0;
   private initPayload: Dictionary<any>;
   private subscriptions: Dictionary<SubscriptionHandle> = {};
   private keepAliveTimeoutHandler: number;
   private debug: boolean = false;
   private messageQueue: string[] = [];
   private initMessages: string[] = [];
+  private idCounter: number = 0;
 
   constructor(options: Partial<Options<any>>) {
     this.debug = options.debug || false;
@@ -130,7 +132,7 @@ export class SubscriptionManager {
     subscription: Subscription,
     onData: OnData<T>,
     onError?: OnError) => {
-    const id = this.idCounter++ + '';
+    const id = `gql-subscription-operation-${game.selfPlayerState.characterID}-${this.idCounter++}`;
 
     let payload;
     if (typeof subscription === 'string' || subscription.hasOwnProperty('loc')) {
