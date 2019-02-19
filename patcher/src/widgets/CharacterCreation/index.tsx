@@ -172,6 +172,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         this.pushPagesVisited(CharacterCreationPage.BanesAndBoons);
         content = (
           <BanesAndBoonsContainer
+            shard={this.props.shard}
             apiHost={this.props.apiHost}
             race={racesState}
             faction={factionsState}
@@ -513,6 +514,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
           return;
         }
         this.props.dispatch(fetchTraits({
+          shard: this.props.shard,
           apiHost: this.props.apiHost,
           playerClass: Archetype[this.props.playerClassesState.selected.id],
           race: Race[this.props.racesState.selected.id],
@@ -591,6 +593,7 @@ class CharacterCreationWithInjectedContext extends React.Component<CharacterCrea
   public render() {
     return (
       <StatsSelectContextProvider
+        shard={this.props.shard}
         host={this.props.apiHost}
         selectedGender={this.props.gender}
         selectedRace={this.props.racesState.selected && this.props.racesState.selected.id}

@@ -89,6 +89,7 @@ const query = gql`
 `;
 
 export interface Props {
+  shard: number;
   host: string;
   selectedRace: Race;
   selectedGender: Gender;
@@ -147,7 +148,7 @@ export class StatsSelectContextProvider extends React.Component<Props, ProviderS
       requestOptions: {
         headers: {
           Authorization: `Bearer ${patcher.getAccessToken()}`,
-          shardID: `${game.shardID}`,
+          shardID: `${this.props.shard}`,
           characterID: '',
         },
       },

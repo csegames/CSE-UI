@@ -24,6 +24,7 @@ import {
 } from '../../services/session/banesAndBoons';
 
 export interface BanesAndBoonsContainerProps {
+  shard: number;
   apiHost: string;
   banesAndBoons: BanesAndBoonsState;
   race: RacesState;
@@ -112,8 +113,9 @@ class BanesAndBoonsContainer extends React.Component<BanesAndBoonsContainerProps
   }
 
   private onResetClick = (initType: 'banes' | 'boons' | 'both') => {
-    const { dispatch, playerClass, race, faction } = this.props;
+    const { dispatch, playerClass, race, faction, shard } = this.props;
     dispatch(resetBaneOrBoon({
+      shard,
       apiHost: this.props.apiHost,
       playerClass: Archetype[playerClass.selected.id],
       race: Race[race.selected.id],

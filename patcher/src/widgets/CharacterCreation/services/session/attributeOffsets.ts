@@ -49,7 +49,7 @@ export function fetchAttributeOffsetsFailed(error: any) {
 export function fetchAttributeOffsets(shard: number = 1, apiHost: string) {
   return (dispatch: (action: any) => any) => {
     dispatch(requestAttributeOffsets());
-    return getAttributeOffsets(dispatch, game.shardID, apiHost);
+    return getAttributeOffsets(dispatch, shard, apiHost);
   };
 }
 
