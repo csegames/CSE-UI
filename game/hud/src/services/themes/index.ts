@@ -63,7 +63,7 @@ declare global {
         [Faction.TDD]: string;
         [Faction.Viking]: string;
         [Faction.Factionless]: string;
-      }
+      },
     };
 
     scenarioScoreboard: {

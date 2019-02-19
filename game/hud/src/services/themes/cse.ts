@@ -59,6 +59,7 @@ export default function(): Theme {
         [Faction.Factionless]: 'rgba(20, 20, 20, 0.25)',
       },
     },
+
     scenarioScoreboard: {
       color: {
         background: {
