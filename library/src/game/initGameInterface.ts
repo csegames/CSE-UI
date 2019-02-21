@@ -74,6 +74,8 @@ export default function(isAttached: boolean) {
   _devGame.building.replaceShapesAsync
     = makeClientPromise((game, sID, rID, inS) => game.building._cse_dev_replaceShapes(sID, rID, inS));
 
+  // Item Placement API Tasks
+
   // EVENTS
   _devGame.onReady = onReady;
   _devGame.on = events_on;
@@ -138,6 +140,16 @@ export function initOutOfContextGame(): Partial<GameInterface> {
       potentialItems: {},
     },
 
+    itemPlacementMode: {
+      isActive: false,
+      activeTransformMode: null,
+      requestStart: noOp,
+      requestCommit: noOp,
+      requestReset: noOp,
+      requestCancel: noOp,
+      requestChangeTransformMode: noOp,
+    },
+
     dropLight: {
       drop: noOp,
       removeLast: noOp,
@@ -154,12 +166,6 @@ export function initOutOfContextGame(): Partial<GameInterface> {
     clearKeybind: noOp,
     resetKeybinds: noOp,
     resetOptions: noOp,
-
-    startItemPlacement: noOp,
-    commitItemPlacement: noOp,
-    cancelItemPlacement: noOp,
-    resetItemPlacement: noOp,
-    changeItemPlacementMode: noOp,
 
     _cse_dev_beginTriggerKeyActionLoop: noOp,
     _cse_dev_endTriggerKeyActionLoop: noOp,

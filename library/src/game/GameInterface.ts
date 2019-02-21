@@ -140,51 +140,7 @@ export interface GameModel {
   /* ITEM PLACEMENT API                                 */
   /* -------------------------------------------------- */
 
-  /**
-   * Action used to begin deployment of a deployable item
-   * @param {Number} itemDefID Item Definition ID of the deployable
-   * @param {String} itemInstanceID Instance ID of the deployable item
-   * @param {String} actionID ID of the item action
-   * @return {Boolean} whether or not placement actually started in the client.
-   */
-  startItemPlacement: (itemDefID: number, itemInstanceID: string, actionID: string) => boolean;
-
-  /**
-   * Commit active placed item with its current position & orientation
-   * *IMPORTANT* This item placement is client-side only! The UI must make a move item request with the returned
-   * positional data from this call to actually move the item to position on th e game server.
-   * @return
-   * {
-   *   success: true | false - whether or not the commit was successful
-   *   position?: {Vec3f} - where the item was placed
-   *   rotation?: {Euler3f} - orientation of the placed item
-   *   actionID?: {String} - ID used in creating a move request
-   * }
-   */
-  commitItemPlacement: () => Failure | Success & {
-    itemDefID: number;
-    itemInstanceID: string;
-    position: Vec3f;
-    rotation: Euler3f,
-    actionID: string
-  };
-
-  /**
-   * Reset active placed item's position and orientation
-   */
-  resetItemPlacement: () => void;
-
-  /**
-   * Cancel active placed item's placement
-   * @return {Boolean} whether or not the placement was cancelled
-   */
-  cancelItemPlacement: () => boolean;
-
-  /**
-   * Change item placement mode to inputted mode
-   * @param {Number} itemPlacementTransformMode The id of placement mode
-   */
-  changeItemPlacementMode: (itemPlacementTransformMode: ItemPlacementTransformMode) => void;
+  itemPlacementMode: ItemPlacementAPI;
 
   /* -------------------------------------------------- */
   /* BUILDING API                                       */
@@ -218,6 +174,18 @@ export interface GameModel {
   _cse_dev_endTriggerKeyActionLoop: () => void;
 }
 
+// Item Placement API
+interface ItemPlacementAPI {
+  isActive: boolean;
+  activeTransformMode: ItemPlacementTransformMode | null;
+  requestStart: (itemDefID: number, itemInstanceID: string, actionID: string) => void;
+  requestCommit: () => void;
+  requestReset: () => void;
+  requestCancel: () => void;
+  requestChangeTransformMode: (transformMode: ItemPlacementTransformMode) => void;
+}
+
+// Building API
 interface BuildingAPIModel {
   mode: BuildingMode;
   activePlotID: string;
@@ -423,6 +391,21 @@ export interface GameInterface extends GameModel {
   onOptionChanged: (callback: (option: GameOption) => any) => EventHandle;
 
   onBuildingModeChanged: (callback: (mode: BuildingMode) => any) => EventHandle;
+
+  /**
+   * Called when the Item Placement Mode has changed.
+  */
+  onItemPlacementModeChanged: (callback: (isActive: boolean) => any) => EventHandle;
+
+  /**
+   * Called when the UI should send an API request to the server to commit the item being placed.
+   */
+  onSendItemPlacementCommitRequest: (callback: (
+    itemInstanceID: string,
+    position: Vec3f,
+    rotation: Euler3f,
+    actionID: string | null,
+  ) => any) => EventHandle;
 
   /**
    * Called when the active plot is changed.

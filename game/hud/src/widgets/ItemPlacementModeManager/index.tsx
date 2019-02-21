@@ -113,11 +113,12 @@ export interface State {
 }
 
 class ItemPlacementModeManager extends React.PureComponent<Props, State> {
+  private evh: EventHandle[] = [];
   constructor(props: Props) {
     super(props);
     this.state = {
       visible: false,
-      selectedTransformGizmoMode: ItemPlacementTransformMode.Translate,
+      selectedTransformGizmoMode: game.itemPlacementMode.activeTransformMode,
     };
   }
   public render() {
@@ -162,8 +163,14 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   }
 
   public componentDidMount() {
-    game.on('navigate', this.handleNav);
-    game.onBuildingModeChanged(this.handleBuildingModeChanged);
+    this.evh.push(game.on('navigate', this.handleNav));
+    this.evh.push(game.onBuildingModeChanged(this.handleBuildingModeChanged));
+    this.evh.push(game.onItemPlacementModeChanged(this.handleItemPlacementModeChanged));
+    this.evh.push(game.onSendItemPlacementCommitRequest(this.handleSendItemPlacementCommitRequest));
+  }
+
+  public componentWillUnmount() {
+    this.evh.forEach(e => e.clear());
   }
 
   private renderItemActionButton = (text: string, actionIcon: string, selected: boolean, onClick: () => void) => {
@@ -178,6 +185,38 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   private handleBuildingModeChanged = (mode: BuildingMode) => {
     if (mode === BuildingMode.PlacingItem) {
       this.showPlacementMode();
+    }
+  }
+
+  private handleItemPlacementModeChanged = (isActive: boolean) => {
+    const stateUpdate: Partial<State> = {};
+    if (isActive && !this.state.visible) {
+      stateUpdate.visible = true;
+    }
+
+    if (!isActive && this.state.visible) {
+      stateUpdate.visible = false;
+    }
+
+    if (game.itemPlacementMode.activeTransformMode !== this.state.selectedTransformGizmoMode) {
+      stateUpdate.selectedTransformGizmoMode = game.itemPlacementMode.activeTransformMode;
+    }
+
+    this.setState(state => ({
+      ...state,
+      ...stateUpdate,
+    }));
+  }
+
+  private handleSendItemPlacementCommitRequest = (
+    itemInstanceID: string,
+    position: Vec3f,
+    rotation: Euler3f,
+    actionID: string | null) => {
+    if (!actionID) {
+      this.makeMoveItemRequest(itemInstanceID, position, rotation);
+    } else {
+      this.makeItemActionRequest(itemInstanceID, actionID, position, rotation);
     }
   }
 
@@ -200,51 +239,30 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   }
 
   private onTranslateClick = () => {
-    game.changeItemPlacementMode(ItemPlacementTransformMode.Translate);
-    this.setState({ selectedTransformGizmoMode: ItemPlacementTransformMode.Translate });
+    game.itemPlacementMode.requestChangeTransformMode(ItemPlacementTransformMode.Translate);
   }
 
   private onRotateClick = () => {
-    game.changeItemPlacementMode(ItemPlacementTransformMode.Rotate);
-    this.setState({ selectedTransformGizmoMode: ItemPlacementTransformMode.Rotate });
+    game.itemPlacementMode.requestChangeTransformMode(ItemPlacementTransformMode.Rotate);
   }
 
   // private onScaleClick = () => {
   //   game.changeItemPlacementMode(ItemPlacementTransformMode.Scale);
-  //   this.setState({ selectedTransformGizmoMode: ItemPlacementTransformMode.Scale });
   // }
 
   private onCommitClick = () => {
-    const result = game.commitItemPlacement();
-    if (result.success) {
-      const { itemInstanceID, position, rotation } = result;
-      this.handleCommitItemRequest(itemInstanceID, position, rotation, result.actionID ? result.actionID : null);
-      this.hidePlacementMode();
-    }
+    game.itemPlacementMode.requestCommit();
   }
 
   private onResetClick = () => {
-    game.resetItemPlacement();
+    game.itemPlacementMode.requestReset();
   }
 
   private onCancelClick = () => {
-    const cancelled = game.cancelItemPlacement();
-    if (cancelled) {
-      this.hidePlacementMode();
-    }
-  }
-
-  private handleCommitItemRequest = (itemId: string, position: Vec3F, rotation: Euler3f, actionId?: string) => {
-    // Calls a moveItem request to a world position.
-    if (!actionId) {
-      this.makeMoveItemRequest(itemId, position, rotation);
-    } else {
-      this.makeItemActionRequest(itemId, actionId, position, rotation);
-    }
+    game.itemPlacementMode.requestCancel();
   }
 
   private makeItemActionRequest = async (itemId: string, actionId: string, position: Vec3F, rotation: Euler3f) => {
-    if (!itemId) return;
     try {
       const res = await webAPI.ItemAPI.PerformItemAction(
         webAPI.defaultConfig,
@@ -270,7 +288,6 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   }
 
   private makeMoveItemRequest = async (itemId: string, position: Vec3F, rotation: Euler3f) => {
-    if (!itemId) return;
     try {
       const res = await webAPI.ItemAPI.MoveItems(
         webAPI.defaultConfig,

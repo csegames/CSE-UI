@@ -207,7 +207,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     this.eventHandles.push(game.on(eventNames.updateInventoryItems, this.onUpdateInventoryOnEquip));
     this.eventHandles.push(game.on(eventNames.onDropItem, (payload: DropItemPayload) =>
       base.dropItemRequest(payload.inventoryItem.item)));
-    game.cancelItemPlacement();
+    game.itemPlacementMode.requestCancel();
   }
 
   public componentDidUpdate(prevProps: InventoryBodyComponentProps, prevState: InventoryBodyState) {

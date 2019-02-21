@@ -112,6 +112,20 @@ export const EE_OnBuildingModeChanged = 'buildingModeChanged';
 regMap[EE_OnBuildingModeChanged] = 'onBuildingModeChanged';
 
 /**
+ * Called when the ItemPlacementMode is changed.
+ *
+ * @param {ItemPlacementMode} mode The new mode
+ */
+export const EE_OnItemPlacementModeChanged = 'itemPlacementModeChanged';
+regMap[EE_OnItemPlacementModeChanged] = 'onItemPlacementModeChanged';
+
+/**
+ * Called when the client wants the UI to send the API request for item placement
+ */
+export const EE_OnSendItemPlacementCommitRequest = 'sendItemPlacementCommitRequest';
+regMap[EE_OnSendItemPlacementCommitRequest] = 'onSendItemPlacementCommitRequest';
+
+/**
  * Called when the active plot is changed.
  *
  * @param {String} plotID The new plot id

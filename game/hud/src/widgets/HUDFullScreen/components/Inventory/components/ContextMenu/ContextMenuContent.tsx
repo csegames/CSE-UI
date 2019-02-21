@@ -43,6 +43,8 @@ export interface ContextMenuProps {
 export type ContextMenuComponentProps = InjectedContextedMenuContentProps & ContextMenuProps;
 
 class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
+  private evh: EventHandle;
+  private prevPlacementModeActive: boolean = false;
   public render() {
     const { item } = this.props;
     const gearSlotSets = item && item.staticDefinition && item.staticDefinition.gearSlotSets;
@@ -108,6 +110,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
 
   public componentDidMount() {
     this.props.onContextMenuShow();
+    this.evh = game.onItemPlacementModeChanged(this.handleItemPlacementModeChanged);
   }
 
   public componentDidUpdate(prevProps: ContextMenuComponentProps) {
@@ -120,6 +123,15 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
 
   public componentWillUnmount() {
     this.props.onContextMenuHide();
+    this.evh.clear();
+  }
+
+  private handleItemPlacementModeChanged = (isActive: boolean) => {
+    if (!this.prevPlacementModeActive && isActive) {
+      hideContextMenu();
+    }
+
+    this.prevPlacementModeActive = isActive;
   }
 
   private onEquipItem = (gearSlots: GearSlotDefRef.Fragment[]) => {
@@ -170,9 +182,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
       }
     });
 
-    game.startItemPlacement(staticDefinition.numericItemDefID, id, (action && action.id) || '');
-    game.trigger('navigate', 'placement-mode');
-    hideContextMenu();
+    game.itemPlacementMode.requestStart(staticDefinition.numericItemDefID, id, (action && action.id) || '');
   }
 
   private onActionClick = (action: InventoryItem.Actions) => {
