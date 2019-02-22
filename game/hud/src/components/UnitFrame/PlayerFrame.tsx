@@ -5,11 +5,11 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { Tooltip } from 'components/Tooltip';
 import { Faction as GQLFaction, Archetype as GQLArchetype } from 'gql/interfaces';
 
-const PlayerFrameContainer = styled('div')`
+const PlayerFrameContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: row;
@@ -18,7 +18,7 @@ const PlayerFrameContainer = styled('div')`
   pointer-events: all;
 `;
 
-const MainGrid = styled('div')`
+const MainGrid = styled.div`
   position: relative;
   flex: 0 0 auto;
   display: grid;
@@ -31,7 +31,7 @@ const MainGrid = styled('div')`
   }
 `;
 
-const ArchetypeFrameContainer = styled('div')`
+const ArchetypeFrameContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
@@ -41,7 +41,7 @@ const ArchetypeFrameContainer = styled('div')`
   grid-column-end: 3;
 `;
 
-const Name = styled('div')`
+const Name = styled.div`
   color: white;
   grid-row-start: 2;
   grid-row-end: last;
@@ -56,13 +56,13 @@ const Name = styled('div')`
   }
 `;
 
-const Image = styled('img')`
+const Image = styled.img`
   position: absolute;
   width: 100%;
   height: 100%;
 `;
 
-const MainFrame = styled('div')`
+const MainFrame = styled.div`
   position: relative;
   grid-column-start: 1;
   grid-column-end: last;
@@ -70,7 +70,7 @@ const MainFrame = styled('div')`
   grid-row-end: last;
 `;
 
-const HealthSubGrid = styled('div')`
+const HealthSubGrid = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
@@ -94,23 +94,26 @@ const HealthSubGrid = styled('div')`
   }
 `;
 
-const NameBG = styled(Image)`
+const NameBG = styled.img`
+  position: absolute;
+  width: 100%;
+  height: 100%;
   grid-area: nameBG;
 `;
 
-const Blood = styled('div')`
+const Blood = styled.div`
   grid-area: blood;
   width: 100%;
   align-self: end;
 `;
 
-const Health = styled('div')`
+const Health = styled.div`
   grid-area: health;
   height: 100%;
   transform: skewX(31.6deg);
 `;
 
-const HealthText = styled('div')`
+const HealthText = styled.div`
   position: absolute;
   text-align: center;
   grid-area: health;
@@ -124,14 +127,14 @@ const HealthText = styled('div')`
   }
 `;
 
-const Stamina = styled('div')`
+const Stamina = styled.div`
   grid-area: stamina;
   height: 100%;
   transform: skewX(-30deg);
   border-radius: 3px;
 `;
 
-const Statuses = styled('div')`
+const Statuses = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -142,7 +145,7 @@ const Statuses = styled('div')`
   }
 `;
 
-const Status = styled('div')`
+const Status = styled.div`
   position: relative;
   overflow: hidden;
   border: 1px solid black;
@@ -157,19 +160,19 @@ const Status = styled('div')`
   }
 `;
 
-const StatusTooltip = styled('div')`
+const StatusTooltip = styled.div`
   padding: 5px;
   min-width: 200px;
   max-width: 300px;
   max-height: 750px;
 `;
 
-const StatusTooltipName = styled('h3')`
+const StatusTooltipName = styled.h3`
   margin: 0;
   margin-bottom: 5px;
 `;
 
-const StatusTooltipDescription = styled('p')`
+const StatusTooltipDescription = styled.p`
   margin: 0;
   padding: 0;
 `;

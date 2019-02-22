@@ -119,7 +119,7 @@ module.exports = function (e, argv = {}) {
               },
             },
             {
-              test: /\.js?$/,
+              test: /\.js$/,
               exclude: function(modulePath) {
                 return /node_modules/.test(modulePath);
                 // return /node_modules/.test(modulePath) &&
@@ -131,6 +131,12 @@ module.exports = function (e, argv = {}) {
                   loader: require.resolve('babel-loader'),
                   options: {
                     cacheDirectory: path.resolve(CACHE_ROOT, 'babel-loader'),
+                  },
+                },
+                {
+                  loader: 'linaria/loader',
+                  options: {
+                    sourceMap: IS_DEVELOPMENT,
                   },
                 },
               ]
@@ -177,6 +183,12 @@ module.exports = function (e, argv = {}) {
                   }
                 },
                 {
+                  loader: 'linaria/loader',
+                  options: {
+                    sourceMap: IS_DEVELOPMENT,
+                  },
+                },
+                {
                   loader: require.resolve('ts-loader'),
                   options: {
                     transpileOnly: IS_CI ? false : true,
@@ -185,7 +197,7 @@ module.exports = function (e, argv = {}) {
                       sourceMap: true,
                     }
                   }
-                }
+                },
               ]
             },
             {
@@ -200,12 +212,13 @@ module.exports = function (e, argv = {}) {
             {
               test: /\.css$/,
               use: [
-                (IS_DEVELOPMENT && IS_BROWSER) ? {
-                  loader: require.resolve('style-loader'),
-                  options: {
-                    sourceMap: true,
-                  }
-                } : {
+                // (IS_DEVELOPMENT && IS_BROWSER) ? {
+                  // loader: require.resolve('style-loader'),
+                  // options: {
+                    // sourceMap: true,
+                  // }
+                // } : 
+                {
                   loader: MiniCssExtractPlugin.loader,
                   options: {
                     publicPath: '../',
@@ -214,7 +227,7 @@ module.exports = function (e, argv = {}) {
                 {
                   loader: require.resolve('css-loader'),
                   options: {
-                    sourceMap: true,
+                    sourceMap: IS_DEVELOPMENT,
                     url: true,
                   }
                 },
