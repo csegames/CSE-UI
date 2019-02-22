@@ -75,6 +75,14 @@ class ControllerDisplay extends React.PureComponent<Props, ControllerDisplayStat
 
   private toggleCharacterSelect = () => {
     this.updateApiServerStatus();
+    if (this.state.charSelectVisible) {
+      // We are closing char select
+      game.trigger('resume-videos');
+    } else {
+      // We are opening char select
+      game.trigger('pause-videos');
+    }
+
     this.setState({ charSelectVisible: !this.state.charSelectVisible });
   }
 

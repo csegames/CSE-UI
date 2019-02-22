@@ -132,8 +132,8 @@ export class SubscriptionManager {
     subscription: Subscription,
     onData: OnData<T>,
     onError?: OnError) => {
-    const id = `gql-subscription-operation-${game.selfPlayerState ? game.selfPlayerState.characterID : ''}-
-    ${this.idCounter++}`;
+    const id = `gql-subscription-operation-
+    ${game.selfPlayerState ? game.selfPlayerState.characterID : ''}-${this.idCounter++}`;
 
     let payload;
     if (typeof subscription === 'string' || subscription.hasOwnProperty('loc')) {
