@@ -189,7 +189,6 @@ const TooltipContentContainer = styled('div')`
 const DefaultTooltipStyles = {
   tooltip: css`
     padding: 2px 5px 5px 5px;
-    background-color: rgba(0,0,0,0.9);
     min-width: 200px;
     max-width: 300px;
     max-height: 750px;

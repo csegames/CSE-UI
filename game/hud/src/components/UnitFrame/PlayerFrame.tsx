@@ -158,10 +158,10 @@ const Status = styled('div')`
 `;
 
 const StatusTooltip = styled('div')`
-  background: #333;
-  border: 1px solid #777;
   padding: 5px;
-  color: white;
+  min-width: 200px;
+  max-width: 300px;
+  max-height: 750px;
 `;
 
 const StatusTooltipName = styled('h3')`
