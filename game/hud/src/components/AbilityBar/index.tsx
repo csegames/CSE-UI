@@ -49,7 +49,7 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
           const abilityInfo = this.getAbility(clientAbility);
 
           return abilityInfo ? (
-            <AbilityButton key={index} abilityInfo={abilityInfo} index={index + 1} />
+            <AbilityButton key={abilityInfo.id} abilityInfo={abilityInfo} index={index + 1} />
           ) : null;
         })}
       </Container>
