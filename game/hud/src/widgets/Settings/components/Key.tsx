@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import * as CSS from 'lib/css-helper';
 
-export const Key = styled('span')`
+export const Key = styled.span`
   display: flex;
   ${CSS.HORIZONTALLY_CENTERED}
   width: fit-content;

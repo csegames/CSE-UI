@@ -1,45 +1,39 @@
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import moment from 'moment';
 
 import CollapsibleList from './CollapsibleList';
 import ObjectProperties from './ObjectProperties';
 import { States, DataTypes, DataMapper } from './types';
 
-const Status = styled('div')(
-  {
-    display: 'inline-block',
-    borderRadius: '5px',
-    borderWidth: '2px',
-    borderStyle: 'solid',
-    padding: '2px 5px',
-    textTransform: 'uppercase',
-  },
-  (props: { state: States })  => {
-    switch (props.state) {
-      case 'online':
-        return {
-          color: 'lightgreen',
-          borderColor: 'darkgreen',
-          backgroundColor: 'green',
-        };
-      case 'offline':
-        return {
-          color: 'white',
-          borderColor: 'darkred',
-          backgroundColor: 'red',
-        };
-      case 'initializing':
-        return {
-          color: 'tangerine',
-          borderColor: 'darkorange',
-          backgroundColor: 'orange',
-        };
-    }
-  },
-);
+const Status = styled.div`
+  display: inline-block;
+  border-radius: 5px;
+  border-width: 2px;
+  border-style: solid;
+  padding: 2px 5px;
+  text-transform: uppercase;
 
-const Row = styled('div')`
+  &.online {
+    color: lightgreen;
+    border-color: darkgreen;
+    background-color: green;
+  }
+
+  &.offline {
+    color: white;
+    border-color: darkred;
+    background-color: red;
+  }
+
+  &.initializing {
+    color: tangerine;
+    border-color: darkorange;
+    background-color: orange;
+  }
+`;
+
+const Row = styled.div`
   padding: 3px 5px;
   display: flex;
   flex-direction: row;
@@ -62,7 +56,7 @@ const Row = styled('div')`
   }
 `;
 
-const Content = styled('div')`
+const Content = styled.div`
   max-height: 100%;
   overflow-x: hidden;
 `;
@@ -126,8 +120,7 @@ class StatusItems extends React.Component<Props, undefined> {
                     <div>{key}</div>
                     <Status
                       title={this.getTitle(key)}
-                      state={this.props.statusMapper && this.props.statusMapper(value) || ''}
-                    >
+                      className={this.props.statusMapper && this.props.statusMapper(value) || ''}>
                       {value}
                     </Status>
                   </Row>

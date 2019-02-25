@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { TabPanel, TabItem } from '@csegames/camelot-unchained';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { hideContextMenu } from 'actions/contextMenu';
@@ -44,13 +44,13 @@ export interface ITemporaryTab {
 export interface FullScreenNavProps {
 }
 
-const BackgroundImage = styled('div')`
+const BackgroundImage = styled.div`
   position: absolute;
   width: 50%;
   height: 100%;
   z-index: 99;
   box-shadow: inset 0px -100px 120px rgba(0, 0, 0, 0.8);
-  background: url(images/inventory/bag-bg.png) repeat-x, linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  background: url(/hud-new/images/inventory/bag-bg.png) repeat-x, linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
   &.left {
     top: 0;
     left: 0;

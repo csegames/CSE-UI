@@ -5,6 +5,8 @@
  *
  */
 
+import { CLASS_NAMES } from './styles';
+import { AbilityButtonInfo } from '../AbilityButtonView';
 export * from './styles';
 
 
@@ -51,3 +53,59 @@ export function getTimingEnd(timing: DeepImmutableObject<Timing>) {
   const timingEnd = ((timing.start + timing.duration) - game.worldTime) * 1000;
   return timingEnd;
 }
+
+export const getClassNames = (abilityState: AbilityButtonInfo) => {
+  const classNames: string[] = [];
+  if (abilityState.type === AbilityButtonType.Modal) {
+    classNames.push(CLASS_NAMES.MODAL_STATE);
+  }
+  const status = abilityState.status;
+  const reason = abilityState.error;
+  if (status & AbilityButtonState.Unusable) {
+    classNames.push(CLASS_NAMES.UNAVAILABLE_STATE);
+    if (reason & AbilityButtonErrorFlag.NoAmmo) {
+      classNames.push(CLASS_NAMES.NO_AMMO_STATE);
+    }
+    if (reason & AbilityButtonErrorFlag.NoWeapon) {
+      classNames.push(CLASS_NAMES.NO_WEAPON_STATE);
+    }
+  }
+
+  if (status & AbilityButtonState.Ready) {
+    classNames.push(CLASS_NAMES.READY_STATE);
+  }
+
+  if (status & AbilityButtonState.Error) {
+    classNames.push(CLASS_NAMES.ERROR_STATE);
+  }
+
+  if (status & AbilityButtonState.Queued) {
+    classNames.push(CLASS_NAMES.QUEUED_STATE);
+  }
+
+  if (status & AbilityButtonState.Cooldown) {
+    classNames.push(CLASS_NAMES.COOLDOWN_STATE);
+  }
+
+  if (status & AbilityButtonState.Channel) {
+    classNames.push(CLASS_NAMES.CHANNEL_STATE);
+  }
+
+  if (status & AbilityButtonState.Recovery) {
+    classNames.push(CLASS_NAMES.RECOVERY_STATE);
+  }
+
+  if (status & AbilityButtonState.Preparation) {
+    classNames.push(CLASS_NAMES.PREPARATION_STATE);
+  }
+
+  if (status & AbilityButtonState.Running ! & AbilityButtonState.Preparation ! & AbilityButtonState.Channel) {
+    classNames.push(CLASS_NAMES.RUNNING_STATE);
+  }
+
+  if (status & AbilityButtonState.Held) {
+    classNames.push(CLASS_NAMES.HELD_STATE);
+  }
+
+  return classNames;
+};

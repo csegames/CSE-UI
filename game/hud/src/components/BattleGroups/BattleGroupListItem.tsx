@@ -6,10 +6,10 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 // import { Faction as GQLFaction, Archetype as GQLArchetype } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   cursor: pointer;
   font-size: 12px;
   font-family: TitilliumWeb;
@@ -20,7 +20,7 @@ const Container = styled('div')`
   overflow: hidden;
 `;
 
-const RankIcon = styled('span')`
+const RankIcon = styled.span`
   margin-right: 5px;
   font-size: 12px;
   font-family: TitilliumWeb;

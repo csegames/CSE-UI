@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { createSharedState } from 'services/session/lib/sharedState';
 
 enum MouseButtons {
@@ -174,7 +174,7 @@ export type DragAndDropProps =
 
 export type DNDProps = DragProps | DropProps | DragAndDropProps;
 
-const DNDWrapper = styled('div')`
+const DNDWrapper = styled.div`
   pointer-events: all;
   display: inline-block;
   width: 100%;
@@ -320,7 +320,7 @@ export function DragAndDrop(props: DNDProps) {
   );
 }
 
-const RenderWrapper = styled('div')`
+const RenderWrapper = styled.div`
   position: fixed;
   pointer-events: none !important;
   z-index: 9999;

@@ -4,15 +4,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import * as CSS from 'lib/css-helper';
 
-export const PopupDialog = styled('div')`
+export const PopupDialog = styled.div`
   position: absolute;
   ${CSS.IS_COLUMN}
 `;
 
-export const Container = styled('div')`
+export const Container = styled.div`
   ${CSS.IS_COLUMN} ${CSS.EXPAND_TO_FIT}
   padding: 20px;
   overflow: auto;

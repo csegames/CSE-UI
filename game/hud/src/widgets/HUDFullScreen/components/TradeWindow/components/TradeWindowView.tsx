@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { webAPI } from '@csegames/camelot-unchained';
 
 import TabHeader from '../../TabHeader';
@@ -21,7 +21,7 @@ import { InventoryItem, SecureTradeState } from 'gql/interfaces';
 
 declare const toastr: any;
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
@@ -30,7 +30,7 @@ const Container = styled('div')`
   align-items: stretch;
 `;
 
-const BackgroundImage = styled('div')`
+const BackgroundImage = styled.img`
   position: absolute;
   top: 0;
   right: 0;
@@ -40,11 +40,11 @@ const BackgroundImage = styled('div')`
   height: 100%;
 `;
 
-const CancelButton = styled('div')`
+const CancelButton = styled.div`
   position: absolute;
   top: 9px;
   right: 20px;
-  z-index: 99;s
+  z-index: 99;
   pointer-events: all;
   cursor: pointer;
   font-family: Caudex;
@@ -63,14 +63,14 @@ const CancelButton = styled('div')`
   border-image-slice: 0.5;
   border-width: 1px;
   border-style: solid;
-  -webkit-filter: brightness(100%);
-  -webkit-transition: -webkit-filter 0.2s;
+  filter: brightness(100%);
+  transition: filter 0.2s;
   &:hover {
-    -webkit-filter: brightness(130%);
+    filter: brightness(130%);
   }
 `;
 
-const TradeSection = styled('div')`
+const TradeSection = styled.div`
   display: flex;
   flex: 1;
   width: 100%;

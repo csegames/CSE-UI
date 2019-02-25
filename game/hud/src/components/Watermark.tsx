@@ -5,9 +5,9 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const Watermark = styled('div')`
+const Watermark = styled.div`
   position: fixed;
   margin: auto;
   left: 50%;

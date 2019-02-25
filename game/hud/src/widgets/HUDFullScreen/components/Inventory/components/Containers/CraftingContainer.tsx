@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import * as base from '../../../ItemShared/InventoryBase';
 import ContainerView, { CloseButton } from './ContainerView';
@@ -20,14 +20,14 @@ import { InventoryDataTransfer } from '../../../../lib/eventNames';
 import { InventorySlotItemDef } from '../../../../lib/itemInterfaces';
 import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
 
-const HeaderContent = styled('div')`
+const HeaderContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 `;
 
-const FooterContent = styled('div')`
+const FooterContent = styled.div`
   display: flex;
   align-items: center;
 `;

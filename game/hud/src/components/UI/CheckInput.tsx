@@ -5,10 +5,10 @@
 */
 
 import * as React from 'react';
-import { css } from 'emotion';
-import styled from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 
-const Wrapper = styled('div')`
+const Wrapper = styled.div`
   display: inline-block;
   position: relative;
 `;
@@ -23,7 +23,7 @@ const inputStyle = css`
   margin: 5px;
 `;
 
-const ClickDiv = styled('div')`
+const ClickDiv = styled.div`
   display: inline-block;
   position: absolute;
   left: 0;

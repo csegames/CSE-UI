@@ -6,10 +6,10 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import * as CSS from 'lib/css-helper';
 
-const SettingsPanelContainer = styled('div')`
+const SettingsPanelContainer = styled.div`
   ${CSS.IS_COLUMN} ${CSS.EXPAND_TO_FIT}
   padding: 10px;
 `;

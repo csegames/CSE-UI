@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import {
   TabbedDialogWithSideMenu,
   DialogDefinition,
@@ -18,7 +18,7 @@ interface Link {
   uri: string;
 }
 
-const Iframe = styled('iframe')`
+const Iframe = styled.iframe`
   flex: 1;
   border: 0;
   pointer-events: all;

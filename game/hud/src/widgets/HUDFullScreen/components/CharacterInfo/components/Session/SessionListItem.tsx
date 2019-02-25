@@ -6,11 +6,11 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 import { SkillPartsUsedField } from '@csegames/camelot-unchained/lib/graphql/schema';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
   align-items: center;
@@ -31,51 +31,51 @@ const Container = styled('div')`
     right: 0;
     bottom: -5px;
     height: 5px;
-    background: url(images/character-stats/ornament-middle-bottom-list.png) no-repeat;
+    background: url(/hud-new/images/character-stats/ornament-middle-bottom-list.png) no-repeat;
     background-position: center;
   }
 `;
 
-const ImageContainer = styled('div')`
+const ImageContainer = styled.div`
   width: 80px;
   height: 80px;
   border: 1px solid #555;
   margin-left: 5px;
 `;
 
-const Image = styled('img')`
+const Image = styled.img`
   width: 100%;
   height: 100%;
 `;
 
-const InfoContainer = styled('div')`
+const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 15px;
   flex: 1;
 `;
 
-const Title = styled('div')`
+const Title = styled.div`
   font-size: 16px;
   font-weight: bold;
   font-family: Caudex;
   color: #C3C3C3;
 `;
 
-const Description = styled('div')`
+const Description = styled.div`
   font-size: 14px;
   font-family: Caudex;
   color: #C3C3C3;
   margin-right: 50px;
 `;
 
-const Section = styled('div')`
+const Section = styled.div`
   display: flex;
-  flex: ${(props: { flex: number }) => props.flex || 1};
+  flex: ${(props: { flex?: number }) => props.flex || 1};
   align-items: center;
 `;
 
-const TimesUsed = styled('div')`
+const TimesUsed = styled.div`
   font-size: 16px;
   font-weight: bold;
   font-family: Caudex;

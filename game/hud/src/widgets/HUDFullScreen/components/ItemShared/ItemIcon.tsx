@@ -5,7 +5,8 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { placeholderIcon } from '../../lib/constants';
 
 export interface ItemIconStyle {
@@ -16,7 +17,7 @@ export interface ItemIconStyle {
   text: React.CSSProperties;
 }
 
-const Container = styled('div')`
+const Container = styled.div`
   background-image: url();
   vertical-align: baseline;
   background-size: cover;
@@ -27,7 +28,7 @@ const Container = styled('div')`
   cursor: inherit;
 `;
 
-const TextContainer = styled('header')`
+const TextContainer = styled.header`
   position: absolute;
   left: 0;
   width: 100%;
@@ -78,7 +79,7 @@ const Footer = css`
   }
 `;
 
-const Text = styled('div')`
+const Text = styled.div`
   position: relative;
   color: white;
   text-shadow: 0 1px 0 black;

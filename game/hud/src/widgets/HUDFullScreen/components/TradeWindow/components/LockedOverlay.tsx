@@ -6,10 +6,10 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { SecureTradeState } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
@@ -19,7 +19,7 @@ const Container = styled('div')`
   }
 `;
 
-const BlackOverlay = styled('div')`
+const BlackOverlay = styled.div`
   position: absolute;
   top: 0;
   right: 0;
@@ -28,7 +28,7 @@ const BlackOverlay = styled('div')`
   background-color: rgba(0, 0, 0, 0.5);
 `;
 
-const TopGlare = styled('div')`
+const TopGlare = styled.div`
   position: absolute;
   top: -150px;
   left: 0;
@@ -37,21 +37,21 @@ const TopGlare = styled('div')`
   height: 300px;
 `;
 
-const DiagnalGlare = styled('div')`
+const DiagnalGlare = styled.div`
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  background: url(images/trade/locked-glare.png) no-repeat;
+  background: url(/hud-new/images/trade/locked-glare.png) no-repeat;
   background-size: cover;
 `;
 
-const Lock = styled('div')`
+const Lock = styled.div`
   &:before {
     content: '';
     position: absolute;
-    background: url(images/trade/lock-in.png) no-repeat;
+    background: url(/hud-new/images/trade/lock-in.png) no-repeat;
     background-size: cover;
     width: 68px;
     height: 60px;
@@ -63,7 +63,7 @@ const Lock = styled('div')`
   &:after {
     content: '';
     position: absolute;
-    background: url(images/trade/lock.png) no-repeat;
+    background: url(/hud-new/images/trade/lock.png) no-repeat;
     background-size: cover;
     width: 103px;
     height: 97px;
@@ -74,65 +74,65 @@ const Lock = styled('div')`
   }
 `;
 
-const TopRightBorder = styled('div')`
+const TopRightBorder = styled.div`
   position: absolute;
   top: 0;
   right: 0;
-  background: url(images/trade/locked-top-right.png) no-repeat;
+  background: url(/hud-new/images/trade/locked-top-right.png) no-repeat;
   width: 322px;
   height: 121px;
 `;
 
-const TopMiddleBorder = styled('div')`
+const TopMiddleBorder = styled.div`
   position: absolute;
   top: 0;
   right: 0;
   left: 0;
-  background: url(images/trade/locked-top-middle.png) no-repeat;
+  background: url(/hud-new/images/trade/locked-top-middle.png) no-repeat;
   background-position: center center;
   width: 100%;
   height: 45px;
 `;
 
-const TopLeftBorder = styled('div')`
+const TopLeftBorder = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  background: url(images/trade/locked-top-left.png) no-repeat;
+  background: url(/hud-new/images/trade/locked-top-left.png) no-repeat;
   width: 322px;
   height: 121px;
 `;
 
-const BottomRightBorder = styled('div')`
+const BottomRightBorder = styled.div`
   position: absolute;
   bottom: 0;
   right: 0;
-  background: url(images/trade/locked-bot-right.png) no-repeat;
+  background: url(/hud-new/images/trade/locked-bot-right.png) no-repeat;
   width: 244px;
   height: 95px;
 `;
 
-const BottomMiddleBorder = styled('div')`
+const BottomMiddleBorder = styled.div`
 position: absolute;
 bottom: 0;
 right: 0;
 left: 0;
-background: url(images/trade/locked-bot-middle.png) no-repeat;
+background: url(/hud-new/images/trade/locked-bot-middle.png) no-repeat;
 background-position: center center;
 width: 100%;
 height: 45px;
 `;
 
-const BottomLeftBorder = styled('div')`
+const BottomLeftBorder = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
-  background: url(images/trade/locked-bot-left.png) no-repeat;
+  background: url(/hud-new/images/trade/locked-bot-left.png) no-repeat;
   width: 244px;
   height: 95px;
 `;
 
-const AcceptedText = styled('div')`
+const AcceptedText = styled.div`
 &:after {
   content: 'ACCEPTED';
   font-family: Caudex;
@@ -140,7 +140,7 @@ const AcceptedText = styled('div')`
   color: #A8936F;
   text-align: center;
   position: absolute;
-  background: url(images/trade/accepted-bg.png) no-repeat;
+  background: url(/hud-new/images/trade/accepted-bg.png) no-repeat;
   background-size: cover;
   width: 238px;
   height: 32px;

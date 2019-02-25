@@ -5,12 +5,12 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import ParallaxBG from '../ParallaxBG';
 import { ProgressBar } from './ProgressBar';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: fixed;
   top: 0;
   right: 0;
@@ -21,7 +21,7 @@ const Container = styled('div')`
   z-index: 9999;
 `;
 
-const LoadingMessage = styled('div')`
+const LoadingMessage = styled.div`
   position: absolute;
   bottom: 50px;
   left: 50%;
@@ -31,20 +31,20 @@ const LoadingMessage = styled('div')`
   font-size: 24px;
 `;
 
-const Overlay = styled('div')`
+const Overlay = styled.div`
   position: absolute;
   z-index: 1;
   width: 100%;
   height: 100%;
 `;
 
-const ProgressBarWrapper = styled('div')`
+const ProgressBarWrapper = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
 `;
 
-const TrademarkWrapper = styled('div')`
+const TrademarkWrapper = styled.div`
   position: absolute;
   bottom: 10px;
   right: 0;
@@ -55,28 +55,28 @@ const TrademarkWrapper = styled('div')`
   font-size: 14px;
 `;
 
-const TriRealm = styled('h3')`
+const TriRealm = styled.h3`
   margin: 0;
 `;
 
-const Logo = styled('div')`
+const Logo = styled.div`
   position: absolute;
   bottom: 100px;
   left: 50%;
   transform: translateX(-50%) scale(0.75);
   width: 462px;
   height: 171px;
-  background: url(images/logo.png);
+  background: url(/hud-new/images/logo.png);
   background-repeat: no-repeat;
 `;
 
-const PoweredBy = styled('div')`
+const PoweredBy = styled.div`
   position: absolute;
   bottom: 10px;
   left: 0;
   width: 453px;
   height: 88px;
-  background: url(images/poweredby.png);
+  background: url(/hud-new/images/poweredby.png);
 `;
 
 export class LoadingScreen extends React.PureComponent<{}> {

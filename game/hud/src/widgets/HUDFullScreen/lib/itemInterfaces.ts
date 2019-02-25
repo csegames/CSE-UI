@@ -10,6 +10,30 @@ import { ContainerPermissionDef } from '../components/ItemShared/InventoryBase';
 import { DrawerCurrentStats } from '../components/Inventory/components/Containers/Drawer';
 import { DataTransferLocation } from './eventNames';
 
+export enum ArmorType {
+  Heavy,
+  Medium,
+  Light,
+}
+export interface InventoryFilterButton {
+  // The css class for the icon to use
+  icon: string;
+  // Unique name for this filter (** MUST BE UNIQUE **)
+  name: string;
+  // Any additional styling to add to the icon displayed
+  // usually for flipping an icon for left / right
+  style?: React.CSSProperties;
+  // Filter method returns true if the given item should
+  // be displayed when this filter is active
+  filter: (item: InventoryItem.Fragment) => boolean;
+  // Used to distinguish difference between Heavy, Medium, and Light armor
+  armorType?: ArmorType;
+}
+
+export interface InventoryFilterButtonInfo {
+  [id: string]: { icon: string, name: string, armorType?: ArmorType };
+}
+
 export enum SlotType {
   Empty,
   // Standard - item slot for a general item

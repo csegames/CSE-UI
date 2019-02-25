@@ -6,7 +6,7 @@
 
 import gql from 'graphql-tag';
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import OL from 'ol';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { request } from '@csegames/camelot-unchained/lib/utils/request';
@@ -16,15 +16,15 @@ import { MapGQL } from 'gql/interfaces';
 
 declare const ol: typeof OL;
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  background: url(images/map/map_bg.jpg);
+  background: url(/hud-new/images/map/map_bg.jpg);
   background-size: cover;
 `;
 
-const LoadingContainer = styled('div')`
+const LoadingContainer = styled.div`
   position: absolute;
   top: 0;
   right: 0;
@@ -37,12 +37,12 @@ const LoadingContainer = styled('div')`
   flex-direction: column;
 `;
 
-const LoadingText = styled('div')`
+const LoadingText = styled.div`
   font-size: 22px;
   color: white;
 `;
 
-const RetryButton = styled('button')`
+const RetryButton = styled.button`
   font-size: 22px;
   display: block;
   background: rgba(255,0,0,0.4);

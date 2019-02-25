@@ -6,20 +6,21 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 
 import { TextInput } from 'UI/TextInput';
 import { Name, KDAContainer, Divider, Kills, Deaths, Assists, Team } from './ListItem';
 import ListHeaderItem, { SortBy } from './ListHeaderItem';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   justify-content: space-between;
   color: white;
   padding: 5px 25px;
 `;
 
-const SearchIcon = styled('span')`
+const SearchIcon = styled.span`
   font-size: 12px;
   margin-top: 7px;
   margin-left: 5px;

@@ -9,11 +9,11 @@ import {
   parseMessageForSlashCommand,
 } from '@csegames/camelot-unchained';
 
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import ObjectDisplay from './ObjectDisplay';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: fixed;
   display: flex;
   flex-direction: row;
@@ -24,7 +24,7 @@ const Container = styled('div')`
   max-height: 400px;
 `;
 
-const InfoWrapper = styled('div')`
+const InfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex: 0 0 450px;
@@ -33,18 +33,18 @@ const InfoWrapper = styled('div')`
   user-select: all;
 `;
 
-const ConsoleWrapper = styled('div')`
+const ConsoleWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
 `;
 
-const InputWrapper = styled('div')`
+const InputWrapper = styled.div`
   flex: 0 0 auto;
   border-top: 1px solid rgba(255, 255, 255, 0.7);
 `;
 
-const Messages = styled('div')`
+const Messages = styled.div`
   display: flex;
   flex: 1 1 auto;
   flex-direction: column-reverse;
@@ -52,7 +52,7 @@ const Messages = styled('div')`
   height: 350px;
 `;
 
-const Line = styled('div')`
+const Line = styled.div`
   flex: 0 0 auto;
   color: #ececec;
 `;

@@ -7,7 +7,8 @@
 
 import * as React from 'react';
 import { isEqual } from 'lodash';
-import styled, { css, keyframes } from 'react-emotion';
+import { styled } from 'linaria/react';
+import { css } from 'linaria';
 import { FactionColors } from 'lib/factionColors';
 import { TeamInterface } from './ScenarioResultsContainer';
 import {
@@ -24,79 +25,14 @@ const WaitTillWidgetSlideIn = css`
   animation-delay: 0.3s;
 `;
 
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-const glow = keyframes`
-  0% {
-    -webkit-filter: brightness(100%);
-    filter: brightness(100%);
-  }
-
-  50% {
-    -webkit-filter: brightness(175%);
-    filter: brightness(175%);
-  }
-
-  100% {
-    -webkit-filter: brightness(100%);
-    filter: brightness(100%);
-  }
-`;
-
-const slideUp = keyframes`
-  from {
-    opacity: 0;
-    bottom: -20px;
-  }
-  to {
-    opacity: 1;
-    bottom: 0px;
-  }
-`;
-
-const slideInFromLeft = keyframes`
-  0% {
-    opacity: 0;
-    left: -75px;
-  }
-  50% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 0.7;
-    left: 0px;
-  }
-`;
-
-const slideInFromRight = keyframes`
-  0% {
-    opacity: 0;
-    right: -75px;
-  }
-  50% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 0.7;
-    right: 0px;
-  }
-`;
-
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
   font-family: Caudex;
 `;
 
-const Divider = styled('div')`
+const Divider = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
@@ -105,7 +41,7 @@ const Divider = styled('div')`
   background: linear-gradient(to right, transparent, #5D5D5D, transparent);
 `;
 
-const TeamContainer = styled('div')`
+const TeamContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -121,13 +57,41 @@ const TeamContainer = styled('div')`
   z-index: 1;
   opacity: 0;
   -webkit-animation: ${(props: any) => props.fromLeft ?
-    `${slideInFromLeft} 0.5s ease forwards` : `${slideInFromRight} 0.5s ease forwards`};
+    `slideInFromLeft 0.5s ease forwards` : `slideInFromRight 0.5s ease forwards`};
   animation: ${(props: any) => props.fromLeft ?
-    `${slideInFromLeft} 0.5s ease forwards` : `${slideInFromRight} 0.5s ease forwards`};
-  ${WaitTillWidgetSlideIn};
+    `slideInFromLeft 0.5s ease forwards` : `slideInFromRight 0.5s ease forwards`};
+  ${WaitTillWidgetSlideIn}
+
+  @keyframes slideInFromLeft {
+    0% {
+      opacity: 0;
+      left: -75px;
+    }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0.7;
+      left: 0px;
+    }
+  }
+
+  @keyframes slideInFromRight {
+    0% {
+      opacity: 0;
+      right: -75px;
+    }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0.7;
+      right: 0px;
+    }
+  }
 `;
 
-const TeamName = styled('div')`
+const TeamName = styled.div`
   position: absolute;
   font-size: 22px;
   letter-spacing: 3px;
@@ -136,13 +100,13 @@ const TeamName = styled('div')`
   right: ${(props: any) => props.right};
 `;
 
-// const Score = styled('div')`
+// const Score = styled.div`
 //   color: white;
 //   font-size: 16px;
 //   letter-spacing: 2px;
 // `;
 
-const VictoryTeamContainer = styled('div')`
+const VictoryTeamContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -157,23 +121,47 @@ const VictoryTeamContainer = styled('div')`
   z-index: 2;
   opacity: 0;
   background: linear-gradient(${(props: any) => props.daWay}, ${(props: any) => props.backgroundColor}, rgba(0,0,0,0.2));
-  -webkit-animation: ${fadeIn} 0.5s ease forwards, ${glow} 2s ease infinite;
-  animation: ${fadeIn} 0.5s ease forwards, ${glow} 2s ease infinite;
+  -webkit-animation: fadeIn 0.5s ease forwards, glow 2s ease infinite;
+  animation: fadeIn 0.5s ease forwards, glow 2s ease infinite;
   ${WaitTillWidgetSlideIn}
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes glow {
+    0% {
+      -webkit-filter: brightness(100%);
+      filter: brightness(100%);
+    }
+    50% {
+      -webkit-filter: brightness(175%);
+      filter: brightness(175%);
+    }
+    100% {
+      -webkit-filter: brightness(100%);
+      filter: brightness(100%);
+    }
+  }
 `;
 
-const LeftVictoryOrnament = styled('div')`
+const LeftVictoryOrnament = styled.div`
   position: absolute;
-  background: url(images/scenario-results/left-divider-ornament.png) no-repeat;
+  background: url(/hud-new/images/scenario-results/left-divider-ornament.png) no-repeat;
   left: 10px;
   top: 10px;
   height: 100%;
   width: 100%;
 `;
 
-const RightVictoryOrnament = styled('div')`
+const RightVictoryOrnament = styled.div`
   position: absolute;
-  background: url(images/scenario-results/right-divider-ornament.png) no-repeat;
+  background: url(/hud-new/images/scenario-results/right-divider-ornament.png) no-repeat;
   right: 0px;
   top: 10px;
   height: 100%;
@@ -181,45 +169,56 @@ const RightVictoryOrnament = styled('div')`
 `;
 
 
-const BottomMidOrnament = styled('div')`
+const BottomMidOrnament = styled.div`
   position: absolute;
   left: 0;
   right: 0;
   bottom: -13px;
   height: 30%;
-  background: url(images/scenario-results/bottom-mid-ornament.png) no-repeat center;
+  background: url(/hud-new/images/scenario-results/bottom-mid-ornament.png) no-repeat center;
   z-index: 10;
 `;
 
-const OutcomeTeamName = styled('div')`
+const OutcomeTeamName = styled.div`
   margin-top: 10px;
   font-size: 26px;
   letter-spacing: 3px;
 `;
 
-const OutcomeText = styled('div')`
+const OutcomeText = styled.div`
   margin-top: -3px;
   font-size: 13px;
   letter-spacing: 2.5px;
 `;
 
-// const VictoryScore = styled('div')`
+// const VictoryScore = styled.div`
 //   color: white;
 //   font-size: 18px;
 //   letter-spacing: 2px;
 // `;
 
-const OutcomeContent = styled('div')`
+const OutcomeContent = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   opacity: 0;
-  -webkit-animation: ${slideUp} 0.5s ease forwards;
-  animation: ${slideUp} 0.5s ease forwards;
+  -webkit-animation: slideUp 0.5s ease forwards;
+  animation: slideUp 0.5s ease forwards;
   -webkit-animation-delay: 0.7s;
   animation-delay: 0.7s;
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      bottom: -20px;
+    }
+    to {
+      opacity: 1;
+      bottom: 0px;
+    }
+  }
 `;
 
 export interface TeamScoreProps {

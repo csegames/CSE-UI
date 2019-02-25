@@ -6,9 +6,9 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-export const ColumnSection = styled('div')`
+export const ColumnSection = styled.div`
   display: inline-block;
   pointer-events: all;
   cursor: pointer;

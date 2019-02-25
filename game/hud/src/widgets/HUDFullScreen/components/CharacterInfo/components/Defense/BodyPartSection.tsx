@@ -6,21 +6,21 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { css } from 'react-emotion';
-import { utils } from '@csegames/camelot-unchained';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 
 import StatListItem from '../StatListItem';
 import TabSubHeader from '../../../TabSubHeader';
-import { colors, characterBodyPartIcons } from '../../../../lib/constants';
+import { characterBodyPartIcons } from '../../../../lib/constants';
 import { prettifyText, searchIncludesSection } from '../../../../lib/utils';
 import { DamageType_Single } from 'gql/interfaces';
 
-const Container = styled('div')`
-  border-top: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+const Container = styled.div`
+  border-top: 1px solid #6A6260;
 `;
 
-const Title = styled('span')`
+const Title = styled.span`
   margin-left: 5px;
 `;
 
@@ -29,7 +29,7 @@ const DoesNotMatchSearch = css`
   background-color: rgba(0, 0, 0, 0.2);
 `;
 
-const ListHeader = styled('div')`
+const ListHeader = styled.div`
   display: flex;
   justify-content: flex-end;
   color: #C3A186;
@@ -42,13 +42,13 @@ const ListHeader = styled('div')`
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
 `;
 
-const StatValueContainer = styled('div')`
+const StatValueContainer = styled.div`
   display: flex;
-  color: ${utils.lightenColor(colors.filterBackgroundColor, 150)};
+  color: #96827b;
   font-size: 16px;
 `;
 
-const ValueText = styled('div')`
+const ValueText = styled.div`
   width: 40px;
   border-left: 1px solid black;
   margin-left: 5px;
@@ -59,7 +59,7 @@ const SubHeaderContent = css`
   justify-content: space-between;
 `;
 
-const ListHeaderText = styled('div')`
+const ListHeaderText = styled.div`
   width: 40px;
   margin-left: 5px;
   text-align: right;

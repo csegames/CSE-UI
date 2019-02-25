@@ -7,7 +7,7 @@
 
 import gql from 'graphql-tag';
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
@@ -22,7 +22,7 @@ export interface GeneralProps extends GraphQLInjectedProps<GeneralStatsGQL.Query
 
 }
 
-const Tooltip = styled('div')`
+const Tooltip = styled.div`
   max-width: 300px;
   min-width: 200px;
   padding: 5px;

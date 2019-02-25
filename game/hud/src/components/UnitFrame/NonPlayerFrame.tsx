@@ -5,11 +5,11 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { Tooltip } from 'components/Tooltip';
 
 
-const NonPlayerFrameContainer = styled('div')`
+const NonPlayerFrameContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: row;
@@ -18,14 +18,14 @@ const NonPlayerFrameContainer = styled('div')`
   pointer-events: all;
 `;
 
-const Image = styled('img')`
+const Image = styled.img`
   position: absolute;
   width: 100%;
   height: 100%;
 `;
 
 
-const MainGrid = styled('div')`
+const MainGrid = styled.div`
   position: relative;
   flex: 0 0 auto;
   display: grid;
@@ -38,7 +38,7 @@ const MainGrid = styled('div')`
   }
 `;
 
-const HeraldryFrameContainer = styled('div')`
+const HeraldryFrameContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
@@ -55,7 +55,7 @@ const NameBG = styled(Image)`
   grid-column-end: 6;
 `;
 
-const Name = styled('div')`
+const Name = styled.div`
   position: relative;
   color: white;
   grid-row-start: 2;
@@ -78,7 +78,7 @@ const MainFrame = styled(Image)`
   grid-row-end: 6;
 `;
 
-const Health = styled('div')`
+const Health = styled.div`
   grid-row-start: 5;
   grid-row-end: 6;
   grid-column-start: 4;
@@ -87,7 +87,7 @@ const Health = styled('div')`
   transform: skewX(31.6deg);
 `;
 
-const HealthText = styled('div')`
+const HealthText = styled.div`
   position: absolute;
   text-align: center;
   grid-row-start: 5;
@@ -106,7 +106,7 @@ const HealthText = styled('div')`
   }
 `;
 
-const Statuses = styled('div')`
+const Statuses = styled.div`
    display: flex;
    flex-wrap: wrap;
    justify-content: flex-start;
@@ -117,7 +117,7 @@ const Statuses = styled('div')`
    }
 `;
 
-const Status = styled('div')`
+const Status = styled.div`
   position: relative;
   overflow: hidden;
   border: 1px solid black;
@@ -132,19 +132,19 @@ const Status = styled('div')`
   }
 `;
 
-const StatusTooltip = styled('div')`
+const StatusTooltip = styled.div`
   background: #333;
   border: 1px solid #777;
   padding: 5px;
   color: white;
 `;
 
-const StatusTooltipName = styled('h3')`
+const StatusTooltipName = styled.h3`
   margin: 0;
   margin-bottom: 5px;
 `;
 
-const StatusTooltipDescription = styled('p')`
+const StatusTooltipDescription = styled.p`
   margin: 0;
   padding: 0;
 `;

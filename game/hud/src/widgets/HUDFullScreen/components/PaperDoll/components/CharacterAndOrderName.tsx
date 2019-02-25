@@ -5,9 +5,9 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const Container = styled('div')`
+const Container = styled.div`
   padding-left: 20px;
   height: 100%;
   width: 50%;
@@ -15,7 +15,7 @@ const Container = styled('div')`
   align-items: center;
 `;
 
-const Text = styled('div')`
+const Text = styled.div`
   margin: 0;
   padding: 0;
   font-family: Caudex;

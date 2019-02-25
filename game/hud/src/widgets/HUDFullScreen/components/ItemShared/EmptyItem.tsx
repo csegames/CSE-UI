@@ -5,9 +5,9 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const Item = styled('div')`
+const Item = styled.div`
   width: ${(props: any) => props.width};
   height: ${(props: any) => props.height};
   cursor: pointer;

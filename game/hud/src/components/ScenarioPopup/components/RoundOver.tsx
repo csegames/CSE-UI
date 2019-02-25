@@ -6,36 +6,58 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
-import { slideDownBounceUp, fadeIn, fadeOut, slideUpTitle, slideUpMsg } from '../animations';
+import { styled } from 'linaria/react';
 
 const slideBounceTime = 0.4;
 
-const WaitTillBounce = css`
+const WaitTillBounce = `
   -webkit-animation-delay: ${slideBounceTime - 0.08}s;
   animation-delay: ${slideBounceTime - 0.08}s;
 `;
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   width: 700px;
   height: 370px;
-  -webkit-animation: ${slideDownBounceUp} ${slideBounceTime}s ease-out forwards,
-    shake-hard 0.15s ease 0.3s, ${fadeOut} 0.5s ease 4s forwards;
-  animation: ${slideDownBounceUp} ${slideBounceTime}s ease-out forwards,
-    shake-hard 0.15s ease 0.3s, ${fadeOut} 0.5s ease 4s forwards;
+  -webkit-animation: slideDownBounceUp ${slideBounceTime}s ease-out forwards,
+    shake-hard 0.15s ease 0.3s, fadeOut 0.5s ease 4s forwards;
+  animation: slideDownBounceUp ${slideBounceTime}s ease-out forwards,
+    shake-hard 0.15s ease 0.3s, fadeOut 0.5s ease 4s forwards;
+
+  @keyframes slideDownBounceUp {
+    0%, 10% {
+      top: -300px;
+      opacity: 0;
+    }
+    80% {
+      top: 0px;
+    }
+    100% {
+      top: -20px;
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
 `;
 
-const Frame = styled('div')`
+const Frame = styled.div`
   position: absolute;
   width: 700px;
   height: 370px;
-  background: url(images/scenario/roundend/round-endframe.png) no-repeat;
+  background: url(/hud-new/images/scenario/roundend/round-endframe.png) no-repeat;
   background-size: cover;
   z-index: 10;
 `;
 
-const Background = styled('div')`
+const Background = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,11 +67,11 @@ const Background = styled('div')`
   height: 225px;
   top: 105px;
   left: 90px;
-  background: url(images/scenario/roundend/round-end-bg.png) no-repeat;
+  background: url(/hud-new/images/scenario/roundend/round-end-bg.png) no-repeat;
   z-index: 1;
 `;
 
-const Title = styled('div')`
+const Title = styled.div`
   z-index: 10;
   position: relative;
   font-family: Caudex;
@@ -58,12 +80,23 @@ const Title = styled('div')`
   font-size: 35px;
   letter-spacing: 15px;
   opacity: 0;
-  -webkit-animation: ${slideUpTitle} 0.2s linear forwards;
-  animation: ${slideUpTitle} 0.2s linear forwards;
-  ${WaitTillBounce};
+  -webkit-animation: slideUpTitle 0.2s linear forwards;
+  animation: slideUpTitle 0.2s linear forwards;
+  ${WaitTillBounce}
+
+  @keyframes slideUpTitle {
+    0%, 10% {
+      bottom: 0px;
+      opacity: 0;
+    }
+    100% {
+      bottom: 35px;
+      opacity: 1;
+    }
+  }
 `;
 
-const ResultMessage = styled('div')`
+const ResultMessage = styled.div`
   z-index: 11;
   position: relative;
   opacity: 0;
@@ -72,22 +105,42 @@ const ResultMessage = styled('div')`
   width: 450px;
   font-family: Caudex;
   color: white;
-  -webkit-animation: ${slideUpMsg} 0.2s linear forwards;
-  animation: ${slideUpMsg} 0.2s linear forwards;
-  ${WaitTillBounce};
+  -webkit-animation: slideUpMsg 0.2s linear forwards;
+  animation: slideUpMsg 0.2s linear forwards;
+  ${WaitTillBounce}
+
+  @keyframes slideUpMsg {
+    0%, 10% {
+      bottom: 0px;
+      opacity: 0;
+    }
+    100% {
+      bottom: 30px;
+      opacity: 1;
+    }
+  }
 `;
 
-const BackgroundShadow = styled('div')`
+const BackgroundShadow = styled.div`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 110%;
-  background: url(images/scenario/roundend/gradient-bg.png) no-repeat;
+  background: url(/hud-new/images/scenario/roundend/gradient-bg.png) no-repeat;
   background-size: cover;
   z-index: 0;
-  -webkit-animation: ${fadeIn} 1s ease-in forwards;
-  animation: ${fadeIn} 1s ease-in forwards;
+  -webkit-animation: fadeIn 1s ease-in forwards;
+  animation: fadeIn 1s ease-in forwards;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 export interface RoundOverProps {

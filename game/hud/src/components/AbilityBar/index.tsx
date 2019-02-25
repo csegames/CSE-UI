@@ -7,10 +7,10 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import AbilityButton from './AbilityButton';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   justify-content: center;
 `;

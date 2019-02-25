@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { DrawerCurrentStats } from './Containers/Drawer';
 import ContextMenuContent from './ContextMenu/ContextMenuContent';
@@ -27,12 +27,12 @@ declare const toastr: any;
 
 export const slotDimensions = 62;
 
-const Container = styled('div')`
+const Container = styled.div`
   display: inline-block;
   height: 62px;
 `;
 
-const ItemWrapper = styled('div')`
+const ItemWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
@@ -44,7 +44,7 @@ const ItemWrapper = styled('div')`
   margin: 0 2.5px;
 `;
 
-const ItemImage = styled('img')`
+const ItemImage = styled.img`
   position: absolute;
   top: 0;
   right: 0;
@@ -185,11 +185,11 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
     }
   }
 
-  private onMouseOver = (event: MouseEvent) => {
+  private onMouseOver = (event: React.MouseEvent) => {
     if (!this.mouseOver) {
       this.mouseOver = true;
       if (!this.state.contextMenuVisible && !getDragStore().isDragging) {
-        this.props.showTooltip(this.props.item, event);
+        this.props.showTooltip(this.props.item, event as any);
       }
       const item = this.props.item.item;
       if (!getDragStore().isDragging && item && item.staticDefinition && item.staticDefinition.gearSlotSets.length > 0) {

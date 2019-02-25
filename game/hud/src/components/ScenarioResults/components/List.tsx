@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import Infinite from 'react-infinite';
 import { doesSearchInclude } from '@csegames/camelot-unchained/lib/utils';
 
@@ -18,18 +18,18 @@ import ListItem from './ListItem';
 import TeamScore from './TeamScore';
 import { TeamInterface, TeamPlayer } from './ScenarioResultsContainer';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   height: 100%;
-  background: url(images/scenario-results/bg.png) no-repeat;
+  background: url(/hud-new/images/scenario-results/bg.png) no-repeat;
   background-size: cover;
-  -webkit-mask-image: url(images/scenario-results/ui-mask.png);
+  -webkit-mask-image: url(/hud-new/images/scenario-results/ui-mask.png);
   -webkit-mask-size: cover;
   -webkit-mask-position: bottom;
   -webkit-mask-repeat: no-repeat;
 `;
 
-const ListContainer = styled('div')`
+const ListContainer = styled.div`
   height: 500px;
   overflow: auto;
   &::-webkit-scrollbar {
@@ -44,12 +44,12 @@ const ListContainer = styled('div')`
   }
 `;
 
-// const ListItemsContainer = styled('div')`
+// const ListItemsContainer = styled.div`
 //   padding: 0px 5px 0px 5px;
 //   -webkit-mask-image: linear-gradient(to top, transparent 0%, black 4%);
 // `;
 
-const NoDataText = styled('div')`
+const NoDataText = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -118,7 +118,7 @@ class List extends React.Component<ListProps, ListState> {
     } else if (status.loading) {
       return (
         <Container>
-          <ListContainer innerRef={(r: HTMLDivElement) => this.listRef = r}>
+          <ListContainer ref={(r: HTMLDivElement) => this.listRef = r}>
             <NoDataText>Fetching data for Scenario...</NoDataText>
           </ListContainer>
         </Container>
@@ -126,7 +126,7 @@ class List extends React.Component<ListProps, ListState> {
     } else if (this.props.scenarioID !== '' && status.lastError !== 'OK') {
       return (
         <Container>
-          <ListContainer innerRef={(r: HTMLDivElement) => this.listRef = r}>
+          <ListContainer ref={(r: HTMLDivElement) => this.listRef = r}>
             <NoDataText>There was an error fetching data about a recent Scenario...</NoDataText>
             <NoDataText>{status.lastError}</NoDataText>
           </ListContainer>
@@ -135,7 +135,7 @@ class List extends React.Component<ListProps, ListState> {
     } else {
       return (
         <Container>
-          <ListContainer innerRef={(r: HTMLDivElement) => this.listRef = r}>
+          <ListContainer ref={(r: HTMLDivElement) => this.listRef = r}>
             <NoDataText>No data for any recent Scenarios</NoDataText>
           </ListContainer>
         </Container>

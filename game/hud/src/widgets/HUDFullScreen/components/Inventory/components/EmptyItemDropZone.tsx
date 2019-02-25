@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import EmptyItem, { EmptyItemProps } from '../../ItemShared/EmptyItem';
 import { ContainerPermissionDef } from '../../ItemShared/InventoryBase';
@@ -22,11 +22,11 @@ import {
 } from '../../../lib/utils';
 import { SlotType, SlotIndexInterface } from '../../../lib/itemInterfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
 `;
 
-const SlotOverlay = styled('div')`
+const SlotOverlay = styled.div`
   position: absolute;
   top: 2px;
   left: 2px;

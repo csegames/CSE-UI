@@ -1,17 +1,23 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { States, DataMapper } from './types';
 import ObjectDisplay from '.';
 
-const Container = styled('div')`
+const Container = styled.div`
 `;
 
-const Indicator = styled('span')`
+const Indicator = styled.span`
   margin-right: 4px;
 `;
 
-const Title = styled('div')`
+const Title = styled.div`
   font-size: 1.1em;
   padding: 5px;
   cursor: pointer;
@@ -26,34 +32,22 @@ const Title = styled('div')`
   }
 `;
 
-const Content = styled('div')(
-  {
-    '::-webkit-scrollbar': {
-      width: '5px',
-      backgroundColor: '#111',
-    },
-    '::-webkit-scrollbar-track': {
-      backgroundColor: 'transparent',
-    },
-    '::-webkit-scrollbar-thumb': {
-      backgroundColor: '#555',
-      borderRadius: '5px',
-    },
+const Content = styled.div`
+  ::-webkit-scrollbar: {
+    width: 5px;
+    background-color: #111;
   },
-  (props: { collapsed: boolean }) => {
-    if (props.collapsed) {
-      return {
-        display: 'none',
-      };
-    } else {
-      return {
-        display: 'block',
-      };
-    }
+  ::-webkit-scrollbar-track: {
+    background-color: transparent;
   },
-);
+  ::-webkit-scrollbar-thumb: {
+    background-color: #555;
+    border-radius: 5px;
+  }
+  display: ${(props: { collapsed: boolean }) => props.collapsed ? 'block' : 'none'}
+`;
 
-const Item = styled('div')`
+const Item = styled.div`
   border-bottom: 1px solid #666;
   background: #1a1a1a;
   > div {
@@ -67,7 +61,7 @@ const Item = styled('div')`
   }
 `;
 
-const Count = styled('span')`
+const Count = styled.span`
   float: right;
   font-size: .9em;
   &:before {
@@ -78,7 +72,7 @@ const Count = styled('span')`
   }
 `;
 
-const Warn = styled('span')`
+const Warn = styled.span`
   color: orange;
   margin: 0px 5px;
 `;
@@ -121,11 +115,8 @@ class CollapsibleList extends React.Component<Props, { collapsed: boolean }> {
     }
 
     return (
-      <Container collapsed={this.state.collapsed}>
-        <Title
-          onClick={this.toggleCollapsed}
-          collapsed={this.state.collapsed}
-        >
+      <Container>
+        <Title onClick={this.toggleCollapsed}>
           <Indicator>{this.state.collapsed ? '+' : '-'}</Indicator>
           {this.props.keyName.toTitleCase()}
           {warnings ? <Warn><i className='fas fa-exclamation-triangle'></i></Warn> : null }

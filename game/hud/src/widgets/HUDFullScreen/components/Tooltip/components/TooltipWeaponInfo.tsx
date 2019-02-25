@@ -7,15 +7,13 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
-import { utils } from '@csegames/camelot-unchained';
+import { styled } from 'linaria/react';
 
 import {
   shortenedWeaponStatWords,
   weaponStatUnits,
   MORE_THAN_STAT_COLOR,
   LESS_THAN_STAT_COLOR,
-  TOOLTIP_PADDING,
 } from '../../../lib/constants';
 import { prettifyText } from '../../../lib/utils';
 import {
@@ -23,46 +21,46 @@ import {
   EquippedItem,
 } from 'gql/interfaces';
 
-const Container = styled('div')`
-  padding: ${TOOLTIP_PADDING};
+const Container = styled.div`
+  padding: 10px;
   column-count: 2;
   color: #C3C3C3;
 `;
 
-const StatContainer = styled('div')`
+const StatContainer = styled.div`
   width: 100%;
   -webkit-column-break-inside: avoid;
 `;
 
-const WeaponStatItem = styled('div')`
+const WeaponStatItem = styled.div`
   display: flex;
   justify-content: space-between;
   white-space: nowrap;
   font-size: 12px;
 `;
 
-const StatName = styled('div')`
+const StatName = styled.div`
   display: flex;
   margin-right: 5px;
 `;
 
-const StatValueContainer = styled('div')`
+const StatValueContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   min-width: 50px;
 `;
 
-const StatValue = styled('div')`
+const StatValue = styled.div`
   color: ${(props: any) => props.color ? props.color : '#C3C3C3'};
 `;
 
-const UnitText = styled('div')`
+const UnitText = styled.div`
   display: flex;
   align-items: flex-end;
   font-size: 0.85em;
   height: 18px;
   margin-left: 4px;
-  color: ${utils.darkenColor('#C3C3C3', 40)};
+  color: #7d7d7d;
 `;
 
 export interface TooltipWeaponInfoState {

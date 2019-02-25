@@ -6,10 +6,11 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { TextInput } from 'UI/TextInput';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
   flex: 1 1 auto;
@@ -29,20 +30,20 @@ const InputStyle = css`
   display: inline-block;
   padding: 0 5px;
   border: 1px solid transparent;
-  border-image: url(images/inventory/border-brown-texture.png);
+  border-image: url(/hud-new/images/inventory/border-brown-texture.png);
   border-image-slice: 1;
   border-image-repeat:round;
-  background: url(images/inventory/filter-input-texture.png), rgba(10,10,10,1);
+  background: url(/hud-new/images/inventory/filter-input-texture.png), rgba(10,10,10,1);
   transition: border 0.30s ease-in-out;
   &::-webkit-input-placeholder {
     color: #43382e;
   }
   &:focus {
     border: 1px solid transparent;
-    border-image: url(images/inventory/border-texture.png);
+    border-image: url(/hud-new/images/inventory/border-texture.png);
     border-image-slice: 1;
     border-image-repeat:round;
-    background: url(images/inventory/filter-input-texture.png), rgba(10,10,10,1);
+    background: url(/hud-new/images/inventory/filter-input-texture.png), rgba(10,10,10,1);
     border: 1px solid #847963;
     outline: none;
   }

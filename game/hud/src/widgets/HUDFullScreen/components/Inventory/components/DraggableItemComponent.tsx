@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import ItemStack from '../../ItemShared/ItemStack';
 import CraftingItem from './CraftingItem';
@@ -20,13 +20,13 @@ import { InventorySlotItemDef, CraftingSlotItemDef, SlotType } from '../../../li
 import { getInventoryDataTransfer, isContainerSlotVerified, getContainerColor, getContainerInfo } from '../../../lib/utils';
 import { ContainerDefStat_Single, GearSlotDefRef } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-export const StandardSlot = styled('img')`
+export const StandardSlot = styled.img`
   vertical-align: baseline;
   background-size: cover;
   width: 54px;
@@ -36,7 +36,7 @@ export const StandardSlot = styled('img')`
   cursor: pointer;
 `;
 
-export const SlotOverlay = styled('div')`
+export const SlotOverlay = styled.div`
   position: absolute;
   top: 2px;
   left: 2px;
@@ -54,7 +54,7 @@ export const SlotOverlay = styled('div')`
   };
 `;
 
-const ContainerOverlay = styled('div')`
+const ContainerOverlay = styled.div`
   position: absolute;
   top: 2px;
   left: 2px;
@@ -63,7 +63,7 @@ const ContainerOverlay = styled('div')`
   background: linear-gradient(to top, ${(props: any) => props.backgroundColor}, transparent 65%);
 `;
 
-const FirstContainerItem = styled('div')`
+const FirstContainerItem = styled.div`
   position: absolute;
   right: 3px;
   bottom: 4px;

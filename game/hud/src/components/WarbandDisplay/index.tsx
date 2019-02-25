@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import gql from 'graphql-tag';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { isEqual } from 'lodash';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import {
@@ -33,7 +33,7 @@ import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
 import { WarbandNotificationProvider } from './WarbandNotificationProvider';
 import { BattleGroupNotificationProvider } from '../BattleGroups/BattleGroupNotificationProvider';
 
-const Container = styled('div')`
+const Container = styled.div`
   user-select: none;
   pointer-events: none;
 `;

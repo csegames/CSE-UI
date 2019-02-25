@@ -5,11 +5,12 @@
  */
 
 import * as React from 'react';
-import styled, { cx } from 'react-emotion';
+import { styled } from 'linaria/react';
+import { cx } from 'linaria';
 import * as CONFIG from './config';
 import * as CSS from '../../lib/css-helper';
 
-const Outer = styled('div')`
+const Outer = styled.div`
   ${CSS.DONT_GROW} ${CSS.IS_ROW}
   margin-bottom: 5px;
   padding: 3px;
@@ -17,15 +18,14 @@ const Outer = styled('div')`
   ${CSS.ALLOW_MOUSE}
 `;
 
-const Border = styled('div')`
+const Border = styled.div`
   ${CSS.EXPAND_TO_FIT} ${CSS.IS_ROW}
   border: 1px solid ${CONFIG.BOX_BORDER_INNER_COLOR};
   position: relative;
   &::before {
-    /* Border texture */
     position: absolute;
     content: '';
-    background-image: url(images/settings/settings-permissions-texture.png);
+    background-image: url(/hud-new/images/settings/settings-permissions-texture.png);
     background-size: contain;
     width: calc(100% + 2px);
     height: calc(100% + 2px);
@@ -34,7 +34,6 @@ const Border = styled('div')`
     ${CSS.NO_MOUSE}
   }
   &::after {
-    /* Inset Shadow from edge of box */
     position: absolute;
     content: '';
     width: calc(100% + 6px);
@@ -46,21 +45,21 @@ const Border = styled('div')`
   }
 `;
 
-const Inner = styled('div')`
+const Inner = styled.div`
   ${CSS.EXPAND_WITH_WRAP} ${CSS.IS_ROW}
   background-color: ${CONFIG.BOX_BACKGROUND_COLOR};
   color: ${CONFIG.HIGHLIGHTED_TEXT_COLOR};
   font-size: 15px;
   padding: 5px;
   position: relative;
-  &.no-pad { padding: 0; }
-  &.uppercase { text-transform: uppercase; }
-  ${(props: any) => {
-    return `
-      ${props.justify ? `justify-content: ${props.justify};` : ''}
-      ${props.align ? `text-align: ${props.align};` : ''}
-    `;
-  }}
+  &.no-pad {
+    padding: 0;
+  }
+  &.uppercase {
+    text-transform: uppercase;
+  }
+  justify-content: ${(props: any) => props.justify ? props.justify : ''};
+  text-align: ${(props: any) => props.align ? props.align : ''};
 `;
 
 interface BoxProps {

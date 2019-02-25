@@ -5,9 +5,9 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const CompassTooltipContainer: React.SFC = styled('div')`
+const CompassTooltipContainer: React.SFC = styled.div`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -24,7 +24,7 @@ const CompassTooltipContainer: React.SFC = styled('div')`
   align-items: flex-start;
 `;
 
-const CompassTooltipInner: React.SFC = styled('div')`
+const CompassTooltipInner: React.SFC = styled.div`
   height: auto;
   border: 1px solid rgba(255,255,255,0.3);
   background: rgba(0,0,0,0.2);
@@ -36,7 +36,7 @@ const CompassTooltipInner: React.SFC = styled('div')`
   color: white;
 `;
 
-const CompassTooltipTitle = styled('div')`
+const CompassTooltipTitle = styled.div`
   font-size: 14px;
   padding-top: 10px;
   padding-left: 10px;
@@ -47,7 +47,7 @@ const CompassTooltipTitle = styled('div')`
   text-shadow: 0 0 2px black;
 `;
 
-const CompassTooltipSubtitle = styled('div')`
+const CompassTooltipSubtitle = styled.div`
   font-size: 12px;
   padding-left: 10px;
   padding-right: 10px;
@@ -57,7 +57,7 @@ const CompassTooltipSubtitle = styled('div')`
   text-shadow: 0 0 2px black;
 `;
 
-const CompassTooltipDistance = styled('div')`
+const CompassTooltipDistance = styled.div`
   font-size: 12px;
   padding: 10px;
   padding-top: 0px;

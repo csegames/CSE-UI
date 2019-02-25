@@ -6,13 +6,13 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import DistanceText from './DistanceText';
 import { PlayerFrame } from './PlayerFrame';
 import { NonPlayerFrame } from './NonPlayerFrame';
 
-const Container = styled('div')`
+const Container = styled.div`
   width: 100%;
   height: 100%;
 `;

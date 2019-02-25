@@ -5,7 +5,8 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { CloseButton } from 'UI/CloseButton';
 import { MessageOfTheDay, CUQuery } from 'gql/interfaces';
@@ -20,11 +21,11 @@ const query = {
   },
 };
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
 `;
 
-const InnerContainer = styled('div')`
+const InnerContainer = styled.div`
   position: relative;
   pointer-events: all;
   width: 800px;
@@ -33,15 +34,15 @@ const InnerContainer = styled('div')`
   margin:0 auto;
   background-color: gray;
   color: white;
-  background: url(images/motd/motd-bg-grey.png) no-repeat;
+  background: url(/hud-new/images/motd/motd-bg-grey.png) no-repeat;
   z-index: 1;
   border: 1px solid #6e6c6c;
   box-shadow: 0 0 30px 0 #000;
 `;
 
-const MOTDTitle = styled('div')`
+const MOTDTitle = styled.div`
   text-align: center;
-  background: url(images/motd/motd-top-title.png) center top no-repeat;
+  background: url(/hud-new/images/motd/motd-top-title.png) center top no-repeat;
   margin: 0 auto -9px auto;
   position: relative;
   z-index: 999;
@@ -57,18 +58,18 @@ const MOTDTitle = styled('div')`
   }
 `;
 
-const MOTDCorner = styled('div')`
+const MOTDCorner = styled.div`
   position: absolute;
   min-width: 800px;
   min-height: 400px;
   background:
-  url(images/motd/motd-ornament-top-left.png) left 0 top 0 no-repeat,
-  url(images/motd/motd-ornament-top-right.png) right 0 top 0 no-repeat,
-  url(images/motd/motd-ornament-bottom-left.png) left 0 bottom 0 no-repeat,
-  url(images/motd/motd-ornament-bottom-right.png) right 0 bottom 0 no-repeat;
+  url(/hud-new/images/motd/motd-ornament-top-left.png) left 0 top 0 no-repeat,
+  url(/hud-new/images/motd/motd-ornament-top-right.png) right 0 top 0 no-repeat,
+  url(/hud-new/images/motd/motd-ornament-bottom-left.png) left 0 bottom 0 no-repeat,
+  url(/hud-new/images/motd/motd-ornament-bottom-right.png) right 0 bottom 0 no-repeat;
   z-index: 1;
 `;
-const MOTDMotdTitle = styled('div')`
+const MOTDMotdTitle = styled.div`
   height: 40px;
   h4 {
     color: #cebd9d;
@@ -76,7 +77,7 @@ const MOTDMotdTitle = styled('div')`
     margin-left: 20px;
   }
 `;
-const MOTDContent = styled('div')`
+const MOTDContent = styled.div`
   height: 284px;
   margin-top: 0px;
   max-height: 295px;
@@ -91,7 +92,7 @@ const MOTDContent = styled('div')`
   position: absolute;
 `;
 
-const MOTDFooter = styled('div')`
+const MOTDFooter = styled.div`
   position: absolute;
   min-width: 800px;
   height: 55px;
@@ -102,9 +103,9 @@ const MOTDFooter = styled('div')`
   z-index: 11;
 `;
 
-const MOTDButton = styled('div')`
+const MOTDButton = styled.div`
   &.btn {
-    background: url(images/motd/button-off.png) no-repeat;
+    background: url(/hud-new/images/motd/button-off.png) no-repeat;
     width: 95px;
     height: 30px;;
     border: none;
@@ -117,13 +118,13 @@ const MOTDButton = styled('div')`
     text-align: center;
     line-height: 30px;
     &:hover {
-      background: url(images/motd/button-on.png) no-repeat;
+      background: url(/hud-new/images/motd/button-on.png) no-repeat;
       color: #fff;
     }
   }
 `;
 
-const MOTDFooterBorder = styled('div')`
+const MOTDFooterBorder = styled.div`
   position: absolute;
   border: 1px solid #2e2b28;
   margin: 7px 10px 0;
@@ -133,7 +134,7 @@ const MOTDFooterBorder = styled('div')`
   z-index: 3;
 `;
 
-const MOTDFooterOuter = styled('div')`
+const MOTDFooterOuter = styled.div`
   position: absolute;
   z-index: 4;
   display: flex;
@@ -141,14 +142,14 @@ const MOTDFooterOuter = styled('div')`
   width: 100%;
 `;
 
-const MOTDFooterLeft = styled('div')`
-  background: url(images/motd/motd-botnav-left-ornament.png) no-repeat;
+const MOTDFooterLeft = styled.div`
+  background: url(/hud-new/images/motd/motd-botnav-left-ornament.png) no-repeat;
   height: 55px;
   width: 75px;
 `;
 
-const MOTDFooterRight = styled('div')`
-  background: url(images/motd/motd-botnav-right-ornament.png) no-repeat;
+const MOTDFooterRight = styled.div`
+  background: url(/hud-new/images/motd/motd-botnav-right-ornament.png) no-repeat;
   height: 55px;
   width: 75px;
 `;

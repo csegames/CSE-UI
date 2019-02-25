@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { InventorySlot } from './InventorySlot';
 import { DrawerCurrentStats } from './Containers/Drawer';
@@ -25,11 +25,11 @@ import {
 
 declare const toastr: any;
 
-const Container = styled('div')`
+const Container = styled.div`
   margin: auto;
 `;
 
-const Row = styled('div')`
+const Row = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 5px;

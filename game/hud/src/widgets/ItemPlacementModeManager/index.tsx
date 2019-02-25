@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { webAPI } from '@csegames/camelot-unchained';
 import { Dialog } from 'UI/Dialog';
 
@@ -19,17 +19,17 @@ const iconClass = {
   reset: 'reset fa fa-undo',
 };
 
-const Container = styled('div')`
+const Container = styled.div`
   pointer-events: all;
   display: flex;
   flex-direction: column;
-  background: url(images/settings/bag-bg-grey.png);
+  background: url(/hud-new/images/settings/bag-bg-grey.png);
   background-size: cover;
   width: 100%;
   height: 100%;
 `;
 
-const TopActionContainer = styled('div')`
+const TopActionContainer = styled.div`
   padding-top: 15px;
   flex: 1;
   display: flex;
@@ -37,14 +37,14 @@ const TopActionContainer = styled('div')`
   justify-content: center;
 `;
 
-const BottomActionContainer = styled('div')`
+const BottomActionContainer = styled.div`
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-const ItemActionContainer = styled('div')`
+const ItemActionContainer = styled.div`
   margin-top: 10px;
   pointer-events: all;
   cursor: pointer;
@@ -61,14 +61,14 @@ const ItemActionContainer = styled('div')`
   }
 `;
 
-const ItemActionText = styled('div')`
+const ItemActionText = styled.div`
   font-size: 9px;
 `;
 
-const MenuButton = styled('div')`
+const MenuButton = styled.div`
   pointer-events: all;
   position: relative;
-  background: url(images/gamemenu/button-big-off.png) no-repeat;
+  background: url(/hud-new/images/gamemenu/button-big-off.png) no-repeat;
   background-size: 100% 100%;
   height: 30px;
   width: 80px;
@@ -85,11 +85,11 @@ const MenuButton = styled('div')`
   margin: 0 5px;
   &:hover {
     color: rgb(204,204,204);
-    background: url(images/gamemenu/button-big-on.png) no-repeat;
+    background: url(/hud-new/images/gamemenu/button-big-on.png) no-repeat;
     &::before {
       content: '';
       position: absolute;
-      background-image: url(images/gamemenu/button-glow.png);
+      background-image: url(/hud-new/images/gamemenu/button-glow.png);
       top: 0;
       right: 0;
       bottom: 0;
@@ -99,7 +99,7 @@ const MenuButton = styled('div')`
   }
 `;
 
-const Divider = styled('div')`
+const Divider = styled.div`
   margin: 0 5px;
 `;
 

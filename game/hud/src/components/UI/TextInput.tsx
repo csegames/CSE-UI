@@ -5,10 +5,10 @@
 */
 
 import * as React from 'react';
-import { css } from 'emotion';
-import styled, { cx } from 'react-emotion';
+import { styled } from 'linaria/react';
+import { cx, css } from 'linaria';
 
-const Wrapper = styled('div')`
+const Wrapper = styled.div`
   display: inline-block;
   position: relative;
 `;
@@ -25,7 +25,7 @@ const inputStyle = css`
   padding: 15px 10px;
   border: 1px #2c2c2c solid;
   color: #8f8f8f;
-  -webkit-mask-image: url(images/button-mask.png);
+  -webkit-mask-image: url(/hud-new/images/button-mask.png);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: cover;
   background: #2a2a2a;
@@ -45,7 +45,7 @@ const inputStyle = css`
   }
 `;
 
-const ClickDiv = styled('div')`
+const ClickDiv = styled.div`
   display: inline-block;
   position: absolute;
   left: 0;

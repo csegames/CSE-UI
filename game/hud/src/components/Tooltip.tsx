@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import styled, { keyframes } from 'react-emotion';
+import { styled } from 'linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 import {
   onShowTooltip,
@@ -17,32 +17,32 @@ import {
 } from 'actions/tooltips';
 import { getViewportSize } from 'lib/viewport';
 
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-const Container = styled('div')`
+const Container = styled.div`
   display: inline-block;
   position: relative;
   pointer-events: none;
 `;
 
-const View = styled('div')`
+const View = styled.div`
   position: fixed;
   z-index: 9999;
   &.should-animate {
     opacity: 0;
-    animation: ${fadeIn} 0.15s forwards;
-    -webkit-animation: ${fadeIn} 0.15s forwards;
+    animation: fadeIn 0.15s forwards;
+    -webkit-animation: fadeIn 0.15s forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 `;
 
-const DefaultTooltipWrapper = styled('div')`
+const DefaultTooltipWrapper = styled.div`
   pointer-events: none;
   position: relative;
   display: flex;
@@ -51,9 +51,9 @@ const DefaultTooltipWrapper = styled('div')`
   border-style: solid;
   border-image: linear-gradient(to bottom, ${(props: {color: string}) => props.color}, transparent);
   border-image-slice: 1;
-  background: url(images/item-tooltips/bg.png);
+  background: url(/hud-new/images/item-tooltips/bg.png);
   background-size: cover;
-  -webkit-mask-image: url(images/item-tooltips/ui-mask.png);
+  -webkit-mask-image: url(/hud-new/images/item-tooltips/ui-mask.png);
   -webkit-mask-size: cover;
   color: #ABABAB;
   width: auto;
@@ -63,7 +63,7 @@ const DefaultTooltipWrapper = styled('div')`
     position: absolute;
     top: 0px;
     left: 0px;
-    background: url(images/item-tooltips/ornament_left.png);
+    background: url(/hud-new/images/item-tooltips/ornament_left.png);
     width: 35px;
     height: 35px;
   }
@@ -72,14 +72,14 @@ const DefaultTooltipWrapper = styled('div')`
     position: absolute;
     top: 0px;
     right: 0px;
-    background: url(images/item-tooltips/ornament_right.png);
+    background: url(/hud-new/images/item-tooltips/ornament_right.png);
     width: 35px;
     height: 35px;
   }
   padding: 5px;
 `;
 
-const HeaderOverlay = styled('div')`
+const HeaderOverlay = styled.div`
   position: absolute;
   top: 0;
   right: 0;
@@ -96,7 +96,7 @@ const HeaderOverlay = styled('div')`
     left: 0;
     right: 0;
     bottom: 0;
-    background: url(images/item-tooltips/title_viel.png);
+    background: url(/hud-new/images/item-tooltips/title_viel.png);
     background-size: cover;
     background-repeat: no-repeat;
   }
@@ -146,7 +146,7 @@ export class TooltipView extends React.Component<{}, TooltipState> {
             return (
             <Container id='tooltip-view' className={customStyles.Tooltip}>
               <View
-                innerRef={this.handleRef}
+                ref={this.handleRef}
                 className={`${customStyles.tooltip} ${this.state.shouldAnimate ? 'should-animate' : ''}`}>
                   {useStandardWrapper ? (
                     <DefaultTooltipWrapper color={color}>

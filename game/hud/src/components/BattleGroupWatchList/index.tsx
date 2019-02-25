@@ -6,7 +6,8 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { isEqual, isEmpty } from 'lodash';
 import gql from 'graphql-tag';
 import { CollapsingList } from '@csegames/camelot-unchained/lib/components';
@@ -66,7 +67,7 @@ export interface BattleGroupWatchListStyles {
   listHeader: string;
 }
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   user-select: none;
   pointer-events: all;
@@ -80,7 +81,7 @@ const Container = styled('div')`
       rgba(0, 0, 0, 0.5) 70%,
       rgba(0, 0, 0, 0.9) 90%
     ),
-    url(images/battlegroups/battlegroup-bg.png);
+    url(/hud-new/images/battlegroups/battlegroup-bg.png);
   box-shadow: inset 0 -5px 50px 7px rgba(0,0,0,0.8);
   border-image: linear-gradient(to bottom, rgba(65, 65, 65, 1), rgba(0, 0, 0, 0));
   border-image-slice: 1;
@@ -88,40 +89,40 @@ const Container = styled('div')`
   border-style: solid;
 `;
 
-const TopLeftOrnament = styled('div')`
+const TopLeftOrnament = styled.div`
   position: absolute;
   top: -1px;
   left: -2px;
   width: 43px;
   height: 43px;
-  background: url(images/battlegroups/ornament-top-left.png) no-repeat;
+  background: url(/hud-new/images/battlegroups/ornament-top-left.png) no-repeat;
 `;
 
-const TopRightOrnament = styled('div')`
+const TopRightOrnament = styled.div`
   position: absolute;
   top: -1px;
   right: -2px;
   width: 43px;
   height: 43px;
-  background: url(images/battlegroups/ornament-top-right.png) no-repeat;
+  background: url(/hud-new/images/battlegroups/ornament-top-right.png) no-repeat;
 `;
 
-const BottomLeftOrnament = styled('div')`
+const BottomLeftOrnament = styled.div`
   position: absolute;
   bottom: -1px;
   left: -2px;
   width: 43px;
   height: 43px;
-  background: url(images/battlegroups/ornament-bottom-left.png) no-repeat;
+  background: url(/hud-new/images/battlegroups/ornament-bottom-left.png) no-repeat;
 `;
 
-const BottomRightOrnament = styled('div')`
+const BottomRightOrnament = styled.div`
   position: absolute;
   bottom: -1px;
   right: -2px;
   width: 43px;
   height: 43px;
-  background: url(images/battlegroups/ornament-bottom-right.png) no-repeat;
+  background: url(/hud-new/images/battlegroups/ornament-bottom-right.png) no-repeat;
 `;
 
 export const defaultBattleGroupWatchListStyles: BattleGroupWatchListStyles = {

@@ -7,12 +7,12 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { AbilityButtonInfo } from '../../AbilityBar/AbilityButton/AbilityButtonView';
 import AbilityQueueItem from './AbilityQueueItem';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   margin-right: ${(props: any) => props.marginRight}px;
   opacity: 0.9;

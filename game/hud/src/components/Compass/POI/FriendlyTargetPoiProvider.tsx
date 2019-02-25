@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import {
   CompassPOIProviderProps,
   CompassPOI,
@@ -16,7 +16,7 @@ import {
 import { updateCompassTooltip, hideCompassTooltip, showCompassTooltip } from 'actions/compassTooltip';
 import { CompassTooltipData } from 'components/CompassTooltip';
 
-const FriendlyTargetPoi = styled('div')`
+const FriendlyTargetPoi = styled.div`
   position: absolute;
   width: 36px;
   height: 36px;
@@ -29,7 +29,7 @@ const FriendlyTargetPoi = styled('div')`
   user-select: none;
 `;
 
-const FriendlyTargetPoiCircle = styled('div')`
+const FriendlyTargetPoiCircle = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 19px;
@@ -41,7 +41,7 @@ const FriendlyTargetPoiCircle = styled('div')`
   justify-content: center;
 `;
 
-const StyledSvg = styled('svg')`
+const StyledSvg = styled.svg`
   fill: rgba(255,255,255,0.8);
   text-shadow: none;
   stroke: rgba(255,255,255,0.8);

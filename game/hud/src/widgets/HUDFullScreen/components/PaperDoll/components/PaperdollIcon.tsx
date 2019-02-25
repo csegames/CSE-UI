@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { getPaperDollIcon, getPaperDollBaseIcon } from '../../../lib/utils';
 
@@ -22,7 +22,7 @@ const query = `
   }
 `;
 
-const Icon = styled('img')`
+const Icon = styled.img`
   position: absolute;
   right: 0;
   left: 0;
@@ -33,7 +33,7 @@ const Icon = styled('img')`
   height: 80%;
 `;
 
-const Base = styled('img')`
+const Base = styled.img`
   position: absolute;
   right: 0px;
   left: 0px;

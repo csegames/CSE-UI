@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import {
   CompassPOIProviderProps,
   CompassPOIPartial,
@@ -27,11 +27,11 @@ const cardinalStyle = `
   user-select: none;
 `;
 
-const Cardinal = styled('div')`
+const Cardinal = styled.div`
   ${cardinalStyle}
 `;
 
-const CardinalDot = styled('div')`
+const CardinalDot = styled.div`
   ${cardinalStyle}
   top: -0.25em;
 `;

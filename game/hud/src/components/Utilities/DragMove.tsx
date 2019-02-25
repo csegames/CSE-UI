@@ -210,17 +210,6 @@ export function DragMove(props: DragMoveProps) {
         });
       }
     },
-    // to work with emotion styled components
-    innerRef: (r: any) => {
-      if (!r || !r.getBoundingClientRect) return;
-      const elBounds = (r as HTMLElement).getBoundingClientRect();
-      if (state.elBounds.width !== elBounds.width || state.elBounds.height !== elBounds.height) {
-        setState({
-          ...state,
-          elBounds,
-        });
-      }
-    },
   });
   return newElement;
 }

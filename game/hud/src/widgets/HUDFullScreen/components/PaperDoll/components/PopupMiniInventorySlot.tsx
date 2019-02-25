@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import eventNames, { EquipItemPayload } from '../../../lib/eventNames';
 import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';
@@ -22,7 +22,7 @@ export const itemDimensions = {
   width: 70,
 };
 
-const Slot = styled('div')`
+const Slot = styled.div`
   pointer-events: all;
   width: ${itemDimensions.width}px;
   height: ${itemDimensions.height}px;

@@ -4,13 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-export const LoadingContainer = styled('div')`
+export const LoadingContainer = styled.div`
   position: relative;
 `;
 
-export const InnerContainer = styled('div')`
+export const InnerContainer = styled.div`
   position: relative;
   pointer-events: all;
   width: 1000px;
@@ -19,15 +19,15 @@ export const InnerContainer = styled('div')`
   margin:0 auto;
   background-color: gray;
   color: white;
-  background: url(images/progression/progress-bg-grey.png) no-repeat;
+  background: url(/hud-new/images/progression/progress-bg-grey.png) no-repeat;
   z-index: 1;
   border: 1px solid #6e6c6c;
   box-shadow: 0 0 30px 0 #000;
 `;
 
-export const ProgressionTitle = styled('div')`
+export const ProgressionTitle = styled.div`
   text-align: center;
-  background: url(images/progression/progress-top-title.png) center top no-repeat;
+  background: url(/hud-new/images/progression/progress-top-title.png) center top no-repeat;
   margin: 0 auto -9px auto;
   position: relative;
   z-index: 999;
@@ -43,19 +43,19 @@ export const ProgressionTitle = styled('div')`
   }
 `;
 
-export const ProgressionCorner = styled('div')`
+export const ProgressionCorner = styled.div`
   position: absolute;
   min-width: 1000px;
   min-height: 600px;
   background:
-  url(images/progression/progress-ornament-top-left.png) left 0 top 0 no-repeat,
-  url(images/progression/progress-ornament-top-right.png) right 0 top 0 no-repeat,
-  url(images/progression/progress-ornament-bottom-left.png) left 0 bottom 0 no-repeat,
-  url(images/progression/progress-ornament-bottom-right.png) right 0 bottom 0 no-repeat;
+  url(/hud-new/images/progression/progress-ornament-top-left.png) left 0 top 0 no-repeat,
+  url(/hud-new/images/progression/progress-ornament-top-right.png) right 0 top 0 no-repeat,
+  url(/hud-new/images/progression/progress-ornament-bottom-left.png) left 0 bottom 0 no-repeat,
+  url(/hud-new/images/progression/progress-ornament-bottom-right.png) right 0 bottom 0 no-repeat;
   z-index: 1;
 `;
 
-export const ProgressionContent = styled('div')`
+export const ProgressionContent = styled.div`
   height: 494px;
   margin-top: 30px;
   max-height: 494px;
@@ -274,12 +274,12 @@ export const ProgressionContent = styled('div')`
 }
 `;
 
-export const ProgressionLoading = styled('div')`
+export const ProgressionLoading = styled.div`
   text-align: center;
   margin-top: 130px;
 `;
 
-export const ProgressionFooter = styled('div')`
+export const ProgressionFooter = styled.div`
   position: absolute;
   min-width: 1000px;
   height: 55px;

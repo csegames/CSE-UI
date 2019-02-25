@@ -5,13 +5,12 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { Button } from 'UI/Button';
 import { ScenarioMatch, scenarioIsAvailable, pollNow } from 'services/session/scenarioQueue';
 
-export const SCENARIO_FONT = `font-family: 'Caudex', serif;`;
-
-const ScenarioContainer = styled('div')`
+const ScenarioContainer = styled.div`
   display: block;
   position: relative;
   min-height: 112px;
@@ -26,8 +25,8 @@ const ScenarioContainer = styled('div')`
   box-sizing: border-box!important;
 `;
 
-const ScenarioTitle = styled('div')`
-  ${SCENARIO_FONT}
+const ScenarioTitle = styled.div`
+  font-family: 'Caudex', serif;
   position: absolute;
   top: 20px;
   left: 160px;
@@ -42,7 +41,7 @@ const ScenarioTitle = styled('div')`
   height: 1em;
 `;
 
-const ScenarioStatus = styled('div')`
+const ScenarioStatus = styled.div`
   position: absolute;
   top: 55px;
   left: 160px;
@@ -55,7 +54,7 @@ const ScenarioStatus = styled('div')`
   white-space: pre;
 `;
 
-const ScenarioButton = css(`
+const ScenarioButton = css`
   position: absolute;
   top: 30px;
   right: 42px;
@@ -63,7 +62,7 @@ const ScenarioButton = css(`
   height: 42px;
   line-height: 42px;
   font-size: 12px;
-`);
+`;
 
 interface ScenarioProps {
   style?: any;
@@ -87,11 +86,6 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
   public render() {
     const { scenario } = this.props;
     const { joinMessage } = this.state;
-    const bg = css(`
-      background-image:
-        linear-gradient(to right, #0000, #000 225px),
-        url(${scenario.icon});
-    `);
     let status;
     let needed;
     if (needed = scenarioIsAvailable(scenario)) {
@@ -101,10 +95,15 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
       status = 'Scenario Not Available';
     }
     return (
-      <ScenarioContainer css={bg} data-id='scenario-container' style={this.props.style}>
+      <ScenarioContainer
+        data-id='scenario-container'
+        style={{
+          backgroundImage: `linear-gradient(to right, #0000, #000 225px), url(${scenario.icon})`,
+          ...this.props.style,
+        }}>
         <ScenarioTitle>{scenario.name}</ScenarioTitle>
         <ScenarioStatus>{status}</ScenarioStatus>
-        <Button css={ScenarioButton} onClick={scenario.isQueued ? this.leaveQueue : this.joinQueue}>
+        <Button className={ScenarioButton} onClick={scenario.isQueued ? this.leaveQueue : this.joinQueue}>
           {joinMessage ? joinMessage : scenario.isQueued ? 'Leave Queue' : 'Find Match'}
         </Button>
       </ScenarioContainer>

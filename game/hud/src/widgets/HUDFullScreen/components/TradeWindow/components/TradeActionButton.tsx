@@ -6,13 +6,13 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
 `;
 
-const ActionButton = styled('div')`
+const ActionButton = styled.div`
   pointer-events: ${(props: any) => props.disabled ? 'none' : 'all'};
   cursor: ${(props: any) => props.disabled ? 'not-allowed' : 'pointer'};
   position: relative;
@@ -45,7 +45,7 @@ const ActionButton = styled('div')`
   }
 `;
 
-const ButtonContent = styled('div')`
+const ButtonContent = styled.div`
   position: relative;
   color: #000;
   display: flex;
@@ -55,7 +55,7 @@ const ButtonContent = styled('div')`
   height: 47px;
 `;
 
-const ButtonImage = styled('img')`
+const ButtonImage = styled.img`
   position: absolute;
   top: 0;
   right: 0;
@@ -65,14 +65,14 @@ const ButtonImage = styled('img')`
   z-index: -1;
 `;
 
-const ActionButtonOverlay = styled('div')`
+const ActionButtonOverlay = styled.div`
   pointer-events: none;
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  background: url(images/trade/button-texture.png);
+  background: url(/hud-new/images/trade/button-texture.png);
   background-size: cover;
 `;
 

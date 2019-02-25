@@ -8,7 +8,8 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
 import moment from 'moment';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
@@ -31,12 +32,12 @@ const HeaderContent = css`
   display: flex;
 `;
 
-const HeaderSessionText = styled('header')`
+const HeaderSessionText = styled.header`
   flex: 2;
   text-transform: uppercase;
 `;
 
-const HeaderTimesUsedText = styled('header')`
+const HeaderTimesUsedText = styled.header`
   flex: 1;
   font-size: 14px;
   letter-spacing: 1px;

@@ -7,11 +7,11 @@
 
 import * as React from 'react';
 import { isEqual } from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 import { GroupMemberState } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   border-image: linear-gradient(to right, rgba(176, 176, 175, 0) 5%, rgba(176, 176, 175, 0.7), rgba(176, 176, 175, 0) 95%);
   border-image-slice: 1;
@@ -19,7 +19,7 @@ const Container = styled('div')`
   padding: 3px 0px 5px;
 `;
 
-const Name = styled('div')`
+const Name = styled.div`
   cursor: default;
   color: white;
   font-size: 12px;
@@ -31,27 +31,27 @@ const Name = styled('div')`
   margin-right: 5px;
 `;
 
-const Resources = styled('div')`
+const Resources = styled.div`
   display: flex;
   flex-direction: column;
   width: 50%;
 `;
 
-const HealthContainer = styled('div')`
+const HealthContainer = styled.div`
   height: 7px;
   margin-bottom: 2px;
   flex: 1;
   background-color: ${(props: any) => props.backgroundColor};
 `;
 
-const ResourceContainer = styled('div')`
+const ResourceContainer = styled.div`
   height: 2px;
   margin-bottom: ${(props: any) => props.marginBottom || '2px'};
   flex: 1;
   background-color: ${(props: any) => props.backgroundColor};
 `;
 
-const ResourceBar = styled('div')`
+const ResourceBar = styled.div`
   height: 100%;
   background-color: ${(props: any) => props.backgroundColor};
 `;

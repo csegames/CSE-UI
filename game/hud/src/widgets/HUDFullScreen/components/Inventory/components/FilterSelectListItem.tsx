@@ -5,12 +5,12 @@
  */
 
 import * as React from 'react';
-import { CUIcon, utils } from '@csegames/camelot-unchained';
-import styled from 'react-emotion';
-import { colors, InventoryFilterButton as FilterButtonInfo } from '../../../lib/constants';
+import { CUIcon } from '@csegames/camelot-unchained';
+import { styled } from 'linaria/react';
+import { InventoryFilterButton as FilterButtonInfo } from '../../../lib/itemInterfaces';
 import { prettifyText } from '../../../lib/utils';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
   align-items: center;
@@ -19,10 +19,10 @@ const Container = styled('div')`
   font-size: 18px;
   line-height: 18px;
   padding: 2px 5px;
-  color: ${utils.lightenColor(colors.filterBackgroundColor, 100)};
-  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 100)};
+  color: #413735;
+  border-bottom: 1px solid #413735;
   &:hover {
-    background-color: ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+    background-color: #6A6260;
     cursor: pointer;
   }
   &:hover * {

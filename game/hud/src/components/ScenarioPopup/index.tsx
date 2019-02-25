@@ -6,14 +6,14 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import Victory from './components/Victory';
 import Defeat from './components/Defeat';
 import RoundOver from './components/RoundOver';
 import HUDZOrder from 'services/session/HUDZOrder';
 
-const PopupContainer = styled('div')`
+const PopupContainer = styled.div`
   display: block;
   position: fixed;
   top: 20%;

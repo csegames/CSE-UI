@@ -7,8 +7,8 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 
 import eventNames, { EquipItemPayload, InventoryDataTransfer, EquippedItemDataTransfer } from '../../../lib/eventNames';
 import { defaultSlotIcons, placeholderIcon, gearSlots } from '../../../lib/constants';
@@ -22,19 +22,19 @@ import {
 
 declare const toastr: any;
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
   opacity: ${(props: any) => props.opacity};
 `;
 
-const ItemIcon = styled('img')`
+const ItemIcon = styled.img`
   width: 100%;
   height: 100%;
 `;
 
-const SlotOverlay = styled('div')`
+const SlotOverlay = styled.div`
   position: absolute;
   top: 0;
   right: 0;

@@ -5,16 +5,16 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { webAPI } from '@csegames/camelot-unchained';
 
-const ZoneContainer = styled('div')`
+const ZoneContainer = styled.div`
 margin-top:40px;
 `;
 
-const ZoneNameContainer = styled('div')`
+const ZoneNameContainer = styled.div`
   height: 32px;
-  background: url(images/zone/zone_background.png) repeat-x;
+  background: url(/hud-new/images/zone/zone_background.png) repeat-x;
   border-left: 3px solid #3b3634;
   float: left;
   h3 {
@@ -29,11 +29,11 @@ const ZoneNameContainer = styled('div')`
   }
 `;
 
-const ZoneNameEnd = styled('div')`
+const ZoneNameEnd = styled.div`
   height: 32px;
   width: 67px;
   float: left;
-  background: url(images/zone/zone_background_end.png) repeat-x;
+  background: url(/hud-new/images/zone/zone_background_end.png) repeat-x;
 `;
 
 export interface ZoneNameState {

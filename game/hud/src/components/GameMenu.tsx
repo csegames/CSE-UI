@@ -5,14 +5,15 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { CloseButton } from 'UI/CloseButton';
 
-const OuterContainer = styled('div')`
+const OuterContainer = styled.div`
   position: relative;
 `;
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   pointer-events: all;
   width: 257px;
@@ -20,15 +21,15 @@ const Container = styled('div')`
   margin:0 auto;
   background-color: gray;
   color: white;
-  background: url(images/gamemenu/gamemenu-bg-grey.png) no-repeat;
+  background: url(/hud-new/images/gamemenu/gamemenu-bg-grey.png) no-repeat;
   z-index: 1;
   border: 1px solid #6e6c6c;
   box-shadow: 0 0 30px 0 #000;
 `;
 
-const MenuTitle = styled('div')`
+const MenuTitle = styled.div`
   text-align: center;
-  background: url(images/gamemenu/gamemenu-top-title.png) center top no-repeat;
+  background: url(/hud-new/images/gamemenu/gamemenu-top-title.png) center top no-repeat;
   margin: 0 auto -9px auto;
   position: relative;
   z-index: 89;
@@ -45,15 +46,15 @@ const MenuTitle = styled('div')`
   }
 `;
 
-const MenuCorner = styled('div')`
+const MenuCorner = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
   background:
-  url(images/gamemenu/gamemenu-ornament-top-left.png) left 0 top 0 no-repeat,
-  url(images/gamemenu/gamemenu-ornament-top-right.png) right 0 top 0 no-repeat,
-  url(images/gamemenu/gamemenu-ornament-bottom-left.png) left 0 bottom 0 no-repeat,
-  url(images/gamemenu/gamemenu-ornament-bottom-right.png) right 0 bottom 0 no-repeat;
+  url(/hud-new/images/gamemenu/gamemenu-ornament-top-left.png) left 0 top 0 no-repeat,
+  url(/hud-new/images/gamemenu/gamemenu-ornament-top-right.png) right 0 top 0 no-repeat,
+  url(/hud-new/images/gamemenu/gamemenu-ornament-bottom-left.png) left 0 bottom 0 no-repeat,
+  url(/hud-new/images/gamemenu/gamemenu-ornament-bottom-right.png) right 0 bottom 0 no-repeat;
   z-index: 1;
 `;
 
@@ -63,7 +64,7 @@ const CloseButtonPosition = css`
   right: 7px;
 `;
 
-const MenuContent = styled('div')`
+const MenuContent = styled.div`
   height: 115px;
   margin-top: 30px;
   max-height: 345px;
@@ -75,9 +76,9 @@ const MenuContent = styled('div')`
   width: 100%;
   width: calc(100% - 40px);
 `;
-const MenuButton = styled('div')`
+const MenuButton = styled.div`
   position: relative;
-  background: url(images/gamemenu/button-big-off.png) no-repeat;
+  background: url(/hud-new/images/gamemenu/button-big-off.png) no-repeat;
   height: 30px;
   width: 200px;
   margin: 12px 16px 0 16px;
@@ -94,11 +95,11 @@ const MenuButton = styled('div')`
   text-align: center;
   &:hover {
     color: rgb(204,204,204);
-    background: url(images/gamemenu/button-big-on.png) no-repeat;
+    background: url(/hud-new/images/gamemenu/button-big-on.png) no-repeat;
     &::before {
       content: '';
       position: absolute;
-      background-image: url(images/gamemenu/button-glow.png);
+      background-image: url(/hud-new/images/gamemenu/button-glow.png);
       top: 0;
       right: 0;
       bottom: 0;

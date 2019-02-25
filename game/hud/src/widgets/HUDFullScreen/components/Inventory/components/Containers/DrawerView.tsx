@@ -6,29 +6,27 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
-import { utils } from '@csegames/camelot-unchained';
+import { styled } from 'linaria/react';
 
 import { getContainerColor } from '../../../../lib/utils';
-import { colors } from '../../../../lib/constants';
 import { InventoryItem } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   width: 100%;
   margin-top: ${(props: any) => props.marginTop}px;
   display: flex;
   flex-direction: column;
 `;
 
-const Header = styled('div')`
+const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: ${(props: any) => utils.lightenColor(colors.filterBackgroundColor, 150)};
+  color: #B6AEAC;
   background-color: ${(props: any) => props.color};
 `;
 
-const Content = styled('div')`
+const Content = styled.div`
   position: relative;
   width: 100%;
   overflow: auto;
@@ -41,23 +39,23 @@ const Content = styled('div')`
   }
 `;
 
-const Footer = styled('div')`
+const Footer = styled.div`
   display: flex;
   align-items: center;
-  color: ${(props: any) => utils.lightenColor(colors.filterBackgroundColor, 150)};
+  color: #B6AEAC;
   background-color: ${(props: any) => props.color};
   width: ${(props: any) => typeof props.footerWidth === 'number' ? `${props.footerWidth}px` : props.footerWidth};
   align-self: flex-end;
 `;
 
-const Divider = styled('div')`
+const Divider = styled.div`
   position: absolute;
   top: 0px;
   right: 0;
   left: 0;
   height: 1px;
   background: ${(props: any) => props.color};
-  -webkit-mask-image: url(images/inventory/texture-over-line.png);
+  -webkit-mask-image: url(/hud-new/images/inventory/texture-over-line.png);
 `;
 
 export interface DrawerViewProps {
@@ -81,7 +79,7 @@ class DrawerView extends React.PureComponent<DrawerViewProps> {
         <Header>
           {this.props.headerContent()}
         </Header>
-        <Content color={contentColor} innerRef={(r: HTMLDivElement) => this.props.contentRef && this.props.contentRef(r)}>
+        <Content color={contentColor} ref={(r: HTMLDivElement) => this.props.contentRef && this.props.contentRef(r)}>
           <Divider color={subHeaderDividerColor} />
           {this.props.mainContent()}
         </Content>

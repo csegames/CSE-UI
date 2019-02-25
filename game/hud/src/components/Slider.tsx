@@ -20,28 +20,29 @@
 
 import * as React from 'react';
 import * as className from 'classnames';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { spring, TransitionMotion } from 'react-motion';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   overflow: hidden;
   height: 100%;
   width: 100%;
 `;
 
-const Items = styled('div')`
+const Items = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
 `;
 
-const Item = styled('div')`
+const Item = styled.div`
   width: 100%;
   height: 100%;
 `;
 
-const Counter = styled('div')`
+const Counter = styled.div`
   position: absolute;
   color: white;
   font-size: 0.8em;
@@ -49,7 +50,7 @@ const Counter = styled('div')`
   bottom: 10px;
 `;
 
-const Arrow = styled('a')`
+const Arrow = styled.a`
   position: absolute;
   top: 50%;
   margin-top: -7.5px;
@@ -69,7 +70,7 @@ const ArrowLeft = css`
   transform: rotate(-135deg) translateX(-2px);
 `;
 
-const ArrowDisabled = styled('div')`
+const ArrowDisabled = css`
   border: 1px solid #EEE;
   cursor: default !important;
 `;
@@ -149,12 +150,12 @@ class Slider extends React.Component<SliderProps, SliderState> {
           }
         </TransitionMotion>
         <Arrow className={className(ArrowRight,
-          { [ArrowDisabled]: (this.props.children.length === 1 || !this.props.loop) && this.state.index === 0 })}
+          (this.props.children.length === 1 || !this.props.loop) && this.state.index === 0 ? ArrowDisabled : '')}
           onClick={() => this.prev()}>
         </Arrow>
         <Arrow className={className(ArrowLeft,
-          { [ArrowDisabled]: (this.props.children.length === 1 || !this.props.loop) &&
-            this.state.index === this.props.children.length - 1 })}
+          (this.props.children.length === 1 || !this.props.loop) &&
+            this.state.index === this.props.children.length - 1 ? ArrowDisabled : '')}
           onClick={() => this.next()}>
         </Arrow>
       </Container>

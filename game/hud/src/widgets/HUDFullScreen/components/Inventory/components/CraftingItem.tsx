@@ -5,10 +5,10 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import ItemIcon from '../../ItemShared/ItemIcon';
 
-const Container = styled('div')`
+const Container = styled.div`
   width: 60px;
   height: 60px;
   position: relative;

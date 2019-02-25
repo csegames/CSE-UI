@@ -5,11 +5,11 @@
 */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { Tooltip } from 'components/Tooltip';
 import { doesSearchInclude } from '@csegames/camelot-unchained';
 
-const Container = styled('div')`
+const Container = styled.div`
   flex: 1 1 auto;
   margin-top: -10px;
   padding-top: 10px;
@@ -18,7 +18,7 @@ const Container = styled('div')`
   pointer-events: auto;
 `;
 
-const Content = styled('div')`
+const Content = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -27,7 +27,7 @@ const Content = styled('div')`
   box-sizing: border-box!important;
 `;
 
-const Block = styled('div')`
+const Block = styled.div`
   display: inline-block;
   margin: 2px;
   border: 1px solid #444;
@@ -40,12 +40,12 @@ const SelectedBlock = styled(Block)`
   border: 1px solid gold;
 `;
 
-const Image = styled('img')`
+const Image = styled.img`
   width: 64px;
   height: 64px;
 `;
 
-const TooltipContainer = styled('div')`
+const TooltipContainer = styled.div`
   padding: 5px;
   background: #222;
   color: #ececec;
@@ -58,7 +58,7 @@ const TooltipContainer = styled('div')`
     / auto auto;
 `;
 
-const TooltipIcon = styled('img')`
+const TooltipIcon = styled.img`
   grid-area: icon;
   width: 64px;
   height: 64px;
@@ -66,13 +66,13 @@ const TooltipIcon = styled('img')`
   justify-self: center;
 `;
 
-const TooltipBlockTags = styled('div')`
+const TooltipBlockTags = styled.div`
   grid-area: block-tags;
   padding: 5px;
   align-self: center;
 `;
 
-const TooltipMatTags = styled('div')`
+const TooltipMatTags = styled.div`
   grid-area: mat-tags;
   padding: 5px;
   align-self: center;

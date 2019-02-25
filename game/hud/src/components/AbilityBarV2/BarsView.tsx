@@ -5,15 +5,15 @@
  */
 
 import React, { useEffect } from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-import { useAbilityStateReducer } from '../../services/session/AbilityViewState';
+import { useAbilityStateReducer, EditMode } from '../../services/session/AbilityViewState';
 
 import { AbilityBarAnchor } from './AbilityBarAnchor';
 import { KeyCodes } from '@csegames/camelot-unchained/lib/utils';
 import { EditController } from './EditController';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -24,7 +24,7 @@ const Container = styled('div')`
   align-items: center;
   width: 100%;
   height: 100%;
-  ${({ editMode }: {editMode: boolean}) => editMode && 'background: rgba(255, 0, 0, 0.2);'}
+  ${({ editMode }: {editMode: EditMode}) => editMode && 'background: rgba(255, 0, 0, 0.2);'}
 `;
 
 export interface AbilitiesViewProps {

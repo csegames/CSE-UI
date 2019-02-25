@@ -5,13 +5,13 @@
  */
 
 import React, { useContext, useState } from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { useAbilityStateReducer, AbilitySlot } from 'services/session/AbilityViewState';
 import { SkillTracks } from 'gql/interfaces';
 import { AbilityBtn } from '../AbilityBtn';
 import { DragAndDrop } from '../Utilities/DragAndDropV2';
 
-const Rotator = styled('div')`
+const Rotator = styled.div`
   position: absolute;
   left: 0;
   right: 0;
@@ -22,7 +22,7 @@ const Rotator = styled('div')`
   pointer-events: none;
 `;
 
-const SlotContainer = styled('div')`
+const SlotContainer = styled.div`
   position: relative;
   display: inline-block;
   pointer-events: none;
@@ -36,7 +36,7 @@ const SlotContainer = styled('div')`
   }}
 `;
 
-const IMG = styled('img')`
+const IMG = styled.img`
   position: absolute;
   left: 0;
   top: 0;
@@ -45,7 +45,7 @@ const IMG = styled('img')`
   pointer-events: all;
 `;
 
-const AbilityWrapper = styled('div')`
+const AbilityWrapper = styled.div`
   position: absolute;
   left: 0;
   top: 0;

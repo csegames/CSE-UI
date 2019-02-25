@@ -6,7 +6,8 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { Spinner } from '@csegames/camelot-unchained';
@@ -24,16 +25,16 @@ import {
 import { CloseButton } from 'UI/CloseButton';
 import { ProgressionGQL } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
 `;
 
-const ProgressionBorder = styled('div')`
+const ProgressionBorder = styled.div`
 `;
 
-const CollectButton = styled('div')`
+const CollectButton = styled.div`
   &.btn {
-    background: url(images/progression/button-off.png) no-repeat;
+    background: url(/hud-new/images/progression/button-off.png) no-repeat;
     width: 95px;
     height: 30px;;
     border: none;
@@ -46,12 +47,12 @@ const CollectButton = styled('div')`
     text-align: center;
     line-height: 30px;
     &:hover {
-      background: url(images/progression/button-on.png) no-repeat;
+      background: url(/hud-new/images/progression/button-on.png) no-repeat;
       color: #fff;
       &::before {
         content: '';
         position: absolute;
-        background-image: url(images/progression/button-glow.png);
+        background-image: url(/hud-new/images/progression/button-glow.png);
         width: 93px;
         height: 30px;
         left: 456px;
@@ -61,7 +62,7 @@ const CollectButton = styled('div')`
   }
 `;
 
-const ProgressionFooterBorder = styled('div')`
+const ProgressionFooterBorder = styled.div`
   position: absolute;
   border: 1px solid #2e2b28;
   margin: 7px 10px 0;
@@ -71,7 +72,7 @@ const ProgressionFooterBorder = styled('div')`
   z-index: 3;
 `;
 
-const ProgressionFooterOuter = styled('div')`
+const ProgressionFooterOuter = styled.div`
   position: absolute;
   z-index: 4;
   display: flex;
@@ -79,14 +80,14 @@ const ProgressionFooterOuter = styled('div')`
   width: 100%;
 `;
 
-const ProgressionFooterLeft = styled('div')`
-  background: url(images/progression/progress-botnav-left-ornament.png) no-repeat;
+const ProgressionFooterLeft = styled.div`
+  background: url(/hud-new/images/progression/progress-botnav-left-ornament.png) no-repeat;
   height: 55px;
   width: 75px;
 `;
 
-const ProgressionFooterRight = styled('div')`
-  background: url(images/progression/progress-botnav-right-ornament.png) no-repeat;
+const ProgressionFooterRight = styled.div`
+  background: url(/hud-new/images/progression/progress-botnav-right-ornament.png) no-repeat;
   height: 55px;
   width: 75px;
 `;

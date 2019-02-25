@@ -6,19 +6,19 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { InventoryItem } from 'gql/interfaces';
 
-const DurabilityContainer = styled('div')`
+const DurabilityContainer = styled.div`
   column-count: 2;
   column-gap: 0;
 `;
 
-const ItemContainer = styled('div')`
+const ItemContainer = styled.div`
   width: 100%;
 `;
 
-const StatItem = styled('div')`
+const StatItem = styled.div`
   display: flex;
   justify-content: space-between;
   border-image: ${(props: any) => props.showBorder ?
@@ -32,7 +32,7 @@ const StatItem = styled('div')`
   -webkit-column-break-inside: avoid;
 `;
 
-const StatValue = styled('div')`
+const StatValue = styled.div`
   margin-left: 5px;
 `;
 

@@ -8,22 +8,22 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { utils } from '@csegames/camelot-unchained';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
 `;
 
-const ListContainer = styled('div')`
+const ListContainer = styled.div`
   overflow: auto;
 `;
 
-const ListBody = styled('div')`
+const ListBody = styled.div`
   height: ${(props: any) => props.height}px;
   width: 100%;
 `;
 
-const List = styled('div')`
+const List = styled.div`
   position: absolute;
   top: 0;
   right: 10px;
@@ -74,12 +74,12 @@ class SearchableList extends React.Component<Props, State> {
     const visibleItems = this.getVisibleItems();
     return (
       <Container>
-        <ListContainer innerRef={this.onRef} className={this.props.containerClass}>
+        <ListContainer ref={this.onRef} className={this.props.containerClass}>
           <ListBody height={this.props.listItemsData.length * this.props.listItemHeight} width={'100%'} />
         </ListContainer>
         <List
           isScrolling={this.state.isScrolling}
-          innerRef={(r: HTMLDivElement) => this.listItemsContainerRef = r}
+          ref={(r: HTMLDivElement) => this.listItemsContainerRef = r}
           className={this.props.listItemsContainerClass}>
             {visibleItems.map((listItemData, i) => {
               const searchIncludes = listItemData.searchIncludes || this.props.searchValue === '';

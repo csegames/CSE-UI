@@ -5,25 +5,25 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { styled } from 'linaria/react';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { MiniScenarioScoreboardQuery } from 'gql/interfaces';
 
-const Wrapper = styled('div')`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
 `;
 
-const Container = styled('div')`
+const Container = styled.div`
   align-self: center;
   display: flex;
   overflow: hidden;
   box-sizing: border-box !important;
   background-size: contain;
-  background-image: url('images/scenario-live-score/uhd/mini-hud-frame.png');
+  background-image: url('/hud-new/images/scenario-live-score/uhd/mini-hud-frame.png');
   width: 520px;
   height: 104px;
   padding-left: 34px;
@@ -32,7 +32,7 @@ const Container = styled('div')`
   z-index: 1;
 
   @media (max-width: 1920px) {
-    background-image: url('images/scenario-live-score/hd/mini-hud-frame.png');
+    background-image: url('/hud-new/images/scenario-live-score/hd/mini-hud-frame.png');
     width: 260px;
     height: 52px;
     padding-left: 17px;
@@ -45,10 +45,9 @@ interface BackgroundProps {
   active?: boolean;
 }
 
-const backgroundCss = (props: BackgroundProps) => css`
+const backgroundCss = `
   background-size: contain;
   position: relative;
-  background: ${props.active ? 'none' : 'rgba(0,0,0,0.6)'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,53 +72,56 @@ const backgroundCss = (props: BackgroundProps) => css`
   }
 `;
 
-const ArthurianBackground: React.SFC<BackgroundProps> = styled('div')`
+const ArthurianBackground: React.SFC<BackgroundProps> = styled.div`
   ${backgroundCss}
+  background: ${(props: any) => props.active ? 'none' : 'rgba(0,0,0,0.6)'};
   margin-left: 1px;
   color: #ffd7d7;
   margin-left: 2px;
 
   &:before {
-    background-image: url('images/scenario-live-score/uhd/mini-hud-art-bg.png');
+    background-image: url('/hud-new/images/scenario-live-score/uhd/mini-hud-art-bg.png');
   }
 
   @media (max-width: 1920px) {
     margin-left: 0;
     &:before {
-      background-image: url('images/scenario-live-score/hd/mini-hud-art-bg.png');
+      background-image: url('/hud-new/images/scenario-live-score/hd/mini-hud-art-bg.png');
     }
   }
 `;
 
-const VikingBackground: React.SFC<BackgroundProps> = styled('div')`
+const VikingBackground: React.SFC<BackgroundProps> = styled.div`
   ${backgroundCss}
+  background: ${(props: any) => props.active ? 'none' : 'rgba(0,0,0,0.6)'};
   color: #c7e7ff;
   margin-left: 12px;
 
   &:before {
-    background-image: url('images/scenario-live-score/uhd/mini-hud-vik-bg.png');
+    background-image: url('/hud-new/images/scenario-live-score/uhd/mini-hud-vik-bg.png');
   }
 
   @media (max-width: 1920px) {
     margin-left: 6px;
     &:before {
-      background-image: url('images/scenario-live-score/hd/mini-hud-vik-bg.png');
+      background-image: url('/hud-new/images/scenario-live-score/hd/mini-hud-vik-bg.png');
     }
   }
 `;
 
-const TddBackground: React.SFC<BackgroundProps> = styled('div')`
+const TddBackground: React.SFC<BackgroundProps> = styled.div`
   ${backgroundCss}
+  background: ${(props: any) => props.active ? 'none' : 'rgba(0,0,0,0.6)'};
   margin-left: 10px;
   color: #d5ffc1;
   &:before {
-    background-image: url('images/scenario-live-score/uhd/mini-hud-tdd-bg.png');
+    background-image: url('/hud-new/images/scenario-live-score/uhd/mini-hud-tdd-bg.png');
   }
 
   @media (max-width: 1920px) {
     margin-left: 5px;
     &:before {
-      background-image: url('images/scenario-live-score/hd/mini-hud-tdd-bg.png');
+      background-image: url('/hud-new/images/scenario-live-score/hd/mini-hud-tdd-bg.png');
     }
   }
 `;

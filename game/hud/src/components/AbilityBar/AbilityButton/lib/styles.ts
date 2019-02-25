@@ -5,9 +5,6 @@
  *
  */
 
-import { keyframes } from 'react-emotion';
-import { AbilityButtonInfo } from '../AbilityButtonView';
-
 const MODAL_STATE = 'modalState';
 const UNAVAILABLE_STATE = 'unavailableState';
 const NO_AMMO_STATE = 'noAmmoState';
@@ -24,6 +21,10 @@ const HELD_STATE = 'heldState';
 const START_CAST_STATE = 'startCastState';
 const HIT_STATE = 'hitState';
 const INTERRUPTED_STATE = 'interruptedState';
+
+export enum testEnum {
+  tetsting,
+}
 
 export const CLASS_NAMES = {
   MODAL_STATE,
@@ -61,49 +62,67 @@ export const abilityStateColors = {
   modalColor: '#aaa',
 };
 
-const blinkStroke = keyframes`
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-`;
-
-const pulseStroke = keyframes`
-  from {
-    stroke-opacity: 1;
-  }
-  to {
-    stroke-opacity: 0.25;
+const keyframesBlinkStroke = `
+  @keyframes blinkStroke {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
   }
 `;
 
-const opacityPulse = keyframes`
-  from {
-    opacity: 0.3;
-  }
-  to {
-    opacity: 0.1;
-  }
-`;
-
-const recoveryBgPulse = keyframes`
-  from {
-    background: rgba(25, 171, 255, 0.25);
-  }
-  to {
-    background: rgba(25, 171, 255, 0.1);
+const keyframesPulseStroke = `
+  @keyframes pulseStroke {
+    from {
+      stroke-opacity: 1;
+    }
+    to {
+      stroke-opacity: 0.25;
+    }
   }
 `;
 
-const prepBgPulse = keyframes`
-  from {
-    background: rgba(255, 159, 25, 0.25);
+const keyframesOpacityPulse = `
+  @keyframes opacityPulse {
+    from {
+      opacity: 0.3;
+    }
+    to {
+      opacity: 0.1;
+    }
   }
-  to {
-    background: rgba(255, 159, 25, 0.1);
+`;
+
+const keyframesRecoveryBgPulse = `
+  @keyframes recoveryBgPulse {
+    from {
+      background: rgba(25, 171, 255, 0.25);
+    }
+    to {
+      background: rgba(25, 171, 255, 0.1);
+    }
   }
+`;
+
+const keyframesPrepBgPulse = `
+  @keyframes prepBgPulse {
+    from {
+      background: rgba(255, 159, 25, 0.25);
+    }
+    to {
+      background: rgba(255, 159, 25, 0.1);
+    }
+  }
+`;
+
+export const animations = `
+  ${keyframesBlinkStroke}
+  ${keyframesPulseStroke}
+  ${keyframesOpacityPulse}
+  ${keyframesRecoveryBgPulse}
+  ${keyframesPrepBgPulse}
 `;
 
 export const overlayPseudo = `
@@ -123,9 +142,8 @@ export const overlayPseudo = `
 
 const pulsingBackground = `
   ${overlayPseudo};
-  background: $runningColor;
-  animation: ${opacityPulse} .75s steps(5, start) infinite alternate;
-  -webkit-animation: ${opacityPulse} .75s steps(5, start) infinite alternate;
+  background: ${abilityStateColors.runningColor};
+  animation: opacityPulse .75s steps(5, start) infinite alternate;
 `;
 
 export const ReadyState = `
@@ -137,15 +155,13 @@ export const ReadyState = `
 
     .inner-bg {
       stroke: ${abilityStateColors.readyColor};
-      animation: ${blinkStroke} .5s steps(5, end) infinite alternate-reverse;
-      -webkit-animation: ${blinkStroke} .5s steps(5, end) infinite alternate-reverse;
+      animation: blinkStroke .5s steps(5, end) infinite alternate-reverse;
     }
 
     .inner-bg-blur {
       filter: url(#svg-blur);
       stroke: ${abilityStateColors.readyColor};
-      animation: ${blinkStroke} .5s steps(5, end) infinite alternate-reverse;
-      -webkit-animation: ${blinkStroke} .5s steps(5, end) infinite alternate-reverse;
+      animation: blinkStroke .5s steps(5, end) infinite alternate-reverse;
     }
   }
 `;
@@ -158,8 +174,7 @@ export const HeldState = `
   .outer,
   .outer-blur {
     stroke: ${abilityStateColors.runningColor};
-    animation: ${pulseStroke} .75s infinite alternate-reverse;
-    -webkit-animation: ${pulseStroke} .75s infinite alternate-reverse;
+    animation: pulseStroke .75s infinite alternate-reverse;
   }
 `;
 
@@ -169,8 +184,7 @@ export const QueuedState = `
   .inner-blur,
   .outer-blur {
     stroke: ${abilityStateColors.queuedColor};
-    animation: ${pulseStroke} .75s steps(2, start) infinite alternate-reverse;
-    -webkit-animation: ${pulseStroke} .75s steps(2, start) infinite alternate-reverse;
+    animation: pulseStroke .75s steps(2, start) infinite alternate-reverse;
   }
 `;
 
@@ -180,17 +194,15 @@ export const RunningState = `
     ${pulsingBackground}
   }
   .inner-bg {
-    stroke: $runningColor;
+    stroke: ${abilityStateColors.runningColor};
     animation: blinkStroke .5s steps(5, end) infinite alternate-reverse;
-    -webkit-animation: blinkStroke .5s steps(5, end) infinite alternate-reverse;
   }
 
   .inner,
   .inner-blur {
     stroke: ${abilityStateColors.runningColor};
     filter: url(#svg-blur);
-    animation: ${pulseStroke} .75s steps(5, start) infinite alternate;
-    -webkit-animation: ${pulseStroke} .75s steps(5, start) infinite alternate;
+    animation: pulseStroke .75s steps(5, start) infinite alternate;
   }
 `;
 
@@ -211,15 +223,14 @@ export const CooldownState = `
 export const ErrorState = `
   &:before {
     ${overlayPseudo}
-    background: $errorColor;
+    background: ${abilityStateColors.errorColor};
     opacity: 0.3;
   }
 
   .inner,
   .inner-blur {
     stroke: ${abilityStateColors.errorColor};
-    animation: ${blinkStroke} .25s infinite;
-    -webkit-animation: ${blinkStroke} .25s infinite;
+    animation: blinkStroke .25s infinite;
   }
 
   .inner-blur {
@@ -252,8 +263,7 @@ export const ChannelState = `
 
 export const RecoveryState = `
   .skill-timing-overlay {
-    animation: ${recoveryBgPulse} .75s steps(5, start) infinite alternate;
-    -webkit-animation: ${recoveryBgPulse} .75s steps(5, start) infinite alternate;
+    animation: recoveryBgPulse .75s steps(5, start) infinite alternate;
   }
 
   .inner,
@@ -269,8 +279,7 @@ export const RecoveryState = `
 export const PreparationState = `
   filter: brightness(125%);
   .skill-timing-overlay {
-    animation: ${prepBgPulse} .75s steps(5, start) infinite alternate;
-    -webkit-animation: ${prepBgPulse} .75s steps(5, start) infinite alternate;
+    animation: prepBgPulse .75s steps(5, start) infinite alternate;
   }
 
   .inner,
@@ -296,8 +305,7 @@ export const StartCastState = `
   .outer,
   .outer-blur {
     stroke: ${abilityStateColors.startCastColor};
-    animation: ${blinkStroke} .25s infinite reverse;
-    -webkit-animation: ${blinkStroke} .25s infinite reverse;
+    animation: blinkStroke .25s infinite reverse;
   }
 `;
 
@@ -313,8 +321,7 @@ export const HitState = `
   .outer,
   .outer-blur {
     stroke: ${abilityStateColors.hitColor};
-    animation: ${blinkStroke} .25s infinite reverse;
-    -webkit-animation: ${blinkStroke} .25s infinite reverse;
+    animation: blinkStroke .25s infinite reverse;
   }
 `;
 
@@ -333,7 +340,7 @@ export const ModalState = `
     left: -3px;
     width: 110%;
     height: 110%;
-    background: url(images/skills/queued-tick.png);
+    background: url(/hud-new/images/skills/queued-tick.png);
     background-size: cover;
     z-index: 3;
     box-shadow: initial;
@@ -347,8 +354,7 @@ export const ModalState = `
   .inner-blur,
   .outer-blur {
     stroke: ${abilityStateColors.modalColor};
-    animation: ${pulseStroke} .75s steps(5, start) infinite alternate;
-    -webkit-animation: ${pulseStroke} .75s steps(5, start) infinite alternate;
+    animation: pulseStroke .75s steps(5, start) infinite alternate;
     filter: url(#svg-blur);
   }
 `;
@@ -362,7 +368,7 @@ export const UnavailableState = `
 
   &:before {
     ${overlayPseudo}
-    background-image: url(''), linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
     background-repeat: no-repeat, no-repeat;
     background-position: 50% 10px, center;
     background-size: 70% 70%, cover;
@@ -371,7 +377,7 @@ export const UnavailableState = `
 
   &:hover:before {
     ${overlayPseudo}
-    background-image: url(''), linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
     background-repeat: no-repeat, no-repeat;
     background-position: 50% 10px, center;
     background-size: 70% 70%, cover;
@@ -385,80 +391,24 @@ export const UnavailableState = `
 
 export const NoAmmoState = `
   &:before {
-    background-image: url(images/skills/no-arrow.png),
+    background-image: url(/hud-new/images/skills/no-arrow.png),
       linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
   }
 
   &:hover:before {
-    background-image: url(images/skills/no-arrow.png),
+    background-image: url(/hud-new/images/skills/no-arrow.png),
       linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
   }
 `;
 
 export const NoWeaponState = `
   &:before {
-    background-image: url(images/skills/no-weapon.png),
+    background-image: url(/hud-new/images/skills/no-weapon.png),
       linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
   }
 
   &:hover:before {
-    background-image: url(images/skills/no-weapon.png),
+    background-image: url(/hud-new/images/skills/no-weapon.png),
       linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
   }
 `;
-
-export const getClassNames = (abilityState: AbilityButtonInfo) => {
-  const classNames: string[] = [];
-  if (abilityState.type === AbilityButtonType.Modal) {
-    classNames.push(MODAL_STATE);
-  }
-  const status = abilityState.status;
-  const reason = abilityState.error;
-  if (status & AbilityButtonState.Unusable) {
-    classNames.push(UNAVAILABLE_STATE);
-    if (reason & AbilityButtonErrorFlag.NoAmmo) {
-      classNames.push(NO_AMMO_STATE);
-    }
-    if (reason & AbilityButtonErrorFlag.NoWeapon) {
-      classNames.push(NO_WEAPON_STATE);
-    }
-  }
-
-  if (status & AbilityButtonState.Ready) {
-    classNames.push(READY_STATE);
-  }
-
-  if (status & AbilityButtonState.Error) {
-    classNames.push(ERROR_STATE);
-  }
-
-  if (status & AbilityButtonState.Queued) {
-    classNames.push(QUEUED_STATE);
-  }
-
-  if (status & AbilityButtonState.Cooldown) {
-    classNames.push(COOLDOWN_STATE);
-  }
-
-  if (status & AbilityButtonState.Channel) {
-    classNames.push(CHANNEL_STATE);
-  }
-
-  if (status & AbilityButtonState.Recovery) {
-    classNames.push(RECOVERY_STATE);
-  }
-
-  if (status & AbilityButtonState.Preparation) {
-    classNames.push(PREPARATION_STATE);
-  }
-
-  if (status & AbilityButtonState.Running ! & AbilityButtonState.Preparation ! & AbilityButtonState.Channel) {
-    classNames.push(RUNNING_STATE);
-  }
-
-  if (status & AbilityButtonState.Held) {
-    classNames.push(HELD_STATE);
-  }
-
-  return classNames;
-};

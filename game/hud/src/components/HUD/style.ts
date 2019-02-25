@@ -4,9 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 
-export const HUDEditorContainer = styled('div')`
+export const HUDEditorContainer = styled.div`
   position: fixed;
   width: 200px;
   height: 35%;
@@ -14,13 +15,13 @@ export const HUDEditorContainer = styled('div')`
   overflow-y: hidden;
   color: white;
   background-color: gray;
-  background: url(images/progression/progress-bg-grey.png) no-repeat;
+  background: url(/hud-new/images/progression/progress-bg-grey.png) no-repeat;
   border: 2px solid #6e6c6c;
   box-shadow: 0 0 30px 0 #000;
   z-index: 942;
 `;
 
-export const HUDEditorTitle = styled('div')`
+export const HUDEditorTitle = styled.div`
   position: relative;
   z-index: 1;
   padding-left: 4px;
@@ -49,7 +50,7 @@ export const HUDEditorTitle = styled('div')`
   }
 `;
 
-export const HUDEditorList = styled('div')`
+export const HUDEditorList = styled.div`
   padding: 5px 5px;
   box-sizing: border-box;
   overflow-x: hidden;
@@ -100,7 +101,7 @@ export const HUDEditorList = styled('div')`
   }
 `;
 
-export const HUDEditorToolbar = styled('div')`
+export const HUDEditorToolbar = styled.div`
   display: flex;
   align-items: center;
   margin: 0 auto;
@@ -120,13 +121,13 @@ export const HUDEditorToolbar = styled('div')`
   }
 `;
 
-export const HUDEditorToolbarTitle = styled('div')`
+export const HUDEditorToolbarTitle = styled.div`
   text-align: center;
   font-size: .7em;
   color: #91743a;
 `;
 
-export const HUDEditorToolbarItem = styled('div')`
+export const HUDEditorToolbarItem = styled.div`
   margin: auto;
   width: 55px;
   height: 40px;

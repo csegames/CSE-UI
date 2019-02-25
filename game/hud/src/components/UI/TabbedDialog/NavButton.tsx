@@ -4,14 +4,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import * as CONFIG from '../config';
 import { DIALOG_FONT, FOOTER_BORDER_COLOR_RGB } from './config';
 
 const NAV_BUTTON_WIDTH = 147;
 const NAV_BUTTON_HEIGHT = 45;
 
-const NavButtonLabel = styled('span')`
+const NavButtonLabel = styled.span`
   position: absolute;
   line-height: ${NAV_BUTTON_HEIGHT - 5}px;
   text-align: center;
@@ -21,7 +21,7 @@ const NavButtonLabel = styled('span')`
   width: 100%;
 `;
 
-const NavButton = styled('div')`
+const NavButton = styled.div`
   width: ${NAV_BUTTON_WIDTH}px;
   height: ${NAV_BUTTON_HEIGHT}px;
   x-line-height: ${NAV_BUTTON_HEIGHT - 5}px;
@@ -34,7 +34,7 @@ const NavButton = styled('div')`
   /* Normal Nav Button, with arrow pointing up */
   color: ${CONFIG.NAV_NORMAL_TEXT_COLOR};
   border: ${CONFIG.NAV_BUTTON_BORDER_WIDTH}px rgba(0,0,0,0) solid;
-  background-image: url(images/settings/settings-topnav-arrow-up.png);
+  background-image: url(/hud-new/images/settings/settings-topnav-arrow-up.png);
   background-position: center 35px;
   background-repeat: no-repeat;
   box-sizing: border-box!important;
@@ -101,7 +101,7 @@ const NavButton = styled('div')`
       left: -1px;
       z-index: 1;
       border: none;
-      background-image: url(images/settings/settings-topnav-texture.png);
+      background-image: url(/hud-new/images/settings/settings-topnav-texture.png);
       background-repeat: no-repeat;
     }
 
@@ -110,7 +110,7 @@ const NavButton = styled('div')`
       content: '';
       position: absolute;
       border: 0;
-      background-image: url(images/settings/settings-topnav-arrow-down.png);
+      background-image: url(/hud-new/images/settings/settings-topnav-arrow-down.png);
       background-position: center 36px;
       background-repeat: no-repeat;
       width: 147px;

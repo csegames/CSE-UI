@@ -5,7 +5,8 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import Fuse from 'fuse.js';
 import { Store } from '@csegames/camelot-unchained/lib/utils/local-storage';
 
@@ -22,14 +23,14 @@ import * as CSS from 'lib/css-helper';
 import * as CONFIG from 'components/UI/config';
 
 
-const KeyBindsSearchBar = styled('div')`
+const KeyBindsSearchBar = styled.div`
   ${CSS.IS_ROW} ${CSS.DONT_GROW}
   padding: 10px;
   box-sizing: border-box!important;
   width: 100%;
 `;
 
-const KeyBindsContainer = styled('div')`
+const KeyBindsContainer = styled.div`
   ${CSS.IS_COLUMN} ${CSS.EXPAND_TO_FIT}
   width: 100%;
   padding: 10px;
@@ -38,7 +39,7 @@ const KeyBindsContainer = styled('div')`
   overflow: auto;
 `;
 
-const SearchBox = styled('input')`
+const SearchBox = styled.input`
   height: 25px;
   width: 100%;
   background-color: black;
@@ -59,13 +60,13 @@ const CloseButtonPosition = css`
   top: 3px;
 `;
 
-const ConfigName = styled('h4')`
+const ConfigName = styled.h4`
   margin-bottom: 0!important;
   padding: 4px 15px;
   color: ${CONFIG.NORMAL_TEXT_COLOR};
 `;
 
-const Error = styled('div')`
+const Error = styled.div`
   color: #dd0000;
 `;
 
@@ -73,7 +74,7 @@ export const MODAL_ACCENT = 'rgba(255, 234, 194, 0.4)';
 export const MODAL_HIGHLIGHT_STRONG = 'rgba(255, 234, 194, 0.2)';
 export const MODAL_HIGHLIGHT_WEAK = 'rgba(255, 234, 194, 0.0)';
 
-export const ModalContainer = styled('div')`
+export const ModalContainer = styled.div`
   position: fixed;
   top: 0;
   right: 0;
@@ -85,7 +86,7 @@ export const ModalContainer = styled('div')`
   pointer-events: none;
 `;
 
-export const ModalButtonContainer = styled('div')`
+export const ModalButtonContainer = styled.div`
   position: absolute;
   bottom: 20px;
   left: 0;
@@ -96,10 +97,10 @@ export const ModalButtonContainer = styled('div')`
   justify-content: center;
 `;
 
-export const ModalButton = styled('div')`
+export const ModalButton = styled.div`
   position: relative;
   pointer-events: all;
-  background: url(images/progression/button-off.png) no-repeat;
+  background: url(/hud-new/images/progression/button-off.png) no-repeat;
   width: 95px;
   height: 30px;;
   border: none;
@@ -112,12 +113,12 @@ export const ModalButton = styled('div')`
   text-align: center;
   line-height: 30px;
   &:hover {
-    background: url(images/progression/button-on.png) no-repeat;
+    background: url(/hud-new/images/progression/button-on.png) no-repeat;
     color: #fff;
     &::before {
       content: '';
       position: absolute;
-      background-image: url(images/progression/button-glow.png);
+      background-image: url(/hud-new/images/progression/button-glow.png);
       width: 93px;
       height: 30px;
       left: 0;
@@ -205,7 +206,6 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
         <Field className='expand'>
           <Box padding={false} style={{ margin: 0 }}>
             <SearchBox
-              spellcheck={false}
               placeholder='Search...'
               value={this.state.searchText}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { spacify } from 'lib/spacify';
 import { PopupDialog, Container } from './PopupDialog';
@@ -22,17 +22,17 @@ const DIALOG_SIZE: React.CSSProperties = {
   margin: 'auto',
 };
 
-const InstructionsText = styled('div')`
+const InstructionsText = styled.div`
   margin-top: 20px;
   text-align: center;
 `;
 
-const ListeningPopup = styled('div')`
+const ListeningPopup = styled.div`
   padding: 20px;
   z-index: 1;
 `;
 
-const ListeningTitle = styled('div')`
+const ListeningTitle = styled.div`
   font-size: 24px;
   font-weight: 500;
   color: rgba(255, 234, 194, 1);
@@ -42,7 +42,7 @@ const ListeningTitle = styled('div')`
   text-align: center;
 `;
 
-const ListeningKey = styled('div')`
+const ListeningKey = styled.div`
   text-align: center;
   font-style: italic;
 `;

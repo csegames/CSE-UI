@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import * as CSS from '../../lib/css-helper';
 import * as CONFIG from './config';
 import { DIALOG_FONT } from './TabbedDialog/config';
@@ -40,12 +40,12 @@ export const SIDE_CONTENT_BORDER_GRADIENT =
 
 
 /* SideMenu Container: Contains the menu and the selected items content */
-const SideMenuContainer = styled('div')`
+const SideMenuContainer = styled.div`
   ${CSS.IS_ROW} ${CSS.EXPAND_TO_FIT}
 `;
 
 /* SideMenu Options: This contains the MenuOption(s) */
-const SideMenuOptions = styled('div')`
+const SideMenuOptions = styled.div`
   ${CSS.IS_COLUMN} ${CSS.DONT_GROW}
   min-width: ${SIDE_MENU_WIDTH + 5}px;
   position: relative;
@@ -65,7 +65,7 @@ const SideMenuOptions = styled('div')`
 
 /* SideMenuContent: The users content is rendered in here for the current
  * option. It has no padding, but does allow scrolling. */
-export const SideMenuContent = styled('div')`
+export const SideMenuContent = styled.div`
   ${CSS.IS_COLUMN} ${CSS.EXPAND_TO_FIT}
   background-color: ${CONFIG.CONTENT_BACKGROUND_COLOR};
   pointer-events: all;
@@ -75,7 +75,7 @@ export const SideMenuContent = styled('div')`
 
 /* DialogContent: A container for displaying content that
  * adds standard padding and allows vertical scrolling. [optional] */
-export const DialogContent = styled('div')`
+export const DialogContent = styled.div`
   ${CSS.IS_COLUMN} ${CSS.EXPAND_TO_FIT}
   width: 100%;
   padding: 10px;
@@ -84,7 +84,7 @@ export const DialogContent = styled('div')`
 `;
 
 /* SideMenuOption: An option in the side menu */
-const SideMenuOption = styled('div')`
+const SideMenuOption = styled.div`
   width: ${SIDE_MENU_WIDTH + 5}px;
   height: ${SIDE_OPTION_HEIGHT}px;
   line-height: ${SIDE_OPTION_HEIGHT}px;
@@ -98,7 +98,7 @@ const SideMenuOption = styled('div')`
   box-sizing: border-box!important;
   cursor: pointer;
   pointer-events: all;
-  background-image: url(images/settings/settings-leftnav-arrow-left.png);
+  background-image: url(/hud-new/images/settings/settings-leftnav-arrow-left.png);
   background-position: right 5px center;
   ${DIALOG_FONT}
   z-index: 1;
@@ -127,7 +127,7 @@ const SideMenuOption = styled('div')`
 
   /* side menu option highlighted */
   &.selected {
-    background-image: url(images/settings/settings-leftnav-arrow-right.png);
+    background-image: url(/hud-new/images/settings/settings-leftnav-arrow-right.png);
     background-position: right center;
     color: ${CONFIG.MENU_HIGHLIGHTED_TEXT_COLOR};
     ::before {
@@ -138,7 +138,7 @@ const SideMenuOption = styled('div')`
       content: '';
       position: absolute;
       top: 0; left: 0;
-      background-image: url(images/settings/settings-leftnav-texture.png);
+      background-image: url(/hud-new/images/settings/settings-leftnav-texture.png);
       background-position: 100%;
       z-index: -1;
       width: 100%;

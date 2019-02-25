@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 // import { hot, setConfig } from 'react-hot-loader';
 
@@ -54,7 +54,7 @@ import { DragAndDropV2Renderer } from 'components/Utilities/DragAndDropV2';
 import { WarbandNotificationProvider } from '../WarbandDisplay/WarbandNotificationProvider';
 import { BattleGroupNotificationProvider } from '../BattleGroups/BattleGroupNotificationProvider';
 
-const HUDNavContainer = styled('div')`
+const HUDNavContainer = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -64,13 +64,13 @@ const HUDNavContainer = styled('div')`
   z-index: 999;
 `;
 
-const ZoneNameContainer = styled('div')`
+const ZoneNameContainer = styled.div`
   position: fixed;
   top: 50px;
   left: 0;
 `;
 
-const AbilityBarContainer = styled('div')`
+const AbilityBarContainer = styled.div`
   position: fixed;
   left: 0;
   right: 0;
@@ -79,7 +79,7 @@ const AbilityBarContainer = styled('div')`
   pointer-events: none;
 `;
 
-const MiniScenarioScoreboardContainer = styled('div')`
+const MiniScenarioScoreboardContainer = styled.div`
   position: fixed;
   top: 0px;
   left: 0;
@@ -90,7 +90,7 @@ const MiniScenarioScoreboardContainer = styled('div')`
   z-index: ${HUDZOrder.MiniScenarioScoreboard};
 `;
 
-const FullScenarioScoreboardContainer = styled('div')`
+const FullScenarioScoreboardContainer = styled.div`
   position: fixed;
   top: 200px;
   left: 0;

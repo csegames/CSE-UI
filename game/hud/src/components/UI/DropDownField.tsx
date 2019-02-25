@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { Box } from './Box';
 import { Field } from './Field';
 
@@ -15,11 +15,11 @@ export interface DropDownItem {
   value: string;
 }
 
-const ListBoxContainer = styled('div')`
+const ListBoxContainer = styled.div`
   position: relative;
 `;
 
-const ListBox = styled('div')`
+const ListBox = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -36,7 +36,7 @@ const ListBox = styled('div')`
   }
 `;
 
-const ListItems = styled('ul')`
+const ListItems = styled.ul`
   position: absolute;
   bottom: 100%;
   min-width: 100%;
@@ -44,7 +44,7 @@ const ListItems = styled('ul')`
   z-index: 1000;
 `;
 
-const ListItem = styled('li')`
+const ListItem = styled.li`
   padding: 2px 5px;
   color: white;
   background-color: rgba(31, 31, 31, 1);

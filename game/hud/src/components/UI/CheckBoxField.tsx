@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import * as CSS from '../../lib/css-helper';
 import { Box } from './Box';
 import { Field } from './Field';
@@ -14,7 +14,7 @@ const CHECK_BG_COLOR = 'rgb(15,16,18)';
 const CHECK_FG_COLOR = 'rgb(252,211,179)';
 const CHECK_LINE_COLOR = '53,53,53';
 
-const CheckBoxContainer = styled('div')`
+const CheckBoxContainer = styled.div`
   ${CSS.IS_ROW}
   position: absolute;
   right: 40px;

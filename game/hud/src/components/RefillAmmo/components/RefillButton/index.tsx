@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 interface RefillButtonStyle {
   container: React.CSSProperties;
@@ -17,7 +17,7 @@ interface RefillButtonProps {
   refill: () => void;
 }
 
-const Container = styled('div')`
+const Container = styled.div`
   width: 120px;
   height: 35px;
   line-height: 35px;

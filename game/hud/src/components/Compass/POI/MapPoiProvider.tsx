@@ -6,7 +6,7 @@
 
 import gql from 'graphql-tag';
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import hash from 'object-hash';
 import {
   CompassPOIProviderProps,
@@ -21,7 +21,7 @@ import { showCompassTooltip, hideCompassTooltip, updateCompassTooltip } from 'ac
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { MapPoiProviderGQL } from 'gql/interfaces';
 
-const MapPoi = styled('div')`
+const MapPoi = styled.div`
   position: absolute;
   width: 36px;
   height: 36px;
@@ -34,7 +34,7 @@ const MapPoi = styled('div')`
   user-select: none;
 `;
 
-const MapPoiCircle = styled('div')`
+const MapPoiCircle = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 19px;

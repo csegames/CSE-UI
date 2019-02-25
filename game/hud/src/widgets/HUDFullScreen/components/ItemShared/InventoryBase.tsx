@@ -10,7 +10,7 @@ import Fuse, { FuseOptions } from 'fuse.js';
 import { webAPI } from '@csegames/camelot-unchained';
 
 import { InventoryRow } from '../Inventory/components/InventoryRow';
-import { nullVal, InventoryFilterButton, emptyStackHash } from '../../lib/constants';
+import { nullVal, emptyStackHash } from '../../lib/constants';
 import eventNames, {
   InventoryDataTransfer,
   EquippedItemDataTransfer,
@@ -53,6 +53,7 @@ import {
   ContainerSlotItemDef,
   SlotType,
   SlotItemDefType,
+  InventoryFilterButton,
 } from '../../lib/itemInterfaces';
 
 export interface ContainerPermissionDef {

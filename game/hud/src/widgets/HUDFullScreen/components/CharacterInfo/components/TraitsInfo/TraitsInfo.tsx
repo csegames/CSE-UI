@@ -7,7 +7,7 @@
 
 import gql from 'graphql-tag';
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
@@ -31,11 +31,11 @@ const query = gql`
   }
 `;
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
 `;
 
-const Section = styled('div')`
+const Section = styled.div`
   flex: 1;
 `;
 

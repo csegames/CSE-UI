@@ -5,17 +5,12 @@
  */
 
 import * as React from 'react';
-import styled, { keyframes } from 'react-emotion';
+import { styled } from 'linaria/react';
 import { isEqual } from 'lodash';
 
 const fadeTime = 1000;
 
-const fadeOut = keyframes`
-  from { opacity: 1; }
-  to { opacity: 0; }
-`;
-
-const ActionAlertItem = styled('div')`
+const ActionAlertItem = styled.div`
   position: fixed;
   color: #FFFFFF;
   font-weight: medium;
@@ -25,10 +20,15 @@ const ActionAlertItem = styled('div')`
 `;
 
 const FadeAlertItem = styled(ActionAlertItem)`
-  -webkit-animation: ${fadeOut} 500ms ease-in-out;
+  -webkit-animation: fadeOut 500ms ease-in-out;
   -webkit-animation-delay: ${fadeTime - 500}ms;
-  animation: ${fadeOut} 500ms ease-in-out;
+  animation: fadeOut 500ms ease-in-out;
   animation-delay: ${fadeTime - 500}ms;
+
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
 `;
 
 export interface Alert {

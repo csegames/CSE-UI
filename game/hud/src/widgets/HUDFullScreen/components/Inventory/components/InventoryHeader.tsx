@@ -7,21 +7,21 @@
 import * as React from 'react';
 import * as FilterButtonAPI from './FilterButtonAPI';
 
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import InventoryFilterButton from './InventoryFilterButton';
 import FilterInput from './FilterInput';
 import FilterSelectMenu from './FilterSelectMenu';
-import { InventoryFilterButton as FilterButtonDefinition } from '../../../lib/constants';
+import { InventoryFilterButton as FilterButtonDefinition } from '../../../lib/itemInterfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
   justify-content: center;
   padding: 10px 10px 5px 10px;
-  background: url(images/inventory/bag-bg.png);
+  background: url(/hud-new/images/inventory/bag-bg.png);
   background-size: cover;
   z-index: 2;
   &:before {
@@ -36,12 +36,12 @@ const Container = styled('div')`
   }
 `;
 
-const InputAndFilterMenuContainer = styled('div')`
+const InputAndFilterMenuContainer = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const FilterButtons = styled('div')`i
+const FilterButtons = styled.div`
   display: flex;
   flex-wrap: wrap;
 `;

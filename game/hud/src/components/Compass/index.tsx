@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import CompassPOIManager, { CompassContext } from './CompassPOIManager';
 import CardinalDirectionsPoiProvider from './POI/CardinalDirectionsPoiProvider';
 import WarbandMembersPoiProvider from './POI/WarbandMembersPoiProvider';
@@ -16,7 +16,7 @@ export interface CompassProps {}
 
 export interface CompassState {}
 
-const CompassContainer = styled('div')`
+const CompassContainer = styled.div`
   font-family: TitilliumBold;
   position: absolute;
   height: 100%;
@@ -26,7 +26,7 @@ const CompassContainer = styled('div')`
   user-select: none;
 `;
 
-const CompassTrack = styled('div')`
+const CompassTrack = styled.div`
   position: relative;
   top: 0px;
   height: 38px;

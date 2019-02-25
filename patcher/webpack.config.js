@@ -123,6 +123,15 @@ module.exports = function (e, argv = {}) {
                     cacheDirectory: path.resolve(CACHE_ROOT, 'babel-loader'),
                   },
                 },
+                {
+                  loader: 'linaria/loader',
+                  options: {
+                    sourceMap: IS_DEVELOPMENT,
+                    resolve: {
+                      alias: ALIAS,
+                    }
+                  },
+                },
               ]
             },
             {
@@ -153,6 +162,16 @@ module.exports = function (e, argv = {}) {
                   },
                 }] : []),
                 {
+                  loader: require.resolve('ts-loader'),
+                  options: {
+                    transpileOnly: IS_CI ? false : true,
+                    happyPackMode: IS_CI ? false : true,
+                    compilerOptions: {
+                      sourceMap: true,
+                    }
+                  }
+                }
+                {
                   loader: require.resolve('babel-loader'),
                   options: {
                     cacheDirectory: path.resolve(CACHE_ROOT, 'babel-loader'),
@@ -166,16 +185,6 @@ module.exports = function (e, argv = {}) {
                     failOnError: true,
                   }
                 },
-                {
-                  loader: require.resolve('ts-loader'),
-                  options: {
-                    transpileOnly: IS_CI ? false : true,
-                    happyPackMode: IS_CI ? false : true,
-                    compilerOptions: {
-                      sourceMap: true,
-                    }
-                  }
-                }
               ]
             },
             {

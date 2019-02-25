@@ -7,11 +7,12 @@
 
 import * as React from 'react';
 import className from 'classnames';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 import { showTooltip, hideTooltip, ShowTooltipPayload } from 'actions/tooltips';
 
-const Item = styled('a')`
+const Item = styled.a`
   pointer-events: all;
   color: #e0ddd3 !important;
   width: 26px;
@@ -53,7 +54,7 @@ const ListHorizontal = css`
 const Tooltip = css`
 `;
 
-const Badge = styled('div')`
+const Badge = styled.div`
   position: relative;
   z-index: 1;
   top: -25px;

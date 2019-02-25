@@ -5,17 +5,17 @@
  */
 
 import React, { useState } from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { useAbilityStateReducer, EditMode } from 'services/session/AbilityViewState';
 import { DragMove } from 'components/Utilities/DragMove';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: fixed;
   color: #ececec;
   background: #333;
 `;
 
-const Header = styled('div')`
+const Header = styled.div`
   cursor: move;
   padding: 5px;
   padding-top: 10px;
@@ -34,11 +34,11 @@ const Header = styled('div')`
   }
 `;
 
-const Options = styled('ul')`
+const Options = styled.ul`
   margin: 0;
 `;
 
-const Option = styled('li')`
+const Option: any = styled.li`
   list-style: none;
   padding: 2px;
   border: 1px solid #666;

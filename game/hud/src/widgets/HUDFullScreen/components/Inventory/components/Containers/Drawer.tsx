@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { webAPI, Tooltip } from '@csegames/camelot-unchained';
 
 import * as base from '../../../ItemShared/InventoryBase';
@@ -34,17 +34,17 @@ import {
 
 declare const toastr: any;
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
 `;
 
-const HeaderContent = styled('div')`
+const HeaderContent = styled.div`
   position: relative;
   height: 30px;
   width: 160px;
   padding-left: 15px;
-  background: ${(props: any) => props.showImg ? 'url(images/inventory/sub-title.png)' : 'transparent' };
+  background: ${(props: any) => props.showImg ? 'url(/hud-new/images/inventory/sub-title.png)' : 'transparent' };
   background-size: 100% 100%;
   &:before {
     content: '';
@@ -53,16 +53,16 @@ const HeaderContent = styled('div')`
     right: 0;
     bottom: 0;
     left: 0;
-    background: ${(props: any) => props.showImg ? 'url(images/inventory/sub-title.png)' : 'transparent' };
+    background: ${(props: any) => props.showImg ? 'url(/hud-new/images/inventory/sub-title.png)' : 'transparent' };
     background-size: 100% 100%;
   }
 `;
 
-const MainContent = styled('div')`
+const MainContent = styled.div`
   padding: 0 10px;
 `;
 
-const FooterContainer = styled('div')`
+const FooterContainer = styled.div`
   height: 30px;
   display: flex;
   align-items: center;
@@ -71,25 +71,25 @@ const FooterContainer = styled('div')`
   padding-right: 3px;
 `;
 
-const RequirementsContainer = styled('div')`
+const RequirementsContainer = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
 `;
 
-const RequirementIcon = styled('span')`
+const RequirementIcon = styled.span`
   display: flex;
   font-size: 15px;
   margin-right: 5px;
   color: ${(props: any) => props.color};
 `;
 
-const PermissionContainer = styled('div')`
+const PermissionContainer = styled.div`
   background: rgba(0,0,0,0.5);
   padding: 0 5px;
 `;
 
-const PermissionIcon = styled('span')`
+const PermissionIcon = styled.span`
   opacity: ${(props: any) => props.opacity};
   padding: 0 5px 0 0;
   vertical-align: middle;

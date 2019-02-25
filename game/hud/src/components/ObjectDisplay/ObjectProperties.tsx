@@ -1,13 +1,13 @@
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { States, DataMapper } from './types';
 import ObjectDisplay from '.';
 
-const Container = styled('section')`
+const Container = styled.section`
 `;
 
-const Title = styled('div')`
+const Title = styled.div`
   font-size: 1.1em;
   padding: 5px;
   text-align: left;
@@ -19,7 +19,7 @@ const Title = styled('div')`
   cursor: pointer;
 `;
 
-const Indicator = styled('span')`
+const Indicator = styled.span`
   float: left;
   margin: 0px 5px;
 `;

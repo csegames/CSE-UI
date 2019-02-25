@@ -8,7 +8,7 @@ import gql from 'graphql-tag';
 import * as React from 'react';
 
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import BodyPartSection from './BodyPartSection';
 import StatListContainer from '../StatListContainer';
@@ -17,7 +17,7 @@ import eventNames from '../../../../lib/eventNames';
 import { DamageTypeValuesFragment } from 'gql/fragments/DamageTypeValuesFragment';
 import { DefenseListGQL } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   flex: 1;
   height: 100%;
   background-color: rgba(75, 67, 65, 0.2);

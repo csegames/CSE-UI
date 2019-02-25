@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import * as base from '../../../ItemShared/InventoryBase';
 import Drawer from './Drawer';
@@ -26,7 +26,7 @@ import {
   hasRemoveContentPermissions,
 } from '../../../../lib/utils';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   border-left: 1px solid ${(props: any) => props.borderColor};
   border-bottom: 1px solid ${(props: any) => props.borderColor};
@@ -34,7 +34,7 @@ const Container = styled('div')`
   -webkit-border-image: linear-gradient(to top, ${(props: any) => props.borderColor}, transparent 70%) 1% 1%;
 `;
 
-const ContainerHeaderOverlay = styled('div')`
+const ContainerHeaderOverlay = styled.div`
   position: absolute;
   top: 0;
   right: 0;
@@ -47,7 +47,7 @@ const ContainerHeaderOverlay = styled('div')`
     left: 0;
     right: 0;
     height: 100%;
-    background: url(images/inventory/title-bg-grey.png) no-repeat;
+    background: url(/hud-new/images/inventory/title-bg-grey.png) no-repeat;
     box-shadow: inset 0 0 5px 2px rgba(0,0,0,1);
     background-size: cover;
   }
@@ -63,7 +63,7 @@ const ContainerHeaderOverlay = styled('div')`
   }
 `;
 
-const ContainerSubHeader = styled('div')`
+const ContainerSubHeader = styled.div`
   position: relative;
   height: 30px;
   display: flex;
@@ -72,7 +72,7 @@ const ContainerSubHeader = styled('div')`
   background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0.2));
 `;
 
-const PermissionIcon = styled('div')`
+const PermissionIcon = styled.div`
   opacity: ${(props: any) => props.opacity};
   color: ${(props: any) => props.color};
   padding: 0 5px;

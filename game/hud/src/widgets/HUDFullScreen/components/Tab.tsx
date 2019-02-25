@@ -6,15 +6,15 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   height: 100%;
   pointer-events: none;
 `;
 
-const Button = styled('div')`
+const Button = styled.div`
   position: relative;
   display: flex;
   align-items: center;
@@ -42,33 +42,33 @@ const Button = styled('div')`
   }
 `;
 
-const Icon = styled('div')`
+const Icon = styled.div`
   margin-right: 5px;
 `;
 
-const Glow = styled('div')`
+const Glow = styled.div`
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   height: 35px;
-  background: url(images/tabs/arrow-glow.png) no-repeat;
+  background: url(/hud-new/images/tabs/arrow-glow.png) no-repeat;
   background-size: cover;
   background-position: center;
 `;
 
-const Arrow = styled('div')`
+const Arrow = styled.div`
   position: absolute;
   left: 0;
   right: 5px;
   bottom: 1px;
   height: 3px;
-  background: url(images/tabs/arrow-tab.png) no-repeat;
+  background: url(/hud-new/images/tabs/arrow-tab.png) no-repeat;
   background-size: contain;
   background-position: center;
 `;
 
-const ActiveBottomBorder = styled('div')`
+const ActiveBottomBorder = styled.div`
   position: absolute;
   right: 0;
   left: 0;
@@ -77,7 +77,7 @@ const ActiveBottomBorder = styled('div')`
   background: linear-gradient(to right, rgba(237, 177, 115, 0) 10%, rgba(237, 177, 115, 0.5), rgba(237, 177, 115, 0) 90%);
 `;
 
-const TopBorder = styled('div')`
+const TopBorder = styled.div`
   position: absolute;
   top: 1px;
   right: 0;
@@ -87,7 +87,7 @@ const TopBorder = styled('div')`
     props.active ? 'rgba(229, 229, 229, 0.5)' : '#333'}, rgba(0,0,0,0));
 `;
 
-const LeftBorder = styled('div')`
+const LeftBorder = styled.div`
   position: absolute;
   top: 0px;
   left: 10px;
@@ -99,7 +99,7 @@ const LeftBorder = styled('div')`
     'rgba(229, 229, 229, 0.5)' : '#333'};
 `;
 
-const BottomBorder = styled('div')`
+const BottomBorder = styled.div`
   position: absolute;
   bottom: 5px;
   left: 4px;
@@ -109,7 +109,7 @@ const BottomBorder = styled('div')`
     props.active ? 'rgba(229, 229, 229, 0.5)' : '#333'}, rgba(0,0,0,0));
 `;
 
-const CloseButton = styled('div')`
+const CloseButton = styled.div`
   position: absolute;
   top: -4px;
   right: -7px;

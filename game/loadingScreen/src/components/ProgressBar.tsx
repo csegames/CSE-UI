@@ -6,27 +6,16 @@
  */
 
 import * as React from 'react';
-import styled, { keyframes } from 'react-emotion';
+import { styled } from 'linaria/react';
 
-export const shine = keyframes`
-  from {
-    left: 95%;
-    opacity: 1;
-  }
-  to {
-    left: 20px;
-    opacity: 0;
-  }
-`;
-
-const BarContainer = styled('div')`
+const BarContainer = styled.div`
   position: relative;
   height: 15px;
   width: 100%;
   bottom: 0px;
   left: 0px;
   z-index: 2;
-  background: url(images/progressbar/texture-overlay.png),
+  background: url(/hud-new/images/progressbar/texture-overlay.png),
     linear-gradient(black, #272727);
   background-repeat-y: no-repeat;
   border: 1px solid #464646;
@@ -36,11 +25,11 @@ const BarContainer = styled('div')`
   border-left: 0px solid  #09f;
 `;
 
-const ProgressText = styled('div')`
+const ProgressText = styled.div`
   font-size: 9px;
   padding: 3px 10px;
   color: #c3c3c3;
-  background: url(images/progressbar/loading-percent.png);
+  background: url(/hud-new/images/progressbar/loading-percent.png);
   display: block;
   position: absolute;
   top: -2px;
@@ -50,14 +39,14 @@ const ProgressText = styled('div')`
   z-index: 1;
 `;
 
-const Bar = styled('div')`
+const Bar = styled.div`
   position: relative;
   display: flex;
   width: 100%;
   transition: all linear .5s;
   &:after {
     content: "";
-    background: url(images/progressbar/loading-bar-end.png) no-repeat center right;
+    background: url(/hud-new/images/progressbar/loading-bar-end.png) no-repeat center right;
     width: 200px;
     height: 10px;
     margin-top: 2px;
@@ -65,14 +54,14 @@ const Bar = styled('div')`
 
   &:before {
     content: "";
-    background: url(images/progressbar/loading-bar-repeat.png) center;
+    background: url(/hud-new/images/progressbar/loading-bar-repeat.png) center;
     width: 100%;
     height: 10px;
     margin-top: 2px;
   }
 `;
 
-const ButtonShine = styled('div')`
+const ButtonShine = styled.div`
   pointer-events: none;
   opacity: 0;
   position: absolute;
@@ -85,8 +74,19 @@ const ButtonShine = styled('div')`
   background: linear-gradient(transparent, rgba(255,255,255,1));
   clip-path: polygon(80% 0%, 100% 0%, 20% 100%, 0% 100%);
   -webkit-clip-path: polygon(80% 0%, 100% 0%, 20% 100%, 0% 100%);
-  -webkit-animation: ${shine} 3s ease forwards;
-  animation: ${shine} 3s ease forwards;
+  -webkit-animation: shine 3s ease forwards;
+  animation: shine 3s ease forwards;
+
+  @keyframes shine {
+    from {
+      left: 95%;
+      opacity: 1;
+    }
+    to {
+      left: 20px;
+      opacity: 0;
+    }
+  }
 `;
 
 export interface Props {

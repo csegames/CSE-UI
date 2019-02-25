@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { styled } from 'linaria/react';
 import { isEqual, includes } from 'lodash';
 
 import { SLOT_DIMENSIONS } from '../../../lib/constants';
@@ -27,7 +27,7 @@ export interface EquippedItemSlotStyle {
   highlightSlotContainer: React.CSSProperties;
 }
 
-const SlotDecorationPrefix = css`
+const SlotDecorationPrefix = `
   content: '';
   position: absolute;
   top: 0;
@@ -39,7 +39,7 @@ const SlotDecorationPrefix = css`
   pointer-events: none;
 `;
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   width: ${SLOT_DIMENSIONS.WIDTH}px;
   height: ${SLOT_DIMENSIONS.HEIGHT}px;
@@ -55,12 +55,12 @@ const Container = styled('div')`
     ${SlotDecorationPrefix}
     width: ${SLOT_DIMENSIONS.WIDTH - 4}px;
     height: ${SLOT_DIMENSIONS.HEIGHT - 4}px;
-    background: url(images/paperdoll/slot-gear-bg.png) no-repeat;
+    background: url(/hud-new/images/paperdoll/slot-gear-bg.png) no-repeat;
     background-size: contain;
   }
   &:after {
     ${SlotDecorationPrefix}
-    background: url(images/paperdoll/slot-gear-frame.png) no-repeat;
+    background: url(/hud-new/images/paperdoll/slot-gear-frame.png) no-repeat;
     background-size: contain;
   }
   &.weapon-slot {
@@ -70,12 +70,12 @@ const Container = styled('div')`
       height: ${SLOT_DIMENSIONS.HEIGHT - 4}px;
       top: 1px;
       left: 1px;
-      background: url(images/paperdoll/slot-weapon-bg.png) no-repeat;
+      background: url(/hud-new/images/paperdoll/slot-weapon-bg.png) no-repeat;
       background-size: contain;
     }
     &:after {
       ${SlotDecorationPrefix}
-      background: url(images/paperdoll/slot-weapon-frame.png) no-repeat;
+      background: url(/hud-new/images/paperdoll/slot-weapon-frame.png) no-repeat;
       background-size: contain;
     }
   }
@@ -108,7 +108,6 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     const isWeapon = includes(this.props.slot.slotName.toLowerCase(), 'weapon');
     return (
       <Container
-        hasItem={this.props.providedEquippedItem}
         className={isWeapon ? 'weapon-slot' : ''}
         onMouseOver={this.onMouseOverItemSlot}
         onMouseLeave={this.onMouseLeave}
@@ -146,7 +145,7 @@ export class EquippedItemSlot extends React.Component<EquippedItemSlotProps, Equ
     game.trigger(eventNames.onUnequipItem, payload);
   }
 
-  private onMouseOverItemSlot = (event: MouseEvent) => {
+  private onMouseOverItemSlot = (event: React.MouseEvent<HTMLDivElement>) => {
     const equippedItem = this.props.providedEquippedItem;
     const itemId = equippedItem && equippedItem.item.id;
     const shouldShowTooltip = !this.props.itemMenuVisible && itemId;

@@ -5,10 +5,10 @@
 */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { Btn } from './BlueprintNameDialog';
 
-const Container = styled('div')`
+const Container = styled.div`
   flex: 1 1 auto;
   padding-top: 10px;
   overflow: auto;
@@ -22,13 +22,13 @@ const Container = styled('div')`
   color: #ececec;
 `;
 
-const Controls = styled('div')`
+const Controls = styled.div`
   grid-area: controls;
   padding: 5px;
   border-right 1px solid #444;
 `;
 
-const Control = styled('div')`
+const Control = styled.div`
   display: grid;
   grid-template:
     'keybind label' auto
@@ -36,24 +36,24 @@ const Control = styled('div')`
   margin-bottom: 5px;
 `;
 
-const ControlKeybind = styled('div')`
+const ControlKeybind = styled.div`
   grid-area: keybind;
   border: 1px solid #444;
   padding: 5px;
   text-align: center;
 `;
 
-const ControlLabel = styled('div')`
+const ControlLabel = styled.div`
   grid-area: label;
 `;
 
-const Buttons = styled('div')`
+const Buttons = styled.div`
   grid-area: buttons;
   padding: 5px;
   border-bottom 1px solid #444;
 `;
 
-const Extra = styled('div')`
+const Extra = styled.div`
   grid-area: extra;
   padding: 5px;
   border-bottom 1px solid #444;

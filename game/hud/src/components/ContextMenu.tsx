@@ -5,14 +5,13 @@
  */
 
 import * as React from 'react';
-import { css } from 'emotion';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { isEmpty } from 'lodash';
 
 import * as actions from 'actions/contextMenu';
 import { getViewportSize } from 'lib/viewport';
 
-const Container = styled('div')`
+const Container = styled.div`
   background: rgba(0, 0, 0, 0.01);
   position: fixed;
   left: 0;
@@ -22,18 +21,18 @@ const Container = styled('div')`
   z-index: 10000;
 `;
 
-const Item = styled('li')`
+const Item = styled.li`
   padding: 2px 5px;
   margin: 0;
   color: #ececec;
   pointer-events: all;
   cursor: pointer;
   &:hover {
-    color: ${(props: {color: string}) => props.color};
+    color: ${(props: any) => props.color};
   }
 `;
 
-const HeaderOverlay = styled('div')`
+const HeaderOverlay = styled.div`
   pointer-events: none;
   position: absolute;
   top: 0;
@@ -51,10 +50,51 @@ const HeaderOverlay = styled('div')`
     left: 0;
     right: 0;
     bottom: 0;
-    background: url(images/item-tooltips/title_viel.png);
+    background: url(/hud-new/images/item-tooltips/title_viel.png);
     background-size: cover;
     background-repeat: no-repeat;
   }
+`;
+
+const Overlay = styled.ol`
+  list-style: none;
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  border-width: 2px;
+  border-style: solid;
+  border-image: linear-gradient(to bottom, ${(props: any) => props.color}, transparent);
+  border-image-slice: 1;
+  background: url(/hud-new/images/item-tooltips/bg.png);
+  background-size: cover;
+  -webkit-mask-image: url(/hud-new/images/item-tooltips/ui-mask.png);
+  -webkit-mask-size: cover;
+  color: #ABABAB;
+  width: auto;
+  overflow: hidden;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: url(/hud-new/images/item-tooltips/ornament_left.png);
+    width: 35px;
+    height: 35px;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background: url(/hud-new/images/item-tooltips/ornament_right.png);
+    width: 35px;
+    height: 35px;
+  }
+  padding: 5px;
 `;
 
 export type MenuItem = {
@@ -122,55 +162,14 @@ export class ContextMenuView extends React.Component<Props, State> {
                 data-input-group='block'
                 onMouseDown={this.hide}
               >
-                <ol
+                <Overlay
                   onMouseDown={(e: React.MouseEvent) => e.stopPropagation()}
                   color={color}
                   ref={this.refCallback}
                   style={{
                     position: 'fixed',
                     ...this.state.styledPosition,
-                  }}
-                  className={css`
-                    list-style: none;
-                    position: fixed;
-                    margin: 0;
-                    padding: 0;
-                    z-index: 10001;
-                    display: flex;
-                    flex-direction: column;
-                    pointer-events: none;
-                    border-width: 2px;
-                    border-style: solid;
-                    border-image: linear-gradient(to bottom, ${color}, transparent);
-                    border-image-slice: 1;
-                    background: url(images/item-tooltips/bg.png);
-                    background-size: cover;
-                    -webkit-mask-image: url(images/item-tooltips/ui-mask.png);
-                    -webkit-mask-size: cover;
-                    color: #ABABAB;
-                    width: auto;
-                    overflow: hidden;
-                    &:before {
-                      content: '';
-                      position: absolute;
-                      top: 0px;
-                      left: 0px;
-                      background: url(images/item-tooltips/ornament_left.png);
-                      width: 35px;
-                      height: 35px;
-                    }
-                    &:after {
-                      content: '';
-                      position: absolute;
-                      top: 0px;
-                      right: 0px;
-                      background: url(images/item-tooltips/ornament_right.png);
-                      width: 35px;
-                      height: 35px;
-                    }
-                    padding: 5px;
-                  `}
-                >
+                  }}>
                   <HeaderOverlay color={color} />
                   {this.state.content && this.state.content}
                   {
@@ -188,7 +187,7 @@ export class ContextMenuView extends React.Component<Props, State> {
                         </Item>
                       ))
                   }
-                </ol>
+                </Overlay>
               </Container>
             );
           }

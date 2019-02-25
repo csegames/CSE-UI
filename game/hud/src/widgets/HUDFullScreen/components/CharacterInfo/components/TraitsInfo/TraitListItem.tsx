@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 
 const COLORS = {
@@ -23,7 +23,7 @@ enum TraitType {
   Boon = 'Boon',
 }
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
   align-items: center;
@@ -45,12 +45,12 @@ const Container = styled('div')`
     right: 0;
     bottom: -5px;
     height: 5px;
-    background: url(images/character-stats/ornament-middle-bottom-list.png) no-repeat;
+    background: url(/hud-new/images/character-stats/ornament-middle-bottom-list.png) no-repeat;
     background-position: center;
   }
 `;
 
-const ImageContainer = styled('div')`
+const ImageContainer = styled.div`
   width: 80px;
   height: 80px;
   min-width: 80px;
@@ -68,18 +68,18 @@ const ImageContainer = styled('div')`
   }
 `;
 
-const Image = styled('img')`
+const Image = styled.img`
   width: 100%;
   height: calc(100% - 3px);
 `;
 
-const InfoContainer = styled('div')`
+const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 10px;
 `;
 
-const Title = styled('div')`
+const Title = styled.div`
   font-size: 16px;
   font-family: Caudex;
   font-weight: bold;
@@ -93,7 +93,7 @@ const Title = styled('div')`
   }
 `;
 
-const SubTitle = styled('div')`
+const SubTitle = styled.div`
   font-size: 14px;
   font-family: Caudex;
   color: ${COLORS.GENERAL_TRAIT};
@@ -109,7 +109,7 @@ const SubTitle = styled('div')`
   }
 `;
 
-const Description = styled('div')`
+const Description = styled.div`
   margin-top: 5px;
   font-size: 14px;
   font-family: TitilliumWeb;

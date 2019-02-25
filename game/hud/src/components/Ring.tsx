@@ -5,53 +5,7 @@
  */
 
 import * as React from 'react';
-import styled, { keyframes } from 'react-emotion';
-
-// Ring Animations
-const blinkStroke = keyframes`
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-`;
-
-const pulseStroke = keyframes`
-  from {
-    stroke-opacity: 1;
-  }
-  to {
-    stroke-opacity: 0.25;
-  }
-`;
-
-const opacityPulse = keyframes`
-  from {
-    opacity: 0.3;
-  }
-  to {
-    opacity: 0.1;
-  }
-`;
-
-// const recoveryBgPulse = keyframes`
-//   from {
-//     background: rgba(25, 171, 255, 0.25);
-//   }
-//   to {
-//     background: rgba(25, 171, 255, 0.1);
-//   }
-// `;
-
-// const prepBgPulse = keyframes`
-//   from {
-//     background: rgba(255, 159, 25, 0.25);
-//   }
-//   to {
-//     background: rgba(255, 159, 25, 0.1);
-//   }
-// `;
+import { styled } from 'linaria/react';
 
 // Ring Elements
 interface RingProps {
@@ -69,39 +23,63 @@ interface CircleOpts {
   blur: boolean;
 }
 
-const RingSVG = styled('svg')`
+const RingSVG = styled.svg`
   position: absolute;
   left: 0;
   top: 0;
   overflow: visible !important;
 `;
 
-const RingCircle = styled('path')`
+const RingCircle = styled.path`
   position: absolute;
   left: 0;
   top: 0;
-  ${(props: CircleOpts & { isBackground: boolean }) => {
+  ${(props: any) => {
     switch (props.animation) {
       default:
       case 'solid': return;
       case 'pulse':
         if (props.isBackground) {
           return `
-          animation: ${opacityPulse} .75s steps(5, start) infinite alternate;
-          -webkit-animation: ${opacityPulse} .75s steps(5, start) infinite alternate;
+          animation: opacityPulse .75s steps(5, start) infinite alternate;
         `;
         }
         return `
-          animation: ${pulseStroke} .75s infinite alternate-reverse;
-          -webkit-animation: ${pulseStroke} .75s infinite alternate-reverse;
+          animation: pulseStroke .75s infinite alternate-reverse;
         `;
       case 'blink':
         return `
-          animation: ${blinkStroke} .5s steps(5, end) infinite alternate-reverse;
-          -webkit-animation: ${blinkStroke} .5s steps(5, end) infinite alternate-reverse;
+          animation: blinkStroke .5s steps(5, end) infinite alternate-reverse;
         `;
     }
   }}
+
+  @keyframes blinkStroke {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes pulseStroke {
+    from {
+      stroke-opacity: 1;
+    }
+    to {
+      stroke-opacity: 0.25;
+    }
+  }
+
+  @keyframes opacityPulse {
+    from {
+      opacity: 0.3;
+    }
+    to {
+      opacity: 0.1;
+    }
+  }
 `;
 
 const RingCircleBlur = styled(RingCircle)`

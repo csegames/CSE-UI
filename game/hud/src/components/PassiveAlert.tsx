@@ -7,19 +7,14 @@
 import * as React from 'react';
 import { GraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
-import styled, { keyframes } from 'react-emotion';
+import { styled } from 'linaria/react';
 import { PassiveAlert as IPassiveAlert } from 'gql/interfaces';
 
 const fadeTime = 3000;
 const maxNumAlerts = 5;
 const shiftBy = 3;
 
-const fadeOut = keyframes`
-  from { -webkit-opacity :1; }
-  to { -webkit-opacity :0; }
-`;
-
-const PassiveAlertContainer = styled('div')`
+const PassiveAlertContainer = styled.div`
   display: block;
   position: fixed;
   top: 12%;
@@ -31,7 +26,7 @@ const PassiveAlertContainer = styled('div')`
   text-align: center;
 `;
 
-const PassiveAlertItem = styled('li')`
+const PassiveAlertItem = styled.li`
   color: #FFFFFF;
   font-weight: medium;
   font-size: 13px;
@@ -39,10 +34,15 @@ const PassiveAlertItem = styled('li')`
 `;
 
 const FadeAlertItem = styled(PassiveAlertItem)`
-  -webkit-animation: ${fadeOut} 500ms ease-in-out;
+  -webkit-animation: fadeOut 500ms ease-in-out;
   -webkit-animation-delay: ${fadeTime - 500}ms;
-  animation: ${fadeOut} 500ms ease-in-out;
+  animation: fadeOut 500ms ease-in-out;
   animation-delay: ${fadeTime - 500}ms;
+
+  @keyframes fadeOut {
+    from { -webkit-opacity :1; }
+    to { -webkit-opacity :0; }
+  }
 `;
 
 let alertId = 0;

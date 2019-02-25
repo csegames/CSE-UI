@@ -5,12 +5,12 @@
 */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { Tooltip } from 'components/Tooltip';
 import { doesSearchInclude } from '@csegames/camelot-unchained';
 import { ConfirmDialog } from '@csegames/camelot-unchained/lib/components/ConfirmDialog';
 
-const Container = styled('div')`
+const Container = styled.div`
   flex: 1 1 auto;
   margin-top: -10px;
   padding-top: 10px;
@@ -21,7 +21,7 @@ const Container = styled('div')`
   flex-direction: column;
 `;
 
-const Content = styled('div')`
+const Content = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -31,14 +31,14 @@ const Content = styled('div')`
   color: #ececec;
 `;
 
-const Controller = styled('div')`
+const Controller = styled.div`
   display: flex;
   flex: 0 0 auto;
   padding: 2px;
   border-bottom: 1px solid #444;
 `;
 
-const CreateBtn = styled('div')`
+const CreateBtn = styled.div`
   padding: 5px 2px;
   font-size: 0.9em;
   background-color: orange;
@@ -56,7 +56,7 @@ const CreateBtnDisabled = styled(CreateBtn)`
   }
 `;
 
-const Blueprint = styled('div')`
+const Blueprint = styled.div`
   position: relative;
   display: flex;
   margin: 2px;
@@ -70,18 +70,18 @@ const SelectedBlueprint = styled(Blueprint)`
   border: 1px solid gold;
 `;
 
-const Image = styled('img')`
+const Image = styled.img`
   width: 128px;
   height: 128px;
 `;
 
-const Delete = styled('div')`
+const Delete = styled.div`
   color: red;
   cursor: pointer;
   background: #777;
 `;
 
-const TooltipContainer = styled('div')`
+const TooltipContainer = styled.div`
   padding: 5px;
   background: #222;
   color: #ececec;
@@ -94,7 +94,7 @@ const TooltipContainer = styled('div')`
     / auto auto;
 `;
 
-const TooltipIcon = styled('img')`
+const TooltipIcon = styled.img`
   grid-area: icon;
   width: 128px;
   height: 128px;
@@ -102,7 +102,7 @@ const TooltipIcon = styled('img')`
   justify-self: center;
 `;
 
-const TooltipName = styled('div')`
+const TooltipName = styled.div`
   grid-area: name;
   padding: 5px;
   align-self: center;

@@ -5,21 +5,20 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { debounce } from 'lodash';
 
 import TabHeader from '../TabHeader';
 import InventoryHeader from './components/InventoryHeader';
 import InventoryBody from './components/InventoryBody';
-import { InventoryFilterButton } from '../../lib/constants';
 import { ContainerIdToDrawerInfo } from '../ItemShared/InventoryBase';
 import {
   InventoryItem,
   GearSlotDefRef,
 } from 'gql/interfaces';
-import { SlotItemDefType } from '../../lib/itemInterfaces';
+import { SlotItemDefType, InventoryFilterButton } from '../../lib/itemInterfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -28,7 +27,7 @@ const Container = styled('div')`
   height: 100%;
 `;
 
-const SideImage = styled('img')`
+const SideImage = styled.img`
   position: absolute;
   pointer-events: none;
   top: 0;

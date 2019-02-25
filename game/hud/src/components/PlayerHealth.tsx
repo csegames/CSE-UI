@@ -6,14 +6,14 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { isEqualPlayerState } from '../lib/playerStateEqual';
 import { UnitFrame } from './UnitFrame';
 import { showSelfContextMenu } from 'actions/contextMenu';
 import { setPlayerState } from 'actions/player';
 
-const PlayerHealthContainer = styled('div')`
+const PlayerHealthContainer = styled.div`
   pointer-events: auto;
   width: 100%;
   height: 100%;

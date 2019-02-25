@@ -5,12 +5,12 @@
 */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { Dialog } from 'components/UI/Dialog';
 import { DropDownSelect } from '@csegames/camelot-unchained/lib/components/DropDownSelect';
 import { CheckInput } from 'components/UI/CheckInput';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: fixed;
   left: 50%;
   top: 50%;
@@ -20,7 +20,7 @@ const Container = styled('div')`
   z-index: 1;
 `;
 
-const Content = styled('div')`
+const Content = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -33,7 +33,7 @@ const Content = styled('div')`
   min-height: 150px;
 `;
 
-const ReplacementField = styled('div')`
+const ReplacementField = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -42,7 +42,7 @@ const ReplacementField = styled('div')`
   align-content: space-between;
   color: #ececec;
   padding-top: 10px;
-  background-image: url(images/settings/bag-bg-grey.png);
+  background-image: url(/hud-new/images/settings/bag-bg-grey.png);
   background-repeat: no-repeat;
   background-position: top center;
   overflow: visible;
@@ -50,7 +50,7 @@ const ReplacementField = styled('div')`
   min-height: 150px;
 `;
 
-export const Btn = styled('div')`
+export const Btn = styled.div`
   position: relative;
   pointer-events: all;
   display: flex;
@@ -73,7 +73,7 @@ export const Btn = styled('div')`
   font-size: 14px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  -webkit-mask-image: url(images/button-mask.png);
+  -webkit-mask-image: url(/hud-new/images/button-mask.png);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: cover;
   transition: all ease .2s;
@@ -85,7 +85,7 @@ export const Btn = styled('div')`
   }
 `;
 
-const Image = styled('img')`
+const Image = styled.img`
   width: 64px;
   height: 64px;
 `;

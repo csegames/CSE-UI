@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { prettifyText } from '../../../lib/utils';
 import {
   characterBodyPartIcons,
@@ -16,10 +16,10 @@ import {
   LESS_THAN_STAT_COLOR,
 } from '../../../lib/constants';
 
-const SectionContainer = styled('div')`
+const SectionContainer = styled.div`
 `;
 
-const SectionTitle = styled('div')`
+const SectionTitle = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -31,14 +31,14 @@ const SectionTitle = styled('div')`
     bottom: 0;
     left: -10px;
     right: 0;
-    background: url(images/item-tooltips/section-title.png) no-repeat;
+    background: url(/hud-new/images/item-tooltips/section-title.png) no-repeat;
     background-size: 100% 25px;
     z-index: -1;
     overflow: hidden;
   }
 `;
 
-const SectionIcon = styled('div')`
+const SectionIcon = styled.div`
   display: inline-block;
   -webkit-transform: ${(props: any) => props.isRightSection ? 'scaleX(-1)' : ''};
   transform: ${(props: any) => props.isRightSection ? 'scaleX(-1)' : ''};
@@ -47,12 +47,12 @@ const SectionIcon = styled('div')`
   font-size: 14px;
 `;
 
-const SectionListContainer = styled('div')`
+const SectionListContainer = styled.div`
   column-count: ${(props: any) => props.columnCount};
   padding: ${(props: any) => props.padding};
 `;
 
-const ListItem = styled('div')`
+const ListItem = styled.div`
   display: flex;
   font-family: "TitilliumWeb";
   font-size: 12px;
@@ -60,15 +60,15 @@ const ListItem = styled('div')`
   -webkit-column-break-inside: avoid;
 `;
 
-const ListIcon = styled('span')`
+const ListIcon = styled.span`
   margin-right: 5px;
 `;
 
-const StatValueContainer = styled('div')`
+const StatValueContainer = styled.div`
   display: flex;
 `;
 
-const ComparedStat = styled('div')`
+const ComparedStat = styled.div`
   color: ${(props: any) => props.color};
 `;
 
@@ -119,7 +119,7 @@ class TooltipInfoSection extends React.Component<TooltipInfoSectionProps> {
             const comparedStat = stat.compared && (turnValueToPercent ?
               Number((stat.compared * 100).toFixed(1)) : Number(stat.compared.toFixed(1)));
             return (
-              <ListItem key={i} hasWidth={i !== this.props.stats.length - 1}>
+              <ListItem key={i}>
                 {this.props.useIcon ?
                   <ListIcon className={`icon-damage-${stat.name}`}></ListIcon> :
                   <ListIcon>{prettifyText(stat.name)}</ListIcon>

@@ -5,18 +5,19 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { placeholderIcon } from '../../lib/constants';
 import { StandardSlot } from '../Inventory/components/DraggableItemComponent';
 
-const Container = styled('div')`
+const Container = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
   cursor: pointer;
 `;
 
-const TextContainer = styled('header')`
+const TextContainer = styled.header`
   position: absolute;
   left: 0;
   width: 100%;
@@ -57,7 +58,7 @@ const Footer = css`
   }
 `;
 
-const Text = styled('div')`
+const Text = styled.div`
   position: relative;
   color: white;
   text-shadow: 0 1px 0 black;

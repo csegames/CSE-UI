@@ -5,9 +5,9 @@
  *
  */
 
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const DescriptionItem = styled('div')`
+const DescriptionItem = styled.div`
   display: flex;
   justify-content: space-between;
   position: relative;

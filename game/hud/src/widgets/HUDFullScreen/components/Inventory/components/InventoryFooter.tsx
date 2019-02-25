@@ -6,25 +6,25 @@
 
 import * as React from 'react';
 
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { Tooltip } from '@csegames/camelot-unchained';
 
 import InventoryRowActionButton from './InventoryRowActionButton';
 import { emptyStackHash, footerInfoIcons, rowActionIcons } from '../../../lib/constants';
 import eventNames, { DropItemPayload } from '../../../lib/eventNames';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   flex: 0 0 auto;
   height: 36px;
   justify-content: flex-end;
   align-items: center;
-  background: url(images/inventory/bag-bottom-bg.png);
+  background: url(/hud-new/images/inventory/bag-bottom-bg.png);
   background-size: cover;
   z-index: 1;
 `;
 
-const Section = styled('div')`
+const Section = styled.div`
   cursor: default;
   display: flex;
   align-items: center;
@@ -35,7 +35,7 @@ const Section = styled('div')`
   text-align: center;
 `;
 
-const Icon = styled('span')`
+const Icon = styled.span`
   font-size: 14px;
   line-height: 14px;
   margin-right: 5px;

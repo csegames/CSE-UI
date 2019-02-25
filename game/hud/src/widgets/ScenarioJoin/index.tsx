@@ -5,13 +5,11 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { TabbedDialog, DialogTab } from 'UI/TabbedDialog';
 import { ScenarioMatch, startPollingScenarioQueue, stopPollingScenarioQueue } from 'services/session/scenarioQueue';
 import { Scenario } from './components/Scenario';
 import * as CSS from 'lib/css-helper';
-
-export const SCENARIO_FONT = `font-family: 'Caudex', serif;`;
 
 const SCENARIO_JOIN_DIALOG_WIDTH = 850;
 const SCENARIO_JOIN_DIALOG_HEIGHT = 410;
@@ -29,12 +27,12 @@ export const ScenarioJoinDimensions: Size = {
   height: SCENARIO_JOIN_DIALOG_HEIGHT,
 };
 
-const ScenarioJoinWrapper = styled('div')`
+const ScenarioJoinWrapper = styled.div`
   width: 100%;
   height: 100%;
 `;
 
-const LoadingScenarios = styled('div')`
+const LoadingScenarios = styled.div`
   ${CSS.IS_COLUMN}
   ${CSS.DONT_GROW}
   width: 100%;
@@ -44,7 +42,7 @@ const LoadingScenarios = styled('div')`
   padding-top: 70px;
 `;
 
-const ScenariosContainer = styled('div')`
+const ScenariosContainer = styled.div`
   ${CSS.IS_COLUMN}
   ${CSS.DONT_GROW}
   width: 100%;
@@ -55,7 +53,7 @@ const ScenariosContainer = styled('div')`
   box-sizing: border-box !important;
 `;
 
-const Scenarios = styled('div')`
+const Scenarios = styled.div`
   ${CSS.IS_COLUMN}
   ${CSS.DONT_GROW}
   padding: 0 10px 0 10px;

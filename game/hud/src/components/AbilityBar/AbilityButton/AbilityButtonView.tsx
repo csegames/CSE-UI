@@ -7,10 +7,11 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 
-import { overlayPseudo } from 'components/AbilityBar/AbilityButton/lib/styles';
 import {
+  overlayPseudo,
   ReadyState,
   HeldState,
   QueuedState,
@@ -28,10 +29,12 @@ import {
   NoAmmoState,
   NoWeaponState,
   CLASS_NAMES,
-} from 'components/AbilityBar/AbilityButton/lib';
+  animations,
+} from 'components/AbilityBar/AbilityButton/lib/styles';
 import { Tooltip } from 'components/Tooltip';
 
-const Button = styled('div')`
+const Button = styled.div`
+  ${animations}
   position: relative;
   width: 50px;
   height: 50px;
@@ -133,7 +136,7 @@ const Button = styled('div')`
   }
 `;
 
-const KeybindInfo = styled('div')`
+const KeybindInfo = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
@@ -153,7 +156,7 @@ const KeybindInfo = styled('div')`
   z-index: 99;
 `;
 
-const TimingOverlay = styled('div')`
+const TimingOverlay = styled.div`
   ${overlayPseudo};
   display: flex;
   justify-content: center;
@@ -164,7 +167,7 @@ const TimingOverlay = styled('div')`
   filter: brightness(120%);
 `;
 
-const QueuedStateTick = styled('div')`
+const QueuedStateTick = styled.div`
   position: absolute;
   top: -2px;
   left: -2px;
@@ -173,16 +176,16 @@ const QueuedStateTick = styled('div')`
   z-index: 3;
   border-radius: 0;
   box-shadow: initial;
-  background: url(images/skills/queued-tick.png) no-repeat;
+  background: url(/hud-new/images/skills/queued-tick.png) no-repeat;
   background-size: 90%;
 `;
 
-const TooltipHeader = styled('div')`
+const TooltipHeader = styled.div`
   font-size: 22px;
   font-weight: 700;
 `;
 
-const TooltipContentContainer = styled('div')`
+const TooltipContentContainer = styled.div`
   color: white;
 `;
 
@@ -194,6 +197,7 @@ const DefaultTooltipStyles = {
     max-height: 750px;
   `,
 };
+
 
 export interface AbilityButtonInfo extends ImmutableAbilityState {
   icon: string;
@@ -236,11 +240,10 @@ class AbilityButtonView extends React.Component<AbilityButtonViewProps, AbilityB
 
     return (
       <Tooltip
-        content={tooltipContent}
         styles={DefaultTooltipStyles}
+        content={tooltipContent}
       >
       <Button
-        id={ability.id}
         className={this.props.className}
         style={icon}
         onClick={this.props.onAbilityClick}

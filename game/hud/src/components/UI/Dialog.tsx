@@ -5,7 +5,8 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import * as CSS from 'lib/css-helper';
 
 import {
@@ -17,7 +18,7 @@ import {
 import { CloseButton } from 'UI/CloseButton';
 
 /* Dialog Container */
-const DialogContainer = styled('div')`
+const DialogContainer = styled.div`
   pointer-events: none;
   ${CSS.IS_COLUMN}
   width: 100%;
@@ -30,7 +31,7 @@ const DialogContainer = styled('div')`
       height: 23px;
       width: calc(100% - 50px);
       left: 25px;
-      background-image: url(images/settings/settings-top-title.png);
+      background-image: url(/hud-new/images/settings/settings-top-title.png);
       background-position: center top;
       background-repeat: no-repeat;
       padding-top: 8px;
@@ -46,7 +47,7 @@ const DialogContainer = styled('div')`
       width: calc(100% - 50px);
       left: 25px;
       top: -5px;
-      background-image: url(images/settings/top-title.png);
+      background-image: url(/hud-new/images/settings/top-title.png);
       background-position: center top;
       background-repeat: no-repeat;
       background-size: 100% 100%;
@@ -58,7 +59,7 @@ const DialogContainer = styled('div')`
   }
 `;
 
-const DialogTitle = styled('div')`
+const DialogTitle = styled.div`
   position: absolute;
   top: 5px;
   text-transform: uppercase;
@@ -74,7 +75,7 @@ const DialogTitle = styled('div')`
 // because the title div is positioned absolute, in the dialog container
 // we move the dialog-window up 17px (top: -17px) which also moves the
 // bottom up, we need to stretch that back down by 17px (margin-bottom: -17px)
-const DialogWindow = styled('div')`
+const DialogWindow = styled.div`
   ${CSS.IS_COLUMN} ${CSS.EXPAND_TO_FIT} ${DIALOG_SHADOW} ${DIALOG_BORDER}
   position: relative;
   top: -17px;
@@ -82,19 +83,19 @@ const DialogWindow = styled('div')`
   z-index: 1;
 `;
 
-const OrnamentTopLeft = styled('div')`
+const OrnamentTopLeft = styled.div`
   position: absolute;
   top: 0; left: 0;
-  background-image: url(images/settings/settings-ornament-top-left.png);
+  background-image: url(/hud-new/images/settings/settings-ornament-top-left.png);
   width: 35px;
   height: 31px;
   z-index: 2;
 `;
 
-const OrnamentTopRight = styled('div')`
+const OrnamentTopRight = styled.div`
   position: absolute;
   top: 0; right: 0;
-  background-image: url(images/settings/settings-ornament-top-right.png);
+  background-image: url(/hud-new/images/settings/settings-ornament-top-right.png);
   width: 49px;
   height: 48px;
   padding-left: 25px;
@@ -103,19 +104,19 @@ const OrnamentTopRight = styled('div')`
   z-index: 2;
 `;
 
-const OrnamentBottomLeft = styled('div')`
+const OrnamentBottomLeft = styled.div`
   position: absolute;
   bottom: 0; left: 0;
-  background-image: url(images/settings/settings-ornament-bottom-left.png);
+  background-image: url(/hud-new/images/settings/settings-ornament-bottom-left.png);
   width: 35px;
   height: 31px;
   z-index: 2;
 `;
 
-const OrnamentBottomRight = styled('div')`
+const OrnamentBottomRight = styled.div`
   position: absolute;
   bottom: 0; right: 0;
-  background-image: url(images/settings/settings-ornament-bottom-right.png);
+  background-image: url(/hud-new/images/settings/settings-ornament-bottom-right.png);
   width: 35px;
   height: 31px;
   z-index: 2;
@@ -127,7 +128,7 @@ const CloseButtonClass = css`
   right: 7px;
 `;
 
-export const DialogHeading = styled('div')`
+export const DialogHeading = styled.div`
   ${CSS.DONT_GROW} ${CSS.IS_ROW}
   ${DIALOG_FONT}
   font-size: 18px;

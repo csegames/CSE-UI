@@ -6,9 +6,9 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   flex: 1;
   justify-content: center;

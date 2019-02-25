@@ -6,19 +6,18 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { SlotType } from '../../../lib/itemInterfaces';
-import { TOOLTIP_PADDING } from '../../../lib/constants';
 import { getTooltipColor, getContainerInfo } from '../../../lib/utils';
 import { InventoryItem } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: ${TOOLTIP_PADDING};
+  padding: 10px;
   border-bottom: 2px solid #292929;
   &:after {
     content: '';
@@ -27,14 +26,14 @@ const Container = styled('div')`
     right: 70px;
     bottom: -5px;
     height: 10px;
-    background-image: url(images/item-tooltips/divider_top.png);
+    background-image: url(/hud-new/images/item-tooltips/divider_top.png);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
   }
 `;
 
-const HeaderOverlay = styled('div')`
+const HeaderOverlay = styled.div`
   position: absolute;
   top: 0;
   right: 0;
@@ -50,36 +49,36 @@ const HeaderOverlay = styled('div')`
     left: 0;
     right: 0;
     bottom: 0;
-    background: url(images/item-tooltips/title_viel.png);
+    background: url(/hud-new/images/item-tooltips/title_viel.png);
     background-size: cover;
     background-repeat: no-repeat;
   }
 `;
 
-const InfoContainer = styled('div')`
+const InfoContainer = styled.div`
   max-width: 300px;
   margin-right: 5px;
 `;
 
-const SubContainer = styled('div')`
+const SubContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const ItemName = styled('div')`
+const ItemName = styled.div`
   font-family: Caudex;
   font-size: 18px;
   white-space: wrap;
   color: white;
 `;
 
-const ItemSubtitle = styled('div')`
+const ItemSubtitle = styled.div`
   font-size: 14px;
   white-space: wrap;
   color: #C3C3C3;
 `;
 
-const ItemStatInfo = styled('div')`
+const ItemStatInfo = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -88,7 +87,7 @@ const ItemStatInfo = styled('div')`
   color: ${(props: any) => props.color ? props.color : '#C3C3C3'};
 `;
 
-const Icon = styled('div')`
+const Icon = styled.div`
   margin-right: 5px;
   -webkit-transform: ${(props: any) => props.flip ? 'scaleX(-1)' : ''};
   transform: ${(props: any) => props.flip ? 'scaleX(-1)' : ''};

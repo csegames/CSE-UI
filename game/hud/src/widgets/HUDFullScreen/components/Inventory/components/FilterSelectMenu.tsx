@@ -6,24 +6,25 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Input, IconButton, utils } from '@csegames/camelot-unchained';
-import styled from 'react-emotion';
+import { Input, IconButton } from '@csegames/camelot-unchained';
+import { styled } from 'linaria/react';
 
 import FilterSelectListItem from './FilterSelectListItem';
-import { colors, inventoryFilterButtons, InventoryFilterButton as FilterButtonInfo } from '../../../lib/constants';
+import { inventoryFilterButtons } from '../../../lib/utils';
+import { InventoryFilterButton as FilterButtonInfo } from '../../../lib/itemInterfaces';
 
 const containerDimensions = {
   width: 300,
   height: 500,
 };
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: inline-block;
   z-index: 9999;
 `;
 
-const MenuContainer = styled('div')`
+const MenuContainer = styled.div`
   position: absolute;
   top: -5px;
   left: -${containerDimensions.width}px;
@@ -32,19 +33,19 @@ const MenuContainer = styled('div')`
   background-color: #18130E;
   width: ${containerDimensions.width}px;
   height: ${containerDimensions.height}px;
-  border: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 100)};
+  border: 1px solid #413735;
 `;
 
-const HeaderContainer = styled('div')`
+const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex: 0 0 auto;
-  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 100)};
+  border-bottom: 1px solid #413735;
   padding: 2px;
 `;
 
-const ButtonsContainer = styled('div')`
+const ButtonsContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -52,8 +53,8 @@ const ButtonsContainer = styled('div')`
   overflow: auto;
 `;
 
-const HeaderText = styled('header')`
-  color: ${utils.lightenColor(colors.filterBackgroundColor, 100)};
+const HeaderText = styled.header`
+  color: #413735;
   font-size: 18px;
 `;
 
@@ -61,11 +62,11 @@ const InputStyle = {
   input: {
     height: '20px',
     backgroundColor: 'rgba(179, 183, 192, 0.3)',
-    border: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 100)}`,
-    color: `1px solid ${utils.lightenColor(colors.filterBackgroundColor, 100)}`,
+    border: `1px solid #413735`,
+    color: `1px solid #413735`,
     padding: '0 5px',
     '::-webkit-input-placeholder': {
-      color: utils.lightenColor(colors.filterBackgroundColor, 100),
+      color: '#413735',
     },
   },
 };

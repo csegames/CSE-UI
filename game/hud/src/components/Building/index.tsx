@@ -5,7 +5,7 @@
 */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { TabbedDialog, DialogButton } from 'components/UI/TabbedDialog';
 import { Blocks } from './Blocks';
 import { Blueprints } from './Blueprints';
@@ -15,29 +15,29 @@ import { BlueprintNameDialog } from './BlueprintNameDialog';
 import { ReplaceDialog } from './ReplaceDialog';
 import { SearchInput } from './SearchInput';
 
-const OuterWrapper = styled('div')`
+const OuterWrapper = styled.div`
   height: 100%;
   width: 100%;
 `;
 
-const Container = styled('div')`
+const Container = styled.div`
   pointer-events: all;
   height: 100%;
   width: 100%;
 `;
 
-const Content = styled('div')`
+const Content = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   overflow-y: auto;
-  background-image: url(images/settings/bag-bg-grey.png);
+  background-image: url(/hud-new/images/settings/bag-bg-grey.png);
   background-repeat: no-repeat;
   background-position: top center;
   margin-top: -10px;
 `;
 
-const OpenButton = styled('div')`
+const OpenButton = styled.div`
   pointer-events: all;
   cursor: pointer;
   padding: 10px 5px;

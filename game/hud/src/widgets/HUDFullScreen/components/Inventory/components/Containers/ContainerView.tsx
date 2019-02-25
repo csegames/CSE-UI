@@ -5,27 +5,27 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 
 import { colors } from '../../../../lib/constants';
 import { ContainerColor } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   width: 100%;
   margin-bottom: 5px;
 `;
 
-const Header = styled('div')`
+const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 2px 5px;
-  color: ${(props: any) => utils.lightenColor(colors.filterBackgroundColor, 150)};
+  color: #B6AEAC;
   background-color: ${(props: any) => props.color};
 `;
 
-const Content = styled('div')`
+const Content = styled.div`
   width: 100%;
   overflow: auto;
   display: flex;
@@ -39,18 +39,18 @@ const Content = styled('div')`
   }
 `;
 
-const Footer = styled('div')`
+const Footer = styled.div`
   display: flex;
   align-items: center;
   padding: 2px 5px;
-  color: ${(props: any) => utils.lightenColor(colors.filterBackgroundColor, 150)};
+  color: #B6AEAC
   background-color: ${(props: any) => props.color};
 `;
 
-export const CloseButton = styled('div')`
+export const CloseButton = styled.div`
   cursor: pointer;
   font-size: 20px;
-  color: ${(props: any) => utils.lightenColor(colors.filterBackgroundColor, 100)};
+  color: #413735;
   text-shadow: 1px 1px rgba(0, 0, 0, 0.7);
   margin-left: 15px;
 `;
@@ -72,7 +72,7 @@ class ContainerView extends React.PureComponent<ContainerViewProps> {
         <Header color={headerFooterColor}>
           {this.props.headerContent()}
         </Header>
-        <Content color={contentColor} innerRef={(r: HTMLDivElement) => this.props.contentRef && this.props.contentRef(r)}>
+        <Content color={contentColor} ref={(r: HTMLDivElement) => this.props.contentRef && this.props.contentRef(r)}>
           {this.props.mainContent()}
         </Content>
         <Footer color={headerFooterColor}>

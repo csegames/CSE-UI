@@ -5,24 +5,24 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import ParallaxBG from './ParallaxBG';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: fixed;
   width: 100%;
   height: 100%;
   z-index: 9999;
 `;
 
-const SelectMessage = styled('div')`
+const SelectMessage = styled.div`
   color: white;
   font-family: 'TitilliumWeb';
   font-size: 24px;
 `;
 
-const Overlay = styled('div')`
+const Overlay = styled.div`
   position: absolute;
   z-index: 1;
   width: 100%;
@@ -33,12 +33,12 @@ const Overlay = styled('div')`
   flex-direction: column;
 `;
 
-const ZoneSelectWrapper = styled('div')`
+const ZoneSelectWrapper = styled.div`
   background: #111;
   min-width: 600px;
 `;
 
-const Zone = styled('div')`
+const Zone = styled.div`
   color: #aaa;
   text-align: center;
   font-family: 'TitilliumWeb';
@@ -51,10 +51,10 @@ const Zone = styled('div')`
   }
 `;
 
-const Logo = styled('div')`
+const Logo = styled.div`
   width: 462px;
   height: 171px;
-  background: url(images/logo.png);
+  background: url(/hud-new/images/logo.png);
   background-repeat: no-repeat;
 `;
 

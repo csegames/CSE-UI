@@ -5,40 +5,32 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { webAPI } from '@csegames/camelot-unchained';
 import { getMyPaperDollBG, getMyPaperDollIcon } from '../../../lib/utils';
 
-interface ContainerProps {
-  characterImage: string;
-  backgroundImage: string;
-  shouldZoom: boolean;
-}
-
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   flex: 1;
   height: 100%;
-  background: url(${(props: ContainerProps) => props.backgroundImage});
   background-size: cover;
   opacity: 0.8;
   overflow: hidden;
-  &:before {
-    content: '';
-    position: absolute;
-    top: -150px;
-    right: -100px;
-    width: 800px;
-    height: 800px;
-    background: url(${(props: ContainerProps) => props.characterImage});
-    background-size: cover;
-    -webkit-mask: linear-gradient(to right,transparent 35%, black 55%);
-    -webkit-mask-size: cover;
-    zoom: ${(props: ContainerProps) => props.shouldZoom ? '120%' : '100%'};
-  }
 `;
 
-const Border = styled('div')`
+const CharacterImage = styled.div`
+  position: absolute;
+  top: -150px;
+  right: -100px;
+  width: 800px;
+  height: 800px;
+  background-size: cover;
+  -webkit-mask: linear-gradient(to right,transparent 35%, black 55%);
+  -webkit-mask-size: cover;
+  zoom: ${(props: any) => props.shouldZoom ? '120%' : '100%'};
+`;
+
+const Border = styled.div`
   position: absolute;
   top: 7px;
   right: 7px;
@@ -47,91 +39,91 @@ const Border = styled('div')`
   border: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
-const TopLeftOrnament = styled('div')`
+const TopLeftOrnament = styled.div`
   position: absolute;
   top: 5px;
   left: 5px;
   width: 40px;
   height: 26px;
-  background: url(images/character-stats/ornament-top-left-profile.png) no-repeat;
+  background: url(/hud-new/images/character-stats/ornament-top-left-profile.png) no-repeat;
   background-size: contain;
 `;
 
-const BottomLeftOrnament = styled('div')`
+const BottomLeftOrnament = styled.div`
   position: absolute;
   bottom: 5px;
   left: 5px;
   width: 40px;
   height: 26px;
-  background: url(images/character-stats/ornament-bottom-left-profile.png) no-repeat;
+  background: url(/hud-new/images/character-stats/ornament-bottom-left-profile.png) no-repeat;
   background-size: contain;
 `;
 
-const TopRightOrnament = styled('div')`
+const TopRightOrnament = styled.div`
   position: absolute;
   top: 5px;
   right: 5px;
   width: 40px;
   height: 26px;
-  background: url(images/character-stats/ornament-top-right-profile.png) no-repeat;
+  background: url(/hud-new/images/character-stats/ornament-top-right-profile.png) no-repeat;
   background-size: contain;
 `;
 
-const BottomRightOrnament = styled('div')`
+const BottomRightOrnament = styled.div`
   position: absolute;
   bottom: 5px;
   right: 5px;
   width: 40px;
   height: 26px;
-  background: url(images/character-stats/ornament-bottom-right-profile.png) no-repeat;
+  background: url(/hud-new/images/character-stats/ornament-bottom-right-profile.png) no-repeat;
   background-size: contain;
 `;
 
-const Content = styled('div')`
+const Content = styled.div`
   width: 100%;
   height: 100%;
   padding: 20px;
 `;
 
-const Name = styled('div')`
+const Name = styled.div`
   color: white;
   font-size: 24px;
   font-family: Caudex;
 `;
 
-const InfoContainer = styled('div')`
+const InfoContainer = styled.div`
   display: flex;
   width: 50%;
 `;
 
-const InfoDivider = styled('div')`
+const InfoDivider = styled.div`
   position: absolute;
   left: 155px;
   height: 69px;
   width: 9px;
-  background: url(images/character-stats/ornament-profile-content.png);
+  background: url(/hud-new/images/character-stats/ornament-profile-content.png);
   background-size: contain;
 `;
 
-const CharacterInfo = styled('div')`
+const CharacterInfo = styled.div`
   margin-top: 10px;
   font-size: 14px;
   width: 175px;
   color: #CCC;
 `;
 
-// const InfoDivider = styled('div')`
-//   background: url(images/character-stats/ornament-profile-content.png)
+// const InfoDivider = styled.div`
+//   background: url(/hud-new/images/character-stats/ornament-profile-content.png)
 // `;
 
-const BiographyInfo = styled('div')`
+const BiographyInfo = styled.div`
   margin-top: 10px;
   font-size: 14px;
   width: 300px;
   color: #CCC;
 `;
 
-const Text = styled('div')`
+const Text = styled.div`
   font-family: Caudex;
 `;
 
@@ -154,7 +146,8 @@ class GeneralInfo extends React.PureComponent<GeneralInfoProps, GeneralInfoState
   public render() {
     const shouldZoom = this.shouldZoom();
     return (
-      <Container shouldZoom={shouldZoom} characterImage={this.paperdollIcon} backgroundImage={this.paperdollBG}>
+      <Container style={{ backgroundImage: `url(${this.paperdollBG})` }}>
+        <CharacterImage shouldZoom={shouldZoom} style={{ backgroundImage: `url(${this.paperdollIcon})` }} />
         <Border />
         <TopLeftOrnament />
         <BottomLeftOrnament />

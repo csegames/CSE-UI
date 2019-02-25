@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { spacify } from 'lib/spacify';
 import * as CSS from 'lib/css-helper';
@@ -24,18 +24,18 @@ const DIALOG_SIZE: React.CSSProperties = {
   margin: 'auto',
 };
 
-const ConfirmContainer = styled('div')`
+const ConfirmContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-const Bind = styled('div')`
+const Bind = styled.div`
   ${CSS.IS_ROW}
   display: flex;
 `;
 
-const ConfirmBindingText = styled('span')`
+const ConfirmBindingText = styled.span`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,14 +43,14 @@ const ConfirmBindingText = styled('span')`
   font-size: 1.2em;
 `;
 
-const Clashed = styled('div')`
+const Clashed = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
 `;
 
-const ClashContent = styled('div')`
+const ClashContent = styled.div`
   ${CSS.IS_COLUMN} ${CSS.DONT_GROW}
   align-items: center;
   min-height: 26px;
@@ -62,7 +62,7 @@ const ClashContent = styled('div')`
   }
 `;
 
-const ClashesContainer = styled('div')`
+const ClashesContainer = styled.div`
   display: flex;
 `;
 

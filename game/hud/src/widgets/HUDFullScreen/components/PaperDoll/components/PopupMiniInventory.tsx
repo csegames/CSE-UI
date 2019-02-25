@@ -7,23 +7,22 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 
 import { PageController, PageInfo, Input } from '@csegames/camelot-unchained';
 
 import PopupMiniInventorySlot from './PopupMiniInventorySlot';
 import { displaySlotNames, colors } from '../../../lib/constants';
 import { getItemDefinitionName } from '../../../lib/utils';
-import {
-  InventoryItem,
-} from 'gql/interfaces';
+import { InventoryItem } from 'gql/interfaces';
 
 const containerDimensions = {
   width: 320,
   height: 225,
 };
 
-const MiniInventoryBox = styled('div')`
+const MiniInventoryBox = styled.div`
   position: fixed;
   background: linear-gradient(rgba(74, 77, 84, 0.8), rgba(74, 77, 84, 0.4), rgba(74, 77, 84, 0.2));
   width: ${containerDimensions.width}px;
@@ -32,13 +31,13 @@ const MiniInventoryBox = styled('div')`
   z-index: 10;
 `;
 
-const HeaderContainer = styled('div')`
+const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 5px;
 `;
 
-const ControllerContainer = styled('div')`
+const ControllerContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -47,24 +46,24 @@ const ControllerContainer = styled('div')`
   background-color: rgba(74, 77, 84, 0.5);
 `;
 
-const ItemsContainer = styled('div')`
+const ItemsContainer = styled.div`
   padding: 5px;
   height: ${containerDimensions.height - 30}px;
 `;
 
-const ItemSpacing = styled('div')`
+const ItemSpacing = styled.div`
   display: inline-block;
   margin: 0.5px 2.5px;
 `;
 
-const SlotNameText = styled('p')`
+const SlotNameText = styled.p`
   font-size: 18px;
   color: #BCC1CB;
   margin: 0 !important;
   padding: 0;
 `;
 
-const PageNumberText = styled('p')`
+const PageNumberText = styled.p`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -72,9 +71,9 @@ const PageNumberText = styled('p')`
   margin: 0 5px 0 0 !important;
 `;
 
-const ControllerButton = styled('div')`
+const ControllerButton = styled.div`
   display: inline-block;
-  font-sizE: 15px;
+  font-size: 15px;
   color: ${colors.goldIcon};
   &:active {
     text-shadow: 2px 2px rgba(0, 0, 0, 0.9);

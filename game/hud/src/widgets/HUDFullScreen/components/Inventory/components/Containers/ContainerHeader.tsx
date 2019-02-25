@@ -7,7 +7,8 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { css } from 'react-emotion';
+import { styled } from 'linaria/react';
+import { css } from 'linaria';
 import { webAPI } from '@csegames/camelot-unchained';
 import { CloseButton } from 'UI/CloseButton';
 
@@ -15,7 +16,7 @@ import { nullVal } from '../../../../lib/constants';
 import { getContainerColor } from '../../../../lib/utils';
 import { InventoryItem } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -24,7 +25,7 @@ const Container = styled('div')`
   padding: 0px 5px;
 `;
 
-const ContainerName = styled('div')`
+const ContainerName = styled.div`
   font-size: 18px;
   font-family: Caudex;
   letter-spacing: 2px;
@@ -43,7 +44,7 @@ const ContainerName = styled('div')`
   padding: 0 5px;
 `;
 
-const ContainerNameInput = styled('input')`
+const ContainerNameInput = styled.input`
   cursor: ${(props: any) => props.cursor};
   width: ${(props: any) => props.width}px;
   color: white !important;
@@ -54,7 +55,7 @@ const ContainerNameInput = styled('input')`
   border: 0px;
 `;
 
-const StaticDefName = styled('div')`
+const StaticDefName = styled.div`
   display: inline-block;
   width: fit-content;
 `;
@@ -63,7 +64,7 @@ const CloseButtonPosition = css`
   margin-right: 10px;
 `;
 
-const InvisiDiv = styled('div')`
+const InvisiDiv = styled.div`
   width: auto;
   position: fixed;
   pointer-events: none;
@@ -113,12 +114,12 @@ class ContainerHeader extends React.Component<ContainerHeaderProps, ContainerHea
     return (
       <Container>
         <ContainerName
-          innerRef={(r: HTMLDivElement) => this.nameContainer = r}
+          ref={(r: HTMLDivElement) => this.nameContainer = r}
           backgroundColor={backgroundColor}
           borderColor={borderColor}
         >
           <ContainerNameInput
-            innerRef={(r: HTMLInputElement) => this.nameInput = r}
+            ref={(r: HTMLInputElement) => this.nameInput = r}
             id={`${containerItem.id}-container-name-input`}
             value={containerNameValue}
             onChange={this.onContainerNameChange}
@@ -127,10 +128,10 @@ class ContainerHeader extends React.Component<ContainerHeaderProps, ContainerHea
             cursor={this.state.editModeOn ? 'text' : 'pointer'}
             width={this.state.inputWidth}
           />
-          <StaticDefName innerRef={(r: HTMLDivElement) => this.staticDefName = r}>
+          <StaticDefName ref={(r: HTMLDivElement) => this.staticDefName = r}>
             {containerNameValue !== containerItem.staticDefinition.name ? `[${containerItem.staticDefinition.name}]` : ''}
           </StaticDefName>
-          <InvisiDiv innerRef={(r: HTMLDivElement) => this.invisibleDiv = r} />
+          <InvisiDiv ref={(r: HTMLDivElement) => this.invisibleDiv = r} />
         </ContainerName>
         <CloseButton width={18} height={18} onClick={onCloseClick} className={CloseButtonPosition} />
       </Container>

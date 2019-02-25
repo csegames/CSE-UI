@@ -6,9 +6,9 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const Button = styled('div')`
+const Button = styled.div`
   z-index: 99;
   pointer-events: all;
   font-size: 14px;
@@ -35,8 +35,7 @@ export class CloseButton extends React.Component<CloseButtonProps> {
     return (
       <Button
         className={`icon-close ${this.props.className}`}
-        width={this.props.width}
-        height={this.props.height}
+        style={{ width: this.props.width, height: this.props.height }}
         onClick={this.props.onClick}
       />
     );

@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { webAPI } from '@csegames/camelot-unchained';
 import TradeActionButton from './TradeActionButton';
 import { tradeActionButtonIcons } from '../../../lib/constants';
@@ -14,23 +14,23 @@ import { SecureTradeState } from 'gql/interfaces';
 
 declare const toastr: any;
 
-const MidSection = styled('div')`
+const MidSection = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 1;
   height: 100px;
   padding: 0 30px;
-  background: url(images/trade/trade-texture-bg.png), url(images/inventory/bag-bg.png);
+  background: url(/hud-new/images/trade/trade-texture-bg.png), url(/hud-new/images/inventory/bag-bg.png);
   background-size: cover;
 `;
 
-const InstructionsContainer = styled('div')`
+const InstructionsContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const InstructionsText = styled('div')`
+const InstructionsText = styled.div`
   color: #976E4C;
   font-size: 14px;
   font-family: Caudex;
@@ -39,7 +39,7 @@ const InstructionsText = styled('div')`
   font-weight: bold;
 `;
 
-const ActionButtonsContainer = styled('div')`
+const ActionButtonsContainer = styled.div`
   display: flex;
 `;
 

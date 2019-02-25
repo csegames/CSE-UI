@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
 import { remove } from '@csegames/camelot-unchained/lib/utils/arrayUtils';
@@ -19,9 +19,9 @@ import { ProgressionAlertView } from './ProgressionAlert';
 import { IInteractiveAlert, TradeAlert, GroupAlert, ProgressionAlert } from 'gql/interfaces';
 import HUDZOrder from 'services/session/HUDZOrder';
 
-const Container = styled('div')`
+const Container = styled.div`
   border-image-slice: 1;
-  background: url(images/interactive-alert/alert-bg.png);
+  background: url(/hud-new/images/interactive-alert/alert-bg.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -45,7 +45,7 @@ const Container = styled('div')`
     right: 50px;
     top: 0;
     height: 10px;
-    background-image: url(images/interactive-alert/divider-top.png);
+    background-image: url(/hud-new/images/interactive-alert/divider-top.png);
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
@@ -61,7 +61,7 @@ const Container = styled('div')`
     right: 50px;
     bottom: -2px;
     height: 10px;
-    background-image: url(images/interactive-alert/divider-bottom.png);
+    background-image: url(/hud-new/images/interactive-alert/divider-bottom.png);
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;

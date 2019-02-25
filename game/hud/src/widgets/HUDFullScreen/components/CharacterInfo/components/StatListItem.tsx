@@ -6,7 +6,8 @@
 
 import * as React from 'react';
 import classNames from 'classnames';
-import styled, { css } from 'react-emotion';
+import { styled } from 'linaria/react';
+import { css } from 'linaria';
 import { utils } from '@csegames/camelot-unchained';
 import { prettifyText, searchIncludesSection } from '../../../lib/utils';
 
@@ -18,7 +19,7 @@ export interface StatListItemStyles {
   doesNotMatchSearch: React.CSSProperties;
 }
 
-const StatsListItem = styled('div')`
+const StatsListItem = styled.div`
   display: flex;
   justify-content: space-between;
   position: relative;
@@ -43,7 +44,7 @@ const LightListItem = css`
   }
 `;
 
-const StatText = styled('p')`
+const StatText = styled.p`
   display: inline-block;
   font-size: 16px;
   margin: 0;
@@ -127,11 +128,15 @@ class StatListItem extends React.Component<StatListItemProps, {}> {
   }
 
   private onMouseOver = (e: React.MouseEvent<HTMLDivElement>) => {
-    this.props.onMouseOver(e, this.props.item);
+    if (typeof this.props.onMouseOver !== 'undefined') {
+      this.props.onMouseOver(e, this.props.item);
+    }
   }
 
   private onMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    this.props.onMouseLeave(e, this.props.item);
+    if (typeof this.props.onMouseLeave !== 'undefined') {
+      this.props.onMouseLeave(e, this.props.item);
+    }
   }
 }
 

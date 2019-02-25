@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import * as CONFIG from 'UI/config';
 import { TabbedDialog, DialogTab, DialogButton } from 'UI/TabbedDialog';
 import { Box } from 'UI/Box';
@@ -21,7 +21,7 @@ const DIALOG_SIZE: React.CSSProperties = {
   margin: 'auto',
 };
 
-const Input = styled('input')`
+const Input = styled.input`
   background-color: transparent;
   width: 100%;
   border: 1px solid #333;

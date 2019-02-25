@@ -7,11 +7,13 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { css } from 'react-emotion';
+import { styled } from 'linaria/react';
+import { css } from 'linaria';
+
 import { AbilityButtonInfo } from '../../AbilityBar/AbilityButton/AbilityButtonView';
 import { abilityStateColors, makeGlowPathFor } from '../../AbilityBar/AbilityButton/lib';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   width: 30px;
   height: 30px;

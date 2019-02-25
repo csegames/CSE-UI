@@ -22,15 +22,16 @@ const ALIAS = {
   'react': path.dirname(
     require.resolve('react/package.json')
   ),
-  gql: path.resolve(__dirname, 'src/gql'),
-  components: path.resolve(__dirname, 'src/components'),
-  'UI/TabbedDialog': path.resolve(__dirname, 'src/components/UI/TabbedDialog/index'),
-  UI: path.resolve(__dirname, 'src/components/UI'),
-  actions: path.resolve(__dirname, 'src/services/actions'),
-  lib: path.resolve(__dirname, 'src/lib'),
-  services: path.resolve(__dirname, 'src/services'),
-  widgets: path.resolve(__dirname, 'src/widgets'),
-  HUDContext: path.resolve(__dirname, 'src/components/HUD/context'),
+  gql: path.resolve(__dirname, 'tmp/gql'),
+  components: path.resolve(__dirname, 'tmp/components'),
+  'UI/TabbedDialog': path.resolve(__dirname, 'tmp/components/UI/TabbedDialog/index'),
+  UI: path.resolve(__dirname, 'tmp/components/UI'),
+  actions: path.resolve(__dirname, 'tmp/services/actions'),
+  lib: path.resolve(__dirname, 'tmp/lib'),
+  services: path.resolve(__dirname, 'tmp/services'),
+  widgets: path.resolve(__dirname, 'tmp/widgets'),
+  HUDContext: path.resolve(__dirname, 'tmp/components/HUD/context'),
+  images: path.resolve(__dirname, 'tmp/images'),
 };
 
 module.exports = function (e, argv = {}) {
@@ -75,7 +76,7 @@ module.exports = function (e, argv = {}) {
     mode: MODE,
     devtool: 'source-map',
     entry: {
-      [NAME]: ['./src/polyfill.tsx', './src/sentry.tsx', './src/index.tsx'],
+      [NAME]: ['./tmp/polyfill.jsx', './tmp/sentry.jsx', './tmp/index.jsx'],
     },
     output: {
       path: OUTPUT_PATH,
@@ -104,7 +105,7 @@ module.exports = function (e, argv = {}) {
     },
     resolve: {
       alias: ALIAS,
-      extensions: ['.web.ts', '.ts', '.web.tsx', '.tsx', '.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
+      extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     },
     module: {
       rules: [
@@ -137,6 +138,9 @@ module.exports = function (e, argv = {}) {
                   loader: 'linaria/loader',
                   options: {
                     sourceMap: IS_DEVELOPMENT,
+                    resolve: {
+                      alias: ALIAS,
+                    },
                   },
                 },
               ]
@@ -153,7 +157,7 @@ module.exports = function (e, argv = {}) {
               ]
             },
             {
-              test: /\.tsx?$/,
+              test: /\.jsx?$/,
               exclude: /node_modules/,
               use: [
                 {
@@ -186,17 +190,10 @@ module.exports = function (e, argv = {}) {
                   loader: 'linaria/loader',
                   options: {
                     sourceMap: IS_DEVELOPMENT,
+                    resolve: {
+                      alias: ALIAS,
+                    },
                   },
-                },
-                {
-                  loader: require.resolve('ts-loader'),
-                  options: {
-                    transpileOnly: IS_CI ? false : true,
-                    happyPackMode: IS_CI ? false : true,
-                    compilerOptions: {
-                      sourceMap: true,
-                    }
-                  }
                 },
               ]
             },
@@ -267,7 +264,7 @@ module.exports = function (e, argv = {}) {
               ]
             },
             {
-              exclude: [/\.js$/, /\.html$/, /\.json$/, /\.tsx?$/],
+              exclude: [/\.js$/, /\.html$/, /\.json$/, /\.jsx?$/],
               loader: require.resolve('file-loader'),
               options: {
                 name: 'static/[name].[ext]',

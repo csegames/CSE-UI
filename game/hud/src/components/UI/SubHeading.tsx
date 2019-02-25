@@ -5,11 +5,11 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import * as CONFIG from './config';
 import { DIALOG_FONT } from './TabbedDialog/config';
 
-export const H1 = styled('div')`
+export const H1 = styled.div`
   font-size: 12px;
   ${DIALOG_FONT};
   color: ${CONFIG.NORMAL_TEXT_COLOR};

@@ -5,10 +5,10 @@
  *
  */
 
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import * as CONFIG from 'UI/config';
 
-export const Container = styled('div')`
+export const Container = styled.div`
   margin-top: 20px;
   height: 100px;
   text-align: center;
@@ -18,7 +18,7 @@ export const Container = styled('div')`
   margin: 30px 150px 0px 150px;
 `;
 
-export const InputContainer = styled('div')`
+export const InputContainer = styled.div`
   flex: 0 0 auto;
   display: flex;
   align-items: center;
@@ -29,7 +29,7 @@ export const InputContainer = styled('div')`
   left: 250px;
 `;
 
-export const Button = styled('div')`
+export const Button = styled.div`
   cursor: pointer;
   width: ${CONFIG.ACTION_BUTTON_WIDTH}px;
   height: ${CONFIG.ACTION_BUTTON_HEIGHT}px;
@@ -38,16 +38,16 @@ export const Button = styled('div')`
   text-transform: uppercase;
   margin: 0 3px;
   font-size: 9px;
-  background-image: url(images/settings/button-off.png);
+  background-image: url(/hud-new/images/settings/button-off.png);
   letter-spacing: 1px;
   position: relative;
   &:hover {
   color: ${CONFIG.HIGHLIGHTED_TEXT_COLOR};
-  background-image: url(images/settings/button-on.png);
+  background-image: url(/hud-new/images/settings/button-on.png);
   ::before {
     content: '';
     position: absolute;
-    background-image: url(images/settings/button-glow.png);
+    background-image: url(/hud-new/images/settings/button-glow.png);
     width: 93px;
     height: 30px;
     left: 1px;
@@ -56,14 +56,14 @@ export const Button = styled('div')`
   }
 `;
 
-export const ButtonOverlay = styled('div')`
+export const ButtonOverlay = styled.div`
   color: ${CONFIG.NORMAL_TEXT_COLOR};
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url(images/ui/interactive-alert/button-texture.png);
+  background-image: url(/hud-new/images/ui/interactive-alert/button-texture.png);
   padding-left: 2px;
   padding-right: 2px;
 `;

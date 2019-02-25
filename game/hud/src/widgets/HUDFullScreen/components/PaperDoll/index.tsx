@@ -6,7 +6,7 @@
 
 import gql from 'graphql-tag';
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/BodyPartHealth';
@@ -27,13 +27,13 @@ const paperDollContainerQuery = gql`
   ${EquippedItemFragment}
 `;
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
   align-items: stretch;
   width: 100%;
   height: 100%;
-  background: url(${(props: { backgroundImg: string }) => props.backgroundImg}) no-repeat;
+  background-repeat: no-repeat;
   background-size: cover;
   &:before {
     content: '';
@@ -42,22 +42,22 @@ const Container = styled('div')`
     left: 0;
     right: 0;
     height: 65%;
-    background: url(images/paperdoll/bg/bg-veil.png) no-repeat;
+    background: url(/hud-new/images/paperdoll/bg/bg-veil.png) no-repeat;
     background-size: cover;
   }
 `;
 
-const NameBackground = styled('div')`
+const NameBackground = styled.div`
   position: absolute;
   top: -23px;
   left: 0;
   height: 167px;
   width: 400px;
-  background: url(images/paperdoll/name-bg-splash.png) no-repeat;
+  background: url(/hud-new/images/paperdoll/name-bg-splash.png) no-repeat;
   background-size: contain;
 `;
 
-const PaperdollContainer = styled('div')`
+const PaperdollContainer = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -66,7 +66,7 @@ const PaperdollContainer = styled('div')`
   height: 100%;
 `;
 
-const CharacterInfoContainer = styled('div')`
+const CharacterInfoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -88,7 +88,7 @@ export interface PaperDollState {
 
 class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   private refetchListener: EventHandle;
-  private paperdollBG: string;
+  private paperdollBG: string = '';
   private graphql: GraphQLResult<PaperDollContainerGQL.Query>;
   constructor(props: PaperDollProps) {
     super(props);
@@ -104,7 +104,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
         {(graphql: GraphQLResult<PaperDollContainerGQL.Query>) => {
           this.graphql = graphql;
           return (
-            <Container backgroundImg={this.paperdollBG}>
+            <Container style={{ backgroundImage: `url(${this.paperdollBG})` }}>
               <NameBackground />
               <PaperdollContainer>
                 <CharacterInfoContainer>

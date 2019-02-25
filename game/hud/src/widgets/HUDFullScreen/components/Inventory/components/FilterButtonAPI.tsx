@@ -7,7 +7,8 @@
 // IMPORTANT: This component is the shared code between the EditFilterButtonMenu and FilterButtonList components.
 
 import * as _ from 'lodash';
-import { defaultFilterButtonIcons, InventoryFilterButton } from '../../../lib/constants';
+import { defaultFilterButtonIcons } from '../../../lib/utils';
+import { InventoryFilterButton } from '../../../lib/itemInterfaces';
 
 const inventoryFilterButtonLocalStorageKey =  `inventoryFilterButton${game.selfPlayerState.characterID}`;
 

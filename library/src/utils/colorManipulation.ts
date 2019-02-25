@@ -32,7 +32,7 @@ const lightenDarkenColor = (color: string, amount: number) => {
     color = color.slice(1);
     usePound = true;
   }
-  const num = parseInt(color, 16);
+  const num = parseInt(color);
   let r = (num >> 16) + amount;
   if (r > 255) {
     r = 255;
@@ -56,9 +56,9 @@ const lightenDarkenColor = (color: string, amount: number) => {
 
 export const hex2rgba = (color: string, alpha: number) => {
   const hex = color.replace('#', '');
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
+  const r = parseInt(hex.substring(0, 2));
+  const g = parseInt(hex.substring(2, 4));
+  const b = parseInt(hex.substring(4, 6));
   const a = alpha;
   return `rgba(${r},${g},${b},${a})`;
 }

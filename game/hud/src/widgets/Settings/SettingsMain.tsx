@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { TabbedDialog, DialogButton } from 'UI/TabbedDialog';
 import { GeneralSettings } from './tabs/General';
@@ -39,7 +39,7 @@ const tabs: DialogButton[] = [
 ];
 
 
-const SettingsWrapper = styled('div')`
+const SettingsWrapper = styled.div`
   position: absolute;
   left: 0;
   right: 0;

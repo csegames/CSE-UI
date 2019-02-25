@@ -5,13 +5,13 @@
  */
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { isEqualPlayerState } from '../lib/playerStateEqual';
 import { UnitFrame } from './UnitFrame';
 import { showEnemyTargetContextMenu } from 'actions/contextMenu';
 
-const Container = styled('div')`
+const Container = styled.div`
   pointer-events: auto;
   width: 100%;
   height: 100%;

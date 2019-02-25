@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 export interface BodyPartHealthStyles {
   healthInfoContainer: React.CSSProperties;
@@ -18,7 +18,7 @@ export interface BodyPartHealthStyles {
   flipIcon: React.CSSProperties;
 }
 
-const HealthInfoContainer = styled('div')`
+const HealthInfoContainer = styled.div`
   position: relative;
   display: flex;
   justify-content: space-around;
@@ -31,7 +31,7 @@ const HealthInfoContainer = styled('div')`
     top: -15px;
     right: 0;
     left: 0;
-    background: url(images/paperdoll/ornament-health-mid-top.png) no-repeat;
+    background: url(/hud-new/images/paperdoll/ornament-health-mid-top.png) no-repeat;
     background-size: contain;
   }
   &:after {
@@ -42,29 +42,29 @@ const HealthInfoContainer = styled('div')`
     right: 0;
     bottom: -15px;
     left: 0;
-    background: url(images/paperdoll/ornament-health-mid-bot.png) no-repeat;
+    background: url(/hud-new/images/paperdoll/ornament-health-mid-bot.png) no-repeat;
     background-size: contain;
   }
 `;
 
-const SectionContainer = styled('div')`
+const SectionContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
 `;
 
-const HealthCompContainer = styled('div')`
+const HealthCompContainer = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: ${(props: { marginBottom: number }) => props.marginBottom}px;
 `;
 
-const HealthCompInfo = styled('div')`
+const HealthCompInfo = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const HealthCompSecondaryText = styled('div')`
+const HealthCompSecondaryText = styled.div`
   margin: 0;
   padding: 0;
   color: #707475;
@@ -72,7 +72,7 @@ const HealthCompSecondaryText = styled('div')`
   font-family: TitilliumWeb;
 `;
 
-const Icon = styled('div')`
+const Icon = styled.div`
   font-size: 14px;
   font-family: TitilliumWeb;
   color: #707475;

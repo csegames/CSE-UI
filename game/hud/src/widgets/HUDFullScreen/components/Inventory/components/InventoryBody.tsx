@@ -6,7 +6,7 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
@@ -47,14 +47,14 @@ export interface InventoryBodyStyles {
   refreshButton: React.CSSProperties;
 }
 
-const Container = styled('div')`
+const Container = styled.div`
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   padding-top: 15px;
 `;
 
-const InnerContainer = styled('div')`
+const InnerContainer = styled.div`
   flex: 1;
   overflow: auto;
   position: relative;
@@ -64,7 +64,7 @@ const InnerContainer = styled('div')`
   }
 `;
 
-const Content = styled('div')`
+const Content = styled.div`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -73,7 +73,7 @@ const Content = styled('div')`
   position: relative;
 `;
 
-const RefreshContainer = styled('div')`
+const RefreshContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -90,12 +90,12 @@ const RefreshContainer = styled('div')`
   z-index: 10;
 `;
 
-const RefreshTitle = styled('div')`
+const RefreshTitle = styled.div`
   font-size: 35px;
   color: white;
 `;
 
-const RefreshButton = styled('div')`
+const RefreshButton = styled.div`
   width: 50px;
   height: 50px;
   font-size: 35px;
@@ -181,7 +181,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
                   <RefreshButton onClick={this.refetch}><i className='fa fa-refresh' /></RefreshButton>
                 </RefreshContainer>
               }
-              <InnerContainer innerRef={(r: HTMLDivElement) => this.bodyRef = r} id='inventory-scroll-container'>
+              <InnerContainer ref={(r: HTMLDivElement) => this.bodyRef = r} id='inventory-scroll-container'>
                 <Content>{rows}</Content>
               </InnerContainer>
               <InventoryFooter

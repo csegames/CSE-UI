@@ -7,7 +7,7 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
 
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 
@@ -21,12 +21,12 @@ import { WeaponStatsFragment } from 'gql/fragments/WeaponStatsFragment';
 import { OffenseListGQL, ItemType } from 'gql/interfaces';
 import TabSubHeader from '../../../TabSubHeader';
 
-const Container = styled('div')`
+const Container = styled.div`
   flex: 1;
   height: 100%;
 `;
 
-const NoWeaponsContainer = styled('div')`
+const NoWeaponsContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
@@ -37,7 +37,7 @@ const NoWeaponsContainer = styled('div')`
   font-family: Caudex;
 `;
 
-const SectionTitle = styled('span')`
+const SectionTitle = styled.span`
   margin-left: 5px;
 `;
 

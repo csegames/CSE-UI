@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 export const RespawnDimensions = {
   width: 532,
@@ -14,23 +14,23 @@ export const RespawnDimensions = {
   heightUHD: 332,
 };
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   pointer-events: all;
   background-size: contain;
   width: ${RespawnDimensions.widthUHD}px;
   height: ${RespawnDimensions.heightUHD}px;
-  background: url(images/respawn/uhd/banner.png);
+  background: url(/hud-new/images/respawn/uhd/banner.png);
   z-index: -1;
 
   @media (max-width: 1920px) {
     width: ${RespawnDimensions.width}px;
     height: ${RespawnDimensions.height}px;
-    background: url(images/respawn/hd/banner.png);
+    background: url(/hud-new/images/respawn/hd/banner.png);
   }
 `;
 
-const Content = styled('div')`
+const Content = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,7 +39,7 @@ const Content = styled('div')`
   height: 100%;
 `;
 
-const RespawnText = styled('div')`
+const RespawnText = styled.div`
   font-family: Caudex;
   text-transform: uppercase;
   color: #F5D699;
@@ -55,7 +55,7 @@ const RespawnText = styled('div')`
   }
 `;
 
-const RespawnButton = styled('div')`
+const RespawnButton = styled.div`
   position: relative;
   font-family: Caudex;
   background-color: rgba(17, 17, 17, 0.8);
@@ -69,12 +69,12 @@ const RespawnButton = styled('div')`
   padding: 8px 20px;
   border: 2px solid #404040;
   border-width: 2px 1px 2px 1px;
-  border-image: url(images/respawn/uhd/button-border-gold.png);
+  border-image: url(/hud-new/images/respawn/uhd/button-border-gold.png);
   border-image-slice: 2 1 2 1;
   margin: 6px;
 
   &:hover {
-    background-image: url(images/respawn/uhd/button-glow.png);
+    background-image: url(/hud-new/images/respawn/uhd/button-glow.png);
   }
 
   @media (max-width: 1920px) {
@@ -83,12 +83,12 @@ const RespawnButton = styled('div')`
     padding: 4px 10px;
     border: 1px solid #404040;
     border-width: 2px 1px 2px 1px;
-    border-image: url(images/respawn/hd/button-border-gold.png);
+    border-image: url(/hud-new/images/respawn/hd/button-border-gold.png);
     border-image-slice: 2 1 2 1;
     margin: 3px;
 
     &:hover {
-      background-image: url(images/gamemenu/button-glow.png);
+      background-image: url(/hud-new/images/gamemenu/button-glow.png);
     }
   }
 `;

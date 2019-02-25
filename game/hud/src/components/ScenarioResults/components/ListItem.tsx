@@ -6,32 +6,13 @@
  */
 
 import * as React from 'react';
-import styled, { keyframes } from 'react-emotion';
+import { styled } from 'linaria/react';
 import { FactionColors } from 'lib/factionColors';
 import { TeamPlayer } from './ScenarioResultsContainer';
 
 const HOVER_EFFECT_TIME = 0.4;
 
-const hoverEffect = keyframes`
-  from {
-    left: -3px;
-  }
-
-  to {
-    left: 0px;
-  }
-`;
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  top {
-    opacity: 1;
-  }
-`;
-
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
   justify-content: space-around;
@@ -44,18 +25,36 @@ const Container = styled('div')`
   pointer-events: all;
   opacity: ${(props: any) => props.searchIncludes ? 1 : 0.3};
   &:hover .scenario-results-list-item-background {
-    animation: ${hoverEffect} ${HOVER_EFFECT_TIME}s forwards;
-    -webkit-animation: ${hoverEffect} ${HOVER_EFFECT_TIME}s forwards;
+    animation: hoverEffect ${HOVER_EFFECT_TIME}s forwards;
+    -webkit-animation: hoverEffect ${HOVER_EFFECT_TIME}s forwards;
   }
 
   &:hover .scenario-results-list-item-background::before {
     opacity: 0.65;
-    animation: ${hoverEffect} ${HOVER_EFFECT_TIME}s forwards, ${fadeIn} 0.2s forwards;
-    -webkit-animation: ${hoverEffect} ${HOVER_EFFECT_TIME}s forwards, ${fadeIn} 0.2s forwards;
+    animation: hoverEffect ${HOVER_EFFECT_TIME}s forwards, fadeIn 0.2s forwards;
+    -webkit-animation: hoverEffect ${HOVER_EFFECT_TIME}s forwards, fadeIn 0.2s forwards;
+  }
+
+  @keyframes hoverEffect {
+    from {
+      left: -3px;
+    }
+    to {
+      left: 0px;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    top {
+      opacity: 1;
+    }
   }
 `;
 
-const ContainerBackground = styled('div')`
+const ContainerBackground = styled.div`
   position: absolute;
   top: 0;
   right: 0;
@@ -79,7 +78,7 @@ const ContainerBackground = styled('div')`
   }
 `;
 
-const ContainerOverlay = styled('div')`
+const ContainerOverlay = styled.div`
   position: absolute;
   top: 0;
   right: 0;
@@ -90,69 +89,69 @@ const ContainerOverlay = styled('div')`
   &:hover {
     opacity: 0.65;
     background: linear-gradient(to right, rgba(255, 255, 255, 0.4), transparent);
-    -webkit-mask-image: url(images/scenario-results/texture-over-line.png);
+    -webkit-mask-image: url(/hud-new/images/scenario-results/texture-over-line.png);
   }
 `;
 
 
-export const Team = styled('div')`
+export const Team = styled.div`
   width: 40px;
   color: ${(props: any) => props.color};
 `;
 
-export const Name = styled('div')`
+export const Name = styled.div`
   flex: 2;
   display: flex;
   color: ${(props: any) => props.color};
 `;
 
-export const KDAContainer = styled('div')`
+export const KDAContainer = styled.div`
   display: flex;
   flex: 1;
   margin-right: 15px;
 `;
 
-export const Kills = styled('div')`
+export const Kills = styled.div`
   width: 50px;
   text-align: center;
 `;
 
-export const Deaths = styled('div')`
+export const Deaths = styled.div`
   width: 50px;
   text-align: center;
 `;
 
-export const Assists = styled('div')`
+export const Assists = styled.div`
   width: 50px;
   text-align: center;
 `;
 
-export const Divider = styled('div')`
+export const Divider = styled.div`
   text-align: center;
   color: ${(props: any) => props.color};
 `;
 
-export const HealingDealt = styled('div')`
+export const HealingDealt = styled.div`
   flex: 1;
 `;
 
-export const DamageReceived = styled('div')`
+export const DamageReceived = styled.div`
   flex: 1;
 `;
 
-export const HealingReceived = styled('div')`
+export const HealingReceived = styled.div`
   flex: 1;
 `;
 
-export const Score = styled('div')`
+export const Score = styled.div`
   flex: 1;
 `;
 
-export const DamageDealt = styled('div')`
+export const DamageDealt = styled.div`
   flex: 1;
 `;
 
-export const NPCKills = styled('div')`
+export const NPCKills = styled.div`
   flex: 1;
 `;
 
@@ -164,14 +163,13 @@ export interface ListItemProps {
 }
 
 class ListItem extends React.Component<ListItemProps> {
-  private listItemRef: HTMLDivElement;
   public render() {
     const { player, searchIncludes, backgroundColor } = this.props;
     const teamString = player.teamID;
     const colors = teamString ? FactionColors[teamString] : { textColor: 'white' };
 
     return (
-      <Container innerRef={(r: HTMLDivElement) => this.listItemRef = r} searchIncludes={searchIncludes}>
+      <Container searchIncludes={searchIncludes}>
         <ContainerBackground
           className='scenario-results-list-item-background'
           searchIncludes={searchIncludes}

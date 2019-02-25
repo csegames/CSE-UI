@@ -8,7 +8,7 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { InventoryItem, ContextMenuActionGQL } from 'gql/interfaces';
@@ -28,7 +28,7 @@ const query = gql`
   }
 `;
 
-const Button = styled('div')`
+const Button = styled.div`
   display: flex;
   justify-content: space-between;
   color: ${(props: any) => props.disabled ? '#666' : 'white' };
@@ -44,11 +44,11 @@ const Button = styled('div')`
   }
 
   &:active {
-    ${(props: any) => props.disabled ? '' : 'box-shadow: inset 0 0 3px rgba(0,0,0,0.5)'};
+    box-shadow: ${(props: any) => props.disabled ? '' : 'inset 0 0 3px rgba(0,0,0,0.5)'};
   }
 `;
 
-const CooldownText = styled('div')`
+const CooldownText = styled.div`
   margin-left: 10px;
 `;
 

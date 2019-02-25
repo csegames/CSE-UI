@@ -5,7 +5,8 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 
 import TooltipHeader from './components/TooltipHeader';
 import TooltipArmorInfo from './components/TooltipArmorInfo';
@@ -40,7 +41,7 @@ export const defaultTooltipStyle: { tooltip: string } = {
   `,
 };
 
-const Container = styled('div')`
+const Container = styled.div`
 `;
 
 export interface TooltipContentProps {

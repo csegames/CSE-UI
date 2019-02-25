@@ -4,7 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { isEqual } from 'lodash';
 import { UnitFrame } from './UnitFrame';
 const ProgressBar = (props: {current: number, max: number, foreground: string, background: string}) => {
@@ -51,7 +52,7 @@ const CenteredTextOverlay = (props: {text: string, textStyle: any, children: any
   );
 };
 
-const Button = styled('div')`
+const Button = styled.div`
   position: relative;
   display: inline-block;
   border: 1px solid rgba(220, 220, 220, 0.5);

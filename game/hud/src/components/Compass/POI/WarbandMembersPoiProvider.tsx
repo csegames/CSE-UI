@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import {
@@ -30,7 +30,7 @@ import {
   WarbandUpdateSubscription,
 } from 'gql/interfaces';
 
-const MemberPoi = styled('div')`
+const MemberPoi = styled.div`
   position: absolute;
   width: 36px;
   height: 36px;
@@ -43,7 +43,7 @@ const MemberPoi = styled('div')`
   user-select: none;
 `;
 
-const MemberPoiCircle = styled('div')`
+const MemberPoiCircle = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 19px;
@@ -52,7 +52,7 @@ const MemberPoiCircle = styled('div')`
   pointer-events: auto;
 `;
 
-const StyledSvg = styled('svg')`
+const StyledSvg = styled.svg`
   fill: rgba(255,255,255,0.8);
   text-shadow: none;
   stroke: rgba(255,255,255,0.8);
@@ -61,7 +61,7 @@ const StyledSvg = styled('svg')`
   margin: 0 auto;
 `;
 
-const Container = styled('div')`
+const Container = styled.div`
   user-select: none;
   pointer-events: all;
 `;

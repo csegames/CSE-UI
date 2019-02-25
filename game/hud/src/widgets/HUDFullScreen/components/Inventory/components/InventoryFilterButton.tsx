@@ -5,20 +5,21 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 
 import { showTooltip, hideTooltip } from 'actions/tooltips';
-import { InventoryFilterButton as FilterButtonDefinition } from '../../../lib/constants';
+import { InventoryFilterButton as FilterButtonDefinition } from '../../../lib/itemInterfaces';
 import { prettifyText } from '../../../lib/utils';
 
-const Container = styled('div')`
+const Container = styled.div`
   pointer-events: all;
   display: inline-block;
   margin-right: 5px;
   margin-bottom: 5px;
 `;
 
-const FilterIcon = styled('div')`
+const FilterIcon = styled.div`
   cursor: pointer;
   width: 25px;
   height: 25px;

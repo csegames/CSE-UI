@@ -5,12 +5,12 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { UnitFrame } from '../UnitFrame';
 import { showFriendlyTargetContextMenu } from 'actions/contextMenu';
 
-const Container = styled('div')`
+const Container = styled.div`
   margin-bottom: 10px;
   pointer-events: all;
 `;

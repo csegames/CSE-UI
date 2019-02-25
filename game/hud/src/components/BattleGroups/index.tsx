@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import gql from 'graphql-tag';
 import { isEqual } from 'lodash';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
@@ -31,7 +31,7 @@ import {
 } from 'gql/interfaces';
 import { BattleGroupNotificationProvider } from './BattleGroupNotificationProvider';
 
-const Container = styled('div')`
+const Container = styled.div`
   width: 100%;
   height: 100%;
 `;

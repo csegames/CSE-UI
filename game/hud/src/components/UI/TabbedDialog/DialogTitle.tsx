@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import * as CONFIG from '../config';
 
 interface DialogTitleProps {
@@ -8,7 +8,7 @@ interface DialogTitleProps {
   titleIcon?: string;
 }
 
-const DialogTitleContainer = styled('div')`
+const DialogTitleContainer = styled.div`
   position: absolute;
   top: 7px;
   text-transform: uppercase;

@@ -5,7 +5,8 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 
 import * as CSS from 'lib/css-helper';
 import { spacify } from 'lib/spacify';
@@ -14,11 +15,11 @@ import { Key } from 'widgets/Settings/components/Key';
 import ListeningDialog from './ListeningDialog';
 import ConfirmBindDialog from './ConfirmBindDialog';
 
-const Name = styled('div')`
+const Name = styled.div`
   ${CSS.EXPAND_TO_FIT}
   position: relative;
 `;
-const Bind = styled('div')`
+const Bind = styled.div`
   ${CSS.IS_ROW}
   width: 130px;
   display: flex;
@@ -31,7 +32,7 @@ const InnerClass = css`
   align-items: center;
 `;
 
-const DialogContainer = styled('div')`
+const DialogContainer = styled.div`
   position: fixed;
   top: 0;
   bottom: 0;
@@ -45,7 +46,7 @@ const DialogContainer = styled('div')`
   z-index: 1;
 `;
 
-const Dialog = styled('div')`
+const Dialog = styled.div`
   background-color: #444;
   min-width: 250px;
   min-height: 100px;
@@ -54,7 +55,7 @@ const Dialog = styled('div')`
   z-index: 1;
 `;
 
-const Content = styled('div')`
+const Content = styled.div`
   padding: 10px;
   flex: 1;
 `;

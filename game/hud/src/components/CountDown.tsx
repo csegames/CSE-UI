@@ -5,9 +5,9 @@
  */
 
 import React, { useState } from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const Container = styled('span')`
+const Container = styled.span`
 `;
 
 export interface CountdownProps extends Timing {

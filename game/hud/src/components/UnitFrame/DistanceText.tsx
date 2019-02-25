@@ -7,10 +7,10 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: absolute;
   left: 200px;
   bottom: -41px;

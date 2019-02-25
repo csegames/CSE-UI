@@ -5,14 +5,14 @@
  */
 
 import React, { useContext } from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { AbilityViewAnchor, useAbilityStateReducer } from '../../services/session/AbilityViewState';
 import { AbilityBarSlot } from './AbilityBarSlot';
 import { ContextMenu } from '../ContextMenu';
 
-const IMG = styled('img')`
-  ${(props: { radius: number }) => {
+const IMG = styled.img`
+  ${(props: { radius: number, src: string }) => {
     return `
       width: ${props.radius * 2}px;
       height: ${props.radius * 2}px;
@@ -20,7 +20,7 @@ const IMG = styled('img')`
   }}
 `;
 
-const AnchorWrapper = styled('div')`
+const AnchorWrapper = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -28,7 +28,7 @@ const AnchorWrapper = styled('div')`
   height: 100%;
 `;
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   ${(props: { radius: number }) => {
     return `

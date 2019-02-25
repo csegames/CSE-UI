@@ -7,9 +7,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import styled  from 'react-emotion';
+import { styled }  from 'linaria/react';
 import * as CSS from 'lib/css-helper';
-import { SCENARIO_FONT } from 'widgets/ScenarioJoin';
 import {
   ScenarioMatch,
   startPollingScenarioQueue,
@@ -18,14 +17,14 @@ import {
   pollNow,
 } from 'services/session/scenarioQueue';
 
-const Container = styled('div')`
+const Container = styled.div`
 `;
 
-const IconMenu = styled('div')`
+const IconMenu = styled.div`
   margin-top: 5px;
 `;
 
-const IconButton = styled('div')`
+const IconButton = styled.div`
   ${CSS.ALLOW_MOUSE}
   position: relative;
   box-sizing: border-box!important;
@@ -36,18 +35,18 @@ const IconButton = styled('div')`
   background-color: rgba(0,0,0,0.8);
   font-size: 22px;
   text-align: center;
-  background-image: url(images/settings/button-off.png);
+  background-image: url(/hud-new/images/settings/button-off.png);
   background-size: cover;
   &:hover {
     color: #f5d598;
-    background-image: url(images/settings/button-on.png);
+    background-image: url(/hud-new/images/settings/button-on.png);
   }
   &.lit {
     box-shadow: 0 0 10px 5px rgba(245, 213, 152, 1);
     transition: 1s linear 0s;
     border-radius: 5px;
     color: #f5d598;
-    background-image: url(images/settings/button-on.png);
+    background-image: url(/hud-new/images/settings/button-on.png);
   }
   &.unlit {
     transition: 1s linear 0s;
@@ -55,14 +54,14 @@ const IconButton = styled('div')`
     box-shadow: none;
     border-radius: 0px;
     color: #cbcbcb;
-    background-image: url(images/settings/button-off.png);
+    background-image: url(/hud-new/images/settings/button-off.png);
   }
   &.not-available {
     filter: grayscale(100%);
   }
 `;
 
-const Icon = styled('div')`
+const Icon = styled.div`
   position: relative;
   top: 2px;
   left: 2px;
@@ -71,7 +70,7 @@ const Icon = styled('div')`
   background-size: cover;
 `;
 
-const ToolTip = styled('div')`
+const ToolTip = styled.div`
   background-color: rgba(0,0,0,0.8);
   border: 1px solid rgba(128,128,128,0.5);
   position: absolute;
@@ -82,7 +81,7 @@ const ToolTip = styled('div')`
   z-index: 32000;
 `;
 
-const ToolTipContent = styled('div')`
+const ToolTipContent = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
@@ -92,8 +91,8 @@ const ToolTipContent = styled('div')`
   background-size: auto 100%;
 `;
 
-const ToolTipTitle = styled('div')`
-  ${SCENARIO_FONT}
+const ToolTipTitle = styled.div`
+  font-family: 'Caudex', serif;
   position: absolute;
   top: 15px;
   left: 20px;
@@ -103,7 +102,7 @@ const ToolTipTitle = styled('div')`
   letter-spacing: 3px;
 `;
 
-const ToolTipSubTitle = styled('div')`
+const ToolTipSubTitle = styled.div`
   position: absolute;
   top: 35px;
   left: 20px;

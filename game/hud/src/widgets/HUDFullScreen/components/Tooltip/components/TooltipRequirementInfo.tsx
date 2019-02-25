@@ -7,13 +7,13 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { shortenedWeaponStatWords } from '../../../lib/constants';
 import { prettifyText } from '../../../lib/utils';
 import { InventoryItem } from 'gql/interfaces';
 
-const StatItem = styled('div')`
+const StatItem = styled.div`
   display: flex;
   justify-content: space-between;
   border-image: linear-gradient(to right, rgba(177, 168, 156, 0.4), #131313, rgba(177, 168, 156, 0.4));
@@ -23,11 +23,11 @@ const StatItem = styled('div')`
   padding: 0 5px;
 `;
 
-const StatName = styled('div')`
+const StatName = styled.div`
   font-size: ${(props: any) => props.fontSize}px;
 `;
 
-const StatValue = styled('div')`
+const StatValue = styled.div`
 `;
 
 export interface TooltipRequirementInfoProps {

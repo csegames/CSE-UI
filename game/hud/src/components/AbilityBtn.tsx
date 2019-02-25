@@ -5,17 +5,17 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { Ring } from './Ring';
 import { CountDown } from './CountDown';
 import { Skill } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: absolute;
   border-radius: 50%;
   background-color: #ccc;
-  ${(props: { radius: number }) => {
+  ${(props: any) => {
     return `
       width: ${props.radius * 2}px;
       height: ${props.radius * 2}px;
@@ -25,7 +25,7 @@ const Container = styled('div')`
   top: 0;
 `;
 
-const Icon = styled('img')`
+const Icon = styled.img`
   position: absolute;
   left: 0;
   top: 0;
@@ -34,7 +34,7 @@ const Icon = styled('img')`
   border-radius: 100%;
 `;
 
-const OverlayShadow = styled('div')`
+const OverlayShadow = styled.div`
   position: absolute;
   left: 0;
   top: 0;
@@ -48,7 +48,7 @@ const OverlayShadow = styled('div')`
     1px 5px 30px -4px rgba(0, 0, 0, 1);
 `;
 
-const CountdownWrapper = styled('div')`
+const CountdownWrapper = styled.div`
   position: absolute;
   left: 0;
   top: 0;
@@ -66,7 +66,7 @@ const CountdownWrapper = styled('div')`
   filter: brightness(120%);
 `;
 
-const KeybindInfo = styled('div')`
+const KeybindInfo = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
@@ -84,7 +84,7 @@ const KeybindInfo = styled('div')`
   font-size: 0.5em;
 `;
 
-const QueuedStateTick = styled('div')`
+const QueuedStateTick = styled.div`
   position: absolute;
   top: -2px;
   left: -2px;
@@ -93,7 +93,7 @@ const QueuedStateTick = styled('div')`
   z-index: 3;
   border-radius: 0;
   box-shadow: initial;
-  background: url(images/skills/queued-tick.png) no-repeat;
+  background: url(/hud-new/images/skills/queued-tick.png) no-repeat;
   background-size: 90%;
 `;
 

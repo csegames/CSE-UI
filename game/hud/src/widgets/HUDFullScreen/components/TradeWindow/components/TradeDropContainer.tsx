@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { webAPI } from '@csegames/camelot-unchained';
 
 import LockedOverlay from './LockedOverlay';
@@ -28,29 +28,28 @@ import {
 
 declare const toastr: any;
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
   flex: 1;
-  &:after {
-    content: '';
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 47px;
-    background: url(${(props: any) => props.useGrayBG ? 'images/inventory/bag-left-bg-grey.png' :
-      'images/inventory/bag-left-bg.png'});
-    background-size: cover;
-    z-index: 0;
-  }
 `;
 
-const BackgroundImage = styled('img')`
+const LeftBG = styled.div`
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 47px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 0;
+`;
+
+const BackgroundImage = styled.img`
   position: absolute;
   top: 0;
   right: 0;
@@ -62,16 +61,15 @@ const BackgroundImage = styled('img')`
   z-index: 0;
 `;
 
-const ContainerOverlay = styled('div')`
+const ContainerOverlay = styled.div`
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: ${(props: any) => props.backgroundColor};
 `;
 
-const LockedContainer = styled('div')`
+const LockedContainer = styled.div`
   position: absolute;
   top: 0;
   right: 0;
@@ -80,7 +78,7 @@ const LockedContainer = styled('div')`
   z-index: 1;
 `;
 
-const Content = styled('div')`
+const Content = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,26 +88,25 @@ const Content = styled('div')`
   overflow: auto;
 `;
 
-const Footer = styled('div')`
+const Footer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  background: ${(props: any) => props.useGrayBG ? 'url(images/inventory/bag-bottom-bg-grey.png) no-repeat' :
-    'url(images/inventory/bag-bottom-bg.png) no-repeat'};
+  background-repeat: no-repeat;
   background-size: cover;
   width: 100%;
   height: 36px;
   z-index: 1;
 `;
 
-const FooterItem = styled('div')`
+const FooterItem = styled.div`
   display: flex;
   color: ${(props: any) =>  props.useGrayBG ? '#999999' : '#998675'};
   font-family: Caudex;
   margin-right: 10px;
 `;
 
-const FooterIcon = styled('span')`
+const FooterIcon = styled.span`
   margin-right: 5px;
 `;
 
@@ -165,15 +162,15 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
     const footerInfo = getContainerInfo(items);
 
     return (
-      <Container useGrayBG={useGrayBG}>
+      <Container>
         <BackgroundImage src={useGrayBG ? 'images/inventory/bag-bg-grey.png' : 'images/inventory/bag-bg.png'} />
-        <Content innerRef={getRef}>
+        <Content ref={getRef}>
           {(tradeState === 'Locked' || tradeState === 'Confirmed' || tradeState === 'None') &&
             <LockedContainer>
               <LockedOverlay state={tradeState} />
             </LockedContainer>
           }
-          <ContainerOverlay backgroundColor={this.state.backgroundColor} />
+          <ContainerOverlay style={{ backgroundColor: this.state.backgroundColor }} />
           <InventoryRow
             items={rowItems || []}
             bodyWidth={bodyWidth}
@@ -189,7 +186,9 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
             onRightOrLeftItemAction={() => {}}
           />
         </Content>
-        <Footer useGrayBG={useGrayBG}>
+        <Footer style={{ backgroundImage: `url(${useGrayBG ?
+          'url(/hud-new/images/inventory/bag-bottom-bg-grey.png) no-repeat' :
+          'url(/hud-new/images/inventory/bag-bottom-bg.png) no-repeat'})` }}>
           <FooterItem useGrayBG={useGrayBG}>
             <FooterIcon className={'icon-ui-bag'}></FooterIcon> {footerInfo.totalUnitCount}
           </FooterItem>
@@ -197,6 +196,8 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
             <FooterIcon className={'icon-ui-weight'}></FooterIcon> {footerInfo.weight}
           </FooterItem>
         </Footer>
+        <LeftBG style={{ backgroundImage: `url(${useGrayBG ? '/hud-new/images/inventory/bag-left-bg-grey.png' :
+          '/hud-new/images/inventory/bag-left-bg.png'})` }} />
       </Container>
     );
   }

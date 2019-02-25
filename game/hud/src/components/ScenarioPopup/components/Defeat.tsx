@@ -6,28 +6,50 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
-import { slideDownBounceUp, blast, slideUpTitle, slideUpMsg, glow, fadeIn, fadeOut, fadeInOut } from '../animations';
+import { styled } from 'linaria/react';
 
 const slideBounceTime = 0.4;
 
-const WaitTillBounce = css`
+const WaitTillBounce = `
   -webkit-animation-delay: ${slideBounceTime - 0.08}s;
   animation-delay: ${slideBounceTime - 0.08}s;
 `;
 
-const Container = styled('div')`
+const Container = styled.div`
   pointer-events: none;
   position: relative;
   width: 700px;
   height: 370px;
-  -webkit-animation: ${slideDownBounceUp} ${slideBounceTime}s ease-out forwards,
-    shake-hard 0.15s ease 0.3s, ${fadeOut} 0.5s ease 4s forwards;
-  animation: ${slideDownBounceUp} ${slideBounceTime}s ease-out forwards,
-    shake-hard 0.15s ease 0.3s, ${fadeOut} 0.5s ease 4s forwards;
+  -webkit-animation: slideDownBounceUp ${slideBounceTime}s ease-out forwards,
+    shake-hard 0.15s ease 0.3s, fadeOut 0.5s ease 4s forwards;
+  animation: slideDownBounceUp ${slideBounceTime}s ease-out forwards,
+    shake-hard 0.15s ease 0.3s, fadeOut 0.5s ease 4s forwards;
+
+  @keyframes slideDownBounceUp {
+    0%, 10% {
+      top: -300px;
+      opacity: 0;
+    }
+    80% {
+      top: 0px;
+    }
+    100% {
+      top: -20px;
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
 `;
 
-const RadialGradient = styled('div')`
+const RadialGradient = styled.div`
   position: absolute;
   width: 1000px;
   height: 600px;
@@ -35,49 +57,92 @@ const RadialGradient = styled('div')`
   left: -150px;
   opacity: 0;
   background: radial-gradient(rgba(237,53,35,0.5) 1%, transparent 55%);;
-  -webkit-animation: ${fadeInOut} 1s linear forwards;
-  animation: ${fadeInOut} 1s linear forwards;
-  ${WaitTillBounce};
+  animation: fadeInOut 1s linear forwards;
+  ${WaitTillBounce}
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
 `;
 
-const DefeatBlast = styled('div')`
+const DefeatBlast = styled.div`
   position: absolute;
   width: 1142px;
   height: 651px;
   opacity: 0;
   top: -112px;
   left: -230px;
-  background: url(images/scenario/defeat/blast-defeat.png) no-repeat center;
+  background: url(/hud-new/images/scenario/defeat/blast-defeat.png) no-repeat center;
   background-size: cover;
-  -webkit-animation: ${blast} 1s ease forwards;
-  animation: ${blast} 1s ease forwards;
+  -webkit-animation: blast 1s ease forwards;
+  animation: blast 1s ease forwards;
   -webkit-animation-delay: 0.2s;
   animation-delay: 0.2s;
+
+  @keyframes blast {
+    from {
+      opacity: 1;
+      background-size: 10% 10%;
+    }
+    to {
+      opacity: 0;
+      background-size: 120% 120%;
+    }
+  }
 `;
 
-const FrameLasers = styled('div')`
+const FrameLasers = styled.div`
   position: absolute;
   top: -72px;
   left: -96px;
   width: 883px;
   height: 515px;
-  background: url(images/scenario/defeat/laser-defeat.png);
+  background: url(/hud-new/images/scenario/defeat/laser-defeat.png);
   background-size: cover;
   opacity: 0;
-  -webkit-animation: ${fadeIn} 1s ease forwards, ${glow} 2s ease infinite;
-  animation: ${fadeIn} 1s ease forwards, ${glow} 2s ease infinite;
+  -webkit-animation: fadeIn 1s ease forwards, glow 2s ease infinite;
+  animation: fadeIn 1s ease forwards, glow 2s ease infinite;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes glow {
+    0% {
+      -webkit-filter: brightness(100%);
+    }
+    50% {
+      -webkit-filter: brightness(150%);
+    }
+    100% {
+      -webkit-filter: brightness(100%);
+    }
+  }
 `;
 
-const Frame = styled('div')`
+const Frame = styled.div`
   position: absolute;
   width: 673px;
   height: 386px;
-  background: url(images/scenario/defeat/frame-defeat.png) no-repeat;
+  background: url(/hud-new/images/scenario/defeat/frame-defeat.png) no-repeat;
   background-size: cover;
   z-index: 10;
 `;
 
-const Background = styled('div')`
+const Background = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,7 +152,7 @@ const Background = styled('div')`
   height: 225px;
   top: 105px;
   left: 90px;
-  background: url(images/scenario/roundend/round-end-bg.png) no-repeat;
+  background: url(/hud-new/images/scenario/roundend/round-end-bg.png) no-repeat;
   z-index: 1;
 
   &:after {
@@ -97,14 +162,26 @@ const Background = styled('div')`
     height: 188px;
     left: 0;
     bottom: 0;
-    background: url(images/scenario/defeat/gradient-defeat.png);
-    -webkit-animation: ${glow} 2s ease infinite;
-    animation: ${glow} 2s ease infinite;
-    ${WaitTillBounce};
+    background: url(/hud-new/images/scenario/defeat/gradient-defeat.png);
+    -webkit-animation: glow 2s ease infinite;
+    animation: glow 2s ease infinite;
+    ${WaitTillBounce}
+  }
+
+  @keyframes glow {
+    0% {
+      -webkit-filter: brightness(100%);
+    }
+    50% {
+      -webkit-filter: brightness(150%);
+    }
+    100% {
+      -webkit-filter: brightness(100%);
+    }
   }
 `;
 
-const Title = styled('div')`
+const Title = styled.div`
   z-index: 10;
   position: relative;
   font-family: Caudex;
@@ -113,12 +190,24 @@ const Title = styled('div')`
   font-size: 45px;
   letter-spacing: 25px;
   opacity: 0;
-  -webkit-animation: ${slideUpTitle} 0.2s linear forwards;
-  animation: ${slideUpTitle} 0.2s linear forwards;
-  ${WaitTillBounce};
+  -webkit-animation: slideUpTitle 0.2s linear forwards;
+  animation: slideUpTitle 0.2s linear forwards;
+  ${WaitTillBounce}
+
+  @keyframes slideUpTitle {
+    0%, 10% {
+      bottom: 0px;
+      opacity: 0;
+    }
+
+    100% {
+      bottom: 35px;
+      opacity: 1;
+    }
+  }
 `;
 
-const ResultMessage = styled('div')`
+const ResultMessage = styled.div`
   z-index: 11;
   position: relative;
   opacity: 0;
@@ -127,23 +216,44 @@ const ResultMessage = styled('div')`
   width: 450px;
   font-family: Caudex;
   color: white;
-  -webkit-animation: ${slideUpMsg} 0.2s linear forwards;
-  animation: ${slideUpMsg} 0.2s linear forwards;
-  ${WaitTillBounce};
+  -webkit-animation: slideUpMsg 0.2s linear forwards;
+  animation: slideUpMsg 0.2s linear forwards;
+  ${WaitTillBounce}
+
+  @keyframes slideUpMsg {
+    0%, 10% {
+      bottom: 0px;
+      opacity: 0;
+    }
+
+    100% {
+      bottom: 30px;
+      opacity: 1;
+    }
+  }
 `;
 
-const BackgroundShadow = styled('div')`
+const BackgroundShadow = styled.div`
   position: absolute;
   top: 0;
   left: 0;
   opacity: 0;
   width: 100%;
   height: 110%;
-  background: url(images/scenario/roundend/gradient-bg.png) no-repeat;
+  background: url(/hud-new/images/scenario/roundend/gradient-bg.png) no-repeat;
   background-size: cover;
   z-index: 0;
-  -webkit-animation: ${fadeIn} 0.5s ease-in forwards;
-  animation: ${fadeIn} 0.5s ease-in forwards;
+  -webkit-animation: fadeIn 0.5s ease-in forwards;
+  animation: fadeIn 0.5s ease-in forwards;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 export interface DefeatProps {

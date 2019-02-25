@@ -6,7 +6,8 @@
 
 import * as React from 'react';
 import { TabPanel, TabItem, ContentItem, TabPanelStyle } from '@csegames/camelot-unchained';
-import styled, { css } from 'react-emotion';
+import { styled } from 'linaria/react';
+import { css } from 'linaria';
 
 import GeneralInfo from './components/GeneralInfo';
 import GeneralStats from './components/GeneralStats/GeneralStats';
@@ -16,26 +17,27 @@ import TraitsInfo from './components/TraitsInfo/TraitsInfo';
 import Session from './components/Session';
 import SearchInput from './components/SearchInput';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0, 0, 0, 0.3)), url(images/inventory/bag-bg-grey.png), black;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0, 0, 0, 0.3)),
+  url(/hud-new/images/inventory/bag-bg-grey.png), black;
 `;
 
-const GeneralInfoContainer = styled('div')`
+const GeneralInfoContainer = styled.div`
   display: flex;
   height: 200px;
 `;
 
-const InfoContent = styled('div')`
+const InfoContent = styled.div`
   z-index: 1;
   flex: 1;
   height: calc(100% - 200px);
 `;
 
-const TabText = styled('span')`
+const TabText = styled.span`
   font-size: 16px;
   margin: 0;
   padding: 0;
@@ -89,7 +91,7 @@ export const defaultCharacterInfoStyle: Partial<TabPanelStyle> = {
       left: 0;
       right: 0;
       bottom: 5px;
-      background: url(images/character-stats/ornament-nav.png) no-repeat;
+      background: url(/hud-new/images/character-stats/ornament-nav.png) no-repeat;
       background-size: contain;
       background-position: center;
     }

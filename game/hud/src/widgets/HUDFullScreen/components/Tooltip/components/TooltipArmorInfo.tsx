@@ -6,14 +6,13 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-import { TOOLTIP_PADDING } from '../../../lib/constants';
 import TooltipInfoSection, { TooltipSection } from './TooltipInfoSection';
 import { InventoryItem, EquippedItem } from 'gql/interfaces';
 
-const Container = styled('div')`
-  padding: 0 ${TOOLTIP_PADDING};
+const Container = styled.div`
+  padding: 0 10px;
 `;
 
 export interface TooltipArmorInfoMap {

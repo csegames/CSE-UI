@@ -7,7 +7,8 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 
 import { webAPI, GameInterface } from '@csegames/camelot-unchained';
 import { TabPanel } from '@csegames/camelot-unchained/lib/components';
@@ -59,7 +60,7 @@ export interface RootPage extends Partial<Page> {
   showMaximizeButton?: boolean;
 }
 
-const Button = styled('div')`
+const Button = styled.div`
   cursor: pointer;
   background-color: #555;
   display: inline-block;
@@ -118,7 +119,7 @@ class DevUIButton extends React.PureComponent<Button> {
   }
 }
 
-const Content = styled('div')`
+const Content = styled.div`
   flex: 1;
 `;
 
@@ -201,7 +202,7 @@ class DevUIObjectContent extends React.PureComponent<Partial<Page>> {
   }
 }
 
-const Page = styled('div')`
+const Page = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -212,12 +213,12 @@ const Page = styled('div')`
   -webkit-user-select: none;
 `;
 
-const Pages = styled('div')`
+const Pages = styled.div`
   flex: 1;
   display: flex;
 `;
 
-const Title = styled('div')`
+const Title = styled.div`
   font-weight: 700;
   font-size: 1.5em;
   margin: 5px 0;
@@ -324,7 +325,7 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
 //   ,
 // };
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   z-index: ${HUDZOrder.DevUI};
   width: 100%;
@@ -332,13 +333,13 @@ const Container = styled('div')`
   pointer-events: none;
 `;
 
-const CloseButtonPosition = styled('div')`
+const CloseButtonPosition = styled.div`
   position: absolute;
   top: 5px;
   right: 5px;
 `;
 
-const MaximizeButton = styled('a')`
+const MaximizeButton = styled.a`
   position: absolute;
   right: 50px;
   top: 0px;

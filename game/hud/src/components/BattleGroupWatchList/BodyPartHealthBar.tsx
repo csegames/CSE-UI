@@ -6,9 +6,9 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -20,7 +20,7 @@ const Container = styled('div')`
   background-color: transparent;
 `;
 
-const Bar = styled('div')`
+const Bar = styled.div`
   position: absolute;
   right: 0;
   left: 0;
@@ -29,7 +29,7 @@ const Bar = styled('div')`
   background-color: ${(props: any) => props.backgroundColor};
 `;
 
-const Wound = styled('div')`
+const Wound = styled.div`
   z-index: 10;
   height: 3px;
   width: 2px;
