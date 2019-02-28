@@ -44,11 +44,22 @@ module.exports = function (e, argv = {}) {
   console.log(`CPUS: ${require('os').cpus().length}`)
   logEnv(EXPOSE_ENV);
 
+  const ALIAS = {
+    'react': path.dirname(
+      require.resolve('react/package.json')
+    ),
+    components: path.resolve(__dirname, 'tmp/components'),
+    actions: path.resolve(__dirname, 'tmp/services/actions'),
+    lib: path.resolve(__dirname, 'tmp/lib'),
+    services: path.resolve(__dirname, 'tmp/services'),
+    widgets: path.resolve(__dirname, 'tmp/widgets'),
+  };
+
   const config = {
     mode: MODE,
     devtool: 'source-map',
     entry: {
-      ls: ['@babel/polyfill', './src/sentry.tsx', './src/index.tsx'],
+      ls: ['./tmp/sentry.jsx', './tmp/index.jsx'],
     },
     output: {
       path: OUTPUT_PATH,
@@ -76,17 +87,8 @@ module.exports = function (e, argv = {}) {
       runtimeChunk: 'single',
     },
     resolve: {
-      alias: {
-        'react': path.dirname(
-          require.resolve('react/package.json')
-        ),
-        components: path.resolve(__dirname, 'src/components'),
-        actions: path.resolve(__dirname, 'src/services/actions'),
-        lib: path.resolve(__dirname, 'src/lib'),
-        services: path.resolve(__dirname, 'src/services'),
-        widgets: path.resolve(__dirname, 'src/widgets'),
-      },
-      extensions: ['.web.ts', '.ts', '.web.tsx', '.tsx', '.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
+      alias: ALIAS,
+      extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     },
     module: {
       rules: [
@@ -115,6 +117,15 @@ module.exports = function (e, argv = {}) {
                     cacheDirectory: true
                   },
                 },
+                {
+                  loader: 'linaria/loader',
+                  options: {
+                    sourceMap: IS_DEVELOPMENT,
+                    resolve: {
+                      alias: ALIAS,
+                    },
+                  },
+                },
               ]
             },
             {
@@ -129,7 +140,7 @@ module.exports = function (e, argv = {}) {
               ]
             },
             {
-              test: /\.tsx?$/,
+              test: /\.jsx?$/,
               exclude: /node_modules/,
               use: [
                 {
@@ -159,15 +170,14 @@ module.exports = function (e, argv = {}) {
                   }
                 },
                 {
-                  loader: require.resolve('ts-loader'),
+                  loader: 'linaria/loader',
                   options: {
-                    transpileOnly: IS_CI ? false : true,
-                    happyPackMode: IS_CI ? false : true,
-                    compilerOptions: {
-                      sourceMap: true,
-                    }
-                  }
-                }
+                    sourceMap: IS_DEVELOPMENT,
+                    resolve: {
+                      alias: ALIAS,
+                    },
+                  },
+                },
               ]
             },
             {
