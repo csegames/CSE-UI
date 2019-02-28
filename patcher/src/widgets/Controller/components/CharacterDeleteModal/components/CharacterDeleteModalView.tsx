@@ -6,12 +6,13 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { Tooltip, Spinner } from '@csegames/camelot-unchained';
 import PatcherModal from '../../../../PatcherModal';
 import GenericButton from '../../../../GenericButton';
 
-const Container = styled('div')`
+const Container = styled.div`
   left: 50%;
   top: 50%;
   margin: 0 auto;
@@ -21,7 +22,7 @@ const Container = styled('div')`
   z-index: 99999;
 `;
 
-const Modal = styled('div')`
+const Modal = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -31,7 +32,7 @@ const Modal = styled('div')`
   padding: 1em;
 `;
 
-const Input = styled('input')`
+const Input = styled.input`
   margin: 5px 10px;
   background: transparent;
   padding: 15px;
@@ -49,11 +50,11 @@ const Input = styled('input')`
   }
 `;
 
-const Label = styled('label')`
+const Label = styled.label`
   color: #8f8f8f;
 `;
 
-const Title = styled('div')`
+const Title = styled.div`
   font-size: 24px;
   font-weight: 500;
   color: #FFD9D2;
@@ -62,20 +63,20 @@ const Title = styled('div')`
   letter-spacing: 5px;
 `;
 
-const Text = styled('div')`
+const Text = styled.div`
   font-size: 1em;
   color: rgb(255,95,76);
 `;
 
-const ModalError = styled('div')`
+const ModalError = styled.div`
   color: red;
 `;
 
-const ModalSuccess = styled('div')`
+const ModalSuccess = styled.div`
   color: #3fd0b0;
 `;
 
-const ButtonContainer = styled('div')`
+const ButtonContainer = styled.div`
   display: flex;
 `;
 
@@ -88,7 +89,7 @@ const FailedButton = css`
   }
 `;
 
-const ButtonGlow = styled('div')`
+const ButtonGlow = styled.div`
   position: absolute;
   right: 0;
   left: 10%;
@@ -123,7 +124,7 @@ class CharacterDeleteModalView extends React.Component<CharacterDeleteModalViewP
             <Title>Delete character?</Title>
             <Text>Warning! This cannot be undone.</Text>
             <Label>Enter character name to confirm</Label>
-            <Input id='name' innerRef={ref => this.nameInput = ref} type='text' onChange={this.props.onChange} />
+            <Input id='name' ref={ref => this.nameInput = ref} type='text' onChange={this.props.onChange} />
             {
               this.props.error ?
                 <ModalError>

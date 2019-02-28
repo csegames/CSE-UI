@@ -6,29 +6,26 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { ChannelStatus, PatchChannelMode } from '../../../../../services/patcher';
 import { PatcherServer } from '../../../ControllerContext';
 
-const MenuContainer = styled('div')`
+const MenuContainer = styled.div`
   position: fixed;
   display: block;
   width: 180px;
   z-index: 5;
   line-height: 20px;
-  top: ${(props: any) => props.topPos}px;
-  left: ${(props: any) => props.leftPos}px;
-  background: url(images/controller/dropdown-bg.png);
+  background: url(/ui/images/controller/dropdown-bg.png);
   border: 1px solid #525252;
-  -webkit-mask-image: url(images/controller/dropdown-mask.png);
+  -webkit-mask-image: url(/ui/images/controller/dropdown-mask.png);
   -webkit-mask-size: cover;
   -webkit-mask-repeat: no-repeat;
     border-image: linear-gradient(180deg,#626262,#1c1c1c) stretch;
   border-image-slice: 1;
 `;
 
-const ListItem = styled('div')`
-  pointer-events: ${(props: any) => props.visible ? 'all' : 'none'};
+const ListItem = styled.div`
   cursor: pointer;
   text-decoration: none;
   display: block;
@@ -42,7 +39,7 @@ const ListItem = styled('div')`
   }
 `;
 
-const OptionsMenuOverlay = styled('div')`
+const OptionsMenuOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -50,7 +47,7 @@ const OptionsMenuOverlay = styled('div')`
   width: 100%;
 `;
 
-const CheckMark = styled('span')`
+const CheckMark = styled.span`
   height: 20px;
   margin-left: 5px;
 `;
@@ -70,11 +67,15 @@ class ServerOptionsMenu extends React.Component<ServerOptionsMenuProps> {
     const { serverForOptions } = this.props;
     return (
       <div>
-        <MenuContainer topPos={this.props.top} leftPos={this.props.left}>
-          <ListItem onClick={this.props.handleInstallUninstall} visible={this.props.charSelectVisible}>
+        <MenuContainer style={{ top: this.props.top, left: this.props.left }}>
+          <ListItem
+            onClick={this.props.handleInstallUninstall}
+            style={{ pointerEvents: this.props.charSelectVisible ? 'all' : 'none' }}>
             {this.props.serverForOptions.channelStatus === ChannelStatus.NotInstalled ? 'Install' : 'Uninstall'}
           </ListItem>
-          <ListItem onClick={this.props.onToggleChannelMode} visible={this.props.charSelectVisible}>
+          <ListItem
+            onClick={this.props.onToggleChannelMode}
+            style={{ pointerEvents: this.props.charSelectVisible ? 'all' : 'none' }}>
             Use 32-Bit
             <CheckMark className={serverForOptions.mode === PatchChannelMode.ThiryTwoBit ? 'fa fa-check' : ''} />
           </ListItem>

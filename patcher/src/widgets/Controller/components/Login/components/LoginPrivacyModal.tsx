@@ -6,13 +6,13 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import GenericButton from '../../../../GenericButton';
 import LoginLink from './LoginLink';
 import PatcherModal from '../../../../PatcherModal';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: fixed;
   top: 0;
   right: 0;
@@ -25,7 +25,7 @@ const Container = styled('div')`
   z-index: 99;
 `;
 
-const Modal = styled('div')`
+const Modal = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -33,7 +33,7 @@ const Modal = styled('div')`
   height: 400px;
 `;
 
-const ModalHeader = styled('div')`
+const ModalHeader = styled.div`
   font-family: Caudex;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -42,7 +42,7 @@ const ModalHeader = styled('div')`
   margin: 0 15px 15px 15px;
 `;
 
-const ModalText = styled('div')`
+const ModalText = styled.div`
   font-family: Titillium;
   color: #ffd9d4;
   font-size: 16px;
@@ -50,7 +50,7 @@ const ModalText = styled('div')`
   margin: 0 15px 10px 15px;
 `;
 
-const Section = styled('div')`
+const Section = styled.div`
   margin-bottom: 10px;
 `;
 

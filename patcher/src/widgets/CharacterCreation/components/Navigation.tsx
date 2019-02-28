@@ -6,11 +6,12 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
-import { utils, Tooltip } from '@csegames/camelot-unchained';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
+import { Tooltip } from '@csegames/camelot-unchained';
 import { CharacterCreationPage } from '../index';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   position: absolute;
   left: 0;
@@ -28,38 +29,38 @@ const Section = css`
   flex: 1;
 `;
 
-const MiddleNavContainer = styled('div')`
+const MiddleNavContainer = styled.div`
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-const CreateContainer = styled('div')`
+const CreateContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
 `;
 
-const ProgressContainer = styled('div')`
+const ProgressContainer = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const ProgressImage = styled('img')`
+const ProgressImage = styled.img`
   cursor: pointer;
   width: 55px;
   height: 55px;
   margin: 5px 0 0 0;
 `;
 
-const NavProgressSection = styled('div')`
+const NavProgressSection = styled.div`
   display: flex;
   align-items: center;
   flex: 1;
 `;
 
-const NavButton = styled('button')`
+const NavButton = styled.button`
   font-size: 14px;
   font-weight: bold;
   letter-spacing: 0.1px;
@@ -71,22 +72,22 @@ const NavButton = styled('button')`
   padding: 20px;
   width: 100px;
   &:hover {
-    color: ${utils.lightenColor('#D6B597', 25)};
+    color: #e0c7b1;
   }
 `;
 
-const NavConnector = styled('div')`
+const NavConnector = styled.div`
   height: 2px;
   width: 30px;
   margin: 0px -5px;
-  background-color: ${utils.lightenColor('#2F2C29', 20)};
+  background-color: #5c5650;
 `;
 
 const NavConnectorCompleted = css`
   background-color: #D2B59D;
 `;
 
-const NavArrow = styled('span')`
+const NavArrow = styled.span`
   margin: 0 2px;
 `;
 

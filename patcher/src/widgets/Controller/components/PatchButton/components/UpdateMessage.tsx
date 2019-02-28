@@ -6,27 +6,26 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { Progress } from '../../../lib/Progress';
 import { patcher } from '../../../../../services/patcher';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url(images/controller/update-details.png);
+  background: url(/ui/images/controller/update-details.png);
   color: #BFBFBF;
   font-size: 12px;
   width: 295px;
   height: 90px;
-  right: ${(props: any) => props.right}px;
   transition: right 0.5s ease;
   font-weight: normal;
 `;
 
-const TextContainer = styled('div')`
+const TextContainer = styled.div`
   text-align: right;
 `;
 
@@ -65,7 +64,7 @@ class UpdateMessage extends React.Component<UpdateMessageProps, UpdateMessageSta
     }
 
     return (
-      <Container right={installingChannel !== -1 ? 230 : 0}>
+      <Container style={{ right: installingChannel !== -1 ? 230 : 0 }}>
         {installingChannel !== -1 &&
           <TextContainer>
             <div>Updating {installingChannelName}...</div>

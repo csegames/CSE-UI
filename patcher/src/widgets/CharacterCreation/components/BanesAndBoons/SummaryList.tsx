@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import TraitSummary from './TraitSummary';
 import SummaryListHeader from './SummaryListHeader';
@@ -14,13 +14,13 @@ import ResetAlert from './ResetAlert';
 import { colors } from '../../styleConstants';
 import { TraitMap, TraitIdMap, BanesAndBoonsInfo } from '../../services/session/banesAndBoons';
 
-const Container = styled('div')`
+const Container = styled.div`
   height: 100%;
   width: 48vw;
   padding: 0 15px;
 `;
 
-const InnerSummaryWrapper = styled('div')`
+const InnerSummaryWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -34,11 +34,11 @@ const InnerSummaryWrapper = styled('div')`
   }
 `;
 
-const AddedBoonSummaryWrapper = styled('div')`
+const AddedBoonSummaryWrapper = styled.div`
   flex: 1;
 `;
 
-const AddedBaneSummaryWrapper = styled('div')`
+const AddedBaneSummaryWrapper = styled.div`
   flex: 1;
   margin-left: 15px;
 `;

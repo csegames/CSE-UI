@@ -5,12 +5,12 @@
  *
  */
 
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 export const PATCH_NOTES_COLOR = 'rgba(122, 184, 227, 1)';
 export const NEWS_COLOR = 'rgba(236, 119, 127, 1)';
 
-export const FeaturedContainer = styled('div')`
+export const FeaturedContainer = styled.div`
   position: relative;
   width: calc(100% - 10px);
   height: 500px;
@@ -34,7 +34,6 @@ export const FeaturedContainer = styled('div')`
       rgba(16, 16, 16, 0.5) 10%,
       rgba(16, 16, 16, 1) 60%
     ),
-    url(${(props: any) => props.backgroundImage}) left top/80% no-repeat,
     #101010;
 `;
 
@@ -47,7 +46,7 @@ export const FeaturedContainer = styled('div')`
 //   }
 // `;
 
-export const FullWrapper = styled('div')`
+export const FullWrapper = styled.div`
   position: fixed;
   display: flex;
   align-items: center;
@@ -61,7 +60,7 @@ export const FullWrapper = styled('div')`
   z-index: 9999;
 `;
 
-export const FullContainer = styled('div')`
+export const FullContainer = styled.div`
   position: relative;
   top: 30px;
   height: 80%;
@@ -86,47 +85,46 @@ export const FullContainer = styled('div')`
       transparent,
       rgba(16, 16, 16, 0.5) 10%,
       rgba(16, 16, 16, 1) 60%
-    ),
-    url(${(props: any) => props.backgroundImage}) left top/80% no-repeat;
+    );
 `;
 
-export const TitleContainer = styled('div')`
+export const TitleContainer = styled.div`
   text-align: right;
   flex: 1;
   margin-left: 80px;
 `;
 
-export const ContentContainer = styled('div')`
+export const ContentContainer = styled.div`
   flex: 3;
   margin-right: 6px;
   padding-right: 75px;
   overflow: auto;
 `;
 
-export const ContentImage = styled('img')`
+export const ContentImage = styled.img`
   width: 100%;
   height: 500px;
   object-fit: cover;
 `;
 
-export const Title = styled('div')`
+export const Title = styled.div`
   font-family: Caudex;
   font-size: 24px;
   letter-spacing: 0.5px;
   margin-bottom: 10px;
 `;
 
-export const DescriptionText = styled('div')`
+export const DescriptionText = styled.div`
   font-family: Titillium Web;
   font-size: 14px;
 `;
 
-export const ContentText = styled('div')`
+export const ContentText = styled.div`
   font-family: Titillium Web;
   font-size: 16px;
 `;
 
-export const CloseButton = styled('div')`
+export const CloseButton = styled.div`
   position: absolute;
   top: 4px;
   right: 4px;
@@ -140,14 +138,14 @@ export const CloseButton = styled('div')`
   }
 `;
 
-export const ReadMoreButton = styled('div')`
+export const ReadMoreButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
   position: absolute;
   right: 0;
   bottom: 0;
-  background: url(images/news/read-more-bg.png);
+  background: url(/ui/images/news/read-more-bg.png);
   width: 201px;
   height: 43px;
   font-family: Caudex;
@@ -161,6 +159,6 @@ export const ReadMoreButton = styled('div')`
   }
 `;
 
-export const ReadMoreText = styled('div')`
+export const ReadMoreText = styled.div`
   padding-right: 30px;
 `;

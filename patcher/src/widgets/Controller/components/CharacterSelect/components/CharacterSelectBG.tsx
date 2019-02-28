@@ -6,61 +6,60 @@
  */
 
 import * as React from 'react';
-import styled, { css, keyframes, cx } from 'react-emotion';
+import { css, cx } from 'linaria';
+import { styled } from 'linaria/react';
 import CharacterSelectFX from './CharacterSelectFX';
 import NoCharacterSelectFX from './NoCharacterSelectFX';
 import { getCharImage } from '../../../../../lib/characterImages';
 import { SimpleCharacter, Race, Archetype, Faction } from 'gql/interfaces';
 
-const charTransitionAnim = keyframes`
-  from {
-    left: 10%;
-    opacity: 0;
-  }
-
-  to {
-    left: 15%;
-    opacity: 1;
-  }
-`;
-
-const charTransitionNameAnim = keyframes`
-  from {
-    left: 41%;
-    opacity: 0;
-  }
-
-  to {
-    left: 38%;
-    opacity: 1;
-  }
-`;
-
-const charTransitionBaseAnim = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
 const CharTransitionAnim = css`
-  -webkit-animation: ${charTransitionAnim} 1s ease forwards;
-  animation: ${charTransitionAnim} 1s ease forwards;
+  -webkit-animation: charTransitionAnim 1s ease forwards;
+  animation: charTransitionAnim 1s ease forwards;
+
+  @keyframes charTransitionAnim {
+    from {
+      left: 10%;
+      opacity: 0;
+    }
+    to {
+      left: 15%;
+      opacity: 1;
+    }
+  }
 `;
 
 const CharNameTransitionAnim = css`
-  -webkit-animation: ${charTransitionNameAnim} 1s ease forwards;
-  animation: ${charTransitionNameAnim} 1s ease forwards;
+  -webkit-animation: charTransitionNameAnim 1s ease forwards;
+  animation: charTransitionNameAnim 1s ease forwards;
+
+  @keyframes charTransitionNameAnim {
+    from {
+      left: 41%;
+      opacity: 0;
+    }
+    to {
+      left: 38%;
+      opacity: 1;
+    }
+  }
 `;
 
 const CharBaseTransitionAnim = css`
-  -webkit-animation: ${charTransitionBaseAnim} 1s ease forwards;
-  animation: ${charTransitionBaseAnim} 1s ease forwards;
+  -webkit-animation: charTransitionBaseAnim 1s ease forwards;
+  animation: charTransitionBaseAnim 1s ease forwards;
+
+  @keyframes charTransitionBaseAnim {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
-const CharacterInfoOverlay = styled('div')`
+const CharacterInfoOverlay = styled.div`
   cursor: default;
   display: block;
   position: absolute;
@@ -68,16 +67,14 @@ const CharacterInfoOverlay = styled('div')`
   z-index: 11;
   color: white;
   left: 41%;
-  opacity: ${(props: any) => props.opacity};
 `;
 
-const CharacterName = styled('div')`
+const CharacterName = styled.div`
   font-family: "Caudex";
   font-size: 28px;
-  font-size: ${(props: any) => props.fontSize}vw;
 `;
 
-const CharacterMetaInfo = styled('div')`
+const CharacterMetaInfo = styled.div`
   line-height: 20px;
   font-family: "Titillium Web";
   font-size: 17px;
@@ -85,17 +82,15 @@ const CharacterMetaInfo = styled('div')`
   opacity:.7;
 `;
 
-const CharImg = styled('img')`
+const CharImg = styled.img`
   left: 10%;
   position: absolute;
   width: auto;
   z-index: 2;
-  opacity: ${(props: any) => props.opacity};
-  height: ${(props: any) => props.height || 80}%;
   bottom: 25px;
 `;
 
-const CharBase = styled('div')`
+const CharBase = styled.div`
   position: absolute;
   background-position: 35% bottom;
   background-size: contain;
@@ -106,15 +101,14 @@ const CharBase = styled('div')`
   bottom: 0px !important;
   right: 0px;
   z-index: 1;
-  opacity: ${(props: any) => props.opacity};
   &.arthurian {
-    background-image: url(images/visualfx/art/art-base.png);
+    background-image: url(/ui/images/visualfx/art/art-base.png);
   }
   &.viking {
-    background-image: url(images/visualfx/vik/vik-base.png);
+    background-image: url(/ui/images/visualfx/vik/vik-base.png);
   }
   &.tdd {
-    background-image: url(images/visualfx/tdd/tdd-base_edit02.png);
+    background-image: url(/ui/images/visualfx/tdd/tdd-base_edit02.png);
   }
 `;
 
@@ -152,15 +146,6 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
     const { selectedCharacter } = this.props;
     if (selectedCharacter) {
       const { faction } = selectedCharacter;
-      const charImgClass = [`bgelement char`];
-      const charBaseClass = [Faction[faction].toLowerCase()];
-      const charNameClass = [];
-
-      if (this.state.shouldTransition) {
-        charNameClass.push(CharNameTransitionAnim);
-        charImgClass.push(CharTransitionAnim);
-        charBaseClass.push(CharBaseTransitionAnim);
-      }
       let hidden = false;
       if (this.state.visualFXTransition) {
         hidden = true;
@@ -175,15 +160,26 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
             selectedClass={{ id: visualFXChar && visualFXChar.archetype }}
           />
           <CharImg
-            className={cx(charImgClass)}
+            className={cx('bgelement char', this.state.shouldTransition ? CharTransitionAnim : '')}
             src={getCharImage(selectedCharacter)}
-            height={selectedCharacter.race === Race.Luchorpan ||
-              selectedCharacter.archetype === Archetype.WintersShadow ? 65 : 80}
-            opacity={this.state.visualFXChar === null ? 1 : 0}
+            style={{
+              height: selectedCharacter.race === Race.Luchorpan ||
+                selectedCharacter.archetype === Archetype.WintersShadow ? '65%' : '80%',
+              opacity: this.state.visualFXChar === null ? 1 : 0,
+            }}
           />
-          <CharBase className={cx(charBaseClass)} opacity={this.state.visualFXChar === null ? 1 : 0} />
-          <CharacterInfoOverlay className={cx(charNameClass)} opacity={this.state.visualFXChar === null ? 1 : 0}>
-            <CharacterName fontSize={this.state.characterNameFontSize}>{selectedCharacter.name}</CharacterName>
+          <CharBase
+            className={cx(Faction[faction].toLowerCase(), this.state.shouldTransition ? CharBaseTransitionAnim : '')}
+            style={{ opacity: this.state.visualFXChar === null ? 1 : 0 }}
+          />
+          <CharacterInfoOverlay
+            className={this.state.shouldTransition ? CharNameTransitionAnim : ''}
+            style={{
+              opacity: this.state.visualFXChar === null ? 1 : 0,
+            }}>
+            <CharacterName style={{ fontSize: `${this.state.characterNameFontSize}vw` }}>
+              {selectedCharacter.name}
+            </CharacterName>
             <CharacterMetaInfo>
               {Archetype[selectedCharacter.archetype]} - {selectedCharacter.race}
             </CharacterMetaInfo>

@@ -6,34 +6,34 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const Container = styled('div')`
+const Container = styled.div`
   top: 150px;
   left: 50px;
   position: absolute;
   z-index: 99;
 `;
 
-const Dudes = styled('div')`
+const Dudes = styled.div`
   margin-bottom: -6px;
 `;
 
-const Image = styled('img')`
+const Image = styled.img`
   zoom: 100% !important;
 `;
 
-const Anvil = styled('div')`
+const Anvil = styled.div`
   position: relative;
   z-index: -1;
 `;
 
-const LinksContainer = styled('div')`
+const LinksContainer = styled.div`
   margin: -15px 0px 0px 43px;
   z-index: 1;
 `;
 
-const Link = styled('a')`
+const Link = styled.a`
   font-family: Titillium Web;
   font-weight: bold;
   color: black;
@@ -46,12 +46,12 @@ const Link = styled('a')`
   height: 48px;
   display: block;
   cursor: pointer;
-  background: url(images/getting-started/grey-button.png) no-repeat;
+  background: url(/ui/images/getting-started/grey-button.png) no-repeat;
   &.no-margin {
     margin-top: 0px;
   }
   &:hover {
-    background: url(images/getting-started/hovered-button.png) no-repeat;
+    background: url(/ui/images/getting-started/hovered-button.png) no-repeat;
   }
 `;
 

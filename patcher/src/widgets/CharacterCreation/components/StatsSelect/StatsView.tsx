@@ -6,8 +6,8 @@
  */
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
-import { utils } from '@csegames/camelot-unchained';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { Tooltip, GridStats } from '@csegames/camelot-unchained/lib/components';
 import { StatDefinitionGQL } from 'gql/interfaces';
 
@@ -19,7 +19,7 @@ export interface StatsViewStyle {
   tooltip: React.CSSProperties;
 }
 
-const StatsListItem = styled('div')`
+const StatsListItem = styled.div`
   width: calc(100% - 5px);
   display: flex;
   position: relative;
@@ -29,10 +29,10 @@ const StatsListItem = styled('div')`
   background-color: rgba(55, 47, 45, 0.5);
   box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
   opacity: 0.8;
-  border-right: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
-  border-bottom: 1px solid ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+  border-right: 1px solid #645551;
+  border-bottom: 1px solid #645551;
   &:hover {
-    background-color: ${utils.lightenColor(colors.filterBackgroundColor, 20)};
+    background-color: #645551;
   }
 `;
 
@@ -40,12 +40,12 @@ const LightListItem = css`
   background-color: ${colors.filterBackgroundColor};
 `;
 
-const StatText = styled('span')`
+const StatText = styled.span`
   flex: 1;
   display: inline-block;
   font-size: 16px;
   padding: 0;
-  color: ${utils.lightenColor(colors.filterBackgroundColor, 150)};
+  color: #a3928e;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -57,13 +57,13 @@ const StatValue = css`
   color: #D2D2D2;
 `;
 
-const SectionTitleContainer = styled('span')`
+const SectionTitleContainer = styled.span`
   font-size: 18px;
   font-weight: bold;
   color: #CCC;
 `;
 
-const TooltipContent = styled('div')`
+const TooltipContent = styled.div`
   display: flex;
   flex-direction: column;
 `;

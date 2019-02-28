@@ -7,10 +7,11 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { css } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { ContextState, PatcherServer, ServerType } from '../../../ControllerContext';
 
-const InfoContainer = styled('div')`
+const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -18,7 +19,7 @@ const InfoContainer = styled('div')`
   left: calc(50% - 90px);
 `;
 
-const ToolButton = styled('div')`
+const ToolButton = styled.div`
   cursor: pointer;
   pointer-events: all;
   color: white;

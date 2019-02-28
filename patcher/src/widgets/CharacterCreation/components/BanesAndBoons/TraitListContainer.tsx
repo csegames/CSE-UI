@@ -6,14 +6,14 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import Bane from './Bane';
 import Boon from './Boon';
 import { BanesAndBoonsInfo, TraitIdMap, TraitMap } from '../../services/session/banesAndBoons';
 import { colors } from '../../styleConstants';
 
-const Container = styled('div')`
+const Container = styled.div`
   flex: 1;
   flex-direction: column;
   padding-bottom: 15px;
@@ -22,7 +22,7 @@ const Container = styled('div')`
   overflow: visible;
 `;
 
-const HeaderContainer = styled('div')`
+const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -30,24 +30,21 @@ const HeaderContainer = styled('div')`
   padding-left: 15px;
 `;
 
-const Title = styled('div')`
+const Title = styled.div`
   font-size: 1.7em;
   margin-top: 10px;
   margin-bottom: 10px;
-  text-align: ${(props: any) => props.textAlign};
-  color: ${(props: any) => props.color};
 `;
 
-const RangePointsText = styled('div')`
+const RangePointsText = styled.div`
   margin: 0;
   font-size: 1em;
   color: #EEE;
 `;
 
-const InnerWrapper = styled('div')`
+const InnerWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: ${(props: any) => props.alignItems};
   flex: 1;
   height: 50vh;
   width: 24vw;
@@ -64,12 +61,10 @@ const InnerWrapper = styled('div')`
   }
 `;
 
-const TraitsContainer = styled('div')`
+const TraitsContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: ${(props: any) => props.alignItems};
-  justify-content: ${(props: any) => props.justifyContent};
 `;
 
 export interface TraitListContainerProps {
@@ -111,7 +106,7 @@ class TraitListContainer extends React.Component<TraitListContainerProps> {
             </RangePointsText>
           </div>
         </HeaderContainer>
-        <InnerWrapper alignItems={type === 'boon' ? 'flex-start' : 'flex-end'}>
+        <InnerWrapper style={{ alignItems: type === 'boon' ? 'flex-start' : 'flex-end' }}>
           <TraitsContainer>
             {this.props.traitsList.map((trait: BanesAndBoonsInfo, index: number) => {
               return (

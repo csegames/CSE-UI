@@ -6,12 +6,12 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { PatchButtonStyle, ButtonGlow, ButtonText } from '../styles';
 
-const DisabledButtonView = styled('div')`
+const DisabledButtonView = styled.div`
   ${PatchButtonStyle};
-  background: url(images/controller/play-button-press.png);
+  background: url(/ui/images/controller/play-button-press.png);
   filter: grayscale(90%) brightness(50%);
 
   &:hover {
@@ -29,7 +29,7 @@ class DisabledButton extends React.PureComponent<DisabledButtonProps> {
   public render() {
     return (
       <DisabledButtonView onClick={this.props.onClick}>
-        <ButtonText fontSize={this.props.fontSize}>{this.props.text}</ButtonText>
+        <ButtonText style={{ fontSize: this.props.fontSize }}>{this.props.text}</ButtonText>
         <ButtonGlow className='patch-button-glow' />
         {this.props.children}
       </DisabledButtonView>

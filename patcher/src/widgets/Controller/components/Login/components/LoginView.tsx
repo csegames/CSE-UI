@@ -6,14 +6,14 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { LoginStatus } from '../index';
 import Link from './LoginLink';
 import LoginButton from './LoginButton';
 import LoginPrivacyModal from './LoginPrivacyModal';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   height: 92px;
   width: 500px;
@@ -24,13 +24,13 @@ const Container = styled('div')`
   pointer-events: all;
 `;
 
-const Input = styled('input')`
+const Input = styled.input`
   width: 200px;
   margin: 5px;
   padding: 15px 10px;
   border: 1px #2c2c2c solid;
   color: #8f8f8f;
-  -webkit-mask-image: url(images/controller/button-mask.png);
+  -webkit-mask-image: url(/ui/images/controller/button-mask.png);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: cover;
   background: #2a2a2a;
@@ -47,13 +47,13 @@ const Input = styled('input')`
   }
 `;
 
-const RememberMeContainer = styled('div')`
+const RememberMeContainer = styled.div`
   flex: none;
   text-align: left;
   margin: -4px 0 0 10px;
 `;
 
-const RememberMeLabel = styled('label')`
+const RememberMeLabel = styled.label`
   margin-left: 10px;
   color: #8f8f8f;
   cursor: pointer !important;
@@ -84,7 +84,7 @@ class LoginView extends React.Component<LoginViewProps> {
         <div>
           <Input
             placeholder='Your Email'
-            innerRef={this.props.emailRef}
+            ref={this.props.emailRef}
             type='email'
             value={this.props.email || ''}
             onChange={this.props.onEmailChanged}
@@ -111,7 +111,7 @@ class LoginView extends React.Component<LoginViewProps> {
           <Input
             placeholder='Your Password'
             id='password'
-            innerRef={this.props.passwordRef}
+            ref={this.props.passwordRef}
             type='password'
             value={this.props.password || ''}
             onChange={this.props.onPasswordChanged}

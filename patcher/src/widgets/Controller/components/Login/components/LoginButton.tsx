@@ -6,66 +6,16 @@
  */
 
 import * as React from 'react';
-import { utils } from '@csegames/camelot-unchained';
-import styled, { css, keyframes } from 'react-emotion';
+import { css } from 'linaria';
+import { styled } from 'linaria/react';
 import { LoginStatus } from '../index';
 import GenericButton from '../../../../GenericButton';
 
-const waveTextAnimation = keyframes`
-  0% {
-    opacity: .3;
-    color: #ececec;
-  }
-  80% {
-    opacity: 1;
-    color: #d7bb4d;
-  }
-  100% {
-    opacity: 1;
-    color: #d7bb4d;
-    font-size: 1.1em;
-  }
-`;
-
-const verifyingAnim = keyframes`
-  0% {
-    opacity: 0.3;
-  }
-
-  50% {
-    opacity: 0.8;
-  }
-
-  100% {
-    opacity: 0.3;
-  }
-`;
-
-const horizontalShineAnim = keyframes`
-  0 {
-    left: 0;
-  }
-  80% {
-    left: 100%;
-  }
-`;
-
-const verticalShineAnim = keyframes`
-  0%, 75%  {
-    top: 0;
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 1;
-    top: 100%;
-  }
-`;
-
-const WaveText = styled('span')`
+const WaveText = styled.span`
   i {
     font-style: normal;
-    animation: ${waveTextAnimation} 1s infinite ease-in alternate;
-    -webkit-animation: ${waveTextAnimation} 1s infinite ease-in alternate;
+    animation: waveTextAnimation 1s infinite ease-in alternate;
+    -webkit-animation: waveTextAnimation 1s infinite ease-in alternate;
   }
 
   @for $i from 0 through 9 {
@@ -74,13 +24,29 @@ const WaveText = styled('span')`
       -webkit-animation-delay: 0.1s * $i;
     }
   }
+
+  @keyframes waveTextAnimation {
+    0% {
+      opacity: .3;
+      color: #ececec;
+    }
+    80% {
+      opacity: 1;
+      color: #d7bb4d;
+    }
+    100% {
+      opacity: 1;
+      color: #d7bb4d;
+      font-size: 1.1em;
+    }
+  }
 `;
 
 const FailedButton = css`
   background-color: rgba(112, 21, 30, 0.4);
 `;
 
-const ButtonGlow = styled('div')`
+const ButtonGlow = styled.div`
   position: absolute;
   right: 0;
   left: 10%;
@@ -89,11 +55,23 @@ const ButtonGlow = styled('div')`
   height: 60%;
   border-radius: 60%;
   box-shadow: 0 0 60px 20px rgba(184, 153, 105, 0.3);
-  -webkit-animation: ${verifyingAnim} 1s ease infinite;
-  animation: ${verifyingAnim} 1s ease infinite;
+  -webkit-animation: verifyingAnim 1s ease infinite;
+  animation: verifyingAnim 1s ease infinite;
+
+  @keyframes verifyingAnim {
+    0% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.8;
+    }
+    100% {
+      opacity: 0.3;
+    }
+  }
 `;
 
-const HorizontalBorderShine = styled('div')`
+const HorizontalBorderShine = styled.div`
   &:before {
     content: '';
     position: absolute;
@@ -101,9 +79,9 @@ const HorizontalBorderShine = styled('div')`
     left: -30px;
     height: 3px;
     width: 30px;
-    background-color: ${utils.lightenColor('#e2cb8e', 70)};
-    -webkit-animation: ${horizontalShineAnim} 1s infinite;
-    animation: ${horizontalShineAnim} 1s infinite;
+    background-color: #f6efdd;
+    -webkit-animation: horizontalShineAnim 1s infinite;
+    animation: horizontalShineAnim 1s infinite;
   }
 
   &:after {
@@ -113,13 +91,22 @@ const HorizontalBorderShine = styled('div')`
     left: -30px;
     height: 3px;
     width: 30px;
-    background-color: ${utils.lightenColor('#8e6d27', 50)};
-    -webkit-animation: ${horizontalShineAnim} 1s infinite;
-    animation: ${horizontalShineAnim} 1s infinite;
+    background-color: #dbbd7d;
+    -webkit-animation: horizontalShineAnim 1s infinite;
+    animation: horizontalShineAnim 1s infinite;
+  }
+
+  @keyframes horizontalShineAnim {
+    0 {
+      left: 0;
+    }
+    80% {
+      left: 100%;
+    }
   }
 `;
 
-const VerticalBorderShine = styled('div')`
+const VerticalBorderShine = styled.div`
   &:before {
     content: '';
     position: absolute;
@@ -127,9 +114,20 @@ const VerticalBorderShine = styled('div')`
     top: 0;
     height: 15px;s
     width: 1px;
-    background-color: ${utils.lightenColor('#e2cb8e', 70)};
-    -webkit-animation: ${verticalShineAnim} 1s infinite;
-    animation: ${verticalShineAnim} 1s infinite;
+    background-color: f6efdd;
+    -webkit-animation: verticalShineAnim 1s infinite;
+    animation: verticalShineAnim 1s infinite;
+  }
+
+  @keyframes verticalShineAnim {
+    0%, 75%  {
+      top: 0;
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+      top: 100%;
+    }
   }
 `;
 

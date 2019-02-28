@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { Chat } from '@csegames/camelot-unchained';
 import { patcher } from '../../services/patcher';
@@ -15,8 +15,8 @@ import CharacterCreation from '../../widgets/CharacterCreation';
 import News from '../../widgets/News';
 import { ServerModel } from 'gql/interfaces';
 
-const NewsContainer = styled('div')`
-  background: url(images/news/bg.png) no-repeat, black;
+const NewsContainer = styled.div`
+  background: url(/ui/images/news/bg.png) no-repeat, black;
   background-size: contain;
 `;
 

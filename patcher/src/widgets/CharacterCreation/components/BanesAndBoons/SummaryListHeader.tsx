@@ -6,57 +6,53 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { Tooltip } from '@csegames/camelot-unchained';
 import { colors } from '../../styleConstants';
 
-const PointsContainer = styled('div')`
+const PointsContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const PointsBarContainer = styled('div')`
+const PointsBarContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
 
-const TotalPointsText = styled('div')`
+const TotalPointsText = styled.div`
   font-size: 1em;
   text-align: center;
-  margin-top: ${(props: any) => props.marginTop ? props.marginTop : 0};
-  margin-bottom: ${(props: any) => props.marginBottom ? props.marginBottom : -28}px;
-  color: ${(props: any) => props.color};
+  margin-top: 0;
+  margin-bottom: -28px;
 `;
 
-const TooManyTraitsText = styled('div')`
+const TooManyTraitsText = styled.div`
   font-size: 24px;
   text-align: center;
   margin: 0;
-  color: ${(props: any) => props.color};
 `;
 
-const PointsMeter = styled('div')`
+const PointsMeter = styled.div`
   display: flex;
   height: 20px;
   margin-top: 10px;
   margin-bottom: 2px;
 `;
 
-const BalanceBar = styled('div')`
+const BalanceBar = styled.div`
   transition: flex 0.5s, background-color 0.5s;
-  flex: ${(props: any) => props.flex};
-  background-color: ${(props: any) => props.backgroundColor};
 `;
 
-const ResetButtonsContainer = styled('div')`
+const ResetButtonsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 `;
 
-const ResetButton = styled('div')`
+const ResetButton = styled.div`
   cursor: pointer;
   font-size: 1em;
   transition: color 0.3s;
@@ -103,7 +99,9 @@ class SummaryListHeader extends React.Component<SummaryListHeaderProps, SummaryL
     return (
       <PointsContainer id={'trait-pointsContainer'}>
         <PointsBarContainer>
-          <TotalPointsText color={colors.boonPrimary} marginBottom={-5}>{boonPoints}</TotalPointsText>
+          <TotalPointsText style={{ color: colors.boonPrimary, marginBottom: -5 }}>
+            {boonPoints}
+          </TotalPointsText>
           <Tooltip
             styles={{
               tooltip: {
@@ -129,9 +127,9 @@ class SummaryListHeader extends React.Component<SummaryListHeaderProps, SummaryL
               </p>
           )}>
             <TooManyTraitsText
-              color={totalPoints > 0 ? colors.boonPrimary : totalPoints < 0 ||
-              banePoints + boonPoints < minPoints || banePoints + boonPoints > maxPoints ?
-              colors.banePrimary : colors.success}>
+              style={{ color: totalPoints > 0 ? colors.boonPrimary : totalPoints < 0 ||
+                banePoints + boonPoints < minPoints || banePoints + boonPoints > maxPoints ?
+                colors.banePrimary : colors.success }}>
               {
                 banePoints + boonPoints < minPoints ? 'Too few Banes and Boons' :
                 banePoints + boonPoints > maxPoints ? 'Too many Banes and Boons' :
@@ -141,18 +139,22 @@ class SummaryListHeader extends React.Component<SummaryListHeaderProps, SummaryL
               }
             </TooManyTraitsText>
           </Tooltip>
-          <TotalPointsText color={colors.banePrimary}>{banePoints}</TotalPointsText>
+          <TotalPointsText style={{ color: colors.banePrimary }}>{banePoints}</TotalPointsText>
         </PointsBarContainer>
         <PointsMeter>
           <BalanceBar
-            flex={this.props.flexOfBoonBar}
-            backgroundColor={totalPoints !== 0 || banePoints + boonPoints < minPoints ||
-              banePoints + boonPoints > maxPoints ? colors.boonPrimary : colors.success}
+            style={{
+              flex: this.props.flexOfBoonBar,
+              backgroundColor: totalPoints !== 0 || banePoints + boonPoints < minPoints ||
+                banePoints + boonPoints > maxPoints ? colors.boonPrimary : colors.success,
+            }}
           />
           <BalanceBar
-            flex={this.props.flexOfBaneBar}
-            backgroundColor={totalPoints !== 0 || banePoints + boonPoints < minPoints ||
-              banePoints + boonPoints > maxPoints ? colors.banePrimary : colors.success}
+            style={{
+              flex: this.props.flexOfBaneBar,
+              backgroundColor: totalPoints !== 0 || banePoints + boonPoints < minPoints ||
+                banePoints + boonPoints > maxPoints ? colors.banePrimary : colors.success,
+            }}
           />
         </PointsMeter>
         <ResetButtonsContainer>

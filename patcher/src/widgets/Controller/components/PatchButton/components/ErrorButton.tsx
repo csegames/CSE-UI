@@ -6,12 +6,12 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { PatchButtonStyle, ButtonText, ButtonGlow } from '../styles';
 
-const ErrorButtonView = styled('div')`
+const ErrorButtonView = styled.div`
   ${PatchButtonStyle};
-  background: url(images/controller/play-button-press.png);
+  background: url(/ui/images/controller/play-button-press.png);
   filter: grayscale(0%) brightness(50%) hue-rotate(-45deg);
 
   &:hover {

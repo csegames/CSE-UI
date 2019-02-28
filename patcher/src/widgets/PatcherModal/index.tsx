@@ -21,7 +21,7 @@ export default ({ accentColor, highlightColorStrong, highlightColorWeak, classNa
       flex: 0 0 auto;
       width: 500px;
       background: radial-gradient(${highlightColorStrong}, ${highlightColorWeak} 60%, transparent) 0% -140px no-repeat,
-        url(images/modal/modal-bg.jpg);
+        url(/ui/images/modal/modal-bg.jpg);
       background-size: cover;
       border-top: 1px solid ${accentColor};
       position: relative;
@@ -49,7 +49,7 @@ export default ({ accentColor, highlightColorStrong, highlightColorWeak, classNa
         padding: 15px 10px;
         border: 1px #2c2c2c solid;
         color: #8f8f8f;
-        mask-image: url(images/button-long-mask.png);
+        mask-image: url(/ui/images/button-long-mask.png);
         mask-repeat: no-repeat;
         mask-size: cover;
         background: #2a2a2a;

@@ -6,9 +6,9 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const TextureWrapper = styled('div')`
+const TextureWrapper = styled.div`
   position: relative;
   cursor: pointer;
   filter: brightness(100%);
@@ -20,7 +20,7 @@ const TextureWrapper = styled('div')`
     right: 0;
     bottom: 0;
     left: 0;
-    background: url(images/news/news-texture.png) repeat-y;
+    background: url(/ui/images/news/news-texture.png) repeat-y;
   }
   transition: all 0.3s;
   &:hover {
@@ -37,7 +37,7 @@ const TextureWrapper = styled('div')`
   }
 `;
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   pointer-events: all;
   display: flex;
@@ -50,12 +50,11 @@ const Container = styled('div')`
   border-right-width: 0px;
   border-bottom-width: 0px;
   border-style: solid;
-  border-image: linear-gradient(to right, ${(props: { color: string }) => props.color}, transparent) 10% 1%;
   background-size: cover;
   cursor: pointer;
 `;
 
-const Image = styled('img')`
+const Image = styled.img`
   position: absolute;
   top: 0;
   right: 0;
@@ -68,7 +67,7 @@ const Image = styled('img')`
   transition: transform 0.2s;
 `;
 
-const Overlay = styled('div')`
+const Overlay = styled.div`
   position: absolute;
   top: 0;
   right: 0;
@@ -79,13 +78,13 @@ const Overlay = styled('div')`
   z-index: -1;
 `;
 
-const ChildrenContainer = styled('div')`
+const ChildrenContainer = styled.div`
   position: relative;
   margin-top: 0px;
   transition: margin-top 0.2s;
 `;
 
-const ReadMore = styled('div')`
+const ReadMore = styled.div`
   position: absolute;
   display: flex;
   align-items: center;
@@ -97,10 +96,9 @@ const ReadMore = styled('div')`
   width: 100%;
   background: rgba(0, 0, 0, 0.5);
   transition: bottom 0.2s;
-  color: ${(props: { color: string }) => props.color};
 `;
 
-const Arrow = styled('span')`
+const Arrow = styled.span`
   margin-left: 5px;
   margin-bottom: -4px;
 `;
@@ -116,13 +114,13 @@ class Item extends React.Component<ItemProps> {
   public render() {
     return (
       <TextureWrapper onClick={this.onClick} onMouseEnter={this.onMouseEnter}>
-        <Container color={this.props.indicatorColor}>
+        <Container style={{ borderImage: `linear-gradient(to right, ${this.props.indicatorColor}, transparent) 10% 1%` }}>
           <Image src={this.props.imgSrc} />
           <Overlay />
           <ChildrenContainer className='children-container'>
             {this.props.children}
           </ChildrenContainer>
-          <ReadMore className='read-more' color={this.props.indicatorColor}>
+          <ReadMore className='read-more' style={{ color: this.props.indicatorColor }}>
             Read More
             <Arrow className='fa fa-angle-right'></Arrow>
           </ReadMore>

@@ -6,11 +6,11 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { PostFilter } from './FilterTabs';
 import { PATCH_NOTES_COLOR, NEWS_COLOR } from '../lib/styles';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   align-items: center;
   text-transform: uppercase;
@@ -31,7 +31,7 @@ const Container = styled('div')`
   }
 `;
 
-const FilterIndicator = styled('div')`
+const FilterIndicator = styled.div`
   position: relative;
   display: inline-block;
   margin-right: 5px;
@@ -44,7 +44,7 @@ const FilterIndicator = styled('div')`
     right: 0;
     bottom: 0;
     left: 0;
-    background: url(images/news/news-texture.png) repeat-y;
+    background: url(/ui/images/news/news-texture.png) repeat-y;
   }
   &.patch-note {
     background-color: ${PATCH_NOTES_COLOR};

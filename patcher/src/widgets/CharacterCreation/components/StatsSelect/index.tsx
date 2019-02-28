@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { StatsSelectContext, StatIdToValue, StatObjectInfo } from './StatsSelectContext';
 import StatRow from './StatRow';
@@ -25,7 +25,7 @@ export interface Props extends ComponentProps {
   derivedStats: StatObjectInfo[];
 }
 
-const AllocateInstructions = styled('div')`
+const AllocateInstructions = styled.div`
   font-size: 12px;
   color: #605345;
   font-weight: 600;

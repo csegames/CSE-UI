@@ -5,10 +5,10 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { PatcherError } from '../../../../services/patcher';
 
-const Alert = styled('div')`
+const Alert = styled.div`
   overflow: hidden;
   background: repeating-linear-gradient(45deg, darkorange, orange 2px, orange 1px, darkorange 4px);
   color: black;

@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import VisualEffects from '../../../../../components/VisualEffects/VisualEffects';
 import { view } from '../../../../../components/OverlayView';
@@ -14,7 +14,7 @@ import glowyOrbsParticles from '../../../../../widgets/CharacterCreation/particl
 import dustParticles from '../../../../../widgets/CharacterCreation/particles/dustParticles';
 import { Race, Faction, Archetype } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   transition: opacity .7s linear;
 `;
 

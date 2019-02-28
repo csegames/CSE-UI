@@ -7,20 +7,20 @@
 
 import * as React from 'react';
 import { includes } from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { webAPI } from '@csegames/camelot-unchained';
 
 import { BanesAndBoonsState } from '../../services/session/banesAndBoons';
 import { CharacterState } from '../../services/session/character';
 import LeftInfoPanel from './components/LeftInfoPanel';
 
-const Container = styled('div')`
+const Container = styled.div`
   height: calc(100% - 30px);
   display: flex;
   padding: 15px;
 `;
 
-const CharacterContainer = styled('div')`
+const CharacterContainer = styled.div`
   position: relative;
   height: 100%;
   flex: 1.5;
@@ -29,7 +29,7 @@ const CharacterContainer = styled('div')`
   justify-content: center;
 `;
 
-const StandingCharacter = styled('div')`
+const StandingCharacter = styled.div`
   position: relative !important;
   background-size: contain !important;
   pointer-events: none;
@@ -39,13 +39,13 @@ const StandingCharacter = styled('div')`
   margin-left: -15%;
 `;
 
-const CharacterNameInputContainer = styled('div')`
+const CharacterNameInputContainer = styled.div`
   position: relative;
   width: auto;
   bottom: 55px;
 `;
 
-const VideoBG = styled('video')`
+const VideoBG = styled.video`
   position: absolute;
   top: 50%;
   left: 50%;

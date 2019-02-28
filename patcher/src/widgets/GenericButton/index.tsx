@@ -6,9 +6,9 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const Button = styled('a')`
+const Button = styled.a`
   position: relative;
   display: flex;
   align-items: center;
@@ -24,26 +24,31 @@ const Button = styled('a')`
   transition: background-color .3s;
   background-color: rgba(17, 17, 17, 0.8);
   border-image-slice: 1;
-  color: ${(props: any) => props.textColor ? props.textColor : '#B89969'};
+  color: #B89969;
   cursor: pointer;
-  opacity: ${(props: any) => props.disabled ? 0.5 : 1};
   font-size: 14px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  -webkit-mask-image: url(images/controller/button-mask.png);
+  -webkit-mask-image: url(/ui/images/controller/button-mask.png);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: cover;
   transition: all ease .2s;
   text-decoration: none;
   &:hover {
-    background-color: ${(props: any) => props.disabled ? '' : 'rgba(36, 28, 28, 0.8)'};
+    background-color: rgba(36, 28, 28, 0.8);
     border-image-slice: 1;
-    color: ${(props: any) => props.disabled ? '' : '#ffd695'};
+    color: #ffd695;
+  }
+
+  &.disabled:hover {
+    background-color: rgba(17, 17, 17, 0.8);
+    border-image-slice: 1;
+    color: #B89969;
   }
 `;
 
 export interface GenericButtonProps {
-  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onClick?: (e: React.MouseEvent<any>) => void;
   text?: string;
   className?: string;
   href?: string;
@@ -52,13 +57,16 @@ export interface GenericButtonProps {
 
 class GenericButton extends React.Component<GenericButtonProps> {
   public render() {
+    const className = `${this.props.disabled ? 'disabled' : ''} ${this.props.className ? this.props.className : ''}`;
     return (
       <Button
         onClick={this.props.onClick}
-        className={this.props.className ? this.props.className : ''}
+        className={className}
         href={this.props.href}
-        disabled={this.props.disabled}
-        target='_blank'>
+        target='_blank'
+        style={{
+          opacity: this.props.disabled ? 0.5 : 1,
+        }}>
         {this.props.text}
         {this.props.children}
       </Button>

@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import Item from './Item';
 import { Post } from '../../../services/session/news';
@@ -14,13 +14,13 @@ import { getNewsTitle, getNewsDate, getNewsImageInfo } from '../utils';
 import { PostItem } from '..';
 import { NEWS_COLOR } from '../lib/styles';
 
-const Title = styled('div')`
+const Title = styled.div`
   font-family: Caudex;
   font-size: 18px;
   margin-bottom: 5px;
 `;
 
-const DescriptionText = styled('div')`
+const DescriptionText = styled.div`
   font-family: Titillium Web;
   font-size: 10px;
 `;

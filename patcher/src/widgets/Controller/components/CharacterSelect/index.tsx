@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { ControllerContext, ContextState, PatcherServer, ServerType } from '../../ControllerContext';
 import CharacterSelectList from './components/CharacterSelectList';
@@ -17,16 +17,14 @@ import { APIServerStatus } from '../ControllerDisplay/index';
 import { SimpleCharacter } from 'gql/interfaces';
 import { KeyCodes } from '@csegames/camelot-unchained';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  opacity: ${(props: any) => props.visible ? 1 : 0};
-  visibility: ${(props: any) => props.visible ? 'visible' : 'hidden'};
   -webkit-user-select: none;
 `;
 
-const Overlay = styled('div')`
+const Overlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -36,7 +34,7 @@ const Overlay = styled('div')`
   background-color: rgba(0, 0, 0, 0.8);
 `;
 
-const Header = styled('div')`
+const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -49,7 +47,7 @@ const Header = styled('div')`
   font-size: 14px;
 `;
 
-const ListContainer = styled('div')`
+const ListContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   position: absolute;
@@ -64,7 +62,7 @@ const ListContainer = styled('div')`
   -webkit-mask-image: linear-gradient(to bottom,transparent 0%,black 4%, black 90%, transparent 100%)
 `;
 
-const ListBG = styled('div')`
+const ListBG = styled.div`
   position: absolute;
   top: 0px;
   right: 0px;
@@ -75,7 +73,7 @@ const ListBG = styled('div')`
   z-index: 9;
 `;
 
-const BottomListFade = styled('div')`
+const BottomListFade = styled.div`
   position: fixed;
   right: 200px;
   bottom: -50px;
@@ -83,7 +81,7 @@ const BottomListFade = styled('div')`
   z-index: 11;
 `;
 
-const CloseButton = styled('div')`
+const CloseButton = styled.div`
   width: auto;
   height: auto;
   padding: 1px 6px;
@@ -100,7 +98,7 @@ const CloseButton = styled('div')`
   font-size: 14px;
   letter-spacing: 0;
   text-transform: uppercase;
-  -webkit-mask-image: url(images/controller/button-mask.png);
+  -webkit-mask-image: url(/ui/images/controller/button-mask.png);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: cover;
   transition: all ease .2s;
@@ -160,11 +158,16 @@ class CharacterSelect extends React.Component<Props, CharacterSelectState> {
     });
 
     return (
-      <Container id='cu-character-select' visible={this.props.charSelectVisible}>
+      <Container
+        id='cu-character-select'
+        style={{
+          opacity: this.props.charSelectVisible ? 1 : 0,
+          visibility: this.props.charSelectVisible ? 'visible' : 'hidden',
+        }}>
         <Header><CloseButton onClick={this.onClose}>X</CloseButton></Header>
         <CharacterSelectBG selectedCharacter={selectedCharacter} />
         <ListBG />
-        <ListContainer innerRef={ref => this.listRef = ref}>
+        <ListContainer ref={ref => this.listRef = ref}>
           <CharacterSelectList
             servers={servers}
             selectedCharacter={selectedCharacter}

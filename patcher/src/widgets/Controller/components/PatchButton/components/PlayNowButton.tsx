@@ -6,10 +6,10 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { PatchButtonStyle, ButtonText, ButtonGlow, shine } from '../styles';
 
-const PlayNowButtonView = styled('div')`
+const PlayNowButtonView = styled.div`
   ${PatchButtonStyle};
   transition: all 0.3s ease;
   &:hover {
@@ -35,8 +35,8 @@ const PlayNowButtonView = styled('div')`
     background: linear-gradient(transparent, rgba(255,255,255,0.2));
     clip-path: polygon(70% 0%, 100% 0%, 30% 100%, 0% 100%);
     -webkit-clip-path: polygon(70% 0%, 100% 0%, 30% 100%, 0% 100%);
-    -webkit-animation: ${shine} 0.5s ease forwards;
-    animation: ${shine} 0.5s ease forwards;
+    -webkit-animation: shine 0.5s ease forwards;
+    animation: shine 0.5s ease forwards;
     animation-delay: 0.3s;
     -webkit-animation-delay: 0.3s;
   }
@@ -55,13 +55,15 @@ const PlayNowButtonView = styled('div')`
     background: linear-gradient(transparent, rgba(255,255,255,0.2));
     clip-path: polygon(70% 0%, 100% 0%, 30% 100%, 0% 100%);
     -webkit-clip-path: polygon(70% 0%, 100% 0%, 30% 100%, 0% 100%);
-    -webkit-animation: ${shine} 0.5s ease forwards;
-    animation: ${shine} 0.5s ease forwards;
+    -webkit-animation: shine 0.5s ease forwards;
+    animation: shine 0.5s ease forwards;
   }
 
   &:active {
-    background: url(images/controller/play-button-press.png)  no-repeat;
+    background: url(/ui/images/controller/play-button-press.png)  no-repeat;
   }
+
+  ${shine}
 `;
 
 export interface PlayNowButtonProps {

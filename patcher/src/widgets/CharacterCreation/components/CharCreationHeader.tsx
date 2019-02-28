@@ -6,10 +6,10 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { CharacterCreationPage } from '../index';
 
-const Header = styled('div')`
+const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -23,12 +23,12 @@ const Header = styled('div')`
   font-size: 14px;
 `;
 
-const ActionContainer = styled('div')`
+const ActionContainer = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const Button = styled('div')`
+const Button = styled.div`
   cursor: pointer;
   color: #6F6F6F;
   margin-right: 15px;
@@ -37,7 +37,7 @@ const Button = styled('div')`
   }
 `;
 
-const CloseButton = styled('div')`
+const CloseButton = styled.div`
   width: auto;
   height: auto;
   padding: 1px 6px;
@@ -54,7 +54,7 @@ const CloseButton = styled('div')`
   font-size: 14px;
   letter-spacing: 0;
   text-transform: uppercase;
-  -webkit-mask-image: url(images/controller/button-mask.png);
+  -webkit-mask-image: url(/ui/images/controller/button-mask.png);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: cover;
   transition: all ease .2s;

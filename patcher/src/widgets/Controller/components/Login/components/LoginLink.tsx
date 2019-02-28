@@ -6,18 +6,14 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
-import { utils } from '@csegames/camelot-unchained';
+import { styled } from 'linaria/react';
 
-const Link = styled('a')`
-  margin: ${(props: any) => props.margin ? props.margin : 0};
-  text-decoration: ${(props: any) => props.underline ? 'underline' : 'none'};
-  color: ${utils.darkenColor('#d7bb4d', 10)};
+const Link = styled.a`
+  color: #d7bb4d;
   transition: all 0.3s;
-  font-size: ${(props: any) => props.fontSize ? props.fontSize : '0.9em'};
   display: block;
   &:hover {
-    color: ${utils.lightenColor('#d7bb4d', 10)};
+    color: #dbc15e;
   }
 `;
 
@@ -33,9 +29,11 @@ class LoginLink extends React.Component<LoginLinkProps> {
     return (
       <Link
         href={this.props.href}
-        fontSize={this.props.fontSize}
-        underline={this.props.underline}
-        margin={this.props.margin}
+        style={{
+          fontSize: this.props.fontSize || '0.9em',
+          textDecoration: this.props.underline ? 'underline' : 'none',
+          margin: this.props.margin || 0,
+        }}
         target='_blank'
       >
         {this.props.children}

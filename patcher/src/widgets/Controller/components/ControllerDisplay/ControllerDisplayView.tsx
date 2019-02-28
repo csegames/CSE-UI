@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import Login from '../Login';
 // import Alerts from '../Alerts';
@@ -23,7 +23,7 @@ import { Routes } from '../../../../services/session/routes';
 import { ControllerContext, PatcherServer, ServerType } from '../../ControllerContext';
 import { SimpleCharacter } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   background-color: transparent;
   z-index: 100;
@@ -34,14 +34,14 @@ const Container = styled('div')`
   user-select: none;
 `;
 
-const ControllerBody = styled('div')`
+const ControllerBody = styled.div`
   flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
 `;
 
-const VersionNumber = styled('div')`
+const VersionNumber = styled.div`
   position: fixed;
   bottom: 5px;
   right: 5px;

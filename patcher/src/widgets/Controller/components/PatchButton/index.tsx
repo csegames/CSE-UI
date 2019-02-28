@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import moment from 'moment';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { patcher, ChannelStatus } from '../../../../services/patcher';
 import Animate from '../../../../lib/Animate';
@@ -16,13 +16,13 @@ import EualaModal from '../EualaModal';
 import { ControllerContext, ServerType, PatcherServer } from '../../ControllerContext';
 import { SimpleCharacter } from 'gql/interfaces';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   flex-direction: row-reverse;
   font-weight: 200;
 `;
 
-const UpdateInfoContainer = styled('div')`
+const UpdateInfoContainer = styled.div`
   display: flex;
   flex-direction: row-reverse;
   label {
@@ -31,7 +31,7 @@ const UpdateInfoContainer = styled('div')`
   }
 `;
 
-const LastUpdatedText = styled('label')`
+const LastUpdatedText = styled.label`
   display: flex;
   align-items: flex-end;
   margin-right: 5px;
@@ -40,7 +40,7 @@ const LastUpdatedText = styled('label')`
   font-weight: normal;
 `;
 
-const ButtonContainer = styled('div')`
+const ButtonContainer = styled.div`
   display: flex;
   z-index: 10;
 `;

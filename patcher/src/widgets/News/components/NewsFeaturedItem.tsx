@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { Post, PostItem } from '..';
 import { getNewsTitle, getNewsDate, getNewsImageInfo } from '../utils';
 import {
@@ -22,7 +22,7 @@ import {
   NEWS_COLOR,
 } from '../lib/styles';
 
-const Divider = styled('div')`
+const Divider = styled.div`
   position: relative;
   background-color: ${NEWS_COLOR};
   width: 3px;
@@ -34,7 +34,7 @@ const Divider = styled('div')`
     top: 0;
     bottom: 0;
     width: 100%;
-    background: url(images/news/news-texture.png) repeat-y;
+    background: url(/ui/images/news/news-texture.png) repeat-y;
   }
 `;
 
@@ -50,7 +50,7 @@ class NewsFeaturedItem extends React.Component<Props> {
     const date = getNewsDate(postItem);
     const { imgSrc } = getNewsImageInfo(postItem);
     return (
-      <FeaturedContainer backgroundImage={imgSrc}>
+      <FeaturedContainer style={{ backgroundImage: `url(${imgSrc}) left top/80% no-repeat` }}>
         <TitleContainer>
           <Title dangerouslySetInnerHTML={{ __html: title }} />
           <DescriptionText className='date'>{date}</DescriptionText>

@@ -7,20 +7,20 @@
 
 import * as React from 'react';
 import moment from 'moment';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import Item from './Item';
 import { PostItem } from '..';
 import { PATCH_NOTES_COLOR } from '../lib/styles';
 import { PatchNote } from 'gql/interfaces';
 
-const Title = styled('div')`
+const Title = styled.div`
   font-family: Caudex;
   font-size: 18px;
   margin-bottom: 5px;
 `;
 
-const DescriptionText = styled('div')`
+const DescriptionText = styled.div`
   font-family: Titillium Web;
   font-size: 10px;
 `;

@@ -5,9 +5,9 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-const Container = styled('div')`
+const Container = styled.div`
   overflow: hidden;
   background: repeating-linear-gradient(45deg, #600000, #600000 2px, #6F0000 2px, #6F0000 5px);
   border-top: 3px solid #600000;

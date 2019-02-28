@@ -5,11 +5,11 @@
  *
  */
 
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
-export const TopVeil = styled('div')`
+export const TopVeil = styled.div`
   position: absolute;
-  background: url(images/controller/veil-top-bar.png) repeat-x top;
+  background: url(/ui/images/controller/veil-top-bar.png) repeat-x top;
   top: -30px;
   width: 100%;
   height: 173px;
@@ -17,9 +17,9 @@ export const TopVeil = styled('div')`
   pointer-events: none;
 `;
 
-export const TopLeftVeil = styled('div')`
+export const TopLeftVeil = styled.div`
   position: absolute;
-  background: url(images/controller/veil-top-left.png) no-repeat ;
+  background: url(/ui/images/controller/veil-top-left.png) no-repeat ;
   top: 0;
   left: 0;
   width: 400px;
@@ -28,9 +28,9 @@ export const TopLeftVeil = styled('div')`
   pointer-events: none;
 `;
 
-export const BottomVeil = styled('div')`
+export const BottomVeil = styled.div`
   position: absolute;
-  background: url(images/controller/veil-bottom-bar.png) repeat-x top;
+  background: url(/ui/images/controller/veil-bottom-bar.png) repeat-x top;
   bottom: 0;
   width: 100%;
   height: 80px;
@@ -38,9 +38,9 @@ export const BottomVeil = styled('div')`
   pointer-events: none;
 `;
 
-export const BottomLeftVeil = styled('div')`
+export const BottomLeftVeil = styled.div`
   position: absolute;
-  background: url(images/controller/veil-bottom-left.png) no-repeat;
+  background: url(/ui/images/controller/veil-bottom-left.png) no-repeat;
   background-size: cover;
   bottom: 0;
   left: 0;
@@ -50,9 +50,9 @@ export const BottomLeftVeil = styled('div')`
   pointer-events: none;
 `;
 
-export const BottomRightVeil = styled('div')`
+export const BottomRightVeil = styled.div`
   position: absolute;
-  background: url(images/controller/veil-bottom-right.png) no-repeat right;
+  background: url(/ui/images/controller/veil-bottom-right.png) no-repeat right;
   bottom: 0;
   right: 0;
   width: 500px;

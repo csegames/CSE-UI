@@ -6,10 +6,10 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import FilterTabItem from './FilterTabItem';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   width: 75%;
   align-self: center;
@@ -18,7 +18,7 @@ const Container = styled('div')`
   padding: 10px 0;
 `;
 
-const FilterDivider = styled('div')`
+const FilterDivider = styled.div`
   height: 12px;
   width: 1px;
   background-color: #939393;

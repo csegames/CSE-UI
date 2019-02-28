@@ -27,7 +27,7 @@ module.exports = {
 
     build: {
       default: {
-        script: 'nps report.start && nps clean && nps gql.codegen && nps build.webpack.production && nps report.success',
+        script: 'nps report.start && nps clean && nps gql.codegen && nps report.typescript && tsc && nps copyspecials && nps build.webpack.production && nps report.success',
         description: 'Builds the UI in production mode',
       },
       dev: {
@@ -70,6 +70,13 @@ module.exports = {
           },
         };
       }),
+    },
+
+    copyspecials: {
+      default: {
+        script: 'copyup src/**/*.scss src/third-party/**/* src/images/**/* src/font/**/* src/hud.html src/**/*.ico src/**/*.ui tmp',
+        hiddenFromHelp: true,
+      },
     },
 
     // Dev
@@ -216,7 +223,11 @@ module.exports = {
       gql: {
         script: 'echo "Generating GraphQL Documents and Typings...',
         hiddenFromHelp: true,
-      }
+      },
+      typescript: {
+        script: 'echo "Running typescript compiler..."',
+        hiddenFromHelp: true,
+      },
     },
   }
 };

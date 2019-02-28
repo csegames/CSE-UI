@@ -22,8 +22,8 @@ const ALIAS = {
   'react': path.dirname(
     require.resolve('react/package.json')
   ),
-  gql: path.resolve(__dirname, 'src/gql'),
-  components: path.resolve(__dirname, 'src/components'),
+  gql: path.resolve(__dirname, 'tmp/gql'),
+  components: path.resolve(__dirname, 'tmp/components'),
 };
 
 module.exports = function (e, argv = {}) {
@@ -65,7 +65,7 @@ module.exports = function (e, argv = {}) {
     mode: MODE,
     devtool: 'source-map',
     entry: {
-      [NAME]: ['./src/sentry.tsx', './src/index.tsx'],
+      [NAME]: ['./tmp/sentry.jsx', './tmp/index.jsx'],
     },
     output: {
       path: OUTPUT_PATH,
@@ -94,7 +94,7 @@ module.exports = function (e, argv = {}) {
     },
     resolve: {
       alias: ALIAS,
-      extensions: ['.web.ts', '.ts', '.web.tsx', '.tsx', '.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
+      extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     },
     module: {
       rules: [
@@ -146,7 +146,7 @@ module.exports = function (e, argv = {}) {
               ]
             },
             {
-              test: /\.tsx?$/,
+              test: /\.jsx?$/,
               exclude: /node_modules/,
               use: [
                 {
@@ -162,16 +162,6 @@ module.exports = function (e, argv = {}) {
                   },
                 }] : []),
                 {
-                  loader: require.resolve('ts-loader'),
-                  options: {
-                    transpileOnly: IS_CI ? false : true,
-                    happyPackMode: IS_CI ? false : true,
-                    compilerOptions: {
-                      sourceMap: true,
-                    }
-                  }
-                }
-                {
                   loader: require.resolve('babel-loader'),
                   options: {
                     cacheDirectory: path.resolve(CACHE_ROOT, 'babel-loader'),
@@ -184,6 +174,15 @@ module.exports = function (e, argv = {}) {
                     emitWarning: true,
                     failOnError: true,
                   }
+                },
+                {
+                  loader: 'linaria/loader',
+                  options: {
+                    sourceMap: IS_DEVELOPMENT,
+                    resolve: {
+                      alias: ALIAS,
+                    },
+                  },
                 },
               ]
             },

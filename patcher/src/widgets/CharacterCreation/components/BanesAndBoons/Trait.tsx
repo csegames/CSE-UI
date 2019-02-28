@@ -5,12 +5,13 @@
  */
 
 import * as React from 'react';
-import styled, { css, cx } from 'react-emotion';
+import { css, cx } from 'linaria';
+import { styled } from 'linaria/react';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 import { Tooltip } from '@csegames/camelot-unchained';
 import { colors } from '../../styleConstants';
 
-const TraitView = styled('div')`
+const TraitView = styled.div`
   position: relative;
   display: flex;
   align-items: center;
@@ -24,7 +25,6 @@ const TraitView = styled('div')`
   margin-right: 0;
   margin-left: 0;
   user-select: none;
-  border: ${(props: any) => `3px solid ${props.traitColor}`};
 `;
 
 const SelectedTrait = css`
@@ -67,19 +67,19 @@ const DisabledShadow = css`
   }
 `;
 
-const Name = styled('div')`
+const Name = styled.div`
   font-size: 1.3em;
   margin: 0 0 -4px 0;
 `;
 
-const Category = styled('div')`
+const Category = styled.div`
   font-size: 1.2em;
   margin-top: 0;
   margin-bottom: 0;
   margin-right: 5px;
 `;
 
-const Points = styled('div')`
+const Points = styled.div`
   font-size: 1.2em;
   display: inline-block;
   color: orange;
@@ -88,17 +88,17 @@ const Points = styled('div')`
   margin-bottom: 0;
 `;
 
-const DependenciesContainer = styled('div')`
+const DependenciesContainer = styled.div`
   display: flex;
   align-items: center;
   margin: 0;
 `;
 
-const DependencyText = styled('div')`
+const DependencyText = styled.div`
   margin: 0 0 -1px 5px;
 `;
 
-const RankText = styled('div')`
+const RankText = styled.div`
   font-size: 0.7em;
   position: absolute;
   right: 0;
@@ -108,11 +108,11 @@ const RankText = styled('div')`
   margin: 0;
 `;
 
-const RegularText = styled('div')`
+const RegularText = styled.div`
   margin: 0;
 `;
 
-const PointsCircle = styled('div')`
+const PointsCircle = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -127,12 +127,12 @@ const PointsCircle = styled('div')`
   color: white;
 `;
 
-const AdditionalInfoContainer = styled('div')`
+const AdditionalInfoContainer = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const Divider = styled('div')`
+const Divider = styled.div`
   font-size: 1.2em;
   margin: 0;
   color: #8F8F8F;
@@ -261,9 +261,12 @@ class Trait extends React.Component<TraitProps, {}> {
             trait.selected && !shouldBeDefault ? SelectedTrait : '',
             shouldBeDisabled && !shouldBeDefault && DisabledTrait,
           )}
-          traitColor={traitColor}
           onClick={shouldBeDisabled ? () => {} : trait.ranks ? this.onRankClick : this.onTraitClick}
-          style={{ background: `url(${trait.icon}) no-repeat`, backgroundSize: 'cover' }}>
+          style={{
+            background: `url(${trait.icon}) no-repeat`,
+            backgroundSize: 'cover',
+            border: `3px solid ${traitColor}`,
+          }}>
             <PointsCircle>
               {type === 'Bane' ? trait.points * -1 : trait.points}
             </PointsCircle>
@@ -276,7 +279,7 @@ class Trait extends React.Component<TraitProps, {}> {
                 !shouldBeDefault ? Shadow : '',
                 trait.selected && !shouldBeDefault ? SelectedShadow : '')}
               /> :
-                <div className={css(
+                <div className={cx(
                   !shouldBeDefault ? DisabledShadow : '',
                   trait.selected && !shouldBeDefault ? SelectedShadow : '')}
                 />}

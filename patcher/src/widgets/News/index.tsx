@@ -6,7 +6,7 @@
 
 
 import * as React from 'react';
-import styled, { css } from 'react-emotion';
+import { styled } from 'linaria/react';
 import { has, uniqBy } from 'lodash';
 import { query } from '@csegames/camelot-unchained/lib/graphql/query';
 import { CUQuery } from '@csegames/camelot-unchained/lib/graphql/schema';
@@ -40,7 +40,7 @@ const patchNotesQuery = `
   }
 `;
 
-const Container = styled('div')`
+const Container = styled.div`
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
@@ -51,7 +51,7 @@ const Container = styled('div')`
   }
 `;
 
-const Content = styled('div')`
+const Content = styled.div`
   display: flex;
   flex-wrap: wrap;
   flex: 1 1 auto;
@@ -63,7 +63,7 @@ const Content = styled('div')`
   margin-bottom: 15px;
 `;
 
-const ContentItem = styled('div')`
+const ContentItem = styled.div`
   flex: 1;
   list-style-type: inherit;
   display: inline-block;
@@ -76,7 +76,7 @@ const ContentItem = styled('div')`
   flex-basis: 30%;
 `;
 
-const LoadMore = css`
+const LoadMore = `
   position: relative;
   margin-bottom: 40px;
   text-align: center;
@@ -114,14 +114,14 @@ const LoadMore = css`
   }
 `;
 
-const LoadMoreText = styled('div')`
+const LoadMoreText = styled.div`
   ${LoadMore}
   letter-spacing: 2px;
   text-transform: uppercase;
   color: #847B72;
 `;
 
-const LoadMoreLoading = styled('div')`
+const LoadMoreLoading = styled.div`
   ${LoadMore}
   font-weight: 700;
   color: #847B72;

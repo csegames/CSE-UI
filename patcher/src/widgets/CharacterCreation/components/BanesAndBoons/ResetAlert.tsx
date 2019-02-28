@@ -6,10 +6,10 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { colors } from '../../styleConstants';
 
-const ResetAlertOverlay = styled('div')`
+const ResetAlertOverlay = styled.div`
   position: fixed;
   top: 0;
   right: 0;
@@ -18,11 +18,9 @@ const ResetAlertOverlay = styled('div')`
   background-color: rgba(0, 0, 0, 0.7);
   transition: opacity 0.3s;
   z-index: 10;
-  opacity: ${(props: any) => props.opacity};
-  visibility: ${(props: any) => props.visibility};
 `;
 
-const ResetAlertDialog = styled('div')`
+const ResetAlertDialog = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -40,27 +38,25 @@ const ResetAlertDialog = styled('div')`
   z-index: 11;
   transition: opacity 0.3s;
   border-radius: 7px;
-  opacity: ${(props: any) => props.opacity};
-  visibility: ${(props: any) => props.visibility};
 `;
 
-const AlertPrimaryText = styled('div')`
+const AlertPrimaryText = styled.div`
   font-size: 1.6em;
   font-weight: bold;
   margin: 0;
   colro: #858585;
 `;
 
-const ResetAlertDialogText = styled('div')`
+const ResetAlertDialogText = styled.div`
   color: #858585;
 `;
 
-const ResetAlertButtonContainer = styled('div')`
+const ResetAlertButtonContainer = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const AlertButton = styled('div')`
+const AlertButton = styled.div`
   cursor: pointer;
   padding: 5px 10px;
   background-color: #CCC;
@@ -74,7 +70,7 @@ const AlertButton = styled('div')`
   }
 `;
 
-const ResetAlertButton = styled('div')`
+const ResetAlertButton = styled.div`
   cursor: pointer;
   padding: 5px 10px;
   background-color: ${colors.banePrimary};
@@ -108,14 +104,18 @@ class ResetAlert extends React.Component<ResetAlertProps> {
     return (
       <div>
         <ResetAlertOverlay
-          opacity={showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0}
-          visibility={showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ?
-            'visible' : 'hidden'}
+          style={{
+            opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
+            visibility: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ?
+              'visible' : 'hidden',
+          }}
         />
         <ResetAlertDialog
-          opacity={showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0}
-          visibility={showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ?
-            'visible' : 'hidden'}>
+          style={{
+            opacity: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ? 1 : 0,
+            visibility: showResetBoonAlertDialog || showResetBaneAlertDialog || showResetAllAlertDialog ?
+              'visible' : 'hidden',
+          }}>
           <AlertPrimaryText>Are you sure?</AlertPrimaryText>
           <ResetAlertDialogText>
             Are you sure you want to reset all&nbsp;

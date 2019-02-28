@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { find } from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { patcher } from '../../../../services/patcher';
 import { ControllerContext, ContextState, PatcherServer, ServerType } from '../../ControllerContext';
@@ -16,11 +16,11 @@ import CharacterInfo from './components/CharacterInfo';
 import ToolsSelect from './components/ToolsSelect';
 import { SimpleCharacter } from 'gql/interfaces';
 
-const ButtonContainer = styled('div')`
+const ButtonContainer = styled.div`
   display: flex;
 `;
 
-const HoverArea = styled('div')`
+const HoverArea = styled.div`
   position: absolute;
   width: 60px;
   height: 70%;

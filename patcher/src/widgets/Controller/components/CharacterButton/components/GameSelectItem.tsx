@@ -6,21 +6,10 @@
  */
 
 import * as React from 'react';
-import styled, { keyframes } from 'react-emotion';
+import { styled } from 'linaria/react';
 import { serverTypeToIcon, ServerType } from '../../../ControllerContext';
 
-const gameNameAnim = keyframes`
-  from {
-    opacity: 0;
-    margin-top: -5px;
-  }
-  to {
-    opacity: 1;
-    margin-top: -10px;
-  }
-`;
-
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,7 +19,7 @@ const Container = styled('div')`
   margin-bottom: 20px;
 `;
 
-const GameImage = styled('div')`
+const GameImage = styled.div`
   display: inline-block;
   position: relative;
   pointer-events: all;
@@ -38,9 +27,10 @@ const GameImage = styled('div')`
   height: 80px;
   zoom: 100%;
   cursor: pointer;
-  background: url(${(props: any) => props.img}) no-repeat center;
   z-index: 10;
-  transition: ${(props: any) => props.instant ? '' : 'opacity .3s ease'};
+  transition: opacity .3s ease;
+  background-repeat: no-repeat;
+  background-position: center;
   bottom: 0;
 
   &:before {
@@ -57,7 +47,7 @@ const GameImage = styled('div')`
   }
 `;
 
-const GameName = styled('div')`
+const GameName = styled.div`
   position: absolute;
   width: 64px;
   margin-top: -10px;
@@ -68,8 +58,19 @@ const GameName = styled('div')`
   color: #C6C6C6;
   text-shadow: 0px 1px 2px black;
   opacity: 0;
-  -webkit-animation: ${gameNameAnim} 0.5s forwards;
-  animation: ${gameNameAnim} 0.5s forwards;
+  -webkit-animation: gameNameAnim 0.5s forwards;
+  animation: gameNameAnim 0.5s forwards;
+
+  @keyframes gameNameAnim {
+    from {
+      opacity: 0;
+      margin-top: -5px;
+    }
+    to {
+      opacity: 1;
+      margin-top: -10px;
+    }
+  }
 `;
 
 export interface GameSelectItemProps {
@@ -95,7 +96,7 @@ class GameSelectItem extends React.Component<GameSelectItemProps, GameSelectItem
     return (
       <Container>
         <GameImage
-          img={serverTypeToIcon(type)}
+          style={{ backgroundImage: `url(${serverTypeToIcon(type)})` }}
           onClick={() => this.props.onSelectServerType(type)}
           onMouseOver={this.showGameName}
           onMouseLeave={this.hideGameName}

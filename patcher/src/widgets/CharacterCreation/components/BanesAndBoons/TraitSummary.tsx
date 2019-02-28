@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { BanesAndBoonsInfo } from '../../services/session/banesAndBoons';
 import { colors } from '../../styleConstants';
@@ -20,7 +20,7 @@ export interface TraitSummaryProps {
   onCancelRankTrait: Function;
 }
 
-const AddedSummaryContainer = styled('div')`
+const AddedSummaryContainer = styled.div`
   position: relative;
   padding: 10px;
   margin-top: 15px;
@@ -28,53 +28,53 @@ const AddedSummaryContainer = styled('div')`
   background-color: rgba(49, 49, 49, 0.7);
 `;
 
-const Name = styled('div')`
+const Name = styled.div`
   font-size: 1.1em;
   line-height: 1.1em;
   margin-bottom: 5px;
   margin-top: 0;
 `;
 
-const Points = styled('div')`
+const Points = styled.div`
   margin: 0;
   color: orange;
   margin-left: 5px;
 `;
 
-const TitleContainer = styled('div')`
+const TitleContainer = styled.div`
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
 `;
 
-const Description = styled('div')`
+const Description = styled.div`
   color: #CCC;
   margin-bottom: 0;
 `;
 
-const Category = styled('div')`
+const Category = styled.div`
   margin-top: 0;
   margin-bottom: 0;
   margin-right: 5px;
 `;
 
-const Icon = styled('img')`
+const Icon = styled.img`
   width: 60px;
   height: 60px;
 `;
 
-const AdditionalInfoContainer = styled('div')`
+const AdditionalInfoContainer = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const Divider = styled('div')`
+const Divider = styled.div`
   font-size: 1em;
   margin: 0;
   color: #8F8F8F;
 `;
 
-const RemoveButton = styled('div')`
+const RemoveButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;

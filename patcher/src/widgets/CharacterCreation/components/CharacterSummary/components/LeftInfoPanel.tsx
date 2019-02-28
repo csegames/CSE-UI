@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { BanesAndBoonsState } from '../../../services/session/banesAndBoons';
 
 import StatsView from '../../StatsSelect/StatsView';
@@ -17,7 +17,7 @@ export const colors = {
   filterBackgroundColor: '#372F2D',
 };
 
-const Container = styled('div')`
+const Container = styled.div`
   flex: 2;
   overflow-y: auto;
   background: linear-gradient(top left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.8));

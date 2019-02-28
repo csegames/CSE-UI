@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import styled, { keyframes, css } from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { patcher } from '../../../../../services/patcher';
 import { view } from '../../../../../components/OverlayView';
@@ -16,19 +16,7 @@ declare var toastr: any;
 
 const goldenColor = 'rgba(192, 173, 124, 0.4)';
 
-const activeShine = keyframes`
-  from {
-    opacity: 1;
-    left: 30px;
-  }
-
-  to {
-    opacity: 0;
-    left: 30%;
-  }
-`;
-
-const activeItem = css`
+const activeItem = `
   filter: brightness(180%);
 
   &:before {
@@ -41,26 +29,36 @@ const activeItem = css`
     bottom: 0px;
     left: 20px;
     opacity: 0;
-    -webkit-animation: ${activeShine} 2s ease forwards;
-    animation: ${activeShine} 2s ease forwards;
+    -webkit-animation: activeShine 2s ease forwards;
+    animation: activeShine 2s ease forwards;
     -webkit-clip-path: polygon(5% 0%, 100% 0%, 90% 100%, 0% 100%);
     clip-path: polygon(5% 0%, 100% 0%, 90% 100%, 0% 100%);
   }
+
+  @keyframes activeShine {
+    from {
+      opacity: 1;
+      left: 30px;
+    }
+    to {
+      opacity: 0;
+      left: 30%;
+    }
+  }
 `;
 
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   display: block;
   text-align: center;
   margin-left: -5px;
 `;
 
-const ButtonContainer = styled('div')`
+const ButtonContainer = styled.div`
   position: relative;
   display: flex;
   text-align: center;
   pointer-events: all;
-  cursor: ${(props: any) => props.cursor};
   color: white;
   font-family: "Caudex";
   font-size: 13px;
@@ -68,7 +66,6 @@ const ButtonContainer = styled('div')`
   width: 345px;
   margin: 15px 15px 25px 15px;
   padding-bottom: 5px;
-  background: url(${(props: any) => props.backgroundImg}) no-repeat;
   background-size: contain;
   transition: all ease .1s;
   &:hover {
@@ -76,22 +73,21 @@ const ButtonContainer = styled('div')`
   }
 `;
 
-const Plus = styled('span')`
+const Plus = styled.span`
   font-size: 24px;
   margin-right: 5px;
 `;
 
-const Text = styled('div')`
+const Text = styled.div`
   position: absolute;
   top: 5px;
   right: 0;
   left: 0;
   bottom: 22px;
-  color: ${(props: any) => props.color};
   font-size: 16px;
 `;
 
-const SubText = styled('div')`
+const SubText = styled.div`
   position: absolute;
   top: 30px;
   right: 0;
@@ -126,10 +122,13 @@ class CreateCharacterItem extends React.Component<Props> {
       <Container>
         <ButtonContainer
           onMouseEnter={this.onMouseEnter}
-          backgroundImg={backgroundImg}
-          onClick={isOnline ? this.onClick : this.onClickOffline}
-          cursor={isOnline ? 'pointer' : 'not-allowed'}>
-          <Text color={isOnline ? 'white' : '#FF6A6A'}>
+          onClick={isOnline ? () => this.onClick() : this.onClickOffline}
+          style={{
+            backgroundImage: `url(${backgroundImg})`,
+            backgroundRepeat: 'no-repeat',
+            cursor: isOnline ? 'pointer' : 'not-allowed',
+          }}>
+          <Text style={{ color: isOnline ? 'white' : '#FF6A6A' }}>
             <Plus>+</Plus>
             Create New Character
           </Text>

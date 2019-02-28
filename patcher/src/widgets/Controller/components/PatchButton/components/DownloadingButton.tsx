@@ -6,28 +6,14 @@
  */
 
 import * as React from 'react';
-import styled, { keyframes } from 'react-emotion';
+import { styled } from 'linaria/react';
 import { ButtonText, PatchButtonStyle } from '../styles';
 
 const goldenColor = 'rgba(192, 173, 124, 0.9)';
 
-const shineAnim = keyframes`
-  0% {
-    left: 30px;
-    opacity: 0;
-  }
-  30% {
-    opacity: 0.5;
-  }
-  100% {
-    left: 35%;
-    opacity: 0;
-  }
-`;
-
-const DownloadingButtonView = styled('div')`
+const DownloadingButtonView = styled.div`
   ${PatchButtonStyle};
-  background: url(images/controller/play-button-grey.png);
+  background: url(/ui/images/controller/play-button-grey.png);
   filter: brightness(140%);
   &:hover {
     filter: brightness(140%);
@@ -42,7 +28,7 @@ const DownloadingButtonView = styled('div')`
   }
 `;
 
-const Shine = styled('div')`
+const Shine = styled.div`
   position: absolute;
   height: 90%;
   width: 70%;
@@ -51,11 +37,25 @@ const Shine = styled('div')`
   bottom: 5px;
   left: 15px;
   opacity: 0;
-  -webkit-animation: ${shineAnim} 1.3s ease infinite;
-  animation: ${shineAnim} 1.3s ease infinite;
+  -webkit-animation: shineAnim 1.3s ease infinite;
+  animation: shineAnim 1.3s ease infinite;
   -webkit-clip-path: polygon(5% 0%, 100% 0%, 90% 100%, 0% 100%);
   clip-path: polygon(5% 0%, 100% 0%, 90% 100%, 0% 100%);
   z-index: 2;
+
+  @keyframes shineAnim {
+    0% {
+      left: 30px;
+      opacity: 0;
+    }
+    30% {
+      opacity: 0.5;
+    }
+    100% {
+      left: 35%;
+      opacity: 0;
+    }
+  }
 `;
 
 export interface DownloadingButtonProps {

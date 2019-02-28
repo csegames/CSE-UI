@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled, { keyframes } from 'react-emotion';
+import { styled } from 'linaria/react';
 import { webAPI, Spinner } from '@csegames/camelot-unchained';
 import { getCharImage, shouldFlipCharImage } from '../../../../../lib/characterImages';
 import { PatcherServer } from '../../../ControllerContext';
@@ -16,36 +16,7 @@ import { SimpleCharacter, Gender, Race, Archetype } from 'gql/interfaces';
 
 declare const toastr: any;
 
-const shine = keyframes`
-  from {
-    left: 20px;
-    opacity: 1;
-  }
-  to {
-    left: 80%;
-    opacity: 0;
-  }
-`;
-
-const idleShine = keyframes`
-  0% {
-    left: 20px;
-    opacity: 0;
-  }
-  90% {
-    left: 20px;
-    opacity: 0;
-  }
-  91% {
-    opacity: 1;
-  }
-  100% {
-    left: 80%;
-    opacity: 0;
-  }
-`;
-
-const Container = styled('div')`
+const Container = styled.div`
   position: relative;
   height: 92px;
   width: 500px;
@@ -74,8 +45,8 @@ const Container = styled('div')`
     background: linear-gradient(transparent, rgba(255,255,255,0.2));
     clip-path: polygon(55% 0%, 100% 0%, 45% 100%, 0% 100%);
     -webkit-clip-path: polygon(55% 0%, 100% 0%, 45% 100%, 0% 100%);
-    -webkit-animation: ${shine} 0.5s ease forwards;
-    animation: ${shine} 0.5s ease forwards;
+    -webkit-animation: shine 0.5s ease forwards;
+    animation: shine 0.5s ease forwards;
     animation-delay: 0.3s;
     -webkit-animation-delay: 0.3s;
   }
@@ -95,12 +66,23 @@ const Container = styled('div')`
     background: linear-gradient(transparent, rgba(255,255,255,0.2));
     clip-path: polygon(55% 0%, 100% 0%, 45% 100%, 0% 100%);
     -webkit-clip-path: polygon(55% 0%, 100% 0%, 45% 100%, 0% 100%);
-    -webkit-animation: ${shine} 0.5s ease forwards;
-    animation: ${shine} 0.5s ease forwards;
+    -webkit-animation: shine 0.5s ease forwards;
+    animation: shine 0.5s ease forwards;
+  }
+
+  @keyframes shine {
+    from {
+      left: 20px;
+      opacity: 1;
+    }
+    to {
+      left: 80%;
+      opacity: 0;
+    }
   }
 `;
 
-const IdleShine = styled('div')`
+const IdleShine = styled.div`
   pointer-events: none;
   opacity: 0;
   position: absolute;
@@ -114,16 +96,34 @@ const IdleShine = styled('div')`
   background: linear-gradient(transparent, rgba(255,255,255,0.2));
   clip-path: polygon(55% 0%, 100% 0%, 45% 100%, 0% 100%);
   -webkit-clip-path: polygon(55% 0%, 100% 0%, 45% 100%, 0% 100%);
-  -webkit-animation: ${idleShine} 9s ease infinite;
-  animation: ${idleShine} 9s ease infinite;
+  -webkit-animation: idleShine 9s ease infinite;
+  animation: idleShine 9s ease infinite;
+
+  @keyframes idleShine {
+    0% {
+      left: 20px;
+      opacity: 0;
+    }
+    90% {
+      left: 20px;
+      opacity: 0;
+    }
+    91% {
+      opacity: 1;
+    }
+    100% {
+      left: 80%;
+      opacity: 0;
+    }
+  }
 `;
 
-const CharPic = styled('div')`
+const CharPic = styled.div`
   position: relative;
   display: block;
   height: 103px;
   width: 222px;
-  background: url(images/controller/character-face-spot.png) no-repeat;
+  background: url(/ui/images/controller/character-face-spot.png) no-repeat;
   background-size: contain;
   z-index: 2;
   -webkit-clip-path: polygon(0% 0%, 100% 0%, 57% 100%, 0% 100%);
@@ -132,52 +132,33 @@ const CharPic = styled('div')`
   &:hover ~ .block-area {
     z-index: 0;
   }
-  &:before {
-    position: absolute;
-    content: "";
-    display:block;
-    background: url(${(props: any) => props.backgroundImg});
-    background-size: 280%;
-    background-position: ${(props: any) => props.backgroundPosition};
-    transform: ${(props: any) => props.flipImage ? 'scale(-1, 1)' : 'none'};
-    width: 200px;
-    height: 100px;
-    bottom: 0;
-  }
 `;
 
-const CharMask = styled('div')`
+const CharPicImage = styled.div`
+  position: absolute;
+  display: block;
+  background-size: 280%;
+  width: 200px;
+  height: 100px;
+  bottom: 0;
+`;
+
+const CharMask = styled.div`
   position: absolute;
   left: 105px;
   height: 103px;
   width: 405px;
   cursor: pointer;
-  background: url(images/controller/character-info-spot.png);
+  background: url(/ui/images/controller/character-info-spot.png);
   background-size: cover;
   transition: width .2s cubic-bezier(0.93, 0.02, 1, 1.01), -webkit-filter 1s ease;
   overflow: hidden;
-  &:before {
-    content:"";
-    position:absolute;
-    background: url(${(props: any) => props.image});
-    display:block;
-    background-size: 280%;
-    background-position: ${(props: any) => props.backgroundPosition};
-    transform: ${(props: any) => props.flipImage ? 'scale(-1, 1)' : 'none'};
-    -webkit-mask: url(images/controller/character-profile-selected-mask.png) no-repeat;
-    -webkit-mask-size: cover;
-    -webkit-mask-position-x: 51px;
-    width: 200px;
-    height: 100px;
-    left: -107px;
-    bottom: 0;
-  }
   &:after {
     content: "";
     transition: opacity 1s linear;
     transition-delay: 0.5s;
     position: absolute;
-    background: url(images/controller/slideout-icon.png) no-repeat;
+    background: url(/ui/images/controller/slideout-icon.png) no-repeat;
     width: 50px;
     height: 50px;
     right: 20px;
@@ -185,24 +166,36 @@ const CharMask = styled('div')`
   }
 `;
 
-const InfoContainer = styled('div')`
+const CharMaskImage = styled.div`
+  position:absolute;
+  display:block;
+  background-size: 280%;
+  -webkit-mask: url(/ui/images/controller/character-profile-selected-mask.png) no-repeat;
+  -webkit-mask-size: cover;
+  -webkit-mask-position-x: 51px;
+  width: 200px;
+  height: 100px;
+  left: -107px;
+  bottom: 0;
+`;
+
+const InfoContainer = styled.div`
   opacity: 1;
   background-size: 280%;
   background-position: 52% 23%;
   transition: opacity 1s ease;
 `;
 
-const CharacterName = styled('div')`
+const CharacterName = styled.div`
   position: relative;
   font-family: "Caudex";
-  font-size: ${(props: any) => props.longName ? '12px' : '16px'};
   font-weight: normal;
-  padding: ${(props: any) => props.padding ? props.padding : '10px 0px 0px 120px'};
+  padding: 10px 0px 0px 120px;
   color: white;
   white-space: nowrap;
 `;
 
-const CharacterMetaInfo = styled('div')`
+const CharacterMetaInfo = styled.div`
   font-family: "Titillium Web";
   font-size: 12px;
   font-weight: normal;
@@ -211,27 +204,26 @@ const CharacterMetaInfo = styled('div')`
   pointer-events: none;
 `;
 
-const ServerActiveIcon = styled('i')`
-  color: ${(props: any) => props.color};
+const ServerActiveIcon = styled.i`
   margin-right: 5px;
 `;
 
-const ServerInfoContainer = styled('div')`
+const ServerInfoContainer = styled.div`
   display: flex;
   font-family: "Titillium Web";
   color: white;
   font-size: 14px;
   font-weight: normal;
-  padding: ${(props: any) => props.padding ? props.padding : '8px 0 0 140px'};
+  padding: 8px 0 0 140px;
   white-space: nowrap;
   pointer-events: none;
 `;
 
-const ServerName = styled('div')`
+const ServerName = styled.div`
   margin-left: -20px;
 `;
 
-const AccessLevel = styled('div')`
+const AccessLevel = styled.div`
   margin-left: 30px;
   font-size: 12px;
   color: gray;
@@ -239,7 +231,7 @@ const AccessLevel = styled('div')`
   width: 130px;
 `;
 
-const SpinnerContainer = styled('div')`
+const SpinnerContainer = styled.div`
   position: absolute;
   right: 105px;
   top: 40px;
@@ -288,43 +280,45 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
           onMouseEnter={this.handleMouseOver}
           onClick={onNavigateToCharacterSelect}
         >
-        {this.state.playAnimation && <IdleShine /> }
-          <CharPic
-            flipImage={flipImage}
-            className='character-button-char-pic'
-            backgroundImg={getCharImage(character)}
-            backgroundPosition={
-              character.race === Race.Luchorpan ||
-                (character.gender === Gender.Male && character.race === Race.HumanMaleT &&
-                  character.archetype === Archetype.ForestStalker) ? '50% 25%' :
-              character.archetype === Archetype.WintersShadow ? '45% 25%' :
-              '50% 20%'
-            }
-          />
-          <CharMask
-            className='character-button-char-mask'
-            flipImage={flipImage}
-            image={getCharImage(character)}
-            backgroundPosition={
-              character.race === Race.Luchorpan ||
-                (character.race === Race.HumanMaleT && character.archetype === Archetype.ForestStalker) ? '50% 25%' :
-              character.archetype === Archetype.WintersShadow ? '45% 25%' :
-              '50% 20%'
-            }>
+          {this.state.playAnimation && <IdleShine /> }
+          <CharPic className='character-button-char-pic'>
+            <CharPicImage
+              style={{
+                backgroundImage: `url(${getCharImage(character)})`,
+                backgroundPosition: character.race === Race.Luchorpan ||
+                  (character.gender === Gender.Male && character.race === Race.HumanMaleT &&
+                    character.archetype === Archetype.ForestStalker) ? '50% 25%' :
+                  character.archetype === Archetype.WintersShadow ? '45% 25%' :
+                  '50% 20%',
+                transform: flipImage ? 'scale(-1, 1)' : 'none',
+              }}
+            />
+          </CharPic>
+          <CharMask className='character-button-char-mask'>
+            <CharMaskImage
+              style={{
+                backgroundImage: `url(${getCharImage(character)})`,
+                backgroundPosition: character.race === Race.Luchorpan ||
+                  (character.race === Race.HumanMaleT && character.archetype === Archetype.ForestStalker) ? '50% 25%' :
+                character.archetype === Archetype.WintersShadow ? '45% 25%' :
+                '50% 20%',
+                transform: flipImage ? 'scale(-1, 1)' : 'none',
+              }}
+            />
             <InfoContainer className='character-button-info'>
-              <CharacterName longName={isLongName}>
+              <CharacterName style={{ fontSize: isLongName ? '12px' : '16px' }}>
                 {character.name}
                 <CharacterMetaInfo>
                   {Archetype[character.archetype]} - {character.race}
                 </CharacterMetaInfo>
               </CharacterName>
               {selectedServer &&
-                <ServerInfoContainer longName={isLongName}>
+                <ServerInfoContainer>
                   <ServerName>
                     <ServerActiveIcon
                       className='fa fa-power-off'
                       aria-hidden='true'
-                      color={selectedServer.available ? 'green' : 'red'}>
+                      style={{ color: selectedServer.available ? 'green' : 'red' }}>
                     </ServerActiveIcon>
                     {selectedServer.name}
                     <PlayerCounts shard={selectedServer.shardID} host={selectedServer.apiHost} />
@@ -343,14 +337,12 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
         <Container
           className='character-button-char-container'
           onClick={this.props.hasAccessToServers ? onNavigateToCharacterSelect : this.noAccessError}>
-          <CharPic
-            className='character-button-char-pic'
-            image={'images/controller/no-character-shadow.png'}>
+          <CharPic className='character-button-char-pic'>
+            <CharPicImage style={{ backgroundImage: 'url(images/controller/no-character-shadow.png)' }} />
             {this.state.isLoading && <SpinnerContainer><Spinner /></SpinnerContainer>}
           </CharPic>
-          <CharMask
-            className='character-button-char-mask'
-            image={'images/controller/no-character-shadow.png'}>
+          <CharMask className='character-button-char-mask'>
+            <CharMaskImage style={{ backgroundImage: 'url(images/controller/no-character-shadow.png)' }} />
             {!this.state.isLoading &&
               <InfoContainer className='character-button-info'>
                 <CharacterName>

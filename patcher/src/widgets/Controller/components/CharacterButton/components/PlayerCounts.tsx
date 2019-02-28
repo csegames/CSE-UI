@@ -6,16 +6,12 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { MetricsData } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
-const PlayerCount = styled('span')`
+const PlayerCount = styled.span`
   font-size: 12px;
-  padding-right: ${(props: any) => props.faction === Faction.Viking ? '0px' : '10px'};
-  color: ${(props: any) => props.faction === Faction.Arthurian ? '#FF8080'
-    : props.faction === Faction.Viking ? '#6DB9D9'
-    : '#92E989'};
 `;
 
 function query(shard: number) {
@@ -60,9 +56,9 @@ class PlayerCounts extends React.PureComponent<PlayerCountsProps, PlayerCountsSt
   public render() {
     return (
       <div>
-        <PlayerCount faction={Faction.Arthurian}>{this.state.playerCountA} A</PlayerCount>
-        <PlayerCount faction={Faction.TDD}>{this.state.playerCountT} T</PlayerCount>
-        <PlayerCount faction={Faction.Viking}>{this.state.playerCountV} V</PlayerCount>
+        <PlayerCount style={{ color: '#FF8080', marginRight: 10 }}>{this.state.playerCountA} A</PlayerCount>
+        <PlayerCount style={{ color: '#92E989', marginRight: 10 }}>{this.state.playerCountT} T</PlayerCount>
+        <PlayerCount style={{ color: '#6DB9D9' }}>{this.state.playerCountV} V</PlayerCount>
         <GraphQL
           query={{
             query: query(this.props.shard),

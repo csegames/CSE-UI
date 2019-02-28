@@ -6,10 +6,10 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { Spinner } from '@csegames/camelot-unchained';
 
-const Container = styled('div')`
+const Container = styled.div`
   position: absolute;
   top: 0;
   right: 0;

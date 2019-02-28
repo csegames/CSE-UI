@@ -23,5 +23,5 @@ export function getCharImage(character: SimpleCharacter) {
   const gender = (character.gender as any) === 'Male' ? 'm' : 'f';
   const archetype = Archetype[character.archetype].toLowerCase();
 
-  return `images/character-select/${race}-${gender}-${archetype}-select.png`;
+  return `/ui/images/character-select/${race}-${gender}-${archetype}-select.png`;
 }

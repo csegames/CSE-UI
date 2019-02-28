@@ -8,7 +8,8 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import gql from 'graphql-tag';
-import styled, { css } from 'react-emotion';
+import { css } from 'react-emotion';
+import { styled } from 'linaria/react';
 import { webAPI, CollapsingList } from '@csegames/camelot-unchained';
 import { GraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
@@ -21,17 +22,17 @@ import { ControllerContext, ContextState, PatcherServer } from '../../../Control
 import { PatcherAlertFragment } from 'gql/fragments';
 import { SimpleCharacter, PatcherAlert, CharacterListSubscription } from 'gql/interfaces';
 
-const Server = styled('div')`
+const Server = styled.div`
   display: block;
   height: 55px;
   width: 407px;
-  background: url(images/controller/server-name-bg.png) no-repeat;
+  background: url(/ui/images/controller/server-name-bg.png) no-repeat;
   &:hover {
     filter: brightness(140%);
   }
 `;
 
-const ServerTitle = styled('div')`
+const ServerTitle = styled.div`
   display: flex;
   justify-content: space-between;
   text-align: right;
@@ -51,7 +52,7 @@ const ServerTitle = styled('div')`
   font-family: "Caudex";
   color: #dac0a9;`;
 
-const ServerInfo = styled('div')`
+const ServerInfo = styled.div`
   display: flex;
   justify-content: space-between;
   height: 20px;
@@ -67,21 +68,18 @@ const ServerInfo = styled('div')`
   }
 `;
 
-const Icon = styled('i')`
+const Icon = styled.i`
   position: relative;
   top: -1px;
   display: inline;
   margin-right: 6px;
-  color: ${(props: any) => props.color};
-  font-size: ${(props: any) => props.size}px;
 `;
 
-const ServerOptionsButton = styled('div')`
+const ServerOptionsButton = styled.div`
   display: inline;
   margin-top: 9px;
   margin-right: 5px;
   cursor: pointer;
-  pointer-events: ${(props: any) => props.visible ? 'all' : 'none'};
   z-index: 1;
   &:hover {
     color: #fff;
@@ -179,17 +177,16 @@ class CharacterList extends React.PureComponent<Props, CharacterListState> {
             <Server>
               <ServerTitle>
                 <div>
-                  <Icon size={14}>{collapsed ? '+' : '-'}</Icon>
+                  <Icon style={{ fontSize: 14 }}>{collapsed ? '+' : '-'}</Icon>
                   <Icon
                     className='fa fa-power-off'
                     aria-hidden='true'
-                    color={server.available ? 'green' : 'red'}
-                    size={12}>
+                    style={{ fontSize: 12, color: server.available ? 'green' : 'red' }}>
                   </Icon>
                     {server.name} ({serverCharacters.length})
                 </div>
                 <ServerOptionsButton
-                  visible={this.props.charSelectVisible}
+                  style={{ pointerEvents: this.props.charSelectVisible ? 'all' : 'none' }}
                   onClick={(e: React.MouseEvent<HTMLDivElement>) => this.onToggleMenu(e, server)}
                 >
                   <i className='fa fa-cog' />

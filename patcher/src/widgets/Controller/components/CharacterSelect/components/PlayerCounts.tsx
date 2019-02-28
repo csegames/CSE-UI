@@ -6,23 +6,19 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import { MetricsData } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
-const PlayerCount = styled('span')`
-  padding-right: ${(props: any) => props.faction === Faction.Viking ? '0px' : '10px'};
-  color: ${(props: any) => props.faction === Faction.Arthurian ? '#FF8080'
-    : props.faction === Faction.Viking ? '#6DB9D9'
-    : '#92E989'};
+const PlayerCount = styled.span`
 `;
 
-const PlayerCountLabel = styled('span')`
+const PlayerCountLabel = styled.span`
   padding-right: 4px;
   opacity: 0.5;
 `;
 
-const PlayerCountsContainer = styled('div')`
+const PlayerCountsContainer = styled.div`
   display: inline;
   margin-top: -5px;
   margin-left: 75px;
@@ -72,9 +68,9 @@ class PlayerCounts extends React.PureComponent<PlayerCountsProps, PlayerCountsSt
     return (
       <PlayerCountsContainer>
         <PlayerCountLabel>Players:</PlayerCountLabel>
-        <PlayerCount faction={Faction.Arthurian}>{this.state.playerCountA} A</PlayerCount>
-        <PlayerCount faction={Faction.TDD}>{this.state.playerCountT} T</PlayerCount>
-        <PlayerCount faction={Faction.Viking}>{this.state.playerCountV} V</PlayerCount>
+        <PlayerCount style={{ color: '#FF8080', marginRight: 10 }}>{this.state.playerCountA} A</PlayerCount>
+        <PlayerCount style={{ color: '#92E989', marginRight: 10 }}>{this.state.playerCountT} T</PlayerCount>
+        <PlayerCount style={{ color: '#6DB9D9' }}>{this.state.playerCountV} V</PlayerCount>
         {this.props.apiServerOnline === 'Online' &&
           <GraphQL
             query={{

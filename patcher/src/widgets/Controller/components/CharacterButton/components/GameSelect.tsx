@@ -7,45 +7,19 @@
 
 import * as React from 'react';
 
-import styled, { keyframes } from 'react-emotion';
+import { styled } from 'linaria/react';
 import GameSelectItem from './GameSelectItem';
 import { PatcherServer, ServerType, serverTypeToIcon } from '../../../ControllerContext';
 import { patcher, permissionsString } from '../../../../../services/patcher';
 
-const idleShine = keyframes`
-  0% {
-    left: -115px;
-    opacity: 0;
-  }
-  90% {
-    left: -115px;
-    opacity: 0;
-  }
-  100% {
-    left: 100%;
-    opacity: 1;
-  }
-`;
-
-const shine = keyframes`
-  from {
-    left: 0px;
-    opacity: 1;
-  }
-  to {
-    left: 80%;
-    opacity: 0;
-  }
-`;
-
-const GameMask = styled('div')`
+const GameMask = styled.div`
   position: relative;
   height: 97px;
   width: 175px;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent),
-    url(images/controller/games-bot-left-bg.png) no-repeat;
+    url(/ui/images/controller/games-bot-left-bg.png) no-repeat;
   background-size: cover;
-  -webkit-mask-image: url(images/controller/bottom-left-mask.png);
+  -webkit-mask-image: url(/ui/images/controller/bottom-left-mask.png);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: 100% 100%;
   box-shadow: inset 0px 0px 20px 20px rgba(0, 0, 0, 0.5);
@@ -75,8 +49,8 @@ const GameMask = styled('div')`
     background: linear-gradient(transparent, rgba(255,255,255,0.2));
     clip-path: polygon(75% 0%, 100% 0%, 35% 100%, 0% 100%);
     -webkit-clip-path: polygon(75% 0%, 100% 0%, 35% 100%, 0% 100%);
-    -webkit-animation: ${shine} 0.5s ease forwards;
-    animation: ${shine} 0.5s ease forwards;
+    -webkit-animation: shine 0.5s ease forwards;
+    animation: shine 0.5s ease forwards;
     animation-delay: 0.3s;
     -webkit-animation-delay: 0.3s;
   }
@@ -96,37 +70,59 @@ const GameMask = styled('div')`
     background: linear-gradient(transparent, rgba(255,255,255,0.2));
     clip-path: polygon(75% 0%, 100% 0%, 35% 100%, 0% 100%);
     -webkit-clip-path: polygon(75% 0%, 100% 0%, 35% 100%, 0% 100%);
-    -webkit-animation: ${shine} 0.5s ease forwards;
-    animation: ${shine} 0.5s ease forwards;
+    -webkit-animation: shine 0.5s ease forwards;
+    animation: shine 0.5s ease forwards;
   }
 
   &:hover ~ .hover-area {
     z-index: 1;
   }
+
+  @keyframes shine {
+    from {
+      left: 0px;
+      opacity: 1;
+    }
+    to {
+      left: 80%;
+      opacity: 0;
+    }
+  }
 `;
 
-const IdleShine = styled('div')`
+const IdleShine = styled.div`
   position: absolute;
   top: 0px;
   left: -100px;
   width: 100px;
   height: 100%;
   background: linear-gradient(to right, transparent, rgba(255,255,255,0.3) 60%, transparent);
-  -webkit-animation: ${idleShine} 5s ease infinite;
-  animation: ${idleShine} 5s ease infinite;
+  -webkit-animation: idleShine 5s ease infinite;
+  animation: idleShine 5s ease infinite;
+
+  @keyframes idleShine {
+    0% {
+      left: -115px;
+      opacity: 0;
+    }
+    90% {
+      left: -115px;
+      opacity: 0;
+    }
+    100% {
+      left: 100%;
+      opacity: 1;
+    }
+  }
 `;
 
-const PopupContainer = styled('div')`
+const PopupContainer = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
-  top: ${(props: any) => props.top}px;
-  opacity: ${(props: any) => props.opacity};
-  visibility: ${(props: any) => props.opacity === 0 ? 'hidden' : 'visible'};
-  transition: ${(props: any) => props.instant ? '' : 'all 0.5s ease'};
 `;
 
-const SelectedGame = styled('div')`
+const SelectedGame = styled.div`
   display: inline-block;
   position: relative;
   pointer-events: all;
@@ -135,20 +131,20 @@ const SelectedGame = styled('div')`
   height: 95px;
   zoom: 100%;
   cursor: pointer;
-  background: url(${(props: any) => props.img}) no-repeat center;
   z-index: 10;
-  transition: ${(props: any) => props.instant ? '' : 'opacity .3s ease'};
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: opacity .3s ease;
   bottom: 0;
 `;
 
-const AccessLevelText = styled('div')`
+const AccessLevelText = styled.div`
   position: absolute;
   top: -25px;
   left: 15px;
   color: white;
   font-size: 14px;
   margin-right: 30px;
-  opacity: ${(props: any) => props.opacity};
   -webkit-transition: 0.4s ease;
   transition: 0.4s ease;
 `;
@@ -182,36 +178,36 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
   public render() {
     const { serverType } = this.props;
     const serverTypes: ServerType[] = this.getServerTypes();
+    console.log(this.state.isOpen);
     return (
       <div>
         {patcher.getPermissions() &&
-          <AccessLevelText opacity={this.state.isOpen ? 0 : 0.5}>
+          <AccessLevelText style={{ opacity: this.state.isOpen ? 0 : 0.5 }}>
             Your Access Level: {permissionsString(patcher.getPermissions())}
           </AccessLevelText>
         }
         <GameMask
           className='character-button-game-mask'
-          {...{
-            width: 175,
-            isCUGame: serverType === ServerType.CUGAME,
-            onMouseEnter: this.handleMouseOver,
-            onMouseLeave: this.close,
-          } as any}
+          onMouseEnter={this.handleMouseOver}
+          onMouseLeave={() => this.close()}
         >
-          { this.state.playAnimation && <IdleShine /> }
+          {this.state.playAnimation && <IdleShine />}
           <SelectedGame
             key={serverType}
-            img={serverTypeToIcon(serverType)}
+            style={{ backgroundImage: `url(${serverTypeToIcon(serverType)})` }}
           />
         </GameMask>
         <PopupContainer
           className='game-popup-container'
-          innerRef={(r: any) => this.popupRef = r}
-          top={this.popupRef ? -(this.popupRef.getBoundingClientRect().height + 5) : 0}
-          opacity={this.state.isOpen ? 1 : 0}
-          instant={this.state.instant}
+          ref={(r: any) => this.popupRef = r}
           onMouseEnter={this.open}
-          onMouseLeave={this.close}
+          onMouseLeave={() => this.close()}
+          style={{
+            top: this.popupRef ? -(this.popupRef.getBoundingClientRect().height + 5) : 0,
+            opacity: this.state.isOpen ? 1 : 0,
+            visibility: this.state.isOpen ? 'visible' : 'hidden',
+            transition: this.state.instant ? '' : 'all 0.5s ease',
+          }}
         >
           {serverTypes.map(type => type === this.props.serverType ? null : (
             <GameSelectItem

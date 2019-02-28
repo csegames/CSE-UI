@@ -5,17 +5,17 @@
  */
 
 import * as React from 'react';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import SummaryList from './SummaryList';
 import TraitListContainer from './TraitListContainer';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  background: url(../images/bg.jpg) repeat-x top center fixed;
+  background: url(/ui/images/bg.jpg) repeat-x top center fixed;
   background-color: rgba(49, 49, 49, 0.3);
   position: absolute;
   top: 0;

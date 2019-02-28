@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 
 import { ControllerContext, PatcherServer } from '../../../ControllerContext';
 import { patcher, canAccessChannel, ChannelStatus, PatchChannelMode } from '../../../../../services/patcher';
@@ -16,9 +16,8 @@ import ServerOptionsMenu from './ServerOptionsMenu';
 import { APIServerStatus } from '../../ControllerDisplay/index';
 import { SimpleCharacter } from 'gql/interfaces';
 
-const MinimizeAll = styled('div')`
+const MinimizeAll = styled.div`
   cursor: pointer;
-  pointer-events: ${(props: any) => props.visible ? 'all' : 'none'}
   z-index: 10;
   opacity: 0.5;
   padding: 15px 25px 0 25px;
@@ -30,7 +29,7 @@ const MinimizeAll = styled('div')`
   }
 `;
 
-const ArrowIcon = styled('i')`
+const ArrowIcon = styled.i`
   font-size: 12px;
   margin-right: 5px;
 `;
@@ -78,7 +77,7 @@ class CharacterSelectList extends React.Component<Props, CharacterSelectListStat
       <div>
         <MinimizeAll
           onClick={this.state.minimized ? this.onMaximizeAllClick : this.onMinimizeAllClick}
-          visible={this.props.charSelectVisible}>
+          style={{ pointerEvents: this.props.charSelectVisible ? 'all' : 'none' }}>
             <ArrowIcon className={this.state.minimized ? 'fal fa-arrow-to-bottom' : 'fal fa-arrow-to-top'}></ArrowIcon>
             {this.state.minimized ? 'Maximize All' : 'Minimize All'}
         </MinimizeAll>

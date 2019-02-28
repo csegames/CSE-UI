@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import moment from 'moment';
-import styled from 'react-emotion';
+import { styled } from 'linaria/react';
 import {
   FeaturedContainer,
   TitleContainer,
@@ -23,7 +23,7 @@ import {
 import { PostItem } from '..';
 import { PatchNote } from 'gql/interfaces';
 
-const Divider = styled('div')`
+const Divider = styled.div`
   position: relative;
   background-color: ${PATCH_NOTES_COLOR};
   width: 3px;
@@ -35,7 +35,7 @@ const Divider = styled('div')`
     top: 0;
     bottom: 0;
     width: 100%;
-    background: url(images/news/news-texture.png) repeat-y;
+    background: url(/ui/images/news/news-texture.png) repeat-y;
   }
 `;
 
@@ -48,7 +48,7 @@ class PatchNotesFeaturedItem extends React.Component<Props> {
   public render() {
     const patchNote = this.props.post.item as PatchNote;
     return (
-      <FeaturedContainer backgroundImage={'images/news/post-image.png'}>
+      <FeaturedContainer style={{ backgroundImage: `url(images/news/post-image.png) left top/80% no-repeat` }}>
         <TitleContainer>
           <Title>{patchNote.title}</Title>
           <DescriptionText>BUIID #{patchNote.patchNumber}</DescriptionText>
