@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { css } from 'linaria';
+import { css } from 'react-emotion';
 import { styled } from 'linaria/react';
 
 import { webAPI, GameInterface } from '@csegames/camelot-unchained';
@@ -224,6 +224,31 @@ const Title = styled.div`
   margin: 5px 0;
 `;
 
+const ContentContainerClass = css`
+  height: auto;
+`;
+
+const ContentClass = css`
+  position: relative;
+`;
+
+const TabPanelClass = css`
+  flex: 1 1 auto;
+  width: initial;
+  height: initial;
+`;
+
+const TabClass = css`
+  padding: 2px 10px;
+  background: #444;
+  border-bottom: 1px solid transparent;
+`;
+
+const ActiveTabClass = css`
+  background: #777;
+  border-bottom: 1px solid orange;
+`;
+
 class DevUIPage extends React.PureComponent<Partial<Page>> {
   private tabPanel: any;
   public render(): JSX.Element {
@@ -244,26 +269,11 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
               defaultTabIndex={this.props.activeTabIndex}
               ref={ref => this.tabPanel = ref}
               styles={{
-                contentContainer: css`
-                  height: auto;
-                `,
-                content: css`
-                  position: relative;
-                `,
-                tabPanel: css`
-                  flex: 1 1 auto;
-                  width: initial;
-                  height: initial;
-                `,
-                tab: css`
-                  padding: 2px 10px;
-                  background: #444;
-                  border-bottom: 1px solid transparent;
-                `,
-                activeTab: css`
-                  background: #777;
-                  border-bottom: 1px solid orange;
-                `,
+                contentContainer: ContentContainerClass,
+                content: ContentClass,
+                tabPanel: TabPanelClass,
+                tab: TabClass,
+                activeTab: ActiveTabClass,
               }}
               tabs={this.props.pages.map((p, index) => {
                 return {
