@@ -69,6 +69,7 @@
     "react-motion-slider": "^0.4.1",
     "react-move": "^2.8.0",
     "react-openlayers": "^0.2.1",
+    "react-pose": "^4.0.8",
     "react-redux": "^5.0.5",
     "react-resizable": "^1.6.0",
     "react-select": "^1.0.0-beta13",
@@ -77,6 +78,7 @@
     "redux-thunk": "^2.2.0",
     "redux-typed-modules": "^2.2.1",
     "sass-importer-node": "^1.0.1",
+    "velocity-react": "^1.4.1",
     "why-did-you-update": "^0.1.1",
     "yargs-parser": "^2.4.1"
   },

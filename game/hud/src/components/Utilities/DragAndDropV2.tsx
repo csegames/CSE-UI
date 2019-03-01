@@ -303,15 +303,24 @@ export function DragAndDrop(props: DNDProps) {
         if (props.type !== 'drop') {
           handleMouseDown(e);
         }
+        if (children.props && children.props.onMouseDown) {
+          children.props.onMouseDown(e);
+        }
       }}
       onMouseEnter={(e: React.MouseEvent) => {
         if (props.type !== 'drag') {
           handleMouseEnter(e);
         }
+        if (children.props && children.props.onMouseDown) {
+          children.props.onMouseDown(e);
+        }
       }}
       onMouseLeave={(e: React.MouseEvent) => {
         if (props.type !== 'drag') {
           handleMouseLeave(e);
+        }
+        if (children.props && children.props.onMouseDown) {
+          children.props.onMouseDown(e);
         }
       }}
     >

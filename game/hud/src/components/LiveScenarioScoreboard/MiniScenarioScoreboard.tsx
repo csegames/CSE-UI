@@ -23,7 +23,7 @@ const Container = styled.div`
   overflow: hidden;
   box-sizing: border-box !important;
   background-size: contain;
-  background-image: url('../images/scenario-live-score/uhd/mini-hud-frame.png');
+  background-image: url(../images/scenario-live-score/uhd/mini-hud-frame.png);
   width: 520px;
   height: 104px;
   padding-left: 34px;
@@ -32,7 +32,7 @@ const Container = styled.div`
   z-index: 1;
 
   @media (max-width: 1920px) {
-    background-image: url('../images/scenario-live-score/hd/mini-hud-frame.png');
+    background-image: url(../images/scenario-live-score/hd/mini-hud-frame.png);
     width: 260px;
     height: 52px;
     padding-left: 17px;
@@ -80,13 +80,13 @@ const ArthurianBackground: React.SFC<BackgroundProps> = styled.div`
   margin-left: 2px;
 
   &:before {
-    background-image: url('../images/scenario-live-score/uhd/mini-hud-art-bg.png');
+    background-image: url(../images/scenario-live-score/uhd/mini-hud-art-bg.png);
   }
 
   @media (max-width: 1920px) {
     margin-left: 0;
     &:before {
-      background-image: url('../images/scenario-live-score/hd/mini-hud-art-bg.png');
+      background-image: url(../images/scenario-live-score/hd/mini-hud-art-bg.png);
     }
   }
 `;
@@ -98,13 +98,13 @@ const VikingBackground: React.SFC<BackgroundProps> = styled.div`
   margin-left: 12px;
 
   &:before {
-    background-image: url('../images/scenario-live-score/uhd/mini-hud-vik-bg.png');
+    background-image: url(../images/scenario-live-score/uhd/mini-hud-vik-bg.png);
   }
 
   @media (max-width: 1920px) {
     margin-left: 6px;
     &:before {
-      background-image: url('../images/scenario-live-score/hd/mini-hud-vik-bg.png');
+      background-image: url(../images/scenario-live-score/hd/mini-hud-vik-bg.png);
     }
   }
 `;
@@ -115,13 +115,13 @@ const TddBackground: React.SFC<BackgroundProps> = styled.div`
   margin-left: 10px;
   color: #d5ffc1;
   &:before {
-    background-image: url('../images/scenario-live-score/uhd/mini-hud-tdd-bg.png');
+    background-image: url(../images/scenario-live-score/uhd/mini-hud-tdd-bg.png);
   }
 
   @media (max-width: 1920px) {
     margin-left: 5px;
     &:before {
-      background-image: url('../images/scenario-live-score/hd/mini-hud-tdd-bg.png');
+      background-image: url(../images/scenario-live-score/hd/mini-hud-tdd-bg.png);
     }
   }
 `;

@@ -6,7 +6,8 @@
 
 import React, { useState } from 'react';
 import { styled } from '@csegames/linaria/react';
-import { useAbilityStateReducer, EditMode } from 'services/session/AbilityViewState';
+
+import { useActionStateReducer, EditMode } from 'services/session/ActionViewState';
 import { DragMove } from 'components/Utilities/DragMove';
 
 const Container = styled.div`
@@ -60,7 +61,7 @@ interface EditControllerState {
 const localStateKey = 'ability-view-edit-controller-state';
 // tslint:disable-next-line:function-name
 export function EditController() {
-  const [abilityState, dispatch] = useAbilityStateReducer();
+  const [actionState, dispatch] = useActionStateReducer();
 
   const storedState = tryParseJSON<EditControllerState>(localStorage.getItem(localStateKey), false);
   const [state, _setState] = useState(storedState || {
@@ -81,7 +82,7 @@ export function EditController() {
     localStorage.setItem(localStateKey, JSON.stringify(state));
   }
 
-  if (!abilityState.editMode) return null;
+  if (!actionState.editMode) return null;
 
   return (
     <Container style={{ top: `${state.position.y}px`, left: `${state.position.x}px` }}>
@@ -99,16 +100,16 @@ export function EditController() {
       </DragMove>
       <Options>
         <Option
-          selected={abilityState.editMode === EditMode.SlotEdit}
+          selected={actionState.editMode === EditMode.SlotEdit}
           onMouseDown={() => dispatch({ type: 'enable-slot-edit-mode' })}
         >
           [S] Edit Slots
         </Option>
         <Option
-          selected={abilityState.editMode === EditMode.AbilityEdit}
-          onMouseDown={() => dispatch({ type: 'enable-ability-edit-mode' })}
+          selected={actionState.editMode === EditMode.ActionEdit}
+          onMouseDown={() => dispatch({ type: 'enable-action-edit-mode' })}
         >
-          [A] Edit Abilities
+          [A] Edit Actions
         </Option>
       </Options>
     </Container>

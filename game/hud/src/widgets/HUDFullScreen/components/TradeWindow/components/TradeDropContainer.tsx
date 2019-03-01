@@ -197,8 +197,8 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
             <FooterIcon className={'icon-ui-weight'}></FooterIcon> {footerInfo.weight}
           </FooterItem>
         </Footer>
-        <LeftBG style={{ backgroundImage: `url(${useGrayBG ? '../images/inventory/bag-left-bg-grey.png' :
-          '../images/inventory/bag-left-bg.png'})` }} />
+        <LeftBG style={{ backgroundImage: `url(${useGrayBG ? 'images/inventory/bag-left-bg-grey.png' :
+          'images/inventory/bag-left-bg.png'})` }} />
       </Container>
     );
   }

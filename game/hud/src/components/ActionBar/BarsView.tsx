@@ -6,12 +6,12 @@
 
 import React, { useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
+import { VelocityTransitionGroup } from 'velocity-react';
 
-import { useAbilityStateReducer, EditMode } from '../../services/session/AbilityViewState';
+import { useActionStateReducer, EditMode } from '../../services/session/ActionViewState';
 
-import { AbilityBarAnchor } from './AbilityBarAnchor';
+import { ActionBarAnchor } from './ActionBarAnchor';
 import { KeyCodes } from '@csegames/camelot-unchained/lib/utils';
-import { EditController } from './EditController';
 
 const Container = styled.div`
   position: fixed;
@@ -19,21 +19,39 @@ const Container = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-items: stretch;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+  > :first-child {
+    flex: 1 1 auto;
+  }
+`;
+
+const Lock = styled.div`
+  font-size: 10em;
+  color: rgba(255, 255, 255, 0.6);
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 10, 0.5);
+`;
+
+const Icon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
-  ${({ editMode }: {editMode: EditMode}) => editMode && 'background: rgba(255, 0, 0, 0.2);'}
 `;
 
-export interface AbilitiesViewProps {
-}
-
 // tslint:disable-next-line:function-name
-export function AbilitiesView(props: AbilitiesViewProps) {
+export function ActionBars() {
 
-  const [state, dispatch] = useAbilityStateReducer();
+  const [state, dispatch] = useActionStateReducer();
+  const editMode = state.editMode !== EditMode.Disabled;
 
   useEffect(() => {
     function disableEditMode(e: KeyboardEvent) {
@@ -41,7 +59,7 @@ export function AbilitiesView(props: AbilitiesViewProps) {
         dispatch({ type: 'disable-edit-mode' });
       }
     }
-    if (state.editMode) {
+    if (editMode) {
       window.addEventListener('keydown', disableEditMode);
       return () => window.removeEventListener('keydown', disableEditMode);
     } else {
@@ -50,18 +68,19 @@ export function AbilitiesView(props: AbilitiesViewProps) {
   }, [state.editMode]);
 
   return (
-    <Container editMode={state.editMode}>
+    <Container id='actionbar-view'>
+      <VelocityTransitionGroup enter={{ animation: 'fadeIn' }} leave={{ animation: 'fadeOut' }}>
+        {editMode && <Lock><Icon><i className='far fa-lock-open'></i></Icon></Lock>}
+      </VelocityTransitionGroup>
       {
         Object.values(state.anchors)
           .map(anchor => (
-            <AbilityBarAnchor
+            <ActionBarAnchor
               key={anchor.id}
               {...anchor}
             />
           ))
       }
-      <EditController />
     </Container>
   );
 }
-

@@ -37,5 +37,10 @@ module.exports = {
   },
   plugins: [
     'graphql'
+  ],
+  overrides: [
+    {
+      files: ['src/*.ts', 'src/*.tsx'],
+    }
   ]
 }

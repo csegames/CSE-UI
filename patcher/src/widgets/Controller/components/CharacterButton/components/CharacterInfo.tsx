@@ -338,11 +338,11 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
           className='character-button-char-container'
           onClick={this.props.hasAccessToServers ? onNavigateToCharacterSelect : this.noAccessError}>
           <CharPic className='character-button-char-pic'>
-            <CharPicImage style={{ backgroundImage: 'url(images/controller/no-character-shadow.png)' }} />
+            <CharPicImage style={{ backgroundImage: 'url(../images/controller/no-character-shadow.png)' }} />
             {this.state.isLoading && <SpinnerContainer><Spinner /></SpinnerContainer>}
           </CharPic>
           <CharMask className='character-button-char-mask'>
-            <CharMaskImage style={{ backgroundImage: 'url(images/controller/no-character-shadow.png)' }} />
+            <CharMaskImage style={{ backgroundImage: 'url(../images/controller/no-character-shadow.png)' }} />
             {!this.state.isLoading &&
               <InfoContainer className='character-button-info'>
                 <CharacterName>

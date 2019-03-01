@@ -6,17 +6,18 @@
 
 import { createSharedStateWithReducer } from './lib/sharedState';
 const maxGroupCount = 6;
+const maxChildSlotCount = 4;
 
 export enum EditMode {
   Disabled,
-  AbilityEdit,
+  ActionEdit,
   SlotEdit,
 }
 
-export interface AbilityViewState {
-  anchors: Dictionary<AbilityViewAnchor>;
-  abilities: Dictionary<AbilityPosition[]>; // ability id => position map
-  slots: Dictionary<AbilitySlot>;
+export interface ActionViewState {
+  anchors: Dictionary<ActionViewAnchor>;
+  actions: Dictionary<ActionPosition[]>; // action id => position map
+  slots: Dictionary<ActionSlot>;
 
   // ClientSlotID handling. A ClientSlotID is an id used for keybinding a slot on the client
   clientSlotIDMap: { [clientSlotID: number]: string; }; // client slot id to ui slot id map
@@ -24,12 +25,12 @@ export interface AbilityViewState {
   editMode: EditMode;
 }
 
-export interface AbilityPosition {
+export interface ActionPosition {
   group: string; // group id
   slot: string; // slot id
 }
 
-export interface AbilityViewAnchor {
+export interface ActionViewAnchor {
   id: string;
   position: Vec2f;
   activeGroupIndex: number;
@@ -37,7 +38,7 @@ export interface AbilityViewAnchor {
   children: string[]; // direct child slots
 }
 
-export interface AbilitySlot {
+export interface ActionSlot {
   id: string;
   angle: number;
   clientSlotID: number;
@@ -45,7 +46,7 @@ export interface AbilitySlot {
   children: string[];
 }
 
-function initialState(): AbilityViewState {
+function initialState(): ActionViewState {
   const anchorID = genID();
   const group1 = genID();
   const group2 = genID();
@@ -58,13 +59,13 @@ function initialState(): AbilityViewState {
     anchors: {
       [anchorID]: {
         id: anchorID,
-        position: { x: 200, y: 200 },
+        position: { x: 300, y: 300 },
         activeGroupIndex: 0,
         groups: [group1, group2, group3],
         children: [slot1],
       },
     },
-    abilities: {
+    actions: {
       one: [
         {
           group: group1,
@@ -92,6 +93,10 @@ function initialState(): AbilityViewState {
         },
       ],
       two: [
+        {
+          group: group1,
+          slot: slot2,
+        },
         {
           group: group2,
           slot: slot4,
@@ -138,7 +143,7 @@ function initialState(): AbilityViewState {
 }
 
 let lastClientSlotID = -1;
-function getNextAvailableClientSlotID(state: AbilityViewState) {
+function getNextAvailableClientSlotID(state: ActionViewState) {
   for (const key in state.clientSlotIDMap) {
     if (state.clientSlotIDMap[key]) continue;
     return Number(key);
@@ -146,19 +151,19 @@ function getNextAvailableClientSlotID(state: AbilityViewState) {
   return ++lastClientSlotID;
 }
 
-export const useAbilityStateReducer
-  = createSharedStateWithReducer('ability-view-state', initialState(), abilityStateReducer);
+export const useActionStateReducer
+  = createSharedStateWithReducer('action-view-state', initialState(), actionStateReducer);
 
-// Ability View State Actions
+// Action View State Actions
 
-interface EnableAbilityEditMode {
-  type: 'enable-ability-edit-mode';
+interface EnableActionEditMode {
+  type: 'enable-action-edit-mode';
 }
 
-function enableAbilityEditMode(state: AbilityViewState, action: EnableAbilityEditMode): AbilityViewState {
+function enableActionEditMode(state: ActionViewState, action: EnableActionEditMode): ActionViewState {
   return {
     ...state,
-    editMode: EditMode.AbilityEdit,
+    editMode: EditMode.ActionEdit,
   };
 }
 
@@ -166,7 +171,7 @@ interface EnableSlotEditMode {
   type: 'enable-slot-edit-mode';
 }
 
-function enableSlotEditMode(state: AbilityViewState, action: EnableSlotEditMode): AbilityViewState {
+function enableSlotEditMode(state: ActionViewState, action: EnableSlotEditMode): ActionViewState {
   return {
     ...state,
     editMode: EditMode.SlotEdit,
@@ -177,7 +182,7 @@ interface DisableEditMode {
   type: 'disable-edit-mode';
 }
 
-function disableEditMode(state: AbilityViewState, action: DisableEditMode): AbilityViewState {
+function disableEditMode(state: ActionViewState, action: DisableEditMode): ActionViewState {
   return {
     ...state,
     editMode: EditMode.Disabled,
@@ -189,7 +194,7 @@ interface AddGroup {
   anchor: string;
 }
 
-function addGroup(state: AbilityViewState, action: AddGroup): AbilityViewState {
+function addGroup(state: ActionViewState, action: AddGroup): ActionViewState {
   const anchor = state.anchors[action.anchor];
 
   if (anchor.groups.length >= maxGroupCount) {
@@ -203,24 +208,30 @@ function addGroup(state: AbilityViewState, action: AddGroup): AbilityViewState {
       ...state.anchors,
       [anchor.id]: {
         ...anchor,
-        groups: {
+        groups: [
           ...anchor.groups,
-          [newGroupID]: newGroupID,
-        },
+          newGroupID,
+        ],
       },
     },
   };
 }
 
-interface DeleteGroup {
-  type: 'delete-group';
+interface RemoveGroup {
+  type: 'remove-group';
   anchor: string;
   group: string;
 }
 
-function deleteGroup(state: AbilityViewState, action: DeleteGroup): AbilityViewState {
+function removeGroup(state: ActionViewState, action: RemoveGroup): ActionViewState {
   const anchor = cloneDeep(state.anchors[action.anchor]);
+
+  if (anchor.groups.length === 1) return;
+
   anchor.groups = anchor.groups.remove(action.group);
+  if (anchor.activeGroupIndex >= anchor.groups.length) {
+    anchor.activeGroupIndex = anchor.groups.length - 1;
+  }
   return {
     ...state,
     anchors: {
@@ -236,7 +247,7 @@ interface ActivateGroup {
   index: number;
 }
 
-function activateGroup(state: AbilityViewState, action: ActivateGroup): AbilityViewState {
+function activateGroup(state: ActionViewState, action: ActivateGroup): ActionViewState {
   const anchor = state.anchors[action.anchor];
   if (!anchor) {
     console.warn(`${action.type} | And anchor with id '${action.anchor}' was not found.`);
@@ -265,7 +276,7 @@ interface ActivateNextGroup {
   anchor: string;
 }
 
-function activateNextGroup(state: AbilityViewState, action: ActivateNextGroup): AbilityViewState {
+function activateNextGroup(state: ActionViewState, action: ActivateNextGroup): ActionViewState {
   const anchor = state.anchors[action.anchor];
   if (!anchor) {
     console.warn(`${action.type} | And anchor with id '${action.anchor}' was not found.`);
@@ -294,7 +305,7 @@ interface ActivatePrevGroup {
   anchor: string;
 }
 
-function activatePrevGroup(state: AbilityViewState, action: ActivatePrevGroup): AbilityViewState {
+function activatePrevGroup(state: ActionViewState, action: ActivatePrevGroup): ActionViewState {
   const anchor = state.anchors[action.anchor];
   if (!anchor) {
     console.warn(`${action.type} | And anchor with id '${action.anchor}' was not found.`);
@@ -324,8 +335,8 @@ interface AddSlot {
   parent: string;
 }
 
-function addSlot(state: AbilityViewState, action: AddSlot): AbilityViewState {
-  const newSlot: AbilitySlot = {
+function addSlot(state: ActionViewState, action: AddSlot): ActionViewState {
+  const newSlot: ActionSlot = {
     id: genID(),
     angle: 0,
     clientSlotID: getNextAvailableClientSlotID(state),
@@ -336,6 +347,12 @@ function addSlot(state: AbilityViewState, action: AddSlot): AbilityViewState {
   if (state.anchors[action.parent]) {
     // parent is an anchor
     const anchor = state.anchors[action.parent];
+
+    if (anchor.children.length + 1 > maxChildSlotCount) {
+      // don't add
+      return state;
+    }
+
     return {
       ...state,
       anchors: {
@@ -356,6 +373,12 @@ function addSlot(state: AbilityViewState, action: AddSlot): AbilityViewState {
   }
 
   const parent = state.slots[action.parent];
+
+  if (parent.children.length + 1 > maxChildSlotCount) {
+    // don't add
+    return state;
+  }
+
   return {
     ...state,
     slots: {
@@ -377,12 +400,18 @@ interface RemoveSlot {
   slot: string;
 }
 
-function removeSlot(state: AbilityViewState, action: RemoveSlot): AbilityViewState {
+function removeSlot(state: ActionViewState, action: RemoveSlot): ActionViewState {
 
   const slot = state.slots[action.slot];
   if (!slot) return state;
 
   if (state.anchors[slot.parent]) {
+
+    // if this is the last slot, don't remove it
+    if (slot.children.length === 0) {
+      return state;
+    }
+
     // parent is an anchor
     const anchor = cloneDeep(state.anchors[slot.parent]);
     anchor.children.remove(slot.id);
@@ -390,6 +419,10 @@ function removeSlot(state: AbilityViewState, action: RemoveSlot): AbilityViewSta
 
     const slots = cloneDeep(state.slots);
     delete slots[slot.id];
+
+    anchor.children.forEach((child) => {
+      if (slots[child]) slots[child].parent = anchor.id;
+    });
 
     return {
       ...state,
@@ -407,10 +440,14 @@ function removeSlot(state: AbilityViewState, action: RemoveSlot): AbilityViewSta
     return state;
   }
 
+  parent.children.remove(slot.id);
   parent.children.push(...slot.children);
 
   const slots = cloneDeep(state.slots);
   delete slots[slot.id];
+  parent.children.forEach((child) => {
+    if (slots[child]) slots[child].parent = parent.id;
+  });
   slots[parent.id] = parent;
 
   return {
@@ -425,7 +462,7 @@ interface SetSlotAngle {
   angle: number;
 }
 
-function setSlotAngle(state: AbilityViewState, action: SetSlotAngle): AbilityViewState {
+function setSlotAngle(state: ActionViewState, action: SetSlotAngle): ActionViewState {
   const slot = state.slots[action.slot];
   if (!slot) {
     console.warn(`${action.type} | Attempted to set angle on unknown slot. (id:${action.slot})`);
@@ -445,31 +482,31 @@ function setSlotAngle(state: AbilityViewState, action: SetSlotAngle): AbilityVie
 }
 
 
-interface AddAbility {
-  type: 'add-ability';
-  ability: string;
+interface AddAction {
+  type: 'add-action';
+  action: string;
   group: string;
   slot: string;
 }
 
-function addAbility(state: AbilityViewState, action: AddAbility): AbilityViewState {
-  const positions = (state.abilities[action.ability] || []).slice();
+function addAction(state: ActionViewState, action: AddAction): ActionViewState {
+  const positions = (state.actions[action.action] || []).slice();
   positions.push({
     group: action.group,
     slot: action.slot,
   });
   return {
     ...state,
-    abilities: {
-      ...state.abilities,
-      [action.ability]: positions,
+    actions: {
+      ...state.actions,
+      [action.action]: positions,
     },
   };
 }
 
-interface AddAndRemoveAbility {
-  type: 'add-and-remove-ability';
-  ability: string;
+interface AddAndRemoveAction {
+  type: 'add-and-remove-action';
+  action: string;
   from: {
     group: string;
     slot: string;
@@ -480,8 +517,8 @@ interface AddAndRemoveAbility {
   };
 }
 
-function addAndRemoveAbility(state: AbilityViewState, action: AddAndRemoveAbility): AbilityViewState {
-  const positions = (state.abilities[action.ability] || []).slice()
+function addAndRemoveAction(state: ActionViewState, action: AddAndRemoveAction): ActionViewState {
+  const positions = (state.actions[action.action] || []).slice()
     .filter(a => !(a.group === action.from.group && a.slot === action.from.slot));
   positions.push({
     group: action.target.group,
@@ -489,63 +526,63 @@ function addAndRemoveAbility(state: AbilityViewState, action: AddAndRemoveAbilit
   });
   return {
     ...state,
-    abilities: {
-      ...state.abilities,
-      [action.ability]: positions,
+    actions: {
+      ...state.actions,
+      [action.action]: positions,
     },
   };
 }
 
-interface RemoveAbility {
-  type: 'remove-ability';
-  ability: string;
+interface RemoveAction {
+  type: 'remove-action';
+  action: string;
   group: string;
   slot: string;
 }
 
-function removeAbility(state: AbilityViewState, action: RemoveAbility): AbilityViewState {
-  const positions = (state.abilities[action.ability] || []).slice()
+function removeAction(state: ActionViewState, action: RemoveAction): ActionViewState {
+  const positions = (state.actions[action.action] || []).slice()
     .filter(a => !(a.group === action.group && a.slot === action.slot));
   return {
     ...state,
-    abilities: {
-      ...state.abilities,
-      [action.ability]: positions,
+    actions: {
+      ...state.actions,
+      [action.action]: positions,
     },
   };
 }
 
-interface ReplaceOrSwapAbility {
-  type: 'replace-or-swap-ability';
+interface ReplaceOrSwapAction {
+  type: 'replace-or-swap-action';
   from: {
-    ability: string;
+    action: string;
     group?: string;
     slot?: string;
   };
   target: {
-    ability: string;
+    action: string;
     group: string;
     slot: string;
   };
 }
 
-function replaceOrSwapAbility(state: AbilityViewState, action: ReplaceOrSwapAbility): AbilityViewState {
+function replaceOrSwapAction(state: ActionViewState, action: ReplaceOrSwapAction): ActionViewState {
   if (!action.target || !action.from) {
-    console.warn(`${action.type} | Attempted to swap abilities with invalid locations.`);
+    console.warn(`${action.type} | Attempted to swap actions with invalid locations.`);
     return state;
   }
 
-  if (action.target.ability === action.from.ability) {
-    // do nothing when the same abilities
+  if (action.target.action === action.from.action) {
+    // do nothing when the same actions
     return state;
   }
 
   if (!action.from.group) {
     // replacing
-    const targetPositions = (state.abilities[action.target.ability] || []).slice()
+    const targetPositions = (state.actions[action.target.action] || []).slice()
     .filter(a => !(a.group === action.target.group && a.slot === action.target.slot));
 
-    const fromPositions = (state.abilities[action.from.ability] || []).slice()
+    const fromPositions = (state.actions[action.from.action] || []).slice()
     .filter(a => !(a.group === action.from.group && a.slot === action.from.slot));
     fromPositions.push({
       group: action.target.group,
@@ -554,22 +591,22 @@ function replaceOrSwapAbility(state: AbilityViewState, action: ReplaceOrSwapAbil
 
     return {
       ...state,
-      abilities: {
-        ...state.abilities,
-        [action.target.ability]: targetPositions,
-        [action.from.ability]: fromPositions,
+      actions: {
+        ...state.actions,
+        [action.target.action]: targetPositions,
+        [action.from.action]: fromPositions,
       },
     };
   } else {
     // swapping
-    const targetPositions = (state.abilities[action.target.ability] || []).slice()
+    const targetPositions = (state.actions[action.target.action] || []).slice()
     .filter(a => !(a.group === action.target.group && a.slot === action.target.slot));
     targetPositions.push({
       group: action.from.group,
       slot: action.from.slot,
     });
 
-    const fromPositions = (state.abilities[action.from.ability] || []).slice()
+    const fromPositions = (state.actions[action.from.action] || []).slice()
     .filter(a => !(a.group === action.from.group && a.slot === action.from.slot));
     fromPositions.push({
       group: action.target.group,
@@ -578,53 +615,75 @@ function replaceOrSwapAbility(state: AbilityViewState, action: ReplaceOrSwapAbil
 
     return {
       ...state,
-      abilities: {
-        ...state.abilities,
-        [action.target.ability]: targetPositions,
-        [action.from.ability]: fromPositions,
+      actions: {
+        ...state.actions,
+        [action.target.action]: targetPositions,
+        [action.from.action]: fromPositions,
       },
     };
   }
 }
 
+interface SetAnchorPosition {
+  type: 'set-anchor-position';
+  anchor: string;
+  position: Vec2f;
+}
+
+function setAnchorPosition(state: ActionViewState, action: SetAnchorPosition) {
+  if (!state.anchors[action.anchor]) return state;
+  return {
+    ...state,
+    anchors: {
+      ...state.anchors,
+      [action.anchor]: {
+        ...state.anchors[action.anchor],
+        position: action.position,
+      },
+    },
+  };
+}
+
 export type Actions =
-  EnableAbilityEditMode |
+  EnableActionEditMode |
   EnableSlotEditMode |
   DisableEditMode |
   AddGroup |
-  DeleteGroup |
-  AddAbility |
-  AddAndRemoveAbility |
-  RemoveAbility |
-  ReplaceOrSwapAbility |
+  RemoveGroup |
+  AddAction |
+  AddAndRemoveAction |
+  RemoveAction |
+  ReplaceOrSwapAction |
   AddSlot |
   RemoveSlot |
   SetSlotAngle |
   ActivateGroup |
   ActivateNextGroup |
-  ActivatePrevGroup;
+  ActivatePrevGroup |
+  SetAnchorPosition;
 
-function abilityStateReducer(state: AbilityViewState, action: Actions) {
+function actionStateReducer(state: ActionViewState, action: Actions) {
   if (!state) {
     return cloneDeep(initialState());
   }
 
   switch (action.type) {
-    case 'enable-ability-edit-mode': return enableAbilityEditMode(state, action);
+    case 'enable-action-edit-mode': return enableActionEditMode(state, action);
     case 'enable-slot-edit-mode': return enableSlotEditMode(state, action);
     case 'disable-edit-mode': return disableEditMode(state, action);
     case 'add-group': return addGroup(state, action);
-    case 'delete-group': return deleteGroup(state, action);
-    case 'add-ability': return addAbility(state, action);
-    case 'add-and-remove-ability': return addAndRemoveAbility(state, action);
-    case 'remove-ability': return removeAbility(state, action);
-    case 'replace-or-swap-ability': return replaceOrSwapAbility(state, action);
+    case 'remove-group': return removeGroup(state, action);
+    case 'add-action': return addAction(state, action);
+    case 'add-and-remove-action': return addAndRemoveAction(state, action);
+    case 'remove-action': return removeAction(state, action);
+    case 'replace-or-swap-action': return replaceOrSwapAction(state, action);
     case 'add-slot': return addSlot(state, action);
     case 'remove-slot': return removeSlot(state, action);
     case 'set-slot-angle': return setSlotAngle(state, action);
     case 'activate-group': return activateGroup(state, action);
     case 'activate-next-group': return activateNextGroup(state, action);
     case 'activate-prev-group': return activatePrevGroup(state, action);
+    case 'set-anchor-position': return setAnchorPosition(state, action);
     default: return state;
   }
 }

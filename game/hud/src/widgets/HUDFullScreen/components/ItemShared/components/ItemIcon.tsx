@@ -18,7 +18,6 @@ export interface ItemIconStyle {
 }
 
 const Container = styled.div`
-  background-image: url();
   vertical-align: baseline;
   background-size: cover;
   width: 100%;

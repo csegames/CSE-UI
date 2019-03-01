@@ -14,6 +14,7 @@ import './numberUtils';
 import './compare';
 import './mathExtensions';
 import './idGen';
+import './BitFlag';
 
 export * from './arrayUtils';
 export * from './eventMapper';
@@ -32,6 +33,7 @@ export * from './withDefaults';
 export * from './compare';
 export * from './mathExtensions';
 export * from './idGen';
+export * from './BitFlag';
 
 
 import * as KeyCodes from './keyCodes';

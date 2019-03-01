@@ -57,5 +57,5 @@ game/hud/src/gqlInterfaces\.ts
 !webpack.config.js
 yarn-error.log
 .gql
-.linaria-cache/
 !game/*/webpack.config.js
+.linaria-cache/

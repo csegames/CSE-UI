@@ -5,8 +5,10 @@
  */
 
 import 'font-awesome/css/font-awesome.css';
-import './third-party/animate.css';
+import 'velocity-animate';
+import 'velocity-animate/velocity.ui';
 import 'ol/ol.css';
+import './third-party/animate.css';
 import './third-party/toastr.min.css';
 import './index.scss';
 import './services/types';

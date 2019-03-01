@@ -19,7 +19,7 @@ export default function(): Theme {
       },
     },
 
-    abilityButtons: {
+    actionButtons: {
       color: {
         ready: 'cyan',
         unavailable: '#C1000E',
@@ -45,8 +45,8 @@ export default function(): Theme {
           radius: 22,
         },
         uhd: {
-          ringStrokeWidth: 4,
-          radius: 44,
+          ringStrokeWidth: 3,
+          radius: 33,
         },
       },
     },

@@ -11,6 +11,7 @@
     "react-draggable": "github:cumodsquad/Typings/react-draggable/react-draggable.d.ts",
     "react-emotion": "github:cumodsquad/Typings/react-emotion/react-emotion.d.ts",
     "react-resizable": "github:cumodsquad/Typings/react-resizable/react-resizable.d.ts",
+    "velocity-react": "github:cumodsquad/Typings/velocity-react/velocity-react.d.ts",
     "yargs-parser": "github:cumodsquad/Typings/yargs-parser/yargs-parser.d.ts"
   },
   "dependencies": {

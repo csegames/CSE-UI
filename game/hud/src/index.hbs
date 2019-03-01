@@ -16,6 +16,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
   {{/if}}
 </head>
 <body oncontextmenu='return false;'>
+{{!-- <body> --}}
   <div id="hud"></div>
   {{!-- {{#if process.env.ENABLE_SENTRY }}
   <script src="third-party/raven.min.js"></script>
@@ -35,6 +36,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
     }, 1000);
   </script>
   {{/if}} --}}
+
 
   {{#if process.env.IS_BROWSER}}
   <script src="dev.config.js"></script>

@@ -10,16 +10,13 @@ import { isEqual } from 'lodash';
 
 const fadeTime = 1000;
 
-const ActionAlertItem = styled.div`
+const FadeAlertItem = styled.div`
   position: fixed;
   color: #FFFFFF;
   font-weight: medium;
   font-size: 15px;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000 !important;
   z-index: 9999;
-`;
-
-const FadeAlertItem = styled(ActionAlertItem)`
   -webkit-animation: fadeOut 500ms ease-in-out;
   -webkit-animation-delay: ${fadeTime - 500}ms;
   animation: fadeOut 500ms ease-in-out;

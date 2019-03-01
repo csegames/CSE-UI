@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
 
 const Container = styled.span`
@@ -19,7 +19,7 @@ export function CountDown(props: CountdownProps) {
 
   const [current, setCurrent] = useState(props.duration - (Date.now() - props.start));
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (current > 0) {
       const timeout = Math.min(current, 100);
       const handle = setTimeout(() => setCurrent(current - timeout), timeout);

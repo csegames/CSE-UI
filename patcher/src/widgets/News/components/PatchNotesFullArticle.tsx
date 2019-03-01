@@ -48,7 +48,7 @@ class PatchNotesFullArticle extends React.Component<Props> {
     return (
       <FullContainer
         onClick={(e: React.MouseEvent) => e.stopPropagation()}
-        style={{ backgroundImage: `url(images/news/post-image.png) left top/80% no-repeat` }}>
+        style={{ backgroundImage: `url(../images/news/post-image.png) left top/80% no-repeat` }}>
         <CloseButton className='icon-close' onClick={this.props.onClose} />
         <TitleContainer>
           <Title>{patchNote.title}</Title>

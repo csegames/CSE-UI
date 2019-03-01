@@ -48,7 +48,7 @@ class PatchNotesFeaturedItem extends React.Component<Props> {
   public render() {
     const patchNote = this.props.post.item as PatchNote;
     return (
-      <FeaturedContainer style={{ backgroundImage: `url(images/news/post-image.png) left top/80% no-repeat` }}>
+      <FeaturedContainer style={{ backgroundImage: `url(../images/news/post-image.png) left top/80% no-repeat` }}>
         <TitleContainer>
           <Title>{patchNote.title}</Title>
           <DescriptionText>BUIID #{patchNote.patchNumber}</DescriptionText>

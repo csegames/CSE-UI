@@ -49,10 +49,12 @@ import { FullScenarioScoreboard } from '../LiveScenarioScoreboard/FullScenarioSc
 import { uiContextFromGame } from 'services/session/UIContext';
 import HUDZOrder from 'services/session/HUDZOrder';
 
-// import { AbilitiesView } from '../AbilityBarV2/BarsView';
+// import { ActionBars } from '../ActionBar/BarsView';
 import { DragAndDropV2Renderer } from 'components/Utilities/DragAndDropV2';
 import { WarbandNotificationProvider } from '../WarbandDisplay/WarbandNotificationProvider';
 import { BattleGroupNotificationProvider } from '../BattleGroups/BattleGroupNotificationProvider';
+
+import { DynamicModal } from '../DynamicModal';
 
 const HUDNavContainer = styled.div`
   position: fixed;
@@ -179,11 +181,17 @@ class HUD extends React.Component<HUDProps, HUDState> {
             />
           }
 
-          {/* <AbilitiesView /> */}
+          {/* <ActionBars /> */}
 
           <Settings />
+
+          <DynamicModal />
+
+          {/* END HUD */}
+
           <Watermark />
           <OfflineZoneSelect />
+
           <LoadingScreen />
           <DragStore />
           <DragAndDropV2Renderer />

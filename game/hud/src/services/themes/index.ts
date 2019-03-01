@@ -31,7 +31,7 @@ declare global {
       };
     };
 
-    abilityButtons: {
+    actionButtons: {
       color: {
         ready: string;
         unavailable: string;

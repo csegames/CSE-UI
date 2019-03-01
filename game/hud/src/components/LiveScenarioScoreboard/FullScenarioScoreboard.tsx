@@ -20,7 +20,7 @@ const Container = styled.div`
   flex-direction: column;
   width: 2000px;
   height: 1000px;
-  background-image: url('../images/scenario-live-score/uhd/bg.png');
+  background-image: url(../images/scenario-live-score/uhd/bg.png);
 
   &:before {
     content: '';
