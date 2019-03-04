@@ -91,7 +91,7 @@ module.exports = {
       watch: {
         default: {
           hiddenFromHelp: true,
-          script: 'nps -p dev.watch.webpackServe,dev.watch.graphql',
+          script: 'nps -p dev.watch.typescript,dev.watch.webpackServe,dev.watch.graphql',
         },
         webpackServe: {
           hiddenFromHelp: true,
@@ -100,6 +100,10 @@ module.exports = {
         webpack: {
           hiddenFromHelp: true,
           script: 'webpack --mode development --watch',
+        },
+        typescript: {
+          hiddenFromHelp: true,
+          script: 'tsc -w',
         },
         graphql: {
           hiddenFromHelp: true,
