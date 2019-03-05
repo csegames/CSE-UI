@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import { css } from 'linaria';
-import { styled } from 'linaria/react';
+import { css } from '@csegames/linaria';
+import { styled } from '@csegames/linaria/react';
 import Fuse from 'fuse.js';
 import { Store } from '@csegames/camelot-unchained/lib/utils/local-storage';
 
@@ -100,7 +100,7 @@ export const ModalButtonContainer = styled.div`
 export const ModalButton = styled.div`
   position: relative;
   pointer-events: all;
-  background: url(/hud-new/images/progression/button-off.png) no-repeat;
+  background: url(../images/progression/button-off.png) no-repeat;
   width: 95px;
   height: 30px;;
   border: none;
@@ -113,12 +113,12 @@ export const ModalButton = styled.div`
   text-align: center;
   line-height: 30px;
   &:hover {
-    background: url(/hud-new/images/progression/button-on.png) no-repeat;
+    background: url(../images/progression/button-on.png) no-repeat;
     color: #fff;
     &::before {
       content: '';
       position: absolute;
-      background-image: url(/hud-new/images/progression/button-glow.png);
+      background-image: url(../images/progression/button-glow.png);
       width: 93px;
       height: 30px;
       left: 0;

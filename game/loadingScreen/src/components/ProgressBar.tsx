@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 const BarContainer = styled.div`
   position: relative;
@@ -15,7 +15,7 @@ const BarContainer = styled.div`
   bottom: 0px;
   left: 0px;
   z-index: 2;
-  background: url(/hud-new/images/progressbar/texture-overlay.png),
+  background: url(../images/progressbar/texture-overlay.png),
     linear-gradient(black, #272727);
   background-repeat-y: no-repeat;
   border: 1px solid #464646;
@@ -29,7 +29,7 @@ const ProgressText = styled.div`
   font-size: 9px;
   padding: 3px 10px;
   color: #c3c3c3;
-  background: url(/hud-new/images/progressbar/loading-percent.png);
+  background: url(../images/progressbar/loading-percent.png);
   display: block;
   position: absolute;
   top: -2px;
@@ -46,7 +46,7 @@ const Bar = styled.div`
   transition: all linear .5s;
   &:after {
     content: "";
-    background: url(/hud-new/images/progressbar/loading-bar-end.png) no-repeat center right;
+    background: url(../images/progressbar/loading-bar-end.png) no-repeat center right;
     width: 200px;
     height: 10px;
     margin-top: 2px;
@@ -54,7 +54,7 @@ const Bar = styled.div`
 
   &:before {
     content: "";
-    background: url(/hud-new/images/progressbar/loading-bar-repeat.png) center;
+    background: url(../images/progressbar/loading-bar-repeat.png) center;
     width: 100%;
     height: 10px;
     margin-top: 2px;

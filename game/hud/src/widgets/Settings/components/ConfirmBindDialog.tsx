@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import { spacify } from 'lib/spacify';
 import * as CSS from 'lib/css-helper';

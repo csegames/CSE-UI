@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { MetricsData } from '@csegames/camelot-unchained/lib/graphql/schema';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 

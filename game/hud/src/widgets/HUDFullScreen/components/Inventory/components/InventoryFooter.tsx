@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { Tooltip } from '@csegames/camelot-unchained';
 
 import InventoryRowActionButton from './InventoryRowActionButton';
@@ -19,7 +19,7 @@ const Container = styled.div`
   height: 36px;
   justify-content: flex-end;
   align-items: center;
-  background: url(/hud-new/images/inventory/bag-bottom-bg.png);
+  background: url(../images/inventory/bag-bottom-bg.png);
   background-size: cover;
   z-index: 1;
 `;

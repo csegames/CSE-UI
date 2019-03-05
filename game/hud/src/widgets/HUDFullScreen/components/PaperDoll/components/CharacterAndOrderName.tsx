@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 const Container = styled.div`
   padding-left: 20px;

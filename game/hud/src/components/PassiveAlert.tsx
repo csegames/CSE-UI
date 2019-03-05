@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { GraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { PassiveAlert as IPassiveAlert } from 'gql/interfaces';
 
 const fadeTime = 3000;

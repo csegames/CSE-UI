@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import Victory from './components/Victory';
 import Defeat from './components/Defeat';

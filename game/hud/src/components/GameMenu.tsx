@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import { css } from 'linaria';
-import { styled } from 'linaria/react';
+import { css } from '@csegames/linaria';
+import { styled } from '@csegames/linaria/react';
 import { CloseButton } from 'UI/CloseButton';
 
 const OuterContainer = styled.div`
@@ -21,7 +21,7 @@ const Container = styled.div`
   margin:0 auto;
   background-color: gray;
   color: white;
-  background: url(/hud-new/images/gamemenu/gamemenu-bg-grey.png) no-repeat;
+  background: url(../images/gamemenu/gamemenu-bg-grey.png) no-repeat;
   z-index: 1;
   border: 1px solid #6e6c6c;
   box-shadow: 0 0 30px 0 #000;
@@ -29,7 +29,7 @@ const Container = styled.div`
 
 const MenuTitle = styled.div`
   text-align: center;
-  background: url(/hud-new/images/gamemenu/gamemenu-top-title.png) center top no-repeat;
+  background: url(../images/gamemenu/gamemenu-top-title.png) center top no-repeat;
   margin: 0 auto -9px auto;
   position: relative;
   z-index: 89;
@@ -51,10 +51,10 @@ const MenuCorner = styled.div`
   width: 100%;
   height: 100%;
   background:
-  url(/hud-new/images/gamemenu/gamemenu-ornament-top-left.png) left 0 top 0 no-repeat,
-  url(/hud-new/images/gamemenu/gamemenu-ornament-top-right.png) right 0 top 0 no-repeat,
-  url(/hud-new/images/gamemenu/gamemenu-ornament-bottom-left.png) left 0 bottom 0 no-repeat,
-  url(/hud-new/images/gamemenu/gamemenu-ornament-bottom-right.png) right 0 bottom 0 no-repeat;
+  url(../images/gamemenu/gamemenu-ornament-top-left.png) left 0 top 0 no-repeat,
+  url(../images/gamemenu/gamemenu-ornament-top-right.png) right 0 top 0 no-repeat,
+  url(../images/gamemenu/gamemenu-ornament-bottom-left.png) left 0 bottom 0 no-repeat,
+  url(../images/gamemenu/gamemenu-ornament-bottom-right.png) right 0 bottom 0 no-repeat;
   z-index: 1;
 `;
 
@@ -78,7 +78,7 @@ const MenuContent = styled.div`
 `;
 const MenuButton = styled.div`
   position: relative;
-  background: url(/hud-new/images/gamemenu/button-big-off.png) no-repeat;
+  background: url(../images/gamemenu/button-big-off.png) no-repeat;
   height: 30px;
   width: 200px;
   margin: 12px 16px 0 16px;
@@ -95,11 +95,11 @@ const MenuButton = styled.div`
   text-align: center;
   &:hover {
     color: rgb(204,204,204);
-    background: url(/hud-new/images/gamemenu/button-big-on.png) no-repeat;
+    background: url(../images/gamemenu/button-big-on.png) no-repeat;
     &::before {
       content: '';
       position: absolute;
-      background-image: url(/hud-new/images/gamemenu/button-glow.png);
+      background-image: url(../images/gamemenu/button-glow.png);
       top: 0;
       right: 0;
       bottom: 0;

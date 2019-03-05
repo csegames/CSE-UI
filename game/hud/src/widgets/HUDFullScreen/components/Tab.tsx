@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 const Container = styled.div`
   position: relative;
@@ -52,7 +52,7 @@ const Glow = styled.div`
   right: 0;
   bottom: 0;
   height: 35px;
-  background: url(/hud-new/images/tabs/arrow-glow.png) no-repeat;
+  background: url(../images/tabs/arrow-glow.png) no-repeat;
   background-size: cover;
   background-position: center;
 `;
@@ -63,7 +63,7 @@ const Arrow = styled.div`
   right: 5px;
   bottom: 1px;
   height: 3px;
-  background: url(/hud-new/images/tabs/arrow-tab.png) no-repeat;
+  background: url(../images/tabs/arrow-tab.png) no-repeat;
   background-size: contain;
   background-position: center;
 `;

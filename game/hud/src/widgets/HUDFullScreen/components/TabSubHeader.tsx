@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { HeaderBorderFoundation } from './TabHeader';
 
 const SubHeaderContainer = styled.div`
@@ -17,7 +17,7 @@ const SubHeaderContainer = styled.div`
       to right,
       ${props.color || 'rgba(188, 163, 143, 0.6)'},
       transparent
-    ), url(/hud-new/images/inventory/title-bg.png);`
+    ), url(../images/inventory/title-bg.png);`
   };
   background-size: cover;
   color: white;
@@ -33,14 +33,14 @@ const SubHeaderContainer = styled.div`
       to right,
       ${props.color || 'rgba(141, 128, 119, 0.70)'},
       transparent
-    ), url(/hud-new/images/inventory/title-bg-grey.png);`
+    ), url(../images/inventory/title-bg-grey.png);`
   }
     &:before {
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.40);
     }
   }
   &.confirmed {
-    background: linear-gradient(to right,rgba(255, 203, 77, 0.7), transparent ), url(/hud-new/images/inventory/title-bg.png);
+    background: linear-gradient(to right,rgba(255, 203, 77, 0.7), transparent ), url(../images/inventory/title-bg.png);
   }
   &:before {
     content: '';

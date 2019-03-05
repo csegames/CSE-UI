@@ -5,7 +5,7 @@
  */
 
 import React, { useContext } from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import { AbilityViewAnchor, useAbilityStateReducer } from '../../services/session/AbilityViewState';
 import { AbilityBarSlot } from './AbilityBarSlot';

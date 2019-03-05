@@ -6,7 +6,7 @@
 
 import gql from 'graphql-tag';
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 
 import BodyPartHealth, { MaxHealthPartsInfo } from '../ItemShared/BodyPartHealth';
@@ -42,7 +42,7 @@ const Container = styled.div`
     left: 0;
     right: 0;
     height: 65%;
-    background: url(/hud-new/images/paperdoll/bg/bg-veil.png) no-repeat;
+    background: url(../images/paperdoll/bg/bg-veil.png) no-repeat;
     background-size: cover;
   }
 `;
@@ -53,7 +53,7 @@ const NameBackground = styled.div`
   left: 0;
   height: 167px;
   width: 400px;
-  background: url(/hud-new/images/paperdoll/name-bg-splash.png) no-repeat;
+  background: url(../images/paperdoll/name-bg-splash.png) no-repeat;
   background-size: contain;
 `;
 

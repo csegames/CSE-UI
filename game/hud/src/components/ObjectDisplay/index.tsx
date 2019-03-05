@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import moment from 'moment';
 
 import CollapsibleList from './CollapsibleList';

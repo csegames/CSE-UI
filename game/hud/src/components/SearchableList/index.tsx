@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { utils } from '@csegames/camelot-unchained';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 const Container = styled.div`
   position: relative;

@@ -5,7 +5,7 @@
  */
 
 import React, { useContext, useState } from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { useAbilityStateReducer, AbilitySlot } from 'services/session/AbilityViewState';
 import { SkillTracks } from 'gql/interfaces';
 import { AbilityBtn } from '../AbilityBtn';

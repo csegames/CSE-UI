@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 export const RespawnDimensions = {
   width: 532,
@@ -20,13 +20,13 @@ const Container = styled.div`
   background-size: contain;
   width: ${RespawnDimensions.widthUHD}px;
   height: ${RespawnDimensions.heightUHD}px;
-  background: url(/hud-new/images/respawn/uhd/banner.png);
+  background: url(../images/respawn/uhd/banner.png);
   z-index: -1;
 
   @media (max-width: 1920px) {
     width: ${RespawnDimensions.width}px;
     height: ${RespawnDimensions.height}px;
-    background: url(/hud-new/images/respawn/hd/banner.png);
+    background: url(../images/respawn/hd/banner.png);
   }
 `;
 
@@ -69,12 +69,12 @@ const RespawnButton = styled.div`
   padding: 8px 20px;
   border: 2px solid #404040;
   border-width: 2px 1px 2px 1px;
-  border-image: url(/hud-new/images/respawn/uhd/button-border-gold.png);
+  border-image: url(../images/respawn/uhd/button-border-gold.png);
   border-image-slice: 2 1 2 1;
   margin: 6px;
 
   &:hover {
-    background-image: url(/hud-new/images/respawn/uhd/button-glow.png);
+    background-image: url(../images/respawn/uhd/button-glow.png);
   }
 
   @media (max-width: 1920px) {
@@ -83,12 +83,12 @@ const RespawnButton = styled.div`
     padding: 4px 10px;
     border: 1px solid #404040;
     border-width: 2px 1px 2px 1px;
-    border-image: url(/hud-new/images/respawn/hd/button-border-gold.png);
+    border-image: url(../images/respawn/hd/button-border-gold.png);
     border-image-slice: 2 1 2 1;
     margin: 3px;
 
     &:hover {
-      background-image: url(/hud-new/images/gamemenu/button-glow.png);
+      background-image: url(../images/gamemenu/button-glow.png);
     }
   }
 `;

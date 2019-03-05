@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/camelot-unchained';
 import TradeActionButton from './TradeActionButton';
 import { tradeActionButtonIcons } from '../../../lib/constants';
@@ -21,7 +21,7 @@ const MidSection = styled.div`
   z-index: 1;
   height: 100px;
   padding: 0 30px;
-  background: url(/hud-new/images/trade/trade-texture-bg.png), url(/hud-new/images/inventory/bag-bg.png);
+  background: url(../images/trade/trade-texture-bg.png), url(../images/inventory/bag-bg.png);
   background-size: cover;
 `;
 

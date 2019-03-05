@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import TooltipDurabilityInfo from './TooltipDurabilityInfo';
 import TooltipRequirementInfo from './TooltipRequirementInfo';
@@ -27,7 +27,7 @@ const Container = styled.div`
     right: 70px;
     top: -5px;
     height: 10px;
-    background-image: url(/hud-new/images/item-tooltips/divider_bottom.png);
+    background-image: url(../images/item-tooltips/divider_bottom.png);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
@@ -40,7 +40,7 @@ const FooterOverlay = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  background: url(/hud-new/images/item-tooltips/bg.png) no-repeat;
+  background: url(../images/item-tooltips/bg.png) no-repeat;
   background-size: 150% 150%;
   background-position: -50px -50px;
   z-index: -1;
@@ -78,7 +78,7 @@ const Divider = styled.div`
     left: 0;
     right: 0;
     height: ${(props: any) => props.height}px;
-    background: url(/hud-new/images/inventory/texture-over-line.png);
+    background: url(../images/inventory/texture-over-line.png);
     background-size: cover;
   }
 `;

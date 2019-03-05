@@ -36,7 +36,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@babel/runtime": "^7.0.0-rc.1",
-    "@csegames/camelot-unchained": "^0.2.4",
+    "@csegames/camelot-unchained": "^0.2.5",
     "aphrodite": "^1.1.0",
     "apollo": "^1.7.0",
     "apollo-client": "^1.9.0-1",
@@ -88,6 +88,7 @@
     "@babel/plugin-transform-react-jsx": "^7.0.0-rc.1",
     "@babel/plugin-transform-runtime": "^7.0.0-rc.1",
     "@babel/preset-env": "^7.0.0-rc.1",
+    "@csegames/linaria": "^0.1.101",
     "@types/aphrodite": "0.5.5",
     "@types/classnames": "0.0.32",
     "@types/color": "^2.0.0",

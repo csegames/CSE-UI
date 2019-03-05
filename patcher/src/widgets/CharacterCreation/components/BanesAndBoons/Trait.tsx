@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import { css, cx } from 'linaria';
-import { styled } from 'linaria/react';
+import { css, cx } from '@csegames/linaria';
+import { styled } from '@csegames/linaria/react';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
 import { Tooltip } from '@csegames/camelot-unchained';
 import { colors } from '../../styleConstants';

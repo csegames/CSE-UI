@@ -7,8 +7,8 @@
 
 import * as React from 'react';
 import { isEqual } from 'lodash';
-import { styled } from 'linaria/react';
-import { css } from 'linaria';
+import { styled } from '@csegames/linaria/react';
+import { css } from '@csegames/linaria';
 import { FactionColors } from 'lib/factionColors';
 import { TeamInterface } from './ScenarioResultsContainer';
 import {
@@ -152,7 +152,7 @@ const VictoryTeamContainer = styled.div`
 
 const LeftVictoryOrnament = styled.div`
   position: absolute;
-  background: url(/hud-new/images/scenario-results/left-divider-ornament.png) no-repeat;
+  background: url(../images/scenario-results/left-divider-ornament.png) no-repeat;
   left: 10px;
   top: 10px;
   height: 100%;
@@ -161,7 +161,7 @@ const LeftVictoryOrnament = styled.div`
 
 const RightVictoryOrnament = styled.div`
   position: absolute;
-  background: url(/hud-new/images/scenario-results/right-divider-ornament.png) no-repeat;
+  background: url(../images/scenario-results/right-divider-ornament.png) no-repeat;
   right: 0px;
   top: 10px;
   height: 100%;
@@ -175,7 +175,7 @@ const BottomMidOrnament = styled.div`
   right: 0;
   bottom: -13px;
   height: 30%;
-  background: url(/hud-new/images/scenario-results/bottom-mid-ornament.png) no-repeat center;
+  background: url(../images/scenario-results/bottom-mid-ornament.png) no-repeat center;
   z-index: 10;
 `;
 

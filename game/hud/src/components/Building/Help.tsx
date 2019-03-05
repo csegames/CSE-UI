@@ -5,7 +5,7 @@
 */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { Btn } from './BlueprintNameDialog';
 
 const Container = styled.div`

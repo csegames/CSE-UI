@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import { useAbilityStateReducer, EditMode } from '../../services/session/AbilityViewState';
 

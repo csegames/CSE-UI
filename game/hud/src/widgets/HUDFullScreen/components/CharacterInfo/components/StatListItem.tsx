@@ -6,8 +6,8 @@
 
 import * as React from 'react';
 import classNames from 'classnames';
-import { styled } from 'linaria/react';
-import { css } from 'linaria';
+import { styled } from '@csegames/linaria/react';
+import { css } from '@csegames/linaria';
 import { utils } from '@csegames/camelot-unchained';
 import { prettifyText, searchIncludesSection } from '../../../lib/utils';
 

@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as FilterButtonAPI from './FilterButtonAPI';
 
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import InventoryFilterButton from './InventoryFilterButton';
 import FilterInput from './FilterInput';
@@ -21,7 +21,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   padding: 10px 10px 5px 10px;
-  background: url(/hud-new/images/inventory/bag-bg.png);
+  background: url(../images/inventory/bag-bg.png);
   background-size: cover;
   z-index: 2;
   &:before {

@@ -8,7 +8,7 @@ import gql from 'graphql-tag';
 import * as React from 'react';
 
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import BodyPartSection from './BodyPartSection';
 import StatListContainer from '../StatListContainer';

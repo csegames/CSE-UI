@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import { Ring } from './Ring';
 import { CountDown } from './CountDown';
@@ -93,7 +93,7 @@ const QueuedStateTick = styled.div`
   z-index: 3;
   border-radius: 0;
   box-shadow: initial;
-  background: url(/hud-new/images/skills/queued-tick.png) no-repeat;
+  background: url(../images/skills/queued-tick.png) no-repeat;
   background-size: 90%;
 `;
 

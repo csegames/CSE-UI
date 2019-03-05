@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { find } from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import { patcher } from '../../../../services/patcher';
 import { ControllerContext, ContextState, PatcherServer, ServerType } from '../../ControllerContext';

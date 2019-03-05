@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import moment from 'moment';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import { patcher, ChannelStatus } from '../../../../services/patcher';
 import Animate from '../../../../lib/Animate';

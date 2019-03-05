@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { isEmpty } from 'lodash';
 
 import * as actions from 'actions/contextMenu';
@@ -50,7 +50,7 @@ const HeaderOverlay = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: url(/hud-new/images/item-tooltips/title_viel.png);
+    background: url(../images/item-tooltips/title_viel.png);
     background-size: cover;
     background-repeat: no-repeat;
   }
@@ -69,9 +69,9 @@ const Overlay = styled.ol`
   border-style: solid;
   border-image: linear-gradient(to bottom, ${(props: any) => props.color}, transparent);
   border-image-slice: 1;
-  background: url(/hud-new/images/item-tooltips/bg.png);
+  background: url(../images/item-tooltips/bg.png);
   background-size: cover;
-  -webkit-mask-image: url(/hud-new/images/item-tooltips/ui-mask.png);
+  -webkit-mask-image: url(../images/item-tooltips/ui-mask.png);
   -webkit-mask-size: cover;
   color: #ABABAB;
   width: auto;
@@ -81,7 +81,7 @@ const Overlay = styled.ol`
     position: absolute;
     top: 0px;
     left: 0px;
-    background: url(/hud-new/images/item-tooltips/ornament_left.png);
+    background: url(../images/item-tooltips/ornament_left.png);
     width: 35px;
     height: 35px;
   }
@@ -90,7 +90,7 @@ const Overlay = styled.ol`
     position: absolute;
     top: 0px;
     right: 0px;
-    background: url(/hud-new/images/item-tooltips/ornament_right.png);
+    background: url(../images/item-tooltips/ornament_right.png);
     width: 35px;
     height: 35px;
   }

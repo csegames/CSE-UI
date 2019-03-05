@@ -340,7 +340,7 @@ export const ModalState = `
     left: -3px;
     width: 110%;
     height: 110%;
-    background: url(/hud-new/images/skills/queued-tick.png);
+    background: url(../images/skills/queued-tick.png);
     background-size: cover;
     z-index: 3;
     box-shadow: initial;
@@ -391,24 +391,24 @@ export const UnavailableState = `
 
 export const NoAmmoState = `
   &:before {
-    background-image: url(/hud-new/images/skills/no-arrow.png),
+    background-image: url(../images/skills/no-arrow.png),
       linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
   }
 
   &:hover:before {
-    background-image: url(/hud-new/images/skills/no-arrow.png),
+    background-image: url(../images/skills/no-arrow.png),
       linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
   }
 `;
 
 export const NoWeaponState = `
   &:before {
-    background-image: url(/hud-new/images/skills/no-weapon.png),
+    background-image: url(../images/skills/no-weapon.png),
       linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
   }
 
   &:hover:before {
-    background-image: url(/hud-new/images/skills/no-weapon.png),
+    background-image: url(../images/skills/no-weapon.png),
       linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
   }
 `;

@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { InventoryItem } from 'gql/interfaces';
 
 const DurabilityContainer = styled.div`

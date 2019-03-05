@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import { patcher } from '../../../../../services/patcher';
 import { view } from '../../../../../components/OverlayView';

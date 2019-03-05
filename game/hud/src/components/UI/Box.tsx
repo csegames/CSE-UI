@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
-import { cx } from 'linaria';
+import { styled } from '@csegames/linaria/react';
+import { cx } from '@csegames/linaria';
 import * as CONFIG from './config';
 import * as CSS from '../../lib/css-helper';
 
@@ -25,7 +25,7 @@ const Border = styled.div`
   &::before {
     position: absolute;
     content: '';
-    background-image: url(/hud-new/images/settings/settings-permissions-texture.png);
+    background-image: url(../images/settings/settings-permissions-texture.png);
     background-size: contain;
     width: calc(100% + 2px);
     height: calc(100% + 2px);

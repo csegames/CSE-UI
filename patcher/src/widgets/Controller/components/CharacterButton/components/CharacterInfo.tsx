@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { webAPI, Spinner } from '@csegames/camelot-unchained';
 import { getCharImage, shouldFlipCharImage } from '../../../../../lib/characterImages';
 import { PatcherServer } from '../../../ControllerContext';

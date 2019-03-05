@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import GameSelectItem from './GameSelectItem';
 import { PatcherServer, ServerType, serverTypeToIcon } from '../../../ControllerContext';
 import { patcher, permissionsString } from '../../../../../services/patcher';

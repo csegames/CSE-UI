@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/camelot-unchained';
 import { getMyPaperDollBG, getMyPaperDollIcon } from '../../../lib/utils';
 
@@ -45,7 +45,7 @@ const TopLeftOrnament = styled.div`
   left: 5px;
   width: 40px;
   height: 26px;
-  background: url(/hud-new/images/character-stats/ornament-top-left-profile.png) no-repeat;
+  background: url(../images/character-stats/ornament-top-left-profile.png) no-repeat;
   background-size: contain;
 `;
 
@@ -55,7 +55,7 @@ const BottomLeftOrnament = styled.div`
   left: 5px;
   width: 40px;
   height: 26px;
-  background: url(/hud-new/images/character-stats/ornament-bottom-left-profile.png) no-repeat;
+  background: url(../images/character-stats/ornament-bottom-left-profile.png) no-repeat;
   background-size: contain;
 `;
 
@@ -65,7 +65,7 @@ const TopRightOrnament = styled.div`
   right: 5px;
   width: 40px;
   height: 26px;
-  background: url(/hud-new/images/character-stats/ornament-top-right-profile.png) no-repeat;
+  background: url(../images/character-stats/ornament-top-right-profile.png) no-repeat;
   background-size: contain;
 `;
 
@@ -75,7 +75,7 @@ const BottomRightOrnament = styled.div`
   right: 5px;
   width: 40px;
   height: 26px;
-  background: url(/hud-new/images/character-stats/ornament-bottom-right-profile.png) no-repeat;
+  background: url(../images/character-stats/ornament-bottom-right-profile.png) no-repeat;
   background-size: contain;
 `;
 
@@ -101,7 +101,7 @@ const InfoDivider = styled.div`
   left: 155px;
   height: 69px;
   width: 9px;
-  background: url(/hud-new/images/character-stats/ornament-profile-content.png);
+  background: url(../images/character-stats/ornament-profile-content.png);
   background-size: contain;
 `;
 
@@ -113,7 +113,7 @@ const CharacterInfo = styled.div`
 `;
 
 // const InfoDivider = styled.div`
-//   background: url(/hud-new/images/character-stats/ornament-profile-content.png)
+//   background: url(../images/character-stats/ornament-profile-content.png)
 // `;
 
 const BiographyInfo = styled.div`

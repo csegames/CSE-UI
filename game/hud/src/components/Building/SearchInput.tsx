@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { debounce } from 'lodash';
-import { css } from 'linaria';
+import { css } from '@csegames/linaria';
 import { TextInput } from 'UI/TextInput';
 import { Box } from 'UI/Box';
 

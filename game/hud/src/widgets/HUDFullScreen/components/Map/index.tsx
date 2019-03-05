@@ -6,7 +6,7 @@
 
 import gql from 'graphql-tag';
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import OL from 'ol';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { request } from '@csegames/camelot-unchained/lib/utils/request';
@@ -20,7 +20,7 @@ const Container = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  background: url(/hud-new/images/map/map_bg.jpg);
+  background: url(../images/map/map_bg.jpg);
   background-size: cover;
 `;
 

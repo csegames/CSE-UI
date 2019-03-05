@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import { getContainerColor } from '../../../../lib/utils';
 import { InventoryItem } from 'gql/interfaces';
@@ -55,7 +55,7 @@ const Divider = styled.div`
   left: 0;
   height: 1px;
   background: ${(props: any) => props.color};
-  -webkit-mask-image: url(/hud-new/images/inventory/texture-over-line.png);
+  -webkit-mask-image: url(../images/inventory/texture-over-line.png);
 `;
 
 export interface DrawerViewProps {

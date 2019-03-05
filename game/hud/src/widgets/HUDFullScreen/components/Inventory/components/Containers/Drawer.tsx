@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { webAPI, Tooltip } from '@csegames/camelot-unchained';
 
 import * as base from '../../../ItemShared/InventoryBase';
@@ -44,7 +44,7 @@ const HeaderContent = styled.div`
   height: 30px;
   width: 160px;
   padding-left: 15px;
-  background: ${(props: any) => props.showImg ? 'url(/hud-new/images/inventory/sub-title.png)' : 'transparent' };
+  background: ${(props: any) => props.showImg ? 'url(../images/inventory/sub-title.png)' : 'transparent' };
   background-size: 100% 100%;
   &:before {
     content: '';
@@ -53,7 +53,7 @@ const HeaderContent = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
-    background: ${(props: any) => props.showImg ? 'url(/hud-new/images/inventory/sub-title.png)' : 'transparent' };
+    background: ${(props: any) => props.showImg ? 'url(../images/inventory/sub-title.png)' : 'transparent' };
     background-size: 100% 100%;
   }
 `;

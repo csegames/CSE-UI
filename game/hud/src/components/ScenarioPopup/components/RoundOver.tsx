@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 const slideBounceTime = 0.4;
 
@@ -52,7 +52,7 @@ const Frame = styled.div`
   position: absolute;
   width: 700px;
   height: 370px;
-  background: url(/hud-new/images/scenario/roundend/round-endframe.png) no-repeat;
+  background: url(../images/scenario/roundend/round-endframe.png) no-repeat;
   background-size: cover;
   z-index: 10;
 `;
@@ -67,7 +67,7 @@ const Background = styled.div`
   height: 225px;
   top: 105px;
   left: 90px;
-  background: url(/hud-new/images/scenario/roundend/round-end-bg.png) no-repeat;
+  background: url(../images/scenario/roundend/round-end-bg.png) no-repeat;
   z-index: 1;
 `;
 
@@ -127,7 +127,7 @@ const BackgroundShadow = styled.div`
   left: 0;
   width: 100%;
   height: 110%;
-  background: url(/hud-new/images/scenario/roundend/gradient-bg.png) no-repeat;
+  background: url(../images/scenario/roundend/gradient-bg.png) no-repeat;
   background-size: cover;
   z-index: 0;
   -webkit-animation: fadeIn 1s ease-in forwards;

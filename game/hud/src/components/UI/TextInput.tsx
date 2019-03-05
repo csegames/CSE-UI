@@ -5,8 +5,8 @@
 */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
-import { cx, css } from 'linaria';
+import { styled } from '@csegames/linaria/react';
+import { cx, css } from '@csegames/linaria';
 
 const Wrapper = styled.div`
   display: inline-block;
@@ -25,7 +25,7 @@ const inputStyle = css`
   padding: 15px 10px;
   border: 1px #2c2c2c solid;
   color: #8f8f8f;
-  -webkit-mask-image: url(/hud-new/images/button-mask.png);
+  -webkit-mask-image: url(../images/button-mask.png);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: cover;
   background: #2a2a2a;

@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 const Container = styled.div`
   position: relative;
@@ -72,7 +72,7 @@ const ActionButtonOverlay = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  background: url(/hud-new/images/trade/button-texture.png);
+  background: url(../images/trade/button-texture.png);
   background-size: cover;
 `;
 

@@ -6,8 +6,8 @@
  */
 
 import * as React from 'react';
-import { css } from 'linaria';
-import { styled } from 'linaria/react';
+import { css } from '@csegames/linaria';
+import { styled } from '@csegames/linaria/react';
 import { TabPanel, ContentItem } from '@csegames/camelot-unchained';
 
 import { CloseButton } from 'UI/CloseButton';
@@ -63,7 +63,7 @@ const Divider = styled.div`
     left: -16.5px;
     width: 37px;
     height: 82px;
-    background: url(/hud-new/images/tabs/dragon-ornament-top.png);
+    background: url(../images/tabs/dragon-ornament-top.png);
     z-index: 11;
   }
   &:after {
@@ -73,7 +73,7 @@ const Divider = styled.div`
     bottom: 0;
     width: 13px;
     height: 12px;
-    background: url(/hud-new/images/tabs/dragon-ornament-bottom.png);
+    background: url(../images/tabs/dragon-ornament-bottom.png);
     z-index: 11;
   }
 `;
@@ -87,7 +87,7 @@ const DividerMidSection = styled.div`
     left: -1px;
     margin: auto;
     width: 5px;
-    background: url(/hud-new/images/tabs/divider-ornament-middle-base.png);
+    background: url(../images/tabs/divider-ornament-middle-base.png);
     z-index: 2;
   }
   &:after {
@@ -99,7 +99,7 @@ const DividerMidSection = styled.div`
     margin: auto;
     width: 9px;
     height: 365px;
-    background: url(/hud-new/images/tabs/divider-ornament-middle.png);
+    background: url(../images/tabs/divider-ornament-middle.png);
     z-index: 2;
   }
 `;
@@ -130,7 +130,7 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
       right: 0;
       bottom: 0;
       left: 0;
-      background: url(/hud-new/images/tabs/tab-bg.png) no-repeat;
+      background: url(../images/tabs/tab-bg.png) no-repeat;
       background-size: 100% 100%;
       z-index: -1;
     }
@@ -151,7 +151,7 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
       right: 0;
       bottom: 0;
       left: 0;
-      background: url(/hud-new/images/tabs/tab-bg.png) no-repeat;
+      background: url(../images/tabs/tab-bg.png) no-repeat;
       background-size: 100% 100%;
       z-index: -1;
     },

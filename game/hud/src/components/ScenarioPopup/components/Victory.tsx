@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 const slideBounceTime = 0.4;
 
@@ -81,7 +81,7 @@ const VictoryBlast = styled.div`
   opacity: 0;
   top: -112px;
   left: -230px;
-  background: url(/hud-new/images/scenario/victory/blast.png) no-repeat center;
+  background: url(../images/scenario/victory/blast.png) no-repeat center;
   background-size: cover;
   -webkit-animation: blast 1s ease forwards;
   animation: blast 1s ease forwards;
@@ -106,7 +106,7 @@ const FrameLasers = styled.div`
   left: -96px;
   width: 892px;
   height: 554px;
-  background: url(/hud-new/images/scenario/victory/laser-victory.png);
+  background: url(../images/scenario/victory/laser-victory.png);
   background-size: cover;
   opacity: 0;
   -webkit-animation: fadeIn 1s ease forwards, glow 2s ease infinite;
@@ -140,7 +140,7 @@ const Frame = styled.div`
   position: relative;
   width: 700px;
   height: 370px;
-  background: url(/hud-new/images/scenario/roundend/round-endframe.png) no-repeat;
+  background: url(../images/scenario/roundend/round-endframe.png) no-repeat;
   background-size: cover;
   z-index: 10;
 
@@ -150,7 +150,7 @@ const Frame = styled.div`
     width: 0%;
     height: 100%;
     background: linear-gradient(to right, transparent 80%, rgba(255,255,255,0.5));
-    -webkit-mask-image: url(/hud-new/images/scenario/roundend/round-endframe.png);
+    -webkit-mask-image: url(../images/scenario/roundend/round-endframe.png);
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-size: cover;
     -webkit-animation: shine 0.7ss ease-in forwards;
@@ -182,7 +182,7 @@ const Background = styled.div`
   height: 225px;
   top: 105px;
   left: 90px;
-  background: url(/hud-new/images/scenario/roundend/round-end-bg.png) no-repeat;
+  background: url(../images/scenario/roundend/round-end-bg.png) no-repeat;
   z-index: 1;
 
   &:before {
@@ -192,7 +192,7 @@ const Background = styled.div`
     height: 223px;
     left: 0;
     bottom: 0;
-    background: url(/hud-new/images/scenario/victory/flame-victory.png);
+    background: url(../images/scenario/victory/flame-victory.png);
     -webkit-animation: glow 2s ease infinite;
     animation: glow 2s ease infinite;
     ${WaitTillBounce}
@@ -205,7 +205,7 @@ const Background = styled.div`
     height: 188px;
     left: 0;
     bottom: 0;
-    background: url(/hud-new/images/scenario/victory/gradient-victory.png);
+    background: url(../images/scenario/victory/gradient-victory.png);
     -webkit-animation: glow 2s ease infinite;
     animation: glow 2s ease infinite;
     ${WaitTillBounce}
@@ -282,7 +282,7 @@ const BackgroundShadow = styled.div`
   opacity: 0;
   width: 100%;
   height: 110%;
-  background: url(/hud-new/images/scenario/roundend/gradient-bg.png) no-repeat;
+  background: url(../images/scenario/roundend/gradient-bg.png) no-repeat;
   background-size: cover;
   z-index: 0;
   -webkit-animation: fadeIn 0.5s ease-in forwards;

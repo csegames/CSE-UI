@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { useAbilityStateReducer, EditMode } from 'services/session/AbilityViewState';
 import { DragMove } from 'components/Utilities/DragMove';
 

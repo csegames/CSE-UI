@@ -9,7 +9,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import gql from 'graphql-tag';
 import { css } from 'react-emotion';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { webAPI, CollapsingList } from '@csegames/camelot-unchained';
 import { GraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
 import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';

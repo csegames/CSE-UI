@@ -5,7 +5,7 @@
  *
  */
 
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import * as CONFIG from 'UI/config';
 
 export const Container = styled.div`
@@ -38,16 +38,16 @@ export const Button = styled.div`
   text-transform: uppercase;
   margin: 0 3px;
   font-size: 9px;
-  background-image: url(/hud-new/images/settings/button-off.png);
+  background-image: url(../images/settings/button-off.png);
   letter-spacing: 1px;
   position: relative;
   &:hover {
   color: ${CONFIG.HIGHLIGHTED_TEXT_COLOR};
-  background-image: url(/hud-new/images/settings/button-on.png);
+  background-image: url(../images/settings/button-on.png);
   ::before {
     content: '';
     position: absolute;
-    background-image: url(/hud-new/images/settings/button-glow.png);
+    background-image: url(../images/settings/button-glow.png);
     width: 93px;
     height: 30px;
     left: 1px;
@@ -63,7 +63,7 @@ export const ButtonOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url(/hud-new/images/ui/interactive-alert/button-texture.png);
+  background-image: url(../images/ui/interactive-alert/button-texture.png);
   padding-left: 2px;
   padding-right: 2px;
 `;

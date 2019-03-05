@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 // import { hot, setConfig } from 'react-hot-loader';
 

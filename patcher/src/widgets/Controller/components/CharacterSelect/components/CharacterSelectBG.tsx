@@ -6,8 +6,8 @@
  */
 
 import * as React from 'react';
-import { css, cx } from 'linaria';
-import { styled } from 'linaria/react';
+import { css, cx } from '@csegames/linaria';
+import { styled } from '@csegames/linaria/react';
 import CharacterSelectFX from './CharacterSelectFX';
 import NoCharacterSelectFX from './NoCharacterSelectFX';
 import { getCharImage } from '../../../../../lib/characterImages';

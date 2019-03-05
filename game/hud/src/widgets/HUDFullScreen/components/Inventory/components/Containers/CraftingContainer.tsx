@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import * as base from '../../../ItemShared/InventoryBase';
 import ContainerView, { CloseButton } from './ContainerView';

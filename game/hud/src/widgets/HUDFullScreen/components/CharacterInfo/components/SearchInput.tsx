@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 const Input = styled.input`
   font-family:Titillium Web;
@@ -16,20 +16,20 @@ const Input = styled.input`
   display: inline-block;
   padding: 5px;
   border: 1px solid transparent !important;
-  border-image: url(/hud-new/images/inventory/border-texture.png) !important;
+  border-image: url(../images/inventory/border-texture.png) !important;
   border-image-slice: 1 !important;
   border-image-repeat: round !important;
-  background: url(/hud-new/images/inventory/filter-input-texture.png), rgba(10,10,10,1) !important;
+  background: url(../images/inventory/filter-input-texture.png), rgba(10,10,10,1) !important;
   transition: border 0.30s ease-in-out;
   margin: 5px !important;
   &::placeholder {
     color: #c0c0c0 !important;
   }
   &:focus {
-    border-image: url(/hud-new/images/inventory/border-texture.png) !important;
+    border-image: url(../images/inventory/border-texture.png) !important;
     border-image-slice: 1 !important;
     border-image-repeat: round !important;
-    background: url(/hud-new/images/inventory/filter-input-texture.png), rgba(10,10,10,1) !important;
+    background: url(../images/inventory/filter-input-texture.png), rgba(10,10,10,1) !important;
     border: 1px solid #847963 !important;
     outline: none;
   }

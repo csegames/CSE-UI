@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/camelot-unchained';
 
 import LockedOverlay from './LockedOverlay';
@@ -187,8 +187,8 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
           />
         </Content>
         <Footer style={{ backgroundImage: `url(${useGrayBG ?
-          'url(/hud-new/images/inventory/bag-bottom-bg-grey.png) no-repeat' :
-          'url(/hud-new/images/inventory/bag-bottom-bg.png) no-repeat'})` }}>
+          'url(../images/inventory/bag-bottom-bg-grey.png) no-repeat' :
+          'url(../images/inventory/bag-bottom-bg.png) no-repeat'})` }}>
           <FooterItem useGrayBG={useGrayBG}>
             <FooterIcon className={'icon-ui-bag'}></FooterIcon> {footerInfo.totalUnitCount}
           </FooterItem>
@@ -196,8 +196,8 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
             <FooterIcon className={'icon-ui-weight'}></FooterIcon> {footerInfo.weight}
           </FooterItem>
         </Footer>
-        <LeftBG style={{ backgroundImage: `url(${useGrayBG ? '/hud-new/images/inventory/bag-left-bg-grey.png' :
-          '/hud-new/images/inventory/bag-left-bg.png'})` }} />
+        <LeftBG style={{ backgroundImage: `url(${useGrayBG ? '../images/inventory/bag-left-bg-grey.png' :
+          '../images/inventory/bag-left-bg.png'})` }} />
       </Container>
     );
   }

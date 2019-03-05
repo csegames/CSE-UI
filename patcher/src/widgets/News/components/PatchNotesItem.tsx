@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import moment from 'moment';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import Item from './Item';
 import { PostItem } from '..';

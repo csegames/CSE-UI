@@ -6,7 +6,7 @@
 
 import gql from 'graphql-tag';
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import hash from 'object-hash';
 import {
   CompassPOIProviderProps,

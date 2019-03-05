@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import * as CSS from '../../lib/css-helper';
 import { Box } from './Box';
 import { Field } from './Field';

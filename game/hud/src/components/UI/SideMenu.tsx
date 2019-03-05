@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import * as CSS from '../../lib/css-helper';
 import * as CONFIG from './config';
 import { DIALOG_FONT } from './TabbedDialog/config';
@@ -98,7 +98,7 @@ const SideMenuOption = styled.div`
   box-sizing: border-box!important;
   cursor: pointer;
   pointer-events: all;
-  background-image: url(/hud-new/images/settings/settings-leftnav-arrow-left.png);
+  background-image: url(../images/settings/settings-leftnav-arrow-left.png);
   background-position: right 5px center;
   ${DIALOG_FONT}
   z-index: 1;
@@ -127,7 +127,7 @@ const SideMenuOption = styled.div`
 
   /* side menu option highlighted */
   &.selected {
-    background-image: url(/hud-new/images/settings/settings-leftnav-arrow-right.png);
+    background-image: url(../images/settings/settings-leftnav-arrow-right.png);
     background-position: right center;
     color: ${CONFIG.MENU_HIGHLIGHTED_TEXT_COLOR};
     ::before {
@@ -138,7 +138,7 @@ const SideMenuOption = styled.div`
       content: '';
       position: absolute;
       top: 0; left: 0;
-      background-image: url(/hud-new/images/settings/settings-leftnav-texture.png);
+      background-image: url(../images/settings/settings-leftnav-texture.png);
       background-position: 100%;
       z-index: -1;
       width: 100%;

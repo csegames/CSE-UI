@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { CUIcon } from '@csegames/camelot-unchained';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { InventoryFilterButton as FilterButtonInfo } from '../../../lib/itemInterfaces';
 import { prettifyText } from '../../../lib/utils';
 

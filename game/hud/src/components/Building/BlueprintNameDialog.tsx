@@ -5,7 +5,7 @@
 */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { Dialog } from 'components/UI/Dialog';
 import { TextInput } from 'components/UI/TextInput';
 
@@ -27,7 +27,7 @@ const Content = styled.div`
   justify-content: space-around;
   color: #ececec;
   padding-top: 10px;
-  background-image: url(/hud-new/images/settings/bag-bg-grey.png);
+  background-image: url(../images/settings/bag-bg-grey.png);
   background-repeat: no-repeat;
   background-position: top center;
   overflow: auto;
@@ -58,7 +58,7 @@ export const Btn = styled.div`
   font-size: 14px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  -webkit-mask-image: url(/hud-new/images/button-mask.png);
+  -webkit-mask-image: url(../images/button-mask.png);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: cover;
   transition: all ease .2s;

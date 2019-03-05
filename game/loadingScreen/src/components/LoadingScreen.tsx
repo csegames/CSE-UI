@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import ParallaxBG from './ParallaxBG';
 import { ProgressBar } from './ProgressBar';
@@ -61,7 +61,7 @@ const Logo = styled.div`
   transform: translateX(-50%) scale(0.75);
   width: 462px;
   height: 171px;
-  background: url(/hud-new/images/logo.png);
+  background: url(../images/logo.png);
   background-repeat: no-repeat;
 `;
 
@@ -71,7 +71,7 @@ const PoweredBy = styled.div`
   left: 0;
   width: 453px;
   height: 88px;
-  background: url(/hud-new/images/poweredby.png);
+  background: url(../images/poweredby.png);
 `;
 
 export class LoadingScreen extends React.PureComponent<{}> {

@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { BanesAndBoonsState } from '../../../services/session/banesAndBoons';
 
 import StatsView from '../../StatsSelect/StatsView';

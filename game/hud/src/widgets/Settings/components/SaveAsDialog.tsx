@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import * as CONFIG from 'UI/config';
 import { TabbedDialog, DialogTab, DialogButton } from 'UI/TabbedDialog';
 import { Box } from 'UI/Box';

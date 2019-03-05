@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { isEqual, includes } from 'lodash';
 
 import { SLOT_DIMENSIONS } from '../../../lib/constants';
@@ -55,12 +55,12 @@ const Container = styled.div`
     ${SlotDecorationPrefix}
     width: ${SLOT_DIMENSIONS.WIDTH - 4}px;
     height: ${SLOT_DIMENSIONS.HEIGHT - 4}px;
-    background: url(/hud-new/images/paperdoll/slot-gear-bg.png) no-repeat;
+    background: url(../images/paperdoll/slot-gear-bg.png) no-repeat;
     background-size: contain;
   }
   &:after {
     ${SlotDecorationPrefix}
-    background: url(/hud-new/images/paperdoll/slot-gear-frame.png) no-repeat;
+    background: url(../images/paperdoll/slot-gear-frame.png) no-repeat;
     background-size: contain;
   }
   &.weapon-slot {
@@ -70,12 +70,12 @@ const Container = styled.div`
       height: ${SLOT_DIMENSIONS.HEIGHT - 4}px;
       top: 1px;
       left: 1px;
-      background: url(/hud-new/images/paperdoll/slot-weapon-bg.png) no-repeat;
+      background: url(../images/paperdoll/slot-weapon-bg.png) no-repeat;
       background-size: contain;
     }
     &:after {
       ${SlotDecorationPrefix}
-      background: url(/hud-new/images/paperdoll/slot-weapon-frame.png) no-repeat;
+      background: url(../images/paperdoll/slot-weapon-frame.png) no-repeat;
       background-size: contain;
     }
   }

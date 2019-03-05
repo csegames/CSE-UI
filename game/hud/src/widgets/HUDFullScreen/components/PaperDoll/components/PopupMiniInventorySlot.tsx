@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import eventNames, { EquipItemPayload } from '../../../lib/eventNames';
 import { getInventoryDataTransfer, hasEquipmentPermissions } from '../../../lib/utils';

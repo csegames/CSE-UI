@@ -828,6 +828,32 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
+"@csegames/linaria@^0.1.101":
+  version "0.1.101"
+  resolved "http://registry.camelotunchained.com/@csegames%2flinaria/-/linaria-0.1.101.tgz#0ae0ef5012977a439e2952f279d35472fa2a9661"
+  integrity sha512-d4NMc4f5o/8ILKXGXiuiLQ7ubdBLhis4MC8tHMCMfTTYi2xLk355Zx28wpdh8fP4XQq1QWcKkF9jd5u6fiLX+A==
+  dependencies:
+    "@babel/core" "^7.3.3"
+    "@babel/generator" "^7.3.3"
+    "@babel/plugin-proposal-export-namespace-from" "^7.2.0"
+    "@babel/plugin-syntax-dynamic-import" "^7.2.0"
+    "@babel/plugin-transform-modules-commonjs" "^7.2.0"
+    "@babel/register" "^7.0.0"
+    "@emotion/is-prop-valid" "^0.7.3"
+    cosmiconfig "^5.1.0"
+    dedent "^0.7.0"
+    enhanced-resolve "^4.1.0"
+    glob "^7.1.3"
+    loader-utils "^1.2.3"
+    mkdirp "^0.5.1"
+    normalize-path "^3.0.0"
+    postcss "^7.0.14"
+    react-is "^16.8.3"
+    rollup-pluginutils "^2.4.1"
+    source-map "^0.7.3"
+    stylis "^3.5.4"
+    yargs "^13.2.1"
+
 "@emotion/babel-utils@^0.6.4":
   version "0.6.10"
   resolved "https://registry.yarnpkg.com/@emotion/babel-utils/-/babel-utils-0.6.10.tgz#83dbf3dfa933fae9fc566e54fbb45f14674c6ccc"
@@ -8649,32 +8675,6 @@ levn@^0.3.0, levn@~0.3.0:
   dependencies:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
-
-linaria@^0.1.99:
-  version "0.1.99"
-  resolved "http://registry.camelotunchained.com/linaria/-/linaria-0.1.99.tgz#a549c8935c9d1b4a5a5568e6390152ff1c06633b"
-  integrity sha512-gLvSsVub/cqNSfa7qjuZDl7ZxgDX/ev2pzp75ePZXEm7b7t6vWamJmylny7e96CHM7er+FSkdBSoolni4wZOwA==
-  dependencies:
-    "@babel/core" "^7.3.3"
-    "@babel/generator" "^7.3.3"
-    "@babel/plugin-proposal-export-namespace-from" "^7.2.0"
-    "@babel/plugin-syntax-dynamic-import" "^7.2.0"
-    "@babel/plugin-transform-modules-commonjs" "^7.2.0"
-    "@babel/register" "^7.0.0"
-    "@emotion/is-prop-valid" "^0.7.3"
-    cosmiconfig "^5.1.0"
-    dedent "^0.7.0"
-    enhanced-resolve "^4.1.0"
-    glob "^7.1.3"
-    loader-utils "^1.2.3"
-    mkdirp "^0.5.1"
-    normalize-path "^3.0.0"
-    postcss "^7.0.14"
-    react-is "^16.8.3"
-    rollup-pluginutils "^2.4.1"
-    source-map "^0.7.3"
-    stylis "^3.5.4"
-    yargs "^13.2.1"
 
 listify@^1.0.0:
   version "1.0.0"

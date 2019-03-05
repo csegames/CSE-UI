@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import { ControllerContext, ContextState, PatcherServer, ServerType } from '../../ControllerContext';
 import CharacterSelectList from './components/CharacterSelectList';

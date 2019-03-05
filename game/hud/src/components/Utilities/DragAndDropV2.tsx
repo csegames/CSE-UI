@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { createSharedState } from 'services/session/lib/sharedState';
 
 enum MouseButtons {

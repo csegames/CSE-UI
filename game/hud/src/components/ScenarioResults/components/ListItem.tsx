@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { FactionColors } from 'lib/factionColors';
 import { TeamPlayer } from './ScenarioResultsContainer';
 
@@ -89,7 +89,7 @@ const ContainerOverlay = styled.div`
   &:hover {
     opacity: 0.65;
     background: linear-gradient(to right, rgba(255, 255, 255, 0.4), transparent);
-    -webkit-mask-image: url(/hud-new/images/scenario-results/texture-over-line.png);
+    -webkit-mask-image: url(../images/scenario-results/texture-over-line.png);
   }
 `;
 

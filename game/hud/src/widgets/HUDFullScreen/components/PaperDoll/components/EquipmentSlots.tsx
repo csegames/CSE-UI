@@ -6,8 +6,8 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { styled } from 'linaria/react';
-import { css, cx } from 'linaria';
+import { styled } from '@csegames/linaria/react';
+import { css, cx } from '@csegames/linaria';
 import { ContentItem, TabItem, TabPanel } from '@csegames/camelot-unchained';
 
 
@@ -59,7 +59,7 @@ const LeftArmorSlots = styled.div`
     left: -3px;
     width: 72px;
     height: 67px;
-    background: url(/hud-new/images/paperdoll/ornament-slot-left-top.png) no-repeat;
+    background: url(../images/paperdoll/ornament-slot-left-top.png) no-repeat;
     background-size: contain;
     opacity: ${ARMOR_ORNAMENT_OPACITY};
   }
@@ -70,7 +70,7 @@ const LeftArmorSlots = styled.div`
     left: -3px;
     width: 72px;
     height: 67px;
-    background: url(/hud-new/images/paperdoll/ornament-slot-left-bot.png) no-repeat;
+    background: url(../images/paperdoll/ornament-slot-left-bot.png) no-repeat;
     background-size: contain;
     opacity: ${ARMOR_ORNAMENT_OPACITY};
   }
@@ -81,7 +81,7 @@ const LeftSideOrnament = styled.div`
   left: -3px;
   top: -5px;
   height: 100%;
-  background: url(/hud-new/images/paperdoll/ornament-slot-left-mid.png) repeat;
+  background: url(../images/paperdoll/ornament-slot-left-mid.png) repeat;
   background-size: contain;
   width: 8px;
   opacity: ${ARMOR_ORNAMENT_OPACITY};
@@ -96,7 +96,7 @@ const RightArmorSlots = styled.div`
     right: -3px;
     width: 72px;
     height: 67px;
-    background: url(/hud-new/images/paperdoll/ornament-slot-right-top.png) no-repeat;
+    background: url(../images/paperdoll/ornament-slot-right-top.png) no-repeat;
     background-size: contain;
     opacity: ${ARMOR_ORNAMENT_OPACITY};
   }
@@ -107,7 +107,7 @@ const RightArmorSlots = styled.div`
     right: -3px;
     width: 72px;
     height: 67px;
-    background: url(/hud-new/images/paperdoll/ornament-slot-right-bot.png) no-repeat;
+    background: url(../images/paperdoll/ornament-slot-right-bot.png) no-repeat;
     background-size: contain;
     opacity: ${ARMOR_ORNAMENT_OPACITY};
   }
@@ -118,14 +118,14 @@ const RightSideOrnament = styled.div`
   right: -3px;
   top: -5px;
   height: 100%;
-  background: url(/hud-new/images/paperdoll/ornament-slot-right-mid.png) repeat;
+  background: url(../images/paperdoll/ornament-slot-right-mid.png) repeat;
   background-size: contain;
   width: 8px;
   opacity: ${ARMOR_ORNAMENT_OPACITY};
 `;
 
 const TabDivider = styled.div`
-  background: url(/hud-new/images/paperdoll/ornament-gear-select.png);
+  background: url(../images/paperdoll/ornament-gear-select.png);
   background-size: contain;
   width: 2px;
   height: 42px;
@@ -163,7 +163,7 @@ const ToggleTab = styled.div`
   &.isActive {
     color: #F4EBAD;
     &:before {
-      background: url(/hud-new/images/paperdoll/outer-hover-button.png) no-repeat;
+      background: url(../images/paperdoll/outer-hover-button.png) no-repeat;
       background-size: contain;
     }
   }
@@ -215,7 +215,7 @@ const EquippedWeaponSlots = styled.div`
   &:before {
     content: '';
     position: absolute;
-    background: url(/hud-new/images/paperdoll/ornament-slot-bot-mid.png) no-repeat;
+    background: url(../images/paperdoll/ornament-slot-bot-mid.png) no-repeat;
     background-size: contain;
     background-position-x: center;
     bottom: 0px;
@@ -240,7 +240,7 @@ const WeaponSlotOrnaments = styled.div`
     left: -105px;
     bottom: 0;
     width: 97px;
-    background: url(/hud-new/images/paperdoll/ornament-slot-bot-left.png) no-repeat;
+    background: url(../images/paperdoll/ornament-slot-bot-left.png) no-repeat;
     background-size: contain;
     opacity: ${WEAPON_ORNAMENT_OPACITY};
     z-index: 0;
@@ -253,7 +253,7 @@ const WeaponSlotOrnaments = styled.div`
     right: -88px;
     bottom: 0;
     width: 97px;
-    background: url(/hud-new/images/paperdoll/ornament-slot-bot-right.png) no-repeat;
+    background: url(../images/paperdoll/ornament-slot-bot-right.png) no-repeat;
     background-size: contain;
     opacity: ${WEAPON_ORNAMENT_OPACITY};
     z-index: 0;

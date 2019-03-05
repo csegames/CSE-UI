@@ -9,7 +9,7 @@ import {
   parseMessageForSlashCommand,
 } from '@csegames/camelot-unchained';
 
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import ObjectDisplay from './ObjectDisplay';
 

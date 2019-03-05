@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { includes } from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { getCharImage } from '../../../../../lib/characterImages';
 import { SimpleCharacter, Race, Gender, Archetype } from 'gql/interfaces';
 

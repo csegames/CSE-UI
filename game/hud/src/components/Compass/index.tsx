@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import CompassPOIManager, { CompassContext } from './CompassPOIManager';
 import CardinalDirectionsPoiProvider from './POI/CardinalDirectionsPoiProvider';
 import WarbandMembersPoiProvider from './POI/WarbandMembersPoiProvider';

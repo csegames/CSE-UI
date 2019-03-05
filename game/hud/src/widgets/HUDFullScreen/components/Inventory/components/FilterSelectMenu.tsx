@@ -7,7 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { Input, IconButton } from '@csegames/camelot-unchained';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import FilterSelectListItem from './FilterSelectListItem';
 import { inventoryFilterButtons } from '../../../lib/utils';

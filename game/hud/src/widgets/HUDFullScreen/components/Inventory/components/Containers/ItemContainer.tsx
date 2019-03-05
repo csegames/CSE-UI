@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import * as base from '../../../ItemShared/InventoryBase';
 import Drawer from './Drawer';
@@ -47,7 +47,7 @@ const ContainerHeaderOverlay = styled.div`
     left: 0;
     right: 0;
     height: 100%;
-    background: url(/hud-new/images/inventory/title-bg-grey.png) no-repeat;
+    background: url(../images/inventory/title-bg-grey.png) no-repeat;
     box-shadow: inset 0 0 5px 2px rgba(0,0,0,1);
     background-size: cover;
   }

@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import { SlotType } from '../../../lib/itemInterfaces';
 import { getTooltipColor, getContainerInfo } from '../../../lib/utils';
@@ -26,7 +26,7 @@ const Container = styled.div`
     right: 70px;
     bottom: -5px;
     height: 10px;
-    background-image: url(/hud-new/images/item-tooltips/divider_top.png);
+    background-image: url(../images/item-tooltips/divider_top.png);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -49,7 +49,7 @@ const HeaderOverlay = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: url(/hud-new/images/item-tooltips/title_viel.png);
+    background: url(../images/item-tooltips/title_viel.png);
     background-size: cover;
     background-repeat: no-repeat;
   }

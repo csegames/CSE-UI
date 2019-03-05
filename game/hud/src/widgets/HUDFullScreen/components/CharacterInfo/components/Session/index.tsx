@@ -8,8 +8,8 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
 import moment from 'moment';
-import { css } from 'linaria';
-import { styled } from 'linaria/react';
+import { css } from '@csegames/linaria';
+import { styled } from '@csegames/linaria/react';
 
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';

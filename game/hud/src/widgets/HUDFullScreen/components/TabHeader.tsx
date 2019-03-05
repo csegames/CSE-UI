@@ -6,18 +6,18 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 export const HeaderFoundation = `
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(to right,rgba(220, 141, 88, 0.60), transparent ), url(/hud-new/images/inventory/title-bg.png);
+  background: linear-gradient(to right,rgba(220, 141, 88, 0.60), transparent ), url(../images/inventory/title-bg.png);
   background-size: cover;
   padding: 20px 20px;
   z-index: 1;
-  -webkit-mask-image: url(/hud-new/images/inventory/title-mask.png);
+  -webkit-mask-image: url(../images/inventory/title-mask.png);
   -webkit-mask-size: cover;
   box-shadow: inset 0px 0px 60px rgba(0,0,0,0.8);
   font-family: Caudex;
@@ -43,7 +43,7 @@ const Container = styled.div`
   ${HeaderFoundation}
   z-index: 2;
   background: linear-gradient(to right,rgba(220,141,88,0.6),transparent),
-    url(/hud-new/images/inventory/title-bg.png) no-repeat;
+    url(../images/inventory/title-bg.png) no-repeat;
   &:before {
     content: '';
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
@@ -59,7 +59,7 @@ const HeaderOrnament = styled.div`
   bottom: 0px;
   width: 45px;
   padding: 20px 0;
-  background: url(/hud-new/images/inventory/title-ornament.png) no-repeat;
+  background: url(../images/inventory/title-ornament.png) no-repeat;
   background-size: contain;
   z-index: 2;
   &:before {
@@ -67,7 +67,7 @@ const HeaderOrnament = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    background: url(/hud-new/images/inventory/title-ornament-top.png);
+    background: url(../images/inventory/title-ornament-top.png);
     width: 35px;
     height: 26px;
   }
@@ -76,7 +76,7 @@ const HeaderOrnament = styled.div`
     position: absolute;
     bottom: 0;
     left: 0;
-    background: url(/hud-new/images/inventory/title-ornament-bottom.png);
+    background: url(../images/inventory/title-ornament-bottom.png);
     width: 35px;
     height: 26px;
   }

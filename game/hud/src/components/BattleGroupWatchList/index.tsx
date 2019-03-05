@@ -6,8 +6,8 @@
  */
 
 import * as React from 'react';
-import { css } from 'linaria';
-import { styled } from 'linaria/react';
+import { css } from '@csegames/linaria';
+import { styled } from '@csegames/linaria/react';
 import { isEqual, isEmpty } from 'lodash';
 import gql from 'graphql-tag';
 import { CollapsingList } from '@csegames/camelot-unchained/lib/components';
@@ -81,7 +81,7 @@ const Container = styled.div`
       rgba(0, 0, 0, 0.5) 70%,
       rgba(0, 0, 0, 0.9) 90%
     ),
-    url(/hud-new/images/battlegroups/battlegroup-bg.png);
+    url(../images/battlegroups/battlegroup-bg.png);
   box-shadow: inset 0 -5px 50px 7px rgba(0,0,0,0.8);
   border-image: linear-gradient(to bottom, rgba(65, 65, 65, 1), rgba(0, 0, 0, 0));
   border-image-slice: 1;
@@ -95,7 +95,7 @@ const TopLeftOrnament = styled.div`
   left: -2px;
   width: 43px;
   height: 43px;
-  background: url(/hud-new/images/battlegroups/ornament-top-left.png) no-repeat;
+  background: url(../images/battlegroups/ornament-top-left.png) no-repeat;
 `;
 
 const TopRightOrnament = styled.div`
@@ -104,7 +104,7 @@ const TopRightOrnament = styled.div`
   right: -2px;
   width: 43px;
   height: 43px;
-  background: url(/hud-new/images/battlegroups/ornament-top-right.png) no-repeat;
+  background: url(../images/battlegroups/ornament-top-right.png) no-repeat;
 `;
 
 const BottomLeftOrnament = styled.div`
@@ -113,7 +113,7 @@ const BottomLeftOrnament = styled.div`
   left: -2px;
   width: 43px;
   height: 43px;
-  background: url(/hud-new/images/battlegroups/ornament-bottom-left.png) no-repeat;
+  background: url(../images/battlegroups/ornament-bottom-left.png) no-repeat;
 `;
 
 const BottomRightOrnament = styled.div`
@@ -122,7 +122,7 @@ const BottomRightOrnament = styled.div`
   right: -2px;
   width: 43px;
   height: 43px;
-  background: url(/hud-new/images/battlegroups/ornament-bottom-right.png) no-repeat;
+  background: url(../images/battlegroups/ornament-bottom-right.png) no-repeat;
 `;
 
 export const defaultBattleGroupWatchListStyles: BattleGroupWatchListStyles = {

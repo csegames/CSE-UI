@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import Infinite from 'react-infinite';
 import { doesSearchInclude } from '@csegames/camelot-unchained/lib/utils';
 
@@ -21,9 +21,9 @@ import { TeamInterface, TeamPlayer } from './ScenarioResultsContainer';
 const Container = styled.div`
   position: relative;
   height: 100%;
-  background: url(/hud-new/images/scenario-results/bg.png) no-repeat;
+  background: url(../images/scenario-results/bg.png) no-repeat;
   background-size: cover;
-  -webkit-mask-image: url(/hud-new/images/scenario-results/ui-mask.png);
+  -webkit-mask-image: url(../images/scenario-results/ui-mask.png);
   -webkit-mask-size: cover;
   -webkit-mask-position: bottom;
   -webkit-mask-repeat: no-repeat;

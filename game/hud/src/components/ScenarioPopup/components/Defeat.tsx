@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 const slideBounceTime = 0.4;
 
@@ -80,7 +80,7 @@ const DefeatBlast = styled.div`
   opacity: 0;
   top: -112px;
   left: -230px;
-  background: url(/hud-new/images/scenario/defeat/blast-defeat.png) no-repeat center;
+  background: url(../images/scenario/defeat/blast-defeat.png) no-repeat center;
   background-size: cover;
   -webkit-animation: blast 1s ease forwards;
   animation: blast 1s ease forwards;
@@ -105,7 +105,7 @@ const FrameLasers = styled.div`
   left: -96px;
   width: 883px;
   height: 515px;
-  background: url(/hud-new/images/scenario/defeat/laser-defeat.png);
+  background: url(../images/scenario/defeat/laser-defeat.png);
   background-size: cover;
   opacity: 0;
   -webkit-animation: fadeIn 1s ease forwards, glow 2s ease infinite;
@@ -137,7 +137,7 @@ const Frame = styled.div`
   position: absolute;
   width: 673px;
   height: 386px;
-  background: url(/hud-new/images/scenario/defeat/frame-defeat.png) no-repeat;
+  background: url(../images/scenario/defeat/frame-defeat.png) no-repeat;
   background-size: cover;
   z-index: 10;
 `;
@@ -152,7 +152,7 @@ const Background = styled.div`
   height: 225px;
   top: 105px;
   left: 90px;
-  background: url(/hud-new/images/scenario/roundend/round-end-bg.png) no-repeat;
+  background: url(../images/scenario/roundend/round-end-bg.png) no-repeat;
   z-index: 1;
 
   &:after {
@@ -162,7 +162,7 @@ const Background = styled.div`
     height: 188px;
     left: 0;
     bottom: 0;
-    background: url(/hud-new/images/scenario/defeat/gradient-defeat.png);
+    background: url(../images/scenario/defeat/gradient-defeat.png);
     -webkit-animation: glow 2s ease infinite;
     animation: glow 2s ease infinite;
     ${WaitTillBounce}
@@ -240,7 +240,7 @@ const BackgroundShadow = styled.div`
   opacity: 0;
   width: 100%;
   height: 110%;
-  background: url(/hud-new/images/scenario/roundend/gradient-bg.png) no-repeat;
+  background: url(../images/scenario/roundend/gradient-bg.png) no-repeat;
   background-size: cover;
   z-index: 0;
   -webkit-animation: fadeIn 0.5s ease-in forwards;

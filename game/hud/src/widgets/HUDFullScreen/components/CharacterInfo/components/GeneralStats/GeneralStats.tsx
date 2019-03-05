@@ -7,7 +7,7 @@
 
 import gql from 'graphql-tag';
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import { withGraphQL, GraphQLInjectedProps } from '@csegames/camelot-unchained/lib/graphql/react';
 import { showTooltip, hideTooltip } from 'actions/tooltips';

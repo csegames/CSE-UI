@@ -5,7 +5,7 @@
 */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { TabbedDialog, DialogButton } from 'components/UI/TabbedDialog';
 import { Blocks } from './Blocks';
 import { Blueprints } from './Blueprints';
@@ -31,7 +31,7 @@ const Content = styled.div`
   flex-direction: column;
   flex: 1;
   overflow-y: auto;
-  background-image: url(/hud-new/images/settings/bag-bg-grey.png);
+  background-image: url(../images/settings/bag-bg-grey.png);
   background-repeat: no-repeat;
   background-position: top center;
   margin-top: -10px;

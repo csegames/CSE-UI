@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 export const LoadingContainer = styled.div`
   position: relative;
@@ -19,7 +19,7 @@ export const InnerContainer = styled.div`
   margin:0 auto;
   background-color: gray;
   color: white;
-  background: url(/hud-new/images/progression/progress-bg-grey.png) no-repeat;
+  background: url(../images/progression/progress-bg-grey.png) no-repeat;
   z-index: 1;
   border: 1px solid #6e6c6c;
   box-shadow: 0 0 30px 0 #000;
@@ -27,7 +27,7 @@ export const InnerContainer = styled.div`
 
 export const ProgressionTitle = styled.div`
   text-align: center;
-  background: url(/hud-new/images/progression/progress-top-title.png) center top no-repeat;
+  background: url(../images/progression/progress-top-title.png) center top no-repeat;
   margin: 0 auto -9px auto;
   position: relative;
   z-index: 999;
@@ -48,10 +48,10 @@ export const ProgressionCorner = styled.div`
   min-width: 1000px;
   min-height: 600px;
   background:
-  url(/hud-new/images/progression/progress-ornament-top-left.png) left 0 top 0 no-repeat,
-  url(/hud-new/images/progression/progress-ornament-top-right.png) right 0 top 0 no-repeat,
-  url(/hud-new/images/progression/progress-ornament-bottom-left.png) left 0 bottom 0 no-repeat,
-  url(/hud-new/images/progression/progress-ornament-bottom-right.png) right 0 bottom 0 no-repeat;
+  url(../images/progression/progress-ornament-top-left.png) left 0 top 0 no-repeat,
+  url(../images/progression/progress-ornament-top-right.png) right 0 top 0 no-repeat,
+  url(../images/progression/progress-ornament-bottom-left.png) left 0 bottom 0 no-repeat,
+  url(../images/progression/progress-ornament-bottom-right.png) right 0 bottom 0 no-repeat;
   z-index: 1;
 `;
 

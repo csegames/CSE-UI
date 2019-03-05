@@ -6,8 +6,8 @@
 
 import * as React from 'react';
 import { TabPanel, TabItem, ContentItem, TabPanelStyle } from '@csegames/camelot-unchained';
-import { styled } from 'linaria/react';
-import { css } from 'linaria';
+import { styled } from '@csegames/linaria/react';
+import { css } from '@csegames/linaria';
 
 import GeneralInfo from './components/GeneralInfo';
 import GeneralStats from './components/GeneralStats/GeneralStats';
@@ -23,7 +23,7 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
   background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0, 0, 0, 0.3)),
-  url(/hud-new/images/inventory/bag-bg-grey.png), black;
+  url(../images/inventory/bag-bg-grey.png), black;
 `;
 
 const GeneralInfoContainer = styled.div`
@@ -91,7 +91,7 @@ export const defaultCharacterInfoStyle: Partial<TabPanelStyle> = {
       left: 0;
       right: 0;
       bottom: 5px;
-      background: url(/hud-new/images/character-stats/ornament-nav.png) no-repeat;
+      background: url(../images/character-stats/ornament-nav.png) no-repeat;
       background-size: contain;
       background-position: center;
     }

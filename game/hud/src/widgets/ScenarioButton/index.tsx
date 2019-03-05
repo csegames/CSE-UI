@@ -7,7 +7,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { styled }  from 'linaria/react';
+import { styled }  from '@csegames/linaria/react';
 import * as CSS from 'lib/css-helper';
 import {
   ScenarioMatch,
@@ -35,18 +35,18 @@ const IconButton = styled.div`
   background-color: rgba(0,0,0,0.8);
   font-size: 22px;
   text-align: center;
-  background-image: url(/hud-new/images/settings/button-off.png);
+  background-image: url(../images/settings/button-off.png);
   background-size: cover;
   &:hover {
     color: #f5d598;
-    background-image: url(/hud-new/images/settings/button-on.png);
+    background-image: url(../images/settings/button-on.png);
   }
   &.lit {
     box-shadow: 0 0 10px 5px rgba(245, 213, 152, 1);
     transition: 1s linear 0s;
     border-radius: 5px;
     color: #f5d598;
-    background-image: url(/hud-new/images/settings/button-on.png);
+    background-image: url(../images/settings/button-on.png);
   }
   &.unlit {
     transition: 1s linear 0s;
@@ -54,7 +54,7 @@ const IconButton = styled.div`
     box-shadow: none;
     border-radius: 0px;
     color: #cbcbcb;
-    background-image: url(/hud-new/images/settings/button-off.png);
+    background-image: url(../images/settings/button-off.png);
   }
   &.not-available {
     filter: grayscale(100%);

@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { FullScenarioScoreboardQuery, TeamScore } from 'gql/interfaces';
@@ -20,12 +20,12 @@ const Container = styled.div`
   flex-direction: column;
   width: 2000px;
   height: 1000px;
-  background-image: url('/hud-new/images/scenario-live-score/uhd/bg.png');
+  background-image: url('../images/scenario-live-score/uhd/bg.png');
 
   &:before {
     content: '';
     position: absolute;
-    background: url(/hud-new/images/scenario-live-score/uhd/corner-left-ornament.png) no-repeat;
+    background: url(../images/scenario-live-score/uhd/corner-left-ornament.png) no-repeat;
     background-size: contain;
     left: -8px;
     top: -8px;
@@ -36,7 +36,7 @@ const Container = styled.div`
   &:after {
     content: '';
     position: absolute;
-    background: url(/hud-new/images/scenario-live-score/uhd/corner-right-ornament.png) no-repeat;
+    background: url(../images/scenario-live-score/uhd/corner-right-ornament.png) no-repeat;
     background-size: contain;
     right: -8px;
     top: -8px;
@@ -47,13 +47,13 @@ const Container = styled.div`
   @media (max-width: 1920px) {
     width: 1000px;
     height: 500px;
-    background: url(/hud-new/images/scenario-live-score/hd/bg.png) no-repeat;
+    background: url(../images/scenario-live-score/hd/bg.png) no-repeat;
     background-size: cover;
 
     &:before {
       top: -2px;
       left: -2px;
-      background: url(/hud-new/images/scenario-live-score/hd/corner-left-ornament.png) no-repeat;
+      background: url(../images/scenario-live-score/hd/corner-left-ornament.png) no-repeat;
       background-size: contain;
       width: 82px;
       height: 82px;
@@ -63,7 +63,7 @@ const Container = styled.div`
     &:after {
       top: -2px;
       right: -2px;
-      background: url(/hud-new/images/scenario-live-score/hd/corner-right-ornament.png) no-repeat;
+      background: url(../images/scenario-live-score/hd/corner-right-ornament.png) no-repeat;
       background-size: contain;
       width: 82px;
       height: 82px;
@@ -77,14 +77,14 @@ const BottomRip = styled.div`
   bottom: -86px;
   height: 87px;
   width: 100%;
-  background: url(/hud-new/images/scenario-live-score/uhd/bottom-rip.png) no-repeat;
+  background: url(../images/scenario-live-score/uhd/bottom-rip.png) no-repeat;
   background-size: 100% 100%;
 
   @media (max-width: 1920px) {
     bottom: -43px;
     height: 44px;
     width: 100%;
-    background: url(/hud-new/images/scenario-live-score/hd/bottom-rip.png) no-repeat;
+    background: url(../images/scenario-live-score/hd/bottom-rip.png) no-repeat;
     background-size: 100% 100%;
   }
 `;
@@ -103,7 +103,7 @@ const Header = styled.div`
     right: 0;
     bottom: 0;
     height: 4px;
-    background: url(/hud-new/images/scenario-live-score/uhd/bottom-line-ornament.png) no-repeat;
+    background: url(../images/scenario-live-score/uhd/bottom-line-ornament.png) no-repeat;
     background-size: 100% 100%;
   }
 
@@ -116,7 +116,7 @@ const Header = styled.div`
       left: 0;
       right: 0;
       bottom: 0;
-      background: url(/hud-new/images/scenario-live-score/hd/bottom-line-ornament.png) no-repeat;
+      background: url(../images/scenario-live-score/hd/bottom-line-ornament.png) no-repeat;
       background-size: 100% 100%;
     }
   }
@@ -129,20 +129,20 @@ const HeaderBG = styled.div`
   bottom: 0;
   z-index: 0;
   width: 570px;
-  background: url(/hud-new/images/scenario-live-score/uhd/deathmatch-bg.png) no-repeat;
+  background: url(../images/scenario-live-score/uhd/deathmatch-bg.png) no-repeat;
   background-size: contain;
 
   &.point-capture {
-    background: url(/hud-new/images/scenario-live-score/uhd/point-capture-bg.png) no-repeat;
+    background: url(../images/scenario-live-score/uhd/point-capture-bg.png) no-repeat;
     background-size: contain;
   }
 
   @media (max-width: 1920px) {
     width: 285px;
-    background: url(/hud-new/images/scenario-live-score/hd/deathmatch-bg.png) no-repeat;
+    background: url(../images/scenario-live-score/hd/deathmatch-bg.png) no-repeat;
     background-size: contain;
     &.point-capture {
-      background: url(/hud-new/images/scenario-live-score/hd/point-capture-bg.png) no-repeat;
+      background: url(../images/scenario-live-score/hd/point-capture-bg.png) no-repeat;
       background-size: contain;
     }
   }
@@ -150,7 +150,7 @@ const HeaderBG = styled.div`
 
 const LeftHeaderOrnament = styled.div`
   position: absolute;
-  background: url(/hud-new/images/scenario-live-score/uhd/title-frame-left.png) no-repeat;
+  background: url(../images/scenario-live-score/uhd/title-frame-left.png) no-repeat;
   background-size: contain;
   top: 14px;
   bottom: 10px;
@@ -161,14 +161,14 @@ const LeftHeaderOrnament = styled.div`
     top: 7px;
     bottom: 5px;
     left: 2px;
-    background: url(/hud-new/images/scenario-live-score/hd/title-frame-left.png) no-repeat;
+    background: url(../images/scenario-live-score/hd/title-frame-left.png) no-repeat;
     background-size: contain;
   }
 `;
 
 const RightHeaderOrnament = styled.div`
   position: absolute;
-  background: url(/hud-new/images/scenario-live-score/uhd/title-frame-right.png) no-repeat;
+  background: url(../images/scenario-live-score/uhd/title-frame-right.png) no-repeat;
   background-size: contain;
   background-position: right center;
   top: 14px;
@@ -180,7 +180,7 @@ const RightHeaderOrnament = styled.div`
     top: 7px;
     bottom: 5px;
     right: 2px;
-    background: url(/hud-new/images/scenario-live-score/hd/title-frame-right.png) no-repeat;
+    background: url(../images/scenario-live-score/hd/title-frame-right.png) no-repeat;
     background-size: contain;
     background-position: right center;
   }
@@ -226,7 +226,7 @@ const RoundItem = styled.div`
       transform: translateX(-50%);
       margin: auto;
       width: 492px;
-      background: url(/hud-new/images/scenario-live-score/uhd/flameglow.png) no-repeat;
+      background: url(../images/scenario-live-score/uhd/flameglow.png) no-repeat;
       background-size: contain;
     }
 
@@ -239,14 +239,14 @@ const RoundItem = styled.div`
       top: -20px;
       height: 178px;
       width: 842px;
-      background: url(/hud-new/images/scenario-live-score/uhd/middle-ornament.png) no-repeat;
+      background: url(../images/scenario-live-score/uhd/middle-ornament.png) no-repeat;
       background-size: contain;
     }
 
     @media (max-width: 1920px) {
       &:before {
         width: 246px;
-        background: url(/hud-new/images/scenario-live-score/hd/flameglow.png) no-repeat;
+        background: url(../images/scenario-live-score/hd/flameglow.png) no-repeat;
         background-size: contain;
       }
 
@@ -254,7 +254,7 @@ const RoundItem = styled.div`
         top: -10px;
         height: 89px;
         width: 421px;
-        background: url(/hud-new/images/scenario-live-score/hd/middle-ornament.png) no-repeat;
+        background: url(../images/scenario-live-score/hd/middle-ornament.png) no-repeat;
         background-size: contain;
       }
     }

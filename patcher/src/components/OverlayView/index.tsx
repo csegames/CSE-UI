@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import { Chat } from '@csegames/camelot-unchained';
 import { patcher } from '../../services/patcher';

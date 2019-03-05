@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { PostFilter } from './FilterTabs';
 import { PATCH_NOTES_COLOR, NEWS_COLOR } from '../lib/styles';
 

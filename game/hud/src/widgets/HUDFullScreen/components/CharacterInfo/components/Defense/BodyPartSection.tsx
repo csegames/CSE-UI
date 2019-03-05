@@ -6,8 +6,8 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { css } from 'linaria';
-import { styled } from 'linaria/react';
+import { css } from '@csegames/linaria';
+import { styled } from '@csegames/linaria/react';
 import { GridStats } from '@csegames/camelot-unchained/lib/components';
 
 import StatListItem from '../StatListItem';

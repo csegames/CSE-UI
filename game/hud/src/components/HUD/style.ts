@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { css } from 'linaria';
-import { styled } from 'linaria/react';
+import { css } from '@csegames/linaria';
+import { styled } from '@csegames/linaria/react';
 
 export const HUDEditorContainer = styled.div`
   position: fixed;
@@ -15,7 +15,7 @@ export const HUDEditorContainer = styled.div`
   overflow-y: hidden;
   color: white;
   background-color: gray;
-  background: url(/hud-new/images/progression/progress-bg-grey.png) no-repeat;
+  background: url(../images/progression/progress-bg-grey.png) no-repeat;
   border: 2px solid #6e6c6c;
   box-shadow: 0 0 30px 0 #000;
   z-index: 942;

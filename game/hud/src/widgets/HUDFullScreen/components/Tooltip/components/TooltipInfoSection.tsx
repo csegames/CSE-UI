@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { prettifyText } from '../../../lib/utils';
 import {
   characterBodyPartIcons,
@@ -31,7 +31,7 @@ const SectionTitle = styled.div`
     bottom: 0;
     left: -10px;
     right: 0;
-    background: url(/hud-new/images/item-tooltips/section-title.png) no-repeat;
+    background: url(../images/item-tooltips/section-title.png) no-repeat;
     background-size: 100% 25px;
     z-index: -1;
     overflow: hidden;

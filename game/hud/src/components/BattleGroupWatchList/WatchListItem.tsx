@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { isEqual } from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 import { GroupMemberState } from 'gql/interfaces';
 

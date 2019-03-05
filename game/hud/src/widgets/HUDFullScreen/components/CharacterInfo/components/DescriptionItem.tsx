@@ -5,7 +5,7 @@
  *
  */
 
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 const DescriptionItem = styled.div`
   display: flex;

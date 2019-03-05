@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import * as CSS from '../../lib/css-helper';
 
 export const Field = styled.div`

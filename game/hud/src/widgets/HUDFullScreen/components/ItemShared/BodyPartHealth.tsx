@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 export interface BodyPartHealthStyles {
   healthInfoContainer: React.CSSProperties;
@@ -31,7 +31,7 @@ const HealthInfoContainer = styled.div`
     top: -15px;
     right: 0;
     left: 0;
-    background: url(/hud-new/images/paperdoll/ornament-health-mid-top.png) no-repeat;
+    background: url(../images/paperdoll/ornament-health-mid-top.png) no-repeat;
     background-size: contain;
   }
   &:after {
@@ -42,7 +42,7 @@ const HealthInfoContainer = styled.div`
     right: 0;
     bottom: -15px;
     left: 0;
-    background: url(/hud-new/images/paperdoll/ornament-health-mid-bot.png) no-repeat;
+    background: url(../images/paperdoll/ornament-health-mid-bot.png) no-repeat;
     background-size: contain;
   }
 `;

@@ -5,7 +5,7 @@
 */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { Tooltip } from 'components/Tooltip';
 import { doesSearchInclude } from '@csegames/camelot-unchained';
 import { ConfirmDialog } from '@csegames/camelot-unchained/lib/components/ConfirmDialog';

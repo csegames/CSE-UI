@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 import { SkillPartsUsedField } from '@csegames/camelot-unchained/lib/graphql/schema';
 
@@ -31,7 +31,7 @@ const Container = styled.div`
     right: 0;
     bottom: -5px;
     height: 5px;
-    background: url(/hud-new/images/character-stats/ornament-middle-bottom-list.png) no-repeat;
+    background: url(../images/character-stats/ornament-middle-bottom-list.png) no-repeat;
     background-position: center;
   }
 `;

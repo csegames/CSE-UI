@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import { InventorySlot } from './InventorySlot';
 import { DrawerCurrentStats } from './Containers/Drawer';

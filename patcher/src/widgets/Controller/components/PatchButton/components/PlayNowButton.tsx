@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { PatchButtonStyle, ButtonText, ButtonGlow, shine } from '../styles';
 
 const PlayNowButtonView = styled.div`

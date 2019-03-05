@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { TabbedDialog, DialogTab } from 'UI/TabbedDialog';
 import { ScenarioMatch, startPollingScenarioQueue, stopPollingScenarioQueue } from 'services/session/scenarioQueue';
 import { Scenario } from './components/Scenario';

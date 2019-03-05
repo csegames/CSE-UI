@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import { css } from 'linaria';
-import { styled } from 'linaria/react';
+import { css } from '@csegames/linaria';
+import { styled } from '@csegames/linaria/react';
 import * as CSS from 'lib/css-helper';
 import * as CONFIG from '../config';
 import { NavButton, NavButtonLabel } from './NavButton';
@@ -39,7 +39,7 @@ const DialogContainer = styled.div`
       height: 23px;
       width: calc(100% - 50px);
       left: 25px;
-      background-image: url(/hud-new/images/settings/settings-top-title.png);
+      background-image: url(../images/settings/settings-top-title.png);
       background-position: center top;
       background-repeat: no-repeat;
       padding-top: 8px;
@@ -67,7 +67,7 @@ const DialogWindow = styled.div`
 const OrnamentTopLeft = styled.div`
   position: absolute;
   top: 0; left: 0;
-  background-image: url(/hud-new/images/settings/settings-ornament-top-left.png);
+  background-image: url(../images/settings/settings-ornament-top-left.png);
   width: 35px;
   height: 31px;
   z-index: 2;
@@ -76,7 +76,7 @@ const OrnamentTopLeft = styled.div`
 const OrnamentTopRight = styled.div`
   position: absolute;
   top: 0; right: 0;
-  background-image: url(/hud-new/images/settings/settings-ornament-top-right.png);
+  background-image: url(../images/settings/settings-ornament-top-right.png);
   width: 49px;
   height: 48px;
   padding-left: 25px;
@@ -88,7 +88,7 @@ const OrnamentTopRight = styled.div`
 const OrnamentBottomLeft = styled.div`
   position: absolute;
   bottom: 0; left: 0;
-  background-image: url(/hud-new/images/settings/settings-ornament-bottom-left.png);
+  background-image: url(../images/settings/settings-ornament-bottom-left.png);
   width: 35px;
   height: 31px;
   z-index: 2;
@@ -97,7 +97,7 @@ const OrnamentBottomLeft = styled.div`
 const OrnamentBottomRight = styled.div`
   position: absolute;
   bottom: 0; right: 0;
-  background-image: url(/hud-new/images/settings/settings-ornament-bottom-right.png);
+  background-image: url(../images/settings/settings-ornament-bottom-right.png);
   width: 35px;
   height: 31px;
   z-index: 2;
@@ -109,7 +109,7 @@ const DialogNavigation = styled.div`
   ${CSS.DONT_GROW} ${CSS.IS_ROW} ${CSS.CENTERED}
   width: 100%;
   height: ${DIALOG_HEADING_HEIGHT}px;
-  background-image: url(/hud-new/images/settings/bag-bg-grey.png);
+  background-image: url(../images/settings/bag-bg-grey.png);
   background-repeat: no-repeat;
   background-position: top center;
   background-color: rgb(27,26,24);
@@ -171,7 +171,7 @@ const DialogTabContent = styled.div`
   .no-tabs & {
     margin-top: 0;
     padding-top: 25px;
-    background-image: url(/hud-new/images/settings/bag-bg-grey.png);
+    background-image: url(../images/settings/bag-bg-grey.png);
     background-repeat: no-repeat;
     background-position: top center;
     background-color: rgb(27,26,24);
@@ -192,7 +192,7 @@ const DialogFooter = styled.div`
   ${CSS.DONT_GROW} ${CSS.IS_ROW} ${CSS.CENTERED}
   height: ${DIALOG_FOOTER_HEIGHT}px;
   position: relative;
-  background-image: url(/hud-new/images/settings/bag-bg-grey.png);
+  background-image: url(../images/settings/bag-bg-grey.png);
   background-repeat: no-repeat;
   background-position: top center;
   padding: 3px;
@@ -200,7 +200,7 @@ const DialogFooter = styled.div`
   box-shadow: inset 0 0 60px rgba(0,0,0,0.8);
   ::before {
     content: '';
-    background-image: url(/hud-new/images/settings/settings-botnav-left-ornament.png);
+    background-image: url(../images/settings/settings-botnav-left-ornament.png);
     background-repeat: no-repeat;
     margin: 0 3px;
     width: 75px;
@@ -208,7 +208,7 @@ const DialogFooter = styled.div`
   }
   ::after {
     content: '';
-    background-image: url(/hud-new/images/settings/settings-botnav-right-ornament.png);
+    background-image: url(../images/settings/settings-botnav-right-ornament.png);
     background-repeat: no-repeat;
     margin: 0 3px;
     width: 75px;
@@ -249,17 +249,17 @@ const DialogFooterButton = styled.div`
   color: ${CONFIG.NORMAL_TEXT_COLOR};
   margin: 0 3px;
   font-size: 9px;
-  background-image: url(/hud-new/images/settings/button-off.png);
+  background-image: url(../images/settings/button-off.png);
   ${DIALOG_FONT}
   letter-spacing: 2px;
   position: relative;
   &:hover {
     color: ${CONFIG.HIGHLIGHTED_TEXT_COLOR};
-    background-image: url(/hud-new/images/settings/button-on.png);
+    background-image: url(../images/settings/button-on.png);
     ::before {
       content: '';
       position: absolute;
-      background-image: url(/hud-new/images/settings/button-glow.png);
+      background-image: url(../images/settings/button-glow.png);
       width: 93px;
       height: 30px;
       left: 1px;

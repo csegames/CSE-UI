@@ -6,7 +6,7 @@
 
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { has, uniqBy } from 'lodash';
 import { query } from '@csegames/camelot-unchained/lib/graphql/query';
 import { CUQuery } from '@csegames/camelot-unchained/lib/graphql/schema';

@@ -5,7 +5,7 @@
  *
  */
 
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 export const TopVeil = styled.div`
   position: absolute;

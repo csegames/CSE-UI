@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 import HUDNavButton from './components/HUDNavButton';
 
@@ -13,7 +13,7 @@ const List = styled.ul`
   margin: 0 0 0 0;
   padding: 0 60px 0 6px !important;
   list-style: none;
-  background: url(/hud-new/images/hudnav/hudnav_background.png) right top no-repeat;
+  background: url(../images/hudnav/hudnav_background.png) right top no-repeat;
   height: 45px;
   width: fit-content;
   min-width: 40px;

@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 import ParallaxBG from './ParallaxBG';
 
@@ -54,7 +54,7 @@ const Zone = styled.div`
 const Logo = styled.div`
   width: 462px;
   height: 171px;
-  background: url(/hud-new/images/logo.png);
+  background: url(../images/logo.png);
   background-repeat: no-repeat;
 `;
 

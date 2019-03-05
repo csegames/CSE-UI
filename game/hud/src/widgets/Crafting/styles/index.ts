@@ -77,10 +77,10 @@ export const minimize: MinimizeStyles = {
     backgroundSize: '100%',
   },
   minimized: {
-    backgroundImage: 'url(/hud-new/images/crafting/minimize.png)',
+    backgroundImage: 'url(../images/crafting/minimize.png)',
   },
   maximized: {
-    backgroundImage: 'url(/hud-new/images/crafting/maximize.png)',
+    backgroundImage: 'url(../images/crafting/maximize.png)',
   },
 };
 
@@ -137,7 +137,7 @@ export interface AppStyles {
 export const app: AppStyles = {
   app: {              // main UI window (App)
     pointerEvents: 'auto',
-    // backgroundImage: 'url(/hud-new/images/crafting/crafting-bg.png)',
+    // backgroundImage: 'url(../images/crafting/crafting-bg.png)',
     background: '#2E2C2F',
     color: 'white',
     width: '100%',

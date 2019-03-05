@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/camelot-unchained';
 import { Dialog } from 'UI/Dialog';
 
@@ -23,7 +23,7 @@ const Container = styled.div`
   pointer-events: all;
   display: flex;
   flex-direction: column;
-  background: url(/hud-new/images/settings/bag-bg-grey.png);
+  background: url(../images/settings/bag-bg-grey.png);
   background-size: cover;
   width: 100%;
   height: 100%;
@@ -68,7 +68,7 @@ const ItemActionText = styled.div`
 const MenuButton = styled.div`
   pointer-events: all;
   position: relative;
-  background: url(/hud-new/images/gamemenu/button-big-off.png) no-repeat;
+  background: url(../images/gamemenu/button-big-off.png) no-repeat;
   background-size: 100% 100%;
   height: 30px;
   width: 80px;
@@ -85,11 +85,11 @@ const MenuButton = styled.div`
   margin: 0 5px;
   &:hover {
     color: rgb(204,204,204);
-    background: url(/hud-new/images/gamemenu/button-big-on.png) no-repeat;
+    background: url(../images/gamemenu/button-big-on.png) no-repeat;
     &::before {
       content: '';
       position: absolute;
-      background-image: url(/hud-new/images/gamemenu/button-glow.png);
+      background-image: url(../images/gamemenu/button-glow.png);
       top: 0;
       right: 0;
       bottom: 0;

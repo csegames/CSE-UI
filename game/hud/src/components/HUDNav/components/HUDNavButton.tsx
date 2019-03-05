@@ -7,8 +7,8 @@
 
 import * as React from 'react';
 import className from 'classnames';
-import { css } from 'linaria';
-import { styled } from 'linaria/react';
+import { css } from '@csegames/linaria';
+import { styled } from '@csegames/linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 import { showTooltip, hideTooltip, ShowTooltipPayload } from 'actions/tooltips';
 

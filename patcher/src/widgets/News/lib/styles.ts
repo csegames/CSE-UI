@@ -5,7 +5,7 @@
  *
  */
 
-import { styled } from 'linaria/react';
+import { styled } from '@csegames/linaria/react';
 
 export const PATCH_NOTES_COLOR = 'rgba(122, 184, 227, 1)';
 export const NEWS_COLOR = 'rgba(236, 119, 127, 1)';

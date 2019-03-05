@@ -7,8 +7,8 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { styled } from 'linaria/react';
-import { css } from 'linaria';
+import { styled } from '@csegames/linaria/react';
+import { css } from '@csegames/linaria';
 import { CloseButton } from 'UI/CloseButton';
 
 import List from './List';
@@ -36,7 +36,7 @@ const Container = styled.div`
     right: 0;
     left: 0;
     height: 1%;
-    background: url(/hud-new/images/scenario-results/top-repeat.png);
+    background: url(../images/scenario-results/top-repeat.png);
   }
 
   &:after {
@@ -46,7 +46,7 @@ const Container = styled.div`
     right: 0;
     left: 0;
     height: 10%;
-    background: url(/hud-new/images/scenario-results/top-mid-ornament.png) no-repeat center;
+    background: url(../images/scenario-results/top-mid-ornament.png) no-repeat center;
   }
 
   @keyframes slideIn {
@@ -67,7 +67,7 @@ const LeftOrnament = styled.div`
   top: -30px;
   width: 40px;
   height: 55px;
-  background: url(/hud-new/images/scenario-results/left-corner-ornament.png) no-repeat;
+  background: url(../images/scenario-results/left-corner-ornament.png) no-repeat;
   z-index: 10;
 `;
 
@@ -77,7 +77,7 @@ const CloseOrnament = styled.div`
   top: -30px;
   width: 60px;
   height: 55px;
-  background: url(/hud-new/images/scenario-results/close-ornament.png) no-repeat;
+  background: url(../images/scenario-results/close-ornament.png) no-repeat;
   z-index: 10;
 `;
 
