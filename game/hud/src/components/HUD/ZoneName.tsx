@@ -9,7 +9,7 @@ import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/camelot-unchained';
 
 const ZoneContainer = styled.div`
-margin-top:40px;
+  margin-top:40px;
 `;
 
 const ZoneNameContainer = styled.div`

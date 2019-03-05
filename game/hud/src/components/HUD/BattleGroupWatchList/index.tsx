@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { css } from '@csegames/linaria';
+import { css } from 'react-emotion';
 import { styled } from '@csegames/linaria/react';
 import { isEqual, isEmpty } from 'lodash';
 import gql from 'graphql-tag';
@@ -73,62 +73,77 @@ const Container = styled.div`
   pointer-events: all;
   width: 100%;
   padding: 3px;
-  background:
-    linear-gradient(
-      to bottom left,
-      rgba(196, 157, 108, 0.1),
-      rgba(196, 157, 108, 0.25),
-      rgba(0, 0, 0, 0.5) 70%,
-      rgba(0, 0, 0, 0.9) 90%
-    ),
-    url(../images/battlegroups/battlegroup-bg.png);
-  box-shadow: inset 0 -5px 50px 7px rgba(0,0,0,0.8);
-  border-image: linear-gradient(to bottom, rgba(65, 65, 65, 1), rgba(0, 0, 0, 0));
-  border-image-slice: 1;
-  border-width: 1px;
+`;
+
+const Background = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  border-width: 2px;
   border-style: solid;
+  border-image: linear-gradient(to bottom,
+    ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) => props.color}, transparent);
+  border-image-slice: 1;
+  background: url(../images/item-tooltips/bg.png);
+  background-size: cover;
+  -webkit-mask-image: url(../images/item-tooltips/ui-mask.png);
+  -webkit-mask-size: 100% 100%;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: url(../images/item-tooltips/ornament_left.png);
+    width: 35px;
+    height: 35px;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background: url(../images/item-tooltips/ornament_right.png);
+    width: 35px;
+    height: 35px;
+  }
+
+  transition: opacity 0.5s ease;
+  opacity: 0;
+  &.mouseOver {
+    opacity: 1;
+  }
 `;
 
-const TopLeftOrnament = styled.div`
+const HeaderOverlay = styled.div`
   position: absolute;
-  top: -1px;
-  left: -2px;
-  width: 43px;
-  height: 43px;
-  background: url(../images/battlegroups/ornament-top-left.png) no-repeat;
-`;
-
-const TopRightOrnament = styled.div`
-  position: absolute;
-  top: -1px;
-  right: -2px;
-  width: 43px;
-  height: 43px;
-  background: url(../images/battlegroups/ornament-top-right.png) no-repeat;
-`;
-
-const BottomLeftOrnament = styled.div`
-  position: absolute;
-  bottom: -1px;
-  left: -2px;
-  width: 43px;
-  height: 43px;
-  background: url(../images/battlegroups/ornament-bottom-left.png) no-repeat;
-`;
-
-const BottomRightOrnament = styled.div`
-  position: absolute;
-  bottom: -1px;
-  right: -2px;
-  width: 43px;
-  height: 43px;
-  background: url(../images/battlegroups/ornament-bottom-right.png) no-repeat;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  background: linear-gradient(to right, ${(props: {color: string}) => props.color}, transparent);
+  box-shadow: inset 0 0 20px 2px rgba(0,0,0,0.8);
+  height: 106px;
+  &:after {
+    content: '';
+    position: absolute;
+    height: 106px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url(../images/item-tooltips/title_viel.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
 `;
 
 export const defaultBattleGroupWatchListStyles: BattleGroupWatchListStyles = {
   body: css`
-    height: 220px;
-    padding: 0 10px;
+    height: auto;
+    padding: 0 10px 20px 0;
   `,
 
   title: css`
@@ -137,7 +152,7 @@ export const defaultBattleGroupWatchListStyles: BattleGroupWatchListStyles = {
     align-items: center;
     padding: 0 10px;
     height: 30px;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
+    text-shadow: 0px 0px 3px black, 0px 0px 3px black, 0px 0px 3px black,0px 0px 3px black,0px 0px 3px black;
     border-image: linear-gradient(to right, rgba(176, 176, 175, 0) 5%, rgba(176, 176, 175, 0.7), rgba(176, 176, 175, 0) 95%);
     border-image-slice: 1;
     border-width: 1px;
@@ -164,12 +179,14 @@ export interface State {
   warbandID: string;
   warbandMembers: GroupMemberState[];
   visible: boolean;
+  mouseOver: boolean;
 }
 
 class BattleGroupWatchList extends React.Component<Props, State> {
   private receivedMemberUpdate: boolean = false;
   private myGroupsGQL: GraphQLResult<BattleGroupWatchListQuery.Query>;
   private evh: EventHandle[] = [];
+  private mouseLeaveTimeout: number;
 
   constructor(props: Props) {
     super(props);
@@ -178,6 +195,7 @@ class BattleGroupWatchList extends React.Component<Props, State> {
       warbandID: '',
       warbandMembers: [],
       visible: false,
+      mouseOver: false,
     };
   }
 
@@ -186,23 +204,29 @@ class BattleGroupWatchList extends React.Component<Props, State> {
       <GraphQL query={query} onQueryResult={this.handleQueryResult}>
         {() => (
           this.state.battlegroupID && this.state.warbandID ?
-            <Container>
-              <TopLeftOrnament />
-              <TopRightOrnament />
-              <BottomLeftOrnament />
-              <BottomRightOrnament />
-              <CollapsingList
-                title={`Watch (${this.state.warbandMembers.length})`}
-                items={this.state.warbandMembers}
-                styles={{
-                  body: defaultBattleGroupWatchListStyles.body,
-                  title: defaultBattleGroupWatchListStyles.title,
-                }}
-                renderListItem={(item: GroupMemberState) =>
-                  <WatchListItem item={item} />
-                }
-              />
-            </Container> : null
+          <UIContext.Consumer>
+            {(ui) => {
+              const color = ui.currentTheme().toolTips.color[game.selfPlayerState.faction];
+              return (
+                <Container onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
+                  <Background color={color} className={this.state.mouseOver ? 'mouseOver' : ''}>
+                    <HeaderOverlay color={color} />
+                  </Background>
+                  <CollapsingList
+                    title={`Watch (${this.state.warbandMembers.length})`}
+                    items={this.state.warbandMembers}
+                    styles={{
+                      body: defaultBattleGroupWatchListStyles.body,
+                      title: defaultBattleGroupWatchListStyles.title,
+                    }}
+                    renderListItem={(item: GroupMemberState) =>
+                      <WatchListItem item={item} />
+                    }
+                  />
+                </Container>
+              );
+            }}
+          </UIContext.Consumer> : null
         )}
       </GraphQL>
     );
@@ -215,6 +239,10 @@ class BattleGroupWatchList extends React.Component<Props, State> {
   }
 
   public shouldComponentUpdate(nextProps: Props, nextState: State) {
+    if (this.state.mouseOver !== nextState.mouseOver) {
+      return true;
+    }
+
     if (this.state.warbandID !== nextState.warbandID) {
       return true;
     }
@@ -382,6 +410,23 @@ class BattleGroupWatchList extends React.Component<Props, State> {
     if (this.state.visible) {
       this.setState({ visible: false });
     }
+  }
+
+  private onMouseOver = () => {
+    if (this.mouseLeaveTimeout) {
+      window.clearTimeout(this.mouseLeaveTimeout);
+      this.mouseLeaveTimeout = null;
+    }
+
+    if (!this.state.mouseOver) {
+      this.setState({ mouseOver: true });
+    }
+  }
+
+  private onMouseLeave = () => {
+    this.mouseLeaveTimeout = window.setTimeout(() => {
+      this.setState({ mouseOver: false });
+    }, 1000);
   }
 }
 

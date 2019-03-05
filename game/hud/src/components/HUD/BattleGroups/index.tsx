@@ -33,7 +33,8 @@ import { BattleGroupNotificationProvider } from './BattleGroupNotificationProvid
 
 const Container = styled.div`
   width: 100%;
-  height: 100%;
+  height: fit-content;
+  max-height: 100%;
 `;
 
 const query = gql`
@@ -89,7 +90,10 @@ class BattleGroupsList extends React.Component<Props, State> {
   }
   public render() {
     if (!this.state.battlegroupID) {
-      return null;
+      return <GraphQL
+        query={query}
+        onQueryResult={this.handleQueryResult}
+      />;
     }
 
     const groups = this.state.groups;
@@ -233,7 +237,8 @@ class BattleGroupsList extends React.Component<Props, State> {
       };
     });
 
-    this.setState({ groups });
+    console.log('Got it m8');
+    this.setState({ battlegroupID: myBattlegroup.battlegroup.id, groups });
   }
 
   private onMemberJoin = (member: GroupMemberState) => {

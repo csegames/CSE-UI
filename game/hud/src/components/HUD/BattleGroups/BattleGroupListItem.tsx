@@ -18,6 +18,7 @@ const Container = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  text-shadow: 0px 0px 3px black, 0px 0px 3px black, 0px 0px 3px black,0px 0px 3px black,0px 0px 3px black;
 `;
 
 const RankIcon = styled.span`

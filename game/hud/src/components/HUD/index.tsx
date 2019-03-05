@@ -68,7 +68,7 @@ const HUDNavContainer = styled.div`
 
 const ZoneNameContainer = styled.div`
   position: fixed;
-  top: 50px;
+  top: 10px;
   left: 0;
 `;
 

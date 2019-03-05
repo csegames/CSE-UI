@@ -29,6 +29,7 @@ const Name = styled.div`
   white-space: nowrap;
   overflow: hidden;
   margin-right: 5px;
+  text-shadow: 0px 0px 3px black, 0px 0px 3px black, 0px 0px 3px black,0px 0px 3px black,0px 0px 3px black;
 `;
 
 const Resources = styled.div`
