@@ -62,7 +62,7 @@
     "fuzzysearch": "^1.0.3",
     "graphql": "^0.13.2",
     "graphql-tag": "^1.2.4",
-    "linaria": "^1.2.5",
+    "linaria": "^0.1.99",
     "node-xmpp-client": "2.1.0",
     "randomstring": "^1.1.5",
     "raven-js": "^3.27.0",

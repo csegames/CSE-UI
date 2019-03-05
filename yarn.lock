@@ -8650,10 +8650,10 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-linaria@^1.2.5:
-  version "1.2.5"
-  resolved "http://registry.camelotunchained.com/linaria/-/linaria-1.2.5.tgz#613e1a6c2f0294414e99f605bee3b53e55eed14d"
-  integrity sha512-h57I6Z/RDEExBuUo22o8v3W2epiMl1VLU1sKJl68FbZx6CPexWKxJk4EPt+H6WWZ2ObzL1bjYwq10nFN+Mmz1w==
+linaria@^0.1.99:
+  version "0.1.99"
+  resolved "http://registry.camelotunchained.com/linaria/-/linaria-0.1.99.tgz#a549c8935c9d1b4a5a5568e6390152ff1c06633b"
+  integrity sha512-gLvSsVub/cqNSfa7qjuZDl7ZxgDX/ev2pzp75ePZXEm7b7t6vWamJmylny7e96CHM7er+FSkdBSoolni4wZOwA==
   dependencies:
     "@babel/core" "^7.3.3"
     "@babel/generator" "^7.3.3"
