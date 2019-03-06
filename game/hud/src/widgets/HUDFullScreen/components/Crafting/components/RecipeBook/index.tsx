@@ -195,11 +195,13 @@ class RecipeBook extends React.Component<Props, State> {
   public shouldComponentUpdate(nextProps: Props, nextState: State) {
     return this.props.voxEntityID !== nextProps.voxEntityID ||
       !isEqual(this.props.jobIdentifierToVoxJobGroupLog, nextProps.jobIdentifierToVoxJobGroupLog) ||
+      !isEqual(this.props.recipeIdToRecipe, nextProps.recipeIdToRecipe) ||
       !isEqual(this.state, nextState);
   }
 
   public componentDidUpdate(prevProps: Props) {
-    if (!isEqual(this.props.jobIdentifierToVoxJobGroupLog, prevProps.jobIdentifierToVoxJobGroupLog)) {
+    if (!isEqual(this.props.jobIdentifierToVoxJobGroupLog, prevProps.jobIdentifierToVoxJobGroupLog) ||
+        !isEqual(this.props.recipeIdToRecipe, prevProps.recipeIdToRecipe)) {
       this.initAllGroupLogs();
     }
 
