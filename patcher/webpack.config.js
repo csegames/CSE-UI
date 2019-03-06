@@ -124,7 +124,7 @@ module.exports = function (e, argv = {}) {
                   },
                 },
                 {
-                  loader: 'linaria/loader',
+                  loader: '@csegames/linaria/loader',
                   options: {
                     sourceMap: IS_DEVELOPMENT,
                     resolve: {
@@ -176,7 +176,7 @@ module.exports = function (e, argv = {}) {
                   }
                 },
                 {
-                  loader: 'linaria/loader',
+                  loader: '@csegames/linaria/loader',
                   options: {
                     sourceMap: IS_DEVELOPMENT,
                     resolve: {
