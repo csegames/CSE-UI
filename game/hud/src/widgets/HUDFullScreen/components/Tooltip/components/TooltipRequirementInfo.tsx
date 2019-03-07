@@ -24,7 +24,7 @@ const StatItem = styled.div`
 `;
 
 const StatName = styled.div`
-  font-size: ${(props: any) => props.fontSize}px;
+  font-size: 12px;
 `;
 
 const StatValue = styled.div`

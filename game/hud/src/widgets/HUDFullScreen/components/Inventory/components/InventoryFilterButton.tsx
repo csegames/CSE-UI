@@ -26,7 +26,7 @@ const FilterIcon = styled.div`
   font-size: 25px;
   color: ${(props: any) => props.active ? '#998675' : '#43382E'};
   &:hover {
-    -webkit-filter: brightness(120%);
+    color: #766351;
   }
 `;
 

@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
 import { utils } from '@csegames/camelot-unchained';
 
 import HUDNav from 'components/HUDNav/index';
@@ -49,11 +48,6 @@ export default {
         name: 'console',
         tooltip: 'Console',
         iconClass: 'fa-terminal',
-        icon: (
-          <span>
-            <i className='fa fa-terminal fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.trigger('navigate', 'console');
@@ -63,11 +57,6 @@ export default {
         name: 'gamemenu',
         tooltip: 'Game Menu',
         iconClass: 'fa-cog',
-        icon: (
-          <span>
-            <i className='fa fa-cog fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.trigger('navigate', 'gamemenu'),
@@ -78,11 +67,6 @@ export default {
         name: 'building',
         tooltip: 'Toggle Building Mode',
         iconClass: 'fa-cube',
-        icon: (
-          <span>
-            <i className='fa fa-cube fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.trigger('navigate', 'building');
@@ -93,11 +77,6 @@ export default {
         name: 'character',
         tooltip: 'Character',
         iconClass: 'fa-user',
-        icon: (
-          <span>
-            <i className='fa fa-user fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.trigger('navigate', 'character');
@@ -108,11 +87,6 @@ export default {
         name: 'equippedgear',
         tooltip: 'Equipped Items',
         iconClass: 'fa-shield',
-        icon: (
-          <span>
-            <i className='fa fa-shield fa-stack-1x'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.trigger('navigate', 'equippedgear-left');
@@ -124,11 +98,6 @@ export default {
         name: 'inventory',
         tooltip: 'Inventory',
         iconClass: 'fa-briefcase',
-        icon: (
-          <span>
-            <i className='fa fa-briefcase fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.trigger('navigate', 'equippedgear-left');
@@ -140,11 +109,6 @@ export default {
       //   name: 'spellbook',
       //   tooltip: 'Spellbook',
       //   iconClass: 'fa-book',
-      //   icon: (
-      //     <span>
-      //       <i className='fa fa-book fa-stack-1x fa-inverse'></i>
-      //     </span>
-      //   ),
       //   hidden: false,
       //   onClick: () => {
       //     game.trigger('navigate', 'spellbook');
@@ -156,11 +120,6 @@ export default {
       //   name: 'skillbuilder',
       //   tooltip: 'Skill Builder',
       //   iconClass: 'fa-rotate-270 fa-sitemap',
-      //   icon: (
-      //     <span>
-      //       <i className='fa fa-rotate-270 fa-sitemap fa-stack-1x fa-inverse'></i>
-      //     </span>
-      //   ),
       //   hidden: false,
       //   onClick: () => {
       //     game.trigger('navigate', 'skillbuilder');
@@ -171,11 +130,6 @@ export default {
         name: 'crafting',
         tooltip: 'Crafting',
         iconClass: 'fa-flask',
-        icon: (
-          <span>
-            <i className='fa fa-flask fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.trigger('navigate', 'crafting');
@@ -185,11 +139,6 @@ export default {
         name: 'nearby-plot',
         tooltip: 'Nearby Plot',
         iconClass: 'fa-map-signs',
-        icon: (
-          <span>
-            <i className='fa fa-map-signs fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.sendSlashCommand('plot showui --nearby');
@@ -199,11 +148,6 @@ export default {
         name: 'gameinfo',
         tooltip: 'Game Info',
         iconClass: 'fa-tasks',
-        icon: (
-          <span>
-            <i className='fa fa-info fa-stack-1x'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.trigger('navigate', 'gameinfo');
@@ -213,11 +157,6 @@ export default {
         name: 'owned-plot',
         tooltip: 'Owned Plot',
         iconClass: 'fa-home',
-        icon: (
-          <span>
-            <i className='fa fa-home fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.sendSlashCommand('plot showui --owned');
@@ -227,11 +166,6 @@ export default {
         name: 'map',
         tooltip: 'World Map',
         iconClass: 'fa-map',
-        icon: (
-          <span>
-            <i className='fa fa-map fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.trigger('navigate', 'map');
@@ -241,11 +175,6 @@ export default {
       //   name: 'social',
       //   tooltip: 'Social',
       //   iconClass: 'fa-users',
-      //   icon: (
-      //     <span>
-      //       <i className='fa fa-users fa-stack-1x fa-inverse'></i>
-      //     </span>
-      //   ),
       //   hidden: false,
       //   onClick: () => {
       //     game.trigger('navigate', 'social');
@@ -256,11 +185,6 @@ export default {
       //   name: 'plotcontrol',
       //   tooltip: 'Plot Controller',
       //   iconClass: 'fa-map-signs',
-      //   icon: (
-      //     <span>
-      //       <i className='fa fa-map-signs fa-stack-1x fa-inverse'></i>
-      //     </span>
-      //   ),
       //   hidden: true,
       //   onClick: () => {
       //     game.trigger('navigate', 'plotcontrol');
@@ -270,11 +194,6 @@ export default {
         name: 'scenario-join',
         tooltip: 'Join Scenario',
         iconClass: 'icon-scenario',
-        icon: (
-          <span>
-            <i className='icon-scenario fa-stack-1x'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.trigger('navigate', 'scenario-join');
@@ -284,11 +203,6 @@ export default {
         name: 'scenario',
         tooltip: 'Scenario Management',
         iconClass: 'fa-gamepad',
-        icon: (
-          <span>
-            <i className='fa fa-gamepad fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.sendSlashCommand('showscenarioui');
@@ -298,11 +212,6 @@ export default {
         name: 'scenario-results',
         tooltip: 'Scenario Results',
         iconClass: 'fa-star',
-        icon: (
-          <span>
-            <i className='fa fa-star fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.trigger('navigate', 'scenario-results');
@@ -312,11 +221,6 @@ export default {
         name: 'progression',
         tooltip: 'Progression',
         iconClass: 'fa-chart-line',
-        icon: (
-          <span>
-            <i className='fa fa-chart-line fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.trigger('navigate', 'progression');
@@ -326,11 +230,6 @@ export default {
       //   name: 'chat',
       //   tooltip: 'Show/Hide Chat',
       //   iconClass: 'fa-comment',
-      //   icon: (
-      //     <span>
-      //       <i className='fa fa-comment fa-stack-1x fa-inverse'></i>
-      //     </span>
-      //   ),
       //   hidden: false,
       //   onClick: () => {
       //     game.trigger('navigate', 'chat');
@@ -340,11 +239,6 @@ export default {
         name: 'ui',
         tooltip: 'Toggle UI Edit Mode',
         iconClass: 'fa-lock',
-        icon: (
-          <span>
-            <i className='fa fa-lock fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.trigger('navigate', 'ui');
@@ -354,11 +248,6 @@ export default {
       //   name: 'reset',
       //   tooltip: 'Reset UI layout',
       //   iconClass: 'fa-clone',
-      //   icon: (
-      //     <span>
-      //       <i className='fa fa-clone fa-stack-1x fa-inverse'></i>
-      //     </span>
-      //   ),
       //   hidden: false,
       //   onClick: () => {
       //     game.trigger('navigate', 'reset');
@@ -368,11 +257,6 @@ export default {
         name: 'reloadui',
         tooltip: 'Reload UI',
         iconClass: 'fa-sync',
-        icon: (
-          <span>
-            <i className='fa fa-sync fa-stack-1x fa-inverse'></i>
-          </span>
-        ),
         hidden: false,
         onClick: () => {
           game.reloadUI();

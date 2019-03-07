@@ -344,6 +344,16 @@ export class InputItem extends React.Component<Props, State> {
           return;
         }
 
+        if (this.props.item && (this.props.item.stats.item.unitCount + itemUnitCount > ingredientInfo.maxUnitCount)) {
+          // Trying to add more than max items when there are already some items in the slot.
+          this.props.onAddInputItem(
+            e.dataTransfer.item,
+            this.props.slotNumber,
+            ingredientInfo.maxUnitCount - this.props.item.stats.item.unitCount,
+          );
+          return;
+        }
+
         if (itemUnitCount > ingredientInfo.maxUnitCount) {
           this.props.onAddInputItem(
             e.dataTransfer.item,

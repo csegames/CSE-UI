@@ -14,7 +14,7 @@ declare const toastr: any;
 
 const iconClass = {
   translate: 'translate fa fa-arrows',
-  rotate: 'rotate fa fa-refresh',
+  rotate: 'rotate fa fa-sync',
   scale: 'scale fa fa-expand',
   reset: 'reset fa fa-undo',
 };

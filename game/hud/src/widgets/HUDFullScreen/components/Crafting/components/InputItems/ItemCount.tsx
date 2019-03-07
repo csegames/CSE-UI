@@ -163,6 +163,12 @@ class ItemCount extends React.Component<Props, State> {
       this.setState({ ratioItemCount: this.props.item.stats.item.unitCount });
     }
 
+    if (prevProps.item && this.props.item &&
+        prevProps.item.stats.item.unitCount !== this.props.item.stats.item.unitCount) {
+      // Item count of input has been changed
+      this.setState({ ratioItemCount: this.props.item.stats.item.unitCount });
+    }
+
     if (prevProps.shapeJobRunCount !== this.props.shapeJobRunCount) {
       // Shape Job run count was changed, update job item count based off of this item's ratio.
       this.onItemCountChange(this.state.ratioItemCount * this.props.shapeJobRunCount);

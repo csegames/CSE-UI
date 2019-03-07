@@ -41,7 +41,6 @@ const SlotOverlay = styled.div`
   bottom: 0;
   left: 0;
   background-color: ${(props: any) => props.backgroundColor};
-  box-shadow: ${(props: any) => props.boxShadow};
   border: 1px solid transparent;
   &:hover {
     box-shadow: inset 0 0 10px rgba(255,255,255,0.2);

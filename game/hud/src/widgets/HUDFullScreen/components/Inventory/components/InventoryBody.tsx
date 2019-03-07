@@ -224,6 +224,10 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     if (!_.isEqual(this.props.invBodyDimensions, prevProps.invBodyDimensions) && !this.props.graphql.loading) {
       this.initializeSlotsData();
     }
+
+    if (this.props.searchValue !== prevProps.searchValue) {
+      this.bodyRef.scrollTop = 0;
+    }
   }
 
   public componentWillUnmount() {

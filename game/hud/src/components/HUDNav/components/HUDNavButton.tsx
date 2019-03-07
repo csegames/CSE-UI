@@ -17,33 +17,19 @@ const Item = styled.a`
   color: #e0ddd3 !important;
   width: 26px;
   height: 26px;
+  font-size: 14px !important;
   text-align: center;
   display: inline-block;
   text-shadow: 1px 1px 0px #242424;
   &:hover {
-    i {
-      font-size: 14px;
-      color: #efefe6;
-    }
+    color: #efefe6;
   }
-  span {
-    position: relative;
-    display: inline-block;
-    width: 26px;
-    height: 26px;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    vertical-align: middle;
-    i {
-      color: #aba9a2;
-      font-size: 14px;
-    }
+  &.fontawesome {
+    font-size: 10px !important;
   }
   .glow & {
-    i {
-      font-size: 16px;
-      color: #e0ca91;
-    }
+    font-size: 16px;
+    color: #e0ca91;
   }
 `;
 
@@ -110,7 +96,7 @@ class HUDNavButton extends React.Component<Props, State> {
   }
 
   public render() {
-    const { orientation, onClick, name, icon, iconClass } = this.props;
+    const { orientation, onClick, name, iconClass } = this.props;
     const { glow, badge } = this.state;
     const cls = [];
     if (orientation === utils.Orientation.HORIZONTAL) cls.push(ListHorizontal);
@@ -122,10 +108,10 @@ class HUDNavButton extends React.Component<Props, State> {
           onClick={onClick}
           onMouseOver={this.onMouseOver}
           onMouseLeave={this.onMouseLeave}>
-          <Item href='#'>
+          <Item href='#' className={iconClass.includes('fa') ? 'fontawesome' : ''}>
             {
-              typeof icon !== 'undefined' ? icon :
-                <i className={className('fa', 'fa-lg', iconClass, 'click-effect')}></i>
+              <i className={iconClass.includes('fa') ? className('fa', 'fa-lg', iconClass, 'click-effect') : iconClass}>
+              </i>
             }
           </Item>
         </div>
