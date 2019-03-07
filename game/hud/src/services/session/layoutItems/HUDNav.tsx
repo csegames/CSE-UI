@@ -297,10 +297,10 @@ export default {
       {
         name: 'scenario-results',
         tooltip: 'Scenario Results',
-        iconClass: 'fa-fort-awesome',
+        iconClass: 'fa-star',
         icon: (
           <span>
-            <i className='fa fa-fort-awesome fa-stack-1x fa-inverse'></i>
+            <i className='fa fa-star fa-stack-1x fa-inverse'></i>
           </span>
         ),
         hidden: false,
@@ -311,10 +311,10 @@ export default {
       {
         name: 'progression',
         tooltip: 'Progression',
-        iconClass: 'fa-line-chart',
+        iconClass: 'fa-chart-line',
         icon: (
           <span>
-            <i className='fa fa-line-chart fa-stack-1x fa-inverse'></i>
+            <i className='fa fa-chart-line fa-stack-1x fa-inverse'></i>
           </span>
         ),
         hidden: false,
@@ -367,10 +367,10 @@ export default {
       {
         name: 'reloadui',
         tooltip: 'Reload UI',
-        iconClass: 'fa-refresh',
+        iconClass: 'fa-sync',
         icon: (
           <span>
-            <i className='fa fa-refresh fa-stack-1x fa-inverse'></i>
+            <i className='fa fa-sync fa-stack-1x fa-inverse'></i>
           </span>
         ),
         hidden: false,
