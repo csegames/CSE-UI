@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { LayoutMode, Edge } from 'components/HUDDrag';
-import ScenarioJoin, { ScenarioJoinDimensions } from 'widgets/ScenarioJoin';
+import { LayoutMode, Edge } from 'utils/HUDDrag';
+import ScenarioJoin, { ScenarioJoinDimensions } from 'hud/ScenarioJoin';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

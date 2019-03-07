@@ -10,7 +10,7 @@ import { styled } from '@csegames/linaria/react';
 import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 // import { hot, setConfig } from 'react-hot-loader';
 
-import DragStore from '../DragAndDrop/DragStore';
+import DragStore from 'utils/DragAndDrop/DragStore';
 import {
   LayoutState,
   setPosition,
@@ -20,41 +20,41 @@ import {
 } from '../../services/session/layout';
 import { InvitesState, initializeInvites } from '../../services/session/invites';
 import { SessionState } from '../../services/session/reducer';
-import HUDDrag, { HUDDragState, HUDDragOptions } from '../HUDDrag';
-import Watermark from '../Watermark';
-import { LoadingScreen } from '../LoadingScreen';
-import { OfflineZoneSelect } from '../OfflineZoneSelect';
-import HUDFullScreen from '../../widgets/HUDFullScreen';
-import DevUI from '../DevUI';
-import AbilityBar from '../AbilityBar';
-import ScenarioPopup from '../ScenarioPopup';
-import ScenarioResults from '../ScenarioResults';
-import Settings from '../../widgets/Settings/SettingsMain';
+import HUDDrag, { HUDDragState, HUDDragOptions } from 'utils/HUDDrag';
+import Watermark from './Watermark';
+import { LoadingScreen } from 'fullscreen/LoadingScreen';
+import { OfflineZoneSelect } from './OfflineZoneSelect';
+import HUDFullScreen from '../fullscreen';
+import DevUI from 'hud/DevUI';
+import AbilityBar from 'hud/AbilityBar';
+import ScenarioPopup from 'hud/ScenarioPopup';
+import ScenarioResults from 'hud/ScenarioResults';
+import Settings from 'hud/Settings/SettingsMain';
 
 // import TestButtons from '../BattleGroups/components/TestButtons'
 
-import { ZoneName } from '../ZoneName';
-import HUDEditor from './HUDEditor';
+import { ZoneName } from './ZoneName';
+import { HUDEditor } from './HUDEditor';
 
 // TEMP -- Disable this being movable/editable
 import HUDNav from '../../services/session/layoutItems/HUDNav';
-import Console from '../Console';
-import { InteractiveAlertView } from '../InteractiveAlert';
-import { ContextMenuView } from '../ContextMenu';
-import { TooltipView } from 'components/Tooltip';
-import PassiveAlert from '../PassiveAlert';
-import { ActionAlert } from '../ActionAlert';
-import { MiniScenarioScoreboard } from '../LiveScenarioScoreboard/MiniScenarioScoreboard';
-import { FullScenarioScoreboard } from '../LiveScenarioScoreboard/FullScenarioScoreboard';
+import Console from './Console';
+import { InteractiveAlertView } from 'hud/InteractiveAlert';
+import { ContextMenuView } from '../shared/ContextMenu';
+import { TooltipView } from '../shared/Tooltip';
+import PassiveAlert from './PassiveAlert';
+import { ActionAlert } from './ActionAlert';
+import { MiniScenarioScoreboard } from 'hud/LiveScenarioScoreboard/MiniScenarioScoreboard';
+import { FullScenarioScoreboard } from 'hud/LiveScenarioScoreboard/FullScenarioScoreboard';
 import { uiContextFromGame } from 'services/session/UIContext';
 import HUDZOrder from 'services/session/HUDZOrder';
 
 // import { ActionBars } from '../ActionBar/BarsView';
-import { DragAndDropV2Renderer } from 'components/Utilities/DragAndDropV2';
-import { WarbandNotificationProvider } from '../WarbandDisplay/WarbandNotificationProvider';
-import { BattleGroupNotificationProvider } from '../BattleGroups/BattleGroupNotificationProvider';
+import { DragAndDropV2Renderer } from 'utils/DragAndDropV2';
+import { WarbandNotificationProvider } from 'hud/WarbandDisplay/WarbandNotificationProvider';
+import { BattleGroupNotificationProvider } from 'hud/BattleGroups/BattleGroupNotificationProvider';
 
-import { DynamicModal } from '../DynamicModal';
+import { DynamicModal } from 'utils/DynamicModal';
 
 const HUDNavContainer = styled.div`
   position: fixed;
@@ -121,7 +121,7 @@ export interface HUDState {
   uiContext: UIContext;
 }
 
-class HUD extends React.Component<HUDProps, HUDState> {
+class HUDViewInternal extends React.Component<HUDProps, HUDState> {
   constructor(props: HUDProps) {
     super(props);
     this.state = {
@@ -353,4 +353,4 @@ function select(state: SessionState) {
 
 // setConfig({ pureSFC: true });
 // export default hot(module)(connect(select)(HUD));
-export default connect(select)(HUD);
+export const HUDView = connect(select)(HUDViewInternal);

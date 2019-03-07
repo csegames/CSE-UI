@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { LayoutMode, Edge } from 'components/HUDDrag';
-import { ScenarioButton } from 'widgets/ScenarioButton';
+import { LayoutMode, Edge } from 'utils/HUDDrag';
+import { ScenarioButton } from 'hud/ScenarioButton';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

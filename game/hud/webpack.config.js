@@ -22,15 +22,15 @@ const ALIAS = {
   'react': path.dirname(
     require.resolve('react/package.json')
   ),
+  hud: path.resolve(__dirname, 'tmp/components/hud'),
+  fullscreen: path.resolve(__dirname, 'tmp/components/fullscreen'),
+  shared: path.resolve(__dirname, 'tmp/components/shared'),
+  utils: path.resolve(__dirname, 'tmp/components/utils'),
   gql: path.resolve(__dirname, 'tmp/gql'),
   components: path.resolve(__dirname, 'tmp/components'),
-  'UI/TabbedDialog': path.resolve(__dirname, 'tmp/components/UI/TabbedDialog/index'),
-  UI: path.resolve(__dirname, 'tmp/components/UI'),
   actions: path.resolve(__dirname, 'tmp/services/actions'),
   lib: path.resolve(__dirname, 'tmp/lib'),
   services: path.resolve(__dirname, 'tmp/services'),
-  widgets: path.resolve(__dirname, 'tmp/widgets'),
-  HUDContext: path.resolve(__dirname, 'tmp/components/HUD/context'),
   images: path.resolve(__dirname, 'tmp/images'),
 };
 

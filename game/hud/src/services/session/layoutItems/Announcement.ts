@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { LayoutMode } from 'components/HUDDrag';
-import Announcement from 'components/Announcement';
+import { LayoutMode } from 'utils/HUDDrag';
+import Announcement from 'hud/Announcement';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

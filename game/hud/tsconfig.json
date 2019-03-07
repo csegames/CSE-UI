@@ -17,14 +17,15 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./src",
     "paths": {
+      "hud/*": ["components/hud/*"],
+      "fullscreen/*": ["components/fullscreen/*"],
+      "shared/*": ["components/shared/*"],
+      "utils/*": ["components/utils/*"],
       "gql/*": [ "gql/*" ],
       "components/*": [ "components/*" ],
-      "UI/*": [ "components/UI/*" ],
       "actions/*": [ "services/actions/*" ],
       "lib/*": [ "lib/*" ],
       "services/*": [ "services/*" ],
-      "widgets/*": [ "widgets/*" ],
-      "HUDContext": [ "components/HUD/context.ts" ],
       "*": [
         "node_modules/*",
         "types/*",

@@ -26,7 +26,7 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 
-import HUD from './components/HUD';
+import { HUDView } from './components/hud';
 import { apollo, store } from './services/session/reducer';
 import { ApolloProvider } from 'react-apollo';
 
@@ -50,7 +50,7 @@ function readyCheck() {
   ReactDom.render(
   <ErrorBoundary outputErrorToConsole>
       <ApolloProvider store={store} client={apollo}>
-        <HUD />
+        <HUDView />
     </ApolloProvider>
   </ErrorBoundary>,
   document.getElementById('hud'));

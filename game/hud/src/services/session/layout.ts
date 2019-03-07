@@ -9,7 +9,7 @@ import { Map } from 'immutable';
 import { Module } from 'redux-typed-modules';
 
 import { cloneDeep } from 'lodash';
-import { HUDDragOptions, LayoutMode } from '../../components/HUDDrag';
+import { HUDDragOptions, LayoutMode } from 'utils/HUDDrag';
 
 // layout items
 import Chat from './layoutItems/Chat';

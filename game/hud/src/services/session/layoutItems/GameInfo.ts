@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { LayoutMode } from '../../../components/HUDDrag';
-import GameInfo, { GameInfoDimensions } from '../../../widgets/GameInfo/';
+import { LayoutMode } from 'utils/HUDDrag';
+import GameInfo, { GameInfoDimensions } from 'hud/GameInfo/';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

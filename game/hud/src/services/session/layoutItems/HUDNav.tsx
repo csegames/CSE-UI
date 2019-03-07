@@ -6,8 +6,8 @@
 
 import { utils } from '@csegames/camelot-unchained';
 
-import HUDNav from 'components/HUDNav/index';
-import { LayoutMode } from 'components/HUDDrag';
+import Nav from 'hud/Nav';
+import { LayoutMode } from 'utils/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 
 const { Orientation } = utils;
@@ -40,7 +40,7 @@ export default {
     lockHeight: true,
     lockWidth: true,
   },
-  component: HUDNav,
+  component: Nav,
   props: {
     orientation: Orientation.HORIZONTAL,
     items: [

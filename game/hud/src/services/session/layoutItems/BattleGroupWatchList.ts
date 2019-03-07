@@ -5,8 +5,8 @@
  *
  */
 
-import { LayoutMode, Edge } from '../../../components/HUDDrag';
-import BattleGroupWatchList from '../../../components/BattleGroupWatchList';
+import { LayoutMode, Edge } from 'utils/HUDDrag';
+import BattleGroupWatchList from 'hud/BattleGroupWatchList';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

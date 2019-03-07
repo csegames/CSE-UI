@@ -5,8 +5,8 @@
  *
  */
 
-import { LayoutMode } from 'components/HUDDrag';
-import AbilityQueue from 'components/AbilityQueue';
+import { LayoutMode } from 'utils/HUDDrag';
+import AbilityQueue from 'hud/AbilityQueue';
 import HUDZOrder from 'services/session/HUDZOrder';
 
 export default {

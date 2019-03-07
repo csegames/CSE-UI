@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import GameMenu, { GameMenuDimensions } from 'components/GameMenu';
-import { LayoutMode } from 'components/HUDDrag';
+import GameMenu, { GameMenuDimensions } from 'hud/GameMenu';
+import { LayoutMode } from 'utils/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

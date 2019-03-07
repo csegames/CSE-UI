@@ -5,8 +5,8 @@
  *
  */
 
-import { LayoutMode } from 'components/HUDDrag';
-import { Respawn, RespawnDimensions } from 'components/Respawn';
+import { LayoutMode } from 'utils/HUDDrag';
+import { Respawn, RespawnDimensions } from 'hud/Respawn';
 import HUDZOrder from 'services/session/HUDZOrder';
 
 export default {

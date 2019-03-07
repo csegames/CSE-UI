@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { CompassTooltipData } from 'components/CompassTooltip';
+import { CompassTooltipData } from 'hud/CompassTooltip';
 
 export function showCompassTooltip(tooltip: CompassTooltipData) {
   game.trigger('compass-tooltip--show', tooltip);

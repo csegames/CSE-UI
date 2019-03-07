@@ -3,9 +3,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { LayoutMode, Edge } from 'components/HUDDrag';
+import { LayoutMode, Edge } from 'utils/HUDDrag';
 import HUDZOrder from '../HUDZOrder';
-import CompassTooltip from 'components/CompassTooltip';
+import CompassTooltip from 'hud/CompassTooltip';
 
 export default {
   position: {
