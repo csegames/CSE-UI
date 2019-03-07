@@ -51,13 +51,15 @@ class ClearJob extends React.PureComponent<Props> {
   public render() {
     const { jobNumber, canClear } = this.props;
     const JobContext = getJobContext(jobNumber);
-    const className = `${canClear ? 'fa fa-undo' : 'disabled fa fa-undo'}`;
+    const className = `${canClear ? '' : 'disabled'}`;
     return (
       <JobContext.Consumer>
         {({ onClearJob }) => {
           return (
             <Tooltip content={<TooltipContent>Clear</TooltipContent>}>
-              <ResetButton className={className} onClick={onClearJob} />
+              <ResetButton className={className} onClick={onClearJob}>
+                <span className='fa fa-undo' />
+              </ResetButton>
             </Tooltip>
           );
         }}

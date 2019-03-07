@@ -142,7 +142,7 @@ const RightCrystal = styled.div`
 
 const ClearJobPosition = styled.div`
   position: fixed;
-  top: 103px;
+  top: 107px;
   left: 14px;
   @media (min-width: ${MediaBreakpoints.UHD}px) {
     top: 197px;
