@@ -21,8 +21,9 @@ export const orbsParticleDef = {
     "shape": {
       "type": "circle",
       "stroke": {
-        "width": 0,
-        "color": "#ffffff"
+        "width": 2,
+        "height": 2,
+        "color": "#ffe270",
       },
       "polygon": {
         "nb_sides": 3

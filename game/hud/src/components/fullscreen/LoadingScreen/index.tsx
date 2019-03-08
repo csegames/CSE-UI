@@ -8,7 +8,7 @@ import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 
 import ParallaxBG from 'shared/ParallaxBG';
-import { ProgressBar } from './ProgressBar';
+// import { ProgressBar } from './ProgressBar';
 
 const Container = styled.div`
   position: fixed;
@@ -18,17 +18,6 @@ const Container = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 9999;
-`;
-
-const LoadingMessage = styled.div`
-  position: absolute;
-  bottom: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: white;
-  font-family: 'TitilliumWeb';
-  font-size: 24px;
 `;
 
 const Overlay = styled.div`
@@ -38,45 +27,79 @@ const Overlay = styled.div`
   height: 100%;
 `;
 
-const ProgressBarWrapper = styled.div`
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-`;
+// const ProgressBarWrapper = styled.div`
+//   position: absolute;
+//   bottom: 0;
+//   width: 100%;
+// `;
 
-const TrademarkWrapper = styled.div`
+const LogoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: absolute;
-  bottom: 10px;
-  right: 0;
-  padding: 10px;
-  color: #aaa;
-  text-align: right;
-  font-family: 'TitilliumWeb';
-  font-size: 14px;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 const TriRealm = styled.h3`
   margin: 0;
+  color: #aaa;
+  text-align: center;
+  font-family: 'TitilliumWeb';
+  font-size: 18px;
 `;
 
 const Logo = styled.div`
-  position: absolute;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%) scale(0.75);
-  width: 462px;
-  height: 171px;
+  width: 347px;
+  height: 128px;
   background: url(../images/logo.png);
   background-repeat: no-repeat;
+  background-size: contain;
+`;
+
+const Trademark = styled.div`
+  margin-top: 50px;
+  margin-bottom: 20px;
+  color: #aaa;
+  text-align: center;
+  font-family: 'TitilliumWeb';
+  font-size: 14px;
 `;
 
 const PoweredBy = styled.div`
   position: absolute;
-  bottom: 10px;
-  left: 0;
-  width: 453px;
-  height: 88px;
-  background: url(../images/poweredby.png);
+  left: 20px;
+  bottom: 0px;
+  width: 262px;
+  height: 142px;
+  background: url(../images/poweredby-stacked.png);
+`;
+
+const LoadingWrapper = styled.div`
+  position: absolute;
+  right: 40px;
+  bottom: 0px;
+  max-width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const LoadingIcon = styled.video`
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  filter: brightness(0) invert(1);
+  opacity: 0.2;
+`;
+
+const LoadingMessage = styled.h3`
+  color: white;
+  font-family: 'TitilliumWeb';
+  font-size: 18px;
+  margin-top: -10px;
 `;
 
 export class LoadingScreen extends React.PureComponent<{}> {
@@ -114,7 +137,7 @@ export class LoadingScreen extends React.PureComponent<{}> {
   }
 
   public render() {
-    const { percent, message, visible } = game.loadingState;
+    const { message, visible } = game.loadingState;
 
     if (!visible) {
       // nothing to render here when the loading screen is not visible;
@@ -131,16 +154,19 @@ export class LoadingScreen extends React.PureComponent<{}> {
         />
 
         <Overlay>
-          <ProgressBarWrapper>
+          {/* <ProgressBarWrapper>
             <ProgressBar progress={percent} />
-          </ProgressBarWrapper>
-          <TrademarkWrapper>
+          </ProgressBarWrapper> */}
+          <LogoWrapper>
+            <Logo />
             <TriRealm>A TriRealm™ MMORPG</TriRealm>
-            Camelot Unchained and TriRealm are trademarks of City State Entertainment, LLC.
-          </TrademarkWrapper>
-          <Logo />
+            <Trademark>Camelot Unchained and TriRealm are trademarks of City State Entertainment, LLC.</Trademark>
+          </LogoWrapper>
           <PoweredBy />
-          <LoadingMessage>{message}</LoadingMessage>
+          <LoadingWrapper>
+            <LoadingIcon src='images/loading-realms.webm' autoPlay loop muted />
+            <LoadingMessage>{message}</LoadingMessage>
+          </LoadingWrapper>
         </Overlay>
 
       </Container>

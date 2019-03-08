@@ -389,14 +389,13 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
               position: 'absolute',
               visibility: page.visible ? 'visible' : 'hidden',
               background: page.background && page.background || '#111',
-              pointerEvents: 'auto',
+              pointerEvents: k === 'Scoreboard' ? 'none' : 'auto',
             },
           } as any;
 
           if (k.toLowerCase() !== 'scoreboard') {
             pageProps['data-input-group'] = 'block';
           }
-
           return (
             <div id={'DevUI' + k} {...pageProps}>
             <div style={{ position: 'relative' }}>

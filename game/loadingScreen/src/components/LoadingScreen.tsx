@@ -77,7 +77,7 @@ const LoadingWrapper = styled.div`
   position: absolute;
   right: 40px;
   bottom: 0px;
-  max-width: 200px;
+  max-width: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -96,6 +96,7 @@ const LoadingMessage = styled.h3`
   font-family: 'TitilliumWeb';
   font-size: 18px;
   margin-top: -10px;
+  text-align: center;
 `;
 
 export class LoadingScreen extends React.PureComponent<{}> {
