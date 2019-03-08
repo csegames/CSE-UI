@@ -22,7 +22,7 @@ const ALIAS = {
   'react': path.dirname(
     require.resolve('react/package.json')
   ),
-  hud: path.resolve(__dirname, 'tmp/components/hud'),
+  hud: path.resolve(__dirname, 'tmp/components/HUD'),
   fullscreen: path.resolve(__dirname, 'tmp/components/fullscreen'),
   shared: path.resolve(__dirname, 'tmp/components/shared'),
   utils: path.resolve(__dirname, 'tmp/components/utils'),

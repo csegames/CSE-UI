@@ -26,7 +26,7 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 
-import { HUDView } from './components/hud';
+import { HUDView } from 'hud/index';
 import { apollo, store } from './services/session/reducer';
 import { ApolloProvider } from 'react-apollo';
 

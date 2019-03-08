@@ -21,9 +21,9 @@ import {
 import { InvitesState, initializeInvites } from '../../services/session/invites';
 import { SessionState } from '../../services/session/reducer';
 import HUDDrag, { HUDDragState, HUDDragOptions } from 'utils/HUDDrag';
-import Watermark from './Watermark';
+import Watermark from 'hud/Watermark';
 import { LoadingScreen } from 'fullscreen/LoadingScreen';
-import { OfflineZoneSelect } from './OfflineZoneSelect';
+import { OfflineZoneSelect } from 'hud/OfflineZoneSelect';
 import HUDFullScreen from '../fullscreen';
 import DevUI from 'hud/DevUI';
 import AbilityBar from 'hud/AbilityBar';
@@ -33,17 +33,17 @@ import Settings from 'hud/Settings/SettingsMain';
 
 // import TestButtons from '../BattleGroups/components/TestButtons'
 
-import { ZoneName } from './ZoneName';
-import { HUDEditor } from './HUDEditor';
+import { ZoneName } from 'hud/ZoneName';
+import { HUDEditor } from 'hud/HUDEditor';
 
 // TEMP -- Disable this being movable/editable
 import HUDNav from '../../services/session/layoutItems/HUDNav';
-import Console from './Console';
+import Console from 'hud/Console';
 import { InteractiveAlertView } from 'hud/InteractiveAlert';
 import { ContextMenuView } from '../shared/ContextMenu';
 import { TooltipView } from '../shared/Tooltip';
-import PassiveAlert from './PassiveAlert';
-import { ActionAlert } from './ActionAlert';
+import PassiveAlert from 'hud/PassiveAlert';
+import { ActionAlert } from 'hud/ActionAlert';
 import { MiniScenarioScoreboard } from 'hud/LiveScenarioScoreboard/MiniScenarioScoreboard';
 import { FullScenarioScoreboard } from 'hud/LiveScenarioScoreboard/FullScenarioScoreboard';
 import { uiContextFromGame } from 'services/session/UIContext';
