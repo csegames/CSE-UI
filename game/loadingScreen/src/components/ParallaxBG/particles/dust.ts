@@ -21,8 +21,9 @@ export const dustParticleDef = {
     "shape": {
       "type": "circle",
       "stroke": {
-        "width": 0,
-        "color": "#000000"
+        "width": 2,
+        "height": 2,
+        "color": "#a8a86d"
       },
       "image": {
         "width": 100,

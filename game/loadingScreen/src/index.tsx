@@ -16,7 +16,7 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { ErrorBoundary } from '@csegames/camelot-unchained/lib/components/ErrorBoundary';
 
-import { LoadingScreen } from 'hud/LoadingScreen';
+import { LoadingScreen } from 'components/LoadingScreen';
 
 if (process.env.CUUI_LS_ENABLE_WHY_DID_YOU_UPDATE) {
   // tslint:disable

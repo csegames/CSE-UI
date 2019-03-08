@@ -108,6 +108,7 @@ export interface Props {
 }
 
 export interface State {
+  isActive: boolean;
   visible: boolean;
   selectedTransformGizmoMode: ItemPlacementTransformMode;
 }
@@ -117,6 +118,7 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      isActive: false,
       visible: false,
       selectedTransformGizmoMode: game.itemPlacementMode.activeTransformMode,
     };
@@ -185,6 +187,8 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   private handleBuildingModeChanged = (mode: BuildingMode) => {
     if (mode === BuildingMode.PlacingItem) {
       this.showPlacementMode();
+    } else if (this.state.isActive) {
+      this.setState({ isActive: false });
     }
   }
 
@@ -200,6 +204,10 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
 
     if (game.itemPlacementMode.activeTransformMode !== this.state.selectedTransformGizmoMode) {
       stateUpdate.selectedTransformGizmoMode = game.itemPlacementMode.activeTransformMode;
+    }
+
+    if (isActive !== this.state.isActive) {
+      stateUpdate.isActive = isActive;
     }
 
     this.setState(state => ({
@@ -222,7 +230,7 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
 
   private handleNav = (uiName: string) => {
     if (uiName === 'placement-mode') {
-      if (this.state.visible) {
+      if (this.state.visible && !this.state.isActive) {
         this.hidePlacementMode();
       } else {
         this.showPlacementMode();
@@ -231,11 +239,11 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   }
 
   private showPlacementMode = () => {
-    this.setState({ visible: true });
+    this.setState({ visible: true, isActive: true });
   }
 
   private hidePlacementMode = () => {
-    this.setState({ visible: false, selectedTransformGizmoMode: ItemPlacementTransformMode.Translate });
+    this.setState({ visible: false, selectedTransformGizmoMode: ItemPlacementTransformMode.Translate, isActive: false });
   }
 
   private onTranslateClick = () => {
