@@ -10,7 +10,7 @@ import moment from 'moment';
 import { styled } from '@csegames/linaria/react';
 import { VoxJob, VoxJobState } from 'gql/interfaces';
 import { getJobContext, getNearestVoxEntityID, isNearbyVox } from 'fullscreen/Crafting/lib/utils';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import { CraftingContext } from '../../CraftingContext';
 
 const Container = styled.div`
@@ -35,7 +35,7 @@ const InfoBG = styled.div`
   margin: auto;
   z-index: 12;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/output-text-still-ring.png) no-repeat;
     background-size: contain;
     background-position: center;
@@ -57,9 +57,15 @@ const InfoItem = styled.div`
   z-index: 13;
   text-align: center;
   color: #B1FFF3;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 24px;
   }
+
   @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
     font-size: 10px;
   }

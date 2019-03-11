@@ -11,7 +11,7 @@ import { RecipeIngredientDef, InventoryItem } from 'gql/interfaces';
 import { PlaceholderImage } from './InputItem';
 import { RecipeData } from '../../CraftingBase';
 import { toDisplayQuality } from '../../lib/utils';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   width: 100%;
@@ -25,9 +25,15 @@ const UnitCountRange = styled.div`
   font-size: 9px;
   color: #FFE3B9;
   z-index: 10;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 18px;
   }
+
   @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
     right: -1px;
     top: -4px;
@@ -41,9 +47,15 @@ const QualityRange = styled.div`
   font-size: 9px;
   color: #FFE3B9;
   z-index: 10;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 18px;
   }
+
   @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
     right: -1px;
     bottom: -6px;
@@ -55,10 +67,17 @@ const ItemImage = styled.img`
   height: 50px;
   pointer-events: none;
   object-fit: cover;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 65px;
+    height: 65px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 125px;
     height: 125px;
   }
+
   @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
     width: 41.5px;
     height: 41.5px;

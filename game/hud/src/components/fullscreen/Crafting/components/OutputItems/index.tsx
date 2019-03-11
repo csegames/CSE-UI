@@ -23,7 +23,7 @@ import {
   shouldShowCustomNameInput,
   shouldShowShapeRunCount,
 } from '../../lib/utils';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   position: relative;
@@ -53,7 +53,7 @@ const QualityAndNameEditContainer = styled.div`
   left: 30px;
   pointer-events: all;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     top: -15px;
     left: -30px;
   }
@@ -65,7 +65,7 @@ const ItemCountEditContainer = styled.div`
   right: 30px;
   pointer-events: all;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     top: -15;
     right: -15px;
   }

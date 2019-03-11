@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   display: flex;
@@ -40,7 +40,18 @@ const Page = styled.div`
     opacity: 0.6;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 26px;
+    height: 18px;
+    font-size: 18px;
+    line-height: 18px;
+
+    &.active {
+      font-size: 18px;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 40px;
     height: 28px;
     font-size: 28px;
@@ -56,7 +67,13 @@ const Divider = styled.div`
   width: 16px;
   letter-spacing: 1px;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 28px;
     height: 28px;
     font-size: 28px;
@@ -79,7 +96,14 @@ const BackArrow = styled.div`
     opacity: 0.8;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 21px;
+    height: 13px;
+    background: url(../images/crafting/4k/paper-history-left-arrow.png) no-repeat;
+    background-size: contain;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 32px;
     height: 19px;
     background: url(../images/crafting/4k/paper-history-left-arrow.png) no-repeat;
@@ -102,7 +126,14 @@ const NextArrow = styled.div`
     opacity: 0.8;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 21px;
+    height: 13px;
+    background: url(../images/crafting/4k/paper-history-right-arrow.png) no-repeat;
+    background-size: contain;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 32px;
     height: 19px;
     background: url(../images/crafting/4k/paper-history-right-arrow.png) no-repeat;

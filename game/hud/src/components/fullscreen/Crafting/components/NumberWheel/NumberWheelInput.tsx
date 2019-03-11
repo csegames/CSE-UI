@@ -9,7 +9,7 @@ import * as React from 'react';
 import { debounce } from 'lodash';
 import { css } from '@csegames/linaria';
 import { TextInput } from 'shared/TextInput';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const InputStyle = css`
   width: 50px;
@@ -31,7 +31,7 @@ const InputStyle = css`
     -webkit-appearance: none;
     margin: 0;
   }
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 120px;
     height: 120px;
     font-size: 44px !important;
@@ -83,9 +83,18 @@ class NumberWheelInput extends React.Component<Props, State> {
   }
 
   private onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVal = Number(e.target.value);
-    this.setState({ tempValue: newVal });
-    this.onChange(newVal);
+    let inputValue = e.target.value;
+
+    if (this.props.prevValueDecorator) {
+      // Remove prevalue decorator before turning value into number
+      inputValue = inputValue.replace(this.props.prevValueDecorator, '');
+    }
+
+    const newVal = Number(inputValue);
+    if (typeof newVal === 'number') {
+      this.setState({ tempValue: newVal });
+      this.onChange(newVal);
+    }
   }
 
   private onChange = (newVal: number) => {

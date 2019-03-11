@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 function degreesToRads(angle: number) {
   return (angle * Math.PI) / 180;
@@ -59,7 +59,7 @@ const Container = styled.div`
     height: 22px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 60px;
     height: 60px;
     font-size: 24px;

@@ -16,7 +16,7 @@ import OutputCraftHistory from './OutputCraftHistory';
 import InputCraftHistory from './InputCraftHistory';
 import PageSelector from '../PageSelector';
 import { GroupLogData } from '../index';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import { RecipeIdToRecipe, RecipeData } from '../../../CraftingBase';
 import {
   VoxJobLog,
@@ -58,7 +58,7 @@ const JobPageSelectorPosition = styled.div`
   position: absolute;
   top: -18px;
   right: 5px;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     top: -35px;
   }
 `;
@@ -81,7 +81,15 @@ const PaperCraftingButton = styled.div`
     opacity: 0.8;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    background: url(../images/crafting/4k/paper-craft-button.png);
+    background-size: contain;
+    width: 410px;
+    height: 126px;
+    font-size: 21px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/paper-craft-button.png);
     background-size: contain;
     width: 768px;

@@ -10,7 +10,8 @@ import { styled } from '@csegames/linaria/react';
 import { ItemDefRef } from 'gql/interfaces';
 import { getGroupLogDescription, getJobTypeIcon, getFavoriteIcon } from '../../../lib/utils';
 import { GroupLogData } from '../index';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { CraftingResolutionContext } from '../../../CraftingResolutionContext';
 
 export const Container = styled.div`
   position: relative;
@@ -24,7 +25,11 @@ export const Container = styled.div`
     opacity: 0.8;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    max-height: 130px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     max-height: 200px;
   }
 `;
@@ -37,7 +42,13 @@ const JobTypeIcon = styled.div`
   opacity: 0.2;
   font-size: 80px;
   z-index: 0;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 104px;
+    right: 100px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 160px;
     right: 150px;
   }
@@ -56,7 +67,7 @@ const FavoriteContainer = styled.div`
   justify-content: center;
   width: 30px;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 55px;
   }
 `;
@@ -68,7 +79,8 @@ const FavoriteImage = styled.img`
   opacity: 1;
   -webkit-transition: opacity 0.2s;
   transition: opacity 0.2s;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 41px;
     height: 47px;
   }
@@ -90,7 +102,12 @@ const Name = styled.div`
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 100%;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 18px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 28px;
   }
 `;
@@ -100,7 +117,12 @@ const Description = styled.div`
   color: #000000;
   font-size: 16px;
   overflow: hidden;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 21px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 32px;
   }
 `;
@@ -115,9 +137,15 @@ const OutputContainer = styled.div`
   background: url(../images/crafting/1080/paper-output-frame.png) no-repeat;
   background-size: contain;
   background-position: center center;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 189px;
-    height: 182px;
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 99px;
+    height: 99px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 152px;
+    height: 152px;
     background: url(../images/crafting/4k/paper-output-frame.png) no-repeat;
     background-size: contain;
     background-position: center center;
@@ -130,9 +158,15 @@ const OutputImage = styled.img`
   object-fit: contain;
   opacity: 0.8;
   cursor: pointer;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 100px;
-    height: 100px;
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 53px;
+    height: 53px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 82px;
+    height: 82px;
   }
 `;
 
@@ -155,8 +189,8 @@ class GeneralQuickViewItem extends React.Component<Props> {
     const notCrafted = groupLog.log.timesCrafted === 0;
 
     return (
-      <UIContext.Consumer>
-        {(uiContext: UIContext) => {
+      <CraftingResolutionContext.Consumer>
+        {({ isUHD }) => {
           return (
             <Container style={{
               transform: shouldTransform ? 'rotate(180deg)' : 'none',
@@ -166,7 +200,7 @@ class GeneralQuickViewItem extends React.Component<Props> {
                 <FavoriteContainer>
                   {!notCrafted &&
                     <FavoriteImage
-                      src={getFavoriteIcon(groupLog.log, uiContext.isUHD())}
+                      src={getFavoriteIcon(groupLog.log, isUHD())}
                       onClick={this.props.onFavoriteClick}
                     />
                   }
@@ -191,7 +225,7 @@ class GeneralQuickViewItem extends React.Component<Props> {
             </Container>
           );
         }}
-      </UIContext.Consumer>
+      </CraftingResolutionContext.Consumer>
     );
   }
 

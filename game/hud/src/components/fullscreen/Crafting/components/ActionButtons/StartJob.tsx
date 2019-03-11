@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { getJobContext } from '../../lib/utils';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 // const Spin = keyframes`
 //   0% {
@@ -26,7 +26,7 @@ const Container = styled.div`
   height: 400px;
   width: 100%;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     height: 630px;
   }
 `;
@@ -49,7 +49,21 @@ const Frame = styled.div`
     background-size: cover;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 812px;
+    height: 520px;
+    background: url(../images/crafting/4k/status-frame-off.png) no-repeat;
+    background-position: center 0%;
+    background-size: cover;
+
+    &.active {
+      background: url(../images/crafting/4k/status-frame.png) no-repeat;
+      background-position: center 0%;
+      background-size: cover;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 1250px;
     height: 800px;
     background: url(../images/crafting/4k/status-frame-off.png) no-repeat;
@@ -80,7 +94,19 @@ const Orb = styled.div`
     background: url(../images/crafting/1080/orb-on.png);
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    top: 181px;
+    width: 173px;
+    height: 173px;
+    background: url(../images/crafting/4k/orb-off.png) no-repeat;
+    background-size: contain;
+    &.active {
+      background: url(../images/crafting/4k/orb-on.png) no-repeat;
+      background-size: contain;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     top: 280px;
     width: 318px;
     height: 318px;
@@ -113,7 +139,14 @@ const Glow = styled.div`
     opacity: 1;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 542px;
+    height: 313px;
+    background: url(../images/crafting/4k/orb-glow.png) no-repeat;
+    background-size: cover;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 998px;
     height: 833px;
     background: url(../images/crafting/4k/orb-glow.png);

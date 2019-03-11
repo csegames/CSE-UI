@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Back = styled.div`
   position: absolute;
@@ -27,7 +27,11 @@ const Back = styled.div`
     opacity: 0.8;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     top: 5px;
     font-size: 24px;
   }
@@ -39,7 +43,14 @@ const Arrow = styled.div`
   height: 10px;
   background: url(../images/crafting/1080/paper-history-left-arrow.png) no-repeat;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 21px;
+    height: 13px;
+    background: url(../images/crafting/4k/paper-history-left-arrow.png) no-repeat;
+    background-size: contain;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 31px;
     height: 19px;
     background: url(../images/crafting/4k/paper-history-left-arrow.png) no-repeat;

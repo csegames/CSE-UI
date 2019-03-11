@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 function degreesToRads(angle: number) {
   return (angle * Math.PI) / 180;
@@ -68,7 +68,7 @@ const NavArrow = styled.div`
     filter: brightness(120%);
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 90px;
     height: 168px;
     background: url(../images/crafting/4k/select-wheel-arrow.png) no-repeat;

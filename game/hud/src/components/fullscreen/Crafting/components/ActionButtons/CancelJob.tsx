@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { getJobContext } from '../../lib/utils';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const ConfirmationContainer = styled.div`
   display: flex;
@@ -36,7 +36,16 @@ const CancelButton = styled.div`
   cursor: pointer;
   margin: 0 5px;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    background: url(../images/crafting/4k/vox-cancel-button-border.png) no-repeat;
+    background-size: contain;
+    width: 203px;
+    height: 56px;
+    font-size: 16px;
+    letter-spacing: 3px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/vox-cancel-button-border.png) no-repeat;
     width: 382px;
     height: 110px;

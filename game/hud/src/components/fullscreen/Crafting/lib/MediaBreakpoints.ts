@@ -8,11 +8,19 @@
 import * as React from 'react';
 
 interface MediaBreakpoints {
-  UHD: number;
+  UHDWidth: number;
+  UHDHeight: number;
+
+  MidWidth: number;
+  MidHeight: number;
+
   SmallScreen: number;
 }
 
 export const MediaBreakpoints: MediaBreakpoints = {
-  UHD: 1921,
+  UHDWidth: 3001,
+  UHDHeight: 1801,
+  MidWidth: 2001,
+  MidHeight: 1201,
   SmallScreen: 1640,
 };

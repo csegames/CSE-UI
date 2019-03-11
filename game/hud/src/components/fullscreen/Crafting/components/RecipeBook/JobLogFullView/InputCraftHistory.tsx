@@ -18,7 +18,7 @@ import ItemImage from '../../../ItemImage';
 import CraftingDefTooltip from '../../CraftingDefTooltip';
 import { getIcon, getItemUnitCount, getItemQuality } from 'fullscreen/lib/utils';
 import { GroupLogData } from '../index';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import { getIngredientInfo, toDisplayQuality } from '../../../lib/utils';
 
 const Container = styled.div`
@@ -34,7 +34,13 @@ const InputItemsContainer = styled.div`
   flex-wrap: wrap;
   width: 120px;
   height: 160px;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 156px;
+    height: 208px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 270px;
     height: 400px;
   }
@@ -51,11 +57,21 @@ const InputItem = styled.div`
   margin-right: 5px;
   margin-bottom: 5px;
   opacity: 0.7;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
     background: url(../images/crafting/4k/paper-craft-no-counter-frame.png) no-repeat;
     background-size: cover;
-    width: 130px;
-    height: 130px;
+    width: 62px;
+    height: 62px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    background: url(../images/crafting/4k/paper-craft-no-counter-frame.png) no-repeat;
+    background-size: cover;
+    width: 96px;
+    height: 96px;
     margin-right: 15px;
     margin-bottom: 15px;
   }
@@ -67,9 +83,17 @@ const ConceptArt = styled.div`
   height: 200px;
   background: url(../images/crafting/1080/drawings/sketch-statue.png) no-repeat;
   background-size: contain;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 432px;
-    height: 600px;
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 234px;
+    height: 260px;
+    background: url(../images/crafting/4k/drawings/sketch-tdd-statue.png) no-repeat;
+    background-size: contain;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 360px;
+    height: 400px;
     background: url(../images/crafting/4k/drawings/sketch-tdd-statue.png) no-repeat;
     background-size: contain;
   }
@@ -83,9 +107,15 @@ const UnitCountRange = styled.div`
   color: #FFE3B9;
   z-index: 10;
   pointer-events: none;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 18px;
   }
+
   @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
     right: -1px;
     top: -4px;
@@ -100,9 +130,15 @@ const QualityRange = styled.div`
   color: #FFE3B9;
   z-index: 10;
   pointer-events: none;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 18px;
   }
+
   @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
     right: -1px;
     bottom: -6px;

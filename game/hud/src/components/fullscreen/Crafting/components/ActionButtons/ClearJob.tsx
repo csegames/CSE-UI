@@ -10,15 +10,21 @@ import { styled } from '@csegames/linaria/react';
 
 import { Tooltip } from 'shared/Tooltip';
 import { getJobContext } from '../../lib/utils';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const ResetButton = styled.div`
   color: #FFD899;
   font-size: 12px;
   cursor: pointer;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 24px;
   }
+
   &:hover {
     -webkit-filter: brightness(120%);
     filter: brightness(120%);
@@ -32,11 +38,14 @@ const ResetButton = styled.div`
 const TooltipContent = styled.div`
   padding: 2px 5px;
   font-size: 14px;
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid #CCC;
   color: #CCC;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    padding: 3px 10px;
+    font-size: 18px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     padding: 6px 15px;
     font-size: 28px;
   }

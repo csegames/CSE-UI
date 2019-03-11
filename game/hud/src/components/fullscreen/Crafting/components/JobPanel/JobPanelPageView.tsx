@@ -21,7 +21,7 @@ import OutputInfo from '../OutputItems/OutputInfo';
 import NoVoxOverlay from './NoVoxOverlay';
 import { canStartJob, shouldShowClearButton, isNearbyVox } from '../../lib/utils';
 import { VoxJobState } from 'gql/interfaces';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   position: relative;
@@ -48,7 +48,7 @@ const BGGlow = styled.div`
   background: url(../images/crafting/1080/glow-bg.png);
   background-size: cover;
   pointer-events: none;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
     background: url(../images/crafting/4k/glow-bg.png);
     background-size: cover;
   }
@@ -64,7 +64,17 @@ const LeftBGRing = styled.div`
   height: 40%;
   background: url(../images/crafting/1080/rings.png) no-repeat;
   background-size: contain;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    max-width: 406px;
+    max-height: 406px;
+    bottom: 182px;
+    left: -40%;
+    background: url(../images/crafting/4k/rings.png) no-repeat;
+    background-size: contain;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     max-width: 950px;
     max-height: 950px;
     left: -35%;
@@ -85,7 +95,18 @@ const RightBGRing = styled.div`
   background: url(../images/crafting/1080/rings.png) no-repeat;
   background-size: contain;
   background-position: right;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    max-width: 406px;
+    max-height: 406px;
+    right: -40%;
+    bottom: 182px;
+    background: url(../images/crafting/4k/rings.png) no-repeat;
+    background-size: contain;
+    background-position: right;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     max-width: 950px;
     max-height: 950px;
     right: -35%;
@@ -108,7 +129,16 @@ const LeftCrystal = styled.div`
   bottom: 150px;
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    background: url(../images/crafting/4k/left-crystal.png);
+    background-size: cover;
+    max-width: 338px;
+    max-height: 502px;
+    left: -130px;
+    bottom: 195px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/left-crystal.png);
     background-size: cover;
     max-width: 624px;
@@ -130,7 +160,16 @@ const RightCrystal = styled.div`
   bottom: 150px;
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    background: url(../images/crafting/4k/right-crystal.png);
+    background-size: cover;
+    max-width: 338px;
+    max-height: 502px;
+    right: -130px;
+    bottom: 195px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/right-crystal.png);
     background-size: cover;
     max-width: 624px;
@@ -144,7 +183,13 @@ const ClearJobPosition = styled.div`
   position: fixed;
   top: 107px;
   left: 14px;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    top: 110px;
+    left: 16px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     top: 197px;
     left: 30px;
   }
@@ -182,7 +227,7 @@ const OutputMainRing = styled.div`
     z-index: 11;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
     background: url(../images/crafting/4k/output-main-ring-shadow.png) no-repeat;
     background-position: center 0%;
     background-size: cover;
@@ -236,7 +281,7 @@ const OutputContainer = styled.div`
 //     background-size: cover;
 //   }
 
-//   @media (min-width: ${MediaBreakpoints.UHD}px) {
+//   @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
 //     &:before {
 //       background: url(../images/crafting/4k/output-main-ring-shadow.png) no-repeat;
 //       background-position: center 0%;
@@ -252,6 +297,14 @@ const ButtonContainer = styled.div`
   display: flex;
   pointer-events: none;
   z-index: 12;
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    bottom: -110px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    bottom: -170px;
+  }
 `;
 
 export interface Props extends ContextState {

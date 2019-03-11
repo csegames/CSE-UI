@@ -14,7 +14,7 @@ import { placeholderIcon } from 'fullscreen/lib/constants';
 import ItemImage from '../../ItemImage';
 import TooltipContent, { defaultTooltipStyle } from 'shared/ItemTooltip';
 import CraftingDefTooltip from '../CraftingDefTooltip';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const ItemContainer = styled.div`
   display: flex;
@@ -48,7 +48,21 @@ const ItemContainer = styled.div`
     }
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 78px;
+    height: 78px;
+
+    &:after {
+      background: url(../images/crafting/4k/output-item-ring.png);
+      background-size: contain;
+      width: 189px;
+      height: 189px;
+      left: -56px;
+      top: -56px;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 155px;
     height: 155px;
 
@@ -71,13 +85,24 @@ const ItemSlotBG = styled.div`
   height: 75px;
   top: -7px;
   left: -10px;
+
   @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
     width: 60px;
     height: 60px;
     top: 1px;
     left: 0;
   }
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    background: url(../images/crafting/4k/output-item-slot.png) no-repeat;
+    background-size: contain;
+    width: 98px;
+    height: 98px;
+    left: -9px;
+    top: -9px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/output-item-slot.png) no-repeat;
     background-size: contain;
     width: 180px;
@@ -91,7 +116,7 @@ const ItemSlot = styled.div`
   width: 100%;
   height: 100%;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     position: relative;
     left: 5px;
     top: 7px;

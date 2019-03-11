@@ -12,7 +12,7 @@ import { styled } from '@csegames/linaria/react';
 import { VoxJob } from 'gql/interfaces';
 import { getJobContext } from 'fullscreen/Crafting/lib/utils';
 import { TextInput } from 'shared/TextInput';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   width: 144px;
@@ -27,7 +27,7 @@ const Container = styled.div`
     width: 120px;
     height: 120px;
   }
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 345px;
     height: 345px;
     background: url(../images/crafting/4k/output-input.png) no-repeat;
@@ -48,7 +48,7 @@ const InputStyle = css`
     font-size: 12px !important;
     font-family: Caudex !important;
   }
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 24px !important;
     width: 200px;
     &::-webkit-input-placeholder {

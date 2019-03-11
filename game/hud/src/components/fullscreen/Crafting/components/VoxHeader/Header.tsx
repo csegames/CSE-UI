@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 export const Container = styled.div`
   position: relative;
@@ -18,7 +18,7 @@ export const Container = styled.div`
   background: url(../images/crafting/1080/title-texture.png) repeat;
   background-size: cover;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/title-texture.png) repeat;
     background-size: cover;
     height: 130px;
@@ -34,7 +34,7 @@ export const Overlay = styled.div`
   background: url(../images/crafting/1080/title-vox-overlay.png) no-repeat;
   background-size: cover;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/title-vox-overlay.png) no-repeat;
     background-size: cover;
   }
@@ -47,7 +47,7 @@ export const Text = styled.div`
   text-transform: uppercase;
   letter-spacing: 5px;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 40px;
     letter-spacing: 10px;
   }

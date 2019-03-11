@@ -17,7 +17,7 @@ import ItemImage from '../../../ItemImage';
 import PageSelector from '../PageSelector';
 import CraftingDefTooltip from '../../CraftingDefTooltip';
 import { GroupLogData } from '../index';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const OutputResultContainer = styled.div`
   position: relative;
@@ -50,7 +50,23 @@ const OutputResultContainer = styled.div`
     background-size: cover;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    height: 208px;
+    &:before {
+      background: url(../images/crafting/4k/paper-history-border.png) no-repeat;
+      background-position: center center;
+      background-size: 100% 100%;
+      height: 390px;
+    }
+    &:after {
+      background: url(../images/crafting/4k/paper-history-divider.png) no-repeat;
+      background-position: center bottom;
+      background-size: cover;
+      height: 17px;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     height: 320px;
     &:before {
       background: url(../images/crafting/4k/paper-history-border.png) no-repeat;
@@ -90,9 +106,20 @@ const OutputSlot = styled.div`
     opacity: 1;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 185px;
-    height: 185px;
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 91px;
+    height: 91px;
+    background: url(../images/crafting/4k/paper-output-frame.png) no-repeat;
+    background-size: contain;
+    &.byproduct {
+      background: url(../images/crafting/4k/paper-output-bonus-frame.png) no-repeat;
+      background-size: contain;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 140px;
+    height: 140px;
     background: url(../images/crafting/4k/paper-output-frame.png) no-repeat;
     background-size: contain;
     &.byproduct {
@@ -113,7 +140,12 @@ const JobInfoSection = styled.div`
   font-size: 16px;
   margin-left: 5px;
   margin-right: 5px;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 21px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 32px;
   }
 `;
@@ -140,9 +172,20 @@ const ItemContainer = styled.div`
     pointer-events: none;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 105px;
-    height: 100px;
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 52px;
+    height: 52px;
+    &.byproduct:after {
+      background: url(../images/crafting/4k/bonus-frame.png) no-repeat;
+      background-size: contain;
+      width: 78px;
+      height: 78px;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 80px;
+    height: 80px;
     &.byproduct:after {
       background: url(../images/crafting/4k/bonus-frame.png) no-repeat;
       background-size: contain;

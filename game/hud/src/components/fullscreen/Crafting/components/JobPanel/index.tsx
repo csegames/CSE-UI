@@ -61,7 +61,7 @@ import {
 } from 'gql/interfaces';
 import { VoxJobFragment } from '../../gql/VoxJobFragment';
 import { getItemUnitCount } from 'fullscreen/lib/utils';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   display: flex;
@@ -101,7 +101,17 @@ const CraftOrnamentRight = styled.div`
   background-size: contain;
   z-index: 0;
   pointer-events: none;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    background: url(../images/crafting/4k/craft-ornament-right.png);
+    background-size: contain;
+    width: 225px;
+    height: 395px;
+    top: 9px;
+    right: 7px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/craft-ornament-right.png);
     background-size: contain;
     width: 422px;
@@ -121,7 +131,17 @@ const CraftOrnamentLeft = styled.div`
   background-size: contain;
   z-index: 0;
   pointer-events: none;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    background: url(../images/crafting/4k/craft-ornament-left.png);
+    background-size: contain;
+    width: 225px;
+    height: 395px;
+    top: 9px;
+    right: 7px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/craft-ornament-left.png);
     background-size: contain;
     width: 422px;
@@ -162,7 +182,27 @@ const TabsContainer = styled.div`
     background: url(../images/crafting/1080/que-ornament-right.png);
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    height: 33px;
+    min-height: 33px;
+    &:before {
+      background: url(../images/crafting/4k/que-ornament-left.png) no-repeat;
+      background-size: contain;
+      width: 47px;
+      height: 31px;
+      left: -23px;
+    }
+
+    &:after {
+      background: url(../images/crafting/4k/que-ornament-right.png) no-repeat;
+      background-size: contain;
+      width: 47px;
+      height: 31px;
+      right: -23px;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     height: 55px;
     min-height: 55px;
     &:before {
@@ -309,6 +349,7 @@ class JobPanelPage extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
+    window.addEventListener('resize', () => console.log(window.innerWidth + 'x' + window.innerHeight));
     this.setState(this.initializeTabs());
     this.evh.push(game.on('refetch-vox-job', this.refetchVoxJob));
   }

@@ -12,7 +12,7 @@ import { styled } from '@csegames/linaria/react';
 
 import { KeyCodes } from '@csegames/camelot-unchained';
 import { TextArea } from 'shared/TextArea';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const MAX_CHARACTERS = 1000;
 
@@ -41,7 +41,11 @@ const TextAreaStyle = css`
     color: transparent !important;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 21px !important;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 32px !important;
   }
 `;
@@ -55,7 +59,12 @@ const TextContent = styled.div`
   opacity: 0;
   visibility: hidden;
   white-space: pre;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 21px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 32px;
   }
 `;
@@ -69,7 +78,12 @@ const HeaderTitle = styled.div`
   font-family: TradeWinds;
   font-size: 14px;
   color: #0A0706;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 18px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 28px;
   }
 `;
@@ -82,7 +96,12 @@ const CharacterCount = styled.div`
   &.not-allowed {
     color: red;
   }
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 21px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 32px;
   }
 `;

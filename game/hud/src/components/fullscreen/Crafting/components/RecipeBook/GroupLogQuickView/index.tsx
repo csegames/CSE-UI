@@ -14,7 +14,8 @@ import QuickViewItem from './QuickViewItem';
 import PageSelector from '../PageSelector';
 import ConceptArt from '../ConceptArt';
 import { CraftingContext } from '../../../CraftingContext';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { CraftingResolutionContext } from '../../../CraftingResolutionContext';
 
 const Container = styled.div`
   width: 100%;
@@ -35,7 +36,14 @@ const PageSelectorPosition = styled.div`
     right: 80px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    top: 2px;
+    &.showingBackButton {
+      right: 104px;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     top: 15px;
     &.showingBackButton {
       right: 140px;
@@ -55,14 +63,20 @@ const NoLogsText = styled.div`
   font-family: TradeWinds;
   font-size: 16px;
   pointer-events: none;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 21px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 32px;
   }
 `;
 
 export interface InjectedProps {
   loading: boolean;
-  use4kAssets: boolean;
+  isUHD: boolean;
+  isMidScreen: boolean;
 }
 
 export interface ComponentProps {
@@ -137,7 +151,7 @@ class QuickView extends React.Component<Props, State> {
       this.props.loading !== nextProps.loading ||
       this.props.searchValue !== nextProps.searchValue ||
       this.state.itemsPerPage !== nextState.itemsPerPage ||
-      this.props.use4kAssets !== nextProps.use4kAssets ||
+      this.props.isUHD !== nextProps.isUHD ||
       !isEqual(this.props.groupLogs, nextProps.groupLogs);
   }
 
@@ -146,7 +160,7 @@ class QuickView extends React.Component<Props, State> {
   }
 
   private setItemsPerPage = () => {
-    const itemHeight = this.props.use4kAssets ? 200 : 100;
+    const itemHeight = this.props.isUHD ? 200 : this.props.isMidScreen ? 130 : 100;
     const itemsPerPage = Math.floor(this.ref.clientHeight / itemHeight);
     this.setState({ itemsPerPage });
   }
@@ -175,15 +189,15 @@ class QuickView extends React.Component<Props, State> {
 class QuickViewWithInjectedContext extends React.Component<ComponentProps> {
   public render() {
     return (
-      <UIContext.Consumer>
-        {(uiContext: UIContext) => (
+      <CraftingResolutionContext.Consumer>
+        {({ isUHD, isMidScreen }) => (
           <CraftingContext.Consumer>
             {({ loading }) => (
-              <QuickView {...this.props} loading={loading} use4kAssets={uiContext.isUHD()} />
+              <QuickView {...this.props} loading={loading} isUHD={isUHD()} isMidScreen={isMidScreen()} />
             )}
           </CraftingContext.Consumer>
         )}
-      </UIContext.Consumer>
+      </CraftingResolutionContext.Consumer>
     );
   }
 }

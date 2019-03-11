@@ -9,7 +9,7 @@ import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { TextInput } from 'shared/TextInput';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   position: relative;
@@ -22,7 +22,7 @@ const Container = styled.div`
   background: url(../images/crafting/1080/search-line.png) no-repeat;
   background-position: left bottom;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     height: 77px;
     padding: 0 0 5px 15px;
     background: url(../images/crafting/4k/search-line.png) no-repeat;
@@ -48,7 +48,7 @@ const InputStyle = css`
     color: black !important;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 40px !important;
   }
 `;

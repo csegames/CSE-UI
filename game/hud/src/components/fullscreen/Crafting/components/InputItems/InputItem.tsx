@@ -21,7 +21,7 @@ import { getJobContext, canStartJob, getNearestVoxEntityID } from '../../lib/uti
 import ShapeInputItem from './ShapeInputItem';
 import ItemCount from './ItemCount';
 import DraggableItem, { Props as DraggableItemProps } from 'fullscreen/ItemShared/components/DraggableItem';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import {
   InventoryItem,
   SubItemSlot,
@@ -46,13 +46,15 @@ const Container = styled.div`
   display: flex;
   margin-right: 5px;
   margin-bottom: 5px;
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    margin-right: 0px;
+    margin-bottom: 0px;
+  }
+
   @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
     margin-right: 1px;
     margin-bottom: 1px;
-  }
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    margin-right: 0px;
-    margin-bottom: 0px;
   }
 `;
 
@@ -65,12 +67,20 @@ export const ItemContainerBackground = styled.div`
   align-items: center;
   justify-content: center;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 218px;
-    height: 218px;
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 117px;
+    height: 117px;
     background: url(../images/crafting/4k/craft-frame-slots-background.png) no-repeat;
     background-size: cover;
   }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 180px;
+    height: 180px;
+    background: url(../images/crafting/4k/craft-frame-slots-background.png) no-repeat;
+    background-size: cover;
+  }
+
   @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
     width: 75px;
     height: 75px;
@@ -84,12 +94,20 @@ const DisabledItemContainer = styled.div`
   background-size: contain;
   opacity: 0.4;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 218px;
-    height: 218px;
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 117px;
+    height: 117px;
     background: url(../images/crafting/4k/frame-slots-non-background.png) no-repeat;
     background-size: contain;
   }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 180px;
+    height: 180px;
+    background: url(../images/crafting/4k/frame-slots-non-background.png) no-repeat;
+    background-size: contain;
+  }
+
   @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
     width: 75px;
     height: 75px;
@@ -118,9 +136,20 @@ export const ItemContainer = styled.div`
     };
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 137px;
-    height: 137px;
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 78px;
+    height: 78px;
+    background: url(../images/crafting/4k/frame-slots-empty.png) no-repeat;
+    background-size: contain;
+    &.hasItem {
+      background: url(../images/crafting/4k/craft-frame-slots.png) no-repeat;
+      background-size: contain;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 120px;
+    height: 120px;
     background: url(../images/crafting/4k/frame-slots-empty.png) no-repeat;
     background-size: contain;
     &.hasItem {
@@ -141,18 +170,28 @@ export const ItemWrapper = styled.div`
   height: 54px;
   max-width: 54px;
   max-height: 54px;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 125px;
-    height: 125px;
-    max-width: 125px;
-    max-height: 125px;
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 70px;
+    height: 70px;
+    max-width: 70px;
+    max-height: 70px;
   }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 108px;
+    height: 108px;
+    max-width: 108px;
+    max-height: 108px;
+  }
+
   @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
     width: 41.5px;
     height: 41.5px;
     max-width: 41.5px;
     max-height: 41.5px;
   }
+
   &:after {
     content: '';
     position: absolute;
@@ -170,10 +209,17 @@ export const PlaceholderImage = styled.img`
   pointer-events: none;
   opacity: 0.5;
   object-fit: cover;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 125px;
-    height: 125px;
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 65px;
+    height: 65px;
   }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 100px;
+    height: 100px;
+  }
+
   @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
     width: 41.5px;
     height: 41.5px;

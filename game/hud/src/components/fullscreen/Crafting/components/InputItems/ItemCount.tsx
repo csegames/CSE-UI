@@ -11,7 +11,7 @@ import { debounce } from 'lodash';
 import { InventoryItem, SubItemSlot } from 'gql/interfaces';
 import { getJobContext } from '../../lib/utils';
 import { getItemUnitCount } from 'fullscreen/lib/utils';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   position: absolute;
@@ -22,7 +22,7 @@ const Container = styled.div`
   align-self: flex-end;
   align-items: flex-end;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     right: -15px;
     bottom: 0;
   }
@@ -50,16 +50,31 @@ const Button = styled.div`
     opacity: 0.9;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
     &.up {
-      background: url(../images/crafting/4k/craft-slots-up-arrow.png);
-      width: 31px;
-      height: 19px;
+      background: url(../images/crafting/4k/craft-slots-up-arrow.png) no-repeat;
+      background-size: contain;
+      width: 17px;
+      height: 10px;
     }
     &.down {
-      background: url(../images/crafting/4k/craft-slots-down-arrow.png);
-      width: 31px;
-      height: 19px;
+      background: url(../images/crafting/4k/craft-slots-down-arrow.png) no-repeat;
+      background-size: contain;
+      width: 17px;
+      height: 10px;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    &.up {
+      background: url(../images/crafting/4k/craft-slots-up-arrow.png) no-repeat;
+      width: 26px;
+      height: 16px;
+    }
+    &.down {
+      background: url(../images/crafting/4k/craft-slots-down-arrow.png) no-repeat;
+      width: 26px;
+      height: 16px;
     }
   }
 `;
@@ -84,9 +99,26 @@ const ItemCountContainer = styled.div`
     color: gray;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 100px;
-    height: 49px;
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 55px;
+    height: 23px;
+    font-size: 13px;
+    padding-right: 5px;
+    background: url(../images/crafting/4k/counter-clot.png) no-repeat;
+    background-size: contain;
+    background-position: right center;
+
+    &.disabled {
+      background: url(../images/crafting/4k/counter-clot-empty.png) no-repeat;
+      background-size: contain;
+      background-position: right center;
+      color: gray;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 84px;
+    height: 36px;
     font-size: 20px;
     padding-right: 5px;
     background: url(../images/crafting/4k/counter-clot.png) no-repeat;

@@ -10,7 +10,8 @@ import { findIndex, isEmpty, isEqual } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import NumberItem, { AngleData } from './NumberItem';
 import NumberWheelInput from './NumberWheelInput';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { CraftingResolutionContext } from '../../CraftingResolutionContext';
 
 const DIMENSIONS = 100;
 const LARGE_DIMENSIONS = 245;
@@ -35,7 +36,7 @@ const Container = styled.div`
     background-position: center center;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 300px;
     height: 300px;
     &:before {
@@ -60,7 +61,7 @@ const Hand = styled.div`
     -webkit-filter: brightness(150%);
     filter: brightness(150%);
   }
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 36px;
     height: 63px;
     background: url(../images/crafting/4k/output-dial-pointer.png);
@@ -86,7 +87,7 @@ const InputContainer = styled.div`
 `;
 
 export interface InjectedProps {
-  uiContext: UIContext;
+  isUHD: boolean;
 }
 
 export interface ComponentProps {
@@ -145,7 +146,7 @@ class NumberWheel extends React.Component<Props, State> {
               disabled={disabled}
               value={val}
               index={i}
-              wheelRadius={this.props.uiContext.isUHD() ? LARGE_WHEEL_RADIUS : WHEEL_RADIUS}
+              wheelRadius={this.props.isUHD ? LARGE_WHEEL_RADIUS : WHEEL_RADIUS}
               totalNumberItems={numberWheelArr.length}
               extraSpacing={EXTRA_SPACING}
               selectedIndex={this.state.selectedValue === val && i}
@@ -181,7 +182,7 @@ class NumberWheel extends React.Component<Props, State> {
 
   public componentDidMount() {
     const { arrOfNums } = this.state;
-    this.shouldUse4kAssets = this.props.uiContext.isUHD();
+    this.shouldUse4kAssets = this.props.isUHD;
 
     const potentialIndex = findIndex(arrOfNums, num => num === this.state.selectedValue);
     if (potentialIndex !== -1) {
@@ -192,8 +193,8 @@ class NumberWheel extends React.Component<Props, State> {
   }
 
   public componentDidUpdate(prevProps: Props, prevState: State) {
-    if (this.shouldUse4kAssets !== this.props.uiContext.isUHD()) {
-      this.shouldUse4kAssets = this.props.uiContext.isUHD();
+    if (this.shouldUse4kAssets !== this.props.isUHD) {
+      this.shouldUse4kAssets = this.props.isUHD;
       this.initializeHand();
     }
 
@@ -257,7 +258,7 @@ class NumberWheel extends React.Component<Props, State> {
   }
 
   private getHandTransformData = (value: number, angle: AngleData) => {
-    const isLargeResolution = this.props.uiContext.isUHD();
+    const isLargeResolution = this.props.isUHD;
     const wheelRadius = isLargeResolution ? LARGE_WHEEL_RADIUS : WHEEL_RADIUS;
     const extraSpacing = isLargeResolution ? 0 : EXTRA_SPACING;
     const x = Math.floor((Math.cos(angle.radians) * (wheelRadius - INNER_CIRCLE_DIFF)) + (wheelRadius - extraSpacing));
@@ -348,13 +349,13 @@ class NumberWheel extends React.Component<Props, State> {
 class NumberWheelWithInjectedContext extends React.Component<ComponentProps> {
   public render() {
     return (
-      <UIContext.Consumer>
-        {(uiContext: UIContext) => {
+      <CraftingResolutionContext.Consumer>
+        {({ isUHD }) => {
           return (
-            <NumberWheel {...this.props} uiContext={uiContext} />
+            <NumberWheel {...this.props} isUHD={isUHD()} />
           );
         }}
-      </UIContext.Consumer>
+      </CraftingResolutionContext.Consumer>
     );
   }
 

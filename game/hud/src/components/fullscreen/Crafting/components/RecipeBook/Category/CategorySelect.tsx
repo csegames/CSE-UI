@@ -9,7 +9,7 @@ import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { isEqual } from 'lodash';
 import { VoxJobType, ItemType, VoxJob } from 'gql/interfaces';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import { CraftingContext } from '../../../CraftingContext';
 import { AlloyType, RecipeData, InputItem } from '../../../CraftingBase';
 import {
@@ -43,7 +43,11 @@ const SectionTitle = styled.div`
   font-size: 18px;
   font-family: TradeWinds;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 23px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 36px;
   }
 `;
@@ -55,8 +59,12 @@ const ButtonContainer = styled.div`
   width: 336px;
   height: fit-content;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 840px
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 437px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 672px
   }
 `;
 
@@ -83,10 +91,19 @@ const SelectButton = styled.div`
     opacity: 0.5;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 250px;
-    height: 250px;
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 133px;
+    height: 133px;
     background: url(../images/crafting/4k/category-select-ring.png) no-repeat;
+    background-size: contain;
+    margin-right: 0 10px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 204px;
+    height: 204px;
+    background: url(../images/crafting/4k/category-select-ring.png) no-repeat;
+    background-size: contain;
     margin-right: 0 15px;
   }
 `;
@@ -95,7 +112,13 @@ const JobIcon = styled.div`
   font-size: 40px;
   color: black;
   margin-bottom: 5px;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 52px;
+    margin-bottom: 10px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 80px;
     margin-bottom: 15px;
   }
@@ -106,7 +129,12 @@ const JobText = styled.div`
   color: black;
   text-transform: uppercase;
   font-family: TradeWinds;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 24px;
   }
 `;
@@ -123,9 +151,17 @@ const ConceptArt = styled.div`
   background-size: contain;
   background-position: center center;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
-    width: 1020px;
-    height: 624px;
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 543px;
+    height: 333px;
+    background: url(../images/crafting/4k/drawings/sketch-mid-1.png) no-repeat;
+    background-size: contain;
+    background-position: center center;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+    width: 836px;
+    height: 512px;
     background: url(../images/crafting/4k/drawings/sketch-mid-1.png) no-repeat;
     background-size: contain;
     background-position: center center;

@@ -15,7 +15,7 @@ import { getJobContext } from '../../lib/utils';
 import { showTooltip, hideTooltip, ShowTooltipPayload } from 'actions/tooltips';
 import Tooltip, { defaultTooltipStyle } from 'shared/ItemTooltip';
 import ItemImage from '../../ItemImage';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   position: absolute;
@@ -55,7 +55,17 @@ const Modal = styled.div`
     background-size: 100% 100%;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 299px;
+    background: url(../images/crafting/4k/complete-modal-frame.png) no-repeat;
+    background-size: 100% 100%;
+    &.hasByproduct {
+      background: url(../images/crafting/4k/complete-bonus-modal-frame.png) no-repeat;
+      background-size: 100% 100%;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 600px;
     background: url(../images/crafting/4k/complete-modal-frame.png) no-repeat;
     background-size: 100% 100%;
@@ -77,7 +87,18 @@ const ModalBottom = styled.div`
     background-size: cover;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    height: 81px;
+    background: url(../images/crafting/4k/complete-modal-bottom-frame.png) no-repeat;
+    background-size: cover;
+
+    &.hasByproduct {
+      background: url(../images/crafting/4k/complete-bonus-modal-bottom-frame.png) no-repeat;
+      background-size: cover;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     height: 160px;
     background: url(../images/crafting/4k/complete-modal-bottom-frame.png) no-repeat;
     background-size: cover;
@@ -106,7 +127,11 @@ const ModalTitle = styled.div`
     color: #FFEA9E;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 26px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     top: 0;
     font-size: 40px;
   }
@@ -122,7 +147,15 @@ const MainOutputContainer = styled.div`
   background: url(../images/crafting/1080/main-output-item.png) no-repeat;
   margin-top: 15px;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 191px;
+    height: 191px;
+    background: url(../images/crafting/4k/main-output-item.png) no-repeat;
+    background-size: contain;
+    margin-top: 20px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 358px;
     height: 358px;
     background: url(../images/crafting/4k/main-output-item.png) no-repeat;
@@ -133,7 +166,13 @@ const MainOutputContainer = styled.div`
 const MainOutputItem = styled.div`
   width: 60px;
   height: 60px;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 78px;
+    height: 78px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 150px;
     height: 150px;
   }
@@ -155,6 +194,18 @@ const ItemContainer = styled.div`
     top: -3px;
     left: -5px;
     pointer-events: none;
+  }
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 53px;
+    height: 53px;
+
+    &.byproduct:after {
+      width: 65px;
+      height: 65px;
+      background: url(../images/crafting/1080/bonus-frame.png) no-repeat;
+      background-size: contain;
+    }
   }
 `;
 
@@ -225,7 +276,15 @@ const CollectButton = styled.div`
     filter: brightness(130%);
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 16px;
+    width: 203px;
+    height: 59px;
+    background: url(../images/crafting/4k/vox-inventory-button-border.png) no-repeat;
+    background-size: contain;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 24px;
     width: 382px;
     height: 110px;

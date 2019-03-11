@@ -7,7 +7,6 @@
 import * as React from 'react';
 
 import * as cseThemes from '../themes';
-import { MediaBreakpoints } from './MediaBreakpoints';
 
 declare global {
   interface Resolution {
@@ -34,7 +33,7 @@ declare global {
 }
 
 function isUHD(this: UIContext) {
-  return this.forceUHD || this.resolution.width > MediaBreakpoints.UHD;
+  return this.forceUHD || this.resolution.width > 1920;
 }
 
 function currentTheme(this: UIContext) {

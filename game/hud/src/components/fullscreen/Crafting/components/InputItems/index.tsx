@@ -12,7 +12,7 @@ import { InventoryItem, VoxJob, SubItemSlot, MakeRecipeDefRef } from 'gql/interf
 import { RecipeData, InputItem, RecipeType } from '../../CraftingBase';
 import { getJobContext, getItemSlotForRecipe } from '../../lib/utils';
 import InputItemComponent from './InputItem';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 declare const toastr: any;
 
@@ -23,9 +23,15 @@ const Container = styled.div`
   width: 220px;
   left: 30px;
   top: 10px;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 286px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 450px;
   }
+
   @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
     left: 25px;
     top: 5px;

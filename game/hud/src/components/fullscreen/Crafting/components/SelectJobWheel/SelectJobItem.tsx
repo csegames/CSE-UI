@@ -10,7 +10,7 @@ import { styled } from '@csegames/linaria/react';
 import { VoxJobType } from 'gql/interfaces';
 import { PRIMARY_COLOR } from '../SelectorWheel';
 import { getJobTypeIcon } from '../../lib/utils';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   position: relative;
@@ -57,7 +57,7 @@ const InnerCircle = styled.div`
 const Icon = styled.div`
   color: ${PRIMARY_COLOR};
   font-size: 30px !important;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 60px !important;
   }
 `;
@@ -68,7 +68,7 @@ const Text = styled.div`
   font-size: 12px;
   font-family: Caudex;
   letter-spacing: 1px;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 24px;
   }
 `;

@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import Slot from './Slot';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   position: relative;
@@ -33,7 +33,14 @@ const BG = styled.div`
   background-size: cover;
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    background: url(../images/crafting/4k/infusion-bg.png) no-repeat;
+    background-size: cover;
+    max-width: 296px;
+    max-height: 533px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/infusion-bg.png) no-repeat;
     background-size: cover;
     max-width: 555px;
@@ -57,12 +64,23 @@ const SlotsContainer = styled.div`
   background-position: right center;
   transform: scale(0.9);
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    transform: scale(0.8);
+    top: -32.5px;
+    right: 15px;
+    width: 234px;
+    height: 378px;
+    background: url(../images/crafting/4k/infusion-slots.png) no-repeat;
+    background-size: contain;
+    background-position: right center;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     transform: scale(0.8);
     top: -50px;
     right: 15px;
-    width: 437px;
-    height: 698px;
+    width: 360px;
+    height: 578px;
     background: url(../images/crafting/4k/infusion-slots.png) no-repeat;
     background-size: contain;
     background-position: right center;
@@ -82,25 +100,18 @@ export interface Props {
 class Infusions extends React.PureComponent<Props> {
   public render() {
     return (
-      <UIContext.Consumer>
-        {(uiContext: UIContext) => {
-          const isFourK = uiContext.isUHD();
-          return (
-            <Container>
-              <BG>
-                <SlotsContainer>
-                  <Slot top={isFourK ? 277 : 114} left={isFourK ? 0 : -1} />
-                  <Slot top={isFourK ? 152 : 62} left={isFourK ? 150 : 62} />
-                  <Slot top={isFourK ? 400 : 167} left={isFourK ? 150 : 62} />
-                  <Slot top={isFourK ? 277 : 114} left={isFourK ? 292 : 120} />
-                  <Slot top={0} left={isFourK ? 263 : 109} />
-                  <Slot top={isFourK ? 553 : 229} left={isFourK ? 263 : 109} />
-                </SlotsContainer>
-              </BG>
-            </Container>
-          );
-        }}
-      </UIContext.Consumer>
+      <Container>
+        <BG>
+          <SlotsContainer>
+            <Slot top={114} left={0} />
+            <Slot top={62} left={62} />
+            <Slot top={167} left={62} />
+            <Slot top={114} left={120} />
+            <Slot top={0} left={109} />
+            <Slot top={229} left={109} />
+          </SlotsContainer>
+        </BG>
+      </Container>
     );
   }
 }

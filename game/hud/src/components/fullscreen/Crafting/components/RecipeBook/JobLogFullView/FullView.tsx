@@ -20,7 +20,8 @@ import {
   getFavoriteIcon,
   getJobTypeIcon,
 } from '../../../lib/utils';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { CraftingResolutionContext } from '../../../CraftingResolutionContext';
 
 const Container = styled.div`
   position: relative;
@@ -31,7 +32,12 @@ const Name = styled.div`
   font-size: 18px;
   color: #0A0706;
   pointer-events: none;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 21px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 36px;
   }
 `;
@@ -44,7 +50,14 @@ const JobTypeIcon = styled.div`
   font-size: 150px;
   z-index: 0;
   pointer-events: none;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 195px;
+    opacity: 0.2;
+  }
+
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 300px;
     opacity: 0.2;
   }
@@ -62,7 +75,11 @@ const Description = styled.div`
   color: #000000;
   font-size: 16px;
   margin-bottom: 10px;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 21px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 32px;
   }
 `;
@@ -71,7 +88,12 @@ const SubHeader = styled.div`
   font-family: TradeWinds;
   font-size: 14px;
   color: #0A0706;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 18px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 28px;
   }
 `;
@@ -82,7 +104,7 @@ const FavoriteContainer = styled.div`
   display: flex;
   justify-content: center;
   width: 30px;
-  @meida (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 55px;
     left: -45px;
   }
@@ -99,7 +121,7 @@ const FavoriteImage = styled.img`
     opacity: 0.8;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 40px;
     height: 40px;
   }
@@ -126,14 +148,14 @@ class FullView extends React.Component<Props> {
     const notCrafted = groupLog.timesCrafted === 0;
 
     return (
-      <UIContext.Consumer>
-        {(uiContext: UIContext) => (
+      <CraftingResolutionContext.Consumer>
+        {({ isUHD }) => (
           <Container>
             <JobTypeIcon className={getJobTypeIcon(this.props.selectedGroupLog.log.jobType)} />
             <Info>
               <FavoriteContainer>
                 {!notCrafted &&
-                  <FavoriteImage src={getFavoriteIcon(groupLog, uiContext.isUHD())} onClick={this.onFavoriteClick} />
+                  <FavoriteImage src={getFavoriteIcon(groupLog, isUHD())} onClick={this.onFavoriteClick} />
                 }
               </FavoriteContainer>
               <Name>{recipeItem.name}</Name>
@@ -153,7 +175,7 @@ class FullView extends React.Component<Props> {
             </Info>
           </Container>
         )}
-      </UIContext.Consumer>
+      </CraftingResolutionContext.Consumer>
     );
   }
 

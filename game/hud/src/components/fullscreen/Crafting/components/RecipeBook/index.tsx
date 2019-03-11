@@ -20,7 +20,7 @@ import Recent from './Recent';
 import Favorites from './Favorites';
 import Category from './Category';
 import Notes from './Notes';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   width: 100%;
@@ -36,7 +36,13 @@ const ContentContainer = styled.div`
   -webkit-mask-size: cover;
   z-index: 1;
   pointer-events: none;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    -webkit-mask-image: url(../images/crafting/4k/paper-mask-x-repeat.png);
+    -webkit-mask-size: cover;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     top: -30px;
     -webkit-mask-image: url(../images/crafting/4k/paper-mask-x-repeat.png);
     -webkit-mask-size: cover;
@@ -51,7 +57,8 @@ const PageBG = styled.div`
   left: 12px;
   background: url(../images/crafting/1080/paper-bg.png);
   pointer-events: none;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
     background: url(../images/crafting/4k/paper-bg.png);
   }
 `;
@@ -64,7 +71,13 @@ const PageRip = styled.div`
   left: -13px;
   background: url(../images/crafting/1080/page-rip-pattern.png);
   pointer-events: none;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 51px;
+    background: url(../images/crafting/4k/page-rip-pattern.png);
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 129px;
     background: url(../images/crafting/4k/page-rip-pattern.png);
   }
@@ -78,7 +91,14 @@ const CornerOrnament = styled.div`
   width: 100%;
   height: 100%;
   pointer-events: none;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    background: url(../images/crafting/4k/paper-top-left-border.png) no-repeat;
+    top: 10px;
+    left: 10px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/paper-top-left-border.png) no-repeat;
     top: 15px;
     left: 15px;
@@ -92,7 +112,12 @@ const TabsContainer = styled.div`
   top: 9px;
   right: 0;
   z-index: 1;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    top: 20px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     top: 30px;
   }
 `;
@@ -107,7 +132,13 @@ const Content = styled.div`
   padding-left: 20px;
   margin-right: 3px;
   pointer-events: all;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    padding-top: 40px;
+    padding-left: 40px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     padding-top: 60px;
     padding-left: 60px;
   }

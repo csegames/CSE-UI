@@ -14,7 +14,7 @@ import { slotDimensions } from 'fullscreen/Inventory/components/InventorySlot';
 import { calcRowsForContainer } from 'fullscreen/lib/utils';
 import { DrawerSlotNumberToItem } from 'fullscreen/ItemShared/InventoryBase';
 import { createRowElementsForVoxInventory } from '../../CraftingBase';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   position: relative;
@@ -43,7 +43,7 @@ const ComingSoonOverlay = styled.div`
   font-size: 16px;
   text-transform: uppercase;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 32px;
   }
 `;

@@ -12,7 +12,7 @@ import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/
 import { JobPanelTabQuery, VoxJobState } from 'gql/interfaces';
 import { CraftingContext } from '../../CraftingContext';
 import { JobIdToJobState } from '../../CraftingBase';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import { Tooltip } from 'shared/Tooltip';
 
 const query = gql`
@@ -119,7 +119,66 @@ const Tab = styled.div`
     margin: auto;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    width: 26px;
+    height: 26px;
+    font-size: 16px;
+    margin: 0 5px;
+    z-index: 10;
+    &.none:before {
+      background: url(../images/crafting/4k/que-slot.png) no-repeat;
+      background-position: center center;
+      background-size: contain;
+      width: 26px;
+      height: 29px;
+    }
+
+    &.configuring:before {
+      background: url(../images/crafting/4k/que-slot-filled.png) no-repeat;
+      background-position: center center;
+      background-size: contain;
+      width: 26px;
+      height: 29px;
+    }
+
+    &.running {
+      &:before {
+        background: url(../images/crafting/4k/que-current.png) no-repeat;
+        background-size: contain;
+        width: 46px;
+        height: 29px;
+        top: 0px;
+      }
+      &:after {
+        background: url(../images/crafting/4k/que-crafting-gif.gif) no-repeat;
+        background-size: contain;
+        width: 20px;
+        height: 20px;
+        top: 0px;
+        left: 3px;
+      }
+    }
+
+    &.queued {
+      &:before {
+        background: url(../images/crafting/4k/queued-job-current.png) no-repeat;
+        background-size: contain;
+        width: 46px;
+        height: 29px;
+        top: 0px;
+      }
+    }
+
+    &.finished:before {
+      background: url(../images/crafting/4k/que-done.png) no-repeat;
+      background-position: center center;
+      background-size: contain;
+      width: 26px;
+      height: 29px;
+    }
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     width: 26px;
     height: 62px;
     font-size: 24px;
@@ -134,7 +193,7 @@ const Tab = styled.div`
 
     &.configuring:before {
       background: url(../images/crafting/4k/que-slot-filled.png) no-repeat;
-      backgruond-position: center center;
+      background-position: center center;
       width: 26px;
       height: 62px;
     }
@@ -181,7 +240,7 @@ const TooltipContent = styled.div`
   font-size: 14px;
   color: #CCC;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     padding: 6px 15px;
     font-size: 28px;
   }

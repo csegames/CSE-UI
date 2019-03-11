@@ -13,7 +13,8 @@ import { isEqual } from 'lodash';
 import CancelJob from '../ActionButtons/CancelJob';
 import { CraftingContext } from '../../CraftingContext';
 import { JobIdToJobState } from '../../CraftingBase';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { CraftingResolutionContext } from '../../CraftingResolutionContext';
 
 const Container = styled.div`
   position: absolute;
@@ -57,7 +58,11 @@ const QueuedContainer = styled.div`
   margin: auto;
   text-align: center;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 18px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 48px;
   }
 `;
@@ -72,7 +77,11 @@ const JobActionText = styled.div`
   color: #B1FFF3;
   margin-top: 100px;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 24px;
   }
 `;
@@ -103,9 +112,9 @@ class JobStartedOverlay extends React.Component<Props, State> {
 
   public render() {
     return (
-      <UIContext.Consumer>
-        {(uiContext: UIContext) => {
-          const jobTypeIcon = this.getJobTypeIcon(uiContext);
+      <CraftingResolutionContext.Consumer>
+        {({ isUHD }) => {
+          const jobTypeIcon = this.getJobTypeIcon(isUHD());
           const isQueued = this.isQueued();
           return (
             <Container>
@@ -124,7 +133,7 @@ class JobStartedOverlay extends React.Component<Props, State> {
             </Container>
           );
         }}
-      </UIContext.Consumer>
+      </CraftingResolutionContext.Consumer>
     );
   }
 
@@ -167,9 +176,9 @@ class JobStartedOverlay extends React.Component<Props, State> {
     return queued;
   }
 
-  private getJobTypeIcon = (uiContext: UIContext) => {
+  private getJobTypeIcon = (isUHD: boolean) => {
     const { voxJob } = this.props;
-    const imagePrefix = uiContext.isUHD() ? '4k' : '1080';
+    const imagePrefix = isUHD ? '4k' : '1080';
 
     switch (voxJob.jobType) {
       case VoxJobType.Make:

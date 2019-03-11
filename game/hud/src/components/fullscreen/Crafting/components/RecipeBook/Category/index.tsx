@@ -15,7 +15,7 @@ import CategorySelect from './CategorySelect';
 import GroupLogQuickView from '../GroupLogQuickView';
 import JobLogFullView from '../JobLogFullView';
 import BackButton from '../JobLogFullView/BackButton';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import { itemCanBeRepaired, itemCanBeSalvaged, getJobContext } from '../../../lib/utils';
 import { getItemUnitCount } from 'fullscreen/lib/utils';
 import { CraftingContext } from '../../../CraftingContext';
@@ -34,7 +34,7 @@ const Container = styled.div`
 `;
 
 const BackButtonStyle = css`
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     top: 15px;
   }
 `;

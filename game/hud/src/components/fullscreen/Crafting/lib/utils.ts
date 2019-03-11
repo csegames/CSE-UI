@@ -468,7 +468,7 @@ export function isNearbyVox(voxEntityID: string) {
 }
 
 export function getIngredientInfo(recipeData: RecipeData, ingredientDefId: string) {
-  if (recipeData) {
+  if (recipeData && recipeData.def && recipeData.def['ingredients']) {
     return (recipeData.def as MakeRecipeDefRef).ingredients.find(ingredient =>
       ingredient.ingredient.id === ingredientDefId);
   } else {

@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { Container, Overlay } from './Header';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const ContainerClass = css`
   color: #FFDFAF;
@@ -19,7 +19,14 @@ const ContainerClass = css`
   font-family: Caudex;
   letter-spacing: 3px;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    background: url(../images/crafting/4k/wood-bg.png);
+    height: 46px;
+    font-size: 21px;
+    padding: 0 25px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/wood-bg.png);
     height: 86px;
     font-size: 28px;
@@ -31,7 +38,14 @@ const OverlayClass = css`
   background: url(../images/crafting/1080/title-recipebar-overlay.png) no-repeat;
   background-size: cover;
   max-width: 538px;
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    background: url(../images/crafting/4k/title-recipebar-overlay.png) no-repeat;
+    background-size: cover;
+    max-width: 699px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     background: url(../images/crafting/4k/title-recipebar-overlay.png) no-repeat;
     background-size: cover;
     max-width: 1076px;

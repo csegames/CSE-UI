@@ -9,7 +9,7 @@ import * as React from 'react';
 import { debounce } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { VoxNote } from 'gql/interfaces';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
 const Container = styled.div`
   position: relative;
@@ -39,7 +39,7 @@ const ComingSoonOverlay = styled.div`
   font-size: 16px;
   color: white;
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 32px;
   }
 `;

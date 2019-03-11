@@ -6,9 +6,11 @@
  */
 
 import * as React from 'react';
+import { isEqual } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { prettifyText } from 'fullscreen/lib/utils';
-import { MediaBreakpoints } from 'services/session/MediaBreakpoints';
+import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { CraftingResolutionContext } from 'fullscreen/Crafting/CraftingResolutionContext';
 
 const Container = styled.div`
   position: relative;
@@ -78,7 +80,13 @@ const Container = styled.div`
     background-image: url(../images/crafting/1080/bookmark-notes-bg.png);
   }
 
-  @media (min-width: ${MediaBreakpoints.UHD}px) {
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 16px;
+    height: 35px;
+    padding: 3px 13px 0 13px;
+  }
+
+  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     font-size: 24px;
     height: 60px;
     padding: 6px 20px 0 20px;
@@ -93,17 +101,24 @@ export enum Routes {
   Select = 'select',
 }
 
-export interface Props {
+export interface ComponentProps {
   route: Routes;
   selectedRoute: Routes;
   onClick: (route: Routes) => void;
 }
 
+export interface InjectedProps {
+  isUHD: boolean;
+  resolution: { width: number, height: number };
+}
+
+export type Props = ComponentProps & InjectedProps;
+
 export interface State {
   miniVersion: boolean;
 }
 
-class Tab extends React.PureComponent<Props, State> {
+class Tab extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -124,21 +139,21 @@ class Tab extends React.PureComponent<Props, State> {
 
   public componentDidMount() {
     this.handleMiniVersion();
-    window.addEventListener('resize', this.handleMiniVersion);
   }
 
-  public componentWillUnmount() {
-    window.removeEventListener('resize', this.handleMiniVersion);
+  public componentDidUpdate(prevProps: Props) {
+    if (!isEqual(prevProps.resolution, this.props.resolution)) {
+      this.handleMiniVersion();
+    }
   }
 
   private handleMiniVersion = () => {
-    const screenWidth = window.innerWidth;
+    const { resolution, isUHD } = this.props;
+    const screenWidth = resolution.width;
 
-    if (!this.state.miniVersion && screenWidth <= 1600) {
+    if (!this.state.miniVersion && (screenWidth <= 1600 || (isUHD && screenWidth <= 2550))) {
       this.setState({ miniVersion: true });
-    }
-
-    if (this.state.miniVersion && screenWidth > 1600) {
+    } else {
       this.setState({ miniVersion: false });
     }
   }
@@ -157,4 +172,16 @@ class Tab extends React.PureComponent<Props, State> {
   }
 }
 
-export default Tab;
+class TabWithInjectedContext extends React.Component<ComponentProps> {
+  public render() {
+    return (
+      <CraftingResolutionContext.Consumer>
+        {({ isUHD, resolution }) => (
+          <Tab {...this.props} isUHD={isUHD()} resolution={resolution} />
+        )}
+      </CraftingResolutionContext.Consumer>
+    );
+  }
+}
+
+export default TabWithInjectedContext;
