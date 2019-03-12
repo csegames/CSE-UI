@@ -354,8 +354,8 @@ export function itemCanBeSalvaged(item: InventoryItem.Fragment) {
 export function getFavoriteIcon(groupLog: VoxJobGroupLog.Fragment, use4k?: boolean) {
   const resPrefix = use4k ? '4k' : '1080';
   return groupLog.favorite ?
-    `../images/crafting/${resPrefix}/paper-favorite-on.png` :
-    `../images/crafting/${resPrefix}/paper-favorite-off.png`;
+    `images/crafting/${resPrefix}/paper-favorite-on.png` :
+    `images/crafting/${resPrefix}/paper-favorite-off.png`;
 }
 
 export function getItemSlotForRecipe(item: ItemDefRef.Fragment,

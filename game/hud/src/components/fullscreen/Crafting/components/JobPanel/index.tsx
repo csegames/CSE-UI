@@ -785,6 +785,7 @@ class JobPanelPage extends React.Component<Props, State> {
     const { recipeIdToRecipe } = this.props;
     const { voxJob } = this.state;
     let updatedInputItems = [...this.state.inputItems];
+    let removingItem = false;
 
     return new Promise((res) => {
       for (let i = 0; i < voxJob.ingredients.length; i++) {
@@ -798,6 +799,7 @@ class JobPanelPage extends React.Component<Props, State> {
         const requiredIngredientUnitCount = ingredientItem.unitCount * voxJob.itemCount;
         const currentInputUnitCount = getItemUnitCount(inputItem);
         if (currentInputUnitCount > requiredIngredientUnitCount) {
+          removingItem = true;
           // Remove the unneeded ingredients
           const { crafting, slotNumberToItem, voxContainerID } = this.props;
           const updatedUnitCount = currentInputUnitCount - requiredIngredientUnitCount;
@@ -819,7 +821,10 @@ class JobPanelPage extends React.Component<Props, State> {
         }
       }
 
-      res();
+      if (!removingItem) {
+        res();
+      }
+
       this.setState({ inputItems: updatedInputItems });
     });
   }

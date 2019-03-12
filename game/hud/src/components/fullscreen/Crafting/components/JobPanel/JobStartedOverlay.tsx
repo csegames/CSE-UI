@@ -183,27 +183,27 @@ class JobStartedOverlay extends React.Component<Props, State> {
     switch (voxJob.jobType) {
       case VoxJobType.Make:
       case VoxJobType.Block: {
-        return `../images/crafting/${imagePrefix}/make.png`;
+        return `images/crafting/${imagePrefix}/make.png`;
       }
 
       case VoxJobType.Purify: {
-        return `../images/crafting/${imagePrefix}/purify.png`;
+        return `images/crafting/${imagePrefix}/purify.png`;
       }
 
       case VoxJobType.Repair: {
-        return `../images/crafting/${imagePrefix}/repair.png`;
+        return `images/crafting/${imagePrefix}/repair.png`;
       }
 
       case VoxJobType.Salvage: {
-        return `../images/crafting/${imagePrefix}/salvage.png`;
+        return `images/crafting/${imagePrefix}/salvage.png`;
       }
 
       case VoxJobType.Shape: {
-        return `../images/crafting/${imagePrefix}/shape.png`;
+        return `images/crafting/${imagePrefix}/shape.png`;
       }
 
       default: {
-        return `../images/crafting/${imagePrefix}/make.png`;
+        return `images/crafting/${imagePrefix}/make.png`;
       }
     }
   }
