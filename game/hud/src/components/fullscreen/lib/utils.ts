@@ -964,6 +964,12 @@ export const defaultTabsLeft: TabItem<HUDFullScreenTabData>[] = [
   { name: 'inventory-left', tab: { title: 'Inventory' }, rendersContent: 'Inventory' },
   { name: 'character-stats-left', tab: { title: 'Stats' }, rendersContent: 'CharacterStats' },
   { name: 'map-left', tab: { title: 'Map' }, rendersContent: 'Map' },
+  {
+    name: 'ability-builder-left',
+    tab: { title: 'Ability Builder' },
+    rendersContent: 'AbilityBuilder',
+    shouldTriggerNavEvent: true,
+  },
 ];
 
 export const defaultTabsRight: TabItem<HUDFullScreenTabData>[] = [
@@ -971,6 +977,12 @@ export const defaultTabsRight: TabItem<HUDFullScreenTabData>[] = [
   { name: 'inventory-right', tab: { title: 'Inventory' }, rendersContent: 'Inventory' },
   { name: 'character-stats-right', tab: { title: 'Stats' }, rendersContent: 'CharacterStats' },
   { name: 'map-right', tab: { title: 'Map' }, rendersContent: 'Map' },
+  {
+    name: 'ability-builder-right',
+    tab: { title: 'Ability Builder' },
+    rendersContent: 'AbilityBuilder',
+    shouldTriggerNavEvent: true,
+  },
 ];
 
 export const defaultFullScreenState: FullScreenNavState = {

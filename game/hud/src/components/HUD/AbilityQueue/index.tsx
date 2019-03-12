@@ -76,8 +76,8 @@ class AbilityQueue extends React.Component<AbilityQueueProps, AbilityQueueState>
   }
 
   private initAbilityButtonEvents = () => {
-    if (game.store.myCharacter && game.store.myCharacter.skills) {
-      game.store.myCharacter.skills.forEach((ability) => {
+    if (game.store.myCharacter && game.store.myCharacter.abilities) {
+      game.store.myCharacter.abilities.forEach((ability) => {
         if (ability && !this.eventHandles[ability.id]) {
           this.eventHandles[ability.id] = game.on('abilitybutton-' + ability.id, this.handleAbilityQueueEvent);
         }

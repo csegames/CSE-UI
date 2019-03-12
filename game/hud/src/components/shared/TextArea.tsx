@@ -28,16 +28,26 @@ const TextAreaElement = styled.textarea`
   }
 `;
 
-type Props = React.InputHTMLAttributes<HTMLTextAreaElement> & { inputClassName?: string; wrapperClassName?: string; };
+type Props = React.InputHTMLAttributes<HTMLTextAreaElement> & {
+  getInputRef?: (r: HTMLTextAreaElement) => void;
+  inputClassName?: string;
+  wrapperClassName?: string;
+};
 
-export class TextArea extends React.PureComponent<Props> {
+export interface State {
+  isFocused: boolean;
+}
+
+export class TextArea extends React.PureComponent<Props, State> {
   private inputRef: HTMLTextAreaElement = null;
-
   public render() {
     return (
       <Wrapper className={this.props.wrapperClassName}>
         <TextAreaElement
-          ref={(r: HTMLTextAreaElement) => this.inputRef = r }
+          ref={(r: HTMLTextAreaElement) => {
+            this.inputRef = r;
+            this.props.getInputRef(r);
+          }}
           className={this.props.inputClassName}
           {...this.props}
         />
@@ -49,6 +59,7 @@ export class TextArea extends React.PureComponent<Props> {
   public focus = () => {
     if (!this.props.disabled) {
       this.inputRef.focus();
+      this.inputRef.select();
     }
   }
 

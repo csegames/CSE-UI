@@ -80,6 +80,7 @@
     "sass-importer-node": "^1.0.1",
     "velocity-react": "^1.4.1",
     "why-did-you-update": "^0.1.1",
+    "xml-js": "^1.6.11",
     "yargs-parser": "^2.4.1"
   },
   "devDependencies": {
@@ -111,6 +112,7 @@
     "@types/react-transition-group": "1.x",
     "@types/redux": "^3.6.0",
     "@types/redux-thunk": "^2.1.0",
+    "@types/xml-js": "^1.0.0",
     "apollo-codegen": "^0.10.13",
     "babel-cli": "^6.5.1",
     "babel-eslint": "^8.2.6",

@@ -62,6 +62,7 @@ const ContentHidden = css`
 
 export interface TabItem<T> {
   name?: string;
+  shouldTriggerNavEvent?: boolean;
   rendersContent: string;
   tab: T;
 }
@@ -158,7 +159,7 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
               <Tab
                 key={index}
                 className={selected ? customStyle.activeTab : customStyle.tab}
-                onClick={() => this.selectIndex(index, tabItem.name)}>
+                onClick={() => this.selectIndex(index, tabItem.name, tabItem.shouldTriggerNavEvent)}>
                   {this.props.renderTab(tabItem.tab, selected)}
               </Tab>,
               index !== this.props.tabs.length - 1 ? (
@@ -172,7 +173,7 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
               <Tab
                 key={index}
                 className={selected ? customStyle.activeTab : customStyle.tab}
-                onClick={() => this.selectIndex(index, tabItem.name)}>
+                onClick={() => this.selectIndex(index, tabItem.name, tabItem.shouldTriggerNavEvent)}>
                   {this.props.renderTab(tabItem.tab, selected)}
               </Tab>
             );
@@ -218,7 +219,10 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
     );
   }
 
-  private selectIndex = (index: number, name: string) => {
+  private selectIndex = (index: number, name: string, shouldTriggerNavEvent: boolean) => {
+    if (shouldTriggerNavEvent) {
+      game.trigger('navigate', name);
+    }
     if (this.activeTabIndex === index) return;
     if (!this.props.activeTabIndex) {
       this.setState({ activeIndex: index });

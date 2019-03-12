@@ -24,6 +24,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-ally:before {
+  content: "\e95d";
+}
+.icon-enemy:before {
+  content: "\e95e";
+}
+.icon-edit:before {
+  content: "\e95f";
+}
 .icon-category-alloys:before {
   content: "\e90c";
 }

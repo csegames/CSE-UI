@@ -7,6 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 
+import { ContextMenu } from 'shared/ContextMenu';
 import AbilityButtonView, { AbilityButtonInfo } from './AbilityButtonView';
 import AbilityStateConnector from './AbilityStateConnector';
 import {
@@ -15,7 +16,11 @@ import {
   makeGlowPathFor,
   CLASS_NAMES,
 } from './lib';
+import { webAPI } from '@csegames/camelot-unchained';
+import { AbilityContextMenu } from './AbilityContextMenu';
 export * from './lib';
+
+declare const toastr: any;
 
 export interface AbilityButtonProps {
   abilityInfo: AbilityButtonInfo;
@@ -138,18 +143,24 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
 
       // output button
       return (
-        <AbilityButtonView
-          ability={this.props.abilityInfo}
-          name={this.props.name}
-          description={this.props.description}
-          timer={this.state.label}
-          outer={outer}
-          outerPath={outerPath || outer}
-          inner={inner}
-          innerPath={innerPath || inner}
-          className={classNames.join(' ')}
-          onAbilityClick={this.performAbility}
-        />
+        <ContextMenu
+          type='content'
+          getContent={() => <AbilityContextMenu onDeleteClick={() => this.onDeleteClick(this.props.abilityInfo.id)} />}>
+          <div>
+            <AbilityButtonView
+              ability={this.props.abilityInfo}
+              name={this.props.name}
+              description={this.props.description}
+              timer={this.state.label}
+              outer={outer}
+              outerPath={outerPath || outer}
+              inner={inner}
+              innerPath={innerPath || inner}
+              className={classNames.join(' ')}
+              onAbilityClick={this.performAbility}
+            />
+          </div>
+        </ContextMenu>
       );
     }
 
@@ -375,6 +386,22 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
     }
 
     this.prevEvent = { ...event };
+  }
+
+  private onDeleteClick = async (abilityID: number) => {
+    const res = await webAPI.AbilitiesAPI.DeleteAbility(
+      webAPI.defaultConfig,
+      game.shardID,
+      game.selfPlayerState.characterID,
+      abilityID,
+    );
+
+    if (res.ok) {
+      game.store.refetch();
+    } else {
+      const errorMessage = JSON.parse(res.data).FieldCodes[0].AbilityResult.Details;
+      toastr.error(errorMessage, 'Oh no!!', { timeout: 3000 });
+    }
   }
 }
 

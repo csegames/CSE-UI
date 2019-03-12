@@ -226,6 +226,15 @@ export default {
           game.trigger('navigate', 'progression');
         },
       },
+      {
+        name: 'ability-builder',
+        tooltip: 'Ability Builder',
+        iconClass: 'fa-toolbox',
+        hidden: false,
+        onClick: () => {
+          game.trigger('navigate', 'ability-builder');
+        },
+      },
       // {
       //   name: 'chat',
       //   tooltip: 'Show/Hide Chat',

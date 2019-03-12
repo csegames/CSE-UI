@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { query } from '@csegames/camelot-unchained/lib/graphql/query';
 import { useConfig } from '@csegames/camelot-unchained/lib/graphql/react';
-import { Skill, CUQuery, ItemDefRef } from 'gql/interfaces';
+import { Ability, CUQuery, ItemDefRef } from 'gql/interfaces';
 
 export const HUDGraphQLQueryConfig = () => ({
   url: game.webAPIHost + '/graphql',
@@ -42,7 +42,7 @@ export interface HUDGraphQLQueryResult<T> {
 }
 
 export interface HUDContextState {
-  skills: HUDGraphQLQueryResult<Skill[]>;
+  skills: HUDGraphQLQueryResult<Ability[]>;
   itemDefRefs: HUDGraphQLQueryResult<ItemDefRef[]>;
 }
 
@@ -66,32 +66,32 @@ export const defaultContextState: HUDContextState = {
 
 export const HUDContext = React.createContext(defaultContextState);
 
-export const skillsQuery = `
+export const abilitiesQuery = `
   {
     myCharacter {
-      skills {
+      abilities {
         id
         name
         icon
-        notes
+        description
         tracks
       }
     }
   }
 `;
 
-export async function fetchSkills(): Promise<HUDGraphQLQueryResult<Skill[]>> {
+export async function fetchAbilities(): Promise<HUDGraphQLQueryResult<Ability[]>> {
   const res = await query<Pick<CUQuery, 'myCharacter'>>({
-    query: skillsQuery,
+    query: abilitiesQuery,
     operationName: null,
     namedQuery: null,
     variables: {},
   }, HUDGraphQLQueryConfig());
-  const skills = res.data && res.data.myCharacter ? res.data.myCharacter.skills : [];
+  const abilities = res.data && res.data.myCharacter ? res.data.myCharacter.abilities : [];
   return {
     ...res,
-    data: skills,
-    refetch: fetchSkills,
+    data: abilities,
+    refetch: fetchAbilities,
   };
 }
 

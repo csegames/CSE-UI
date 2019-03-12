@@ -162,6 +162,15 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         break;
       }
 
+      case 'ability-builder': {
+        if (this.isAlreadyOpen(name)) {
+          this.onCloseFullScreen();
+        } else {
+          this.setActiveTabs('ability-builder-left', 'character-stats-right');
+        }
+        break;
+      }
+
       case 'trade': {
         if (typeof shouldOpen === 'boolean') {
           if (shouldOpen) {
@@ -260,7 +269,6 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
       };
     }
 
-    console.log('FOCUS THAT CONTAINER REF!');
     this.containerRef.focus();
     this.setState(tabsState as any);
   }

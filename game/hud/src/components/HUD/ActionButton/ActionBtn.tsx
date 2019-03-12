@@ -9,7 +9,7 @@ import { styled } from '@csegames/linaria/react';
 import { VelocityComponent } from 'velocity-react';
 
 import { Ring, RingOpts } from './Ring';
-import { Skill } from 'gql/interfaces';
+import { Ability } from 'gql/interfaces';
 
 type ContainerProps = { radius: number; acceptInput: boolean; } & React.HTMLProps<HTMLDivElement>;
 const Container = styled.div`
@@ -462,7 +462,7 @@ export function OuterRing(props: ActionBtnProps) {
 }
 
 
-export interface ActionBtnProps extends Skill {
+export interface ActionBtnProps extends Ability {
   current: ImmutableAbilityState;
   keybind: string;
   additionalStyles?: React.CSSProperties;

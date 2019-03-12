@@ -108,10 +108,10 @@ const BtnWrapper = styled.span`
 `;
 
 
-const action = {
+const action: any = {
   name: 'test',
   icon: 'https://camelot-unchained.s3.amazonaws.com/game/4/icons/components/Acidic_Concoction.png',
-  notes: 'info about action',
+  description: 'info about action',
   id: 'one',
   tracks: AbilityTracks.EitherWeaponPreferPrimary,
 
@@ -131,10 +131,10 @@ const action = {
   } as any,
 };
 
-const action2 = {
+const action2: any = {
   name: 'test2',
   icon: 'https://camelot-unchained.s3.amazonaws.com/game/4/icons/skills/Blackgaurd-Adept-Shot.png',
-  notes: 'info about action 2',
+  description: 'info about action 2',
   id: 'two',
   tracks: AbilityTracks.EitherWeaponPreferPrimary,
 

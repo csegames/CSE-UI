@@ -1,4 +1,4 @@
- /*
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -43,62 +43,68 @@ const View = styled.div`
 `;
 
 const DefaultTooltipWrapper = styled.div`
-  pointer-events: none;
   position: relative;
+  pointer-events: none;
   display: flex;
   flex-direction: column;
   border-width: 2px;
   border-style: solid;
-  border-image: linear-gradient(to bottom, ${(props: {color: string}) => props.color}, transparent);
+  border-image: linear-gradient(to bottom, ${(props: {color: string} &
+    React.HTMLProps<HTMLDivElement>) => props.color}, transparent);
   border-image-slice: 1;
-  background: url(../images/item-tooltips/bg.png);
-  background-size: cover;
-  -webkit-mask-image: url(../images/item-tooltips/ui-mask.png);
+  -webkit-mask-image: url(../images/tooltips/uhd/mask.png);
   -webkit-mask-size: cover;
   color: #ABABAB;
   width: auto;
   overflow: hidden;
+
   &:before {
     content: '';
     position: absolute;
     top: 0px;
     left: 0px;
-    background: url(../images/item-tooltips/ornament_left.png);
-    width: 35px;
-    height: 35px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url(../images/tooltips/hd/ornament-left.png);
+    width: 38px;
+    height: 42px;
   }
   &:after {
     content: '';
     position: absolute;
     top: 0px;
     right: 0px;
-    background: url(../images/item-tooltips/ornament_right.png);
-    width: 35px;
-    height: 35px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url(../images/tooltips/hd/ornament-right.png);
+    width: 38px;
+    height: 42px;
   }
   padding: 5px;
+  z-index: 1;
 `;
 
-const HeaderOverlay = styled.div`
+const Background = styled.div`
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
+  background-image: url(../images/tooltips/uhd/bg.jpg);
+  background-size: auto 100%;
+  background-repeat: repeat-x;
   z-index: -1;
-  background: linear-gradient(to right, ${(props: {color: string}) => props.color}, transparent);
-  box-shadow: inset 0 0 20px 2px rgba(0,0,0,0.8);
-  height: 106px;
-  &:after {
-    content: '';
-    position: absolute;
-    height: 106px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url(../images/item-tooltips/title_viel.png);
-    background-size: cover;
-    background-repeat: no-repeat;
+
+  &.tdd {
+    filter: hue-rotate(90deg);
+  }
+
+  &.viking {
+    filter: hue-rotate(-160deg);
+  }
+
+  @media (max-width: 1920px) {
+    background-image: url(../images/tooltips/hd/bg.jpg);
   }
 `;
 
@@ -150,7 +156,7 @@ export class TooltipView extends React.Component<{}, TooltipState> {
                 className={`${customStyles.tooltip} ${this.state.shouldAnimate ? 'should-animate' : ''}`}>
                   {useStandardWrapper ? (
                     <DefaultTooltipWrapper color={color}>
-                      <HeaderOverlay color={color} />
+                      <Background className={Faction[game.selfPlayerState.faction].toLowerCase()} />
                       {this.state.content}
                     </DefaultTooltipWrapper>
                     ) : this.state.content}
@@ -163,6 +169,7 @@ export class TooltipView extends React.Component<{}, TooltipState> {
       </UIContext.Consumer>
     ) : null;
   }
+
   public componentDidMount() {
     window.addEventListener('mousemove', this.onMouseMove);
     this.eventHandles.push(onShowTooltip(this.handleShowTooltip));

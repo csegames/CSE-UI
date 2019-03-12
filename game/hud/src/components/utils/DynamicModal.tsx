@@ -16,7 +16,7 @@ const Container = styled('div')`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(50, 50, 50, 0.1);
+  background: rgba(50, 50, 50, 0.3);
   z-index: 9999;
 `;
 

@@ -42,7 +42,7 @@ function abilityStateConnector<PropsTypes extends any>() {
             {...this.props}
             abilityInfo={abilityState}
             name={this.props.abilityInfo.name}
-            description={this.props.abilityInfo.notes}
+            description={this.props.abilityInfo.description}
           />
         );
       }

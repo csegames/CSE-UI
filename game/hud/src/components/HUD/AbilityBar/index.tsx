@@ -19,7 +19,7 @@ export interface ApiAbilityInfo {
   id: number;
   name: string;
   icon: string;
-  notes: string;
+  description: string;
   tracks: any;
 }
 
@@ -88,11 +88,11 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
   }
 
   private getAbility = (clientAbility: AbilityBarItem) => {
-    const apiAbilityInfo = game.store.getSkillInfo(clientAbility.id);
+    const apiAbilityInfo = game.store.getAbilityInfo(clientAbility.id);
     const abilityInfo: InitialAbilityInfo = {
       ...clientAbility,
       ...apiAbilityInfo,
-    };
+    } as InitialAbilityInfo;
 
     if (apiAbilityInfo) {
       Object.keys(apiAbilityInfo).forEach((key) => {

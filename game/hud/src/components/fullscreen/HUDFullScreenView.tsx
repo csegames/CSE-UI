@@ -18,6 +18,7 @@ import PaperDoll from 'fullscreen/PaperDoll';
 import CharacterInfo from 'fullscreen/CharacterInfo';
 import TradeWindow from 'fullscreen/TradeWindow';
 import Crafting from 'fullscreen/Crafting';
+import AbilityBuilder from 'fullscreen/AbilityBuilder';
 import { HUDFullScreenTabData, FullScreenContext } from 'fullscreen/lib/utils';
 import {
   InventoryItem,
@@ -200,6 +201,7 @@ class HUDFullScreenView extends React.Component<Props, State> {
       { name: 'Map', content: { render: this.renderMap } },
       { name: 'Trade', content: { render: this.renderTrade } },
       { name: 'Crafting', content: { render: this.renderCrafting } },
+      { name: 'AbilityBuilder', content: { render: this.renderAbilityBuilder } },
     ];
   }
 
@@ -306,6 +308,12 @@ class HUDFullScreenView extends React.Component<Props, State> {
   private renderCrafting = () => {
     return (
       <Crafting />
+    );
+  }
+
+  private renderAbilityBuilder = () => {
+    return (
+      <AbilityBuilder />
     );
   }
 }

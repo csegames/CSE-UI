@@ -42,8 +42,10 @@ import Console from 'hud/Console';
 import { InteractiveAlertView } from 'hud/InteractiveAlert';
 import { ContextMenuView } from '../shared/ContextMenu';
 import { TooltipView } from '../shared/Tooltip';
+import { PopupView } from '../shared/Popup';
 import PassiveAlert from 'hud/PassiveAlert';
 import { ActionAlert } from 'hud/ActionAlert';
+import { ImagePreloader } from './ImagePreloader';
 import { MiniScenarioScoreboard } from 'hud/LiveScenarioScoreboard/MiniScenarioScoreboard';
 import { FullScenarioScoreboard } from 'hud/LiveScenarioScoreboard/FullScenarioScoreboard';
 import { uiContextFromGame } from 'services/session/UIContext';
@@ -141,6 +143,7 @@ class HUDViewInternal extends React.Component<HUDProps, HUDState> {
       <UIContext.Provider value={this.state.uiContext}>
         <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
           {renderWidgets}
+          <ImagePreloader />
           <ZoneNameContainer>
             <ZoneName />
           </ZoneNameContainer>
@@ -169,6 +172,7 @@ class HUDViewInternal extends React.Component<HUDProps, HUDState> {
             <FullScenarioScoreboard />
           </FullScenarioScoreboardContainer>
 
+          <PopupView />
           <TooltipView />
           <ActionAlert />
           <PassiveAlert />

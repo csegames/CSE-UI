@@ -9,28 +9,28 @@
  */
 import { useState } from 'react';
 import { query } from '../../graphql/query';
-import { CUQuery, Skill } from '../../graphql/schema';
+import { CUQuery, Ability } from '../../graphql/schema';
 
 const queryString = `
 {
   myCharacter {
-    skills {
+    abilities {
       id
       name
       icon
-      notes
+      description
       tracks
     }
   }
 
   status {
-  statuses {
-    id
-    numericID
-    iconURL
-    description
-    name
-  }
+    statuses {
+      id
+      numericID
+      iconURL
+      description
+      name
+    }
 	}
 
   game {
@@ -97,7 +97,7 @@ declare global {
     init(): void;
     refetch(): Promise<GameDataStore>;
     getStatusInfo(id: number): any;
-    getSkillInfo(id: number): Skill | null;
+    getAbilityInfo(id: number): Ability | null;
     onUpdated(callback: Callback): EventHandle;
   }
 
@@ -151,9 +151,9 @@ function getStatusInfo(this: InternalGameDataStore, id: number) {
   return info || null;
 }
 
-function getSkillInfo(this: InternalGameDataStore, id: number) {
-  if (!this.myCharacter || !this.myCharacter.skills) return null;
-  const info = this.myCharacter.skills.find(skill => skill.id === id);
+function getAbilityInfo(this: InternalGameDataStore, id: number) {
+  if (!this.myCharacter || !this.myCharacter.abilities) return null;
+  const info = this.myCharacter.abilities.find(skill => skill.id === id);
   return info || null;
 }
 
@@ -174,7 +174,7 @@ export default function(): GameDataStore {
     status: null,
     game: null,
     getStatusInfo,
-    getSkillInfo,
+    getAbilityInfo,
     onUpdated,
   };
 
