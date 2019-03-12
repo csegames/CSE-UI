@@ -60,7 +60,7 @@ export interface State {
   scaleFactor: number;
 }
 
-export class HUDEditor extends React.Component<Props, State> {
+class HUDEditor extends React.Component<Props, State> {
   private lastPosition = { x: NaN , y: NaN };
   private mouseDownForScaleHold: boolean = false;
   private mouseScaleHoldInitTimeout: NodeJS.Timer = null;
@@ -487,3 +487,5 @@ export class HUDEditor extends React.Component<Props, State> {
   }
 
 }
+
+export default HUDEditor;

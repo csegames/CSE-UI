@@ -30,11 +30,11 @@ import AbilityBar from 'hud/AbilityBar';
 import ScenarioPopup from 'hud/ScenarioPopup';
 import ScenarioResults from 'hud/ScenarioResults';
 import Settings from 'hud/Settings/SettingsMain';
+import HUDEditor from 'hud/HUDEditor';
 
 // import TestButtons from '../BattleGroups/components/TestButtons'
 
 import { ZoneName } from 'hud/ZoneName';
-import { HUDEditor } from 'hud/HUDEditor';
 
 // TEMP -- Disable this being movable/editable
 import HUDNav from '../../services/session/layoutItems/HUDNav';
