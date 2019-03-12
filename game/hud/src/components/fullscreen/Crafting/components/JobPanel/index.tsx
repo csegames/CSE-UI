@@ -738,6 +738,7 @@ class JobPanelPage extends React.Component<Props, State> {
       this.props.removeVoxJobID(this.state.voxJob.id);
       this.props.refetchInventory();
       this.props.refetchCrafting();
+      game.trigger('refetch-craft-history');
     }
   }
 

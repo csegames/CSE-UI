@@ -123,6 +123,8 @@ export interface State {
 }
 
 class CraftHistory extends React.Component<Props, State> {
+  private evh: EventHandle;
+  private countGraphQL: GraphQLResult<CraftHistoryLogCountQuery.Query>;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -144,6 +146,7 @@ class CraftHistory extends React.Component<Props, State> {
           },
         }}>
         {(graphql: GraphQLResult<CraftHistoryLogCountQuery.Query>) => {
+          this.countGraphQL = graphql;
           if (!graphql.data || !graphql.data.crafting) {
             return null;
           }
@@ -181,6 +184,15 @@ class CraftHistory extends React.Component<Props, State> {
         }}
       </GraphQL>
     );
+  }
+
+  public componentDidMount() {
+    this.evh = game.on('refetch-craft-history', this.countGraphQL.refetch);
+  }
+
+  public componentWillUnmount() {
+    this.evh.clear();
+    this.evh = null;
   }
 
   public shouldComponentUpdate(nextProps: Props, nextState: State) {
