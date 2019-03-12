@@ -15,6 +15,7 @@ import CategorySelect from './CategorySelect';
 import GroupLogQuickView from '../GroupLogQuickView';
 import JobLogFullView from '../JobLogFullView';
 import BackButton from '../JobLogFullView/BackButton';
+import SearchInput from '../SearchInput';
 import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import { itemCanBeRepaired, itemCanBeSalvaged, getJobContext } from '../../../lib/utils';
 import { getItemUnitCount } from 'fullscreen/lib/utils';
@@ -86,8 +87,10 @@ class Category extends React.Component<Props, State> {
   }
 
   public render() {
+    const { searchValue, onSearchChange } = this.props;
     return (
       <Container>
+        <SearchInput searchValue={searchValue} onSearchChange={onSearchChange} />
         {this.shouldShowBack() && <BackButton className={BackButtonStyle} onClick={this.onBackClick} />}
         {this.renderView()}
       </Container>
@@ -124,9 +127,9 @@ class Category extends React.Component<Props, State> {
     if (!selectedGroupLog) {
       if (selectedCategory) {
         let groupLogs: GroupLogData[] = [];
-        if (selectedCategory === VoxJobType.Make) {
+        if (selectedCategory === VoxJobType.Make && this.state.selectedItemType) {
           groupLogs = this.getItemTypeGroupLogs();
-        } else if (selectedCategory === VoxJobType.Shape) {
+        } else if (selectedCategory === VoxJobType.Shape && this.state.selectedAlloyType) {
           groupLogs = this.getAlloyTypeGroupLogs();
         } else {
           groupLogs = this.getCategoryGroupLogs();
@@ -230,6 +233,7 @@ class Category extends React.Component<Props, State> {
   }
 
   private onBackClick = () => {
+    this.props.onSearchChange('');
     this.setState((state) => {
       if (state.selectedGroupLog) {
         return {
