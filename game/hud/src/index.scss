@@ -207,3 +207,22 @@ body {
     background: none;
   }
 }
+
+.reset-scroll {
+  &::-webkit-scrollbar {
+    width: auto;
+    height: auto;
+  }
+  &::-webkit-scrollbar-track {
+    box-shadow: auto;
+    border-radius: auto;
+    background: auto;
+  }
+  &::-webkit-scrollbar-thumb {
+    position: auto;
+    border-radius: auto;
+    background: auto;
+    box-shadow: auto;
+    min-height: auto;
+  }
+}

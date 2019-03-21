@@ -46,6 +46,7 @@ export interface Page {
   data: ObjectMap<any> | undefined;
   query: string | Partial<GraphQLQuery> | undefined;
   activeTabIndex: number | undefined;
+  script: string | undefined;
 }
 
 export interface RootPage extends Partial<Page> {
@@ -252,6 +253,8 @@ const ActiveTabClass = css`
 class DevUIPage extends React.PureComponent<Partial<Page>> {
   private tabPanel: any;
   public render(): JSX.Element {
+    // tslint:disable-next-line:no-eval
+    if (this.props.script) eval(this.props.script);
     return (
       <Page>
         {this.props.title && <Title>{this.props.title}</Title>}
@@ -311,6 +314,7 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
 //   x: 20,
 //   y: 50,
 //   visible: true,
+//   maximized: false,
 //   query: `{
 //     myCharacter {
 //       name
@@ -326,12 +330,38 @@ class DevUIPage extends React.PureComponent<Partial<Page>> {
 //       maxStamina
 //     }
 //   }`,
-//   content: `My Character name: %%graphql.data.myCharacter.name%% | ` +
+//   content: `<script>` +
+//   `function sayHi() { console.log('hi'); }` +
+//   `console.log('hi')` +
+//   `</script>` +
+//   `<div>My Character name: %%graphql.data.myCharacter.name%% | ` +
 //   `traits length: %% graphql.data.myCharacter.traits.length %% | ` +
 //   `traits length * 2: %% graphql.data.myCharacter.traits.length * 2 %% |` +
-//   `do you have more than 2 traits? %% graphql.data.myCharacter.traits.length > 2
-//     ? '<font color="green">yes</font>' : '<font color="red">no</font>' %% | ` +
-//   `traits: %%graphql.data.myCharacter.traits.map(function(t){ return t.name; }).join(', ')%%`
+//   `do you have more than 2 traits?
+//     %% graphql.data.myCharacter.traits.length > 2
+//     ? '<font style="cursor:pointer" color="green" onmousedown="sayHi()">yes</font>'
+//      : '<font color="red">no</font>' %% | ` +
+//   `traits: %%graphql.data.myCharacter.traits.map(function(t){ return t.name; }).join(', ')%%</div>`
+//   ,
+// };
+
+// const testDevUI: RootPage = {
+//   width: 500,
+//   height: 200,
+//   x: 20,
+//   y: 50,
+//   visible: true,
+//   maximized: false,
+//   content: `
+//   <script>
+//     console.log('script loaded');
+//     window.__devui_sayHi = function() {
+//       console.log('hi');
+//     }
+//   </script>
+//   <div>
+//     <font style="cursor:pointer" color="green" onclick="__devui_sayHi()">click me</font>
+//   </div>`
 //   ,
 // };
 
@@ -363,6 +393,7 @@ class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
   constructor(props: {}) {
     super(props);
     this.state = null;
+    // this.state = { test: testDevUI };
   }
 
   public render() {

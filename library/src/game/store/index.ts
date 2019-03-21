@@ -9,7 +9,7 @@
  */
 import { useState } from 'react';
 import { query } from '../../graphql/query';
-import { CUQuery, StatusDef_Deprecated, Skill } from '../../graphql/schema';
+import { CUQuery, Skill } from '../../graphql/schema';
 
 const queryString = `
 {
@@ -97,7 +97,7 @@ declare global {
   interface GameDataStore extends QueryResult {
     init(): void;
     refetch(): Promise<GameDataStore>;
-    getStatusInfo(id: number): StatusDef_Deprecated | null;
+    getStatusInfo(id: number): any;
     getSkillInfo(id: number): Skill | null;
     onUpdated(callback: Callback): EventHandle;
   }
