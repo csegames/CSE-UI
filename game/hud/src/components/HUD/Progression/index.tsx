@@ -24,12 +24,12 @@ const query = gql`
         dayEnd
         secondsActive
         distanceMoved
-        skillPartsUsed {
-          skillPartID
+        abilityComponentsUsed {
+          abilityComponentID
           usedInCombatCount
           usedNonCombatCount
-          skillPartDef {
-            ...SkillPartDefinition
+          abilityComponentDef {
+            ...AbilityComponentDefinition
           }
         }
         damage {
@@ -107,7 +107,7 @@ const query = gql`
     resourceNode
   }
 
-  fragment SkillPartDefinition on SkillPartDef {
+  fragment AbilityComponentDefinition on AbilityComponentGQL {
     icon
     id
     name

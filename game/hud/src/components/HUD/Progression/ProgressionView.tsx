@@ -198,7 +198,15 @@ class ProgressionView extends React.Component<Props, State> {
           <ProgressionContent className='cse-ui-scroller-thumbonly'>
 
           {graphql.data.myprogression.unCollectedDayLogs.map((uncollectedDay) => {
-            const { secondsActive, distanceMoved, skillPartsUsed, damage, plots, crafting, scenarios } = uncollectedDay;
+            const {
+              secondsActive,
+              distanceMoved,
+              abilityComponentsUsed,
+              damage,
+              plots,
+              crafting,
+              scenarios,
+            } = uncollectedDay;
 
             const damageDetails: JSX.Element[] = [];
             Object.keys(damage).forEach((damageKey) => {
@@ -295,22 +303,22 @@ class ProgressionView extends React.Component<Props, State> {
             }
 
             const skillDetails: JSX.Element[] = [];
-            skillPartsUsed.forEach((skillPartUsed) => {
+            abilityComponentsUsed.forEach((abilityComponentUsed) => {
               skillDetails.push(
-                <li key={skillPartUsed.skillPartID}>
+                <li key={abilityComponentUsed.abilityComponentID}>
                   <div className='ProgressionInfo'>
                     <div className='ProgressionLabel'>
-                      <img height='20px' width='20px' src={skillPartUsed.skillPartDef.icon} />&nbsp;
-                      { skillPartUsed.skillPartDef.name }
+                      <img height='20px' width='20px' src={abilityComponentUsed.abilityComponentDef.icon} />&nbsp;
+                      { abilityComponentUsed.abilityComponentDef.name }
                     </div>
                     <div className='ProgressionValue3'>
-                      { skillPartUsed.usedInCombatCount }
+                      { abilityComponentUsed.usedInCombatCount }
                     </div>
                     <div className='ProgressionValue3'>
-                      { skillPartUsed.usedNonCombatCount }
+                      { abilityComponentUsed.usedNonCombatCount }
                     </div>
                     <div className='ProgressionValue3'>
-                      { skillPartUsed.usedInCombatCount + skillPartUsed.usedNonCombatCount }
+                      { abilityComponentUsed.usedInCombatCount + abilityComponentUsed.usedNonCombatCount }
                     </div>
                   </div>
                 </li>

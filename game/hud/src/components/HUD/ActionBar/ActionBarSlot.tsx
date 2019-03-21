@@ -7,7 +7,7 @@
 import React, { useContext, useState } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { useActionStateReducer, ActionSlot, EditMode } from 'services/session/ActionViewState';
-import { SkillTracks } from 'gql/interfaces';
+import { AbilityTracks } from 'gql/interfaces';
 import { ActionBtn } from 'hud/ActionButton/ActionBtn';
 import { DragAndDrop } from 'utils/DragAndDropV2';
 import { Drag } from 'utils/Drag';
@@ -113,7 +113,7 @@ const action = {
   icon: 'https://camelot-unchained.s3.amazonaws.com/game/4/icons/components/Acidic_Concoction.png',
   notes: 'info about action',
   id: 'one',
-  tracks: SkillTracks.EitherWeaponPreferPrimary,
+  tracks: AbilityTracks.EitherWeaponPreferPrimary,
 
   keybind: '3',
 
@@ -136,7 +136,7 @@ const action2 = {
   icon: 'https://camelot-unchained.s3.amazonaws.com/game/4/icons/skills/Blackgaurd-Adept-Shot.png',
   notes: 'info about action 2',
   id: 'two',
-  tracks: SkillTracks.EitherWeaponPreferPrimary,
+  tracks: AbilityTracks.EitherWeaponPreferPrimary,
 
   keybind: '4',
 
