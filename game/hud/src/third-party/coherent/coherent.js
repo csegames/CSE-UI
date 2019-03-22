@@ -14,7 +14,7 @@
 })(function (global, engine, hasOnLoad) {
 	'use strict';
 
-	var VERSION = [2, 7, 0, 3];
+	var VERSION = [2, 8, 1, 1];
 
 	/**
 	* Event emitter
