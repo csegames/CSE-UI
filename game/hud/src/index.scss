@@ -30,15 +30,15 @@ body {
   @import './_font.scss';
 
   // components
-  @import './components/HUD/index';
+  @import './components/hud/index';
   @import './components/utils/HUDDrag/index';
-  @import './components/HUD/ErrorMessages/index';
-  @import './components/HUD/Announcement/index';
-  @import './components/HUD/DevUI/index';
+  @import './components/hud/ErrorMessages/index';
+  @import './components/hud/Announcement/index';
+  @import './components/hud/DevUI/index';
   @import './components/fullscreen/LoadingScreen/index';
   @import './components/shared/ParallaxBG/index';
   // widgets
-  @import './components/HUD/BuildingOLD/index';
+  @import './components/hud/BuildingOLD/index';
   // external scss
   @import '@csegames/camelot-unchained/lib/components/Chat/index.scss';
   .chat-window {

@@ -136,6 +136,8 @@ export class Respawn extends React.Component<Props, State> {
   }
 
   private handleVisibility = () => {
+    console.log('HANDLE VISIBILITY');
+    console.log(JSON.stringify(game.selfPlayerState));
     if (game.selfPlayerState.characterID === 'unknown') {
       console.log('CHARACTER ID UNKNOWN BITCH');
     }
