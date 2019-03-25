@@ -28,6 +28,7 @@ declare global {
         blood: string;
         stamina: string;
         panic: string;
+        wound: string;
       };
     };
 

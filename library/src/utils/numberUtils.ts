@@ -10,9 +10,14 @@ export {};
 declare global {
   interface Number {
     floatEquals(n: number, epsilon?: number): boolean;
+    printWithSeparator(separator: string): string;
   }
 }
 
 Number.prototype.floatEquals = function(n: number, epsilon: number = Number.EPSILON) {
   return (Math.abs(this - n) < epsilon);
+};
+
+Number.prototype.printWithSeparator = function(separator: string) {
+  return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
 };

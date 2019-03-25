@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
+import React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { Tooltip } from 'shared/Tooltip';
 import { Faction as GQLFaction, Archetype as GQLArchetype } from 'gql/interfaces';
@@ -86,10 +86,10 @@ const HealthSubGrid = styled.div`
     '. blood . panic panic panic . . .'
     '. blood . . . . . . .'
     '. . . . . . . . .';
-  grid-template-columns: 8px 30px 6px 3px 6px 293px 3px 85px 7px;
+  grid-template-columns: 8px 30px 6px 3px 3px 293px 3px 85px 10px;
   grid-template-rows: 57px 4px 13px 6px 4px 1px 4px 3px 9px;
   @media (max-width: 1920px) {
-    grid-template-columns: 4px 15px 3px 1px 3px 147px 1px 43px 3px;
+    grid-template-columns: 4px 15px 3px 1px 3px 147px 1px 42px 3px;
     grid-template-rows: 29px 2px 7px 2px 2px 1px 2px 1px 4px;
   }
 `;
@@ -113,18 +113,16 @@ const Health = styled.div`
   transform: skewX(31.6deg);
 `;
 
-const HealthText = styled.div`
-  position: absolute;
-  text-align: center;
+const Wounds = styled.div`
   grid-area: health;
   height: 100%;
-  width: 100%;
-  color: white;
-  line-height: 12px;
-  @media (max-width: 1920px) {
-    font-size: 16px;
-    line-height: 6px;
-  }
+  transform: skewX(31.6deg);
+  justify-self: end;
+`;
+
+const HealthText = styled.div`
+  font-size: 1em;
+  line-height: 1em;
 `;
 
 const Stamina = styled.div`
@@ -188,10 +186,6 @@ export interface State {
 
 export class PlayerFrame extends React.Component<Props, State> {
 
-  public state = {
-    hover: false,
-  };
-
   public render() {
     return (
       <UIContext.Consumer>
@@ -229,52 +223,77 @@ export class PlayerFrame extends React.Component<Props, State> {
 
     return (
       <PlayerFrameContainer data-input-group='block'>
-        <MainGrid onMouseOver={this.setHoverOn} onMouseLeave={this.setHoverOff}>
-          <MainFrame>
-            <Image src={imgDir + 'bg.png'} />
+        <Tooltip
+          content={(
+            <>
+              <HealthText style={{
+                color: theme.unitFrames.color.health,
+                fontWeight: 900,
+                fontSize: '1.1em',
+              }}>
+                <div style={{ display: 'inline-block', width: '101px' }}>Health:</div>
+                {`${player.health && player.health[0] ? player.health[0].current.printWithSeparator(' ') : 0}  /`}
+                {`  ${player.health && player.health[0] ? player.health[0].max.printWithSeparator(' ') : 0}`}
+              </HealthText>
+              <HealthText style={{ color: theme.unitFrames.color.blood }}>
+                <div style={{ display: 'inline-block', width: '100px' }}>Blood:</div>
+                {`${player.blood && player.blood[0] ? player.blood[0].current.printWithSeparator(' ') : 0}  /`}
+                {`  ${player.blood && player.blood[0] ? player.blood[0].max.printWithSeparator(' ') : 0}`}
+              </HealthText>
+              <HealthText style={{ color: theme.unitFrames.color.stamina }}>
+                <div style={{ display: 'inline-block', width: '100px' }}>Stamina:</div>
+                {`${player.stamina && player.stamina[0] ? player.stamina[0].current.printWithSeparator(' ') : 0}  /`}
+                {`  ${player.stamina && player.stamina[0] ? player.stamina[0].max.printWithSeparator(' ') : 0}`}
+              </HealthText>
+            </>
+          )}
+        >
+          <MainGrid>
+            <MainFrame>
+              <Image src={imgDir + 'bg.png'} />
 
-            <HealthSubGrid>
-              <NameBG src={imgDir + realmPrefix + 'nameplate-bg.png'} />
-            </HealthSubGrid>
-
-            <HealthSubGrid style={{ WebkitMaskImage: `url(${imgDir}main-frame-mask.png)` }}>
-              <Blood style={{
-                height: CurrentMax.cssPercent(player.blood),
-                backgroundColor: theme.unitFrames.color.blood,
-              }} />
-              <Health style={{
-                width: player.health && player.health[0] ? CurrentMax.cssPercent(player.health[0]) : 0,
-                backgroundColor: theme.unitFrames.color.health,
-              }} />
-              <Stamina style={{
-                width: CurrentMax.cssPercent(player.stamina),
-                backgroundColor: theme.unitFrames.color.stamina,
-              }} />
-              <NameBG src={imgDir + realmPrefix + 'nameplate-bg.png'} />
-            </HealthSubGrid>
-
-            {/* Overlay */}
-            <Image src={imgDir + realmPrefix + 'main-frame.png'} />
-
-            {this.state.hover && player.health && player.health[0] &&
               <HealthSubGrid>
-                <HealthText>{player.health[0].current.toFixed(0) + ' / ' + player.health[0].max}</HealthText>
-              </HealthSubGrid >
-            }
+                <NameBG src={imgDir + realmPrefix + 'nameplate-bg.png'} />
+              </HealthSubGrid>
 
-          </MainFrame>
+              <HealthSubGrid style={{ WebkitMaskImage: `url(${imgDir}main-frame-mask.png)` }}>
+                <Blood style={{
+                  height: CurrentMax.cssPercent(player.blood),
+                  backgroundColor: theme.unitFrames.color.blood,
+                }} />
+                <Health style={{
+                  width: player.health && player.health[0] ? CurrentMax.cssPercent(player.health[0]) : 0,
+                  backgroundColor: theme.unitFrames.color.health,
+                }} />
+                <Wounds style={{
+                  width: player.health && player.health[0].wounds ? ((player.health[0].wounds * .333) * 100 + '%') : 0,
+                  background: `url(${imgDir}wounds-texture.png) ${theme.unitFrames.color.wound} repeat-x`,
+                }}
+                />
+                <Stamina style={{
+                  width: CurrentMax.cssPercent(player.stamina),
+                  backgroundColor: theme.unitFrames.color.stamina,
+                }} />
+                <NameBG src={imgDir + realmPrefix + 'nameplate-bg.png'} />
+              </HealthSubGrid>
 
-          <ArchetypeFrameContainer>
-            <Image src={imgDir + archetypePrefix + 'bg.png'} />
-            <Image
-              src={imgDir + realmPrefix + 'propic.png'}
-              style={{ WebkitMaskImage: `url(${imgDir + archetypePrefix}bg.png)` }}
-            />
-            <Image src={imgDir + realmPrefix + archetypePrefix + 'frame.png'} />
-          </ArchetypeFrameContainer>
+              {/* Overlay */}
+              <Image src={imgDir + realmPrefix + 'main-frame.png'} />
 
-          <Name>{player.name}{!player.isAlive ? ' (Corpse)' : ''}</Name>
-        </MainGrid>
+            </MainFrame>
+
+            <ArchetypeFrameContainer>
+              <Image src={imgDir + archetypePrefix + 'bg.png'} />
+              <Image
+                src={imgDir + realmPrefix + 'propic.png'}
+                style={{ WebkitMaskImage: `url(${imgDir + archetypePrefix}bg.png)` }}
+              />
+              <Image src={imgDir + realmPrefix + archetypePrefix + 'frame.png'} />
+            </ArchetypeFrameContainer>
+
+            <Name>{player.name}{!player.isAlive ? ' (Corpse)' : ''}</Name>
+          </MainGrid>
+        </Tooltip>
 
         {player.statuses &&
           <Statuses>
@@ -308,14 +327,6 @@ export class PlayerFrame extends React.Component<Props, State> {
         </Status>
       </Tooltip>
     );
-  }
-
-  private setHoverOn = () => {
-    this.setState({ hover: true });
-  }
-
-  private setHoverOff = () => {
-    this.setState({ hover: false });
   }
 
   private realmPrefix = (faction: Faction | GQLFaction) => {

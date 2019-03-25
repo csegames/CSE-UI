@@ -16,6 +16,7 @@ export default function(): Theme {
         blood: '#DF2E00',
         stamina: '#53FF64',
         panic: '#FFF153',
+        wound: '#A02106',
       },
     },
 
