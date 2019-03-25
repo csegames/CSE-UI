@@ -17,16 +17,18 @@ export const RespawnDimensions = {
 const Container = styled.div`
   position: relative;
   pointer-events: all;
-  background-size: contain;
   width: ${RespawnDimensions.widthUHD}px;
   height: ${RespawnDimensions.heightUHD}px;
-  background: url(../images/respawn/uhd/banner.png);
+  background-image: url(../images/respawn/uhd/banner.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: center center;
   z-index: -1;
 
   @media (max-width: 1920px) {
     width: ${RespawnDimensions.width}px;
     height: ${RespawnDimensions.height}px;
-    background: url(../images/respawn/hd/banner.png);
+    background-image: url(../images/respawn/hd/banner.png);
   }
 `;
 
