@@ -181,7 +181,6 @@ export interface Props {
 }
 
 export interface State {
-  hover: boolean;
 }
 
 export class PlayerFrame extends React.Component<Props, State> {
@@ -233,13 +232,13 @@ export class PlayerFrame extends React.Component<Props, State> {
               </HealthText>
               <HealthText style={{ color: theme.unitFrames.color.blood }}>
                 <div style={{ display: 'inline-block', width: '100px' }}>Blood:</div>
-                {`${player.blood && player.blood[0] ? player.blood[0].current.printWithSeparator(' ') : 0}  /`}
-                {`  ${player.blood && player.blood[0] ? player.blood[0].max.printWithSeparator(' ') : 0}`}
+                {`${player.blood && player.blood ? player.blood.current.printWithSeparator(' ') : 0}  /`}
+                {`  ${player.blood && player.blood ? player.blood.max.printWithSeparator(' ') : 0}`}
               </HealthText>
               <HealthText style={{ color: theme.unitFrames.color.stamina }}>
                 <div style={{ display: 'inline-block', width: '100px' }}>Stamina:</div>
-                {`${player.stamina && player.stamina[0] ? player.stamina[0].current.printWithSeparator(' ') : 0}  /`}
-                {`  ${player.stamina && player.stamina[0] ? player.stamina[0].max.printWithSeparator(' ') : 0}`}
+                {`${player.stamina && player.stamina ? player.stamina.current.printWithSeparator(' ') : 0}  /`}
+                {`  ${player.stamina && player.stamina ? player.stamina.max.printWithSeparator(' ') : 0}`}
               </HealthText>
             </>
           )}
