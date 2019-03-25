@@ -199,10 +199,6 @@ export class PlayerFrame extends React.Component<Props, State> {
   }
 
   public shouldComponentUpdate(nextProps: Props, nextState: State) {
-    if (this.state.hover !== nextState.hover) {
-      return true;
-    }
-
     if (Object.is(this.props.player, nextProps.player)) {
       return false;
     }
@@ -266,7 +262,9 @@ export class PlayerFrame extends React.Component<Props, State> {
                   backgroundColor: theme.unitFrames.color.health,
                 }} />
                 <Wounds style={{
-                  width: player.health && player.health[0].wounds ? ((player.health[0].wounds * .333) * 100 + '%') : 0,
+                  width: player.health
+                  && player.health[0]
+                  && player.health[0].wounds ? ((player.health[0].wounds * .333) * 100 + '%') : 0,
                   background: `url(${imgDir}wounds-texture.png) ${theme.unitFrames.color.wound} repeat-x`,
                 }}
                 />
