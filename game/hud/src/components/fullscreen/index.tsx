@@ -83,6 +83,7 @@ const BackgroundImage = styled.div`
 
 class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavState> {
   private navigateListener: EventHandle;
+  private containerRef: HTMLDivElement;
 
   constructor(props: any) {
     super(props);
@@ -99,6 +100,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
           visibleComponentLeft={visibleComponentLeft}
           visibleComponentRight={visibleComponentRight}>
             <div
+              ref={r => this.containerRef = r}
               data-input-group='block'
               style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
               <BackgroundImage className={'left'} />
@@ -258,6 +260,8 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
       };
     }
 
+    console.log('FOCUS THAT CONTAINER REF!');
+    this.containerRef.focus();
     this.setState(tabsState as any);
   }
 

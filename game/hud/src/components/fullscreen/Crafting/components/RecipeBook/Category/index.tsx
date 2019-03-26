@@ -90,7 +90,7 @@ class Category extends React.Component<Props, State> {
     const { searchValue, onSearchChange } = this.props;
     return (
       <Container>
-        <SearchInput searchValue={searchValue} onSearchChange={onSearchChange} />
+        {this.state.selectedGroupLog ? null : <SearchInput searchValue={searchValue} onSearchChange={onSearchChange} />}
         {this.shouldShowBack() && <BackButton className={BackButtonStyle} onClick={this.onBackClick} />}
         {this.renderView()}
       </Container>

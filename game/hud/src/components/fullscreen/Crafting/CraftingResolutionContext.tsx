@@ -7,6 +7,22 @@
 import * as React from 'react';
 import { MediaBreakpoints } from './lib/MediaBreakpoints';
 
+/*
+  The reason for a CraftingResolutionContext is to provide UHD and MidScreen resolutions specific to the Crafting UI ONLY.
+  The Crafting UI's style is very unique to the rest of the UI's, and in it's current state, it isn't practical to
+  try to force it to look good with the same breakpoints other UIs use.
+
+  In the future, we can revisit the styles for the Crafting UI and come up with a better way to implement
+  those styles to make them work with the rest of the UI.
+
+  MidScreen values are multiplied by 1.3
+  UHD values are multiplied by 2
+
+  These values were just what looked the best for this UI and the way the styles were implemented.
+
+  -AJ
+*/
+
 export interface ResolutionContextState {
   resolution: Resolution;
   isUHD(): boolean;
@@ -48,11 +64,11 @@ export class CraftingResolutionContextProvider extends React.Component<{}, Resol
   }
 
   public componentDidMount() {
-    window.addEventListener('resize', this.onWindowResize);
+    window.addEventListener('optimizedResize', this.onWindowResize);
   }
 
   public componentWillUnmount() {
-    window.removeEventListener('resize', this.onWindowResize);
+    window.removeEventListener('optimizedResize', this.onWindowResize);
   }
 
   private isUHD = () => {

@@ -22,6 +22,14 @@ const Container = styled.div`
   background: url(../images/crafting/1080/search-line.png) no-repeat;
   background-position: left bottom;
 
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    height: 40px;
+    padding: 0 0 5px 10px;
+    background: url(../images/crafting/4k/search-line.png) no-repeat;
+    background-size: contain;
+    background-position: left bottom;
+  }
+
   @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
     height: 77px;
     padding: 0 0 5px 15px;
@@ -46,6 +54,10 @@ const InputStyle = css`
   color: black !important;
   &::placeholder {
     color: black !important;
+  }
+
+  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+    font-size: 26px !important;
   }
 
   @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {

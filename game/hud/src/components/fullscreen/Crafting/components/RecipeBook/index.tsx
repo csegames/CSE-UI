@@ -276,8 +276,6 @@ class RecipeBook extends React.Component<Props, State> {
         );
       }
       case Routes.Category: {
-        console.log('CATEGORY PAGE');
-        console.log(groupLogs);
         return (
           <Category
             isSelect={false}
