@@ -12,7 +12,7 @@ import { showTooltip, hideTooltip, ShowTooltipPayload } from 'actions/tooltips';
 import { getItemUnitCount, getItemQuality } from 'fullscreen/lib/utils';
 import { placeholderIcon } from 'fullscreen/lib/constants';
 import ItemImage from '../../ItemImage';
-import TooltipContent, { defaultTooltipStyle } from 'shared/ItemTooltip';
+import TooltipContent from 'shared/ItemTooltip';
 import CraftingDefTooltip from '../CraftingDefTooltip';
 import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
@@ -198,7 +198,7 @@ class OutputItem extends React.Component<Props> {
       const payload: ShowTooltipPayload = {
         content: <TooltipContent item={this.getItem()} instructions={''} />,
         event: e,
-        styles: defaultTooltipStyle,
+        styles: 'item',
       };
       showTooltip(payload);
     } else if (this.props.staticDef) {

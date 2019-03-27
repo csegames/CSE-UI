@@ -21,6 +21,7 @@ import {
   EquippedItem,
   ContainerDefStat_Single,
 } from 'gql/interfaces';
+import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 
 declare const toastr: any;
 
@@ -28,11 +29,22 @@ const Container = styled.div`
   margin: auto;
 `;
 
+// #region Row constants
+const ROW_MARGIN_BOTTOM = 10;
+// #endregion
 const Row = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: 5px;
+  margin-bottom: ${ROW_MARGIN_BOTTOM}px;
   flex-wrap: wrap;
+
+  @media (max-width: 2560px) {
+    margin-bottom: ${ROW_MARGIN_BOTTOM * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-bottom: ${ROW_MARGIN_BOTTOM * HD_SCALE}px;
+  }
 `;
 
 export interface ContainerInfo {
@@ -133,7 +145,7 @@ export class InventoryRow extends React.Component<InventoryRowProps, InventoryRo
           // Is an item container
           if (itemDef && itemDef.slotType === SlotType.Container) {
             return (
-              <Row key={container.itemIndex}>
+              <Row key={container.itemIndex} id='ITEM_CONTAINER_ROW'>
                 <ItemContainer
                   item={itemDef}
                   searchValue={''}

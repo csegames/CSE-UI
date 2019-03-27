@@ -10,9 +10,21 @@ import { styled } from '@csegames/linaria/react';
 
 import TooltipInfoSection, { TooltipSection } from './TooltipInfoSection';
 import { InventoryItem, EquippedItem } from 'gql/interfaces';
+import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_PADDING_HORIZONTAL = 20;
+// #endregion
 const Container = styled.div`
-  padding: 0 10px;
+  padding: 0 ${CONTAINER_PADDING_HORIZONTAL}px;
+
+  @media (max-width: 2560px) {
+    padding: 0 ${CONTAINER_PADDING_HORIZONTAL * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding: 0 ${CONTAINER_PADDING_HORIZONTAL * HD_SCALE}px;
+  }
 `;
 
 export interface TooltipArmorInfoState {

@@ -20,7 +20,7 @@ import {
 
 import { CraftingContext } from '../../../CraftingContext';
 import { RecipeIdToRecipe, RecipeType, RecipeData } from '../../../CraftingBase';
-import Tooltip, { defaultTooltipStyle } from 'shared/ItemTooltip';
+import Tooltip from 'shared/ItemTooltip';
 import ItemImage from '../../../ItemImage';
 import CraftingDefTooltip from '../../CraftingDefTooltip';
 import { getIcon, getItemUnitCount, getItemQuality } from 'fullscreen/lib/utils';
@@ -263,7 +263,7 @@ class InputCraftHistory extends React.Component<Props> {
       const payload: ShowTooltipPayload = {
         event,
         content: <Tooltip item={inputItem.item as InventoryItem.Fragment} instructions='' />,
-        styles: defaultTooltipStyle,
+        styles: 'item',
       };
       showTooltip(payload);
     } else if (!inputItem.item.staticDefinition && inputItem.ingredient.requirement) {

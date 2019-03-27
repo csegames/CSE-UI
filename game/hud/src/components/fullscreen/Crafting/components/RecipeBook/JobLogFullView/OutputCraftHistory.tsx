@@ -11,7 +11,7 @@ import moment from 'moment';
 import { styled } from '@csegames/linaria/react';
 import { VoxJobLog, InventoryItem, VoxJobOutputItemType } from 'gql/interfaces';
 import { showTooltip, hideTooltip, ShowTooltipPayload } from 'actions/tooltips';
-import Tooltip, { defaultTooltipStyle } from 'shared/ItemTooltip';
+import Tooltip from 'shared/ItemTooltip';
 import { getItemWithNewUnitCount, getItemUnitCount, getItemQuality, getIcon } from 'fullscreen/lib/utils';
 import ItemImage from '../../../ItemImage';
 import PageSelector from '../PageSelector';
@@ -340,7 +340,7 @@ class OutputCraftHistory extends React.Component<Props, State> {
       const payload: ShowTooltipPayload = {
         event,
         content: <Tooltip item={item} instructions='' />,
-        styles: defaultTooltipStyle,
+        styles: 'item',
       };
       showTooltip(payload);
     } else {

@@ -9,16 +9,22 @@ import { CUIcon } from '@csegames/camelot-unchained';
 import { styled } from '@csegames/linaria/react';
 import { InventoryFilterButton as FilterButtonInfo } from 'fullscreen/lib/itemInterfaces';
 import { prettifyText } from 'fullscreen/lib/utils';
+import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_FONT_SIZE = 36;
+const CONTAINER_PADDING_VERTICAL = 4;
+const CONTAINER_PADDING_HORIZONTAL = 10;
+// #endregion
 const Container = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex: 0 0 auto;
-  font-size: 18px;
-  line-height: 18px;
-  padding: 2px 5px;
+  font-size: ${CONTAINER_FONT_SIZE}px;
+  line-height: ${CONTAINER_FONT_SIZE}px;
+  padding: ${CONTAINER_PADDING_VERTICAL}px ${CONTAINER_PADDING_HORIZONTAL}px;
   color: #413735;
   border-bottom: 1px solid #413735;
   &:hover {
@@ -27,6 +33,18 @@ const Container = styled.div`
   }
   &:hover * {
     cursor: pointer;
+  }
+
+  @media (max-width: 2560px) {
+    font-size: ${CONTAINER_FONT_SIZE * MID_SCALE}px;
+    line-height: ${CONTAINER_FONT_SIZE * MID_SCALE}px;
+    padding: ${CONTAINER_PADDING_VERTICAL * MID_SCALE}px ${CONTAINER_PADDING_HORIZONTAL * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${CONTAINER_FONT_SIZE * HD_SCALE}px;
+    line-height: ${CONTAINER_FONT_SIZE * HD_SCALE}px;
+    padding: ${CONTAINER_PADDING_VERTICAL * HD_SCALE}px ${CONTAINER_PADDING_HORIZONTAL * HD_SCALE}px;
   }
 `;
 

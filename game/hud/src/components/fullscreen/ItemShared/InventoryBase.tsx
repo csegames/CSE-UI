@@ -19,7 +19,7 @@ import eventNames, {
   CombineStackPayload,
 } from 'fullscreen/lib/itemEvents';
 import { DrawerCurrentStats } from 'fullscreen/Inventory/components/Containers/Drawer';
-import { slotDimensions } from 'fullscreen/Inventory/components/InventorySlot';
+import { SLOT_DIMENSIONS } from 'fullscreen/Inventory/components/InventorySlot';
 import {
   InventoryItem,
   GearSlotDefRef,
@@ -59,6 +59,8 @@ import {
   SlotItemDefType,
   InventoryFilterButton,
 } from 'fullscreen/lib/itemInterfaces';
+import { getScaledValue } from 'lib/scale';
+import { uiContextFromGame } from 'services/session/UIContext';
 
 declare const toastr: any;
 
@@ -1165,6 +1167,7 @@ export function allInventoryFooterButtonsDisabled(props: InventoryBaseProps) {
 }
 
 export function inventoryFooterRemoveAndPruneButtonDisabled(rowData: InventorySlotItemDef[][], heightOfBody: number) {
+  const slotDimensions = getScaledValue(uiContextFromGame(), SLOT_DIMENSIONS);
   const lastRowIndexOnScreen = Math.floor((heightOfBody - 15) / (slotDimensions + 4));
   const isRowOutsideBody = _.indexOf(rowData, (_.last(rowData))) >= lastRowIndexOnScreen;
   const lastRowIsEmpty = _.findIndex(_.last(rowData), item => item.slotType !== SlotType.Empty) === -1;
@@ -1188,6 +1191,7 @@ export function removeRowOfSlots(state: InventoryBaseState,
                                 rowData: InventorySlotItemDef[][],
                                 heightOfBody: number,
                                 isContainer?: boolean) {
+  const slotDimensions = getScaledValue(uiContextFromGame(), SLOT_DIMENSIONS);
   const lastRowIndexOnScreen = Math.floor((heightOfBody - 15) / (slotDimensions + 4));
   const isEmptyRow = _.findIndex(_.last(rowData), item => item.slotType !== SlotType.Empty) === -1;
   const isRowOutsideBody = _.indexOf(rowData, (_.last(rowData))) >= lastRowIndexOnScreen;
@@ -1214,6 +1218,7 @@ export function pruneRowsOfSlots(state: InventoryBaseState,
                                     rowData: InventorySlotItemDef[][],
                                     heightOfBody: number,
                                     isContainer?: boolean) {
+  const slotDimensions = getScaledValue(uiContextFromGame(), SLOT_DIMENSIONS);
   const lastRowIndexOnScreen = Math.floor((heightOfBody - 15) / (slotDimensions + 4));
   const lastRowContainingItem = _.findLastIndex(rowData, row => _.find(row, item => item.slotType !== SlotType.Empty));
   if (!isContainer) {

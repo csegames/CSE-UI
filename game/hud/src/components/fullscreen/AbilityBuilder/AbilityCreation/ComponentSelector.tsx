@@ -16,16 +16,11 @@ import { checkNetworkRequirements } from '../utils';
 import { AbilityBuilderQuery } from 'gql/interfaces';
 import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 import { AbilityType } from 'services/session/AbilityBuilderState';
+import { getScaledValue } from 'lib/scale';
 
 // #region Item Dimension Constants
 const ITEM_DIMENSIONS_UHD = 128;
 const ITEM_MARGIN_UHD = 5;
-
-const ITEM_DIMENSIONS = ITEM_DIMENSIONS_UHD * HD_SCALE;
-const ITEM_MARGIN = ITEM_MARGIN_UHD * HD_SCALE;
-
-const ITEM_DIMENSIONS_MID = ITEM_DIMENSIONS_UHD * MID_SCALE;
-const ITEM_MARGIN_MID = ITEM_MARGIN_UHD * MID_SCALE;
 // #endregion
 
 // #region Container Constants
@@ -434,19 +429,19 @@ const ItemContainer = styled.div`
   }
 
   @media (max-width: 2560px) {
-    width: ${ITEM_DIMENSIONS_MID}px;
-    height: ${ITEM_DIMENSIONS_MID}px;
-    min-width: ${ITEM_DIMENSIONS_MID}px;
-    min-height: ${ITEM_DIMENSIONS_MID}px;
-    margin: 0 ${ITEM_MARGIN_MID}px;
+    width: ${ITEM_DIMENSIONS_UHD * MID_SCALE}px;
+    height: ${ITEM_DIMENSIONS_UHD * MID_SCALE}px;
+    min-width: ${ITEM_DIMENSIONS_UHD * MID_SCALE}px;
+    min-height: ${ITEM_DIMENSIONS_UHD * MID_SCALE}px;
+    margin: 0 ${ITEM_MARGIN_UHD * MID_SCALE}px;
   }
 
   @media (max-width: 1920px) {
-    width: ${ITEM_DIMENSIONS}px;
-    height: ${ITEM_DIMENSIONS}px;
-    min-width: ${ITEM_DIMENSIONS}px;
-    min-height: ${ITEM_DIMENSIONS}px;
-    margin: 0 ${ITEM_MARGIN}px;
+    width: ${ITEM_DIMENSIONS_UHD * HD_SCALE}px;
+    height: ${ITEM_DIMENSIONS_UHD * HD_SCALE}px;
+    min-width: ${ITEM_DIMENSIONS_UHD * HD_SCALE}px;
+    min-height: ${ITEM_DIMENSIONS_UHD * HD_SCALE}px;
+    margin: 0 ${ITEM_MARGIN_UHD * HD_SCALE}px;
   }
 `;
 
@@ -631,10 +626,8 @@ export class ComponentSelector extends React.PureComponent<Props, State> {
     return (
       <UIContext.Consumer>
         {(uiContext: UIContext) => {
-          const itemDimension = uiContext.resolution.width > 2560 ? ITEM_DIMENSIONS_UHD :
-            uiContext.resolution.width > 1920 ? ITEM_DIMENSIONS_MID : ITEM_DIMENSIONS;
-          const itemMargin = uiContext.resolution.width > 2560 ? ITEM_MARGIN_UHD :
-            uiContext.resolution.width > 1920 ? ITEM_MARGIN_MID : ITEM_MARGIN;
+          const itemDimension = getScaledValue(uiContext, ITEM_DIMENSIONS_UHD);
+          const itemMargin = getScaledValue(uiContext, ITEM_MARGIN_UHD);
           return (
             <Container>
               <ContainerBG />

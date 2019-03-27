@@ -13,7 +13,7 @@ import eventNames, { UnequipItemPayload } from 'fullscreen/lib/itemEvents';
 import { getEquippedDataTransfer } from 'fullscreen/lib/utils';
 import { Alignment } from './PopupMiniInventory';
 import DraggableEquippedItem from './DraggableEquippedItem';
-import ItemTooltipContent, { defaultTooltipStyle } from 'shared/ItemTooltip';
+import ItemTooltipContent from 'shared/ItemTooltip';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
 import {
   EquippedItem,
@@ -161,7 +161,7 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
         item={this.props.providedEquippedItem.item}
         instructions='Right click to unequip'
       />;
-      showTooltip({ content, event, styles: defaultTooltipStyle, shouldAnimate: true });
+      showTooltip({ content, event, styles: 'item', shouldAnimate: true });
     }
   }
 

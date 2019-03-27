@@ -35,7 +35,7 @@ export class CloseButton extends React.Component<CloseButtonProps> {
     return (
       <Button
         className={`icon-close ${this.props.className}`}
-        style={{ width: this.props.width, height: this.props.height }}
+        style={{ width: this.props.width, height: this.props.height, fontSize: this.props.width }}
         onClick={this.props.onClick}
       />
     );

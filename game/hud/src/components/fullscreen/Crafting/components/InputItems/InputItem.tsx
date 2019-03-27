@@ -14,7 +14,7 @@ import { showTooltip, hideTooltip, ShowTooltipPayload } from 'actions/tooltips';
 import { DragEvent, DragAndDropInjectedProps, DraggableOptions } from 'utils/DragAndDrop/DragAndDrop';
 import { getItemUnitCount, getItemQuality, getIcon, getInventoryDataTransfer } from 'fullscreen/lib/utils';
 import { InventoryDataTransfer } from 'fullscreen/lib/itemEvents';
-import Tooltip, { defaultTooltipStyle } from 'shared/ItemTooltip';
+import Tooltip, { defaultItemTooltipStyle } from 'shared/ItemTooltip';
 import ItemImage from '../../ItemImage';
 import { RecipeData, RecipeType } from '../../CraftingBase';
 import CraftingDefTooltip from '../CraftingDefTooltip';
@@ -487,7 +487,7 @@ export class InputItem extends React.Component<Props, State> {
       const payload: ShowTooltipPayload = {
         content: <Tooltip item={this.props.item} instructions={''} />,
         event,
-        styles: defaultTooltipStyle,
+        styles: 'item',
       };
       showTooltip(payload);
       return;
@@ -502,7 +502,7 @@ export class InputItem extends React.Component<Props, State> {
             ingredientInfo={this.ingredientInfo}
           />,
         event,
-        styles: defaultTooltipStyle,
+        styles: defaultItemTooltipStyle,
       };
       showTooltip(payload);
       return;
@@ -514,7 +514,7 @@ export class InputItem extends React.Component<Props, State> {
           <CraftingDefTooltip recipeDef={placeholderItem} recipeData={this.props.selectedRecipe} />
         ),
         event,
-        styles: defaultTooltipStyle,
+        styles: 'item',
       };
       showTooltip(payload);
     }

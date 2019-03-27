@@ -20,7 +20,7 @@ import {
   SecureTradeState,
 } from 'gql/interfaces';
 import { SlotItemDefType, SlotType } from 'fullscreen/lib/itemInterfaces';
-import ItemTooltipContent, { defaultTooltipStyle } from 'shared/ItemTooltip';
+import ItemTooltipContent from 'shared/ItemTooltip';
 import {
   FullScreenNavState,
   FullScreenContext,
@@ -446,7 +446,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
       equippedItems={this.state.equippedItems}
       instructions={instructions}
     />;
-    showTooltip({ content, event, styles: defaultTooltipStyle, shouldAnimate: true });
+    showTooltip({ content, event, styles: 'item', shouldAnimate: true });
   }
 
   private getTabIndex = (tabName: string) => {

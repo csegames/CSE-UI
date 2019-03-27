@@ -10,6 +10,7 @@ import { styled } from '@csegames/linaria/react';
 
 import { getContainerColor } from 'fullscreen/lib/utils';
 import { InventoryItem } from 'gql/interfaces';
+import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   height: 100%;
@@ -27,17 +28,29 @@ const Header = styled.div`
   background-color: ${(props: any) => props.color};
 `;
 
+// #region Content constants
+const CONTENT_PADDING_TOP = 10;
+const CONTENT_SCROLLBAR_WIDTH = 15;
+// #endregion
 const Content = styled.div`
   position: relative;
   width: 100%;
-  height: 100%;
   overflow: auto;
   display: block;
-  padding-top: 5px;
+  padding-top: ${CONTENT_PADDING_TOP}px;
   box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.7);
   background-color: ${(props: any) => props.color};
+
   &::-webkit-scrollbar {
-    width: 15px;
+    width: ${CONTENT_SCROLLBAR_WIDTH}px;
+  }
+
+  @media (max-width: 2560px) {
+    padding-top: ${CONTENT_PADDING_TOP * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding-top: ${CONTENT_PADDING_TOP * HD_SCALE}px;
   }
 `;
 
@@ -46,7 +59,7 @@ const Footer = styled.div`
   align-items: center;
   color: #B6AEAC;
   background-color: ${(props: any) => props.color};
-  width: ${(props: any) => typeof props.footerWidth === 'number' ? `${props.footerWidth}px` : props.footerWidth};
+  width: 100%;
   align-self: flex-end;
 `;
 

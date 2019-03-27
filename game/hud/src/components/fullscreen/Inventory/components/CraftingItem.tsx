@@ -8,12 +8,26 @@ import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 
 import ItemIcon from 'fullscreen/ItemShared/components/ItemIcon';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_DIMENSIONS = 120;
+// #endregion
 const Container = styled.div`
-  width: 60px;
-  height: 60px;
+  width: ${CONTAINER_DIMENSIONS}px;
+  height: ${CONTAINER_DIMENSIONS}px;
   position: relative;
   cursor: pointer;
+
+  @media (max-width: 2560px) {
+    width: ${CONTAINER_DIMENSIONS * MID_SCALE}px;
+    height: ${CONTAINER_DIMENSIONS * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${CONTAINER_DIMENSIONS * HD_SCALE}px;
+    height: ${CONTAINER_DIMENSIONS * HD_SCALE}px;
+  }
 `;
 
 export interface CraftingItemProps {

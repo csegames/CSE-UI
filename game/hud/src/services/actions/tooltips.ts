@@ -23,7 +23,7 @@ export interface ShowTooltipPayload {
     clientY: number;
   };
   shouldAnimate?: boolean;
-  styles?: Partial<ToolTipStyle>;
+  styles?: Partial<ToolTipStyle> | 'item';
 }
 
 export function showTooltip(payload: ShowTooltipPayload) {

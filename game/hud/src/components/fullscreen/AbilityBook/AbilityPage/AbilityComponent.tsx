@@ -12,6 +12,7 @@ import { Tooltip } from 'shared/Tooltip';
 import { ComponentTooltip } from './ComponentTooltip';
 import { AbilityBookContext } from '../index';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
+import { getScaledValue } from 'lib/scale';
 
 // #region Component constants
 const COMPONENT_DIMENSIONS = 72;
@@ -68,7 +69,7 @@ const STROKE_WIDTH = 4;
 
 // tslint:disable-next-line:function-name
 export function AbilityComponent(props: Props) {
-  const { resolution } = useContext(UIContext);
+  const uiContext = useContext(UIContext);
   const { abilityComponentIDToProgression } = useContext(AbilityBookContext);
   const progressionData = abilityComponentIDToProgression[props.abilityComponent.id];
   let progress = 0;
@@ -79,12 +80,8 @@ export function AbilityComponent(props: Props) {
     progress = progressionData.progressionPoints / progressInfo.progressionForLevel;
   }
 
-  const ringRadius = resolution.width > 2560 ? RING_RADIUS :
-    resolution.width > 1920 ? RING_RADIUS * MID_SCALE :
-    RING_RADIUS * HD_SCALE;
-  const strokeWidth = resolution.width > 2560 ? STROKE_WIDTH :
-    resolution.width > 1920 ? STROKE_WIDTH * MID_SCALE :
-    STROKE_WIDTH * HD_SCALE;
+  const ringRadius = getScaledValue(uiContext, RING_RADIUS);
+  const strokeWidth = getScaledValue(uiContext, STROKE_WIDTH);
 
   return (
     <Tooltip content={<ComponentTooltip abilityComponent={props.abilityComponent} />}>

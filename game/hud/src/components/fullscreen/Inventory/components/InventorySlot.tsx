@@ -22,16 +22,29 @@ import eventNames, { EquipItemPayload, InventoryDataTransfer, CombineStackPayloa
 import { SlotType, SlotItemDefType } from 'fullscreen/lib/itemInterfaces';
 import { showContextMenuContent } from 'actions/contextMenu';
 import ContextMenuContent from './ContextMenu/ContextMenuContent';
+import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 
 declare const toastr: any;
 
-export const slotDimensions = 62;
-
+// #region Container constants
+export const SLOT_DIMENSIONS = 124;
+// #endregion
 const Container = styled.div`
   display: inline-block;
-  height: 62px;
+  height: ${SLOT_DIMENSIONS}px;
+
+  @media (max-width: 2560px) {
+    height: ${SLOT_DIMENSIONS * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    height: ${SLOT_DIMENSIONS * HD_SCALE}px;
+  }
 `;
 
+// #region ItemWrapper constants
+export const ITEM_WRAPPER_MARGIN_HORIZONTAL = 5;
+// #endregion
 const ItemWrapper = styled.div`
   position: relative;
   display: flex;
@@ -39,9 +52,21 @@ const ItemWrapper = styled.div`
   justify-content: center;
   overflow: hidden;
   position: relative;
-  width: ${slotDimensions}px;
-  height: ${slotDimensions}px;
-  margin: 0 2.5px;
+  width: ${SLOT_DIMENSIONS}px;
+  height: ${SLOT_DIMENSIONS}px;
+  margin: 0 ${ITEM_WRAPPER_MARGIN_HORIZONTAL}px;
+
+  @media (max-width: 2560px) {
+    width: ${SLOT_DIMENSIONS * MID_SCALE}px;
+    height: ${SLOT_DIMENSIONS * MID_SCALE}px;
+    margin: 0 ${ITEM_WRAPPER_MARGIN_HORIZONTAL * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${SLOT_DIMENSIONS * HD_SCALE}px;
+    height: ${SLOT_DIMENSIONS * HD_SCALE}px;
+    margin: 0 ${ITEM_WRAPPER_MARGIN_HORIZONTAL * HD_SCALE}px;
+  }
 `;
 
 const ItemImage = styled.img`

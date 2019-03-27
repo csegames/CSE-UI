@@ -50,12 +50,13 @@ export const IconButton = (props: IconButtonProps) => {
                 disabled && disabledColor ? disabledColor :
                   active && activeColor ? activeColor :
                     color,
+              ...customStyles.buttonIcon,
             }}
             className={`fa ${iconClass} ${!disabled ? 'click-effect' : ''} ${disabled && Disabled}`}
           />
         </Tooltip> :
         <ButtonIcon
-          style={{ color }}
+          style={{ color, ...customStyles.buttonIcon }}
           className={`fa ${iconClass} ${!disabled ? 'click-effect' : ''} ${disabled && Disabled}`}
         />
       }

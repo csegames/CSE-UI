@@ -10,36 +10,81 @@ import { styled } from '@csegames/linaria/react';
 import { Tooltip } from '@csegames/camelot-unchained';
 
 import InventoryRowActionButton from './InventoryRowActionButton';
-import { emptyStackHash, footerInfoIcons, rowActionIcons } from 'fullscreen/lib/constants';
+import { emptyStackHash, footerInfoIcons, rowActionIcons, HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 import eventNames, { DropItemPayload } from 'fullscreen/lib/itemEvents';
 
+// #region Container constants
+const CONTAINER_HEIGHT = 72;
+// #endregion
 const Container = styled.div`
   display: flex;
   flex: 0 0 auto;
-  height: 36px;
+  height: ${CONTAINER_HEIGHT}px;
   justify-content: flex-end;
   align-items: center;
   background: url(../images/inventory/bag-bottom-bg.png);
   background-size: cover;
   z-index: 1;
+
+  @media (max-width: 2560px) {
+    height: ${CONTAINER_HEIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    height: ${CONTAINER_HEIGHT * HD_SCALE}px;
+  }
 `;
 
+// #region Section constants
+const SECTION_FONT_SIZE = 28;
+const SECTION_MARGIN_RIGHT = 10;
+const SECTION_PADDING_VERTICAL = 4;
+const SECTION_PADDING_HORIZONTAL = 20;
+// #endregion
 const Section = styled.div`
   cursor: default;
   display: flex;
   align-items: center;
-  font-size: 14px;
   color: #ACAAA8;
-  margin-right: 5px;
-  padding: 2px 10px;
   text-align: center;
+  font-size: ${SECTION_FONT_SIZE}px;
+  margin-right: ${SECTION_MARGIN_RIGHT}px;
+  padding: ${SECTION_PADDING_VERTICAL}px ${SECTION_PADDING_HORIZONTAL}px;
+
+  @media (max-width: 2560px) {
+    font-size: ${SECTION_FONT_SIZE * MID_SCALE}px;
+    margin-right: ${SECTION_MARGIN_RIGHT * MID_SCALE}px;
+    padding: ${SECTION_PADDING_VERTICAL * MID_SCALE}px ${SECTION_PADDING_HORIZONTAL * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${SECTION_FONT_SIZE * HD_SCALE}px;
+    margin-right: ${SECTION_MARGIN_RIGHT * HD_SCALE}px;
+    padding: ${SECTION_PADDING_VERTICAL * HD_SCALE}px ${SECTION_PADDING_HORIZONTAL * HD_SCALE}px;
+  }
 `;
 
+// #region Icon constants
+const ICON_FONT_SIZE = 28;
+const ICON_MARGIN_RIGHT = 10;
+// #endregion
 const Icon = styled.span`
-  font-size: 14px;
-  line-height: 14px;
-  margin-right: 5px;
+  font-size: ${ICON_FONT_SIZE}px;
+  line-height: ${ICON_FONT_SIZE}px;
+  margin-right: ${ICON_MARGIN_RIGHT}px;
   color: ${(props: any) => props.color};
+
+  @media (max-width: 2560px) {
+    font-size: ${ICON_FONT_SIZE * MID_SCALE}px;
+    line-height: ${ICON_FONT_SIZE * MID_SCALE}px;
+    margin-right: ${ICON_MARGIN_RIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${ICON_FONT_SIZE * HD_SCALE}px;
+    line-height: ${ICON_FONT_SIZE * HD_SCALE}px;
+    margin-right: ${ICON_MARGIN_RIGHT * HD_SCALE}px;
+  }
 `;
 
 export interface InventoryFooterProps {

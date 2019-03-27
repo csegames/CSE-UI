@@ -10,9 +10,21 @@ import { styled } from '@csegames/linaria/react';
 
 import { prettifyText } from 'fullscreen/lib/utils';
 import { InventoryItem } from 'gql/interfaces';
+import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_PADDING = 20;
+// #endregion
 const Container = styled.div`
-  padding: 10px;
+  padding: ${CONTAINER_PADDING}px;
+
+  @media (max-width: 2560px) {
+    padding: ${CONTAINER_PADDING * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding: ${CONTAINER_PADDING * HD_SCALE}px;
+  }
 `;
 
 export interface TooltipBuildingBlockInfoProps {

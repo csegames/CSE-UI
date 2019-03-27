@@ -17,7 +17,7 @@ import CraftingItem from './CraftingItem';
 import { ContainerPermissionDef, ContainerIdToDrawerInfo } from 'fullscreen/ItemShared/InventoryBase';
 import { DrawerCurrentStats } from './Containers/Drawer';
 import { DragAndDropInjectedProps, DragEvent } from 'utils/DragAndDrop/DragAndDrop';
-import { placeholderIcon } from 'fullscreen/lib/constants';
+import { placeholderIcon, HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 import eventNames, { InventoryDataTransfer, MoveStackPayload, CombineStackPayload } from 'fullscreen/lib/itemEvents';
 import { InventorySlotItemDef, CraftingSlotItemDef, SlotType } from 'fullscreen/lib/itemInterfaces';
 import { InventoryContext } from 'fullscreen/ItemShared/InventoryContext';
@@ -71,15 +71,28 @@ const ContainerOverlay = styled.div`
   background: linear-gradient(to top, ${(props: any) => props.backgroundColor}, transparent 65%);
 `;
 
+// #region FirstContainerItem constants
+const FIRST_CONTAINER_ITEM_DIMENSIONS = 50;
+// #endregion
 const FirstContainerItem = styled.img`
   position: absolute;
   right: 3px;
   bottom: 4px;
-  width: 25px;
-  height: 25px;
+  width: ${FIRST_CONTAINER_ITEM_DIMENSIONS}px;
+  height: ${FIRST_CONTAINER_ITEM_DIMENSIONS}px;
   border: 1px solid #795B46;
   cursor: pointer;
   z-index: 9;
+
+  @media (max-width: 2560px) {
+    width: ${FIRST_CONTAINER_ITEM_DIMENSIONS * MID_SCALE}px;
+    height: ${FIRST_CONTAINER_ITEM_DIMENSIONS * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${FIRST_CONTAINER_ITEM_DIMENSIONS * HD_SCALE}px;
+    height: ${FIRST_CONTAINER_ITEM_DIMENSIONS * HD_SCALE}px;
+  }
 `;
 
 function getDragItemID(item: InventorySlotItemDef & CraftingSlotItemDef) {

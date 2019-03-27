@@ -12,7 +12,7 @@ import { Tooltip } from '@csegames/camelot-unchained';
 import * as base from 'fullscreen/ItemShared/InventoryBase';
 import DrawerView from './DrawerView';
 import InventoryRowActionButton from 'fullscreen/Inventory/components/InventoryRowActionButton';
-import { rowActionIcons } from 'fullscreen/lib/constants';
+import { rowActionIcons, MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 import { getContainerColor, getContainerInfo } from 'fullscreen/lib/utils';
 import { InventorySlotItemDef, ContainerSlotItemDef } from 'fullscreen/lib/itemInterfaces';
 import { InventoryItem, ContainerDrawers } from 'gql/interfaces';
@@ -22,11 +22,12 @@ const Container = styled.div`
   display: flex;
 `;
 
+// #region HeaderContent constants
+const HEADER_CONTENT_PADDING_LEFT = 30;
+// #endregion
 const HeaderContent = styled.div`
   position: relative;
-  height: 30px;
-  width: 160px;
-  padding-left: 15px;
+  padding-left: ${HEADER_CONTENT_PADDING_LEFT}px;
   background: ${(props: any) => props.showImg ? 'url(../images/inventory/sub-title.png)' : 'transparent' };
   background-size: 100% 100%;
   &:before {
@@ -39,23 +40,56 @@ const HeaderContent = styled.div`
     background: ${(props: any) => props.showImg ? 'url(../images/inventory/sub-title.png)' : 'transparent' };
     background-size: 100% 100%;
   }
+
+  @media (max-width: 2560px) {
+    padding-left: ${HEADER_CONTENT_PADDING_LEFT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding-left: ${HEADER_CONTENT_PADDING_LEFT * HD_SCALE}px;
+  }
 `;
 
+// #region MainContent constants
+const MAIN_CONTENT_PADDING_HORIZONTAL = 20;
+// #endregion
 const MainContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 ${MAIN_CONTENT_PADDING_HORIZONTAL}px;
   flex: 1;
+
+  @media (max-width: 2560px) {
+    padding: 0 ${MAIN_CONTENT_PADDING_HORIZONTAL * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding: 0 ${MAIN_CONTENT_PADDING_HORIZONTAL * HD_SCALE}px;
+  }
 `;
 
+// #region FooterContainer constants
+const FOOTER_CONTAINER_HEIGHT = 60;
+const FOOTER_CONTAINER_PADDING_RIGHT = 6;
+// #endregion
 const FooterContainer = styled.div`
-  height: 30px;
+  height: ${FOOTER_CONTAINER_HEIGHT}px;
+  padding-right: ${FOOTER_CONTAINER_PADDING_RIGHT}px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   flex: 1;
-  padding-right: 3px;
+
+  @media (max-width: 2560px) {
+    height: ${FOOTER_CONTAINER_HEIGHT * MID_SCALE}px;
+    padding-right: ${FOOTER_CONTAINER_PADDING_RIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    height: ${FOOTER_CONTAINER_HEIGHT * HD_SCALE}px;
+    padding-right: ${FOOTER_CONTAINER_PADDING_RIGHT * HD_SCALE}px;
+  }
 `;
 
 const RequirementsContainer = styled.div`
@@ -64,22 +98,66 @@ const RequirementsContainer = styled.div`
   height: 100%;
 `;
 
+// #region RequirementIcon constants
+const REQUIREMENT_ICON_FONT_SIZE = 30;
+const REQUIREMENT_ICON_MARGIN_RIGHT = 10;
+// #endregion
 const RequirementIcon = styled.span`
   display: flex;
-  font-size: 15px;
-  margin-right: 5px;
+  font-size: ${REQUIREMENT_ICON_FONT_SIZE}px;
+  margin-right: ${REQUIREMENT_ICON_MARGIN_RIGHT}px;
   color: ${(props: any) => props.color};
+
+  @media (max-width: 2560px) {
+    font-size: ${REQUIREMENT_ICON_FONT_SIZE * MID_SCALE}px;
+    margin-right: ${REQUIREMENT_ICON_MARGIN_RIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${REQUIREMENT_ICON_FONT_SIZE * HD_SCALE}px;
+    margin-right: ${REQUIREMENT_ICON_MARGIN_RIGHT * HD_SCALE}px;
+  }
 `;
 
+// #region PermissionContainer constants
+const PERMISSION_CONTAINER_PADDING = 10;
+const PERMISSION_CONTAINER_FONT_SIZE = 32;
+// #endregion
 const PermissionContainer = styled.div`
   background: rgba(0,0,0,0.5);
-  padding: 0 5px;
+  padding: 0 ${PERMISSION_CONTAINER_PADDING}px;
+  font-size: ${PERMISSION_CONTAINER_FONT_SIZE}px;
+
+  @media (max-width: 2560px) {
+    padding: 0 ${PERMISSION_CONTAINER_PADDING * MID_SCALE}px;
+    font-size: ${PERMISSION_CONTAINER_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding: 0 ${PERMISSION_CONTAINER_PADDING * HD_SCALE}px;
+    font-size: ${PERMISSION_CONTAINER_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region PermissionIcon constants
+const PERMISSION_ICON_PADDING_TOP = 10;
+const PERMISSION_ICON_FONT_SIZE = 32;
+// #endregion
 const PermissionIcon = styled.span`
   opacity: ${(props: any) => props.opacity};
-  padding: 0 5px 0 0;
+  padding: 0 ${PERMISSION_ICON_PADDING_TOP}px 0 0;
+  font-size: ${PERMISSION_ICON_FONT_SIZE}px;
   vertical-align: middle;
+
+  @media (max-width: 2560px) {
+    padding: 0 ${PERMISSION_ICON_PADDING_TOP * MID_SCALE}px 0 0;
+    font-size: ${PERMISSION_ICON_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding: 0 ${PERMISSION_ICON_PADDING_TOP * HD_SCALE}px 0 0;
+    font-size: ${PERMISSION_ICON_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 export interface DrawerCurrentStats {
@@ -111,7 +189,6 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
   }
   public render() {
     const { requirements, requirementIconColor, stats, totalUnitCount, weight } = this.getDrawerData();
-
     return (
       <DrawerView
         marginTop={this.props.marginTop}

@@ -7,7 +7,13 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
+import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 
+// #region HeaderFoundation constants
+const HEADER_FOUNDATION_HEIGHT = 130;
+const HEADER_FOUNDATION_FONT_SIZE = 40;
+const HEADER_FOUNDATION_LETTER_SPACING = 6;
+// #endregion
 export const HeaderFoundation = `
   position: relative;
   display: flex;
@@ -15,28 +21,61 @@ export const HeaderFoundation = `
   justify-content: space-between;
   background: linear-gradient(to right,rgba(220, 141, 88, 0.60), transparent ), url(../images/inventory/title-bg.png);
   background-size: cover;
-  padding: 20px 20px;
   z-index: 1;
   -webkit-mask-image: url(../images/inventory/title-mask.png);
   -webkit-mask-size: cover;
   box-shadow: inset 0px 0px 60px rgba(0,0,0,0.8);
   font-family: Caudex;
   color: #FFE7BB;
-  font-size: 18px;
-  letter-spacing: 5px;
+  padding: 0px 20px;
+  min-height: ${HEADER_FOUNDATION_HEIGHT}px;
+  height: ${HEADER_FOUNDATION_HEIGHT}px;
+  font-size: ${HEADER_FOUNDATION_FONT_SIZE}px;
+  letter-spacing: ${HEADER_FOUNDATION_LETTER_SPACING}px;
+
+  @media (max-width: 2560px) {
+    min-height: ${HEADER_FOUNDATION_HEIGHT * MID_SCALE}px;
+    height: ${HEADER_FOUNDATION_HEIGHT * MID_SCALE}px;
+    font-size: ${HEADER_FOUNDATION_FONT_SIZE * MID_SCALE}px;
+    letter-spacing: ${HEADER_FOUNDATION_LETTER_SPACING * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    min-height: ${HEADER_FOUNDATION_HEIGHT * HD_SCALE}px;
+    height: ${HEADER_FOUNDATION_HEIGHT * HD_SCALE}px;
+    font-size: ${HEADER_FOUNDATION_FONT_SIZE * HD_SCALE}px;
+    letter-spacing: ${HEADER_FOUNDATION_LETTER_SPACING * HD_SCALE}px;
+  }
 `;
 
+// #region HeaderBorderFoundation constants
+const HEADER_BORDER_FOUNDATION_ALIGNMENT = 6;
+// #endregion
 export const HeaderBorderFoundation = `
   position: absolute;
-  top: 3px;
-  left: 3px;
-  bottom: 3px;
-  right: 3px;
+  top: ${HEADER_BORDER_FOUNDATION_ALIGNMENT}px;
+  left: ${HEADER_BORDER_FOUNDATION_ALIGNMENT}px;
+  bottom: ${HEADER_BORDER_FOUNDATION_ALIGNMENT}px;
+  right: ${HEADER_BORDER_FOUNDATION_ALIGNMENT}px;
   border-top-width: 1px;
   border-bottom-width: 1px;
   border-left-width: 1px;
   border-right-width: 0px;
   border-style: solid;
+
+  @media (max-width: 2560px) {
+    top: ${HEADER_BORDER_FOUNDATION_ALIGNMENT * MID_SCALE}px;
+    left: ${HEADER_BORDER_FOUNDATION_ALIGNMENT * MID_SCALE}px;
+    bottom: ${HEADER_BORDER_FOUNDATION_ALIGNMENT * MID_SCALE}px;
+    right: ${HEADER_BORDER_FOUNDATION_ALIGNMENT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    top: ${HEADER_BORDER_FOUNDATION_ALIGNMENT * HD_SCALE}px;
+    left: ${HEADER_BORDER_FOUNDATION_ALIGNMENT * HD_SCALE}px;
+    bottom: ${HEADER_BORDER_FOUNDATION_ALIGNMENT * HD_SCALE}px;
+    right: ${HEADER_BORDER_FOUNDATION_ALIGNMENT * HD_SCALE}px;
+  }
 `;
 
 const Container = styled.div`
@@ -52,14 +91,22 @@ const Container = styled.div`
   }
 `;
 
+// #region HeaderOrnament constants
+const HEADER_ORNAMENT_WIDTH = 90;
+const HEADER_ORNAMENT_PADDING_VERTICAL = 40;
+
+const HEADER_ORNAMENT_EXTRA_WIDTH = 70;
+const HEADER_ORNAMENT_EXTRA_HEIGHT = 52;
+// #endregion
 const HeaderOrnament = styled.div`
   position: absolute;
   top: 0px;
   left: 0px;
   bottom: 0px;
-  width: 45px;
-  padding: 20px 0;
-  background: url(../images/inventory/title-ornament.png) no-repeat;
+  width: ${HEADER_ORNAMENT_WIDTH}px;
+  padding: ${HEADER_ORNAMENT_PADDING_VERTICAL}px 0;
+  background-image: url(../images/inventory/title-ornament.png);
+  background-repeat: no-repeat;
   background-size: contain;
   z-index: 2;
   &:before {
@@ -67,26 +114,70 @@ const HeaderOrnament = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    background: url(../images/inventory/title-ornament-top.png);
-    width: 35px;
-    height: 26px;
+    background-image: url(../images/inventory/title-ornament-top.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: ${HEADER_ORNAMENT_EXTRA_WIDTH}px;
+    height: ${HEADER_ORNAMENT_EXTRA_HEIGHT}px;
   }
   &:after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
-    background: url(../images/inventory/title-ornament-bottom.png);
-    width: 35px;
-    height: 26px;
+    background-image: url(../images/inventory/title-ornament-bottom.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: ${HEADER_ORNAMENT_EXTRA_WIDTH}px;
+    height: ${HEADER_ORNAMENT_EXTRA_HEIGHT}px;
+  }
+
+  @media (max-width: 2560px) {
+    width: ${HEADER_ORNAMENT_WIDTH * MID_SCALE}px;
+    padding: ${HEADER_ORNAMENT_PADDING_VERTICAL * MID_SCALE}px 0;
+    &:before {
+      width: ${HEADER_ORNAMENT_EXTRA_WIDTH * MID_SCALE}px;
+      height: ${HEADER_ORNAMENT_EXTRA_HEIGHT * MID_SCALE}px;
+    }
+    &:after {
+      width: ${HEADER_ORNAMENT_EXTRA_WIDTH * MID_SCALE}px;
+      height: ${HEADER_ORNAMENT_EXTRA_HEIGHT * MID_SCALE}px;
+    }
+  }
+
+  @media (max-width: 1920px) {
+    width: ${HEADER_ORNAMENT_WIDTH * HD_SCALE}px;
+    padding: ${HEADER_ORNAMENT_PADDING_VERTICAL * HD_SCALE}px 0;
+    &:before {
+      width: ${HEADER_ORNAMENT_EXTRA_WIDTH * HD_SCALE}px;
+      height: ${HEADER_ORNAMENT_EXTRA_HEIGHT * HD_SCALE}px;
+    }
+    &:after {
+      width: ${HEADER_ORNAMENT_EXTRA_WIDTH * HD_SCALE}px;
+      height: ${HEADER_ORNAMENT_EXTRA_HEIGHT * HD_SCALE}px;
+    }
   }
 `;
 
+// #region HeaderTitle constants
+const HEADER_TITLE_FONT_SIZE = 40;
+const HEADER_TITLE_LETTER_SPACING = 6;
+// #endregion
 const HeaderTitle = styled.div`
   color: #ffe7bb;
-  font-size: 20px;
+  font-size: ${HEADER_TITLE_FONT_SIZE}px;
+  letter-spacing: ${HEADER_TITLE_LETTER_SPACING}px;
   font-family: Caudex;
-  letter-spacing: 5px;
+
+  @media (max-width: 2560px) {
+    font-size: ${HEADER_TITLE_FONT_SIZE * MID_SCALE}px;
+    letter-spacing: ${HEADER_TITLE_LETTER_SPACING * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${HEADER_TITLE_FONT_SIZE * HD_SCALE}px;
+    letter-spacing: ${HEADER_TITLE_LETTER_SPACING * HD_SCALE}px;
+  }
 `;
 
 export interface TabHeaderProps {

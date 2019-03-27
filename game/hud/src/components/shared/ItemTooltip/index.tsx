@@ -30,7 +30,7 @@ import {
 } from 'gql/interfaces';
 import TooltipAlloyInfo from './components/TooltipAlloyInfo';
 
-export const defaultTooltipStyle: { tooltip: string } = {
+export const defaultItemTooltipStyle: { tooltip: string, uhdTooltip: string } = {
   tooltip: css`
     box-shadow: 0px;
     padding: 0px;
@@ -38,6 +38,14 @@ export const defaultTooltipStyle: { tooltip: string } = {
     background: none;
     max-width: 500px;
     max-height: 750px;
+  `,
+  uhdTooltip: css`
+    box-shadow: 0px;
+    padding: 0px;
+    border: 0px;
+    background: none;
+    max-width: 1000px;
+    max-height: 1500px;
   `,
 };
 

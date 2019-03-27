@@ -13,7 +13,7 @@ import { VoxJob, VoxJobOutputItemType, InventoryItem } from 'gql/interfaces';
 import { getIcon, getItemUnitCount, getItemQuality } from 'fullscreen/lib/utils';
 import { getJobContext } from '../../lib/utils';
 import { showTooltip, hideTooltip, ShowTooltipPayload } from 'actions/tooltips';
-import Tooltip, { defaultTooltipStyle } from 'shared/ItemTooltip';
+import Tooltip from 'shared/ItemTooltip';
 import ItemImage from '../../ItemImage';
 import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 
@@ -387,7 +387,7 @@ class JobFinishedOverlay extends React.Component<Props> {
     const payload: ShowTooltipPayload = {
       content: <Tooltip item={item} instructions={''} />,
       event: e,
-      styles: defaultTooltipStyle,
+      styles: 'item',
     };
     showTooltip(payload);
   }

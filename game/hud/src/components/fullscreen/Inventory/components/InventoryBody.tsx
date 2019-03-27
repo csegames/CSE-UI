@@ -14,7 +14,7 @@ import InventoryFooter from './InventoryFooter';
 import { InventorySlotItemDef } from 'fullscreen/lib/itemInterfaces';
 import eventNames, { InventoryDataTransfer, DropItemPayload } from 'fullscreen/lib/itemEvents';
 import { InventoryContext, MoveInventoryItemPayload } from 'fullscreen/ItemShared/InventoryContext';
-import { slotDimensions } from './InventorySlot';
+import { SLOT_DIMENSIONS } from './InventorySlot';
 import {
   FullScreenContext,
   calcRowAndSlots,
@@ -22,6 +22,8 @@ import {
   hasFilterText,
 } from 'fullscreen/lib/utils';
 import { InventoryItem, CUQuery, SecureTradeState } from 'gql/interfaces';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
+import { getScaledValue } from 'lib/scale';
 
 export interface InventoryBodyStyles {
   inventoryBody: React.CSSProperties;
@@ -33,13 +35,27 @@ export interface InventoryBodyStyles {
   refreshButton: React.CSSProperties;
 }
 
+// #region Container constants
+const CONTAINER_PADDING_RIGHT = 10;
+const CONTAINER_PADDING_TOP = 30;
+// #endregion
 const Container = styled.div`
   position: relative;
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  padding-right: 5px;
-  padding-top: 15px;
+  padding-right: ${CONTAINER_PADDING_RIGHT}px;
+  padding-top: ${CONTAINER_PADDING_TOP}px;
+
+  @media (max-width: 2560px) {
+    padding-right: ${CONTAINER_PADDING_RIGHT * MID_SCALE}px;
+    padding-top: ${CONTAINER_PADDING_TOP * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding-right: ${CONTAINER_PADDING_RIGHT * HD_SCALE}px;
+    padding-top: ${CONTAINER_PADDING_TOP * HD_SCALE}px;
+  }
 `;
 
 const InnerContainer = styled.div`
@@ -74,19 +90,46 @@ const RefreshContainer = styled.div`
   z-index: 999;
 `;
 
+// #region RefreshTitle constants
+const REFRESH_TITLE_FONT_SIZE = 70;
+// #endregion
 const RefreshTitle = styled.div`
-  font-size: 35px;
+  font-size: ${REFRESH_TITLE_FONT_SIZE}px;
   color: white;
+
+  @media (max-width: 2560px) {
+    font-size: ${REFRESH_TITLE_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${REFRESH_TITLE_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region RefreshButton constants
+const REFRESH_BUTTON_DIMENSIONS = 100;
+const REFRESH_BUTTON_FONT_SIZE = 70;
+// #endregion
 const RefreshButton = styled.div`
-  width: 50px;
-  height: 50px;
-  font-size: 35px;
+  width: ${REFRESH_BUTTON_DIMENSIONS}px;
+  height: ${REFRESH_BUTTON_DIMENSIONS}px;
+  font-size: ${REFRESH_BUTTON_FONT_SIZE}px;
   color: white;
   cursor: pointer;
   &:hover {
     color: rgba(255, 255, 255, 0.7);
+  }
+
+  @media (max-width: 2560px) {
+    width: ${REFRESH_BUTTON_DIMENSIONS * MID_SCALE}px;
+    height: ${REFRESH_BUTTON_DIMENSIONS * MID_SCALE}px;
+    font-size: ${REFRESH_BUTTON_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${REFRESH_BUTTON_DIMENSIONS * HD_SCALE}px;
+    height: ${REFRESH_BUTTON_DIMENSIONS * HD_SCALE}px;
+    font-size: ${REFRESH_BUTTON_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
@@ -108,6 +151,8 @@ export interface InjectedInventoryBodyProps {
   };
   initializeInventory: () => void;
   onMoveInventoryItem: (payload: MoveInventoryItemPayload) => void;
+  isUHD: boolean;
+  uiContext: UIContext;
 }
 
 export interface InventoryBodyProps {
@@ -212,7 +257,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   public componentDidMount() {
     this.initializeSlotsData();
     this.initBodyDimensionsTimeout = window.setTimeout(() => this.initializeBodyDimensions(true), 1);
-    window.addEventListener('resize', () => {
+    window.addEventListener('optimizedResize', () => {
       this.initializeBodyDimensions(true);
     });
     this.dropItemHandler = game.on(eventNames.onDropItem, (payload: DropItemPayload) =>
@@ -221,7 +266,8 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   }
 
   public componentDidUpdate(prevProps: InventoryBodyComponentProps) {
-    if (!_.isEqual(this.props.invBodyDimensions, prevProps.invBodyDimensions) && !this.props.graphql.loading) {
+    if (this.props.isUHD !== prevProps.isUHD ||
+        (!_.isEqual(this.props.invBodyDimensions, prevProps.invBodyDimensions) && !this.props.graphql.loading)) {
       this.initializeSlotsData();
     }
 
@@ -233,7 +279,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
   public componentWillUnmount() {
     this.dropItemHandler.clear();
     window.clearTimeout(this.initBodyDimensionsTimeout);
-    window.removeEventListener('resize', () => this.initializeBodyDimensions(true));
+    window.removeEventListener('optimizedResize', () => this.initializeBodyDimensions(true));
   }
 
   private refetch = () => {
@@ -258,10 +304,11 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     if (!this.bodyRef || !this.props.invBodyDimensions.height || !this.props.invBodyDimensions.width) {
       return;
     }
+    const slotDimension = getScaledValue(this.props.uiContext, SLOT_DIMENSIONS);
     const itemCount = this.props.inventoryItems && this.props.inventoryItems.length;
     const rowsAndSlots = calcRowAndSlots(
       { height: this.props.invBodyDimensions.height, width: this.props.invBodyDimensions.width },
-      slotDimensions,
+      slotDimension,
       Math.max(InventoryBody.minSlots, itemCount),
     );
 
@@ -298,51 +345,57 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
 class InventoryBodyWithInjectedContext extends React.Component<InventoryBodyProps & base.InventoryBaseProps> {
   public render() {
     return (
-      <FullScreenContext.Consumer>
-        {({
-            myTradeItems,
-            myTradeState,
-            visibleComponentLeft,
-            visibleComponentRight,
-            invBodyDimensions,
-          }) => {
-          return (
-            <InventoryContext.Consumer>
-              {({
-                graphql,
-                inventoryItems,
-                containerIdToDrawerInfo,
-                stackGroupIdToItemIDs,
-                slotNumberToItem,
-                itemIdToInfo,
-                itemIDToStackGroupID,
-                initializeInventory,
-                onMoveInventoryItem,
+      <UIContext.Consumer>
+        {(uiContext: UIContext) => (
+          <FullScreenContext.Consumer>
+            {({
+                myTradeItems,
+                myTradeState,
+                visibleComponentLeft,
+                visibleComponentRight,
+                invBodyDimensions,
               }) => {
-                return (
-                  <InventoryBody
-                    {...this.props}
-                    graphql={graphql}
-                    inventoryItems={inventoryItems}
-                    myTradeItems={myTradeItems}
-                    myTradeState={myTradeState}
-                    stackGroupIdToItemIDs={stackGroupIdToItemIDs}
-                    containerIdToDrawerInfo={containerIdToDrawerInfo}
-                    slotNumberToItem={slotNumberToItem}
-                    itemIdToInfo={itemIdToInfo}
-                    itemIDToStackGroupID={itemIDToStackGroupID}
-                    visibleComponentLeft={visibleComponentLeft}
-                    visibleComponentRight={visibleComponentRight}
-                    invBodyDimensions={invBodyDimensions}
-                    initializeInventory={initializeInventory}
-                    onMoveInventoryItem={onMoveInventoryItem}
-                  />
-                );
-              }}
-            </InventoryContext.Consumer>
-          );
-        }}
-      </FullScreenContext.Consumer>
+              return (
+                <InventoryContext.Consumer>
+                  {({
+                    graphql,
+                    inventoryItems,
+                    containerIdToDrawerInfo,
+                    stackGroupIdToItemIDs,
+                    slotNumberToItem,
+                    itemIdToInfo,
+                    itemIDToStackGroupID,
+                    initializeInventory,
+                    onMoveInventoryItem,
+                  }) => {
+                    return (
+                      <InventoryBody
+                        {...this.props}
+                        isUHD={uiContext.isUHD()}
+                        uiContext={uiContext}
+                        graphql={graphql}
+                        inventoryItems={inventoryItems}
+                        myTradeItems={myTradeItems}
+                        myTradeState={myTradeState}
+                        stackGroupIdToItemIDs={stackGroupIdToItemIDs}
+                        containerIdToDrawerInfo={containerIdToDrawerInfo}
+                        slotNumberToItem={slotNumberToItem}
+                        itemIdToInfo={itemIdToInfo}
+                        itemIDToStackGroupID={itemIDToStackGroupID}
+                        visibleComponentLeft={visibleComponentLeft}
+                        visibleComponentRight={visibleComponentRight}
+                        invBodyDimensions={invBodyDimensions}
+                        initializeInventory={initializeInventory}
+                        onMoveInventoryItem={onMoveInventoryItem}
+                      />
+                    );
+                  }}
+                </InventoryContext.Consumer>
+              );
+            }}
+          </FullScreenContext.Consumer>
+        )}
+      </UIContext.Consumer>
     );
   }
 }

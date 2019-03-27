@@ -11,7 +11,7 @@ import { webAPI } from '@csegames/camelot-unchained';
 import * as base from './InventoryBase';
 import { InventoryItem } from 'gql/interfaces';
 import { DrawerComponentProps } from 'fullscreen/Inventory/components/Containers/InventoryDrawer';
-import { slotDimensions } from 'fullscreen/Inventory/components/InventorySlot';
+import { SLOT_DIMENSIONS } from 'fullscreen/Inventory/components/InventorySlot';
 import { InventoryDataTransfer, CombineStackPayload } from 'fullscreen/lib/itemEvents';
 import {
   calcRowsForContainer,
@@ -21,6 +21,8 @@ import {
   createMoveItemRequestToContainerPosition,
   isMovingStack,
 } from 'fullscreen/lib/utils';
+import { uiContextFromGame } from 'services/session/UIContext';
+import { getScaledValue } from 'lib/scale';
 
 declare const toastr: any;
 
@@ -32,6 +34,7 @@ export function getRowsAndSlots(props: DrawerComponentProps) {
   Object.keys(drawerInfo).forEach((_key) => {
     drawerItems.push(drawerInfo[_key].item);
   });
+  const slotDimensions = getScaledValue(uiContextFromGame(), SLOT_DIMENSIONS);
   const rowData = calcRowsForContainer(props.bodyWidth, slotDimensions, drawerItems);
 
   return rowData;

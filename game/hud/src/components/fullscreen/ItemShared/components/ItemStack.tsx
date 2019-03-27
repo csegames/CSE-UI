@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
-import { placeholderIcon } from 'fullscreen/lib/constants';
+import { placeholderIcon, HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 import { StandardSlot } from 'fullscreen/Inventory/components/DraggableInventoryItem';
 
 const Container = styled.div`
@@ -59,15 +59,30 @@ const Footer = css`
   }
 `;
 
+// #region Text constants
+const TEXT_FONT_SIZE = 32;
+const TEXT_PADDING = 4;
+// #endregion
 const Text = styled.div`
   position: relative;
   color: white;
   text-shadow: 0 1px 0 black;
   text-align: right;
   z-index: 1;
-  padding-right: 2px;
+  font-size: ${TEXT_FONT_SIZE}px;
+  padding-right: ${TEXT_PADDING}px;
   cursor: inherit;
   -webkit-user-select: none;
+
+  @media (max-width: 2560px) {
+    font-size: ${TEXT_FONT_SIZE * MID_SCALE}px;
+    padding-right: ${TEXT_PADDING * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${TEXT_FONT_SIZE * HD_SCALE}px;
+    padding-right: ${TEXT_PADDING * HD_SCALE}px;
+  }
 `;
 
 export interface ItemStackProps {

@@ -25,6 +25,7 @@ import {
   hasAddContentPermissions,
   hasRemoveContentPermissions,
 } from 'fullscreen/lib/utils';
+import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   position: relative;
@@ -34,12 +35,15 @@ const Container = styled.div`
   -webkit-border-image: linear-gradient(to top, ${(props: any) => props.borderColor}, transparent 70%) 1% 1%;
 `;
 
+// #region ContainerHeaderOverlay constants
+const CONTAINER_HEADER_OVERLAY_HEIGHT = 90;
+// #endregion
 const ContainerHeaderOverlay = styled.div`
   position: absolute;
   top: 0;
   right: 0;
   left: 0;
-  height: 45px;
+  height: ${CONTAINER_HEADER_OVERLAY_HEIGHT}px;
   &:before {
     content: '';
     position: absolute;
@@ -61,21 +65,55 @@ const ContainerHeaderOverlay = styled.div`
     right: 0;
     height: 100%;
   }
+
+  @media (max-width: 2560px) {
+    height: ${CONTAINER_HEADER_OVERLAY_HEIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    height: ${CONTAINER_HEADER_OVERLAY_HEIGHT * HD_SCALE}px;
+  }
 `;
 
+// #region ContainerSubHeader constants
+const CONTAINER_SUB_HEADER = 60;
+// #endregion
 const ContainerSubHeader = styled.div`
   position: relative;
-  height: 30px;
+  height: ${CONTAINER_SUB_HEADER}px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0.2));
+
+  @media (max-width: 2560px) {
+    height: ${CONTAINER_SUB_HEADER * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    height: ${CONTAINER_SUB_HEADER * HD_SCALE}px;
+  }
 `;
 
+// #region PermissionIcon constants
+const PERMISSION_ICON_PADDING_HORIZONTAL = 10;
+const PERMISSION_ICON_FONT_SIZE = 32;
+// #endregion
 const PermissionIcon = styled.div`
   opacity: ${(props: any) => props.opacity};
   color: ${(props: any) => props.color};
-  padding: 0 5px;
+  padding: 0 ${PERMISSION_ICON_PADDING_HORIZONTAL}px;
+  font-size: ${PERMISSION_ICON_FONT_SIZE}px;
+
+  @media (max-width: 2560px) {
+    padding 0 ${PERMISSION_ICON_PADDING_HORIZONTAL * MID_SCALE}px;
+    font-size: ${PERMISSION_ICON_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding 0 ${PERMISSION_ICON_PADDING_HORIZONTAL * HD_SCALE}px;
+    font-size: ${PERMISSION_ICON_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 export interface ItemContainerProps extends base.InventoryBaseProps {

@@ -11,30 +11,76 @@ import { styled } from '@csegames/linaria/react';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { InventoryFilterButton as FilterButtonDefinition } from 'fullscreen/lib/itemInterfaces';
 import { prettifyText } from 'fullscreen/lib/utils';
+import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_MARGIN_RIGHT = 10;
+const CONTAINER_MARGIN_BOTTOM = 10;
+// #endregion
 const Container = styled.div`
   pointer-events: all;
   display: inline-block;
-  margin-right: 5px;
-  margin-bottom: 5px;
+  margin-right: ${CONTAINER_MARGIN_RIGHT}px;
+  margin-bottom: ${CONTAINER_MARGIN_BOTTOM}px;
+
+  @media (max-width: 2560px) {
+    margin-right: ${CONTAINER_MARGIN_RIGHT * MID_SCALE}px;
+    margin-bottom: ${CONTAINER_MARGIN_BOTTOM * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-right: ${CONTAINER_MARGIN_RIGHT * HD_SCALE}px;
+    margin-bottom: ${CONTAINER_MARGIN_BOTTOM * HD_SCALE}px;
+  }
 `;
 
+// #region FilterIcon constants
+const FILTER_ICON_DIMENSIONS = 50;
+// #endregion
 const FilterIcon = styled.div`
   cursor: pointer;
-  width: 25px;
-  height: 25px;
-  font-size: 25px;
+  width: ${FILTER_ICON_DIMENSIONS}px;
+  height: ${FILTER_ICON_DIMENSIONS}px;
+  font-size: ${FILTER_ICON_DIMENSIONS}px;
   color: ${(props: any) => props.active ? '#998675' : '#43382E'};
   &:hover {
     color: #766351;
   }
+
+  @media (max-width: 2560px) {
+    width: ${FILTER_ICON_DIMENSIONS * MID_SCALE}px;
+    height: ${FILTER_ICON_DIMENSIONS * MID_SCALE}px;
+    font-size: ${FILTER_ICON_DIMENSIONS * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${FILTER_ICON_DIMENSIONS * HD_SCALE}px;
+    height: ${FILTER_ICON_DIMENSIONS * HD_SCALE}px;
+    font-size: ${FILTER_ICON_DIMENSIONS * HD_SCALE}px;
+  }
 `;
 
+// #region Tooltip constants
+const TOOLTIP_PADDING_VERTICAL = 4;
+const TOOLTIP_PADDING_HORIZONTAL = 10;
+const TOOLTIP_FONT_SIZE = 32;
+// #endregion
 const DefaultTooltipStyles = {
   tooltip: css`
-    padding: 2px 5px;
+    padding: ${TOOLTIP_PADDING_VERTICAL}px ${TOOLTIP_PADDING_HORIZONTAL}px;
+    font-size: ${TOOLTIP_FONT_SIZE}px;
     background-color: rgba(0,0,0,0.9);
     color: white;
+
+    @media (max-width: 2560px) {
+      padding: ${TOOLTIP_PADDING_VERTICAL * MID_SCALE}px ${TOOLTIP_PADDING_HORIZONTAL * MID_SCALE}px;
+      font-size: ${TOOLTIP_FONT_SIZE * MID_SCALE}px;
+    }
+
+    @media (max-width: 1920px) {
+      padding: ${TOOLTIP_PADDING_VERTICAL * HD_SCALE}px ${TOOLTIP_PADDING_HORIZONTAL * HD_SCALE}px;
+      font-size: ${TOOLTIP_FONT_SIZE * HD_SCALE}px;
+    }
   `,
 };
 

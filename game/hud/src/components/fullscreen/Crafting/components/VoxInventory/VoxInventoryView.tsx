@@ -10,11 +10,12 @@ import { styled } from '@csegames/linaria/react';
 import { InventoryItem } from 'gql/interfaces';
 import SubHeader from '../VoxHeader/VoxInventoryHeader';
 import Drawer from 'fullscreen/Inventory/components/Containers/Drawer';
-import { slotDimensions } from 'fullscreen/Inventory/components/InventorySlot';
+import { SLOT_DIMENSIONS } from 'fullscreen/Inventory/components/InventorySlot';
 import { calcRowsForContainer } from 'fullscreen/lib/utils';
 import { DrawerSlotNumberToItem } from 'fullscreen/ItemShared/InventoryBase';
 import { createRowElementsForVoxInventory } from '../../CraftingBase';
 import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   position: relative;
@@ -115,7 +116,7 @@ class VoxInventoryView extends React.Component<Props, State> {
     const minRows = 2;
     const { rowCount, slotsPerRow } = calcRowsForContainer(
       this.clientWidth,
-      slotDimensions,
+      SLOT_DIMENSIONS * HD_SCALE,
       item && item.containerDrawers ? item.containerDrawers[0].containedItems as InventoryItem.Fragment[] : [],
       gutterSize,
       minRows,

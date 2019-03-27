@@ -16,6 +16,7 @@ import {
   hideTooltip,
 } from 'actions/tooltips';
 import { getViewportSize } from 'lib/viewport';
+import { defaultItemTooltipStyle } from './ItemTooltip';
 
 const Container = styled.div`
   display: inline-block;
@@ -120,13 +121,17 @@ export interface TooltipState {
   simple?: boolean;
 }
 
-export class TooltipView extends React.Component<{}, TooltipState> {
+export interface Props {
+  uiContext: UIContext;
+}
+
+class TooltipView extends React.Component<Props, TooltipState> {
   private tooltipRef: HTMLDivElement;
   private eventHandles: EventHandle[] = [];
 
   private mousePos = { clientX: 0, clientY: 0 };
 
-  constructor(props: {}) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       wndRegion: utils.Quadrant.TopLeft,
@@ -217,11 +222,28 @@ export class TooltipView extends React.Component<{}, TooltipState> {
   private handleShowTooltip = (payload: ShowTooltipPayload) => {
     const { content, event, shouldAnimate, styles } = payload;
     // this.updatePosition();
+    let style: Partial<ToolTipStyle> = null;
+    if (typeof payload.styles === 'string') {
+      switch (payload.styles) {
+        case 'item': {
+          style = this.props.uiContext.isUHD() ? { tooltip: defaultItemTooltipStyle.uhdTooltip } :
+            { tooltip: defaultItemTooltipStyle.tooltip };
+          break;
+        }
+        default: {
+          style = {};
+          break;
+        }
+      }
+    } else {
+      style = styles as Partial<ToolTipStyle>;
+    }
+
     this.setState({
       show: true,
       wndRegion: utils.windowQuadrant(event.clientX, event.clientY),
       content,
-      styles,
+      styles: style,
       shouldAnimate,
     });
   }
@@ -324,3 +346,15 @@ export class Tooltip extends React.PureComponent<TooltipProps, {}> {
     }
   }
 }
+
+class TooltipViewWithInjectedContext extends React.Component<{}> {
+  public render() {
+    return (
+      <UIContext.Consumer>
+        {(uiContext: UIContext) => <TooltipView uiContext={uiContext} />}
+      </UIContext.Consumer>
+    );
+  }
+}
+
+export { TooltipViewWithInjectedContext as TooltipView };

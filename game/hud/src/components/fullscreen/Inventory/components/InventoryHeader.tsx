@@ -13,14 +13,20 @@ import InventoryFilterButton from './InventoryFilterButton';
 import FilterInput from './FilterInput';
 import FilterSelectMenu from './FilterSelectMenu';
 import { InventoryFilterButton as FilterButtonDefinition } from 'fullscreen/lib/itemInterfaces';
+import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_PADDING = 20;
+const CONTAINER_PADDING_BOTTOM = 10;
+// #endregion
 const Container = styled.div`
   position: relative;
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
   justify-content: center;
-  padding: 10px 10px 5px 10px;
+  padding: ${CONTAINER_PADDING}px;
+  padding-bottom: ${CONTAINER_PADDING_BOTTOM}px;
   background: url(../images/inventory/bag-bg.png);
   background-size: cover;
   z-index: 2;
@@ -34,6 +40,16 @@ const Container = styled.div`
     background-color: rgba(0, 0, 0, 0.5);
     z-index: -1;
   }
+
+  @media (max-width: 2560px) {
+    padding: ${CONTAINER_PADDING * MID_SCALE}px;
+    padding-bottom: ${CONTAINER_PADDING_BOTTOM * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding: ${CONTAINER_PADDING * HD_SCALE}px;
+    padding-bottom: ${CONTAINER_PADDING_BOTTOM * HD_SCALE}px;
+  }
 `;
 
 const InputAndFilterMenuContainer = styled.div`
@@ -41,13 +57,36 @@ const InputAndFilterMenuContainer = styled.div`
   align-items: center;
 `;
 
+// #region FilterButtons constants
+const FILTER_BUTTON_FONT_SIZE = 32;
+// #endregion
 const FilterButtons = styled.div`
   display: flex;
   flex-wrap: wrap;
+  font-size: ${FILTER_BUTTON_FONT_SIZE}px;
+
+  @media (max-width: 2560px) {
+    font-size: ${FILTER_BUTTON_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${FILTER_BUTTON_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region InputClass constants
+const INPUT_CLASS_MARGIN_RIGHT = 20;
+// #endregion
 const InputClass = css`
-  margin-right: 10px;
+  margin-right: ${INPUT_CLASS_MARGIN_RIGHT}px;
+
+  @media (max-width: 2560px) {
+    margin-right: ${INPUT_CLASS_MARGIN_RIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-right: ${INPUT_CLASS_MARGIN_RIGHT * HD_SCALE}px;
+  }
 `;
 
 export interface InventoryHeaderProps {

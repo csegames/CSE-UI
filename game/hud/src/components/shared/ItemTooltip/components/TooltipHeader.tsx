@@ -11,28 +11,61 @@ import { styled } from '@csegames/linaria/react';
 import { SlotType } from 'fullscreen/lib/itemInterfaces';
 import { getTooltipColor, getContainerInfo } from 'fullscreen/lib/utils';
 import { InventoryItem } from 'gql/interfaces';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_PADDING = 20;
+const CONTAINER_DIVIDER_HORIZONTAL_ALIGNMENT = 140;
+const CONTAINER_DIVIDER_BOTTOM = -10;
+const CONTAINER_DIVIDER_HEIGHT = 20;
+// #endregion
 const Container = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
+  padding: ${CONTAINER_PADDING}px;
   border-bottom: 2px solid #292929;
   &:after {
     content: '';
     position: absolute;
-    left: 70px;
-    right: 70px;
-    bottom: -5px;
-    height: 10px;
+    left: ${CONTAINER_DIVIDER_HORIZONTAL_ALIGNMENT}px;
+    right: ${CONTAINER_DIVIDER_HORIZONTAL_ALIGNMENT}px;
+    bottom: ${CONTAINER_DIVIDER_BOTTOM}px;
+    height: ${CONTAINER_DIVIDER_HEIGHT}px;
     background-image: url(../images/item-tooltips/divider_top.png);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
   }
+
+  @media (max-width: 2560px) {
+    padding: ${CONTAINER_PADDING * MID_SCALE}px;
+
+    &:after {
+      left: ${CONTAINER_DIVIDER_HORIZONTAL_ALIGNMENT * MID_SCALE}px;
+      right: ${CONTAINER_DIVIDER_HORIZONTAL_ALIGNMENT * MID_SCALE}px;
+      bottom: ${CONTAINER_DIVIDER_BOTTOM * MID_SCALE}px;
+      height: ${CONTAINER_DIVIDER_HEIGHT * MID_SCALE}px;
+    }
+  }
+
+  @media (max-width: 1920px) {
+    padding: ${CONTAINER_PADDING * HD_SCALE}px;
+
+    &:after {
+      left: ${CONTAINER_DIVIDER_HORIZONTAL_ALIGNMENT * HD_SCALE}px;
+      right: ${CONTAINER_DIVIDER_HORIZONTAL_ALIGNMENT * HD_SCALE}px;
+      bottom: ${CONTAINER_DIVIDER_BOTTOM * HD_SCALE}px;
+      height: ${CONTAINER_DIVIDER_HEIGHT * HD_SCALE}px;
+      background-image: url(../images/item-tooltips/divider_top.png);
+    }
+  }
 `;
 
+// #region HeaderOverlay constants
+const HEADER_OVERLAY_VEIL_HEIGHT = 212;
+// #endregion
 const HeaderOverlay = styled.div`
   position: absolute;
   top: 0;
@@ -45,19 +78,44 @@ const HeaderOverlay = styled.div`
   &:after {
     content: '';
     position: absolute;
-    height: 106px;
+    height: ${HEADER_OVERLAY_VEIL_HEIGHT}px;
     left: 0;
     right: 0;
     bottom: 0;
-    background: url(../images/item-tooltips/title_viel.png);
+    background-image: url(../images/item-tooltips/title_viel.png);
     background-size: cover;
     background-repeat: no-repeat;
   }
+
+  @media (max-width: 2560px) {
+    height: ${HEADER_OVERLAY_VEIL_HEIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    &:after {
+      height: ${HEADER_OVERLAY_VEIL_HEIGHT * HD_SCALE}px;
+      background-image: url(../images/item-tooltips/title_viel.png);
+    }
+  }
 `;
 
+// #region InfoContainer constants
+const INFO_CONTAINER_MAX_WIDTH = 600;
+const INFO_CONTAINER_MARGIN_RIGHT = 10;
+// #endregion
 const InfoContainer = styled.div`
-  max-width: 300px;
-  margin-right: 5px;
+  max-width: ${INFO_CONTAINER_MAX_WIDTH}px;
+  margin-right: ${INFO_CONTAINER_MARGIN_RIGHT}px;
+
+  @media (max-width: 2560px) {
+    max-width: ${INFO_CONTAINER_MAX_WIDTH * MID_SCALE}px;
+    margin-right: ${INFO_CONTAINER_MARGIN_RIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    max-width: ${INFO_CONTAINER_MAX_WIDTH * HD_SCALE}px;
+    margin-right: ${INFO_CONTAINER_MARGIN_RIGHT * HD_SCALE}px;
+  }
 `;
 
 const SubContainer = styled.div`
@@ -65,32 +123,76 @@ const SubContainer = styled.div`
   flex-direction: column;
 `;
 
+// #region ItemName constants
+const ITEM_NAME_FONT_SIZE = 36;
+// #endregion
 const ItemName = styled.div`
   font-family: Caudex;
-  font-size: 18px;
+  font-size: ${ITEM_NAME_FONT_SIZE}px;
   white-space: wrap;
   color: white;
+
+  @media (max-width: 2560px) {
+    font-size: ${ITEM_NAME_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${ITEM_NAME_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region ItemSubtitle constants
+const ITEM_SUBTITLE = 28;
+// #endregion
 const ItemSubtitle = styled.div`
-  font-size: 14px;
+  font-size: ${ITEM_SUBTITLE}px;
   white-space: wrap;
   color: #C3C3C3;
+
+  @media (max-width: 2560px) {
+    font-size: ${ITEM_SUBTITLE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${ITEM_SUBTITLE * HD_SCALE}px;
+  }
 `;
 
+// #region ItemStatInfo constants
+const ITEM_STAT_INFO_FONT_SIZE = 28;
+// #endregion
 const ItemStatInfo = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
   text-align: right;
-  font-size: 14px;
+  font-size: ${ITEM_STAT_INFO_FONT_SIZE}px;
   color: ${(props: any) => props.color ? props.color : '#C3C3C3'};
+
+  @media (max-width: 2560px) {
+    font-size: ${ITEM_STAT_INFO_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${ITEM_STAT_INFO_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region Icon constants
+const ICON_MARGIN_RIGHT = 10;
+// #endregion
 const Icon = styled.div`
-  margin-right: 5px;
+  margin-right: ${ICON_MARGIN_RIGHT}px;
   -webkit-transform: ${(props: any) => props.flip ? 'scaleX(-1)' : ''};
   transform: ${(props: any) => props.flip ? 'scaleX(-1)' : ''};
+
+  @media (max-width: 2560px) {
+    margin-right: ${ICON_MARGIN_RIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-right: ${ICON_MARGIN_RIGHT * HD_SCALE}px;
+  }
 `;
 
 export interface TooltipHeaderProps {

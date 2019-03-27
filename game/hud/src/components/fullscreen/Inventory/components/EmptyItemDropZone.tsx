@@ -173,10 +173,17 @@ class EmptyItemWrapper extends React.Component<Props, EmptyItemDropZoneState> {
 
   public render() {
     return (
-      <Container>
-        <EmptyItem width={60} height={60} index={this.props.slotIndex.position} />
-        <SlotOverlay backgroundColor={this.state.backgroundColor} />
-      </Container>
+      <UIContext.Consumer>
+        {(uiContext: UIContext) => {
+          const emptyItemDimensions = uiContext.isUHD() ? 120 : 60;
+          return (
+            <Container>
+              <EmptyItem width={emptyItemDimensions} height={emptyItemDimensions} index={this.props.slotIndex.position} />
+              <SlotOverlay backgroundColor={this.state.backgroundColor} />
+            </Container>
+          );
+        }}
+      </UIContext.Consumer>
     );
   }
 

@@ -9,12 +9,19 @@ import { IconButton } from '@csegames/camelot-unchained';
 
 export interface InventoryRowActionButtonStyle {
   InventoryRowActionButton: React.CSSProperties;
+  UHDInventoryRowActionButton: React.CSSProperties;
 }
 
 export const defaultInventoryRowActionButtonStyle: InventoryRowActionButtonStyle = {
   InventoryRowActionButton: {
     display: 'inline-block',
     marginRight: '10px',
+    fontSize: '16px',
+  },
+  UHDInventoryRowActionButton: {
+    display: 'inline-block',
+    marginRight: '20px',
+    fontSize: '32px',
   },
 };
 
@@ -30,17 +37,22 @@ export const InventoryRowActionButton = (props: InventoryRowActionButtonProps) =
   const defaultColor = '#998675';
   const disabledColor = 'rgba(153, 134, 117, 0.7)';
   return (
-    <IconButton
-      tooltipContent={props.tooltipContent}
-      iconClass={props.iconClass}
-      onClick={props.onClick}
-      disabled={props.disabled}
-      color={defaultColor}
-      disabledColor={disabledColor}
-      styles={{
-        IconButton: defaultInventoryRowActionButtonStyle.InventoryRowActionButton,
-      }}
-    />
+    <UIContext.Consumer>
+      {(uiContext: UIContext) => (
+        <IconButton
+          tooltipContent={props.tooltipContent}
+          iconClass={props.iconClass}
+          onClick={props.onClick}
+          disabled={props.disabled}
+          color={defaultColor}
+          disabledColor={disabledColor}
+          styles={{
+            IconButton: uiContext.isUHD() ? defaultInventoryRowActionButtonStyle.UHDInventoryRowActionButton :
+              defaultInventoryRowActionButtonStyle.InventoryRowActionButton,
+          }}
+        />
+      )}
+    </UIContext.Consumer>
   );
 };
 

@@ -15,17 +15,30 @@ import { DrawerCurrentStats } from '../Containers/Drawer';
 import InventoryRowActionButton from '../InventoryRowActionButton';
 import { calcRows, getContainerInfo, getItemDefinitionName, FullScreenContext } from 'fullscreen/lib/utils';
 import { InventoryContext } from 'fullscreen/ItemShared/InventoryContext';
-import { rowActionIcons } from 'fullscreen/lib/constants';
+import { rowActionIcons, HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 import { InventoryDataTransfer } from 'fullscreen/lib/itemEvents';
 import { InventorySlotItemDef } from 'fullscreen/lib/itemInterfaces';
 import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
-import { slotDimensions } from '../InventorySlot';
+import { SLOT_DIMENSIONS } from '../InventorySlot';
+import { getScaledValue } from 'lib/scale';
 
+// #region HeaderContent constants
+const HEADER_CONTENT_FONT_SIZE = 32;
+// #endregion
 const HeaderContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  font-size: ${HEADER_CONTENT_FONT_SIZE}px;
+
+  @media (max-width: 2560px) {
+    font-size: ${HEADER_CONTENT_FONT_SIZE * MID_SCALE}
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${HEADER_CONTENT_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 const FooterContent = styled.div`
@@ -34,6 +47,7 @@ const FooterContent = styled.div`
 `;
 
 export interface InjectedCraftingContainerProps {
+  uiContext: UIContext;
   myTradeItems: InventoryItem.Fragment[];
   inventoryItems: InventoryItem.Fragment[];
   stackGroupIdToItemIDs: {[id: string]: string[]};
@@ -150,6 +164,7 @@ export class CraftingContainer extends React.Component<CraftingContainerComponen
   // should not be called outside of initializeInventory
   private internalInit = (state: CraftingContainerState, props: CraftingContainerComponentProps) => {
     if (!this.contentRef) return;
+    const slotDimensions = getScaledValue(this.props.uiContext, SLOT_DIMENSIONS);
     const rowsAndSlots = calcRows(20, slotDimensions,
       Math.max(CraftingContainer.minSlots, props.item.stackedItems.length), props.slotsPerRow);
     return {
@@ -177,28 +192,32 @@ export class CraftingContainer extends React.Component<CraftingContainerComponen
 class CraftingContainerWithInjectedContext extends React.Component<CraftingContainerProps & base.InventoryBaseProps> {
   public render() {
     return (
-      <FullScreenContext.Consumer>
-        {({ myTradeItems }) => {
-          return (
-            <InventoryContext.Consumer>
-              {({
-                inventoryItems,
-                stackGroupIdToItemIDs,
-                onUpdateState,
-              }) => {
-                return (
-                  <CraftingContainer
-                    {...this.props}
-                    myTradeItems={myTradeItems}
-                    inventoryItems={inventoryItems}
-                    stackGroupIdToItemIDs={stackGroupIdToItemIDs}
-                  />
-                );
-              }}
-            </InventoryContext.Consumer>
-          );
-        }}
-      </FullScreenContext.Consumer>
+      <UIContext.Consumer>
+        {(uiContext: UIContext) => (
+          <FullScreenContext.Consumer>
+            {({ myTradeItems }) => {
+              return (
+                <InventoryContext.Consumer>
+                  {({
+                    inventoryItems,
+                    stackGroupIdToItemIDs,
+                  }) => {
+                    return (
+                      <CraftingContainer
+                        {...this.props}
+                        uiContext={uiContext}
+                        myTradeItems={myTradeItems}
+                        inventoryItems={inventoryItems}
+                        stackGroupIdToItemIDs={stackGroupIdToItemIDs}
+                      />
+                    );
+                  }}
+                </InventoryContext.Consumer>
+              );
+            }}
+          </FullScreenContext.Consumer>
+        )}
+      </UIContext.Consumer>
     );
   }
 }

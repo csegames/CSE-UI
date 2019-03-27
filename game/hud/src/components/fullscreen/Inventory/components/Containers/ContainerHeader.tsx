@@ -12,23 +12,43 @@ import { css } from '@csegames/linaria';
 import { webAPI } from '@csegames/camelot-unchained';
 import { CloseButton } from 'shared/CloseButton';
 
-import { nullVal } from 'fullscreen/lib/constants';
+import { nullVal, MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 import { getContainerColor } from 'fullscreen/lib/utils';
 import { InventoryItem } from 'gql/interfaces';
 
+// #region Container constants
+const CONTAINER_HEIGHT = 90;
+const CONTAINER_PADDING_HORIZONTAL = 10;
+// #endregion
 const Container = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 45px;
-  padding: 0px 5px;
+  height: ${CONTAINER_HEIGHT}px;
+  padding: 0px ${CONTAINER_PADDING_HORIZONTAL}px;
+
+  @media (max-width: 2560px) {
+    height: ${CONTAINER_HEIGHT * MID_SCALE}px;
+    padding: 0px ${CONTAINER_PADDING_HORIZONTAL * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    height: ${CONTAINER_HEIGHT * HD_SCALE}px;
+    padding: 0 ${CONTAINER_PADDING_HORIZONTAL * HD_SCALE}px;
+  }
 `;
 
+// #region ContainerName constants
+const CONTAINER_NAME_FONT_SIZE = 36;
+const CONTAINER_NAME_LETTER_SPACING = 4;
+const CONTAINER_NAME_PADDING_HORIZONTAL = 10;
+// #endregion
 const ContainerName = styled.div`
-  font-size: 18px;
+  font-size: ${CONTAINER_NAME_FONT_SIZE}px;
+  letter-spacing: ${CONTAINER_NAME_LETTER_SPACING}px;
+  padding: 0 ${CONTAINER_NAME_PADDING_HORIZONTAL}px;
   font-family: Caudex;
-  letter-spacing: 2px;
   border-top-width: 1px;
   border-bottom-width: 1px;
   border-left-width: 1px;
@@ -41,18 +61,43 @@ const ContainerName = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 0 5px;
+
+  @media (max-width: 2560px) {
+    font-size: ${CONTAINER_NAME_FONT_SIZE * MID_SCALE}px;
+    letter-spacing: ${CONTAINER_NAME_LETTER_SPACING * MID_SCALE}px;
+    padding: 0 ${CONTAINER_NAME_PADDING_HORIZONTAL * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${CONTAINER_NAME_FONT_SIZE * HD_SCALE}px;
+    letter-spacing: ${CONTAINER_NAME_LETTER_SPACING * HD_SCALE}px;
+    padding: 0 ${CONTAINER_NAME_PADDING_HORIZONTAL * HD_SCALE}px;
+  }
 `;
 
+// #region ContainerNameInput constants
+const CONTAINER_NAME_INPUT_MARGIN_RIGHT = 10;
+const CONTAINER_NAME_INPUT_FONT_SIZE = 36;
+// #endregion
 const ContainerNameInput = styled.input`
   cursor: ${(props: any) => props.cursor};
   width: ${(props: any) => props.width}px;
   color: white !important;
-  margin-right: 5px !important;
-  font-size: 18px;
+  margin-right: ${CONTAINER_NAME_INPUT_MARGIN_RIGHT}px !important;
+  font-size: ${CONTAINER_NAME_INPUT_FONT_SIZE}px;
   background: transparent;
   outline: none;
   border: 0px;
+
+  @media (max-width: 2560px) {
+    margin-right: ${CONTAINER_NAME_INPUT_MARGIN_RIGHT * MID_SCALE}px !important;
+    font-size: ${CONTAINER_NAME_INPUT_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-right: ${CONTAINER_NAME_INPUT_MARGIN_RIGHT * HD_SCALE}px !important;
+    font-size: ${CONTAINER_NAME_INPUT_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 const StaticDefName = styled.div`
@@ -60,10 +105,24 @@ const StaticDefName = styled.div`
   width: fit-content;
 `;
 
+// #region CloseButtonPosition constants
+const CLOSE_BUTTON_POSITION_MARGIN_RIGHT = 20;
+// #endregion
 const CloseButtonPosition = css`
-  margin-right: 10px;
+  margin-right: ${CLOSE_BUTTON_POSITION_MARGIN_RIGHT}px;
+
+  @media (max-width: 2560px) {
+    margin-right: ${CLOSE_BUTTON_POSITION_MARGIN_RIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-right: ${CLOSE_BUTTON_POSITION_MARGIN_RIGHT * HD_SCALE}px;
+  }
 `;
 
+// #region InvisiDiv constants
+const INVISI_DIV_FONT_SIZE = 36;
+// #endregion
 const InvisiDiv = styled.div`
   width: auto;
   position: fixed;
@@ -72,9 +131,17 @@ const InvisiDiv = styled.div`
   opacity: 1;
   overflow: hidden;
   font-family: Caudex;
-  font-size: 18px;
+  font-size: ${INVISI_DIV_FONT_SIZE}px;
   letter-spacing: 0px;
   opacity: 0;
+
+  @media (max-width: 2560px) {
+    font-size: ${INVISI_DIV_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${INVISI_DIV_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 export interface ContainerHeaderProps {
@@ -111,28 +178,41 @@ class ContainerHeader extends React.Component<ContainerHeaderProps, ContainerHea
     const backgroundColor = getContainerColor(containerItem, 0.17);
     const borderColor = getContainerColor(containerItem, 0.3);
     return (
-      <Container>
-        <ContainerName
-          ref={(r: HTMLDivElement) => this.nameContainer = r}
-          backgroundColor={backgroundColor}
-          borderColor={borderColor}
-        >
-          <ContainerNameInput
-            id={`${containerItem.id}-container-name-input`}
-            value={containerNameValue}
-            onChange={this.onContainerNameChange}
-            onClick={this.turnOnEditMode}
-            onBlur={this.turnOffEditMode}
-            cursor={this.state.editModeOn ? 'text' : 'pointer'}
-            width={this.state.inputWidth}
-          />
-          <StaticDefName ref={(r: HTMLDivElement) => this.staticDefName = r}>
-            {containerNameValue !== containerItem.staticDefinition.name ? `[${containerItem.staticDefinition.name}]` : ''}
-          </StaticDefName>
-          <InvisiDiv ref={(r: HTMLDivElement) => this.invisibleDiv = r} />
-        </ContainerName>
-        <CloseButton width={18} height={18} onClick={onCloseClick} className={CloseButtonPosition} />
-      </Container>
+      <UIContext.Consumer>
+        {(uiContext: UIContext) => {
+          const closeBtnDimensions = uiContext.isUHD() ? 36 : 18;
+          return (
+            <Container>
+              <ContainerName
+                ref={(r: HTMLDivElement) => this.nameContainer = r}
+                backgroundColor={backgroundColor}
+                borderColor={borderColor}
+              >
+                <ContainerNameInput
+                  id={`${containerItem.id}-container-name-input`}
+                  value={containerNameValue}
+                  onChange={this.onContainerNameChange}
+                  onClick={this.turnOnEditMode}
+                  onBlur={this.turnOffEditMode}
+                  cursor={this.state.editModeOn ? 'text' : 'pointer'}
+                  width={this.state.inputWidth}
+                />
+                <StaticDefName ref={(r: HTMLDivElement) => this.staticDefName = r}>
+                  {containerNameValue !== containerItem.staticDefinition.name ?
+                    `[${containerItem.staticDefinition.name}]` : ''}
+                </StaticDefName>
+                <InvisiDiv ref={(r: HTMLDivElement) => this.invisibleDiv = r} />
+              </ContainerName>
+              <CloseButton
+                width={closeBtnDimensions}
+                height={closeBtnDimensions}
+                onClick={onCloseClick}
+                className={CloseButtonPosition}
+              />
+            </Container>
+          );
+        }}
+      </UIContext.Consumer>
     );
   }
 
