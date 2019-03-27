@@ -77,6 +77,8 @@ const SlotNameText = styled.p`
   color: #D8BFA8;
   margin: 0 !important;
   padding: 0;
+  flex: 1;
+  white-space: nowrap;
 `;
 
 const PageNumberText = styled.p`

@@ -8,7 +8,6 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { css } from '@csegames/linaria';
-import { ContentItem, TabItem, TabPanel } from '@csegames/camelot-unchained';
 
 import EquippedItemSlot from './EquippedItemSlot';
 import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
@@ -36,18 +35,25 @@ const Container = styled.div`
   overflow: hidden;
 `;
 
+const ArmorSlotsWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+`;
+
 const ArmorSlotsContainer = styled.div`
   flex: 1;
   display: flex;
   justify-content: space-between;
   user-select: none;
-  height: 100%;
-  padding: 0 15px;
-  align-items: center;
+  padding: 0 15px 0 15px;
 `;
 
 const LeftArmorSlots = styled.div`
   position: relative;
+  height: fit-content;
+  padding-bottom: 15px;
   &:before {
     content: '';
     position: absolute;
@@ -85,6 +91,8 @@ const LeftSideOrnament = styled.div`
 
 const RightArmorSlots = styled.div`
   position: relative;
+  height: fit-content;
+  padding-bottom: 15px;
   &:before {
     content: '';
     position: absolute;
@@ -118,81 +126,6 @@ const RightSideOrnament = styled.div`
   background-size: contain;
   width: 8px;
   opacity: ${ARMOR_ORNAMENT_OPACITY};
-`;
-
-const TabDivider = styled.div`
-  background: url(../images/paperdoll/ornament-gear-select.png);
-  background-size: contain;
-  width: 2px;
-  height: 42px;
-  margin-top: -10px;
-`;
-
-const ToggleTab = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 14px;
-  font-family: Caudex;
-  color: #9E5631;
-  letter-spacing: 0.5px;
-  -webkit-user-select: none;
-  user-select: none;
-  width: 78px;
-  text-transform: uppercase;
-  -webkit-text-transform: uppercase;
-  z-index: 1;
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-  }
-  &.isInactive:hover {
-    filter: brightness(130%);
-    -webkit-filter: brightness(130%);
-  }
-  &.isActive {
-    color: #F4EBAD;
-    &:before {
-      background: url(../images/paperdoll/outer-hover-button.png) no-repeat;
-      background-size: contain;
-    }
-  }
-  &.outer-toggle {
-    justify-content: flex-end;
-    padding-right: 5px;
-    &.isInactive:before {
-      transform: scale(-1, 1);
-      -webkit-transform: scale(-1, 1);
-    }
-    i {
-      margin-right: 5px;
-    }
-  }
-  &.inner-toggle {
-    justify-content: flex-start;
-    padding-left: 5px;
-    &.isActive:before {
-      transform: scale(-1, 1);
-      -webkit-transform: scale(-1, 1);
-    }
-    i {
-      margin-left: 5px;
-    }
-  }
-`;
-
-const Tabs = css`
-  justify-content: center;
-  position: absolute;
-  top: 25px;
-  left: 0;
-  right: 0;
 `;
 
 const EquippedWeaponSlots = styled.div`
@@ -257,7 +190,7 @@ const WeaponSlotOrnaments = styled.div`
 `;
 
 const ItemSlotSpacing = css`
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 `;
 
 const WeaponSpacing = css`
@@ -265,41 +198,29 @@ const WeaponSpacing = css`
   pointer-events: all;
 `;
 
+const SectionTitle = styled.div`
+  color: gray;
+  font-family: Caudex;
+  text-transform: uppercase;
+  text-align: center;
+`;
+
 const outerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
-  { slotName: GearSlots.Skull, openingSide: Alignment.ATopRight },
-  { slotName: GearSlots.Face, openingSide: Alignment.ATopRight },
-  { slotName: GearSlots.Neck, openingSide: Alignment.ATopRight },
-  { slotName: GearSlots.ShoulderLeft, openingSide: Alignment.ATopRight },
-  { slotName: GearSlots.ShoulderRight, openingSide: Alignment.ABottomRight },
-  { slotName: GearSlots.Chest, openingSide: Alignment.ABottomRight },
-  { slotName: GearSlots.Back, openingSide: Alignment.ABottomRight },
-  { slotName: GearSlots.Waist, openingSide: Alignment.ABottomRight },
-  { slotName: GearSlots.Cloak, openingSide: Alignment.ATopLeft },
-  { slotName: GearSlots.ForearmLeft, openingSide: Alignment.ATopLeft },
-  { slotName: GearSlots.ForearmRight, openingSide: Alignment.ATopLeft },
-  { slotName: GearSlots.HandLeft, openingSide: Alignment.ATopLeft },
-  { slotName: GearSlots.HandRight, openingSide: Alignment.ABottomLeft },
-  { slotName: GearSlots.Thighs, openingSide: Alignment.ABottomLeft },
-  { slotName: GearSlots.Shins, openingSide: Alignment.ABottomLeft },
-  { slotName: GearSlots.Feet, openingSide: Alignment.ABottomLeft },
+  { slotName: GearSlots.Head, openingSide: Alignment.ATopRight },
+  { slotName: GearSlots.Torso, openingSide: Alignment.ATopRight },
+  { slotName: GearSlots.Cloak, openingSide: Alignment.ATopRight },
+  { slotName: GearSlots.Arms, openingSide: Alignment.ABottomRight },
+  { slotName: GearSlots.Hands, openingSide: Alignment.ABottomRight },
+  { slotName: GearSlots.Legs, openingSide: Alignment.ABottomRight },
+  { slotName: GearSlots.Feet, openingSide: Alignment.ABottomRight },
 ];
 
 const innerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [
-  { slotName: GearSlots.SkullUnder, openingSide: Alignment.ATopRight },
-  { slotName: GearSlots.FaceUnder, openingSide: Alignment.ATopRight },
-  { slotName: GearSlots.NeckUnder, openingSide: Alignment.ATopRight },
-  { slotName: GearSlots.ShoulderLeftUnder, openingSide: Alignment.ATopRight },
-  { slotName: GearSlots.ShoulderRightUnder, openingSide: Alignment.ABottomRight },
-  { slotName: GearSlots.ChestUnder, openingSide: Alignment.ABottomRight },
-  { slotName: GearSlots.BackUnder, openingSide: Alignment.ABottomRight },
-  { slotName: GearSlots.WaistUnder, openingSide: Alignment.ABottomRight },
-  { slotName: GearSlots.CloakUnder, openingSide: Alignment.ATopLeft },
-  { slotName: GearSlots.ForearmLeftUnder, openingSide: Alignment.ATopLeft },
-  { slotName: GearSlots.ForearmRightUnder, openingSide: Alignment.ATopLeft },
-  { slotName: GearSlots.HandLeftUnder, openingSide: Alignment.ATopLeft },
-  { slotName: GearSlots.HandRightUnder, openingSide: Alignment.ABottomLeft },
-  { slotName: GearSlots.ThighsUnder, openingSide: Alignment.ABottomLeft },
-  { slotName: GearSlots.ShinsUnder, openingSide: Alignment.ABottomLeft },
+  { slotName: GearSlots.HeadUnder, openingSide: Alignment.ATopLeft },
+  { slotName: GearSlots.TorsoUnder, openingSide: Alignment.ATopLeft },
+  { slotName: GearSlots.ArmsUnder, openingSide: Alignment.ATopLeft },
+  { slotName: GearSlots.HandsUnder, openingSide: Alignment.ABottomLeft },
+  { slotName: GearSlots.LegsUnder, openingSide: Alignment.ABottomLeft },
   { slotName: GearSlots.FeetUnder, openingSide: Alignment.ABottomLeft },
 ];
 
@@ -336,12 +257,6 @@ export interface EquipmentSlotsState {
   };
 }
 
-interface EquipmentSlotsTabData {
-  title: string;
-  onClick: () => void;
-  className: string;
-}
-
 class EquipmentSlots extends React.PureComponent<EquipmentSlotsComponentProps, EquipmentSlotsState> {
   private mouseOverItemMenu: boolean;
   private eventHandles: EventHandle[] = [];
@@ -355,41 +270,12 @@ class EquipmentSlots extends React.PureComponent<EquipmentSlotsComponentProps, E
 
   public render() {
     const { selectedItemMenu } = this.state;
-    const tabs: TabItem<EquipmentSlotsTabData>[] = [
-      {
-        name: 'OUTER',
-        tab: { title: 'Outer', onClick: () => {}, className: 'outer-toggle' },
-        rendersContent: 'outer',
-      },
-      {
-        name: 'INNER',
-        tab: { title: 'Inner', onClick: () => {}, className: 'inner-toggle' },
-        rendersContent: 'inner',
-      },
-    ];
-
-    const content: ContentItem[] = [
-      { name: 'outer', content: { render: this.renderOuterSlots } },
-      { name: 'inner', content: { render: this.renderInnerSlots } },
-    ];
     return (
       <Container>
         <PaperdollIcon />
-        <TabPanel
-          defaultTabIndex={0}
-          tabs={tabs}
-          renderTabDivider={() => <TabDivider />}
-          renderTab={(tab: EquipmentSlotsTabData, active: boolean) =>
-            <ToggleTab onClick={tab.onClick} className={`${active ? 'isActive' : 'isInactive'} ${tab.className}`}>
-              {tab.title === 'Outer' && <i className='icon-filter-armor'></i>}
-              {tab.title}
-              {tab.title === 'Inner' && <i className='icon-filter-underlayer'></i>}
-            </ToggleTab>
-          }
-          content={content}
-          styles={{ tabs: Tabs }}
-          alwaysRenderContent={true}
-        />
+        <ArmorSlotsWrapper>
+          {this.renderSlots()}
+        </ArmorSlotsWrapper>
         <EquippedWeaponSlots>
           <WeaponSlotOrnaments>
             {this.renderEquipmentSlotSection(weaponSlots)}
@@ -524,15 +410,16 @@ class EquipmentSlots extends React.PureComponent<EquipmentSlotsComponentProps, E
   private renderEquipmentSlotSection = (equipmentSlots: EquipmentSlotsAndInfo[]) => {
     const equippedItems = this.props.equippedItems;
     return (
-      equipmentSlots.map((slot) => {
+      equipmentSlots.map((slot, i) => {
         const equippedItem = _.find(equippedItems, (eItem): any => {
           return _.find(eItem.gearSlots, gearSlot => gearSlot.id === slot.slotName);
         });
         const isWeapon = _.includes(slot.slotName, 'Weapon');
+        const isLastItem = i === equipmentSlots.length - 1;
         return (
             <div
               key={slot.slotName}
-              className={!isWeapon ? ItemSlotSpacing : WeaponSpacing}
+              className={!isWeapon ? !isLastItem ? ItemSlotSpacing : '' : WeaponSpacing}
               onMouseOver={() => this.mouseOverItemMenu = true}
               onMouseLeave={() => this.mouseOverItemMenu = false}>
               <EquippedItemSlot
@@ -548,31 +435,18 @@ class EquipmentSlots extends React.PureComponent<EquipmentSlotsComponentProps, E
     );
   }
 
-  private renderInnerSlots = () => {
+  private renderSlots = () => {
     return (
       <ArmorSlotsContainer>
         <LeftArmorSlots>
+          <SectionTitle>Outer</SectionTitle>
           <LeftSideOrnament />
-          {this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(0, 8))}
+          {this.renderEquipmentSlotSection(outerEquipmentSlotsAndInfo)}
         </LeftArmorSlots>
         <RightArmorSlots>
+          <SectionTitle>Under</SectionTitle>
           <RightSideOrnament />
-          {this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo.slice(8, innerEquipmentSlotsAndInfo.length))}
-        </RightArmorSlots>
-      </ArmorSlotsContainer>
-    );
-  }
-
-  private renderOuterSlots = () => {
-    return (
-      <ArmorSlotsContainer>
-        <LeftArmorSlots>
-          <LeftSideOrnament />
-          {this.renderEquipmentSlotSection(outerEquipmentSlotsAndInfo.slice(0, 8))}
-        </LeftArmorSlots>
-        <RightArmorSlots>
-          <RightSideOrnament />
-          {this.renderEquipmentSlotSection(outerEquipmentSlotsAndInfo.slice(8, outerEquipmentSlotsAndInfo.length))}
+          {this.renderEquipmentSlotSection(innerEquipmentSlotsAndInfo)}
         </RightArmorSlots>
       </ArmorSlotsContainer>
     );

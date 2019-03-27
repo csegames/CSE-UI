@@ -175,12 +175,14 @@ class OffenseList extends React.PureComponent<OffenseListProps> {
 
     let weaponSlotArray: { name: string, statArray: any[] }[] = [];
     Object.keys(weaponItems).forEach((weaponSlotName) => {
-      const statArray = Object.keys(weaponItems[weaponSlotName]).map((statName) => {
-        return {
-          name: statName,
-          value: weaponItems[weaponSlotName][statName],
-        };
-      });
+      const statArray = Object.keys(weaponItems[weaponSlotName])
+        .filter(key => weaponItems[weaponSlotName][key] !== 0)
+        .map((statName) => {
+          return {
+            name: statName,
+            value: weaponItems[weaponSlotName][statName],
+          };
+        });
       weaponSlotArray = [...weaponSlotArray,
         {
           name: weaponSlotName,

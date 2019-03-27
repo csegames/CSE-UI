@@ -39,23 +39,16 @@ class DefenseList extends React.PureComponent<DefenseListProps> {
   public render() {
     const myEquippedItems = this.props.graphql.data && this.props.graphql.data.myEquippedItems;
 
-    if (myEquippedItems && myEquippedItems.armorStats) {
+    if (myEquippedItems && myEquippedItems.resistances) {
       return (
         <Container>
           <StatListContainer
             renderContent={() => (
-            <div>
-              {myEquippedItems.armorStats.map((bodyPartStats, i) => {
-                return (
-                  <BodyPartSection
-                    key={i}
-                    name={bodyPartStats.subpartID}
-                    searchValue={this.props.searchValue}
-                    bodyPartStats={bodyPartStats}
-                  />
-                );
-              })}
-            </div>
+              <BodyPartSection
+                name={''}
+                searchValue={this.props.searchValue}
+                bodyPartStats={myEquippedItems}
+              />
           )} />
         </Container>
       );
@@ -83,15 +76,9 @@ const DefenseListWithQL = withGraphQL<DefenseListProps>({
   query: gql`
     query DefenseListGQL {
       myEquippedItems {
-        armorStats {
-          subpartID
-          armorClass
-          resistances {
-            ...DamageTypeValues
-          }
-          mitigations {
-            ...DamageTypeValues
-          }
+        armorClass
+        resistances {
+          ...DamageTypeValues
         }
       }
     }

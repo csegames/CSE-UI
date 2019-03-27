@@ -89,12 +89,12 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
         onClick={this.onEquipItem}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}>
-        <SlotIcon src={'../images/inventory/item-slot.png'} />
+        <SlotIcon src={'images/inventory/item-slot.png'} />
         <ItemComponent id={item.id} icon={item.staticDefinition.iconUrl} containerClass={SlotStyle} />
         <SlotOverlay />
       </Slot>
     ) : <Slot>
-          <SlotIcon src={'../images/inventory/item-slot.png'} />
+          <SlotIcon src={'images/inventory/item-slot.png'} />
           <EmptyItem />
         </Slot>;
   }

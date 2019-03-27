@@ -9,6 +9,5 @@ import gql from 'graphql-tag';
 export const GearSlotDefRefFragment = gql`
   fragment GearSlotDefRef on GearSlotDefRef {
     id
-    subpartIDs
   }
 `;

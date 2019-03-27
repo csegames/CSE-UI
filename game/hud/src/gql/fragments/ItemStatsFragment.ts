@@ -10,10 +10,9 @@ import { BasicItemStatsFragment } from './BasicItemStatsFragment';
 import { AlloyStatsFragment } from './AlloyStatsFragment';
 import { SubstanceStatsFragment } from './SubstanceStatsFragment';
 import { WeaponStatsFragment } from './WeaponStatsFragment';
-import { ArmorPartsFragment } from './ArmorPartsFragment';
-import { ArmorBySubpartFragment } from './ArmorBySubpartFragment';
 import { DurabilityStatsFragment } from './DurabilityStatsFragment';
 import { BuildingBlockStatsFragment } from './BuildingBlockStatsFragment';
+import { DamageTypeValuesFragment } from './DamageTypeValuesFragment';
 
 export const ItemStatsFragment = gql`
   fragment ItemStats on ItemStatsDescription {
@@ -30,10 +29,7 @@ export const ItemStatsFragment = gql`
       ...WeaponStats
     }
     armor {
-      ...ArmorParts
-    }
-    armorBySubpart {
-      ...ArmorBySubpart
+      armorClass
     }
     durability {
       ...DurabilityStats
@@ -41,13 +37,15 @@ export const ItemStatsFragment = gql`
     block {
       ...BuildingBlockStats
     }
+    resistances {
+      ...DamageTypeValues
+    }
   }
   ${BasicItemStatsFragment}
   ${AlloyStatsFragment}
   ${SubstanceStatsFragment}
   ${WeaponStatsFragment}
-  ${ArmorPartsFragment}
-  ${ArmorBySubpartFragment}
   ${DurabilityStatsFragment}
   ${BuildingBlockStatsFragment}
+  ${DamageTypeValuesFragment}
 `;

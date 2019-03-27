@@ -13,7 +13,7 @@ import { GridStats } from '@csegames/camelot-unchained/lib/components';
 import StatListItem from '../StatListItem';
 import TabSubHeader from 'shared/Tabs/TabSubHeader';
 import { characterBodyPartIcons } from 'fullscreen/lib/constants';
-import { prettifyText, searchIncludesSection } from 'fullscreen/lib/utils';
+import { searchIncludesSection } from 'fullscreen/lib/utils';
 import { DamageType_Single } from 'gql/interfaces';
 
 const Container = styled.div`
@@ -29,18 +29,18 @@ const DoesNotMatchSearch = css`
   background-color: rgba(0, 0, 0, 0.2);
 `;
 
-const ListHeader = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  color: #C3A186;
-  font-size: 14px;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-bottom: 1px solid black;
-  border-right: 1px solid black;
-  padding-right: 5px;
-  cursor: default;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
-`;
+// const ListHeader = styled.div`
+//   display: flex;
+//   justify-content: flex-end;
+//   color: #C3A186;
+//   font-size: 14px;
+//   background-color: rgba(0, 0, 0, 0.5);
+//   border-bottom: 1px solid black;
+//   border-right: 1px solid black;
+//   padding-right: 5px;
+//   cursor: default;
+//   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
+// `;
 
 const StatValueContainer = styled.div`
   display: flex;
@@ -48,37 +48,32 @@ const StatValueContainer = styled.div`
   font-size: 16px;
 `;
 
-const ValueText = styled.div`
-  width: 40px;
-  border-left: 1px solid black;
-  margin-left: 5px;
-  text-align: right;
-`;
+// const ValueText = styled.div`
+//   width: 40px;
+//   border-left: 1px solid black;
+//   margin-left: 5px;
+//   text-align: right;
+// `;
 
 const SubHeaderContent = css`
   justify-content: space-between;
 `;
 
-const ListHeaderText = styled.div`
-  width: 40px;
-  margin-left: 5px;
-  text-align: right;
-  font-size: 12px;
-`;
+// const ListHeaderText = styled.div`
+//   width: 40px;
+//   margin-left: 5px;
+//   text-align: right;
+//   font-size: 12px;
+// `;
 
 export interface DefenseStatInterface {
   name: string;
   resistancesValue: number;
-  mitigationsValue: number;
 }
 
-// The BodyPartStatInterface is used so we can break up the ArmorStats sections into sub-sections of bodyParts.
-// So Head will have (slashing, arcane, poison, etc.) resistances and Torso will have it's own (slashing, arcane, etc.)
-// resistances. Same with mitigation.
 export interface BodyPartStatInterface {
-  subpartID?: string;
   resistances?: Partial<DamageType_Single>;
-  mitigations?: Partial<DamageType_Single>;
+  armorClass?: number;
 }
 
 export interface BodyPartSectionProps {
@@ -106,7 +101,7 @@ class BodyPartSection extends React.PureComponent<BodyPartSectionProps> {
                 WebkitTransform: _.includes(name.toLowerCase(), 'right') ? 'scaleX(-1)' : '',
               }}
             />
-            <Title>{prettifyText(bodyPartName)}</Title>
+            <Title>Resistances</Title>
           </div>
           <div>Armor Class: {Number(bodyPartStats['armorClass'].toFixed(2))}</div>
         </TabSubHeader>
@@ -121,12 +116,6 @@ class BodyPartSection extends React.PureComponent<BodyPartSectionProps> {
               margin: '0 1px',
             },
           }}
-          renderHeaderItem={() => (
-            <ListHeader className={!searchIncludes ? DoesNotMatchSearch : ''}>
-              <ListHeaderText>R</ListHeaderText>
-              <ListHeaderText>M</ListHeaderText>
-            </ListHeader>
-          )}
           renderListItem={(item: DefenseStatInterface, index: number) => {
             return (
               <StatListItem
@@ -135,10 +124,9 @@ class BodyPartSection extends React.PureComponent<BodyPartSectionProps> {
                 item={item}
                 statName={item.name}
                 sectionTitle={name}
-                statValue={() => typeof item.mitigationsValue === 'number' && typeof item.resistancesValue === 'number' ?
+                statValue={() => typeof item.resistancesValue === 'number' ?
                   <StatValueContainer>
-                    <div>{Math.round(item.resistancesValue * 100)}%</div>
-                    <ValueText>{Math.round(item.mitigationsValue * 100)}%</ValueText>
+                    <div>{Math.round(item.resistancesValue)}</div>
                   </StatValueContainer> : null
                 }
               />

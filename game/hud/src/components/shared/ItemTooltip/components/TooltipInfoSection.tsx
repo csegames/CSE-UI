@@ -11,7 +11,6 @@ import { styled } from '@csegames/linaria/react';
 import { prettifyText } from 'fullscreen/lib/utils';
 import {
   characterBodyPartIcons,
-  defaultSlotIcons,
   MORE_THAN_STAT_COLOR,
   LESS_THAN_STAT_COLOR,
 } from 'fullscreen/lib/constants';
@@ -85,13 +84,12 @@ export interface TooltipInfoSectionProps {
   useIcon?: boolean;
   turnValueToPercent?: boolean;
   section?: string;
-  slotNames?: string[];
   padding?: string;
 }
 
 class TooltipInfoSection extends React.Component<TooltipInfoSectionProps> {
   public render() {
-    const { section, slotNames, turnValueToPercent } = this.props;
+    const { section, turnValueToPercent } = this.props;
     let isRightSection = false;
     if (section && _.includes(section.toLowerCase(), 'right')) {
       isRightSection = true;
@@ -103,21 +101,10 @@ class TooltipInfoSection extends React.Component<TooltipInfoSectionProps> {
             {section && <SectionIcon isRightSection={isRightSection} className={characterBodyPartIcons[section]} />}
             {this.props.name}
           </div>
-          {slotNames &&
-            <div>
-              {slotNames.map((statName: string, i) => {
-                const isRight = _.includes(statName.toLowerCase(), 'right');
-                return (
-                  <SectionIcon key={`${statName}-${i}`} isRightSection={isRight} className={defaultSlotIcons[statName]} />
-                );
-              })}
-            </div>
-          }
         </SectionTitle>
         <SectionListContainer columnCount={this.props.columnCount} padding={this.props.padding}>
           {this.props.stats.map((stat, i) => {
-            const comparedStat = stat.compared && (turnValueToPercent ?
-              Number((stat.compared * 100).toFixed(1)) : Number(stat.compared.toFixed(1)));
+            const comparedStat = stat.compared && (Number(stat.compared.toFixed(1)));
             return (
               <ListItem key={i}>
                 {this.props.useIcon ?
@@ -125,7 +112,7 @@ class TooltipInfoSection extends React.Component<TooltipInfoSectionProps> {
                   <ListIcon>{prettifyText(stat.name)}</ListIcon>
                 }
                 <StatValueContainer>
-                  {turnValueToPercent ? `${Number((stat.value * 100).toFixed(1))}` : Number(stat.value.toFixed(1))}
+                  {Number(stat.value.toFixed(1))}
                   &nbsp;
                   <ComparedStat color={comparedStat > 0 ? MORE_THAN_STAT_COLOR : LESS_THAN_STAT_COLOR}>
                     {typeof comparedStat === 'number' && comparedStat !== 0 ?

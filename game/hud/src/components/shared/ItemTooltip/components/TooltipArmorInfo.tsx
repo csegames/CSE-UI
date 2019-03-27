@@ -15,12 +15,8 @@ const Container = styled.div`
   padding: 0 10px;
 `;
 
-export interface TooltipArmorInfoMap {
-  [section: string]: TooltipSection[];
-}
-
 export interface TooltipArmorInfoState {
-  resistances: TooltipArmorInfoMap;
+  resistances: TooltipSection[];
 }
 
 export interface TooltipArmorInfoProps {
@@ -39,23 +35,17 @@ class TooltipArmorInfo extends React.Component<TooltipArmorInfoProps, TooltipArm
     const resistances = this.state.resistances;
     return (
       <Container>
-        {!_.isEmpty(resistances) && Object.keys(resistances).map((section) => {
+        {!_.isEmpty(resistances) &&
           // Resistances
-          const slotNames = this.getSlotNames(section);
-          return (
             <TooltipInfoSection
               useIcon
-              turnValueToPercent
-              key={section}
               columnCount={4}
               padding={'5px 0'}
-              section={section}
+              section={'Resistances'}
               name={'Resistances'}
-              stats={resistances[section]}
-              slotNames={slotNames}
+              stats={resistances}
             />
-          );
-        })}
+          }
       </Container>
     );
   }
@@ -64,71 +54,46 @@ class TooltipArmorInfo extends React.Component<TooltipArmorInfoProps, TooltipArm
     return !_.isEqual(this.state.resistances, nextState.resistances);
   }
 
-  private getSlotNames = (sectionName: string) => {
-    const slotNames: string[] = [];
-    const { item } = this.props;
-    item.stats.armor.forEach((armorStat) => {
-      armorStat.statsPerSlot.forEach((statPerSlot) => {
-        if (_.includes(statPerSlot.gearSlot.subpartIDs, sectionName)) {
-          slotNames.push(statPerSlot.gearSlot.id);
-        }
-      });
-    });
-
-    return slotNames;
-  }
-
   private getTooltipArmorInfoList = () => {
-    const comparedStats = this.getComparedArmorStats();
-    const armorResistances: TooltipArmorInfoMap = {};
+    // const comparedStats = this.getComparedArmorStats();
+    const resistances: { name: string, value: number, compared: number }[] = [];
 
     const { item } = this.props;
-    item.stats.armorBySubpart.forEach((slotStats) => {
-      const armorSection = slotStats.subPartId;
-      const resistances: { name: string, value: number, compared: number }[] = [];
+    const comparedStats = this.getComparedArmorStats();
+    Object.keys(item.stats.resistances).forEach((statName) => {
 
       // Get resistances
-      Object.keys(slotStats.resistances).forEach((statName) => {
-        const shouldAdd = slotStats.resistances[statName] !== 0 ||
-          (comparedStats.comparedResistances[armorSection] &&
-            typeof comparedStats.comparedResistances[armorSection][statName] === 'number');
-        if (shouldAdd) {
-          resistances.push({
-            name: statName,
-            value: slotStats.resistances[statName],
-            compared: comparedStats.comparedResistances[armorSection] &&
-              slotStats.resistances[statName] - comparedStats.comparedResistances[armorSection][statName],
-          });
-        }
-      });
-
-      if (!_.isEmpty(resistances)) {
-        armorResistances[armorSection] = resistances;
+      const shouldAdd = item.stats.resistances[statName] !== 0;
+      if (shouldAdd) {
+        resistances.push({
+          name: statName,
+          value: item.stats.resistances[statName],
+          compared: item.location.equipped ? null :
+            item.stats.resistances[statName] - (comparedStats.comparedResistances[statName] || 0),
+        });
       }
     });
 
     // Add stats that equipped items have but inventory does not
-    Object.keys(comparedStats.comparedResistances).forEach((armorSection) => {
+    Object.keys(comparedStats).forEach((statName) => {
       const resistances: { name: string, value: number, compared: number }[] = [];
-      if (!armorResistances[armorSection]) {
-        Object.keys(comparedStats.comparedResistances[armorSection]).forEach((statName) => {
-          resistances.push({
-            name: statName,
-            value: 0,
-            compared: -comparedStats.comparedResistances[armorSection][statName],
-          });
+      if (!resistances[statName]) {
+        resistances.push({
+          name: statName,
+          value: 0,
+          compared: item.location.equipped ? null : -comparedStats.comparedResistances[statName],
         });
       }
     });
 
     return {
-      resistances: armorResistances,
+      resistances,
     };
   }
 
   private getComparedArmorStats = () => {
     const { item, equippedItems } = this.props;
-    const comparedResistances: {[section: string]: { [statName: string]: number }} = {};
+    const comparedResistances: { [statName: string]: number } = {};
     if (equippedItems) {
       // Only compare against the equipped items the inventory item will replace
       let replacedEquippedItems: EquippedItem.Fragment[] = [...equippedItems];
@@ -140,37 +105,13 @@ class TooltipArmorInfo extends React.Component<TooltipArmorInfoProps, TooltipArm
         });
       }
 
-      // Search through the item's sub parts
-      item.stats.armorBySubpart.forEach((subpart) => {
-        // Go through equipped items to find which ones match item stat slots
-        replacedEquippedItems.forEach((equippedItem) => {
-          if (equippedItem.item.stats.armorBySubpart) {
-            const equippedItemSubpartIDs = equippedItem.item.stats.armorBySubpart.map(_subPart => _subPart.subPartId);
-            if (_.includes(equippedItemSubpartIDs, subpart.subPartId)) {
-              equippedItem.item.stats.armorBySubpart.forEach((equippedItemStat) => {
-                const equippedResistances: { [name: string]: number } = {};
-                // Get compared resistances
-                Object.keys(equippedItemStat.resistances).forEach((statName) => {
-                  const shouldAdd = equippedItemStat.resistances[statName] !== 0;
-                  if (shouldAdd) {
-                    equippedResistances[statName] = equippedItemStat.resistances[statName];
-                  }
-                });
-
-                comparedResistances[equippedItemStat.subPartId] = equippedResistances;
-              });
-            }
+      replacedEquippedItems.forEach((equippedItem) => {
+        Object.keys(equippedItem.item.stats.resistances).forEach((statName) => {
+          const shouldAdd = equippedItem.item.stats.resistances[statName] !== 0 && equippedItem.item.id !== item.id;
+          if (shouldAdd) {
+            comparedResistances[statName] = equippedItem.item.stats.resistances[statName];
           }
         });
-
-        if (!comparedResistances[subpart.subPartId]) {
-          comparedResistances[subpart.subPartId] = {};
-          Object.keys(subpart.resistances).forEach((statName) => {
-            if (subpart.resistances[statName] !== 0) {
-              comparedResistances[subpart.subPartId][statName] = 0;
-            }
-          });
-        }
       });
     }
     return {

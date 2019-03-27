@@ -24,13 +24,13 @@ const queryString = `
   }
 
   status {
-	  statuses {
-	    id
-	    numericID
-	    iconURL
-	    description
-	    name
-	  }
+  statuses {
+    id
+    numericID
+    iconURL
+    description
+    name
+  }
 	}
 
   game {
@@ -77,7 +77,6 @@ const queryString = `
       gearSlotSets {
         gearSlots {
           id
-          subpartIDs
         }
       }
       substanceDefinition {

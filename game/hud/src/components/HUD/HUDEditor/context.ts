@@ -118,7 +118,6 @@ export const itemDefRefsQuery = `
         gearSlotSets {
           gearSlots {
             id
-            subpartIDs
           }
         }
         isVox
