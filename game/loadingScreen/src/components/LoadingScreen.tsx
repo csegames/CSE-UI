@@ -8,6 +8,7 @@ import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 
 import ParallaxBG from './ParallaxBG';
+import { LoadingAnimIcon } from '../../../hud/src/components/fullscreen/LoadingScreen/LoadingAnimIcon';
 // import { ProgressBar } from './ProgressBar';
 
 const Container = styled.div`
@@ -83,19 +84,11 @@ const LoadingWrapper = styled.div`
   align-items: center;
 `;
 
-const LoadingIcon = styled.video`
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  filter: brightness(0) invert(1);
-  opacity: 0.2;
-`;
-
 const LoadingMessage = styled.h3`
   color: white;
   font-family: 'TitilliumWeb';
   font-size: 18px;
-  margin-top: -10px;
+  margin-top: -70px;
   text-align: center;
 `;
 
@@ -161,7 +154,7 @@ export class LoadingScreen extends React.PureComponent<{}> {
           </LogoWrapper>
           <PoweredBy />
           <LoadingWrapper>
-            <LoadingIcon src='images/loading-realms.webm' autoPlay loop muted />
+            <LoadingAnimIcon />
             <LoadingMessage>{message}</LoadingMessage>
           </LoadingWrapper>
         </Overlay>
