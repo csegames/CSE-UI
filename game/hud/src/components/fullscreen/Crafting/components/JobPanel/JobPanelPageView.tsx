@@ -269,7 +269,7 @@ const InputSection = styled.div`
 
 const OutputContainer = styled.div`
   flex: 1;
-  z-index: 13
+  z-index: 13;
   pointer-events: none;
 `;
 

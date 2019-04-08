@@ -8,6 +8,7 @@
 // BASIC MANAGEMENT
 
 export const ACTIVATE_TOOLTIP = 'active-tooltip';
+export const UPDATE_TOOLTIP = 'update-tooltip';
 export const HIDE_TOOLTIP = 'hide-tooltip';
 
 export interface ToolTipStyle {
@@ -26,8 +27,17 @@ export interface ShowTooltipPayload {
   styles?: Partial<ToolTipStyle> | 'item';
 }
 
+export interface UpdateTooltipPayload {
+  content: JSX.Element | JSX.Element[] | string;
+  styles?: Partial<ToolTipStyle>;
+}
+
 export function showTooltip(payload: ShowTooltipPayload) {
   game.trigger(ACTIVATE_TOOLTIP, payload);
+}
+
+export function updateTooltip(payload: UpdateTooltipPayload) {
+  game.trigger(UPDATE_TOOLTIP, payload);
 }
 
 export function hideTooltip() {
@@ -36,6 +46,10 @@ export function hideTooltip() {
 
 export function onShowTooltip(callback: (payload: ShowTooltipPayload) => void) {
   return game.on(ACTIVATE_TOOLTIP, callback);
+}
+
+export function onUpdateTooltip(callback: (payload: UpdateTooltipPayload) => void) {
+  return game.on(UPDATE_TOOLTIP, callback);
 }
 
 export function onHideTooltip(callback: () => void) {

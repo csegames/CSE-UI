@@ -11,9 +11,12 @@ import {
   onShowTooltip,
   onHideTooltip,
   ShowTooltipPayload,
+  UpdateTooltipPayload,
   ToolTipStyle,
   showTooltip,
   hideTooltip,
+  onUpdateTooltip,
+  updateTooltip,
 } from 'actions/tooltips';
 import { getViewportSize } from 'lib/viewport';
 import { defaultItemTooltipStyle } from './ItemTooltip';
@@ -179,6 +182,7 @@ class TooltipView extends React.Component<Props, TooltipState> {
     window.addEventListener('mousemove', this.onMouseMove);
     this.eventHandles.push(onShowTooltip(this.handleShowTooltip));
     this.eventHandles.push(onHideTooltip(this.handleHideTooltip));
+    this.eventHandles.push(onUpdateTooltip(this.handleUpdateTooltip));
   }
   public componentWillUnmount() {
     window.removeEventListener('mousemove', this.onMouseMove);
@@ -247,6 +251,15 @@ class TooltipView extends React.Component<Props, TooltipState> {
       shouldAnimate,
     });
   }
+  private handleUpdateTooltip = (payload: UpdateTooltipPayload) => {
+    if (this.state.show) {
+      const { content, styles } = payload;
+      this.setState({
+        content,
+        styles,
+      });
+    }
+  }
   private handleHideTooltip = () => {
     this.setState({ show: false, content: null, styles: {} });
   }
@@ -301,6 +314,10 @@ export class Tooltip extends React.PureComponent<TooltipProps, {}> {
     this.handleMouseLeave();
   }
 
+  public componentDidUpdate() {
+    this.handleUpdateTooltip();
+  }
+
   private handleMouseOver = (event: React.MouseEvent) => {
     if (this.isMouseOver) return;
     this.isMouseOver = true;
@@ -335,6 +352,13 @@ export class Tooltip extends React.PureComponent<TooltipProps, {}> {
         }));
       });
     }
+  }
+  private handleUpdateTooltip = () => {
+    if (!this.isMouseOver) return;
+    updateTooltip({
+      content: this.props.content,
+      styles: this.props.styles,
+    });
   }
   private handleMouseLeave = () => {
     if (!this.isMouseOver) return;
