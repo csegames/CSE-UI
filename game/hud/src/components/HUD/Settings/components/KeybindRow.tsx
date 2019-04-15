@@ -157,6 +157,10 @@ export class KeybindRow extends React.Component<Props, State> {
       return true;
     }
 
+    if (this.state.index !== nextState.index) {
+      return true;
+    }
+
     return false;
   }
 
@@ -216,15 +220,15 @@ export class KeybindRow extends React.Component<Props, State> {
   }
 
   private onRemoveBind = () => {
-    this.cancel();                  // we were listening, need to cancel
     this.setState((state) => {
-      const newState = {
+      const newState: State = {
         ...state,
         mode: KeybindMode.Idle,
       };
-      newState.keybind.binds[state.index] = null;
+      newState.keybind.binds[state.index] = { name: '', value: 0 };
       return newState;
     });
+    this.cancel(); // we were listening, need to cancel
     game.clearKeybind(this.state.keybind.id, this.state.index);
   }
 

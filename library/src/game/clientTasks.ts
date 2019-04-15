@@ -69,7 +69,9 @@ export function makeClientPromise<T>(callFn: (game: DevGameInterface, ...args: a
         console.log(`GAME TASK: CANCEL TASK ${handle.id}`);
       }
       engine.trigger('CancelTask', handle.id);
-      _devGame._activeTasks[handle.id].cancelled = true;
+      if (_devGame._activeTasks[handle.id]) {
+        _devGame._activeTasks[handle.id].cancelled = true;
+      }
     };
     return promise;
   };
