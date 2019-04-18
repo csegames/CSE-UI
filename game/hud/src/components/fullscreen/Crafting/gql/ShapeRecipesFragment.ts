@@ -7,6 +7,7 @@
 
 import gql from 'graphql-tag';
 import { ItemDefRefFragment } from 'gql/fragments/ItemDefRefFragment';
+import { RequirementFragment } from './RequirementFragment';
 
 export const ShapeRecipesFragment = gql`
   fragment ShapeRecipes on ShapeRecipeDefRef {
@@ -18,6 +19,9 @@ export const ShapeRecipesFragment = gql`
       ingredient {
         ...ItemDefRef
       }
+      requirement {
+        ...Requirement
+      }
       minUnitCount
       maxUnitCount
       minQuality
@@ -25,4 +29,5 @@ export const ShapeRecipesFragment = gql`
     }
   }
   ${ItemDefRefFragment}
+  ${RequirementFragment}
 `;

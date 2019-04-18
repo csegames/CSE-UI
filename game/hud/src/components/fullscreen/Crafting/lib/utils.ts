@@ -23,6 +23,7 @@ import {
   SubItemSlot,
   ItemType,
   ItemDefRef,
+  Requirement,
 } from 'gql/interfaces';
 
 export function getJobContext(jobNumber: number): React.Context<ContextState> {
@@ -154,7 +155,9 @@ export function getMinAndMaxItemCount(recipe: RecipeData, inputItems: InputItem[
     const ingredientIdToAvailableUnitCount: {[id: string]: number} = {};
 
     recipeDef.ingredients.forEach((ingredient) => {
-      ingredientIdToRequiredUnitCount[ingredient.ingredient.id] = ingredient.unitCount;
+      if (ingredient.ingredient) {
+        ingredientIdToRequiredUnitCount[ingredient.ingredient.id] = ingredient.unitCount;
+      }
     });
 
     inputItems.forEach((item) => {
@@ -365,7 +368,7 @@ export function getItemSlotForRecipe(item: ItemDefRef.Fragment,
   switch (recipe.type) {
     case RecipeType.Make: {
       const matchingIngredient = find((recipe.def as MakeRecipeDefRef).ingredients, ingredient =>
-        ingredient.ingredient.id === item.id);
+        ingredient.ingredient && ingredient.ingredient.id === item.id);
       if (matchingIngredient) {
         return matchingIngredient.slot;
       }
@@ -470,8 +473,45 @@ export function isNearbyVox(voxEntityID: string) {
 export function getIngredientInfo(recipeData: RecipeData, ingredientDefId: string) {
   if (recipeData && recipeData.def && recipeData.def['ingredients']) {
     return (recipeData.def as MakeRecipeDefRef).ingredients.find(ingredient =>
-      ingredient.ingredient.id === ingredientDefId);
+      ingredient.ingredient && ingredient.ingredient.id === ingredientDefId);
   } else {
     return null;
   }
+}
+
+// Requirement Descriptions
+export function isAlloyOfType(item: ItemDefRef.Fragment, alloyType: AlloyType) {
+  if (!item) return false;
+
+  return item.itemType === ItemType.Alloy &&
+    (item.alloyDefinition && (item.alloyDefinition.type === alloyType || item.alloyDefinition.subType === alloyType));
+}
+
+export function isOfType(item: ItemDefRef.Fragment, itemType: ItemType) {
+  return item.itemType === itemType;
+}
+
+export function hasTag(item: ItemDefRef.Fragment, tag: string) {
+  if (!item || !item.tags) return false;
+
+  return item.tags.includes(tag);
+}
+
+export function meetsRequirementDescription(requirement: Requirement.Fragment, item: ItemDefRef.Fragment) {
+  // @ts-ignore: no-unused-locals
+  const Ctx = {
+    IsAlloyOfType: (alloyType: AlloyType) => isAlloyOfType(item, alloyType),
+    IsOfType: (itemType: ItemType) => isOfType(item, itemType),
+    HasTag: (tag: string) => hasTag(item, tag),
+  };
+
+  let meetsReq = false;
+  try {
+    // tslint:disable-next-line
+    meetsReq = eval(requirement.condition);
+  } catch (e) {
+    console.error('Tried to eval requirement and failed', e);
+  }
+
+  return meetsReq;
 }

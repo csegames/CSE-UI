@@ -90,7 +90,7 @@ class InputItems extends React.Component<Props> {
     for (let i = 0; i < 6; i++) {
       if (selectedRecipe && (selectedRecipe.type === RecipeType.Make || selectedRecipe.type === RecipeType.Shape)) {
         const selectedRecipeIngredient = selectedRecipe && (selectedRecipe.def as MakeRecipeDefRef).ingredients[i];
-        const slot = selectedRecipeIngredient ?
+        const slot = selectedRecipeIngredient ? selectedRecipeIngredient.slot ? selectedRecipeIngredient.slot :
           getItemSlotForRecipe(selectedRecipeIngredient.ingredient, selectedRecipe, i) : null;
         const potentialItem = this.props.inputItems.find(item => item.slot === slot);
         inputItems[i] = { item: potentialItem ? potentialItem.item : null, slot, possibleItemSlot: slot };
@@ -103,9 +103,12 @@ class InputItems extends React.Component<Props> {
     return inputItems;
   }
 
-  private onAddInputItem = (item: InventoryItem.Fragment, slotNumber: number, unitCount?: number) => {
+  private onAddInputItem = (item: InventoryItem.Fragment,
+                            slotNumber: number,
+                            subItemSlot: SubItemSlot,
+                            unitCount?: number) => {
     const { selectedRecipe } = this.props;
-    const slot = getItemSlotForRecipe(item.staticDefinition, selectedRecipe, Number(slotNumber));
+    const slot = subItemSlot || getItemSlotForRecipe(item.staticDefinition, selectedRecipe, Number(slotNumber));
 
     if (slot || !this.props.selectedRecipe) {
       this.props.onAddInputItem(item, slot, unitCount);
@@ -116,6 +119,7 @@ class InputItems extends React.Component<Props> {
 
   private onSwapInputItem = (swappedItem: InventoryItem.Fragment,
                               slotNumber: number,
+                              subItemSlot: SubItemSlot,
                               newItem: InventoryItem.Fragment,
                               newUnitCount: number) => {
     const { selectedRecipe } = this.props;

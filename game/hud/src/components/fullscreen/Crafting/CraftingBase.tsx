@@ -154,98 +154,108 @@ export function initializeContextState(crafting: CraftingBaseQuery.Crafting) {
         switch (craftingKey) {
           case 'blockRecipes': {
             (recipe as CraftingBaseQuery.BlockRecipes).ingredients.forEach((ingredientDef) => {
-              itemIdToAvailablePattern =
-                createOrPushAvailablePattern(
-                  itemIdToAvailablePattern,
-                  ingredientDef.ingredient.id,
-                  RecipeType.Block,
-                  recipe.id,
-                );
-              itemIdToIngredientDefInfo =
-                createOrPushIngredientDefInfo(
-                  itemIdToIngredientDefInfo,
-                  ingredientDef.ingredient.id,
-                  recipe.id,
-                  ingredientDef,
-                );
+              if (ingredientDef.ingredient) {
+                itemIdToAvailablePattern =
+                  createOrPushAvailablePattern(
+                    itemIdToAvailablePattern,
+                    ingredientDef.ingredient.id,
+                    RecipeType.Block,
+                    recipe.id,
+                  );
+                itemIdToIngredientDefInfo =
+                  createOrPushIngredientDefInfo(
+                    itemIdToIngredientDefInfo,
+                    ingredientDef.ingredient.id,
+                    recipe.id,
+                    ingredientDef,
+                  );
+              }
             });
             break;
           }
 
           case 'purifyRecipes': {
             const item = (recipe as CraftingBaseQuery.PurifyRecipes).ingredientItem;
-            itemIdToAvailablePattern =
-              createOrPushAvailablePattern(
-                itemIdToAvailablePattern,
-                item.id,
-                RecipeType.Purify,
-                recipe.id,
-              );
-            itemIdToIngredientDefInfo =
-              createOrPushIngredientDefInfo(
-                itemIdToIngredientDefInfo,
-                item.id,
-                recipe.id,
-                item,
-              );
-            break;
-          }
-
-          case 'grindRecipes': {
-            const item = (recipe as CraftingBaseQuery.GrindRecipes).ingredientItem;
-            itemIdToAvailablePattern =
-              createOrPushAvailablePattern(
-                itemIdToAvailablePattern,
-                item.id,
-                RecipeType.Grind,
-                recipe.id,
-              );
-            itemIdToIngredientDefInfo =
-              createOrPushIngredientDefInfo(
-                itemIdToIngredientDefInfo,
-                item.id,
-                recipe.id,
-                item,
-              );
-            break;
-          }
-
-          case 'shapeRecipes': {
-            (recipe as CraftingBaseQuery.ShapeRecipes).ingredients.forEach((ingredientDef) => {
+            if (item) {
               itemIdToAvailablePattern =
                 createOrPushAvailablePattern(
                   itemIdToAvailablePattern,
-                  ingredientDef.ingredient.id,
-                  RecipeType.Shape,
+                  item.id,
+                  RecipeType.Purify,
                   recipe.id,
                 );
               itemIdToIngredientDefInfo =
                 createOrPushIngredientDefInfo(
                   itemIdToIngredientDefInfo,
-                  ingredientDef.ingredient.id,
+                  item.id,
                   recipe.id,
-                  ingredientDef,
+                  item,
                 );
+            }
+            break;
+          }
+
+          case 'grindRecipes': {
+            const item = (recipe as CraftingBaseQuery.GrindRecipes).ingredientItem;
+            if (item) {
+              itemIdToAvailablePattern =
+                createOrPushAvailablePattern(
+                  itemIdToAvailablePattern,
+                  item.id,
+                  RecipeType.Grind,
+                  recipe.id,
+                );
+              itemIdToIngredientDefInfo =
+                createOrPushIngredientDefInfo(
+                  itemIdToIngredientDefInfo,
+                  item.id,
+                  recipe.id,
+                  item,
+                );
+            }
+            break;
+          }
+
+          case 'shapeRecipes': {
+            (recipe as CraftingBaseQuery.ShapeRecipes).ingredients.forEach((ingredientDef) => {
+              if (ingredientDef.ingredient) {
+                itemIdToAvailablePattern =
+                  createOrPushAvailablePattern(
+                    itemIdToAvailablePattern,
+                    ingredientDef.ingredient.id,
+                    RecipeType.Shape,
+                    recipe.id,
+                  );
+                itemIdToIngredientDefInfo =
+                  createOrPushIngredientDefInfo(
+                    itemIdToIngredientDefInfo,
+                    ingredientDef.ingredient.id,
+                    recipe.id,
+                    ingredientDef,
+                  );
+              }
             });
             break;
           }
 
           case 'makeRecipes': {
             (recipe as CraftingBaseQuery.MakeRecipes).ingredients.forEach((ingredientDef) => {
-              itemIdToAvailablePattern =
-                createOrPushAvailablePattern(
-                  itemIdToAvailablePattern,
-                  ingredientDef.ingredient.id,
-                  RecipeType.Shape,
-                  recipe.id,
-                );
-              itemIdToIngredientDefInfo =
-                createOrPushIngredientDefInfo(
-                  itemIdToIngredientDefInfo,
-                  ingredientDef.ingredient.id,
-                  recipe.id,
-                  ingredientDef,
-                );
+              if (ingredientDef.ingredient) {
+                itemIdToAvailablePattern =
+                  createOrPushAvailablePattern(
+                    itemIdToAvailablePattern,
+                    ingredientDef.ingredient.id,
+                    RecipeType.Shape,
+                    recipe.id,
+                  );
+                itemIdToIngredientDefInfo =
+                  createOrPushIngredientDefInfo(
+                    itemIdToIngredientDefInfo,
+                    ingredientDef.ingredient.id,
+                    recipe.id,
+                    ingredientDef,
+                  );
+              }
             });
             break;
           }

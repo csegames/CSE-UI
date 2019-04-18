@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { find } from 'lodash';
-import { MakeRecipeDefRef } from 'gql/interfaces';
+import { MakeRecipeDefRef, ItemDefRef, MakeIngredientDef } from 'gql/interfaces';
 import { RecipeData } from '../../CraftingBase';
 
 const Container = styled.div`
@@ -20,13 +20,14 @@ const InfoLine = styled.div`
 `;
 
 export interface Props {
-  ingredientDefId: string;
+  recipeDef: ItemDefRef.Fragment;
   recipeData: RecipeData;
+  ingredient?: MakeIngredientDef;
 }
 
 class MakeInfo extends React.Component<Props> {
   public render() {
-    const ingredient = this.getIngredientInfo();
+    const ingredient = this.props.ingredient || this.getIngredientInfo();
     if (!ingredient) return null;
     return (
       <Container>
@@ -34,18 +35,15 @@ class MakeInfo extends React.Component<Props> {
         <InfoLine>Min Quality: {ingredient.minQuality * 100}%</InfoLine>
         <InfoLine>Max Quality: {ingredient.maxQuality * 100}%</InfoLine>
         <InfoLine>Min Item Count: {ingredient.unitCount}</InfoLine>
-        {ingredient.requirementDescription &&
-          <InfoLine>Additional Requirements: {ingredient.requirementDescription}</InfoLine>
-        }
       </Container>
     );
   }
 
   private getIngredientInfo = () => {
-    const { recipeData, ingredientDefId } = this.props;
-    if (recipeData) {
+    const { recipeData, recipeDef } = this.props;
+    if (recipeData && recipeDef) {
       return find((recipeData.def as MakeRecipeDefRef).ingredients,
-        ingredient => ingredient.ingredient.id === ingredientDefId);
+        ingredient => ingredient.ingredient && ingredient.ingredient.id === recipeDef.id);
     } else {
       return null;
     }

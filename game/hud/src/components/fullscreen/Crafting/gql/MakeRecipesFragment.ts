@@ -7,6 +7,7 @@
 
 import gql from 'graphql-tag';
 import { ItemDefRefFragment } from 'gql/fragments/ItemDefRefFragment';
+import { RequirementFragment } from './RequirementFragment';
 
 export const MakeRecipesFragment = gql`
   fragment MakeRecipes on MakeRecipeDefRef {
@@ -22,7 +23,11 @@ export const MakeRecipesFragment = gql`
       ingredient {
         ...ItemDefRef
       }
+      requirement {
+        ...Requirement
+      }
     }
   }
   ${ItemDefRefFragment}
+  ${RequirementFragment}
 `;

@@ -9,7 +9,7 @@ import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { getUppercaseRecipeType } from '../../lib/utils';
 import { RecipeType } from '../../CraftingBase';
-import { ItemDefRef } from 'gql/interfaces';
+import { ItemDefRef, Requirement } from 'gql/interfaces';
 
 const Container = styled.div`
   position: relative;
@@ -47,6 +47,7 @@ const ItemDescription = styled.div`
 export interface Props {
   recipeDef: ItemDefRef.Fragment;
   type?: RecipeType;
+  requirementDescription?: Requirement.Fragment;
 }
 
 class Header extends React.Component<Props> {
@@ -56,12 +57,23 @@ class Header extends React.Component<Props> {
     return (
       <Container>
         <InfoContainer>
-          <ItemName>{itemDefRef.name}</ItemName>
+          <ItemName>{this.getName()}</ItemName>
           {type && <ItemSubtitle>Recipe type: {getUppercaseRecipeType(type)}</ItemSubtitle>}
-          {itemDefRef.description && <ItemDescription>({itemDefRef.description})</ItemDescription>}
+          {itemDefRef && itemDefRef.description && <ItemDescription>({itemDefRef.description})</ItemDescription>}
         </InfoContainer>
       </Container>
     );
+  }
+
+  private getName = () => {
+    const { recipeDef, requirementDescription } = this.props;
+    if (recipeDef) {
+      return recipeDef.name;
+    }
+
+    if (requirementDescription) {
+      return requirementDescription.description;
+    }
   }
 }
 

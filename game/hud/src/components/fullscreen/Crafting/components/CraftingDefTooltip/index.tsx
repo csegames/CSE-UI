@@ -13,26 +13,45 @@ import ShapeInfo from './ShapeInfo';
 import BlockInfo from './BlockInfo';
 import { RecipeType, RecipeData } from '../../CraftingBase';
 import { Container } from 'shared/ItemTooltip';
-import { ItemDefRef } from 'gql/interfaces';
+import { ItemDefRef, MakeIngredientDef, RecipeIngredientDef } from 'gql/interfaces';
 
 export interface Props {
   recipeDef: ItemDefRef.Fragment;
   recipeData?: RecipeData;
+  ingredientInfo?: MakeIngredientDef | RecipeIngredientDef;
 }
 
 class CraftingDefTooltip extends React.Component<Props> {
   public render() {
+    const type = this.getType();
+    const { recipeDef, recipeData, ingredientInfo } = this.props;
     return (
       <Container>
-        <Header recipeDef={this.props.recipeDef} type={this.getType()} />
-        {this.getType() === RecipeType.Make &&
-          <MakeInfo recipeData={this.props.recipeData} ingredientDefId={this.props.recipeDef.id} />
+        <Header
+          recipeDef={recipeDef}
+          type={type}
+          requirementDescription={ingredientInfo && (ingredientInfo as MakeIngredientDef).requirement}
+        />
+        {type === RecipeType.Make &&
+          <MakeInfo
+            recipeData={recipeData}
+            recipeDef={recipeDef}
+            ingredient={ingredientInfo as MakeIngredientDef}
+          />
         }
-        {this.getType() === RecipeType.Shape &&
-          <ShapeInfo recipeDef={this.props.recipeDef} recipeData={this.props.recipeData} />
+        {type === RecipeType.Shape &&
+          <ShapeInfo
+            recipeDef={recipeDef}
+            recipeData={recipeData}
+            ingredient={ingredientInfo as RecipeIngredientDef}
+          />
         }
-        {this.getType() === RecipeType.Block &&
-          <BlockInfo recipeDef={this.props.recipeDef} recipeData={this.props.recipeData} />
+        {type === RecipeType.Block &&
+          <BlockInfo
+            recipeDef={recipeDef}
+            recipeData={recipeData}
+            ingredient={ingredientInfo as RecipeIngredientDef}
+          />
         }
       </Container>
     );

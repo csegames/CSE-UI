@@ -17,7 +17,7 @@ import Tooltip, { defaultTooltipStyle } from 'shared/ItemTooltip';
 import ItemImage from '../../ItemImage';
 import { RecipeData, RecipeType } from '../../CraftingBase';
 import CraftingDefTooltip from '../CraftingDefTooltip';
-import { getJobContext, canStartJob, getNearestVoxEntityID } from '../../lib/utils';
+import { getJobContext, canStartJob, getNearestVoxEntityID, meetsRequirementDescription } from '../../lib/utils';
 import ShapeInputItem from './ShapeInputItem';
 import ItemCount from './ItemCount';
 import DraggableItem, { Props as DraggableItemProps } from 'fullscreen/ItemShared/components/DraggableItem';
@@ -32,9 +32,11 @@ import {
   ShapeRecipeDefRef,
   VoxJob,
   VoxJobType,
+  MakeIngredientDef,
 } from 'gql/interfaces';
 import { SlotType } from 'fullscreen/lib/itemInterfaces';
 import { CraftingContext } from '../../CraftingContext';
+import { placeholderIcon } from 'fullscreen/lib/constants';
 
 declare const toastr: any;
 
@@ -232,10 +234,10 @@ export interface ComponentProps {
   item: InventoryItem.Fragment;
   subItemSlot: SubItemSlot;
   possibleItemSlot: SubItemSlot;
-  onAddInputItem: (item: InventoryItem.Fragment, slotNumber: number, unitCount?: number) => void;
+  onAddInputItem: (item: InventoryItem.Fragment, slotNumber: number, subItemSlot?: SubItemSlot, unitCount?: number) => void;
   onRemoveInputItem: (item: InventoryItem.Fragment, slotNumber: number, slot: SubItemSlot) => void;
-  onSwapInputItem: (swappedItem: InventoryItem.Fragment, slotNumber: number, newItem: InventoryItem.Fragment,
-    newUnitCount: number) => void;
+  onSwapInputItem: (swappedItem: InventoryItem.Fragment, slotNumber: number, subItemSlot: SubItemSlot,
+    newItem: InventoryItem.Fragment, newUnitCount: number) => void;
 }
 
 export type Props = ComponentProps & DragAndDropInjectedProps & InjectedContextProps;
@@ -252,6 +254,7 @@ export interface State {
 
 export class InputItem extends React.Component<Props, State> {
   private myDataTransfer: InventoryDataTransfer;
+  private ingredientInfo: MakeIngredientDef;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -262,9 +265,17 @@ export class InputItem extends React.Component<Props, State> {
   public render() {
     const { item, voxJob, jobNumber, subItemSlot } = this.props;
     const placeholderItem: InventoryItem.StaticDefinition = this.getSelectedRecipePlaceholderItem();
-    let ingredientInfo = null;
+    if (this.ingredientInfo && !voxJob) {
+      this.ingredientInfo = null;
+    }
+
+    if (voxJob && (voxJob.jobType === VoxJobType.Make || voxJob.jobType === VoxJobType.Block)) {
+      this.ingredientInfo = this.getIngredientInfo(item && item.staticDefinition && item.staticDefinition.id) as any;
+    }
+
     if (voxJob && voxJob.jobType === VoxJobType.Shape && placeholderItem) {
-      ingredientInfo = this.getIngredientInfo(item ? item.staticDefinition.id : placeholderItem.id) as any;
+      this.ingredientInfo = this.getIngredientInfo((item && item.staticDefinition && item.staticDefinition.id) ||
+        placeholderItem.id) as any;
     }
 
     return (
@@ -295,8 +306,8 @@ export class InputItem extends React.Component<Props, State> {
             item={item}
             jobNumber={jobNumber}
             slot={subItemSlot}
-            minUnitCount={ingredientInfo ? ingredientInfo.minUnitCount : 0}
-            maxUnitCount={ingredientInfo ? ingredientInfo.maxUnitCount : 0}
+            minUnitCount={this.ingredientInfo ? (this.ingredientInfo as any).minUnitCount : 0}
+            maxUnitCount={this.ingredientInfo ? (this.ingredientInfo as any).maxUnitCount : 0}
           />}
       </Container>
     );
@@ -318,15 +329,22 @@ export class InputItem extends React.Component<Props, State> {
     const { item, voxJob, selectedRecipe } = this.props;
     const placeholderItem: InventoryItem.StaticDefinition = this.getSelectedRecipePlaceholderItem();
     if (voxJob && voxJob.jobType === VoxJobType.Shape && placeholderItem) {
-      const potentialPlaceholderItem = this.getIngredientInfo(item ? item.staticDefinition.id : placeholderItem.id) as any;
       return (
         <ItemWrapper backgroundColor={this.state.backgroundColor}>
           <ShapeInputItem
             item={item}
-            ingredientInfo={potentialPlaceholderItem}
+            ingredientInfo={this.ingredientInfo as any}
             selectedRecipe={selectedRecipe}
             removeInputItem={this.removeInputItem}
           />
+        </ItemWrapper>
+      );
+    }
+
+    if (!this.props.item && this.isRequirementDescriptionSlot()) {
+      return (
+        <ItemWrapper backgroundColor={this.state.backgroundColor}>
+          <PlaceholderImage src={this.ingredientInfo.requirement.iconURL || placeholderIcon} />
         </ItemWrapper>
       );
     }
@@ -342,6 +360,10 @@ export class InputItem extends React.Component<Props, State> {
 
   private getDragItemID = () => {
     return (this.props.item && this.props.item.id) || 'crafting-input-item';
+  }
+
+  private isRequirementDescriptionSlot = () => {
+    return this.ingredientInfo && !this.ingredientInfo.ingredient && this.ingredientInfo.requirement;
   }
 
   private initializeDragAndDrop = (): DraggableOptions => {
@@ -395,6 +417,7 @@ export class InputItem extends React.Component<Props, State> {
           this.props.onAddInputItem(
             e.dataTransfer.item,
             this.props.slotNumber,
+            this.props.subItemSlot,
             ingredientInfo.maxUnitCount - this.props.item.stats.item.unitCount,
           );
           return;
@@ -404,6 +427,7 @@ export class InputItem extends React.Component<Props, State> {
           this.props.onAddInputItem(
             e.dataTransfer.item,
             this.props.slotNumber,
+            this.props.subItemSlot,
             ingredientInfo.maxUnitCount,
           );
           return;
@@ -412,13 +436,20 @@ export class InputItem extends React.Component<Props, State> {
 
       if (!this.props.voxJob && this.props.item) {
         // Swap item
-        this.props.onSwapInputItem(this.props.item, this.props.slotNumber, e.dataTransfer.item, itemUnitCount);
+        this.props.onSwapInputItem(
+          this.props.item,
+          this.props.slotNumber,
+          this.props.subItemSlot,
+          e.dataTransfer.item,
+          itemUnitCount,
+        );
         return;
       }
 
       this.props.onAddInputItem(
         e.dataTransfer.item,
         this.props.slotNumber,
+        this.props.subItemSlot,
         itemUnitCount,
       );
     }
@@ -432,8 +463,12 @@ export class InputItem extends React.Component<Props, State> {
   private getIngredientInfo = (ingredientDefId: string) => {
     const { selectedRecipe } = this.props;
     if (selectedRecipe) {
+      if (this.props.selectedRecipe.type === RecipeType.Make && this.props.possibleItemSlot) {
+        return (selectedRecipe.def as MakeRecipeDefRef).ingredients
+          .find(ingredient => ingredient.slot === this.props.subItemSlot);
+      }
       return find((selectedRecipe.def as MakeRecipeDefRef).ingredients,
-        ingredient => ingredient.ingredient.id === ingredientDefId);
+        ingredient => ingredient.ingredient && ingredient.ingredient.id === ingredientDefId);
     } else {
       return null;
     }
@@ -449,6 +484,21 @@ export class InputItem extends React.Component<Props, State> {
     if (this.props.item) {
       const payload: ShowTooltipPayload = {
         content: <Tooltip item={this.props.item} instructions={''} />,
+        event,
+        styles: defaultTooltipStyle,
+      };
+      showTooltip(payload);
+      return;
+    }
+
+    if (this.isRequirementDescriptionSlot()) {
+      const payload: ShowTooltipPayload = {
+        content:
+          <CraftingDefTooltip
+            recipeDef={placeholderItem}
+            recipeData={this.props.selectedRecipe}
+            ingredientInfo={this.ingredientInfo}
+          />,
         event,
         styles: defaultTooltipStyle,
       };
@@ -532,6 +582,10 @@ export class InputItem extends React.Component<Props, State> {
       return false;
     }
 
+    if (this.isRequirementDescriptionSlot()) {
+      return meetsRequirementDescription(this.ingredientInfo.requirement, e.dataTransfer.item.staticDefinition);
+    }
+
     if (this.props.voxJob && this.props.voxJob.jobType === VoxJobType.Shape) {
       // For shape jobs, make sure the inputted item meets the min and max unit count, as well as the min and max quality.
       const placeholderItem: InventoryItem.StaticDefinition = this.getSelectedRecipePlaceholderItem();
@@ -561,8 +615,12 @@ export class InputItem extends React.Component<Props, State> {
       switch (this.props.voxJob.jobType) {
         case VoxJobType.Make:
         case VoxJobType.Block: {
-          const isAnIngredient = (this.props.selectedRecipe.def as MakeRecipeDefRef).ingredients.find(ing =>
-            ing.ingredient.id === e.dataTransfer.item.staticDefinition.id);
+          const isAnIngredient = (this.props.selectedRecipe.def as MakeRecipeDefRef).ingredients.find((ing) => {
+            if (!ing.ingredient && ing.requirement) {
+              return meetsRequirementDescription(ing.requirement, e.dataTransfer.item.staticDefinition);
+            }
+            return ing.ingredient.id === e.dataTransfer.item.staticDefinition.id;
+          });
           return isAnIngredient;
         }
         case VoxJobType.Purify: {

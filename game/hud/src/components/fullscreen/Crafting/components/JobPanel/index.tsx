@@ -49,7 +49,6 @@ import {
   setRecipeIDServer,
 } from '../../CraftingBase';
 import {
-  MakeRecipeDefRef,
   InventoryItem,
   CraftingBaseQuery,
   SubItemSlot,
@@ -782,7 +781,6 @@ class JobPanelPage extends React.Component<Props, State> {
   }
 
   private filterInputItems = () => {
-    const { recipeIdToRecipe } = this.props;
     const { voxJob } = this.state;
     let updatedInputItems = [...this.state.inputItems];
     let removingItem = false;
@@ -791,12 +789,8 @@ class JobPanelPage extends React.Component<Props, State> {
       for (let i = 0; i < voxJob.ingredients.length; i++) {
         const inputItem = voxJob.ingredients[i];
         // Find the ingredient item info
-        const ingredientItem = (recipeIdToRecipe[voxJob.recipeID].def as MakeRecipeDefRef)
-          .ingredients.find((ingredientInfo) => {
-            return ingredientInfo.ingredient.id === inputItem.staticDefinition.id;
-          });
 
-        const requiredIngredientUnitCount = ingredientItem.unitCount * voxJob.itemCount;
+        const requiredIngredientUnitCount = inputItem.stats.item.unitCount * voxJob.itemCount;
         const currentInputUnitCount = getItemUnitCount(inputItem);
         if (currentInputUnitCount > requiredIngredientUnitCount) {
           removingItem = true;
@@ -808,7 +802,7 @@ class JobPanelPage extends React.Component<Props, State> {
 
           removeInputItemServer(
             inputItem,
-            ingredientItem.slot,
+            inputItem.location.inVox.itemSlot,
             getNearestVoxEntityID(crafting),
             voxContainerID,
             slotNumberToItem,

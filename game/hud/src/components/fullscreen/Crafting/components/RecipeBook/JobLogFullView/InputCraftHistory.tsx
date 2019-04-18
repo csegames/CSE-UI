@@ -8,8 +8,15 @@
 import * as React from 'react';
 import { fill } from 'lodash';
 import { styled } from '@csegames/linaria/react';
-import { VoxJobLog, InventoryItem, MakeRecipeDefRef, PurifyRecipeDefRef, RecipeIngredientDef } from 'gql/interfaces';
 import { showTooltip, hideTooltip, ShowTooltipPayload } from 'actions/tooltips';
+import {
+  VoxJobLog,
+  InventoryItem,
+  MakeRecipeDefRef,
+  PurifyRecipeDefRef,
+  RecipeIngredientDef,
+  MakeIngredientDef,
+} from 'gql/interfaces';
 
 import { CraftingContext } from '../../../CraftingContext';
 import { RecipeIdToRecipe, RecipeType, RecipeData } from '../../../CraftingBase';
@@ -147,6 +154,7 @@ const QualityRange = styled.div`
 
 export interface InputItem {
   item: Partial<InventoryItem.Fragment>;
+  ingredient: MakeIngredientDef | RecipeIngredientDef;
   recipeData?: RecipeData;
 }
 
@@ -166,7 +174,7 @@ class InputCraftHistory extends React.Component<Props> {
       <Container>
         <InputItemsContainer>
           {inputItems.map((item, i) => {
-            const ingredientInfo: RecipeIngredientDef = item &&
+            const ingredientInfo: RecipeIngredientDef = item && item.item && item.item.staticDefinition &&
               getIngredientInfo(item.recipeData, item.item.staticDefinition.id) as any;
             return (
               <InputItem key={i}>
@@ -178,7 +186,9 @@ class InputCraftHistory extends React.Component<Props> {
                 }
                 {item &&
                   <ItemImage
-                    icon={getIcon(item.item as InventoryItem.Fragment)}
+                    icon={getIcon(item.item as InventoryItem.Fragment) ||
+                      (item.ingredient.requirement &&
+                      item.ingredient.requirement.iconURL)}
                     count={getItemUnitCount(item.item as InventoryItem.Fragment)}
                     quality={getItemQuality(item.item as InventoryItem.Fragment)}
                     onMouseOver={e => this.showItemTooltip(e as any, item)}
@@ -215,7 +225,7 @@ class InputCraftHistory extends React.Component<Props> {
         case RecipeType.Block: {
           (recipeData.def as MakeRecipeDefRef).ingredients.forEach((ingredient) => {
             const item: Partial<InventoryItem.Fragment> = { staticDefinition: ingredient.ingredient };
-            inputItems.push(this.itemToInputItem(item, recipeData));
+            inputItems.push(this.itemToInputItem(item, ingredient, recipeData));
           });
           break;
         }
@@ -223,7 +233,7 @@ class InputCraftHistory extends React.Component<Props> {
         case RecipeType.Grind: {
           const ingredientItem = (recipeData.def as PurifyRecipeDefRef).ingredientItem;
           const item: Partial<InventoryItem.Fragment> = { staticDefinition: ingredientItem };
-          inputItems[0] = this.itemToInputItem(item, recipeData);
+          inputItems[0] = this.itemToInputItem(item, null, recipeData);
           break;
         }
       }
@@ -231,7 +241,7 @@ class InputCraftHistory extends React.Component<Props> {
 
     if (this.props.voxJobLog && inputItems.length === 0) {
       // There was a voxJobLog so show the actual items that were inputted during that job
-      inputItems = this.props.voxJobLog.inputItems.map(item => this.itemToInputItem(item));
+      inputItems = this.props.voxJobLog.inputItems.map(item => this.itemToInputItem(item, null));
     }
 
     // Fill with empty slots
@@ -239,9 +249,11 @@ class InputCraftHistory extends React.Component<Props> {
   }
 
   private itemToInputItem = (item: Partial<InventoryItem.Fragment>,
+                              ingredient: MakeIngredientDef | RecipeIngredientDef,
                               recipeData?: RecipeData): InputItem => {
     return {
       item,
+      ingredient,
       recipeData,
     };
   }
@@ -252,6 +264,17 @@ class InputCraftHistory extends React.Component<Props> {
         event,
         content: <Tooltip item={inputItem.item as InventoryItem.Fragment} instructions='' />,
         styles: defaultTooltipStyle,
+      };
+      showTooltip(payload);
+    } else if (!inputItem.item.staticDefinition && inputItem.ingredient.requirement) {
+      const payload: ShowTooltipPayload = {
+        event,
+        content:
+          <CraftingDefTooltip
+            recipeDef={null}
+            recipeData={inputItem.recipeData}
+            ingredientInfo={inputItem.ingredient}
+          />,
       };
       showTooltip(payload);
     } else {

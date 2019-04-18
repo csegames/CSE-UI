@@ -17,7 +17,7 @@ import JobLogFullView from '../JobLogFullView';
 import BackButton from '../JobLogFullView/BackButton';
 import SearchInput from '../SearchInput';
 import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
-import { itemCanBeRepaired, itemCanBeSalvaged, getJobContext } from '../../../lib/utils';
+import { itemCanBeRepaired, itemCanBeSalvaged, getJobContext, meetsRequirementDescription } from '../../../lib/utils';
 import { getItemUnitCount } from 'fullscreen/lib/utils';
 import { CraftingContext } from '../../../CraftingContext';
 import {
@@ -320,8 +320,12 @@ class Category extends React.Component<Props, State> {
   private meetsIngredientRequirements = (item: InventoryItem.Fragment, recipe: RecipeData) => {
     switch (recipe.type) {
       case RecipeType.Make: {
-        const matchingIngredient = (recipe.def as CraftingBaseQuery.MakeRecipes).ingredients.find(
-          i => i.ingredient.id === item.staticDefinition.id);
+        const matchingIngredient = (recipe.def as CraftingBaseQuery.MakeRecipes).ingredients.find((ing) => {
+          if (!ing.ingredient && ing.requirement) {
+            return meetsRequirementDescription(ing.requirement,item.staticDefinition);
+          }
+          return ing.ingredient.id === item.staticDefinition.id;
+        });
         if (matchingIngredient) {
           const itemQuality = item.stats.item.quality;
           return itemQuality <= matchingIngredient.maxQuality &&
@@ -331,8 +335,12 @@ class Category extends React.Component<Props, State> {
         return false;
       }
       case RecipeType.Shape: {
-        const matchingIngredient = (recipe.def as CraftingBaseQuery.ShapeRecipes).ingredients.find(
-          i => i.ingredient.id === item.staticDefinition.id);
+        const matchingIngredient = (recipe.def as CraftingBaseQuery.ShapeRecipes).ingredients.find((ing) => {
+          if (!ing.ingredient && ing.requirement) {
+            return meetsRequirementDescription(ing.requirement,item.staticDefinition);
+          }
+          return ing.ingredient.id === item.staticDefinition.id;
+        });
         if (matchingIngredient) {
           const itemQuality = item.stats.item.quality;
           const itemUnitCount = getItemUnitCount(item);
@@ -345,8 +353,12 @@ class Category extends React.Component<Props, State> {
         return false;
       }
       case RecipeType.Block: {
-        const matchingIngredient = (recipe.def as CraftingBaseQuery.BlockRecipes).ingredients.find(
-          i => i.ingredient.id === item.staticDefinition.id);
+        const matchingIngredient = (recipe.def as CraftingBaseQuery.BlockRecipes).ingredients.find((ing) => {
+          if (!ing.ingredient && ing.requirement) {
+            return meetsRequirementDescription(ing.requirement,item.staticDefinition);
+          }
+          return ing.ingredient.id === item.staticDefinition.id;
+        });
         if (matchingIngredient) {
           const itemQuality = item.stats.item.quality;
           return itemQuality <= matchingIngredient.maxQuality &&

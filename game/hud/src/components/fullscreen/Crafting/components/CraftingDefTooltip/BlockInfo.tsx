@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { find } from 'lodash';
 import { styled } from '@csegames/linaria/react';
-import { BlockRecipeDefRef, ItemDefRef } from 'gql/interfaces';
+import { BlockRecipeDefRef, ItemDefRef, RecipeIngredientDef } from 'gql/interfaces';
 import { RecipeData } from '../../CraftingBase';
 
 const Container = styled.div`
@@ -22,6 +22,7 @@ const InfoLine = styled.div`
 export interface Props {
   recipeDef: ItemDefRef.Fragment;
   recipeData: RecipeData;
+  ingredient?: RecipeIngredientDef;
 }
 
 class BlockInfo extends React.Component<Props> {

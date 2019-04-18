@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { find } from 'lodash';
 import { styled } from '@csegames/linaria/react';
-import { ShapeRecipeDefRef, ItemDefRef } from 'gql/interfaces';
+import { ShapeRecipeDefRef, ItemDefRef, RecipeIngredientDef } from 'gql/interfaces';
 import { RecipeData } from '../../CraftingBase';
 
 const Container = styled.div`
@@ -22,11 +22,12 @@ const InfoLine = styled.div`
 export interface Props {
   recipeDef: ItemDefRef.Fragment;
   recipeData: RecipeData;
+  ingredient?: RecipeIngredientDef;
 }
 
 class ShapeInfo extends React.Component<Props> {
   public render() {
-    const ingredient = this.getIngredient();
+    const ingredient = this.props.ingredient || this.getIngredient();
     if (!ingredient) return null;
 
     return (

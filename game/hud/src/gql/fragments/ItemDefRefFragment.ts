@@ -18,6 +18,7 @@ export const ItemDefRefFragment = gql`
     defaultResourceID
     numericItemDefID
     isStackableItem
+    tags
     deploySettings {
       resourceID
       isDoor
