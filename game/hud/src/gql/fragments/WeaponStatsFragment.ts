@@ -16,6 +16,7 @@ export const WeaponStatsFragment = gql`
     slashingArmorPenetration
     crushingDamage
     fallbackCrushingDamage
+    magicPower
     disruption
     deflectionAmount
     physicalProjectileSpeed
