@@ -8,6 +8,7 @@
 import * as React from 'react';
 import { find } from 'lodash';
 import { styled } from '@csegames/linaria/react';
+import { webAPI } from '@csegames/camelot-unchained';
 
 import { showTooltip, hideTooltip, ShowTooltipPayload } from 'actions/tooltips';
 import { DragEvent, DragAndDropInjectedProps, DraggableOptions } from 'utils/DragAndDrop/DragAndDrop';
@@ -17,7 +18,7 @@ import Tooltip, { defaultTooltipStyle } from 'shared/ItemTooltip';
 import ItemImage from '../../ItemImage';
 import { RecipeData, RecipeType } from '../../CraftingBase';
 import CraftingDefTooltip from '../CraftingDefTooltip';
-import { getJobContext, canStartJob, getNearestVoxEntityID, meetsRequirementDescription } from '../../lib/utils';
+import { getJobContext, canStartJob, getNearestVoxEntityID } from '../../lib/utils';
 import ShapeInputItem from './ShapeInputItem';
 import ItemCount from './ItemCount';
 import DraggableItem, { Props as DraggableItemProps } from 'fullscreen/ItemShared/components/DraggableItem';
@@ -33,6 +34,7 @@ import {
   VoxJob,
   VoxJobType,
   MakeIngredientDef,
+  ItemDefRef,
 } from 'gql/interfaces';
 import { SlotType } from 'fullscreen/lib/itemInterfaces';
 import { CraftingContext } from '../../CraftingContext';
@@ -583,7 +585,8 @@ export class InputItem extends React.Component<Props, State> {
     }
 
     if (this.isRequirementDescriptionSlot()) {
-      return meetsRequirementDescription(this.ingredientInfo.requirement, e.dataTransfer.item.staticDefinition);
+      return webAPI.RequirementDescriptionMethods
+        .MeetsRequirementDescription(this.ingredientInfo.requirement, e.dataTransfer.item.staticDefinition as ItemDefRef);
     }
 
     if (this.props.voxJob && this.props.voxJob.jobType === VoxJobType.Shape) {
@@ -617,7 +620,8 @@ export class InputItem extends React.Component<Props, State> {
         case VoxJobType.Block: {
           const isAnIngredient = (this.props.selectedRecipe.def as MakeRecipeDefRef).ingredients.find((ing) => {
             if (!ing.ingredient && ing.requirement) {
-              return meetsRequirementDescription(ing.requirement, e.dataTransfer.item.staticDefinition);
+              return webAPI.RequirementDescriptionMethods
+                .MeetsRequirementDescription(ing.requirement, e.dataTransfer.item.staticDefinition as ItemDefRef);
             }
             return ing.ingredient.id === e.dataTransfer.item.staticDefinition.id;
           });

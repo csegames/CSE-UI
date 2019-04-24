@@ -23,7 +23,6 @@ import {
   SubItemSlot,
   ItemType,
   ItemDefRef,
-  Requirement,
 } from 'gql/interfaces';
 
 export function getJobContext(jobNumber: number): React.Context<ContextState> {
@@ -477,41 +476,4 @@ export function getIngredientInfo(recipeData: RecipeData, ingredientDefId: strin
   } else {
     return null;
   }
-}
-
-// Requirement Descriptions
-export function isAlloyOfType(item: ItemDefRef.Fragment, alloyType: AlloyType) {
-  if (!item) return false;
-
-  return item.itemType === ItemType.Alloy &&
-    (item.alloyDefinition && (item.alloyDefinition.type === alloyType || item.alloyDefinition.subType === alloyType));
-}
-
-export function isOfType(item: ItemDefRef.Fragment, itemType: ItemType) {
-  return item.itemType === itemType;
-}
-
-export function hasTag(item: ItemDefRef.Fragment, tag: string) {
-  if (!item || !item.tags) return false;
-
-  return item.tags.includes(tag);
-}
-
-export function meetsRequirementDescription(requirement: Requirement.Fragment, item: ItemDefRef.Fragment) {
-  // @ts-ignore: no-unused-locals
-  const Ctx = {
-    IsAlloyOfType: (alloyType: AlloyType) => isAlloyOfType(item, alloyType),
-    IsOfType: (itemType: ItemType) => isOfType(item, itemType),
-    HasTag: (tag: string) => hasTag(item, tag),
-  };
-
-  let meetsReq = false;
-  try {
-    // tslint:disable-next-line
-    meetsReq = eval(requirement.condition);
-  } catch (e) {
-    console.error('Tried to eval requirement and failed', e);
-  }
-
-  return meetsReq;
 }

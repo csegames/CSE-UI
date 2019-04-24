@@ -8,8 +8,8 @@
 import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
+import { webAPI } from '@csegames/camelot-unchained';
 
-import { VoxJobType, ItemType, InventoryItem, CraftingBaseQuery, VoxJob } from 'gql/interfaces';
 import { GroupLogData } from '../index';
 import CategorySelect from './CategorySelect';
 import GroupLogQuickView from '../GroupLogQuickView';
@@ -17,7 +17,7 @@ import JobLogFullView from '../JobLogFullView';
 import BackButton from '../JobLogFullView/BackButton';
 import SearchInput from '../SearchInput';
 import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
-import { itemCanBeRepaired, itemCanBeSalvaged, getJobContext, meetsRequirementDescription } from '../../../lib/utils';
+import { itemCanBeRepaired, itemCanBeSalvaged, getJobContext } from '../../../lib/utils';
 import { getItemUnitCount } from 'fullscreen/lib/utils';
 import { CraftingContext } from '../../../CraftingContext';
 import {
@@ -28,6 +28,15 @@ import {
   ItemIdToAvailablePattern,
   RecipeType,
 } from '../../../CraftingBase';
+import {
+  VoxJobType,
+  ItemType,
+  InventoryItem,
+  CraftingBaseQuery,
+  VoxJob,
+  ItemDefRef,
+  ItemRequirementByStringIDDefRef,
+} from 'gql/interfaces';
 
 const Container = styled.div`
   width: 100%;
@@ -322,7 +331,11 @@ class Category extends React.Component<Props, State> {
       case RecipeType.Make: {
         const matchingIngredient = (recipe.def as CraftingBaseQuery.MakeRecipes).ingredients.find((ing) => {
           if (!ing.ingredient && ing.requirement) {
-            return meetsRequirementDescription(ing.requirement,item.staticDefinition);
+            return webAPI.RequirementDescriptionMethods
+              .MeetsRequirementDescription(
+                ing.requirement as ItemRequirementByStringIDDefRef,
+                item.staticDefinition as ItemDefRef,
+              );
           }
           return ing.ingredient.id === item.staticDefinition.id;
         });
@@ -337,7 +350,11 @@ class Category extends React.Component<Props, State> {
       case RecipeType.Shape: {
         const matchingIngredient = (recipe.def as CraftingBaseQuery.ShapeRecipes).ingredients.find((ing) => {
           if (!ing.ingredient && ing.requirement) {
-            return meetsRequirementDescription(ing.requirement,item.staticDefinition);
+            return webAPI.RequirementDescriptionMethods
+              .MeetsRequirementDescription(
+                ing.requirement as ItemRequirementByStringIDDefRef,
+                item.staticDefinition as ItemDefRef,
+              );
           }
           return ing.ingredient.id === item.staticDefinition.id;
         });
@@ -355,7 +372,11 @@ class Category extends React.Component<Props, State> {
       case RecipeType.Block: {
         const matchingIngredient = (recipe.def as CraftingBaseQuery.BlockRecipes).ingredients.find((ing) => {
           if (!ing.ingredient && ing.requirement) {
-            return meetsRequirementDescription(ing.requirement,item.staticDefinition);
+            return webAPI.RequirementDescriptionMethods
+              .MeetsRequirementDescription(
+                ing.requirement as ItemRequirementByStringIDDefRef,
+                item.staticDefinition as ItemDefRef,
+              );
           }
           return ing.ingredient.id === item.staticDefinition.id;
         });
