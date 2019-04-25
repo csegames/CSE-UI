@@ -4,13 +4,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
+import React, { useContext, useState } from 'react';
+import { isEmpty } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { AbilityNetworkTemplate, ComponentCategorySelector } from './AbilityNetworkTemplate';
 import { Modal } from './Modal';
-import { AbilityType, AbilityBuilderContext, NetworkIDToCategories, CategoryIDToComponents } from '..';
-import { AbilityBuilderQuery } from 'gql/interfaces';
+import { AbilityBuilderContext } from '..';
 import { webAPI } from '@csegames/camelot-unchained';
+import { useAbilityBuilderReducer, AbilityType } from 'services/session/AbilityBuilderState';
 
 const Container = styled.div`
   position: relative;
@@ -28,69 +29,21 @@ const Overlay = styled.div`
   z-index: 98;
 `;
 
-export interface ComponentProps {
+export interface Props {
   reset: () => void;
 }
 
-export interface InjectedProps {
-  selectedType: AbilityType;
-  abilityNetworks: AbilityBuilderQuery.AbilityNetworks[];
-  networkIDToCategories: NetworkIDToCategories;
-  categoryIDToComponents: CategoryIDToComponents;
-}
+// tslint:disable-next-line:function-name
+export function AbilityCreation(props: Props) {
+  const abilityBuilderContext = useContext(AbilityBuilderContext);
+  const [state] = useAbilityBuilderReducer();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
-export type Props = ComponentProps & InjectedProps;
-
-export interface State {
-  name: string;
-  icon: string;
-  abilityComponents: string[];
-  showModal: boolean;
-  errorMessage: string;
-}
-
-class AbilityCreationView extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      name: '',
-      icon: '',
-      abilityComponents: [],
-      showModal: false,
-      errorMessage: '',
-    };
-  }
-
-  public render() {
-    return (
-      <Container>
-        <AbilityNetworkTemplate
-          selectedType={this.props.selectedType}
-          componentCategories={this.getComponentCategorySelectors()}
-          onCreateAbility={this.onCreateAbility}
-        />
-        {this.state.showModal &&
-          <>
-            <Overlay />
-            <Modal
-              type={this.state.errorMessage ? 'fail' : 'success'}
-              name={this.state.name}
-              icon={this.state.icon}
-              errorMessage={this.state.errorMessage}
-              abilityType={this.props.selectedType}
-              onTryAgainClick={this.onTryAgainClick}
-              onCreateNewClick={this.onCreateNewClick}
-            />
-          </>
-        }
-      </Container>
-    );
-  }
-
-  private getComponentCategorySelectors = () => {
-    const { abilityNetworks, selectedType, categoryIDToComponents } = this.props;
+  function getComponentCategorySelectors() {
+    const { abilityNetworks, categoryIDToComponents } = abilityBuilderContext;
     const componentCategorySelectors: ComponentCategorySelector[] = [];
-    const selectedNetwork = abilityNetworks.find(network => network.id === selectedType.id);
+    const selectedNetwork = abilityNetworks.find(network => network.id === state.selectedType.id);
     selectedNetwork.componentCategories.forEach((category) => {
       componentCategorySelectors.push({
         isMultiSelect: false,
@@ -102,12 +55,12 @@ class AbilityCreationView extends React.PureComponent<Props, State> {
     return componentCategorySelectors;
   }
 
-  private onCreateAbility = async (type: AbilityType,
-                                    abilityComponents: string[],
-                                    icon: string,
-                                    name: string,
-                                    description: string) => {
-    const { abilityNetworks } = this.props;
+  async function onCreateAbility(type: AbilityType,
+                                  abilityComponents: string[],
+                                  icon: string,
+                                  name: string,
+                                  description: string) {
+    const { abilityNetworks } = abilityBuilderContext;
     const selectedNetwork = abilityNetworks.find(network => network.id === type.id);
     const createAbilityRequest: CreateAbilityRequest = {
       NetworkID: selectedNetwork.id,
@@ -124,25 +77,46 @@ class AbilityCreationView extends React.PureComponent<Props, State> {
     );
 
     if (res.ok) {
-      this.setState({
-        showModal: true,
-        abilityComponents,
-        icon,
-        name,
-      });
+      setShowModal(true);
     } else if (res.data) {
       const errorMessage = JSON.parse(res.data).FieldCodes[0].AbilityResult.Details;
-      this.setState({
-        showModal: true,
-        abilityComponents,
-        icon,
-        name,
-        errorMessage,
-      });
+      setErrorMessage(errorMessage);
+      setShowModal(true);
     }
   }
 
-  private onTryAgainClick = () => {
+  async function onModifyAbility(type: AbilityType,
+                                  abilityComponents: string[],
+                                  icon: string,
+                                  name: string,
+                                  description: string) {
+    const { abilityNetworks } = abilityBuilderContext;
+    const selectedNetwork = abilityNetworks.find(network => network.id === type.id);
+    const createAbilityRequest: CreateAbilityRequest = {
+      NetworkID: selectedNetwork.id,
+      Name: name,
+      Description: description,
+      IconURL: icon,
+      Components: abilityComponents,
+    };
+    const res = await webAPI.AbilitiesAPI.ModifyAbility(
+      webAPI.defaultConfig,
+      game.shardID,
+      game.selfPlayerState.characterID,
+      state.modifiedAbilityID,
+      createAbilityRequest,
+    );
+
+    if (res.ok) {
+      setShowModal(true);
+    } else if (res.data) {
+      const errorMessage = JSON.parse(res.data).FieldCodes[0].AbilityResult.Details;
+      setErrorMessage(errorMessage);
+      setShowModal(true);
+    }
+  }
+
+  function onTryAgainClick() {
     this.setState({
       showModal: false,
       abilityComponents: [],
@@ -152,25 +126,32 @@ class AbilityCreationView extends React.PureComponent<Props, State> {
     });
   }
 
-  private onCreateNewClick = () => {
-    this.props.reset();
+  function onCreateNewClick() {
+    props.reset();
   }
-}
 
-export class AbilityCreation extends React.Component<ComponentProps> {
-  public render() {
-    return (
-      <AbilityBuilderContext.Consumer>
-        {({ selectedType, networkIDToCategories, categoryIDToComponents, abilityNetworks }) => (
-          <AbilityCreationView
-            {...this.props}
-            selectedType={selectedType}
-            networkIDToCategories={networkIDToCategories}
-            categoryIDToComponents={categoryIDToComponents}
-            abilityNetworks={abilityNetworks}
+  return !isEmpty(abilityBuilderContext.abilityNetworks) ? (
+    <Container>
+      <AbilityNetworkTemplate
+        selectedType={state.selectedType}
+        componentCategories={getComponentCategorySelectors()}
+        onCreateAbility={state.isModifying ? onModifyAbility : onCreateAbility}
+      />
+      {showModal &&
+        <>
+          <Overlay />
+          <Modal
+            type={errorMessage ? 'fail' : 'success'}
+            name={state.name}
+            icon={state.icon}
+            errorMessage={errorMessage}
+            abilityType={state.selectedType}
+            isModifying={state.isModifying}
+            onTryAgainClick={onTryAgainClick}
+            onCreateNewClick={onCreateNewClick}
           />
-        )}
-      </AbilityBuilderContext.Consumer>
-    );
-  }
+        </>
+      }
+    </Container>
+  ) : null;
 }

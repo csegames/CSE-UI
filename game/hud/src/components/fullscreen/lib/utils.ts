@@ -970,6 +970,7 @@ export const defaultTabsLeft: TabItem<HUDFullScreenTabData>[] = [
     rendersContent: 'AbilityBuilder',
     shouldTriggerNavEvent: true,
   },
+  { name: 'ability-book-left', tab: { title: 'Ability Book' }, rendersContent: 'AbilityBook' },
 ];
 
 export const defaultTabsRight: TabItem<HUDFullScreenTabData>[] = [
@@ -983,6 +984,7 @@ export const defaultTabsRight: TabItem<HUDFullScreenTabData>[] = [
     rendersContent: 'AbilityBuilder',
     shouldTriggerNavEvent: true,
   },
+  { name: 'ability-book-right', tab: { title: 'Ability Book' }, rendersContent: 'AbilityBook' },
 ];
 
 export const defaultFullScreenState: FullScreenNavState = {

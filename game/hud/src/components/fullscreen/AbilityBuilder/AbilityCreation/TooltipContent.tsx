@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { checkNetworkRequirements, NetworkRequirementResult } from '../utils';
-import { AbilityBuilderQuery } from 'gql/interfaces';
+import { AbilityBuilderQuery, AbilityComponent } from 'gql/interfaces';
 import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 
 // #region Container constants
@@ -31,7 +31,7 @@ const Container = styled.div`
 `;
 
 // #region Name constants
-const NAME_FONT_SIZE = 36;
+const NAME_FONT_SIZE = 44;
 // #endregion
 const Name = styled.div`
   font-size: ${NAME_FONT_SIZE}px;
@@ -48,7 +48,7 @@ const Name = styled.div`
 `;
 
 // #region Description constants
-const DESCRIPTION_FONT_SIZE = 24;
+const DESCRIPTION_FONT_SIZE = 32;
 const DESCRIPTION_LINE_HEIGHT = 32;
 const DESCRIPTION_MARGIN_BOTTOM = 20;
 // #endregion
@@ -72,7 +72,7 @@ const Description = styled.div`
 `;
 
 // #region TagsContainer constants
-const TAGS_CONTAINER_FONT_SIZE = 28;
+const TAGS_CONTAINER_FONT_SIZE = 32;
 const TAGS_CONTAINER_MARGIN_BOTTOM = 10;
 // #endregion
 const TagsContainer = styled.div`
@@ -215,14 +215,14 @@ export class TooltipContent extends React.PureComponent<Props> {
   }
 
   private renderRequirement = (key: string,
-                                requirement: AbilityBuilderQuery.RequireTag | AbilityBuilderQuery.ExcludeTag |
-                                  AbilityBuilderQuery.RequireComponent | AbilityBuilderQuery.ExcludeComponent,
+                                requirement: AbilityComponent.RequireTag | AbilityComponent.ExcludeTag |
+                                  AbilityComponent.RequireComponent | AbilityComponent.ExcludeComponent,
                                 networkReqResults: NetworkRequirementResult) => {
 
     let renderComponent = null;
     switch (key) {
       case 'requireTag': {
-        const reqTag = requirement as AbilityBuilderQuery.RequireTag;
+        const reqTag = requirement as AbilityComponent.RequireTag;
         if (reqTag) {
           renderComponent = (
             <Requirement className={!networkReqResults.meetsRequireTagReq ? 'disabled' : ''}>
@@ -235,7 +235,7 @@ export class TooltipContent extends React.PureComponent<Props> {
       }
 
       case 'excludeTag': {
-        const exclTag = requirement as AbilityBuilderQuery.ExcludeTag;
+        const exclTag = requirement as AbilityComponent.ExcludeTag;
         if (exclTag) {
           renderComponent = (
             <Requirement className={!networkReqResults.meetsExcludeTagReq ? 'disabled' : ''}>
@@ -248,7 +248,7 @@ export class TooltipContent extends React.PureComponent<Props> {
       }
 
       case 'requireComponent': {
-        const reqComponent = requirement as AbilityBuilderQuery.RequireComponent;
+        const reqComponent = requirement as AbilityComponent.RequireComponent;
         if (reqComponent) {
           renderComponent = (
             <Requirement className={!networkReqResults.meetsRequireComponentReq ? 'disabled' : ''}>
@@ -262,7 +262,7 @@ export class TooltipContent extends React.PureComponent<Props> {
       }
 
       case 'excludeComponent': {
-        const exclComponent = requirement as AbilityBuilderQuery.ExcludeComponent;
+        const exclComponent = requirement as AbilityComponent.ExcludeComponent;
         if (exclComponent) {
           renderComponent = (
             <Requirement className={!networkReqResults.meetsExcludeComponentReq ? 'disabled' : ''}>

@@ -6,8 +6,8 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { AbilityType } from '..';
 import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
+import { AbilityType } from 'services/session/AbilityBuilderState';
 
 const Container = styled.div`
   width: 100%;
@@ -97,6 +97,7 @@ export const Button = styled.div`
 `;
 
 export interface Props {
+  text: string;
   selectedType: AbilityType;
   onClick: () => void;
 }
@@ -105,7 +106,7 @@ export interface Props {
 export function CreateAbilityButton(props: Props) {
   return (
     <Container>
-      <Button className={props.selectedType.name} onClick={props.onClick}>Create Ability</Button>
+      <Button className={props.selectedType.name} onClick={props.onClick}>{props.text}</Button>
     </Container>
   );
 }

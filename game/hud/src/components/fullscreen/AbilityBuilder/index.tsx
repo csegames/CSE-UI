@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import gql from 'graphql-tag';
 import { styled } from '@csegames/linaria/react';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
@@ -12,6 +12,8 @@ import { AbilityTypeSelect } from './AbilityTypeSelect';
 import { AbilityCreation } from './AbilityCreation';
 import { Header } from './Header';
 import { AbilityBuilderQuery } from 'gql/interfaces';
+import { useAbilityBuilderReducer, AbilityType, Routes } from 'services/session/AbilityBuilderState';
+import { AbilityComponentFragment } from 'gql/fragments/AbilityComponentFragment';
 
 const Container = styled.div`
   position: absolute;
@@ -55,65 +57,13 @@ const query = gql`
       }
 
       abilityComponents(class: $class) {
-        id
-        display {
-          name
-          description
-          iconURL
-        }
-        abilityComponentCategory {
-          id
-        }
-        abilityTags
-        networkRequirements {
-          requireTag {
-            tag
-          }
-          excludeTag {
-            tag
-          }
-          requireComponent {
-            component {
-              id
-              display {
-                name
-              }
-              abilityComponentCategory {
-                displayInfo {
-                  name
-                }
-              }
-            }
-          }
-          excludeComponent {
-            component {
-              id
-              display {
-                name
-              }
-              abilityComponentCategory {
-                displayInfo {
-                  name
-                }
-              }
-            }
-          }
-        }
+        ...AbilityComponent
       }
 
     }
   }
+  ${AbilityComponentFragment}
 `;
-
-export interface AbilityType {
-  id: string;
-  name: string;
-}
-
-export enum Routes {
-  AbilityTypeSelect,
-  AbilityCreation,
-}
 
 export interface NetworkIDToCategories {
   [networkID: string]: AbilityBuilderQuery.ComponentCategories[];
@@ -128,8 +78,6 @@ export interface ComponentIDToComponent {
 }
 
 export interface State {
-  currentRoute: Routes;
-  selectedType: AbilityType;
   abilityNetworks: AbilityBuilderQuery.AbilityNetworks[];
   abilityComponents: AbilityBuilderQuery.AbilityComponents[];
   networkIDToCategories: NetworkIDToCategories;
@@ -138,8 +86,6 @@ export interface State {
 }
 
 const defaultAbilityBuilderContext: State = {
-  currentRoute: Routes.AbilityTypeSelect,
-  selectedType: null,
   abilityNetworks: [],
   abilityComponents: [],
   networkIDToCategories: {},
@@ -149,50 +95,30 @@ const defaultAbilityBuilderContext: State = {
 
 export const AbilityBuilderContext = React.createContext(defaultAbilityBuilderContext);
 
-class AbilityBuilder extends React.PureComponent<{}, State> {
-  private evh: EventHandle;
-  constructor(props: {}) {
-    super(props);
-    this.state = { ...defaultAbilityBuilderContext };
-  }
+// tslint:disable-next-line:function-name
+function AbilityBuilder(props: {}) {
+  const evh: EventHandle[] = [];
+  const [state, dispatch] = useAbilityBuilderReducer();
+  console.log('Ability builder');
+  console.log(state);
+  const [contextState, setContextState] = useState(defaultAbilityBuilderContext);
 
-  public render() {
-    return (
-      <UIContext.Consumer>
-        {(uiContext: UIContext) => (
-          <AbilityBuilderContext.Provider value={this.state}>
-            <GraphQL
-              query={{
-                query,
-                variables: {
-                  class: Archetype[game.selfPlayerState.classID],
-                },
-              }}
-              onQueryResult={this.handleQueryResult}
-            />
-            <Container style={{ backgroundImage: `url(${this.getBackgroundImage(uiContext)})` }}>
-              <Header title={this.getHeaderTitle()} selectedType={this.state.selectedType} />
-              {this.renderPage()}
-            </Container>
-          </AbilityBuilderContext.Provider>
-        )}
-      </UIContext.Consumer>
-    );
-  }
-
-  public componentDidMount() {
-    this.evh = game.on('navigate', (name: string) => {
+  useEffect(() => {
+    evh.push(game.on('navigate', (name: string) => {
       if (name.includes('ability-builder')) {
-        this.reset();
+        reset();
       }
-    });
-  }
+    }));
 
-  public componentWillUnmount() {
-    this.evh.clear();
-  }
+    return function() {
+      evh.forEach(e => e.clear());
+      reset();
+    };
+  }, []);
 
-  private handleQueryResult = (graphql: GraphQLResult<AbilityBuilderQuery.Query>) => {
+  useEffect(() => {}, [state, contextState]);
+
+  function handleQueryResult(graphql: GraphQLResult<AbilityBuilderQuery.Query>) {
     if (graphql.loading || !graphql.data) return graphql;
 
     const { abilityNetworks, abilityComponents } = graphql.data.game;
@@ -216,7 +142,7 @@ class AbilityBuilder extends React.PureComponent<{}, State> {
       }
     });
 
-    this.setState({
+    setContextState({
       abilityNetworks,
       abilityComponents,
       networkIDToCategories,
@@ -225,34 +151,34 @@ class AbilityBuilder extends React.PureComponent<{}, State> {
     });
   }
 
-  private renderPage = () => {
-    switch (this.state.currentRoute) {
+  function reset() {
+    dispatch({ type: 'reset' });
+  }
+
+  function onSelectType(type: AbilityType) {
+    dispatch({ type: 'set-selected-type', selectedType: type });
+  }
+
+  function renderPage() {
+    switch (state.currentRoute) {
       case Routes.AbilityTypeSelect: {
-        return <AbilityTypeSelect onSelectType={this.onSelectType} />;
+        return <AbilityTypeSelect onSelectType={onSelectType} />;
       }
       case Routes.AbilityCreation: {
-        return <AbilityCreation reset={this.reset} />;
+        return <AbilityCreation reset={reset} />;
       }
       default: return null;
     }
   }
 
-  private reset = () => {
-    this.setState({ currentRoute: Routes.AbilityTypeSelect, selectedType: null });
-  }
-
-  private onSelectType = (type: AbilityType) => {
-    this.setState({ selectedType: type, currentRoute: Routes.AbilityCreation });
-  }
-
-  private getHeaderTitle = () => {
-    switch (this.state.currentRoute) {
+  function getHeaderTitle() {
+    switch (state.currentRoute) {
       case Routes.AbilityTypeSelect: {
-        return <div><HeaderLink onClick={this.reset}>Ability Builder</HeaderLink> | Choose an Ability Type'</div>;
+        return <div><HeaderLink onClick={reset}>Ability Builder</HeaderLink> | Choose an Ability Type'</div>;
       }
 
       case Routes.AbilityCreation: {
-        return <div><HeaderLink onClick={this.reset}>Ability Builder</HeaderLink> | {this.state.selectedType.name}</div>;
+        return <div><HeaderLink onClick={reset}>Ability Builder</HeaderLink> | {state.selectedType.name}</div>;
       }
 
       default: {
@@ -261,10 +187,10 @@ class AbilityBuilder extends React.PureComponent<{}, State> {
     }
   }
 
-  private getBackgroundImage = (uiContext: UIContext) => {
+  function getBackgroundImage(uiContext: UIContext) {
     const hdPrefix = uiContext.isUHD() ? 'uhd' : 'hd';
     const imagePrefix = `images/abilitybuilder/${hdPrefix}/`;
-    if (this.state.currentRoute === Routes.AbilityCreation) {
+    if (state.currentRoute === Routes.AbilityCreation) {
       return imagePrefix + 'classes-bg-texture.jpg';
     }
 
@@ -311,6 +237,28 @@ class AbilityBuilder extends React.PureComponent<{}, State> {
       }
     }
   }
+
+  return (
+    <UIContext.Consumer>
+        {(uiContext: UIContext) => (
+          <AbilityBuilderContext.Provider value={contextState}>
+            <GraphQL
+              query={{
+                query,
+                variables: {
+                  class: Archetype[game.selfPlayerState.classID],
+                },
+              }}
+              onQueryResult={handleQueryResult}
+            />
+            <Container style={{ backgroundImage: `url(${getBackgroundImage(uiContext)})` }}>
+              <Header title={getHeaderTitle()} selectedType={state.selectedType} />
+              {renderPage()}
+            </Container>
+          </AbilityBuilderContext.Provider>
+        )}
+      </UIContext.Consumer>
+  );
 }
 
 export default AbilityBuilder;

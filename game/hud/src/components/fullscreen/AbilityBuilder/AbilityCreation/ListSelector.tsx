@@ -60,12 +60,13 @@ export interface Props {
 
 export interface State {
   listItems: ListItem<any>[];
+  shouldCenterContent: boolean;
 }
 
 const MOUSE_DOWN_TIMEOUT = 200;
 const SCROLL_SPEED = 60;
 
-class ListSelector extends React.PureComponent<Props, State> {
+class ListSelector extends React.Component<Props, State> {
   private listRef: HTMLDivElement;
 
   private nextTimeout: number;
@@ -77,28 +78,29 @@ class ListSelector extends React.PureComponent<Props, State> {
     super(props);
     this.state = {
       listItems: props.listItems,
+      shouldCenterContent: false,
     };
   }
 
   public render() {
-    const centerContent = this.shouldCenterContent();
+    const { shouldCenterContent } = this.state;
     return (
       <Container>
         <ButtonWrapper
-          className={centerContent ? 'disabled' : ''}
+          className={shouldCenterContent ? 'disabled' : ''}
           onMouseDown={this.onPrevMouseDown}
           onMouseUp={this.onPrevMouseUp}>
           {this.props.renderPrevButton()}
         </ButtonWrapper>
         <ListContainer
           ref={r => this.listRef = r}
-          className={`${this.props.listContainerStyles} ${centerContent ? 'center' : ''}`}>
+          className={`${this.props.listContainerStyles} ${shouldCenterContent ? 'center' : ''}`}>
           {this.state.listItems.map((item, i) => {
             return <div key={i}>{this.props.renderListItem(item)}</div>;
           })}
         </ListContainer>
         <ButtonWrapper
-          className={centerContent ? 'disabled' : ''}
+          className={shouldCenterContent ? 'disabled' : ''}
           onMouseDown={this.onNextMouseDown}
           onMouseUp={this.onNextMouseUp}>
           {this.props.renderNextButton()}
@@ -108,19 +110,28 @@ class ListSelector extends React.PureComponent<Props, State> {
   }
 
   public componentDidMount() {
-    window.setTimeout(this.initializeList, 10);
+    this.initializeList();
+    window.addEventListener('optimizedResize', this.initializeList);
+  }
+
+  public componentWillUnmount() {
+    window.removeEventListener('optimizedResize', this.initializeList);
   }
 
   private initializeList = () => {
-    this.updateInfiniteList();
+    window.setTimeout(() => {
+      this.updateInfiniteList();
+      this.checkCenterContent();
+    }, 50);
   }
 
-  private shouldCenterContent = () => {
-    if (this.listRef) {
-      return this.listRef.scrollWidth === this.listRef.clientWidth;
+  private checkCenterContent = () => {
+    if (this.listRef.scrollWidth === this.listRef.clientWidth) {
+      this.setState({ shouldCenterContent: true });
+      return;
     }
 
-    return true;
+    this.setState({ shouldCenterContent: false });
   }
 
   /* Next */

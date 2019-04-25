@@ -6,8 +6,8 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { AbilityType } from '.';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
+import { AbilityType } from 'services/session/AbilityBuilderState';
 
 // #region Container constants
 const CONTAINER_HEIGHT = 130;

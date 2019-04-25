@@ -171,6 +171,15 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         break;
       }
 
+      case 'ability-book': {
+        if (this.isAlreadyOpen(name)) {
+          this.onCloseFullScreen();
+        } else {
+          this.setActiveTabs('ability-book-left', 'character-stats-right');
+        }
+        break;
+      }
+
       case 'trade': {
         if (typeof shouldOpen === 'boolean') {
           if (shouldOpen) {

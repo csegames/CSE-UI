@@ -27,6 +27,7 @@ import {
   SecureTradeState,
 } from 'gql/interfaces';
 import { SlotItemDefType } from 'fullscreen/lib/itemInterfaces';
+import { AbilityBook } from './AbilityBook';
 
 export interface HUDFullScreenStyle {
   hudFullScreen: string;
@@ -202,6 +203,7 @@ class HUDFullScreenView extends React.Component<Props, State> {
       { name: 'Trade', content: { render: this.renderTrade } },
       { name: 'Crafting', content: { render: this.renderCrafting } },
       { name: 'AbilityBuilder', content: { render: this.renderAbilityBuilder } },
+      { name: 'AbilityBook', content: { render: this.renderAbilityBook } },
     ];
   }
 
@@ -315,6 +317,10 @@ class HUDFullScreenView extends React.Component<Props, State> {
     return (
       <AbilityBuilder />
     );
+  }
+
+  private renderAbilityBook = () => {
+    return <AbilityBook />;
   }
 }
 

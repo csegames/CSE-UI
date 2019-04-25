@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { VelocityComponent } from 'velocity-react';
 
-import { Ring, RingOpts } from './Ring';
+import { Ring, RingOpts } from 'shared/Ring';
 import { Ability } from 'gql/interfaces';
 
 type ContainerProps = { radius: number; acceptInput: boolean; } & React.HTMLProps<HTMLDivElement>;

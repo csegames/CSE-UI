@@ -7,9 +7,9 @@
 import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
-import { AbilityType } from '..';
 import { TextArea } from 'shared/TextArea';
 import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
+import { AbilityType } from 'services/session/AbilityBuilderState';
 
 const Container = styled.div`
   position: relative;

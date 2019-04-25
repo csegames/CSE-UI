@@ -9,8 +9,8 @@ import { styled } from '@csegames/linaria/react';
 import { dustParticleDef } from '../particles/dust';
 import { snowParticleDef } from '../particles/snow';
 import { orbsParticleDef } from '../particles/orbs';
-import { AbilityType } from '..';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
+import { AbilityType } from 'services/session/AbilityBuilderState';
 
 declare var particlesJS: any;
 

@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
-import { isArray } from 'lodash';
+import React, { useContext, useState, useEffect } from 'react';
+import { isArray, isEmpty } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 
 import { ComponentSelector } from './ComponentSelector';
@@ -13,7 +13,8 @@ import { Preview } from './Preview';
 import { CreateAbilityButton } from './CreateAbilityButton';
 import { generateRandomAbilityName } from '../utils';
 import { AbilityBuilderQuery } from 'gql/interfaces';
-import { AbilityBuilderContext, ComponentIDToComponent, AbilityType } from '..';
+import { AbilityBuilderContext, ComponentIDToComponent } from '..';
+import { useAbilityBuilderReducer, AbilityType } from 'services/session/AbilityBuilderState';
 
 const Container = styled.div`
   width: 100%;
@@ -58,85 +59,52 @@ export interface State {
   selectedComponentMap: SelectedComponentMap;
 }
 
-class AbilityNetworkTemplateView extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    const selectedComponentMap = this.getDefaultSelectedComponentMap();
-    this.state = {
-      name: this.getRandomAbilityName(selectedComponentMap),
-      nameHasBeenEdited: false,
-      description: '',
-      selectedIcon: this.props.componentCategories[0].components[0].display.iconURL,
-      selectedComponentMap,
-    };
-  }
+// tslint:disable-next-line:function-name
+export function AbilityNetworkTemplate(props: ComponentProps) {
+  const { componentIDToComponent } = useContext(AbilityBuilderContext);
+  const [state, dispatch] = useAbilityBuilderReducer();
+  const [selectedComponentMap, setSelectedComponentMap] =
+    useState<{ [categoryID: string]: string | string[] }>(getDefaultSelectedComponentMap());
+  const [nameHasBeenEdited, setNameHasBeenEdited] = useState(false);
 
-  public render() {
-    const selectedComponentsList = this.getSelectedComponents();
+  useEffect(() => {
+    if (state.name === '') {
+      dispatch({ type: 'set-name', name: getRandomAbilityName(selectedComponentMap) });
+    }
 
-    // Filter out empty categories
-    const componentCategories = this.props.componentCategories.filter(category => category.components.length > 0);
-    return (
-      <Container className='cse-ui-scroller-thumbonly'>
-        <ListContainer>
-          {componentCategories.map(category => (
-            <ComponentSelector
-              selectedType={this.props.selectedType}
-              optional={!category.def.isRequired}
-              categoryID={category.def.id}
-              title={`Select ${category.def.displayInfo.name}`}
-              listItems={category.components.map(item => ({ id: item.id, data: item }))}
-              selectedItem={this.state.selectedComponentMap[category.def.id]}
-              onSelectedItemChange={this.onSelectedItemChange}
-              selectedComponentsList={selectedComponentsList}
-            />
-          ))}
-        </ListContainer>
-        <Preview
-          components={selectedComponentsList}
-          selectedType={this.props.selectedType}
-          selectedIcon={this.state.selectedIcon}
-          onSelectedIconChange={this.onSelectedIconChange}
-          name={this.state.name}
-          onNameChange={this.onNameChange}
-          description={this.state.description}
-          onDescriptionChange={this.onDescriptionChange}
-        />
-        <CreateAbilityButton selectedType={this.props.selectedType} onClick={this.onCreateClick} />
-      </Container>
-    );
-  }
+    if (state.icon === '') {
+      dispatch({ type: 'set-icon', icon: componentCategories[0].components[0].display.iconURL });
+    }
+  }, []);
 
-  private getRandomAbilityName = (selectedComponentMap: { [categoryID: string]: string | string[] }) => {
-    const { componentCategories } = this.props;
-    let name = '';
-    let componentOne: AbilityBuilderQuery.AbilityComponents = null;
-    let componentTwo: AbilityBuilderQuery.AbilityComponents = null;
-    Object.keys(selectedComponentMap).forEach((categoryID) => {
-      if (componentCategories[0] && componentCategories[0].def.id === categoryID) {
-        if (isArray(selectedComponentMap[categoryID])) {
-          componentOne = this.props.componentIDToComponent[selectedComponentMap[categoryID][0]];
-        } else {
-          componentOne = this.props.componentIDToComponent[selectedComponentMap[categoryID] as string];
-        }
-      }
+  useEffect(() => {
+    setSelectedComponentMap(getDefaultSelectedComponentMap());
+  }, [state.abilityComponents]);
 
-      if (componentCategories[1] && componentCategories[1].def.id === categoryID) {
-        if (isArray(selectedComponentMap[categoryID])) {
-          componentTwo = this.props.componentIDToComponent[selectedComponentMap[categoryID][0]];
-        } else {
-          componentTwo = this.props.componentIDToComponent[selectedComponentMap[categoryID] as string];
-        }
-      }
-    });
+  useEffect(() => {}, [componentIDToComponent, state, selectedComponentMap, nameHasBeenEdited]);
 
-    name = generateRandomAbilityName(componentOne, componentTwo);
-    return name;
-  }
-
-  private getDefaultSelectedComponentMap = () => {
+  function getDefaultSelectedComponentMap() {
     const selectedComponentMap: { [categoryID: string]: string | string[] } = {};
-    this.props.componentCategories.forEach((category) => {
+    props.componentCategories.forEach((category) => {
+      if (!isEmpty(state.abilityComponents)) {
+        // Preset abilities, example is from Ability Book
+        const selectedAbilityComponents = state.abilityComponents
+          .filter(id => componentIDToComponent[id].abilityComponentCategory.id === category.def.id);
+        if (selectedAbilityComponents.length > 1) {
+          selectedComponentMap[category.def.id] = selectedAbilityComponents;
+        } else if (selectedAbilityComponents.length === 1) {
+          selectedComponentMap[category.def.id] = selectedAbilityComponents[0];
+        } else {
+          if (category.isMultiSelect) {
+            selectedComponentMap[category.def.id] = [];
+          } else {
+            selectedComponentMap[category.def.id] = null;
+          }
+        }
+
+        return selectedComponentMap;
+      }
+
       if (category.def.isRequired) {
         if (category.isMultiSelect) {
           selectedComponentMap[category.def.id] = [category.components[0].id];
@@ -155,93 +123,138 @@ class AbilityNetworkTemplateView extends React.PureComponent<Props, State> {
     return selectedComponentMap;
   }
 
-  private getSelectedComponents = (): AbilityBuilderQuery.AbilityComponents[] => {
+  function getRandomAbilityName(selectedComponentMap: { [categoryID: string]: string | string[] }) {
+    const { componentCategories } = props;
+    let name = '';
+    let componentOne: AbilityBuilderQuery.AbilityComponents = null;
+    let componentTwo: AbilityBuilderQuery.AbilityComponents = null;
+    Object.keys(selectedComponentMap).forEach((categoryID) => {
+      if (componentCategories[0] && componentCategories[0].def.id === categoryID) {
+        if (isArray(selectedComponentMap[categoryID])) {
+          componentOne = componentIDToComponent[selectedComponentMap[categoryID][0]];
+        } else {
+          componentOne = componentIDToComponent[selectedComponentMap[categoryID] as string];
+        }
+      }
+
+      if (componentCategories[1] && componentCategories[1].def.id === categoryID) {
+        if (isArray(selectedComponentMap[categoryID])) {
+          componentTwo = componentIDToComponent[selectedComponentMap[categoryID][0]];
+        } else {
+          componentTwo = componentIDToComponent[selectedComponentMap[categoryID] as string];
+        }
+      }
+    });
+
+    name = generateRandomAbilityName(componentOne, componentTwo);
+    return name;
+  }
+
+  function getSelectedComponents(): AbilityBuilderQuery.AbilityComponents[] {
     let componentItems: AbilityBuilderQuery.AbilityComponents[] = [];
-    Object.keys(this.state.selectedComponentMap).forEach((key) => {
-      const selectedComponent = this.state.selectedComponentMap[key];
+    Object.keys(selectedComponentMap).forEach((key) => {
+      const selectedComponent = selectedComponentMap[key];
       if (isArray(selectedComponent)) {
-        componentItems = componentItems.concat(selectedComponent.map(id => this.props.componentIDToComponent[id]));
+        componentItems = componentItems.concat(selectedComponent.map(id => componentIDToComponent[id]));
       } else if (selectedComponent) {
-        componentItems.push(this.props.componentIDToComponent[selectedComponent]);
+        componentItems.push(componentIDToComponent[selectedComponent]);
       }
     });
     return componentItems;
   }
 
-  private onSelectedItemChange = (categoryID: string, componentID: string) => {
-    const selectedComponentMap = { ...this.state.selectedComponentMap };
-    if (isArray(selectedComponentMap[categoryID])) {
+  function onSelectedItemChange(categoryID: string, componentID: string) {
+    const selectedComponents = { ...selectedComponentMap };
+    if (isArray(selectedComponents[categoryID])) {
       // Is Multi select
-      const selectedComponent = selectedComponentMap[categoryID] as string[];
+      const selectedComponent = selectedComponents[categoryID] as string[];
       if (selectedComponent.includes(componentID)) {
         // Remove from array
-        selectedComponentMap[categoryID] = selectedComponent.filter(component => component !== componentID);
+        selectedComponents[categoryID] = selectedComponent.filter(component => component !== componentID);
       } else if (componentID !== null) {
         // Add to array
-        (selectedComponentMap[categoryID] as string[]).push(componentID);
+        (selectedComponents[categoryID] as string[]).push(componentID);
       } else {
         // Remove category
-        delete selectedComponentMap[categoryID];
+        delete selectedComponents[categoryID];
       }
     } else {
       if (componentID === null) {
         // Remove categoryID
-        delete selectedComponentMap[categoryID];
+        delete selectedComponents[categoryID];
       } else {
-        selectedComponentMap[categoryID] = componentID;
+        selectedComponents[categoryID] = componentID;
       }
     }
 
-    this.setState((state) => {
-      if (this.state.nameHasBeenEdited) {
-        return {
-          ...state,
-          selectedComponentMap,
-        };
-      }
-
-      return {
-        ...state,
-        selectedComponentMap,
-        name: this.getRandomAbilityName(selectedComponentMap),
-      };
-    });
+    if (nameHasBeenEdited) {
+      setSelectedComponentMap(selectedComponents);
+    } else {
+      setSelectedComponentMap(selectedComponents);
+      dispatch({ type: 'set-name', name: getRandomAbilityName(selectedComponents) });
+    }
   }
 
-  private onDescriptionChange = (description: string) => {
-    this.setState({ description });
+  function onDescriptionChange(description: string) {
+    // do nothing...
   }
 
-  private onSelectedIconChange = (icon: string) => {
-    this.setState({ selectedIcon: icon });
+  function onSelectedIconChange(icon: string) {
+    dispatch({ type: 'set-icon', icon });
   }
 
-  private onNameChange = (name: string) => {
-    this.setState({ name, nameHasBeenEdited: true });
+  function onNameChange(name: string) {
+    dispatch({ type: 'set-name', name });
+    setNameHasBeenEdited(true);
   }
 
-  private onCreateClick = () => {
-    const selectedComponents = this.getSelectedComponents();
+  function onCreateClick() {
+    const selectedComponents = getSelectedComponents();
     const selectedComponentIDs = selectedComponents.map(c => c.id);
 
-    this.props.onCreateAbility(
-      this.props.selectedType,
+    props.onCreateAbility(
+      state.selectedType,
       selectedComponentIDs,
-      this.state.selectedIcon,
-      this.state.name,
-      this.state.description,
+      state.icon,
+      state.name,
+      '',
     );
   }
-}
 
-export class AbilityNetworkTemplate extends React.Component<ComponentProps> {
-  public render() {
-    return (
-      <AbilityBuilderContext.Consumer>
-        {({ componentIDToComponent }) => (
-          <AbilityNetworkTemplateView {...this.props} componentIDToComponent={componentIDToComponent} />
-        )}
-      </AbilityBuilderContext.Consumer>
-    );
-  }
+  // Filter out empty categories
+  const selectedComponentsList = getSelectedComponents();
+  const componentCategories = props.componentCategories.filter(category => category.components.length > 0);
+  return (
+    <Container className='cse-ui-scroller-thumbonly'>
+      <ListContainer>
+        {componentCategories.map(category => (
+          <ComponentSelector
+            selectedType={state.selectedType}
+            optional={!category.def.isRequired}
+            categoryID={category.def.id}
+            title={`Select ${category.def.displayInfo.name}`}
+            listItems={category.components.map(item => ({ id: item.id, data: item }))}
+            selectedItem={selectedComponentMap[category.def.id]}
+            onSelectedItemChange={onSelectedItemChange}
+            selectedComponentsList={selectedComponentsList}
+          />
+        ))}
+      </ListContainer>
+      <Preview
+        components={selectedComponentsList}
+        selectedType={state.selectedType}
+        selectedIcon={state.icon}
+        onSelectedIconChange={onSelectedIconChange}
+        name={state.name}
+        onNameChange={onNameChange}
+        description={''}
+        onDescriptionChange={onDescriptionChange}
+      />
+      <CreateAbilityButton
+        text={state.isModifying ? 'Modify Ability' : 'Create Ability'}
+        selectedType={state.selectedType}
+        onClick={onCreateClick}
+      />
+    </Container>
+  );
 }

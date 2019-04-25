@@ -11,11 +11,11 @@ import { css } from '@csegames/linaria';
 
 import ListSelector, { ListItem } from './ListSelector';
 import { Tooltip } from 'shared/Tooltip';
-import { AbilityType } from '..';
 import { TooltipContent } from './TooltipContent';
 import { checkNetworkRequirements } from '../utils';
 import { AbilityBuilderQuery } from 'gql/interfaces';
 import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
+import { AbilityType } from 'services/session/AbilityBuilderState';
 
 // #region Item Dimension Constants
 const ITEM_DIMENSIONS_UHD = 128;

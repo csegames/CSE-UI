@@ -10,7 +10,7 @@ import { styled } from '@csegames/linaria/react';
 import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { AbilityTypeSelectItem } from './AbilityTypeSelectItem';
 import { AbilityTypeSelectQuery } from 'gql/interfaces';
-import { AbilityType } from '..';
+import { AbilityType } from 'services/session/AbilityBuilderState';
 
 const query = gql`
   query AbilityTypeSelectQuery($classID: String!) {

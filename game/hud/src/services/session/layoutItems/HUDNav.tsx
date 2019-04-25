@@ -235,6 +235,15 @@ export default {
           game.trigger('navigate', 'ability-builder');
         },
       },
+      {
+        name: 'ability-book',
+        tooltip: 'Ability Book',
+        iconClass: 'fa-book-open',
+        hidden: false,
+        onClick: () => {
+          game.trigger('navigate', 'ability-book');
+        },
+      },
       // {
       //   name: 'chat',
       //   tooltip: 'Show/Hide Chat',

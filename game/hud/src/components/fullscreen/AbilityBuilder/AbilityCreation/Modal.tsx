@@ -6,9 +6,10 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { AbilityType } from '..';
 import { Button } from './CreateAbilityButton';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
+import { AbilityType } from 'services/session/AbilityBuilderState';
+import { useAbilityBookReducer, Routes } from 'services/session/AbilityBookState';
 
 // #region Container constants
 const CONTAINER_PADDING_TOP = 60;
@@ -289,47 +290,59 @@ export interface Props {
   name: string;
   icon: string;
   errorMessage: string;
+  isModifying: boolean;
   onTryAgainClick: () => void;
   onCreateNewClick: () => void;
 }
 
-export class Modal extends React.PureComponent<Props> {
-  public render() {
-    const { type, name, icon, errorMessage, abilityType } = this.props;
-    return (
-      <Container className={type}>
-        <Content>
-          <Title className={`${type} ${abilityType.name}`}>
-            <AbilityIconWrapper className={type}>
-              <AbilityIcon src={icon} />
-            </AbilityIconWrapper>
-            {type === 'success' ? 'Success' : 'Failed'}
-          </Title>
-          <InfoContainer>
-            <AbilityActionsContainer>
-              <Text>{type === 'success' ? `${name} has been created!` : `Failed to create ${name}`}</Text>
-              {errorMessage && <Text>{errorMessage}</Text>}
-            </AbilityActionsContainer>
-            <Button
-              className={abilityType.name}
-              onClick={type === 'success' ? this.closeAbilityBuilder : this.props.onTryAgainClick}>
-              {type === 'success' ? 'Add Ability To HUD' : 'Try again'}
-            </Button>
-          </InfoContainer>
+// tslint:disable-next-line:function-name
+export function Modal(props: Props) {
+  const { type, name, icon, isModifying, errorMessage, abilityType } = props;
 
-          <ActionButtonsContainer>
-            <ActionButton onClick={this.props.onCreateNewClick}>Create new ability</ActionButton>
-            <ActionButton onClick={this.closeAbilityBuilder}>
-              {type === 'success' ? 'View in ability book' : 'Exit ability builder'}
-            </ActionButton>
-          </ActionButtonsContainer>
-        </Content>
-      </Container>
-    );
-  }
+  // @ts-ignore:no-unused-var
+  const [_, abilityBookDispatch] = useAbilityBookReducer();
 
-  private closeAbilityBuilder = () => {
+  function closeAbilityBuilder() {
     // For now just close the UI
     game.trigger('navigate', 'ability-builder');
   }
+
+  function viewInAbilityBook() {
+    abilityBookDispatch({ type: 'set-active-route', activeRoute: Routes[abilityType.name] });
+    game.trigger('navigate', 'ability-book-left');
+  }
+
+  return (
+    <Container className={type}>
+      <Content>
+        <Title className={`${type} ${abilityType.name}`}>
+          <AbilityIconWrapper className={type}>
+            <AbilityIcon src={icon} />
+          </AbilityIconWrapper>
+          {type === 'success' ? 'Success' : 'Failed'}
+        </Title>
+        <InfoContainer>
+          <AbilityActionsContainer>
+            <Text>
+              {type === 'success' ? `${name} has been ${isModifying ? 'modified' : 'created'}!` :
+                `Failed to ${isModifying ? 'modify' : 'create'} ${name}`}
+            </Text>
+            {errorMessage && <Text>{errorMessage}</Text>}
+          </AbilityActionsContainer>
+          <Button
+            className={abilityType.name}
+            onClick={type === 'success' ? closeAbilityBuilder : props.onTryAgainClick}>
+            {type === 'success' ? 'Add Ability To HUD' : 'Try again'}
+          </Button>
+        </InfoContainer>
+
+        <ActionButtonsContainer>
+          <ActionButton onClick={props.onCreateNewClick}>Create new ability</ActionButton>
+          <ActionButton onClick={type === 'success' ? viewInAbilityBook : closeAbilityBuilder}>
+            {type === 'success' ? 'View in ability book' : 'Exit ability builder'}
+          </ActionButton>
+        </ActionButtonsContainer>
+      </Content>
+    </Container>
+  );
 }

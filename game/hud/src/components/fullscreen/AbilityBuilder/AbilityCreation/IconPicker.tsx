@@ -7,10 +7,10 @@
 import * as React from 'react';
 import convert from 'xml-js';
 import { styled } from '@csegames/linaria/react';
-import { AbilityType } from '..';
 import { hidePopup } from 'actions/popup';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 import { request } from '@csegames/camelot-unchained/lib/utils/request';
+import { AbilityType } from 'services/session/AbilityBuilderState';
 
 const ICONS_URL = 'http://camelot-unchained.s3.amazonaws.com/?prefix=game/4/icons/skills';
 

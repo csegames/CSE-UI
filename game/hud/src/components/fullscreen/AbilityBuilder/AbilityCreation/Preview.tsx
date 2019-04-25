@@ -9,12 +9,12 @@ import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { Tooltip } from 'shared/Tooltip';
 
-import { AbilityType } from '..';
 import { TooltipContent } from './TooltipContent';
 import { TextEdit } from './TextEdit';
 import { IconPicker } from './IconPicker';
 import { AbilityBuilderQuery } from 'gql/interfaces';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
+import { AbilityType } from 'services/session/AbilityBuilderState';
 
 // #region Container constants
 const CONTAINER_MARGIN = -100;
