@@ -210,7 +210,10 @@ class AbilityBuilder extends React.PureComponent<{}, State> {
 
     abilityComponents.forEach((component) => {
       componentIDToComponent[component.id] = component;
-      categoryIDToComponents[component.abilityComponentCategory.id].push(component);
+
+      if (categoryIDToComponents[component.abilityComponentCategory.id]) {
+        categoryIDToComponents[component.abilityComponentCategory.id].push(component);
+      }
     });
 
     this.setState({
