@@ -46,7 +46,9 @@ export class TextArea extends React.PureComponent<Props, State> {
         <TextAreaElement
           ref={(r: HTMLTextAreaElement) => {
             this.inputRef = r;
-            this.props.getInputRef(r);
+            if (this.props.getInputRef) {
+              this.props.getInputRef(r);
+            }
           }}
           className={this.props.inputClassName}
           {...this.props}

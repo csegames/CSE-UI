@@ -143,7 +143,7 @@ class NotesEditor extends React.Component<Props, State> {
           </CharacterCount>
         </HeaderContainer>
         <TextArea
-          ref={r => this.textAreaRef = r.ref}
+          getInputRef={r => this.textAreaRef = r}
           disabled={this.props.disabled}
           placeholder={this.props.placeholder || 'Click to add some notes!'}
           value={this.state.value}
