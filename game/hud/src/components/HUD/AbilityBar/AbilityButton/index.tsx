@@ -28,6 +28,7 @@ export interface AbilityButtonProps {
   name: string;
   description: any;
   index: number;
+  numberOfAbilities: number;
 }
 
 interface RingState {
@@ -143,6 +144,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
 
       // output button
       return (
+        this.props.numberOfAbilities > 1 ?
         <ContextMenu
           type='content'
           getContent={() => <AbilityContextMenu onDeleteClick={() => this.onDeleteClick(this.props.abilityInfo.id)} />}>
@@ -160,7 +162,21 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
               onAbilityClick={this.performAbility}
             />
           </div>
-        </ContextMenu>
+        </ContextMenu> :
+          <div>
+            <AbilityButtonView
+              ability={this.props.abilityInfo}
+              name={this.props.name}
+              description={this.props.description}
+              timer={this.state.label}
+              outer={outer}
+              outerPath={outerPath || outer}
+              inner={inner}
+              innerPath={innerPath || inner}
+              className={classNames.join(' ')}
+              onAbilityClick={this.performAbility}
+            />
+          </div>
       );
     }
 

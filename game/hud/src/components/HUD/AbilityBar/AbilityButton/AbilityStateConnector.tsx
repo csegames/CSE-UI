@@ -13,6 +13,7 @@ import { AbilityButtonInfo } from './AbilityButtonView';
 export interface AbilityStateConnectorProps {
   abilityInfo: InitialAbilityInfo;
   index: number;
+  numberOfAbilities: number;
 }
 
 export interface AbilityStateConnectorState {
