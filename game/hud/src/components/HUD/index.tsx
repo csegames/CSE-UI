@@ -106,6 +106,15 @@ const FullScenarioScoreboardContainer = styled.div`
   z-index: ${HUDZOrder.FullScenarioScoreboard};
 `;
 
+// This is a hack to fix a Coherent bug where if there are svg-blur elements in the DOM that get taken out,
+// the UI starts to have rendering issues. This just makes sure there is always a svg-blur element in the DOM.
+const SVGBlurHack = styled.div`
+  position: fixed;
+  pointer-events: none;
+  filter: url(#svg-blur);
+`;
+
+
 interface HUDWidget<T = any> {
   widget: Widget<T>;
   name: string;
@@ -142,6 +151,7 @@ class HUDViewInternal extends React.Component<HUDProps, HUDState> {
     return (
       <UIContext.Provider value={this.state.uiContext}>
         <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+          <SVGBlurHack />
           {renderWidgets}
           <ImagePreloader />
           <ZoneNameContainer>
