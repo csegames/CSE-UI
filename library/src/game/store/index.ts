@@ -63,11 +63,9 @@ const queryString = `
       name
       iconUrl
       itemType
-      defaultResourceID
       numericItemDefID
       isStackableItem
       deploySettings {
-        resourceID
         isDoor
         snapToGround
         rotateYaw
