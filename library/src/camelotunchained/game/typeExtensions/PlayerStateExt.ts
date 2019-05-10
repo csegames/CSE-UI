@@ -81,7 +81,7 @@ class PlayerStateExt {
       return false;
     }
 
-    if (!Vec3f.equals(a.position, b.position)) {
+    if (!Vec3fExt.equals(a.position, b.position)) {
       return false;
     }
 

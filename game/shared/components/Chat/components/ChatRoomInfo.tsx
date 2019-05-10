@@ -8,7 +8,6 @@ import { isEqual } from 'lodash';
 import { UserInfo } from './User';
 import { ChatMessage, chatType } from './ChatMessage';
 import { chatConfig } from './ChatConfig';
-import { RoomId } from './RoomId';
 
 export interface ChatRoomInfoMessage {
   key: number;
@@ -24,7 +23,7 @@ export class ChatRoomInfo {
   public messages: ChatRoomInfoMessage[] = [];
   public users: ChatRoomInfoUser[] = [];
   public key: number = 0;
-  public roomId: RoomId;
+  public roomId: string;
   public type: chatType;
   public players: number = 0;
   public unread: number = 0;
@@ -32,14 +31,14 @@ export class ChatRoomInfo {
   public scrollbackPageSize: number;
   public scrollbackThreshold: number;
 
-  constructor(roomId: RoomId, scrollbackThreshold: number = 50, scrollbackPageSize: number = 50) {
+  constructor(roomId: string, scrollbackThreshold: number = 50, scrollbackPageSize: number = 50) {
     this.roomId = roomId;
     this.scrollbackThreshold = scrollbackThreshold;
     this.scrollbackPageSize = scrollbackPageSize;
   }
 
   public diagnostics = (): void => {
-    console.log('|  Room: ' + this.roomId.name
+    console.log('|  Room: ' + this.roomId
       + ' Players: ' + this.players
       + ' Unread: ' + this.unread
       + ' Messages: ' + this.messages.length

@@ -5,13 +5,12 @@
  */
 
 import * as React from 'react';
-import { Tabs } from './Tabs';
-import { Rooms } from './Rooms';
-import { JoinRoomButton } from './JoinRoomButton';
-import { ChatSession } from './ChatSession';
-import { Users } from './Users';
-import { RoomId } from './RoomId';
-import { Settings } from './settings/Settings';
+import Tabs from './Tabs';
+import Rooms from './Rooms';
+import JoinRoomButton from './JoinRoomButton';
+import ChatSession from './ChatSession';
+import Users from './Users';
+import Settings from './settings/Settings';
 
 export const defaultInfoState = {
   currentTab: 'rooms',
@@ -23,9 +22,9 @@ export interface InfoState {
 
 export interface InfoProps {
   chat: ChatSession;
-  currentRoom: RoomId;
-  selectRoom: (roomId: RoomId) => void;
-  leaveRoom: (roomId: RoomId) => void;
+  currentRoom: string;
+  selectRoom: (roomId: string) => void;
+  leaveRoom: (roomId: string) => void;
 }
 
 export class Info extends React.Component<InfoProps, InfoState> {

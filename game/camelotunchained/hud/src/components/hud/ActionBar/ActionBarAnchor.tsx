@@ -222,7 +222,7 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
               newPos.y = viewport.height - bounds.height;
             }
 
-            if (Vec2f.equals(props.position, newPos)) return;
+            if (Vec2fExt.equals(props.position, newPos)) return;
 
             dispatch({
               type: 'set-anchor-position',

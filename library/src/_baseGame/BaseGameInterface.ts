@@ -9,6 +9,7 @@ import { BaseInternalGameInterfaceExt } from './InternalGameInterfaceExt';
 import * as engineEvents from './engineEvents';
 import { query, QueryOptions } from './graphql/query';
 import { subscribe } from './graphql/subscription';
+import { CSEChat } from './chat/CSEChat';
 
 /**
  * GameModel interface defines the structure and functionality of the global game object as presented by the game
@@ -310,12 +311,22 @@ export interface BaseGameInterface extends BaseGameModel {
    */
   apiVersion: number;
 
+  chat: CSEChat;
+
   /**
    * Subscribes a function to be executed when the game client wished to begin writing a chat message.
    * (this usually means the user pressed 'Enter' when not focusing the chate interface itself)
    * @param {(message: string) => any} callback callback function to be executed when the game client wishes to begin chat.
   */
   onBeginChat: (callback: (message: string) => any) => EventHandle;
+  beginChat: (message: string) => void;
+
+  /**
+   * Subscribes a function to be executed when the game client wishes to append content to the chat window.
+   * @param {(content: string) => any} callback callback function to be executed when chat content is pushed.
+   */
+  onPushChat: (callback: (content: string) => any) => EventHandle;
+  pushChat: (content: string) => void;
 
   /**
    * Subscribes a function to be executed when the game client wishes to print a system message to the system log.

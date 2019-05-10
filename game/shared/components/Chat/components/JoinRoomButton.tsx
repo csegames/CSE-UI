@@ -5,8 +5,6 @@
  */
 
 import * as React from 'react';
-import { RoomId } from './RoomId';
-import { chatType } from './ChatMessage';
 import { JoinRoomModal } from './JoinRoomModal';
 
 export interface JoinRoomButtonState {
@@ -15,7 +13,7 @@ export interface JoinRoomButtonState {
 
 export interface JoinRoomButtonProps {
   key: string;
-  join: (roomId: RoomId) => void;
+  join: (roomId: string) => void;
   getRooms: () => void;
 }
 
@@ -38,7 +36,7 @@ export class JoinRoomButton extends React.Component<JoinRoomButtonProps, JoinRoo
 
   private promptRoom(): void {
     const room = window.prompt('Room?');
-    this.props.join(new RoomId(room, chatType.GROUP));
+    this.props.join(room);
   }
 
   private showModal = () => {
@@ -50,7 +48,7 @@ export class JoinRoomButton extends React.Component<JoinRoomButtonProps, JoinRoo
   }
 
   private joinRoom = (room: string) => {
-    this.props.join(new RoomId(room, chatType.GROUP));
+    this.props.join(room);
     this.setState({ showJoinRoomModal: false });
   }
 

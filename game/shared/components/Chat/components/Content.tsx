@@ -5,16 +5,15 @@
  */
 
 import * as React from 'react';
-import { ChatText } from './ChatText';
-import { ChatInput } from './ChatInput';
-import { ChatRoomInfo } from './ChatRoomInfo';
-import { RoomId } from './RoomId';
+import ChatText from './ChatText';
+import ChatInput from './ChatInput';
+import ChatRoomInfo from './ChatRoomInfo';
 
 export interface ContentState {
 }
 export interface ContentProps {
   room: ChatRoomInfo;                   // current room
-  send: (roomId: RoomId, text: string) => void;
+  send: (roomId: string, text: string) => void;
   slashCommand: (command: string) => void;
 }
 
@@ -23,7 +22,7 @@ export class Content extends React.Component<ContentProps, ContentState> {
     return (
       <div className='chat-content'>
         <ChatText ref='text' room={this.props.room}/>
-        <ChatInput label='SEND' send={this.send} slashCommand={this.props.slashCommand} scroll={this.scroll}/>
+        <ChatInput label='SEND' send={this.send.bind(this)} slashCommand={this.props.slashCommand} scroll={this.scroll}/>
       </div>
     );
   }

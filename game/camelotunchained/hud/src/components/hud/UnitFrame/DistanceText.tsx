@@ -74,8 +74,8 @@ class DistanceText extends React.Component<DistanceTextProps, DistanceTextState>
 
   public shouldComponentUpdate(nextProps: DistanceTextProps, nextState: DistanceTextState) {
     return !this.myPositionCache || !this.theirPositionCache ||
-      !Vec3f.equals(this.myPositionCache, nextState.myPosition) ||
-      !Vec3f.equals(this.theirPositionCache, nextState.theirPosition);
+      !Vec3fExt.equals(this.myPositionCache, nextState.myPosition) ||
+      !Vec3fExt.equals(this.theirPositionCache, nextState.theirPosition);
   }
 
   public componentDidUpdate() {

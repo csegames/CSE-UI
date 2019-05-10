@@ -7,11 +7,6 @@
 export {};
 
 declare global {
-  class Vec3f {
-    public static equals(a: Vec3f, b: Vec3f): boolean;
-    public static distance(a: Vec3f, b: Vec3f): number;
-    public static distanceSquared(a: Vec3f, b: Vec3f): number;
-  }
   class Vec3fExt {
     public static equals(a: Vec3f, b: Vec3f): boolean;
     public static distance(a: Vec3f, b: Vec3f): number;

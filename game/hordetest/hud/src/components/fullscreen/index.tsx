@@ -7,7 +7,6 @@
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
 
-// import { Chat } from 'cushared/components/Chat';
 import { StartScreen } from './StartScreen';
 import { ChampionSelect } from './ChampionSelect';
 import { Button } from './Button';
@@ -79,7 +78,6 @@ export class FullScreen extends React.Component<Props, State> {
         </HideButton>
         {/* {this.state.isChatVisible &&
           <ChatPosition>
-            <Chat accessToken={game.accessToken} />
           </ChatPosition>
         } */}
       </Container>

@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { css } from 'react-emotion';
 
-import { ChatSession } from './ChatSession';
+import ChatSession from './ChatSession';
 import { chatState } from './ChatState';
 import { AtUserList } from './AtUserList';
 import { ChatRoomInfoUser } from './ChatRoomInfo';

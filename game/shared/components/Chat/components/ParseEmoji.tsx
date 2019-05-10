@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { utils } from '@csegames/library/lib/_baseGame';
+import { findIndexWhere } from '@csegames/camelot-unchained/lib/utils/arrayUtils';
 
 enum emojis {
   ANGRY,
@@ -117,7 +117,7 @@ function emojiNameFromText(text: string): string {
   }
 
   const upper = text.replace(/:/g, '').toUpperCase();
-  return utils.findIndexWhere(emojiNames, n => n === upper) ? upper : null;
+  return findIndexWhere(emojiNames, n => n === upper) ? upper : null;
 }
 
 function fromText(text: string, keygen: () => number): JSX.Element[] {

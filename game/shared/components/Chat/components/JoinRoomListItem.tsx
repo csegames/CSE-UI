@@ -5,11 +5,10 @@
  */
 
 import * as React from 'react';
-import { Room } from '../lib/CSEChat';
 
 export interface JoinRoomListItemProps {
-  room: Room;
-  selectRoom: (room: Room) => void;
+  room: { name: string };
+  selectRoom: (room: { name: string }) => void;
 }
 
 export interface JoinRoomListItemState {
@@ -17,7 +16,7 @@ export interface JoinRoomListItemState {
 
 export class JoinRoomListItem extends React.Component<JoinRoomListItemProps, JoinRoomListItemState> {
   public render() {
-    const name: string = this.props.room.jid.split('@')[0];
+    const name: string = this.props.room.name;
     return (<div className='room-name' onClick={this.selectRoom}>{name}</div>);
   }
 

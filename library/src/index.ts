@@ -4,6 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+// Import definitions first to init a whole bunch of globals
+import './webAPI/definitions';
+import './_baseGame/chat/chatProtoTypes';
 export * from './_baseGame';
 
 import * as camelotunchained from './camelotunchained';

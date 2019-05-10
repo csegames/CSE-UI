@@ -16,6 +16,10 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = function (e, argv = { isProduction, cacheRoot }) {
 
+  if (!argv.cacheRoot) {
+    argv.cacheRoot = path.resolve(__dirname, 'node_modules', '.cache');
+  }
+
   const MODE = argv.mode || 'development';
   const NODE_ENV = process.env.NODE_ENV || MODE;
   process.env.NODE_ENV = NODE_ENV;
@@ -50,12 +54,12 @@ module.exports = function (e, argv = { isProduction, cacheRoot }) {
       require.resolve('react/package.json')
     ),
     components: path.resolve(__dirname, 'src/components'),
-    actions: path.resolve(__dirname, 'src/services/actions'),
+    // actions: path.resolve(__dirname, 'src/services/actions'),
     context: path.resolve(__dirname, 'src/components/context'),
     lib: path.resolve(__dirname, 'src/lib'),
     services: path.resolve(__dirname, 'src/services'),
-    widgets: path.resolve(__dirname, 'src/widgets'),
-    cushared: path.resolve(__dirname, '../../shared'),
+    // widgets: path.resolve(__dirname, 'src/widgets'),
+    cseshared: path.resolve(__dirname, '../../shared'),
   };
 
   const config = {

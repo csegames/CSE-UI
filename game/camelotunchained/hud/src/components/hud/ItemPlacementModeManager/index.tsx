@@ -279,7 +279,7 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
         itemId,
         camelotunchained.game.selfPlayerState.entityID,
         actionId,
-        { WorldPosition: position, Rotation: rotation },
+        { WorldPosition: position },
       );
       if (!res.ok) {
         const data = JSON.parse(res.data);

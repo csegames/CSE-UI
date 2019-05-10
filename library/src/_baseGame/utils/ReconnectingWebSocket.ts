@@ -3,8 +3,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { getBooleanEnv } from './env';
+import { createEventEmitter, EventEmitter } from './EventEmitter';
 import * as Raven from 'raven-js';
+import { getBooleanEnv } from './env';
 
 export interface WebSocketOptions {
   // WebSocket url, default '/graphql'
@@ -23,14 +24,23 @@ export interface WebSocketOptions {
 
   // If true, logs actions taken, default false
   debug: boolean;
+
+  onopen: (event: Event) => any;
+  onclose: (event: CloseEvent) => any;
+  onmessage: (event: MessageEvent) => any;
+  onerror: (event: ErrorEvent) => any;
 }
 
 export const defaultWebSocketOptions: WebSocketOptions = {
-  url: '/ws',
-  protocols: '',
+  url: "/chat",
+  protocols: "",
   reconnectInterval: 15000,
   connectTimeout: 5000,
   debug: getBooleanEnv('CUUI_LIB_DEBUG_WEB_SOCKET', false),
+  onopen: function(event: Event) {},
+  onclose: function(event: CloseEvent) {},
+  onmessage: function(event: MessageEvent) {},
+  onerror: function(event: ErrorEvent) {}
 };
 
 export class ReconnectingWebSocket {
@@ -44,6 +54,8 @@ export class ReconnectingWebSocket {
   private connectTimeoutHandle: number;
   private debug: boolean;
   private reconnecting: boolean;
+  private wantConnect: boolean;
+  private eventEmitter: EventEmitter;
 
   public get isOpen() {
     return this.socket && this.socket.readyState === WebSocket.OPEN;
@@ -57,19 +69,43 @@ export class ReconnectingWebSocket {
     if (options && options.debug) {
       this.log(`constructor => ${options && JSON.stringify(options)}`);
     }
-    const opts =  withDefaults(options, defaultWebSocketOptions);
+    const opts = withDefaults(options, defaultWebSocketOptions);
     this.url = opts.url;
     this.protocols = opts.protocols;
     this.connectTimeoutInterval = opts.connectTimeout;
     this.reconnectInterval = opts.reconnectInterval;
     this.debug = opts.debug;
     this.connect();
+    this.eventEmitter = createEventEmitter();
   }
 
-  public onopen = function(event: Event) {};
-  public onclose = function(event: CloseEvent) {};
-  public onmessage = function(event: MessageEvent) {};
-  public onerror = function(event: ErrorEvent) {};
+  public set onopen(callback: (event: Event) => any) {
+    this.eventEmitter.on('open', callback);
+  }
+  private _onopen = (event: Event) => {
+    this.eventEmitter.emit('open', event);
+  }
+
+  public set onclose(callback: (event: CloseEvent) => any) {
+    this.eventEmitter.on('closed', callback);
+  }
+  private _onclose = (event: CloseEvent) => {
+    this.eventEmitter.emit('closed', event);
+  }
+
+  public set onmessage(callback: (event: MessageEvent) => any) {
+    this.eventEmitter.on('message', callback);
+  }
+  private _onmessage = (event: MessageEvent) => {
+    this.eventEmitter.emit('message', event);
+  }
+
+  public set onerror(callback: (event: ErrorEvent) => any) {
+    this.eventEmitter.on('error', callback);
+  }
+  private _onerror = (event: ErrorEvent) => {
+    this.eventEmitter.emit('error', event);
+  }
 
   public send = (data: any) => {
     if (this.debug) {
@@ -80,31 +116,34 @@ export class ReconnectingWebSocket {
     } catch (err) {
       this.error(err);
     }
-  }
+  };
 
   public close = () => {
     if (this.debug) {
-      this.log('close');
+      this.log("close");
     }
-    this.socket.close();
-  }
+    this.wantConnect = false;
+    this.socket && this.socket.close();
+  };
 
   public refresh = () => {
     if (this.debug) {
-      this.log('refresh');
+      this.log("refresh");
     }
     this.socket.close();
     this.connect();
-  }
+  };
 
   private connect = () => {
     this.reconnecting = false;
+    this.wantConnect = true;
     if (this.debug) {
       this.log(`connect => url: '${this.url}', protocols: '${this.protocols}'`);
     }
 
     try {
       this.socket = new WebSocket(this.url, this.protocols);
+      this.socket.binaryType = 'arraybuffer';
       this.socket.onerror = this.error;
       this.socket.onmessage = this.message;
       this.socket.onclose = this.closed;
@@ -114,20 +153,25 @@ export class ReconnectingWebSocket {
     }
 
     setTimeout(() => {
-      if (!this.isOpen) {
-        console.log('failed to connect to WebSocket within '
-        + this.connectTimeoutInterval +  ' ms. Reconnecting in ' + this.reconnectInterval + ' ms.');
+      if (!this.isOpen && this.wantConnect) {
+        console.log(
+          "failed to connect to WebSocket within " +
+            this.connectTimeoutInterval +
+            " ms. Reconnecting in " +
+            this.reconnectInterval +
+            " ms."
+        );
         this.reconnect();
       }
     }, this.connectTimeoutInterval);
-  }
+  };
 
   private reconnect = () => {
-    if (this.reconnecting) return;
+    if (!this.wantConnect || this.reconnecting) return;
     this.reconnecting = true;
 
     if (this.debug) {
-      this.log('reconnecting');
+      this.log("reconnecting");
     }
 
     this.socket = null;
@@ -135,7 +179,7 @@ export class ReconnectingWebSocket {
     setTimeout(() => {
       this.connect();
     }, this.reconnectInterval);
-  }
+  };
 
   private message = (e: MessageEvent) => {
     if (this.debug) {
@@ -143,10 +187,10 @@ export class ReconnectingWebSocket {
     }
     if (e.data) {
       ++this.messageCount;
-      this.onmessage(e);
+      this._onmessage(e);
     }
     return false;
-  }
+  };
 
   private error = (e: any) => {
     Raven.captureException(e);
@@ -154,27 +198,27 @@ export class ReconnectingWebSocket {
       this.log(`error => ${JSON.stringify(e)}`);
     }
     if (!e) return;
-    this.onerror(e);
+    this._onerror(e);
     this.reconnect();
-  }
+  };
 
   private open = (e: Event) => {
     if (this.debug) {
-      this.log('connection open');
+      this.log("connection open");
     }
     clearTimeout(this.connectTimeoutHandle);
-    this.onopen(e);
-  }
+    this._onopen(e);
+  };
 
   private closed = (e: CloseEvent) => {
     if (this.debug) {
-      this.log('connection closed');
+      this.log("connection closed");
     }
     this.reconnect();
-    this.onclose(e);
-  }
+    this._onclose(e);
+  };
 
   private log = (message: string) => {
     console.log(`ReconnectingWebSocket | ${message}`);
-  }
+  };
 }

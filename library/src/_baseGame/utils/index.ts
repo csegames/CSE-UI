@@ -19,6 +19,8 @@ import './ReconnectingWebSocket';
 import './local-storage';
 import './textUtils';
 import './distance';
+import './CircularArray';
+import './idGen';
 
 export * from './arrayUtils';
 export * from './EventEmitter';
@@ -35,6 +37,8 @@ export * from './ReconnectingWebSocket';
 export * from './local-storage';
 export * from './textUtils';
 export * from './distance';
+export * from './CircularArray';
+export * from './idGen';
 
 import stringContains from '../../_baseGame/utils/stringContains';
 

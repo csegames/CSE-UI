@@ -12,7 +12,6 @@ import { cloneDeep } from 'lodash';
 import { HUDDragOptions, LayoutMode } from 'utils/HUDDrag';
 
 // layout items
-import Chat from './layoutItems/Chat';
 import MOTD from './layoutItems/MOTD';
 import Build from './layoutItems/Build';
 import Warband from './layoutItems/Warband';
@@ -140,9 +139,6 @@ function forceOnScreen(current: Readonly<Position>, screen: Readonly<Size>): Pos
 function initialState(): LayoutState {
 
   const widgets = Map<string, Widget<any>>([
-    [
-      'chat', cloneDeep(Chat),
-    ],
     // [
     //   'hudNav', HUDNav
     // ],

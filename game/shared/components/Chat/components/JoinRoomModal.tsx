@@ -5,8 +5,7 @@
  */
 
 import * as React from 'react';
-import { Room } from '../lib/CSEChat';
-import { JoinRoomList } from './JoinRoomList';
+import JoinRoomList from './JoinRoomList';
 
 export interface JoinRoomModalProps {
   closeModal: () => void;
@@ -15,7 +14,7 @@ export interface JoinRoomModalProps {
 }
 
 export interface JoinRoomModalState {
-  rooms: Room[];
+  rooms: { name: string }[];
   filter: string;
 }
 
@@ -70,7 +69,7 @@ export class JoinRoomModal extends React.Component<JoinRoomModalProps, JoinRoomM
     this.props.getRooms();
   }
 
-  private gotRooms = (rooms: Room[]): void => {
+  private gotRooms = (rooms: { name: string; }[]): void => {
     this.setState({ rooms });
   }
 
@@ -79,7 +78,7 @@ export class JoinRoomModal extends React.Component<JoinRoomModalProps, JoinRoomM
     this.props.joinRoom(input.value);
   }
 
-  private selectRoom = (room: Room) => {
-    this.props.joinRoom(room.jid.split('@')[0]);
+  private selectRoom = (room: { name: string; }) => {
+    this.props.joinRoom(room.name);
   }
 }

@@ -5,8 +5,7 @@
  */
 
 import * as React from 'react';
-import { RoomId } from './RoomId';
-import { ChatRoomInfo, ChatRoomInfoMessage } from './ChatRoomInfo';
+import ChatRoomInfo, { ChatRoomInfoMessage } from './ChatRoomInfo';
 import { ChatLine } from './ChatLine';
 
 export class ChatTextState {
@@ -22,7 +21,7 @@ export class ChatText extends React.Component<ChatTextProps, ChatTextState> {
   public SCROLLBACK_PAGESIZE: number = 50;
   public autoScroll: boolean = true;
   public lazyLoadTop: HTMLElement = null;
-  public currentRoom: RoomId;
+  public currentRoom: string;
   constructor(props: ChatTextProps) {
     super(props);
     this.state = new ChatTextState();
@@ -61,7 +60,7 @@ export class ChatText extends React.Component<ChatTextProps, ChatTextState> {
     let messages: ChatRoomInfoMessage[];
     let lazy: JSX.Element = undefined;
     if (room) {
-      if (!this.currentRoom || !room.roomId.same(this.currentRoom)) {
+      if (!this.currentRoom || !(room.roomId === this.currentRoom)) {
         this.newRoom();
       }
       if (room.scrollback > 0) {

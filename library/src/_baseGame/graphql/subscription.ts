@@ -34,6 +34,10 @@ export function defaultSubscriptionOpts(): Options<any> {
     onDataReceived: data => console.log(data),
     onError: e => console.error(e),
     onClosed: () => null,
+    onopen: function(event: Event) {},
+    onclose: function(event: CloseEvent) {},
+    onmessage: function(event: MessageEvent) {},
+    onerror: function(event: ErrorEvent) {},
   };
 }
 

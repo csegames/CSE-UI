@@ -189,19 +189,6 @@ module.exports = {
       }
     ),
 
-    // Linting
-    lint: {
-      default: {
-        script: 'tslint -t stylish src/**/*.ts{,x} && nps report.lint',
-        description: 'Run TS-Lint"',
-      },
-      fix: {
-        script: 'tslint --fix src/**/*.ts{,x}',
-        description: 'Fix TS-Lint errors',
-        hiddenFromHelp: true,
-      }
-    },
-
     // Reporting
     report: {
       start: {
@@ -214,10 +201,6 @@ module.exports = {
       },
       success: {
         script: 'echo "Build completed successfully!"',
-        hiddenFromHelp: true,
-      },
-      lint: {
-        script: 'echo "TSLint complete"',
         hiddenFromHelp: true,
       },
       gql: {

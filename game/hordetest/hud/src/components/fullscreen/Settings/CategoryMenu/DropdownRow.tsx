@@ -7,7 +7,7 @@
 import React from 'react';
 import { css } from '@csegames/linaria';
 import { ItemContainer } from '../ItemContainer';
-import { DropDown } from 'cushared/components/DropDownField';
+import { DropDown } from 'cseshared/components/DropDownField';
 
 const ListBoxStyles = css`
   padding: 0 5px;

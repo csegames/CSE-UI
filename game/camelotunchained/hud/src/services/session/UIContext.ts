@@ -52,6 +52,8 @@ export function uiContextFromGame(): UIContext {
     themes[theme.name] = theme;
   });
 
+  window.currentTheme = Object.freeze(themes['cse']);
+
   return Object.freeze({
     resolution: {
       width: window.innerWidth,

@@ -51,7 +51,11 @@ export function ActionButtons(props: Props) {
   }, [hordetest.game.abilityBarState]);
 
   function getAbilityIconClass(abilityIndex: number) {
-    const myClass = hordetest.game.classes.find(c => c.id === hordetest.game.selfPlayerState.classID);
+    let myClass: DeepImmutableObject<CharacterClassDef>;
+    try {
+      myClass = hordetest.game.classes.find(c => c.id === hordetest.game.selfPlayerState.classID);
+    } catch {
+    }
     if  (!myClass) {
       console.error('Could not find character def class for ability icon class');
       return '';

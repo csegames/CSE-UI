@@ -5,19 +5,18 @@
  */
 
 import * as React from 'react';
-import RoomId from './RoomId';
-import { chatType } from './ChatMessage';
 
 export interface RoomState {
 }
 export interface RoomProps {
   key: number;
-  roomId: RoomId;
+  roomId: string;
   players: number;
   unread?: number;
   selected?: boolean;
-  select: (roomId: RoomId) => void;
-  leave: (roomId: RoomId) => void;
+  isDM?: boolean;
+  select: (roomId: string) => void;
+  leave: (roomId: string) => void;
 }
 
 export class Room extends React.Component<RoomProps, RoomState> {
@@ -25,16 +24,16 @@ export class Room extends React.Component<RoomProps, RoomState> {
     let players: JSX.Element = undefined;
     const classes: string[] = ['chat-room'];
     if (this.props.selected) classes.push('chat-room-selected');
-    if (this.props.roomId.type === chatType.GROUP) {
-      players = <li className='chat-room-players'>{this.props.players} players</li>;
-    } else {
+    if (this.props.isDM) {
       players = <li className='chat-room-players'>(private)</li>;
+    } else {
+      players = <li className='chat-room-players'>{this.props.players} players</li>;
     }
     return (
       <div className={classes.join(' ')} onClick={this.select}>
         <div className='chat-room-close' onClick={this.leave}></div>
         <ul>
-          <li className='chat-room-name'>{this.props.roomId.displayName || this.props.roomId.name}</li>
+          <li className='chat-room-name'>{this.props.roomId || this.props.roomId}</li>
           {players}
         </ul>
         <div className={this.props.unread ? 'chat-unread' : 'chat-hidden'}>{this.props.unread}</div>

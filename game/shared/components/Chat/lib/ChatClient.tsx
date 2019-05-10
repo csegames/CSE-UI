@@ -4,24 +4,31 @@
  */
 
 import { findIndex } from 'lodash';
-import { CSEChat, Room } from './CSEChat';
-import { Config } from './Config';
-import { EventEmitter } from './EventEmitter';
-import { RoomId } from '../components/RoomId';
-import { chatType } from '../components/ChatMessage';
+import { CSEChat } from '@csegames/library/lib/_baseGame/chat/CSEChat';
+import EventEmitter from './EventEmitter';
+import '@csegames/library/lib/_baseGame/chat/chatProtoTypes';
 
-const GLOBAL_ROOM_ID = new RoomId('_global', chatType.GROUP);
-const CUBE_ROOM_ID = new RoomId('_cube', chatType.GROUP);
-const DEFAULT_ROOM_LIST: RoomId[] = [GLOBAL_ROOM_ID, CUBE_ROOM_ID];
+interface ChatOptions {
+  url: string;
+  characterID: string;
+  characterName: string;
+  shard: number;
+  getAccessToken: () => string;
+}
 
 // tslint:disable
 export class ChatClient {
   public chat: CSEChat = null;
-  public connected: boolean = false;
   public updated: number = 0;
   public errorListener: any = null;
-  public config: Config = null;
   public emitter: EventEmitter = new EventEmitter();
+  
+  private characterName: string;
+  private connectOptions: ChatOptions | (() => ChatOptions);
+
+  public get connected() {
+    return this.chat && this.chat.connected;
+  }
 
   public on(topic: string, handler: (data?: any) => void): any {
     return this.emitter.on(topic, handler);
@@ -31,80 +38,137 @@ export class ChatClient {
     this.emitter.removeListener(id);
   }
 
-  public connectWithToken(accessToken: string, nick: string = '', rooms: RoomId[] = DEFAULT_ROOM_LIST) {
+  public connect(options: ChatOptions | (() => ChatOptions)) {
     if (this.chat) {
       console.warn('ChatClient:connect() called when already connected.');
       return;
     }
-    // this._fire('connecting');
-    this.connected = false;
     this.updated = 0;
-    this.config = new Config('', accessToken, nick);
-    this.internalConnect(rooms);
+    this.connectOptions = options;
+    const provided = typeof options === 'function' ? options() : options;
+    const chatOpts = {
+      url: provided.url,
+      shardID: provided.shard,
+      characterID: provided.characterID,
+      token: provided.getAccessToken,
+    }
+    
+    this.chat = new CSEChat();
+    this.chat.initialize(chatOpts);
+
+    this.chat.onConnected(this.onConnected.bind(this));
+    this.chat.onError((err) => {
+      console.error(`ChatClient | Error: ${err.message}`);
+    });
+
+    this.chat.connect();
   }
 
-  public connect(
-    username: string | (() => string),
-    password: string | (() => string),
-    nick: string = '',
-    rooms: RoomId[] = DEFAULT_ROOM_LIST,
-  ): void {
-    if (this.chat) {
-      console.warn('ChatClient:connect() called when already connected.');
-      return;
-    }
-    // this._fire('connecting');
-    this.connected = false;
-    this.updated = 0;
-    this.config = new Config(username, password, nick);
-    this.internalConnect(rooms);
+  private onConnected() {
+    this.internalInitEvents();
+    var rooms = this.getStoredRooms();
+    rooms.forEach(room => {
+      this.chat.joinRoom(room);
+    })
+  }
+
+  private internalInitEvents(): void {
+
+    this.chat.onChatMessage(msg => {
+      switch (msg.type) {
+        case ChatMessage_MessageTypes.Direct:
+          this.internalFire('message', {
+            type: 4,
+            roomName: msg.targetID,
+            sender: {
+              sender: msg.senderName,
+              isCSE: msg.senderFlag === ChatMessage_SenderFlag.CSE,
+            },
+            message: msg.content,
+            time: new Date(),
+          });
+          return;
+        case ChatMessage_MessageTypes.Room:
+          this.internalFire('message', {
+            type: 3,
+            roomName: msg.targetID,
+            sender: {
+              sender: msg.senderName,
+              isCSE: msg.senderFlag === ChatMessage_SenderFlag.CSE,
+            },
+            message: msg.content,
+            time: new Date(),
+          })
+          return;
+        case ChatMessage_MessageTypes.Announcement:
+          this.internalFire('message', {
+            type: -1,
+            message: [msg.content],
+          })
+          return;
+      }
+    });
+
+    this.chat.onDirectory(directory => {
+      directory.rooms.forEach((r: { roomID: string }) => this.joinRoom(r.roomID));
+      this.internalFire('rooms', directory.rooms);
+    });
+
+    // this.chat.on('presence', (presence: any) => this.internalFire('presence', presence));
+    // this.chat.on('message', (message: any) => this.internalFire('message', message));
+    // this.chat.on('groupmessage', (message: any) => this.internalFire('groupmessage', message));
+    // this.chat.on('ping', (ping: any) => this.internalFire('ping', ping));
+    // this.chat.on('rooms', (rooms: Room[]) => this.internalFire('rooms', rooms));
   }
 
   public disconnect(): void {
-    this.internalDisconnect();
     this.internalFire('disconnect');
+    if (this.chat) {
+      this.chat.disconnect();
+      this.chat = null;
+    }
   }
 
-  public reconnect(rooms: RoomId[]): void {
-    this._connect(rooms);
+  public reconnect(rooms: string[]): void {
+    this.connect(this.connectOptions);
   }
 
   public getNick(): string {
-    return this.chat.client.jid._local;
+    return this.characterName;
   }
 
 
-  public getStoredRooms(): RoomId[] {
+  public getStoredRooms(): string[] {
     try {
-      const storedRooms = localStorage.getItem('CSE_CHAT_Stored_channels');
+      const storedRooms = localStorage.getItem('CSE_CHAT_Rooms');
       if (storedRooms) {
         return JSON.parse(storedRooms);
       }
       return [];
     } catch (err) {
       // Just reset stored channels, there was some bad/old data in there.
-      localStorage.setItem('CSE_CHAT_Stored_channels', '');
+      localStorage.setItem('CSE_CHAT_Rooms', '');
       return [];
     }
   }
-  public removeFromStoredRooms(room: string): void {
+  public removeFromStoredRooms(roomId: string): void {
     const storedRooms = this.getStoredRooms();
-    const idx = findIndex(storedRooms, _room => _room.name === room);
+    const idx = findIndex(storedRooms, _room => _room === roomId);
     if (idx !== -1) {
       storedRooms.splice(idx, 1);
     }
     this.setStoredRooms(storedRooms);
   }
-  public addToStoredRooms(room: RoomId): void {
+  public addToStoredRooms(roomId: string): void {
     const storedRooms = this.getStoredRooms();
-    const idx = findIndex(storedRooms, _room => _room.name === room.name);
+    const idx = findIndex(storedRooms, _room => _room === roomId);
     if (idx !== -1) {
       return;
     }
-    storedRooms.push(room);
+    storedRooms.push(roomId);
     this.setStoredRooms(storedRooms);
   }
-  public setStoredRooms(rooms: RoomId[]): void {
+  public setStoredRooms(rooms: string[]): void {
     if (rooms.length > 0) {
       localStorage.setItem('CSE_CHAT_Stored_channels', JSON.stringify(rooms));
     } else {
@@ -126,148 +190,34 @@ export class ChatClient {
       console.warn('ChatClient:sendMessageToUser() called when not connected.');
       return;
     }
-    this.chat.sendMessageToUser(message, userName);
+    this.chat.sendDirectMessage(message, null, userName);
   }
 
-  public joinRoom(roomId: RoomId): void {
+  public joinRoom(roomId: string): void {
     if (!this.chat) {
       console.warn('ChatClient:joinRoom() called when not connected.');
       return;
     }
-    this.chat.joinRoom(roomId.name + this.chat.config.serviceAddress);
-
+    this.chat.joinRoom(roomId);
     this.addToStoredRooms(roomId);
   }
 
-  public leaveRoom(roomName: string): void {
+  public leaveRoom(roomId: string): void {
     if (!this.chat) {
       console.warn('ChatClient:leaveRoom() called when not connected.');
       return;
     }
-    this.chat.leaveRoom(roomName + this.chat.config.serviceAddress);
+    this.chat.leaveRoom(roomId);
 
-    this.removeFromStoredRooms(roomName);
+    this.removeFromStoredRooms(roomId);
   }
 
   public getRooms(): void {
     if (!this.chat) {
-      console.warn('ChatClient:leaveRoom() called when not connected.');
+      console.warn('ChatClient:getRooms() called when not connected.');
       return;
     }
-    this.chat.getRooms();
-  }
-
-  private _connect(rooms: RoomId[]): void {
-
-    if (this.chat) {
-      console.warn('ChatClient:connect() called when already connected.');
-      return;
-    }
-
-    this.chat = new CSEChat(this.config);
-
-    this.errorListener = this.chat.on('error', (err: any) => this._onerror(err));
-    this.chat.once('online', () => this._online(rooms));
-    this.chat.connect();
-  }
-
-  private _online(rooms: RoomId[]): void {
-    this.connected = true;
-    this._initializeEvents();
-    this._fire('connect');
-    rooms = rooms.concat(this.getStoredRooms());
-    const joining: any = {};
-    rooms.forEach((room: RoomId) => {
-      if (!joining[room.name]) {
-        joining[room.name] = true;
-        this.chat.joinRoom(room.name + this.config.serviceAddress);
-      }
-    });
-  }
-
-  private _onerror(err: any) {
-    return;
-    // const connected: boolean = this.connected;
-    // this._disconnect();
-    // if (!connected) {
-    //   // if not connected when we got the error, connect failed
-    //   this._fire('connectfailed', err);
-    // } else {
-    //   // if connected when got the error, signal we were disconnected
-    //   this._fire('disconnect');
-    // }
-  }
-
-  private _initializeEvents(): void {
-    this.chat.on('presence', (presence: any) => this._fire('presence', presence));
-    this.chat.on('message', (message: any) => this._fire('message', message));
-    this.chat.on('groupmessage', (message: any) => this._fire('groupmessage', message));
-    this.chat.on('ping', (ping: any) => this._fire('ping', ping));
-    this.chat.on('rooms', (rooms: Room[]) => this._fire('rooms', rooms));
-  }
-
-  private _fire(topic: string, data?: any): void {
-    this.emitter.emit(topic, data);
-    this.updated = Date.now();
-  }
-
-  private internalConnect(rooms: RoomId[]): void {
-
-    if (this.chat) {
-      console.warn('ChatClient:connect() called when already connected.');
-      return;
-    }
-
-    this.chat = new CSEChat(this.config);
-
-    this.errorListener = this.chat.on('error', (err: any) => this.internalOnError(err));
-    this.chat.once('online', () => this.internalOnline(rooms));
-    this.chat.connect();
-  }
-
-  private internalOnline(rooms: RoomId[]): void {
-    this.connected = true;
-    this.internalInitEvents();
-    this.internalFire('connect');
-    let newRooms = rooms;
-    newRooms = newRooms.concat(this.getStoredRooms());
-    const joining: any = {};
-    newRooms.forEach((room: RoomId) => {
-      if (!joining[room.name]) {
-        joining[room.name] = true;
-        this.chat.joinRoom(room.name + this.config.serviceAddress);
-      }
-    });
-  }
-
-  private internalOnError(err: any) {
-    return;
-    // const connected: boolean = this.connected;
-    // this._disconnect();
-    // if (!connected) {
-    //   // if not connected when we got the error, connect failed
-    //   this._fire('connectfailed', err);
-    // } else {
-    //   // if connected when got the error, signal we were disconnected
-    //   this._fire('disconnect');
-    // }
-  }
-
-  private internalInitEvents(): void {
-    this.chat.on('presence', (presence: any) => this.internalFire('presence', presence));
-    this.chat.on('message', (message: any) => this.internalFire('message', message));
-    this.chat.on('groupmessage', (message: any) => this.internalFire('groupmessage', message));
-    this.chat.on('ping', (ping: any) => this.internalFire('ping', ping));
-    this.chat.on('rooms', (rooms: Room[]) => this.internalFire('rooms', rooms));
-  }
-
-  private internalDisconnect(): void {
-    if (this.chat) {
-      this.chat.removeListener(this.errorListener);
-      this.chat.disconnect();
-      this.chat = null;
-    }
-    this.connected = false;
+    this.chat.requestDirectory();
   }
 
   private internalFire(topic: string, data?: any): void {

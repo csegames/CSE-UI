@@ -5,9 +5,8 @@
  */
 
 import * as React from 'react';
-import { Room } from './Room';
-import { ChatRoomInfo } from './ChatRoomInfo';
-import { RoomId } from './RoomId';
+import Room from './Room';
+import ChatRoomInfo from './ChatRoomInfo';
 
 export interface RoomsState {
 }
@@ -15,9 +14,9 @@ export interface RoomsState {
 export interface RoomsProps {
   key: string;
   rooms: ChatRoomInfo[];
-  current: RoomId;      // current room
-  select: (roomId: RoomId) => void;
-  leave: (roomId: RoomId) => void;
+  current: string;      // current room
+  select: (roomId: string) => void;
+  leave: (roomId: string) => void;
 }
 
 export class Rooms extends React.Component<RoomsProps, RoomsState> {
@@ -34,7 +33,7 @@ export class Rooms extends React.Component<RoomsProps, RoomsState> {
           roomId={rooms[i].roomId}
           players={rooms[i].players}
           unread={rooms[i].unread}
-          selected={rooms[i].roomId.same(this.props.current)}
+          selected={rooms[i].roomId == this.props.current}
           select={this.props.select}
           leave={this.props.leave}
         />,

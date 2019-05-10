@@ -8,8 +8,9 @@ import React from 'react';
 import { styled } from '@csegames/linaria/react';
 
 import { ContextProviders, FullScreenContextProviders } from '../context';
-import { Chat } from 'cushared/components/Chat';
-import { DevUI } from 'cushared/components/DevUI';
+// import { Chat } from 'cseshared/components/Chat';
+import { Chat } from './Chat';
+import { DevUI } from '../shared/DevUI';
 
 // import { ChannelBar } from './ChannelBar';
 import { MatchInfo } from './MatchInfo';
@@ -23,7 +24,7 @@ import { FullScreen } from '../fullscreen';
 import { PopupAnnouncement } from './Announcements/Popup';
 import { Compass } from './Compass';
 import { Objectives } from './Objectives';
-import { Console } from '../HUD/Console';
+import { Console } from '../hud/Console';
 import { LoadingScreen } from '../fullscreen/LoadingScreen';
 import { ImagePreloader } from './ImagePreloader';
 import { SelfHealthBar } from './SelfHealthBar';
@@ -39,7 +40,9 @@ import { ActionAlert } from '../shared/ActionAlert';
 import { ExtraButtons } from './ExtraButtons';
 // import { LowHealthFullScreenEffects } from './FullScreenEffects/LowHealth';
 
+
 const Container = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
 `;
@@ -271,9 +274,7 @@ export class HUD extends React.Component<Props, State> {
             <FriendlyHealthBars />
           </FriendlyHealthBarsPosition>
 
-          <ChatPosition>
-            <Chat accessToken={game.accessToken} />
-          </ChatPosition>
+          <Chat />
 
           <PlayerTrackersPosition>
             <PlayerTrackers />

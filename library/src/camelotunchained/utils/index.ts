@@ -6,7 +6,6 @@
 import './assert';
 import './typeUtils';
 import './compare';
-import './idGen';
 import './BitFlag';
 
 export * from './eventMapper';
@@ -16,7 +15,6 @@ export * from './colorManipulation';
 export * from './searchUtils';
 export * from './time';
 export * from './compare';
-export * from './idGen';
 export * from './BitFlag';
 
 

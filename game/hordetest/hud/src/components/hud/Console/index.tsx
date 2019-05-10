@@ -5,7 +5,7 @@
  */
 import * as React from 'react';
 import { parseMessageForSlashCommand } from '@csegames/library/lib/_baseGame';
-import { Input } from 'cushared/components/Input';
+import { Input } from 'cseshared/components/Input';
 
 import { styled } from '@csegames/linaria/react';
 

@@ -8,11 +8,10 @@ import * as React from 'react';
 import { throttle } from 'lodash';
 import { parseMessageForSlashCommand } from '@csegames/library/lib/_baseGame';
 
-import { ChatSession } from './components/ChatSession';
-import { ChatRoomInfo } from './components/ChatRoomInfo';
-import { chatType } from './components/ChatMessage';
-import { SlashCommand } from './components/SlashCommand';
-import { RoomId } from './components/RoomId';
+import ChatSession, { ChatOptions } from './components/ChatSession';
+import ChatRoomInfo from './components/ChatRoomInfo';
+// import { chatType } from './components/ChatMessage';
+import SlashCommand from './components/SlashCommand';
 import { chatConfig, ChatConfig } from './components/ChatConfig';
 
 import { Info } from './components/Info';
@@ -25,8 +24,7 @@ export interface ChatState {
   config: ChatConfig;
 }
 
-export interface ChatProps {
-  accessToken: string;
+export interface ChatProps extends ChatOptions {
   hideChat?: () => void;
 }
 
@@ -46,7 +44,7 @@ export class Chat extends React.Component<ChatProps, ChatState> {
     this._eventHandlers.push(game.on('chat-session-update', this.update));
     this._eventHandlers.push(game.on('chat-show-room', this.joinRoom));
     this._eventHandlers.push(game.on('chat-leave-room', (name: string) =>
-      this.leaveRoom(new RoomId(name, chatType.GROUP))));
+      this.leaveRoom(name)));
     this._eventHandlers.push(game.on('chat-options-update', this.optionsUpdated));
 
     // Initialize chat settings in localStorage
@@ -55,14 +53,10 @@ export class Chat extends React.Component<ChatProps, ChatState> {
 
   public componentWillMount(): void {
     // hook up to chat
-    this.state.chat.connectWithToken(this.props.accessToken);
+    this.state.chat.connect(this.props);
   }
 
   public componentDidMount(): void {
-    if (!this.state.chat.currentRoom) {
-      const roomId = new RoomId('_global', chatType.GROUP);
-      this.state.chat.setCurrentRoom(roomId);
-    }
   }
 
   public componentWillUnmount() {
@@ -73,8 +67,9 @@ export class Chat extends React.Component<ChatProps, ChatState> {
 
   // Render chat
   public render() {
-    const current: RoomId = this.state.chat.currentRoom;
+    const current = this.state.chat.currentRoom;
     const room: ChatRoomInfo = current ? this.state.chat.getRoom(current) : undefined;
+    console.log('is new chat');
     return (
       <div className='cse-chat no-select' data-input-group='block'>
         <div className='chat-frame'>
@@ -86,7 +81,7 @@ export class Chat extends React.Component<ChatProps, ChatState> {
             />
           <Content
             room={room}
-            send={this.send}
+            send={this.sentToRoom}
             slashCommand={this.slashCommand}
             />
         </div>
@@ -102,16 +97,12 @@ export class Chat extends React.Component<ChatProps, ChatState> {
     };
   }
 
-  // Send a message to the current room, named room (not implemented) or user (not implemneted)
-  private send = (roomId: RoomId, text: string): void => {
-    switch (roomId.type) {
-      case chatType.GROUP:
-        this.state.chat.send(text, roomId.name);
-        break;
-      case chatType.PRIVATE:
-        this.state.chat.sendMessage(text, roomId.name);
-        break;
-    }
+  // private sendToUser = (text: string, name: string) => {
+  //   this.state.chat.sendToUser(text, name);
+  // }
+
+  private sentToRoom = (text: string, room: string) => {
+    this.state.chat.sendToRoom(text, name);
   }
 
   private update = (chat: ChatSession): void => {
@@ -122,16 +113,16 @@ export class Chat extends React.Component<ChatProps, ChatState> {
     this.setState({ config, now: Date.now() });
   }
 
-  private selectRoom = (roomId: RoomId): void => {
+  private selectRoom = (roomId: string): void => {
     this.state.chat.joinRoom(roomId);
   }
 
-  private leaveRoom = (roomId: RoomId): void => {
+  private leaveRoom = (roomId: string): void => {
     this.state.chat.leaveRoom(roomId);
   }
 
   private joinRoom = (roomName: string, displayName?: string): void => {
-    const roomId = new RoomId(roomName, chatType.GROUP, displayName);
+    const roomId = roomName;
     this.state.chat.joinRoom(roomId);
   }
 

@@ -4,11 +4,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import chatTheme from 'hud/Chat/theme/cse';
+
 export default function(): Theme {
   return {
     name: 'cse',
     description: 'The default CSE theme.',
     author: 'City State Entertainment',
+
+    chat: chatTheme(),
 
     unitFrames: {
       color: {

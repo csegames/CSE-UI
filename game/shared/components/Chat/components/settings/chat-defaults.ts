@@ -61,8 +61,7 @@ export const display = {
   },
 };
 
-export const rooms = [
-  '_global',
+export const rooms: any = [
 ];
 
 export function initLocalStorage() {

@@ -4,9 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { ChatSession } from './ChatSession';
-import { RoomId } from './RoomId';
-import { chatType } from './ChatMessage';
+import ChatSession from './ChatSession';
 
 export class SlashCommand {
   private name: string;
@@ -25,18 +23,18 @@ export class SlashCommand {
         if (this.argv.length > 1) {
           const user = this.argv[0];
           const message = this.args.substr(user.length + 1).trim();
-          session.sendMessage(message, user);
+          session.sendToUser(message, user);
         }
         return true;
       case 'join':
         if (this.argv.length === 1) {
-          session.joinRoom(new RoomId(this.argv[0], chatType.GROUP));
+          session.joinRoom(this.argv[0]);
         }
         return true;
       case 'leave':
         if (this.argv.length === 1) {
-          session.leaveRoom(new RoomId(this.argv[0], chatType.GROUP));
-          session.leaveRoom(new RoomId(this.argv[0], chatType.PRIVATE));
+          session.leaveRoom(this.argv[0]);
+          session.leaveRoom(this.argv[0]);
         } else {
           session.leaveRoom(session.currentRoom);
         }

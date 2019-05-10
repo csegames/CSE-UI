@@ -120,6 +120,8 @@ export interface GameInterface extends GameModel {
    */
   consumableItemsState: ConsumableItemsState;
 
+  characterID: string;
+
 }
 
 export type DevGameInterface = InternalGameInterfaceExt;

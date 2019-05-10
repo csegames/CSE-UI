@@ -14,7 +14,7 @@ import '@csegames/library/lib/hordetest';
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { ErrorBoundary } from 'cushared/components/ErrorBoundary';
+import { ErrorBoundary } from 'cseshared/components/ErrorBoundary';
 
 import { LoadingScreen } from 'components/LoadingScreen';
 

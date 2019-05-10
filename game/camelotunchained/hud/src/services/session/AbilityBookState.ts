@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { createSharedStateWithReducer } from './lib/sharedState';
+import { createSharedStateWithReducer } from '../../../../../shared/lib/sharedState';
 
 export enum Routes {
   Main,

@@ -33,6 +33,10 @@ const ALIAS = {
 
 module.exports = function (baseConfig, argv = { cacheRoot, isProduction }) {
 
+  if (!argv.cacheRoot) {
+    argv.cacheRoot = path.resolve(__dirname, 'node_modules', '.cache');
+  }
+  
   const MODE = argv.mode || 'development';
   const NODE_ENV = process.env.NODE_ENV || MODE;
   process.env.NODE_ENV = NODE_ENV;

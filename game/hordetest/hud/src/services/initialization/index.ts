@@ -22,7 +22,7 @@ export default () => {
     // {impulse} (INDIGO) => received (sent - received) IMPULSE
     // {activeEffects} (VIOLET) => activeEffects[0] activeEffects[1] ...
     if (!log) return;
-    let output = `${log.fromName}(${Faction[log.fromFaction]}) > ${log.toName}(${Faction[log.toFaction]}) | `;
+    let output = `${log.fromName} | `;
 
     if (log.damages) {
       for (let i = 0; i < log.damages.length; ++i) {

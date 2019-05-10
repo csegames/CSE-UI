@@ -15,7 +15,7 @@ import '@csegames/library/lib/hordetest';
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { ErrorBoundary } from 'cushared/components/ErrorBoundary';
+import { ErrorBoundary } from 'cseshared/components/ErrorBoundary';
 import { WorldUI } from './components';
 
 if (process.env.CUUI_LS_ENABLE_WHY_DID_YOU_UPDATE) {

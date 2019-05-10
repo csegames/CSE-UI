@@ -49,11 +49,11 @@ module.exports = {
         },
         development: {
           hiddenFromHelp: true,
-          script: 'webpack --mode development',
+          script: 'webpack --mode development --approute=""',
         },
         production: {
           hiddenFromHelp: true,
-          script: 'webpack --mode production',
+          script: 'webpack --mode production --approute=""',
         },
       },
       ...generateForTargets((target) => {

@@ -71,7 +71,13 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
 
         {patcher.hasAccessToken() ?
         <div className={`View ${this.state.currentView === view.CHAT ? 'View--show' : 'View--hide'}`}>
-          <Chat accessToken={patcher.getAccessToken()} />
+          <Chat
+            url={'ws://localhost:9990/chat'}
+            characterID={'h0HK3FdKsdIEVgeO0s3200'}
+            characterName={'csejb-a'}
+            shard={1}
+            getAccessToken={patcher.getAccessToken}
+          />
         </div>
         : null }
 

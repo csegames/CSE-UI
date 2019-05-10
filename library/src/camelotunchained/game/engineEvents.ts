@@ -13,6 +13,27 @@ import { CoherentEventHandle } from '../../_baseGame/coherent';
 const regMap: {[key: string]: string} = {};
 
 /**
+ * Begin chat is fired by the game client to tell the UI that the user wishes to begin sending a chat message.
+ *
+ * Expected behavior: The chat input element will gain focus and accept text input.
+ *
+ * @param {String} message Optional: A message to auto-populate into the chat input.
+ */
+export const EE_BeginChat = 'beginChat';
+regMap[EE_BeginChat] = 'onBeginChat';
+
+/**
+ * Push chat is fired by the game client to tell the UI to append a string to the chat box, used for linking items or
+ * any other types of dynamic content into the chat window.
+ *
+ * Expected behavior: The chat input element will gain focus and accept text input and append the provided content.
+ *
+ * @param {String} content Optional: Content to append into the chat input.
+ */
+export const EE_PushChat = 'pushChat';
+regMap[EE_PushChat] = 'onPushChat';
+
+/**
  * A scenario round that the current player is in has ended.
  *
  * Expected behavior: Displays a notificaiton of win/loss for the round and if the

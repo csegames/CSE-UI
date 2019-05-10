@@ -4,8 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import './Vec2f';
-import './Vec3f';
+import './CurrentMax';
 import './Ability';
 import './Consumables';
 import './PlayerDirection';

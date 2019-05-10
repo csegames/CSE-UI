@@ -1,0 +1,364 @@
+syntax = "proto3";
+package chat;
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Google.Protobuf.CU.Chat";
+
+//	Optimize for speed over code size
+option optimize_for = SPEED;
+
+/////////////////////////////
+// MESSAGES TO THE SERVER
+/////////////////////////////
+
+message RoomActionRequest {
+  enum ActionType {
+    CREATE = 0;
+    DELETE = 1;
+    RENAME = 2;
+    JOIN = 3;
+    LEAVE = 4;
+    CREATEROLE = 5;
+    UPDATEROLE = 6;
+    DELETEROLE = 7;
+    ASSIGNROLE = 8;
+    INVITEUSER = 9;
+    KICKUSER = 10;
+    BANUSER = 11;
+    MUTEUSER = 12;
+    TRANSFEROWNERSHIP = 13;
+    DIRECTORY = 14;
+  }
+
+  message CreateRoom {
+    string name = 1;
+    bool isPublic = 2; // if true, channel is public and anyone can join. 
+                        // if false, channel is private and members must be invited.
+    string forGroupID = 3; 
+  }
+
+  message DeleteRoom {
+    string roomID = 1;
+  }
+
+  message RenameRoom {
+    string roomID = 1;
+    string name = 2;
+  }
+
+  message JoinRoom {
+    string roomID = 1;
+    string inviteToken = 2;
+  }
+
+  message LeaveRoom {
+    string roomID = 1;
+  }
+
+  message CreateRole {
+    string roomID = 1;
+    string name = 2;
+    int32 permissions = 3; // Bit flag of permissions
+  }
+
+  message UpdateRole {
+    string roomID = 1;
+    string name = 2;
+    int32 permissions = 3; // Bit flag of permissions
+    string rename = 4;
+  }
+
+  message DeleteRole {
+    string roomID = 1;
+    string name = 2;
+  }
+
+  message AssignRole {
+    string roomID = 1;
+    string role = 2;
+    string userID = 3;
+  }
+
+  message InviteUser {
+    string roomID = 1;
+    string userID = 2;
+    string characterName = 3;
+  }
+
+  message KickUser {
+    string roomID = 1;
+    string userID = 2;
+  }
+
+  message BanUser {
+    string roomID = 1;
+    string userID = 2;
+    int32 seconds = 3; // how long to ban the user for, if not provided ban is permanent
+  }
+
+  message MuteUser {
+    string roomID = 1;
+    string userID = 2;
+    int32 seconds = 3; // how long to mute the user for, if not provided ban is permanent
+  }
+
+  message TransferOwnership {
+    string roomID = 1;
+    string newOwnerID = 2;
+  }
+
+  ActionType action = 1;
+  CreateRoom create = 51;
+  DeleteRoom delete = 52;
+  RenameRoom rename = 53;
+  JoinRoom join = 54;
+  LeaveRoom leave = 55;
+
+  CreateRole createRole = 56;
+  UpdateRole updateRole = 57;
+  DeleteRole deleteRole = 58;
+  AssignRole assignRole = 59;
+
+  InviteUser inviteUser = 60;
+  KickUser kickUser = 61;
+  BanUser banUser = 62;
+  MuteUser muteUser = 63;
+  TransferOwnership transferOwner = 64;
+}
+
+
+/////////////////////////////
+// MESSAGES TO THE CLIENT
+/////////////////////////////
+
+message RoomActionResponse {
+  enum ActionResponseType {
+    CREATE = 0;
+    DELETE = 1;
+    RENAME = 2;
+    JOIN = 3;
+    LEAVE = 4;
+    CREATEROLE = 5;
+    UPDATEROLE = 6;
+    DELETEROLE = 7;
+    ASSIGNROLE = 8;
+    INVITE = 9;
+    KICKUSER = 10;
+    BANUSER = 11;
+    MUTEUSER = 12;
+    TRANSFEROWNERSHIP = 13;
+  }
+  ActionResponseType action = 1;
+  bool success = 2;
+  string message = 3;
+}
+
+message RoomInfo {
+  enum RoomCategory {
+    GENERAL = 0;
+    WARBAND = 1;
+    ORDER = 2;
+    CAMPAIGN = 3;
+    CUSTOM = 4;
+  }
+  message RoomRole {
+    string name = 2;
+    uint32 permissions = 3; // Bit flag of permissions
+  }
+  string roomID = 1;
+  string name = 2;
+  RoomCategory category = 3;
+  repeated RoomRole roles = 4;
+}
+
+message RoomDirectory {
+  repeated RoomInfo rooms = 1;
+}
+
+message RoomJoined {
+  string roomID = 1;
+  string userID = 2;
+  string name = 3;
+  string role = 4;
+}
+
+message RoomLeft {
+  string roomID = 1;
+  string userID = 2;
+  string name = 3;
+}
+
+message RoomRenamed {
+  string roomID = 1;
+  string name = 2;
+}
+
+message RoomRoleAdded {
+  string roomID = 1;
+  string name = 2;
+  int32 permissions = 3;
+}
+
+message RoomRoleUpdated {
+  string roomID = 1;
+  string name = 2;
+  int32 permissions = 3;
+}
+
+message RoomRoleRemoved {
+  string roomID = 1;
+  string name = 2;
+}
+
+message RoomRoleAssigned {
+  string roomID = 1;
+  string roleName = 2;
+  string userID = 3;
+}
+
+message RoomInviteReceived {
+  string roomID = 1;
+  string roomName = 2;
+}
+
+message RoomKickReceived {
+  string roomID = 1;
+}
+
+message RoomMuteReceived {
+  string roomID = 1;
+  google.protobuf.Timestamp expiration = 2;
+}
+
+message RoomBanReceived {
+  string roomID = 1;
+  google.protobuf.Timestamp expiration = 2;
+}
+
+message RoomOwnerChanged {
+  string roomID = 1;
+  string userID = 2;
+}
+
+
+/////////////////////////////
+// MESSAGES BOTH WAYS
+/////////////////////////////
+
+message ChatMessage {
+  enum MessageTypes {
+    Error = 0; // Chat server error
+    Direct = 1; // Direct message between users
+    Room = 2; // Room chat message
+    Announcement = 3; // Admin announcements, received by all clients regardless of what Room they are in
+  }
+  enum SenderFlag {
+    PLAYER = 0;
+    CSE = 1;
+  }
+  MessageTypes type = 1;
+  string content = 2;
+  SenderFlag senderFlag = 3;
+  string senderID = 4;
+  string senderName = 5;
+  string targetID = 6;
+  string targetName = 7;
+}
+
+message PingPongMessage {
+  bool ping = 1;
+}
+
+
+/////////////////////////////
+// UNION MESSAGES
+/////////////////////////////
+
+// Union for messages to the server
+message ChatServerUnionMessage {
+  enum MessageTypes {
+    NONE = 0;
+    CHAT = 1;
+    PINGPONG = 2;
+    ROOMACTION = 3;
+  }
+  MessageTypes messageType = 1;
+  ChatMessage chat = 2;
+  PingPongMessage pingPong = 3;
+  RoomActionRequest roomAction = 5;
+}
+
+// Union for messages to the client
+message ChatClientUnionMessage {
+  enum MessageTypes {
+    NONE = 0;
+    CHATMESSAGE = 1;
+    PINGPONGMESSAGE = 2;
+    ROOMACTION = 4;
+    ROOMINFO = 5;
+    JOINED = 6;
+    LEFT = 7;
+    RENAMED = 8;
+    ROLEADDED = 9;
+    ROLEUPDATED = 10;
+    ROLEREMOVED = 11;
+    ROLEASSIGNED = 12;
+    INVITERECEIVED = 13;
+    KICKED = 14;
+    BANNED = 15;
+    MUTED = 16;
+    OWNERCHANGED = 17;
+    DIRECTORY = 18;
+  }
+  MessageTypes type = 1;
+  ChatMessage chat = 2;
+  PingPongMessage pingPong = 3;
+
+  RoomActionResponse roomAction = 5;
+  RoomInfo info = 6;
+  RoomJoined joined = 7;
+  RoomLeft left = 8;
+  RoomRenamed renamed = 9;
+  RoomRoleAdded roleAdded = 10;
+  RoomRoleUpdated roleUpdated = 11;
+  RoomRoleRemoved roleRemoved = 12;
+  RoomRoleAssigned roleAssigned = 13;
+  RoomInviteReceived invited = 14;
+  RoomKickReceived kicked = 15;
+  RoomMuteReceived muted = 16;
+  RoomBanReceived banned = 17;
+  RoomOwnerChanged ownerChanged = 18;
+  RoomDirectory directory = 19;
+}
+
+/////////////////////////////
+// PROXY
+/////////////////////////////
+
+message ProxyAuth {
+  enum UserTypes {
+    Player = 0;
+    Bot = 1;
+  }
+  UserTypes type = 1;
+  string accountID = 2;
+  int64 sourceIPAddr = 3;
+}
+
+message ProxyMessage {
+  enum MessageTypes {
+    None = 0;
+    Auth = 1;
+    PingPong = 2;
+    Server = 3;
+    Client = 4;
+    RemoveUser = 5;
+  }
+  MessageTypes type = 1;
+  string userID = 2;
+  ProxyAuth auth = 3;
+  PingPongMessage pingPong = 4;
+  ChatServerUnionMessage serverMessage = 5;
+  ChatClientUnionMessage clientMessage = 6;
+}

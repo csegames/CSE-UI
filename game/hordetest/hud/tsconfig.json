@@ -24,7 +24,7 @@
       "lib/*": [ "lib/*" ],
       "services/*": [ "services/*" ],
       "widgets/*": [ "widgets/*" ],
-      "cushared/*": [ "../../../shared/*" ],
+      "cseshared/*": ["../../../shared/*"],
       "*": [
         "node_modules/*",
         "types/*",
@@ -38,6 +38,5 @@
   },
   "resolution": "typings",
   "include": [
-    "src/**/*", "../shared/components/DevUI"
   ]
 }

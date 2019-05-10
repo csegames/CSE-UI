@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { createSharedStateWithReducer } from './lib/sharedState';
+import { createSharedStateWithReducer } from 'cseshared/lib/sharedState';
 const maxGroupCount = 6;
 const maxChildSlotCount = 4;
 

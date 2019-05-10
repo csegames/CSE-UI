@@ -5,7 +5,7 @@
  */
 
 import { useEffect } from 'react';
-import { createSharedState } from './lib/sharedState';
+import { createSharedState } from 'cseshared/lib/sharedState';
 
 interface SharedAbilityState {
   last: AbilityState | null;

@@ -45,6 +45,7 @@ import { TooltipView } from '../shared/Tooltip';
 import { PopupView } from '../shared/Popup';
 import PassiveAlert from 'hud/PassiveAlert';
 import { ActionAlert } from 'hud/ActionAlert';
+import { Chat } from 'hud/Chat';
 import { ImagePreloader } from './ImagePreloader';
 import { MiniScenarioScoreboard } from 'hud/LiveScenarioScoreboard/MiniScenarioScoreboard';
 import { FullScenarioScoreboard } from 'hud/LiveScenarioScoreboard/FullScenarioScoreboard';
@@ -183,6 +184,7 @@ class HUDViewInternal extends React.Component<HUDProps, HUDState> {
             <FullScenarioScoreboard />
           </FullScenarioScoreboardContainer>
 
+          <Chat />
           <PopupView />
           <TooltipView />
           <ActionAlert />

@@ -17,7 +17,7 @@ import {
   GroupMemberUpdate,
   GroupMemberRemovedUpdate,
 } from '@csegames/library/lib/hordetest/graphql/schema';
-import { GraphQLActiveWarband } from '@csegames/library/lib/camelotunchained/graphql/schema';
+import { GraphQLActiveWarband } from '@csegames/library/lib/hordetest/graphql/schema';
 
 export function onGroupNotification(callback: (myGroupNotifications: GroupNotification) => any): EventHandle {
   return game.on('subscription-groupNotification', callback);

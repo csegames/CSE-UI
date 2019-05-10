@@ -39,8 +39,9 @@ body {
   // widgets
   @import './components/hud/BuildingOLD/index';
   // external scss
-  @import '../../../shared/components/DevUI/index.scss';
+  @import './components/shared/DevUI/index.scss';
   @import '../../../shared/components/Chat/index.scss';
+  // @import '@csegames/camelot-unchained/lib/components/Chat/index.scss';
   .chat-window {
     position: relative;
     overflow: hidden;

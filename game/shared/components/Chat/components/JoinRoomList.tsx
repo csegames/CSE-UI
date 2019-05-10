@@ -5,13 +5,12 @@
  */
 
 import * as React from 'react';
-import { JoinRoomListItem } from './JoinRoomListItem';
-import { Room } from '../lib/CSEChat';
+import JoinRoomListItem from './JoinRoomListItem';
 
 export interface JoinRoomListProps {
-  rooms: Room[];
+  rooms: { name: string; }[];
   filter: string;
-  selectRoom: (room: Room) => void;
+  selectRoom: (room: { name: string; }) => void;
 }
 
 export interface JoinRoomListState {
@@ -28,8 +27,8 @@ export class JoinRoomList extends React.Component<JoinRoomListProps, JoinRoomLis
     if (this.hidden !== filter) {
       this.hidden = undefined;            // filter changed, cancel hidden
       if (rooms.length && filter.length) {
-        rooms.forEach((room: Room, index: number) => {
-          const name: string = room.jid.split('@')[0];
+        rooms.forEach((room: { name: string; }, index: number) => {
+          const name: string = room.name;
           if (filter.length === 0 || name.toLowerCase().indexOf(filter) !== -1) {
             names.push(
               <JoinRoomListItem room={room} key={index} selectRoom={this.props.selectRoom}/>,

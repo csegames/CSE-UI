@@ -7,7 +7,7 @@
 
 import initGameInterface, { initOutOfContextGame } from './initGameInterface';
 
-import { GameInterface, GameModel, DevGameInterface } from './GameInterface';
+import { GameInterface, DevGameInterface } from './GameInterface';
 import initCoherentRecording from '../../_baseGame/coherent';
 import { initEventForwarding } from './engineEvents';
 
