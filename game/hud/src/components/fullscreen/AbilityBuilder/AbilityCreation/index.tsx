@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { isEmpty } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { AbilityNetworkTemplate, ComponentCategorySelector } from './AbilityNetworkTemplate';
@@ -39,6 +39,12 @@ export function AbilityCreation(props: Props) {
   const [state] = useAbilityBuilderReducer();
   const [errorMessage, setErrorMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    if (showModal) {
+      setShowModal(false);
+    }
+  }, [state.modifiedAbilityID]);
 
   function getComponentCategorySelectors() {
     const { abilityNetworks, categoryIDToComponents } = abilityBuilderContext;
@@ -109,6 +115,7 @@ export function AbilityCreation(props: Props) {
 
     if (res.ok) {
       setShowModal(true);
+      game.trigger('refetch-ability-book');
     } else if (res.data) {
       const errorMessage = JSON.parse(res.data).FieldCodes[0].AbilityResult.Details;
       setErrorMessage(errorMessage);

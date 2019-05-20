@@ -99,8 +99,6 @@ export const AbilityBuilderContext = React.createContext(defaultAbilityBuilderCo
 function AbilityBuilder(props: {}) {
   const evh: EventHandle[] = [];
   const [state, dispatch] = useAbilityBuilderReducer();
-  console.log('Ability builder');
-  console.log(state);
   const [contextState, setContextState] = useState(defaultAbilityBuilderContext);
 
   useEffect(() => {

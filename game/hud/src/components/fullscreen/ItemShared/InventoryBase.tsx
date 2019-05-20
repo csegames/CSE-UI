@@ -1754,7 +1754,6 @@ export function moveInventoryItemToEmptySlot(args: {
                                         itemIdToInfo: ItemIDToInfo,
                                         inventoryItems: InventoryItem.Fragment[],
                                       }) {
-  console.log('MOVE INVENTORY ITEM TO EMPTY SLOT');
   const { dragItemData, dropZoneData } = args;
   const containerIdToDrawerInfo = {...args.containerIdToDrawerInfo};
   const slotNumberToItem = {...args.slotNumberToItem};

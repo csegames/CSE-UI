@@ -126,7 +126,9 @@ class ListSelector extends React.Component<Props, State> {
   }
 
   private checkCenterContent = () => {
-    if (this.listRef.scrollWidth === this.listRef.clientWidth) {
+    const { itemDimensions } = this.props;
+    const howManyItemsCanFit = Math.floor(this.listRef.clientWidth / (itemDimensions.width + itemDimensions.margin));
+    if (this.props.listItems.length <= howManyItemsCanFit) {
       this.setState({ shouldCenterContent: true });
       return;
     }

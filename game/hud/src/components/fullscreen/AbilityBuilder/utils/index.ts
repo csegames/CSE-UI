@@ -225,7 +225,7 @@ export function generateRandomAbilityName(componentOne: AbilityBuilderQuery.Abil
     whole = s2.concat(whole);
   }
 
-  if (whole.length > 50) {
+  if (whole.length > 100) {
     return 'New ability';
   }
 

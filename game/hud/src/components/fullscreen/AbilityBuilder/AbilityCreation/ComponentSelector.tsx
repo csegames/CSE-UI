@@ -687,6 +687,21 @@ export class ComponentSelector extends React.PureComponent<Props, State> {
     );
   }
 
+  public componentDidMount() {
+    if (this.props.optional) {
+      let hasSelectedComponent = false;
+      this.props.selectedComponentsList.forEach((selectedComponent) => {
+        if (this.props.listItems.find(item => item.id === selectedComponent.id)) {
+          hasSelectedComponent = true;
+        }
+      });
+
+      if (hasSelectedComponent) {
+        this.setState({ closed: false });
+      }
+    }
+  }
+
   private renderDescription = () => {
     if (!this.props.selectedItem) {
       return null;

@@ -143,6 +143,7 @@ export interface ComponentCategoryToComponenentIDs {
 }
 
 export interface State {
+  loading: boolean;
   refetch: () => void;
   abilityNetworks: AbilityNetworks;
   abilityNetworkToAbilities: AbilityNetworkToAbilities;
@@ -155,6 +156,7 @@ export interface Props {
 }
 
 const defaultContextState: State = {
+  loading: true,
   refetch: () => {},
   abilityNetworks: {},
   abilityNetworkToAbilities: {},
@@ -167,7 +169,9 @@ export const AbilityBookContext = React.createContext(defaultContextState);
 
 // tslint:disable-next-line:function-name
 export function AbilityBook(props: Props) {
+  let gql: GraphQLResult<AbilityBookQuery.Query>;
   const [state, dispatch] = useAbilityBookReducer();
+  const [loading, setLoading] = useState(true);
   const [abilityNetworks, setAbilityNetworks] = useState(defaultContextState.abilityNetworks);
   const [abilityNetworkToAbilities, setAbilityNetworkToAbilities] = useState(defaultContextState.abilityNetworkToAbilities);
   const [abilityComponents, setAbilityComponents] = useState(defaultContextState.abilityComponents);
@@ -177,8 +181,10 @@ export function AbilityBook(props: Props) {
     useState(defaultContextState.componentCategoryToComponentIDs);
 
   useEffect(() => {
+    const listener = game.on('refetch-ability-book', refetch);
     return function() {
       dispatch({ type: 'reset' });
+      listener.clear();
     };
   }, []);
 
@@ -189,7 +195,14 @@ export function AbilityBook(props: Props) {
     dispatch({ type: 'set-active-route', activeRoute: route });
   }
 
+  function refetch() {
+    if (gql) {
+      gql.refetch();
+    }
+  }
+
   function handleQueryResult(graphql: GraphQLResult<AbilityBookQuery.Query>) {
+    gql = graphql;
     if (graphql.loading || !graphql.data) return graphql;
 
     const myCharacter = graphql.data.myCharacter;
@@ -204,6 +217,7 @@ export function AbilityBook(props: Props) {
     setAbilityComponents(initialState.abilityComponents);
     setAbilityComponentIDToProgression(initialState.abilityComponentIDToProgression);
     setComponentCategoryToComponentIDs(initialState.componentCategoryToComponentIDs);
+    setLoading(false);
 
     const abilityNetworksArray = Object.keys(initialState.abilityNetworks);
     if (abilityNetworksArray.length > 0) {
@@ -329,6 +343,7 @@ export function AbilityBook(props: Props) {
         return (
           <AbilityBookContext.Provider
             value={{
+              loading,
               refetch: graphql.refetch,
               abilityNetworks,
               abilityNetworkToAbilities,
@@ -345,7 +360,7 @@ export function AbilityBook(props: Props) {
                   abilityNetworkNames={Object.keys(abilityNetworks)}
                 />
                 <PageContainer>
-                  {renderSelectedPage()}
+                  {!loading && renderSelectedPage()}
                 </PageContainer>
               </Content>
             </Container>

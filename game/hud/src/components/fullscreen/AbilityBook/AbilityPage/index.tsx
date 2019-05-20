@@ -114,8 +114,7 @@ export const fuseSearchOptions: FuseOptions<any> = {
 
 // tslint:disable-next-line:function-name
 export function AbilityPage(props: Props) {
-  // @ts-ignore:no-unused-var
-  const [_, abilityBuilderDispatch] = useAbilityBuilderReducer();
+  const [abilityBuilderState, abilityBuilderDispatch] = useAbilityBuilderReducer();
   const [state] = useAbilityBookReducer();
   const { visibleComponentLeft, visibleComponentRight } = useContext(FullScreenContext);
   const { refetch, abilityNetworkToAbilities } = useContext(AbilityBookContext);
@@ -167,6 +166,10 @@ export function AbilityPage(props: Props) {
     if (res.ok) {
       onCloseModal();
       refetch();
+
+      if (abilityBuilderState.modifiedAbilityID === selectedAbility.id) {
+        abilityBuilderDispatch({ type: 'reset' });
+      }
     }
   }
 
