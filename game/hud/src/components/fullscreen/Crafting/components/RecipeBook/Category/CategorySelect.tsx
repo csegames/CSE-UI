@@ -9,7 +9,6 @@ import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { isEqual } from 'lodash';
 import { VoxJobType, ItemType, VoxJob } from 'gql/interfaces';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import { CraftingContext } from '../../../CraftingContext';
 import { AlloyType, RecipeData, InputItem } from '../../../CraftingBase';
 import {
@@ -22,6 +21,7 @@ import {
   isValidVoxEntityID,
 } from '../../../lib/utils';
 import { FilteredAvailablePatterns } from '.';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   display: flex;
@@ -32,53 +32,76 @@ const Container = styled.div`
   height: 100%;
 `;
 
+// #region SectionContainer constants
+const SECTION_CONTAINER_MARGIN_BOTTOM = 20;
+// #endregion
 const SectionContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+  margin-bottom: ${SECTION_CONTAINER_MARGIN_BOTTOM}px;
+
+  @media (max-width: 2560px) {
+    margin-bottom: ${SECTION_CONTAINER_MARGIN_BOTTOM * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-bottom: ${SECTION_CONTAINER_MARGIN_BOTTOM * HD_SCALE}px;
+  }
 `;
 
+// #region SectionTitle constants
+const SECTION_TITLE_FONT_SIZE = 36;
+// #endregion
 const SectionTitle = styled.div`
   text-align: center;
-  font-size: 18px;
+  font-size: ${SECTION_TITLE_FONT_SIZE}px;
   font-family: TradeWinds;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 23px;
+  @media (max-width: 2560px) {
+    font-size: ${SECTION_TITLE_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 36px;
+  @media (max-width: 1920px) {
+    font-size: ${SECTION_TITLE_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
+// #region ButtonContainer constants
+const BUTTON_CONTAINER_WIDTH = 672;
+// #endregion
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  width: 336px;
+  width: ${BUTTON_CONTAINER_WIDTH}px;
   height: fit-content;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 437px;
+  @media (max-width: 2560px) {
+    width: ${BUTTON_CONTAINER_WIDTH * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 672px
+  @media (max-width: 1920px) {
+    width: ${BUTTON_CONTAINER_WIDTH * HD_SCALE}px
   }
 `;
 
+// #region SelectButton constants
+const SELECT_BUTTON_DIMENSIONS = 204;
+const SELECT_BUTTON_HORIZONTAL_MARGIN = 10;
+// #endregion
 const SelectButton = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 102px;
-  height: 102px;
+  width: ${SELECT_BUTTON_DIMENSIONS}px;
+  height: ${SELECT_BUTTON_DIMENSIONS}px;
+  margin: 0 ${SELECT_BUTTON_HORIZONTAL_MARGIN}px;
   border-radius: 50%;
   cursor: pointer;
-  background: url(../images/crafting/1080/category-select-ring.png) no-repeat;
-  margin: 0 5px;
+  background-image: url(../images/crafting/uhd/category-select-ring.png);
+  background-repeat: no-repeat;
+  background-size: contain;
   opacity: 1;
   transition: opacity 0.3s;
 
@@ -91,80 +114,87 @@ const SelectButton = styled.div`
     opacity: 0.5;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 133px;
-    height: 133px;
-    background: url(../images/crafting/4k/category-select-ring.png) no-repeat;
-    background-size: contain;
-    margin-right: 0 10px;
+  @media (max-width: 2560px) {
+    width: ${SELECT_BUTTON_DIMENSIONS * MID_SCALE}px;
+    height: ${SELECT_BUTTON_DIMENSIONS * MID_SCALE}px;
+    margin: 0 ${SELECT_BUTTON_HORIZONTAL_MARGIN * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 204px;
-    height: 204px;
-    background: url(../images/crafting/4k/category-select-ring.png) no-repeat;
-    background-size: contain;
-    margin-right: 0 15px;
+  @media (max-width: 1920px) {
+    width: ${SELECT_BUTTON_DIMENSIONS * HD_SCALE}px;
+    height: ${SELECT_BUTTON_DIMENSIONS * HD_SCALE}px;
+    margin: 0 ${SELECT_BUTTON_HORIZONTAL_MARGIN * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/category-select-ring.png);
   }
 `;
 
+// #region JobIcon constants
+const JOB_ICON_FONT_SIZE = 80;
+const JOB_ICON_MARGIN_BOTTOM = 10;
+// #endregion
 const JobIcon = styled.div`
-  font-size: 40px;
+  font-size: ${JOB_ICON_FONT_SIZE}px;
+  margin-bottom: ${JOB_ICON_MARGIN_BOTTOM}px;
   color: black;
-  margin-bottom: 5px;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 52px;
-    margin-bottom: 10px;
+  @media (max-width: 2560px) {
+    font-size: ${JOB_ICON_FONT_SIZE * MID_SCALE}px;
+    margin-bottom: ${JOB_ICON_MARGIN_BOTTOM * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 80px;
-    margin-bottom: 15px;
+  @media (max-width: 1920px) {
+    font-size: ${JOB_ICON_FONT_SIZE * HD_SCALE}px;
+    margin-bottom: ${JOB_ICON_MARGIN_BOTTOM * HD_SCALE}px;
   }
 `;
 
+// #region JobText constants
+const JOB_TEXT_FONT_SIZE = 24;
+// #endregion
 const JobText = styled.div`
-  font-size: 12px;
+  font-size: ${JOB_TEXT_FONT_SIZE}px;
   color: black;
   text-transform: uppercase;
   font-family: TradeWinds;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 16px;
+  @media (max-width: 2560px) {
+    font-size: ${JOB_TEXT_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 24px;
+  @media (max-width: 1920px) {
+    font-size: ${JOB_TEXT_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
+// #region ConceptArt constants
+const CONCEPT_ART_BOTTOM = 40;
+const CONCEPT_ART_WIDTH = 836;
+const CONCEPT_ART_HEIGHT = 512;
+// #endregion
 const ConceptArt = styled.div`
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 20px;
+  bottom: ${CONCEPT_ART_BOTTOM}px;
+  width: ${CONCEPT_ART_WIDTH}px;
+  height: ${CONCEPT_ART_HEIGHT}px;
   margin: auto;
-  width: 418px;
-  height: 256px;
-  background: url(../images/crafting/1080/drawings/sketch-mid-1.png) no-repeat;
+  background-image: url(../images/crafting/uhd/drawings/sketch-mid-1.png);
+  background-repeat: no-repeat;
   background-size: contain;
   background-position: center center;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 543px;
-    height: 333px;
-    background: url(../images/crafting/4k/drawings/sketch-mid-1.png) no-repeat;
-    background-size: contain;
-    background-position: center center;
+  @media (max-width: 2560px) {
+    bottom: ${CONCEPT_ART_BOTTOM * MID_SCALE}px;
+    width: ${CONCEPT_ART_WIDTH * MID_SCALE}px;
+    height: ${CONCEPT_ART_HEIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 836px;
-    height: 512px;
-    background: url(../images/crafting/4k/drawings/sketch-mid-1.png) no-repeat;
-    background-size: contain;
-    background-position: center center;
+  @media (max-width: 1920px) {
+    bottom: ${CONCEPT_ART_BOTTOM * HD_SCALE}px;
+    width: ${CONCEPT_ART_WIDTH * HD_SCALE}px;
+    height: ${CONCEPT_ART_HEIGHT * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/drawings/sketch-mid-1.png);
   }
 `;
 

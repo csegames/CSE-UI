@@ -20,45 +20,53 @@ import {
   getFavoriteIcon,
   getJobTypeIcon,
 } from '../../../lib/utils';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
-import { CraftingResolutionContext } from '../../../CraftingResolutionContext';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   position: relative;
 `;
 
+// #region Name constants
+const NAME_FONT_SIZE = 36;
+// #endregion
 const Name = styled.div`
   font-family: TradeWinds;
-  font-size: 18px;
+  font-size: ${NAME_FONT_SIZE}px;
   color: #0A0706;
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 21px;
+  @media (max-width: 2560px) {
+    font-size: ${NAME_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 36px;
+  @media (max-width: 1920px) {
+    font-size: ${NAME_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
+// #region JobTypeIcon constants
+const JOB_TYPE_ICON_RIGHT = -40;
+const JOB_TYPE_ICON_FONT_SIZE = 300;
+// #endregion
 const JobTypeIcon = styled.div`
   position: absolute;
-  right: -20px;
+  right: ${JOB_TYPE_ICON_RIGHT}px;
+  font-size: ${JOB_TYPE_ICON_FONT_SIZE}px;
   color: #6B490F;
   opacity: 0.1;
-  font-size: 150px;
   z-index: 0;
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 195px;
+  @media (max-width: 2560px) {
+    right: ${JOB_TYPE_ICON_RIGHT * MID_SCALE}px;
+    font-size: ${JOB_TYPE_ICON_FONT_SIZE * MID_SCALE}px;
     opacity: 0.2;
   }
 
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 300px;
+  @media (max-width: 1920px) {
+    right: ${JOB_TYPE_ICON_RIGHT * HD_SCALE}px;
+    font-size: ${JOB_TYPE_ICON_FONT_SIZE * HD_SCALE}px;
     opacity: 0.2;
   }
 `;
@@ -70,49 +78,67 @@ const Info = styled.div`
   z-index: 1;
 `;
 
+// #region Description constants
+const DESCRIPTION_FONT_SIZE = 32;
+const DESCRIPTION_MARGIN_BOTTOM = 20;
+// #endregion
 const Description = styled.div`
   font-family: Caveat;
   color: #000000;
-  font-size: 16px;
-  margin-bottom: 10px;
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 21px;
+  font-size: ${DESCRIPTION_FONT_SIZE}px;
+  margin-bottom: ${DESCRIPTION_MARGIN_BOTTOM}px;
+
+  @media (max-width: 2560px) {
+    font-size: ${DESCRIPTION_FONT_SIZE * MID_SCALE}px;
+    margin-bottom: ${DESCRIPTION_MARGIN_BOTTOM * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 32px;
+  @media (max-width: 1920px) {
+    font-size: ${DESCRIPTION_FONT_SIZE * MID_SCALE}px;
+    margin-bottom: ${DESCRIPTION_MARGIN_BOTTOM * MID_SCALE}px;
   }
 `;
 
+// #region SubHeader constants
+const SUB_HEADER_FONT_SIZE = 28;
+// #endregion
 const SubHeader = styled.div`
   font-family: TradeWinds;
-  font-size: 14px;
   color: #0A0706;
+  font-size: ${SUB_HEADER_FONT_SIZE}px;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 18px;
+  @media (max-width: 2560px) {
+    font-size: ${SUB_HEADER_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 28px;
+  @media (max-width: 1920px) {
+    font-size: ${SUB_HEADER_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
+// #region FavoriteContainer constants
+const FAVORITE_CONTAINER_LEFT = -50;
+const FAVORITE_CONTAINER_WIDTH = 60;
+// #endregion
 const FavoriteContainer = styled.div`
   position: absolute;
-  left: -25px;
+  left: ${FAVORITE_CONTAINER_LEFT}px;
+  width: ${FAVORITE_CONTAINER_WIDTH}px;
   display: flex;
   justify-content: center;
-  width: 30px;
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 55px;
-    left: -45px;
+
+  @media (max-width: 2560px) {
+    left: ${FAVORITE_CONTAINER_LEFT * MID_SCALE}px;
+    width: ${FAVORITE_CONTAINER_WIDTH * MID_SCALE}px;
   }
 `;
 
+// #region FavoriteImage constants
+const FAVORITE_IMAGE_DIMENSIONS = 40;
+// #endregion
 const FavoriteImage = styled.img`
-  width: 20px;
-  height: 20px;
+  width: ${FAVORITE_IMAGE_DIMENSIONS}px;
+  height: ${FAVORITE_IMAGE_DIMENSIONS}px;
   cursor: pointer;
   opacity: 1;
   -webkit-transition: opacity 0.2s;
@@ -121,9 +147,14 @@ const FavoriteImage = styled.img`
     opacity: 0.8;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 40px;
-    height: 40px;
+  @media (max-width: 2560px) {
+    width: ${FAVORITE_IMAGE_DIMENSIONS * MID_SCALE}px;
+    height: ${FAVORITE_IMAGE_DIMENSIONS * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${FAVORITE_IMAGE_DIMENSIONS * HD_SCALE}px;
+    height: ${FAVORITE_IMAGE_DIMENSIONS * HD_SCALE}px;
   }
 `;
 
@@ -148,7 +179,7 @@ class FullView extends React.Component<Props> {
     const notCrafted = groupLog.timesCrafted === 0;
 
     return (
-      <CraftingResolutionContext.Consumer>
+      <UIContext.Consumer>
         {({ isUHD }) => (
           <Container>
             <JobTypeIcon className={getJobTypeIcon(this.props.selectedGroupLog.log.jobType)} />
@@ -175,7 +206,7 @@ class FullView extends React.Component<Props> {
             </Info>
           </Container>
         )}
-      </CraftingResolutionContext.Consumer>
+      </UIContext.Consumer>
     );
   }
 

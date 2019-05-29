@@ -21,7 +21,7 @@ import OutputInfo from '../OutputItems/OutputInfo';
 import NoVoxOverlay from './NoVoxOverlay';
 import { canStartJob, shouldShowClearButton, isNearbyVox } from '../../lib/utils';
 import { VoxJobState } from 'gql/interfaces';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   position: relative;
@@ -45,153 +45,151 @@ const BGGlow = styled.div`
   right: 0;
   bottom: 0;
   height: 100%;
-  background: url(../images/crafting/1080/glow-bg.png);
+  background-image: url(../images/crafting/uhd/glow-bg.png);
   background-size: cover;
   pointer-events: none;
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    background: url(../images/crafting/4k/glow-bg.png);
-    background-size: cover;
+
+  @media (max-width: 1920px) {
+    background-image: url(../images/crafting/hd/glow-bg.png);
   }
 `;
 
+// #region BGRing constants
+const BG_RING_BOTTOM = 280;
+const BG_RING_MAX_DIMENSIONS = 624;
+// #endregion
 const LeftBGRing = styled.div`
   position: absolute;
   left: -40%;
-  bottom: 140px;
-  max-width: 312px;
-  max-height: 312px;
+  bottom: ${BG_RING_BOTTOM}px;
+  max-width: ${BG_RING_MAX_DIMENSIONS}px;
+  max-height: ${BG_RING_MAX_DIMENSIONS}px;
   width: 100%;
   height: 40%;
-  background: url(../images/crafting/1080/rings.png) no-repeat;
+  background-image: url(../images/crafting/uhd/rings.png);
+  background-repeat: no-repeat;
   background-size: contain;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    max-width: 406px;
-    max-height: 406px;
-    bottom: 182px;
-    left: -40%;
-    background: url(../images/crafting/4k/rings.png) no-repeat;
-    background-size: contain;
+  @media (max-width: 2560px) {
+    bottom: ${BG_RING_BOTTOM * MID_SCALE}px;
+    max-width: ${BG_RING_MAX_DIMENSIONS * MID_SCALE}px;
+    max-height: ${BG_RING_MAX_DIMENSIONS * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    max-width: 950px;
-    max-height: 950px;
-    left: -35%;
-    bottom: 220px;
-    background: url(../images/crafting/4k/rings.png) no-repeat;
-    background-size: contain;
+  @media (max-width: 1920px) {
+    max-width: ${BG_RING_MAX_DIMENSIONS * HD_SCALE}px;
+    max-height: ${BG_RING_MAX_DIMENSIONS * HD_SCALE}px;
+    bottom: ${BG_RING_BOTTOM * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/rings.png);
   }
 `;
 
 const RightBGRing = styled.div`
   position: absolute;
   right: -40%;
-  bottom: 140px;
-  max-width: 312px;
+  bottom: ${BG_RING_BOTTOM}px;
+  max-width: ${BG_RING_MAX_DIMENSIONS}px;
   max-height: 312px;
   width: 100%;
   height: 40%;
-  background: url(../images/crafting/1080/rings.png) no-repeat;
+  background-image: url(../images/crafting/uhd/rings.png);
+  background-repeat: no-repeat;
   background-size: contain;
   background-position: right;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    max-width: 406px;
-    max-height: 406px;
-    right: -40%;
-    bottom: 182px;
-    background: url(../images/crafting/4k/rings.png) no-repeat;
-    background-size: contain;
-    background-position: right;
+  @media (max-width: 2560px) {
+    max-width: ${BG_RING_MAX_DIMENSIONS * MID_SCALE}px;
+    max-height: ${BG_RING_MAX_DIMENSIONS * MID_SCALE}px;
+    bottom: ${BG_RING_BOTTOM * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    max-width: 950px;
-    max-height: 950px;
-    right: -35%;
-    bottom: 220px;
-    background: url(../images/crafting/4k/rings.png) no-repeat;
-    background-size: contain;
-    background-position: right;
+  @media (max-width: 1920px) {
+    max-width: ${BG_RING_MAX_DIMENSIONS * HD_SCALE}px;
+    max-height: ${BG_RING_MAX_DIMENSIONS * HD_SCALE}px;
+    bottom: ${BG_RING_BOTTOM * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/rings.png);
   }
 `;
 
+// #region Crystal constants
+const CRYSTAL_MAX_WIDTH = 520;
+const CRYSTAL_MAX_HEIGHT = 772;
+const CRYSTAL_HORIZONTAL = -200;
+const CRYSTAL_BOTTOM = 300;
+// #endregion
 const LeftCrystal = styled.div`
   position: absolute;
-  background: url(../images/crafting/1080/left-crystal.png);
+  background-image: url(../images/crafting/uhd/left-crystal.png);
   background-size: cover;
-  max-width: 260px;
-  max-height: 386px;
+  max-width: ${CRYSTAL_MAX_WIDTH}px;
+  max-height: ${CRYSTAL_MAX_HEIGHT}px;
+  left: ${CRYSTAL_HORIZONTAL}px;
+  bottom: ${CRYSTAL_BOTTOM}px;
   height: 50%;
   width: 100%;
-  left: -100px;
-  bottom: 150px;
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    background: url(../images/crafting/4k/left-crystal.png);
-    background-size: cover;
-    max-width: 338px;
-    max-height: 502px;
-    left: -130px;
-    bottom: 195px;
+  @media (max-width: 2560px) {
+    max-width: ${CRYSTAL_MAX_WIDTH * MID_SCALE}px;
+    max-height: ${CRYSTAL_MAX_HEIGHT * MID_SCALE}px;
+    left: ${CRYSTAL_HORIZONTAL * MID_SCALE}px;
+    bottom: ${CRYSTAL_BOTTOM * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/left-crystal.png);
-    background-size: cover;
-    max-width: 624px;
-    max-height: 926px;
-    left: -200px;
-    bottom: 250px;
+  @media (max-width: 1920px) {
+    background-image: url(../images/crafting/hd/left-crystal.png);
+    max-width: ${CRYSTAL_MAX_WIDTH * HD_SCALE}px;
+    max-height: ${CRYSTAL_MAX_HEIGHT * HD_SCALE}px;
+    left: ${CRYSTAL_HORIZONTAL * HD_SCALE}px;
+    bottom: ${CRYSTAL_BOTTOM * HD_SCALE}px;
   }
 `;
 
 const RightCrystal = styled.div`
   position: absolute;
-  background: url(../images/crafting/1080/right-crystal.png);
+  background-image: url(../images/crafting/uhd/right-crystal.png);
   background-size: cover;
-  max-width: 260px;
-  max-height: 386px;
+  max-width: ${CRYSTAL_MAX_WIDTH}px;
+  max-height: ${CRYSTAL_MAX_HEIGHT}px;
+  right: ${CRYSTAL_HORIZONTAL}px;
+  bottom: ${CRYSTAL_BOTTOM}px;
   height: 50%;
   width: 100%;
-  right: -100px;
-  bottom: 150px;
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    background: url(../images/crafting/4k/right-crystal.png);
-    background-size: cover;
-    max-width: 338px;
-    max-height: 502px;
-    right: -130px;
-    bottom: 195px;
+  @media (max-width: 2560px) {
+    max-width: ${CRYSTAL_MAX_WIDTH * MID_SCALE}px;
+    max-height: ${CRYSTAL_MAX_HEIGHT * MID_SCALE}px;
+    right: ${CRYSTAL_HORIZONTAL * MID_SCALE}px;
+    bottom: ${CRYSTAL_BOTTOM * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/right-crystal.png);
-    background-size: cover;
-    max-width: 624px;
-    max-height: 926px;
-    right: -200px;
-    bottom: 250px;
+  @media (max-width: 1920px) {
+    background-image: url(../images/crafting/hd/right-crystal.png);
+    max-width: ${CRYSTAL_MAX_WIDTH * HD_SCALE}px;
+    max-height: ${CRYSTAL_MAX_HEIGHT * HD_SCALE}px;
+    right: ${CRYSTAL_HORIZONTAL * HD_SCALE}px;
+    bottom: ${CRYSTAL_BOTTOM * HD_SCALE}px;
   }
 `;
 
+// #region ClearJobPosition constants
+const CLEAR_JOB_POSITION_TOP = -30;
+const CLEAR_JOB_POSITION_LEFT = 28;
+// #endregion
 const ClearJobPosition = styled.div`
-  position: fixed;
-  top: 107px;
-  left: 14px;
+  position: absolute;
+  top: ${CLEAR_JOB_POSITION_TOP}px;
+  left: ${CLEAR_JOB_POSITION_LEFT}px;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    top: 110px;
-    left: 16px;
+  @media (max-width: 2560px) {
+    top: ${CLEAR_JOB_POSITION_TOP * MID_SCALE}px;
+    left: ${CLEAR_JOB_POSITION_LEFT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    top: 197px;
-    left: 30px;
+  @media (max-width: 1920px) {
+    top: ${CLEAR_JOB_POSITION_TOP * HD_SCALE}px;
+    left: ${CLEAR_JOB_POSITION_LEFT * HD_SCALE}px;
   }
 `;
 
@@ -203,6 +201,9 @@ const JobIndicatorPosition = styled.div`
   margin: auto;
 `;
 
+// #region OutputMainRing constants
+const OUTPUT_MAIN_RING_RIGHT = 10;
+// #endregion
 const OutputMainRing = styled.div`
   position: absolute;
   bottom: -10%;
@@ -210,31 +211,38 @@ const OutputMainRing = styled.div`
   margin: auto;
   width: 130%;
   height: 130%;
-  background: url(../images/crafting/1080/output-main-ring-shadow.png) no-repeat;
+  background-image: url(../images/crafting/uhd/output-main-ring-shadow.png);
+  background-repeat: no-repeat;
   background-position: center 0%;
   background-size: cover;
   z-index: 11;
   pointer-events: none;
+
   &:before {
     content: '';
     position: absolute;
     width: 100%;
     height: 100%;
-    background: url(../images/crafting/1080/output-main-ring.png) no-repeat;
+    background: url(../images/crafting/uhd/output-main-ring.png);
     background-position: center 0%;
     background-size: cover;
-    right: 5px;
+    right: ${OUTPUT_MAIN_RING_RIGHT}px;
     z-index: 11;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    background: url(../images/crafting/4k/output-main-ring-shadow.png) no-repeat;
-    background-position: center 0%;
-    background-size: cover;
+  @media (max-width: 2560px) {
     &:before {
-      background: url(../images/crafting/4k/output-main-ring.png) no-repeat;
-      background-position: center 0%;
-      background-size: cover;
+      right: ${OUTPUT_MAIN_RING_RIGHT * MID_SCALE}px;
+    }
+  }
+
+  @media (max-width: 1920px) {
+    background-image: url(../images/crafting/hd/output-main-ring-shadow.png);
+    background-repeat: no-repeat;
+    &:before {
+      right: ${OUTPUT_MAIN_RING_RIGHT * HD_SCALE}px;
+      background-image: url(../images/crafting/hd/output-main-ring.png);
+      background-repeat: no-repeat;
     }
   }
 `;
@@ -265,45 +273,23 @@ const OutputContainer = styled.div`
   pointer-events: none;
 `;
 
-// const WheelContainer = styled.div`
-//   position: relative;
-//   width: 100%;
-//   height: 100%;
-//   left: -2%;
-//   z-index: 11;
-//   &:before {
-//     content: '';
-//     position: absolute;
-//     width: 100%;
-//     height: 100%;
-//     background: url(../images/crafting/1080/output-main-ring-shadow.png) no-repeat;
-//     background-position: center 0%;
-//     background-size: cover;
-//   }
-
-//   @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-//     &:before {
-//       background: url(../images/crafting/4k/output-main-ring-shadow.png) no-repeat;
-//       background-position: center 0%;
-//       background-size: cover;
-//     }
-//   }
-// `;
-
+// #region ButtonContainer constants
+const BUTTON_CONTAINER_BOTTOM = -340;
+// #endregion
 const ButtonContainer = styled.div`
   position: absolute;
   width: 100%;
-  bottom: -170px;
+  bottom: ${BUTTON_CONTAINER_BOTTOM}px;
   display: flex;
   pointer-events: none;
   z-index: 12;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    bottom: -110px;
+  @media (max-width: 2560px) {
+    bottom: ${BUTTON_CONTAINER_BOTTOM * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    bottom: -170px;
+  @media (max-width: 1920px) {
+    bottom: ${BUTTON_CONTAINER_BOTTOM * HD_SCALE}px;
   }
 `;
 

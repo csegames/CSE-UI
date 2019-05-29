@@ -6,7 +6,6 @@
  */
 
 import * as React from 'react';
-import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/camelot-unchained';
 
@@ -16,7 +15,6 @@ import GroupLogQuickView from '../GroupLogQuickView';
 import JobLogFullView from '../JobLogFullView';
 import BackButton from '../JobLogFullView/BackButton';
 import SearchInput from '../SearchInput';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import { itemCanBeRepaired, itemCanBeSalvaged, getJobContext } from '../../../lib/utils';
 import { getItemUnitCount } from 'fullscreen/lib/utils';
 import { CraftingContext } from '../../../CraftingContext';
@@ -41,12 +39,6 @@ import {
 const Container = styled.div`
   width: 100%;
   height: 100%;
-`;
-
-const BackButtonStyle = css`
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    top: 15px;
-  }
 `;
 
 export interface FilteredAvailablePatterns {
@@ -100,7 +92,7 @@ class Category extends React.Component<Props, State> {
     return (
       <Container>
         {this.state.selectedGroupLog ? null : <SearchInput searchValue={searchValue} onSearchChange={onSearchChange} />}
-        {this.shouldShowBack() && <BackButton className={BackButtonStyle} onClick={this.onBackClick} />}
+        {this.shouldShowBack() && <BackButton onClick={this.onBackClick} />}
         {this.renderView()}
       </Container>
     );

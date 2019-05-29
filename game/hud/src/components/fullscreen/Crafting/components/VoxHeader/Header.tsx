@@ -7,21 +7,31 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const PADDING_HORIZONTAL = 40;
+const PADDING_HEIGHT = 140;
+// #endregion
 export const Container = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  padding: 0px 20px;
-  height: 70px;
-  background: url(../images/crafting/1080/title-texture.png) repeat;
+  padding: 0px ${PADDING_HORIZONTAL}px;
+  height: ${PADDING_HEIGHT}px;
+  background-image: url(../images/crafting/uhd/title-texture.png);
+  background-repeat: repeat;
   background-size: cover;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/title-texture.png) repeat;
-    background-size: cover;
-    height: 130px;
+  @media (max-width: 2560px) {
+    padding: 0px ${PADDING_HORIZONTAL * MID_SCALE}px;
+    height: ${PADDING_HEIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding: 0px ${PADDING_HORIZONTAL * HD_SCALE}px;
+    height: ${PADDING_HEIGHT * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/title-texture.png);
   }
 `;
 
@@ -31,25 +41,34 @@ export const Overlay = styled.div`
   left: 0;
   bottom: 0;
   right: 0;
-  background: url(../images/crafting/1080/title-vox-overlay.png) no-repeat;
+  background-image: url(../images/crafting/uhd/title-vox-overlay.png);
+  background-repeat: no-repeat;
   background-size: cover;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/title-vox-overlay.png) no-repeat;
-    background-size: cover;
+  @media (max-width: 1920px) {
+    background-image: url(../images/crafting/hd/title-vox-overlay.png) no-repeat;
   }
 `;
 
+// #region Text constants
+const TEXT_FONT_SIZE = 40;
+const TEXT_LETTER_SPACING = 10;
+// #endregion
 export const Text = styled.div`
   font-family: Caudex;
   color: #C6ffb1;
-  font-size: 20px;
+  font-size: ${TEXT_FONT_SIZE}px;
+  letter-spacing: ${TEXT_LETTER_SPACING}px;
   text-transform: uppercase;
-  letter-spacing: 5px;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 40px;
-    letter-spacing: 10px;
+  @media (max-width: 2560px) {
+    font-size: ${TEXT_FONT_SIZE * MID_SCALE}px;
+    letter-spacing: ${TEXT_LETTER_SPACING * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${TEXT_FONT_SIZE * HD_SCALE}px;
+    letter-spacing: ${TEXT_LETTER_SPACING * HD_SCALE}px;
   }
 `;
 

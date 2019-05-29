@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { getJobContext } from '../../lib/utils';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const ConfirmationContainer = styled.div`
   display: flex;
@@ -20,37 +20,46 @@ const ConfirmationButtons = styled.div`
   display: flex;
 `;
 
+// #region CancelButton constants
+const CANCEL_BUTTON_WIDTH = 302;
+const CANCEL_BUTTON_HEIGHT = 90;
+const CANCEL_BUTTON_FONT_SIZE = 24;
+const CANCEL_BUTTON_LETTER_SPACING = 4;
+const CANCEL_BUTTON_MARGIN_HORIZONTAL = 10;
+// #endregion
 const CancelButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   align-self: center;
-  width: 156px;
-  height: 45px;
-  background: url(../images/crafting/1080/vox-cancel-button-border.png) no-repeat;
+  width: ${CANCEL_BUTTON_WIDTH}px;
+  height: ${CANCEL_BUTTON_HEIGHT}px;
+  font-size: ${CANCEL_BUTTON_FONT_SIZE}px;
+  letter-spacing: ${CANCEL_BUTTON_LETTER_SPACING}px;
+  margin: 0 ${CANCEL_BUTTON_MARGIN_HORIZONTAL}px;
+  background-image: url(../images/crafting/uhd/vox-cancel-button-border.png);
+  background-repeat: no-repeat;
+  background-size: contain;
   text-align: center;
   font-family: Caudex;
-  font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 2px;
   cursor: pointer;
-  margin: 0 5px;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    background: url(../images/crafting/4k/vox-cancel-button-border.png) no-repeat;
-    background-size: contain;
-    width: 203px;
-    height: 56px;
-    font-size: 16px;
-    letter-spacing: 3px;
+  @media (max-width: 2560px) {
+    width: ${CANCEL_BUTTON_WIDTH * MID_SCALE}px;
+    height: ${CANCEL_BUTTON_HEIGHT * MID_SCALE}px;
+    font-size: ${CANCEL_BUTTON_FONT_SIZE * MID_SCALE}px;
+    letter-spacing: ${CANCEL_BUTTON_LETTER_SPACING * MID_SCALE}px;
+    margin: 0 ${CANCEL_BUTTON_MARGIN_HORIZONTAL * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/vox-cancel-button-border.png) no-repeat;
-    width: 382px;
-    height: 110px;
-    font-size: 24px;
-    letter-spacing: 4px;
+  @media (max-width: 1920px) {
+    background-image: url(../images/crafting/hd/vox-cancel-button-border.png) no-repeat;
+    width: ${CANCEL_BUTTON_WIDTH * HD_SCALE}px;
+    height: ${CANCEL_BUTTON_HEIGHT * HD_SCALE}px;
+    font-size: ${CANCEL_BUTTON_FONT_SIZE * HD_SCALE}px;
+    letter-spacing: ${CANCEL_BUTTON_LETTER_SPACING * HD_SCALE}px;
+    margin: 0 ${CANCEL_BUTTON_MARGIN_HORIZONTAL * HD_SCALE}px;
   }
 
   &:hover {

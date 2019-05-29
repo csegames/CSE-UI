@@ -20,7 +20,6 @@ import VoxHeader from './components/VoxHeader/Header';
 import { initializeContextState, JobIdToJobState } from './CraftingBase';
 import { CraftingContext, CraftingContextState, defaultCraftingContextState } from './CraftingContext';
 import { getNearestVoxEntityID } from './lib/utils';
-import { CraftingResolutionContextProvider } from './CraftingResolutionContext';
 
 declare const toastr: any;
 
@@ -76,25 +75,23 @@ class Crafting extends React.Component<Props, CraftingContextState> {
                     onQueryResult={this.handleVoxStatusQueryResult}
                   />
                 }
-                <CraftingResolutionContextProvider>
-                  <CraftingContext.Provider value={this.getCraftingContextState()}>
-                    <VoxHeader />
-                    <CraftingJobContainer>
-                      <JobPanelContainer>
-                        <JobPanel
-                          jobNumber={activeJobNumber}
-                          onUpdateActiveJobNumber={onUpdateActiveJobNumber}
-                        />
-                      </JobPanelContainer>
-                    </CraftingJobContainer>
-                    <VoxInventoryContainer>
-                      <VoxInventory
-                        voxContainerID={this.state.voxContainerID}
-                        voxEntityID={getNearestVoxEntityID(crafting)}
+                <CraftingContext.Provider value={this.getCraftingContextState()}>
+                  <VoxHeader />
+                  <CraftingJobContainer>
+                    <JobPanelContainer>
+                      <JobPanel
+                        jobNumber={activeJobNumber}
+                        onUpdateActiveJobNumber={onUpdateActiveJobNumber}
                       />
-                    </VoxInventoryContainer>
-                  </CraftingContext.Provider>
-                </CraftingResolutionContextProvider>
+                    </JobPanelContainer>
+                  </CraftingJobContainer>
+                  <VoxInventoryContainer>
+                    <VoxInventory
+                      voxContainerID={this.state.voxContainerID}
+                      voxEntityID={getNearestVoxEntityID(crafting)}
+                    />
+                  </VoxInventoryContainer>
+                </CraftingContext.Provider>
               </>
             );
           }}

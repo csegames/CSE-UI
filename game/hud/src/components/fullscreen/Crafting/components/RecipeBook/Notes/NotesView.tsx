@@ -9,21 +9,44 @@ import * as React from 'react';
 import { debounce } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { VoxNote } from 'gql/interfaces';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_FONT_SIZE = 32;
+const CONTAINER_BOLD_FONT_SIZE = 40;
+// #endregion
 const Container = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
   font-family: Caveat;
-  font-size: 16px;
+  font-size: ${CONTAINER_FONT_SIZE}px;
 
   .bold-font {
     font-family: TradeWinds;
-    font-size: 20px;
+    font-size: ${CONTAINER_BOLD_FONT_SIZE}px;
+  }
+
+  @media (max-width: 2560px) {
+    font-size: ${CONTAINER_FONT_SIZE * MID_SCALE}px;
+
+    .bold-font {
+      font-size: ${CONTAINER_BOLD_FONT_SIZE * MID_SCALE}px;
+    }
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${CONTAINER_FONT_SIZE * HD_SCALE}px;
+
+    .bold-font {
+      font-size: ${CONTAINER_BOLD_FONT_SIZE * HD_SCALE}px;
+    }
   }
 `;
 
+// #region ComingSoonOverlay constants
+const COMING_SOON_OVERLAY_FONT_SIZE = 32;
+// #endregion
 const ComingSoonOverlay = styled.div`
   display: flex;
   align-items: center;
@@ -36,11 +59,15 @@ const ComingSoonOverlay = styled.div`
   background: rgba(0, 0, 0, 0.6);
   text-transform: uppercase;
   font-family: Caveat;
-  font-size: 16px;
+  font-size: ${COMING_SOON_OVERLAY_FONT_SIZE}px;
   color: white;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 32px;
+  @media (max-width: 2560px) {
+    font-size: ${COMING_SOON_OVERLAY_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${COMING_SOON_OVERLAY_FONT_SIZE * HD_SCALE}px;
   }
 `;
 

@@ -14,8 +14,7 @@ import { SLOT_DIMENSIONS } from 'fullscreen/Inventory/components/InventorySlot';
 import { calcRowsForContainer } from 'fullscreen/lib/utils';
 import { DrawerSlotNumberToItem } from 'fullscreen/ItemShared/InventoryBase';
 import { createRowElementsForVoxInventory } from '../../CraftingBase';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
-import { HD_SCALE } from 'fullscreen/lib/constants';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   position: relative;
@@ -29,6 +28,9 @@ const DrawerContainer = styled.div`
   height: calc(100% - 115px);
 `;
 
+// #region ComingSoonOverlay constants
+const COMING_SOON_OVERLAY_FONT_SIZE = 32;
+// #endregion
 const ComingSoonOverlay = styled.div`
   position: absolute;
   top: 0;
@@ -41,11 +43,15 @@ const ComingSoonOverlay = styled.div`
   justify-content: center;
   background: rgba(0, 0, 0, 0.5);
   color: white;
-  font-size: 16px;
   text-transform: uppercase;
+  font-size: ${COMING_SOON_OVERLAY_FONT_SIZE}px;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 32px;
+  @media (max-width: 2560px) {
+    font-size: ${COMING_SOON_OVERLAY_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${COMING_SOON_OVERLAY_FONT_SIZE * HD_SCALE}px;
   }
 `;
 

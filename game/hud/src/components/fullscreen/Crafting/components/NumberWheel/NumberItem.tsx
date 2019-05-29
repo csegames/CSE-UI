@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE } from 'fullscreen/lib/constants';
 
 function degreesToRads(angle: number) {
   return (angle * Math.PI) / 180;
@@ -20,11 +20,18 @@ interface ItemProps extends React.HTMLProps<HTMLDivElement> {
   y: number;
 }
 
+// #region Container constants
+const CONTAINER_DIMENSIONS = 40;
+const CONTAINER_FONT_SIZE = 24;
+const CONTAINER_VALUE_LEFT = -60;
+const CONTAINER_VALUE_WIDTH = 160;
+const CONTAINER_VALUE_HEIGHT = 44;
+// #endregion
 const Container = styled.div`
   position: absolute;
-  width: 20px;
-  height: 20px;
-  font-size: 12px;
+  width: ${CONTAINER_DIMENSIONS}px;
+  height: ${CONTAINER_DIMENSIONS}px;
+  font-size: ${CONTAINER_FONT_SIZE}px;
   font-family: Caudex;
   transform: rotate(${(props: ItemProps) => props.rotation}deg);
   top: ${(props: ItemProps) => props.y}px;
@@ -50,19 +57,25 @@ const Container = styled.div`
       filter: brightness(100%);
     }
   }
-  &.value::after {
+  &.value:after {
     transform: rotate(${(props: ItemProps) => props.extensionRotation}deg);
     content: '';
     position: absolute;
-    left: -30px;
-    width: 80px;
-    height: 22px;
+    left: ${CONTAINER_VALUE_LEFT}px;
+    width: ${CONTAINER_VALUE_WIDTH}px;
+    height: ${CONTAINER_VALUE_HEIGHT}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
+  @media (max-width: 2560px) {
+    width: ${CONTAINER_DIMENSIONS * MID_SCALE}px;
+    height: ${CONTAINER_DIMENSIONS * MID_SCALE}px;
+    font-size: ${CONTAINER_FONT_SIZE * MID_SCALE}px;
+  }
+
+  &.value:after {
+    left: ${CONTAINER_VALUE_LEFT * MID_SCALE}px;
+    width: ${CONTAINER_VALUE_WIDTH * MID_SCALE}px;
+    height: ${CONTAINER_VALUE_HEIGHT * MID_SCALE}px;
   }
 `;
 

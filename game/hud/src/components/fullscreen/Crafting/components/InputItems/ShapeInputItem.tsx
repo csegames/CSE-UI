@@ -11,32 +11,30 @@ import { RecipeIngredientDef, InventoryItem } from 'gql/interfaces';
 import { PlaceholderImage } from './InputItem';
 import { RecipeData } from '../../CraftingBase';
 import { toDisplayQuality } from '../../lib/utils';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   width: 100%;
   height: 100%;
 `;
 
+// #region UnitCountRange constants
+const UNIT_COUNT_RANGE_FONT_SIZE = 18;
+// #endregion
 const UnitCountRange = styled.div`
   position: absolute;
   top: 0;
   right: 0;
-  font-size: 9px;
+  font-size: ${UNIT_COUNT_RANGE_FONT_SIZE}px;
   color: #FFE3B9;
   z-index: 10;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 12px;
+  @media (max-width: 2560px) {
+    font-size: ${UNIT_COUNT_RANGE_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 18px;
-  }
-
-  @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
-    right: -1px;
-    top: -4px;
+  @media (max-width: 1920px) {
+    font-size: ${UNIT_COUNT_RANGE_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
@@ -44,43 +42,36 @@ const QualityRange = styled.div`
   position: absolute;
   bottom: 0;
   right: 0;
-  font-size: 9px;
+  font-size: ${UNIT_COUNT_RANGE_FONT_SIZE}px;
   color: #FFE3B9;
   z-index: 10;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 12px;
+  @media (max-width: 2560px) {
+    font-size: ${UNIT_COUNT_RANGE_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 18px;
-  }
-
-  @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
-    right: -1px;
-    bottom: -6px;
+  @media (max-width: 1920px) {
+    font-size: ${UNIT_COUNT_RANGE_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
+// #region ItemImage constants
+const ITEM_DIMENSIONS = 100;
+// #endregion
 const ItemImage = styled.img`
-  width: 50px;
-  height: 50px;
+  width: ${ITEM_DIMENSIONS}px;
+  height: ${ITEM_DIMENSIONS}px;
   pointer-events: none;
   object-fit: cover;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 65px;
-    height: 65px;
+  @media (max-width: 2560px) {
+    width: ${ITEM_DIMENSIONS * MID_SCALE}px;
+    height: ${ITEM_DIMENSIONS * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 125px;
-    height: 125px;
-  }
-
-  @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
-    width: 41.5px;
-    height: 41.5px;
+  @media (max-width: 1920px) {
+    width: ${ITEM_DIMENSIONS * HD_SCALE}px;
+    height: ${ITEM_DIMENSIONS * HD_SCALE}px;
   }
 `;
 

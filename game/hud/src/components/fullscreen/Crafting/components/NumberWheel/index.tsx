@@ -10,66 +10,91 @@ import { findIndex, isEmpty, isEqual } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import NumberItem, { AngleData } from './NumberItem';
 import NumberWheelInput from './NumberWheelInput';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
-import { CraftingResolutionContext } from '../../CraftingResolutionContext';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
-const DIMENSIONS = 100;
-const LARGE_DIMENSIONS = 245;
-const WHEEL_RADIUS = DIMENSIONS / 2;
-const LARGE_WHEEL_RADIUS = LARGE_DIMENSIONS / 2;
 const EXTRA_SPACING = 6;
 const INNER_CIRCLE_DIFF = 10;
 
+// #region Container constants
+const CONTAINER_DIMENSIONS = 200;
+const CONTAINER_ALIGNMENT = -52;
+const CONTAINER_BG_DIMENSIONS = 320;
+// #endregion
 const Container = styled.div`
   position: relative;
-  width: ${DIMENSIONS}px;
-  height: ${DIMENSIONS}px;
+  width: ${CONTAINER_DIMENSIONS}px;
+  height: ${CONTAINER_DIMENSIONS}px;
+
   &:before {
     content: '';
     position: absolute;
-    top: -26px;
-    left: -26px;
-    width: 160px;
-    height: 160px;
-    background: url(../images/crafting/1080/output-dial-counter.png);
+    top: ${CONTAINER_ALIGNMENT}px;
+    left: ${CONTAINER_ALIGNMENT}px;
+    width: ${CONTAINER_BG_DIMENSIONS}px;
+    height: ${CONTAINER_BG_DIMENSIONS}px;
+    background-image: url(../images/crafting/uhd/output-dial-counter.png);
     background-size: cover;
     background-position: center center;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 300px;
-    height: 300px;
+  @media (max-width: 2560px) {
+    width: ${CONTAINER_DIMENSIONS * MID_SCALE}px;
+    height: ${CONTAINER_DIMENSIONS * MID_SCALE}px;
+
     &:before {
-      width: 348px;
-      height: 348px;
-      background: url(../images/crafting/4k/output-dial-counter.png);
-      background-size: cover;
-      background-position: center center;
+      top: ${CONTAINER_ALIGNMENT * MID_SCALE}px;
+      left: ${CONTAINER_ALIGNMENT * MID_SCALE}px;
+      width: ${CONTAINER_BG_DIMENSIONS * MID_SCALE}px;
+      height: ${CONTAINER_BG_DIMENSIONS * MID_SCALE}px;
+    }
+  }
+
+  @media (max-width: 1920px) {
+    width: ${CONTAINER_DIMENSIONS * HD_SCALE}px;
+    height: ${CONTAINER_DIMENSIONS * HD_SCALE}px;
+
+    &:before {
+      top: ${CONTAINER_ALIGNMENT * HD_SCALE}px;
+      left: ${CONTAINER_ALIGNMENT * HD_SCALE}px;
+      width: ${CONTAINER_BG_DIMENSIONS * HD_SCALE}px;
+      height: ${CONTAINER_BG_DIMENSIONS * HD_SCALE}px;
+      background-image: url(../images/crafting/hd/output-dial-counter.png);
     }
   }
 `;
 
+// #region Hand constants
+const HAND_WIDTH = 40;
+const HAND_HEIGHT = 60;
+// #endregion
 const Hand = styled.div`
   position: absolute;
-  width: 20px;
-  height: 30px;
-  background: url(../images/crafting/1080/output-dial-pointer.png) no-repeat;
+  width: ${HAND_WIDTH}px;
+  height: ${HAND_HEIGHT}px;
+  background-image: url(../images/crafting/uhd/output-dial-pointer.png);
+  background-repeat: no-repeat;
   background-size: contain;
   pointer-events: all;
   cursor: pointer;
+
   &.isDragging {
     -webkit-filter: brightness(150%);
     filter: brightness(150%);
   }
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 36px;
-    height: 63px;
-    background: url(../images/crafting/4k/output-dial-pointer.png);
-    background-size: contain;
-  }
+
   &:hover {
     -webkit-filter: brightness(120%);
     filter: brightness(120%);
+  }
+
+  @media (max-width: 2560px) {
+    width: ${HAND_WIDTH * HD_SCALE}px;
+    height: ${HAND_HEIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${HAND_WIDTH * HD_SCALE}px;
+    height: ${HAND_HEIGHT * HD_SCALE}px;
   }
 `;
 
@@ -87,7 +112,7 @@ const InputContainer = styled.div`
 `;
 
 export interface InjectedProps {
-  isUHD: boolean;
+  resolution: { width: number, height: number };
 }
 
 export interface ComponentProps {
@@ -121,7 +146,6 @@ export interface State {
 const defaultArrayOfNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
 class NumberWheel extends React.Component<Props, State> {
-  private shouldUse4kAssets: boolean = false;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -146,7 +170,7 @@ class NumberWheel extends React.Component<Props, State> {
               disabled={disabled}
               value={val}
               index={i}
-              wheelRadius={this.props.isUHD ? LARGE_WHEEL_RADIUS : WHEEL_RADIUS}
+              wheelRadius={this.getWheelRadius()}
               totalNumberItems={numberWheelArr.length}
               extraSpacing={EXTRA_SPACING}
               selectedIndex={this.state.selectedValue === val && i}
@@ -182,7 +206,6 @@ class NumberWheel extends React.Component<Props, State> {
 
   public componentDidMount() {
     const { arrOfNums } = this.state;
-    this.shouldUse4kAssets = this.props.isUHD;
 
     const potentialIndex = findIndex(arrOfNums, num => num === this.state.selectedValue);
     if (potentialIndex !== -1) {
@@ -193,8 +216,7 @@ class NumberWheel extends React.Component<Props, State> {
   }
 
   public componentDidUpdate(prevProps: Props, prevState: State) {
-    if (this.shouldUse4kAssets !== this.props.isUHD) {
-      this.shouldUse4kAssets = this.props.isUHD;
+    if (this.props.resolution.width !== prevProps.resolution.width) {
       this.initializeHand();
     }
 
@@ -258,15 +280,23 @@ class NumberWheel extends React.Component<Props, State> {
   }
 
   private getHandTransformData = (value: number, angle: AngleData) => {
-    const isLargeResolution = this.props.isUHD;
-    const wheelRadius = isLargeResolution ? LARGE_WHEEL_RADIUS : WHEEL_RADIUS;
-    const extraSpacing = isLargeResolution ? 0 : EXTRA_SPACING;
+    const { resolution } = this.props;
+    const wheelRadius = this.getWheelRadius();
+    const extraSpacing = resolution.width > 2560 ? EXTRA_SPACING : resolution.width > 1920 ?
+      EXTRA_SPACING * MID_SCALE : EXTRA_SPACING * HD_SCALE;
     const x = Math.floor((Math.cos(angle.radians) * (wheelRadius - INNER_CIRCLE_DIFF)) + (wheelRadius - extraSpacing));
     const y = Math.floor((Math.sin(angle.radians) * (wheelRadius - INNER_CIRCLE_DIFF)) + (wheelRadius - extraSpacing));
     return {
       selectedValue: value,
       handTransformData: { rotation: angle.degrees + 90, x, y },
     };
+  }
+
+  private getWheelRadius = () => {
+    const { resolution } = this.props;
+    const wheelRadius = resolution.width > 2560 ? CONTAINER_DIMENSIONS / 2 : resolution.width > 1920 ?
+      (CONTAINER_DIMENSIONS / 2) * MID_SCALE : (CONTAINER_DIMENSIONS / 2) * HD_SCALE;
+    return wheelRadius;
   }
 
   private goToPageWith = (value: number) => {
@@ -349,13 +379,13 @@ class NumberWheel extends React.Component<Props, State> {
 class NumberWheelWithInjectedContext extends React.Component<ComponentProps> {
   public render() {
     return (
-      <CraftingResolutionContext.Consumer>
-        {({ isUHD }) => {
+      <UIContext.Consumer>
+        {({ resolution }) => {
           return (
-            <NumberWheel {...this.props} isUHD={isUHD()} />
+            <NumberWheel {...this.props} resolution={resolution} />
           );
         }}
-      </CraftingResolutionContext.Consumer>
+      </UIContext.Consumer>
     );
   }
 

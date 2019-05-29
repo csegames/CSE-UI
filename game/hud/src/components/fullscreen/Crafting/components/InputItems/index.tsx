@@ -12,29 +12,33 @@ import { InventoryItem, VoxJob, SubItemSlot, MakeRecipeDefRef } from 'gql/interf
 import { RecipeData, InputItem, RecipeType } from '../../CraftingBase';
 import { getJobContext, getItemSlotForRecipe } from '../../lib/utils';
 import InputItemComponent from './InputItem';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 declare const toastr: any;
 
+// #region Container constants
+const CONTAINER_WIDTH = 440;
+const CONTAINER_LEFT = 60;
+const CONTAINER_TOP = 20;
+// #endregion
 const Container = styled.div`
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  width: 220px;
-  left: 30px;
-  top: 10px;
+  width: ${CONTAINER_WIDTH}px;
+  left: ${CONTAINER_LEFT}px;
+  top: ${CONTAINER_TOP}px;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 286px;
+  @media (max-width: 2560px) {
+    width: ${CONTAINER_WIDTH * MID_SCALE}px;
+    left: ${CONTAINER_LEFT * MID_SCALE}px;
+    top: ${CONTAINER_TOP * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 450px;
-  }
-
-  @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
-    left: 25px;
-    top: 5px;
+  @media (max-width: 1920px) {
+    width: ${CONTAINER_WIDTH * HD_SCALE}px;
+    left: ${CONTAINER_LEFT * HD_SCALE}px;
+    top: ${CONTAINER_TOP * HD_SCALE}px;
   }
 `;
 

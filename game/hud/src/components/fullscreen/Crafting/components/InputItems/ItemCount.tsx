@@ -11,23 +11,36 @@ import { debounce } from 'lodash';
 import { InventoryItem, SubItemSlot } from 'gql/interfaces';
 import { getJobContext } from '../../lib/utils';
 import { getItemUnitCount } from 'fullscreen/lib/utils';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_RIGHT = -10;
+const CONTAINER_BOTTOM = -10;
+// #endregion
 const Container = styled.div`
   position: absolute;
-  right: -5px;
-  bottom: -5px;
+  right: ${CONTAINER_RIGHT}px;
+  bottom: ${CONTAINER_BOTTOM}px;
   display: flex;
   flex-direction: column;
   align-self: flex-end;
   align-items: flex-end;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    right: -15px;
-    bottom: 0;
+  @media (max-width: 2560px) {
+    right: ${CONTAINER_RIGHT * MID_SCALE}px;
+    bottom: ${CONTAINER_BOTTOM * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    right: ${CONTAINER_RIGHT * HD_SCALE}px;
+    bottom: ${CONTAINER_BOTTOM * HD_SCALE}px;
   }
 `;
 
+// #region Button constants
+const BUTTON_WIDTH = 26;
+const BUTTON_HEIGHT = 16;
+// #endregion
 const Button = styled.div`
   cursor: pointer;
   pointer-events: all;
@@ -36,54 +49,58 @@ const Button = styled.div`
     filter: brightness(150%);
   }
   &.up {
-    background: url(../images/crafting/1080/craft-slots-up-arrow.png);
-    width: 13px;
-    height: 8px;
+    background-image: url(../images/crafting/uhd/craft-slots-up-arrow.png);
+    background-size: contain;
+    width: ${BUTTON_WIDTH}px;
+    height: ${BUTTON_HEIGHT}px;
   }
   &.down {
-    background: url(../images/crafting/1080/craft-slots-down-arrow.png);
-    width: 13px;
-    height: 8px;
+    background-image: url(../images/crafting/uhd/craft-slots-down-arrow.png);
+    background-size: contain;
+    width: ${BUTTON_WIDTH}px;
+    height: ${BUTTON_HEIGHT}px;
   }
   &.disabled {
     filter: brightness(40%);
     opacity: 0.9;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
+  @media (max-width: 2560px) {
     &.up {
-      background: url(../images/crafting/4k/craft-slots-up-arrow.png) no-repeat;
-      background-size: contain;
-      width: 17px;
-      height: 10px;
+      width: ${BUTTON_WIDTH * MID_SCALE}px;
+      height: ${BUTTON_HEIGHT * MID_SCALE}px;
     }
     &.down {
-      background: url(../images/crafting/4k/craft-slots-down-arrow.png) no-repeat;
-      background-size: contain;
-      width: 17px;
-      height: 10px;
+      width: ${BUTTON_WIDTH * MID_SCALE}px;
+      height: ${BUTTON_HEIGHT * MID_SCALE}px;
     }
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
+  @media (max-width: 1920px) {
     &.up {
-      background: url(../images/crafting/4k/craft-slots-up-arrow.png) no-repeat;
-      width: 26px;
-      height: 16px;
+      background-image: url(../images/crafting/hd/craft-slots-up-arrow.png);
+      width: ${BUTTON_WIDTH * HD_SCALE}px;
+      height: ${BUTTON_HEIGHT * HD_SCALE}px;
     }
     &.down {
-      background: url(../images/crafting/4k/craft-slots-down-arrow.png) no-repeat;
-      width: 26px;
-      height: 16px;
+      background-image: url(../images/crafting/hd/craft-slots-down-arrow.png);
+      width: ${BUTTON_WIDTH * HD_SCALE}px;
+      height: ${BUTTON_HEIGHT * HD_SCALE}px;
     }
   }
 `;
 
+// #region ItemCountContainer constants
+const ITEM_COUNT_CONTAINER_WIDTH = 84;
+const ITEM_COUNT_CONTAINER_HEIGHT = 36;
+const ITEM_COUNT_CONTAINER_FONT_SIZE = 20;
+// #endregion
 const ItemCountContainer = styled.div`
-  width: 42px;
-  height: 18px;
-  font-size: 10px;
-  background: url(../images/crafting/1080/counter-clot.png) no-repeat;
+  width: ${ITEM_COUNT_CONTAINER_WIDTH}px;
+  height: ${ITEM_COUNT_CONTAINER_HEIGHT}px;
+  font-size: ${ITEM_COUNT_CONTAINER_FONT_SIZE}px;
+  background-image: url(../images/crafting/uhd/counter-clot.png);
+  background-repeat: no-repeat;
   background-size: contain;
   background-position: right center;
   color: #F2CAAB;
@@ -93,43 +110,29 @@ const ItemCountContainer = styled.div`
   justify-content: flex-end;
   padding-right: 1px;
   &.disabled {
-    background: url(../images/crafting/1080/counter-clot-empty.png) no-repeat;
+    background-image: url(../images/crafting/uhd/counter-clot-empty.png);
+    background-repeat: no-repeat;
     background-size: contain;
     background-position: right center;
     color: gray;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 55px;
-    height: 23px;
-    font-size: 13px;
+  @media (max-width: 2560px) {
+    width: ${ITEM_COUNT_CONTAINER_WIDTH * MID_SCALE}px;
+    height: ${ITEM_COUNT_CONTAINER_HEIGHT * MID_SCALE}px;
+    font-size: ${ITEM_COUNT_CONTAINER_FONT_SIZE * MID_SCALE}px;
     padding-right: 5px;
-    background: url(../images/crafting/4k/counter-clot.png) no-repeat;
-    background-size: contain;
-    background-position: right center;
-
-    &.disabled {
-      background: url(../images/crafting/4k/counter-clot-empty.png) no-repeat;
-      background-size: contain;
-      background-position: right center;
-      color: gray;
-    }
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 84px;
-    height: 36px;
-    font-size: 20px;
+  @media (max-width: 1920px) {
+    width: ${ITEM_COUNT_CONTAINER_WIDTH * HD_SCALE}px;
+    height: ${ITEM_COUNT_CONTAINER_HEIGHT * HD_SCALE}px;
+    font-size: ${ITEM_COUNT_CONTAINER_FONT_SIZE * HD_SCALE}px;
     padding-right: 5px;
-    background: url(../images/crafting/4k/counter-clot.png) no-repeat;
-    background-size: contain;
-    background-position: right center;
+    background-image: url(../images/crafting/hd/counter-clot.png);
 
     &.disabled {
-      background: url(../images/crafting/4k/counter-clot-empty.png) no-repeat;
-      background-size: contain;
-      background-position: right center;
-      color: gray;
+      background-image: url(../images/crafting/hd/counter-clot-empty.png);
     }
   }
 `;

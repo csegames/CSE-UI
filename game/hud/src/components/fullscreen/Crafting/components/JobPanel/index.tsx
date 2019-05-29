@@ -60,7 +60,7 @@ import {
 } from 'gql/interfaces';
 import { VoxJobFragment } from '../../gql/VoxJobFragment';
 import { getItemUnitCount } from 'fullscreen/lib/utils';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   display: flex;
@@ -90,132 +90,153 @@ const RecipeBookContainer = styled.div`
   height: 100%;
 `;
 
+// #region CraftOrnament constants
+const CRAFT_ORNAMENT_TOP = 14;
+const CRAFT_ORNAMENT_HORIZONTAL = 10;
+const CRAFT_ORNAMENT_WIDTH = 346;
+const CRAFT_ORNAMENT_HEIGHT = 608;
+// #endregion
 const CraftOrnamentRight = styled.div`
   position: absolute;
-  top: 7px;
-  right: 5px;
-  width: 173px;
-  height: 304px;
-  background: url(../images/crafting/1080/craft-ornament-right.png);
+  top: ${CRAFT_ORNAMENT_TOP}px;
+  right: ${CRAFT_ORNAMENT_HORIZONTAL}px;
+  width: ${CRAFT_ORNAMENT_WIDTH}px;
+  height: ${CRAFT_ORNAMENT_HEIGHT}px;
+  background-image: url(../images/crafting/uhd/craft-ornament-right.png);
   background-size: contain;
   z-index: 0;
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    background: url(../images/crafting/4k/craft-ornament-right.png);
-    background-size: contain;
-    width: 225px;
-    height: 395px;
-    top: 9px;
-    right: 7px;
+  @media (max-width: 2560px) {
+    top: ${CRAFT_ORNAMENT_TOP * MID_SCALE}px;
+    right: ${CRAFT_ORNAMENT_HORIZONTAL * MID_SCALE}px;
+    width: ${CRAFT_ORNAMENT_WIDTH * MID_SCALE}px;
+    height: ${CRAFT_ORNAMENT_HEIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/craft-ornament-right.png);
-    background-size: contain;
-    width: 422px;
-    height: 741px;
-    top: 21px;
-    right: 15px;
+  @media (max-width: 1920px) {
+    background-image: url(../images/crafting/hd/craft-ornament-right.png);
+    top: ${CRAFT_ORNAMENT_TOP * HD_SCALE}px;
+    right: ${CRAFT_ORNAMENT_HORIZONTAL * HD_SCALE}px;
+    width: ${CRAFT_ORNAMENT_WIDTH * HD_SCALE}px;
+    height: ${CRAFT_ORNAMENT_HEIGHT * HD_SCALE}px;
   }
 `;
 
 const CraftOrnamentLeft = styled.div`
   position: absolute;
-  top: 7px;
-  left: 5px;
-  width: 173px;
-  height: 304px;
-  background: url(../images/crafting/1080/craft-ornament-left.png);
+  top: ${CRAFT_ORNAMENT_TOP}px;
+  left: ${CRAFT_ORNAMENT_HORIZONTAL}px;
+  width: ${CRAFT_ORNAMENT_WIDTH}px;
+  height: ${CRAFT_ORNAMENT_HEIGHT}px;
+  background-image: url(../images/crafting/uhd/craft-ornament-left.png);
   background-size: contain;
   z-index: 0;
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    background: url(../images/crafting/4k/craft-ornament-left.png);
-    background-size: contain;
-    width: 225px;
-    height: 395px;
-    top: 9px;
-    right: 7px;
+  @media (max-width: 2560px) {
+    top: ${CRAFT_ORNAMENT_TOP * MID_SCALE}px;
+    left: ${CRAFT_ORNAMENT_HORIZONTAL * MID_SCALE}px;
+    width: ${CRAFT_ORNAMENT_WIDTH * MID_SCALE}px;
+    height: ${CRAFT_ORNAMENT_HEIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/craft-ornament-left.png);
-    background-size: contain;
-    width: 422px;
-    height: 741px;
-    top: 21px;
-    right: 15px;
+  @media (max-width: 1920px) {
+    top: ${CRAFT_ORNAMENT_TOP * HD_SCALE}px;
+    left: ${CRAFT_ORNAMENT_HORIZONTAL * HD_SCALE}px;
+    width: ${CRAFT_ORNAMENT_WIDTH * HD_SCALE}px;
+    height: ${CRAFT_ORNAMENT_HEIGHT * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/craft-ornament-left.png);
   }
 `;
 
+// #region TabsContainer constants
+const TABS_CONTAINER_HEIGHT = 50;
+const TABS_CONTAINER_PADDING_HORIZONTAL = 20;
+const TABS_CONTAINER_BORDER_WIDTH = 2;
+
+const TABS_CONTAINER_ORNAMENT_TOP = 2;
+const TABS_CONTAINER_ORNAMENT_HORIZONTAL = -36;
+const TABS_CONTAINER_ORNAMENT_WIDTH = 72;
+const TABS_CONTAINER_ORNAMENT_HEIGHT = 48;
+// #endregion
 const TabsContainer = styled.div`
   position: relative;
   display: flex;
-  height: 25px;
+  height: ${TABS_CONTAINER_HEIGHT}px;
+  min-height: ${TABS_CONTAINER_HEIGHT}px;
+  padding: 0px ${TABS_CONTAINER_PADDING_HORIZONTAL}px;
+  border: ${TABS_CONTAINER_BORDER_WIDTH}px solid #B29267;
   align-items: center;
   justify-content: center;
   align-self: center;
   width: fit-content;
-  padding: 0px 10px;
-  border: 1px solid #B29267;
   background-color: rgba(0, 0, 0, 0.8);
   z-index: 100;
+
   &:before {
     content: '';
     position: absolute;
-    top: 1px;
-    left: -18px;
-    width: 36px;
-    height: 24px;
-    background: url(../images/crafting/1080/que-ornament-left.png);
+    top: ${TABS_CONTAINER_ORNAMENT_TOP}px;
+    left: ${TABS_CONTAINER_ORNAMENT_HORIZONTAL}px;
+    width: ${TABS_CONTAINER_ORNAMENT_WIDTH}px;
+    height: ${TABS_CONTAINER_ORNAMENT_HEIGHT}px;
+    background-image url(../images/crafting/uhd/que-ornament-left.png);
+    background-repeat: no-repeat;
+    background-size: contain;
   }
+
   &:after {
     content: '';
     position: absolute;
-    top: 1px;
-    right: -18px;
-    width: 36px;
-    height: 24px;
-    background: url(../images/crafting/1080/que-ornament-right.png);
+    top: ${TABS_CONTAINER_ORNAMENT_TOP}px;
+    right: ${TABS_CONTAINER_ORNAMENT_HORIZONTAL}px;
+    width: ${TABS_CONTAINER_ORNAMENT_WIDTH}px;
+    height: ${TABS_CONTAINER_ORNAMENT_HEIGHT}px;
+    background-image: url(../images/crafting/uhd/que-ornament-right.png);
+    background-repeat: no-repeat;
+    background-size: contain;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    height: 33px;
-    min-height: 33px;
+  @media (max-width: 2560px) {
+    height: ${TABS_CONTAINER_HEIGHT * MID_SCALE}px;
+    min-height: ${TABS_CONTAINER_HEIGHT * MID_SCALE}px;
+    padding: 0px ${TABS_CONTAINER_PADDING_HORIZONTAL * MID_SCALE}px;
+    border: ${TABS_CONTAINER_BORDER_WIDTH * MID_SCALE}px solid #B29267;
     &:before {
-      background: url(../images/crafting/4k/que-ornament-left.png) no-repeat;
-      background-size: contain;
-      width: 47px;
-      height: 31px;
-      left: -23px;
+      top: ${TABS_CONTAINER_ORNAMENT_TOP * MID_SCALE}px;
+      left: ${TABS_CONTAINER_ORNAMENT_HORIZONTAL * MID_SCALE}px;
+      width: ${TABS_CONTAINER_ORNAMENT_WIDTH * MID_SCALE}px;
+      height: ${TABS_CONTAINER_ORNAMENT_HEIGHT * MID_SCALE}px;
     }
 
     &:after {
-      background: url(../images/crafting/4k/que-ornament-right.png) no-repeat;
-      background-size: contain;
-      width: 47px;
-      height: 31px;
-      right: -23px;
+      top: ${TABS_CONTAINER_ORNAMENT_TOP * MID_SCALE}px;
+      right: ${TABS_CONTAINER_ORNAMENT_HORIZONTAL * MID_SCALE}px;
+      width: ${TABS_CONTAINER_ORNAMENT_WIDTH * MID_SCALE}px;
+      height: ${TABS_CONTAINER_ORNAMENT_HEIGHT * MID_SCALE}px;
     }
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    height: 55px;
-    min-height: 55px;
+  @media (max-width: 1920px) {
+    height: ${TABS_CONTAINER_HEIGHT * HD_SCALE}px;
+    min-height: ${TABS_CONTAINER_HEIGHT * HD_SCALE}px;
+    padding: 0px ${TABS_CONTAINER_PADDING_HORIZONTAL * HD_SCALE}px;
+    border: ${TABS_CONTAINER_BORDER_WIDTH * HD_SCALE}px solid #B29267;
     &:before {
-      background: url(../images/crafting/4k/que-ornament-left.png);
-      width: 90px;
-      height: 54px;
-      left: -45px;
+      top: ${TABS_CONTAINER_ORNAMENT_TOP * HD_SCALE}px;
+      left: ${TABS_CONTAINER_ORNAMENT_HORIZONTAL * HD_SCALE}px;
+      width: ${TABS_CONTAINER_ORNAMENT_WIDTH * HD_SCALE}px;
+      height: ${TABS_CONTAINER_ORNAMENT_HEIGHT * HD_SCALE}px;
+      background-image: url(../images/crafting/hd/que-ornament-left.png);
     }
 
     &:after {
-      background: url(../images/crafting/4k/que-ornament-right.png);
-      width: 90px;
-      height: 54px;
-      right: -45px;
+      top: ${TABS_CONTAINER_ORNAMENT_TOP * HD_SCALE}px;
+      right: ${TABS_CONTAINER_ORNAMENT_HORIZONTAL * HD_SCALE}px;
+      width: ${TABS_CONTAINER_ORNAMENT_WIDTH * HD_SCALE}px;
+      height: ${TABS_CONTAINER_ORNAMENT_HEIGHT * HD_SCALE}px;
+      background-image: url(../images/crafting/hd/que-ornament-right.png);
     }
   }
 `;
@@ -348,7 +369,6 @@ class JobPanelPage extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    window.addEventListener('resize', () => console.log(window.innerWidth + 'x' + window.innerHeight));
     this.setState(this.initializeTabs());
     this.evh.push(game.on('refetch-vox-job', this.refetchVoxJob));
   }

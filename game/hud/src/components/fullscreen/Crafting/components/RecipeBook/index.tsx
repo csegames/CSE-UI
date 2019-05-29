@@ -20,127 +20,158 @@ import Recent from './Recent';
 import Favorites from './Favorites';
 import Category from './Category';
 import Notes from './Notes';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   width: 100%;
   height: 100%;
 `;
 
+// #region ContentContainer constants
+const CONTENT_CONTAINER_TOP = -20;
+// #endregion
 const ContentContainer = styled.div`
   position: relative;
-  top: -10px;
-  width: 100%;
+  top: ${CONTENT_CONTAINER_TOP}px;
   height: calc(100% - 25px);
-  -webkit-mask-image: url(../images/crafting/1080/paper-mask-x-repeat.png);
+  width: 100%;
+  -webkit-mask-image: url(../images/crafting/uhd/paper-mask-x-repeat.png);
   -webkit-mask-size: cover;
-  z-index: 1;
   pointer-events: none;
+  z-index: 1;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    -webkit-mask-image: url(../images/crafting/4k/paper-mask-x-repeat.png);
-    -webkit-mask-size: cover;
+  @media (max-width: 2560px) {
+    top: ${CONTENT_CONTAINER_TOP * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    top: -30px;
-    -webkit-mask-image: url(../images/crafting/4k/paper-mask-x-repeat.png);
-    -webkit-mask-size: cover;
+  @media (max-width: 1920px) {
+    top: ${CONTENT_CONTAINER_TOP * HD_SCALE}px;
+    -webkit-mask-image: url(../images/crafting/hd/paper-mask-x-repeat.png);
   }
 `;
 
+// #region PageBG constants
+const PAGE_BG_LEFT = 24;
+// #endregion
 const PageBG = styled.div`
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  left: 12px;
+  left: ${PAGE_BG_LEFT}px;
   background: url(../images/crafting/1080/paper-bg.png);
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    background: url(../images/crafting/4k/paper-bg.png);
+  @media (max-width: 2560px) {
+    left: ${PAGE_BG_LEFT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    left: ${PAGE_BG_LEFT * HD_SCALE}px;
   }
 `;
 
+// #region PageRip constants
+const PAGE_RIP_WIDTH = 78;
+const PAGE_RIP_LEFT = -26;
+// #endregion
 const PageRip = styled.div`
   position: absolute;
-  width: 39px;
+  width: ${PAGE_RIP_WIDTH}px;
+  left: ${PAGE_RIP_LEFT}px;
   top: 0;
   bottom: 0;
-  left: -13px;
-  background: url(../images/crafting/1080/page-rip-pattern.png);
+  background-image: url(../images/crafting/uhd/page-rip-pattern.png);
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 51px;
-    background: url(../images/crafting/4k/page-rip-pattern.png);
+  @media (max-width: 2560px) {
+    width: ${PAGE_RIP_WIDTH * MID_SCALE}px;
+    left: ${PAGE_RIP_LEFT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 129px;
-    background: url(../images/crafting/4k/page-rip-pattern.png);
+  @media (max-width: 1920px) {
+    width: ${PAGE_RIP_WIDTH * HD_SCALE}px;
+    left: ${PAGE_RIP_LEFT * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/page-rip-pattern.png);
   }
 `;
 
+// #region CornerOrnament constants
+const CORNER_ORNAMENT_TOP = 10;
+const CORNER_ORNAMENT_LEFT = 10;
+// #endregion
 const CornerOrnament = styled.div`
   position: absolute;
-  top: 5px;
-  left: 5px;
-  background: url(../images/crafting/1080/paper-top-left-border.png) no-repeat;
+  top: ${CORNER_ORNAMENT_TOP}px;
+  left: ${CORNER_ORNAMENT_LEFT}px;
+  background-image: url(../images/crafting/uhd/paper-top-left-border.png);
+  background-size: contain;
+  background-repeat: no-repeat;
   width: 100%;
   height: 100%;
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    background: url(../images/crafting/4k/paper-top-left-border.png) no-repeat;
-    top: 10px;
-    left: 10px;
+  @media (max-width: 2560px) {
+    top: ${CORNER_ORNAMENT_TOP * MID_SCALE}px;
+    left: ${CORNER_ORNAMENT_LEFT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/paper-top-left-border.png) no-repeat;
-    top: 15px;
-    left: 15px;
+  @media (max-width: 1920px) {
+    background-image: url(../images/crafting/hd/paper-top-left-border.png);
+    top: ${CORNER_ORNAMENT_TOP * HD_SCALE}px;
+    left: ${CORNER_ORNAMENT_LEFT * HD_SCALE}px;
   }
 `;
 
+// #region TabsContainer constants
+const TABS_CONTAINER_TOP = 18;
+// #endregion
 const TabsContainer = styled.div`
   display: flex;
   flex-direction: row-reverse;
   position: absolute;
-  top: 9px;
+  top: ${TABS_CONTAINER_TOP}px;
   right: 0;
   z-index: 1;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    top: 20px;
+  @media (max-width: 2560px) {
+    top: ${TABS_CONTAINER_TOP * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    top: 30px;
+  @media (max-width: 1920px) {
+    top: ${TABS_CONTAINER_TOP * HD_SCALE}px;
   }
 `;
 
+// #region Content constants
+const CONTENT_TOP = 20;
+const CONTENT_PADDING_TOP = 40;
+const CONTENT_PADDING_LEFT = 40;
+const CONTENT_MARGIN_RIGHT = 6;
+// #endregion
 const Content = styled.div`
   position: absolute;
-  top: 10px;
+  top: ${CONTENT_TOP}px;
+  padding-top: ${CONTENT_PADDING_TOP}px;
+  padding-left: ${CONTENT_PADDING_LEFT}px;
+  margin-right: ${CONTENT_MARGIN_RIGHT}px;
   right: 0;
   bottom: 0;
   left: 0;
-  padding-top: 20px;
-  padding-left: 20px;
-  margin-right: 3px;
   pointer-events: all;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    padding-top: 40px;
-    padding-left: 40px;
+  @media (max-width: 2560px) {
+    top: ${CONTENT_TOP * MID_SCALE}px;
+    padding-top: ${CONTENT_PADDING_TOP * MID_SCALE}px;
+    padding-left: ${CONTENT_PADDING_LEFT * MID_SCALE}px;
+    margin-right: ${CONTENT_MARGIN_RIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    padding-top: 60px;
-    padding-left: 60px;
+  @media (max-width: 1920px) {
+    top: ${CONTENT_TOP * HD_SCALE}px;
+    padding-top: ${CONTENT_PADDING_TOP * HD_SCALE}px;
+    padding-left: ${CONTENT_PADDING_LEFT * HD_SCALE}px;
+    margin-right: ${CONTENT_MARGIN_RIGHT * HD_SCALE}px;
   }
 `;
 

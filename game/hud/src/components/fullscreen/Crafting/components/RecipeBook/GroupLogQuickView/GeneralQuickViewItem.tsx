@@ -10,47 +10,59 @@ import { styled } from '@csegames/linaria/react';
 import { ItemDefRef } from 'gql/interfaces';
 import { getGroupLogDescription, getJobTypeIcon, getFavoriteIcon } from '../../../lib/utils';
 import { GroupLogData } from '../index';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
-import { CraftingResolutionContext } from '../../../CraftingResolutionContext';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_MIN_HEIGHT = 152;
+export const CONTAINER_MAX_HEIGHT = 200;
+// #endregion
 export const Container = styled.div`
   position: relative;
   display: flex;
   pointer-events: all;
   width: 100%;
-  min-height: 76px;
-  max-height: 100px;
+  min-height: ${CONTAINER_MIN_HEIGHT}px;
+  max-height: ${CONTAINER_MAX_HEIGHT}px;
   overflow: hidden;
   &:hover {
     opacity: 0.8;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    max-height: 130px;
+  @media (max-width: 2560px) {
+    min-height: ${CONTAINER_MIN_HEIGHT * MID_SCALE}px;
+    max-height: ${CONTAINER_MAX_HEIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    max-height: 200px;
+  @media (max-width: 1920px) {
+    min-height: ${CONTAINER_MIN_HEIGHT * HD_SCALE}px;
+    max-height: ${CONTAINER_MAX_HEIGHT * HD_SCALE}px;
   }
 `;
 
+// #region JobTypeIcon constants
+const JOB_TYPE_ICON_TOP = 10;
+const JOB_TYPE_ICON_RIGHT = 100;
+const JOB_TYPE_ICON_FONT_SIZE = 160;
+// #endregion
 const JobTypeIcon = styled.div`
   position: absolute;
-  top: 10px;
-  right: 50px;
+  top: ${JOB_TYPE_ICON_TOP}px;
+  right: ${JOB_TYPE_ICON_RIGHT}px;
+  font-size: ${JOB_TYPE_ICON_FONT_SIZE}px;
   color: #6B490F;
   opacity: 0.2;
-  font-size: 80px;
   z-index: 0;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 104px;
-    right: 100px;
+  @media (max-width: 2560px) {
+    top: ${JOB_TYPE_ICON_TOP * MID_SCALE}px;
+    right: ${JOB_TYPE_ICON_RIGHT * MID_SCALE}px;
+    font-size: ${JOB_TYPE_ICON_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 160px;
-    right: 150px;
+  @media (max-width: 1920px) {
+    top: ${JOB_TYPE_ICON_TOP * HD_SCALE}px;
+    right: ${JOB_TYPE_ICON_RIGHT * HD_SCALE}px;
+    font-size: ${JOB_TYPE_ICON_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
@@ -62,27 +74,42 @@ const Info = styled.div`
   flex: 1;
 `;
 
+// #region FavoriteContainer constants
+const FAVORITE_CONTAINER_WIDTH = 60;
+// #endregion
 const FavoriteContainer = styled.div`
   display: flex;
   justify-content: center;
-  width: 30px;
+  width: ${FAVORITE_CONTAINER_WIDTH}px;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 55px;
+  @media (max-width: 2560px) {
+    width: ${FAVORITE_CONTAINER_WIDTH * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${FAVORITE_CONTAINER_WIDTH * HD_SCALE}px;
   }
 `;
 
+// #region FavoriteImage constants
+const FAVORITE_IMAGE_DIMENSIONS = 40;
+// #endregion
 const FavoriteImage = styled.img`
-  width: 20px;
-  height: 20px;
+  width: ${FAVORITE_IMAGE_DIMENSIONS}px;
+  height: ${FAVORITE_IMAGE_DIMENSIONS}px;
   cursor: pointer;
   opacity: 1;
   -webkit-transition: opacity 0.2s;
   transition: opacity 0.2s;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 41px;
-    height: 47px;
+  @media (max-width: 2560px) {
+    width: ${FAVORITE_IMAGE_DIMENSIONS * MID_SCALE}px;
+    height: ${FAVORITE_IMAGE_DIMENSIONS * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${FAVORITE_IMAGE_DIMENSIONS * HD_SCALE}px;
+    height: ${FAVORITE_IMAGE_DIMENSIONS * HD_SCALE}px;
   }
 `;
 
@@ -94,79 +121,90 @@ const InfoContainer = styled.div`
   cursor: pointer;
 `;
 
+// #region Name constants
+const NAME_FONT_SIZE = 28;
+// #endregion
 const Name = styled.div`
   font-family: TradeWinds;
-  font-size: 14px;
+  font-size: ${NAME_FONT_SIZE}px;
   color: #0A0706;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 100%;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 18px;
+  @media (max-width: 2560px) {
+    font-size: ${NAME_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 28px;
+  @media (max-width: 1920px) {
+    font-size: ${NAME_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
+// #region Description constants
+const DESCRIPTION_FONT_SIZE = 32;
+// #endregion
 const Description = styled.div`
   font-family: Caveat;
   color: #000000;
-  font-size: 16px;
+  font-size: ${DESCRIPTION_FONT_SIZE}px;
   overflow: hidden;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 21px;
+  @media (max-width: 2560px) {
+    font-size: ${DESCRIPTION_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 32px;
+  @media (max-width: 1920px) {
+    font-size: ${DESCRIPTION_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
+// #region OutputContainer constants
+const OUTPUT_CONTAINER_DIMENSIONS = 152;
+// #endregion
 const OutputContainer = styled.div`
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 76px;
-  height: 76px;
-  background: url(../images/crafting/1080/paper-output-frame.png) no-repeat;
+  width: ${OUTPUT_CONTAINER_DIMENSIONS}px;
+  height: ${OUTPUT_CONTAINER_DIMENSIONS}px;
+  background-image: url(../images/crafting/uhd/paper-output-frame.png);
+  background-repeat: no-repeat;
   background-size: contain;
   background-position: center center;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 99px;
-    height: 99px;
+  @media (max-width: 2560px) {
+    width: ${OUTPUT_CONTAINER_DIMENSIONS * MID_SCALE}px;
+    height: ${OUTPUT_CONTAINER_DIMENSIONS * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 152px;
-    height: 152px;
-    background: url(../images/crafting/4k/paper-output-frame.png) no-repeat;
-    background-size: contain;
-    background-position: center center;
+  @media (max-width: 1920px) {
+    width: ${OUTPUT_CONTAINER_DIMENSIONS * HD_SCALE}px;
+    height: ${OUTPUT_CONTAINER_DIMENSIONS * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/paper-output-frame.png);
   }
 `;
 
+// #region OutputImage constants
+const OUTPUT_IMAGE_DIMENSIONS = 82;
+// #endregion
 const OutputImage = styled.img`
-  width: 41px;
-  height: 41px;
+  width: ${OUTPUT_IMAGE_DIMENSIONS}px;
+  height: ${OUTPUT_IMAGE_DIMENSIONS}px;
   object-fit: contain;
   opacity: 0.8;
   cursor: pointer;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 53px;
-    height: 53px;
+  @media (max-width: 2560px) {
+    width: ${OUTPUT_IMAGE_DIMENSIONS * MID_SCALE}px;
+    height: ${OUTPUT_IMAGE_DIMENSIONS * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 82px;
-    height: 82px;
+  @media (max-width: 1920px) {
+    width: ${OUTPUT_IMAGE_DIMENSIONS * HD_SCALE}px;
+    height: ${OUTPUT_IMAGE_DIMENSIONS * HD_SCALE}px;
   }
 `;
 
@@ -189,7 +227,7 @@ class GeneralQuickViewItem extends React.Component<Props> {
     const notCrafted = groupLog.log.timesCrafted === 0;
 
     return (
-      <CraftingResolutionContext.Consumer>
+      <UIContext.Consumer>
         {({ isUHD }) => {
           return (
             <Container style={{
@@ -225,7 +263,7 @@ class GeneralQuickViewItem extends React.Component<Props> {
             </Container>
           );
         }}
-      </CraftingResolutionContext.Consumer>
+      </UIContext.Consumer>
     );
   }
 

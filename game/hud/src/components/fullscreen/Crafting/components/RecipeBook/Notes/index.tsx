@@ -14,7 +14,7 @@ import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/
 import { VoxNote, RecipeBookNotesQuery } from 'gql/interfaces';
 import { VoxNoteFragment } from '../../../gql/VoxNoteFragment';
 
-import { nullVal } from 'fullscreen/lib/constants';
+import { nullVal, HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 import PageSelector from '../PageSelector';
 import NotesView from './NotesView';
 
@@ -29,32 +29,71 @@ const query = gql`
   ${VoxNoteFragment}
 `;
 
+// #region Container constants
+const CONTAINER_MARGIN_TOP = -20;
+// #endregion
 const Container = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: -10px;
+  margin-top: ${CONTAINER_MARGIN_TOP}px;
+
+  @media (max-width: 2560px) {
+    margin-top: ${CONTAINER_MARGIN_TOP * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-top: ${CONTAINER_MARGIN_TOP * HD_SCALE}px;
+  }
 `;
 
+// #region PageSelectorPosition constants
+const PAGE_SELECTOR_POSITION_RIGHT = 20;
+const PAGE_SELECTOR_POSITION_TOP = 2;
+// #endregion
 const PageSelectorPosition = styled.div`
   display: flex;
   align-items: center;
   position: absolute;
-  right: 10px;
-  top: 10px;
+  right: ${PAGE_SELECTOR_POSITION_RIGHT}px;
+  top: ${PAGE_SELECTOR_POSITION_TOP}px;
+
+  @media (max-width: 2560px) {
+    right: ${PAGE_SELECTOR_POSITION_RIGHT * MID_SCALE}px;
+    top: ${PAGE_SELECTOR_POSITION_TOP * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    right: ${PAGE_SELECTOR_POSITION_RIGHT * HD_SCALE}px;
+    top: ${PAGE_SELECTOR_POSITION_TOP * HD_SCALE}px;
+  }
 `;
 
+// #region AddButton constants
+const ADD_BUTTON_MARGIN_LEFT = 20;
+const ADD_BUTTON_MARGIN_BOTTOM = -6;
+// #endregion
 const AddButton = styled.div`
   font-family: TradeWinds;
   font-weight: bold;
   opacity: 1;
   cursor: pointer;
-  margin-left: 10px;
-  margin-bottom: -3px;
+  margin-left: ${ADD_BUTTON_MARGIN_LEFT}px;
+  margin-bottom: ${ADD_BUTTON_MARGIN_BOTTOM}px;
   &:hover {
     opacity: 0.7;
+  }
+
+  @media (max-width: 2560px) {
+    margin-left: ${ADD_BUTTON_MARGIN_LEFT * MID_SCALE}px;
+    margin-bottom: ${ADD_BUTTON_MARGIN_BOTTOM * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-left: ${ADD_BUTTON_MARGIN_LEFT * HD_SCALE}px;
+    margin-bottom: ${ADD_BUTTON_MARGIN_BOTTOM * HD_SCALE}px;
   }
 `;
 

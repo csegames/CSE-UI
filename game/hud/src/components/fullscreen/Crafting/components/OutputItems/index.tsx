@@ -23,7 +23,7 @@ import {
   shouldShowCustomNameInput,
   shouldShowShapeRunCount,
 } from '../../lib/utils';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   position: relative;
@@ -47,27 +47,45 @@ const EditContainer = styled.div`
   pointer-events: all;
 `;
 
+// #region QualityAndNameEditContainer constants
+const QUALITY_NAME_AND_EDIT_CONTAINER_TOP = 30;
+const QUALITY_NAME_AND_EDIT_CONTAINER_LEFT = 60;
+// #endregion
 const QualityAndNameEditContainer = styled.div`
   position: absolute;
-  top: 15px;
-  left: 30px;
+  top: ${QUALITY_NAME_AND_EDIT_CONTAINER_TOP}px;
+  left: ${QUALITY_NAME_AND_EDIT_CONTAINER_LEFT}px;
   pointer-events: all;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    top: -15px;
-    left: -30px;
+  @media (max-width: 2560px) {
+    top: ${QUALITY_NAME_AND_EDIT_CONTAINER_TOP * MID_SCALE}px;
+    left: ${QUALITY_NAME_AND_EDIT_CONTAINER_LEFT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    top: ${QUALITY_NAME_AND_EDIT_CONTAINER_TOP * HD_SCALE}px;
+    left: ${QUALITY_NAME_AND_EDIT_CONTAINER_LEFT * HD_SCALE}px;
   }
 `;
 
+// #region ItemCountEditContainer constants
+const ITEM_COUNT_EDIT_CONTAINER_TOP = 30;
+const ITEM_COUNT_EDIT_CONTAINER_RIGHT = 60;
+// #endregion
 const ItemCountEditContainer = styled.div`
   position: absolute;
-  top: 15px;
-  right: 30px;
+  top: ${ITEM_COUNT_EDIT_CONTAINER_TOP}px;
+  right: ${ITEM_COUNT_EDIT_CONTAINER_RIGHT}px;
   pointer-events: all;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    top: -15;
-    right: -15px;
+  @media (max-width: 2560px) {
+    top: ${ITEM_COUNT_EDIT_CONTAINER_TOP * MID_SCALE}px;
+    right: ${ITEM_COUNT_EDIT_CONTAINER_RIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    top: ${ITEM_COUNT_EDIT_CONTAINER_TOP * HD_SCALE}px;
+    right: ${ITEM_COUNT_EDIT_CONTAINER_RIGHT * HD_SCALE}px;
   }
 `;
 

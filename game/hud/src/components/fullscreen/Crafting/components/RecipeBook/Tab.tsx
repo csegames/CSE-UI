@@ -9,27 +9,38 @@ import * as React from 'react';
 import { isEqual } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { prettifyText } from 'fullscreen/lib/utils';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
-import { CraftingResolutionContext } from 'fullscreen/Crafting/CraftingResolutionContext';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_MIN_WIDTH = 40;
+const CONTAINER_HEIGHT = 54;
+const CONTAINER_PADDING_TOP = 4;
+const CONTAINER_PADDING_HORIZONTAL = 20;
+const CONTAINER_FONT_SIZE = 24;
+const CONTAINER_MARGIN_LEFT = -10;
+
+const ORNAMENT_ALIGNMENT = -2;
+const ORNAMENT_LEFT_WIDTH = 18;
+const ORNAMENT_RIGHT_WIDTH = 32;
+const ORNAMENT_HEIGHT = 26;
+// #endregion
 const Container = styled.div`
   position: relative;
-  min-width: 20px;
-  height: 27px;
-  padding: 2px 10px 0 10px;
+  min-width: ${CONTAINER_MIN_WIDTH}px;
+  height: ${CONTAINER_HEIGHT}px;
+  padding: ${CONTAINER_PADDING_TOP}px ${CONTAINER_PADDING_HORIZONTAL}px 0 ${CONTAINER_PADDING_HORIZONTAL}px;
+  font-size: ${CONTAINER_FONT_SIZE}px;
+  margin-left: ${CONTAINER_MARGIN_LEFT}px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   font-family: Caudex;
-  font-size: 12px;
   color: #B19A8E;
   background-size: cover;
   background-repeat: no-repeat;
   box-shadow: 2px 0px 2px rgba(0, 0, 0, 0.7);
   border: 1px solid rgba(103, 95, 89, 0.5);
-  margin-left: -5px;
   cursor: pointer;
-  margin-top: 2;
   transition: margin-top 0.1s;
 
   &:hover {
@@ -40,21 +51,25 @@ const Container = styled.div`
   &:before {
     content: '';
     position: absolute;
-    top: -1px;
-    left: -1px;
-    width: 9px;
-    height: 13px;
-    background: url(../images/crafting/1080/bookmark-ornament-left-corner.png);
+    top: ${ORNAMENT_ALIGNMENT}px;
+    left: ${ORNAMENT_ALIGNMENT}px;
+    width: ${ORNAMENT_LEFT_WIDTH}px;
+    height: ${ORNAMENT_HEIGHT}px;
+    background-image: url(../images/crafting/uhd/bookmark-ornament-left-corner.png);
+    background-repeat: no-repeat;
+    background-size: contain;
   }
 
   &:after {
     content: '';
     position: absolute;
-    top: -1px;
-    right: -1px;
-    width: 16px;
-    height: 13px;
-    background: url(../images/crafting/1080/bookmark-ornament-right-corner.png);
+    top: ${ORNAMENT_ALIGNMENT}px;
+    right: ${ORNAMENT_ALIGNMENT}px;
+    width: ${ORNAMENT_RIGHT_WIDTH}px;
+    height: ${ORNAMENT_HEIGHT}px;
+    background-image: url(../images/crafting/uhd/bookmark-ornament-right-corner.png);
+    background-repeat: no-repeat;
+    background-size: contain;
   }
 
   &.selected {
@@ -64,32 +79,68 @@ const Container = styled.div`
   }
 
   &.recent {
-    background-image: url(../images/crafting/1080/bookmark-recent-bg.png);
+    background-image: url(../images/crafting/hd/bookmark-recent-bg.png);
   }
 
   &.favorites {
-    background-image: url(../images/crafting/1080/bookmark-favorite-bg.png);
+    background-image: url(../images/crafting/hd/bookmark-favorite-bg.png);
   }
 
   &.category {
-    background-image: url(../images/crafting/1080/bookmark-category-bg.png);
+    background-image: url(../images/crafting/hd/bookmark-category-bg.png);
   }
 
   &.notes,
   &.select {
-    background-image: url(../images/crafting/1080/bookmark-notes-bg.png);
+    background-image: url(../images/crafting/hd/bookmark-notes-bg.png);
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 16px;
-    height: 35px;
-    padding: 3px 13px 0 13px;
+  @media (max-width: 2560px) {
+    min-width: ${CONTAINER_MIN_WIDTH * MID_SCALE}px;
+    height: ${CONTAINER_HEIGHT * MID_SCALE}px;
+    padding: ${CONTAINER_PADDING_TOP * MID_SCALE}px ${CONTAINER_PADDING_HORIZONTAL * MID_SCALE}px 0
+    ${CONTAINER_PADDING_HORIZONTAL * MID_SCALE}px;
+    font-size: ${CONTAINER_FONT_SIZE * MID_SCALE}px;
+    margin-left: ${CONTAINER_MARGIN_LEFT * MID_SCALE}px;
+
+    &:before {
+      top: ${ORNAMENT_ALIGNMENT * MID_SCALE}px;
+      left: ${ORNAMENT_ALIGNMENT * MID_SCALE}px;
+      width: ${ORNAMENT_LEFT_WIDTH * MID_SCALE}px;
+      height: ${ORNAMENT_HEIGHT * MID_SCALE}px;
+    }
+
+    &:after {
+      top: ${ORNAMENT_ALIGNMENT * MID_SCALE}px;
+      right: ${ORNAMENT_ALIGNMENT * MID_SCALE}px;
+      width: ${ORNAMENT_RIGHT_WIDTH * MID_SCALE}px;
+      height: ${ORNAMENT_HEIGHT * MID_SCALE}px;
+    }
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 24px;
-    height: 60px;
-    padding: 6px 20px 0 20px;
+  @media (max-width: 1920px) {
+    min-width: ${CONTAINER_MIN_WIDTH * HD_SCALE}px;
+    height: ${CONTAINER_HEIGHT * HD_SCALE}px;
+    padding: ${CONTAINER_PADDING_TOP * HD_SCALE}px ${CONTAINER_PADDING_HORIZONTAL * HD_SCALE}px 0
+    ${CONTAINER_PADDING_HORIZONTAL * HD_SCALE}px;
+    font-size: ${CONTAINER_FONT_SIZE * HD_SCALE}px;
+    margin-left: ${CONTAINER_MARGIN_LEFT * HD_SCALE}px;
+
+    &:before {
+      top: ${ORNAMENT_ALIGNMENT * HD_SCALE}px;
+      left: ${ORNAMENT_ALIGNMENT * HD_SCALE}px;
+      width: ${ORNAMENT_LEFT_WIDTH * HD_SCALE}px;
+      height: ${ORNAMENT_HEIGHT * HD_SCALE}px;
+      background-image: url(../images/crafting/hd/bookmark-ornament-left-corner.png);
+    }
+
+    &:after {
+      top: ${ORNAMENT_ALIGNMENT * HD_SCALE}px;
+      right: ${ORNAMENT_ALIGNMENT * HD_SCALE}px;
+      width: ${ORNAMENT_RIGHT_WIDTH * HD_SCALE}px;
+      height: ${ORNAMENT_HEIGHT * HD_SCALE}px;
+      background-image: url(../images/crafting/hd/bookmark-ornament-right-corner.png);
+    }
   }
 `;
 
@@ -108,7 +159,6 @@ export interface ComponentProps {
 }
 
 export interface InjectedProps {
-  isUHD: boolean;
   resolution: { width: number, height: number };
 }
 
@@ -148,10 +198,10 @@ class Tab extends React.Component<Props, State> {
   }
 
   private handleMiniVersion = () => {
-    const { resolution, isUHD } = this.props;
+    const { resolution } = this.props;
     const screenWidth = resolution.width;
 
-    if (!this.state.miniVersion && (screenWidth <= 1600 || (isUHD && screenWidth <= 2550))) {
+    if (!this.state.miniVersion && (screenWidth <= 1600 || screenWidth <= 2550)) {
       this.setState({ miniVersion: true });
     } else {
       this.setState({ miniVersion: false });
@@ -175,11 +225,11 @@ class Tab extends React.Component<Props, State> {
 class TabWithInjectedContext extends React.Component<ComponentProps> {
   public render() {
     return (
-      <CraftingResolutionContext.Consumer>
-        {({ isUHD, resolution }) => (
-          <Tab {...this.props} isUHD={isUHD()} resolution={resolution} />
+      <UIContext.Consumer>
+        {({ resolution }) => (
+          <Tab {...this.props} resolution={resolution} />
         )}
-      </CraftingResolutionContext.Consumer>
+      </UIContext.Consumer>
     );
   }
 }

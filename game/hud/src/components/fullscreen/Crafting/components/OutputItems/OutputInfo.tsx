@@ -10,8 +10,8 @@ import moment from 'moment';
 import { styled } from '@csegames/linaria/react';
 import { VoxJob, VoxJobState } from 'gql/interfaces';
 import { getJobContext, getNearestVoxEntityID, isNearbyVox } from 'fullscreen/Crafting/lib/utils';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import { CraftingContext } from '../../CraftingContext';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   width: 100%;
@@ -26,7 +26,8 @@ const InfoBG = styled.div`
   justify-content: center;
   width: 70%;
   height: 70%;
-  background: url(../images/crafting/1080/output-text-still-ring.png) no-repeat;
+  background-image: url(../images/crafting/uhd/output-text-still-ring.png);
+  background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
   bottom: 0;
@@ -35,10 +36,9 @@ const InfoBG = styled.div`
   margin: auto;
   z-index: 12;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/output-text-still-ring.png) no-repeat;
-    background-size: contain;
-    background-position: center;
+  @media (max-width: 1920px) {
+    background-image: url(../images/crafting/hd/output-text-still-ring.png);
+    background-repeat: no-repeat;
   }
 `;
 
@@ -49,25 +49,27 @@ const InfoContainer = styled.div`
   margin-top: -10px;
 `;
 
+// #region InfoItem constants
+const INFO_ITEM_FONT_SIZE = 24;
+const INFO_ITEM_LETTER_SPACING = 2;
+// #endregion
 const InfoItem = styled.div`
-  font-size: 12px;
-  letter-spacing: 1px;
+  font-size: ${INFO_ITEM_FONT_SIZE}px;
+  letter-spacing: ${INFO_ITEM_LETTER_SPACING}px;
   text-transform: uppercase;
   font-family: Caudex;
   z-index: 13;
   text-align: center;
   color: #B1FFF3;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 16px;
+  @media (max-width: 2560px) {
+    font-size: ${INFO_ITEM_FONT_SIZE * MID_SCALE}px;
+    letter-spacing: ${INFO_ITEM_LETTER_SPACING * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 24px;
-  }
-
-  @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
-    font-size: 10px;
+  @media (max-width: 1920px) {
+    font-size: ${INFO_ITEM_FONT_SIZE * HD_SCALE}px;
+    letter-spacing: ${INFO_ITEM_LETTER_SPACING * HD_SCALE}px;
   }
 `;
 

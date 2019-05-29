@@ -10,6 +10,7 @@ import { styled } from '@csegames/linaria/react';
 import { getUppercaseRecipeType } from '../../lib/utils';
 import { RecipeType } from '../../CraftingBase';
 import { ItemDefRef, Requirement } from 'gql/interfaces';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   position: relative;
@@ -18,29 +19,76 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
+// #region InfoContainer constants
+const INFO_CONTAINER_MAX_WIDTH = 600;
+const INFO_CONTAINER_MARGIN_RIGHT = 10;
+// #endregion
 const InfoContainer = styled.div`
-  max-width: 300px;
-  margin-right: 5px;
+  max-width: ${INFO_CONTAINER_MAX_WIDTH}px;
+  margin-right: ${INFO_CONTAINER_MARGIN_RIGHT}px;
+
+  @media (max-width: 2560px) {
+    max-width: ${INFO_CONTAINER_MAX_WIDTH * MID_SCALE}px;
+    margin-right: ${INFO_CONTAINER_MARGIN_RIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    max-width: ${INFO_CONTAINER_MAX_WIDTH * HD_SCALE}px;
+    margin-right: ${INFO_CONTAINER_MARGIN_RIGHT * HD_SCALE}px;
+  }
 `;
 
+// #region ItemName constants
+const ITEM_NAME_FONT_SIZE = 36;
+// #endregion
 const ItemName = styled.div`
   font-family: Caudex;
-  font-size: 18px;
+  font-size: ${ITEM_NAME_FONT_SIZE}px;
   white-space: wrap;
   color: white;
+
+  @media (max-width: 2560px) {
+    font-size: ${ITEM_NAME_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${ITEM_NAME_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region ItemSubtitle constants
+const ITEM_SUBTITLE_FONT_SIZE = 28;
+// #endregion
 const ItemSubtitle = styled.div`
   font-family: Caudex;
-  font-size: 14px;
+  font-size: ${ITEM_SUBTITLE_FONT_SIZE}px;
   white-space: wrap;
   color: white;
+
+  @media (max-width: 2560px) {
+    font-size: ${ITEM_SUBTITLE_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${ITEM_SUBTITLE_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region ItemDescription constants
+const ITEM_DESCRIPTION_FONT_SIZE = 28;
+// #endregion
 const ItemDescription = styled.div`
-  font-size: 14px;
+  font-size: ${ITEM_DESCRIPTION_FONT_SIZE}px;
   white-space: wrap;
   color: #C3C3C3;
+
+  @media (max-width: 2560px) {
+    font-size: ${ITEM_DESCRIPTION_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${ITEM_DESCRIPTION_FONT_SIZE * HD_SCALE}
+  }
 `;
 
 

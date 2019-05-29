@@ -6,21 +6,36 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_TOP = -50;
+const CONTAINER_FONT_SIZE = 48;
+// #endregion
 const Container = styled.div`
   position: absolute;
-  top: -25px;
+  top: ${CONTAINER_TOP}px;
+  font-size: ${CONTAINER_FONT_SIZE}px;
   right: 0;
   bottom: 0;
   left: 0;
   background: linear-gradient(to top, rgba(8, 26, 27, 0.2), rgba(8, 26, 27, 0.8));
   color: white;
-  font-size: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
   z-index: 99;
+
+  @media (max-width: 2560px) {
+    top: ${CONTAINER_TOP * MID_SCALE}px;
+    font-size: ${CONTAINER_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    top: ${CONTAINER_TOP * HD_SCALE}px;
+    font-size: ${CONTAINER_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 export interface Props {

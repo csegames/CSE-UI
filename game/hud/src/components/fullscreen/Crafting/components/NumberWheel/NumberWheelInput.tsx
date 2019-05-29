@@ -9,12 +9,17 @@ import * as React from 'react';
 import { debounce } from 'lodash';
 import { css } from '@csegames/linaria';
 import { TextInput } from 'shared/TextInput';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region InputStyle constants
+const INPUT_STYLE_WIDTH = 100;
+const INPUT_STYLE_HEIGHT = 80;
+const INPUT_STYLE_FONT_SIZE = 44;
+// #endregion
 const InputStyle = css`
-  width: 50px;
-  height: 40px;
-  font-size: 22px !important;
+  width: ${INPUT_STYLE_WIDTH}px;
+  height: ${INPUT_STYLE_HEIGHT}px;
+  font-size: ${INPUT_STYLE_FONT_SIZE}px !important;
   color: #91FFFF !important;
   background-color: transparent !important;
   font-family: Caudex !important;
@@ -31,10 +36,16 @@ const InputStyle = css`
     -webkit-appearance: none;
     margin: 0;
   }
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 120px;
-    height: 120px;
-    font-size: 44px !important;
+  @media (max-width: 2560px) {
+    width: ${INPUT_STYLE_WIDTH * MID_SCALE}px;
+    height: ${INPUT_STYLE_HEIGHT * MID_SCALE}px;
+    font-size: ${INPUT_STYLE_FONT_SIZE * MID_SCALE}px !important;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${INPUT_STYLE_WIDTH * HD_SCALE}px;
+    height: ${INPUT_STYLE_HEIGHT * HD_SCALE}px;
+    font-size: ${INPUT_STYLE_FONT_SIZE * HD_SCALE}px !important;
   }
 `;
 

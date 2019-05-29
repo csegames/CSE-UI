@@ -12,8 +12,8 @@ import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/
 import { JobPanelTabQuery, VoxJobState } from 'gql/interfaces';
 import { CraftingContext } from '../../CraftingContext';
 import { JobIdToJobState } from '../../CraftingBase';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import { Tooltip } from 'shared/Tooltip';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const query = gql`
   query JobPanelTabQuery($entityID: String!, $voxJobID: String!) {
@@ -27,32 +27,59 @@ const query = gql`
   }
 `;
 
+// #region Tab constants
+const TAB_DIMENSIONS = 40;
+const TAB_FONT_SIZE = 24;
+const TAB_MARGIN_RIGHT = 10;
+
+const TAB_CONFIGURING_WIDTH = 22;
+const TAB_CONFIGURING_HEIGHT = 48;
+
+const TAB_RUNNING_CONTAINER_WIDTH = 70;
+const TAB_RUNNING_CONTAINER_HEIGHT = 44;
+const TAB_RUNNING_CONTAINER_LEFT = -20;
+const TAB_RUNNING_GIF_DIMENSIONS = 30;
+const TAB_RUNNING_GIF_TOP = 8;
+
+const TAB_QUEUED_LEFT = -20;
+const TAB_QUEUED_TOP = 4;
+
+const TAB_FINISHED_WIDTH = 22;
+const TAB_FINISHED_HEIGHT = 48;
+// #endregion
 const Tab = styled.div`
   position: relative;
-  width: 20px;
-  height: 20px;
-  font-size: 12px;
+  width: ${TAB_DIMENSIONS}px;
+  height: ${TAB_DIMENSIONS}px;
+  font-size: ${TAB_FONT_SIZE}px;
+  margin-right: ${TAB_MARGIN_RIGHT}px;
   text-align: center;
   color: white;
   cursor: pointer;
-  margin-right: 5px;
   z-index: ${(props: React.HTMLProps<HTMLDivElement> & { zIndex: number }) => props.zIndex};
+
   &:hover {
     -webkit-filter: brightness(130%);
     filter: brightness(130%);
   }
+
   &.active {
     -webkit-filter: brightness(200%);
     filter: brightness(200%);
   }
 
-  &.none:before {
+  &:before {
     content: '';
     position: absolute;
-    width: 20px;
-    height: 20px;
-    background: url(../images/crafting/1080/que-slot.png) no-repeat;
+    width: ${TAB_DIMENSIONS}px;
+    height: ${TAB_DIMENSIONS}px;
+    background-repeat: no-repeat;
     background-position: center center;
+    background-size: contain;
+  }
+
+  &.none:before {
+    background-image: url(../images/crafting/uhd/que-slot.png);
     top: 0;
     right: 0;
     bottom: 0;
@@ -60,12 +87,9 @@ const Tab = styled.div`
   }
 
   &.configuring:before {
-    content: '';
-    position: absolute;
-    width: 11px;
-    height: 24px;
-    background: url(../images/crafting/1080/que-slot-filled.png) no-repeat;
-    background-position: center center;
+    width: ${TAB_CONFIGURING_WIDTH}px;
+    height: ${TAB_CONFIGURING_HEIGHT}px;
+    background-image: url(../images/crafting/uhd/que-slot-filled.png);
     right: 0;
     left: 0;
     margin: auto;
@@ -73,176 +97,162 @@ const Tab = styled.div`
 
   &.running {
     &:before {
-      content: '';
-      position: absolute;
-      width: 35px;
-      height: 22px;
-      background: url(../images/crafting/1080/que-current.png) no-repeat;
+      background-image: url(../images/crafting/uhd/que-current.png);
+      background-repeat: no-repeat;
       background-size: contain;
-      left: -10px;
-      top: 2px;
+      width: ${TAB_RUNNING_CONTAINER_WIDTH}px;
+      height: ${TAB_RUNNING_CONTAINER_HEIGHT}px;
+      left: ${TAB_RUNNING_CONTAINER_LEFT}px;
     }
     &:after {
       content: '';
       position: absolute;
-      width: 15px;
-      height: 15px;
-      top: 5px;
+      width: ${TAB_RUNNING_GIF_DIMENSIONS}px;
+      height: ${TAB_RUNNING_GIF_DIMENSIONS}px;
+      top: ${TAB_RUNNING_GIF_TOP}px;
       left: 0px;
-      background: url(../images/crafting/1080/que-crafting-gif.gif) no-repeat;
+      background-image: url(../images/crafting/uhd/que-crafting-gif.gif);
+      background-repeat: no-repeat;
       background-size: contain;
     }
   }
 
   &.queued {
     &:before {
-      content: '';
-      position: absolute;
-      width: 35px;
-      height: 22px;
-      background: url(../images/crafting/1080/queued-job-current.png) no-repeat;
+      width: ${TAB_RUNNING_CONTAINER_WIDTH}px;
+      height: ${TAB_RUNNING_CONTAINER_HEIGHT}px;
+      left: ${TAB_QUEUED_LEFT}px;
+      top: ${TAB_QUEUED_TOP}px;
+      background-image: url(../images/crafting/uhd/queued-job-current.png);
       background-size: contain;
-      left: -10px;
-      top: 2px;
     }
   }
 
   &.finished:before {
-    content: '';
-    position: absolute;
-    width: 11px;
-    height: 24px;
-    background: url(../images/crafting/1080/que-done.png) no-repeat;
-    background-position: center center;
+    width: ${TAB_FINISHED_WIDTH}px;
+    height: ${TAB_FINISHED_HEIGHT}px;
+    background-image: url(../images/crafting/uhd/que-done.png);
     right: 0;
     left: 0;
     margin: auto;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 26px;
-    height: 26px;
-    font-size: 16px;
-    margin: 0 5px;
+  @media (max-width: 2560px) {
+    width: ${TAB_DIMENSIONS * MID_SCALE}px;
+    height: ${TAB_DIMENSIONS * MID_SCALE}px;
+    font-size: ${TAB_FONT_SIZE * MID_SCALE}px;
+    margin-right: ${TAB_MARGIN_RIGHT * MID_SCALE}px;
     z-index: 10;
-    &.none:before {
-      background: url(../images/crafting/4k/que-slot.png) no-repeat;
-      background-position: center center;
-      background-size: contain;
-      width: 26px;
-      height: 29px;
+
+    &:before {
+      width: ${TAB_DIMENSIONS * MID_SCALE}px;
+      height: ${TAB_DIMENSIONS * MID_SCALE}px;
     }
 
     &.configuring:before {
-      background: url(../images/crafting/4k/que-slot-filled.png) no-repeat;
-      background-position: center center;
-      background-size: contain;
-      width: 26px;
-      height: 29px;
+      width: ${TAB_CONFIGURING_WIDTH * MID_SCALE}px;
+      height: ${TAB_CONFIGURING_HEIGHT * MID_SCALE}px;
     }
 
     &.running {
       &:before {
-        background: url(../images/crafting/4k/que-current.png) no-repeat;
-        background-size: contain;
-        width: 46px;
-        height: 29px;
-        top: 0px;
+        width: ${TAB_RUNNING_CONTAINER_WIDTH * MID_SCALE}px;
+        height: ${TAB_RUNNING_CONTAINER_HEIGHT * MID_SCALE}px;
+        left: ${TAB_RUNNING_CONTAINER_LEFT * MID_SCALE}px;
       }
       &:after {
-        background: url(../images/crafting/4k/que-crafting-gif.gif) no-repeat;
-        background-size: contain;
-        width: 20px;
-        height: 20px;
-        top: 0px;
-        left: 3px;
+        width: ${TAB_RUNNING_GIF_DIMENSIONS * MID_SCALE}px;
+        height: ${TAB_RUNNING_GIF_DIMENSIONS * MID_SCALE}px;
+        top: ${TAB_RUNNING_GIF_TOP * MID_SCALE}px;
       }
     }
 
     &.queued {
       &:before {
-        background: url(../images/crafting/4k/queued-job-current.png) no-repeat;
-        background-size: contain;
-        width: 46px;
-        height: 29px;
-        top: 0px;
+        width: ${TAB_RUNNING_CONTAINER_WIDTH * MID_SCALE}px;
+        height: ${TAB_RUNNING_CONTAINER_HEIGHT * MID_SCALE}px;
+        top: ${TAB_QUEUED_TOP * MID_SCALE}px;
       }
     }
 
     &.finished:before {
-      background: url(../images/crafting/4k/que-done.png) no-repeat;
-      background-position: center center;
-      background-size: contain;
-      width: 26px;
-      height: 29px;
+      width: ${TAB_FINISHED_WIDTH * MID_SCALE}px;
+      height: ${TAB_FINISHED_HEIGHT * MID_SCALE}px;
     }
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 26px;
-    height: 62px;
-    font-size: 24px;
-    margin: 0 15px;
+  @media (max-width: 1920px) {
+    width: ${TAB_DIMENSIONS * HD_SCALE}px;
+    height: ${TAB_DIMENSIONS * HD_SCALE}px;
+    font-size: ${TAB_FONT_SIZE * HD_SCALE}px;
+    margin-right: ${TAB_MARGIN_RIGHT * HD_SCALE}px;
     z-index: 10;
-    &.none:before {
-      background: url(../images/crafting/4k/que-slot.png) no-repeat;
-      background-position: center center;
-      width: 26px;
-      height: 62px;
+
+    &:before {
+      width: ${TAB_DIMENSIONS * HD_SCALE}px;
+      height: ${TAB_DIMENSIONS * HD_SCALE}px;
+    }
+
+    &:none:before {
+      background-image: url(../images/crafting/hd/que-slot.png);
     }
 
     &.configuring:before {
-      background: url(../images/crafting/4k/que-slot-filled.png) no-repeat;
-      background-position: center center;
-      width: 26px;
-      height: 62px;
+      background-image: url(../images/crafting/hd/que-slot-filled.png);
+      width: ${TAB_CONFIGURING_WIDTH * HD_SCALE}px;
+      height: ${TAB_CONFIGURING_HEIGHT * HD_SCALE}px;
     }
 
     &.running {
       &:before {
-        background: url(../images/crafting/4k/que-current.png) no-repeat;
-        background-size: contain;
-        width: 60px;
-        height: 53px;
-        top: 15px;
+        background-image: url(../images/crafting/hd/que-current.png);
+        width: ${TAB_RUNNING_CONTAINER_WIDTH * HD_SCALE}px;
+        height: ${TAB_RUNNING_CONTAINER_HEIGHT * HD_SCALE}px;
+        left: ${TAB_RUNNING_CONTAINER_LEFT * HD_SCALE}px;
       }
       &:after {
-        background: url(../images/crafting/4k/que-crafting-gif.gif) no-repeat;
-        background-size: contain;
-        width: 25px;
-        height: 25px;
-        top: 17px;
-        left: 10px;
+        background-image: url(../images/crafting/hd/que-crafting-gif.gif);
+        width: ${TAB_RUNNING_GIF_DIMENSIONS * HD_SCALE}px;
+        height: ${TAB_RUNNING_GIF_DIMENSIONS * HD_SCALE}px;
+        top: ${TAB_RUNNING_GIF_TOP * HD_SCALE}px;
       }
     }
 
     &.queued {
       &:before {
-        background: url(../images/crafting/4k/queued-job-current.png) no-repeat;
-        background-size: contain;
-        width: 60px;
-        height: 53px;
-        top: 15px;
+        background-image: url(../images/crafting/hd/queued-job-current.png);
+        width: ${TAB_RUNNING_CONTAINER_WIDTH * HD_SCALE}px;
+        height: ${TAB_RUNNING_CONTAINER_HEIGHT * HD_SCALE}px;
+        top: ${TAB_QUEUED_TOP * HD_SCALE}px;
       }
     }
 
     &.finished:before {
-      background: url(../images/crafting/4k/que-done.png) no-repeat;
-      background-position: center center;
-      width: 26px;
-      height: 62px;
+      background-image: url(../images/crafting/hd/que-done.png);
+      width: ${TAB_FINISHED_WIDTH * HD_SCALE}px;
+      height: ${TAB_FINISHED_HEIGHT * HD_SCALE}px;
     }
   }
 `;
 
+// #region TooltipContent constants
+const TOOLTIP_CONTENT_PADDING_VERTICAL = 4;
+const TOOLTIP_CONTENT_PADDING_HORIZONTAL = 10;
+const TOOLTIP_FONT_SIZE = 28;
+// #endregion
 const TooltipContent = styled.div`
-  padding: 2px 5px;
-  font-size: 14px;
+  padding: ${TOOLTIP_CONTENT_PADDING_VERTICAL}px ${TOOLTIP_CONTENT_PADDING_HORIZONTAL}px;
+  font-size: ${TOOLTIP_FONT_SIZE}px;
   color: #CCC;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    padding: 6px 15px;
-    font-size: 28px;
+  @media (max-width: 2560px) {
+    padding: ${TOOLTIP_CONTENT_PADDING_VERTICAL * MID_SCALE}px ${TOOLTIP_CONTENT_PADDING_HORIZONTAL * MID_SCALE}px;
+    font-size: ${TOOLTIP_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding: ${TOOLTIP_CONTENT_PADDING_VERTICAL * HD_SCALE}px ${TOOLTIP_CONTENT_PADDING_HORIZONTAL * HD_SCALE}px;
+    font-size: ${TOOLTIP_FONT_SIZE * HD_SCALE}px;
   }
 `;
 

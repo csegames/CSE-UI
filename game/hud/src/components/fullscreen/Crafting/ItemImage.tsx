@@ -7,8 +7,7 @@
 import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
-import { placeholderIcon } from 'fullscreen/lib/constants';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { placeholderIcon, MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   width: 100%;
@@ -47,23 +46,29 @@ const Footer = css`
   }
 `;
 
+// #region Text constants
+const TEXT_FONT_SIZE = 24;
+const TEXT_PADDING = 6;
+// #endregion
 const Text = styled.div`
   position: relative;
   color: white;
   text-shadow: 0 1px 0 black;
   text-align: right;
   z-index: 1;
-  padding-right: 3px;
+  padding-right: ${TEXT_PADDING}px;
+  font-size: ${TEXT_FONT_SIZE}px;
   cursor: inherit;
   -webkit-user-select: none;
-  font-size: 12px;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 16px;
+  @media (max-width: 2560px) {
+    padding-right: ${TEXT_PADDING * MID_SCALE}px;
+    font-size: ${TEXT_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 24px;
+  @media (max-width: 1920px) {
+    padding-right: ${TEXT_PADDING * HD_SCALE}px;
+    font-size: ${TEXT_FONT_SIZE * HD_SCALE}px;
   }
 `;
 

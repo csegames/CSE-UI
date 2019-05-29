@@ -33,6 +33,7 @@ declare global {
 }
 
 function isUHD(this: UIContext) {
+  if (!this) return false;
   return this.forceUHD || this.resolution.width > 1920;
 }
 

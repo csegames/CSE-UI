@@ -9,32 +9,41 @@ import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { TextInput } from 'shared/TextInput';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_LEFT = 10;
+const CONTAINER_HEIGHT = 62;
+const CONTAINER_MARGIN_BOTTOM = 20;
+const CONTAINER_PADDING_BOTTOM = 10;
+const CONTAINER_PADDING_RIGHT = 10;
+// #endregion
 const Container = styled.div`
   position: relative;
   top: 0px;
-  left: 5px;
   right: 0;
-  height: 31px;
-  margin-bottom: 10px;
-  padding: 0 0 5px 5px;
-  background: url(../images/crafting/1080/search-line.png) no-repeat;
+  left: ${CONTAINER_LEFT}px;
+  height: ${CONTAINER_HEIGHT}px;
+  margin-bottom: ${CONTAINER_MARGIN_BOTTOM}px;
+  padding: 0 0 ${CONTAINER_PADDING_BOTTOM}px ${CONTAINER_PADDING_RIGHT}px;
+  background-image: url(../images/crafting/uhd/search-line.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
   background-position: left bottom;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    height: 40px;
-    padding: 0 0 5px 10px;
-    background: url(../images/crafting/4k/search-line.png) no-repeat;
-    background-size: contain;
-    background-position: left bottom;
+  @media (max-width: 2560px) {
+    left: ${CONTAINER_LEFT * MID_SCALE}px;
+    height: ${CONTAINER_HEIGHT * MID_SCALE}px;
+    margin-bottom: ${CONTAINER_MARGIN_BOTTOM * MID_SCALE}px;
+    padding: 0 0 ${CONTAINER_PADDING_BOTTOM * MID_SCALE}px ${CONTAINER_PADDING_RIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    height: 77px;
-    padding: 0 0 5px 15px;
-    background: url(../images/crafting/4k/search-line.png) no-repeat;
-    background-position: left bottom;
+  @media (max-width: 1920px) {
+    left: ${CONTAINER_LEFT * HD_SCALE}px;
+    height: ${CONTAINER_HEIGHT * HD_SCALE}px;
+    margin-bottom: ${CONTAINER_MARGIN_BOTTOM * HD_SCALE}px;
+    padding: 0 0 ${CONTAINER_PADDING_BOTTOM * HD_SCALE}px ${CONTAINER_PADDING_RIGHT * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/search-line.png);
   }
 `;
 
@@ -43,6 +52,9 @@ const WrapperStyle = css`
   height: 100%;
 `;
 
+// #region InputStyle constants
+const INPUT_STYLE_FONT_SIZE = 40;
+// #endregion
 const InputStyle = css`
   width: 100%;
   height: 100%;
@@ -50,18 +62,18 @@ const InputStyle = css`
   border: 0px !important;
   outline: none !important;
   font-family: Caveat !important;
-  font-size: 20px !important;
+  font-size: ${INPUT_STYLE_FONT_SIZE}px !important;
   color: black !important;
   &::placeholder {
     color: black !important;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 26px !important;
+  @media (max-width: 2560px) {
+    font-size: ${INPUT_STYLE_FONT_SIZE * MID_SCALE}px !important;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 40px !important;
+  @media (max-width: 1920px) {
+    font-size: ${INPUT_STYLE_FONT_SIZE * HD_SCALE}px !important;
   }
 `;
 

@@ -7,31 +7,58 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_FONT_SIZE = 24;
+// #endregion
 const Container = styled.div`
   display: flex;
   align-items: center;
-  font-size: 12px;
   font-family: TradeWinds;
+  font-size: ${CONTAINER_FONT_SIZE}px;
+
+  @media (max-width: 2560px) {
+    font-size: ${CONTAINER_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${CONTAINER_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region Pages constants
+const PAGES_MIN_WIDTH = 160;
+// #endregion
 const Pages = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  min-width: 80px;
+  min-width: ${PAGES_MIN_WIDTH}px;
+
+  @media (max-width: 2560px) {
+    min-width: ${PAGES_MIN_WIDTH * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    min-width: ${PAGES_MIN_WIDTH * HD_SCALE}px;
+  }
 `;
 
+// #region Page constants
+const PAGE_WIDTH = 40;
+const PAGE_HEIGHT = 28;
+const PAGE_FONT_SIZE = 28;
+// #endregion
 const Page = styled.div`
   cursor: pointer;
-  width: 20px;
-  height: 14px;
-  line-height: 14px;
+  width: ${PAGE_WIDTH}px;
+  height: ${PAGE_HEIGHT}px;
+  line-height: ${PAGE_FONT_SIZE}px;
+  font-size: ${PAGE_FONT_SIZE}px;
   &.active {
     font-weight: bold;
     text-decoration: underline;
-    font-size: 14px;
     &:hover {
       opacity: 1;
     }
@@ -40,50 +67,54 @@ const Page = styled.div`
     opacity: 0.6;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 26px;
-    height: 18px;
-    font-size: 18px;
-    line-height: 18px;
-
-    &.active {
-      font-size: 18px;
-    }
+  @media (max-width: 2560px) {
+    width: ${PAGE_WIDTH * MID_SCALE}px;
+    height: ${PAGE_HEIGHT * MID_SCALE}px;
+    line-height: ${PAGE_FONT_SIZE * MID_SCALE}px;
+    font-size: ${PAGE_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 40px;
-    height: 28px;
-    font-size: 28px;
-    line-height: 28px;
-
-    &.active {
-      font-size: 28px;
-    }
+  @media (max-width: 1920px) {
+    width: ${PAGE_WIDTH * MID_SCALE}px;
+    height: ${PAGE_HEIGHT * MID_SCALE}px;
+    line-height: ${PAGE_FONT_SIZE * MID_SCALE}px;
+    font-size: ${PAGE_FONT_SIZE * MID_SCALE}px;
   }
 `;
 
+// #region Divider constants
+const DIVIDER_DIMENSIONS = 32;
+const DIVIDER_FONT_SIZE = 32;
+const DIVIDER_LETTER_SPACING = 2;
+// #endregion
 const Divider = styled.div`
-  width: 16px;
-  letter-spacing: 1px;
+  width: ${DIVIDER_DIMENSIONS}px;
+  font-size: ${DIVIDER_FONT_SIZE}px;
+  letter-spacing: ${DIVIDER_LETTER_SPACING}px;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 18px;
-    height: 18px;
-    font-size: 18px;
+  @media (max-width: 2560px) {
+    width: ${DIVIDER_DIMENSIONS * MID_SCALE}px;
+    font-size: ${DIVIDER_FONT_SIZE * MID_SCALE}px;
+    letter-spacing: ${DIVIDER_LETTER_SPACING * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 28px;
-    height: 28px;
-    font-size: 28px;
+  @media (max-width: 1920px) {
+    width: ${DIVIDER_DIMENSIONS * HD_SCALE}px;
+    font-size: ${DIVIDER_FONT_SIZE * HD_SCALE}px;
+    letter-spacing: ${DIVIDER_LETTER_SPACING * HD_SCALE}px;
   }
 `;
 
+// #region BackArrow constants
+const BACK_ARROW_WIDTH = 32;
+const BACK_ARROW_HEIGHT = 20;
+// #endregion
 const BackArrow = styled.div`
-  width: 16px;
-  height: 10px;
-  background: url(../images/crafting/1080/paper-history-left-arrow.png) no-repeat;
+  width: ${BACK_ARROW_WIDTH}px;
+  height: ${BACK_ARROW_HEIGHT}px;
+  background-image: url(../images/crafting/uhd/paper-history-left-arrow.png);
+  background-size: contain;
+  background-repeat: no-repeat;
   cursor: pointer;
   &.disabled {
     opacity: 0.6;
@@ -96,24 +127,28 @@ const BackArrow = styled.div`
     opacity: 0.8;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 21px;
-    height: 13px;
-    background: url(../images/crafting/4k/paper-history-left-arrow.png) no-repeat;
-    background-size: contain;
+  @media (max-width: 2560px) {
+    width: ${BACK_ARROW_WIDTH * MID_SCALE}px;
+    height: ${BACK_ARROW_HEIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 32px;
-    height: 19px;
-    background: url(../images/crafting/4k/paper-history-left-arrow.png) no-repeat;
+  @media (max-width: 1920px) {
+    width: ${BACK_ARROW_WIDTH * HD_SCALE}px;
+    height: ${BACK_ARROW_HEIGHT * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/paper-history-left-arrow.png);
   }
 `;
 
+// #region NextArrow constants
+const NEXT_ARROW_WIDTH = 32;
+const NEXT_ARROW_HEIGHT = 20;
+// #endregion
 const NextArrow = styled.div`
-  width: 16px;
-  height: 10px;
-  background: url(../images/crafting/1080/paper-history-right-arrow.png) no-repeat;
+  width: ${NEXT_ARROW_WIDTH}px;
+  height: ${NEXT_ARROW_HEIGHT}px;
+  background-image: url(../images/crafting/uhd/paper-history-right-arrow.png);
+  background-size: contain;
+  background-repeat: no-repeat;
   cursor: pointer;
   &.disabled {
     opacity: 0.6;
@@ -126,17 +161,15 @@ const NextArrow = styled.div`
     opacity: 0.8;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 21px;
-    height: 13px;
-    background: url(../images/crafting/4k/paper-history-right-arrow.png) no-repeat;
-    background-size: contain;
+  @media (max-width: 2560px) {
+    width: ${NEXT_ARROW_WIDTH * MID_SCALE}px;
+    height: ${NEXT_ARROW_HEIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 32px;
-    height: 19px;
-    background: url(../images/crafting/4k/paper-history-right-arrow.png) no-repeat;
+  @media (max-width: 1920px) {
+    width: ${NEXT_ARROW_WIDTH * HD_SCALE}px;
+    height: ${NEXT_ARROW_HEIGHT * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/paper-history-right-arrow.png);
   }
 `;
 

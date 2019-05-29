@@ -11,46 +11,69 @@ import { styled } from '@csegames/linaria/react';
 
 import { GroupLogData } from '../index';
 import QuickViewItem from './QuickViewItem';
+import { CONTAINER_MAX_HEIGHT } from './GeneralQuickViewItem';
 import PageSelector from '../PageSelector';
 import ConceptArt from '../ConceptArt';
 import { CraftingContext } from '../../../CraftingContext';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
-import { CraftingResolutionContext } from '../../../CraftingResolutionContext';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   width: 100%;
   height: 100%;
 `;
 
+// #region ItemSpacing constants
+const ITEM_SPACING_MARGIN_TOP = 20;
+// #endregion
 const ItemSpacing = styled.div`
-  margin-top: 10px;
+  margin-top: ${ITEM_SPACING_MARGIN_TOP}px;
+
+  @media (max-width: 2560px) {
+    margin-top: ${ITEM_SPACING_MARGIN_TOP * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-top: ${ITEM_SPACING_MARGIN_TOP * HD_SCALE}px;
+  }
 `;
 
+// #region PageSelectorPosition constants
+const PAGE_SELECTOR_POSITION_RIGHT = 20;
+const PAGE_SELECTOR_POSITION_PADDING = 10;
+const PAGE_SELECTOR_POSITION_BACK_RIGHT = 160;
+// #endregion
 const PageSelectorPosition = styled.div`
   position: absolute;
-  right: 10px;
+  right: ${PAGE_SELECTOR_POSITION_RIGHT}px;
+  padding: ${PAGE_SELECTOR_POSITION_PADDING}px;
   top: 0;
-  padding: 5px;
 
   &.showingBackButton {
-    right: 80px;
+    right: ${PAGE_SELECTOR_POSITION_BACK_RIGHT}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    top: 2px;
+  @media (max-width: 2560px) {
+    right: ${PAGE_SELECTOR_POSITION_RIGHT * MID_SCALE}px;
+    padding: ${PAGE_SELECTOR_POSITION_PADDING * MID_SCALE}px;
+
     &.showingBackButton {
-      right: 104px;
+      right: ${PAGE_SELECTOR_POSITION_BACK_RIGHT * MID_SCALE}px;
     }
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    top: 15px;
+  @media (max-width: 1920px) {
+    right: ${PAGE_SELECTOR_POSITION_RIGHT * HD_SCALE}px;
+    padding: ${PAGE_SELECTOR_POSITION_PADDING * HD_SCALE}px;
+
     &.showingBackButton {
-      right: 140px;
+      right: ${PAGE_SELECTOR_POSITION_BACK_RIGHT * HD_SCALE}px;
     }
   }
 `;
 
+// #region NoLogsText constants
+const NO_LOGS_TEXT_FONT_SIZE = 32;
+// #endregion
 const NoLogsText = styled.div`
   display: flex;
   justify-content: center;
@@ -61,22 +84,22 @@ const NoLogsText = styled.div`
   bottom: 0;
   left: 0;
   font-family: TradeWinds;
-  font-size: 16px;
+  font-size: ${NO_LOGS_TEXT_FONT_SIZE}px;
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 21px;
+  @media (max-width: 2560px) {
+    font-size: ${NO_LOGS_TEXT_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 32px;
+  @media (max-width: 1920px) {
+    font-size: ${NO_LOGS_TEXT_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
 export interface InjectedProps {
   loading: boolean;
   isUHD: boolean;
-  isMidScreen: boolean;
+  resolution: { width: number, height: number };
 }
 
 export interface ComponentProps {
@@ -143,7 +166,6 @@ class QuickView extends React.Component<Props, State> {
 
   public componentDidMount() {
     this.setItemsPerPage();
-    window.addEventListener('resize', this.setItemsPerPage);
   }
 
   public shouldComponentUpdate(nextProps: Props, nextState: State) {
@@ -152,15 +174,20 @@ class QuickView extends React.Component<Props, State> {
       this.props.searchValue !== nextProps.searchValue ||
       this.state.itemsPerPage !== nextState.itemsPerPage ||
       this.props.isUHD !== nextProps.isUHD ||
+      !isEqual(this.props.resolution, nextProps.resolution) ||
       !isEqual(this.props.groupLogs, nextProps.groupLogs);
   }
 
-  public componentWillUnmount() {
-    window.removeEventListener('resize', this.setItemsPerPage);
+  public componentDidUpdate(prevProps: Props) {
+    if (this.props.resolution.width !== prevProps.resolution.width) {
+      this.setItemsPerPage();
+    }
   }
 
   private setItemsPerPage = () => {
-    const itemHeight = this.props.isUHD ? 200 : this.props.isMidScreen ? 130 : 100;
+    const { resolution } = this.props;
+    const itemHeight = resolution.width > 2560 ? CONTAINER_MAX_HEIGHT : resolution.width > 1920 ?
+      CONTAINER_MAX_HEIGHT * MID_SCALE : CONTAINER_MAX_HEIGHT * HD_SCALE;
     const itemsPerPage = Math.floor(this.ref.clientHeight / itemHeight);
     this.setState({ itemsPerPage });
   }
@@ -189,15 +216,15 @@ class QuickView extends React.Component<Props, State> {
 class QuickViewWithInjectedContext extends React.Component<ComponentProps> {
   public render() {
     return (
-      <CraftingResolutionContext.Consumer>
-        {({ isUHD, isMidScreen }) => (
+      <UIContext.Consumer>
+        {({ isUHD, resolution }) => (
           <CraftingContext.Consumer>
             {({ loading }) => (
-              <QuickView {...this.props} loading={loading} isUHD={isUHD()} isMidScreen={isMidScreen()} />
+              <QuickView {...this.props} loading={loading} isUHD={isUHD()} resolution={resolution} />
             )}
           </CraftingContext.Consumer>
         )}
-      </CraftingResolutionContext.Consumer>
+      </UIContext.Consumer>
     );
   }
 }

@@ -7,53 +7,68 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Back constants
+const BACK_TOP = 2;
+const BACK_RIGHT = 20;
+const BACK_FONT_SIZE = 24;
+const BACK_PADDING = 10;
+// #endregion
 const Back = styled.div`
   position: absolute;
-  top: 1px;
-  right: 10px;
+  top: ${BACK_TOP}px;
+  right: ${BACK_RIGHT}px;
+  font-size: ${BACK_FONT_SIZE}px;
+  padding: ${BACK_PADDING}px;
   width: fit-content;
   color: black;
-  font-size: 12px;
   cursor: pointer;
   text-transform: uppercase;
   font-family: TradeWinds;
   pointer-events: all;
   cursor: pointer;
-  padding: 5px;
   z-index: 10;
   &:hover {
     opacity: 0.8;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 16px;
+  @media (max-width: 2560px) {
+    top: ${BACK_TOP * MID_SCALE}px;
+    right: ${BACK_RIGHT * MID_SCALE}px;
+    font-size: ${BACK_FONT_SIZE * MID_SCALE}px;
+    padding: ${BACK_PADDING * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    top: 5px;
-    font-size: 24px;
+  @media (max-width: 1920px) {
+    top: ${BACK_TOP * HD_SCALE}px;
+    right: ${BACK_RIGHT * HD_SCALE}px;
+    font-size: ${BACK_FONT_SIZE * HD_SCALE}px;
+    padding: ${BACK_PADDING * HD_SCALE}px;
   }
 `;
 
+// #region Arrow constants
+const ARROW_WIDTH = 32;
+const ARROW_HEIGHT = 20;
+// #endregion
 const Arrow = styled.div`
   display: inline-block;
-  width: 16px;
-  height: 10px;
-  background: url(../images/crafting/1080/paper-history-left-arrow.png) no-repeat;
+  width: ${ARROW_WIDTH}px;
+  height: ${ARROW_HEIGHT}px;
+  background-image: url(../images/crafting/uhd/paper-history-left-arrow.png);
+  background-size: contain;
+  background-repeat: no-repeat;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 21px;
-    height: 13px;
-    background: url(../images/crafting/4k/paper-history-left-arrow.png) no-repeat;
-    background-size: contain;
+  @media (max-width: 2560px) {
+    width: ${ARROW_WIDTH * MID_SCALE}px;
+    height: ${ARROW_HEIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 31px;
-    height: 19px;
-    background: url(../images/crafting/4k/paper-history-left-arrow.png) no-repeat;
+  @media (max-width: 1920px) {
+    width: ${ARROW_WIDTH * HD_SCALE}px;
+    height: ${ARROW_HEIGHT * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/paper-history-left-arrow.png);
   }
 `;
 

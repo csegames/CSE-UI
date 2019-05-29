@@ -13,76 +13,127 @@ import { isEqual } from 'lodash';
 import CancelJob from '../ActionButtons/CancelJob';
 import { CraftingContext } from '../../CraftingContext';
 import { JobIdToJobState } from '../../CraftingBase';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
-import { CraftingResolutionContext } from '../../CraftingResolutionContext';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_TOP = -50;
+const CONTAINER_FONT_SIZE = 48;
+// #endregion
 const Container = styled.div`
   position: absolute;
-  top: -25px;
+  top: ${CONTAINER_TOP}px;
+  font-size: ${CONTAINER_FONT_SIZE}px;
   right: 0;
   bottom: 0;
   left: 0;
   background: linear-gradient(to top, rgba(8, 26, 27, 0.2), rgba(8, 26, 27, 0.8));
   color: white;
-  font-size: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
   z-index: 99;
+
+  @media (max-width: 2560px) {
+    top: ${CONTAINER_TOP * MID_SCALE}px;
+    font-size: ${CONTAINER_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    top: ${CONTAINER_TOP * HD_SCALE}px;
+    font-size: ${CONTAINER_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region JobTypeIcon constants
+const JOB_TYPE_ICON_TOP = 100;
+// #endregion
 const JobTypeIcon = styled.img`
   position: absolute;
-  top: 50px;
+  top: ${JOB_TYPE_ICON_TOP}px;
   right: 0;
   left: 0;
   margin: auto;
+
+  @media (max-width: 2560px) {
+    top: ${JOB_TYPE_ICON_TOP * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    top: ${JOB_TYPE_ICON_TOP * HD_SCALE}px;
+  }
 `;
 
+// #region CancelContainer constants
+const CANCEL_CONTAINER_BOTTOM = 280;
+// #endregion
 const CancelContainer = styled.div`
   position: absolute;
   right: 0;
   left: 0;
-  bottom: 140px;
+  bottom: ${CANCEL_CONTAINER_BOTTOM}px;
   margin: auto;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 2560px) {
+    bottom: ${CANCEL_CONTAINER_BOTTOM * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    bottom: ${CANCEL_CONTAINER_BOTTOM * HD_SCALE}px;
+  }
 `;
 
+// #region QueuedContainer constants
+const QUEUED_CONTAINER_BOTTOM = 240;
+const QUEUED_CONTAINER_FONT_SIZE = 32;
+// #endregion
 const QueuedContainer = styled.div`
   position: absolute;
   right: 0;
   left: 0;
-  bottom: 120px;
+  bottom: ${QUEUED_CONTAINER_BOTTOM}px;
+  font-size: ${QUEUED_CONTAINER_FONT_SIZE}px;
   margin: auto;
   text-align: center;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 18px;
+  @media (max-width: 2560px) {
+    bottom: ${QUEUED_CONTAINER_BOTTOM * MID_SCALE}px;
+    font-size: ${QUEUED_CONTAINER_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 48px;
+  @media (max-width: 1920px) {
+    bottom: ${QUEUED_CONTAINER_BOTTOM * MID_SCALE}px;
+    font-size: ${QUEUED_CONTAINER_FONT_SIZE * MID_SCALE}px;
   }
 `;
 
+// #region JobActionText constants
+const JOB_ACTION_TEXT_FONT_SIZE = 24;
+const JOB_ACTION_TEXT_LETTER_SPACING = 2;
+const JOB_ACTION_TEXT_MARGIN_TOP = 200;
+// #endregion
 const JobActionText = styled.div`
-  font-size: 12px;
-  letter-spacing: 1px;
+  font-size: ${JOB_ACTION_TEXT_FONT_SIZE}px;
+  letter-spacing: ${JOB_ACTION_TEXT_LETTER_SPACING}px;
+  margin-top: ${JOB_ACTION_TEXT_MARGIN_TOP}px;
   text-transform: uppercase;
   font-family: Caudex;
   z-index: 10;
   text-align: center;
   color: #B1FFF3;
-  margin-top: 100px;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 16px;
+  @media (max-width: 2560px) {
+    font-size: ${JOB_ACTION_TEXT_FONT_SIZE * MID_SCALE}px;
+    letter-spacing: ${JOB_ACTION_TEXT_LETTER_SPACING * MID_SCALE}px;
+    margin-top: ${JOB_ACTION_TEXT_MARGIN_TOP * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 24px;
+  @media (max-width: 1920px) {
+    font-size: ${JOB_ACTION_TEXT_FONT_SIZE * HD_SCALE}px;
+    letter-spacing: ${JOB_ACTION_TEXT_LETTER_SPACING * HD_SCALE}px;
+    margin-top: ${JOB_ACTION_TEXT_MARGIN_TOP * HD_SCALE}px;
   }
 `;
 
@@ -112,7 +163,7 @@ class JobStartedOverlay extends React.Component<Props, State> {
 
   public render() {
     return (
-      <CraftingResolutionContext.Consumer>
+      <UIContext.Consumer>
         {({ isUHD }) => {
           const jobTypeIcon = this.getJobTypeIcon(isUHD());
           const isQueued = this.isQueued();
@@ -133,7 +184,7 @@ class JobStartedOverlay extends React.Component<Props, State> {
             </Container>
           );
         }}
-      </CraftingResolutionContext.Consumer>
+      </UIContext.Consumer>
     );
   }
 

@@ -22,7 +22,6 @@ import { getJobContext, canStartJob, getNearestVoxEntityID } from '../../lib/uti
 import ShapeInputItem from './ShapeInputItem';
 import ItemCount from './ItemCount';
 import DraggableItem, { Props as DraggableItemProps } from 'fullscreen/ItemShared/components/DraggableItem';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import {
   InventoryItem,
   SubItemSlot,
@@ -38,100 +37,94 @@ import {
 } from 'gql/interfaces';
 import { SlotType } from 'fullscreen/lib/itemInterfaces';
 import { CraftingContext } from '../../CraftingContext';
-import { placeholderIcon } from 'fullscreen/lib/constants';
+import { placeholderIcon, MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 declare const toastr: any;
 
 const ALLOWED_COLOR = 'rgba(46, 213, 80, 0.4)';
 const NOT_ALLOWED_COLOR = 'rgba(186, 50, 50, 0.4)';
 
+// #region Container constants
+const CONTAINER_MARGIN_RIGHT = 10;
+const CONTAINER_MARGIN_BOTTOM = 10;
+// #endregion
 const Container = styled.div`
   position: relative;
   display: flex;
-  margin-right: 5px;
-  margin-bottom: 5px;
+  margin-right: ${CONTAINER_MARGIN_RIGHT}px;
+  margin-bottom: ${CONTAINER_MARGIN_BOTTOM}px;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    margin-right: 0px;
-    margin-bottom: 0px;
+  @media (max-width: 2560px) {
+    margin-right: ${CONTAINER_MARGIN_RIGHT * MID_SCALE}px;
+    margin-bottom: ${CONTAINER_MARGIN_BOTTOM * MID_SCALE}px;
   }
 
-  @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
-    margin-right: 1px;
-    margin-bottom: 1px;
+  @media (max-width: 1920px) {
+    margin-right: ${CONTAINER_MARGIN_RIGHT * HD_SCALE}px;
+    margin-bottom: ${CONTAINER_MARGIN_BOTTOM * HD_SCALE}px;
   }
 `;
 
+// #region ItemContainerBackground constants
+const ITEM_CONTAINER_BACKGROUND_DIMENSIONS = 180;
+// #endregion
 export const ItemContainerBackground = styled.div`
-  width: 90px;
-  height: 90px;
-  background: url(../images/crafting/1080/craft-frame-slots-background.png) no-repeat;
+  width: ${ITEM_CONTAINER_BACKGROUND_DIMENSIONS}px;
+  height: ${ITEM_CONTAINER_BACKGROUND_DIMENSIONS}px;
+  background-image: url(../images/crafting/uhd/craft-frame-slots-background.png);
+  background-repeat: no-repeat;
   background-size: cover;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 117px;
-    height: 117px;
-    background: url(../images/crafting/4k/craft-frame-slots-background.png) no-repeat;
-    background-size: cover;
+  @media (max-width: 2560px) {
+    width: ${ITEM_CONTAINER_BACKGROUND_DIMENSIONS * MID_SCALE}px;
+    height: ${ITEM_CONTAINER_BACKGROUND_DIMENSIONS * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 180px;
-    height: 180px;
-    background: url(../images/crafting/4k/craft-frame-slots-background.png) no-repeat;
-    background-size: cover;
-  }
-
-  @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
-    width: 75px;
-    height: 75px;
+  @media (max-width: 1920px) {
+    width: ${ITEM_CONTAINER_BACKGROUND_DIMENSIONS * HD_SCALE}px;
+    height: ${ITEM_CONTAINER_BACKGROUND_DIMENSIONS * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/craft-frame-slots-background.png);
   }
 `;
 
 const DisabledItemContainer = styled.div`
-  width: 90px;
-  height: 90px;
-  background: url(../images/crafting/1080/frame-slots-non-background.png) no-repeat;
+  width: ${ITEM_CONTAINER_BACKGROUND_DIMENSIONS}px;
+  height: ${ITEM_CONTAINER_BACKGROUND_DIMENSIONS}px;
+  background-image: url(../images/crafting/uhd/frame-slots-non-background.png);
   background-size: contain;
   opacity: 0.4;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 117px;
-    height: 117px;
-    background: url(../images/crafting/4k/frame-slots-non-background.png) no-repeat;
-    background-size: contain;
+  @media (max-width: 2560px) {
+    width: ${ITEM_CONTAINER_BACKGROUND_DIMENSIONS * MID_SCALE}px;
+    height: ${ITEM_CONTAINER_BACKGROUND_DIMENSIONS * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 180px;
-    height: 180px;
-    background: url(../images/crafting/4k/frame-slots-non-background.png) no-repeat;
-    background-size: contain;
-  }
-
-  @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
-    width: 75px;
-    height: 75px;
+  @media (max-width: 1920px) {
+    width: ${ITEM_CONTAINER_BACKGROUND_DIMENSIONS * HD_SCALE}px;
+    height: ${ITEM_CONTAINER_BACKGROUND_DIMENSIONS * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/frame-slots-non-background.png);
   }
 `;
 
+// #region ItemContainer constants
+const ITEM_CONTAINER_DIMENSIONS = 120;
+// #endregion
 export const ItemContainer = styled.div`
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: ${ITEM_CONTAINER_DIMENSIONS}px;
+  height: ${ITEM_CONTAINER_DIMENSIONS}px;
   pointer-events: all;
   cursor: pointer;
-  background: url(../images/crafting/1080/frame-slots-empty.png) no-repeat;
+  background-image: url(../images/crafting/uhd/frame-slots-empty.png);
   background-size: contain;
   display: flex;
   align-items: center;
   justify-content: center;
   &.hasItem {
-    background: url(../images/crafting/1080/craft-frame-slots.png) no-repeat;
-    background-size: contain;
+    background-image: url(../images/crafting/uhd/craft-frame-slots.png);
     &:hover {
       box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
     };
@@ -140,60 +133,43 @@ export const ItemContainer = styled.div`
     };
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 78px;
-    height: 78px;
-    background: url(../images/crafting/4k/frame-slots-empty.png) no-repeat;
-    background-size: contain;
-    &.hasItem {
-      background: url(../images/crafting/4k/craft-frame-slots.png) no-repeat;
-      background-size: contain;
-    }
+  @media (max-width: 2560px) {
+    width: ${ITEM_CONTAINER_DIMENSIONS * MID_SCALE}px;
+    height: ${ITEM_CONTAINER_DIMENSIONS * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 120px;
-    height: 120px;
-    background: url(../images/crafting/4k/frame-slots-empty.png) no-repeat;
-    background-size: contain;
+  @media (max-width: 1920px) {
+    width: ${ITEM_CONTAINER_DIMENSIONS * HD_SCALE}px;
+    height: ${ITEM_CONTAINER_DIMENSIONS * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/frame-slots-empty.png);
     &.hasItem {
-      background: url(../images/crafting/4k/craft-frame-slots.png) no-repeat;
-      background-size: contain;
+      background-image: url(../images/crafting/hd/craft-frame-slots.png);
     }
-  }
-
-  @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
-    width: 50px;
-    height: 50px;
   }
 `;
 
+// #region ItemWrapper constants
+const ITEM_WRAPPER_DIMENSIONS = 108;
+// #endregion
 export const ItemWrapper = styled.div`
   position: relative;
-  width: 54px;
-  height: 54px;
-  max-width: 54px;
-  max-height: 54px;
+  width: ${ITEM_WRAPPER_DIMENSIONS}px;
+  height: ${ITEM_WRAPPER_DIMENSIONS}px;
+  max-width: ${ITEM_WRAPPER_DIMENSIONS}px;
+  max-height: ${ITEM_WRAPPER_DIMENSIONS}px;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 70px;
-    height: 70px;
-    max-width: 70px;
-    max-height: 70px;
+  @media (max-width: 2560px) {
+    width: ${ITEM_WRAPPER_DIMENSIONS * MID_SCALE}px;
+    height: ${ITEM_WRAPPER_DIMENSIONS * MID_SCALE}px;
+    max-width: ${ITEM_WRAPPER_DIMENSIONS * MID_SCALE}px;
+    max-height: ${ITEM_WRAPPER_DIMENSIONS * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 108px;
-    height: 108px;
-    max-width: 108px;
-    max-height: 108px;
-  }
-
-  @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
-    width: 41.5px;
-    height: 41.5px;
-    max-width: 41.5px;
-    max-height: 41.5px;
+  @media (max-width: 1920px) {
+    width: ${ITEM_WRAPPER_DIMENSIONS * HD_SCALE}px;
+    height: ${ITEM_WRAPPER_DIMENSIONS * HD_SCALE}px;
+    max-width: ${ITEM_WRAPPER_DIMENSIONS * HD_SCALE}px;
+    max-height: ${ITEM_WRAPPER_DIMENSIONS * HD_SCALE}px;
   }
 
   &:after {
@@ -207,26 +183,24 @@ export const ItemWrapper = styled.div`
   }
 `;
 
+// #region PlaceholderImage constants
+const PLACEHOLDER_IMAGE_DIMENSIONS = 100;
+// #endregion
 export const PlaceholderImage = styled.img`
-  width: 50px;
-  height: 50px;
+  width: ${PLACEHOLDER_IMAGE_DIMENSIONS}px;
+  height: ${PLACEHOLDER_IMAGE_DIMENSIONS}px;
   pointer-events: none;
   opacity: 0.5;
   object-fit: cover;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 65px;
-    height: 65px;
+  @media (max-width: 2560px) {
+    width: ${PLACEHOLDER_IMAGE_DIMENSIONS * MID_SCALE}px;
+    height: ${PLACEHOLDER_IMAGE_DIMENSIONS * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 100px;
-    height: 100px;
-  }
-
-  @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
-    width: 41.5px;
-    height: 41.5px;
+  @media (max-width: 1920px) {
+    width: ${PLACEHOLDER_IMAGE_DIMENSIONS * HD_SCALE}px;
+    height: ${PLACEHOLDER_IMAGE_DIMENSIONS * HD_SCALE}px;
   }
 `;
 

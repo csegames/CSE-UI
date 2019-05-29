@@ -25,130 +25,151 @@ import ItemImage from '../../../ItemImage';
 import CraftingDefTooltip from '../../CraftingDefTooltip';
 import { getIcon, getItemUnitCount, getItemQuality } from 'fullscreen/lib/utils';
 import { GroupLogData } from '../index';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import { getIngredientInfo, toDisplayQuality } from '../../../lib/utils';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_MARGIN_TOP = 40;
+// #endregion
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: ${CONTAINER_MARGIN_TOP}px;
+
+  @media (max-width: 2560px) {
+    margin-top: ${CONTAINER_MARGIN_TOP * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-top: ${CONTAINER_MARGIN_TOP * HD_SCALE}px;
+  }
 `;
 
+// #region InputItemsContainer constants
+const INPUT_ITEMS_CONTAINER_WIDTH = 240;
+const INPUT_ITEMS_CONTAINER_HEIGHT = 320;
+// #endregion
 const InputItemsContainer = styled.div`
   flex: 1;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  width: 120px;
-  height: 160px;
+  width: ${INPUT_ITEMS_CONTAINER_WIDTH}px;
+  height: ${INPUT_ITEMS_CONTAINER_HEIGHT}px;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 156px;
-    height: 208px;
+  @media (max-width: 2560px) {
+    width: ${INPUT_ITEMS_CONTAINER_WIDTH * MID_SCALE}px;
+    height: ${INPUT_ITEMS_CONTAINER_HEIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 270px;
-    height: 400px;
+  @media (max-width: 1920px) {
+    width: ${INPUT_ITEMS_CONTAINER_WIDTH * HD_SCALE}px;
+    height: ${INPUT_ITEMS_CONTAINER_HEIGHT * HD_SCALE}px;
   }
 `;
 
+// #region InputItem constants
+const INPUT_ITEM_DIMENSIONS = 96;
+const INPUT_ITEM_MARGIN_RIGHT = 10;
+const INPUT_ITEM_MARGIN_BOTTOM = 10;
+// #endregion
 const InputItem = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  background: url(../images/crafting/1080/paper-craft-no-counter-frame.png);
-  margin-right: 5px;
-  margin-bottom: 5px;
+  width: ${INPUT_ITEM_DIMENSIONS}px;
+  height: ${INPUT_ITEM_DIMENSIONS}px;
+  margin-right: ${INPUT_ITEM_MARGIN_RIGHT}px;
+  margin-bottom: ${INPUT_ITEM_MARGIN_BOTTOM}px;
+  background-image: url(../images/crafting/uhd/paper-craft-no-counter-frame.png);
+  background-size: cover;
   opacity: 0.7;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    background: url(../images/crafting/4k/paper-craft-no-counter-frame.png) no-repeat;
-    background-size: cover;
-    width: 62px;
-    height: 62px;
-    margin-right: 10px;
-    margin-bottom: 10px;
+  @media (max-width: 2560px) {
+    width: ${INPUT_ITEM_DIMENSIONS * MID_SCALE}px;
+    height: ${INPUT_ITEM_DIMENSIONS * MID_SCALE}px;
+    margin-right: ${INPUT_ITEM_MARGIN_RIGHT * MID_SCALE}px;
+    margin-bottom: ${INPUT_ITEM_MARGIN_BOTTOM * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/paper-craft-no-counter-frame.png) no-repeat;
-    background-size: cover;
-    width: 96px;
-    height: 96px;
-    margin-right: 15px;
-    margin-bottom: 15px;
+  @media (max-width: 1920px) {
+    width: ${INPUT_ITEM_DIMENSIONS * HD_SCALE}px;
+    height: ${INPUT_ITEM_DIMENSIONS * HD_SCALE}px;
+    margin-right: ${INPUT_ITEM_MARGIN_RIGHT * HD_SCALE}px;
+    margin-bottom: ${INPUT_ITEM_MARGIN_BOTTOM * HD_SCALE}px;
   }
 `;
 
+// #region ConnceptArt constants
+const CONCEPT_ART_WIDTH = 360;
+const CONCEPT_ART_HEIGHT = 400;
+// #endregion
 const ConceptArt = styled.div`
   flex: 1;
-  width: 180px;
-  height: 200px;
-  background: url(../images/crafting/1080/drawings/sketch-statue.png) no-repeat;
+  width: ${CONCEPT_ART_WIDTH}px;
+  height: ${CONCEPT_ART_HEIGHT}px;
+  background-image: url(../images/crafting/uhd/drawings/sketch-statue.png);
+  background-repeat: no-repeat;
   background-size: contain;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 234px;
-    height: 260px;
-    background: url(../images/crafting/4k/drawings/sketch-tdd-statue.png) no-repeat;
-    background-size: contain;
+  @media (max-width: 2560px) {
+    width: ${CONCEPT_ART_WIDTH * MID_SCALE}px;
+    height: ${CONCEPT_ART_HEIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 360px;
-    height: 400px;
-    background: url(../images/crafting/4k/drawings/sketch-tdd-statue.png) no-repeat;
-    background-size: contain;
+  @media (max-width: 1920px) {
+    width: ${CONCEPT_ART_WIDTH * HD_SCALE}px;
+    height: ${CONCEPT_ART_HEIGHT * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/drawings/sketch-tdd-statue.png);
   }
 `;
 
+// #region UnitCountRange constants
+const UNIT_COUNT_RANGE_RIGHT = 4;
+const UNIT_COUNT_RANGE_FONT_SIZE = 18;
+// #endregion
 const UnitCountRange = styled.div`
   position: absolute;
   top: 0px;
-  right: 2px;
-  font-size: 9px;
+  right: ${UNIT_COUNT_RANGE_RIGHT}px;
+  font-size: ${UNIT_COUNT_RANGE_FONT_SIZE}px;
   color: #FFE3B9;
   z-index: 10;
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 12px;
+  @media (max-width: 2560px) {
+    right: ${UNIT_COUNT_RANGE_RIGHT * MID_SCALE}px;
+    font-size: ${UNIT_COUNT_RANGE_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 18px;
-  }
-
-  @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
-    right: -1px;
-    top: -4px;
+  @media (max-width: 1920px) {
+    right: ${UNIT_COUNT_RANGE_RIGHT * HD_SCALE}px;
+    font-size: ${UNIT_COUNT_RANGE_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
+// #region QualityRange constants
+const QUALITY_RANGE_RIGHT = 4;
+const QUALITY_RANGE_FONT_SIZE = 18;
+// #endregion
 const QualityRange = styled.div`
   position: absolute;
   bottom: 0;
-  right: 2px;
-  font-size: 9px;
+  right: ${QUALITY_RANGE_RIGHT}px;
+  font-size: ${QUALITY_RANGE_FONT_SIZE}px;
   color: #FFE3B9;
   z-index: 10;
   pointer-events: none;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 12px;
+  @media (max-width: 2560px) {
+    right: ${QUALITY_RANGE_RIGHT * MID_SCALE}px;
+    font-size: ${QUALITY_RANGE_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 18px;
-  }
-
-  @media (max-width: ${MediaBreakpoints.SmallScreen}px) {
-    right: -1px;
-    bottom: -6px;
+  @media (max-width: 1920px) {
+    right: ${QUALITY_RANGE_RIGHT * HD_SCALE}px;
+    font-size: ${QUALITY_RANGE_FONT_SIZE * HD_SCALE}px;
   }
 `;
 

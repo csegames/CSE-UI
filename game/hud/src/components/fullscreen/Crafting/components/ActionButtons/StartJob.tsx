@@ -8,111 +8,97 @@
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { getJobContext } from '../../lib/utils';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
-// const Spin = keyframes`
-//   0% {
-//     -webkit-transform: rotate(0deg);
-//     transform: rotate(0deg);
-//   }
-//   100% {
-//     -webkit-transform: rotate(360deg);
-//     transform:rotate(360deg);
-//   }
-// `;
-
+// #region Container constants
+const CONTAINER_HEIGHT = 800;
+// #endregion
 const Container = styled.div`
   position: relative;
-  height: 400px;
+  height: ${CONTAINER_HEIGHT}px;
   width: 100%;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    height: 630px;
+  @media (max-width: 2560px) {
+    height: ${CONTAINER_HEIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    height: ${CONTAINER_HEIGHT * HD_SCALE}px;
   }
 `;
 
+// #region Frame constants
+const FRAME_WIDTH = 1250;
+const FRAME_HEIGHT = 800;
+// #endregion
 const Frame = styled.div`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: 625px;
-  height: 400px;
-  background: url(../images/crafting/1080/status-frame-off.png) no-repeat;
+  width: ${FRAME_WIDTH}px;
+  height: ${FRAME_HEIGHT}px;
+  background-image: url(../images/crafting/uhd/status-frame-off.png);
+  background-repeat: no-repeat;
   background-position: center 0%;
   background-size: cover;
   -webkit-transition: background 0.2s;
   transition: background 0.2s;
   overflow: hidden;
   &.active {
-    background: url(../images/crafting/1080/status-frame.png) no-repeat;
-    background-position: center 0%;
-    background-size: cover;
+    background-image: url(../images/crafting/uhd/status-frame.png);
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 812px;
-    height: 520px;
-    background: url(../images/crafting/4k/status-frame-off.png) no-repeat;
-    background-position: center 0%;
-    background-size: cover;
-
-    &.active {
-      background: url(../images/crafting/4k/status-frame.png) no-repeat;
-      background-position: center 0%;
-      background-size: cover;
-    }
+  @media (max-width: 2560px) {
+    width: ${FRAME_WIDTH * MID_SCALE}px;
+    height: ${FRAME_HEIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 1250px;
-    height: 800px;
-    background: url(../images/crafting/4k/status-frame-off.png) no-repeat;
-    background-position: center 0%;
-    background-size: cover;
+  @media (max-width: 1920px) {
+    width: ${FRAME_WIDTH * HD_SCALE}px;
+    height: ${FRAME_HEIGHT * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/status-frame-off.png);
 
     &.active {
-      background: url(../images/crafting/4k/status-frame.png) no-repeat;
-      background-position: center 0%;
-      background-size: cover;
+      background-image: url(../images/crafting/hd/status-frame.png);
     }
   }
 `;
 
+// #region Orb constants
+const ORB_DIMENSIONS = 266;
+const ORB_TOP = 278;
+// #endregion
 const Orb = styled.div`
   position: absolute;
-  width: 133px;
-  height: 133px;
-  top: 139px;
+  width: ${ORB_DIMENSIONS}px;
+  height: ${ORB_DIMENSIONS}px;
+  top: ${ORB_TOP}px;
   left: 0;
   right: 0;
   margin: auto;
   cursor: pointer;
   pointer-events: all;
   transition: filter 0.2s ease-in-out;
-  background: url(../images/crafting/1080/orb-off.png);
+  background-image: url(../images/crafting/uhd/orb-off.png);
+  background-repeat: no-repeat;
+  background-size: contain;
   &.active {
-    background: url(../images/crafting/1080/orb-on.png);
+    background-image: url(../images/crafting/uhd/orb-on.png);
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    top: 181px;
-    width: 173px;
-    height: 173px;
-    background: url(../images/crafting/4k/orb-off.png) no-repeat;
-    background-size: contain;
-    &.active {
-      background: url(../images/crafting/4k/orb-on.png) no-repeat;
-      background-size: contain;
-    }
+  @media (max-width: 2560px) {
+    width: ${ORB_DIMENSIONS * MID_SCALE}px;
+    height: ${ORB_DIMENSIONS * MID_SCALE}px;
+    top: ${ORB_TOP * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    top: 280px;
-    width: 318px;
-    height: 318px;
-    background: url(../images/crafting/4k/orb-off.png);
+  @media (max-width: 1920px) {
+    width: ${ORB_DIMENSIONS * HD_SCALE}px;
+    height: ${ORB_DIMENSIONS * HD_SCALE}px;
+    top: ${ORB_TOP * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/orb-off.png);
     &.active {
-      background: url(../images/crafting/4k/orb-on.png);
+      background-image: url(../images/crafting/hd/orb-on.png);
     }
   }
 
@@ -122,11 +108,16 @@ const Orb = styled.div`
   }
 `;
 
+// #region Glow constants
+const GLOW_WIDTH = 834;
+const GLOW_HEIGHT = 482;
+// #endregion
 const Glow = styled.div`
   position: absolute;
-  background: url(../images/crafting/1080/orb-glow.png);
-  width: 417px;
-  height: 241px;
+  background-image: url(../images/crafting/uhd/orb-glow.png);
+  background-size: cover;
+  width: ${GLOW_WIDTH}px;
+  height: ${GLOW_HEIGHT}px;
   left: 0;
   right: 0;
   margin: auto;
@@ -139,17 +130,15 @@ const Glow = styled.div`
     opacity: 1;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 542px;
-    height: 313px;
-    background: url(../images/crafting/4k/orb-glow.png) no-repeat;
-    background-size: cover;
+  @media (max-width: 2560px) {
+    width: ${GLOW_WIDTH * MID_SCALE}px;
+    height: ${GLOW_HEIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 998px;
-    height: 833px;
-    background: url(../images/crafting/4k/orb-glow.png);
+  @media (max-width: 1920px) {
+    width: ${GLOW_WIDTH * HD_SCALE}px;
+    height: ${GLOW_HEIGHT * HD_SCALE}px;
+    background-image: url(../images/crafting/hd/orb-glow.png);
   }
 `;
 

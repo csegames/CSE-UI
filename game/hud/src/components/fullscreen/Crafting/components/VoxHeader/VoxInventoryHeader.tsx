@@ -8,26 +8,41 @@
 import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { Container, Overlay, Text } from './Header';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region ContainerClass constants
+const CONTAINER_CLASS_PADDING_HORIZONTAL = 40;
+const CONTAINER_CLASS_HEIGHT = 100;
+// #endregion
 const ContainerClass = css`
-  padding: 0px 20px;
-  height: 50px;
+  padding: 0px ${CONTAINER_CLASS_PADDING_HORIZONTAL}px;
+  height: ${CONTAINER_CLASS_HEIGHT}px;
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    padding: 0px 30px;
-    height: 90px;
+  @media (max-width: 2560px) {
+    padding: 0px ${CONTAINER_CLASS_PADDING_HORIZONTAL * MID_SCALE}px;
+    height: ${CONTAINER_CLASS_HEIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding: 0px ${CONTAINER_CLASS_PADDING_HORIZONTAL * HD_SCALE}px;
+    height: ${CONTAINER_CLASS_HEIGHT * HD_SCALE}px;
   }
 `;
 
+// #region OverlayClass constants
+const OVERLAY_CLASS_MAX_WIDTH = 1764;
+// #endregion
 const OverlayClass = css`
-  background: url(../images/crafting/1080/title-vox-inventory-overlay.png) no-repeat;
+  background: url(../images/crafting/uhd/title-vox-inventory-overlay.png) no-repeat;
   background-size: cover;
-  max-width: 882px;
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/title-vox-inventory-overlay.png) no-repeat;
-    background-size: cover;
-    max-width: 1763px;
+  max-width: ${OVERLAY_CLASS_MAX_WIDTH}px;
+
+  @media (max-width: 2560px) {
+    max-width: ${OVERLAY_CLASS_MAX_WIDTH * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    max-width: ${OVERLAY_CLASS_MAX_WIDTH * HD_SCALE}px;
   }
 `;
 

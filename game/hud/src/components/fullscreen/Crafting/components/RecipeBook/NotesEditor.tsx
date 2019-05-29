@@ -12,7 +12,7 @@ import { styled } from '@csegames/linaria/react';
 
 import { KeyCodes } from '@csegames/camelot-unchained';
 import { TextArea } from 'shared/TextArea';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const MAX_CHARACTERS = 1000;
 
@@ -21,13 +21,17 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
+// #region TextAreaStyle constants
+const TEXT_AREA_STYLE_FONT_SIZE = 32;
+const TEXT_AREA_STYLE_MIN_HEIGHT = 200;
+// #endregion
 const TextAreaStyle = css`
   padding: 0px !important;
   background-color: transparent;
   font-family: Caveat !important;
-  font-size: 16px !important;
+  font-size: ${TEXT_AREA_STYLE_FONT_SIZE}px !important;
+  min-height: ${TEXT_AREA_STYLE_MIN_HEIGHT}px;
   color: black !important;
-  min-height: 100px;
   width: 100%;
   align-self: center;
   border: 0px !important;
@@ -41,31 +45,36 @@ const TextAreaStyle = css`
     color: transparent !important;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 21px !important;
+  @media (max-width: 2560px) {
+    font-size: ${TEXT_AREA_STYLE_FONT_SIZE * MID_SCALE}px !important;
+    min-height: ${TEXT_AREA_STYLE_MIN_HEIGHT * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 32px !important;
+  @media (max-width: 1920px) {
+    font-size: ${TEXT_AREA_STYLE_FONT_SIZE * HD_SCALE}px !important;
+    min-height: ${TEXT_AREA_STYLE_MIN_HEIGHT * HD_SCALE}px;
   }
 `;
 
+// #region TextContent constants
+const TEXT_CONTENT_FONT_SIZE = 32;
+// #endregion
 const TextContent = styled.div`
   position: absolute;
   width: 100%;
-  font-size: 16px;
+  font-size: ${TEXT_CONTENT_FONT_SIZE}px;
   font-family: Caveat;
   padding: 0px;
   opacity: 0;
   visibility: hidden;
   white-space: pre;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 21px;
+  @media (max-width: 2560px) {
+    font-size: ${TEXT_CONTENT_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 32px;
+  @media (max-width: 1920px) {
+    font-size: ${TEXT_CONTENT_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
@@ -74,35 +83,41 @@ const HeaderContainer = styled.div`
   align-items: center;
 `;
 
+// #region HeaderTitle constants
+const HEADER_TITLE_FONT_SIZE = 28;
+// #endregion
 const HeaderTitle = styled.div`
   font-family: TradeWinds;
-  font-size: 14px;
+  font-size: ${HEADER_TITLE_FONT_SIZE}px;
   color: #0A0706;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 18px;
+  @media (max-width: 2560px) {
+    font-size: ${HEADER_TITLE_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 28px;
+  @media (max-width: 1920px) {
+    font-size: ${HEADER_TITLE_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
+// #region CharacterCount constants
+const CHARACTER_COUNT_FONT_SIZE = 32;
+// #endregion
 const CharacterCount = styled.div`
   width: 100%;
   text-align: right;
   font-family: Caveat;
-  font-size: 16px;
+  font-size: ${CHARACTER_COUNT_FONT_SIZE}px;
   &.not-allowed {
     color: red;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 21px;
+  @media (max-width: 2560px) {
+    font-size: ${CHARACTER_COUNT_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 32px;
+  @media (max-width: 1920px) {
+    font-size: ${CHARACTER_COUNT_FONT_SIZE * HD_SCALE}px;
   }
 `;
 

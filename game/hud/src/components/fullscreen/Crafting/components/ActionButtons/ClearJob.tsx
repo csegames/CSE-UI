@@ -10,19 +10,22 @@ import { styled } from '@csegames/linaria/react';
 
 import { Tooltip } from 'shared/Tooltip';
 import { getJobContext } from '../../lib/utils';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region ResetButton constants
+const RESET_BUTTON_FONT_SIZE = 24;
+// #endregion
 const ResetButton = styled.div`
   color: #FFD899;
-  font-size: 12px;
+  font-size: ${RESET_BUTTON_FONT_SIZE}px;
   cursor: pointer;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 16px;
+  @media (max-width: 2560px) {
+    font-size: ${RESET_BUTTON_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 24px;
+  @media (max-width: 1920px) {
+    font-size: ${RESET_BUTTON_FONT_SIZE * HD_SCALE}px;
   }
 
   &:hover {
@@ -35,19 +38,24 @@ const ResetButton = styled.div`
   }
 `;
 
+// #region TooltipContent constants
+const TOOLTIP_CONTENT_PADDING_VERTICAL = 4;
+const TOOLTIP_CONTENT_PADDING_HORIZONTAL = 10;
+const TOOLTIP_CONTENT_FONT_SIZE = 28;
+// #endregion
 const TooltipContent = styled.div`
-  padding: 2px 5px;
-  font-size: 14px;
+  padding: ${TOOLTIP_CONTENT_PADDING_VERTICAL}px ${TOOLTIP_CONTENT_PADDING_HORIZONTAL}px;
+  font-size: ${TOOLTIP_CONTENT_FONT_SIZE}px;
   color: #CCC;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    padding: 3px 10px;
-    font-size: 18px;
+  @media (max-width: 2560px) {
+    padding: ${TOOLTIP_CONTENT_PADDING_VERTICAL * MID_SCALE}px ${TOOLTIP_CONTENT_PADDING_HORIZONTAL * MID_SCALE}px;
+    font-size: ${TOOLTIP_CONTENT_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    padding: 6px 15px;
-    font-size: 28px;
+  @media (max-width: 1920px) {
+    padding: ${TOOLTIP_CONTENT_PADDING_VERTICAL * HD_SCALE}px ${TOOLTIP_CONTENT_PADDING_HORIZONTAL * HD_SCALE}px;
+    font-size: ${TOOLTIP_CONTENT_FONT_SIZE * HD_SCALE}px;
   }
 `;
 

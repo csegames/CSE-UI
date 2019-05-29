@@ -16,7 +16,6 @@ import OutputCraftHistory from './OutputCraftHistory';
 import InputCraftHistory from './InputCraftHistory';
 import PageSelector from '../PageSelector';
 import { GroupLogData } from '../index';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
 import { RecipeIdToRecipe, RecipeData } from '../../../CraftingBase';
 import {
   VoxJobLog,
@@ -27,6 +26,7 @@ import {
 } from 'gql/interfaces';
 import { voxJobToRecipeType, getJobContext } from '../../../lib/utils';
 import { CraftingContext } from '../../../CraftingContext';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const countQuery = gql`
   query CraftHistoryLogCountQuery($jobIdentifier: String!, $jobType: String!) {
@@ -54,52 +54,77 @@ const Container = styled.div`
   width: 100%;
 `;
 
+// #region JobPageSelectorPosition constants
+const JOB_PAGE_SELECTOR_POSITION_TOP = -36;
+const JOB_PAGE_SELECTOR_POSITION_RIGHT = 10;
+// #endregion
 const JobPageSelectorPosition = styled.div`
   position: absolute;
-  top: -18px;
-  right: 5px;
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    top: -35px;
+  top: ${JOB_PAGE_SELECTOR_POSITION_TOP}px;
+  right: ${JOB_PAGE_SELECTOR_POSITION_RIGHT}px;
+
+  @media (max-width: 2560px) {
+    top: ${JOB_PAGE_SELECTOR_POSITION_TOP * MID_SCALE}px;
+    right: ${JOB_PAGE_SELECTOR_POSITION_RIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    top: ${JOB_PAGE_SELECTOR_POSITION_TOP * HD_SCALE}px;
+    right: ${JOB_PAGE_SELECTOR_POSITION_RIGHT * HD_SCALE}px;
   }
 `;
 
+// #region PaperCraftingButton constants
+const PAPER_CRAFTING_BUTTON_WIDTH = 630;
+const PAPER_CRAFTING_BUTTON_HEIGHT = 194;
+const PAPER_CRAFTING_BUTTON_FONT_SIZE = 32;
+// #endregion
 const PaperCraftingButton = styled.div`
   display: flex;
   align-items: center;
   align-self: center;
   justify-content: center;
-  background: url(../images/crafting/1080/paper-craft-button.png);
+  background-image: url(../images/crafting/1080/paper-craft-button.png);
+  background-repeat: no-repeat;
   background-size: contain;
-  width: 315px;
-  height: 97px;
+  width: ${PAPER_CRAFTING_BUTTON_WIDTH}px;
+  height: ${PAPER_CRAFTING_BUTTON_HEIGHT}px;
+  font-size: ${PAPER_CRAFTING_BUTTON_FONT_SIZE}px;
   font-family: TradeWinds;
   text-transform: uppercase;
-  font-size: 16px;
   cursor: pointer;
   pointer-events: all;
   &:hover {
     opacity: 0.8;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    background: url(../images/crafting/4k/paper-craft-button.png);
-    background-size: contain;
-    width: 410px;
-    height: 126px;
-    font-size: 21px;
+  @media (max-width: 2560px) {
+    width: ${PAPER_CRAFTING_BUTTON_WIDTH * MID_SCALE}px;
+    height: ${PAPER_CRAFTING_BUTTON_HEIGHT * MID_SCALE}px;
+    font-size: ${PAPER_CRAFTING_BUTTON_FONT_SIZE * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/paper-craft-button.png);
-    background-size: contain;
-    width: 768px;
-    height: 237px;
-    font-size: 32px;
+  @media (max-width: 1920px) {
+    background-image: url(../images/crafting/hd/paper-craft-button.png);
+    width: ${PAPER_CRAFTING_BUTTON_WIDTH * HD_SCALE}px;
+    height: ${PAPER_CRAFTING_BUTTON_HEIGHT * HD_SCALE}px;
+    font-size: ${PAPER_CRAFTING_BUTTON_FONT_SIZE * HD_SCALE}px;
   }
 `;
 
+// #region PaperCraftText constants
+const PAPER_CRAFT_TEXT_MARGIN_BOTTOM = -20;
+// #endregion
 const PaperCraftText = styled.div`
-  margin-bottom: -10px;
+  margin-bottom: ${PAPER_CRAFT_TEXT_MARGIN_BOTTOM}px;
+
+  @media (max-width: 2560px) {
+    margin-bottom: ${PAPER_CRAFT_TEXT_MARGIN_BOTTOM * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-bottom: ${PAPER_CRAFT_TEXT_MARGIN_BOTTOM * HD_SCALE}px;
+  }
 `;
 
 export interface ComponentProps {

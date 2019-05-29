@@ -17,23 +17,30 @@ import ItemImage from '../../../ItemImage';
 import PageSelector from '../PageSelector';
 import CraftingDefTooltip from '../../CraftingDefTooltip';
 import { GroupLogData } from '../index';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region OutputResultContainer constants
+const OUTPUT_RESULT_CONTAINER_HEIGHT = 320;
+const OUTPUT_RESULT_CONTAINER_BORDER_HEIGHT = 600;
+const OUTPUT_RESULT_CONTAINER_DIVIDER_BOTTOM = -8;
+const OUTPUT_RESULT_CONTAINER_DIVIDER_HEIGHT = 26;
+// #endregion
 const OutputResultContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 100%;
-  height: 160px;
+  height: ${OUTPUT_RESULT_CONTAINER_HEIGHT}px;
   box-shadow: inset 0 0 100px 20px rgba(155, 128, 88, 0.5);
   &:before {
     content: '';
     position: absolute;
     top: 0;
     width: 100%;
-    height: 300px;
-    background: url(../images/crafting/1080/paper-history-border.png) no-repeat;
+    height: ${OUTPUT_RESULT_CONTAINER_BORDER_HEIGHT}px;
+    background-image: url(../images/crafting/uhd/paper-history-border.png);
+    background-repeat: no-repeat;
     background-position: center center;
     background-size: 100% 100%;
     pointer-events: none;
@@ -42,43 +49,36 @@ const OutputResultContainer = styled.div`
   &:after {
     content: '';
     position: absolute;
-    bottom: -4px;
+    bottom: ${OUTPUT_RESULT_CONTAINER_DIVIDER_BOTTOM}px;
+    height: ${OUTPUT_RESULT_CONTAINER_DIVIDER_HEIGHT}px;
     width: 100%;
-    height: 13px;
-    background: url(../images/crafting/1080/paper-history-divider.png) no-repeat;
+    background-image: url(../images/crafting/uhd/paper-history-divider.png);
+    background-repeat: no-repeat;
     background-position: center bottom;
     background-size: cover;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    height: 208px;
+  @media (max-width: 2560px) {
+    height: ${OUTPUT_RESULT_CONTAINER_HEIGHT * MID_SCALE}px;
     &:before {
-      background: url(../images/crafting/4k/paper-history-border.png) no-repeat;
-      background-position: center center;
-      background-size: 100% 100%;
-      height: 390px;
+      height: ${OUTPUT_RESULT_CONTAINER_BORDER_HEIGHT * MID_SCALE}px;
     }
     &:after {
-      background: url(../images/crafting/4k/paper-history-divider.png) no-repeat;
-      background-position: center bottom;
-      background-size: cover;
-      height: 17px;
+      bottom: ${OUTPUT_RESULT_CONTAINER_DIVIDER_BOTTOM * MID_SCALE}px;
+      height: ${OUTPUT_RESULT_CONTAINER_DIVIDER_HEIGHT * MID_SCALE}px;
     }
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    height: 320px;
+  @media (max-width: 1920px) {
+    height: ${OUTPUT_RESULT_CONTAINER_HEIGHT * HD_SCALE}px;
     &:before {
-      background: url(../images/crafting/4k/paper-history-border.png) no-repeat;
-      background-position: center center;
-      background-size: 100% 100%;
-      height: 600px;
+      height: ${OUTPUT_RESULT_CONTAINER_BORDER_HEIGHT * HD_SCALE}px;
+      background-image: url(../images/crafting/hd/paper-history-border.png);
     }
     &:after {
-      background: url(../images/crafting/4k/paper-history-divider.png) no-repeat;
-      background-position: center bottom;
-      background-size: cover;
-      height: 33px;
+      bottom: ${OUTPUT_RESULT_CONTAINER_DIVIDER_BOTTOM * HD_SCALE}px;
+      height: ${OUTPUT_RESULT_CONTAINER_DIVIDER_HEIGHT * HD_SCALE}px;
+      background-image: url(../images/crafting/hd/paper-history-divider.png);
     }
   }
 `;
@@ -88,44 +88,37 @@ const OutputSlotsContainer = styled.div`
   justify-content: center;
 `;
 
+// #region OutputSlot constants
+const OUTPUT_SLOT_DIMENSIONS = 140;
+// #endregion
 const OutputSlot = styled.div`
   position: relative;
-  width: 70px;
-  height: 70px;
-  background: url(../images/crafting/1080/paper-output-frame.png) no-repeat;
+  width: ${OUTPUT_SLOT_DIMENSIONS}px;
+  height: ${OUTPUT_SLOT_DIMENSIONS}px;
+  background-image: url(../images/crafting/uhd/paper-output-frame.png);
+  background-repeat: no-repeat;
   background-size: contain;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0.7;
   &.byproduct {
-    background: url(../images/crafting/1080/paper-output-bonus-frame.png) no-repeat;
+    background-image: url(../images/crafting/uhd/paper-output-bonus-frame.png);
+    background-repeat: no-repeat;
     background-size: contain;
   }
   &.active {
     opacity: 1;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 91px;
-    height: 91px;
-    background: url(../images/crafting/4k/paper-output-frame.png) no-repeat;
-    background-size: contain;
-    &.byproduct {
-      background: url(../images/crafting/4k/paper-output-bonus-frame.png) no-repeat;
-      background-size: contain;
-    }
+  @media (max-width: 2560px) {
+    width: ${OUTPUT_SLOT_DIMENSIONS * MID_SCALE}px;
+    height: ${OUTPUT_SLOT_DIMENSIONS * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 140px;
-    height: 140px;
-    background: url(../images/crafting/4k/paper-output-frame.png) no-repeat;
-    background-size: contain;
-    &.byproduct {
-      background: url(../images/crafting/4k/paper-output-bonus-frame.png) no-repeat;
-      background-size: contain;
-    }
+  @media (max-width: 1920px) {
+    width: ${OUTPUT_SLOT_DIMENSIONS * HD_SCALE}px;
+    height: ${OUTPUT_SLOT_DIMENSIONS * HD_SCALE}px;
   }
 `;
 
@@ -134,63 +127,88 @@ const JobInfoContainer = styled.div`
   justify-content: center;
 `;
 
+// #region JobInfoSection constants
+const JOB_INFO_SECTION_FONT_SIZE = 32;
+const JOB_INFO_SECTION_MARGIN_HORIZONTAL = 10;
+// #endregion
 const JobInfoSection = styled.div`
   font-family: Caveat;
   color: #000000;
-  font-size: 16px;
-  margin-left: 5px;
-  margin-right: 5px;
+  font-size: ${JOB_INFO_SECTION_FONT_SIZE}px;
+  margin: 0 ${JOB_INFO_SECTION_MARGIN_HORIZONTAL}px;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    font-size: 21px;
+  @media (max-width: 2560px) {
+    font-size: ${JOB_INFO_SECTION_FONT_SIZE * MID_SCALE}px;
+    margin: 0 ${JOB_INFO_SECTION_MARGIN_HORIZONTAL * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    font-size: 32px;
+  @media (max-width: 1920px) {
+    font-size: ${JOB_INFO_SECTION_FONT_SIZE * HD_SCALE}px;
+    margin: 0 ${JOB_INFO_SECTION_MARGIN_HORIZONTAL * HD_SCALE}px;
   }
 `;
 
+// #region PageContainer constants
+const PAGE_CONTAINER_PADDING_TOP = 20;
+const PAGE_CONTAINER_PADDING_BOTTOM = 10;
+// #endregion
 const PageContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 0 10px 0 5px;
+  padding: 0 ${PAGE_CONTAINER_PADDING_TOP}px 0 ${PAGE_CONTAINER_PADDING_BOTTOM}px;
+
+  @media (max-width: 2560px) {
+    padding: 0 ${PAGE_CONTAINER_PADDING_TOP * MID_SCALE}px 0 ${PAGE_CONTAINER_PADDING_BOTTOM * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding: 0 ${PAGE_CONTAINER_PADDING_TOP * HD_SCALE}px 0 ${PAGE_CONTAINER_PADDING_BOTTOM * HD_SCALE}px;
+  }
 `;
 
+// #region ItemContainer constants
+const ITEM_CONTAINER_DIMENSIONS = 80;
+const ITEM_CONTAINER_BYPRODUCT_DIMENSIONS = 120;
+const ITEM_CONTAINER_BYPRODUCT_TOP = -10;
+const ITEM_CONTAINER_BYPRODUCT_LEFT = -12;
+// #endregion
 const ItemContainer = styled.div`
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: ${ITEM_CONTAINER_DIMENSIONS}px;
+  height: ${ITEM_CONTAINER_DIMENSIONS}px;
   &.byproduct:after {
     content: '';
     position: absolute;
-    width: 60px;
-    height: 60px;
-    background: url(../images/crafting/1080/bonus-frame.png) no-repeat;
+    width: ${ITEM_CONTAINER_BYPRODUCT_DIMENSIONS}px;
+    height: ${ITEM_CONTAINER_BYPRODUCT_DIMENSIONS}px;
+    top: ${ITEM_CONTAINER_BYPRODUCT_TOP}px;
+    left: ${ITEM_CONTAINER_BYPRODUCT_LEFT}px;
+    background-image: url(../images/crafting/uhd/bonus-frame.png);
+    background-repeat: no-repeat;
     background-size: contain;
-    top: -5px;
-    left: -6px;
     pointer-events: none;
   }
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    width: 52px;
-    height: 52px;
+  @media (max-width: 2560px) {
+    width: ${ITEM_CONTAINER_DIMENSIONS * MID_SCALE}px;
+    height: ${ITEM_CONTAINER_DIMENSIONS * MID_SCALE}px;
     &.byproduct:after {
-      background: url(../images/crafting/4k/bonus-frame.png) no-repeat;
-      background-size: contain;
-      width: 78px;
-      height: 78px;
+      width: ${ITEM_CONTAINER_BYPRODUCT_DIMENSIONS * MID_SCALE}px;
+      height: ${ITEM_CONTAINER_BYPRODUCT_DIMENSIONS * MID_SCALE}px;
+      top: ${ITEM_CONTAINER_BYPRODUCT_TOP * MID_SCALE}px;
+      left: ${ITEM_CONTAINER_BYPRODUCT_LEFT * MID_SCALE}px;
     }
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    width: 80px;
-    height: 80px;
+  @media (max-width: 1920px) {
+    width: ${ITEM_CONTAINER_DIMENSIONS * HD_SCALE}px;
+    height: ${ITEM_CONTAINER_DIMENSIONS * HD_SCALE}px;
     &.byproduct:after {
-      background: url(../images/crafting/4k/bonus-frame.png) no-repeat;
-      background-size: contain;
-      width: 120px;
-      height: 120px;
+      background-image: url(../images/crafting/hd/bonus-frame.png);
+      width: ${ITEM_CONTAINER_BYPRODUCT_DIMENSIONS * HD_SCALE}px;
+      height: ${ITEM_CONTAINER_BYPRODUCT_DIMENSIONS * HD_SCALE}px;
+      top: ${ITEM_CONTAINER_BYPRODUCT_TOP * HD_SCALE}px;
+      left: ${ITEM_CONTAINER_BYPRODUCT_LEFT * HD_SCALE}px;
     }
   }
 `;

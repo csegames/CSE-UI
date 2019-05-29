@@ -8,47 +8,55 @@
 import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { Container, Overlay } from './Header';
-import { MediaBreakpoints } from 'fullscreen/Crafting/lib/MediaBreakpoints';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region ContainerClass constants
+const CONTAINER_CLASS_HEIGHT = 70;
+const CONTAINER_CLASS_PADDING_HORIZONTAL = 40;
+const CONTAINER_CLASS_FONT_SIZE = 32;
+const CONTAINER_CLASS_LETTER_SPACING = 6;
+// #endregion
 const ContainerClass = css`
   color: #FFDFAF;
-  background: url(../images/crafting/1080/wood-bg.png);
-  height: 35px;
-  padding: 0 20px;
+  background-image: url(../images/crafting/uhd/wood-bg.png);
+  height: ${CONTAINER_CLASS_HEIGHT}px;
+  padding: 0 ${CONTAINER_CLASS_PADDING_HORIZONTAL}px;
+  font-size: ${CONTAINER_CLASS_FONT_SIZE}px;
+  letter-spacing: ${CONTAINER_CLASS_LETTER_SPACING}px;
   text-transform: uppercase;
   font-family: Caudex;
-  letter-spacing: 3px;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    background: url(../images/crafting/4k/wood-bg.png);
-    height: 46px;
-    font-size: 21px;
-    padding: 0 25px;
+  @media (max-width: 2560px) {
+    height: ${CONTAINER_CLASS_HEIGHT * MID_SCALE}px;
+    padding: 0 ${CONTAINER_CLASS_PADDING_HORIZONTAL * MID_SCALE}px;
+    font-size: ${CONTAINER_CLASS_FONT_SIZE * MID_SCALE}px;
+    letter-spacing: ${CONTAINER_CLASS_LETTER_SPACING * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/wood-bg.png);
-    height: 86px;
-    font-size: 28px;
-    padding: 0 30px;
+  @media (max-width: 1920px) {
+    background-image: url(../images/crafting/hd/wood-bg.png);
+    height: ${CONTAINER_CLASS_HEIGHT * HD_SCALE}px;
+    padding: 0 ${CONTAINER_CLASS_PADDING_HORIZONTAL * HD_SCALE}px;
+    font-size: ${CONTAINER_CLASS_FONT_SIZE * HD_SCALE}px;
+    letter-spacing: ${CONTAINER_CLASS_LETTER_SPACING * HD_SCALE}px;
   }
 `;
 
+// #region OverlayClass constants
+const OVERLAY_CLASS_MAX_WIDTH = 1076;
+// #endregion
 const OverlayClass = css`
-  background: url(../images/crafting/1080/title-recipebar-overlay.png) no-repeat;
+  background: url(../images/crafting/uhd/title-recipebar-overlay.png) no-repeat;
   background-size: cover;
-  max-width: 538px;
+  max-width: ${OVERLAY_CLASS_MAX_WIDTH}px;
 
-  @media (min-width: ${MediaBreakpoints.MidWidth}px) and (min-height: ${MediaBreakpoints.MidHeight}px) {
-    background: url(../images/crafting/4k/title-recipebar-overlay.png) no-repeat;
-    background-size: cover;
-    max-width: 699px;
+  @media (max-width: 2560px) {
+    max-width: ${OVERLAY_CLASS_MAX_WIDTH * MID_SCALE}px;
   }
 
-  @media (min-width: ${MediaBreakpoints.UHDWidth}px) and (min-height: ${MediaBreakpoints.UHDHeight}px) {
-    background: url(../images/crafting/4k/title-recipebar-overlay.png) no-repeat;
-    background-size: cover;
-    max-width: 1076px;
+  @media (max-width: 1920px) {
+    background: url(../images/crafting/hd/title-recipebar-overlay.png) no-repeat;
+    max-width: ${OVERLAY_CLASS_MAX_WIDTH * HD_SCALE}px;
   }
 `;
 
