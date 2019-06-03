@@ -15,6 +15,7 @@ import EquipmentSlots from './EquipmentSlots';
 import { EquippedItem, PaperDollContainerGQL } from 'gql/interfaces';
 import { EquippedItemFragment } from 'gql/fragments/EquippedItemFragment';
 import { getMyPaperDollBG } from 'fullscreen/lib/utils';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const paperDollContainerQuery = gql`
   query PaperDollContainerGQL {
@@ -47,14 +48,31 @@ const Container = styled.div`
   }
 `;
 
+// #region NameBackground constants
+const NAME_BACKGROUND_TOP = -46;
+const NAME_BACKGROUND_HEIGHT = 334;
+const NAME_BACKGROUND_WIDTH = 800;
+// #endregion
 const NameBackground = styled.div`
   position: absolute;
-  top: -23px;
+  top: ${NAME_BACKGROUND_TOP}px;
+  height: ${NAME_BACKGROUND_HEIGHT}px;
+  width: ${NAME_BACKGROUND_WIDTH}px;
   left: 0;
-  height: 167px;
-  width: 400px;
   background: url(../images/paperdoll/name-bg-splash.png) no-repeat;
   background-size: contain;
+
+  @media (max-width: 2560px) {
+    top: ${NAME_BACKGROUND_TOP * MID_SCALE}px;
+    height: ${NAME_BACKGROUND_HEIGHT * MID_SCALE}px;
+    width: ${NAME_BACKGROUND_WIDTH * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    top: ${NAME_BACKGROUND_TOP * HD_SCALE}px;
+    height: ${NAME_BACKGROUND_HEIGHT * HD_SCALE}px;
+    width: ${NAME_BACKGROUND_WIDTH * HD_SCALE}px;
+  }
 `;
 
 const PaperdollContainer = styled.div`
@@ -66,12 +84,26 @@ const PaperdollContainer = styled.div`
   height: 100%;
 `;
 
+// #region CharacterInfoContainer constants
+const CHARACTER_INFO_CONTAINER_HEIGHT = 100;
+const CHARACTER_INFO_CONTAINER_MARGIN_TOP = 40;
+// #endregion
 const CharacterInfoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 50px;
-  margin-top: 20px;
+  height: ${CHARACTER_INFO_CONTAINER_HEIGHT}px;
+  margin-top: ${CHARACTER_INFO_CONTAINER_MARGIN_TOP}px;
+
+  @media (max-width: 2560px) {
+    height: ${CHARACTER_INFO_CONTAINER_HEIGHT * MID_SCALE}px;
+    margin-top: ${CHARACTER_INFO_CONTAINER_MARGIN_TOP * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    height: ${CHARACTER_INFO_CONTAINER_HEIGHT * HD_SCALE}px;
+    margin-top: ${CHARACTER_INFO_CONTAINER_MARGIN_TOP * HD_SCALE}px;
+  }
 `;
 
 const LoadingOverlay = styled.div`
@@ -91,9 +123,20 @@ const LoadingOverlay = styled.div`
   z-index: 999;
 `;
 
+// #region RefreshTitle constants
+const REFRESH_TITLE_FONT_SIZE = 70;
+// #endregion
 const RefreshTitle = styled.div`
-  font-size: 35px;
+  font-size: ${REFRESH_TITLE_FONT_SIZE}px;
   color: white;
+
+  @media (max-width: 2560px) {
+    font-size: ${REFRESH_TITLE_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${REFRESH_TITLE_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 export interface EquippedItemsMap {

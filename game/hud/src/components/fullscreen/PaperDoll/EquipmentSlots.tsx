@@ -11,7 +11,7 @@ import { css } from '@csegames/linaria';
 
 import EquippedItemSlot from './EquippedItemSlot';
 import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
-import { GearSlots } from 'fullscreen/lib/constants';
+import { GearSlots, MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 import { getEquippedDataTransfer, FullScreenContext } from 'fullscreen/lib/utils';
 import eventNames, {
   EquipItemPayload,
@@ -42,92 +42,220 @@ const ArmorSlotsWrapper = styled.div`
   align-items: center;
 `;
 
+// #region ArmorSlotsContainer constants
+const ARMOR_SLOTS_CONTAINER_PADDING_HORIZONTAL = 30;
+// #endregion
 const ArmorSlotsContainer = styled.div`
   flex: 1;
   display: flex;
   justify-content: space-between;
   user-select: none;
-  padding: 0 15px 0 15px;
+  padding: 0 ${ARMOR_SLOTS_CONTAINER_PADDING_HORIZONTAL}px;
+
+  @media (max-width: 2560px) {
+    padding: 0 ${ARMOR_SLOTS_CONTAINER_PADDING_HORIZONTAL * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding: 0 ${ARMOR_SLOTS_CONTAINER_PADDING_HORIZONTAL * HD_SCALE}px;
+  }
 `;
 
+// #region ArmorSlots constants
+const ARMOR_SLOTS_PADDING_BOTTOM = 30;
+const ARMOR_SLOTS_ORNAMENT_TOP = -140;
+const ARMOR_SLOTS_ORNAMENT_BOTTOM = -116;
+const ARMOR_SLOTS_ORNAMENT_HORIZONTAL_ALIGNMENT = -6;
+const ARMOR_SLOTS_ORNAMENT_WIDTH = 144;
+const ARMOR_SLOTS_ORNAMENT_HEIGHT = 132;
+// #endregion
 const LeftArmorSlots = styled.div`
   position: relative;
   height: fit-content;
-  padding-bottom: 15px;
+  padding-bottom: ${ARMOR_SLOTS_PADDING_BOTTOM}px;
+
   &:before {
     content: '';
     position: absolute;
-    top: -70px;
-    left: -3px;
-    width: 72px;
-    height: 67px;
+    top: ${ARMOR_SLOTS_ORNAMENT_TOP}px;
+    left: ${ARMOR_SLOTS_ORNAMENT_HORIZONTAL_ALIGNMENT}px;
+    width: ${ARMOR_SLOTS_ORNAMENT_WIDTH}px;
+    height: ${ARMOR_SLOTS_ORNAMENT_HEIGHT}px;
     background: url(../images/paperdoll/ornament-slot-left-top.png) no-repeat;
     background-size: contain;
     opacity: ${ARMOR_ORNAMENT_OPACITY};
   }
+
   &:after {
     content: '';
     position: absolute;
-    bottom: -58px;
-    left: -3px;
-    width: 72px;
-    height: 67px;
+    bottom: ${ARMOR_SLOTS_ORNAMENT_BOTTOM}px;
+    left: ${ARMOR_SLOTS_ORNAMENT_HORIZONTAL_ALIGNMENT}px;
+    width: ${ARMOR_SLOTS_ORNAMENT_WIDTH}px;
+    height: ${ARMOR_SLOTS_ORNAMENT_HEIGHT}px;
     background: url(../images/paperdoll/ornament-slot-left-bot.png) no-repeat;
     background-size: contain;
     opacity: ${ARMOR_ORNAMENT_OPACITY};
   }
+
+  @media (max-width: 2560px) {
+    padding-bottom: ${ARMOR_SLOTS_PADDING_BOTTOM * MID_SCALE}px;
+
+    &:before {
+      top: ${ARMOR_SLOTS_ORNAMENT_TOP * MID_SCALE}px;
+      left: ${ARMOR_SLOTS_ORNAMENT_HORIZONTAL_ALIGNMENT * MID_SCALE}px;
+      width: ${ARMOR_SLOTS_ORNAMENT_WIDTH * MID_SCALE}px;
+      height: ${ARMOR_SLOTS_ORNAMENT_HEIGHT * MID_SCALE}px;
+    }
+
+    &:after {
+      bottom: ${ARMOR_SLOTS_ORNAMENT_BOTTOM * MID_SCALE}px;
+      left: ${ARMOR_SLOTS_ORNAMENT_HORIZONTAL_ALIGNMENT * MID_SCALE}px;
+      width: ${ARMOR_SLOTS_ORNAMENT_WIDTH * MID_SCALE}px;
+      height: ${ARMOR_SLOTS_ORNAMENT_HEIGHT * MID_SCALE}px;
+    }
+  }
+
+  @media (max-width: 1920px) {
+    padding-bottom: ${ARMOR_SLOTS_PADDING_BOTTOM * HD_SCALE}px;
+
+    &:before {
+      top: ${ARMOR_SLOTS_ORNAMENT_TOP * HD_SCALE}px;
+      left: ${ARMOR_SLOTS_ORNAMENT_HORIZONTAL_ALIGNMENT * HD_SCALE}px;
+      width: ${ARMOR_SLOTS_ORNAMENT_WIDTH * HD_SCALE}px;
+      height: ${ARMOR_SLOTS_ORNAMENT_HEIGHT * HD_SCALE}px;
+    }
+
+    &:after {
+      bottom: ${ARMOR_SLOTS_ORNAMENT_BOTTOM * HD_SCALE}px;
+      left: ${ARMOR_SLOTS_ORNAMENT_HORIZONTAL_ALIGNMENT * HD_SCALE}px;
+      width: ${ARMOR_SLOTS_ORNAMENT_WIDTH * HD_SCALE}px;
+      height: ${ARMOR_SLOTS_ORNAMENT_HEIGHT * HD_SCALE}px;
+    }
+  }
 `;
 
+// #region Ornament constants
+const ORNAMENT_HORIZONTAL_ALIGNMENT = -6;
+const ORNAMENT_TOP = -10;
+const ORNAMENT_WIDTH = 16;
+// #endregion
 const LeftSideOrnament = styled.div`
   position: absolute;
-  left: -3px;
-  top: -5px;
+  left: ${ORNAMENT_HORIZONTAL_ALIGNMENT}px;
+  top: ${ORNAMENT_TOP}px;
+  width: ${ORNAMENT_WIDTH}px;
   height: 100%;
   background: url(../images/paperdoll/ornament-slot-left-mid.png) repeat;
   background-size: contain;
-  width: 8px;
   opacity: ${ARMOR_ORNAMENT_OPACITY};
+
+  @media (max-width: 2560px) {
+    left: ${ORNAMENT_HORIZONTAL_ALIGNMENT * MID_SCALE}px;
+    top: ${ORNAMENT_TOP * MID_SCALE}px;
+    width: ${ORNAMENT_WIDTH * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    left: ${ORNAMENT_HORIZONTAL_ALIGNMENT * HD_SCALE}px;
+    top: ${ORNAMENT_TOP * HD_SCALE}px;
+    width: ${ORNAMENT_WIDTH * HD_SCALE}px;
+  }
 `;
 
 const RightArmorSlots = styled.div`
   position: relative;
   height: fit-content;
-  padding-bottom: 15px;
+  padding-bottom: ${ARMOR_SLOTS_PADDING_BOTTOM}px;
+
   &:before {
     content: '';
     position: absolute;
-    top: -70px;
-    right: -3px;
-    width: 72px;
-    height: 67px;
+    top: ${ARMOR_SLOTS_ORNAMENT_TOP}px;
+    right: ${ARMOR_SLOTS_ORNAMENT_HORIZONTAL_ALIGNMENT}px;
+    width: ${ARMOR_SLOTS_ORNAMENT_WIDTH}px;
+    height: ${ARMOR_SLOTS_ORNAMENT_HEIGHT}px;
     background: url(../images/paperdoll/ornament-slot-right-top.png) no-repeat;
     background-size: contain;
     opacity: ${ARMOR_ORNAMENT_OPACITY};
   }
+
   &:after {
     content: '';
     position: absolute;
-    bottom: -58px;
-    right: -3px;
-    width: 72px;
-    height: 67px;
+    bottom: ${ARMOR_SLOTS_ORNAMENT_BOTTOM}px;
+    right: ${ARMOR_SLOTS_ORNAMENT_HORIZONTAL_ALIGNMENT}px;
+    width: ${ARMOR_SLOTS_ORNAMENT_WIDTH}px;
+    height: ${ARMOR_SLOTS_ORNAMENT_HEIGHT}px;
     background: url(../images/paperdoll/ornament-slot-right-bot.png) no-repeat;
     background-size: contain;
     opacity: ${ARMOR_ORNAMENT_OPACITY};
+  }
+
+  @media (max-width: 2560px) {
+    padding-bottom: ${ARMOR_SLOTS_PADDING_BOTTOM * MID_SCALE}px;
+
+    &:before {
+      top: ${ARMOR_SLOTS_ORNAMENT_TOP * MID_SCALE}px;
+      right: ${ARMOR_SLOTS_ORNAMENT_HORIZONTAL_ALIGNMENT * MID_SCALE}px;
+      width: ${ARMOR_SLOTS_ORNAMENT_WIDTH * MID_SCALE}px;
+      height: ${ARMOR_SLOTS_ORNAMENT_HEIGHT * MID_SCALE}px;
+    }
+
+    &:after {
+      bottom: ${ARMOR_SLOTS_ORNAMENT_BOTTOM * MID_SCALE}px;
+      right: ${ARMOR_SLOTS_ORNAMENT_HORIZONTAL_ALIGNMENT * MID_SCALE}px;
+      width: ${ARMOR_SLOTS_ORNAMENT_WIDTH * MID_SCALE}px;
+      height: ${ARMOR_SLOTS_ORNAMENT_HEIGHT * MID_SCALE}px;
+    }
+  }
+
+  @media (max-width: 1920px) {
+    padding-bottom: ${ARMOR_SLOTS_PADDING_BOTTOM * HD_SCALE}px;
+
+    &:before {
+      top: ${ARMOR_SLOTS_ORNAMENT_TOP * HD_SCALE}px;
+      right: ${ARMOR_SLOTS_ORNAMENT_HORIZONTAL_ALIGNMENT * HD_SCALE}px;
+      width: ${ARMOR_SLOTS_ORNAMENT_WIDTH * HD_SCALE}px;
+      height: ${ARMOR_SLOTS_ORNAMENT_HEIGHT * HD_SCALE}px;
+    }
+
+    &:after {
+      bottom: ${ARMOR_SLOTS_ORNAMENT_BOTTOM * HD_SCALE}px;
+      right: ${ARMOR_SLOTS_ORNAMENT_HORIZONTAL_ALIGNMENT * HD_SCALE}px;
+      width: ${ARMOR_SLOTS_ORNAMENT_WIDTH * HD_SCALE}px;
+      height: ${ARMOR_SLOTS_ORNAMENT_HEIGHT * HD_SCALE}px;
+    }
   }
 `;
 
 const RightSideOrnament = styled.div`
   position: absolute;
-  right: -3px;
-  top: -5px;
+  right: ${ORNAMENT_HORIZONTAL_ALIGNMENT}px;
+  top: ${ORNAMENT_TOP}px;
+  width: ${ORNAMENT_WIDTH}px;
   height: 100%;
   background: url(../images/paperdoll/ornament-slot-right-mid.png) repeat;
   background-size: contain;
-  width: 8px;
   opacity: ${ARMOR_ORNAMENT_OPACITY};
+
+  @media (max-width: 2560px) {
+    right: ${ORNAMENT_HORIZONTAL_ALIGNMENT * MID_SCALE}px;
+    top: ${ORNAMENT_TOP * MID_SCALE}px;
+    width: ${ORNAMENT_WIDTH * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    right: ${ORNAMENT_HORIZONTAL_ALIGNMENT * HD_SCALE}px;
+    top: ${ORNAMENT_TOP * HD_SCALE}px;
+    width: ${ORNAMENT_WIDTH * HD_SCALE}px;
+  }
 `;
 
+// #region EquippedWeaponSlots constants
+const EQUIPPED_WEAPON_SLOTS_BOTTOM = 44;
+const EQUIPPED_WEAPON_SLOTS_PADDING_VERTICAL = 10;
+// #endregion
 const EquippedWeaponSlots = styled.div`
   position: absolute;
   display: flex;
@@ -135,12 +263,13 @@ const EquippedWeaponSlots = styled.div`
   justify-content: center;
   width: -webkit-fit-content;
   margin: 0 auto;
-  bottom: 22px;
+  bottom: ${EQUIPPED_WEAPON_SLOTS_BOTTOM}px;
+  padding: ${EQUIPPED_WEAPON_SLOTS_PADDING_VERTICAL}px 0;
   left: 0;
   right: 0;
   width: 100%;
-  padding: 5px 0;
   pointer-events: none;
+
   &:before {
     content: '';
     position: absolute;
@@ -154,8 +283,23 @@ const EquippedWeaponSlots = styled.div`
     height: 100%;
     opacity: ${WEAPON_ORNAMENT_OPACITY};
   }
+
+  @media (max-width: 2560px) {
+    bottom: ${EQUIPPED_WEAPON_SLOTS_BOTTOM * MID_SCALE}px;
+    padding: ${EQUIPPED_WEAPON_SLOTS_PADDING_VERTICAL * MID_SCALE}px 0;
+  }
+
+  @media (max-width: 1920px) {
+    bottom: ${EQUIPPED_WEAPON_SLOTS_BOTTOM * HD_SCALE}px;
+    padding: ${EQUIPPED_WEAPON_SLOTS_PADDING_VERTICAL * HD_SCALE}px 0;
+  }
 `;
 
+// #region WeaponSlotOrnaments constants
+const WEAPON_SLOT_ORNAMENTS_LEFT = -210;
+const WEAPON_SLOT_ORNAMENTS_WIDTH = 194;
+const WEAPON_SLOT_ORNAMENTS_RIGHT = -176;
+// #endregion
 const WeaponSlotOrnaments = styled.div`
   position: relative;
   width: fit-content;
@@ -166,9 +310,9 @@ const WeaponSlotOrnaments = styled.div`
     content: '';
     position: absolute;
     top: 0;
-    left: -105px;
     bottom: 0;
-    width: 97px;
+    left: ${WEAPON_SLOT_ORNAMENTS_LEFT}px;
+    width: ${WEAPON_SLOT_ORNAMENTS_WIDTH}px;
     background: url(../images/paperdoll/ornament-slot-bot-left.png) no-repeat;
     background-size: contain;
     opacity: ${WEAPON_ORNAMENT_OPACITY};
@@ -179,9 +323,9 @@ const WeaponSlotOrnaments = styled.div`
     content: '';
     position: absolute;
     top: 0;
-    right: -88px;
     bottom: 0;
-    width: 97px;
+    right: ${WEAPON_SLOT_ORNAMENTS_RIGHT}px;
+    width: ${WEAPON_SLOT_ORNAMENTS_WIDTH}px;
     background: url(../images/paperdoll/ornament-slot-bot-right.png) no-repeat;
     background-size: contain;
     opacity: ${WEAPON_ORNAMENT_OPACITY};
@@ -189,20 +333,54 @@ const WeaponSlotOrnaments = styled.div`
   }
 `;
 
+// #region ItemSlotSpacing constants
+const ITEM_SLOT_SPACING_MARGIN_BOTTOM = 10;
+// #endregion
 const ItemSlotSpacing = css`
-  margin-bottom: 5px;
+  margin-bottom: ${ITEM_SLOT_SPACING_MARGIN_BOTTOM}px;
+
+  @media (max-width: 2560px) {
+    margin-bottom: ${ITEM_SLOT_SPACING_MARGIN_BOTTOM * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-bottom: ${ITEM_SLOT_SPACING_MARGIN_BOTTOM * HD_SCALE}px;
+  }
 `;
 
+// #region WeaponSpacing constants
+const WEAPON_SPACING_MARGIN_RIGHT = 30;
+// #endregion
 const WeaponSpacing = css`
-  margin-right: 15px;
+  margin-right: ${WEAPON_SPACING_MARGIN_RIGHT}px;
   pointer-events: all;
+
+  @media (max-width: 2560px) {
+    margin-right: ${WEAPON_SPACING_MARGIN_RIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-right: ${WEAPON_SPACING_MARGIN_RIGHT * HD_SCALE}px;
+  }
 `;
 
+// #region SectionTitle constants
+const SECTION_TITLE_FONT_SIZE = 32;
+// #endregion
 const SectionTitle = styled.div`
   color: gray;
   font-family: Caudex;
   text-transform: uppercase;
   text-align: center;
+  font-size: ${SECTION_TITLE_FONT_SIZE}px;
+
+  @media (max-width: 2560px) {
+    font-size: ${SECTION_TITLE_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${SECTION_TITLE_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 const outerEquipmentSlotsAndInfo: EquipmentSlotsAndInfo[] = [

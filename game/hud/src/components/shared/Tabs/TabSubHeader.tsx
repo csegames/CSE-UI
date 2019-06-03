@@ -8,6 +8,7 @@
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { HeaderBorderFoundation } from './TabHeader';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const SubHeaderContainer = styled.div`
   position: relative;
@@ -50,11 +51,22 @@ const SubHeaderContainer = styled.div`
   }
 `;
 
+// #region Content constants
+const CONTENT_PADDING_HORIZONTAL = 40;
+// #endregion
 const Content = styled.div`
   display: flex;
   height: 100%;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 ${CONTENT_PADDING_HORIZONTAL}px;
+
+  @media (max-width: 2560px) {
+    padding: 0 ${CONTENT_PADDING_HORIZONTAL * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding: 0 ${CONTENT_PADDING_HORIZONTAL * HD_SCALE}px;
+  }
 `;
 
 export interface TradeWindowSubHeaderProps {

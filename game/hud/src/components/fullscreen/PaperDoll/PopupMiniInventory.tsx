@@ -5,7 +5,7 @@
  *
  */
 
-import * as React from 'react';
+import React, { useContext } from 'react';
 import * as _ from 'lodash';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
@@ -15,15 +15,15 @@ import { utils, PageController, PageInfo } from '@csegames/camelot-unchained';
 import PopupMiniInventorySlot from './PopupMiniInventorySlot';
 import TabSubHeader from '../../shared/Tabs/TabSubHeader';
 import FilterInput from '../Inventory/components/FilterInput';
-import { displaySlotNames, GearSlots } from 'fullscreen/lib/constants';
+import { displaySlotNames, GearSlots, MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 import { getItemDefinitionName } from 'fullscreen/lib/utils';
 import { InventoryItem } from 'gql/interfaces';
+import { getScaledValue } from 'lib/scale';
 
-const containerDimensions = {
-  width: 310,
-  height: 215,
-};
-
+// #region MiniInventoryBox constants
+const MINI_INVENTORY_BOX_WIDTH = 620;
+const MINI_INVENTORY_BOX_HEIGHT = 430;
+// #endregion
 const MiniInventoryBox = styled.div`
   position: fixed;
   background: linear-gradient(to bottom, rgba(55, 33, 19, 1), rgba(24, 17, 11, 0.9));
@@ -33,72 +33,211 @@ const MiniInventoryBox = styled.div`
   border-left-width: 1px;
   border-right-width: 1px;
   border-bottom-width: 0px;
-  width: ${containerDimensions.width}px;
-  height: ${containerDimensions.height}px;
+  width: ${MINI_INVENTORY_BOX_WIDTH}px;
+  height: ${MINI_INVENTORY_BOX_HEIGHT}px;
   overflow: hidden;
   z-index: 10;
+
+  @media (max-width: 2560px) {
+    width: ${MINI_INVENTORY_BOX_WIDTH * MID_SCALE}px;
+    height: ${MINI_INVENTORY_BOX_HEIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${MINI_INVENTORY_BOX_WIDTH * HD_SCALE}px;
+    height: ${MINI_INVENTORY_BOX_HEIGHT * HD_SCALE}px;
+  }
 `;
 
+// #region SubHeaderClass constants
+const SUB_HEADER_CLASS_HEIGHT = 70;
+// #endregion
 const SubHeaderClass = css`
-  height: 35px;
+  height: ${SUB_HEADER_CLASS_HEIGHT}px;
+
+  @media (max-width: 2560px) {
+    height: ${SUB_HEADER_CLASS_HEIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    height: ${SUB_HEADER_CLASS_HEIGHT * HD_SCALE}px;
+  }
 `;
 
+// #region SubHeaderContentClass constants
+const SUB_HEADER_CONTENT_CLASS_LETTER_SPACING = 2;
+const SUB_HEADER_CONTENT_CLASS_PADDING_RIGHT = 10;
+const SUB_HEADER_CONTENT_CLASS_PADDING_LEFT = 20;
+const SUB_HEADER_CONTENT_CLASS_FONT_SIZE = 28;
+// #endregion
 const SubHeaderContentClass = css`
-  padding: 0 5px 0 10px;
-  letter-spacing: 1px;
-  font-size: 14px;
+  padding-right: ${SUB_HEADER_CONTENT_CLASS_PADDING_RIGHT}px;
+  padding-left: ${SUB_HEADER_CONTENT_CLASS_PADDING_LEFT}px;
+  letter-spacing: ${SUB_HEADER_CONTENT_CLASS_LETTER_SPACING}px;
+  font-size: ${SUB_HEADER_CONTENT_CLASS_FONT_SIZE}px;
   text-transform: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media (max-width: 2560px) {
+    padding-right: ${SUB_HEADER_CONTENT_CLASS_PADDING_RIGHT * MID_SCALE}px;
+    padding-left: ${SUB_HEADER_CONTENT_CLASS_PADDING_LEFT * MID_SCALE}px;
+    letter-spacing: ${SUB_HEADER_CONTENT_CLASS_LETTER_SPACING * MID_SCALE}px;
+    font-size: ${SUB_HEADER_CONTENT_CLASS_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding-right: ${SUB_HEADER_CONTENT_CLASS_PADDING_RIGHT * HD_SCALE}px;
+    padding-left: ${SUB_HEADER_CONTENT_CLASS_PADDING_LEFT * HD_SCALE}px;
+    letter-spacing: ${SUB_HEADER_CONTENT_CLASS_LETTER_SPACING * HD_SCALE}px;
+    font-size: ${SUB_HEADER_CONTENT_CLASS_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region ControllerContainerStyle constants
+const CONTROLLER_CONTAINER_STYLE_HEIGHT = 30;
+// #endregion
+const ControllerContainerStyle = css`
+  height: ${CONTROLLER_CONTAINER_STYLE_HEIGHT}px;
+
+  @media (max-width: 2560px) {
+    height: ${CONTROLLER_CONTAINER_STYLE_HEIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    height: ${CONTROLLER_CONTAINER_STYLE_HEIGHT * HD_SCALE}px;
+  }
+`;
+
+// #region ControllerContainer constants
+const CONTROLLER_CONTAINER_PADDING_VERTICAL = 4;
+const CONTROLLER_CONTAIENR_PADDING_HORIZONTAL = 10;
+const CONTROLLER_CONTAINER_HEIGHT = 30;
+// #endregion
 const ControllerContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2px 5px;
-  height: 15px;
+  padding: ${CONTROLLER_CONTAINER_PADDING_VERTICAL}px ${CONTROLLER_CONTAIENR_PADDING_HORIZONTAL}px;
+  height: ${CONTROLLER_CONTAINER_HEIGHT}px;
   background-color: rgba(20, 14, 7, 0.7);
+
+  @media (max-width: 2560px) {
+    height: ${CONTROLLER_CONTAINER_HEIGHT * MID_SCALE}px;
+    padding: ${CONTROLLER_CONTAINER_PADDING_VERTICAL * MID_SCALE}px ${CONTROLLER_CONTAIENR_PADDING_HORIZONTAL * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    height: ${CONTROLLER_CONTAINER_HEIGHT * HD_SCALE}px;
+    padding: ${CONTROLLER_CONTAINER_PADDING_VERTICAL * HD_SCALE}px ${CONTROLLER_CONTAIENR_PADDING_HORIZONTAL * HD_SCALE}px;
+  }
 `;
 
+// #region ItemsContainer constants
+const ITEMS_CONTAINER_PADDING = 10;
+// #endregion
 const ItemsContainer = styled.div`
-  padding: 5px;
-  height: ${containerDimensions.height - 30}px;
+  padding: ${ITEMS_CONTAINER_PADDING}px;
+  height: ${MINI_INVENTORY_BOX_HEIGHT - SUB_HEADER_CLASS_HEIGHT}px;
+
+  @media (max-width: 2560px) {
+    padding: ${ITEMS_CONTAINER_PADDING * MID_SCALE}px;
+    height: ${(MINI_INVENTORY_BOX_HEIGHT - SUB_HEADER_CLASS_HEIGHT) * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    padding: ${ITEMS_CONTAINER_PADDING * HD_SCALE}px;
+    height: ${(MINI_INVENTORY_BOX_HEIGHT - SUB_HEADER_CLASS_HEIGHT) * HD_SCALE}px;
+  }
 `;
 
+// #region ItemSpacing constants
+const ITEM_SPACING_MARGIN_VERTICAL = 1;
+const ITEM_SPACING_MARGIN_HORIZONTAL = 5;
+// #endregion
 const ItemSpacing = styled.div`
   display: inline-block;
-  margin: 0.5px 2.5px;
+  margin: ${ITEM_SPACING_MARGIN_VERTICAL}px ${ITEM_SPACING_MARGIN_HORIZONTAL}px;
+
+  @media (max-width: 2560px) {
+    margin: ${ITEM_SPACING_MARGIN_VERTICAL * MID_SCALE}px ${ITEM_SPACING_MARGIN_HORIZONTAL * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin: ${ITEM_SPACING_MARGIN_VERTICAL * HD_SCALE}px ${ITEM_SPACING_MARGIN_HORIZONTAL * HD_SCALE}px;
+  }
 `;
 
+// #region SlotNameText constants
+const SLOT_NAME_TEXT_FONT_SIZE = 28;
+// #endregion
 const SlotNameText = styled.p`
-  font-size: 14px;
+  font-size: ${SLOT_NAME_TEXT_FONT_SIZE}px;
   color: #D8BFA8;
   margin: 0 !important;
   padding: 0;
   flex: 1;
   white-space: nowrap;
+
+  @media (max-width: 2560px) {
+    font-size: ${SLOT_NAME_TEXT_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${SLOT_NAME_TEXT_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region PageNumberText constants
+const PAGE_NUMBER_TEXT_MARGIN_BOTTOM = 10;
+const PAGE_NUMBER_TEXT_FONT_SIZE = 24;
+const PAGE_NUMBER_TEXT_LETTER_SPACING = 4;
+// #endregion
 const PageNumberText = styled.p`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 5px 0 0 !important;
   color: #D8BFA8;
-  font-size: 12px;
-  letter-spacing: 2px;
+  margin: 0 ${PAGE_NUMBER_TEXT_MARGIN_BOTTOM}px 0 0 !important;
+  font-size: ${PAGE_NUMBER_TEXT_FONT_SIZE}px;
+  letter-spacing: ${PAGE_NUMBER_TEXT_LETTER_SPACING}px;
+
+  @media (max-width: 2560px) {
+    margin: 0 ${PAGE_NUMBER_TEXT_MARGIN_BOTTOM * MID_SCALE}px 0 0 !important;
+    font-size: ${PAGE_NUMBER_TEXT_FONT_SIZE * MID_SCALE}px;
+    letter-spacing: ${PAGE_NUMBER_TEXT_LETTER_SPACING * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin: 0 ${PAGE_NUMBER_TEXT_MARGIN_BOTTOM * HD_SCALE}px 0 0 !important;
+    font-size: ${PAGE_NUMBER_TEXT_FONT_SIZE * HD_SCALE}px;
+    letter-spacing: ${PAGE_NUMBER_TEXT_LETTER_SPACING * HD_SCALE}px;
+  }
 `;
 
+// #region ControllerButton constants
+const CONTROLLER_BUTTON_FONT_SIZE = 24;
+const CONTROLLER_BUTTON_LETTER_SPACING = 2;
+// #endregion
 const ControllerButton = styled.div`
   display: inline-block;
-  font-size: 12px;
-  letter-spacing: 1px;
+  font-size: ${CONTROLLER_BUTTON_FONT_SIZE}px;
+  letter-spacing: ${CONTROLLER_BUTTON_LETTER_SPACING}px;
   color: #D8BFA8;
   cursor: pointer;
   &:active {
     text-shadow: 2px 2px rgba(0, 0, 0, 0.9);
+  }
+
+  @media (max-width: 2560px) {
+    font-size: ${CONTROLLER_BUTTON_FONT_SIZE * MID_SCALE}px;
+    letter-spacing: ${CONTROLLER_BUTTON_LETTER_SPACING * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${CONTROLLER_BUTTON_FONT_SIZE * HD_SCALE}px;
+    letter-spacing: ${CONTROLLER_BUTTON_LETTER_SPACING * HD_SCALE}px;
   }
 `;
 
@@ -106,10 +245,27 @@ const DisabledControllerButton = css`
   opacity: 0.5;
 `;
 
+// #region InputClass constants
+const INPUT_CLASS_MARGIN_LEFT = 20;
+const INPUT_CLASS_PADDING = 10;
+const INPUT_CLASS_HEIGHT = 50;
+// #endregion
 const InputClass = css`
-  margin-left: 10px;
-  padding: 5px;
-  height: 25px;
+  margin-left: ${INPUT_CLASS_MARGIN_LEFT}px;
+  padding: ${INPUT_CLASS_PADDING}px;
+  height: ${INPUT_CLASS_HEIGHT}px;
+
+  @media (max-width: 2560px) {
+    margin-left: ${INPUT_CLASS_MARGIN_LEFT * MID_SCALE}px;
+    padding: ${INPUT_CLASS_PADDING * MID_SCALE}px;
+    height: ${INPUT_CLASS_HEIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-left: ${INPUT_CLASS_MARGIN_LEFT * HD_SCALE}px;
+    padding: ${INPUT_CLASS_PADDING * HD_SCALE}px;
+    height: ${INPUT_CLASS_HEIGHT * HD_SCALE}px;
+  }
 `;
 
 export enum Alignment {
@@ -141,6 +297,8 @@ export interface PopupMiniInventoryProps {
   onMouseLeave: () => void;
 }
 
+type Props = { uiContext: UIContext } & PopupMiniInventoryProps;
+
 export interface PopupMiniInventoryState {
   miniInventoryItems: InventoryItem.Fragment[];
   searchValue: string;
@@ -148,8 +306,8 @@ export interface PopupMiniInventoryState {
   left: number;
 }
 
-export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps, PopupMiniInventoryState> {
-  constructor(props: PopupMiniInventoryProps) {
+export class PopupMiniInventory extends React.Component<Props, PopupMiniInventoryState> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       miniInventoryItems: [],
@@ -214,6 +372,9 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
         </TabSubHeader>
         <PageController
           pages={pages}
+          styles={{
+            controllerContainer: ControllerContainerStyle,
+          }}
           renderPageController={(state, props, onNextPageClick, onPrevPageClick) => {
             const moreNext = state.activePageIndex < pages.length - 1;
             const morePrev = state.activePageIndex > 0;
@@ -239,12 +400,12 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
     this.initializeMiniInventoryItems(this.props);
   }
 
-  public componentWillReceiveProps(nextProps: PopupMiniInventoryProps) {
+  public componentWillReceiveProps(nextProps: Props) {
     this.setWindowPosition(nextProps);
     this.initializeMiniInventoryItems(nextProps);
   }
 
-  private initializeMiniInventoryItems = (props: PopupMiniInventoryProps) => {
+  private initializeMiniInventoryItems = (props: Props) => {
     const { slotName, inventoryItems } = props;
     const miniInventoryItems: InventoryItem.Fragment[] = [];
     if (inventoryItems) {
@@ -264,46 +425,48 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
     }
   }
 
-  private setWindowPosition = (props: PopupMiniInventoryProps) => {
+  private setWindowPosition = (props: Props) => {
     const { align, offsets } = props;
     const { top, left, height, width } = offsets;
-    const margin = 5;
+    const containerHeight = getScaledValue(props.uiContext, MINI_INVENTORY_BOX_HEIGHT);
+    const containerWidth = getScaledValue(props.uiContext, MINI_INVENTORY_BOX_WIDTH);
+    const containerMargin = getScaledValue(props.uiContext, 10);
     this.setState((state, props) => {
       switch (align) {
         case Alignment.WTopRight: {
           return {
-            top: top - (containerDimensions.height + margin),
+            top: top - (containerHeight + containerMargin),
             left,
           };
         }
         case Alignment.WTopLeft: {
           return {
-            top: top - (containerDimensions.height + margin),
-            left: left - (containerDimensions.width) + width,
+            top: top - (containerHeight + containerMargin),
+            left: left - (containerWidth) + width,
           };
         }
         case Alignment.ATopRight: {
           return {
             top,
-            left: left + width + margin,
+            left: left + width + containerMargin,
           };
         }
         case Alignment.ATopLeft: {
           return {
             top,
-            left: left - (containerDimensions.width + margin),
+            left: left - (containerWidth + containerMargin),
           };
         }
         case Alignment.ABottomRight: {
           return {
-            top: top - (containerDimensions.height) + height,
-            left: left + width + margin,
+            top: top - (containerHeight) + height,
+            left: left + width + containerMargin,
           };
         }
         case Alignment.ABottomLeft: {
           return {
-            top: top - (containerDimensions.height) + height,
-            left: left - (containerDimensions.width + margin),
+            top: top - (containerHeight) + height,
+            left: left - (containerWidth + containerMargin),
           };
         }
       }
@@ -315,5 +478,12 @@ export class PopupMiniInventory extends React.Component<PopupMiniInventoryProps,
   }
 }
 
-export default PopupMiniInventory;
+// tslint:disable-next-line:function-name
+function PopupMiniInventoryWithContext(props: PopupMiniInventoryProps) {
+  const uiContext = useContext(UIContext);
+  return (
+    <PopupMiniInventory uiContext={uiContext} {...props} />
+  );
+}
 
+export default PopupMiniInventoryWithContext;

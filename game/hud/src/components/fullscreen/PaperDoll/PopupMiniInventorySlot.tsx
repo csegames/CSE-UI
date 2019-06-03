@@ -15,19 +15,28 @@ import EmptyItem from '../ItemShared/components/EmptyItem';
 import ItemTooltipContent from 'shared/ItemTooltip';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { InventoryItem, GearSlotDefRef } from 'gql/interfaces';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 declare const toastr: any;
 
-export const itemDimensions = {
-  height: 70,
-  width: 70,
-};
-
+// #region Slot constants
+const SLOT_DIMENSIONS = 140;
+// #endregion
 const Slot = styled.div`
   position: relative;
   pointer-events: all;
-  width: ${itemDimensions.width}px;
-  height: ${itemDimensions.height}px;
+  width: ${SLOT_DIMENSIONS}px;
+  height: ${SLOT_DIMENSIONS}px;
+
+  @media (max-width: 2560px) {
+    width: ${SLOT_DIMENSIONS * MID_SCALE}px;
+    height: ${SLOT_DIMENSIONS * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${SLOT_DIMENSIONS * HD_SCALE}px;
+    height: ${SLOT_DIMENSIONS * HD_SCALE}px;
+  }
 `;
 
 const SlotIcon = styled.img`
@@ -41,23 +50,63 @@ const SlotIcon = styled.img`
   object-fit: cover;
 `;
 
+// #region SlotStyle constants
+const SLOT_STYLE_OFFSET = 20;
+const SLOT_STYLE_ALIGNMENT = 8;
+// #endregion
 const SlotStyle = css`
   position: absolute;
-  width: ${itemDimensions.width - 10}px;
-  height: ${itemDimensions.height - 10}px;
-  top: 4px;
-  right: 4px;
-  left: 4px;
-  bottom: 4px;
+  width: ${SLOT_DIMENSIONS - SLOT_STYLE_OFFSET}px;
+  height: ${SLOT_DIMENSIONS - SLOT_STYLE_OFFSET}px;
+  top: ${SLOT_STYLE_ALIGNMENT}px;
+  right: ${SLOT_STYLE_ALIGNMENT}px;
+  left: ${SLOT_STYLE_ALIGNMENT}px;
+  bottom: ${SLOT_STYLE_ALIGNMENT}px;
+
+  @media (max-width: 2560px) {
+    width: ${(SLOT_DIMENSIONS - SLOT_STYLE_OFFSET) * MID_SCALE}px;
+    height: ${(SLOT_DIMENSIONS - SLOT_STYLE_OFFSET) * MID_SCALE}px;
+    top: ${(SLOT_STYLE_ALIGNMENT) * MID_SCALE}px;
+    right: ${(SLOT_STYLE_ALIGNMENT) * MID_SCALE}px;
+    left: ${(SLOT_STYLE_ALIGNMENT) * MID_SCALE}px;
+    bottom: ${(SLOT_STYLE_ALIGNMENT) * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${(SLOT_DIMENSIONS - SLOT_STYLE_OFFSET) * HD_SCALE}px;
+    height: ${(SLOT_DIMENSIONS - SLOT_STYLE_OFFSET) * HD_SCALE}px;
+    top: ${(SLOT_STYLE_ALIGNMENT) * HD_SCALE}px;
+    right: ${(SLOT_STYLE_ALIGNMENT) * HD_SCALE}px;
+    left: ${(SLOT_STYLE_ALIGNMENT) * HD_SCALE}px;
+    bottom: ${(SLOT_STYLE_ALIGNMENT) * HD_SCALE}px;
+  }
 `;
 
+// #region SlotOverlay constants
+const SLOT_OVERLAY_ALIGNMENT = 8;
+// #endregion
 const SlotOverlay = styled.div`
   position: absolute;
-  top: 4px;
-  right: 4px;
-  left: 4px;
-  bottom: 4px;
+  top: ${SLOT_OVERLAY_ALIGNMENT}px;
+  right: ${SLOT_OVERLAY_ALIGNMENT}px;
+  left: ${SLOT_OVERLAY_ALIGNMENT}px;
+  bottom: ${SLOT_OVERLAY_ALIGNMENT}px;
   cursor: pointer;
+
+  @media (max-width: 2560px) {
+    top: ${SLOT_OVERLAY_ALIGNMENT * MID_SCALE}px;
+    right: ${SLOT_OVERLAY_ALIGNMENT * MID_SCALE}px;
+    left: ${SLOT_OVERLAY_ALIGNMENT * MID_SCALE}px;
+    bottom: ${SLOT_OVERLAY_ALIGNMENT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    top: ${SLOT_OVERLAY_ALIGNMENT * HD_SCALE}px;
+    right: ${SLOT_OVERLAY_ALIGNMENT * HD_SCALE}px;
+    left: ${SLOT_OVERLAY_ALIGNMENT * HD_SCALE}px;
+    bottom: ${SLOT_OVERLAY_ALIGNMENT * HD_SCALE}px;
+  }
+
   &:hover {
     box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.3);
   }

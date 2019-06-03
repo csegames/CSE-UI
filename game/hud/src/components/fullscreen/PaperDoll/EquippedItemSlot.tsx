@@ -8,16 +8,14 @@ import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { includes } from 'lodash';
 
-import { SLOT_DIMENSIONS, GearSlots } from 'fullscreen/lib/constants';
+import { GearSlots, MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 import eventNames, { UnequipItemPayload } from 'fullscreen/lib/itemEvents';
 import { getEquippedDataTransfer } from 'fullscreen/lib/utils';
 import { Alignment } from './PopupMiniInventory';
 import DraggableEquippedItem from './DraggableEquippedItem';
 import ItemTooltipContent from 'shared/ItemTooltip';
 import { showTooltip, hideTooltip } from 'actions/tooltips';
-import {
-  EquippedItem,
-} from 'gql/interfaces';
+import { EquippedItem } from 'gql/interfaces';
 
 export interface EquippedItemSlotStyle {
   equippedItemSlot: React.CSSProperties;
@@ -27,6 +25,8 @@ export interface EquippedItemSlotStyle {
   highlightSlotContainer: React.CSSProperties;
 }
 
+const SLOT_DIMENSIONS = 160;
+
 const SlotDecorationPrefix = `
   content: '';
   position: absolute;
@@ -34,40 +34,60 @@ const SlotDecorationPrefix = `
   right: 0;
   bottom: 0;
   left: 0;
-  width: ${SLOT_DIMENSIONS.WIDTH}px;
-  height: ${SLOT_DIMENSIONS.HEIGHT}px;
+  width: ${SLOT_DIMENSIONS}px;
+  height: ${SLOT_DIMENSIONS}px;
   pointer-events: none;
+
+  @media (max-width: 2560px) {
+    width: ${SLOT_DIMENSIONS * MID_SCALE}px;
+    height: ${SLOT_DIMENSIONS * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    width: ${SLOT_DIMENSIONS * HD_SCALE}px;
+    height: ${SLOT_DIMENSIONS * HD_SCALE}px;
+  }
 `;
 
+// #region Container constants
+const CONTAINER_SLOT_BG_OFFSET = 8;
+const CONTAINER_D_AND_D_OFFSET = 22;
+const CONTAINER_D_AND_D_ALIGNMENT = -10;
+// #endregion
 const Container = styled.div`
   position: relative;
-  width: ${SLOT_DIMENSIONS.WIDTH}px;
-  height: ${SLOT_DIMENSIONS.HEIGHT}px;
+  width: ${SLOT_DIMENSIONS}px;
+  height: ${SLOT_DIMENSIONS}px;
   cursor: pointer;
+
   #drag-and-drop-item-container {
     position: relative;
-    width: ${SLOT_DIMENSIONS.WIDTH - 11}px;
-    height: ${SLOT_DIMENSIONS.HEIGHT - 11}px;
-    right: -5px;
-    bottom: -5px;
+    width: ${SLOT_DIMENSIONS - CONTAINER_D_AND_D_OFFSET}px;
+    height: ${SLOT_DIMENSIONS - CONTAINER_D_AND_D_OFFSET}px;
+    right: ${CONTAINER_D_AND_D_ALIGNMENT}px;
+    bottom: ${CONTAINER_D_AND_D_ALIGNMENT}px;
   }
+
+
   &:before {
     ${SlotDecorationPrefix}
-    width: ${SLOT_DIMENSIONS.WIDTH - 4}px;
-    height: ${SLOT_DIMENSIONS.HEIGHT - 4}px;
+    width: ${SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET}px;
+    height: ${SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET}px;
     background: url(../images/paperdoll/slot-gear-bg.png) no-repeat;
     background-size: contain;
   }
+
   &:after {
     ${SlotDecorationPrefix}
     background: url(../images/paperdoll/slot-gear-frame.png) no-repeat;
     background-size: contain;
   }
+
   &.weapon-slot {
     &:before {
       ${SlotDecorationPrefix}
-      width: ${SLOT_DIMENSIONS.WIDTH - 4}px;
-      height: ${SLOT_DIMENSIONS.HEIGHT - 4}px;
+      width: ${SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET}px;
+      height: ${SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET}px;
       top: 1px;
       left: 1px;
       background: url(../images/paperdoll/slot-weapon-bg.png) no-repeat;
@@ -77,6 +97,40 @@ const Container = styled.div`
       ${SlotDecorationPrefix}
       background: url(../images/paperdoll/slot-weapon-frame.png) no-repeat;
       background-size: contain;
+    }
+  }
+
+  @media (max-width: 2560px) {
+    width: ${SLOT_DIMENSIONS * MID_SCALE}px;
+    height: ${SLOT_DIMENSIONS * MID_SCALE}px;
+
+    #drag-and-drop-item-container {
+      width: ${(SLOT_DIMENSIONS - CONTAINER_D_AND_D_OFFSET) * MID_SCALE}px;
+      height: ${(SLOT_DIMENSIONS - CONTAINER_D_AND_D_OFFSET) * MID_SCALE}px;
+      right: ${(CONTAINER_D_AND_D_ALIGNMENT) * MID_SCALE}px;
+      bottom: ${(CONTAINER_D_AND_D_ALIGNMENT) * MID_SCALE}px;
+    }
+
+    &:before {
+      width: ${(SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET) * MID_SCALE}px;
+      height: ${(SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET) * MID_SCALE}px;
+    }
+  }
+
+  @media (max-width: 1920px) {
+    width: ${SLOT_DIMENSIONS * HD_SCALE}px;
+    height: ${SLOT_DIMENSIONS * HD_SCALE}px;
+
+    #drag-and-drop-item-container {
+      width: ${(SLOT_DIMENSIONS - CONTAINER_D_AND_D_OFFSET) * HD_SCALE}px;
+      height: ${(SLOT_DIMENSIONS - CONTAINER_D_AND_D_OFFSET) * HD_SCALE}px;
+      right: ${(CONTAINER_D_AND_D_ALIGNMENT) * HD_SCALE}px;
+      bottom: ${(CONTAINER_D_AND_D_ALIGNMENT) * HD_SCALE}px;
+    }
+
+    &:before {
+      width: ${(SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET) * HD_SCALE}px;
+      height: ${(SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET) * HD_SCALE}px;
     }
   }
 `;

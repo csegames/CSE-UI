@@ -10,11 +10,6 @@ import { ArmorType } from './itemInterfaces';
 export const HD_SCALE = 0.5;
 export const MID_SCALE = 0.6;
 
-export const SLOT_DIMENSIONS = {
-  WIDTH: 80,
-  HEIGHT: 80,
-};
-
 export const emptyStackHash = '00000000000000000000000000000000';
 // nullVal and emptyStackHash are two different things. nullVal is shorter in length.
 export const nullVal = '0000000000000000000000';

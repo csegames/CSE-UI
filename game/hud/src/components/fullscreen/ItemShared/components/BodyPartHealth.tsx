@@ -7,6 +7,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 export interface BodyPartHealthStyles {
   healthInfoContainer: React.CSSProperties;
@@ -18,6 +19,10 @@ export interface BodyPartHealthStyles {
   flipIcon: React.CSSProperties;
 }
 
+// #region HealthInfoContainer constants
+const HEALTH_INFO_CONTAINER_ORNAMENT_HEIGHT = 26;
+const HEALTH_INFO_CONTAINER_ORNAMENT_VERTICAL_ALIGNMENT = -30;
+// #endregion
 const HealthInfoContainer = styled.div`
   position: relative;
   display: flex;
@@ -26,9 +31,9 @@ const HealthInfoContainer = styled.div`
   &:before {
     content: '';
     width: 100%;
-    height: 13px;
+    height: ${HEALTH_INFO_CONTAINER_ORNAMENT_HEIGHT}px;
+    top: ${HEALTH_INFO_CONTAINER_ORNAMENT_VERTICAL_ALIGNMENT}px;
     position: absolute;
-    top: -15px;
     right: 0;
     left: 0;
     background: url(../images/paperdoll/ornament-health-mid-top.png) no-repeat;
@@ -37,13 +42,37 @@ const HealthInfoContainer = styled.div`
   &:after {
     content: '';
     width: 100%;
-    height: 13px;
+    height: ${HEALTH_INFO_CONTAINER_ORNAMENT_HEIGHT}px;
+    bottom: ${HEALTH_INFO_CONTAINER_ORNAMENT_VERTICAL_ALIGNMENT}px;
     position: absolute;
     right: 0;
-    bottom: -15px;
     left: 0;
     background: url(../images/paperdoll/ornament-health-mid-bot.png) no-repeat;
     background-size: contain;
+  }
+
+  @media (max-width: 2560px) {
+    &:before {
+      height: ${HEALTH_INFO_CONTAINER_ORNAMENT_HEIGHT * MID_SCALE}px;
+      top: ${HEALTH_INFO_CONTAINER_ORNAMENT_VERTICAL_ALIGNMENT * MID_SCALE}px;
+    }
+
+    &:after {
+      height: ${HEALTH_INFO_CONTAINER_ORNAMENT_HEIGHT * MID_SCALE}px;
+      bottom: ${HEALTH_INFO_CONTAINER_ORNAMENT_VERTICAL_ALIGNMENT * MID_SCALE}px;
+    }
+  }
+
+  @media (max-width: 1920px) {
+    &:before {
+      height: ${HEALTH_INFO_CONTAINER_ORNAMENT_HEIGHT * HD_SCALE}px;
+      top: ${HEALTH_INFO_CONTAINER_ORNAMENT_VERTICAL_ALIGNMENT * HD_SCALE}px;
+    }
+
+    &:after {
+      height: ${HEALTH_INFO_CONTAINER_ORNAMENT_HEIGHT * HD_SCALE}px;
+      bottom: ${HEALTH_INFO_CONTAINER_ORNAMENT_VERTICAL_ALIGNMENT * HD_SCALE}px;
+    }
   }
 `;
 
@@ -64,22 +93,47 @@ const HealthCompInfo = styled.div`
   flex-direction: column;
 `;
 
+// #region HealthCompSecondaryText constants
+const HEALTH_COMP_SECONDARY_TEXT_FONT_SIZE = 28;
+// #endregion
 const HealthCompSecondaryText = styled.div`
   margin: 0;
   padding: 0;
   color: #707475;
-  font-size: 14px;
+  font-size: ${HEALTH_COMP_SECONDARY_TEXT_FONT_SIZE}px;
   font-family: TitilliumWeb;
+
+  @media (max-width: 2560px) {
+    font-size: ${HEALTH_COMP_SECONDARY_TEXT_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${HEALTH_COMP_SECONDARY_TEXT_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region Icon constants
+const ICON_FONT_SIZE = 28;
+const ICON_MARGIN_RIGHT = 10;
+// #endregion
 const Icon = styled.div`
-  font-size: 14px;
+  font-size: ${ICON_FONT_SIZE}px;
+  margin-right: ${ICON_MARGIN_RIGHT}px;
   font-family: TitilliumWeb;
   color: #707475;
-  margin-right: 5px;
   &.isRightPart {
     transform: scaleX(-1);
     -webkit-transform: scaleX(-1);
+  }
+
+  @media (max-width: 2560px) {
+    font-size: ${ICON_FONT_SIZE * MID_SCALE}px;
+    margin-right: ${ICON_MARGIN_RIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${ICON_FONT_SIZE * HD_SCALE}px;
+    margin-right: ${ICON_MARGIN_RIGHT * HD_SCALE}px;
   }
 `;
 

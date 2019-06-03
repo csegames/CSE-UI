@@ -11,7 +11,7 @@ import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 
 import eventNames, { EquipItemPayload, InventoryDataTransfer, EquippedItemDataTransfer } from 'fullscreen/lib/itemEvents';
-import { defaultSlotIcons, placeholderIcon, GearSlots } from 'fullscreen/lib/constants';
+import { defaultSlotIcons, placeholderIcon, GearSlots, MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 import { getEquippedDataTransfer, hasEquipmentPermissions } from 'fullscreen/lib/utils';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from 'utils/DragAndDrop/DragAndDrop';
 import {
@@ -58,6 +58,9 @@ const SlotOverlay = styled.div`
   }
 `;
 
+// #region defaultIconStyle constants
+const DEFAULT_ICON_STYLE_FONT_SIZE = 70;
+// #endregion
 const defaultIconStyle = css`
   display: flex;
   align-items: center;
@@ -66,7 +69,15 @@ const defaultIconStyle = css`
   width: 100%;
   height: 100%;
   color: #CFD0CB;
-  font-size: 35px;
+  font-size: ${DEFAULT_ICON_STYLE_FONT_SIZE}px;
+
+  @media (max-width: 2560px) {
+    font-size: ${DEFAULT_ICON_STYLE_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${DEFAULT_ICON_STYLE_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 export interface DraggableEquippedItemProps extends DragAndDropInjectedProps {
