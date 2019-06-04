@@ -7,11 +7,15 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Button constants
+const BUTTON_FONT_SIZE = 28;
+// #endregion
 const Button = styled.div`
   z-index: 99;
   pointer-events: all;
-  font-size: 14px;
+  font-size: ${BUTTON_FONT_SIZE}px;
   color: #C3C3C3;
   cursor: pointer;
   transition: color 0.2s;
@@ -20,6 +24,14 @@ const Button = styled.div`
   }
   &:active {
     -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 1));
+  }
+
+  @media (max-width: 2560px) {
+    font-size: ${BUTTON_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${BUTTON_FONT_SIZE * HD_SCALE}px;
   }
 `;
 

@@ -28,6 +28,7 @@ import {
 } from 'gql/interfaces';
 import { SlotItemDefType } from 'fullscreen/lib/itemInterfaces';
 import { AbilityBook } from './AbilityBook';
+import { MID_SCALE, HD_SCALE } from './lib/constants';
 
 export interface HUDFullScreenStyle {
   hudFullScreen: string;
@@ -53,41 +54,88 @@ const Container = styled.div`
   z-index: 9998;
 `;
 
+// #region Divider constants
+const DIVIDER_WIDTH = 6;
+const DIVIDER_ORNAMENT_TOP_LEFT = -33;
+const DIVIDER_ORNAMENT_TOP_WIDTH = 74;
+const DIVIDER_ORNAMENT_TOP_HEIGHT = 164;
+const DIVIDER_ORNAMENT_BOTTOM_LEFT = -10;
+const DIVIDER_ORNAMENT_BOTTOM_WIDTH = 26;
+const DIVIDER_ORNAMENT_BOTTOM_HEIGHT = 24;
+// #endregion
 const Divider = styled.div`
   position: relative;
   height: 100%;
-  width: 3px;
+  width: ${DIVIDER_WIDTH}px;
   &:before {
     content: '';
     position: absolute;
     top: 0;
-    left: -16.5px;
-    width: 37px;
-    height: 82px;
+    left: ${DIVIDER_ORNAMENT_TOP_LEFT}px;
+    width: ${DIVIDER_ORNAMENT_TOP_WIDTH}px;
+    height: ${DIVIDER_ORNAMENT_TOP_HEIGHT}px;
     background: url(../images/tabs/dragon-ornament-top.png);
     z-index: 11;
   }
   &:after {
     content: '';
     position: absolute;
-    left: -5px;
+    left: ${DIVIDER_ORNAMENT_BOTTOM_LEFT}px;
+    width: ${DIVIDER_ORNAMENT_BOTTOM_WIDTH}px;
+    height: ${DIVIDER_ORNAMENT_BOTTOM_HEIGHT}px;
     bottom: 0;
-    width: 13px;
-    height: 12px;
     background: url(../images/tabs/dragon-ornament-bottom.png);
     z-index: 11;
   }
+
+  @media (max-width: 2560px) {
+    width: ${DIVIDER_WIDTH * MID_SCALE}px;
+    &:before {
+      left: ${DIVIDER_ORNAMENT_TOP_LEFT * MID_SCALE}px;
+      width: ${DIVIDER_ORNAMENT_TOP_WIDTH * MID_SCALE}px;
+      height: ${DIVIDER_ORNAMENT_TOP_HEIGHT * MID_SCALE}px;
+    }
+
+    &:after {
+      left: ${DIVIDER_ORNAMENT_BOTTOM_LEFT * MID_SCALE}px;
+      width: ${DIVIDER_ORNAMENT_BOTTOM_WIDTH * MID_SCALE}px;
+      height: ${DIVIDER_ORNAMENT_BOTTOM_HEIGHT * MID_SCALE}px;
+    }
+  }
+
+  @media (max-width: 1920px) {
+    width: ${DIVIDER_WIDTH * HD_SCALE}px;
+    &:before {
+      left: ${DIVIDER_ORNAMENT_TOP_LEFT * HD_SCALE}px;
+      width: ${DIVIDER_ORNAMENT_TOP_WIDTH * HD_SCALE}px;
+      height: ${DIVIDER_ORNAMENT_TOP_HEIGHT * HD_SCALE}px;
+    }
+
+    &:after {
+      left: ${DIVIDER_ORNAMENT_BOTTOM_LEFT * HD_SCALE}px;
+      width: ${DIVIDER_ORNAMENT_BOTTOM_WIDTH * HD_SCALE}px;
+      height: ${DIVIDER_ORNAMENT_BOTTOM_HEIGHT * HD_SCALE}px;
+    }
+  }
 `;
 
+// #region DividerMidSection constants
+const DIVIDER_MID_SECTION_ORNAMENT_BASE_LEFT = -2;
+const DIVIDER_MID_SECTION_ORNAMENT_BASE_WIDTH = 10;
+
+const DIVIDER_MID_SECTION_ORNAMENT_MIDDLE_LEFT = -6;
+const DIVIDER_MID_SECTION_ORNAMENT_MIDDLE_WIDTH = 18;
+const DIVIDER_MID_SECTION_ORNAMENT_MIDDLE_HEIGHT = 730;
+// #endregion
 const DividerMidSection = styled.div`
   &:before {
     content: '';
     position: absolute;
     top: 0;
     bottom: 0;
-    left: -1px;
+    left: ${DIVIDER_MID_SECTION_ORNAMENT_BASE_LEFT}px;
+    width: ${DIVIDER_MID_SECTION_ORNAMENT_BASE_WIDTH}px;
     margin: auto;
-    width: 5px;
     background: url(../images/tabs/divider-ornament-middle-base.png);
     z-index: 2;
   }
@@ -96,21 +144,64 @@ const DividerMidSection = styled.div`
     position: absolute;
     top: 0;
     bottom: 0;
-    left: -3px;
+    left: ${DIVIDER_MID_SECTION_ORNAMENT_MIDDLE_LEFT}px;
+    width: ${DIVIDER_MID_SECTION_ORNAMENT_MIDDLE_WIDTH}px;
+    height: ${DIVIDER_MID_SECTION_ORNAMENT_MIDDLE_HEIGHT}px;
     margin: auto;
-    width: 9px;
-    height: 365px;
     background: url(../images/tabs/divider-ornament-middle.png);
     z-index: 2;
   }
+
+  @media (max-width: 2560px) {
+    &:before {
+      left: ${DIVIDER_MID_SECTION_ORNAMENT_BASE_LEFT * MID_SCALE}px;
+      width: ${DIVIDER_MID_SECTION_ORNAMENT_BASE_WIDTH * MID_SCALE}px;
+    }
+
+    &:after {
+      left: ${DIVIDER_MID_SECTION_ORNAMENT_MIDDLE_LEFT * MID_SCALE}px;
+      width: ${DIVIDER_MID_SECTION_ORNAMENT_MIDDLE_WIDTH * MID_SCALE}px;
+      height: ${DIVIDER_MID_SECTION_ORNAMENT_MIDDLE_HEIGHT * MID_SCALE}px;
+    }
+  }
+
+  @media (max-width: 1920px) {
+    &:before {
+      left: ${DIVIDER_MID_SECTION_ORNAMENT_BASE_LEFT * HD_SCALE}px;
+      width: ${DIVIDER_MID_SECTION_ORNAMENT_BASE_WIDTH * HD_SCALE}px;
+    }
+
+    &:after {
+      left: ${DIVIDER_MID_SECTION_ORNAMENT_MIDDLE_LEFT * HD_SCALE}px;
+      width: ${DIVIDER_MID_SECTION_ORNAMENT_MIDDLE_WIDTH * HD_SCALE}px;
+      height: ${DIVIDER_MID_SECTION_ORNAMENT_MIDDLE_HEIGHT * HD_SCALE}px;
+    }
+  }
 `;
 
+// #region CloseButtonClass constants
+const CLOSE_BUTTON_CLASS_TOP = 10;
+const CLOSE_BUTTON_CLASS_RIGHT = 10;
+// #endregion
 const CloseButtonClass = css`
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: ${CLOSE_BUTTON_CLASS_TOP}px;
+  right: ${CLOSE_BUTTON_CLASS_RIGHT}px;
+
+  @media (max-width: 2560px) {
+    top: ${CLOSE_BUTTON_CLASS_TOP * MID_SCALE}px;
+    right: ${CLOSE_BUTTON_CLASS_RIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    top: ${CLOSE_BUTTON_CLASS_TOP * HD_SCALE}px;
+    right: ${CLOSE_BUTTON_CLASS_RIGHT * HD_SCALE}px;
+  }
 `;
 
+// #region NavigationContainer constants
+const NAVIGATION_CONTAINER_HEIGHT = 50;
+// #endregion
 const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
   hudFullScreen: css`
     width: 50%;
@@ -120,7 +211,7 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
     position: relative;
     display: flex;
     align-items: center;
-    height: 25px;
+    height: ${NAVIGATION_CONTAINER_HEIGHT}px;
     width: 100%;
     background-color: #333333;
     z-index: 10;
@@ -135,12 +226,20 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
       background-size: 100% 100%;
       z-index: -1;
     }
+
+    @media (max-width: 2560px) {
+      height: ${NAVIGATION_CONTAINER_HEIGHT * MID_SCALE}px;
+    }
+
+    @media (max-width: 1920px) {
+      height: ${NAVIGATION_CONTAINER_HEIGHT * HD_SCALE}px;
+    }
   `,
   rightNavigationContainer: css`
     position: relative;
     display: flex;
     align-items: center;
-    height: 25px;
+    height: ${NAVIGATION_CONTAINER_HEIGHT}px;
     width: 100%;
     background-color: #333333;
     z-index: 10;
@@ -155,7 +254,15 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
       background: url(../images/tabs/tab-bg.png) no-repeat;
       background-size: 100% 100%;
       z-index: -1;
-    },
+    }
+
+    @media (max-width: 2560px) {
+      height: ${NAVIGATION_CONTAINER_HEIGHT * MID_SCALE}px;
+    }
+
+    @media (max-width: 1920px) {
+      height: ${NAVIGATION_CONTAINER_HEIGHT * HD_SCALE}px;
+    }
   `,
   contentContainer: css`
     height: 100%;
