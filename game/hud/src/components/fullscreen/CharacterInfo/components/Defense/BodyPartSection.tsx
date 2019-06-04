@@ -12,21 +12,59 @@ import { GridStats } from '@csegames/camelot-unchained/lib/components';
 
 import StatListItem from '../StatListItem';
 import TabSubHeader from 'shared/Tabs/TabSubHeader';
-import { characterBodyPartIcons } from 'fullscreen/lib/constants';
+import { characterBodyPartIcons, MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 import { searchIncludesSection } from 'fullscreen/lib/utils';
 import { DamageType_Single } from 'gql/interfaces';
 
+// #region Container constants
+const CONTAINER_BORDER_TOP = 2;
+// #endregion
 const Container = styled.div`
-  border-top: 1px solid #6A6260;
+  border-top: ${CONTAINER_BORDER_TOP}px solid #6A6260;
+
+  @media (max-width: 2560px) {
+    border-top: ${CONTAINER_BORDER_TOP * MID_SCALE}px solid #6A6260;
+  }
+
+  @media (max-width: 1920px) {
+    border-top: ${CONTAINER_BORDER_TOP * HD_SCALE}px solid #6A6260;
+  }
 `;
 
+// #region Title constants
+const TITLE_MARGIN_LEFT = 10;
+const TITLE_FONT_SIZE = 32;
+// #endregion
 const Title = styled.span`
-  margin-left: 5px;
+  margin-left: ${TITLE_MARGIN_LEFT}px;
+  font-size: ${TITLE_FONT_SIZE}px;
+
+  @media (max-width: 2560px) {
+    margin-left: ${TITLE_MARGIN_LEFT * MID_SCALE}px;
+    font-size: ${TITLE_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    margin-left: ${TITLE_MARGIN_LEFT * HD_SCALE}px;
+    font-size: ${TITLE_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 const DoesNotMatchSearch = css`
   opacity: 0.2;
   background-color: rgba(0, 0, 0, 0.2);
+`;
+
+const ArmorClass = styled.div`
+  font-size: ${TITLE_FONT_SIZE}px;
+
+  @media (max-width: 2560px) {
+    font-size: ${TITLE_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${TITLE_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 // const ListHeader = styled.div`
@@ -42,10 +80,21 @@ const DoesNotMatchSearch = css`
 //   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
 // `;
 
+// #region StatValueContainer constants
+const STAT_VALUE_CONTAINER_FONT_SIZE = 32;
+// #endregion
 const StatValueContainer = styled.div`
   display: flex;
   color: #96827b;
-  font-size: 16px;
+  font-size: ${STAT_VALUE_CONTAINER_FONT_SIZE}px;
+
+  @media (max-width: 2560px) {
+    font-size: ${STAT_VALUE_CONTAINER_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${STAT_VALUE_CONTAINER_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 // const ValueText = styled.div`
@@ -103,7 +152,7 @@ class BodyPartSection extends React.PureComponent<BodyPartSectionProps> {
             />
             <Title>Resistances</Title>
           </div>
-          <div>Armor Class: {Number(bodyPartStats['armorClass'].toFixed(2))}</div>
+          <ArmorClass>Armor Class: {Number(bodyPartStats['armorClass'].toFixed(2))}</ArmorClass>
         </TabSubHeader>
         <GridStats
           statArray={statsArray}

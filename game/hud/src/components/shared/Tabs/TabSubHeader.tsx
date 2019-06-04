@@ -10,9 +10,12 @@ import { styled } from '@csegames/linaria/react';
 import { HeaderBorderFoundation } from './TabHeader';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region SubHeaderContainer constants
+const SUB_HEADER_CONTAINER_HEIGHT = 80;
+// #endregion
 const SubHeaderContainer = styled.div`
   position: relative;
-  height: 40px;
+  height: ${SUB_HEADER_CONTAINER_HEIGHT}px;
   background: ${(props: { color: string, className: string }) =>
     `linear-gradient(
       to right,
@@ -49,23 +52,35 @@ const SubHeaderContainer = styled.div`
     border-image: linear-gradient(to right, rgba(255, 255, 255, 0.1), transparent 70%) 10% 1%;
     ${HeaderBorderFoundation}
   }
+
+  @media (max-width: 2560px) {
+    height: ${SUB_HEADER_CONTAINER_HEIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    height: ${SUB_HEADER_CONTAINER_HEIGHT * HD_SCALE}px;
+  }
 `;
 
 // #region Content constants
 const CONTENT_PADDING_HORIZONTAL = 40;
+const CONTENT_FONT_SIZE = 32;
 // #endregion
 const Content = styled.div`
   display: flex;
   height: 100%;
   align-items: center;
   padding: 0 ${CONTENT_PADDING_HORIZONTAL}px;
+  font-size: ${CONTENT_FONT_SIZE}px;
 
   @media (max-width: 2560px) {
     padding: 0 ${CONTENT_PADDING_HORIZONTAL * MID_SCALE}px;
+    font-size: ${CONTENT_FONT_SIZE * MID_SCALE}px;
   }
 
   @media (max-width: 1920px) {
     padding: 0 ${CONTENT_PADDING_HORIZONTAL * HD_SCALE}px;
+    font-size: ${CONTENT_FONT_SIZE * HD_SCALE}px;
   }
 `;
 

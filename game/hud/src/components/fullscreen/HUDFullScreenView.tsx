@@ -74,7 +74,8 @@ const Divider = styled.div`
     left: ${DIVIDER_ORNAMENT_TOP_LEFT}px;
     width: ${DIVIDER_ORNAMENT_TOP_WIDTH}px;
     height: ${DIVIDER_ORNAMENT_TOP_HEIGHT}px;
-    background: url(../images/tabs/dragon-ornament-top.png);
+    background-image: url(../images/tabs/dragon-ornament-top.png);
+    background-size: contain;
     z-index: 11;
   }
   &:after {
@@ -84,7 +85,8 @@ const Divider = styled.div`
     width: ${DIVIDER_ORNAMENT_BOTTOM_WIDTH}px;
     height: ${DIVIDER_ORNAMENT_BOTTOM_HEIGHT}px;
     bottom: 0;
-    background: url(../images/tabs/dragon-ornament-bottom.png);
+    background-image: url(../images/tabs/dragon-ornament-bottom.png);
+    background-size: contain;
     z-index: 11;
   }
 

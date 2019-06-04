@@ -10,6 +10,7 @@ import { styled } from '@csegames/linaria/react';
 import { css } from '@csegames/linaria';
 import { utils } from '@csegames/camelot-unchained';
 import { prettifyText, searchIncludesSection } from 'fullscreen/lib/utils';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 export interface StatListItemStyles {
   statsListItem: React.CSSProperties;
@@ -19,20 +20,41 @@ export interface StatListItemStyles {
   doesNotMatchSearch: React.CSSProperties;
 }
 
+// #region StatsListItem constants
+const STATS_LIST_ITEM_PADDING_HORIZONTAL = 10;
+const STATS_LIST_ITEM_HEIGHT = 60;
+const STATS_LIST_ITEM_BORDER_WIDTH = 2;
+// #endregion
 const StatsListItem = styled.div`
   display: flex;
   justify-content: space-between;
   position: relative;
   cursor: default;
-  padding: 0 5px;
-  height: 30px;
-  line-height: 30px;
+  padding: 0 ${STATS_LIST_ITEM_PADDING_HORIZONTAL}px;
+  height: ${STATS_LIST_ITEM_HEIGHT}px;
+  line-height: ${STATS_LIST_ITEM_HEIGHT}px;
+  border-right: ${STATS_LIST_ITEM_BORDER_WIDTH}px solid black;
+  border-bottom: ${STATS_LIST_ITEM_BORDER_WIDTH}px solid black;
   background-color: rgba(60, 60, 60, 0.3);
   opacity: 0.8;
-  border-right: 1px solid black;
-  border-bottom: 1px solid black;
   &:hover {
     filter: brightness(200%);
+  }
+
+  @media (max-width: 2560px) {
+    padding: 0 ${STATS_LIST_ITEM_PADDING_HORIZONTAL * MID_SCALE}px;
+    height: ${STATS_LIST_ITEM_HEIGHT * MID_SCALE}px;
+    line-height: ${STATS_LIST_ITEM_HEIGHT * MID_SCALE}px;
+    border-right: ${STATS_LIST_ITEM_BORDER_WIDTH * MID_SCALE}px solid black;
+    border-bottom: ${STATS_LIST_ITEM_BORDER_WIDTH * MID_SCALE}px solid black;
+  }
+
+  @media (max-width: 1920px) {
+    padding: 0 ${STATS_LIST_ITEM_PADDING_HORIZONTAL * HD_SCALE}px;
+    height: ${STATS_LIST_ITEM_HEIGHT * HD_SCALE}px;
+    line-height: ${STATS_LIST_ITEM_HEIGHT * HD_SCALE}px;
+    border-right: ${STATS_LIST_ITEM_BORDER_WIDTH * HD_SCALE}px solid black;
+    border-bottom: ${STATS_LIST_ITEM_BORDER_WIDTH * HD_SCALE}px solid black;
   }
 `;
 
@@ -44,13 +66,24 @@ const LightListItem = css`
   }
 `;
 
+// #region StatText constants
+const STAT_TEXT_FONT_SIZE = 32;
+// #endregion
 const StatText = styled.p`
   display: inline-block;
-  font-size: 16px;
+  font-size: ${STAT_TEXT_FONT_SIZE}px;
   margin: 0;
   padding: 0;
   text-overflow: ellipsis;
   color: #9B9B9B;
+
+  @media (max-width: 2560px) {
+    font-size: ${STAT_TEXT_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${STAT_TEXT_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 const DoesNotMatchSearch = css`

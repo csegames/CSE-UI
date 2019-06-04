@@ -7,21 +7,27 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Input constants
+const INPUT_FONT_SIZE = 28;
+const INPUT_PADDING = 10;
+const INPUT_MARGIN = 10;
+// #endregion
 const Input = styled.input`
   font-family:Titillium Web;
   color: #c0c0c0 !important;
   text-transform: initial;
-  font-size: 14px;
+  font-size: ${INPUT_FONT_SIZE}px;
+  padding: ${INPUT_PADDING}px;
+  margin: ${INPUT_MARGIN}px !important;
   display: inline-block;
-  padding: 5px;
   border: 1px solid transparent !important;
   border-image: url(../images/inventory/border-texture.png) !important;
   border-image-slice: 1 !important;
   border-image-repeat: round !important;
   background: url(../images/inventory/filter-input-texture.png), rgba(10,10,10,1) !important;
   transition: border 0.30s ease-in-out;
-  margin: 5px !important;
   &::placeholder {
     color: #c0c0c0 !important;
   }
@@ -32,6 +38,18 @@ const Input = styled.input`
     background: url(../images/inventory/filter-input-texture.png), rgba(10,10,10,1) !important;
     border: 1px solid #847963 !important;
     outline: none;
+  }
+
+  @media (max-width: 2560px) {
+    font-size: ${INPUT_FONT_SIZE * MID_SCALE}px;
+    padding: ${INPUT_PADDING * MID_SCALE}px;
+    margin: ${INPUT_MARGIN * MID_SCALE}px !important;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${INPUT_FONT_SIZE * HD_SCALE}px;
+    padding: ${INPUT_PADDING * HD_SCALE}px;
+    margin: ${INPUT_MARGIN * HD_SCALE}px !important;
   }
 `;
 

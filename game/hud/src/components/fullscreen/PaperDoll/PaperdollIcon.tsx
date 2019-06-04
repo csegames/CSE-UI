@@ -35,6 +35,7 @@ const Icon = styled.img`
   max-width: 100%;
   width: auto;
   height: 80%;
+  object-fit: cover;
 
   @media (max-width: 2560px) {
     bottom: ${PAPERDOLL_ICON_BOTTOM * MID_SCALE}px;

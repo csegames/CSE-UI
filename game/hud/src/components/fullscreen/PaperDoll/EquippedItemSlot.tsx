@@ -50,7 +50,6 @@ const SlotDecorationPrefix = `
 `;
 
 // #region Container constants
-const CONTAINER_SLOT_BG_OFFSET = 8;
 const CONTAINER_D_AND_D_OFFSET = 22;
 const CONTAINER_D_AND_D_ALIGNMENT = -10;
 // #endregion
@@ -71,8 +70,8 @@ const Container = styled.div`
 
   &:before {
     ${SlotDecorationPrefix}
-    width: ${SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET}px;
-    height: ${SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET}px;
+    width: ${SLOT_DIMENSIONS}px;
+    height: ${SLOT_DIMENSIONS}px;
     background: url(../images/paperdoll/slot-gear-bg.png) no-repeat;
     background-size: contain;
   }
@@ -86,10 +85,8 @@ const Container = styled.div`
   &.weapon-slot {
     &:before {
       ${SlotDecorationPrefix}
-      width: ${SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET}px;
-      height: ${SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET}px;
-      top: 1px;
-      left: 1px;
+      width: ${SLOT_DIMENSIONS}px;
+      height: ${SLOT_DIMENSIONS}px;
       background: url(../images/paperdoll/slot-weapon-bg.png) no-repeat;
       background-size: contain;
     }
@@ -97,6 +94,8 @@ const Container = styled.div`
       ${SlotDecorationPrefix}
       background: url(../images/paperdoll/slot-weapon-frame.png) no-repeat;
       background-size: contain;
+      top: 1px;
+      left: 1px;
     }
   }
 
@@ -112,8 +111,8 @@ const Container = styled.div`
     }
 
     &:before {
-      width: ${(SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET) * MID_SCALE}px;
-      height: ${(SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET) * MID_SCALE}px;
+      width: ${(SLOT_DIMENSIONS) * MID_SCALE}px;
+      height: ${(SLOT_DIMENSIONS) * MID_SCALE}px;
     }
   }
 
@@ -129,8 +128,8 @@ const Container = styled.div`
     }
 
     &:before {
-      width: ${(SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET) * HD_SCALE}px;
-      height: ${(SLOT_DIMENSIONS - CONTAINER_SLOT_BG_OFFSET) * HD_SCALE}px;
+      width: ${(SLOT_DIMENSIONS) * HD_SCALE}px;
+      height: ${(SLOT_DIMENSIONS) * HD_SCALE}px;
     }
   }
 `;

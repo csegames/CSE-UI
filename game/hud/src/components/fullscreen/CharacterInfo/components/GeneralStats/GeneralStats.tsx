@@ -22,10 +22,15 @@ export interface GeneralProps extends GraphQLInjectedProps<GeneralStatsGQL.Query
 
 }
 
+// #region Tooltip constants
+const TOOLTIP_MAX_WIDTH = 600;
+const TOOLTIP_MIN_WIDTH = 400;
+const TOOLTIP_PADDING = 10;
+// #endregion
 const Tooltip = styled.div`
-  max-width: 300px;
-  min-width: 200px;
-  padding: 5px;
+  max-width: ${TOOLTIP_MAX_WIDTH}px;
+  min-width: ${TOOLTIP_MIN_WIDTH}px;
+  padding: ${TOOLTIP_PADDING}px;
   background: rgba(0, 0, 0, 0.7);
   color: white;
 `;

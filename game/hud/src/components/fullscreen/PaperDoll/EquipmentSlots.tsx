@@ -331,6 +331,30 @@ const WeaponSlotOrnaments = styled.div`
     opacity: ${WEAPON_ORNAMENT_OPACITY};
     z-index: 0;
   }
+
+  @media (max-width: 2560px) {
+    &:before {
+      left: ${WEAPON_SLOT_ORNAMENTS_LEFT * MID_SCALE}px;
+      width: ${WEAPON_SLOT_ORNAMENTS_WIDTH * MID_SCALE}px;
+    }
+
+    &:after {
+      right: ${WEAPON_SLOT_ORNAMENTS_RIGHT * MID_SCALE}px;
+      width: ${WEAPON_SLOT_ORNAMENTS_WIDTH * MID_SCALE}px;
+    }
+  }
+
+  @media (max-width: 1920px) {
+    &:before {
+      left: ${WEAPON_SLOT_ORNAMENTS_LEFT * HD_SCALE}px;
+      width: ${WEAPON_SLOT_ORNAMENTS_WIDTH * HD_SCALE}px;
+    }
+
+    &:after {
+      right: ${WEAPON_SLOT_ORNAMENTS_RIGHT * HD_SCALE}px;
+      width: ${WEAPON_SLOT_ORNAMENTS_WIDTH * HD_SCALE}px;
+    }
+  }
 `;
 
 // #region ItemSlotSpacing constants

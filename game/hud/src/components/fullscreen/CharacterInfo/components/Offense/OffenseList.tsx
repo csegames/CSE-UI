@@ -20,12 +20,16 @@ import eventNames from 'fullscreen/lib/itemEvents';
 import { WeaponStatsFragment } from 'gql/fragments/WeaponStatsFragment';
 import { OffenseListGQL, ItemType } from 'gql/interfaces';
 import TabSubHeader from 'shared/Tabs/TabSubHeader';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   flex: 1;
   height: 100%;
 `;
 
+// #region NoWeaponsContainer constants
+const NO_WEAPONS_CONTAINER_FONT_SIZE = 36;
+// #endregion
 const NoWeaponsContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -33,12 +37,43 @@ const NoWeaponsContainer = styled.div`
   align-items: center;
   justify-content: center;
   color: #D6C4A2;
-  font-size: 18px;
   font-family: Caudex;
+  font-size: ${NO_WEAPONS_CONTAINER_FONT_SIZE}px;
+
+  @media (max-width: 2560px) {
+    font-size: ${NO_WEAPONS_CONTAINER_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${NO_WEAPONS_CONTAINER_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region SectionTitle constants
+const SECTION_TITLE_FONT_SIZE = 32;
+// #endregion
 const SectionTitle = styled.span`
+  font-size: ${SECTION_TITLE_FONT_SIZE}px;
   margin-left: 5px;
+
+  @media (max-width: 2560px) {
+    font-size: ${SECTION_TITLE_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${SECTION_TITLE_FONT_SIZE * HD_SCALE}px;
+  }
+`;
+
+const SectionIcon = styled.span`
+  font-size: ${SECTION_TITLE_FONT_SIZE}px;
+  @media (max-width: 2560px) {
+    font-size: ${SECTION_TITLE_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${SECTION_TITLE_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
 const defaultStats = {
@@ -85,7 +120,7 @@ class OffenseList extends React.PureComponent<OffenseListProps> {
                 {weaponSlotArray.map((weaponSlot: any, i: number) => (
                   <div key={i}>
                     <TabSubHeader useGrayBG>
-                      <span className={'icon-filter-weapons'} />
+                      <SectionIcon className={'icon-filter-weapons'} />
                       <SectionTitle>{prettifyText(weaponSlot.name)}</SectionTitle>
                     </TabSubHeader>
                     <GridStats

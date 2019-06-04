@@ -19,6 +19,7 @@ import StatsListContainer from '../StatListContainer';
 import DataUnavailable from '../DataUnavailable';
 import SessionListItem from './SessionListItem';
 import { SessionGQL } from 'gql/interfaces';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 export interface SessionProps extends GraphQLInjectedProps<SessionGQL.Query> {
   searchValue: string;
@@ -32,16 +33,42 @@ const HeaderContent = css`
   display: flex;
 `;
 
+// #region HeaderSessionText constants
+const HEADER_SESSION_TEXT_FONT_SIZE = 32;
+// #endregion
 const HeaderSessionText = styled.header`
   flex: 2;
   text-transform: uppercase;
+  font-size: ${HEADER_SESSION_TEXT_FONT_SIZE}px;
+
+  @media (max-width: 2560px) {
+    font-size: ${HEADER_SESSION_TEXT_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${HEADER_SESSION_TEXT_FONT_SIZE * HD_SCALE}px;
+  }
 `;
 
+// #region HeaderTimesUsedText constants
+const HEADER_TIMES_USED_TEXT_FONT_SIZE = 28;
+const HEADER_TIMES_USED_TEXT_LETTER_SPACING = 2;
+// #endregion
 const HeaderTimesUsedText = styled.header`
   flex: 1;
-  font-size: 14px;
-  letter-spacing: 1px;
+  font-size: ${HEADER_TIMES_USED_TEXT_FONT_SIZE}px;
+  letter-spacing: ${HEADER_TIMES_USED_TEXT_LETTER_SPACING}px;
   text-transform: uppercase;
+
+  @media (max-width: 2560px) {
+    font-size: ${HEADER_TIMES_USED_TEXT_FONT_SIZE * MID_SCALE}px;
+    letter-spacing: ${HEADER_TIMES_USED_TEXT_LETTER_SPACING * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${HEADER_TIMES_USED_TEXT_FONT_SIZE * HD_SCALE}px;
+    letter-spacing: ${HEADER_TIMES_USED_TEXT_LETTER_SPACING * HD_SCALE}px;
+  }
 `;
 
 class Session extends React.Component<SessionProps> {

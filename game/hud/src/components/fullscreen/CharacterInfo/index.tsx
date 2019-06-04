@@ -16,6 +16,7 @@ import OffenseInfo from './components/Offense/OffenseList';
 import TraitsInfo from './components/TraitsInfo/TraitsInfo';
 import Session from './components/Session';
 import SearchInput from './components/SearchInput';
+import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
   display: flex;
@@ -26,30 +27,68 @@ const Container = styled.div`
   url(../images/inventory/bag-bg-grey.png), black;
 `;
 
+// #region GeneralInfoContaier constants
+const GENERAL_INFO_CONTAINER_HEIGHT = 400;
+// #endregion
 const GeneralInfoContainer = styled.div`
   display: flex;
-  height: 200px;
+  height: ${GENERAL_INFO_CONTAINER_HEIGHT}px;
+
+  @media (max-width: 2560px) {
+    height: ${GENERAL_INFO_CONTAINER_HEIGHT * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    height: ${GENERAL_INFO_CONTAINER_HEIGHT * HD_SCALE}px;
+  }
 `;
 
 const InfoContent = styled.div`
   z-index: 1;
   flex: 1;
-  height: calc(100% - 200px);
+  height: calc(100% - ${GENERAL_INFO_CONTAINER_HEIGHT}px);
+
+  @media (max-width: 2560px) {
+    height: calc(100% - ${GENERAL_INFO_CONTAINER_HEIGHT * MID_SCALE}px);
+  }
+
+  @media (max-width: 1920px) {
+    height: calc(100% - ${GENERAL_INFO_CONTAINER_HEIGHT * HD_SCALE}px);
+  }
 `;
 
+// #region TabText constants
+const TAB_TEXT_FONT_SIZE = 32;
+// #endregion
 const TabText = styled.span`
-  font-size: 16px;
+  font-size: ${TAB_TEXT_FONT_SIZE}px;
   margin: 0;
   padding: 0;
-`;
 
+  @media (max-width: 2560px) {
+    font-size: ${TAB_TEXT_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${TAB_TEXT_FONT_SIZE * MID_SCALE}px;
+  }
+`;
+// #region ContentContainer constants
+const CONTENT_CONTAINER_PADDING_BOTTOM = 20;
+// #endregion
+// #region Tab constants
+const TAB_FONT_SIZE = 36;
+const TAB_LETTER_SPACING = 2;
+const TAB_PADDING = 20;
+const ACTIVE_TAB_ORNAMENT_HEIGHT = 12;
+// #endregion
 export const defaultCharacterInfoStyle: Partial<TabPanelStyle> = {
   tabPanel: css`
     height: 100%;
   `,
 
   contentContainer: css`
-    padding-bottom: 10px;
+    padding-bottom: ${CONTENT_CONTAINER_PADDING_BOTTOM}px;
     height: 100%;
     width: 100%;
   `,
@@ -65,11 +104,11 @@ export const defaultCharacterInfoStyle: Partial<TabPanelStyle> = {
 
   tab: css`
     flex: 1;
-    font-size: 18px;
-    padding: 10px;
+    font-size: ${TAB_FONT_SIZE}px;
+    padding: ${TAB_PADDING}px;
+    letter-spacing: ${TAB_LETTER_SPACING}px;
     text-transform: uppercase;
     font-family: Caudex;
-    letter-spacing: 1px;
     color: #757575;
     text-align: center;
     &:hover {
@@ -78,22 +117,34 @@ export const defaultCharacterInfoStyle: Partial<TabPanelStyle> = {
     &:active {
       color: #D6C4A2;
     }
+
+    @media (max-width: 2560px) {
+      font-size: ${TAB_FONT_SIZE * MID_SCALE}px;
+      padding: ${TAB_PADDING * MID_SCALE}px;
+      letter-spacing: ${TAB_LETTER_SPACING * MID_SCALE}px;
+    }
+
+    @media (max-width: 1920px) {
+      font-size: ${TAB_FONT_SIZE * HD_SCALE}px;
+      padding: ${TAB_PADDING * HD_SCALE}px;
+      letter-spacing: ${TAB_LETTER_SPACING * HD_SCALE}px;
+    }
   `,
 
   activeTab: css`
     position: relative;
     flex: 1;
     color: #D6C4A2;
-    font-size: 18px;
-    padding: 10px;
+    font-size: ${TAB_FONT_SIZE}px;
+    padding: ${TAB_PADDING}px;
+    letter-spacing: ${TAB_LETTER_SPACING}px;
     text-transform: uppercase;
     font-family: Caudex;
-    letter-spacing: 1px;
     text-align: center;
     &:after {
       content: '';
       position: absolute;
-      height: 6px;
+      height: ${ACTIVE_TAB_ORNAMENT_HEIGHT}px;
       left: 0;
       right: 0;
       bottom: 5px;
@@ -103,6 +154,24 @@ export const defaultCharacterInfoStyle: Partial<TabPanelStyle> = {
     }
     &:hover {
       color: #D6C4A2;
+    }
+
+    @media (max-width: 2560px) {
+      font-size: ${TAB_FONT_SIZE * MID_SCALE}px;
+      padding: ${TAB_PADDING * MID_SCALE}px;
+      letter-spacing: ${TAB_LETTER_SPACING * MID_SCALE}px;
+      &:before {
+        height: ${ACTIVE_TAB_ORNAMENT_HEIGHT * MID_SCALE}px;
+      }
+    }
+
+    @media (max-width: 1920px) {
+      font-size: ${TAB_FONT_SIZE * HD_SCALE}px;
+      padding: ${TAB_PADDING * HD_SCALE}px;
+      letter-spacing: ${TAB_LETTER_SPACING * HD_SCALE}px;
+      &:after {
+        height: ${ACTIVE_TAB_ORNAMENT_HEIGHT * HD_SCALE}px;
+      }
     }
   `,
 };
