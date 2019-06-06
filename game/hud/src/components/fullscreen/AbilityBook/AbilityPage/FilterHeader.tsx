@@ -78,7 +78,8 @@ export function FilterHeader(props: Props) {
   const { abilityNetworks, componentCategoryToComponentIDs, abilityComponents } = useContext(AbilityBookContext);
   const [state] = useAbilityBookReducer();
 
-  const componentCategories: Section[] = abilityNetworks[Routes[state.activeRoute]].componentCategories
+  const networks = abilityNetworks[Routes[state.activeRoute]];
+  const componentCategories: Section[] = networks ? networks.componentCategories
     .filter(componentCategory => componentCategoryToComponentIDs[componentCategory.displayInfo.name])
     .map((componentCategory) => {
       return {
@@ -86,7 +87,7 @@ export function FilterHeader(props: Props) {
         selected: true,
         items: componentCategoryToComponentIDs[componentCategory.displayInfo.name].map(id => abilityComponents[id]),
       };
-    });
+    }) : [];
 
   function onResetClick() {
     props.onSearchChange('');

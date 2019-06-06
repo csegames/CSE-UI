@@ -199,6 +199,10 @@ export function AbilityPage(props: Props) {
     setComponentFilter(componentFilterClone);
   }
 
+  if (!abilityNetworkToAbilities[Routes[state.activeRoute]]) {
+    return null;
+  }
+
   let abilities: AbilityBookQuery.Abilities[] = [];
   const abilityRows = [];
   if (!isEmpty(abilityNetworkToAbilities)) {
