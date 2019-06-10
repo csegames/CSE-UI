@@ -16,3 +16,4 @@ import './Options';
 import './Screenshot';
 import './SoundEvent';
 import './SuccessFailure';
+import './StatusAction';

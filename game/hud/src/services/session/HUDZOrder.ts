@@ -32,6 +32,7 @@ enum HUDZOrder {
   Progression,
   InteractiveAlert,
   DevUI,
+  SelfDamageNumbers,
 
   // Widgets above all else
   Build,

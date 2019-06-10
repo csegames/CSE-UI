@@ -163,11 +163,11 @@ class HUDViewInternal extends React.Component<HUDProps, HUDState> {
             <HUDNav.component {...HUDNav.props} />
           </HUDNavContainer>
 
-            <DevUI />
-            <InteractiveAlertView />
-            <ScenarioPopup />
+          <DevUI />
+          <InteractiveAlertView />
+          <ScenarioPopup />
 
-            <ScenarioResults />
+          <ScenarioResults />
 
           <HUDFullScreen />
           <AbilityBarContainer id='abilitybar-old'>

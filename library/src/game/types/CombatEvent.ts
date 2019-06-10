@@ -35,6 +35,13 @@ declare global {
       part: BodyPart;
     }[];
 
+    // Array of statuses
+    statuses?: {
+      name: string;
+      action: StatusAction;
+      duration: number;
+    }[];
+
     // Array of body Part ids that received a cure, ie [1, 1, 2] = 2 cures on body part 1 and 1 cure ont body part 2
     cures?: BodyPart[];
 

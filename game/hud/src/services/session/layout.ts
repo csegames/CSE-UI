@@ -40,6 +40,7 @@ import ScenarioButton from './layoutItems/ScenarioButton';
 import BattleGroups from './layoutItems/BattleGroups';
 import BattleGroupWatchList from './layoutItems/BattleGroupWatchList';
 import Respawn from './layoutItems/Respawn';
+import SelfDamageNumbers from './layoutItems/SelfDamageNumbers';
 
 const localStorageKey = 'cse_hud_layout-state';
 const FORCE_RESET_CODE = '0.8.1'; // if the local storage value for the reset code doesn't match this, then force a reset
@@ -225,6 +226,9 @@ function initialState(): LayoutState {
     ],
     [
       'respawn', cloneDeep(Respawn),
+    ],
+    [
+      'selfDamageNumbers', cloneDeep(SelfDamageNumbers),
     ],
   ]);
 
