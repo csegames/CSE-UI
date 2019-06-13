@@ -119,50 +119,14 @@ export default () => {
   }
   combatLogToString(null);
 
-  let combatLogTimeout: number = null;
-  let batchedCombatLogs: string[] = [];
   game.onCombatEvent((logs: CombatEvent[]) => {
     const combatLogs = logs.map(combatLogToString);
-    batchedCombatLogs.concat(combatLogs);
-
-    if (combatLogTimeout) {
-      window.clearTimeout(combatLogTimeout);
-      combatLogTimeout = window.setTimeout(() => {
-        game.trigger('combatlog_message', batchedCombatLogs);
-        batchedCombatLogs = [];
-        combatLogTimeout = null;
-      }, 500);
-      return;
-    }
-
-    combatLogTimeout = window.setTimeout(() => {
-      game.trigger('combatlog_message', combatLogs);
-      batchedCombatLogs = [];
-      combatLogTimeout = null;
-    }, 500);
+    game.trigger('combatlog_message', combatLogs);
   });
 
 
   // hook up for console messages to system messages
-  let consoleLogTimeout: number = null;
-  let batchedConsoleLogs: string[] = [];
   game.onConsoleText((text: string) => {
-    batchedConsoleLogs = batchedConsoleLogs.concat(text);
-
-    if (consoleLogTimeout) {
-      window.clearTimeout(consoleLogTimeout);
-      consoleLogTimeout = window.setTimeout(() => {
-        game.trigger('systemMessage', batchedConsoleLogs);
-        batchedConsoleLogs = [];
-        consoleLogTimeout = null;
-      }, 500);
-      return;
-    }
-
-    consoleLogTimeout = window.setTimeout(() => {
-      game.trigger('systemMessage', text);
-      consoleLogTimeout = null;
-      batchedCombatLogs = [];
-    }, 500);
+    game.trigger('systemMessage', text);
   });
 };
