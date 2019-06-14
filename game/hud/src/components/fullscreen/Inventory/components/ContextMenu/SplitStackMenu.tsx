@@ -88,6 +88,7 @@ export interface SplitStackMenuState {
 
 class SplitStackMenu extends React.Component<SplitStackMenuProps, SplitStackMenuState> {
   private mouseOver: boolean = false;
+  private valueBeforeEdit: number = null;
   constructor(props: SplitStackMenuProps) {
     super(props);
     this.state = {
@@ -106,6 +107,7 @@ class SplitStackMenu extends React.Component<SplitStackMenuProps, SplitStackMenu
             <TextInput
               inputClassName={Input}
               value={this.state.value}
+              onBlur={this.onBlur}
               onChange={this.onInputChange}
             />
             <BoundNumber>{max}</BoundNumber>
@@ -141,8 +143,24 @@ class SplitStackMenu extends React.Component<SplitStackMenuProps, SplitStackMenu
   private onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     if (typeof value === 'number' && value <= this.props.max) {
+      if (this.valueBeforeEdit == null) {
+        this.valueBeforeEdit = this.state.value;
+      }
+
       this.setState({ value });
     }
+  }
+
+  private onBlur = () => {
+    if (!this.isValueValid()) {
+      this.setState({ value: this.valueBeforeEdit });
+    }
+
+    this.valueBeforeEdit = null;
+  }
+
+  private isValueValid = () => {
+    return this.state.value <= this.props.max && this.state.value >= this.props.min;
   }
 
   private onSliderChange = (value: number) => {
@@ -152,7 +170,13 @@ class SplitStackMenu extends React.Component<SplitStackMenuProps, SplitStackMenu
   private onSplit = (e: React.MouseEvent) => {
     if (!this.mouseOver) {
       hideContextMenu();
-      this.props.onSplit(e as any, this.state.value);
+      if (!this.isValueValid()) {
+        this.props.onSplit(e as any, this.valueBeforeEdit);
+      } else {
+        this.props.onSplit(e as any, this.state.value);
+      }
+
+      this.valueBeforeEdit = null;
     }
   }
 }
