@@ -116,6 +116,7 @@ export function AbilityCreation(props: Props) {
     if (res.ok) {
       setShowModal(true);
       game.trigger('refetch-ability-book');
+      game.store.refetch();
     } else if (res.data) {
       const errorMessage = JSON.parse(res.data).FieldCodes[0].AbilityResult.Details;
       setErrorMessage(errorMessage);
