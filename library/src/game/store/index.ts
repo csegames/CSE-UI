@@ -9,7 +9,7 @@
  */
 import { useState } from 'react';
 import { query } from '../../graphql/query';
-import { CUQuery, Ability } from '../../graphql/schema';
+import { CUQuery, Ability, StatusDef } from '../../graphql/schema';
 
 const queryString = `
 {
@@ -30,6 +30,12 @@ const queryString = `
       iconURL
       description
       name
+      statusTags
+      stacking {
+        group
+        refreshTimedDurations
+        removalOrder
+      }
     }
 	}
 
@@ -143,7 +149,7 @@ function initialize(this: InternalGameDataStore) {
   this.refetch();
 }
 
-function getStatusInfo(this: InternalGameDataStore, id: number) {
+function getStatusInfo(this: InternalGameDataStore, id: number): StatusDef {
   if (!this.status || !this.status.statuses) return null;
   const info = this.status.statuses.find(value => value.numericID === id);
   return info || null;

@@ -8,6 +8,7 @@ import React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { Tooltip } from 'shared/Tooltip';
 import { Faction as GQLFaction, Archetype as GQLArchetype } from 'gql/interfaces';
+import { Statuses } from './Statuses';
 
 const PlayerFrameContainer = styled.div`
   position: relative;
@@ -130,49 +131,6 @@ const Stamina = styled.div`
   height: 100%;
   transform: skewX(-30deg);
   border-radius: 3px;
-`;
-
-const Statuses = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-content: flex-start;
-  min-width: 180px;
-  @media (max-width: 1920px) {
-    min-width: 85px;
-  }
-`;
-
-const Status = styled.div`
-  position: relative;
-  overflow: hidden;
-  border: 1px solid black;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  margin: 4px;
-  @media (max-width: 1920px) {
-    width: 16px;
-    height: 16px;
-    margin: 2px;
-  }
-`;
-
-const StatusTooltip = styled.div`
-  padding: 5px;
-  min-width: 200px;
-  max-width: 300px;
-  max-height: 750px;
-`;
-
-const StatusTooltipName = styled.h3`
-  margin: 0;
-  margin-bottom: 5px;
-`;
-
-const StatusTooltipDescription = styled.p`
-  margin: 0;
-  padding: 0;
 `;
 
 export interface Props {
@@ -298,36 +256,9 @@ export class PlayerFrame extends React.Component<Props, State> {
         </Tooltip>
 
         {player.statuses &&
-          <Statuses>
-            {Object.values(player.statuses).map(this.renderStatus)}
-          </Statuses>
+          <Statuses statuses={Object.values(player.statuses)} realmPrefix={this.realmPrefix(player.faction)} />
         }
       </PlayerFrameContainer>
-    );
-  }
-
-  private renderStatus = (status: {id: number } & Timing) => {
-    const info = game.store.getStatusInfo(status.id) || {
-      name: 'unknown',
-      description: 'unknown',
-      iconURL: 'images/unit-frames/4k/' + this.realmPrefix(this.props.player.faction) + 'propic.png',
-    };
-
-    return (
-      <Tooltip content={(
-        <StatusTooltip>
-          <StatusTooltipName>
-            {info.name}
-          </StatusTooltipName>
-          <StatusTooltipDescription>
-            {info.description}
-          </StatusTooltipDescription>
-        </StatusTooltip>
-      )}>
-        <Status key={status.id}>
-          <Image src={info.iconURL} />;
-        </Status>
-      </Tooltip>
     );
   }
 
