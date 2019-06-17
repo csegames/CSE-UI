@@ -9,22 +9,31 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { utils } from '@csegames/camelot-unchained';
+import { HD_SCALE } from 'fullscreen/lib/constants';
 
+// #region Container constants
+const CONTAINER_LEFT = 140;
+const CONTAINER_BOTTOM = -30;
+const CONTAINER_FONT_SIZE = 28;
+const CONTAINER_WIDTH = 200;
+// #endregion
 const Container = styled.div`
   position: absolute;
-  left: 200px;
-  bottom: -41px;
-  z-index: -1;
-  font-size: 24px;
-  @media(max-width: 1920px) {
-    font-size: 14px;
-    left: 70px;
-    bottom: -29px;
-  }
+  left: ${CONTAINER_LEFT}px;
+  bottom: ${CONTAINER_BOTTOM}px;
+  font-size: ${CONTAINER_FONT_SIZE}px;
+  width: ${CONTAINER_WIDTH}px;
   color: white;
   background-color: rgba(0,0,0,0.6);
-  width: 100px;
   text-align: center;
+  z-index: -1;
+
+  @media (max-width: 1920px) {
+    left: ${CONTAINER_LEFT * HD_SCALE}px;
+    bottom: ${CONTAINER_BOTTOM * HD_SCALE}px;
+    font-size: ${CONTAINER_FONT_SIZE * HD_SCALE}px;
+    width: ${CONTAINER_WIDTH * HD_SCALE}px;
+  }
 `;
 
 export interface DistanceTextProps {

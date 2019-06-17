@@ -21,7 +21,7 @@ export default {
       width: 310,
       height: 58.5,
     },
-    size4k: {
+    sizeUHD: {
       width: 620,
       height: 117,
     },

@@ -107,14 +107,14 @@ const HealthText = styled.div`
 `;
 
 const Statuses = styled.div`
-   display: flex;
-   flex-wrap: wrap;
-   justify-content: flex-start;
-   align-content: flex-start;
-   min-width: 180px;
-   @media (max-width: 1920px) {
-     min-width: 85px;
-   }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+  min-width: 180px;
+  @media (max-width: 1920px) {
+    min-width: 85px;
+  }
 `;
 
 const Status = styled.div`
