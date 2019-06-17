@@ -42,7 +42,7 @@ declare global {
     resources?: {
       sent: number;
       received: number;
-      type: ResourceKind;
+      type: EntityResourceType;
     }[];
 
     // impulse = knock back or a force applied to your character

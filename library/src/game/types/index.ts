@@ -13,7 +13,6 @@ import './DamageType';
 import './ItemPlacementTransformMode';
 import './Keybind';
 import './Options';
-import './ResourceKind';
 import './Screenshot';
 import './SoundEvent';
 import './SuccessFailure';

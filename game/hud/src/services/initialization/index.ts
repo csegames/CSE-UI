@@ -92,7 +92,7 @@ export default () => {
       for (let i = 0; i < log.resources.length; ++i) {
         const d = log.resources[i];
         output += `::yellow::${d.received.toFixed(0)}(${Math.abs(d.sent - d.received).toFixed(0)})
-        ${ResourceKind[d.type]} | `;
+        ${EntityResourceType[d.type]} | `;
       }
     }
 
