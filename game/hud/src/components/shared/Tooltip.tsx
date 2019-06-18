@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { isEqual, throttle } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { utils } from '@csegames/camelot-unchained';
 import {
@@ -147,6 +148,8 @@ class TooltipView extends React.Component<Props, TooltipState> {
       styles: {},
       simple: false,
     };
+
+    this.handleUpdateTooltip = throttle(this.handleUpdateTooltip, 500);
   }
 
   public render() {
@@ -273,6 +276,7 @@ interface TooltipProps {
   styles?: Partial<ToolTipStyle>;
   closeOnEvents?: string[];
   children: React.ReactNode;
+  updateValues?: any[];
 }
 
 export class Tooltip extends React.PureComponent<TooltipProps, {}> {
@@ -314,8 +318,10 @@ export class Tooltip extends React.PureComponent<TooltipProps, {}> {
     this.handleMouseLeave();
   }
 
-  public componentDidUpdate() {
-    this.handleUpdateTooltip();
+  public componentDidUpdate(prevProps: TooltipProps) {
+    if (this.props.updateValues && !isEqual(prevProps.updateValues, this.props.updateValues)) {
+      this.handleUpdateTooltip();
+    }
   }
 
   private handleMouseOver = (event: React.MouseEvent) => {

@@ -219,6 +219,11 @@ export class PlayerFrame extends React.Component<Props, State> {
     return (
       <PlayerFrameContainer data-input-group='block'>
         <Tooltip
+          updateValues={[
+            player.health && player.health[0],
+            player.blood && player.blood.current,
+            player.stamina && player.stamina.current,
+          ]}
           content={(
             <>
               <HealthText style={{
