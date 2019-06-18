@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 
 import * as base from 'fullscreen/ItemShared/InventoryBase';
-import ContainerView, { CloseButton } from './ContainerView';
+import ContainerView from './ContainerView';
 import { DrawerCurrentStats } from '../Containers/Drawer';
 import InventoryRowActionButton from '../InventoryRowActionButton';
 import { calcRows, getContainerInfo, getItemDefinitionName, FullScreenContext } from 'fullscreen/lib/utils';
@@ -21,6 +21,7 @@ import { InventorySlotItemDef } from 'fullscreen/lib/itemInterfaces';
 import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
 import { SLOT_DIMENSIONS } from '../InventorySlot';
 import { getScaledValue } from 'lib/scale';
+import { CloseButton } from 'shared/CloseButton';
 
 // #region HeaderContent constants
 const HEADER_CONTENT_FONT_SIZE = 32;
@@ -108,7 +109,7 @@ export class CraftingContainer extends React.Component<CraftingContainerComponen
         headerContent={() => (
           <HeaderContent>
             <div>{header}</div>
-            <CloseButton className={`fa fa-times click-effect`} onClick={this.props.onCloseClick} />
+            <CloseButton onClick={this.props.onCloseClick} />
           </HeaderContent>
         )}
         mainContent={() => rows}
