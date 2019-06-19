@@ -67,7 +67,8 @@ export function NegativeNumber(props: Props) {
           damageNumber={event.received}
           shouldAnimate={shouldAnimate}
           positionAbsoluteClass={positionAbsoluteClass}
-          type={event.eventType}
+          eventType={event.eventType}
+          damageType={event.type}
         />
       );
     } else {
@@ -77,7 +78,7 @@ export function NegativeNumber(props: Props) {
           damageNumber={event.received}
           shouldAnimate={shouldAnimate}
           positionAbsoluteClass={positionAbsoluteClass}
-          type={event.eventType}
+          eventType={event.eventType}
           resourceType={getResourceType(event)}
         />
       );

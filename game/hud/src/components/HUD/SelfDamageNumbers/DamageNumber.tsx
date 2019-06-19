@@ -100,26 +100,27 @@ const DamageTypeIcon = styled.span`
 
 export interface Props {
   id: string;
+  eventType: 'damage' | 'resource';
   damageNumber: number;
-  type: 'damage' | 'resource';
   positionAbsoluteClass: string;
+  damageType?: DamageType;
   resourceType?: string;
   shouldAnimate?: boolean;
 }
 
 // tslint:disable-next-line
 export function DamageNumber(props: Props) {
-  const { id, positionAbsoluteClass, damageNumber, type, resourceType } = props;
+  const { id, positionAbsoluteClass, damageNumber, damageType, eventType, resourceType } = props;
   const roundedDamageNumber = useMemo(() => Math.round(damageNumber), [damageNumber]);
 
-  if (type === 'damage') {
+  if (eventType === 'damage') {
     return (
       <AnimatedContainer
         key={id}
         className={`${NumberContainer} ${positionAbsoluteClass}`}
         shouldAnimate={props.shouldAnimate}>
           <div>{roundedDamageNumber}</div>
-          <DamageTypeIcon className={damageTypeIcons[type]}></DamageTypeIcon>
+          <DamageTypeIcon className={damageTypeIcons[damageType]}></DamageTypeIcon>
       </AnimatedContainer>
     );
   }
