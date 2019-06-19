@@ -286,6 +286,7 @@
           }
         }
         .chat-line-message {
+          white-space: normal;
           color: $chat-line-message-color;
         }
         a.chat-line-message {
