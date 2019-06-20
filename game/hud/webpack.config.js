@@ -180,6 +180,14 @@ module.exports = function (e, argv = {}) {
                   },
                 },
                 {
+                  loader: require.resolve('eslint-loader'),
+                  query: {
+                    emitError: true,
+                    emitWarning: true,
+                    failOnError: true,
+                  }
+                },
+                {
                   loader: '@csegames/linaria/loader',
                   options: {
                     sourceMap: IS_DEVELOPMENT,
@@ -187,14 +195,6 @@ module.exports = function (e, argv = {}) {
                       alias: ALIAS,
                     },
                   },
-                },
-                {
-                  loader: require.resolve('eslint-loader'),
-                  query: {
-                    emitError: true,
-                    emitWarning: true,
-                    failOnError: true,
-                  }
                 },
                 {
                   loader: require.resolve('ts-loader'),

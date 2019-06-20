@@ -27,7 +27,7 @@ module.exports = {
 
     build: {
       default: {
-        script: 'nps report.start && nps clean && nps gql.codegen && nps report.typescript && tsc && nps copyspecials && nps build.webpack.production && nps report.success',
+        script: 'nps report.start && nps clean && nps gql.codegen && nps copyspecials && nps build.webpack.production && nps report.success',
         description: 'Builds the UI in production mode',
       },
       dev: {

@@ -22,8 +22,8 @@ const ALIAS = {
   'react': path.dirname(
     require.resolve('react/package.json')
   ),
-  gql: path.resolve(__dirname, 'tmp/gql'),
-  components: path.resolve(__dirname, 'tmp/components'),
+  gql: path.resolve(__dirname, 'src/gql'),
+  components: path.resolve(__dirname, 'src/components'),
 };
 
 module.exports = function (e, argv = {}) {
@@ -65,7 +65,7 @@ module.exports = function (e, argv = {}) {
     mode: MODE,
     devtool: 'source-map',
     entry: {
-      [NAME]: ['./tmp/sentry.jsx', './tmp/index.jsx'],
+      [NAME]: ['./src/sentry.tsx', './src/index.tsx'],
     },
     output: {
       path: OUTPUT_PATH,
@@ -94,7 +94,7 @@ module.exports = function (e, argv = {}) {
     },
     resolve: {
       alias: ALIAS,
-      extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
+      extensions: ['.web.ts', '.ts', '.web.tsx', '.tsx', '.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     },
     module: {
       rules: [
@@ -146,7 +146,7 @@ module.exports = function (e, argv = {}) {
               ]
             },
             {
-              test: /\.jsx?$/,
+              test: /\.tsx?$/,
               exclude: /node_modules/,
               use: [
                 {
@@ -183,6 +183,16 @@ module.exports = function (e, argv = {}) {
                       alias: ALIAS,
                     },
                   },
+                },
+                {
+                  loader: require.resolve('ts-loader'),
+                  options: {
+                    transpileOnly: IS_CI ? false : true,
+                    happyPackMode: IS_CI ? false : true,
+                    compilerOptions: {
+                      sourceMap: true,
+                    }
+                  }
                 },
               ]
             },

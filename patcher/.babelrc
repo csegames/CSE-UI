@@ -8,6 +8,7 @@
             "chrome": 35.0
           }
         }],
+        "@babel/typescript",
         "@csegames/linaria/babel",
       ],
       "plugins": [
@@ -19,7 +20,9 @@
         "babel-plugin-transform-react-display-name",
         "babel-plugin-graphql-tag",
         "@babel/plugin-transform-runtime",
-        "@babel/plugin-transform-modules-commonjs"
+        "@babel/plugin-transform-modules-commonjs",
+        "@babel/proposal-class-properties",
+			  "@babel/proposal-object-rest-spread"
       ]
     },
     "production": {
@@ -30,6 +33,7 @@
             "chrome": 35.0
           }
         }],
+        "@babel/typescript",
         "@csegames/linaria/babel",
       ],
       "plugins": [
@@ -41,7 +45,9 @@
         "babel-plugin-transform-react-display-name",
         "babel-plugin-graphql-tag",
         "@babel/plugin-transform-runtime",
-        "@babel/plugin-transform-modules-commonjs"
+        "@babel/plugin-transform-modules-commonjs",
+        "@babel/proposal-class-properties",
+			  "@babel/proposal-object-rest-spread"
       ]
     }
   }
