@@ -22,16 +22,16 @@ const ALIAS = {
   'react': path.dirname(
     require.resolve('react/package.json')
   ),
-  hud: path.resolve(__dirname, 'tmp/components/hud'),
-  fullscreen: path.resolve(__dirname, 'tmp/components/fullscreen'),
-  shared: path.resolve(__dirname, 'tmp/components/shared'),
-  utils: path.resolve(__dirname, 'tmp/components/utils'),
-  gql: path.resolve(__dirname, 'tmp/gql'),
-  components: path.resolve(__dirname, 'tmp/components'),
-  actions: path.resolve(__dirname, 'tmp/services/actions'),
-  lib: path.resolve(__dirname, 'tmp/lib'),
-  services: path.resolve(__dirname, 'tmp/services'),
-  images: path.resolve(__dirname, 'tmp/images'),
+  hud: path.resolve(__dirname, 'src/components/hud'),
+  fullscreen: path.resolve(__dirname, 'src/components/fullscreen'),
+  shared: path.resolve(__dirname, 'src/components/shared'),
+  utils: path.resolve(__dirname, 'src/components/utils'),
+  gql: path.resolve(__dirname, 'src/gql'),
+  components: path.resolve(__dirname, 'src/components'),
+  actions: path.resolve(__dirname, 'src/services/actions'),
+  lib: path.resolve(__dirname, 'src/lib'),
+  services: path.resolve(__dirname, 'src/services'),
+  images: path.resolve(__dirname, 'src/images'),
 };
 
 module.exports = function (e, argv = {}) {
@@ -77,7 +77,7 @@ module.exports = function (e, argv = {}) {
     mode: MODE,
     devtool: 'source-map',
     entry: {
-      [NAME]: ['./tmp/polyfill.jsx', './tmp/sentry.jsx', './tmp/index.jsx'],
+      [NAME]: ['./src/polyfill.tsx', './src/sentry.tsx', './src/index.tsx'],
     },
     output: {
       path: OUTPUT_PATH,
@@ -106,7 +106,7 @@ module.exports = function (e, argv = {}) {
     },
     resolve: {
       alias: ALIAS,
-      extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
+      extensions: ['.web.ts', '.ts', '.web.tsx', '.tsx', '.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     },
     module: {
       rules: [
@@ -158,7 +158,7 @@ module.exports = function (e, argv = {}) {
               ]
             },
             {
-              test: /\.jsx?$/,
+              test: /\.tsx?$/,
               exclude: /node_modules/,
               use: [
                 {
@@ -180,6 +180,15 @@ module.exports = function (e, argv = {}) {
                   },
                 },
                 {
+                  loader: '@csegames/linaria/loader',
+                  options: {
+                    sourceMap: IS_DEVELOPMENT,
+                    resolve: {
+                      alias: ALIAS,
+                    },
+                  },
+                },
+                {
                   loader: require.resolve('eslint-loader'),
                   query: {
                     emitError: true,
@@ -188,13 +197,14 @@ module.exports = function (e, argv = {}) {
                   }
                 },
                 {
-                  loader: '@csegames/linaria/loader',
+                  loader: require.resolve('ts-loader'),
                   options: {
-                    sourceMap: IS_DEVELOPMENT,
-                    resolve: {
-                      alias: ALIAS,
-                    },
-                  },
+                    transpileOnly: IS_CI ? false : true,
+                    happyPackMode: IS_CI ? false : true,
+                    compilerOptions: {
+                      sourceMap: true,
+                    }
+                  }
                 },
               ]
             },

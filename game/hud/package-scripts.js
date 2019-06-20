@@ -29,11 +29,11 @@ module.exports = {
 
     build: {
       default: {
-        script: "nps report.start && nps clean && nps gql.codegen && nps report.typescript && tsc && nps copyspecials && nps build.webpack.production && nps report.success",
+        script: "nps report.start && nps clean && nps gql.codegen && nps build.webpack.production && nps report.success",
         description: 'Builds the UI in production mode',
       },
       dev: {
-        script: 'nps report.start && nps clean && nps gql.codegen && tsc && nps build.webpack.development && nps report.success',
+        script: 'nps report.start && nps clean && nps gql.codegen && nps build.webpack.development && nps report.success',
         description: 'Builds the UI in development mode',
       },
       browser: {
