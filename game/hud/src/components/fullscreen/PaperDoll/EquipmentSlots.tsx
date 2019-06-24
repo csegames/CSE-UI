@@ -12,16 +12,14 @@ import { css } from '@csegames/linaria';
 import EquippedItemSlot from './EquippedItemSlot';
 import PopupMiniInventory, { Alignment } from './PopupMiniInventory';
 import { GearSlots, MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
-import { getEquippedDataTransfer, FullScreenContext } from 'fullscreen/lib/utils';
+import { FullScreenContext } from 'fullscreen/lib/utils';
 import eventNames, {
-  EquipItemPayload,
   UnequipItemPayload,
   UpdateInventoryItemsPayload,
 } from 'fullscreen/lib/itemEvents';
 import { InventoryItem, EquippedItem, SecureTradeState } from 'gql/interfaces';
 import { InventoryContext } from '../ItemShared/InventoryContext';
 import { hideTooltip } from 'actions/tooltips';
-import { makeEquipItemRequest } from '../ItemShared/InventoryBase';
 import PaperdollIcon from './PaperdollIcon';
 
 const ARMOR_ORNAMENT_OPACITY = 0.3;
@@ -499,7 +497,6 @@ class EquipmentSlots extends React.PureComponent<EquipmentSlotsComponentProps, E
   }
 
   public componentDidMount() {
-    this.eventHandles.push(game.on(eventNames.onEquipItem, this.onEquipItem));
     this.eventHandles.push(game.on(eventNames.onUnequipItem, this.onUnequipItem));
     window.addEventListener('resize', this.closeItemMenu);
     window.addEventListener('mousedown', this.closeItemMenu);
@@ -527,84 +524,6 @@ class EquipmentSlots extends React.PureComponent<EquipmentSlotsComponentProps, E
         type: 'Unequip',
         equippedItem: item,
       };
-      game.trigger(eventNames.updateInventoryItems, updateInventoryItemsPayload);
-    }
-  }
-
-  private onEquipItem = (payload: EquipItemPayload) => {
-    const { newItem, prevEquippedItem, willEquipTo } = payload;
-    const equippedItems = [...this.props.equippedItems];
-
-    let filteredItems = _.filter(equippedItems, ((equippedItem) => {
-      if (newItem.location === 'equipped') {
-        // New Item was previously equipped somewhere else, filter replaced items and previously equipped.
-        return !_.find(equippedItem.gearSlots, (gearSlot): any => {
-          return _.find(newItem.gearSlots, slot => gearSlot.id === slot.id) ||
-            _.find(willEquipTo, slot => gearSlot.id === slot.id);
-        });
-      }
-
-      // New item coming from inventory, contianer, etc. Only filter replaced items.
-      return !_.find(equippedItem.gearSlots, (gearSlot): any => {
-        return _.find(willEquipTo, slot => gearSlot.id === slot.id);
-      });
-    }));
-
-    makeEquipItemRequest(newItem.item, willEquipTo);
-
-    if (newItem.location === 'equipped' && prevEquippedItem) {
-      // We are swapping items that are currently equipped
-      const swappedItem: InventoryItem.Fragment = {
-        ...prevEquippedItem.item,
-        location: {
-          inventory: null,
-          inContainer: null,
-          inVox: null,
-          equipped: {
-            gearSlots: newItem.gearSlots,
-          },
-        },
-      };
-      const swappedEquippedItem = { item: swappedItem, gearSlots: newItem.gearSlots };
-      makeEquipItemRequest(swappedEquippedItem.item, swappedEquippedItem.gearSlots);
-      filteredItems = filteredItems.concat(swappedEquippedItem);
-    }
-
-    const nextItem: InventoryItem.Fragment = {
-      ...newItem.item,
-      location: {
-        inventory: null,
-        inContainer: null,
-        inVox: null,
-        equipped: {
-          gearSlots: willEquipTo,
-        },
-      },
-    };
-    const newEquippedItem = { item: nextItem, gearSlots: willEquipTo };
-    this.props.onEquippedItemsChange(filteredItems.concat(newEquippedItem));
-
-    const itemToBeReplaced = _.filter(equippedItems, equippedItem =>
-      _.findIndex(equippedItem.gearSlots, gearSlot =>
-        _.find(willEquipTo, slot => slot.id === gearSlot.id),
-      ) > -1)
-      .map((equippedItem) => {
-        return getEquippedDataTransfer({
-          item: equippedItem.item,
-          position: 0,
-          location: 'equipped',
-          gearSlots: equippedItem.gearSlots,
-        });
-      });
-
-    if (newItem.location === 'inventory') {
-      const updateInventoryItemsPayload: UpdateInventoryItemsPayload = {
-        type: 'Equip',
-        inventoryItem: newItem,
-        willEquipTo,
-        equippedItem: itemToBeReplaced.length > 0 ? itemToBeReplaced : null,
-      };
-
       game.trigger(eventNames.updateInventoryItems, updateInventoryItemsPayload);
     }
   }

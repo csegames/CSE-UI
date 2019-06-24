@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
+import React, { useContext } from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { TabItem } from '@csegames/camelot-unchained';
@@ -27,6 +27,8 @@ import {
   defaultFullScreenState,
   isRightOrLeftItem,
 } from 'fullscreen/lib/utils';
+import { onEquipItem } from './ItemShared/InventoryBase';
+import eventNames, { EquipItemPayload } from './lib/itemEvents';
 
 /* tslint:disable:interface-name */
 export interface ITemporaryTab {
@@ -41,6 +43,7 @@ export interface ITemporaryTab {
 }
 
 export interface FullScreenNavProps {
+  shouldSmallScreen: boolean;
 }
 
 const TRADE_TAB = {
@@ -83,6 +86,7 @@ const BackgroundImage = styled.div`
 
 class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavState> {
   private navigateListener: EventHandle;
+  private equipListener: EventHandle;
   private containerRef: HTMLDivElement;
 
   constructor(props: any) {
@@ -106,6 +110,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
               <BackgroundImage className={'left'} />
               <BackgroundImage className={'right'} />
               <HudFullScreenView
+                shouldSmallScreen={this.props.shouldSmallScreen}
                 leftActiveTabIndex={leftActiveTabIndex}
                 rightActiveTabIndex={rightActiveTabIndex}
                 onActiveTabChanged={(i, name) => this.handleTabChange(name)}
@@ -126,10 +131,12 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   public componentDidMount() {
     this.navigateListener = game.on('navigate', this.handleNavEvent);
+    this.equipListener = game.on(eventNames.onEquipItem, this.onEquipItem);
   }
 
   public componentWillUnmount() {
     this.navigateListener.clear();
+    this.equipListener.clear();
   }
 
   private handleNavEvent = (name: string, shouldOpen?: boolean) => {
@@ -138,7 +145,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         if (this.isAlreadyOpen(name)) {
           this.onCloseFullScreen();
         } else {
-          this.setActiveTabs('equippedgear-left', 'inventory-right');
+          if (this.props.shouldSmallScreen) {
+            this.setActiveTabs('inventory-left');
+          } else {
+            this.setActiveTabs('equippedgear-left', 'inventory-right');
+          }
         }
         break;
       }
@@ -148,7 +159,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         if (this.isAlreadyOpen(name)) {
           this.onCloseFullScreen();
         } else {
-          this.setActiveTabs('equippedgear-left', 'character-stats-right');
+          if (this.props.shouldSmallScreen) {
+            this.setActiveTabs('equippedgear-left');
+          } else {
+            this.setActiveTabs('equippedgear-left', 'character-stats-right');
+          }
         }
         break;
       }
@@ -157,7 +172,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         if (this.isAlreadyOpen(name)) {
           this.onCloseFullScreen();
         } else {
-          this.setActiveTabs('map-left', 'inventory-right');
+          if (this.props.shouldSmallScreen) {
+            this.setActiveTabs('map-left');
+          } else {
+            this.setActiveTabs('map-left', 'inventory-right');
+          }
         }
         break;
       }
@@ -166,7 +185,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         if (this.isAlreadyOpen(name)) {
           this.onCloseFullScreen();
         } else {
-          this.setActiveTabs('ability-builder-left', 'character-stats-right');
+          if (this.props.shouldSmallScreen) {
+            this.setActiveTabs('ability-builder-left');
+          } else {
+            this.setActiveTabs('ability-builder-left', 'character-stats-right');
+          }
         }
         break;
       }
@@ -175,7 +198,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
         if (this.isAlreadyOpen(name)) {
           this.onCloseFullScreen();
         } else {
-          this.setActiveTabs('ability-book-left', 'character-stats-right');
+          if (this.props.shouldSmallScreen) {
+            this.setActiveTabs('ability-book-left');
+          } else {
+            this.setActiveTabs('ability-book-left', 'character-stats-right');
+          }
         }
         break;
       }
@@ -463,6 +490,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
     return tabIndex === -1 ? 0 : tabIndex;
   }
 
+  private onEquipItem = (payload: EquipItemPayload) => {
+    const newEquippedItems = onEquipItem(payload, this.state.equippedItems);
+    this.onChangeEquippedItems(newEquippedItems);
+  }
+
   private hideItemTooltip = () => {
     hideTooltip();
   }
@@ -484,4 +516,12 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
   }
 }
 
-export default HUDFullScreen;
+// tslint:disable-next-line:function-name
+function HUDFullScreenWithInjectedContext() {
+  const { resolution } = useContext(UIContext);
+  return (
+    <HUDFullScreen shouldSmallScreen={resolution.width < 1440} />
+  );
+}
+
+export default HUDFullScreenWithInjectedContext;

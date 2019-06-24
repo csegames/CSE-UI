@@ -348,7 +348,7 @@ function dragAndDrop<PropsTypes extends DragAndDropInjectedProps & { ref?: (ref:
       private initDragStoreInfo = (payload: Partial<StartDragOptions>) => {
         DragStore.setDragStoreInfo({
           draggableRef: this.draggableRef,
-          draggableData: payload.draggableData || this.draggableRef.data(),
+          draggableData: payload.draggableData || (this.draggableRef && this.draggableRef.data()),
           draggableInitPosition: this.initialPosition,
           dataKey: this.options.dataKey,
           draggingPosition: this.initialPosition,

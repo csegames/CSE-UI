@@ -218,26 +218,26 @@ const InfoContainer = styled.div`
 
 
 // #region InfoDivider constants
-const INFO_DIVIDER_LEFT = 310;
+const INFO_DIVIDER_MARGIN_HORIZONTAL = 10;
 const INFO_DIVIDER_HEIGHT = 138;
 const INFO_DIVIDER_WIDTH = 18;
 // #endregion
 const InfoDivider = styled.div`
-  position: absolute;
-  left: ${INFO_DIVIDER_LEFT}px;
+  position: relative;
+  margin: 0 ${INFO_DIVIDER_MARGIN_HORIZONTAL}px;
   height: ${INFO_DIVIDER_HEIGHT}px;
   width: ${INFO_DIVIDER_WIDTH}px;
   background: url(../images/character-stats/ornament-profile-content.png);
   background-size: contain;
 
   @media (max-width: 2560px) {
-    left: ${INFO_DIVIDER_LEFT * MID_SCALE}px;
+    margin: 0 ${INFO_DIVIDER_MARGIN_HORIZONTAL * MID_SCALE}px;
     height: ${INFO_DIVIDER_HEIGHT * MID_SCALE}px;
     width: ${INFO_DIVIDER_WIDTH * MID_SCALE}px;
   }
 
   @media (max-width: 1920px) {
-    left: ${INFO_DIVIDER_LEFT * HD_SCALE}px;
+    margin: 0 ${INFO_DIVIDER_MARGIN_HORIZONTAL * HD_SCALE}px;
     height: ${INFO_DIVIDER_HEIGHT * HD_SCALE}px;
     width: ${INFO_DIVIDER_WIDTH * HD_SCALE}px;
   }
@@ -251,19 +251,19 @@ const CHARACTER_INFO_WIDTH = 350;
 const CharacterInfo = styled.div`
   margin-top: ${CHARACTER_INFO_MARGIN_TOP}px;
   font-size: ${CHARACTER_INFO_FONT_SIZE}px;
-  width: ${CHARACTER_INFO_WIDTH}px;
+  max-width: ${CHARACTER_INFO_WIDTH}px;
   color: #CCC;
 
   @media (max-width: 2560px) {
     margin-top: ${CHARACTER_INFO_MARGIN_TOP * MID_SCALE}px;
     font-size: ${CHARACTER_INFO_FONT_SIZE * MID_SCALE}px;
-    width: ${CHARACTER_INFO_WIDTH * MID_SCALE}px;
+    max-width: ${CHARACTER_INFO_WIDTH * MID_SCALE}px;
   }
 
   @media (max-width: 1920px) {
     margin-top: ${CHARACTER_INFO_MARGIN_TOP * HD_SCALE}px;
     font-size: ${CHARACTER_INFO_FONT_SIZE * HD_SCALE}px;
-    width: ${CHARACTER_INFO_WIDTH * HD_SCALE}px;
+    max-width: ${CHARACTER_INFO_WIDTH * HD_SCALE}px;
   }
 `;
 
@@ -301,6 +301,10 @@ const TEXT_FONT_SIZE = 32;
 const Text = styled.div`
   font-family: Caudex;
   font-size: ${TEXT_FONT_SIZE}px;
+
+  &.nowrap {
+    white-space: nowrap;
+  }
 
   @media (max-width: 2560px) {
     font-size: ${TEXT_FONT_SIZE * MID_SCALE}px;
@@ -341,9 +345,15 @@ class GeneralInfo extends React.PureComponent<GeneralInfoProps, GeneralInfoState
           <Name>{game.selfPlayerState.name}</Name>
           <InfoContainer>
             <CharacterInfo>
-              <Text>{Faction[game.selfPlayerState.faction]}</Text>
-              <Text>{Gender[game.selfPlayerState.gender]} {webAPI.raceString(game.selfPlayerState.race)}</Text>
-              <Text>{Archetype[game.selfPlayerState.classID]}</Text>
+              <Text className='nowrap'>
+                {Faction[game.selfPlayerState.faction]}
+              </Text>
+              <Text className='nowrap'>
+                {Gender[game.selfPlayerState.gender]} {webAPI.raceString(game.selfPlayerState.race)}
+              </Text>
+              <Text className='nowrap'>
+                {Archetype[game.selfPlayerState.classID]}
+              </Text>
             </CharacterInfo>
             <InfoDivider />
             <BiographyInfo>

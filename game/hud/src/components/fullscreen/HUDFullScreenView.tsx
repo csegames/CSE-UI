@@ -283,6 +283,7 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
 };
 
 export interface Props {
+  shouldSmallScreen: boolean;
   rightActiveTabIndex: number;
   leftActiveTabIndex: number;
   onActiveTabChanged: (tabIndex: number, name: string) => void;
@@ -339,24 +340,28 @@ class HUDFullScreenView extends React.Component<Props, State> {
                 }}
                 onActiveTabChanged={this.props.onActiveTabChanged}
               />
-              <Divider>
-                <DividerMidSection />
-              </Divider>
-              <TabPanel
-                activeTabIndex={this.props.rightActiveTabIndex}
-                tabs={tabsRight}
-                renderTab={this.renderTab}
-                content={this.content}
-                defaultTabIndex={1}
-                styles={{
-                  tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
-                  tabs: defaultHUDFullScreenStyle.rightNavigationContainer,
-                  tab: defaultHUDFullScreenStyle.navTab,
-                  activeTab: defaultHUDFullScreenStyle.activeNavTab,
-                  content: defaultHUDFullScreenStyle.contentContainer,
-                }}
-                onActiveTabChanged={this.props.onActiveTabChanged}
-              />
+              {!this.props.shouldSmallScreen &&
+                <Divider>
+                  <DividerMidSection />
+                </Divider>
+              }
+              {!this.props.shouldSmallScreen &&
+                <TabPanel
+                  activeTabIndex={this.props.rightActiveTabIndex}
+                  tabs={tabsRight}
+                  renderTab={this.renderTab}
+                  content={this.content}
+                  defaultTabIndex={1}
+                  styles={{
+                    tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
+                    tabs: defaultHUDFullScreenStyle.rightNavigationContainer,
+                    tab: defaultHUDFullScreenStyle.navTab,
+                    activeTab: defaultHUDFullScreenStyle.activeNavTab,
+                    content: defaultHUDFullScreenStyle.contentContainer,
+                  }}
+                  onActiveTabChanged={this.props.onActiveTabChanged}
+                />
+              }
               <CloseButton className={CloseButtonClass} onClick={this.props.onCloseFullScreen} />
             </Container>
           );

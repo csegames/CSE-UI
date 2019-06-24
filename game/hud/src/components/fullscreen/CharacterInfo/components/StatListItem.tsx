@@ -121,7 +121,9 @@ class StatListItem extends React.Component<StatListItemProps, {}> {
           lightItem ? LightListItem : '',
           !searchIncludes ? DoesNotMatchSearch : '',
         )}>
-        <StatText color={this.props.colorOfName}>{prettifyText(this.props.statName)}</StatText>
+        <StatText color={this.props.colorOfName}>
+          {prettifyText(this.props.statName)}
+        </StatText>
         {typeof this.props.statValue === 'function' ?
           this.props.statValue() :
           typeof this.props.statValue === 'number' || typeof this.props.statValue === 'string' ?

@@ -17,6 +17,7 @@ import eventNames, {
   UpdateInventoryItemsPayload,
   UnequipItemPayload,
   CombineStackPayload,
+  EquipItemPayload,
 } from 'fullscreen/lib/itemEvents';
 import { DrawerCurrentStats } from 'fullscreen/Inventory/components/Containers/Drawer';
 import { SLOT_DIMENSIONS } from 'fullscreen/Inventory/components/InventorySlot';
@@ -25,6 +26,7 @@ import {
   GearSlotDefRef,
   ContainerDefStat_Single,
   SecureTradeState,
+  EquippedItem,
 } from 'gql/interfaces';
 import {
   createMoveItemRequestToInventoryPosition,
@@ -50,6 +52,7 @@ import {
   shouldShowItem,
   getItemWithNewInventoryPosition,
   getItemWithNewUnitCount,
+  getEquippedDataTransfer,
 } from 'fullscreen/lib/utils';
 import {
   InventorySlotItemDef,
@@ -2505,4 +2508,83 @@ function createStackMoveItemRequests(args: {
   }
 
   return [];
+}
+
+export function onEquipItem(payload: EquipItemPayload, equippedItemsList: EquippedItem.Fragment[]) {
+  const { newItem, prevEquippedItem, willEquipTo } = payload;
+  const equippedItems = [...equippedItemsList];
+
+  let filteredItems = _.filter(equippedItems, ((equippedItem) => {
+    if (newItem.location === 'equipped') {
+      // New Item was previously equipped somewhere else, filter replaced items and previously equipped.
+      return !_.find(equippedItem.gearSlots, (gearSlot): any => {
+        return _.find(newItem.gearSlots, slot => gearSlot.id === slot.id) ||
+          _.find(willEquipTo, slot => gearSlot.id === slot.id);
+      });
+    }
+
+    // New item coming from inventory, contianer, etc. Only filter replaced items.
+    return !_.find(equippedItem.gearSlots, (gearSlot): any => {
+      return _.find(willEquipTo, slot => gearSlot.id === slot.id);
+    });
+  }));
+
+  makeEquipItemRequest(newItem.item, willEquipTo);
+
+  if (newItem.location === 'equipped' && prevEquippedItem) {
+    // We are swapping items that are currently equipped
+    const swappedItem: InventoryItem.Fragment = {
+      ...prevEquippedItem.item,
+      location: {
+        inventory: null,
+        inContainer: null,
+        inVox: null,
+        equipped: {
+          gearSlots: newItem.gearSlots,
+        },
+      },
+    };
+    const swappedEquippedItem = { item: swappedItem, gearSlots: newItem.gearSlots };
+    makeEquipItemRequest(swappedEquippedItem.item, swappedEquippedItem.gearSlots);
+    filteredItems = filteredItems.concat(swappedEquippedItem);
+  }
+
+  const nextItem: InventoryItem.Fragment = {
+    ...newItem.item,
+    location: {
+      inventory: null,
+      inContainer: null,
+      inVox: null,
+      equipped: {
+        gearSlots: willEquipTo,
+      },
+    },
+  };
+  const newEquippedItem = { item: nextItem, gearSlots: willEquipTo };
+
+  const itemToBeReplaced = _.filter(equippedItems, equippedItem =>
+    _.findIndex(equippedItem.gearSlots, gearSlot =>
+      _.find(willEquipTo, slot => slot.id === gearSlot.id),
+    ) > -1)
+    .map((equippedItem) => {
+      return getEquippedDataTransfer({
+        item: equippedItem.item,
+        position: 0,
+        location: 'equipped',
+        gearSlots: equippedItem.gearSlots,
+      });
+    });
+
+  if (newItem.location === 'inventory') {
+    const updateInventoryItemsPayload: UpdateInventoryItemsPayload = {
+      type: 'Equip',
+      inventoryItem: newItem,
+      willEquipTo,
+      equippedItem: itemToBeReplaced.length > 0 ? itemToBeReplaced : null,
+    };
+
+    game.trigger(eventNames.updateInventoryItems, updateInventoryItemsPayload);
+  }
+
+  return filteredItems.concat(newEquippedItem);
 }
