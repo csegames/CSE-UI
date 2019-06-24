@@ -23,7 +23,8 @@ export type CompassPOIPartial<D = any> = (Pick<
   'data' |
   'offset' |
   'byAtLeast' |
-  'position'
+  'position' |
+  'zone'
 > | Pick<
   CompassPOI<D> & CompassPOIWithDegrees,
   'id' |
@@ -31,12 +32,14 @@ export type CompassPOIPartial<D = any> = (Pick<
   'data' |
   'offset' |
   'byAtLeast' |
-  'degrees'
+  'degrees' |
+  'zone'
 >);
 
 export type CompassPOI<D = any> = {
   id: string;
   type: string;
+  zone: string;
   data: D;
   offset: number;
   byAtLeast: number;

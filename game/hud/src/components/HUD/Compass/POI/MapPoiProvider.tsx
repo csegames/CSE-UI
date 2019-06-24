@@ -87,6 +87,7 @@ class MapPoiContainer extends React.Component<MapPoiContainerProps, MapPoiContai
     }
     const cappedDistancePercentage = cappedDistance / 100;
     const scaleAmount = ((1 - cappedDistancePercentage) * 0.5);
+
     return (
       <>
         <MapPoi style={poi.placementStyle}>
@@ -193,12 +194,14 @@ const query = gql`
     world {
       map {
         static {
+          zone
           position
           tooltip
           src
         }
 
         dynamic {
+          zone
           position
           tooltip
           src
@@ -229,7 +232,7 @@ export default class MapPoiProvider extends React.Component<
           }}
           onQueryResult={this.onQueryResult}
         />
-        {this.props.pois.map(poi => (
+        {this.getZoneFilteredPoi().map(poi => (
           <MapPoiContainer
             key={poi.id}
             compass={this.props.compass}
@@ -258,7 +261,7 @@ export default class MapPoiProvider extends React.Component<
       const pois: CompassPOIPartial<MapPoiData>[] = [];
       if (graphql.data.world.map.dynamic) {
         graphql.data.world.map.dynamic.forEach((dynamicMarker) => {
-          pois.push(this.getMapPoi({
+          pois.push(this.getMapPoi(dynamicMarker.zone, {
             id: hash(dynamicMarker),
             position: {
               x: dynamicMarker.position[0],
@@ -271,7 +274,7 @@ export default class MapPoiProvider extends React.Component<
       }
       if (graphql.data.world.map.static) {
         graphql.data.world.map.static.forEach((staticMarker) => {
-          pois.push(this.getMapPoi({
+          pois.push(this.getMapPoi(staticMarker.zone, {
             id: hash(staticMarker),
             position: {
               x: staticMarker.position[0],
@@ -290,7 +293,11 @@ export default class MapPoiProvider extends React.Component<
     }
   }
 
-  private getMapPoi = (data: MapPoiData): CompassPOIPartial<MapPoiData> => {
+  private getZoneFilteredPoi = () => {
+    return this.props.pois.filter(poi => poi.zone === game.selfPlayerState.zoneID);
+  }
+
+  private getMapPoi = (zone: string, data: MapPoiData): CompassPOIPartial<MapPoiData> => {
     return withCompassPOIPartialDefaults({
       id: `map-${data.id}`,
       type: 'map',
@@ -298,6 +305,7 @@ export default class MapPoiProvider extends React.Component<
       offset: 18,
       byAtLeast: 10,
       data,
+      zone,
     });
   }
 }
