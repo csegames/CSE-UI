@@ -133,6 +133,11 @@ export function getSelfMenuItems(
 export function getFriendlyTargetMenuItems(
   state: Entity,
 ) {
+  if (state.type !== 'player') {
+    return [];
+  }
+
+  // PLAYER actions
   const id = (state as any).entityID;
   const items: MenuItem[] = [
     { title: 'Invite to Trade', onSelected: () => inviteToTrade(id) },
@@ -140,7 +145,6 @@ export function getFriendlyTargetMenuItems(
 
   const myWarbandInfo = getWarbandMemberByCharacterID(game.selfPlayerState.characterID);
   const myBattlegroupInfo = getBattlegroupMemberByCharacterID(game.selfPlayerState.characterID);
-
   if (hasActiveWarband() && !isEntityIDInWarband(id) && myWarbandInfo && myWarbandInfo.canInvite) {
     items.push({
       title: 'Invite to Warband',

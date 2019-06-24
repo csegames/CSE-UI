@@ -275,7 +275,7 @@ module.exports = function (e, argv = {}) {
               ]
             },
             {
-              exclude: [/\.js$/, /\.html$/, /\.json$/, /\.jsx?$/],
+              exclude: [/\.js$/, /\.html$/, /\.json$/, /\.tsx?$/],
               loader: require.resolve('file-loader'),
               options: {
                 name: 'static/[name].[ext]',
