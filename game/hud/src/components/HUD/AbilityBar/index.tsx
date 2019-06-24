@@ -33,6 +33,8 @@ export interface AbilityBarState {
 export type InitialAbilityInfo = ApiAbilityInfo & AbilityBarItem;
 
 export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState> {
+  private refetchAbilitiesTimeout: number;
+  private clientAbilitiesCache: ArrayMap<AbilityBarItem>;
   constructor(props: AbilityBarProps) {
     super(props);
     this.state = {
@@ -62,8 +64,14 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
   }
 
   public componentDidMount() {
-    game.abilityBarState.onUpdated(this.updateAbilities);
+    game.abilityBarState.onUpdated(() => {
+      this.updateAbilities();
+    });
     game.store.onUpdated(() => this.forceUpdate());
+
+    if (!game.store.myCharacter || !game.store.myCharacter.abilities) {
+      this.refetchBadAPIAbilities();
+    }
 
     if (game.abilityBarState.isReady) {
       this.updateAbilities();
@@ -76,14 +84,32 @@ export class AbilityBar extends React.Component<AbilityBarProps, AbilityBarState
     //   !_.isEqual(nextProps.apiAbilities, this.props.apiAbilities);
   }
 
+  public componentWillUnmount() {
+    window.clearTimeout(this.refetchAbilitiesTimeout);
+  }
+
   private updateAbilities = () => {
-    const sortedAbilities = Object.values(game.abilityBarState.abilities).sort(this.sortByAbilityID);
+    if (!this.clientAbilitiesCache || !_.isEqual(this.clientAbilitiesCache, game.abilityBarState.abilities)) {
+      this.clientAbilitiesCache = game.abilityBarState.abilities;
+      const sortedAbilities = Object.values(game.abilityBarState.abilities).sort(this.sortByAbilityID);
 
-    this.setState({ clientAbilities: sortedAbilities });
+      this.setState({ clientAbilities: sortedAbilities });
 
-    if (game.store.refetch) {
-      window.setTimeout(() => game.store.refetch(), 50);
+      if (game.store.refetch) {
+        window.setTimeout(() => game.store.refetch(), 50);
+      }
     }
+  }
+
+  private refetchBadAPIAbilities = () => {
+    if (!game.store.myCharacter || !game.store.myCharacter.abilities) {
+      game.store.refetch();
+      this.refetchAbilitiesTimeout = window.setTimeout(this.refetchBadAPIAbilities, 3000);
+      return;
+    }
+
+    window.clearTimeout(this.refetchAbilitiesTimeout);
+    this.refetchAbilitiesTimeout = null;
   }
 
   private sortByAbilityID = (a: AbilityBarItem, b: AbilityBarItem) => {
