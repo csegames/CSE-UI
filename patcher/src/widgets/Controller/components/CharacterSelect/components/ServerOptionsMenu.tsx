@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { ChannelStatus, PatchChannelMode } from '../../../../../services/patcher';
+import { ChannelStatus } from '../../../../../services/patcher';
 import { PatcherServer } from '../../../ControllerContext';
 
 const MenuContainer = styled.div`
@@ -47,11 +47,6 @@ const OptionsMenuOverlay = styled.div`
   width: 100%;
 `;
 
-const CheckMark = styled.span`
-  height: 20px;
-  margin-left: 5px;
-`;
-
 export interface ServerOptionsMenuProps {
   top: number;
   left: number;
@@ -64,7 +59,6 @@ export interface ServerOptionsMenuProps {
 
 class ServerOptionsMenu extends React.Component<ServerOptionsMenuProps> {
   public render() {
-    const { serverForOptions } = this.props;
     return (
       <div>
         <MenuContainer style={{ top: this.props.top, left: this.props.left }}>
@@ -72,12 +66,6 @@ class ServerOptionsMenu extends React.Component<ServerOptionsMenuProps> {
             onClick={this.props.handleInstallUninstall}
             style={{ pointerEvents: this.props.charSelectVisible ? 'all' : 'none' }}>
             {this.props.serverForOptions.channelStatus === ChannelStatus.NotInstalled ? 'Install' : 'Uninstall'}
-          </ListItem>
-          <ListItem
-            onClick={this.props.onToggleChannelMode}
-            style={{ pointerEvents: this.props.charSelectVisible ? 'all' : 'none' }}>
-            Use 32-Bit
-            <CheckMark className={serverForOptions.mode === PatchChannelMode.ThiryTwoBit ? 'fa fa-check' : ''} />
           </ListItem>
         </MenuContainer>
         <OptionsMenuOverlay onClick={this.props.toggleMenu as React.MouseEventHandler} />
