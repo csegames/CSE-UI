@@ -242,6 +242,12 @@ class TooltipHeader extends React.PureComponent<TooltipHeaderProps, TooltipHeade
             <Icon flip className={'icon-ui-weight'}></Icon>
             +{item.stats.item.encumbrance.toFixed(3)}%
           </ItemStatInfo>
+          {item.stats && item.stats.armor &&
+            <ItemStatInfo>
+              <Icon className='icon-category-shield'></Icon>
+              {item.stats.armor.armorClass}
+            </ItemStatInfo>
+          }
         </SubContainer>
       </Container>
     );
