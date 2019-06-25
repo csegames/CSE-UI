@@ -20,6 +20,10 @@ import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 const paperDollContainerQuery = gql`
   query PaperDollContainerGQL {
     myEquippedItems {
+      readiedGearSlots {
+        id
+        gearSlotType
+      }
       items {
         ...EquippedItem
       }
@@ -145,6 +149,7 @@ export interface EquippedItemsMap {
 
 export interface PaperDollProps {
   onEquippedItemsChange: (equippedItems: EquippedItem.Fragment[]) => void;
+  onReadiedWeaponsChange: (slotIDs: string[]) => void;
 }
 
 export interface PaperDollState {
@@ -196,6 +201,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   }
 
   public componentWillUnmount() {
+    this.refetch();
     game.off(this.refetchListener);
   }
 
@@ -203,6 +209,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
     if (graphql.loading || !graphql.data || !graphql.data.myEquippedItems) return graphql;
 
     this.props.onEquippedItemsChange(graphql.data.myEquippedItems.items);
+    this.props.onReadiedWeaponsChange(graphql.data.myEquippedItems.readiedGearSlots.map(s => s.id));
     return graphql;
   }
 

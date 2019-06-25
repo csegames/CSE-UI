@@ -253,6 +253,8 @@ const RightSideOrnament = styled.div`
 // #region EquippedWeaponSlots constants
 const EQUIPPED_WEAPON_SLOTS_BOTTOM = 44;
 const EQUIPPED_WEAPON_SLOTS_PADDING_VERTICAL = 10;
+const EQUIPPED_WEAPON_SLOTS_ORNAMENT_BOTTOM = 174;
+const EQUIPPED_WEAPON_SLOTS_ORNAMENT_HEIGHT = 2;
 // #endregion
 const EquippedWeaponSlots = styled.div`
   position: absolute;
@@ -271,32 +273,62 @@ const EquippedWeaponSlots = styled.div`
   &:before {
     content: '';
     position: absolute;
-    background: url(../images/paperdoll/ornament-slot-bot-mid.png) no-repeat;
-    background-size: contain;
-    background-position-x: center;
+    background: linear-gradient(to right, transparent, #6A6767, transparent);
     bottom: 0px;
     left: 0;
     right: 0;
-    width: 100%;
-    height: 100%;
+    margin: auto;
+    width: 80%;
+    height: ${EQUIPPED_WEAPON_SLOTS_ORNAMENT_HEIGHT};
+    opacity: ${WEAPON_ORNAMENT_OPACITY};
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    background: linear-gradient(to right, transparent, #6A6767, transparent);
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 80%;
+    bottom: ${EQUIPPED_WEAPON_SLOTS_ORNAMENT_BOTTOM}px;
+    height: ${EQUIPPED_WEAPON_SLOTS_ORNAMENT_HEIGHT};
     opacity: ${WEAPON_ORNAMENT_OPACITY};
   }
 
   @media (max-width: 2560px) {
     bottom: ${EQUIPPED_WEAPON_SLOTS_BOTTOM * MID_SCALE}px;
     padding: ${EQUIPPED_WEAPON_SLOTS_PADDING_VERTICAL * MID_SCALE}px 0;
+
+    &:before {
+      height: ${EQUIPPED_WEAPON_SLOTS_ORNAMENT_HEIGHT * MID_SCALE}px;
+    }
+
+    &:after {
+      height: ${EQUIPPED_WEAPON_SLOTS_ORNAMENT_HEIGHT * MID_SCALE}
+      bottom: ${EQUIPPED_WEAPON_SLOTS_ORNAMENT_BOTTOM * MID_SCALE}px;
+    }
   }
 
   @media (max-width: 1920px) {
     bottom: ${EQUIPPED_WEAPON_SLOTS_BOTTOM * HD_SCALE}px;
     padding: ${EQUIPPED_WEAPON_SLOTS_PADDING_VERTICAL * HD_SCALE}px 0;
+
+    &:before {
+      height: ${EQUIPPED_WEAPON_SLOTS_ORNAMENT_HEIGHT * HD_SCALE}px;
+    }
+
+    &:after {
+      height: ${EQUIPPED_WEAPON_SLOTS_ORNAMENT_HEIGHT * HD_SCALE}px;
+      bottom: ${EQUIPPED_WEAPON_SLOTS_ORNAMENT_BOTTOM * HD_SCALE}px;
+    }
   }
 `;
 
 // #region WeaponSlotOrnaments constants
-const WEAPON_SLOT_ORNAMENTS_LEFT = -210;
-const WEAPON_SLOT_ORNAMENTS_WIDTH = 194;
-const WEAPON_SLOT_ORNAMENTS_RIGHT = -176;
+const WEAPON_SLOT_ORNAMENTS_LEFT = -130;
+const WEAPON_SLOT_ORNAMENTS_WIDTH = 120;
+const WEAPON_SLOT_ORNAMENTS_RIGHT = -100;
 // #endregion
 const WeaponSlotOrnaments = styled.div`
   position: relative;
@@ -311,7 +343,7 @@ const WeaponSlotOrnaments = styled.div`
     bottom: 0;
     left: ${WEAPON_SLOT_ORNAMENTS_LEFT}px;
     width: ${WEAPON_SLOT_ORNAMENTS_WIDTH}px;
-    background: url(../images/paperdoll/ornament-slot-bot-left.png) no-repeat;
+    background: url(../images/paperdoll/frame-weapon-left.svg) no-repeat;
     background-size: contain;
     opacity: ${WEAPON_ORNAMENT_OPACITY};
     z-index: 0;
@@ -324,7 +356,7 @@ const WeaponSlotOrnaments = styled.div`
     bottom: 0;
     right: ${WEAPON_SLOT_ORNAMENTS_RIGHT}px;
     width: ${WEAPON_SLOT_ORNAMENTS_WIDTH}px;
-    background: url(../images/paperdoll/ornament-slot-bot-right.png) no-repeat;
+    background: url(../images/paperdoll/frame-weapon-right.svg) no-repeat;
     background-size: contain;
     opacity: ${WEAPON_ORNAMENT_OPACITY};
     z-index: 0;
@@ -432,6 +464,7 @@ const weaponSlots: EquipmentSlotsAndInfo[] = [
 
 export interface EquipmentSlotsInjectedProps {
   equippedItems: EquippedItem.Fragment[];
+  readiedWeapons: string[];
   inventoryItems: InventoryItem.Fragment[];
   myTradeState: SecureTradeState;
   visibleComponentRight: string;
@@ -536,6 +569,7 @@ class EquipmentSlots extends React.PureComponent<EquipmentSlotsComponentProps, E
           return _.find(eItem.gearSlots, gearSlot => gearSlot.id === slot.slotName);
         });
         const isWeapon = _.includes(slot.slotName, 'Weapon');
+        const isReadiedWeapon = !!this.props.readiedWeapons.find(slotID => slotID === slot.slotName);
         const isLastItem = i === equipmentSlots.length - 1;
         return (
             <div
@@ -545,6 +579,7 @@ class EquipmentSlots extends React.PureComponent<EquipmentSlotsComponentProps, E
               onMouseLeave={() => this.mouseOverItemMenu = false}>
               <EquippedItemSlot
                 slot={slot}
+                isReadiedWeapon={isReadiedWeapon}
                 selectedSlot={this.state.selectedItemMenu}
                 providedEquippedItem={equippedItem}
                 disableDrag={this.props.myTradeState !== 'None'}
@@ -603,7 +638,7 @@ class EquipmentSlotsWithInjectedContext extends React.Component<EquipmentSlotsPr
   public render() {
     return (
       <FullScreenContext.Consumer>
-        {({ equippedItems, visibleComponentLeft, visibleComponentRight, myTradeState }) => {
+        {({ equippedItems, visibleComponentLeft, visibleComponentRight, myTradeState, readiedWeapons }) => {
           return (
             <InventoryContext.Consumer>
               {({ inventoryItems }) => {
@@ -611,6 +646,7 @@ class EquipmentSlotsWithInjectedContext extends React.Component<EquipmentSlotsPr
                   <EquipmentSlots
                     {...this.props}
                     equippedItems={equippedItems}
+                    readiedWeapons={readiedWeapons}
                     inventoryItems={inventoryItems}
                     myTradeState={myTradeState}
                     visibleComponentLeft={visibleComponentLeft}

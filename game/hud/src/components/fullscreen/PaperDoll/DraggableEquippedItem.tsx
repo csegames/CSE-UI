@@ -81,6 +81,7 @@ const defaultIconStyle = css`
 `;
 
 export interface DraggableEquippedItemProps extends DragAndDropInjectedProps {
+  isReadiedWeapon: boolean;
   slotName: string;
   disableDrag: boolean;
   itemMenuVisible: boolean;
@@ -167,12 +168,15 @@ class EquippedItemComponent extends React.Component<DraggableEquippedItemProps, 
     const isRightSlot = _.includes(slotName.toLowerCase(), 'right') || slotName === GearSlots.OneHandedWeaponRight;
     const flipIcon = isRightSlot ? { transform: 'scaleX(-1)', WebkitTransform: 'scaleX(-1)' } : {};
     const flipSlotPlaceholderIcon = !isRightSlot ? { transform: 'scaleX(-1)', WebkitTransform: 'scaleX(-1)' } : {};
+
+    const itemMenuClass = itemMenuVisible ? 'item-menu-visible' : '';
+    const highlightSlotClass = this.state.highlightSlot ? 'highlight-slot' : '';
     return (
       <Container opacity={this.state.opacity}>
         {this.props.equippedItem ? <ItemIcon style={flipIcon} src={iconUrl || placeholderIcon} /> :
           <div style={flipSlotPlaceholderIcon} className={`${iconUrl}`} />}
         <SlotOverlay
-          className={`${itemMenuVisible ? 'item-menu-visible' : ''} ${this.state.highlightSlot ? 'highlight-slot' : ''}`}
+          className={`${itemMenuClass} ${highlightSlotClass}`}
           backgroundColor={this.state.backgroundColor}
         />
       </Container>

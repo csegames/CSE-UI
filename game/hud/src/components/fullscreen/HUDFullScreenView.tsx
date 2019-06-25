@@ -293,6 +293,7 @@ export interface Props {
   showItemTooltip: (item: SlotItemDefType, event: MouseEvent) => void;
   hideItemTooltip: () => void;
   onChangeEquippedItems: (equippedItems: EquippedItem.Fragment[]) => void;
+  onReadiedWeaponsChange: (slotIDs: string[]) => void;
   onChangeMyTradeItems: (myTradeItems: InventoryItem.Fragment[]) => void;
   onChangeMyTradeState: (myTradeState: SecureTradeState) => void;
   onChangeInvBodyDimensions: (invBodyDimensions: { width: number; height: number; }) => void;
@@ -393,9 +394,12 @@ class HUDFullScreenView extends React.Component<Props, State> {
     );
   }
 
-  private renderEquipped = () => {
+  private renderEquipped = (props: any) => {
     return (
-      <PaperDoll onEquippedItemsChange={this.props.onChangeEquippedItems} />
+      <PaperDoll
+        onEquippedItemsChange={this.props.onChangeEquippedItems}
+        onReadiedWeaponsChange={this.props.onReadiedWeaponsChange}
+      />
     );
   }
 

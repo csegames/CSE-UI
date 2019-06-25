@@ -199,6 +199,7 @@ export interface TooltipHeaderProps {
   item: InventoryItem.Fragment;
   slotType?: SlotType;
   stackedItems?: InventoryItem.Fragment[];
+  isReadiedWeapon?: boolean;
 }
 
 export interface TooltipHeaderState {
@@ -214,7 +215,7 @@ class TooltipHeader extends React.PureComponent<TooltipHeaderProps, TooltipHeade
   }
 
   public render() {
-    const { item, slotType, stackedItems } = this.props;
+    const { item, slotType, stackedItems, isReadiedWeapon } = this.props;
     const containerInfo = slotType && slotType === SlotType.CraftingContainer &&
       stackedItems && getContainerInfo(stackedItems);
     const itemInfo = item.staticDefinition;
@@ -248,6 +249,7 @@ class TooltipHeader extends React.PureComponent<TooltipHeaderProps, TooltipHeade
               {item.stats.armor.armorClass}
             </ItemStatInfo>
           }
+          {isReadiedWeapon && <ItemStatInfo color={'#ffda94'}>Ready</ItemStatInfo>}
         </SubContainer>
       </Container>
     );

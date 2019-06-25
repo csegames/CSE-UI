@@ -940,6 +940,7 @@ export interface FullScreenNavState {
   visibleComponentLeft: string;
   visibleComponentRight: string;
   equippedItems: EquippedItem.Fragment[];
+  readiedWeapons: string[];
   myTradeItems: InventoryItem.Fragment[];
   myTradeState: SecureTradeState;
   tabsLeft: TabItem<{ title: string }>[];
@@ -992,6 +993,7 @@ export const defaultFullScreenState: FullScreenNavState = {
   visibleComponentLeft: '',
   visibleComponentRight: '',
   equippedItems: null,
+  readiedWeapons: [],
   myTradeItems: null,
   myTradeState: SecureTradeState.None,
   tabsLeft: defaultTabsLeft,

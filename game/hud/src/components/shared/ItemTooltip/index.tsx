@@ -65,16 +65,17 @@ export interface TooltipContentProps {
   equippedItems?: EquippedItem.Fragment[];
   stackedItems?: InventoryItem.Fragment[];
   slotType?: SlotType;
+  isReadiedWeapon?: boolean;
 }
 
 class ItemTooltipContent extends React.Component<TooltipContentProps> {
   public render() {
-    const { item, slotType, equippedItems, stackedItems, instructions } = this.props;
+    const { item, slotType, equippedItems, stackedItems, instructions, isReadiedWeapon } = this.props;
     const itemInfo = item && item.staticDefinition && item.staticDefinition;
 
     return itemInfo ? (
       <Container>
-        <TooltipHeader item={item} slotType={slotType} stackedItems={stackedItems} />
+        <TooltipHeader item={item} slotType={slotType} stackedItems={stackedItems} isReadiedWeapon={isReadiedWeapon} />
         {isArmorItem(item) && <TooltipArmorInfo item={item} equippedItems={equippedItems} />}
         {isWeaponItem(item) && <TooltipWeaponInfo item={item} equippedItems={equippedItems} />}
         {isContainerItem(item) && <TooltipContainerInfo item={item} />}

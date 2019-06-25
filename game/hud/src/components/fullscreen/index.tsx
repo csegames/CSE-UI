@@ -119,6 +119,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
                 hideItemTooltip={this.hideItemTooltip}
                 onCloseFullScreen={this.onCloseFullScreen}
                 onChangeEquippedItems={this.onChangeEquippedItems}
+                onReadiedWeaponsChange={this.onReadiedWeaponsChange}
                 onChangeMyTradeItems={this.onChangeMyTradeItems}
                 onChangeMyTradeState={this.onChangeMyTradeState}
                 onChangeInvBodyDimensions={this.onChangeInvBodyDimensions}
@@ -501,6 +502,10 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
 
   private onChangeEquippedItems = (equippedItems: EquippedItem.Fragment[]) => {
     this.setState({ equippedItems });
+  }
+
+  private onReadiedWeaponsChange = (slotIDs: string[]) => {
+    this.setState({ readiedWeapons: slotIDs });
   }
 
   private onChangeMyTradeItems = (myTradeItems: InventoryItem.Fragment[]) => {

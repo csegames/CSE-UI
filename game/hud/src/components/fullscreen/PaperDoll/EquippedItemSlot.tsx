@@ -25,7 +25,7 @@ export interface EquippedItemSlotStyle {
   highlightSlotContainer: React.CSSProperties;
 }
 
-const SLOT_DIMENSIONS = 160;
+export const SLOT_DIMENSIONS = 160;
 
 const SlotDecorationPrefix = `
   content: '';
@@ -82,17 +82,17 @@ const Container = styled.div`
     background-size: contain;
   }
 
-  &.weapon-slot {
+  &.readied-weapon {
     &:before {
       ${SlotDecorationPrefix}
       width: ${SLOT_DIMENSIONS}px;
       height: ${SLOT_DIMENSIONS}px;
-      background: url(../images/paperdoll/slot-weapon-bg.png) no-repeat;
+      background: url(../images/paperdoll/readied-weapon-slot.png) no-repeat;
       background-size: contain;
     }
     &:after {
       ${SlotDecorationPrefix}
-      background: url(../images/paperdoll/slot-weapon-frame.png) no-repeat;
+      background: url(../images/paperdoll/readied-weapon-slot.png) no-repeat;
       background-size: contain;
       top: 1px;
       left: 1px;
@@ -135,6 +135,7 @@ const Container = styled.div`
 `;
 
 export interface EquippedItemSlotProps {
+  isReadiedWeapon: boolean;
   providedEquippedItem: EquippedItem.Fragment;
   slot: { slotName: GearSlots, openingSide: Alignment };
   selectedSlot: { slotName: GearSlots, openingSide: Alignment };
@@ -161,16 +162,21 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
   }
 
   public render() {
+    const { isReadiedWeapon } = this.props;
     const isWeapon = includes(this.props.slot.slotName.toLowerCase(), 'weapon');
+    const weaponClass = isWeapon ? 'weapon-slot' : '';
+    const readiedWeaponClass = isReadiedWeapon ? 'readied-weapon' : '';
+
     return (
       <Container
         ref={(r: HTMLDivElement) => this.ref = r}
-        className={isWeapon ? 'weapon-slot' : ''}
+        className={`${weaponClass} ${readiedWeaponClass}`}
         onClick={this.onClick}
         onMouseOver={this.onMouseOverItemSlot}
         onMouseLeave={this.onMouseLeave}
         onMouseDown={this.unequipItem}>
           <DraggableEquippedItem
+            isReadiedWeapon={this.props.isReadiedWeapon}
             disableDrag={this.props.disableDrag}
             slotName={this.props.slot.slotName}
             equippedItem={this.props.providedEquippedItem}
@@ -210,10 +216,12 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
     const itemId = equippedItem && equippedItem.item.id;
     const shouldShowTooltip = !this.isItemMenuVisible() && itemId;
     if (shouldShowTooltip) {
-      const content = <ItemTooltipContent
-        item={this.props.providedEquippedItem.item}
-        instructions='Right click to unequip'
-      />;
+      const content =
+        <ItemTooltipContent
+          isReadiedWeapon={this.props.isReadiedWeapon}
+          item={this.props.providedEquippedItem.item}
+          instructions='Right click to unequip'
+        />;
       showTooltip({ content, event, styles: 'item', shouldAnimate: true });
     }
   }
