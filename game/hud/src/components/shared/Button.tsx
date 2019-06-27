@@ -20,7 +20,13 @@ export const Button = styled.div`
   letter-spacing: 2px;
   position: relative;
   background-size: 100% 100%;
-  &:hover {
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &:hover, &.active {
     color: ${CONFIG.HIGHLIGHTED_TEXT_COLOR};
     background-image: url(../images/settings/button-on.png);
     ::before {

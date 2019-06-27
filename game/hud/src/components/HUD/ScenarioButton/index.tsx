@@ -164,6 +164,8 @@ export class ScenarioButton extends React.Component<Props, State> {
     const { visible, open, on, hover } = this.state;
     const scenarios = this.scenarios;
     if (!visible) return null;
+
+    const activeScenario = scenarios && scenarios.find(s => s.isInScenario);
     cls.push(on ? 'lit' : 'unlit');
     return (
       <Container>
@@ -175,7 +177,10 @@ export class ScenarioButton extends React.Component<Props, State> {
                   url(${scenarios[hover].id})
                 ` }}>
               <ToolTipTitle>{scenarios[hover].name}</ToolTipTitle>
-              <ToolTipSubTitle>{scenarios[hover].isQueued ? 'Click To Leave Queue' : 'Click To Join'}</ToolTipSubTitle>
+              <ToolTipSubTitle>
+                {scenarios[hover].isQueued ? 'Click To Leave Queue' :
+                  scenarios[hover].isInScenario ? 'Playing...' : 'Click To Join'}
+              </ToolTipSubTitle>
             </ToolTipContent>
           </ToolTip>
         )}
@@ -183,9 +188,12 @@ export class ScenarioButton extends React.Component<Props, State> {
         { open && (
           <IconMenu>
             { scenarios.map((scenario, index) => {
+              const isDisabled = activeScenario && activeScenario.id !== scenario.id;
+              const notAvailableClass = scenarioIsAvailable(scenario) && !isDisabled ? '' : 'not-available';
+              const activeClass = activeScenario && activeScenario.id === scenario.id ? 'lit' : '';
               return (
                 <IconButton
-                  className={scenarioIsAvailable(scenario) ? '' : 'not-available'}
+                  className={`${notAvailableClass} ${activeClass}`}
                   onMouseOver={this.hover} onMouseOut={this.hover}
                   onClick={(scenario.isQueued ? () => this.leaveQueue(scenario.id) : () => this.joinQueue(scenario.id))}>
                   <Icon

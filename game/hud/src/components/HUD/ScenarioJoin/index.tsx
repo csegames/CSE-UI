@@ -124,10 +124,16 @@ export class ScenarioJoin extends React.Component<ScenarioJoinProps, ScenarioJoi
 
   private renderScenarios = () => {
     const scenarios = this.scenarios;
+    const activeScenario = scenarios.find(s => s.isInScenario);
     return (
       <ScenariosContainer>
         <Scenarios className='cse-ui-scroller-thumbonly'>
-          { scenarios.map((scenario: ScenarioMatch) => <Scenario scenario={scenario}></Scenario>) }
+          {scenarios.map((scenario: ScenarioMatch) => (
+            <Scenario
+              scenario={scenario}
+              isDisabled={typeof activeScenario !== 'undefined' && activeScenario.id !== scenario.id}
+            />
+          ))}
         </Scenarios>
       </ScenariosContainer>
     );

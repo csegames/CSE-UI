@@ -35,6 +35,7 @@ export interface ScenarioMatch {
   name: string;
   icon: string;
   isQueued: boolean;
+  isInScenario: boolean;
   gamesInProgress: number;
   charactersNeededToStartNextGameByFaction: FactionCounts;
   totalBackfillsNeededByFaction: FactionCounts;
@@ -48,6 +49,7 @@ const scenarioQuery: GraphQLQuery = {
         name
         icon
         isQueued
+        isInScenario
         gamesInProgress
         charactersNeededToStartNextGameByFaction {
           tdd

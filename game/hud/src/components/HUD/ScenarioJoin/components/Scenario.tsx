@@ -67,6 +67,7 @@ const ScenarioButton = css`
 interface ScenarioProps {
   style?: any;
   scenario: ScenarioMatch;
+  isDisabled: boolean;
 }
 
 interface ScenarioState {
@@ -84,7 +85,7 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
     }
   }
   public render() {
-    const { scenario } = this.props;
+    const { scenario, isDisabled } = this.props;
     const { joinMessage } = this.state;
     let status;
     let needed;
@@ -94,6 +95,9 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
     } else {
       status = 'Scenario Not Available';
     }
+
+    const buttonActiveClass = !isDisabled && scenario.isInScenario ? 'active' : '';
+    const buttonDisabledClass = isDisabled ? 'disabled' : '';
     return (
       <ScenarioContainer
         data-id='scenario-container'
@@ -103,8 +107,12 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
         }}>
         <ScenarioTitle>{scenario.name}</ScenarioTitle>
         <ScenarioStatus>{status}</ScenarioStatus>
-        <Button className={ScenarioButton} onClick={scenario.isQueued ? this.leaveQueue : this.joinQueue}>
-          {joinMessage ? joinMessage : scenario.isQueued ? 'Leave Queue' : 'Find Match'}
+        <Button
+          className={`${ScenarioButton} ${buttonActiveClass} ${buttonDisabledClass}`}
+          onClick={(isDisabled || scenario.isInScenario) ?
+            () => {} : (scenario.isQueued ? this.leaveQueue : this.joinQueue)}>
+          {joinMessage ? joinMessage : scenario.isQueued ? 'Leave Queue' :
+            scenario.isInScenario ? 'Playing...' : 'Find Match'}
         </Button>
       </ScenarioContainer>
     );
