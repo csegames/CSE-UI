@@ -27,20 +27,17 @@ const Container = css`
 export interface Props {
   canPositionAbsolute: boolean;
   negativeEvent: DamageEvent | ResourceEvent | NegativeEventBlock;
-  onLifeEnd: (id: string) => void;
 }
 
 // tslint:disable-next-line:function-name
 export function NegativeNumber(props: Props) {
-  const { onLifeEnd, negativeEvent, canPositionAbsolute } = props;
+  const { negativeEvent, canPositionAbsolute } = props;
   const [positionAbsolute, setPositionAbsolute] = useState(false);
 
   useEffect(() => {
-    const lifetimeTimeout = window.setTimeout(() => onLifeEnd(negativeEvent.id), 4100);
     const positionAbsoluteTimeout = window.setTimeout(updatePosition, 1000);
 
     return () => {
-      window.clearTimeout(lifetimeTimeout);
       window.clearTimeout(positionAbsoluteTimeout);
     };
   }, []);

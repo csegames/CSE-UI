@@ -31,6 +31,7 @@ export function AnimatedContainer(props: Props) {
   }, []);
 
   function animateChild(el: HTMLDivElement, duration: number) {
+    if (!el) return;
     const current = new Date().getTime();
     const runtime = current - startTime;
     const progress = Math.min(runtime / duration, 1);

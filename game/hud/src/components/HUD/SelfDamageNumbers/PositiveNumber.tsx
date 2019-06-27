@@ -63,7 +63,6 @@ const TextContainer = styled.div`
 
 export interface Props {
   positiveEvent: ResourceEvent | HealEvent | PositiveEventBlock;
-  onLifeEnd: (id: string) => void;
 }
 
 // tslint:disable-next-line:function-name

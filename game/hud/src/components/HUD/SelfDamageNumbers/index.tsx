@@ -5,7 +5,6 @@
  */
 
 import React from 'react';
-import { has } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { generateID } from 'redux-typed-modules';
 import { Status } from './Status';
@@ -152,7 +151,6 @@ export class SelfDamageNumbers extends React.Component<Props, State> {
                 key={event.id}
                 negativeEvent={event}
                 canPositionAbsolute={this.state.negativeEventsTotalCount < 5}
-                onLifeEnd={this.onNegativeNumberLifeEnd}
               />
             );
           })}
@@ -160,14 +158,14 @@ export class SelfDamageNumbers extends React.Component<Props, State> {
         <SectionContainer flex={1.25}>
           {this.state.statusEvents.map((event) => {
             return (
-              <Status key={event.id} statusEvent={event} onLifeEnd={this.onStatusLifeEnd} />
+              <Status key={event.id} statusEvent={event} />
             );
           })}
         </SectionContainer>
         <SectionContainer flex={1}>
           {this.state.positiveEvents.map((event) => {
             return (
-              <PositiveNumber key={event.id} positiveEvent={event} onLifeEnd={this.onPositiveNumberLifeEnd} />
+              <PositiveNumber key={event.id} positiveEvent={event} />
             );
           })}
         </SectionContainer>
@@ -177,36 +175,6 @@ export class SelfDamageNumbers extends React.Component<Props, State> {
 
   public componentDidMount() {
     game.onCombatEvent(this.setEvents);
-  }
-
-  private onNegativeNumberLifeEnd = (id: string) => {
-    let totalCount = this.state.negativeEventsTotalCount;
-    const negativeEventsClone = [...this.state.negativeEvents];
-
-    for (let i = 0; i < negativeEventsClone.length; i++) {
-      if (negativeEventsClone[i].id !== id) continue;
-
-      const event = negativeEventsClone[i];
-      if (has(event, 'eventBlock')) {
-        totalCount -= (event as NegativeEventBlock).eventBlock.length;
-      } else {
-        totalCount -= 1;
-      }
-
-      negativeEventsClone.splice(i, 1);
-    }
-
-    this.setState({ negativeEvents: negativeEventsClone, negativeEventsTotalCount: totalCount });
-  }
-
-  private onStatusLifeEnd = (id: string) => {
-    const statusEventsClone = [...this.state.statusEvents];
-    this.setState({ statusEvents: statusEventsClone.filter(e => e.id !== id) });
-  }
-
-  private onPositiveNumberLifeEnd = (id: string) => {
-    const positiveEventsClone = [...this.state.positiveEvents];
-    this.setState({ positiveEvents: positiveEventsClone.filter(e => e.id !== id) });
   }
 
   private setEvents = (e: CombatEvent[]) => {
@@ -255,6 +223,10 @@ export class SelfDamageNumbers extends React.Component<Props, State> {
       }
     }
 
+    if (negativeEventsClone.length === 10) {
+      negativeEventsClone.shift();
+    }
+
     this.setState({ negativeEvents: negativeEventsClone, negativeEventsTotalCount: totalCount });
   }
 
@@ -273,6 +245,10 @@ export class SelfDamageNumbers extends React.Component<Props, State> {
       });
 
       statusEventsClone.push({ id: generateID(10), eventBlock: statusEventsBlock });
+    }
+
+    if (statusEventsClone.length === 10) {
+      statusEventsClone.shift();
     }
 
     this.setState({ statusEvents: statusEventsClone });
@@ -313,6 +289,10 @@ export class SelfDamageNumbers extends React.Component<Props, State> {
 
         positiveEventsClone.push({ id: generateID(10), eventBlock: resourceEventsBlock });
       }
+    }
+
+    if (positiveEventsClone.length === 10) {
+      positiveEventsClone.shift();
     }
 
     this.setState({ positiveEvents: positiveEventsClone });

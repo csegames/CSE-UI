@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { has } from 'lodash';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
@@ -48,20 +48,10 @@ const TextContainer = styled.div`
 
 export interface Props {
   statusEvent: StatusEvent | StatusEventBlock;
-  onLifeEnd: (id: string) => void;
 }
 
 // tslint:disable-next-line:function-name
 export function Status(props: Props) {
-  useEffect(() => {
-    const { onLifeEnd, statusEvent } = props;
-    const lifetimeTimeout = window.setTimeout(() => onLifeEnd(statusEvent.id), 7000);
-
-    return () => {
-      window.clearTimeout(lifetimeTimeout);
-    };
-  });
-
   function getStatusTextPrefix(event: StatusEvent) {
     if (event.action === StatusAction.Added) {
       return '+';
