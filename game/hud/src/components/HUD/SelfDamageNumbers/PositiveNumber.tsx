@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { has } from 'lodash';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
@@ -72,9 +72,10 @@ export function PositiveNumber(props: Props) {
     return (
       <AnimatedContainer className={Container}>
         {(positiveEvent as PositiveEventBlock).eventBlock.map((event) => {
+          const roundedNumber = useMemo(() => Math.round(event.received), [event.received]);
           const resourceType = getResourceType(event);
           return (
-            <TextContainer className={resourceType}>+ {Math.round(event.received)}</TextContainer>
+            <TextContainer key={event.id} className={resourceType}>+ {roundedNumber}</TextContainer>
           );
         })}
       </AnimatedContainer>

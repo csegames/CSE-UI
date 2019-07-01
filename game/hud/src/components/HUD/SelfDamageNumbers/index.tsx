@@ -43,6 +43,8 @@ const SectionContainer = styled.div`
   justify-content: flex-end;
 `;
 
+const NUMBER_VISIBLE_TIME = 7000;
+
 export interface NegativeEventBlock {
   id: string;
   eventBlock: (ResourceEvent | DamageEvent)[];
@@ -95,13 +97,10 @@ export interface Props {
 
 export interface State {
   negativeEvents: (DamageEvent | ResourceEvent | NegativeEventBlock)[];
-  negativeEventsTotalCount: number;
 
   statusEvents: (StatusEvent | StatusEventBlock)[];
-  statusEventsTotalCount: number;
 
   positiveEvents: (ResourceEvent | HealEvent | PositiveEventBlock)[];
-  positiveEventsTotalCount: number;
 }
 
 export function getResourceType(event: ResourceEvent | HealEvent) {
@@ -128,16 +127,23 @@ export function getResourceType(event: ResourceEvent | HealEvent) {
 
 // tslint:disable-next-line:function-name
 export class SelfDamageNumbers extends React.Component<Props, State> {
+  private updateEventsInterval: number;
+
+  private batchedNegativeEvents: (DamageEvent | ResourceEvent | NegativeEventBlock)[] = [];
+  private lastNegativeEventTime: number;
+
+  private batchedStatusEvents: (StatusEvent | StatusEventBlock)[] = [];
+  private lastStatusEventTime: number;
+
+  private batchedPositiveEvents: (ResourceEvent | HealEvent | PositiveEventBlock)[] = [];
+  private lastPositiveEventTime: number;
+
   constructor(props: Props) {
     super(props);
     this.state = {
       negativeEvents: [],
       statusEvents: [],
       positiveEvents: [],
-
-      negativeEventsTotalCount: 0,
-      statusEventsTotalCount: 0,
-      positiveEventsTotalCount: 0,
     };
   }
 
@@ -150,7 +156,7 @@ export class SelfDamageNumbers extends React.Component<Props, State> {
               <NegativeNumber
                 key={event.id}
                 negativeEvent={event}
-                canPositionAbsolute={this.state.negativeEventsTotalCount < 5}
+                canPositionAbsolute={this.batchedNegativeEvents.length < 5}
               />
             );
           })}
@@ -177,6 +183,50 @@ export class SelfDamageNumbers extends React.Component<Props, State> {
     game.onCombatEvent(this.setEvents);
   }
 
+  private updateEvents = () => {
+    const currentTime = new Date().getTime();
+    let shouldUpdate = false;
+
+    if (currentTime - this.lastNegativeEventTime >= NUMBER_VISIBLE_TIME) {
+      this.batchedNegativeEvents = [];
+      shouldUpdate = true;
+    }
+
+    if (currentTime - this.lastStatusEventTime >= NUMBER_VISIBLE_TIME) {
+      this.batchedStatusEvents = [];
+      shouldUpdate = true;
+    }
+
+    if (currentTime - this.lastPositiveEventTime >= NUMBER_VISIBLE_TIME) {
+      this.batchedPositiveEvents = [];
+      shouldUpdate = true;
+    }
+
+    if (this.batchedNegativeEvents.length > 0 ||
+        this.batchedStatusEvents.length > 0 ||
+        this.batchedStatusEvents.length > 0) {
+      shouldUpdate = true;
+    }
+
+    if (shouldUpdate) {
+      this.setState({
+        negativeEvents: this.batchedNegativeEvents,
+        statusEvents: this.batchedStatusEvents,
+        positiveEvents: this.batchedPositiveEvents,
+      });
+    }
+
+    if (this.batchedNegativeEvents.length === 0 &&
+        this.batchedStatusEvents.length === 0 &&
+        this.batchedPositiveEvents.length === 0) {
+      this.stopUpdateInterval();
+    }
+  }
+
+  public componentWillUnmount() {
+    window.clearInterval(this.updateEventsInterval);
+  }
+
   private setEvents = (e: CombatEvent[]) => {
     e.forEach((combatEvent) => {
       this.setStatusEvents(combatEvent);
@@ -189,27 +239,22 @@ export class SelfDamageNumbers extends React.Component<Props, State> {
     if (event.toName !== game.selfPlayerState.name) return;
     if (!event.damages) return;
 
-    const negativeEventsClone = [...this.state.negativeEvents];
-    let totalCount = this.state.negativeEventsTotalCount;
-
     if (event.damages.length === 1) {
-      negativeEventsClone.push({ id: generateID(10), eventType: 'damage', ...event.damages[0] });
-      totalCount += 1;
+      this.batchedNegativeEvents.push({ id: generateID(10), eventType: 'damage', ...event.damages[0] });
     } else {
       const negativeEventsBlock: DamageEvent[] = [];
       event.damages.forEach((damageEvent) => {
         negativeEventsBlock.push({ id: generateID(10), eventType: 'damage', ...damageEvent });
-        totalCount += 1;
       });
 
-      negativeEventsClone.push({ id: generateID(10), eventBlock: negativeEventsBlock });
+      this.batchedNegativeEvents.push({ id: generateID(10), eventBlock: negativeEventsBlock });
     }
 
     if (event.resources) {
       if (event.resources.length === 1) {
         const resourceEvent = event.resources[0];
         if (resourceEvent.received > 0) {
-          negativeEventsClone.push({ id: generateID(10), eventType: 'resource', ...event.resources[0] });
+          this.batchedNegativeEvents.push({ id: generateID(10), eventType: 'resource', ...event.resources[0] });
         }
       } else {
         const resourceEventsBlock: ResourceEvent[] = [];
@@ -219,57 +264,61 @@ export class SelfDamageNumbers extends React.Component<Props, State> {
           }
         });
 
-        negativeEventsClone.push({ id: generateID(10), eventBlock: resourceEventsBlock });
+        this.batchedNegativeEvents.push({ id: generateID(10), eventBlock: resourceEventsBlock });
       }
     }
 
-    if (negativeEventsClone.length === 10) {
-      negativeEventsClone.shift();
+    if (this.batchedNegativeEvents.length === 10) {
+      this.batchedNegativeEvents.shift();
     }
 
-    this.setState({ negativeEvents: negativeEventsClone, negativeEventsTotalCount: totalCount });
+    this.lastNegativeEventTime = new Date().getTime();
+
+    if (!this.updateEventsInterval) {
+      this.startUpdateInterval();
+    }
   }
 
   private setStatusEvents = (event: CombatEvent) => {
     if (event.toName !== game.selfPlayerState.name) return;
     if (!event.statuses) return;
 
-    const statusEventsClone = [...this.state.statusEvents];
-
     if (event.statuses.length === 1) {
-      statusEventsClone.push({ id: generateID(10), ...event.statuses[0] });
+      this.batchedStatusEvents.push({ id: generateID(10), ...event.statuses[0] });
     } else {
       const statusEventsBlock: StatusEvent[] = [];
       event.statuses.forEach((statusEvent) => {
         statusEventsBlock.push({ id: generateID(10), ...statusEvent });
       });
 
-      statusEventsClone.push({ id: generateID(10), eventBlock: statusEventsBlock });
+      this.batchedStatusEvents.push({ id: generateID(10), eventBlock: statusEventsBlock });
     }
 
-    if (statusEventsClone.length === 10) {
-      statusEventsClone.shift();
+    if (this.batchedStatusEvents.length === 10) {
+      this.batchedStatusEvents.shift();
     }
 
-    this.setState({ statusEvents: statusEventsClone });
+    this.lastStatusEventTime = new Date().getTime();
+
+    if (!this.updateEventsInterval) {
+      this.startUpdateInterval();
+    }
   }
 
   private setPositiveEvents = (event: CombatEvent) => {
     if (event.toName !== game.selfPlayerState.name) return;
     if (!event.heals && !event.resources) return;
 
-    const positiveEventsClone = [...this.state.positiveEvents];
-
     if (event.heals) {
       if (event.heals.length === 1) {
-        positiveEventsClone.push({ id: generateID(10), eventType: 'heal', ...event.heals[0] });
+        this.batchedPositiveEvents.push({ id: generateID(10), eventType: 'heal', ...event.heals[0] });
       } else {
         const healEventsBlock: HealEvent[] = [];
         event.heals.forEach((healsEvent) => {
           healEventsBlock.push({ id: generateID(10), eventType: 'heal', ...healsEvent });
         });
 
-        positiveEventsClone.push({ id: generateID(10), eventBlock: healEventsBlock });
+        this.batchedPositiveEvents.push({ id: generateID(10), eventBlock: healEventsBlock });
       }
     }
 
@@ -277,7 +326,7 @@ export class SelfDamageNumbers extends React.Component<Props, State> {
       if (event.resources.length === 1) {
         const resourceEvent = event.resources[0];
         if (resourceEvent.received > 0) {
-          positiveEventsClone.push({ id: generateID(10), eventType: 'resource', ...event.resources[0] });
+          this.batchedPositiveEvents.push({ id: generateID(10), eventType: 'resource', ...event.resources[0] });
         }
       } else {
         const resourceEventsBlock: ResourceEvent[] = [];
@@ -287,14 +336,31 @@ export class SelfDamageNumbers extends React.Component<Props, State> {
           }
         });
 
-        positiveEventsClone.push({ id: generateID(10), eventBlock: resourceEventsBlock });
+        this.batchedPositiveEvents.push({ id: generateID(10), eventBlock: resourceEventsBlock });
       }
     }
 
-    if (positiveEventsClone.length === 10) {
-      positiveEventsClone.shift();
+    if (this.batchedPositiveEvents.length === 10) {
+      this.batchedPositiveEvents.shift();
     }
 
-    this.setState({ positiveEvents: positiveEventsClone });
+    this.lastPositiveEventTime = new Date().getTime();
+
+    if (!this.updateEventsInterval) {
+      this.startUpdateInterval();
+    }
+  }
+
+  private startUpdateInterval = () => {
+    if (this.updateEventsInterval) {
+      // Just in case for some crazy reason there is already an interval running, clear it.
+      window.clearInterval(this.updateEventsInterval);
+    }
+    this.updateEventsInterval = window.setInterval(this.updateEvents, 400);
+  }
+
+  private stopUpdateInterval = () => {
+    window.clearInterval(this.updateEventsInterval);
+    this.updateEventsInterval = null;
   }
 }

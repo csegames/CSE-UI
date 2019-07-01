@@ -42,12 +42,6 @@ export function NegativeNumber(props: Props) {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (!canPositionAbsolute && positionAbsolute) {
-  //     setPositionAbsolute(false);
-  //   }
-  // }, [canPositionAbsolute]);
-
   function updatePosition() {
     if (canPositionAbsolute) {
       setPositionAbsolute(true);

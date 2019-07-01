@@ -70,7 +70,7 @@ export function Status(props: Props) {
       <AnimatedContainer className={Container}>
         {(statusEvent as StatusEventBlock).eventBlock.map((event) => {
           return (
-            <TextContainer>{getStatusTextPrefix(event)} {event.name}</TextContainer>
+            <TextContainer key={event.id}>{getStatusTextPrefix(event)} {event.name}</TextContainer>
           );
         })}
       </AnimatedContainer>

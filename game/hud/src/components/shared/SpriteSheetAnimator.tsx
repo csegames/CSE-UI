@@ -26,6 +26,8 @@ export interface State {
 }
 
 export class SpriteSheetAnimator extends React.Component<Props, State> {
+  private fpsTimeout: number;
+  private requestAnimationFrameID: number;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -49,7 +51,17 @@ export class SpriteSheetAnimator extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    window.requestAnimationFrame(this.updateAnimStep);
+    this.requestAnimationFrameID = window.requestAnimationFrame(this.updateAnimStep);
+  }
+
+  public componentWillUnmount() {
+    if (this.fpsTimeout) {
+      window.clearTimeout(this.fpsTimeout);
+    }
+
+    if (this.requestAnimationFrameID) {
+      window.cancelAnimationFrame(this.requestAnimationFrameID);
+    }
   }
 
   private updateAnimStep = () => {
@@ -75,9 +87,11 @@ export class SpriteSheetAnimator extends React.Component<Props, State> {
     this.setState({ currentRow: newCurrentRow, currentColumn: newCurrentColumn });
 
     if (this.props.fps) {
-      window.setTimeout(() => window.requestAnimationFrame(this.updateAnimStep), 1000 / this.props.fps);
+      this.fpsTimeout = window.setTimeout(() => {
+        this.requestAnimationFrameID = window.requestAnimationFrame(this.updateAnimStep);
+      }, 1000 / this.props.fps);
     } else {
-      window.requestAnimationFrame(this.updateAnimStep);
+      this.requestAnimationFrameID = window.requestAnimationFrame(this.updateAnimStep);
     }
   }
 }

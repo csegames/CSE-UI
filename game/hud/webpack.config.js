@@ -73,7 +73,7 @@ module.exports = function (e, argv = {}) {
   logEnv(EXPOSE_ENV);
 
   const config = {
-    stats: { children: false },
+    stats: 'errors-only',
     mode: MODE,
     devtool: 'source-map',
     entry: {
