@@ -233,7 +233,7 @@ class OffenseList extends React.PureComponent<OffenseListProps> {
 const OffenseListWithQL = withGraphQL<OffenseListProps>({
   query: gql`
     query OffenseListGQL {
-      myEquippedItems {
+      myEquippedItems(allowOfflineItems: false) {
         items {
           gearSlots {
             id

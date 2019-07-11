@@ -75,7 +75,7 @@ class DefenseList extends React.PureComponent<DefenseListProps> {
 const DefenseListWithQL = withGraphQL<DefenseListProps>({
   query: gql`
     query DefenseListGQL {
-      myEquippedItems {
+      myEquippedItems(allowOfflineItems: false) {
         armorClass
         resistances {
           ...DamageTypeValues

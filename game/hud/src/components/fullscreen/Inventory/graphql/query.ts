@@ -10,7 +10,7 @@ import { InventoryItemFragment } from 'gql/fragments/InventoryItemFragment';
 
 export const query = gql`
   query InventoryBaseGQL {
-    myInventory {
+    myInventory(allowOfflineItems: false) {
       items {
         ...InventoryItem
       }

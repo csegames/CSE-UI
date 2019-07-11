@@ -19,7 +19,7 @@ import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const paperDollContainerQuery = gql`
   query PaperDollContainerGQL {
-    myEquippedItems {
+    myEquippedItems(allowOfflineItems: false) {
       readiedGearSlots {
         id
         gearSlotType
