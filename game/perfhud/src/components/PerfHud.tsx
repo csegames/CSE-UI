@@ -15,6 +15,7 @@ export interface PerfPage {
 
 export interface PerfHudProps {}
 export interface PerfHudState {
+  show: boolean;
   pages: PerfPage[];
   minimized: boolean;
   currentPage: PerfPage;
@@ -27,6 +28,7 @@ class PerfHud extends React.Component<PerfHudProps, PerfHudState> {
   constructor(props: PerfHudProps) {
     super(props);
     this.state = {
+      show: true,
       pages: [],
       minimized: true,
       currentPage: null,
@@ -35,7 +37,11 @@ class PerfHud extends React.Component<PerfHudProps, PerfHudState> {
   }
 
   public closeWindow(): void {
-    game.sendSlashCommand('showPerfHUD 0');
+    this.setState({ show: false });
+  }
+
+  public openWindow(): void {
+    this.setState({ show: true });
   }
 
   public componentDidMount() {
@@ -139,7 +145,7 @@ class PerfHud extends React.Component<PerfHudProps, PerfHudState> {
   }
 
   public createPerfClose = () => {
-    return (<a onMouseDown={this.closeWindow.bind(this)} className='cu-window-close'></a>);
+    return (<a onMouseDown={this.closeWindow.bind(this)} className='cu-window-close'>&#x25B2;</a>);
   }
 
   public render() {
@@ -153,7 +159,7 @@ class PerfHud extends React.Component<PerfHudProps, PerfHudState> {
     }
 
     const mini = this.state.minimized;
-    return this.state.visible ? (
+    return this.state.show && this.state.visible ? (
       <div className={`${this.name} cu-window`}
         style={{ maxWidth: '500px', right: '0', position: 'fixed' }}
         data-input-group='block'>
@@ -164,7 +170,7 @@ class PerfHud extends React.Component<PerfHudProps, PerfHudState> {
         </div>
         { this.createPerfContent(mini) }
       </div>
-    ) : null;
+    ) : <a onClick={this.openWindow.bind(this)} className='cu-window-open'>&#x25BC;</a>;
   }
 }
 

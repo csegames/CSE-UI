@@ -22,23 +22,20 @@ body {
 .cu-window {
   background-color: rgba($color-dark, 0.25);
 }
-.cu-window-close {
-  font-size: 1.5rem;
+.cu-window-close,
+.cu-window-open {
+  pointer-events: all;
+  font-size: 16px;
   text-shadow: 0 0 5px #000000;
   color: #c4c4c4;
-  width: 12px;
+  width: 16px;
   text-align: center;
-  line-height: .75em;
+  line-height: 1em;
   cursor: pointer;
   display: inline-block;
   position: absolute;
   right: 12px;
-}
-
-.cu-window-close:before, {
-  content: "\00D7";
-  position: absolute;
-  left: 0;
+  background-color: black;
 }
 
 .cu-window-close:hover {
