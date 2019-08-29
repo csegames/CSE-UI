@@ -12,6 +12,7 @@ import { StartScreen } from './StartScreen';
 import { ChampionSelect } from './ChampionSelect';
 import { LoadingScreen } from './LoadingScreen';
 import { Button } from './Button';
+import { RightModal } from './RightModal';
 
 const Container = styled.div`
   position: fixed;
@@ -91,6 +92,7 @@ export class FullScreen extends React.Component<Props, State> {
             <Chat accessToken={game.accessToken} />
           </ChatPosition>
         }
+        <RightModal />
       </Container>
     ) : <OpenFullScreenButton onClick={this.show}>Open Full Screen</OpenFullScreenButton>
   }

@@ -47,18 +47,32 @@ const Container = styled.div`
     background: linear-gradient(to bottom, #52CFFD, #315fb7);
     border: 2px solid #77a5f2;
   }
+
+  &.gray {
+    box-shadow: inset 0 5px 50px 5px rgba(255, 255, 255, 0.1);
+    background: linear-gradient(to bottom, #4c4c4c, #2b2b2b);
+    border: 2px solid #6d6d6d;
+  }
+
+  &.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
 `;
 
 export interface Props {
-  type: 'primary' | 'secondary' | 'blue';
+  type: 'primary' | 'secondary' | 'blue' | 'gray';
   text: string | JSX.Element | JSX.Element[];
   onClick?: () => void;
   styles?: string;
+  disabled?: boolean;
 }
 
 export function Button(props: Props) {
   return (
-    <Container onClick={props.onClick} className={`${props.type} ${props.styles || ''}`}>
+    <Container
+      onClick={props.onClick}
+      className={`${props.type} ${props.styles || ''} ${props.disabled ? 'disabled' : ''}`}>
       {props.text}
     </Container>
   );

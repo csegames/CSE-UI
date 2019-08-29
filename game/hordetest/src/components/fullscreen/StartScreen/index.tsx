@@ -79,7 +79,7 @@ export function StartScreen(props: Props) {
       case StartScreenRoute.Champions: {
         return (
           <GenericScreenContainer>
-            <ChampionProfile onSaveClick={() => {}} />
+            <ChampionProfile />
           </GenericScreenContainer>
         );
       }
