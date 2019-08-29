@@ -23,9 +23,9 @@ class CommandLineArgsModal extends React.Component<CommandLineArgsModalProps, Co
   public render() {
     return (
       <div className='commane-line-args-modal'>
-        <input type='text' ref='args-input'/>
-			  <button className='accept' onClick={this.onOk}>OK</button>
-			  <button className='decline' onClick={this.props.cancel}>Cancel</button>
+        <input type='text' ref='args-input' />
+        <button className='accept' onClick={this.onOk}>OK</button>
+        <button className='decline' onClick={this.props.cancel}>Cancel</button>
       </div>
     );
   }

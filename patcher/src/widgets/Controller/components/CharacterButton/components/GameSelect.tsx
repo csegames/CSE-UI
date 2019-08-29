@@ -178,7 +178,6 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
   public render() {
     const { serverType } = this.props;
     const serverTypes: ServerType[] = this.getServerTypes();
-    console.log(this.state.isOpen);
     return (
       <div>
         {patcher.getPermissions() &&

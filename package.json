@@ -30,6 +30,7 @@
   },
   "workspaces": [
     "library",
+    "game/camelotunchained/*",
     "game/*",
     "patcher"
   ]

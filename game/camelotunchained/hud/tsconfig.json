@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "noImplicitAny": true,
+    "removeComments": false,
+    "outDir": "./tmp",
+    "sourceMap": true,
+    "jsx": "preserve",
+    "module": "esnext",
+    "noImplicitUseStrict": true,
+    "noUnusedLocals": true,
+    "alwaysStrict": false,
+    "skipLibCheck": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src",
+    "paths": {
+      "hud/*": ["components/hud/*"],
+      "fullscreen/*": ["components/fullscreen/*"],
+      "shared/*": ["components/shared/*"],
+      "utils/*": ["components/utils/*"],
+      "gql/*": [ "gql/*" ],
+      "components/*": [ "components/*" ],
+      "actions/*": [ "services/actions/*" ],
+      "lib/*": [ "lib/*" ],
+      "services/*": [ "services/*" ],
+      "cseshared/*": ["../../../shared/*"],
+      "*": [
+        "node_modules/*",
+        "types/*",
+        "../typings/globals/*"
+      ]
+    },
+    "plugins": [
+      { "name": "tslint-language-service"}
+    ],
+    "moduleResolution": "node",
+  },
+  "resolution": "typings",
+  "include": [
+    "src/**/*"
+  ]
+}

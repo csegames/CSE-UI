@@ -19,7 +19,7 @@ const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 const root = document.getElementById('Patcher');
 
 ReactDom.render(
-  <Provider store={store}>
+  <Provider store={store as any}>
     <PatcherApp />
   </Provider>,
   root,

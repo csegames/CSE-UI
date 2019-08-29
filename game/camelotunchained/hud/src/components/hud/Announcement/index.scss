@@ -1,0 +1,75 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../../../interface-lib/@csegames/library/styles/typography/fonts/Cinzel-normal-400.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../../../interface-lib/@csegames/library/styles/typography/fonts/Cinzel-normal-700.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 900;
+  src: url('../../../interface-lib/@csegames/library/styles/typography/fonts/Cinzel-normal-900.woff') format('woff');
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.announcement {
+  display: table;
+  width: 293px;
+  height: 97px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 0 auto;
+  text-align: center;
+  background: transparent url(../images/bg.png) no-repeat center center;
+}
+
+.message {
+  display: table-cell;
+  vertical-align: middle;
+  line-height: 27px;
+  font-size: 24px;
+  font-family: "Cinzel", serif;
+  color: rgb(225, 225, 225);
+}
+
+.large {
+  line-height: 37px;
+  font-size: 34px;
+}
+
+.announcement-enter {
+  opacity: 0.01;
+}
+
+.announcement-enter.announcement-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.announcement-leave {
+  opacity: 1;
+}
+
+.announcement-leave.announcement-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}

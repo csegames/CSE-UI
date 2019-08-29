@@ -24,8 +24,8 @@ class EualaModal extends React.Component<EualaModalProps, EualaModalState> {
     return (
       <div className='euala-modal'>
         <iframe src='https://camelotunchained.com/v3/euala.html' width='100%' height='100%' frameBorder='0'></iframe>
-			  <button className='accept' onClick={this.props.accept}>Accept</button>
-			  <button className='decline' onClick={this.props.decline}>Decline</button>
+        <button className='accept' onClick={this.props.accept}>Accept</button>
+        <button className='decline' onClick={this.props.decline}>Decline</button>
       </div>
     );
   }

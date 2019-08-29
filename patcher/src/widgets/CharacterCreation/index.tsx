@@ -623,7 +623,7 @@ class Container extends React.Component<ContainerProps, any> {
   public render() {
     return (
       <div id='cu-character-creation'>
-        <Provider store={store}>
+        <Provider store={store as any}>
           <ConnectedCharacterCreation
             apiKey={this.props.apiKey}
             apiHost={this.props.apiHost}

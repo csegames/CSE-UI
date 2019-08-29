@@ -12,23 +12,44 @@ module.exports = {
     dev: 'start npm-watch',
     clean: 'rimraf tmp && rimraf lib',
     babel: 'babel tmp -d lib',
-    browserify: 'browserify -g [ envify --NODE_ENV production ] lib/index.js > lib/camelot-unchained.js',
-    sass: 'node-sass src/ -o lib/ --importer src/third-party/sass-importer/sass-npm-importer.js',
+    browserify: {
+      camelotunchained: 'browserify -g [ envify --NODE_ENV production ] lib/camelotunchained/index.js > lib/camelotunchained/camelot-unchained.js',
+      hordetest: 'browserify -g [ envify --NODE_ENV production ] lib/hordetest/index.js > lib/hordetest/hordetest.js',
+    },
+    sass: {
+      camelotunchained: 'node-sass src/camelotunchained/ -o lib/camelotunchained/ --importer src/camelotunchained/third-party/sass-importer/sass-npm-importer.js',
+    },
     copy: {
-      thirdParty: 'copyup "src/third-party/**/*" "lib/"',
-      misc: 'copyup "src/**/*.html" "src/**/*.css" "src/**/*.scss" "lib/"',
-      tmp: 'copyup "tmp/**/*" "lib/"',
       definitions: 'copyup "tmp/**/*.d.ts" lib/',
+      camelotunchained: {
+        thirdParty: 'copyup "src/camelotunchained/third-party/**/*" "lib/"',
+        misc: 'copyup "src/camelotunchained/**/*.html" "src/camelotunchained/**/*.css" "src/camelotunchained/**/*.scss" "lib/"',
+        tmp: 'copyup "tmp/camelotunchained/**/*" "lib/"',
+      },
+      hordetest: {
+        thirdParty: 'copyup "src/hordetest/third-party/**/*" "lib/"',
+        misc: 'copyup "src/hordetest/**/*.html" "src/hordetest/**/*.css" "src/hordetest/**/*.scss" "lib/"',
+        tmp: 'copyup "tmp/**/*" "lib/"',
+      },
     },
     updateApi: {
-      buildDefinitions: '"../../../CamelotUnchained/MMO/CUWebAPIServer/tsfixup/tsfixup.exe" -d "../../../CamelotUnchained/MMO/CUWebAPIServer/CUWebApi.Dll/TypeScriptTemplates/models" -d "../../../CamelotUnchained/MMO/CUWebAPIServer/CUWebApi.Dll/TypeScriptTemplates/extras" -d "../../../CamelotUnchained/MMO/CUWebAPIServer/CUWebApi.Dll/TypeScriptTemplates/enums" -o "src/webAPI/definitions.ts"',
-      cleanControllers: 'rimraf src/webAPI/controllers',
-      copyControllers: 'copyfiles -f ../../../CamelotUnchained/MMO/CUWebAPIServer/CUWebApi.Dll/TypeScriptTemplates/controllers/*.ts src/webAPI/controllers/',
-      default: 'nps updateApi.buildDefinitions && nps updateApi.cleanControllers && nps updateApi.copyControllers',
+      camelotunchained: {
+        buildDefinitions: '"../../../CamelotUnchained/MMO/CUWebAPIServer/tsfixup/tsfixup.exe" -d "../../../CamelotUnchained/MMO/CUWebAPIServer/CUWebApi.Dll/TypeScriptTemplates/models" -d "../../../CamelotUnchained/MMO/CUWebAPIServer/CUWebApi.Dll/TypeScriptTemplates/extras" -d "../../../CamelotUnchained/MMO/CUWebAPIServer/CUWebApi.Dll/TypeScriptTemplates/enums" -o "src/webAPI/definitions.ts"',
+        cleanControllers: 'rimraf src/camelotunchained/webAPI/controllers',
+        copyControllers: 'copyfiles -f ../../../CamelotUnchained/MMO/CUWebAPIServer/CUWebApi.Dll/TypeScriptTemplates/controllers/*.ts src/webAPI/controllers/',
+        default: 'nps updateApi.buildDefinitions && nps updateApi.cleanControllers && nps updateApi.copyControllers',
+      },
     },
-    copies: 'nps copy.definitions && nps copy.thirdParty && nps copy.misc',
-    build: 'nps clean -s && tsc && nps sass && nps copies && nps babel && nps browserify && rimraf tmp',
-    rebuild: 'tsc && nps sass && nps copies && nps babel && nps browserify && rimraf tmp',
+    copies: {
+      camelotunchained: 'nps copy.definitions && nps copy.camelotunchained.thirdParty && nps copy.camelotunchained.misc',
+      hordetest: 'nps copy.definitions && nps copy.hordetest.thirdParty && nps copy.hordetest.misc',
+    },
+    build: {
+      default: 'nps clean -s && (nps build.camelotunchained & nps build.hordetest) && rimraf tmp',
+      camelotunchained: 'tsc --p cu-tsconfig.json && nps sass.camelotunchained && nps copies.camelotunchained && nps babel && nps browserify.camelotunchained',
+      hordetest: 'tsc --p hordetest-tsconfig.json && nps copies.hordetest && nps babel && nps browserify.hordetest',
+    },
+    rebuild: 'tsc && nps sass.camelotunchained && nps copies && nps babel && nps browserify && rimraf tmp',
     //docs: 'typedoc --out docs/ --excludeExternals --module commonjs --exclude node_modules --ignoreCompilerErrors --experimentalDecorators --target ES6 --jsx react ./src/',
     test: {
       default: {
@@ -49,18 +70,22 @@ module.exports = {
       }
     },
     definitions: {
-      default: 'download https://hatcheryapi.camelotunchained.com/codegen/definitions.ts > ./src/webAPI/definitions.ts',
-      local: 'download http://localhost:1337/codegen/definitions.ts > ./src/webAPI/definitions.ts',
-      localserver: 'download http://localhost:8000/codegen/definitions.ts > ./src/webAPI/definitions.ts',
+      camelotunchained: {
+        default: 'download https://hatcheryapi.camelotunchained.com/codegen/definitions.ts > ./src/camelotunchained/webAPI/definitions.ts',
+        local: 'download http://localhost:1337/codegen/definitions.ts > ./src/camelotunchained/webAPI/definitions.ts',
+        localserver: 'download http://localhost:8000/codegen/definitions.ts > ./src/camelotunchained/webAPI/definitions.ts',
+      },
     },
     gql: {
-      schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output src/graphql/schema.json',
-      typings: 'gql-gen --schema src/graphql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/graphql/schema.ts',
-      default: 'nps gql.schema && nps gql.typings',
-      local: 'nps gql.localschema && nps gql.typings',
-      localschema: 'apollo-codegen introspect-schema http://localhost:1337/graphql --output src/graphql/schema.json',
-      localserverschema: 'apollo-codegen introspect-schema http://localhost:8000/graphql --output src/graphql/schema.json',
-      localserver: 'nps gql.localserverschema && nps gql.typings',
+      camelotunchained: {
+        schema: 'apollo-codegen introspect-schema https://hatcheryapi.camelotunchained.com/graphql --output src/camelotunchained/graphql/schema.json',
+        typings: 'gql-gen --schema src/camelotunchained/graphql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/camelotunchained/graphql/schema.ts',
+        default: 'nps gql.camelotunchained.schema && nps gql.camelotunchained.typings',
+        local: 'nps gql.camelotunchained.localschema && nps gql.camelotunchained.typings',
+        localschema: 'apollo-codegen introspect-schema http://localhost:1337/graphql --output src/camelotunchained/graphql/schema.json',
+        localserverschema: 'apollo-codegen introspect-schema http://localhost:8000/graphql --output src/camelotunchained/graphql/schema.json',
+        localserver: 'nps gql.camelotunchained.localserverschema && nps gql.camelotunchained.typings',
+      }
     },
   }
 };

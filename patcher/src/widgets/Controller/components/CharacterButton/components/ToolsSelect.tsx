@@ -48,7 +48,13 @@ class ToolsSelect extends React.Component<ToolsSelectProps> {
   public render() {
     const { servers, selectedServer } = this.props;
     const tools = _.values(servers).filter(server => server.type === ServerType.CHANNEL);
-    const sortedTools = [tools.find(tool => tool.name === 'Editor'), ...tools.filter(tool => tool.name !== 'Editor')];
+    const editor = tools.find(t => t.channelID === 5);
+
+    let sortedTools = tools;
+    if (typeof editor !== 'undefined') {
+      sortedTools = [editor, ...tools.filter(tool => tool.channelID !== editor.channelID)];
+    }
+
     return (
       <InfoContainer>
         {sortedTools.map((tool) => {

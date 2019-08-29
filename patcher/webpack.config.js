@@ -63,6 +63,7 @@ module.exports = function (e, argv = {}) {
 
   const config = {
     mode: MODE,
+    stats: 'errors-only',
     devtool: 'source-map',
     entry: {
       [NAME]: ['./src/sentry.tsx', './src/index.tsx'],

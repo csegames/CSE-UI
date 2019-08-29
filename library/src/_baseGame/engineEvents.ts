@@ -1,0 +1,76 @@
+import { CoherentEventHandle } from "./coherent";
+
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * Mapping of Engine Event name => GameInterface callback registration method name for creating
+ * event forwarding methods on the GameInterface upon initialization
+ */
+const regMap: {[key: string]: string} = {};
+
+/**
+ * Begin chat is fired by the game client to tell the UI that the user wishes to begin sending a chat message.
+ *
+ * Expected behavior: The chat input element will gain focus and accept text input.
+ *
+ * @param {String} message Optional: A message to auto-populate into the chat input.
+ */
+export const EE_BeginChat = 'beginChat';
+regMap[EE_BeginChat] = 'onBeginChat';
+
+/**
+ * Send a string to be displayed in the UI's console interface
+ *
+ * Expected behavior: Display the provided text in the console
+ *
+ * @param {String} text Text to be displayed in the console
+ */
+export const EE_ConsoleText = 'consoleText';
+regMap[EE_ConsoleText] = 'onConsoleText';
+
+/**
+ * A new / updated DevUI is provided by the client
+ *
+ * Expected behavior: Displays or hides a DevUI based on the given update information
+ *
+ * @param {String} id Identifer to uniquely ID a specific DevUI
+ * @param {String} rootPage JSON string of a DevUI RootPage.
+ */
+export const EE_OnUpdateDevUI = 'updateDevUI';
+regMap[EE_OnUpdateDevUI] = 'onUpdateDevUI';
+
+/**
+ * Called when a keybind is changed.
+ *
+ * @param {Keybind} keybind The Keybind that changed
+ */
+export const EE_OnKeybindChanged = 'keybindChanged';
+regMap[EE_OnKeybindChanged] = 'onKeybindChanged';
+
+/**
+ * PerfHUD - Works on Protected HUD only
+ */
+export const EE_OnPerfHUDUpdate = 'perfhud.update';
+regMap[EE_OnPerfHUDUpdate] = 'onPerfHUDUpdate';
+
+/**
+ * Initialize engine event forwarding
+ */
+export default function() {
+  for (const key in regMap) {
+    createForwardingMethod(key, regMap[key]);
+    if (typeof engine !== 'undefined') {
+      engine.on(key, (...args: any[]) => game.trigger(key, ...args));
+    }
+  }
+}
+
+function createForwardingMethod(engineEvent: string, methodName: string) {
+  _devGame[methodName] = function(callback: (...args: any[]) => any): CoherentEventHandle {
+    return engine.on(engineEvent, callback);
+  };
+}

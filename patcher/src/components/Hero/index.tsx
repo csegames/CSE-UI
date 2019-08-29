@@ -93,7 +93,7 @@ class Hero extends React.Component<HeroProps, HeroState> {
   private pause = () => {
     if (this.state.paused) return;
     this.setState({ paused: true } as any);
-    const videoElements: NodeListOf<HTMLVideoElement> = document.getElementsByTagName('video');
+    const videoElements: HTMLCollectionOf<HTMLVideoElement> = document.getElementsByTagName('video');
     for (let vid: any = 0; vid < videoElements.length; vid++) {
       const v = videoElements[vid];
       if (!v.paused) {
@@ -105,7 +105,7 @@ class Hero extends React.Component<HeroProps, HeroState> {
   private resume = () => {
     if (!this.state.paused) return;
     this.setState({ paused: false } as any);
-    const videoElements: NodeListOf<HTMLVideoElement> = document.getElementsByTagName('video');
+    const videoElements: HTMLCollectionOf<HTMLVideoElement> = document.getElementsByTagName('video');
     for (let vid: any = 0; vid < videoElements.length; vid++) {
       const v = videoElements[vid];
       if (v.paused) v.play();
