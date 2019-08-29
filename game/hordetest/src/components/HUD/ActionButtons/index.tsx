@@ -7,7 +7,8 @@
 import React, { useEffect, useState } from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
-import { ActionButton } from './ActionButton';
+import { AbilityButton } from './AbilityButton';
+import { ConsumableButton } from './ConsumableButton';
 
 const ActionButtonsContainer = styled.div`
   position: relative;
@@ -71,7 +72,7 @@ export function ActionButtons(props: Props) {
     <ActionButtonsContainer>
       {abilities.map((ability, i) => {
         return (
-          <ActionButton
+          <AbilityButton
             key={ability.id}
             abilityID={ability.id}
             className={ActionButtonSpacing}
@@ -80,10 +81,10 @@ export function ActionButtons(props: Props) {
           />
         );
       })}
-      <ActionButton
+      <ConsumableButton
         className={ActionButtonSpacing}
         actionIconClass={index2Icon[3]}
-        keybindText={'V'}
+        keybindText={hordetest.game.consumableItemsState.keybindToUse.binds[0].name}
       />
     </ActionButtonsContainer>
   );

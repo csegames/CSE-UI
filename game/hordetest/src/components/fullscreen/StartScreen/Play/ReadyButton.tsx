@@ -143,6 +143,11 @@ export class ReadyButton extends React.Component<Props, State> {
   }
 
   private onClick = () => {
+    // TEMP
+    this.props.onReady();
+    return;
+
+    // Real matchmaking logic
     const { match } = this.state;
 
     if (match && match.isQueued) {

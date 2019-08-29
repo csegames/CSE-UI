@@ -41,6 +41,21 @@ const ChatPosition = styled.div`
   height: 240px;
 `;
 
+const OpenFullScreenButton = styled.div`
+  position: fixed;
+  top: 5px;
+  left: 150px;
+  pointer-events: all;
+  cursor: pointer;
+  color: white;
+  background-color: orange;
+  padding: 5px;
+
+  &:hover {
+    filter: brightness(110%);
+  }
+`;
+
 export enum Route {
   Start,
   ChampionSelect,
@@ -59,7 +74,7 @@ export class FullScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      isVisible: true,
+      isVisible: false,
       currentRoute: Route.Start,
     };
   }
@@ -77,7 +92,7 @@ export class FullScreen extends React.Component<Props, State> {
           </ChatPosition>
         }
       </Container>
-    ) : null
+    ) : <OpenFullScreenButton onClick={this.show}>Open Full Screen</OpenFullScreenButton>
   }
 
   public componentDidMount() {
@@ -104,6 +119,9 @@ export class FullScreen extends React.Component<Props, State> {
     }
   }
 
+  private show = () => {
+    this.setState({ isVisible: true });
+  }
 
   private hide = () => {
     this.setState({ isVisible: false });

@@ -70,78 +70,24 @@ export interface Props {
   keybindText: string;
   abilityID?: number;
   className?: string;
+  cooldownTimer?: number;
 }
 
-export interface State {
-  cooldownTimer: number;
-}
+export function ActionButton(props: Props) {
+  return (
+    <ActionButtonContainer className={props.className}>
+      <Button>
+        <ActionIcon className={props.actionIconClass} />
+        {typeof props.cooldownTimer !== 'undefined' && props.cooldownTimer !== 0 &&
+          <CooldownOverlay>
+            <CooldownText>{props.cooldownTimer}</CooldownText>
+          </CooldownOverlay>
+        }
+      </Button>
 
-export class ActionButton extends React.Component<Props, State> {
-  private abilityStateHandle: EventHandle;
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      cooldownTimer: 0,
-    };
-  }
-
-  public render() {
-    return (
-      <ActionButtonContainer className={this.props.className}>
-        <Button>
-          <ActionIcon className={this.props.actionIconClass} />
-          {this.state.cooldownTimer !== 0 &&
-            <CooldownOverlay>
-              <CooldownText>{this.state.cooldownTimer}</CooldownText>
-            </CooldownOverlay>
-          }
-        </Button>
-
-        <KeybindBox>
-          <KeybindText>{this.props.keybindText}</KeybindText>
-        </KeybindBox>
-      </ActionButtonContainer>
-    );
-  }
-
-  public componentDidMount() {
-    if (this.props.abilityID) {
-      // Do initial check
-      this.checkStartCountdown();
-
-      // Check on updated
-      this.abilityStateHandle = hordetest.game.abilityStates[this.props.abilityID].onUpdated(() => {
-        this.checkStartCountdown();
-      });
-    }
-  }
-
-  public componentWillUnmount() {
-    this.abilityStateHandle.clear();
-  }
-
-  private checkStartCountdown = () => {
-    const ability = hordetest.game.abilityStates[this.props.abilityID];
-    if (ability.status & AbilityButtonState.Cooldown) {
-      this.startCountdown(ability.timing)
-    }
-  }
-
-  private startCountdown = (cooldown: Timing) => {
-    if (cooldown && this.state.cooldownTimer === 0) {
-      this.setState({ cooldownTimer: Math.round(this.getTimingEnd(cooldown) / 1000) });
-      window.setTimeout(this.decrementCountdown, 1000);
-    }
-  }
-
-  private decrementCountdown = () => {
-    if (!this.state.cooldownTimer) return;
-    this.setState({ cooldownTimer: this.state.cooldownTimer - 1 });
-    window.setTimeout(this.decrementCountdown, 1000);
-  }
-
-  private getTimingEnd = (timing: DeepImmutableObject<Timing>) => {
-    const timingEnd = ((timing.start + timing.duration) - game.worldTime) * 1000;
-    return timingEnd;
-  }
+      <KeybindBox>
+        <KeybindText>{props.keybindText}</KeybindText>
+      </KeybindBox>
+    </ActionButtonContainer>
+  );
 }

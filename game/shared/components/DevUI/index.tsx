@@ -387,7 +387,24 @@ const MaximizeButton = styled.a`
   }
 `;
 
-export class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
+const LayerButtonPosition = styled.div`
+  position: absolute;
+  cursor: pointer;
+  right: 150px;
+  top: 0px;
+  color: #ccc !important;
+  &:hover {
+    color: white !important;
+  }
+`;
+
+interface PageState {
+  [id: string]: RootPage;
+}
+
+type State = PageState & { isTopLayer: boolean };
+
+export class DevUI extends React.PureComponent<{}, State | null> {
   constructor(props: {}) {
     super(props);
     this.state = null;
@@ -398,7 +415,7 @@ export class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
     if (!this.state) return null;
     const keys = Object.keys(this.state);
     return (
-      <Container id='DevUI'>
+      <Container id='DevUI' style={{ zIndex: this.state.isTopLayer ? 9999 : 0 }}>
         {keys.map((k) => {
           const page = this.state[k];
           const isMaximized = page.maximized;
@@ -429,11 +446,12 @@ export class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
               <CloseButtonPosition>
                 <CloseButton
                   onClick={() => this.setState({
+                    isTopLayer: false,
                     [k]: {
                       ...page,
                       visible: false,
                     },
-                  })} />
+                  } as Partial<State>)} />
                 </CloseButtonPosition> : null}
                 {page.showMaximizeButton ?
                   <MaximizeButton
@@ -448,7 +466,11 @@ export class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
                         ...page,
                         maximized: isMaximized ? false : true,
                       },
-                    })}>{isMaximized ? 'Minimize' : 'Maximize'}</MaximizeButton> : null }
+                    })}>{isMaximized ? 'Minimize' : 'Maximize'}</MaximizeButton> : null
+                  }
+                <LayerButtonPosition onClick={this.onLayerClick}>
+                  {this.state.isTopLayer ? 'Bot Layer' : 'Top Layer'}
+                </LayerButtonPosition>
               </div>
               <div
                 key={k}
@@ -478,6 +500,10 @@ export class DevUI extends React.PureComponent<{}, ObjectMap<RootPage> | null> {
   public componentDidCatch(error: any, info: any) {
     console.log(error);
     console.log(info);
+  }
+
+  private onLayerClick = () => {
+    this.setState({ isTopLayer: !this.state.isTopLayer });
   }
 
   private handleUpdateDevUI = (id: string, rootPage: any) => {

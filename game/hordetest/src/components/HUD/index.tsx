@@ -167,7 +167,7 @@ export function HUD(props: Props) {
         <ImagePreloader />
         <DevUI />
         <ReloadButtonContainer>
-          <div onClick={() => game.reloadUI()}>ReloadUI</div>
+          <div onClick={() => game.reloadUI()}>Reload UI</div>
         </ReloadButtonContainer>
 
         <CrosshairPosition>
