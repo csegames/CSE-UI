@@ -48,6 +48,11 @@ export interface GameInterface extends GameModel {
    * Current state of the abilitybar, temp - this defines the exact ability bar layout for now
    */
   abilityBarState: AbilityBarState;
+
+  /**
+   * Current state of the consumable items
+   */
+  consumableItemsState: ConsumableItemsState;
 }
 
 export type DevGameInterface = InternalGameInterfaceExt;

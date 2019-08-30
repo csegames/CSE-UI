@@ -9,6 +9,7 @@ import initPlayerState from './GameClientModels/PlayerState';
 import initEntityState from './GameClientModels/EntityState';
 import initAbilityState from './GameClientModels/AbilityState';
 import initAbilityBarState from './GameClientModels/AbilityBarState';
+import initConsumableItemsState from './GameClientModels/ConsumableItemsState';
 import { QueryOptions } from '../../_baseGame/graphql/query';
 
 export default function(isAttached: boolean) {
@@ -23,10 +24,11 @@ export default function(isAttached: boolean) {
   hordetest._devGame.entities = {};
   initEntityState();
 
-  // // INIT MODELS
+  // INIT MODELS
   initPlayerState();
   initAbilityState();
   initAbilityBarState();
+  initConsumableItemsState();
 
   // READY!
   _devGame.ready = true;
@@ -37,8 +39,6 @@ export default function(isAttached: boolean) {
  */
 export function initOutOfContextGame(): Partial<GameInterface> {
   const model: GameModel = {
-    _cse_dev_beginTriggerKeyActionLoop: noOp,
-    _cse_dev_endTriggerKeyActionLoop: noOp,
   };
 
   return withOverrides({

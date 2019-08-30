@@ -17,6 +17,7 @@ declare global {
   interface PlayerStateModel extends EntityStateModel {
     type: 'player';
     health: CurrentMax[];
+    blood: CurrentMax;
     stamina: CurrentMax;
     level: number;
   }
@@ -53,6 +54,7 @@ export function defaultPlayerStateModel(): PlayerStateModel {
     type: 'player',
     health: [defaultCurrentMax()],
     stamina: defaultCurrentMax(),
+    blood: defaultCurrentMax(),
     level: 1,
   };
 }

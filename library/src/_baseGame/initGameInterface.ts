@@ -35,6 +35,23 @@ export default function (isAttached: boolean) {
       makeClientPromise((game, option) => game._cse_dev_testOption(option));
     _devGame.takeScreenshotAsync =
       makeClientPromise(game => game._cse_dev_takeScreenshot());
+      // Building API Tasks
+    _devGame.building.setModeAsync =
+      makeClientPromise((game, mode) => game.building._cse_dev_setMode(mode));
+    _devGame.building.selectBlockAsync =
+      makeClientPromise((game, id) => game.building._cse_dev_selectBlock(id));
+    _devGame.building.selectBlueprintAsync =
+      makeClientPromise((game, id) => game.building._cse_dev_selectBlueprint(id));
+    _devGame.building.selectPotentialItemAsync =
+      makeClientPromise((game, id) => game.building._cse_dev_selectPotentialItem(id));
+    _devGame.building.deleteBlueprintAsync =
+      makeClientPromise((game, id) => game.building._cse_dev_deleteBlueprint(id));
+    _devGame.building.createBlueprintFromSelectionAsync
+      = makeClientPromise((game, name) => game.building._cse_dev_createBlueprintFromSelection(name));
+    _devGame.building.replaceMaterialsAsync
+      = makeClientPromise((game, sID, rID, inS) => game.building._cse_dev_replaceMaterials(sID, rID, inS));
+    _devGame.building.replaceShapesAsync
+      = makeClientPromise((game, sID, rID, inS) => game.building._cse_dev_replaceShapes(sID, rID, inS));
 
     // EVENTS
     _devGame.onReady = onReady;
@@ -115,6 +132,34 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
     clearKeybind: noOp,
     resetKeybinds: noOp,
     resetOptions: noOp,
+    building: {
+      mode: BuildingMode.NotBuilding,
+      activePlotID: 'none',
+      canEditActivePlot: false,
+      activeBlockID: 0,
+      activeBlueprintID: 0,
+      activeMaterialID: 0,
+      activePotentialItemID: 0,
+      blueprints: {},
+      materials: {},
+      potentialItems: {},
+    },
+
+    itemPlacementMode: {
+      isActive: false,
+      activeTransformMode: null,
+      requestStart: noOp,
+      requestCommit: noOp,
+      requestReset: noOp,
+      requestCancel: noOp,
+      requestChangeTransformMode: noOp,
+    },
+
+    dropLight: {
+      drop: noOp,
+      removeLast: noOp,
+      clearAll: noOp,
+    },
   };
 
   return withOverrides({
@@ -122,6 +167,17 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
     isClientAttached: false,
     debug: false,
     apiVersion: 1,
+    building: {
+      ...model.building,
+      setModeAsync: noOp,
+      selectBlockAsync: noOp,
+      selectBlueprintAsync: noOp,
+      selectPotentialItemAsync: noOp,
+      createBlueprintFromSelectionAsync: noOp,
+      deleteBlueprintAsync: noOp,
+      replaceMaterialsAsync: noOp,
+      replaceShapesAsync: noOp,
+    },
   });
 }
 

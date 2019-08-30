@@ -8,3 +8,4 @@ import './CurrentMax';
 import './Vec2f';
 import './Vec3f';
 import './Ability';
+import './Consumables';

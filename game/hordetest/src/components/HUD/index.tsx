@@ -101,7 +101,7 @@ const HealthBarPosition = styled.div`
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 50px;
+  bottom: 20px;
 
   display: flex;
   align-items: center;

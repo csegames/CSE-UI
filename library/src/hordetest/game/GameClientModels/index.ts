@@ -8,3 +8,4 @@ export * from './EntityState';
 export * from './PlayerState';
 export * from './AbilityState';
 export * from './AbilityBarState';
+export * from './ConsumableItemsState';

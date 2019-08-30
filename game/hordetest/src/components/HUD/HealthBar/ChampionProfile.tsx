@@ -10,8 +10,8 @@ import { styled } from '@csegames/linaria/react';
 const ChampionProfileContainer = styled.div`
   display: flex;
   align-items: center;
-  width: 37px;
-  height: 37px;
+  width: 56px;
+  height: 56px;
   justify-content: center;
   border: 3px solid #1a1a1a;
   background-color: #4d4d4d;

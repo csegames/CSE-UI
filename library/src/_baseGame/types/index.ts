@@ -8,3 +8,5 @@ import './Keybind';
 import './Options';
 import './Screenshot';
 import './SuccessFailure';
+import './Building';
+import './ItemPlacementTransformMode';

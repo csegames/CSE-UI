@@ -127,6 +127,82 @@ export interface BaseGameModel {
    * @param {OptionCateogry} category The category of options to reset
    */
   resetOptions: (category: OptionCategory) => void;
+
+  /* -------------------------------------------------- */
+  /* ITEM PLACEMENT API                                 */
+  /* -------------------------------------------------- */
+
+  itemPlacementMode: ItemPlacementAPI;
+
+  /* -------------------------------------------------- */
+  /* BUILDING API                                       */
+  /* -------------------------------------------------- */
+
+  building: BuildingAPIModel;
+
+  /**
+   * Drop light api
+   */
+  dropLight: {
+    drop: (brightness: number, radius: number, red: number, green: number, blue: number) => void;
+    removeLast: () => void;
+    clearAll: () => void;
+  };
+}
+
+// Item Placement API
+interface ItemPlacementAPI {
+  isActive: boolean;
+  activeTransformMode: ItemPlacementTransformMode | null;
+  requestStart: (itemDefID: number, itemInstanceID: string, actionID: string) => void;
+  requestCommit: () => void;
+  requestReset: () => void;
+  requestCancel: () => void;
+  requestChangeTransformMode: (transformMode: ItemPlacementTransformMode) => void;
+}
+
+// Building API
+interface BuildingAPIModel {
+  mode: BuildingMode;
+  activePlotID: string;
+  canEditActivePlot: boolean;
+  activeBlockID: number;
+  activeMaterialID: number;
+  activeBlueprintID: number;
+  activePotentialItemID: number;
+  blueprints: ArrayMap<Blueprint>;
+  materials: ArrayMap<Material>;
+  potentialItems: ArrayMap<PotentialItem>;
+}
+
+interface BuildingAPI extends BuildingAPIModel {
+  setModeAsync: (mode: BuildingMode) => CancellablePromise<Success | Failure>;
+
+  selectBlockAsync: (blockID: number) => CancellablePromise<Success | Failure>;
+  selectBlueprintAsync: (blueprintID: number) => CancellablePromise<Success | Failure>;
+  selectPotentialItemAsync: (potentialItemID: number) => CancellablePromise<Success | Failure>;
+
+  deleteBlueprintAsync: (blueprintID: number) => CancellablePromise<Success | Failure>;
+  createBlueprintFromSelectionAsync: (name: string) => CancellablePromise<(Success & { blueprint: Blueprint}) | Failure>;
+
+  replaceMaterialsAsync: (selectedID: number, replacementID: number, inSelection: boolean) =>
+    CancellablePromise<Success | Failure>;
+  replaceShapesAsync: (selectedID: number, replacementID: number, inSelection: boolean) =>
+    CancellablePromise<Success | Failure>;
+}
+
+interface BuildingAPIModelTasks {
+  _cse_dev_setMode: (mode: BuildingMode) => TaskHandle;
+
+  _cse_dev_selectBlock: (blockID: number) => TaskHandle;
+  _cse_dev_selectBlueprint: (blueprintID: number) => TaskHandle;
+  _cse_dev_selectPotentialItem: (potentialItemID: number) => TaskHandle;
+
+  _cse_dev_deleteBlueprint: (blueprintID: number) => TaskHandle;
+  _cse_dev_createBlueprintFromSelection: (name: string) => TaskHandle;
+
+  _cse_dev_replaceMaterials: (selectedID: number, replacementID: number, inSelection: boolean) => TaskHandle;
+  _cse_dev_replaceShapes: (selectedID: number, replacementID: number, inSelection: boolean) => TaskHandle;
 }
 
 /**
@@ -164,6 +240,8 @@ export interface BaseGameModelTasks {
    * @return {Screenshot} Image & Path to screenshot
    */
   _cse_dev_takeScreenshot: () => TaskHandle;
+
+  building: BuildingAPI & BuildingAPIModelTasks;
 }
 
 /**
@@ -316,6 +394,12 @@ export interface BaseGameInterface extends BaseGameModel {
     defaultOptions(): Partial<QueryOptions>;
     host(): string;
   };
+
+  /* -------------------------------------------------- */
+  /* BUILDING API                                       */
+  /* -------------------------------------------------- */
+
+  building: BuildingAPI;
 }
 
 export type BaseDevGameInterface = BaseInternalGameInterfaceExt & BaseGameModelTasks;
