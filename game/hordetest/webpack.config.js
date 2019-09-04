@@ -124,12 +124,6 @@ module.exports = function (e, argv = { isProduction, cacheRoot }) {
               exclude: /node_modules/,
               sideEffects: true,
               use: [
-                {
-                  loader: require.resolve('cache-loader'),
-                  // options: {
-                  //   cacheDirectory: path.resolve(argv.cacheRoot, 'cache-loader'),
-                  // },
-                },
                 // ...(!IS_CI ? [{
                 //   loader: require.resolve('thread-loader'),
                 //   options: {

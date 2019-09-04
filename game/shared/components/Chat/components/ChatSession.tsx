@@ -119,7 +119,7 @@ export class ChatSession {
       case messageType.COMBAT_LOG:
         if (isArray(args.message)) {
           const arrayOfMessages = args.message.map((msg: string) => {
-            new ChatMessage(chatType.COMBAT, 'combat', '', msg, false, new Date());
+            return new ChatMessage(chatType.COMBAT, 'combat', '', msg, false, new Date());
           });
           this.recv(arrayOfMessages);
           return;

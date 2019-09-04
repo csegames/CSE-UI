@@ -33,6 +33,27 @@ export const EE_ConsoleText = 'consoleText';
 regMap[EE_ConsoleText] = 'onConsoleText';
 
 /**
+ * Announcement message sent from the game client
+ *
+ * Expected behavior: Displays announcement text on screen
+ *
+ * @param {AnnouncementType} type Type of the announcement to display
+ * @param {String} message Text contents of the announcement to display
+ */
+export const EE_OnAnnouncement = 'announcement';
+regMap[EE_OnAnnouncement] = 'onAnnouncement';
+
+/**
+ * Notify the UI of one or more combat log events
+ *
+ * Expected behavior: Display combat events information in the UI combat log
+ *
+ * @param {CombatEvent[]} events An array of Combat events to display in the log
+ */
+export const EE_CombatEvent = 'combatEvent';
+regMap[EE_CombatEvent] = 'onCombatEvent';
+
+/**
  * A new / updated DevUI is provided by the client
  *
  * Expected behavior: Displays or hides a DevUI based on the given update information

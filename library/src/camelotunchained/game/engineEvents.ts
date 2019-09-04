@@ -27,27 +27,6 @@ export const EE_ScenarioRoundEnd = 'scenarioRoundEnd';
 regMap[EE_ScenarioRoundEnd] = 'onScenarioRoundEnded';
 
 /**
- * Notify the UI of one or more combat log events
- *
- * Expected behavior: Display combat events information in the UI combat log
- *
- * @param {CombatEvent[]} events An array of Combat events to display in the log
- */
-export const EE_CombatEvent = 'combatEvent';
-regMap[EE_CombatEvent] = 'onCombatEvent';
-
-/**
- * Announcement message sent from the game client
- *
- * Expected behavior: Displays announcement text on screen
- *
- * @param {AnnouncementType} type Type of the announcement to display
- * @param {String} message Text contents of the announcement to display
- */
-export const EE_OnAnnouncement = 'announcement';
-regMap[EE_OnAnnouncement] = 'onAnnouncement';
-
-/**
  * Client requests UI navigation for a specific target.
  *
  * Expected behavior: UI toggles element requested by the navigation trigger.

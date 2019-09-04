@@ -5,9 +5,5 @@
  */
 
 import './Ability';
-import './ActiveEffectAction';
-import './BodyPart';
-import './CombatEvent';
-import './DamageType';
 import './SoundEvent';
 import './StatusAction';

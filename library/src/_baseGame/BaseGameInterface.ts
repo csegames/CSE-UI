@@ -291,6 +291,18 @@ export interface BaseGameInterface extends BaseGameModel {
   sendSystemMessage: (message: string) => void;
 
   /**
+   * Subscribe to Announcements
+   * @param {(message: string) => any} callback function to be executed when an announcement is received
+   */
+  onAnnouncement: (callback: (type: AnnouncementType, message: string) => any) => EventHandle;
+
+    /**
+   * Subscribe to client combat event messages
+   * @param {((events: CombatEvent[]) => any)} callback function to be executed when a combat event is received
+   */
+  onCombatEvent: (callback: (events: CombatEvent[]) => any) => EventHandle;
+
+  /**
    * Subscribe to the console text messages
    * @param {(text: string) => any} callback function to be executed when a console text message is received
   */
@@ -403,3 +415,16 @@ export interface BaseGameInterface extends BaseGameModel {
 }
 
 export type BaseDevGameInterface = BaseInternalGameInterfaceExt & BaseGameModelTasks;
+
+declare global {
+  enum AnnouncementType {
+    Text = 1,
+    PopUp = 2,
+    Worldspace = 4,
+    PassiveAlert = 8,
+    ALL = -1,
+  }
+  interface Window {
+    AnnouncementType: typeof AnnouncementType;
+  }
+}

@@ -9,10 +9,10 @@ export {};
 declare global {
   interface CombatEvent {
     fromName: string;
-    fromFaction: Faction;
+    fromFaction: any;
 
     toName: string;
-    toFaction: Faction;
+    toFaction: any;
 
     damages?: {
       sent: number;
@@ -38,7 +38,7 @@ declare global {
     // Array of statuses
     statuses?: {
       name: string;
-      action: StatusAction;
+      action: any;
       duration: number;
     }[];
 
@@ -49,7 +49,7 @@ declare global {
     resources?: {
       sent: number;
       received: number;
-      type: EntityResourceType;
+      type: any;
     }[];
 
     // impulse = knock back or a force applied to your character

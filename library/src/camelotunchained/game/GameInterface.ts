@@ -86,19 +86,6 @@ export interface GameInterface extends GameModel {
     ) => any,
   ) => EventHandle;
 
-
-  /**
-   * Subscribe to client combat event messages
-   * @param {((events: CombatEvent[]) => any)} callback function to be executed when a combat event is received
-   */
-  onCombatEvent: (callback: (events: CombatEvent[]) => any) => EventHandle;
-
-  /**
-   * Subscribe to Announcements
-   * @param {(message: string) => any} callback function to be executed when an announcement is received
-   */
-  onAnnouncement: (callback: (type: AnnouncementType, message: string) => any) => EventHandle;
-
   /**
    * Client requests UI navigation for a specific target.
    *
@@ -108,7 +95,6 @@ export interface GameInterface extends GameModel {
    * @param {String} target Navigation target
    */
   onNavigate: (callback: (target: string) => any) => EventHandle;
-
   /**
    * Called when an option is changed.
    */

@@ -10,3 +10,7 @@ import './Screenshot';
 import './SuccessFailure';
 import './Building';
 import './ItemPlacementTransformMode';
+import './ActiveEffectAction';
+import './BodyPart';
+import './CombatEvent';
+import './DamageType';
