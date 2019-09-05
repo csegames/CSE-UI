@@ -478,8 +478,7 @@ export class DevUI extends React.PureComponent<{}, State | null> {
                   width: '100%',
                   height: '100%',
                   display: 'flex',
-                  overflowY: 'auto',
-                  overflowX: 'hidden',
+                  overflow: 'auto',
                 }}>
                 <div style={{ flex: 1 }}>
                   <DevUIPage {...page} />
