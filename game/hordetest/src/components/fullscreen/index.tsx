@@ -13,6 +13,7 @@ import { ChampionSelect } from './ChampionSelect';
 import { LoadingScreen } from './LoadingScreen';
 import { Button } from './Button';
 import { RightModal } from './RightModal';
+import { GameStats } from './GameStats';
 
 const Container = styled.div`
   position: fixed;
@@ -61,6 +62,7 @@ export enum Route {
   Start,
   ChampionSelect,
   Loading,
+  EndGameStats,
 }
 
 export interface Props {
@@ -118,6 +120,11 @@ export class FullScreen extends React.Component<Props, State> {
           <LoadingScreen loadingDuration={3000} onFinishLoading={this.onFinishLoading} />
         );
       }
+      case Route.EndGameStats: {
+        return (
+          <GameStats onLeaveClick={this.onLeaveGameStats} />
+        );
+      }
     }
   }
 
@@ -138,6 +145,10 @@ export class FullScreen extends React.Component<Props, State> {
   }
 
   private onFinishLoading = () => {
-    this.setState({ currentRoute: Route.Start, isVisible: false });
+    this.setState({ currentRoute: Route.EndGameStats });
+  }
+
+  private onLeaveGameStats = () => {
+    this.setState({ currentRoute: Route.Start });
   }
 }

@@ -24,6 +24,30 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-thumbsup:before {
+  content: "\e99e";
+}
+.icon-flip-x:before {
+  content: "\e979";
+}
+.icon-flip-y:before {
+  content: "\e97a";
+}
+.icon-move-x:before {
+  content: "\e97b";
+}
+.icon-move-y:before {
+  content: "\e97c";
+}
+.icon-random:before {
+  content: "\e97d";
+}
+.icon-resize:before {
+  content: "\e97e";
+}
+.icon-rotate:before {
+  content: "\e97f";
+}
 .icon-bottom-pad:before {
   content: "\e980";
 }
@@ -113,27 +137,6 @@
 }
 .icon-xb-y:before {
   content: "\e99d";
-}
-.icon-flip-x:before {
-  content: "\e979";
-}
-.icon-flip-y:before {
-  content: "\e97a";
-}
-.icon-move-x:before {
-  content: "\e97b";
-}
-.icon-move-y:before {
-  content: "\e97c";
-}
-.icon-random:before {
-  content: "\e97d";
-}
-.icon-resize:before {
-  content: "\e97e";
-}
-.icon-rotate:before {
-  content: "\e97f";
 }
 .icon-search:before {
   content: "\e978";

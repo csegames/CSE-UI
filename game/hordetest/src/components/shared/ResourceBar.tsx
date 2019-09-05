@@ -134,6 +134,7 @@ export interface Props {
   type: 'blue' | 'green' | 'orange' | 'red';
   current: number;
   max: number;
+  text?: string;
   hideText?: boolean;
   containerStyles?: string;
   isSquare?: boolean;
@@ -146,11 +147,12 @@ export function ResourceBar(props: Props) {
       <FillContainer className={props.type} style={{ width: `${(props.current / props.max) * 100}%` }}>
         <Fill className={props.type} />
       </FillContainer>
-      {!props.hideText &&
+      {!props.hideText && !props.text &&
         <Text className={squareClass}>
           {Math.round(props.current).toFixed(0)} / {Math.round(props.max).toFixed(0)}
         </Text>
       }
+      {props.text && <Text className={squareClass}>{props.text}</Text>}
     </ResourceBarContainer>
   );
 }
