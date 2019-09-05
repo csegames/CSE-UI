@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { AbilityButton } from './AbilityButton';
@@ -48,39 +48,48 @@ const index2Icon = [
 ];
 
 export function ActionButtons(props: Props) {
-  const [abilities, setAbilities] = useState(getAbilities());
+  const [weakAbility, setWeakAbility] = useState(hordetest.game.abilityBarState.weak);
+  const [strongAbility, setStrongAbility] = useState(hordetest.game.abilityBarState.strong);
+  const [ultimateAbility, setUltimateAbility] = useState(hordetest.game.abilityBarState.ultimate);
 
   useEffect(() => {
     const handle = hordetest.game.abilityBarState.onUpdated(() => {
-      setAbilities(getAbilities());
+      const abilityBarState = JSON.parse(JSON.stringify(hordetest.game.abilityBarState));
+      if (abilityBarState.weak && abilityBarState.weak.id >= 0) {
+        setWeakAbility(abilityBarState.weak);
+      }
+
+      if (abilityBarState.strong && abilityBarState.strong.id >= 0) {
+        setStrongAbility(abilityBarState.strong);
+      }
+
+      if (abilityBarState.ultimate && abilityBarState.ultimate.id >= 0) {
+        setUltimateAbility(abilityBarState.ultimate);
+      }
     });
 
     return () => {
       handle.clear();
-    };
+    }
   }, [hordetest.game.abilityBarState]);
 
-  function getAbilities() {
-    if (hordetest.game.abilityBarState) {
-      return Object.values(hordetest.game.abilityBarState.abilities).slice(2, 5);
-    }
-
-    return [];
+  function renderAbilityButton(ability: AbilityBarItem, i: number) {
+    return (
+      <AbilityButton
+        key={ability.id}
+        abilityID={ability.id}
+        className={ActionButtonSpacing}
+        actionIconClass={index2Icon[i]}
+        keybindText={ability.boundKeyName}
+      />
+    );
   }
 
   return (
     <ActionButtonsContainer>
-      {abilities.map((ability, i) => {
-        return (
-          <AbilityButton
-            key={ability.id}
-            abilityID={ability.id}
-            className={ActionButtonSpacing}
-            actionIconClass={index2Icon[i]}
-            keybindText={ability.boundKeyName}
-          />
-        );
-      })}
+      {weakAbility && weakAbility.id >= 0 && renderAbilityButton(weakAbility, 0)}
+      {strongAbility && strongAbility.id >= 0 && renderAbilityButton(strongAbility, 1)}
+      {ultimateAbility && ultimateAbility.id >= 0 && renderAbilityButton(ultimateAbility, 2)}
       <ConsumableButton
         className={ActionButtonSpacing}
         actionIconClass={index2Icon[3]}

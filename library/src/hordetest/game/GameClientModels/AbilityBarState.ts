@@ -23,6 +23,11 @@ declare global {
 
   interface AbilityBarStateModel {
     abilities: ArrayMap<AbilityBarItem>;
+    primaryAttack: AbilityBarItem;
+    secondaryAttack: AbilityBarItem;
+    weak: AbilityBarItem;
+    strong: AbilityBarItem;
+    ultimate: AbilityBarItem;
   }
 
   type AbilityBarState = AbilityBarStateModel & Updatable;
@@ -34,6 +39,11 @@ export const AbilityBarState_Update = 'abilityBarState.update';
 function initDefault(): AbilityBarState {
   return {
     abilities: {},
+    primaryAttack: null,
+    secondaryAttack: null,
+    weak: null,
+    strong: null,
+    ultimate: null,
 
     isReady: false,
     updateEventName: AbilityBarState_Update,

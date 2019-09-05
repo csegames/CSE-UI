@@ -88,7 +88,8 @@ export function UltimateReadyView(props: Props) {
   }, [hordetest.game.abilityStates[props.ultAbilityID].status]);
 
   function isUltimateReady() {
-    return (hordetest.game.abilityStates[props.ultAbilityID].status & AbilityButtonState.Cooldown) === 0;
+    return (hordetest.game.abilityStates[props.ultAbilityID].status &
+      AbilityButtonState.Cooldown) === 0;
   }
 
   return isVisible ? (

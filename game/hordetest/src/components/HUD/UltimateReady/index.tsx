@@ -5,7 +5,6 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { isEmpty } from 'lodash';
 import { UltimateReadyView } from './UltimateReadyView';
 
 export function UltimateReady() {
@@ -25,14 +24,10 @@ export function UltimateReady() {
   }, [hordetest.game.abilityBarState.abilities]);
 
   function getUltAbilityID() {
-    if (hordetest.game.abilityBarState && !isEmpty(hordetest.game.abilityBarState.abilities)) {
-      const ultimateAbility = Object.values(hordetest.game.abilityBarState.abilities).find(a => a.boundKeyName === '3');
-
-      if (!ultimateAbility) {
-        return null;
-      }
-
-      return ultimateAbility.id;
+    if (hordetest.game.abilityBarState &&
+        hordetest.game.abilityBarState.ultimate &&
+        hordetest.game.abilityBarState.ultimate.id >= 0) {
+      return hordetest.game.abilityBarState.ultimate.id;
     }
 
     return null;
