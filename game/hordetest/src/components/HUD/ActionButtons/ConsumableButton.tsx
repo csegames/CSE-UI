@@ -58,14 +58,14 @@ export function ConsumableButton(props: Props) {
         {Object.values(consumableItemsState.items).map((item, i) => {
           const activeClass = consumableItemsState.activeIndex === i ? 'active' : '';
           return (
-            <Item className={`${item.iconClass} ${activeClass}`} />
+            <Item className={`${item.iconClass || 'fas fa-question'} ${activeClass}`} />
           );
         })}
       </ItemList>
       <ActionButton
         actionIconClass={
-          !isEmpty(consumableItemsState.items) ?
-            consumableItemsState.items[consumableItemsState.activeIndex].iconClass : ''}
+          (!isEmpty(consumableItemsState.items) && consumableItemsState.items[consumableItemsState.activeIndex].iconClass) ?
+            consumableItemsState.items[consumableItemsState.activeIndex].iconClass : 'fas fa-question'}
         keybindText={props.keybindText}
         abilityID={props.abilityID}
         className={props.className}
