@@ -171,11 +171,6 @@ export interface GameInterface extends GameModel {
   friendlyTargetState: FriendlyTargetState;
 
   /**
-   * The loading state for the client.
-   */
-  loadingState: LoadingState;
-
-  /**
    * KeyActions are a mapping of key actions to key action id numbers
    */
   keyActions: KeyActions;

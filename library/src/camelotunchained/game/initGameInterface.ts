@@ -12,7 +12,6 @@ import { GameModel, GameInterface } from './GameInterface';
 // tslint:disable-next-line:no-duplicate-imports
 import * as engineEvents from './engineEvents';
 
-import initLoadingState from './GameClientModels/LoadingState';
 import initPlayerState from './GameClientModels/PlayerState';
 import initEntityState from './GameClientModels/EntityState';
 import initEnemyTargetState from './GameClientModels/EnemyTargetState';
@@ -46,7 +45,6 @@ export default function(isAttached: boolean) {
   initEntityState();
 
   // INIT MODELS
-  initLoadingState();
   initPlayerState();
   initEnemyTargetState();
   initFriendlyTargetState();

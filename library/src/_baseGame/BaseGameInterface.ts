@@ -407,6 +407,11 @@ export interface BaseGameInterface extends BaseGameModel {
     host(): string;
   };
 
+    /**
+     * The loading state for the client.
+    */
+    loadingState: LoadingState;
+
   /* -------------------------------------------------- */
   /* BUILDING API                                       */
   /* -------------------------------------------------- */

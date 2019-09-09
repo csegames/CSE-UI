@@ -50,7 +50,11 @@ module.exports = {
         dev: {
           script: "nps report.start && nps build.webpack.hordetest.development && nps report.success",
           description: 'Builds the Colossod HUD UI in Development mode',
-        }
+        },
+        loadingScreen: {
+          script: "nps report.start && nps build.webpack.hordetest.loadingScreen && nps report.success",
+          description: "Builds the HordeTest HUD UI",
+        },
       },
       dev: {
         script: 'nps report.start && nps build.webpack.development && nps report.success',
@@ -89,12 +93,15 @@ module.exports = {
         hordetest: {
           hiddenFromHelp: true,
           default: {
-            script: "webpack --mode production --approute=hordetest",
+            script: "webpack --mode production --approute=hordetest/hud",
+          },
+          loadingScreen: {
+            script: "webpack --mode production --approute=hordetest/loadingScreen",
           },
           development: {
-            script: "webpack --mode development --approute=hordetest",
+            script: "webpack --mode development --approute=hordetest/hud",
           }
-        }
+        },
       },
       ...generateForTargets((target) => {
         const folderPath = `%localappdata%/CSE/CamelotUnchained/${target.id}/INTERFACE/${NAME}`;

@@ -24,11 +24,11 @@
       "lib/*": [ "lib/*" ],
       "services/*": [ "services/*" ],
       "widgets/*": [ "widgets/*" ],
-      "cushared/*": [ "../../shared/*" ],
+      "cushared/*": [ "../../../shared/*" ],
       "*": [
         "node_modules/*",
         "types/*",
-        "../typings/globals/*"
+        "typings/globals/*"
       ]
     },
     "plugins": [

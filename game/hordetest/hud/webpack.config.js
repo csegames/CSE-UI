@@ -55,7 +55,7 @@ module.exports = function (e, argv = { isProduction, cacheRoot }) {
     lib: path.resolve(__dirname, 'src/lib'),
     services: path.resolve(__dirname, 'src/services'),
     widgets: path.resolve(__dirname, 'src/widgets'),
-    cushared: path.resolve(__dirname, '../shared'),
+    cushared: path.resolve(__dirname, '../../shared'),
   };
 
   const config = {

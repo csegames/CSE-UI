@@ -10,7 +10,6 @@ import { styled } from '@csegames/linaria/react';
 import { Chat } from 'cushared/components/Chat';
 import { StartScreen } from './StartScreen';
 import { ChampionSelect } from './ChampionSelect';
-import { LoadingScreen } from './LoadingScreen';
 import { Button } from './Button';
 import { RightModal } from './RightModal';
 import { GameStats } from './GameStats';
@@ -61,7 +60,6 @@ const OpenFullScreenButton = styled.div`
 export enum Route {
   Start,
   ChampionSelect,
-  Loading,
   EndGameStats,
 }
 
@@ -89,18 +87,12 @@ export class FullScreen extends React.Component<Props, State> {
         <HideButton onClick={this.hide}>
           <Button type='blue' text='Hide Full Screen UI' />
         </HideButton>
-        {this.state.currentRoute !== Route.Loading &&
-          <ChatPosition>
-            <Chat accessToken={game.accessToken} />
-          </ChatPosition>
-        }
+        <ChatPosition>
+          <Chat accessToken={game.accessToken} />
+        </ChatPosition>
         <RightModal />
       </Container>
     ) : <OpenFullScreenButton onClick={this.show}>Open Full Screen</OpenFullScreenButton>
-  }
-
-  public componentDidMount() {
-
   }
 
   private renderRoute = () => {
@@ -115,11 +107,6 @@ export class FullScreen extends React.Component<Props, State> {
           <ChampionSelect gameMode={'Survival'} difficulty={'Normal'} onLockIn={this.onLockIn} />
         );
       };
-      case Route.Loading: {
-        return (
-          <LoadingScreen loadingDuration={3000} onFinishLoading={this.onFinishLoading} />
-        );
-      }
       case Route.EndGameStats: {
         return (
           <GameStats onLeaveClick={this.onLeaveGameStats} />
@@ -141,10 +128,6 @@ export class FullScreen extends React.Component<Props, State> {
   }
 
   private onLockIn = () => {
-    this.setState({ currentRoute: Route.Loading });
-  }
-
-  private onFinishLoading = () => {
     this.setState({ currentRoute: Route.EndGameStats });
   }
 

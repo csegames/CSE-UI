@@ -6,7 +6,7 @@
  */
 
 /// <reference> ../coherent.d.ts
-import { LoadingState_Update } from '../GameClientModels/LoadingState';
+import { LoadingState_Update } from '../../../_baseGame/GameClientModels/LoadingState';
 
 const __loadingState = { percent: 0, message: 'ready', visible: true };
 

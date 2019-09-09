@@ -12,6 +12,7 @@ import { subscribe } from './graphql/subscription';
 
 import initEventForwarding from './engineEvents';
 import initCUAPIShim from './cuAPIShim';
+import initLoadingState from './GameClientModels/LoadingState';
 // tslint:disable-next-line:no-duplicate-imports
 import * as engineEvents from './engineEvents';
 
@@ -63,6 +64,7 @@ export default function (isAttached: boolean) {
 
     initEventForwarding();
     initCUAPIShim();
+    initLoadingState();
 }
 
 function onReady(callback: () => any) {

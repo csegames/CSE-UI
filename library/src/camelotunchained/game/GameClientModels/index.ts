@@ -8,7 +8,6 @@ export * from './EnemyTargetState';
 export * from './EntityState';
 export * from './FriendlyTargetState';
 export * from './KeyActions';
-export * from './LoadingState';
 export * from './PlayerState';
 export * from './AbilityState';
 export * from './AbilityBarState';

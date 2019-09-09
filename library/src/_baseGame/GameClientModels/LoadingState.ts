@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Updatable, createDefaultOnUpdated, createDefaultOnReady } from '../../../_baseGame/GameClientModels/_Updatable';
-import engineInit from '../../../_baseGame/GameClientModels/_Init';
+import { Updatable, createDefaultOnUpdated, createDefaultOnReady } from './_Updatable';
+import engineInit from './_Init';
 
 export interface LoadingStateModel {
   percent: number;
@@ -37,7 +37,7 @@ export default function() {
   engineInit(
     LoadingState_Update,
     initDefault,
-    () => camelotunchained.game.loadingState,
-    (model: LoadingStateModel) => camelotunchained._devGame.loadingState = model as LoadingState);
+    () => game.loadingState,
+    (model: LoadingStateModel) => _devGame.loadingState = model as LoadingState);
 
 }

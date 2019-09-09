@@ -1,0 +1,47 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HUD</title>
+  {{#if process.env.IS_BROWSER}}
+  <!-- jss -->
+  <style>
+    html, body {
+      background-color: #1a1a1a;
+    }
+  </style>
+  {{/if}}
+</head>
+<body>
+  <div id="loadingscreen"></div>
+  {{!-- {{#if process.env.ENABLE_SENTRY }}
+  <script src="third-party/raven.min.js"></script>
+  <script>
+    Raven.config('https://f7710348f19c4a0f8f8cd83ea0aa343f@sentry.io/1259561', {
+      release: '0-0-0', // use git revision as release? {{process.env.GIT_REVISION}}
+      environment: 'development-test',
+    }).install()
+
+    setTimeout(function() {
+      Raven.setTagsContext({
+        shard: cuAPI.shardID,
+      });
+      Raven.setUserContext({
+        id: cuAPI.characterID,
+      });
+    }, 1000);
+  </script>
+  {{/if}} --}}
+
+  {{#if process.env.IS_BROWSER}}
+  <script src="dev.config.js"></script>
+  {{/if}}
+
+  <script src='third-party/jquery.min.js'></script>
+  <script src="third-party/coherent/coherent.js"></script>
+  {{!-- <script src="third-party/coherent/coherent.mock.js"></script> --}}
+</body>
+</html>
