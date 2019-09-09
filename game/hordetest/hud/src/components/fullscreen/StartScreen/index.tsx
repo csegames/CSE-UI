@@ -6,9 +6,11 @@
 
 import React, { useState } from 'react';
 import { styled } from '@csegames/linaria/react';
+
 import { NavMenu, StartScreenRoute } from './NavMenu';
 import { Play } from './Play';
 import { ChampionProfile } from './ChampionProfile';
+import { Store } from './Store';
 
 const Container = styled.div`
   position: relative;
@@ -80,6 +82,14 @@ export function StartScreen(props: Props) {
         return (
           <GenericScreenContainer>
             <ChampionProfile />
+          </GenericScreenContainer>
+        );
+      }
+
+      case StartScreenRoute.Store: {
+        return (
+          <GenericScreenContainer>
+            <Store />
           </GenericScreenContainer>
         );
       }

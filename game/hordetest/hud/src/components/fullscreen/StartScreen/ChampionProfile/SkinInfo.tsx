@@ -7,8 +7,10 @@
 import React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
-import { Skin, Rarity } from './testData';
 import { Button } from 'components/fullscreen/Button';
+
+import { Skin, Rarity } from '../Store/testData';
+import { ConfirmPurchase } from '../Store/ConfirmPurchase';
 
 const Container = styled.div`
   display: flex;
@@ -79,6 +81,7 @@ export interface Props {
 
 export function SkinInfo(props: Props) {
   function onUnlockClick(skin: Skin) {
+    game.trigger('show-right-modal', <ConfirmPurchase skin={skin} />)
   }
 
   if (props.selectedPreviewSkinInfo) {
@@ -91,7 +94,7 @@ export function SkinInfo(props: Props) {
         {!props.hideSkinButtons &&
           <ButtonContainer>
             <Button
-              type='gray'
+              type={props.selectedPreviewSkinInfo.isUnlocked ? 'gray' : 'blue'}
               disabled={props.selectedPreviewSkinInfo.isUnlocked}
               text={props.selectedPreviewSkinInfo.isUnlocked ? 'Unlocked' : 'Unlock'}
               styles={ButtonStyle}

@@ -15,7 +15,7 @@ const Container = styled.div`
   color: white;
   box-shadow: inset 0 5px 50px 5px rgba(255, 255, 255, 0.3);
   text-transform: uppercase;
-  transition: filter 0.2s;
+  transition: filter 0.1s;
   text-align: center;
   user-select: none;
 

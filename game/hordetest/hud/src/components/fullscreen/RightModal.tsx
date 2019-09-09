@@ -11,11 +11,33 @@ const Container = styled.div`
   position: fixed;
   top: 0;
   bottom: 0;
-  right: 0;
-  width: 40%;
+  right: -35%;
+  width: 35%;
   height: 100%;
   background-image: url(../images/fullscreen/startscreen/champion-profile/modal-right-bg.png);
   background-size: cover;
+  transition: right 0.2s;
+
+  &.visible {
+    right: 0;
+  }
+`;
+
+const ScreenOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -46,18 +68,22 @@ export class RightModal extends React.Component<Props, State> {
   }
 
   public render() {
-    return this.state.isVisible ? (
-      <Container>
-        <ContentContainer>
-          {this.state.content}
-        </ContentContainer>
-      </Container>
-    ) : null;
+    const visibleClass = this.state.isVisible ? 'visible' : '';
+    return (
+      <>
+        <ScreenOverlay className={visibleClass} onClick={this.hide} />
+        <Container className={visibleClass}>
+          <ContentContainer>
+            {this.state.content}
+          </ContentContainer>
+        </Container>
+      </>
+    );
   }
 
   public componentDidMount() {
-    this.showHandle = game.on('show-right-modal', this.handleShowRightModal);
-    this.hideHandle = game.on('hide-right-modal', this.handleHideRightModal);
+    this.showHandle = game.on('show-right-modal', this.show);
+    this.hideHandle = game.on('hide-right-modal', this.hide);
   }
 
   public componentWillUnmount() {
@@ -68,11 +94,11 @@ export class RightModal extends React.Component<Props, State> {
     this.hideHandle = null;
   }
 
-  private handleShowRightModal = (content: JSX.Element | JSX.Element[]) => {
+  private show = (content: JSX.Element | JSX.Element[]) => {
     this.setState({ isVisible: true, content });
   }
 
-  private handleHideRightModal = () => {
+  private hide = () => {
     this.setState({ isVisible: false, content: null });
   }
 }

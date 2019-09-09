@@ -6,10 +6,12 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { ChampionInfo, Rarity, Skin } from './testData';
 import { EditingMode } from './index';
 import { EquipmentItem } from './EquipmentItem';
 import { ChampionSelect } from './ChampionSelect';
+
+import { ChampionInfo } from './testData';
+import { Skin } from '../Store/testData';
 
 const Container = styled.div`
   display: flex;
@@ -141,7 +143,6 @@ export function ChampionInfoDisplay(props: Props) {
         <EquipmentItem
           skin={selectedSkin}
           onClick={onEditSkinClick}
-          className={selectedSkin ? Rarity[selectedSkin.rarity] : ''}
           onMouseEnter={() => onMouseEnter(selectedSkin)}
           onMouseLeave={onMouseLeave}
         />
@@ -149,7 +150,6 @@ export function ChampionInfoDisplay(props: Props) {
         <EquipmentItem
           skin={selectedWeapon}
           onClick={onEditWeaponClick}
-          className={selectedWeapon ? Rarity[selectedWeapon.rarity] : ''}
           onMouseEnter={() => onMouseEnter(selectedSkin)}
           onMouseLeave={onMouseLeave}
         />
@@ -162,7 +162,6 @@ export function ChampionInfoDisplay(props: Props) {
   function renderSkinEdit() {
     const sortedSkins = props.selectedChampion.availableSkins.sort((a, b) => a.rarity - b.rarity);
     return sortedSkins.map((skin) => {
-      const rarityClass = skin ? Rarity[skin.rarity] : '';
       const selectedPreviewSkinClass = props.selectedPreviewSkinInfo.id === skin.id ? 'selected-preview' : '';
       const isSelected = props.selectedPreviewSkinInfo.isUnlocked ? skin.id === props.selectedPreviewSkinInfo.id :
         skin.id === props.selectedChampion.selectedSkinId;
@@ -172,8 +171,8 @@ export function ChampionInfoDisplay(props: Props) {
           isSelected={isSelected}
           skin={skin}
           onClick={() => onSkinClick(skin, false)}
-          onDoubleClick={props.onSave}
-          className={`${rarityClass} ${selectedPreviewSkinClass}`}
+          onDoubleClick={() => skin.isUnlocked ? props.onSave(skin) : {}}
+          className={`${selectedPreviewSkinClass}`}
         />
       );
     });
@@ -182,7 +181,6 @@ export function ChampionInfoDisplay(props: Props) {
   function renderWeaponEdit() {
     const sortedWeapons = props.selectedChampion.availableWeapons.sort((a, b) => a.rarity - b.rarity);
     return sortedWeapons.map((weapon) => {
-      const rarityClass = weapon ? Rarity[weapon.rarity] : '';
       const selectedPreviewSkinClass = props.selectedPreviewSkinInfo.id === weapon.id ? 'selected-preview' : '';
       const isSelected = props.selectedPreviewSkinInfo.isUnlocked ? weapon.id === props.selectedPreviewSkinInfo.id :
         weapon.id === props.selectedChampion.selectedWeaponId;
@@ -192,8 +190,8 @@ export function ChampionInfoDisplay(props: Props) {
           isSelected={isSelected}
           skin={weapon}
           onClick={() => onSkinClick(weapon, false)}
-          onDoubleClick={props.onSave}
-          className={`${rarityClass} ${selectedPreviewSkinClass}`}
+          onDoubleClick={() => weapon.isUnlocked ? props.onSave(weapon) : {}}
+          className={`${selectedPreviewSkinClass}`}
         />
       );
     });

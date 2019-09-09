@@ -30,6 +30,7 @@ const Container = styled.div`
 `;
 
 export interface Props {
+  className?: string;
   isSelected?: boolean;
   children?: any;
   onClick?: () => void;
@@ -38,7 +39,7 @@ export interface Props {
 export function Header(props: Props) {
   const selectedClass = props.isSelected ? 'selected' : '';
   return (
-    <Container className={selectedClass} onClick={props.onClick}>
+    <Container className={`${props.className} ${selectedClass}`} onClick={props.onClick}>
       {props.children}
     </Container>
   );

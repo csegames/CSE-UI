@@ -7,11 +7,12 @@
 import React, { useState } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { ChampionInfoDisplay } from './ChampionInfoDisplay';
-
-import { champions, ChampionInfo, Skin } from './testData';
 import { SkinInfo } from './SkinInfo';
 import { SkillInfo } from './SkillInfo';
 import { ActionButton } from '../../ActionButton';
+
+import { Skin, StoreItemType } from '../Store/testData';
+import { champions, ChampionInfo } from './testData';
 
 const Container = styled.div`
   position: relative;
@@ -134,12 +135,12 @@ export function ChampionProfile(props: Props) {
 
   function onSave(skin: Skin) {
     switch (skin.type) {
-      case 'skin': {
+      case StoreItemType.Skin: {
         onSkinChange(skin.id);
         onReset();
         break;
       }
-      case 'weapon': {
+      case StoreItemType.Weapon: {
         onWeaponChange(skin.id);
         onReset();
         break;

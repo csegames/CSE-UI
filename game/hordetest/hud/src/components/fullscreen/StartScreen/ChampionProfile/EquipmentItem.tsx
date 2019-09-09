@@ -6,18 +6,22 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { Skin } from './testData';
+import { Skin, Rarity } from '../Store/testData';
+
+interface ContainerProps extends React.HTMLProps<HTMLDivElement> {
+  width: number;
+  height: number;
+}
 
 const Container = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100px;
-  height: 120px;
+  width: ${(props: ContainerProps) => props.width ? `${props.width}px` : '100px'};
+  height: ${(props: ContainerProps) => props.height ? `${props.height}px` : '120px'};
   margin: 5px;
   background-color: #161616;
-  cursor: pointer;
   box-shadow: inset 0 0 0 2px #2c2c2c;
 
   &.Rare {
@@ -35,29 +39,32 @@ const Container = styled.div`
     background-color: #251f16;
   }
 
-  &:before {
-    content: '';
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    background: linear-gradient(to top, rgba(102, 185, 252, 0.7), transparent);
-    opacity: 0;
-    transition: box-shadow 0.2s, opacity 0.2s;
-  }
-
-  &:active:before {
-    background: linear-gradient(to top, rgba(56, 105, 144, 0.7), transparent);
-  }
-
-  &:hover {
-    box-shadow: inset 0 0 0 2px #66b9fc;
+  &.not-disabled {
+    cursor: pointer;
     &:before {
-      opacity: 1;
+      content: '';
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(to top, rgba(102, 185, 252, 0.7), transparent);
+      opacity: 0;
+      transition: box-shadow 0.2s, opacity 0.2s;
     }
-  }
 
-  &.selected-preview {
-    box-shadow: inset 0 0 0 5px #66b9fc;
+    &:active:before {
+      background: linear-gradient(to top, rgba(56, 105, 144, 0.7), transparent);
+    }
+
+    &:hover {
+      box-shadow: inset 0 0 0 2px #66b9fc;
+      &:before {
+        opacity: 1;
+      }
+    }
+
+    &.selected-preview {
+      box-shadow: inset 0 0 0 5px #66b9fc;
+    }
   }
 `;
 
@@ -96,6 +103,8 @@ const CheckIcon = styled.span`
 export interface Props {
   skin: Skin;
 
+  width?: number;
+  height?: number;
   isSelected?: boolean;
   shouldShowStatus?: boolean;
   className?: string;
@@ -103,24 +112,36 @@ export interface Props {
   onDoubleClick?: (skin: Skin) => void;
   onMouseEnter?: (skin: Skin) => void;
   onMouseLeave?: () => void;
+  children?: JSX.Element | JSX.Element[];
+  disabled?: boolean;
 }
 
 export function EquipmentItem(props: Props) {
   function onClick() {
-    props.onClick(props.skin);
+    if (typeof props.onClick !== 'undefined') {
+      props.onClick(props.skin);
+    }
   }
 
   function onDoubleClick() {
-    props.onDoubleClick(props.skin);
+    if (typeof props.onDoubleClick !== 'undefined') {
+      props.onDoubleClick(props.skin);
+    }
   }
 
   function onMouseEnter() {
-    props.onMouseEnter(props.skin);
+    if (typeof props.onMouseEnter !== 'undefined') {
+      props.onMouseEnter(props.skin);
+    }
   }
 
+  const disabledClass = props.disabled ? 'disabled' : 'not-disabled';
+  const rarityClass = props.skin ? Rarity[props.skin.rarity] : '';
   return (
     <Container
-      className={props.className}
+      width={props.width}
+      height={props.height}
+      className={`${props.className} ${rarityClass} ${disabledClass}`}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
       onMouseEnter={onMouseEnter}
@@ -133,6 +154,7 @@ export function EquipmentItem(props: Props) {
         </>
       )}
       {props.shouldShowStatus && props.isSelected && <CheckIcon className='far fa-check' />}
+      {props.children}
     </Container>
   );
 }
