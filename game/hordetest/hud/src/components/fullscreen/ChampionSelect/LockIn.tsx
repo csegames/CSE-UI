@@ -16,6 +16,7 @@ const Container = styled.div`
 const LockInButton = css`
   font-size: 30px;
   padding: 20px 40px;
+  font-family: Colus;
 `;
 
 const LockInText = styled.div`

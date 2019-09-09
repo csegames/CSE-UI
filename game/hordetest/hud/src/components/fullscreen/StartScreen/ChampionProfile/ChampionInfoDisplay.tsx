@@ -17,11 +17,13 @@ const Container = styled.div`
 `;
 
 const ChampionName = styled.div`
+  font-family: Colus;
   font-size: 23px;
   color: white;
 `;
 
 const EquipmentTitle = styled.div`
+  font-family: Colus;
   font-size: 18px;
   color: #a9a9a9;
   border-width: 0px;

@@ -46,6 +46,7 @@ const ReadyButtonStyle = styled.div`
   box-shadow: inset 0 5px 50px 5px rgba(255, 150, 0, 0.5);
   background: linear-gradient(to bottom, #ffd200, #a53d13);
   border: 2px solid #ff9e57;
+  font-family: Colus;
 
   div, span {
     cursor: pointer;

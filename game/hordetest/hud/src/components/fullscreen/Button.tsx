@@ -10,6 +10,7 @@ import { styled } from '@csegames/linaria/react';
 const Container = styled.div`
   position: relative;
   cursor: pointer;
+  font-family: Colus;
   padding: 10px;
   color: white;
   box-shadow: inset 0 5px 50px 5px rgba(255, 255, 255, 0.3);

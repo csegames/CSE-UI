@@ -14,12 +14,26 @@ const ChampionProfileContainer = styled.div`
   height: 56px;
   justify-content: center;
   border: 3px solid #1a1a1a;
-  background-color: #4d4d4d;
+  background-color: black;
   transform: skewX(-10deg);
 `;
 
 const ProfileBox = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
   transform: skewX(10deg);
+`;
+
+const Image = styled.img`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
 `;
 
 export interface Props {
@@ -29,7 +43,7 @@ export function ChampionProfile(props: Props) {
   return (
     <ChampionProfileContainer>
       <ProfileBox>
-        P
+        <Image src='images/fullscreen/character-select/face.png' />
       </ProfileBox>
     </ChampionProfileContainer>
   );

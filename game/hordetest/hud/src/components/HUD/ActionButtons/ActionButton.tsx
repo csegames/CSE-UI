@@ -12,6 +12,7 @@ const ActionButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-family: Colus;
 `;
 
 const Button = styled.div`

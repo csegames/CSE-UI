@@ -15,6 +15,7 @@ const Container = styled.div`
   align-items: center;
   width: 100%;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+  font-family: Colus;
 `;
 
 const ButtonIcon = styled.div`

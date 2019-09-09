@@ -48,6 +48,7 @@ const AbilityType = styled.div`
 `;
 
 const AbilityName = styled.div`
+  font-family: Colus;
   font-size: 30px;
   color: white;
 `;

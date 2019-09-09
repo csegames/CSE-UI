@@ -56,9 +56,9 @@ export function StatsList(props: Props) {
     switch(sortBy) {
       case SortBy.PlayerName: {
         if (leastToGreatest) {
-          return playerStatsClone.sort((a, b) => a.playerName.localeCompare(b.playerName));
-        } else {
           return playerStatsClone.sort((a, b) => b.playerName.localeCompare(a.playerName));
+        } else {
+          return playerStatsClone.sort((a, b) => a.playerName.localeCompare(b.playerName));
         }
       }
       case SortBy.Kills: {

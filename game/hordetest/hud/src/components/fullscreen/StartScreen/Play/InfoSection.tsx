@@ -25,6 +25,7 @@ const Container = styled.div`
 `;
 
 const SeasonText = styled.div`
+  font-family: Colus;
   font-size: 16px;
   color: #797979;
   margin-top: 15px;
@@ -34,6 +35,7 @@ const LevelText = styled.div`
   font-size: 30px;
   color: white;
   text-transform: uppercase;
+  font-family: Colus;
 `;
 
 const Row = styled.div`

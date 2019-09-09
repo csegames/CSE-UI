@@ -120,6 +120,7 @@ const Fill = styled.div`
 // box-shadow: inset -3px 1px 15px rgba(255, 255, 255, 0.8);
 
 const Text = styled.div`
+  font-family: Colus;
   color: white;
   font-size: 13px;
   z-index: 1;

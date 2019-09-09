@@ -17,6 +17,7 @@ const Container = styled.div`
   text-transform: uppercase;
   cursor: pointer;
   transition: 0.2s color;
+  font-family: Colus;
 
   &:hover {
     color: #85d2ff;

@@ -16,6 +16,7 @@ const Text = styled.div`
   font-size: 18px;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
   text-transform: uppercase;
+  font-family: Colus;
 `;
 
 const BarContainer = styled.div`

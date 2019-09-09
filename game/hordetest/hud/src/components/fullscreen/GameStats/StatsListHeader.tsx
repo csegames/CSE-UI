@@ -91,7 +91,7 @@ export function StatsListHeader(props: Props) {
 
   return (
     <Container>
-      <ChampionInfo onClick={onPlayerClick}>Player</ChampionInfo>
+      <ChampionInfo onClick={onPlayerClick}>Player {renderArrow(SortBy.PlayerName)}</ChampionInfo>
       <PreviewImageSpacing />
       <Section onClick={onKillsClick}>Kills {renderArrow(SortBy.Kills)}</Section>
       <Section onClick={onKillStreakClick}>Kill Streak {renderArrow(SortBy.KillStreak)}</Section>
