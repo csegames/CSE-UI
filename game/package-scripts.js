@@ -53,7 +53,11 @@ module.exports = {
         },
         loadingScreen: {
           script: "nps report.start && nps build.webpack.hordetest.loadingScreen && nps report.success",
-          description: "Builds the HordeTest HUD UI",
+          description: "Builds the HordeTest Loading Screen",
+        },
+        worldspace: {
+          script: "nps report.start && nps build.webpack.hordetest.worldspace && nps report.success",
+          description: "Builds the HordeTest World Space UI"
         },
       },
       dev: {
@@ -97,6 +101,9 @@ module.exports = {
           },
           loadingScreen: {
             script: "webpack --mode production --approute=hordetest/loadingScreen",
+          },
+          worldspace: {
+            script: "webpack --mode production --approute=hordetest/worldspace-ui"
           },
           development: {
             script: "webpack --mode development --approute=hordetest/hud",

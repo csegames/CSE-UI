@@ -3,6 +3,7 @@
   "packages": [
     "library",
     "game/camelotunchained/*",
+    "game/hordetest/*",
     "game/*",
     "patcher"
   ],

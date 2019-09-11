@@ -13,7 +13,7 @@ import { GameMenu } from 'cushared/components/GameMenu';
 import { Settings } from 'cushared/components/Settings';
 
 import { HealthBar } from './HealthBar';
-import { ChannelBar } from './ChannelBar';
+// import { ChannelBar } from './ChannelBar';
 import { MatchInfo } from './MatchInfo';
 import { Crosshair } from './Crosshair';
 import { Announcements } from './Announcements';
@@ -135,13 +135,13 @@ const UltimateReadyPosition = styled.div`
   pointer-events: none;
 `;
 
-const ChannelBarPosition = styled.div`
-  position: fixed;
-  left: 50%;
-  bottom: 230px;
-  transform: translateX(-50%);
-  pointer-events: none;
-`;
+// const ChannelBarPosition = styled.div`
+//   position: fixed;
+//   left: 50%;
+//   bottom: 230px;
+//   transform: translateX(-50%);
+//   pointer-events: none;
+// `;
 
 const AnnouncementsPosition = styled.div`
   position: fixed;
@@ -192,9 +192,9 @@ export function HUD(props: Props) {
           <UltimateReady />
         </UltimateReadyPosition>
 
-        <ChannelBarPosition>
+        {/* <ChannelBarPosition>
           <ChannelBar channelType={'Bandage'} current={60} max={100} />
-        </ChannelBarPosition>
+        </ChannelBarPosition> */}
 
         <AnnouncementsPosition>
           <Announcements />

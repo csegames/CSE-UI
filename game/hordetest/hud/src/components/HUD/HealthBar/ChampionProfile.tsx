@@ -10,19 +10,20 @@ import { styled } from '@csegames/linaria/react';
 const ChampionProfileContainer = styled.div`
   display: flex;
   align-items: center;
-  width: 56px;
-  height: 56px;
+  width: 43px;
+  height: 43px;
   justify-content: center;
   border: 3px solid #1a1a1a;
   background-color: black;
-  transform: skewX(-10deg);
+  transform: skewX(-13deg);
+  overflow: hidden;
 `;
 
 const ProfileBox = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  transform: skewX(10deg);
+  transform: skewX(13deg);
 `;
 
 const Image = styled.img`
@@ -31,7 +32,7 @@ const Image = styled.img`
   right: 0;
   bottom: 0;
   left: 0;
-  object-fit: contain;
+  object-fit: cover;
   width: 100%;
   height: 100%;
 `;

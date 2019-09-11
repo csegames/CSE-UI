@@ -31,15 +31,13 @@ const ResourcesContainer = styled.div`
 
 const DivineBarrierContainer = css`
   width: 100%;
-  height: 17px;
-  margin-bottom: 3px;
+  height: 13px;
   border: 3px solid black;
 `;
 
 const HealthBarContainer = css`
   width: 100%;
-  height: 17px;
-  margin-bottom: 3px;
+  height: 13px;
   margin-left: -4px;
   border: 3px solid black;
 `;
