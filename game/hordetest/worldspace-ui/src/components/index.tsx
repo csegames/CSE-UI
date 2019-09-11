@@ -10,6 +10,7 @@ import { engineEvents } from 'lib/engineEvents';
 import { HealthBar } from './HealthBar';
 import { InteractionBar } from './InteractionBar';
 import { Interactable } from './Interactable';
+import { PlayerDifferentiator } from './PlayerDifferentiator';
 
 interface ContainerProps extends React.HTMLProps<HTMLDivElement> {
   worldUIState: WorldUIState;
@@ -31,6 +32,7 @@ export enum WorldUIWidgetType {
   HealthBar,
   Interactable,
   InteractionBar,
+  PlayerDifferentiator,
 }
 
 export interface WorldUIState {
@@ -68,7 +70,13 @@ export interface InteractionBarState extends WorldUIState {
   keybind: Binding;
 }
 
-export type WorldUIType = WorldUIState | ProgressBarState | HealthBarState | InteractableState | InteractionBarState;
+export interface PlayerDifferentiatorState extends WorldUIState {
+  type: WorldUIWidgetType.PlayerDifferentiator;
+  differentiator: number;
+}
+
+export type WorldUIType = WorldUIState | ProgressBarState | HealthBarState |
+  InteractableState | InteractionBarState | PlayerDifferentiatorState;
 
 export interface State {
   worldUIs: { [id: number]: WorldUIType };
@@ -97,6 +105,7 @@ export class WorldUI extends React.Component<{}, State> {
     engineEvents.onUpdateHealthBar(this.handleUpdateHealthBar);
     engineEvents.onUpdateInteractable(this.handleUpdateInteractable);
     engineEvents.onUpdateInteractionBar(this.handleUpdateInteractionBar);
+    engineEvents.onUpdatePlayerDifferentiator(this.handleUpdatePlayerDifferentiator);
   }
 
   private renderWorldUI = (worldUI: WorldUIType) => {
@@ -125,6 +134,14 @@ export class WorldUI extends React.Component<{}, State> {
         return (
           <WorldUIContainer worldUIState={worldUI}>
             <InteractionBar state={worldUI as InteractionBarState} />
+          </WorldUIContainer>
+        );
+      }
+
+      case WorldUIWidgetType.PlayerDifferentiator: {
+        return (
+          <WorldUIContainer worldUIState={worldUI}>
+            <PlayerDifferentiator state={worldUI as PlayerDifferentiatorState} />
           </WorldUIContainer>
         );
       }
@@ -245,6 +262,27 @@ export class WorldUI extends React.Component<{}, State> {
     });
 
     this.createOrUpdateWorldUI(newInteractionBarState);
+  }
+
+  private handleUpdatePlayerDifferentiator = (
+    id: number,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    differentiator: number,
+  ) => {
+    const newDifferentiatorState: PlayerDifferentiatorState = {
+      type: WorldUIWidgetType.PlayerDifferentiator,
+      id,
+      x,
+      y,
+      width,
+      height,
+      differentiator,
+    };
+
+    this.createOrUpdateWorldUI(newDifferentiatorState);
   }
 
   private createOrUpdateWorldUI = (newWorldUI: WorldUIType) => {

@@ -4,9 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import './CurrentMax';
-import './Vec2f';
-import './Vec3f';
-import './Ability';
-import './Consumables';
-import './PlayerDirection';
+export {};
+
+declare global {
+  interface PlayerDirection {
+    id: number;
+    angle: number;
+    screenPos: Vec2f;
+    scale: number;
+  }
+}

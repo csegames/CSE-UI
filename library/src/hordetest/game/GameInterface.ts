@@ -25,6 +25,13 @@ export interface GameModel {
  * to maintain a single primary interface for all interactions with the game client itself.
  */
 export interface GameInterface extends GameModel {
+
+  /**
+   * Subscribe to PlayerDirection updates
+   * @param {(angleDegrees: number, id: number) => any} callback function to be executed with a PlayerDirection update
+   */
+  onPlayerDirectionUpdate: (callback: (playerDirections: PlayerDirection[]) => any) => EventHandle;
+
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */
   /* -------------------------------------------------- */

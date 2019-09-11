@@ -30,6 +30,7 @@ export default function(isAttached: boolean) {
   initAbilityBarState();
   initConsumableItemsState();
 
+
   // READY!
   _devGame.ready = true;
 }

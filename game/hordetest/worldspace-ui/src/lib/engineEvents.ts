@@ -68,6 +68,17 @@ function onUpdateInteractionBar(callback: (
   engine.on('updateInteractionBar', callback);
 }
 
+function onUpdatePlayerDifferentiator(callback: (
+  cell: number,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  matchDifferentiator: number,
+) => void) {
+  engine.on('updatePlayerDifferentiator', callback);
+}
+
 export const engineEvents = {
   onUpdateProgressBar,
   onUpdateWorldUI,
@@ -75,4 +86,5 @@ export const engineEvents = {
   onUpdateHealthBar,
   onUpdateInteractable,
   onUpdateInteractionBar,
+  onUpdatePlayerDifferentiator,
 };
