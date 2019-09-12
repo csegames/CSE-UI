@@ -22,6 +22,7 @@ import { KillStreakCounter } from './KillStreakCounter';
 import { UltimateReady } from './UltimateReady';
 import { Respawn } from './Respawn';
 import { FullScreen } from 'components/fullscreen';
+import { Console } from 'components/HUD/Console';
 import { LoadingScreen } from 'components/fullscreen/LoadingScreen';
 
 import { InputContextProvider } from 'context/InputContext';
@@ -226,6 +227,7 @@ export function HUD(props: Props) {
         </RespawnPosition>
 
         <FullScreen />
+        <Console />
         <LoadingScreen />
       </Container>
     </InputContextProvider>

@@ -45,7 +45,7 @@ const ChatPosition = styled.div`
 const OpenFullScreenButton = styled.div`
   position: fixed;
   top: 5px;
-  left: 150px;
+  left: 90px;
   pointer-events: all;
   cursor: pointer;
   color: white;
