@@ -8,10 +8,11 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
-import { webAPI, Spinner } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/library/lib/camelotunchained';
 import { getCharImage, shouldFlipCharImage } from '../../../../../lib/characterImages';
 import { PatcherServer } from '../../../ControllerContext';
 import PlayerCounts from './PlayerCounts';
+import { Spinner } from '../../../../../components/Spinner';
 import { SimpleCharacter, Gender, Race, Archetype } from 'gql/interfaces';
 
 declare const toastr: any;

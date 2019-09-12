@@ -39,9 +39,13 @@ export const importantAttributes = {
   [Archetype.ForestStalker]: ['Dexterity', 'Agility', 'Endurance', 'Vitality', 'Strength'],
   [Archetype.WintersShadow]: ['Dexterity', 'Agility', 'Endurance', 'Vitality', 'Strength'],
 
-  [Archetype.FlameWarden]: ['Dexterity', 'Agility', 'Endurance', 'Vitality', 'Strength'],
-  [Archetype.Druid]: ['Dexterity', 'Agility', 'Endurance', 'Vitality', 'Strength'],
-  [Archetype.WaveWeaver]: ['Dexterity', 'Agility', 'Endurance', 'Vitality', 'Strength'],
+  [Archetype.FlameWarden]: ['Will', 'Attunement', 'Endurance', 'Vitality'],
+  [Archetype.Druid]: ['Will', 'Attunement', 'Endurance', 'Vitality'],
+  [Archetype.WaveWeaver]: ['Will', 'Attunement', 'Endurance', 'Vitality'],
+
+  [Archetype.DarkFool]: ['Resonance', 'Agility', 'Endurance', 'Vitality'],
+  [Archetype.Minstrel]: ['Resonance', 'Agility', 'Endurance', 'Vitality'],
+  [Archetype.Skald]: ['Resonance', 'Agility', 'Endurance', 'Vitality'],
 };
 
 export class StatRow extends React.Component<Props, State> {

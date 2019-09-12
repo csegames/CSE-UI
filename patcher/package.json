@@ -36,7 +36,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@babel/runtime": "^7.0.0-rc.1",
-    "@csegames/camelot-unchained": "^0.2.2",
+    "@csegames/library": "^0.2.6",
     "@csegames/linaria": "^0.1.103",
     "aphrodite": "^1.1.0",
     "classnames": "^2.2.6",

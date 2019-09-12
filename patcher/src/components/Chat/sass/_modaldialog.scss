@@ -1,0 +1,120 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+/* Shared Dialog Styles */
+.modal-dialog {
+  left: 50%;
+  top: 50%;
+  margin: 0 auto;
+  position: fixed;
+  width: 400px;
+  height: 200px;
+  margin-left: -200px;
+  margin-top: -100px;
+  z-index: 999;
+  background: $gradient-modal;
+  padding: 1em;
+  ::-webkit-input-placeholder {
+    color: #776329;
+  }
+  button {
+    background: $gradient2;
+    border: solid $colorg2 1px;
+    color: #eaeaea;
+    position: relative;
+    top: 9px;
+    margin: 5px;
+    line-height: 30px;
+    font-weight: 700;
+    text-align: center;
+    &[disabled]{
+      opacity: .5;
+    }
+    &:hover {
+      filter: brightness(1.2);
+      -webkit-filter: brightness(1.2);
+    }
+  }
+
+  input[type=text] {
+    box-sizing: border-box;
+    height: 100%!important;     /* override materialize-textarea annoying behaviour of setting textarea to height of contained text */
+    background-color: rgba(128,128,128,0.2);
+    border: 0;
+    color: silver;
+    font-size: 16px;
+    line-height: 16px;
+    min-height: 16px;
+    resize: none;
+    outline: none;
+    padding: 11px 10px;         /* 11px = (height-fontsize)/2 */
+    margin: 0;
+    flex: 1 1 auto;
+  }
+}
+
+.fullscreen-blackout {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 998;
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.fullscreen-modal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 998;
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.confirm-modal {
+  width: 400px;
+  height: 165px;
+  margin: 0 auto;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-left: -200px;
+  margin-top: -100px;
+  z-index: 999;
+  background: $gradient-modal;
+  padding: 1em;
+
+  .confirm-message {
+    height: 3.5em;
+    font-size: 1.5em;
+    color: white;
+  }
+
+  button {
+    background: $gradient2;
+    border: solid $colorg2 1px;
+    color: #eaeaea;
+    position: relative;
+    top: 9px;
+    margin: 5px;
+    line-height: 30px;
+    font-weight: 700;
+    text-align: center;
+    &[disabled]{
+      opacity: .5;
+    }
+    &:hover {
+      filter: brightness(1.2);
+      -webkit-filter: brightness(1.2);
+    }
+  }
+}
+
+.modal-dialog.character-delete {
+  height: 165px;  /* overrides modal-dialog in modaldialog.scss */
+}

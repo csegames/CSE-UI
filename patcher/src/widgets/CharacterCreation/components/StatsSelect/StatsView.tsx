@@ -8,7 +8,8 @@
 import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
-import { Tooltip, GridStats } from '@csegames/camelot-unchained/lib/components';
+import { Tooltip } from '../../../../components/Tooltip';
+import { GridStats } from '../../../../components/GridStats';
 import { StatDefinitionGQL } from 'gql/interfaces';
 
 export const colors = {

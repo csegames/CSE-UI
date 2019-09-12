@@ -134,18 +134,17 @@ const loadingMessages = [
 
 function loadingRun() {
 
-  if (camelotunchained.game.loadingState.percent >= 100) {
+  if (game.loadingState.percent >= 100) {
     console.log('MOCK.loadingState', 'complete');
-    camelotunchained._devGame.loadingState.message = 'Complete';
-    engine.trigger(LoadingState_Update, camelotunchained.game.loadingState);
+    _devGame.loadingState.message = 'Complete';
+    engine.trigger(LoadingState_Update, game.loadingState);
     return;
   }
 
-  camelotunchained._devGame.loadingState.percent += 1;
-  camelotunchained._devGame.loadingState.message = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
-  console.log('MOCK.loadingState', `run - ${camelotunchained.game.loadingState.percent}% ${camelotunchained.game
-    .loadingState.message}`);
-  engine.trigger(LoadingState_Update, camelotunchained.game.loadingState);
+  _devGame.loadingState.percent += 1;
+  _devGame.loadingState.message = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+  console.log('MOCK.loadingState', `run - ${game.loadingState.percent}% ${game.loadingState.message}`);
+  engine.trigger(LoadingState_Update, game.loadingState);
 
   // update once every 500-2000 ms
   setTimeout(loadingRun, Math.floor(Math.random() * 1500) + 500);

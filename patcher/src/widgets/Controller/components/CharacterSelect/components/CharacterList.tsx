@@ -10,14 +10,15 @@ import * as _ from 'lodash';
 import gql from 'graphql-tag';
 import { css } from 'react-emotion';
 import { styled } from '@csegames/linaria/react';
-import { webAPI, CollapsingList } from '@csegames/camelot-unchained';
-import { GraphQL } from '@csegames/camelot-unchained/lib/graphql/react';
-import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
+import { webAPI } from '@csegames/library/lib/camelotunchained';
+import { GraphQL } from '@csegames/library/lib/_baseGame/graphql/react';
+import { SubscriptionResult } from '@csegames/library/lib/_baseGame/graphql/subscription';
 
 import { patcher } from '../../../../../services/patcher';
 import CharacterSelectListItem from './CharacterSelectListItem';
 import CreateCharacterItem from './CreateCharacterItem';
 import PlayerCounts from './PlayerCounts';
+import { CollapsingList } from '../../../../../components/CollapsingList';
 import { ControllerContext, ContextState, PatcherServer } from '../../../ControllerContext';
 import { PatcherAlertFragment } from 'gql/fragments';
 import { SimpleCharacter, PatcherAlert, CharacterListSubscription } from 'gql/interfaces';
@@ -50,7 +51,8 @@ const ServerTitle = styled.div`
     margin-left: 45px;
   }
   font-family: "Caudex";
-  color: #dac0a9;`;
+  color: #dac0a9;
+`;
 
 const ServerInfo = styled.div`
   display: flex;

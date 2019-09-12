@@ -7,8 +7,8 @@
 
 import * as React from 'react';
 import gql from 'graphql-tag';
-import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import { QueryOptions } from '@csegames/camelot-unchained/lib/graphql/query';
+import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
+import { QueryOptions } from '@csegames/library/lib/_baseGame/graphql/query';
 import { patcher } from '../../../../services/patcher';
 import { StatDefinitionGQL, StatBonusGQL, RaceStatBonuses, StatsSelectQuery, StatType } from 'gql/interfaces';
 

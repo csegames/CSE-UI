@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { includes } from 'lodash';
 import { styled } from '@csegames/linaria/react';
-import { webAPI } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/library/lib/camelotunchained';
 
 import { BanesAndBoonsState } from '../../services/session/banesAndBoons';
 import { CharacterState } from '../../services/session/character';

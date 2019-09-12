@@ -7,8 +7,8 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { MetricsData } from '@csegames/camelot-unchained/lib/graphql/schema';
-import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
+import { MetricsData } from '@csegames/library/lib/_baseGame/graphql/schema';
+import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 
 const PlayerCount = styled.span`
   font-size: 12px;

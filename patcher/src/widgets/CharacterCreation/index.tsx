@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import { createStore, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { webAPI, HelpInfo } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/library/lib/camelotunchained';
 
 import { view } from '../../components/OverlayView';
 import FactionSelect from './components/FactionSelect';
@@ -20,7 +20,6 @@ import StatsSelect from './components/StatsSelect';
 import BanesAndBoonsContainer from './components/BanesAndBoonsContainer';
 import Navigation, { NavigationPageInfo } from './components/Navigation';
 import CharacterSummary from './components/CharacterSummary';
-import { helpSteps } from './components/HelpSteps';
 import CharCreationHeader from './components/CharCreationHeader';
 import LoadingOverlay from './components/LoadingOverlay';
 
@@ -249,12 +248,12 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
       this.goToPage(this.state.page + 1) : this.create();
     return (
       <div className='cu-character-creation'>
-        <HelpInfo
+        {/* <HelpInfo
           enabled={this.state.helpEnabled}
           initialStep={0}
           steps={helpSteps[CharacterCreationPage[this.state.page]]}
           onExitClick={this.toggleHelp}
-        />
+        /> */}
         <CharCreationHeader
           selectedServerName={this.state.selectedServerName}
           onCloseClick={this.onCloseClick}

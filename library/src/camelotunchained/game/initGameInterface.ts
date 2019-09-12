@@ -146,7 +146,7 @@ function initAnnouncementRouting() {
   _devGame.onSystemMessage = onSystemMessage;
   _devGame.sendSystemMessage = sendSystemMessage;
 
-  game.on(camelotunchained.game.engineEvents.EE_OnAnnouncement,
+  game.on(game.engineEvents.EE_OnAnnouncement,
     (type: AnnouncementType, message: string) => {
     if ((type & AnnouncementType.Text) !== 0) {
       game.sendSystemMessage(message);

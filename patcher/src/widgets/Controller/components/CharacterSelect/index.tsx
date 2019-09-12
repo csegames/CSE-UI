@@ -15,7 +15,7 @@ import CharacterSelectBG from './components/CharacterSelectBG';
 import CharacterDeleteModal from '../CharacterDeleteModal';
 import { APIServerStatus } from '../ControllerDisplay/index';
 import { SimpleCharacter } from 'gql/interfaces';
-import { KeyCodes } from '@csegames/camelot-unchained';
+import { KeyCodes } from '@csegames/library/lib/camelotunchained';
 
 const Container = styled.div`
   position: relative;

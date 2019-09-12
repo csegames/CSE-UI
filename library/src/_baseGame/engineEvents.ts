@@ -91,7 +91,11 @@ export default function() {
 }
 
 function createForwardingMethod(engineEvent: string, methodName: string) {
-  _devGame[methodName] = function(callback: (...args: any[]) => any): CoherentEventHandle {
-    return engine.on(engineEvent, callback);
-  };
+    _devGame[methodName] = function(callback: (...args: any[]) => any): CoherentEventHandle {
+      if (typeof engine !== 'undefined') {
+        return engine.on(engineEvent, callback);
+      } else {
+        return window._cse_dev_eventEmitter.addListener(engineEvent, false, callback);
+      }
+    };
 }

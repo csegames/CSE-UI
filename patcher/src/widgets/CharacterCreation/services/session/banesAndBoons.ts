@@ -6,7 +6,7 @@
 
 import * as _ from 'lodash';
 import { Module } from 'redux-typed-modules';
-import { webAPI } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/library/lib/camelotunchained';
 import { patcher } from '../../../../services/patcher';
 
 export interface BanesAndBoonsInfo {

@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Spinner } from '@csegames/camelot-unchained';
+import { Spinner } from '../../../components/Spinner';
 import { FactionInfo } from '../services/session/factions';
 
 export interface FactionSelectProps {

@@ -1,0 +1,171 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+
+/**
+ * To add a new emoji, just add a new emoji variable below with the url to the emoji and add a reference in the emojis map,
+ * emoji names must be UPPERCASE to match the enum in ParseEmoji.tsx
+ *
+ * Handling alternate names -- add to the enum in ParseEmoji.tsx & add to the emojis map here, don't need to make a duplicated
+ * variable line.  Look at TUATHASHIELD & TDDSHIELD as an example
+ */
+
+// emojis
+
+$emoji-ANGRY:      url('../images/chat/emoji/angry2.png'), url('../images/chat/emoji/angry2.svg');
+$emoji-BAFFLED:    url('../images/chat/emoji/baffled2.png'), url('../images/chat/emoji/baffled2.svg');
+$emoji-CONFUSED:   url('../images/chat/emoji/confused2.png'), url('../images/chat/emoji/confused2.svg');
+$emoji-COOL:       url('../images/chat/emoji/cool2.png'), url('../images/chat/emoji/cool2.svg');
+$emoji-CRYING:     url('../images/chat/emoji/crying2.png'), url('../images/chat/emoji/crying2.svg');
+$emoji-EVIL:       url('../images/chat/emoji/evil2.png'), url('../images/chat/emoji/evil2.svg');
+$emoji-FRUSTRATED: url('../images/chat/emoji/frustrated2.png'), url('../images/chat/emoji/frustrated2.svg');
+$emoji-GRIN:       url('../images/chat/emoji/grin2.png'), url('../images/chat/emoji/grin2.svg');
+$emoji-HAPPY:      url('../images/chat/emoji/happy2.png'), url('../images/chat/emoji/happy2.svg');
+$emoji-HIPSTER:    url('../images/chat/emoji/hipster2.png'), url('../images/chat/emoji/hipster2.svg');
+$emoji-NEUTRAL:    url('../images/chat/emoji/neutral2.png'), url('../images/chat/emoji/neutral2.svg');
+$emoji-SAD:        url('../images/chat/emoji/sad2.png'), url('../images/chat/emoji/sad2.svg');
+$emoji-SHOCKED:    url('../images/chat/emoji/shocked2.png'), url('../images/chat/emoji/shocked2.svg');
+$emoji-SLEEPY:     url('../images/chat/emoji/sleepy2.png'), url('../images/chat/emoji/sleepy2.svg');
+$emoji-SMILE:      url('../images/chat/emoji/smile2.png'), url('../images/chat/emoji/smile2.svg');
+$emoji-TONGUE:     url('../images/chat/emoji/tongue2.png'), url('../images/chat/emoji/tongue2.svg');
+$emoji-WINK:       url('../images/chat/emoji/wink2.png'), url('../images/chat/emoji/wink2.svg');
+$emoji-WONDERING:  url('../images/chat/emoji/wondering2.png'), url('../images/chat/emoji/wondering2.svg');
+
+/* CSE emoji */
+$emoji-ANDREWFEZ:       url('../images/chat/cse_emoticons/cse_andrewFez.png'), url('../images/chat/cse_emoticons/cse_andrewFez.svg');
+$emoji-JBHEAD:          url('../images/chat/cse_emoticons/cse_jbHead.png'), url('../images/chat/cse_emoticons/cse_jbHead.svg'); 
+$emoji-MARKHEAD:        url('../images/chat/cse_emoticons/cse_markHead.png'), url('../images/chat/cse_emoticons/cse_markHead.svg');
+$emoji-MJELF:           url('../images/chat/cse_emoticons/cse_mjElf.png'), url('../images/chat/cse_emoticons/cse_mjElf.svg');
+$emoji-SANDRAGRIN:      url('../images/chat/cse_emoticons/cse_sandraGrin.png'), url('../images/chat/cse_emoticons/cse_sandraGrin.svg');
+$emoji-TIMHEAD:         url('../images/chat/cse_emoticons/cse_timHead.png'), url('../images/chat/cse_emoticons/cse_timHead.svg');
+$emoji-TINYMICHELLE:    url('../images/chat/cse_emoticons/cse_tinyMichelle.png'), url('../images/chat/cse_emoticons/cse_tinyMichelle.svg');
+$emoji-BATGRIN:         url('../images/chat/cse_emoticons/emote_batGrin.png'), url('../images/chat/cse_emoticons/emote_batGrin.svg');
+$emoji-BATHAPPY:        url('../images/chat/cse_emoticons/emote_batHappy.png'), url('../images/chat/cse_emoticons/emote_batHappy.svg');
+$emoji-BATMAD:          url('../images/chat/cse_emoticons/emote_batMad.png'), url('../images/chat/cse_emoticons/emote_batMad.svg');
+$emoji-BATSAD:          url('../images/chat/cse_emoticons/emote_batSad.png'), url('../images/chat/cse_emoticons/emote_batSad.svg');
+$emoji-BATTONGUE:       url('../images/chat/cse_emoticons/emote_batTongue.png'), url('../images/chat/cse_emoticons/emote_batTongue.svg');
+$emoji-BOB:             url('../images/chat/cse_emoticons/emote_bob.png'), url('../images/chat/cse_emoticons/emote_bob.svg');
+$emoji-BOBLOVE:         url('../images/chat/cse_emoticons/emote_bobLove.png'), url('../images/chat/cse_emoticons/emote_bobLove.svg');
+$emoji-CROWN:           url('../images/chat/cse_emoticons/emote_crown.png'), url('../images/chat/cse_emoticons/emote_crown.svg');
+$emoji-CUPOTEARS:       url('../images/chat/cse_emoticons/emote_cupOtears.png'), url('../images/chat/cse_emoticons/emote_cupOtears.svg');
+$emoji-DRAGONLICK:      url('../images/chat/cse_emoticons/emote_dragonLick.png'), url('../images/chat/cse_emoticons/emote_dragonLick.svg');
+$emoji-DRAGONWHALE:     url('../images/chat/cse_emoticons/emote_dragonwhale.png'), url('../images/chat/cse_emoticons/emote_dragonwhale.svg');
+$emoji-DUCK:            url('../images/chat/cse_emoticons/emote_duck.png'), url('../images/chat/cse_emoticons/emote_duck.svg');
+$emoji-DUCKMAGE:        url('../images/chat/cse_emoticons/emote_duckMage.png'), url('../images/chat/cse_emoticons/emote_duckMage.svg');
+$emoji-FROWNSTRM:       url('../images/chat/cse_emoticons/emote_frownStrm.png'), url('../images/chat/cse_emoticons/emote_frownStrm.svg');
+$emoji-HAPPYSTRM:       url('../images/chat/cse_emoticons/emote_happyStrm.png'), url('../images/chat/cse_emoticons/emote_happyStrm.svg');
+$emoji-JUDGINGDUCKONE:  url('../images/chat/cse_emoticons/emote_judgingDuck1.png'), url('../images/chat/cse_emoticons/emote_judgingDuck1.svg');
+$emoji-JUDGINGDUCKTWO:  url('../images/chat/cse_emoticons/emote_judgingDuck2.png'), url('../images/chat/cse_emoticons/emote_judgingDuck2.svg');
+$emoji-ARTHURIANLOVE:   url('../images/chat/cse_emoticons/emote_loveArthurian_style.png'), url('../images/chat/cse_emoticons/emote_loveArthurian_style.svg');
+$emoji-TUATHALOVE:      url('../images/chat/cse_emoticons/emote_loveTuatha_style.png'), url('../images/chat/cse_emoticons/emote_loveTuatha_style.svg');
+$emoji-VIKINGLOVE:      url('../images/chat/cse_emoticons/emote_loveViking_style.png'), url('../images/chat/cse_emoticons/emote_loveViking_style.svg');
+$emoji-PLUSTEN:         url('../images/chat/cse_emoticons/emote_plus10.png'), url('../images/chat/cse_emoticons/emote_plus10.svg');
+$emoji-PVP:             url('../images/chat/cse_emoticons/emote_PvP.png'), url('../images/chat/cse_emoticons/emote_PvP.svg');
+$emoji-RAGE:            url('../images/chat/cse_emoticons/emote_rage.png'), url('../images/chat/cse_emoticons/emote_rage.svg');
+$emoji-SALT:            url('../images/chat/cse_emoticons/emote_salt.png'), url('../images/chat/cse_emoticons/emote_salt.svg');
+$emoji-ARTHURIANSHIELD: url('../images/chat/cse_emoticons/emote_shieldArthurian.png'), url('../images/chat/cse_emoticons/emote_shieldArthurian.svg');
+$emoji-TUATHASHIELD:    url('../images/chat/cse_emoticons/emote_shieldTuatha.png'), url('../images/chat/cse_emoticons/emote_shieldTuatha.svg');
+$emoji-VIKINGSHIELD:    url('../images/chat/cse_emoticons/emote_shieldViking.png'), url('../images/chat/cse_emoticons/emote_shieldViking.svg');
+$emoji-SHOTSFIRED:      url('../images/chat/cse_emoticons/emote_shotsFired.png'), url('../images/chat/cse_emoticons/emote_shotsFired.svg');
+$emoji-UNICORN:         url('../images/chat/cse_emoticons/emote_unicorn.png'), url('../images/chat/cse_emoticons/emote_unicorn.svg');
+
+
+$emojis: (
+  ANGRY:           $emoji-ANGRY,
+  BAFFLED:         $emoji-BAFFLED,
+  CONFUSED:        $emoji-CONFUSED,
+  COOL:            $emoji-COOL,
+  CRYING:          $emoji-CRYING,
+  EVIL:            $emoji-EVIL,
+  FRUSTRATED:      $emoji-FRUSTRATED,
+  GRIN:            $emoji-GRIN,
+  HAPPY:           $emoji-HAPPY,
+  HIPSTER:         $emoji-HIPSTER,
+  NEUTRAL:         $emoji-NEUTRAL,
+  SAD:             $emoji-SAD,
+  SHOCKED:         $emoji-SHOCKED,
+  SLEEPY:          $emoji-SLEEPY,
+  SMILE:           $emoji-SMILE,
+  TONGUE:          $emoji-TONGUE,
+  WINK:            $emoji-WINK,
+  WONDERING:       $emoji-WONDERING,
+  ANDREWFEZ:       $emoji-ANDREWFEZ,
+  ANDREW:          $emoji-ANDREWFEZ,
+  JBHEAD:          $emoji-JBHEAD,
+  JB:              $emoji-JBHEAD,
+  MARKHEAD:        $emoji-MARKHEAD,
+  MJHEAD:          $emoji-MARKHEAD,
+  MJ:              $emoji-MARKHEAD,
+  MJELF:           $emoji-MJELF,
+  SANDRAGRIN:      $emoji-SANDRAGRIN,
+  TIMHEAD:         $emoji-TIMHEAD,
+  TINYMICHELLE:    $emoji-TINYMICHELLE,
+  BATGRIN:         $emoji-BATGRIN,
+  BATHAPPY:        $emoji-BATHAPPY,
+  BATMAD:          $emoji-BATMAD,
+  BATSAD:          $emoji-BATSAD,
+  BATTONGUE:       $emoji-BATTONGUE,
+  BOB:             $emoji-BOB,
+  BOBLOVE:         $emoji-BOBLOVE,
+  CROWN:           $emoji-CROWN,
+  CUPOTEARS:       $emoji-CUPOTEARS,
+  QQCUP:           $emoji-CUPOTEARS,
+  DRAGONLICK:      $emoji-DRAGONLICK,
+  DRAGONWHALE:     $emoji-DRAGONWHALE,
+  DUCK:            $emoji-DUCK,
+  DUCKMAGE:        $emoji-DUCKMAGE,
+  FROWNSTRM:       $emoji-FROWNSTRM,
+  SADSTRM:         $emoji-FROWNSTRM,
+  HAPPYSTRM:       $emoji-HAPPYSTRM,
+  JUDGINGDUCKONE:  $emoji-JUDGINGDUCKONE,
+  JUDGINGDUCK1:    $emoji-JUDGINGDUCKONE,
+  JUDGINGDUCKTWO:  $emoji-JUDGINGDUCKTWO,
+  JUDGINGDUCK2:    $emoji-JUDGINGDUCKTWO,
+  ARTHURIANLOVE:   $emoji-ARTHURIANLOVE,
+  ARTLOVE:         $emoji-ARTHURIANLOVE,
+  TUATHALOVE:      $emoji-TUATHALOVE,
+  TDDLOVE:         $emoji-TUATHALOVE,
+  VIKINGLOVE:      $emoji-VIKINGLOVE,
+  VIKLOVE:         $emoji-VIKINGLOVE,
+  PLUSTEN:         $emoji-PLUSTEN,
+  PLUS10:          $emoji-PLUSTEN,
+  PVP:             $emoji-PVP,
+  RAGE:            $emoji-RAGE,
+  SALT:            $emoji-SALT,
+  ARTHURIANSHIELD: $emoji-ARTHURIANSHIELD,
+  ARTSHIELD:       $emoji-ARTHURIANSHIELD,
+  TUATHASHIELD:    $emoji-TUATHASHIELD,
+  TDDSHIELD:       $emoji-TUATHASHIELD,
+  VIKINGSHIELD:    $emoji-VIKINGSHIELD,
+  VIKSHIELD:       $emoji-VIKINGSHIELD,
+  SHOTSFIRED:      $emoji-SHOTSFIRED,
+  UNICORN:         $emoji-UNICORN
+);
+
+
+/**
+ * DO NOT EDIT BELOW HERE WHEN ADDING A NEW EMOJI 
+ *
+ * Auto-generates emoji--<emoji-name> classes for all the emojis in the map above
+ */
+
+.emoji {
+  display: inline-block;
+  margin: 0 0.1em;
+  width: 1.2em;
+  height: 1.2em;
+  position: relative;
+  top: 0.2em;
+  background-repeat: no-repeat;
+  background-size: contain;
+  fill: $chat-line-emoji-color;
+  
+  @each $emote, $url in $emojis {
+    &--#{$emote} {
+      background-image: $url;
+    }
+  }
+}

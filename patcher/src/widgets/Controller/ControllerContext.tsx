@@ -7,10 +7,11 @@
 
 import * as React from 'react';
 import gql from 'graphql-tag';
-import { utils } from '@csegames/camelot-unchained';
-import { GraphQL, GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
-import { SubscriptionResult } from '@csegames/camelot-unchained/lib/graphql/subscription';
-import { QueryOptions } from '@csegames/camelot-unchained/lib/graphql/query';
+import { utils } from '@csegames/library/lib/_baseGame';
+import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
+import { SubscriptionResult } from '@csegames/library/lib/_baseGame/graphql/subscription';
+import { QueryOptions } from '@csegames/library/lib/_baseGame/graphql/query';
+
 import { patcher, ChannelStatus, Channel, PatchChannelMode } from '../../services/patcher';
 import { ServerModelFragment } from 'gql/fragments';
 import {

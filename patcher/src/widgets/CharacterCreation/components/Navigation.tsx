@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
-import { Tooltip } from '@csegames/camelot-unchained';
+import { Tooltip } from '../../../components/Tooltip';
 import { CharacterCreationPage } from '../index';
 
 const Container = styled.div`

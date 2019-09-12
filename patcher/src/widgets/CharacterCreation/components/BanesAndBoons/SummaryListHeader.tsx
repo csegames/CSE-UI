@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { Tooltip } from '@csegames/camelot-unchained';
+import { Tooltip } from '../../../../components/Tooltip';
 import { colors } from '../../styleConstants';
 
 const PointsContainer = styled.div`

@@ -9,8 +9,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
  */
+
 // tslint:disable
-import { StepInfo } from '@csegames/camelot-unchained';
+interface StepInfo {
+  element: string;
+  tooltipText?: string;
+}
 
 export const factionSteps: StepInfo[] = [
   {

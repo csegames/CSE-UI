@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { webAPI } from '@csegames/camelot-unchained';
+import { webAPI } from '@csegames/library/lib/camelotunchained';
 
 import ControllerDisplayView from './ControllerDisplayView';
 import { Routes } from '../../../../services/session/routes';

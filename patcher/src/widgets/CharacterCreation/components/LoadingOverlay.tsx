@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { Spinner } from '@csegames/camelot-unchained';
+import { Spinner } from '../../../components/Spinner';
 
 const Container = styled.div`
   position: absolute;

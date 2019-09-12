@@ -8,7 +8,7 @@ import * as React from 'react';
 import { css, cx } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
-import { Tooltip } from '@csegames/camelot-unchained';
+import { Tooltip } from '../../../../components/Tooltip';
 import { colors } from '../../styleConstants';
 
 const TraitView = styled.div`

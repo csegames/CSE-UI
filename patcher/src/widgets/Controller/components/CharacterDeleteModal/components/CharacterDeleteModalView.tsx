@@ -8,7 +8,9 @@
 import * as React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
-import { Tooltip, Spinner } from '@csegames/camelot-unchained';
+
+import { Spinner } from '../../../../../components/Spinner';
+import { Tooltip } from '../../../../../components/Tooltip';
 import PatcherModal from '../../../../PatcherModal';
 import GenericButton from '../../../../GenericButton';
 
