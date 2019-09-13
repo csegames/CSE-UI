@@ -15,13 +15,16 @@ import { SkinItem } from './SkinItem';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
 `;
 
 const ItemsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  width: 846px;
-  height: 930px;
+  margin-top: 15px;
+  width: 55%;
+  height: 75%;
   overflow: auto;
   align-self: center;
 

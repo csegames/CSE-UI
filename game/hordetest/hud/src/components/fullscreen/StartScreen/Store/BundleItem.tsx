@@ -10,9 +10,9 @@ import { Bundle } from './testData';
 
 const Container = styled.div`
   position: relative;
-  width: 407px;
-  height: 300px;
-  margin: 5px;
+  width: calc(50% - 20px);
+  height: calc(50% - 20px);
+  margin: 10px;
   background-color: #2f0d03;
   cursor: pointer;
 

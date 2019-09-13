@@ -55,6 +55,8 @@ export function ActionButtons(props: Props) {
   useEffect(() => {
     const handle = hordetest.game.abilityBarState.onUpdated(() => {
       const abilityBarState = JSON.parse(JSON.stringify(hordetest.game.abilityBarState));
+      if (!abilityBarState) return;
+
       if (abilityBarState.weak && abilityBarState.weak.id >= 0) {
         setWeakAbility(abilityBarState.weak);
       }

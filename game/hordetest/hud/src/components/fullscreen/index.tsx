@@ -28,8 +28,8 @@ const Container = styled.div`
 
 const HideButton = styled.div`
   position: fixed;
-  bottom: 300px;
-  left: 5px;
+  bottom: 0px;
+  left: 0px;
   cursor: pointer;
   z-index: 10;
 `;
@@ -68,6 +68,7 @@ export interface Props {
 
 export interface State {
   isVisible: boolean;
+  isChatVisible: boolean;
   currentRoute: Route;
 }
 
@@ -76,6 +77,7 @@ export class FullScreen extends React.Component<Props, State> {
     super(props);
     this.state = {
       isVisible: false,
+      isChatVisible: true,
       currentRoute: Route.Start,
     };
   }
@@ -87,9 +89,11 @@ export class FullScreen extends React.Component<Props, State> {
         <HideButton onClick={this.hide}>
           <Button type='blue' text='Hide Full Screen UI' />
         </HideButton>
-        <ChatPosition>
-          <Chat accessToken={game.accessToken} />
-        </ChatPosition>
+        {this.state.isChatVisible &&
+          <ChatPosition>
+            <Chat accessToken={game.accessToken} />
+          </ChatPosition>
+        }
         <RightModal />
       </Container>
     ) : <OpenFullScreenButton onClick={this.show}>Open Full Screen</OpenFullScreenButton>
@@ -115,6 +119,11 @@ export class FullScreen extends React.Component<Props, State> {
     }
   }
 
+  public componentDidMount() {
+    game.on('show-fullscreen-chat', this.handleShowFullScreenChat);
+    game.on('hide-fullscreen-chat', this.handleHideFullScreenChat);
+  }
+
   private show = () => {
     this.setState({ isVisible: true });
   }
@@ -133,5 +142,13 @@ export class FullScreen extends React.Component<Props, State> {
 
   private onLeaveGameStats = () => {
     this.setState({ currentRoute: Route.Start });
+  }
+
+  private handleShowFullScreenChat = () => {
+    this.setState({ isChatVisible: true });
+  }
+
+  private handleHideFullScreenChat = () => {
+    this.setState({ isChatVisible: false });
   }
 }

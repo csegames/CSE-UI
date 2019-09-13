@@ -49,6 +49,9 @@ export interface Props {
   onSkinClick: (skin: Skin) => void;
 
   disabled?: boolean;
+  width?: string;
+  height?: string;
+  margin?: string;
 }
 
 export function SkinItem(props: Props) {
@@ -64,8 +67,9 @@ export function SkinItem(props: Props) {
       skin={props.skin}
       className={Rarity[props.skin.rarity]}
       onClick={onSkinClick}
-      width={200}
-      height={300}>
+      width={props.width || 'calc(25% - 20px)'}
+      height={props.height || 'calc(50% - 20px)'}
+      margin={props.margin || '10px'}>
       <CostContainer>
         <Name>{props.skin.name}</Name>
         <Cost>

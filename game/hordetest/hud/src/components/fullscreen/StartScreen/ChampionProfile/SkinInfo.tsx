@@ -74,9 +74,9 @@ const ButtonSpacing = styled.div`
 `;
 
 export interface Props {
-  hideSkinButtons: boolean;
   selectedPreviewSkinInfo: Skin;
-  onSave: (skin: Skin) => void;
+  hideSkinButtons?: boolean;
+  onSave?: (skin: Skin) => void;
 }
 
 export function SkinInfo(props: Props) {

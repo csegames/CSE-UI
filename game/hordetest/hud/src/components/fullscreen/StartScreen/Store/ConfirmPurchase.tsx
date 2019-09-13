@@ -66,7 +66,7 @@ export function ConfirmPurchase(props: Props) {
     <Container>
       <Title>Confirm Purchase</Title>
       <CostTitle>You will use {props.skin.cost} to purchase:</CostTitle>
-      <SkinItem disabled skin={props.skin} onSkinClick={noOp} />
+      <SkinItem disabled width={'70%'} height={'40%'} skin={props.skin} onSkinClick={noOp} />
       <ButtonsContainer>
         <Button text='Purchase' type='blue' styles={ButtonStyle} />
         <Button text='Cancel' type='gray' onClick={onCancelClick} styles={ButtonStyle} />

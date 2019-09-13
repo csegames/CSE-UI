@@ -11,6 +11,7 @@ import { NavMenu, StartScreenRoute } from './NavMenu';
 import { Play } from './Play';
 import { ChampionProfile } from './ChampionProfile';
 import { Store } from './Store';
+import { BattlePass } from './BattlePass';
 
 const Container = styled.div`
   position: relative;
@@ -65,6 +66,12 @@ export function StartScreen(props: Props) {
   const [selectedRoute, setSelectedRoute] = useState(StartScreenRoute.Play);
 
   function onSelectRoute(route: StartScreenRoute) {
+    if (route !== StartScreenRoute.Play) {
+      game.trigger('hide-fullscreen-chat');
+    } else {
+      game.trigger('show-fullscreen-chat');
+    }
+
     setSelectedRoute(route);
   }
 
@@ -90,6 +97,14 @@ export function StartScreen(props: Props) {
         return (
           <GenericScreenContainer>
             <Store />
+          </GenericScreenContainer>
+        );
+      }
+
+      case StartScreenRoute.BattlePass: {
+        return (
+          <GenericScreenContainer>
+            <BattlePass />
           </GenericScreenContainer>
         );
       }

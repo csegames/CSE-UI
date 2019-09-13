@@ -9,8 +9,9 @@ import { styled } from '@csegames/linaria/react';
 import { Skin, Rarity } from '../Store/testData';
 
 interface ContainerProps extends React.HTMLProps<HTMLDivElement> {
-  width: number;
-  height: number;
+  width: string;
+  height: string;
+  margin: string;
 }
 
 const Container = styled.div`
@@ -18,9 +19,9 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${(props: ContainerProps) => props.width ? `${props.width}px` : '100px'};
-  height: ${(props: ContainerProps) => props.height ? `${props.height}px` : '120px'};
-  margin: 5px;
+  width: ${(props: ContainerProps) => props.width ? props.width : '100px'};
+  height: ${(props: ContainerProps) => props.height ? props.height : '120px'};
+  margin: ${(props: ContainerProps) => props.margin ? props.margin : '5px'};
   background-color: #161616;
   box-shadow: inset 0 0 0 2px #2c2c2c;
 
@@ -103,8 +104,9 @@ const CheckIcon = styled.span`
 export interface Props {
   skin: Skin;
 
-  width?: number;
-  height?: number;
+  width?: string;
+  height?: string;
+  margin?: string;
   isSelected?: boolean;
   shouldShowStatus?: boolean;
   className?: string;
@@ -141,6 +143,7 @@ export function EquipmentItem(props: Props) {
     <Container
       width={props.width}
       height={props.height}
+      margin={props.margin}
       className={`${props.className} ${rarityClass} ${disabledClass}`}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
