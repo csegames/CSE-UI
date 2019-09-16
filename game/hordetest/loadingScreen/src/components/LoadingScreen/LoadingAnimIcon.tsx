@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { css } from '@csegames/linaria';
-import { SpriteSheetAnimator } from 'cseshared/components/SpriteSheetAnimator';
+import { SpriteSheetAnimator } from 'cushared/components/SpriteSheetAnimator';
 
 const Sprite = css`
   display: inline-block;

@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { css } from '@csegames/linaria';
-import { SpriteSheetAnimator } from 'cseshared/components/SpriteSheetAnimator';
+import { SpriteSheetAnimator } from 'cushared/components/SpriteSheetAnimator';
 
 const Sprite = css`
   display: inline-block;
@@ -27,7 +27,7 @@ export class LoadingAnimIcon extends React.Component<Props> {
     return (
       <SpriteSheetAnimator
         styles={Sprite}
-        backgroundUrl={'images/spritesheet-loading.png'}
+        backgroundUrl={'images/fullscreen/loadingscreen/spritesheet-loading.png'}
         numberOfRows={15}
         numberOfColumns={13}
         spriteHeight={300}

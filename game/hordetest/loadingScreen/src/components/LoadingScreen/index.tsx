@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
+import { LoadingAnimIcon } from './LoadingAnimIcon';
 
 const Container = styled.div`
   position: fixed;
@@ -17,6 +18,7 @@ const Container = styled.div`
   background-image: url(../images/bg.jpg);
   background-size: cover;
   background-repeat: no-repeat;
+  background-color: black;
 `;
 
 const Logo = styled.div`
@@ -27,6 +29,13 @@ const Logo = styled.div`
   height: 53px;
   background-image: url(../images/temp-logo.png);
   background-size: contain;
+`;
+
+const LoadingAnimIconPosition = styled.div`
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0px;
 `;
 
 const LoadingText = styled.div`
@@ -61,6 +70,9 @@ export class LoadingScreen extends React.Component<Props, State> {
     return this.state.loadingState && this.state.loadingState.visible ? (
       <Container>
         <Logo />
+        <LoadingAnimIconPosition>
+          <LoadingAnimIcon />
+        </LoadingAnimIconPosition>
         <LoadingText>{this.state.loadingState.message}</LoadingText>
       </Container>
     ) : null;
