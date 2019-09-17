@@ -144,6 +144,42 @@ const LuchorpanClass = styled.div`
   ${ClassMask}
 `;
 
+const WaveWeaverClass = styled.div`
+  display: block
+  position: absolute;
+  background-size: 340%;
+  background-position: 50% 42%;
+  width: 120px;
+  height: 70px;
+  bottom: 5px;
+  left: -40px;
+  ${ClassMask}
+`;
+
+const MinstrelClass = styled.div`
+  display: block
+  position: absolute;
+  background-size: 340%;
+  background-position: 45% 37%;
+  width: 120px;
+  height: 70px;
+  bottom: 5px;
+  left: -40px;
+  ${ClassMask}
+`;
+
+const DruidClass = styled.div`
+  display: block
+  position: absolute;
+  background-size: 340%;
+  background-position: 50% 25%;
+  width: 120px;
+  height: 70px;
+  bottom: 5px;
+  left: -40px;
+  ${ClassMask}
+`;
+
 const DeleteButton = styled.div`
   display: block;
   position: absolute;
@@ -187,7 +223,7 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
   }
   public render() {
     const { character } = this.props;
-    const race = includes(Race[character.race].toLowerCase(), 'human') ? character.race :
+    const race = includes(Race[character.race].toLowerCase(), 'human') ? 'Human' :
       Race[character.race];
 
     const charIdentifier = `${race}${Gender[character.gender]}${Archetype[character.archetype]}`;
@@ -279,6 +315,28 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
         return (
           <ValkyrieWintersShadowClass style={{ backgroundImage: `url(${classImg})`, transform: 'scale(-1, 1)' }} />
         );
+      }
+
+
+      case 'HumanMaleWaveWeaver':
+      case 'HumanFemaleWaveWeaver':
+      case 'ValkyrieMaleWaveWeaver':
+      case 'ValkyrieFemaleWaveWeaver': {
+        return <WaveWeaverClass style={{ backgroundImage: `url(${classImg})` }} />;
+      }
+
+      case 'HumanMaleMinstrel':
+      case 'HumanFemaleMinstrel':
+      case 'PictMaleMinstrel':
+      case 'PictFemaleMinstrel': {
+        return <MinstrelClass style={{ backgroundImage: `url(${classImg})` }} />;
+      }
+
+      case 'HumanMaleDruid':
+      case 'HumanFemaleDruid':
+      case 'LuchorpanMaleDruid':
+      case 'LuchorpanFemaleDruid': {
+        return <DruidClass style={{ backgroundImage: `url(${classImg})` }} />;
       }
 
       case 'HumanMaleEmpath':

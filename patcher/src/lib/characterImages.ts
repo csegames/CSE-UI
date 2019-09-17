@@ -12,6 +12,19 @@ export function shouldFlipCharImage(character: SimpleCharacter) {
   return (character.archetype === Archetype.WintersShadow);
 }
 
+export function isSpecialClass(a: Archetype) {
+  if (a === Archetype.Minstrel ||
+      a === Archetype.FlameWarden ||
+      a === Archetype.DarkFool ||
+      a === Archetype.Druid ||
+      a === Archetype.Skald ||
+      a === Archetype.WaveWeaver) {
+    return true;
+  }
+
+  return false;
+}
+
 export function getCharImage(character: SimpleCharacter) {
   if (!character || !character.race || !character.gender || !character.archetype) return '';
 
@@ -20,8 +33,12 @@ export function getCharImage(character: SimpleCharacter) {
     race = 'human';
   }
 
-  const gender = (character.gender as any) === 'Male' ? 'm' : 'f';
   const archetype = Archetype[character.archetype].toLowerCase();
+  if (isSpecialClass(character.archetype)) {
+    return `/ui/images/classes/any-${archetype}.png`;
+  }
+
+  const gender = (character.gender as any) === 'Male' ? 'm' : 'f';
 
   return `/ui/images/character-select/${race}-${gender}-${archetype}-select.png`;
 }

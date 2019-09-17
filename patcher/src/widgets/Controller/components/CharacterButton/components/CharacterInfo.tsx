@@ -127,7 +127,7 @@ const CharPic = styled.div`
   background: url(/ui/images/controller/character-face-spot.png) no-repeat;
   background-size: contain;
   z-index: 2;
-  -webkit-clip-path: polygon(0% 0%, 100% 0%, 57% 100%, 0% 100%);
+  -webkit-clip-path: polygon(45% 0%, 100% 0%, 57% 100%, 0% 100%);
   transition: -webkit-filter 0.8s ease;
   cursor: pointer;
   &:hover ~ .block-area {
@@ -290,6 +290,8 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
                   (character.gender === Gender.Male && character.race === Race.HumanMaleT &&
                     character.archetype === Archetype.ForestStalker) ? '50% 25%' :
                   character.archetype === Archetype.WintersShadow ? '45% 25%' :
+                  character.archetype === Archetype.WaveWeaver ? '50% 42%' :
+                  character.archetype === Archetype.Minstrel ? '45% 37%' :
                   '50% 20%',
                 transform: flipImage ? 'scale(-1, 1)' : 'none',
               }}
@@ -302,6 +304,8 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
                 backgroundPosition: character.race === Race.Luchorpan ||
                   (character.race === Race.HumanMaleT && character.archetype === Archetype.ForestStalker) ? '50% 25%' :
                 character.archetype === Archetype.WintersShadow ? '45% 25%' :
+                character.archetype === Archetype.WaveWeaver ? '50% 42%' :
+                character.archetype === Archetype.Minstrel ? '45% 37%' :
                 '50% 20%',
                 transform: flipImage ? 'scale(-1, 1)' : 'none',
               }}

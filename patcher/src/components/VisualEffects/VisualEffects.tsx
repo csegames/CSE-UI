@@ -37,6 +37,8 @@ class VisualEffects extends React.PureComponent<Props, {}> {
       <div className='videobg'>
         <div className='parallax' data-relative-input='true' id={this.props.id}>
           {_.isArray(layerInfo) ? layerInfo.map((layer, i) => {
+            if (!layer) return null;
+
             if (layer.particleEffect) {
               return (
                 <div

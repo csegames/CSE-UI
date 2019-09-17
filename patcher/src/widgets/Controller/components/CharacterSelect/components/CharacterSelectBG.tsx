@@ -10,7 +10,7 @@ import { css, cx } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import CharacterSelectFX from './CharacterSelectFX';
 import NoCharacterSelectFX from './NoCharacterSelectFX';
-import { getCharImage } from '../../../../../lib/characterImages';
+import { getCharImage, isSpecialClass } from '../../../../../lib/characterImages';
 import { SimpleCharacter, Race, Archetype, Faction } from 'gql/interfaces';
 
 const CharTransitionAnim = css`
@@ -83,11 +83,14 @@ const CharacterMetaInfo = styled.div`
 `;
 
 const CharImg = styled.img`
-  left: 10%;
   position: absolute;
   width: auto;
   z-index: 2;
   bottom: 25px;
+
+  &.websiteImage {
+    margin-left: 10%;
+  }
 `;
 
 const CharBase = styled.div`
@@ -143,6 +146,7 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
 
   public render() {
     const visualFXChar = this.state.visualFXChar || this.state.firstChar;
+    const isWebsiteImageClass = this.isWebsiteImage() ? 'websiteImage' : '';
     const { selectedCharacter } = this.props;
     if (selectedCharacter) {
       const { faction } = selectedCharacter;
@@ -160,7 +164,7 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
             selectedClass={{ id: visualFXChar && visualFXChar.archetype }}
           />
           <CharImg
-            className={cx('bgelement char', this.state.shouldTransition ? CharTransitionAnim : '')}
+            className={cx('bgelement char', this.state.shouldTransition ? CharTransitionAnim : '', isWebsiteImageClass)}
             src={getCharImage(selectedCharacter)}
             style={{
               height: selectedCharacter.race === Race.Luchorpan ||
@@ -168,10 +172,12 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
               opacity: this.state.visualFXChar === null ? 1 : 0,
             }}
           />
-          <CharBase
-            className={cx(Faction[faction].toLowerCase(), this.state.shouldTransition ? CharBaseTransitionAnim : '')}
-            style={{ opacity: this.state.visualFXChar === null ? 1 : 0 }}
-          />
+          {!isSpecialClass(selectedCharacter.archetype) &&
+            <CharBase
+              className={cx(Faction[faction].toLowerCase(), this.state.shouldTransition ? CharBaseTransitionAnim : '')}
+              style={{ opacity: this.state.visualFXChar === null ? 1 : 0 }}
+            />
+          }
           <CharacterInfoOverlay
             className={this.state.shouldTransition ? CharNameTransitionAnim : ''}
             style={{
@@ -243,6 +249,21 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
     clearTimeout(this.transitionTimeout);
     this.setState({ shouldTransition: false });
     this.transitionTimeout = setTimeout(() => this.setState({ shouldTransition: true }), 1);
+  }
+
+  private isWebsiteImage = () => {
+    const { selectedCharacter } = this.props;
+    const archetype = Archetype[selectedCharacter.archetype].toLowerCase();
+    if (archetype === 'minstrel' ||
+      archetype === 'flamewarden' ||
+      archetype === 'darkfool' ||
+      archetype === 'druid' ||
+      archetype === 'skald' ||
+      archetype === 'waveweaver') {
+      return true;
+    }
+
+    return false;
   }
 }
 
