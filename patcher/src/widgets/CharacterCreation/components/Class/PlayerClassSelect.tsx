@@ -98,8 +98,11 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
         case Archetype.Skald: videoTitle = 'healers'; break;
       }
     }
-    const displayedClasses = this.props.classes.filter((c: any) => c.faction === this.props.selectedFaction.id ||
-      c.faction === Faction.Factionless);
+    const displayedClasses = this.props.classes
+      .filter((c: PlayerClassInfo) => c.faction === this.props.selectedFaction.id || c.faction === Faction.Factionless)
+
+      // DISABLE CLASSEES THAT HAVE NOT BEEN RELEASED YET
+      .filter((c: PlayerClassInfo) => c.name !== 'Skald' && c.name !== 'Dark Fool');
 
     return (
       <div className='page'>
