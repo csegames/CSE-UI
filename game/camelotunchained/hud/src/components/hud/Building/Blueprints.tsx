@@ -136,7 +136,7 @@ export class Blueprints extends React.Component<BlueprintsProps, BlueprintsState
       <Container className='cse-ui-scroller-thumbonly'>
         <Controller>
           {
-            camelotunchained.game.building.mode === BuildingMode.BlocksSelected ?
+            game.building.mode === BuildingMode.BlocksSelected ?
             <CreateBtn onClick={() =>
               game.trigger(camelotunchained.game.engineEvents.EE_OnWantCreateBlueprintFromSelection)}>
               Create Blueprint from selection.
@@ -149,12 +149,12 @@ export class Blueprints extends React.Component<BlueprintsProps, BlueprintsState
         <Content>
         {blueprints.length === 0 ? 'No Blueprints Available.' : null}
         {blueprints.map((bp) => {
-          const BP = bp.id === camelotunchained.game.building.activeBlueprintID ? SelectedBlueprint : Blueprint;
+          const BP = bp.id === game.building.activeBlueprintID ? SelectedBlueprint : Blueprint;
           return (
 
               <BP
                 key={bp.id}
-                onClick={() => camelotunchained.game.building.selectBlueprintAsync(bp.id)}
+                onClick={() => game.building.selectBlueprintAsync(bp.id)}
               >
               <Tooltip
                 content={(
@@ -169,7 +169,7 @@ export class Blueprints extends React.Component<BlueprintsProps, BlueprintsState
               </Tooltip>
                 <ConfirmDialog
                   onConfirm={() => (
-                    camelotunchained.game.building.deleteBlueprintAsync(bp.id)
+                    game.building.deleteBlueprintAsync(bp.id)
                     .then(() => setTimeout(() => this.forceUpdate()))
                     .catch(() => setTimeout(() => this.forceUpdate())))}
                   onCancel={() => {}}
@@ -206,7 +206,7 @@ export class Blueprints extends React.Component<BlueprintsProps, BlueprintsState
   }
 
   private getFilteredBlueprints = () => {
-    const blueprints = Object.values(camelotunchained.game.building.blueprints);
+    const blueprints = Object.values(game.building.blueprints);
     if (this.props.searchValue === '') return blueprints;
 
     const filteredBlueprints = blueprints.filter((item) => {

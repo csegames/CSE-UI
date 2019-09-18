@@ -17,21 +17,21 @@ function requestBlueprintPaste() {
 }
 
 function fireHandleBlueprints() {
-  game.trigger(BuildingEventTopics.handlesBlueprints, { blueprints: camelotunchained.game.building.blueprints });
+  game.trigger(BuildingEventTopics.handlesBlueprints, { blueprints: game.building.blueprints });
 }
 
 function requestBlueprintDelete(blueprint: Blueprint) {
-  camelotunchained.game.building.deleteBlueprintAsync(blueprint.id);
+  game.building.deleteBlueprintAsync(blueprint.id);
   fireHandleBlueprints();
 }
 
 function requestBlueprintSave(name: string) {
-  camelotunchained.game.building.createBlueprintFromSelectionAsync(name);
+  game.building.createBlueprintFromSelectionAsync(name);
   fireHandleBlueprints();
 }
 
 function requestBlueprintSelect(blueprint: Blueprint) {
-  camelotunchained.game.building.selectBlueprintAsync(blueprint.id);
+  game.building.selectBlueprintAsync(blueprint.id);
   game.trigger(BuildingEventTopics.handlesBlueprintSelect, { blueprint });
 }
 

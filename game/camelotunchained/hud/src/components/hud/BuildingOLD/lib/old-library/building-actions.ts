@@ -5,7 +5,7 @@
  */
 
 export function changeMode(mode: BuildingMode) {
-  camelotunchained.game.building.setModeAsync(mode);
+  game.building.setModeAsync(mode);
 }
 
 export function commit() {

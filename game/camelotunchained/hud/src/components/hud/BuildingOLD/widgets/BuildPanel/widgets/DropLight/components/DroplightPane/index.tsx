@@ -81,7 +81,7 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
   }
 
   private triggerDrop = (light: Light) => {
-    camelotunchained.game.dropLight.drop(
+    game.dropLight.drop(
       light.intensity,
       light.radius,
       light.color.red,
@@ -114,11 +114,11 @@ class DropLightPane extends React.Component<DropLightPaneProps, DropLightPaneSta
   }
 
   private triggerRemove = () => {
-    camelotunchained.game.dropLight.removeLast();
+    game.dropLight.removeLast();
   }
 
   private triggerClear = () => {
-    camelotunchained.game.dropLight.clearAll();
+    game.dropLight.clearAll();
   }
 
   private toggleLightSelector = () => {

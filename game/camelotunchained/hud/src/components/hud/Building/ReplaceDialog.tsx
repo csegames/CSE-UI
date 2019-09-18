@@ -94,7 +94,7 @@ const Image = styled.img`
 export function ReplaceDialog() {
 
   const [visible, setVisible] = React.useState(false);
-  const materials = Object.values(camelotunchained.game.building.materials) as Material[];
+  const materials = Object.values(game.building.materials) as Material[];
   const [fromMat, setFromMat] = React.useState(materials[0]);
   const [toMat, setToMat] = React.useState(materials[1]);
   const [useSelection, setSelection] = React.useState(true);
@@ -140,7 +140,7 @@ export function ReplaceDialog() {
               onChange={e => setSelection(e.target.checked)}></CheckInput>
             <label htmlFor='selection'>In Selection</label>
           </div>
-          <Btn onClick={() => camelotunchained.game.building.replaceMaterialsAsync(fromMat.id, toMat.id, useSelection)}>
+          <Btn onClick={() => game.building.replaceMaterialsAsync(fromMat.id, toMat.id, useSelection)}>
             Replace
           </Btn>
         </Content>

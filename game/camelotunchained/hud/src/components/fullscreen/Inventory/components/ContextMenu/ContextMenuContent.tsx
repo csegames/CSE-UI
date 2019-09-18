@@ -175,7 +175,7 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     const { id, staticDefinition } = this.props.item;
     this.closeInventory();
 
-    camelotunchained.game.itemPlacementMode.requestStart(staticDefinition.numericItemDefID, id, (action && action.id) || '');
+    game.itemPlacementMode.requestStart(staticDefinition.numericItemDefID, id, (action && action.id) || '');
   }
 
   private onActionClick = (action: InventoryItem.Actions) => {

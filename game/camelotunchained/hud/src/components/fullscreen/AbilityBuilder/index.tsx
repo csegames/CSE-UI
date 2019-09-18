@@ -231,7 +231,7 @@ function AbilityBuilder(props: {}) {
         return imagePrefix + 'classes-bg-wintersshadow.jpg';
       }
       default: {
-        return '';
+        return imagePrefix + 'classes-bg-generic.jpg';
       }
     }
   }

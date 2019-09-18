@@ -126,11 +126,11 @@ class MaterialReplacePane extends React.Component<MaterialReplacePaneProps, Mate
   }
 
   private materialReplace = () => {
-    camelotunchained.game.building.replaceMaterialsAsync(this.props.from.id, this.props.to.id, true);
+    game.building.replaceMaterialsAsync(this.props.from.id, this.props.to.id, true);
   }
 
   private materialReplaceAll = () => {
-    camelotunchained.game.building.replaceMaterialsAsync(this.props.from.id, this.props.to.id, false);
+    game.building.replaceMaterialsAsync(this.props.from.id, this.props.to.id, false);
   }
 }
 

@@ -105,7 +105,7 @@ export class Items extends React.Component<ItemsProps, ItemsState> {
         <Content>
           {items.length === 0 ? 'No Potential Items Available.' : null}
           {items.map((i) => {
-            const I = i.id === camelotunchained.game.building.activePotentialItemID ? SelectedItem : Item;
+            const I = i.id === game.building.activePotentialItemID ? SelectedItem : Item;
             return (
                 <Tooltip
                   content={(
@@ -143,15 +143,15 @@ export class Items extends React.Component<ItemsProps, ItemsState> {
   }
 
   private onClick = async (item: PotentialItem) => {
-    const result = await camelotunchained.game.building.selectPotentialItemAsync(item.id);
+    const result = await game.building.selectPotentialItemAsync(item.id);
     if (result.success) {
       game.trigger(camelotunchained.game.engineEvents.EE_OnToggleBuildSelector);
     }
   }
 
   private getFilteredItems = () => {
-    const items = camelotunchained.game.building.potentialItems &&
-      Object.values(camelotunchained.game.building.potentialItems) || [];
+    const items = game.building.potentialItems &&
+      Object.values(game.building.potentialItems) || [];
     if (this.props.searchValue === '') return items;
 
     const filteredItems = items.filter((item) => {

@@ -7,10 +7,10 @@
 import BuildingEventTopics from './events/BuildingEventTopics';
 
 function getBlockForBlockId(blockId: number) {
-  for (const material in camelotunchained.game.building.materials) {
-    for (const block in camelotunchained.game.building.materials[material].blocks) {
-      if (camelotunchained.game.building.materials[material].blocks[block].id === blockId) {
-        return camelotunchained.game.building.materials[material].blocks[block];
+  for (const material in game.building.materials) {
+    for (const block in game.building.materials[material].blocks) {
+      if (game.building.materials[material].blocks[block].id === blockId) {
+        return game.building.materials[material].blocks[block];
       }
     }
   }
@@ -18,10 +18,10 @@ function getBlockForBlockId(blockId: number) {
 }
 
 function getMaterialForBlockId(blockId: number) {
-  for (const material in camelotunchained.game.building.materials) {
-    for (const block in camelotunchained.game.building.materials[material].blocks) {
-      if (camelotunchained.game.building.materials[material].blocks[block].id === blockId) {
-        return camelotunchained.game.building.materials[material];
+  for (const material in game.building.materials) {
+    for (const block in game.building.materials[material].blocks) {
+      if (game.building.materials[material].blocks[block].id === blockId) {
+        return game.building.materials[material];
       }
     }
   }
@@ -38,7 +38,7 @@ function getBlockForMaterialAndShapeId(material: Material, shapeId: number) {
 }
 
 function requestBlockSelect(block: Block) {
-  camelotunchained.game.building.selectBlockAsync(block.id);
+  game.building.selectBlockAsync(block.id);
 }
 
 function requestMaterials() {

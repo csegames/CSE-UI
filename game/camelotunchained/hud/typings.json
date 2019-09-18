@@ -13,8 +13,5 @@
     "react-resizable": "github:cumodsquad/Typings/react-resizable/react-resizable.d.ts",
     "velocity-react": "github:cumodsquad/Typings/velocity-react/velocity-react.d.ts",
     "yargs-parser": "github:cumodsquad/Typings/yargs-parser/yargs-parser.d.ts"
-  },
-  "dependencies": {
-    "index": "github:gaearon/redux-thunk/index.d.ts"
   }
 }

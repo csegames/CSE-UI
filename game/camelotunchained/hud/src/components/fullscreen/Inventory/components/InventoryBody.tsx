@@ -262,7 +262,7 @@ class InventoryBody extends React.Component<InventoryBodyComponentProps, Invento
     });
     this.dropItemHandler = game.on(eventNames.onDropItem, (payload: DropItemPayload) =>
       base.makeDropItemRequest(payload.inventoryItem.item));
-    camelotunchained.game.itemPlacementMode.requestCancel();
+    game.itemPlacementMode.requestCancel();
   }
 
   public componentDidUpdate(prevProps: InventoryBodyComponentProps) {

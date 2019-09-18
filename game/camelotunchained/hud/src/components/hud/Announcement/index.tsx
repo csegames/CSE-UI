@@ -42,7 +42,7 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
   }
 
   public componentDidMount() {
-    this.eventHandles.push(camelotunchained.game.onAnnouncement((type: AnnouncementType, message: string) => {
+    this.eventHandles.push(game.onAnnouncement((type: AnnouncementType, message: string) => {
       if ((type & AnnouncementType.PopUp) === 0) {
         return;
       }

@@ -30,7 +30,8 @@ const Container = styled.div`
       filter: brightness(150%) hue-rotate(-75deg);
     }
 
-    &.Shout {
+    &.Shout,
+    &.Song {
       filter: brightness(150%) hue-rotate(135deg);
     }
 
@@ -78,7 +79,8 @@ const BackgroundWrapper = styled.div`
     }
   }
 
-  &.Shout {
+  &.Shout,
+  &.Song {
     filter: hue-rotate(135deg) brightness(100%);
     -webkit-mask-image: url(../images/abilitybuilder/uhd/mask-shout.png);
     &:hover {
@@ -109,7 +111,8 @@ const BackgroundWrapper = styled.div`
       -webkit-mask-image: url(../images/abilitybuilder/hd/mask-archery.png);
     }
 
-    &.Shout {
+    &.Shout,
+    &.Song {
       -webkit-mask-image: url(../images/abilitybuilder/hd/mask-shout.png);
     }
 
@@ -221,7 +224,9 @@ const Clouds = styled.div`
   }
 
   &.Shout,
-  &.Shout:before {
+  &.Shout:before,
+  &.Song,
+  &.Song:before {
     animation-delay: 3s;
   }
 
@@ -329,7 +334,8 @@ const NameTag = styled.div`
     filter: brightness(100%) hue-rotate(-75deg);
   }
 
-  &.Shout {
+  &.Shout,
+  &.Song {
     filter: brightness(100%) hue-rotate(135deg);
   }
 
@@ -467,12 +473,28 @@ export class AbilityTypeSelectItem extends React.PureComponent<Props, State> {
     const { type } = this.props;
     const { classID } = camelotunchained.game.selfPlayerState;
     const hdPrefix = uiContext.isUHD() ? 'uhd' : 'hd';
+
+    if (classID === Archetype.Skald ||
+        classID === Archetype.Minstrel ||
+        classID === Archetype.DarkFool) {
+      // Support classes that have no art right now. Going to use assets that look like singing :P.
+      return `images/abilitybuilder/${hdPrefix}/select-shout-fianna.png`.toLowerCase();
+    }
+
     return `images/abilitybuilder/${hdPrefix}/select-${type.name}-${Archetype[classID]}.png`.toLowerCase();
   }
 
   private getNameTagImage = (uiContext: UIContext) => {
     const { type } = this.props;
+    const { classID } = camelotunchained.game.selfPlayerState;
     const hdPrefix = uiContext.isUHD() ? 'uhd' : 'hd';
+
+    if (classID === Archetype.Skald ||
+        classID === Archetype.Minstrel ||
+        classID === Archetype.DarkFool) {
+      return `images/abilitybuilder/${hdPrefix}/select-name-bg-shout.png`.toLowerCase();
+    }
+
     return `images/abilitybuilder/${hdPrefix}/select-name-bg-${type.name}.png`.toLowerCase();
   }
 }

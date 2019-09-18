@@ -79,7 +79,7 @@ export class Build extends React.PureComponent<BuildProps, BuildState> {
     super(props);
     this.state = {
       searchValue: '',
-      visible: camelotunchained.game.building.mode !== BuildingMode.NotBuilding,
+      visible: game.building.mode !== BuildingMode.NotBuilding,
       open: true,
     };
   }
@@ -152,7 +152,7 @@ export class Build extends React.PureComponent<BuildProps, BuildState> {
   }
 
   private handleBuildingModeChanged = () => {
-    if (camelotunchained.game.building.mode === BuildingMode.NotBuilding) {
+    if (game.building.mode === BuildingMode.NotBuilding) {
       this.setState({
         visible: false,
         open: true,

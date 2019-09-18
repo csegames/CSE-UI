@@ -128,11 +128,11 @@ export class LoadingScreen extends React.PureComponent<{}> {
     }
 
     // Hook up to listen for loading state changes
-    this.loadingStateEventHandle = camelotunchained.game.loadingState.onUpdated(this.loadingStateChanged);
+    this.loadingStateEventHandle = game.loadingState.onUpdated(this.loadingStateChanged);
   }
 
   public render() {
-    const { message, visible } = camelotunchained.game.loadingState;
+    const { message, visible } = game.loadingState;
 
     if (!visible) {
       // nothing to render here when the loading screen is not visible;

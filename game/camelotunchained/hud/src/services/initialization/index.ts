@@ -119,7 +119,7 @@ export default () => {
   }
   combatLogToString(null);
 
-  camelotunchained.game.onCombatEvent((logs: CombatEvent[]) => {
+  game.onCombatEvent((logs: CombatEvent[]) => {
     const combatLogs = logs.map(combatLogToString);
     game.trigger('combatlog_message', combatLogs);
   });

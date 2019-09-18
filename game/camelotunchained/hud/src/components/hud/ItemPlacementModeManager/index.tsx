@@ -120,7 +120,7 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
     this.state = {
       isActive: false,
       visible: false,
-      selectedTransformGizmoMode: camelotunchained.game.itemPlacementMode.activeTransformMode,
+      selectedTransformGizmoMode: game.itemPlacementMode.activeTransformMode,
     };
   }
   public render() {
@@ -202,8 +202,8 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
       stateUpdate.visible = false;
     }
 
-    if (camelotunchained.game.itemPlacementMode.activeTransformMode !== this.state.selectedTransformGizmoMode) {
-      stateUpdate.selectedTransformGizmoMode = camelotunchained.game.itemPlacementMode.activeTransformMode;
+    if (game.itemPlacementMode.activeTransformMode !== this.state.selectedTransformGizmoMode) {
+      stateUpdate.selectedTransformGizmoMode = game.itemPlacementMode.activeTransformMode;
     }
 
     if (isActive !== this.state.isActive) {
@@ -247,11 +247,11 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   }
 
   private onTranslateClick = () => {
-    camelotunchained.game.itemPlacementMode.requestChangeTransformMode(ItemPlacementTransformMode.Translate);
+    game.itemPlacementMode.requestChangeTransformMode(ItemPlacementTransformMode.Translate);
   }
 
   private onRotateClick = () => {
-    camelotunchained.game.itemPlacementMode.requestChangeTransformMode(ItemPlacementTransformMode.Rotate);
+    game.itemPlacementMode.requestChangeTransformMode(ItemPlacementTransformMode.Rotate);
   }
 
   // private onScaleClick = () => {
@@ -259,15 +259,15 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
   // }
 
   private onCommitClick = () => {
-    camelotunchained.game.itemPlacementMode.requestCommit();
+    game.itemPlacementMode.requestCommit();
   }
 
   private onResetClick = () => {
-    camelotunchained.game.itemPlacementMode.requestReset();
+    game.itemPlacementMode.requestReset();
   }
 
   private onCancelClick = () => {
-    camelotunchained.game.itemPlacementMode.requestCancel();
+    game.itemPlacementMode.requestCancel();
   }
 
   private makeItemActionRequest = async (itemId: string, actionId: string, position: Vec3F, rotation: Euler3f) => {

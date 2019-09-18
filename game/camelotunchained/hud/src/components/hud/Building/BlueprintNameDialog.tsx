@@ -122,7 +122,7 @@ export class BlueprintNameDialog extends React.PureComponent<BlueprintNameDialog
   }
 
   private saveBP = () => {
-    camelotunchained.game.building.createBlueprintFromSelectionAsync(this.inputRef.value)
+    game.building.createBlueprintFromSelectionAsync(this.inputRef.value)
     .then((result) => {
       if (result.success) {
         this.toggleVisibility();

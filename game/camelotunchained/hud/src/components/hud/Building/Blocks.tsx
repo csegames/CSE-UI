@@ -102,7 +102,7 @@ export class Blocks extends React.Component<BlocksProps, BlocksState> {
         <Content>
         {Object.values(this.getFilteredBlocks()).map((m) => {
           return Object.values(m.blocks).map((b) => {
-            const B = b.id === camelotunchained.game.building.activeBlockID ? SelectedBlock : Block;
+            const B = b.id === game.building.activeBlockID ? SelectedBlock : Block;
             return (
               <Tooltip
                 content={(
@@ -116,7 +116,7 @@ export class Blocks extends React.Component<BlocksProps, BlocksState> {
               >
               <B
                 key={b.id}
-                onClick={() => camelotunchained.game.building.selectBlockAsync(b.id)}
+                onClick={() => game.building.selectBlockAsync(b.id)}
               >
                 <Image src={'data:image/png;base64,' + b.icon}/>
               </B>
@@ -140,9 +140,9 @@ export class Blocks extends React.Component<BlocksProps, BlocksState> {
   }
 
   private getFilteredBlocks = () => {
-    if (this.props.searchValue === '') return camelotunchained.game.building.materials;
+    if (this.props.searchValue === '') return game.building.materials;
 
-    const materials = camelotunchained.game.building.materials;
+    const materials = game.building.materials;
     const filteredMaterials = {};
     Object.keys(materials).forEach((mKey) => {
       let searchIncludesMaterial = false;

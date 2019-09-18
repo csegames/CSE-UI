@@ -32,7 +32,7 @@ class ErrorMessages extends React.Component<ErrorMessagesProps, ErrorMessagesSta
   }
 
   public componentDidMount() {
-    this.eventHandles.push(camelotunchained.game.onCombatEvent((events: CombatEvent[]) => {
+    this.eventHandles.push(game.onCombatEvent((events: CombatEvent[]) => {
       const messages = events.reduce((errors: string[], event) => {
         if (event.errors) {
           return errors.concat(event.errors.map(item => item.msg));

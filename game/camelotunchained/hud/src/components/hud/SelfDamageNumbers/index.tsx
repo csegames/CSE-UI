@@ -180,7 +180,7 @@ export class SelfDamageNumbers extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    camelotunchained.game.onCombatEvent(this.setEvents);
+    game.onCombatEvent(this.setEvents);
   }
 
   private updateEvents = () => {
