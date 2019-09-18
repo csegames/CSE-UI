@@ -13,6 +13,7 @@ export enum Routes {
   Archery,
   Throwing,
   Shout,
+  Song,
   Misc,
   Components,
 }

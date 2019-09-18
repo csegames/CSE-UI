@@ -239,7 +239,12 @@ export function AbilityBook(props: Props) {
       const name = ability.abilityNetwork.display.name;
 
       // Miscellaneous abilities
-      if (name !== 'Magic' && name !== 'Melee' && name !== 'Archery' && name !== 'Throwing' && name !== 'Shout') {
+      if (name !== 'Magic' &&
+          name !== 'Melee' &&
+          name !== 'Archery' &&
+          name !== 'Throwing' &&
+          name !== 'Shout' &&
+          name !== 'Song') {
         if (!abilityNetworkToAbilities['Misc']) {
           abilityNetworkToAbilities['Misc'] = [ability];
           abilityNetworks['Misc'] = ability.abilityNetwork;
@@ -309,6 +314,9 @@ export function AbilityBook(props: Props) {
       }
       case Routes.Archery: {
         return 'Abilities | Archery';
+      }
+      case Routes.Song: {
+        return 'Abilities | Song';
       }
       default: {
         return 'Abilities';

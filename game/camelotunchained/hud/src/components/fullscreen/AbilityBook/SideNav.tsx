@@ -175,6 +175,10 @@ export class SideNav extends React.Component<Props> {
       sortedNetworks.push('Shout');
     }
 
+    if (abilityNetworkNames.includes('Song')) {
+      sortedNetworks.push('Song');
+    }
+
     if (abilityNetworkNames.includes('Throwing')) {
       sortedNetworks.push('Throwing');
     }
@@ -217,6 +221,9 @@ export class SideNav extends React.Component<Props> {
       }
       case Routes.Shout: {
         return 'icon-shout-tab';
+      }
+      case Routes.Song: {
+        return 'icon-category-food';
       }
       case Routes.Misc: {
         return 'icon-misc-tab';
