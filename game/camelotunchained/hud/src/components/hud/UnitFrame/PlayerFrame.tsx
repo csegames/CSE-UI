@@ -133,6 +133,13 @@ const Stamina = styled.div`
   border-radius: 3px;
 `;
 
+const Panic = styled.div`
+  grid-area: panic;
+  height: 100%;
+  transform: skewX(-30deg);
+  border-radius: 3px;
+`;
+
 export interface Props {
   player: PlayerState;
   target?: 'enemy' | 'friendly';
@@ -173,6 +180,7 @@ export class PlayerFrame extends React.Component<Props, State> {
     const realmPrefix = this.realmPrefix(player.faction);
     const archetypePrefix = this.archetypePrefix(player.classID);
     const theme = uiContext.currentTheme();
+    const panic = player.entitySpecificResources[EntityResourceType[EntityResourceType.Panic]];
 
     return (
       <PlayerFrameContainer data-input-group='block'>
@@ -181,6 +189,7 @@ export class PlayerFrame extends React.Component<Props, State> {
             player.health && player.health[0],
             player.blood && player.blood.current,
             player.stamina && player.stamina.current,
+            panic && panic,
           ]}
           content={(
             <>
@@ -203,6 +212,13 @@ export class PlayerFrame extends React.Component<Props, State> {
                 {`${player.stamina && player.stamina ? player.stamina.current.printWithSeparator(' ') : 0}  /`}
                 {`  ${player.stamina && player.stamina ? player.stamina.max.printWithSeparator(' ') : 0}`}
               </HealthText>
+              {panic &&
+                <HealthText style={{ color: theme.unitFrames.color.panic }}>
+                  <div style={{ display: 'inline-block', width: '100px' }}>Panic:</div>
+                  {`${panic && panic ? panic.current.printWithSeparator(' ') : 0}  /`}
+                  {`  ${panic && panic ? panic.max.printWithSeparator(' ') : 0}`}
+                </HealthText>
+              }
             </>
           )}
         >
@@ -234,6 +250,13 @@ export class PlayerFrame extends React.Component<Props, State> {
                   width: CurrentMax.cssPercent(player.stamina),
                   backgroundColor: theme.unitFrames.color.stamina,
                 }} />
+                {player.entitySpecificResources[EntityResourceType[EntityResourceType.Panic]] &&
+                  <Panic style={{
+                    width: CurrentMax.cssPercent(
+                      player.entitySpecificResources[EntityResourceType[EntityResourceType.Panic]]),
+                    backgroundColor: theme.unitFrames.color.panic,
+                  }} />
+                }
                 <NameBG src={imgDir + realmPrefix + 'nameplate-bg.png'} />
               </HealthSubGrid>
 
