@@ -420,16 +420,3 @@ export interface BaseGameInterface extends BaseGameModel {
 }
 
 export type BaseDevGameInterface = BaseInternalGameInterfaceExt & BaseGameModelTasks;
-
-declare global {
-  enum AnnouncementType {
-    Text = 1,
-    PopUp = 2,
-    Worldspace = 4,
-    PassiveAlert = 8,
-    ALL = -1,
-  }
-  interface Window {
-    AnnouncementType: typeof AnnouncementType;
-  }
-}

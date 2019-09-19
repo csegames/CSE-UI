@@ -14,3 +14,4 @@ import './ActiveEffectAction';
 import './BodyPart';
 import './CombatEvent';
 import './DamageType';
+import './AnnouncementType';

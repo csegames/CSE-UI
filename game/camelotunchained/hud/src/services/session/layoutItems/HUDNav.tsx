@@ -205,7 +205,7 @@ export default {
         iconClass: 'fa-gamepad',
         hidden: false,
         onClick: () => {
-          game.sendSlashCommand('showscenarioui');
+          game.sendSlashCommand('scenariodevui showdevui');
         },
       },
       {
