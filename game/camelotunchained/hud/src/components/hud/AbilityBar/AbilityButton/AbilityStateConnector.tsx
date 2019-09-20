@@ -95,7 +95,7 @@ function abilityStateConnector<PropsTypes extends any>() {
       }
 
       private handleClientAbilityStateChanged = () => {
-        const newAbilityState = camelotunchained.game.abilityStates[this.props.abilityInfo.id];
+        const newAbilityState = cloneDeep(camelotunchained.game.abilityStates[this.props.abilityInfo.id]);
         if (newAbilityState) {
           const abilityState = {
             ...newAbilityState,
