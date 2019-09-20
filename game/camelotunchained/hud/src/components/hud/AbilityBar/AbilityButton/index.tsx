@@ -243,6 +243,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
         ring = this.rings[id] = {
           event: { when: Date.now(), remaining: this.outerRingTimingEnd, direction: 1, clockwise },
         };
+
         this.setRingState(id, this.outerRingTimingEnd);
       }
       if (id === INNER) {
@@ -252,6 +253,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
         ring = this.rings[id] = {
           event: { when: Date.now(), remaining: this.innerRingTimingEnd, direction: 1, clockwise },
         };
+
         this.setRingState(id, this.innerRingTimingEnd);
       }
     }
@@ -345,7 +347,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
     }
 
     if (disruption) {
-      if (disruption.current >= disruption.max) {
+      if (disruption.max !== 0 && disruption.current >= disruption.max) {
         // Skill has been disrupted, override the inner ring data with disrupted effect
         this.setTimerRing({ id: INNER, timer: { start: 0, duration: 500 },
           clockwise: !CLOCKWISE, overrideCurrentTimer: true });
