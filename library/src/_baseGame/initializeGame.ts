@@ -5,6 +5,7 @@
  */
 
 import initGameInterface, { initOutOfContextGame } from "./initGameInterface";
+import initClientTasks from './clientTasks';
 import { BaseDevGameInterface, BaseGameInterface } from "./BaseGameInterface";
 
 declare global {
@@ -39,4 +40,5 @@ export function initializeGame() {
   }
 
   initUI();
+  initClientTasks();
 }

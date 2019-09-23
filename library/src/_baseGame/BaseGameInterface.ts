@@ -218,7 +218,7 @@ export interface BaseGameModelTasks {
    * @param {Number} index Index of binds to set / replace with the new binding
    * @returns {Binding} The newly bound key information
    */
-    _cse_dev_listenForKeybindingTask: () => TaskHandle;
+    _cse_dev_listenForKeyBindingTask: () => TaskHandle;
 
   /**
   * Batch set of all passed in options

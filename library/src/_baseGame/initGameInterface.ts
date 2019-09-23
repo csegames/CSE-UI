@@ -29,7 +29,7 @@ export default function (isAttached: boolean) {
     // TASKS
     _devGame._activeTasks = {};
     _devGame.listenForKeyBindingAsync =
-      makeClientPromise(game => game._cse_dev_listenForKeybindingTask());
+      makeClientPromise(game => game._cse_dev_listenForKeyBindingTask());
     _devGame.setOptionsAsync =
       makeClientPromise((game, options) => game._cse_dev_setOptions(options));
     _devGame.testOptionAsync =
