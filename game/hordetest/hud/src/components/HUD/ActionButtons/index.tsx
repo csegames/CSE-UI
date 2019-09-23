@@ -87,6 +87,14 @@ export function ActionButtons(props: Props) {
     );
   }
 
+  function getConsumableButtonKeybind() {
+    if (Array.isArray(hordetest.game.consumableItemsState.keybindToUse)) {
+      return hordetest.game.consumableItemsState.keybindToUse[0].name;
+    }
+
+    return hordetest.game.consumableItemsState.keybindToUse.name;
+  }
+
   return (
     <ActionButtonsContainer>
       {weakAbility && weakAbility.id >= 0 && renderAbilityButton(weakAbility, 0)}
@@ -95,7 +103,7 @@ export function ActionButtons(props: Props) {
       <ConsumableButton
         className={ActionButtonSpacing}
         actionIconClass={index2Icon[3]}
-        keybindText={hordetest.game.consumableItemsState.keybindToUse.binds[0].name}
+        keybindText={getConsumableButtonKeybind()}
       />
     </ActionButtonsContainer>
   );

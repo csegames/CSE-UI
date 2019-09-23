@@ -18,9 +18,9 @@ declare global {
   interface ConsumableItemsStateModel {
     activeIndex: number;
     items: ArrayMap<ConsumableItem>;
-    keybindForNext: Keybind;
-    keybindForPrior: Keybind;
-    keybindToUse: Keybind;
+    keybindForNext: Binding;
+    keybindForPrior: Binding;
+    keybindToUse: Binding;
   }
 
   type ConsumableItemsStateUpdatable = Readonly<ConsumableItemsStateModel> & Updatable;
