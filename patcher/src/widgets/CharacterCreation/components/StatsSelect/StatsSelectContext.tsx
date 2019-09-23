@@ -144,7 +144,7 @@ export class StatsSelectContextProvider extends React.Component<Props, ProviderS
 
   private getConfig = () => {
     const queryConf: QueryOptions = {
-      url: this.props.host + '/graphql',
+      url: this.props.host + 'graphql',
       requestOptions: {
         headers: {
           Authorization: `Bearer ${patcher.getAccessToken()}`,
