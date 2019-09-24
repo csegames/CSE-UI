@@ -33,7 +33,6 @@ const Item = styled.div`
 
 export interface Props {
   actionIconClass: string;
-  keybindText: string;
   abilityID?: number;
   className?: string;
 }
@@ -51,6 +50,14 @@ export function ConsumableButton(props: Props) {
     };
   });
 
+  function getConsumableButtonKeybind() {
+    if (Array.isArray(consumableItemsState.keybindToUse)) {
+      return consumableItemsState.keybindToUse[0].name;
+    }
+
+    return consumableItemsState.keybindToUse.name;
+  }
+
 
   return (
     <Container>
@@ -66,7 +73,7 @@ export function ConsumableButton(props: Props) {
         actionIconClass={
           (!isEmpty(consumableItemsState.items) && consumableItemsState.items[consumableItemsState.activeIndex].iconClass) ?
             consumableItemsState.items[consumableItemsState.activeIndex].iconClass : 'fas fa-question'}
-        keybindText={props.keybindText}
+        keybindText={getConsumableButtonKeybind()}
         abilityID={props.abilityID}
         className={props.className}
       />

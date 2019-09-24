@@ -44,9 +44,35 @@ function onUpdateHealthBar(callback: (
   engine.on('updateHealthBar', callback);
 }
 
+function onUpdateInteractable(callback: (
+  cell: number,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  name: string,
+) => void) {
+  engine.on('updateInteractable', callback);
+}
+
+function onUpdateInteractionBar(callback: (
+  cell: number,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  name: string,
+  progress: number,
+  keybind: Binding,
+) => void) {
+  engine.on('updateInteractionBar', callback);
+}
+
 export const engineEvents = {
   onUpdateProgressBar,
   onUpdateWorldUI,
   onRemoveWorldUI,
   onUpdateHealthBar,
+  onUpdateInteractable,
+  onUpdateInteractionBar,
 };

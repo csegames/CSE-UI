@@ -8,21 +8,7 @@ import React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { HealthBarState } from '.';
 
-interface ContainerProps extends React.HTMLProps<HTMLDivElement> {
-  width: number;
-  height: number;
-  x: number;
-  y: number;
-}
-
 const Container = styled.div`
-  position: fixed;
-  pointer-events: none;
-  width: ${(props: ContainerProps) => props.width}px;
-  height: ${(props: ContainerProps) => props.height}px;
-  top: ${(props: ContainerProps) => props.y}px;
-  left: ${(props: ContainerProps) => props.x}px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -83,21 +69,21 @@ const BarText = styled.div`
 `;
 
 export interface Props {
-  worldUI: HealthBarState;
+  state: HealthBarState;
 }
 
 export function HealthBar(props: Props) {
-  const { worldUI } = props;
-  const enemyClass = worldUI.isEnemy ? 'enemy' : '';
+  const { state } = props;
+  const enemyClass = state.isEnemy ? 'enemy' : '';
   return (
-    <Container width={worldUI.width} height={worldUI.height} x={worldUI.x} y={worldUI.y}>
-      <NameOfPlayer>{worldUI.name}</NameOfPlayer>
+    <Container>
+      <NameOfPlayer>{state.name}</NameOfPlayer>
       <BarContainer className={enemyClass}>
         <Bar
           className={enemyClass}
-          style={{ width: `${(worldUI.current / worldUI.max) * 100}%` }}
+          style={{ width: `${(state.current / state.max) * 100}%` }}
         />
-        <BarText>{worldUI.current} / {worldUI.max}</BarText>
+        <BarText>{state.current} / {state.max}</BarText>
       </BarContainer>
     </Container>
   );

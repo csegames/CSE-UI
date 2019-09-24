@@ -5,13 +5,32 @@
  */
 
 import React from 'react';
+import { styled } from '@csegames/linaria/react';
 import { engineEvents } from 'lib/engineEvents';
 import { HealthBar } from './HealthBar';
+import { InteractionBar } from './InteractionBar';
+import { Interactable } from './Interactable';
+
+interface ContainerProps extends React.HTMLProps<HTMLDivElement> {
+  worldUIState: WorldUIState;
+}
+
+const WorldUIContainer = styled.div`
+  position: fixed;
+  pointer-events: none;
+  width: ${(props: ContainerProps) => props.worldUIState.width}px;
+  height: ${(props: ContainerProps) => props.worldUIState.height}px;
+  top: ${(props: ContainerProps) => props.worldUIState.y}px;
+  left: ${(props: ContainerProps) => props.worldUIState.x}px;
+  overflow: hidden;
+`;
 
 export enum WorldUIWidgetType {
   Default,
   ProgressBar,
   HealthBar,
+  Interactable,
+  InteractionBar,
 }
 
 export interface WorldUIState {
@@ -37,7 +56,19 @@ export interface HealthBarState extends WorldUIState {
   max: number;
 }
 
-export type WorldUIType = WorldUIState | ProgressBarState | HealthBarState;
+export interface InteractableState extends WorldUIState {
+  type: WorldUIWidgetType.Interactable;
+  name: string;
+}
+
+export interface InteractionBarState extends WorldUIState {
+  type: WorldUIWidgetType.InteractionBar;
+  name: string;
+  progress: number;
+  keybind: Binding;
+}
+
+export type WorldUIType = WorldUIState | ProgressBarState | HealthBarState | InteractableState | InteractionBarState;
 
 export interface State {
   worldUIs: { [id: number]: WorldUIType };
@@ -64,6 +95,8 @@ export class WorldUI extends React.Component<{}, State> {
     engineEvents.onRemoveWorldUI(this.handleRemoveWorldUI);
     engineEvents.onUpdateProgressBar(this.handleUpdateProgressBar);
     engineEvents.onUpdateHealthBar(this.handleUpdateHealthBar);
+    engineEvents.onUpdateInteractable(this.handleUpdateInteractable);
+    engineEvents.onUpdateInteractionBar(this.handleUpdateInteractionBar);
   }
 
   private renderWorldUI = (worldUI: WorldUIType) => {
@@ -73,7 +106,27 @@ export class WorldUI extends React.Component<{}, State> {
       }
 
       case WorldUIWidgetType.HealthBar: {
-        return <HealthBar worldUI={worldUI as HealthBarState} />;
+        return (
+          <WorldUIContainer worldUIState={worldUI}>
+            <HealthBar state={worldUI as HealthBarState} />
+          </WorldUIContainer>
+        );
+      }
+
+      case WorldUIWidgetType.Interactable: {
+        return (
+          <WorldUIContainer worldUIState={worldUI}>
+            <Interactable state={worldUI as InteractableState} />
+          </WorldUIContainer>
+        );
+      }
+
+      case WorldUIWidgetType.InteractionBar: {
+        return (
+          <WorldUIContainer worldUIState={worldUI}>
+            <InteractionBar state={worldUI as InteractionBarState} />
+          </WorldUIContainer>
+        );
       }
 
       default: {
@@ -107,7 +160,7 @@ export class WorldUI extends React.Component<{}, State> {
     height: number,
     percent: number
   ) => {
-    const newProgressBarState: ProgressBarState  = {
+    const newProgressBarState: ProgressBarState  = cloneDeep({
       type: WorldUIWidgetType.ProgressBar,
       id,
       x,
@@ -115,7 +168,7 @@ export class WorldUI extends React.Component<{}, State> {
       width,
       height,
       percent,
-    };
+    });
     this.createOrUpdateWorldUI(newProgressBarState);
   }
 
@@ -130,7 +183,7 @@ export class WorldUI extends React.Component<{}, State> {
     current: number,
     max: number
   ) => {
-    const newHealthBarState: HealthBarState = {
+    const newHealthBarState: HealthBarState = cloneDeep({
       type: WorldUIWidgetType.HealthBar,
       id,
       x,
@@ -141,8 +194,53 @@ export class WorldUI extends React.Component<{}, State> {
       isEnemy,
       current,
       max,
-    };
+    });
     this.createOrUpdateWorldUI(newHealthBarState);
+  }
+
+  private handleUpdateInteractable = (
+    id: number,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    name: string,
+  ) => {
+    const newInteractableState: InteractableState = cloneDeep({
+      type: WorldUIWidgetType.Interactable,
+      id,
+      x,
+      y,
+      width,
+      height,
+      name,
+    });
+    this.createOrUpdateWorldUI(newInteractableState);
+  }
+
+  private handleUpdateInteractionBar = (
+    id: number,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    name: string,
+    progress: number,
+    keybind: Binding,
+  ) => {
+    const newInteractionBarState: InteractionBarState = cloneDeep({
+      type: WorldUIWidgetType.InteractionBar,
+      id,
+      x,
+      y,
+      width,
+      height,
+      name,
+      progress,
+      keybind,
+    });
+
+    this.createOrUpdateWorldUI(newInteractionBarState);
   }
 
   private createOrUpdateWorldUI = (newWorldUI: WorldUIType) => {
