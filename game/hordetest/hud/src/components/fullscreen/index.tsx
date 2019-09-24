@@ -11,7 +11,6 @@ import { Chat } from 'cushared/components/Chat';
 import { StartScreen } from './StartScreen';
 import { ChampionSelect } from './ChampionSelect';
 import { Button } from './Button';
-import { RightModal } from './RightModal';
 import { GameStats } from './GameStats';
 
 const Container = styled.div`
@@ -76,6 +75,7 @@ export interface State {
 export class FullScreen extends React.Component<Props, State> {
   private showEVH: EventHandle;
   private hideEVH: EventHandle;
+  private navigateEVH: EventHandle;
   private scenarioEndedEVH: EventHandle;
 
   constructor(props: Props) {
@@ -100,7 +100,6 @@ export class FullScreen extends React.Component<Props, State> {
             <Chat accessToken={game.accessToken} />
           </ChatPosition>
         }
-        <RightModal />
       </Container>
     ) : <OpenFullScreenButton onClick={this.show}>Open Full Screen</OpenFullScreenButton>
   }
@@ -119,7 +118,7 @@ export class FullScreen extends React.Component<Props, State> {
       };
       case Route.EndGameStats: {
         return (
-          <GameStats scenarioID={this.state.scenarioID} onLeaveClick={this.onLeaveGameStats} />
+          <GameStats scenarioID={this.state.scenarioID} onLeaveClick={this.goToStart} />
         );
       }
     }
@@ -128,12 +127,14 @@ export class FullScreen extends React.Component<Props, State> {
   public componentDidMount() {
     this.showEVH = game.on('show-fullscreen-chat', this.handleShowFullScreenChat);
     this.hideEVH = game.on('hide-fullscreen-chat', this.handleHideFullScreenChat);
+    this.navigateEVH = game.on('fullscreen-navigate', this.navigateTo);
     this.scenarioEndedEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
   }
 
   public componentWillUnmount() {
     this.showEVH.clear();
     this.hideEVH.clear();
+    this.navigateEVH.clear();
     this.scenarioEndedEVH.clear();
   }
 
@@ -146,15 +147,15 @@ export class FullScreen extends React.Component<Props, State> {
   }
 
   private onReady = () => {
-    this.setState({ currentRoute: Route.ChampionSelect });
+    this.navigateTo(Route.ChampionSelect);
   }
 
   private onLockIn = () => {
-    this.setState({ currentRoute: Route.EndGameStats });
+    this.navigateTo(Route.EndGameStats);
   }
 
-  private onLeaveGameStats = () => {
-    this.setState({ currentRoute: Route.Start });
+  private goToStart = () => {
+    this.navigateTo(Route.Start);
   }
 
   private handleShowFullScreenChat = () => {
@@ -166,10 +167,12 @@ export class FullScreen extends React.Component<Props, State> {
   }
 
   private handleScenarioRoundEnded = (scenarioID: string, roundID: string, didEnd: boolean) => {
-    console.log('SCENARIO ROUND ENDED');
-    console.log(scenarioID);
     if (didEnd) {
       this.setState({ isVisible: true, scenarioID, currentRoute: Route.EndGameStats });
     }
+  }
+
+  private navigateTo = (route: Route) => {
+    this.setState({ currentRoute: route });
   }
 }

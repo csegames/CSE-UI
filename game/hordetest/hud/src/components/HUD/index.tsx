@@ -9,8 +9,6 @@ import { styled } from '@csegames/linaria/react';
 
 import { Chat } from 'cushared/components/Chat';
 import { DevUI } from 'cushared/components/DevUI';
-import { GameMenu } from 'cushared/components/GameMenu';
-import { Settings } from 'cushared/components/Settings';
 
 import { HealthBar } from './HealthBar';
 // import { ChannelBar } from './ChannelBar';
@@ -21,15 +19,18 @@ import { KillStreakCounter } from './KillStreakCounter';
 import { UltimateReady } from './UltimateReady';
 import { PlayerTrackers } from './PlayerTrackers';
 import { Respawn } from './Respawn';
-import { FullScreen } from 'components/fullscreen';
-import { Console } from 'components/HUD/Console';
-import { LoadingScreen } from 'components/fullscreen/LoadingScreen';
-
-import { ImagePreloader } from './ImagePreloader';
+import { MenuModal } from '../fullscreen/MenuModal';
+import { LeftModal } from '../fullscreen/LeftModal';
+import { RightModal } from '../fullscreen/RightModal';
+import { Settings } from '../fullscreen/Settings';
+import { FullScreen } from '../fullscreen';
 import { PopupAnnouncement } from './Announcements/Popup';
 import { Compass } from './Compass';
 import { ActiveObjectives } from './ActiveObjectives';
-import { ContextProviders } from 'components/context';
+import { Console } from '../HUD/Console';
+import { LoadingScreen } from '../fullscreen/LoadingScreen';
+import { ImagePreloader } from './ImagePreloader';
+import { ContextProviders } from '../context';
 
 const Container = styled.div`
   width: 100%;
@@ -86,27 +87,6 @@ const ChatPosition = styled.div`
   bottom: 50px;
   width: 480px;
   height: 240px;
-`;
-
-const GameMenuPosition = styled.div`
-  position: fixed;
-  left: 50%;
-  top: 35%;
-  transform: translate(-50%, 50%);
-`;
-
-const SettingsPosition = styled.div`
-  position: fixed;
-  left: 50%;
-  top: 45%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-`;
-
-const SettingsContainer = styled.div`
-  position: relative;
-  width: 1040px;
-  height: 710px;
 `;
 
 const HealthBarPosition = styled.div`
@@ -189,6 +169,15 @@ const PlayerTrackersPosition = styled.div`
   pointer-events: none;
 `;
 
+const SettingsContainer = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+`;
+
 export interface Props {
 }
 
@@ -203,6 +192,7 @@ export class HUD extends React.Component<Props> {
           <ReloadButtonContainer>
             <div onClick={() => game.reloadUI()}>Reload UI</div>
           </ReloadButtonContainer>
+          <Console />
 
           <CompassPosition>
             <Compass />
@@ -252,16 +242,6 @@ export class HUD extends React.Component<Props> {
             <Chat accessToken={game.accessToken} />
           </ChatPosition>
 
-          <GameMenuPosition>
-            <GameMenu />
-          </GameMenuPosition>
-
-          <SettingsPosition>
-            <SettingsContainer>
-              <Settings />
-            </SettingsContainer>
-          </SettingsPosition>
-
           <RespawnPosition>
             <Respawn />
           </RespawnPosition>
@@ -270,8 +250,13 @@ export class HUD extends React.Component<Props> {
             <PlayerTrackers />
           </PlayerTrackersPosition>
 
-          <Console />
           <FullScreen />
+          <SettingsContainer>
+            <Settings />
+          </SettingsContainer>
+          <MenuModal />
+          <LeftModal />
+          <RightModal />
           <LoadingScreen />
         </Container>
       </ContextProviders>

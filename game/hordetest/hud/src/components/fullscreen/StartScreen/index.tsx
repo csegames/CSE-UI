@@ -75,6 +75,10 @@ export function StartScreen(props: Props) {
     setSelectedRoute(route);
   }
 
+  function onHamburgerClick() {
+    game.trigger('show-menu-modal');
+  }
+
   function renderRoute() {
     switch (selectedRoute) {
       case StartScreenRoute.Play: {
@@ -117,7 +121,7 @@ export function StartScreen(props: Props) {
     <Container>
       {renderRoute()}
       <TopSection>
-        <Hamburger />
+        <Hamburger onClick={onHamburgerClick} />
         <NavMenu selectedRoute={selectedRoute} onSelectRoute={onSelectRoute} />
       </TopSection>
     </Container>

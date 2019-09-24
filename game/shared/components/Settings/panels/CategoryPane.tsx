@@ -8,8 +8,6 @@ import * as React from 'react';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { OptionView } from '../components/OptionView';
 
-
-
 interface Props {
   category: OptionCategory;
   onCancel: () => void;

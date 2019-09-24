@@ -11,24 +11,22 @@ const Container = styled.div`
   position: fixed;
   top: 0;
   bottom: 0;
-  right: -25%;
+  left: -25%;
   width: 25%;
   height: 100%;
-  background-image: url(../images/fullscreen/modal-right-bg.png);
-  background-size: cover;
-  transition: right 0.2s;
+  transition: left 0.2s;
 
   &.visible {
-    right: 0;
+    left: 0;
   }
 `;
 
 const ScreenOverlay = styled.div`
   position: fixed;
   top: 0;
-  right: 0;
-  bottom: 0;
   left: 0;
+  bottom: 0;
+  right: 0;
   background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
   visibility: hidden;
@@ -40,12 +38,32 @@ const ScreenOverlay = styled.div`
   }
 `;
 
+const ContentBackground = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: url(../images/fullscreen/modal-right-bg.png);
+    background-size: contain;
+    transform: scaleX(-1);
+    z-index: 0;
+  }
+`;
+
 const ContentContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
+  z-index: 10;
 `;
 
 export interface Props {
@@ -57,7 +75,7 @@ export interface State {
   hideOverlay: boolean;
 }
 
-export class RightModal extends React.Component<Props, State> {
+export class LeftModal extends React.Component<Props, State> {
   private showHandle: EventHandle;
   private hideHandle: EventHandle;
   constructor(props: Props) {
@@ -75,17 +93,19 @@ export class RightModal extends React.Component<Props, State> {
       <>
         {!this.state.hideOverlay && <ScreenOverlay className={visibleClass} onClick={this.hide} />}
         <Container className={visibleClass}>
-          <ContentContainer>
-            {this.state.content}
-          </ContentContainer>
+          <ContentBackground>
+            <ContentContainer>
+              {this.state.content}
+            </ContentContainer>
+          </ContentBackground>
         </Container>
       </>
     );
   }
 
   public componentDidMount() {
-    this.showHandle = game.on('show-right-modal', this.show);
-    this.hideHandle = game.on('hide-right-modal', this.hide);
+    this.showHandle = game.on('show-left-modal', this.show);
+    this.hideHandle = game.on('hide-left-modal', this.hide);
   }
 
   public componentWillUnmount() {

@@ -75,6 +75,7 @@ const MenuContent = styled.div`
   width: 100%;
   width: calc(100% - 40px);
 `;
+
 const MenuButton = styled.div`
   position: relative;
   background: url(../images/gamemenu/button-big-off.png) no-repeat;

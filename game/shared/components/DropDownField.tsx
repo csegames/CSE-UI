@@ -17,6 +17,12 @@ export interface DropDownItem {
 
 const ListBoxContainer = styled.div`
   position: relative;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
 `;
 
 const ListBox = styled.div`
@@ -29,11 +35,15 @@ const ListBox = styled.div`
   padding: 0 5px;
   background-color: black;
   text-align: center;
-  i {
-    position: absolute;
-    right: 8px;
-    top: 8px;
+  cursor: pointer;
+
+  div {
+    cursor: pointer;
   }
+`;
+
+const Caret = styled.div`
+  margin-left: 5px;
 `;
 
 const ListItems = styled.ul`
@@ -48,6 +58,12 @@ const ListItem = styled.li`
   padding: 2px 5px;
   color: white;
   background-color: rgba(31, 31, 31, 1);
+  cursor: pointer;
+
+  div {
+    cursor: pointer;
+  }
+
   &:hover {
     background-color: rgba(51, 51, 51, 1);
   }
@@ -58,6 +74,8 @@ interface DropDownProps<TValue> {
   selected: TValue;
   onSelect: (item: TValue) => void;
   renderItem?: (item: TValue) => JSX.Element;
+
+  listBoxStyles?: string;
 }
 interface DropDownState {
   open: boolean;
@@ -73,9 +91,9 @@ export class DropDown<TValue> extends React.PureComponent<DropDownProps<TValue>,
     const { selected, items } = this.props;
     return (
       <ListBoxContainer>
-        <ListBox onClick={this.toggleOpen}>
+        <ListBox className={this.props.listBoxStyles} onClick={this.toggleOpen}>
           {this.props.renderItem ? this.props.renderItem(selected) : selected + ''}
-          <i className={`fa ${ open ? 'fa-caret-down' : 'fa-caret-up' }`}></i>
+          <Caret className={`fa ${ open ? 'fa-caret-down' : 'fa-caret-up' }`}></Caret>
         </ListBox>
         { open &&
           <ListItems>
