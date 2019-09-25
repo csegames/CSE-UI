@@ -253,6 +253,8 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
 
   private isWebsiteImage = () => {
     const { selectedCharacter } = this.props;
+    if (!selectedCharacter) return false;
+
     const archetype = Archetype[selectedCharacter.archetype].toLowerCase();
     if (archetype === 'minstrel' ||
       archetype === 'flamewarden' ||
