@@ -37,14 +37,9 @@ export interface Props {
 }
 
 const index2Icon = [
-  'icon-sword-tab',
-  'icon-target',
-  'icon-damage-lightning',
-  'icon-damage-spirit',
-  'icon-sword-tab',
-  'icon-target',
-  'icon-damage-lightning',
-  'icon-damage-spirit',
+  'fs-icon-berserker-frozen-wrath',
+  'fs-icon-berserker-ground-slam',
+  'fs-icon-berserker-enrage'
 ];
 
 export function ActionButtons(props: Props) {
