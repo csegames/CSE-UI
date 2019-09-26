@@ -50,15 +50,6 @@ export function ConsumableButton(props: Props) {
     };
   });
 
-  function getConsumableButtonKeybind() {
-    if (Array.isArray(consumableItemsState.keybindToUse)) {
-      return consumableItemsState.keybindToUse[0].name;
-    }
-
-    return consumableItemsState.keybindToUse.name;
-  }
-
-
   return (
     <Container>
       <ItemList>
@@ -73,7 +64,8 @@ export function ConsumableButton(props: Props) {
         actionIconClass={
           (!isEmpty(consumableItemsState.items) && consumableItemsState.items[consumableItemsState.activeIndex].iconClass) ?
             consumableItemsState.items[consumableItemsState.activeIndex].iconClass : 'fas fa-question'}
-        keybindText={getConsumableButtonKeybind()}
+        keybindText={consumableItemsState.keybindToUse.name}
+        keybindIconClass={consumableItemsState.keybindToUse.iconClass}
         abilityID={props.abilityID}
         className={props.className}
       />

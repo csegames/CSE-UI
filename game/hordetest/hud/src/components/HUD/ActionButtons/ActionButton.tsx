@@ -69,6 +69,7 @@ const CooldownText = styled.div`
 export interface Props {
   actionIconClass: string;
   keybindText: string;
+  keybindIconClass?: string;
   abilityID?: number;
   className?: string;
   cooldownTimer?: number;
@@ -87,7 +88,10 @@ export function ActionButton(props: Props) {
       </Button>
 
       <KeybindBox>
-        <KeybindText>{props.keybindText}</KeybindText>
+        {props.keybindIconClass ?
+          <KeybindText className={props.keybindIconClass}></KeybindText> :
+          <KeybindText>{props.keybindText}</KeybindText>
+        }
       </KeybindBox>
     </ActionButtonContainer>
   );

@@ -19,6 +19,7 @@ declare global {
     error: string;
     timing: Timing;
     disruption: CurrentMax;
+    binding: Binding;
   }
 
   interface AbilityBarStateModel {

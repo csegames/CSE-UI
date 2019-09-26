@@ -10,6 +10,7 @@ import { ActionButton } from './ActionButton';
 export interface Props {
   actionIconClass: string;
   keybindText: string;
+  keybindIconClass?: string;
   abilityID?: number;
   className?: string;
 }
@@ -35,6 +36,7 @@ export class AbilityButton extends React.Component<Props, State> {
         abilityID={this.props.abilityID}
         className={this.props.className}
         cooldownTimer={this.state.cooldownTimer}
+        keybindIconClass={this.props.keybindIconClass}
       />
     );
   }

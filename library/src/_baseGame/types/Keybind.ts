@@ -46,6 +46,11 @@ declare global {
      * Windows key value for the bound key
      */
     value: number;
+
+    /**
+     * Name of font icon to display for key. This can be empty, default to name property if empty.
+     */
+    iconClass?: string;
   }
 
   type KeybindCategory = 'abilities' | 'interface' | 'game' | 'miscellaneous';

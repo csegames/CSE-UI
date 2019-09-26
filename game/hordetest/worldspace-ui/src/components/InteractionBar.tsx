@@ -71,7 +71,10 @@ export function InteractionBar(props: Props) {
   return (
     <Wrapper>
       <Container>
-        <KeybindBox>{state.keybind.name}</KeybindBox>
+        {state.keybind.iconClass ?
+          <KeybindBox className={state.keybind.iconClass}></KeybindBox> :
+          <KeybindBox>{state.keybind.name}</KeybindBox>
+        }
         <BarContainer>
           <Bar style={{ width: `${state.progress * 100}%` }} />
           <NameText>{state.name}</NameText>

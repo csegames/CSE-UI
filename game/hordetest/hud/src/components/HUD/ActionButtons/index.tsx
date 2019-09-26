@@ -78,6 +78,7 @@ export function ActionButtons(props: Props) {
         className={ActionButtonSpacing}
         actionIconClass={index2Icon[i]}
         keybindText={ability.boundKeyName}
+        keybindIconClass={ability.binding.iconClass}
       />
     );
   }
