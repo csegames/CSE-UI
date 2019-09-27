@@ -10,19 +10,18 @@ export interface InputContextState {
   isConsole: boolean;
 }
 
-const defaultInputContextState: InputContextState = {
-  isConsole: true,
-}
+const getDefaultInputContextState = (): InputContextState => ({
+  isConsole: game.usingGamepadState ? game.usingGamepadState.usingGamepad : false,
+});
 
-export const InputContext = React.createContext(defaultInputContextState);
+export const InputContext = React.createContext(getDefaultInputContextState());
 
 export class InputContextProvider extends React.Component<{}, InputContextState> {
+  private eventHandle: EventHandle;
   constructor(props: {}) {
     super(props);
 
-    this.state = {
-      ...defaultInputContextState,
-    }
+    this.state = getDefaultInputContextState();
   }
 
   public render() {
@@ -31,6 +30,18 @@ export class InputContextProvider extends React.Component<{}, InputContextState>
         {this.props.children}
       </InputContext.Provider>
     );
+  }
+
+  public componentDidMount() {
+    this.eventHandle = game.usingGamepadState.onUpdated(this.handleUsingGamepadStateUpdate);
+  }
+
+  public componentWillUnmount() {
+    this.eventHandle.clear();
+  }
+
+  private handleUsingGamepadStateUpdate = (usingGamepadState: UsingGamepadState) => {
+    this.setState({ isConsole: usingGamepadState.usingGamepad });
   }
 }
 

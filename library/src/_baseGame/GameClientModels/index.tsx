@@ -7,3 +7,4 @@
 export * from './_Updatable';
 export * from './_Init';
 export * from './LoadingState';
+export * from './UsingGamepadState';

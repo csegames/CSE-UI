@@ -53,6 +53,7 @@ export interface GameInterface extends GameModel {
    * Current state of the consumable items
    */
   consumableItemsState: ConsumableItemsState;
+
 }
 
 export type DevGameInterface = InternalGameInterfaceExt;

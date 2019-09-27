@@ -34,11 +34,15 @@ export default function(isAttached: boolean) {
   _devGame.ready = true;
 }
 
+function noOp(...args: any[]): any {}
+
 /**
  * Creates a game object for replacement use when not running in the context of the game client.
  */
 export function initOutOfContextGame(): Partial<GameInterface> {
   const model: GameModel = {
+    gamepadSelectBinding: { name: 'Gamepad Select', value: -1 },
+    setWaitingForSelect: noOp,
   };
 
   return withOverrides({
@@ -60,8 +64,6 @@ function withOverrides(model: Partial<GameInterface>) {
   }
   return m;
 }
-
-function noOp(...args: any[]): any {}
 
 /* -------------------------------------------------- */
 /* GRAPHQL                                            */

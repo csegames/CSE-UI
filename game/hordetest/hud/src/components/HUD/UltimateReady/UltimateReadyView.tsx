@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { styled } from '@csegames/linaria/react';
 
 const Container = styled.div`
@@ -75,32 +75,63 @@ export interface Props {
   ultAbilityID: number;
 }
 
-export function UltimateReadyView(props: Props) {
-  const [isVisible, setIsVisible] = useState(isUltimateReady());
+export interface State {
+  isVisible: boolean;
+  keybind: Binding;
+}
 
-  useEffect(() => {
-    hordetest.game.abilityStates[props.ultAbilityID].onUpdated(() => {
-      if (isUltimateReady()) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-    });
-  }, [hordetest.game.abilityStates[props.ultAbilityID].status]);
+export class UltimateReadyView extends React.Component<Props, State> {
+  private visibleListener: EventHandle;
+  private keybindListener: EventHandle;
 
-  function isUltimateReady() {
-    return (hordetest.game.abilityStates[props.ultAbilityID].status &
-      AbilityButtonState.Cooldown) === 0;
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      isVisible: true,
+      keybind: hordetest.game.abilityBarState.ultimate.binding,
+    };
   }
 
-  return isVisible ? (
-    <Container>
-      <TextContainer>
-        Ultimate Ready
-      </TextContainer>
-      <KeybindBox>
-        <KeybindText>3</KeybindText>
-      </KeybindBox>
-    </Container>
-  ) : null;
+  public render() {
+    return this.state.isVisible ? (
+      <Container>
+        <TextContainer>
+          Ultimate Ready
+        </TextContainer>
+        <KeybindBox>
+          {this.state.keybind && this.state.keybind.iconClass ?
+            <KeybindText className={this.state.keybind.iconClass}></KeybindText> :
+            <KeybindText>{this.state.keybind.name}</KeybindText>
+          }
+        </KeybindBox>
+      </Container>
+    ) : null;
+  }
+
+  public componentDidMount() {
+    this.visibleListener = hordetest.game.abilityStates[this.props.ultAbilityID].onUpdated(this.handleVisibility);
+    this.keybindListener = hordetest.game.abilityBarState.onUpdated(this.handleAbilityBarUpdate);
+  }
+
+  public componentWillUnmount() {
+    this.visibleListener.clear();
+    this.keybindListener.clear();
+  }
+
+  private handleVisibility = () =>{
+    if (this.isUltimateReady()) {
+      this.setState({ isVisible: true });
+    } else {
+      this.setState({ isVisible: false });
+    }
+  }
+
+  private handleAbilityBarUpdate = () => {
+    this.setState({ keybind: hordetest.game.abilityBarState.ultimate.binding });
+  }
+
+  private isUltimateReady = () => {
+    return (hordetest.game.abilityStates[this.props.ultAbilityID].status &
+      AbilityButtonState.Cooldown) === 0;
+  }
 }

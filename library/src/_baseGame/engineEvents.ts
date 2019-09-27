@@ -79,6 +79,12 @@ export const EE_OnPerfHUDUpdate = 'perfhud.update';
 regMap[EE_OnPerfHUDUpdate] = 'onPerfHUDUpdate';
 
 /**
+ * Called when the "select" keybind for controllers is pressed.
+ */
+export const EE_OnControllerSelect = 'select';
+regMap[EE_OnControllerSelect] = 'onControllerSelect';
+
+/**
  * Initialize engine event forwarding
  */
 export default function() {

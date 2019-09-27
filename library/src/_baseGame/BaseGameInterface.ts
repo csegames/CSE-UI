@@ -88,6 +88,21 @@ export interface BaseGameModel {
   playGameSound: (soundID: number) => void;
 
   /* -------------------------------------------------- */
+  /* CONSOLE CONTROLLER                                 */
+  /* -------------------------------------------------- */
+
+  /**
+   * Keybind information about gamepad "select"
+   */
+  gamepadSelectBinding: Binding;
+
+  /**
+   * Called to give the client context that the "select" button shouldn't be interpreted normally. For example, if the A
+   * button is the "select" keybind, and the Respawn UI shows up, players will press A to respawn.
+   */
+  setWaitingForSelect: (isWaitingForSelect: boolean) => void;
+
+  /* -------------------------------------------------- */
   /* OPTIONS                                            */
   /* -------------------------------------------------- */
 
@@ -331,6 +346,12 @@ export interface BaseGameInterface extends BaseGameModel {
    */
   getKeybindSafe: (id: number) => Keybind;
 
+  /**
+   * Subscribe to controller select events
+   * @param {(() => any)} callback function to be executed when a controllerSelect event is received
+   */
+  onControllerSelect: (callback: () => any) => EventHandle;
+
   /* -------------------------------------------------- */
   /* TASKS                                              */
   /* -------------------------------------------------- */
@@ -407,10 +428,15 @@ export interface BaseGameInterface extends BaseGameModel {
     host(): string;
   };
 
-    /**
-     * The loading state for the client.
-    */
-    loadingState: LoadingState;
+  /**
+   * The loading state for the client.
+  */
+  loadingState: LoadingState;
+
+  /**
+   * Tells us if the player is currently using a gamepad or mouse/keyboard
+   */
+  usingGamepadState: UsingGamepadState;
 
   /* -------------------------------------------------- */
   /* BUILDING API                                       */

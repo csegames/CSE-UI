@@ -13,6 +13,7 @@ import { subscribe } from './graphql/subscription';
 import initEventForwarding from './engineEvents';
 import initCUAPIShim from './cuAPIShim';
 import initLoadingState from './GameClientModels/LoadingState';
+import initUsingGamepadState from './GameClientModels/UsingGamepadState';
 // tslint:disable-next-line:no-duplicate-imports
 import * as engineEvents from './engineEvents';
 
@@ -65,6 +66,7 @@ export default function (isAttached: boolean) {
     initEventForwarding();
     initCUAPIShim();
     initLoadingState();
+    initUsingGamepadState();
 }
 
 function onReady(callback: () => any) {
@@ -134,6 +136,12 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
     clearKeybind: noOp,
     resetKeybinds: noOp,
     resetOptions: noOp,
+    setWaitingForSelect: noOp,
+    gamepadSelectBinding: {
+      name: 'Gamepad Select',
+      value: -1,
+      iconClass: '',
+    },
     building: {
       mode: BuildingMode.NotBuilding,
       activePlotID: 'none',

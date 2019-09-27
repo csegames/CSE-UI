@@ -6,6 +6,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
+import { InputContext } from 'components/context/InputContext';
 
 export const RespawnDimensions = {
   width: 532,
@@ -79,6 +80,10 @@ const RespawnButton = styled.div`
     background-image: url(../images/hud/respawn/uhd/button-glow.png);
   }
 
+  &.highlight {
+    background-image: url(../images/hud/respawn/uhd/button-glow.png);
+  }
+
   @media (max-width: 1920px) {
     font-size: 14px;
     letter-spacing: .2em;
@@ -92,19 +97,24 @@ const RespawnButton = styled.div`
     &:hover {
       background-image: url(../images/hud/gamemenu/button-glow.png);
     }
+
+    &.highlight {
+      background-image: url(../images/hud/gamemenu/button-glow.png);
+    }
   }
 `;
 
 export interface Props {
-
+  isConsole: boolean;
 }
 
 export interface State {
   visible: boolean;
 }
 
-export class Respawn extends React.Component<Props, State> {
-  private evh: EventHandle;
+class RespawnWithInjectedContext extends React.Component<Props, State> {
+  private visibilityEVH: EventHandle;
+  private controllerSelectEVH: EventHandle;
 
   constructor(props: Props) {
     super(props);
@@ -115,40 +125,88 @@ export class Respawn extends React.Component<Props, State> {
 
   public render() {
     return this.state.visible ? (
-      <Container data-input-group='block'>
-        <Content>
-          <RespawnText>You died!</RespawnText>
-          <RespawnButton onClick={this.onRespawnClick}>Respawn</RespawnButton>
-        </Content>
-      </Container>
+        <Container data-input-group='block'>
+          <Content>
+            <RespawnText>You died!</RespawnText>
+            <RespawnButton className={this.props.isConsole ? 'highlight' : ''} onClick={this.onRespawn}>
+              {this.props.isConsole && <span className={game.gamepadSelectBinding.iconClass}></span>}
+              Respawn
+            </RespawnButton>
+          </Content>
+        </Container>
     ) : null;
   }
 
   public componentDidMount() {
     this.handleVisibility();
-    this.evh = hordetest.game.selfPlayerState.onUpdated(this.handleVisibility);
+    this.visibilityEVH = hordetest.game.selfPlayerState.onUpdated(this.handleVisibility);
   }
 
-  public shouldComponentUpdate(nextProps: Props, nextState: State) {
-    return this.state.visible !== nextState.visible;
+  public componentDidUpdate(prevProps: Props) {
+    if (this.state.visible) {
+      if (!prevProps.isConsole && this.props.isConsole) {
+        this.setWaitingForSelect(true);
+        this.controllerSelectEVH = game.onControllerSelect(this.onRespawn);
+      }
+
+      if (prevProps.isConsole && !this.props.isConsole) {
+        this.setWaitingForSelect(false);
+        this.controllerSelectEVH.clear();
+      }
+    }
   }
 
   public componentWillUnmount() {
-    this.evh.clear();
+    this.visibilityEVH.clear();
+
+    if (this.controllerSelectEVH) {
+      this.controllerSelectEVH.clear();
+    }
   }
 
   private handleVisibility = () => {
     if (!hordetest.game.selfPlayerState.isAlive && !this.state.visible) {
-      this.setState({ visible: true });
+      this.show();
       return;
     }
 
     if (hordetest.game.selfPlayerState.isAlive && this.state.visible) {
-      this.setState({ visible: false });
+      this.hide();
     }
   }
 
-  private onRespawnClick = () => {
+  private show = () => {
+    if (this.props.isConsole) {
+      this.setWaitingForSelect(true);
+      this.controllerSelectEVH = game.onControllerSelect(this.onRespawn);
+    }
+
+    this.setState({ visible: true });
+  }
+
+  private hide = () => {
+    if (this.props.isConsole) {
+      this.setWaitingForSelect(false);
+    }
+
+    this.setState({ visible: false });
+  }
+
+  private onRespawn = () => {
     hordetest.game.selfPlayerState.respawn('-1');
   }
+
+  private setWaitingForSelect = (isWaitingForSelect: boolean) => {
+    game.setWaitingForSelect(isWaitingForSelect);
+  }
+}
+
+export function Respawn() {
+  return (
+    <InputContext.Consumer>
+      {({ isConsole }) => (
+        <RespawnWithInjectedContext isConsole={isConsole} />
+      )}
+    </InputContext.Consumer>
+  );
 }
