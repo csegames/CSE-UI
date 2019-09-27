@@ -43,9 +43,9 @@ const index2Icon = [
 ];
 
 export function ActionButtons(props: Props) {
-  const [weakAbility, setWeakAbility] = useState(hordetest.game.abilityBarState.weak);
-  const [strongAbility, setStrongAbility] = useState(hordetest.game.abilityBarState.strong);
-  const [ultimateAbility, setUltimateAbility] = useState(hordetest.game.abilityBarState.ultimate);
+  const [weakAbility, setWeakAbility] = useState(cloneDeep(hordetest.game.abilityBarState.weak));
+  const [strongAbility, setStrongAbility] = useState(cloneDeep(hordetest.game.abilityBarState.strong));
+  const [ultimateAbility, setUltimateAbility] = useState(cloneDeep(hordetest.game.abilityBarState.ultimate));
 
   useEffect(() => {
     const handle = hordetest.game.abilityBarState.onUpdated(() => {
