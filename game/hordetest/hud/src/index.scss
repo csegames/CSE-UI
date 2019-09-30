@@ -33,3 +33,21 @@ div {
   width: 100%;
   height: 100%;
 }
+
+.announcement-enter {
+  opacity: 0.01;
+}
+
+.announcement-enter.announcement-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.announcement-leave {
+  opacity: 1;
+}
+
+.announcement-leave.announcement-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}

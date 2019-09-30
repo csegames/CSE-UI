@@ -27,6 +27,7 @@ import { LoadingScreen } from 'components/fullscreen/LoadingScreen';
 
 import { InputContextProvider } from 'context/InputContext';
 import { ImagePreloader } from './ImagePreloader';
+import { PopupAnnouncement } from './Announcements/Popup';
 
 const Container = styled.div`
   width: 100%;
@@ -61,6 +62,13 @@ const KillStreakPosition = styled.div`
   top: 50%;
   transform: translateY(-50%);
   left: 20px;
+`;
+
+const PopupAnnouncementsPosition = styled.div`
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const CrosshairPosition = styled.div`
@@ -171,6 +179,10 @@ export function HUD(props: Props) {
         <ReloadButtonContainer>
           <div onClick={() => game.reloadUI()}>Reload UI</div>
         </ReloadButtonContainer>
+
+        <PopupAnnouncementsPosition>
+          <PopupAnnouncement />
+        </PopupAnnouncementsPosition>
 
         <CrosshairPosition>
           <Crosshair />
