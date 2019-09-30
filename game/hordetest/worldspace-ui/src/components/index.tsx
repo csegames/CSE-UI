@@ -40,7 +40,7 @@ export interface WorldUIState {
   y: number;
   width: number;
   height: number;
-  html?: HTMLElement;
+  html?: string;
 }
 
 export interface ProgressBarState extends WorldUIState {
@@ -130,12 +130,16 @@ export class WorldUI extends React.Component<{}, State> {
       }
 
       default: {
-        return null;
+        if (!worldUI.html) return null;
+
+        return (
+          <WorldUIContainer worldUIState={worldUI} dangerouslySetInnerHTML={{ __html: worldUI.html }}></WorldUIContainer>
+        );
       }
     }
   }
 
-  private handleUpdateWorldUI = (id: number, x: number, y: number, width: number, height: number, html: HTMLElement) => {
+  private handleUpdateWorldUI = (id: number, x: number, y: number, width: number, height: number, html: string) => {
     const newWorldUIState: WorldUIState = {
       type: WorldUIWidgetType.Default,
       id,

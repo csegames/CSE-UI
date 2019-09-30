@@ -21,7 +21,7 @@ function onUpdateWorldUI(callback: (
   y: number,
   width: number,
   height: number,
-  html: HTMLElement,
+  html: string,
 ) => void) {
   engine.on('updateWorldUI', callback);
 }

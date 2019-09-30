@@ -20,6 +20,7 @@ const Container = styled.div`
   border: 2px solid black;
   display: flex;
   width: fit-content;
+  transform: skewX(-10deg);
 `;
 
 const KeybindBox = styled.div`
@@ -34,13 +35,22 @@ const KeybindBox = styled.div`
   font-family: Colus;
 `;
 
+const KeybindText = styled.div`
+  transform: skewX(10deg);
+  transition: color 0.1s;
+
+  &.pressed {
+    color: #4D4D4D;
+  }
+`;
+
 const BarContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  width: 130px;
+  min-width: 130px;
   height: 25px;
-  background-color: #b5b5b5;
+  background-color: #1C1F1F;
   z-index: -1;
 `;
 
@@ -50,7 +60,7 @@ const Bar = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: #626262;
+  background-color: #4D4D4D;
   z-index: 0;
 `;
 
@@ -59,6 +69,7 @@ const NameText = styled.div`
   color: white;
   font-family: Lato;
   margin-left: 10px;
+  transform: skewX(10deg);
   z-index: 10;
 `;
 
@@ -66,20 +77,50 @@ export interface Props {
   state: InteractionBarState;
 }
 
-export function InteractionBar(props: Props) {
-  const { state } = props;
-  return (
-    <Wrapper>
-      <Container>
-        {state.keybind.iconClass ?
-          <KeybindBox className={state.keybind.iconClass}></KeybindBox> :
-          <KeybindBox>{state.keybind.name}</KeybindBox>
-        }
-        <BarContainer>
-          <Bar style={{ width: `${state.progress * 100}%` }} />
-          <NameText>{state.name}</NameText>
-        </BarContainer>
-      </Container>
-    </Wrapper>
-  );
+export interface State {
+  isPressed: boolean;
+}
+
+export class InteractionBar extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      isPressed: false,
+    };
+  }
+
+  public render() {
+    const { state } = this.props;
+    const pressedClassName = this.state.isPressed ? 'pressed' : '';
+    return (
+      <Wrapper>
+        <Container>
+          {state.keybind.iconClass ?
+            <KeybindBox>
+              <KeybindText className={`${pressedClassName} ${state.keybind.iconClass}`}></KeybindText>
+            </KeybindBox> :
+            <KeybindBox>
+              <KeybindText className={pressedClassName}>{state.keybind.name}</KeybindText>
+            </KeybindBox>
+          }
+          <BarContainer>
+            <Bar style={{ width: `${state.progress * 100}%` }} />
+            <NameText>{state.name}</NameText>
+          </BarContainer>
+        </Container>
+      </Wrapper>
+    );
+  }
+
+  public componentDidUpdate(prevProps: Props) {
+    if (!this.state.isPressed && this.props.state.progress > prevProps.state.progress) {
+      // Going up
+      this.setState({ isPressed: true });
+    }
+
+    if (this.state.isPressed && this.props.state.progress < prevProps.state.progress) {
+      // Going down
+      this.setState({ isPressed: false });
+    }
+  }
 }
