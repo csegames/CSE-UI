@@ -7,14 +7,10 @@
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
 
-interface ContainerProps extends React.HTMLProps<HTMLDivElement> {
-  scale: number;
-}
 const Container = styled.div`
   position: absolute;
   display: flex;
   align-items: center;
-  transform: ${(props: ContainerProps) => props.scale}px;
 `;
 
 const Diamond = styled.div`
@@ -137,12 +133,12 @@ export function PlayerTracker(props: Props) {
     }
 
     if (!xFlush) {
-      left = `${screenPos.x * 100}%`;
+      left = `${screenPos.x * 95}%`;
       // transition = 'left 0.1s';
     }
 
     if (!yFlush) {
-      top = `${screenPos.y * 100}%`;
+      top = `${screenPos.y * 95}%`;
       // transition = transition + ', top 0.1s';
     }
 
@@ -157,7 +153,7 @@ export function PlayerTracker(props: Props) {
 
   // const { alignment, styles } = getAlignment();
   return (
-    <Container scale={props.scale} style={getAlignment()}>
+    <Container style={getAlignment()}>
       <Diamond color={props.color}></Diamond>
     </Container>
   );
