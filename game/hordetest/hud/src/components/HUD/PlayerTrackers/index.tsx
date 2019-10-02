@@ -22,7 +22,6 @@ export interface Props {
 
 export interface State {
   playerDirections: PlayerDirection[];
-  colorAssignMap: { [id: number]: string }
 }
 
 const colors = [
@@ -37,12 +36,10 @@ const colors = [
 ];
 
 export class PlayerTrackers extends React.Component<Props, State> {
-  private colorIndex: number = 0;
   constructor(props: Props) {
     super(props);
     this.state = {
       playerDirections: [],
-      colorAssignMap: {},
     };
 
     // this.handlePlayerDirectionUpdate = throttle(this.handlePlayerDirectionUpdate, 50);
@@ -55,7 +52,7 @@ export class PlayerTrackers extends React.Component<Props, State> {
           <PlayerTracker
             key={i}
             index={i}
-            color={this.state.colorAssignMap[pt.id]}
+            color={colors[pt.id]}
             degrees={pt.angle}
             screenPos={pt.screenPos}
             scale={pt.scale}
@@ -70,14 +67,6 @@ export class PlayerTrackers extends React.Component<Props, State> {
   }
 
   private handlePlayerDirectionUpdate = (playerDirections: PlayerDirection[]) => {
-    const colorAssign = cloneDeep(this.state.colorAssignMap);
-    playerDirections.forEach((playerDirection: PlayerDirection) => {
-      if (colorAssign[playerDirection.id]) return;
-
-      colorAssign[playerDirection.id] = colors[this.colorIndex] || 'blue';
-      this.colorIndex++;
-    });
-
-    this.setState({ playerDirections, colorAssignMap: colorAssign });
+    this.setState({ playerDirections });
   }
 }
