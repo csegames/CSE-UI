@@ -12,8 +12,10 @@ import { BattlePassDay } from './BattlePassDay';
 import { SkinInfo } from '../ChampionProfile/SkinInfo';
 import { Skin } from '../Store/testData';
 import { Button } from 'components/fullscreen/Button';
+import { InputContext } from 'components/context/InputContext';
 
 const Container = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -155,6 +157,25 @@ const PageIndex = styled.div`
   }
 `;
 
+const ConsoleTriggerIcon = styled.div`
+  align-self: center;
+  margin: 0 5px 20px 5px;
+  font-size: 30px;
+  color: white;
+`;
+
+const ButtonPosition = styled.div`
+  display: flex;
+  position: absolute;
+  right: 40px;
+  bottom: 40px;
+`;
+
+const ConsoleIcon = styled.span`
+  margin-right: 5px;
+`;
+
+
 // const ButtonsContainer = styled.div`
 //   display: flex;
 // `;
@@ -205,46 +226,61 @@ export function BattlePass(props: Props) {
   const firstIndex = (currentPage - 1) * 7;
   const lastIndex = (firstIndex) + 7;
   return (
-    <Container>
-      <ContentContainer>
-        <BattlePassContainer>
-          <TitleContainer>
-          <div>
-            <SeasonNumber>Season {battlePassData.seasonNumber}</SeasonNumber>
-            <SeasonName>{battlePassData.seasonName}</SeasonName>
-          </div>
+    <InputContext.Consumer>
+      {({ isConsole }) => (
+        <Container>
+          <ContentContainer>
+            {isConsole && <ConsoleTriggerIcon className='icon-xb-lt'></ConsoleTriggerIcon>}
+            <BattlePassContainer>
+              <TitleContainer>
+                <div>
+                  <SeasonNumber>Season {battlePassData.seasonNumber}</SeasonNumber>
+                  <SeasonName>{battlePassData.seasonName}</SeasonName>
+                </div>
 
-          <SeasonEndsText>
-            <EndsInText>Ends in</EndsInText> {battlePassData.days.length - battlePassData.currentDay}
-          </SeasonEndsText>
-        </TitleContainer>
-          <BattlePassDaysContainer>
-            <LeftArrow onClick={onPrevClick} />
-            {battlePassDataClone.days.slice(firstIndex, lastIndex).map((day) => {
-              return (
-                <BattlePassDay day={day} selectedPreviewSkinInfo={selectedPreviewSkinInfo} onClickSkin={onClickSkin} />
-              );
-            })}
-            <RightArrow onClick={onNextClick} />
-          </BattlePassDaysContainer>
-          <BottomContainer>
-            <Button type='primary' text='Upgrade' styles={UpgradeButtonStyle} />
-            <PageIndexContainer>
-              {Array.from(Array(getNumPages()).keys()).map((_, i) => {
-                return (
-                  <PageIndex onClick={() => onPageClick(i + 1)} className={i + 1 === currentPage ? 'active' : ''} />
-                );
-              })}
-            </PageIndexContainer>
-          </BottomContainer>
-        </BattlePassContainer>
-        <ChampionImageContainer>
-          <ChampionImage src={'images/fullscreen/startscreen/human-m-blackguard.png'} />
-          <SkinInfoPosition>
-            <SkinInfo hideSkinButtons selectedPreviewSkinInfo={selectedPreviewSkinInfo} />
-          </SkinInfoPosition>
-        </ChampionImageContainer>
-      </ContentContainer>
-    </Container>
+                <SeasonEndsText>
+                  <EndsInText>Ends in</EndsInText> {battlePassData.days.length - battlePassData.currentDay}
+                </SeasonEndsText>
+              </TitleContainer>
+              <BattlePassDaysContainer>
+                <LeftArrow onClick={onPrevClick} />
+                {battlePassDataClone.days.slice(firstIndex, lastIndex).map((day) => {
+                  return (
+                    <BattlePassDay day={day} selectedPreviewSkinInfo={selectedPreviewSkinInfo} onClickSkin={onClickSkin} />
+                  );
+                })}
+                <RightArrow onClick={onNextClick} />
+              </BattlePassDaysContainer>
+              <BottomContainer>
+                <Button
+                  type='primary'
+                  text={isConsole ? <div><span className='icon-xb-r-down'></span> Upgrade</div> : 'Upgrade'}
+                  styles={UpgradeButtonStyle}
+                />
+                <PageIndexContainer>
+                  {Array.from(Array(getNumPages()).keys()).map((_, i) => {
+                    return (
+                      <PageIndex onClick={() => onPageClick(i + 1)} className={i + 1 === currentPage ? 'active' : ''} />
+                    );
+                  })}
+                </PageIndexContainer>
+              </BottomContainer>
+            </BattlePassContainer>
+            {isConsole && <ConsoleTriggerIcon className='icon-xb-rt'></ConsoleTriggerIcon>}
+            <ChampionImageContainer>
+              <ChampionImage src={'images/fullscreen/startscreen/human-m-blackguard.png'} />
+              <SkinInfoPosition>
+                <SkinInfo hideSkinButtons selectedPreviewSkinInfo={selectedPreviewSkinInfo} />
+              </SkinInfoPosition>
+            </ChampionImageContainer>
+          </ContentContainer>
+          {isConsole &&
+            <ButtonPosition>
+              <ConsoleIcon className='icon-xb-a'></ConsoleIcon> Select
+            </ButtonPosition>
+          }
+        </Container>
+      )}
+    </InputContext.Consumer>
   );
 }

@@ -5,12 +5,15 @@
  */
 
 import React, { useState } from 'react';
+import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { StoreNavMenu } from './StoreNavMenu';
 import { BundleItem } from './BundleItem';
 import { skins, StoreItem, StoreItemType, Bundle, Skin } from './testData';
 import { ConfirmPurchase } from './ConfirmPurchase';
 import { SkinItem } from './SkinItem';
+import { InputContext } from 'components/context/InputContext';
+import { ActionButton } from '../../ActionButton';
 
 const Container = styled.div`
   display: flex;
@@ -41,6 +44,21 @@ const ItemsContainer = styled.div`
   &::-webkit-scrollbar-thumb {
     background-color: #4f4f4f;
   }
+`;
+
+const ButtonPosition = styled.div`
+  display: flex;
+  position: absolute;
+  right: 40px;
+  bottom: 40px;
+`;
+
+const ConsoleIcon = styled.span`
+  margin-right: 5px;
+`;
+
+const ConsoleSelectSpacing = css`
+  margin-right: 20px;
 `;
 
 export interface Props {
@@ -104,9 +122,23 @@ export function Store(props: Props) {
   }
 
   return (
-    <Container>
-      <StoreNavMenu selectedRoute={currentRoute} onSelectRoute={onSelectRoute} />
-      {renderRoute()}
-    </Container>
+    <InputContext.Consumer>
+      {({ isConsole }) => (
+        <Container>
+          <StoreNavMenu selectedRoute={currentRoute} onSelectRoute={onSelectRoute} />
+          {renderRoute()}
+          {isConsole &&
+            <ButtonPosition>
+              <ActionButton className={ConsoleSelectSpacing}>
+                <ConsoleIcon className='icon-xb-a'></ConsoleIcon> Select
+              </ActionButton>
+              <ActionButton>
+                <ConsoleIcon className='icon-xb-b'></ConsoleIcon> Back
+              </ActionButton>
+            </ButtonPosition>
+          }
+        </Container>
+      )}
+    </InputContext.Consumer>
   );
 }

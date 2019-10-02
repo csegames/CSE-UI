@@ -79,8 +79,15 @@ export class LockIn extends React.Component<Props, State> {
                 current={this.state.currentPercentage}
                 max={100}
                 styles={LockInButton}
-                text='Lock in'
                 onClick={this.props.onLockIn}
+                text={
+                  <ConsoleButton>
+                    <LockInText>Lock In</LockInText>
+                    <TextContainer>
+                      0:{this.state.timer.toString().length === 1 ? `0${this.state.timer}` : this.state.timer}
+                    </TextContainer>
+                  </ConsoleButton>
+                }
               /> :
               <LoadingButton
                 current={this.state.currentPercentage}

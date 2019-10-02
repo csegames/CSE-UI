@@ -5,6 +5,7 @@
  */
 
 import React, { useState } from 'react';
+import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { ChampionInfoDisplay } from './ChampionInfoDisplay';
 import { SkinInfo } from './SkinInfo';
@@ -13,6 +14,7 @@ import { ActionButton } from '../../ActionButton';
 
 import { Skin, StoreItemType } from '../Store/testData';
 import { champions, ChampionInfo } from './testData';
+import { InputContext } from 'components/context/InputContext';
 
 const Container = styled.div`
   position: relative;
@@ -57,9 +59,18 @@ const SkinInfoPosition = styled.div`
 `;
 
 const ButtonPosition = styled.div`
+  display: flex;
   position: absolute;
   right: 40px;
   bottom: 40px;
+`;
+
+const ConsoleIcon = styled.span`
+  margin-right: 5px;
+`;
+
+const ConsoleSelectSpacing = css`
+  margin-right: 20px;
 `;
 
 export interface Props {
@@ -157,33 +168,52 @@ export function ChampionProfile(props: Props) {
 
   const offsetClass = editingMode === EditingMode.None ? 'should-offset' : 'no-offset';
   return (
-    <Container>
-      <ChampionImage className={offsetClass} src={selectedChampion.image} />
-      <ChampionInfoPosition>
-        <ChampionInfoDisplay
-          onSave={onSave}
-          champions={champions}
-          selectedPreviewSkinInfo={selectedPreviewSkinInfo}
-          selectedChampion={selectedChampion}
-          editingMode={editingMode}
-          onEditingModeChange={onEditingModeChanged}
-          onWeaponChange={onWeaponChange}
-          onSkinChange={onSkinChange}
-          setSelectedPreviewSkinInfo={onSelectedPreviewSkinInfoChange}
-          onSelectChampion={onSelectChampion}
-        />
-      </ChampionInfoPosition>
-      <SkinInfoPosition className={offsetClass}>
-        <SkinInfo
-          hideSkinButtons={hideSkinButtons}
-          selectedPreviewSkinInfo={selectedPreviewSkinInfo}
-          onSave={onSave}
-        />
-      </SkinInfoPosition>
-      <ButtonPosition>
-        {editingMode === EditingMode.None && <ActionButton onClick={onShowSkills}>Show skills</ActionButton>}
-        {editingMode !== EditingMode.None && <ActionButton onClick={onReset}>Cancel</ActionButton>}
-      </ButtonPosition>
-    </Container>
+    <InputContext.Consumer>
+      {({ isConsole }) => (
+        <Container>
+          <ChampionImage className={offsetClass} src={selectedChampion.image} />
+          <ChampionInfoPosition>
+            <ChampionInfoDisplay
+              onSave={onSave}
+              champions={champions}
+              selectedPreviewSkinInfo={selectedPreviewSkinInfo}
+              selectedChampion={selectedChampion}
+              editingMode={editingMode}
+              onEditingModeChange={onEditingModeChanged}
+              onWeaponChange={onWeaponChange}
+              onSkinChange={onSkinChange}
+              setSelectedPreviewSkinInfo={onSelectedPreviewSkinInfoChange}
+              onSelectChampion={onSelectChampion}
+            />
+          </ChampionInfoPosition>
+          <SkinInfoPosition className={offsetClass}>
+            <SkinInfo
+              hideSkinButtons={hideSkinButtons}
+              selectedPreviewSkinInfo={selectedPreviewSkinInfo}
+              onSave={onSave}
+            />
+          </SkinInfoPosition>
+          {!isConsole ?
+            <ButtonPosition>
+              {editingMode === EditingMode.None ?
+                <ActionButton onClick={onShowSkills}>Show skills</ActionButton> :
+                <ActionButton onClick={onReset}>Cancel</ActionButton>
+              }
+            </ButtonPosition> :
+            <ButtonPosition>
+              {editingMode === EditingMode.None &&
+                <ActionButton className={ConsoleSelectSpacing}>
+                  <ConsoleIcon className='icon-xb-a'></ConsoleIcon> Select
+                </ActionButton>
+              }
+              {editingMode === EditingMode.None ?
+                <ActionButton><ConsoleIcon className='icon-xb-x'></ConsoleIcon> Show Skills</ActionButton> :
+                <ActionButton><ConsoleIcon className='icon-xb-x'></ConsoleIcon> Cancel</ActionButton>
+              }
+            </ButtonPosition>
+          }
+        </Container>
+      )}
+    </InputContext.Consumer>
   );
 }

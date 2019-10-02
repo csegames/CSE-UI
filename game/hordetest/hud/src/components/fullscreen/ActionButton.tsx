@@ -7,6 +7,8 @@
 import { styled } from '@csegames/linaria/react';
 
 export const ActionButton = styled.div`
+  display: flex;
+  align-items: center;
   font-size: 22px;
   color: white;
   font-family: Lato;

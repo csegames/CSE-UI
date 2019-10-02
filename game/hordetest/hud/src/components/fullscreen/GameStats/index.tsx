@@ -11,6 +11,7 @@ import { StatsList } from './StatsList';
 import { Highlights } from './Highlights';
 import { Button } from '../Button';
 import { playerStats } from './testData';
+import { InputContext } from 'components/context/InputContext';
 
 const Container = styled.div`
   width: calc(100% - 50px);
@@ -65,8 +66,14 @@ const HighlightsSection = styled.div`
 `;
 
 const ButtonStyle = css`
+  display: flex;
+  align-items: center;
   padding: 7px 20px;
   font-size: 20px;
+`;
+
+const ConsoleIcon = styled.span`
+  margin-right: 5px;
 `;
 
 export interface Props {
@@ -75,25 +82,36 @@ export interface Props {
 
 export function GameStats(props: Props) {
   return (
-    <Container>
-      <TopContainer>
-        <TitleContainer>
-          <Title>GAME STATS</Title>
-          <MatchTitleInfo>
-            <GameMode>Group Survival</GameMode>
-            <div>Match Time: 15:23</div>
-          </MatchTitleInfo>
-        </TitleContainer>
-        <Button type='blue' text='Leave' onClick={props.onLeaveClick} styles={ButtonStyle} />
-      </TopContainer>
-      <MainSection>
-        <StatsListSection>
-          <StatsList />
-        </StatsListSection>
-        <HighlightsSection>
-          <Highlights players={playerStats} />
-        </HighlightsSection>
-      </MainSection>
-    </Container>
+    <InputContext.Consumer>
+      {({ isConsole }) => (
+        <Container>
+          <TopContainer>
+            <TitleContainer>
+              <Title>GAME STATS</Title>
+              <MatchTitleInfo>
+                <GameMode>Group Survival</GameMode>
+                <div>Match Time: 15:23</div>
+              </MatchTitleInfo>
+            </TitleContainer>
+            {isConsole ?
+              <Button
+                type='blue'
+                text={<><ConsoleIcon className='icon-xb-b'></ConsoleIcon> Leave</>}
+                styles={ButtonStyle}
+              /> :
+              <Button type='blue' text='Leave' onClick={props.onLeaveClick} styles={ButtonStyle} />
+            }
+          </TopContainer>
+          <MainSection>
+            <StatsListSection>
+              <StatsList />
+            </StatsListSection>
+            <HighlightsSection>
+              <Highlights players={playerStats} />
+            </HighlightsSection>
+          </MainSection>
+        </Container>
+      )}
+    </InputContext.Consumer>
   );
 }

@@ -10,6 +10,7 @@ import { styled } from '@csegames/linaria/react';
 import { Button } from '../../Button';
 import { Skin } from './testData';
 import { SkinItem } from './SkinItem';
+import { InputContext } from 'components/context/InputContext';
 
 const Container = styled.div`
   width: 65%;
@@ -46,9 +47,14 @@ const ButtonsContainer = styled.div`
 `;
 
 const ButtonStyle = css`
+  display: flex;
   padding: 18px 30px;
   font-size: 24px;
   margin-right: 15px;
+`;
+
+const ConsoleIcon = styled.span`
+  margin-right: 5px;
 `;
 
 export interface Props {
@@ -63,14 +69,32 @@ export function ConfirmPurchase(props: Props) {
   }
 
   return (
-    <Container>
-      <Title>Confirm Purchase</Title>
-      <CostTitle>You will use {props.skin.cost} to purchase:</CostTitle>
-      <SkinItem disabled width={'70%'} height={'40%'} skin={props.skin} onSkinClick={noOp} />
-      <ButtonsContainer>
-        <Button text='Purchase' type='blue' styles={ButtonStyle} />
-        <Button text='Cancel' type='gray' onClick={onCancelClick} styles={ButtonStyle} />
-      </ButtonsContainer>
-    </Container>
+    <InputContext.Consumer>
+      {({ isConsole }) => (
+        <Container>
+          <Title>Confirm Purchase</Title>
+          <CostTitle>You will use {props.skin.cost} to purchase:</CostTitle>
+          <SkinItem disabled width={'70%'} height={'40%'} skin={props.skin} onSkinClick={noOp} />
+          <ButtonsContainer>
+            {isConsole ?
+              <Button
+                text={<><ConsoleIcon className='icon-xb-a'></ConsoleIcon> Purchase</>}
+                type='blue'
+                styles={ButtonStyle}
+              /> :
+              <Button text='Purchase' type='blue' styles={ButtonStyle} />
+            }
+            {isConsole ?
+              <Button
+                text={<><ConsoleIcon className='icon-xb-b'></ConsoleIcon> Cancel</>}
+                type='gray'
+                styles={ButtonStyle}
+              /> :
+              <Button text='Cancel' type='gray' onClick={onCancelClick} styles={ButtonStyle} />
+            }
+          </ButtonsContainer>
+        </Container>
+      )}
+    </InputContext.Consumer>
   );
 }
