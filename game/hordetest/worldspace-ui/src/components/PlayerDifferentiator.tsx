@@ -46,7 +46,7 @@ export interface Props {
 export function PlayerDifferentiator(props: Props) {
   return (
     <Container>
-      <Diamond color={colors[props.state.differentiator]} />
+      <Diamond color={colors[props.state.differentiator] || 'blue'} />
     </Container>
   );
 }
