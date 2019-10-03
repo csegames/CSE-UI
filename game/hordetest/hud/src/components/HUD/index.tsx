@@ -30,6 +30,7 @@ import { ScreenContextProvider } from 'context/ScreenContext';
 import { InputContextProvider } from 'context/InputContext';
 import { ImagePreloader } from './ImagePreloader';
 import { PopupAnnouncement } from './Announcements/Popup';
+import { Compass } from './Compass';
 
 const Container = styled.div`
   width: 100%;
@@ -119,6 +120,15 @@ const HealthBarPosition = styled.div`
   align-items: center;
 `;
 
+const CompassPosition =  styled.div`
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 60px;
+`;
+
 // const WeaponButtonsContainer = styled.div`
 //   display: flex;
 //   margin-left: 15px;
@@ -191,6 +201,10 @@ export function HUD(props: Props) {
           <ReloadButtonContainer>
             <div onClick={() => game.reloadUI()}>Reload UI</div>
           </ReloadButtonContainer>
+
+          <CompassPosition>
+            <Compass />
+          </CompassPosition>
 
           <PopupAnnouncementsPosition>
             <PopupAnnouncement />
