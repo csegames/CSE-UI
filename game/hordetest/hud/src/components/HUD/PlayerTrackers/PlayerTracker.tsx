@@ -133,12 +133,12 @@ export function PlayerTracker(props: Props) {
     }
 
     if (!xFlush) {
-      left = `${screenPos.x * 95}%`;
+      left = `${screenPos.x * 100}%`;
       // transition = 'left 0.1s';
     }
 
     if (!yFlush) {
-      top = `${screenPos.y * 95}%`;
+      top = `${screenPos.y * 100}%`;
       // transition = transition + ', top 0.1s';
     }
 
@@ -151,9 +151,9 @@ export function PlayerTracker(props: Props) {
     };
   }
 
-  // const { alignment, styles } = getAlignment();
+  const alignment = getAlignment();
   return (
-    <Container style={getAlignment()}>
+    <Container style={alignment}>
       <Diamond color={props.color}></Diamond>
     </Container>
   );
