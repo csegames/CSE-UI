@@ -127,6 +127,7 @@ const CompassPosition =  styled.div`
   transform: translateX(-50%);
   width: 500px;
   height: 60px;
+  pointer-events: none;
 `;
 
 // const WeaponButtonsContainer = styled.div`

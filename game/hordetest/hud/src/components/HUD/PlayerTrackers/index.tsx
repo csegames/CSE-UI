@@ -52,7 +52,7 @@ export class PlayerTrackers extends React.Component<Props, State> {
           <PlayerTracker
             key={i}
             index={i}
-            color={colors[pt.id]}
+            color={colors[pt.id] || 'blue'}
             degrees={pt.angle}
             screenPos={pt.screenPos}
             scale={pt.scale}
