@@ -286,8 +286,10 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
             <CharPicImage
               style={{
                 backgroundImage: `url(${getCharImage(character)})`,
-                backgroundPosition: character.race === Race.Luchorpan ||
-                  (character.gender === Gender.Male && character.race === Race.HumanMaleT &&
+                backgroundPosition:
+                  character.archetype === Archetype.DarkFool ? '50% 20%' :
+                  character.race === Race.Luchorpan ||
+                    (character.gender === Gender.Male && character.race === Race.HumanMaleT &&
                     character.archetype === Archetype.ForestStalker) ? '50% 25%' :
                   character.archetype === Archetype.WintersShadow ? '45% 25%' :
                   character.archetype === Archetype.WaveWeaver ? '50% 42%' :
@@ -301,12 +303,14 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
             <CharMaskImage
               style={{
                 backgroundImage: `url(${getCharImage(character)})`,
-                backgroundPosition: character.race === Race.Luchorpan ||
-                  (character.race === Race.HumanMaleT && character.archetype === Archetype.ForestStalker) ? '50% 25%' :
-                character.archetype === Archetype.WintersShadow ? '45% 25%' :
-                character.archetype === Archetype.WaveWeaver ? '50% 42%' :
-                character.archetype === Archetype.Minstrel ? '45% 37%' :
-                '50% 20%',
+                backgroundPosition:
+                  character.archetype === Archetype.DarkFool ? '50% 20%' :
+                  character.race === Race.Luchorpan ||
+                    (character.race === Race.HumanMaleT && character.archetype === Archetype.ForestStalker) ? '50% 25%' :
+                  character.archetype === Archetype.WintersShadow ? '45% 25%' :
+                  character.archetype === Archetype.WaveWeaver ? '50% 42%' :
+                  character.archetype === Archetype.Minstrel ? '45% 37%' :
+                  '50% 20%',
                 transform: flipImage ? 'scale(-1, 1)' : 'none',
               }}
             />

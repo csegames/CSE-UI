@@ -102,7 +102,7 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
       .filter((c: PlayerClassInfo) => c.faction === this.props.selectedFaction.id || c.faction === Faction.Factionless)
 
       // DISABLE CLASSEES THAT HAVE NOT BEEN RELEASED YET
-      .filter((c: PlayerClassInfo) => c.name !== 'Skald' && c.name !== 'Dark Fool');
+      .filter((c: PlayerClassInfo) => c.name !== 'Skald');
 
     return (
       <div className='page'>
