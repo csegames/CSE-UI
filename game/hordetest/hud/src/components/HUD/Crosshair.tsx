@@ -8,8 +8,8 @@ import React from 'react';
 import { styled } from '@csegames/linaria/react';
 
 const CrosshairImage = styled.img`
-  width: 102px;
-  height: 102px;
+  width: 45px;
+  height: 45px;
 `;
 
 export function Crosshair() {
