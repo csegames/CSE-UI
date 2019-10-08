@@ -23,6 +23,8 @@ declare global {
     characterID: string;
     championID: string;
     facing: Facing2fDegrees;
+    playerDifferentiator: number;
+    viewBearing: number;
 
     /**
      * Request to respawn at a specific location if a spawnLocationID is provided.
@@ -45,6 +47,8 @@ function initDefault(): SelfPlayerState {
     characterID: 'unknown',
     championID: 'unknown',
     facing: { yaw: 0, pitch: 0 },
+    playerDifferentiator: -1,
+    viewBearing: 0,
 
     respawn: noOp,
 

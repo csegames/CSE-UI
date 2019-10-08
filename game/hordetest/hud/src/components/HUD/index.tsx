@@ -126,7 +126,7 @@ const CompassPosition =  styled.div`
   left: 50%;
   transform: translateX(-50%);
   width: 500px;
-  height: 60px;
+  height: 55px;
   pointer-events: none;
 `;
 

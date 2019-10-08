@@ -4,89 +4,72 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
-import { css } from '@csegames/linaria';
+import React from 'react';
 import { styled } from '@csegames/linaria/react';
 
 const Container = styled.div`
-  font-family: TitilliumBold;
   position: relative;
   height: 100%;
   width: 100%;
+  font-size: 16px;
+  font-family: Lato;
+  font-weight: bold;
   overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 90%, transparent 100%);
+`;
 
-  &:before {
-    display: block;
-    width: 100%;
-    height: 2px;
-    line-height: 1px;
-    position: absolute;
-    content: linear-gradient(to right,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, .5) 50%,
-      rgba(0, 0, 0, 0) 100%);
-    top: 2px;
-  }
+const TopBorder = styled.div`
+  position: absolute;
+  top: 25px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, white, transparent);
+`;
 
-  &:after {
-    display: block;
-    width: 100%;
-    height: 2px;
-    line-height: 1px;
-    position: absolute;
-    content: linear-gradient(to right,
-      rgba(200, 200, 200, 0) 0%,
-      rgba(200, 200, 200, .5) 50%,
-      rgba(200, 200, 200, 0) 100%);
-    bottom: 0px;
-  }
+const GradientBackground = styled.div`
+  position: absolute;
+  top: 25px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent);
+`;
+
+const IndicatorContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const IndicatorNumber = styled.div`
+  font-size: 18px;
+  color: white;
+`;
+
+const Indicator = styled.div`
+  width: 8px;
+  height: 8px;
+  border: 2px solid white;
+  border-top-width: 0px;
+  border-left-width: 0px;
+  transform: rotate(45deg);
 `;
 
 const Cardinal = styled.div`
   position: absolute;
   margin: 0;
   padding: 0;
-  margin-top: 6px;
-  color: rgba(255,255,255, .6);
-  text-shadow: 2px 2px 4px black;
-`;
-
-const Dot = css`
-  margin-left: -0.25em;
-  top: -0.25em;
-`;
-
-const CardinalDirection = styled.div`
-  position: relative;
-  height: 38px;
-  line-height: 30px;
-  font-size: 26px;
-
-  &:before {
-    display: block;
-    width: 100%;
-    height: 2px;
-    line-height: 1px;
-    position: absolute;
-    content: linear-gradient(to right,
-      rgba(200, 200, 200, 0) 0%,
-      rgba(200, 200, 200, .5) 50%,
-      rgba(200, 200, 200, 0) 100%);
-    top: 0px;
-  }
-
-  &:after {
-    display: block;
-    width: 100%;
-    height: 2px;
-    line-height: 1px;
-    position: absolute;
-    content: linear-gradient(to right,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, .5) 50%,
-      rgba(0, 0, 0, 0) 100%);
-    bottom: 2px;
-  }
+  bottom: 0;
+  margin-top: 15px;
+  color: white;
+  width: 30px;
+  text-align: center;
+  transform: translateX(-50%);
 `;
 
 export interface CompassProps {
@@ -103,7 +86,7 @@ export class Compass extends React.Component<CompassProps, CompassState> {
   constructor(props: CompassProps) {
     super(props);
     this.state = {
-      facing: hordetest.game.selfPlayerState.facing.yaw,
+      facing: hordetest.game.selfPlayerState.viewBearing,
     };
   }
 
@@ -111,24 +94,36 @@ export class Compass extends React.Component<CompassProps, CompassState> {
     const facing: number = this.state.facing;
     return (
       <Container>
-        <CardinalDirection>
-          <Cardinal style={this.position(facing, -360) }>E</Cardinal>
-          <Cardinal className={Dot} style={this.position(facing, -315) }>.</Cardinal>
-          <Cardinal style={this.position(facing, -270) }>N</Cardinal>
-          <Cardinal className={Dot} style={this.position(facing, -225) }>.</Cardinal>
-          <Cardinal style={this.position(facing, -180) }>W</Cardinal>
-          <Cardinal className={Dot} style={this.position(facing, -135) }>.</Cardinal>
-          <Cardinal style={this.position(facing, -90) }>S</Cardinal>
-          <Cardinal className={Dot} style={this.position(facing, -45) }>.</Cardinal>
-          <Cardinal style={this.position(facing, 0) }>E</Cardinal>
-          <Cardinal className={Dot} style={this.position(facing, 45) }>.</Cardinal>
-          <Cardinal style={this.position(facing, 90) }>N</Cardinal>
-          <Cardinal className={Dot} style={this.position(facing, 135) }>.</Cardinal>
-          <Cardinal style={this.position(facing, 180) }>W</Cardinal>
-          <Cardinal className={Dot} style={this.position(facing, 225) }>.</Cardinal>
-          <Cardinal style={this.position(facing, 270) }>S</Cardinal>
-          <Cardinal className={Dot} style={this.position(facing, 315) }>.</Cardinal>
-        </CardinalDirection>
+        <TopBorder />
+        <GradientBackground />
+        <IndicatorContainer>
+          <IndicatorNumber>{Math.round(facing)}</IndicatorNumber>
+          <Indicator />
+        </IndicatorContainer>
+        <Cardinal style={this.position(facing, 0)}>N</Cardinal>
+        <Cardinal style={this.position(facing, 15)}>15</Cardinal>
+        <Cardinal style={this.position(facing, 30)}>30</Cardinal>
+        <Cardinal style={this.position(facing, 45)}>NE</Cardinal>
+        <Cardinal style={this.position(facing, 60)}>60</Cardinal>
+        <Cardinal style={this.position(facing, 75)}>75</Cardinal>
+        <Cardinal style={this.position(facing, 90)}>E</Cardinal>
+        <Cardinal style={this.position(facing, 105)}>105</Cardinal>
+        <Cardinal style={this.position(facing, 120)}>120</Cardinal>
+        <Cardinal style={this.position(facing, 135)}>SE</Cardinal>
+        <Cardinal style={this.position(facing, 150)}>150</Cardinal>
+        <Cardinal style={this.position(facing, 165)}>165</Cardinal>
+        <Cardinal style={this.position(facing, 180)}>S</Cardinal>
+        <Cardinal style={this.position(facing, 195)}>195</Cardinal>
+        <Cardinal style={this.position(facing, 210)}>210</Cardinal>
+        <Cardinal style={this.position(facing, 225)}>SW</Cardinal>
+        <Cardinal style={this.position(facing, 240)}>240</Cardinal>
+        <Cardinal style={this.position(facing, 255)}>255</Cardinal>
+        <Cardinal style={this.position(facing, 270)}>W</Cardinal>
+        <Cardinal style={this.position(facing, 285)}>285</Cardinal>
+        <Cardinal style={this.position(facing, 300)}>300</Cardinal>
+        <Cardinal style={this.position(facing, 315)}>NW</Cardinal>
+        <Cardinal style={this.position(facing, 330)}>330</Cardinal>
+        <Cardinal style={this.position(facing, 345)}>345</Cardinal>
       </Container>
     );
   }
@@ -141,21 +136,25 @@ export class Compass extends React.Component<CompassProps, CompassState> {
     this.evh.clear();
   }
 
-  private angleToPercentage = (facing: number, angle: number): number => {
-    let diff: number = angle - (facing % 360);
-    const fit = 0.75;
-    const half = 50;
-    if (angle >= facing) {
-      return half - diff * fit;
+  private convertToMinusAngle = (angle: number) => {
+    if (angle <= 360 && angle >= 180) {
+      return -180 + (angle - 180);
     } else {
-      const d2: number = (facing % 360) - 360 - angle;
-      diff = (facing % 360) - angle;
-      return Math.abs(d2) < diff ? half + d2 * fit : half + diff * fit;
+      return angle;
     }
   }
 
+  private angleToPercentage = (facing: number, angle: number): number => {
+    const percentPerDegree = 100 / 150;
+    const facingAdjustment = Math.round((360 - facing) % 360)
+    const adjustedAngle = this.convertToMinusAngle((facingAdjustment + angle) % 360);
+    const leftPosition = (adjustedAngle * percentPerDegree) + 50;
+
+    return leftPosition;
+  }
+
   private handleSelfPlayerUpdate = () => {
-    this.setState({ facing: hordetest.game.selfPlayerState.facing.yaw });
+    this.setState({ facing: hordetest.game.selfPlayerState.viewBearing });
   }
 
   private position(facing: number, angle: number) {
