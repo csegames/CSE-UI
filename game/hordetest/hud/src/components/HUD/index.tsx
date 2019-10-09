@@ -16,7 +16,6 @@ import { HealthBar } from './HealthBar';
 // import { ChannelBar } from './ChannelBar';
 import { MatchInfo } from './MatchInfo';
 import { Crosshair } from './Crosshair';
-import { Announcements } from './Announcements';
 import { ActionButtons } from './ActionButtons';
 import { KillStreakCounter } from './KillStreakCounter';
 import { UltimateReady } from './UltimateReady';
@@ -26,11 +25,11 @@ import { FullScreen } from 'components/fullscreen';
 import { Console } from 'components/HUD/Console';
 import { LoadingScreen } from 'components/fullscreen/LoadingScreen';
 
-import { ScreenContextProvider } from 'context/ScreenContext';
-import { InputContextProvider } from 'context/InputContext';
 import { ImagePreloader } from './ImagePreloader';
 import { PopupAnnouncement } from './Announcements/Popup';
 import { Compass } from './Compass';
+import { ActiveObjectives } from './ActiveObjectives';
+import { ContextProviders } from 'components/context';
 
 const Container = styled.div`
   width: 100%;
@@ -196,86 +195,84 @@ export interface Props {
 // tslint:disable-next-line:function-name
 export function HUD(props: Props) {
   return (
-    <ScreenContextProvider>
-      <InputContextProvider>
-        <Container>
-          <ImagePreloader />
-          <DevUI />
-          <ReloadButtonContainer>
-            <div onClick={() => game.reloadUI()}>Reload UI</div>
-          </ReloadButtonContainer>
+    <ContextProviders>
+      <Container>
+        <ImagePreloader />
+        <DevUI />
+        <ReloadButtonContainer>
+          <div onClick={() => game.reloadUI()}>Reload UI</div>
+        </ReloadButtonContainer>
 
-          <CompassPosition>
-            <Compass />
-          </CompassPosition>
+        <CompassPosition>
+          <Compass />
+        </CompassPosition>
 
-          <PopupAnnouncementsPosition>
-            <PopupAnnouncement />
-          </PopupAnnouncementsPosition>
+        <PopupAnnouncementsPosition>
+          <PopupAnnouncement />
+        </PopupAnnouncementsPosition>
 
-          <CrosshairPosition>
-            <Crosshair />
-          </CrosshairPosition>
+        <CrosshairPosition>
+          <Crosshair />
+        </CrosshairPosition>
 
-          <MatchInfoPosition>
-            <MatchInfo />
-          </MatchInfoPosition>
+        <MatchInfoPosition>
+          <MatchInfo />
+        </MatchInfoPosition>
 
-          <KillStreakPosition>
-            <KillStreakCounter />
-          </KillStreakPosition>
+        <KillStreakPosition>
+          <KillStreakCounter />
+        </KillStreakPosition>
 
-          {/* <ShieldBarPosition>
-            <ShieldBar current={95} max={100} />
-          </ShieldBarPosition> */}
+        {/* <ShieldBarPosition>
+          <ShieldBar current={95} max={100} />
+        </ShieldBarPosition> */}
 
-          <UltimateReadyPosition>
-            <UltimateReady />
-          </UltimateReadyPosition>
+        <UltimateReadyPosition>
+          <UltimateReady />
+        </UltimateReadyPosition>
 
-          {/* <ChannelBarPosition>
-            <ChannelBar channelType={'Bandage'} current={60} max={100} />
-          </ChannelBarPosition> */}
+        {/* <ChannelBarPosition>
+          <ChannelBar channelType={'Bandage'} current={60} max={100} />
+        </ChannelBarPosition> */}
 
-          <AnnouncementsPosition>
-            <Announcements />
-          </AnnouncementsPosition>
+        <AnnouncementsPosition>
+          <ActiveObjectives />
+        </AnnouncementsPosition>
 
-          <HealthBarPosition>
-            <HealthBar />
-          </HealthBarPosition>
+        <HealthBarPosition>
+          <HealthBar />
+        </HealthBarPosition>
 
-          <ActionsContainer>
-            <ActionButtons />
-          </ActionsContainer>
+        <ActionsContainer>
+          <ActionButtons />
+        </ActionsContainer>
 
-          <ChatPosition>
-            <Chat accessToken={game.accessToken} />
-          </ChatPosition>
+        <ChatPosition>
+          <Chat accessToken={game.accessToken} />
+        </ChatPosition>
 
-          <GameMenuPosition>
-            <GameMenu />
-          </GameMenuPosition>
+        <GameMenuPosition>
+          <GameMenu />
+        </GameMenuPosition>
 
-          <SettingsPosition>
-            <SettingsContainer>
-              <Settings />
-            </SettingsContainer>
-          </SettingsPosition>
+        <SettingsPosition>
+          <SettingsContainer>
+            <Settings />
+          </SettingsContainer>
+        </SettingsPosition>
 
-          <RespawnPosition>
-            <Respawn />
-          </RespawnPosition>
+        <RespawnPosition>
+          <Respawn />
+        </RespawnPosition>
 
-          <PlayerTrackersPosition>
-            <PlayerTrackers />
-          </PlayerTrackersPosition>
+        <PlayerTrackersPosition>
+          <PlayerTrackers />
+        </PlayerTrackersPosition>
 
-          <FullScreen />
-          <Console />
-          <LoadingScreen />
-        </Container>
-      </InputContextProvider>
-    </ScreenContextProvider>
+        <FullScreen />
+        <Console />
+        <LoadingScreen />
+      </Container>
+    </ContextProviders>
   );
 }

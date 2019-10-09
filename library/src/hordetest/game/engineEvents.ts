@@ -53,10 +53,16 @@ export const EE_OnOptionChanged = 'optionChanged';
 regMap[EE_OnOptionChanged] = 'onOptionChanged';
 
 /**
- * Called when a another players position changes relative to your facing.
+ * Called when another players position changes relative to your facing.
  */
 export const EE_OnPlayerDirectionUpdate = 'playerDirections.update';
 regMap[EE_OnPlayerDirectionUpdate] = 'onPlayerDirectionUpdate';
+
+/**
+ * Called when new obvjectives are active, or the players facing changes relative to the objective's position.
+ */
+export const EE_OnActiveObjectivesUpdate = 'activeObjectives.update';
+regMap[EE_OnActiveObjectivesUpdate] = 'onActiveObjectivesUpdate';
 
 /**
  * Initialize engine event forwarding

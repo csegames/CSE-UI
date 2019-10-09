@@ -39,13 +39,7 @@ export interface PlayerDownAnnouncement {
 export type Announcement = GeneralAnnouncement | LevelAnnouncement | PlayerDownAnnouncement;
 
 export function Announcements() {
-  const [announcements] = useState<Announcement[]>([
-    {
-      type: 'general',
-      text: 'Wave Cleared! 10:23',
-      iconClass: 'icon-enemy',
-    },
-  ]);
+  const [announcements] = useState<Announcement[]>([]);
   return (
     <AnnouncementsContainer>
       <AnnouncementSpacing>

@@ -18,6 +18,7 @@ import './env';
 import './ReconnectingWebSocket';
 import './local-storage';
 import './textUtils';
+import './distance';
 
 export * from './arrayUtils';
 export * from './EventEmitter';
@@ -33,6 +34,7 @@ export * from './env';
 export * from './ReconnectingWebSocket';
 export * from './local-storage';
 export * from './textUtils';
+export * from './distance';
 
 import stringContains from '../../_baseGame/utils/stringContains';
 

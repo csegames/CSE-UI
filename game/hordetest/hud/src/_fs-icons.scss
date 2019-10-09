@@ -25,8 +25,50 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.fs-icon-trap-explosive-trap:before {
-  content: "\e900";
+.fs-icon-celt-inspire:before {
+  content: "\e910";
+}
+.fs-icon-celt-jump-attack:before {
+  content: "\e911";
+}
+.fs-icon-celt-rally:before {
+  content: "\e912";
+}
+.fs-icon-celt-spear-throw:before {
+  content: "\e913";
+}
+.fs-icon-celt-spear-thrust:before {
+  content: "\e914";
+}
+.fs-icon-celt-call-to-arms:before {
+  content: "\e915";
+}
+.fs-icon-point-mana-pool:before {
+  content: "\e90d";
+}
+.fs-icon-point-health-pool:before {
+  content: "\e90e";
+}
+.fs-icon-point-tower:before {
+  content: "\e90f";
+}
+.fs-icon-amazon-fire-arrow:before {
+  content: "\e907";
+}
+.fs-icon-amazon-fire-storm:before {
+  content: "\e908";
+}
+.fs-icon-amazon-heartseeker:before {
+  content: "\e909";
+}
+.fs-icon-amazon-defensive-kick:before {
+  content: "\e90a";
+}
+.fs-icon-amazon-double-jump:before {
+  content: "\e90b";
+}
+.fs-icon-amazon-fearless-scream:before {
+  content: "\e90c";
 }
 .fs-icon-berserker-enrage:before {
   content: "\e901";
@@ -45,4 +87,7 @@
 }
 .fs-icon-berserker-slash:before {
   content: "\e906";
+}
+.fs-icon-trap-explosive:before {
+  content: "\e900";
 }

@@ -6,12 +6,13 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
+import { ActiveObjectivesContext } from 'components/context/ActiveObjectivesContext';
 
 const Container = styled.div`
   position: relative;
   height: 100%;
   width: 100%;
-  font-size: 16px;
+  font-size: 12px;
   font-family: Lato;
   font-weight: bold;
   overflow: hidden;
@@ -70,20 +71,37 @@ const Cardinal = styled.div`
   width: 30px;
   text-align: center;
   transform: translateX(-50%);
+
+  &.direction {
+    font-size: 15px;
+  }
 `;
 
-export interface CompassProps {
+const Objective = styled.div`
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  top: 20px;
+  font-size: 20px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  -webkit-text-stroke-width: 8px;
+  -webkit-text-stroke-color: black;
+  color: #29BFE0;
+  transform: translateX(-50%);
+`;
+
+export interface Props {
 }
 
-export interface CompassState {
+export interface State {
   facing: number;
 }
 
-export class Compass extends React.Component<CompassProps, CompassState> {
+export class Compass extends React.Component<Props, State> {
   public name: string = 'Compass';
-  private evh: EventHandle;
+  private playerStateEVH: EventHandle;
 
-  constructor(props: CompassProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       facing: hordetest.game.selfPlayerState.viewBearing,
@@ -93,47 +111,59 @@ export class Compass extends React.Component<CompassProps, CompassState> {
   public render() {
     const facing: number = this.state.facing;
     return (
-      <Container>
-        <TopBorder />
-        <GradientBackground />
-        <IndicatorContainer>
-          <IndicatorNumber>{Math.round(facing)}</IndicatorNumber>
-          <Indicator />
-        </IndicatorContainer>
-        <Cardinal style={this.position(facing, 0)}>N</Cardinal>
-        <Cardinal style={this.position(facing, 15)}>15</Cardinal>
-        <Cardinal style={this.position(facing, 30)}>30</Cardinal>
-        <Cardinal style={this.position(facing, 45)}>NE</Cardinal>
-        <Cardinal style={this.position(facing, 60)}>60</Cardinal>
-        <Cardinal style={this.position(facing, 75)}>75</Cardinal>
-        <Cardinal style={this.position(facing, 90)}>E</Cardinal>
-        <Cardinal style={this.position(facing, 105)}>105</Cardinal>
-        <Cardinal style={this.position(facing, 120)}>120</Cardinal>
-        <Cardinal style={this.position(facing, 135)}>SE</Cardinal>
-        <Cardinal style={this.position(facing, 150)}>150</Cardinal>
-        <Cardinal style={this.position(facing, 165)}>165</Cardinal>
-        <Cardinal style={this.position(facing, 180)}>S</Cardinal>
-        <Cardinal style={this.position(facing, 195)}>195</Cardinal>
-        <Cardinal style={this.position(facing, 210)}>210</Cardinal>
-        <Cardinal style={this.position(facing, 225)}>SW</Cardinal>
-        <Cardinal style={this.position(facing, 240)}>240</Cardinal>
-        <Cardinal style={this.position(facing, 255)}>255</Cardinal>
-        <Cardinal style={this.position(facing, 270)}>W</Cardinal>
-        <Cardinal style={this.position(facing, 285)}>285</Cardinal>
-        <Cardinal style={this.position(facing, 300)}>300</Cardinal>
-        <Cardinal style={this.position(facing, 315)}>NW</Cardinal>
-        <Cardinal style={this.position(facing, 330)}>330</Cardinal>
-        <Cardinal style={this.position(facing, 345)}>345</Cardinal>
-      </Container>
+      <ActiveObjectivesContext.Consumer>
+        {({ activeObjectives }) => (
+          <Container>
+            <TopBorder />
+            <GradientBackground />
+            <IndicatorContainer>
+              <IndicatorNumber>{Math.round(facing)}</IndicatorNumber>
+              <Indicator />
+            </IndicatorContainer>
+            <Cardinal className='direction' style={this.position(facing, 0)}>N</Cardinal>
+            <Cardinal style={this.position(facing, 15)}>15</Cardinal>
+            <Cardinal style={this.position(facing, 30)}>30</Cardinal>
+            <Cardinal className='direction' style={this.position(facing, 45)}>NE</Cardinal>
+            <Cardinal style={this.position(facing, 60)}>60</Cardinal>
+            <Cardinal style={this.position(facing, 75)}>75</Cardinal>
+            <Cardinal className='direction' style={this.position(facing, 90)}>E</Cardinal>
+            <Cardinal style={this.position(facing, 105)}>105</Cardinal>
+            <Cardinal style={this.position(facing, 120)}>120</Cardinal>
+            <Cardinal className='direction' style={this.position(facing, 135)}>SE</Cardinal>
+            <Cardinal style={this.position(facing, 150)}>150</Cardinal>
+            <Cardinal style={this.position(facing, 165)}>165</Cardinal>
+            <Cardinal className='direction' style={this.position(facing, 180)}>S</Cardinal>
+            <Cardinal style={this.position(facing, 195)}>195</Cardinal>
+            <Cardinal style={this.position(facing, 210)}>210</Cardinal>
+            <Cardinal className='direction' style={this.position(facing, 225)}>SW</Cardinal>
+            <Cardinal style={this.position(facing, 240)}>240</Cardinal>
+            <Cardinal style={this.position(facing, 255)}>255</Cardinal>
+            <Cardinal className='direction' style={this.position(facing, 270)}>W</Cardinal>
+            <Cardinal style={this.position(facing, 285)}>285</Cardinal>
+            <Cardinal style={this.position(facing, 300)}>300</Cardinal>
+            <Cardinal className='direction' style={this.position(facing, 315)}>NW</Cardinal>
+            <Cardinal style={this.position(facing, 330)}>330</Cardinal>
+            <Cardinal style={this.position(facing, 345)}>345</Cardinal>
+            {activeObjectives.map((objective) => {
+              return (
+                <Objective
+                  style={this.position(facing, objective.bearingDegrees)}
+                  className={objective.entityState.iconClass}
+                />
+              );
+            })}
+          </Container>
+        )}
+      </ActiveObjectivesContext.Consumer>
     );
   }
 
   public componentDidMount() {
-    this.evh = hordetest.game.selfPlayerState.onUpdated(this.handleSelfPlayerUpdate);
+    this.playerStateEVH = hordetest.game.selfPlayerState.onUpdated(this.handleSelfPlayerUpdate);
   }
 
   public componentWillUnmount() {
-    this.evh.clear();
+    this.playerStateEVH.clear();
   }
 
   private convertToMinusAngle = (angle: number) => {
@@ -146,7 +176,7 @@ export class Compass extends React.Component<CompassProps, CompassState> {
 
   private angleToPercentage = (facing: number, angle: number): number => {
     const percentPerDegree = 100 / 150;
-    const facingAdjustment = Math.round((360 - facing) % 360)
+    const facingAdjustment = Math.round((360 - facing) % 360);
     const adjustedAngle = this.convertToMinusAngle((facingAdjustment + angle) % 360);
     const leftPosition = (adjustedAngle * percentPerDegree) + 50;
 

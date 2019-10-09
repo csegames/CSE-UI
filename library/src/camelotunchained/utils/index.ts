@@ -14,7 +14,6 @@ export * from './reduxUtils';
 export * from './compare';
 export * from './colorManipulation';
 export * from './searchUtils';
-export * from './distance';
 export * from './time';
 export * from './compare';
 export * from './idGen';

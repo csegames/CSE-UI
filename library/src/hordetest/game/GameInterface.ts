@@ -28,9 +28,15 @@ export interface GameInterface extends GameModel {
 
   /**
    * Subscribe to PlayerDirection updates
-   * @param {(angleDegrees: number, id: number) => any} callback function to be executed with a PlayerDirection update
+   * @param {(playerDirections: PlayerDirection[]) => any} callback function to be executed with a PlayerDirection update
    */
   onPlayerDirectionUpdate: (callback: (playerDirections: PlayerDirection[]) => any) => EventHandle;
+
+  /**
+   * Subscribe to ActiveObjective updates
+   * @param {(activeObjectives: ActiveObjectives[]) => any} callback function to be executed with a Active Objectives update
+   */
+  onActiveObjectivesUpdate: (callback: (activeObjectives: ActiveObjective[]) => any) => EventHandle;
 
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */

@@ -10,3 +10,4 @@ import './Vec3f';
 import './Ability';
 import './Consumables';
 import './PlayerDirection';
+import './ActiveObjective';
