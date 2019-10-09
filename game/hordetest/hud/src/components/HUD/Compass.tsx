@@ -15,7 +15,7 @@ const Container = styled.div`
   font-family: Lato;
   font-weight: bold;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 84%, transparent 100%);
 `;
 
 const TopBorder = styled.div`
@@ -24,7 +24,7 @@ const TopBorder = styled.div`
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(to right, transparent, white, transparent);
+  background-color: white;
 `;
 
 const GradientBackground = styled.div`
