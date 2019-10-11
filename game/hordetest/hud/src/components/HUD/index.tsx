@@ -193,86 +193,88 @@ export interface Props {
 }
 
 // tslint:disable-next-line:function-name
-export function HUD(props: Props) {
-  return (
-    <ContextProviders>
-      <Container>
-        <ImagePreloader />
-        <DevUI />
-        <ReloadButtonContainer>
-          <div onClick={() => game.reloadUI()}>Reload UI</div>
-        </ReloadButtonContainer>
+export class HUD extends React.Component<Props> {
+  public render() {
+    return (
+      <ContextProviders>
+        <Container>
+          <ImagePreloader />
+          <DevUI />
+          <ReloadButtonContainer>
+            <div onClick={() => game.reloadUI()}>Reload UI</div>
+          </ReloadButtonContainer>
 
-        <CompassPosition>
-          <Compass />
-        </CompassPosition>
+          <CompassPosition>
+            <Compass />
+          </CompassPosition>
 
-        <PopupAnnouncementsPosition>
-          <PopupAnnouncement />
-        </PopupAnnouncementsPosition>
+          <PopupAnnouncementsPosition>
+            <PopupAnnouncement />
+          </PopupAnnouncementsPosition>
 
-        <CrosshairPosition>
-          <Crosshair />
-        </CrosshairPosition>
+          <CrosshairPosition>
+            <Crosshair />
+          </CrosshairPosition>
 
-        <MatchInfoPosition>
-          <MatchInfo />
-        </MatchInfoPosition>
+          <MatchInfoPosition>
+            <MatchInfo />
+          </MatchInfoPosition>
 
-        <KillStreakPosition>
-          <KillStreakCounter />
-        </KillStreakPosition>
+          <KillStreakPosition>
+            <KillStreakCounter />
+          </KillStreakPosition>
 
-        {/* <ShieldBarPosition>
-          <ShieldBar current={95} max={100} />
-        </ShieldBarPosition> */}
+          {/* <ShieldBarPosition>
+            <ShieldBar current={95} max={100} />
+          </ShieldBarPosition> */}
 
-        <UltimateReadyPosition>
-          <UltimateReady />
-        </UltimateReadyPosition>
+          <UltimateReadyPosition>
+            <UltimateReady />
+          </UltimateReadyPosition>
 
-        {/* <ChannelBarPosition>
-          <ChannelBar channelType={'Bandage'} current={60} max={100} />
-        </ChannelBarPosition> */}
+          {/* <ChannelBarPosition>
+            <ChannelBar channelType={'Bandage'} current={60} max={100} />
+          </ChannelBarPosition> */}
 
-        <AnnouncementsPosition>
-          <ActiveObjectives />
-        </AnnouncementsPosition>
+          <AnnouncementsPosition>
+            <ActiveObjectives />
+          </AnnouncementsPosition>
 
-        <HealthBarPosition>
-          <HealthBar />
-        </HealthBarPosition>
+          <HealthBarPosition>
+            <HealthBar />
+          </HealthBarPosition>
 
-        <ActionsContainer>
-          <ActionButtons />
-        </ActionsContainer>
+          <ActionsContainer>
+            <ActionButtons />
+          </ActionsContainer>
 
-        <ChatPosition>
-          <Chat accessToken={game.accessToken} />
-        </ChatPosition>
+          <ChatPosition>
+            <Chat accessToken={game.accessToken} />
+          </ChatPosition>
 
-        <GameMenuPosition>
-          <GameMenu />
-        </GameMenuPosition>
+          <GameMenuPosition>
+            <GameMenu />
+          </GameMenuPosition>
 
-        <SettingsPosition>
-          <SettingsContainer>
-            <Settings />
-          </SettingsContainer>
-        </SettingsPosition>
+          <SettingsPosition>
+            <SettingsContainer>
+              <Settings />
+            </SettingsContainer>
+          </SettingsPosition>
 
-        <RespawnPosition>
-          <Respawn />
-        </RespawnPosition>
+          <RespawnPosition>
+            <Respawn />
+          </RespawnPosition>
 
-        <PlayerTrackersPosition>
-          <PlayerTrackers />
-        </PlayerTrackersPosition>
+          <PlayerTrackersPosition>
+            <PlayerTrackers />
+          </PlayerTrackersPosition>
 
-        <FullScreen />
-        <Console />
-        <LoadingScreen />
-      </Container>
-    </ContextProviders>
-  );
+          <Console />
+          <FullScreen />
+          <LoadingScreen />
+        </Container>
+      </ContextProviders>
+    );
+  }
 }

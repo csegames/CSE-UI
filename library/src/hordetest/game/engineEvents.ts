@@ -65,6 +65,12 @@ export const EE_OnActiveObjectivesUpdate = 'activeObjectives.update';
 regMap[EE_OnActiveObjectivesUpdate] = 'onActiveObjectivesUpdate';
 
 /**
+ * A scenario round that the current player is in has ended.
+ */
+export const EE_ScenarioRoundEnd = 'scenarioRoundEnd';
+regMap[EE_ScenarioRoundEnd] = 'onScenarioRoundEnded';
+
+/**
  * Initialize engine event forwarding
  */
 export function initEventForwarding() {

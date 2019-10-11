@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { PlayerStatInfo } from './testData';
+import { OvermindSummaryDBModel, OvermindCharacterSummary } from '@csegames/library/lib/hordetest/graphql/schema';
 
 const Container = styled.div`
   display: flex;
@@ -77,11 +77,11 @@ const StatName = styled.div`
 `;
 
 export interface Props {
-  players: PlayerStatInfo[];
+  overmindSummary: OvermindSummaryDBModel;
 }
 
 export interface HighlightStat {
-  player: PlayerStatInfo;
+  player: OvermindCharacterSummary;
   statNumber: number;
   statName: string;
 }
@@ -97,19 +97,19 @@ export function Highlights(props: Props) {
     let totalDamageTaken = 0;
 
     let bestKills = 0;
-    let bestKillsPlayer: PlayerStatInfo = null;
+    let bestKillsPlayer: OvermindCharacterSummary = null;
 
     let bestKillStreak = 0;
-    let bestKillStreakPlayer: PlayerStatInfo = null;
+    let bestKillStreakPlayer: OvermindCharacterSummary = null;
 
     let bestLongestLife = 0;
-    let bestLongestLifePlayer: PlayerStatInfo = null;
+    let bestLongestLifePlayer: OvermindCharacterSummary = null;
 
     let bestDamage = 0;
-    let bestDamagePlayer: PlayerStatInfo = null;
+    let bestDamagePlayer: OvermindCharacterSummary = null;
 
     let bestDamageTaken = 0;
-    let bestDamageTakenPlayer: PlayerStatInfo = null;
+    let bestDamageTakenPlayer: OvermindCharacterSummary = null;
 
     let secondBestKills = 0;
     let secondBestDamage = 0;
@@ -117,9 +117,9 @@ export function Highlights(props: Props) {
     let secondBestKillStreak = 0;
     let secondLongestLife = 0;
 
-    props.players.forEach((player) => {
+    props.overmindSummary.characterSummaries.forEach((player) => {
       totalKills += player.kills;
-      totalDamage += player.totalDamage;
+      totalDamage += player.damageApplied;
       totalDamageTaken += player.damageTaken;
 
       if (player.kills >= bestKills) {
@@ -128,9 +128,9 @@ export function Highlights(props: Props) {
         bestKillsPlayer = player;
       }
 
-      if (player.totalDamage >= bestDamage) {
+      if (player.damageApplied >= bestDamage) {
         secondBestDamage = bestDamage;
-        bestDamage = player.totalDamage;
+        bestDamage = player.damageApplied;
         bestDamagePlayer = player;
       }
 
@@ -140,9 +140,9 @@ export function Highlights(props: Props) {
         bestDamageTakenPlayer = player;
       }
 
-      if (player.killStreak >= bestKillStreak) {
+      if (player.longestKillStreak >= bestKillStreak) {
         secondBestKillStreak = bestKillStreak;
-        bestKillStreak = player.killStreak;
+        bestKillStreak = player.longestKillStreak;
         bestKillStreakPlayer = player;
       }
 
@@ -155,17 +155,17 @@ export function Highlights(props: Props) {
 
     // Run through a second time to ensure we actually got second best
     if (!secondBestKills || !secondBestDamage || !secondBestDamageTaken || !secondBestKillStreak || !secondLongestLife) {
-      props.players.forEach((player) => {
+      props.overmindSummary.characterSummaries.forEach((player) => {
         if (player.kills < bestKills && player.kills > secondBestKills) {
           secondBestKills = player.kills;
         }
 
-        if (player.killStreak < bestKillStreak && player.killStreak > secondBestKillStreak) {
-          secondBestKillStreak = player.killStreak;
+        if (player.longestKillStreak < bestKillStreak && player.longestKillStreak > secondBestKillStreak) {
+          secondBestKillStreak = player.longestKillStreak;
         }
 
-        if (player.totalDamage < bestDamage && player.totalDamage > secondBestDamage) {
-          secondBestDamage = player.totalDamage;
+        if (player.damageApplied < bestDamage && player.damageApplied > secondBestDamage) {
+          secondBestDamage = player.damageApplied;
         }
 
         if (player.damageTaken < bestDamageTaken && player.damageTaken > secondBestDamageTaken) {
@@ -188,7 +188,7 @@ export function Highlights(props: Props) {
     const damageDifference: PlayerDifference = {
       player: bestDamagePlayer,
       statName: 'total damage',
-      statNumber: bestDamagePlayer.totalDamage,
+      statNumber: bestDamagePlayer.damageApplied,
       difference: (bestDamage / totalDamage) - (secondBestDamage / totalDamage)
     };
     const damageTakenDifference: PlayerDifference = {
@@ -200,7 +200,7 @@ export function Highlights(props: Props) {
     const killStreakDifference: PlayerDifference = {
       player: bestKillStreakPlayer,
       statName: 'kill streak',
-      statNumber: bestKillStreakPlayer.killStreak,
+      statNumber: bestKillStreakPlayer.longestKillStreak,
       difference: 1 - (secondBestKillStreak / bestKillStreak),
     };
     const longestLifeDifference: PlayerDifference = {
@@ -229,9 +229,9 @@ export function Highlights(props: Props) {
   function renderHighlight(p: HighlightStat) {
     return (
       <HighlightContainer>
-        <ChampionImage src={p.player.previewImage} />
+        <ChampionImage src={'images/fullscreen/character-select/face.png'} />
         <BGOverlay />
-        <PlayerName>{p.player.playerName}</PlayerName>
+        <PlayerName>{p.player.userName}</PlayerName>
         <StatContainer>
           <StatNumber>{p.statNumber}</StatNumber>
           <StatName>{p.statName}</StatName>

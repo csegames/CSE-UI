@@ -38,6 +38,22 @@ export interface GameInterface extends GameModel {
    */
   onActiveObjectivesUpdate: (callback: (activeObjectives: ActiveObjective[]) => any) => EventHandle;
 
+  /**
+   * Subscribes a function to be executed when a scenario round ends.
+   * @param {((scenarioID: string, roundID: string, didEnd: boolean, didWin: boolean) => any} callback
+   * function to be executed when the scenario round ends
+   */
+  onScenarioRoundEnded: (
+    callback: (
+      scenarioID: string,
+      roundID: string,
+      didEnd: boolean,
+      didWin: boolean,
+      roundResultMessage: string,
+      scenarioResultMessage: string,
+    ) => any,
+  ) => EventHandle;
+
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */
   /* -------------------------------------------------- */

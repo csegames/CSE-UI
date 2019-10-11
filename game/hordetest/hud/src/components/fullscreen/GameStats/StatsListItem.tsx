@@ -8,7 +8,7 @@ import React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { ResourceBar } from '../../shared/ResourceBar';
-import { PlayerStatInfo } from './testData';
+import { OvermindCharacterSummary } from '@csegames/library/lib/hordetest/graphql/schema';
 
 const Container = styled.div`
   display: flex;
@@ -77,8 +77,8 @@ const ThumbsupButton = styled.div`
 `;
 
 export interface Props {
-  playerStat: PlayerStatInfo;
-  players: PlayerStatInfo[];
+  playerStat: OvermindCharacterSummary;
+  players: OvermindCharacterSummary[];
 }
 
 export function StatsListItem(props: Props) {
@@ -91,11 +91,11 @@ export function StatsListItem(props: Props) {
 
     props.players.forEach((player) => {
       totalKills += player.kills;
-      totalDamage += player.totalDamage;
+      totalDamage += player.damageApplied;
       totalDamageTaken += player.damageTaken;
 
-      if (player.killStreak > bestKillStreak) {
-        bestKillStreak = player.killStreak;
+      if (player.longestKillStreak > bestKillStreak) {
+        bestKillStreak = player.longestKillStreak;
       }
 
       if (player.longestLife > bestLongestLife) {
@@ -105,9 +105,9 @@ export function StatsListItem(props: Props) {
 
     return {
       kills: (props.playerStat.kills / totalKills) * 100,
-      killStreak: (props.playerStat.killStreak / bestKillStreak) * 100,
+      killStreak: (props.playerStat.longestKillStreak / bestKillStreak) * 100,
       longestLife: (props.playerStat.longestLife / bestLongestLife) * 100,
-      totalDamage: (props.playerStat.totalDamage / totalDamage) * 100,
+      totalDamage: (props.playerStat.damageApplied / totalDamage) * 100,
       damageTaken: (props.playerStat.damageTaken / totalDamageTaken) * 100,
     }
   }
@@ -121,22 +121,22 @@ export function StatsListItem(props: Props) {
   const statsCurrentPercentage = getStatsCurrentPercentage();
   return (
     <Container>
-      <ChampionProfile src={props.playerStat.previewImage} />
+      <ChampionProfile src={'images/fullscreen/character-select/face.png'} />
       <ChampionInfo>
-        <PlayerName>{props.playerStat.playerName}</PlayerName>
-        <ChampionName>{props.playerStat.championName}</ChampionName>
+        <PlayerName>{props.playerStat.userName}</PlayerName>
+        <ChampionName>{'Champion Name'}</ChampionName>
       </ChampionInfo>
       <Section>
         {renderBar(props.playerStat.kills.toString(), statsCurrentPercentage.kills)}
       </Section>
       <Section>
-        {renderBar(props.playerStat.killStreak.toString(), statsCurrentPercentage.killStreak)}
+        {renderBar(props.playerStat.longestKillStreak.toString(), statsCurrentPercentage.killStreak)}
       </Section>
       <Section>
         {renderBar(props.playerStat.longestLife.toString(), statsCurrentPercentage.longestLife)}
       </Section>
       <Section>
-        {renderBar(props.playerStat.totalDamage.toString(), statsCurrentPercentage.totalDamage)}
+        {renderBar(props.playerStat.damageApplied.toString(), statsCurrentPercentage.totalDamage)}
       </Section>
       <Section>
         {renderBar(props.playerStat.damageTaken.toString(), statsCurrentPercentage.damageTaken)}

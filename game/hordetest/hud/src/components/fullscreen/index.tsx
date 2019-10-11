@@ -70,15 +70,21 @@ export interface State {
   isVisible: boolean;
   isChatVisible: boolean;
   currentRoute: Route;
+  scenarioID: string;
 }
 
 export class FullScreen extends React.Component<Props, State> {
+  private showEVH: EventHandle;
+  private hideEVH: EventHandle;
+  private scenarioEndedEVH: EventHandle;
+
   constructor(props: Props) {
     super(props);
     this.state = {
       isVisible: false,
       isChatVisible: true,
       currentRoute: Route.Start,
+      scenarioID: '',
     };
   }
 
@@ -113,15 +119,22 @@ export class FullScreen extends React.Component<Props, State> {
       };
       case Route.EndGameStats: {
         return (
-          <GameStats onLeaveClick={this.onLeaveGameStats} />
+          <GameStats scenarioID={this.state.scenarioID} onLeaveClick={this.onLeaveGameStats} />
         );
       }
     }
   }
 
   public componentDidMount() {
-    game.on('show-fullscreen-chat', this.handleShowFullScreenChat);
-    game.on('hide-fullscreen-chat', this.handleHideFullScreenChat);
+    this.showEVH = game.on('show-fullscreen-chat', this.handleShowFullScreenChat);
+    this.hideEVH = game.on('hide-fullscreen-chat', this.handleHideFullScreenChat);
+    this.scenarioEndedEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
+  }
+
+  public componentWillUnmount() {
+    this.showEVH.clear();
+    this.hideEVH.clear();
+    this.scenarioEndedEVH.clear();
   }
 
   private show = () => {
@@ -129,7 +142,7 @@ export class FullScreen extends React.Component<Props, State> {
   }
 
   private hide = () => {
-    this.setState({ isVisible: false });
+    this.setState({ isVisible: false, currentRoute: Route.Start });
   }
 
   private onReady = () => {
@@ -150,5 +163,13 @@ export class FullScreen extends React.Component<Props, State> {
 
   private handleHideFullScreenChat = () => {
     this.setState({ isChatVisible: false });
+  }
+
+  private handleScenarioRoundEnded = (scenarioID: string, roundID: string, didEnd: boolean) => {
+    console.log('SCENARIO ROUND ENDED');
+    console.log(scenarioID);
+    if (didEnd) {
+      this.setState({ isVisible: true, scenarioID, currentRoute: Route.EndGameStats });
+    }
   }
 }

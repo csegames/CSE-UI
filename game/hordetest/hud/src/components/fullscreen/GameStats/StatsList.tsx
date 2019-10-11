@@ -6,7 +6,8 @@
 
 import React, { useState } from 'react';
 import { styled } from '@csegames/linaria/react';
-import { playerStats } from './testData';
+import { OvermindSummaryDBModel } from '@csegames/library/lib/hordetest/graphql/schema';
+
 import { StatsListItem } from './StatsListItem';
 import { StatsListHeader } from './StatsListHeader';
 
@@ -20,6 +21,7 @@ const ListContainer = styled.div`
 `;
 
 export interface Props {
+  overmindSummary: OvermindSummaryDBModel;
 }
 
 export enum SortBy {
@@ -52,13 +54,13 @@ export function StatsList(props: Props) {
   }
 
   function getSortedPlayers() {
-    const playerStatsClone = [...playerStats];
+    const playerStatsClone = [...props.overmindSummary.characterSummaries];
     switch(sortBy) {
       case SortBy.PlayerName: {
         if (leastToGreatest) {
-          return playerStatsClone.sort((a, b) => b.playerName.localeCompare(a.playerName));
+          return playerStatsClone.sort((a, b) => b.userName.localeCompare(a.userName));
         } else {
-          return playerStatsClone.sort((a, b) => a.playerName.localeCompare(b.playerName));
+          return playerStatsClone.sort((a, b) => a.userName.localeCompare(b.userName));
         }
       }
       case SortBy.Kills: {
@@ -70,9 +72,9 @@ export function StatsList(props: Props) {
       }
       case SortBy.KillStreak: {
         if (leastToGreatest) {
-          return playerStatsClone.sort((a, b) => a.killStreak - b.killStreak);
+          return playerStatsClone.sort((a, b) => a.longestKillStreak - b.longestKillStreak);
         } else {
-          return playerStatsClone.sort((a, b) => b.killStreak - a.killStreak);
+          return playerStatsClone.sort((a, b) => b.longestKillStreak - a.longestKillStreak);
         }
       }
       case SortBy.LongestLife: {
@@ -84,9 +86,9 @@ export function StatsList(props: Props) {
       }
       case SortBy.Damage: {
         if (leastToGreatest) {
-          return playerStatsClone.sort((a, b) => a.totalDamage - b.totalDamage);
+          return playerStatsClone.sort((a, b) => a.damageApplied - b.damageApplied);
         } else {
-          return playerStatsClone.sort((a, b) => b.totalDamage - a.totalDamage);
+          return playerStatsClone.sort((a, b) => b.damageApplied - a.damageApplied);
         }
       }
       case SortBy.DamageTaken: {
@@ -108,7 +110,7 @@ export function StatsList(props: Props) {
       <ListContainer>
         {getSortedPlayers().map((playerStat) => {
           return (
-            <StatsListItem playerStat={playerStat} players={playerStats} />
+            <StatsListItem playerStat={playerStat} players={props.overmindSummary.characterSummaries} />
           );
         })}
       </ListContainer>

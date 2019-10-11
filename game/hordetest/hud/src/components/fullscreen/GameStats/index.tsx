@@ -5,13 +5,40 @@
  */
 
 import React from 'react';
+import gql from 'graphql-tag';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
+import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
+import { OvermindSummaryDBModel } from '@csegames/library/lib/hordetest/graphql/schema';
+
 import { StatsList } from './StatsList';
 import { Highlights } from './Highlights';
 import { Button } from '../Button';
-import { playerStats } from './testData';
 import { InputContext } from 'components/context/InputContext';
+
+const query = gql`
+  query GameStatsQuery($scenarioID: String!, $shardID: Int!) {
+    overmindsummary(id: $scenarioID, shard: $shardID) {
+      id
+      shardID
+      resolution
+      startTime
+      totalRunTime
+      characterSummaries {
+        characterID
+        classID
+        damageApplied
+        damageTaken
+        deathCount
+        kills
+        longestKillStreak
+        longestLife
+        raceID
+        userName
+      }
+    }
+  }
+`;
 
 const Container = styled.div`
   width: calc(100% - 50px);
@@ -77,41 +104,82 @@ const ConsoleIcon = styled.span`
 `;
 
 export interface Props {
+  scenarioID: string;
   onLeaveClick: () => void;
 }
 
-export function GameStats(props: Props) {
-  return (
-    <InputContext.Consumer>
-      {({ isConsole }) => (
-        <Container>
-          <TopContainer>
-            <TitleContainer>
-              <Title>GAME STATS</Title>
-              <MatchTitleInfo>
-                <GameMode>Group Survival</GameMode>
-                <div>Match Time: 15:23</div>
-              </MatchTitleInfo>
-            </TitleContainer>
-            {isConsole ?
-              <Button
-                type='blue'
-                text={<><ConsoleIcon className='icon-xb-b'></ConsoleIcon> Leave</>}
-                styles={ButtonStyle}
-              /> :
-              <Button type='blue' text='Leave' onClick={props.onLeaveClick} styles={ButtonStyle} />
+export interface State {
+  overmindSummary: OvermindSummaryDBModel;
+}
+
+export class GameStats extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      overmindSummary: null,
+    };
+  }
+
+  public render() {
+    const { overmindSummary } = this.state;
+    return (
+      <InputContext.Consumer>
+        {({ isConsole }) => (
+          <Container>
+            <GraphQL
+              query={{
+                query,
+                variables: {
+                  scenarioID: this.props.scenarioID,
+                  shardID: game.shardID,
+                },
+              }}
+              onQueryResult={this.handleQueryResult}
+            />
+            {overmindSummary &&
+              <>
+                <TopContainer>
+                  <TitleContainer>
+                    <Title>GAME STATS</Title>
+                    <MatchTitleInfo>
+                      <GameMode>Group Survival</GameMode>
+                      <div>Match Time: {overmindSummary.totalRunTime}</div>
+                    </MatchTitleInfo>
+                  </TitleContainer>
+                  {isConsole ?
+                    <Button
+                      type='blue'
+                      text={<><ConsoleIcon className='icon-xb-b'></ConsoleIcon> Leave</>}
+                      styles={ButtonStyle}
+                    /> :
+                    <Button
+                      type='blue'
+                      text='Leave'
+                      onClick={this.props.onLeaveClick}
+                      styles={ButtonStyle}
+                    />
+                  }
+                </TopContainer>
+                <MainSection>
+                  <StatsListSection>
+                    <StatsList overmindSummary={overmindSummary} />
+                  </StatsListSection>
+                  <HighlightsSection>
+                    <Highlights overmindSummary={overmindSummary} />
+                  </HighlightsSection>
+                </MainSection>
+              </>
             }
-          </TopContainer>
-          <MainSection>
-            <StatsListSection>
-              <StatsList />
-            </StatsListSection>
-            <HighlightsSection>
-              <Highlights players={playerStats} />
-            </HighlightsSection>
-          </MainSection>
-        </Container>
-      )}
-    </InputContext.Consumer>
-  );
+          </Container>
+        )}
+      </InputContext.Consumer>
+    );
+  }
+
+  private handleQueryResult = (gql: GraphQLResult<{ overmindsummary: OvermindSummaryDBModel }>) => {
+    if (!gql || !gql.data || !gql.data.overmindsummary) return gql;
+
+    const overmindSummary: OvermindSummaryDBModel = gql.data.overmindsummary;
+    this.setState({ overmindSummary });
+  }
 }
