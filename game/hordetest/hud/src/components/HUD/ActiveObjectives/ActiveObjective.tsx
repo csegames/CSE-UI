@@ -62,6 +62,7 @@ const Info = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  white-space: nowrap;
   padding-left: 50px;
   padding-right: 20px;
   margin-left: -40px;
@@ -101,7 +102,7 @@ const DistanceText = styled.div`
 
 const ProgressBarContainer = styled.div`
   position: relative;
-  width: 85%;
+  flex: 1;
   height: 3px;
   border: 1px solid white;
 
@@ -144,7 +145,7 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
     return (
       <Container>
         <Circle>
-          <DirectionalIndicator style={this.getDirectionIndicator()} className='fas fa-caret-up' />
+          <DirectionalIndicator style={this.getDirectionIndicator()} className='fas fa-caret-down' />
           <Icon className={activeObjective.entityState.iconClass} />
         </Circle>
         <Info className={minimizedClassName}>
@@ -162,6 +163,17 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
 
   public componentDidMount() {
     this.minimizeTimeout = window.setTimeout(this.handleInitialMinimize, 4000);
+  }
+
+  public componentDidUpdate() {
+    const distance = this.getDistance();
+    if (this.state.minimized && distance < 20) {
+      this.setState({ minimized: false });
+    }
+
+    if (!this.state.minimized && distance >= 20) {
+      this.setState({ minimized: true });
+    }
   }
 
   public componentWillUnmount() {
@@ -201,14 +213,14 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
     const playerRadians = (360 - facingBearing) * Math.PI / 180;
     const playerVector = { x: Math.cos(playerRadians), y: Math.sin(playerRadians) };
 
-    let radians = Math.atan2(objectiveVector.y, objectiveVector.x) - Math.atan2(playerVector.y, playerVector.x);
+    let radians = -(Math.atan2(objectiveVector.y, objectiveVector.x) - Math.atan2(playerVector.y, playerVector.x));
 
     const x = (radius - 5) * Math.cos(radians) + (radius - INDICATOR_DIMENSIONS / 2);
     const y = (radius - 5) * Math.sin(radians) + (radius - INDICATOR_DIMENSIONS / 2);
 
     return {
-      bottom: y,
-      right: x,
+      top: y,
+      left: x,
       transform: `rotate(${(radians * 180 / Math.PI) - 90}deg)`,
     };
   }
