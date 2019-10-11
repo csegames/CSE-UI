@@ -6,12 +6,23 @@
 
 import React from 'react';
 
+interface ObjectiveColor {
+  name: string;
+  color: string;
+}
+
+const BLUE_COLOR = '#29bfe2';
+const ORANGE_COLOR = '#f37427';
+const PURPLE_COLOR = '#E339AE';
+
 export interface ActiveObjectivesContextState {
   activeObjectives: ActiveObjective[];
+  colorAssign: {[entityID: string]: ObjectiveColor};
 }
 
 const getDefaultActiveObjectivesContextState = (): ActiveObjectivesContextState => ({
   activeObjectives: [],
+  colorAssign: {},
 });
 
 export const ActiveObjectivesContext = React.createContext(getDefaultActiveObjectivesContextState());
@@ -52,6 +63,49 @@ export class ActiveObjectivesContextProvider extends React.Component<{}, ActiveO
   }
 
   private handleActiveObjectivesUpdate = (activeObjectives: ActiveObjective[]) => {
-    this.setState({ activeObjectives });
+    this.setState({ activeObjectives, colorAssign: this.getUpdatedColorAssign(activeObjectives) });
+  }
+
+  private getUpdatedColorAssign = (activeObjectives: ActiveObjective[]) => {
+    const colorAssign = cloneDeep(this.state.colorAssign);
+
+    activeObjectives.forEach((activeObjective) => {
+      const entityID = activeObjective.entityState.entityID;
+      if (!colorAssign[entityID]) {
+        const colorAssignArray = Object.values(colorAssign);
+        const foundBlueColor = colorAssignArray.find((objectiveColor) => (
+          objectiveColor.name === activeObjective.entityState.name && objectiveColor.color === BLUE_COLOR
+        ));
+
+        if (!foundBlueColor) {
+          colorAssign[entityID] = { name: activeObjective.entityState.name, color: BLUE_COLOR };
+          return;
+        }
+
+        const foundOrangeColor = colorAssignArray.find((objectiveColor) => (
+          objectiveColor.name === activeObjective.entityState.name && objectiveColor.color === ORANGE_COLOR
+        ));
+
+        if (!foundOrangeColor) {
+          colorAssign[entityID] = { name: activeObjective.entityState.name, color: ORANGE_COLOR };
+          return;
+        }
+
+        const foundPurpleColor = colorAssignArray.find((objectiveColor) => (
+          objectiveColor.name === activeObjective.entityState.name && objectiveColor.color === PURPLE_COLOR
+        ));
+
+        if (!foundPurpleColor) {
+          colorAssign[entityID] = { name: activeObjective.entityState.name, color: PURPLE_COLOR };
+          return;
+        }
+
+        // Don't have any more preset colors, just assign to blue.
+        // CSS default blue is the color to show that we need more colors to assign.
+        colorAssign[entityID] = { name: activeObjective.entityState.name, color: 'blue' };
+      }
+    });
+
+    return colorAssign;
   }
 }

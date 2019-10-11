@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { ActiveObjectivesContext } from 'components/context/ActiveObjectivesContext';
+import { ActiveObjectivesContext, ActiveObjectivesContextState } from 'components/context/ActiveObjectivesContext';
 
 const Container = styled.div`
   position: relative;
@@ -86,8 +86,8 @@ const Objective = styled.div`
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
   -webkit-text-stroke-width: 8px;
   -webkit-text-stroke-color: black;
-  color: #29BFE0;
   transform: translateX(-50%);
+  color: ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) => props.color};
 `;
 
 export interface Props {
@@ -112,7 +112,7 @@ export class Compass extends React.Component<Props, State> {
     const facing: number = this.state.facing;
     return (
       <ActiveObjectivesContext.Consumer>
-        {({ activeObjectives }) => (
+        {(activeObjectivesContext) => (
           <Container>
             <TopBorder />
             <GradientBackground />
@@ -144,11 +144,12 @@ export class Compass extends React.Component<Props, State> {
             <Cardinal className='direction' style={this.position(facing, 315)}>NW</Cardinal>
             <Cardinal style={this.position(facing, 330)}>330</Cardinal>
             <Cardinal style={this.position(facing, 345)}>345</Cardinal>
-            {activeObjectives.map((objective) => {
+            {activeObjectivesContext.activeObjectives.map((objective) => {
               return (
                 <Objective
                   style={this.position(facing, objective.bearingDegrees)}
                   className={objective.entityState.iconClass}
+                  color={this.getObjectiveColor(objective, activeObjectivesContext)}
                 />
               );
             })}
@@ -189,5 +190,16 @@ export class Compass extends React.Component<Props, State> {
 
   private position(facing: number, angle: number) {
     return {left: this.angleToPercentage(facing, angle) + '%'};
+  }
+
+  private getObjectiveColor = (objective: ActiveObjective, activeObjectivesContext: ActiveObjectivesContextState) => {
+    const objectiveColor = activeObjectivesContext.colorAssign[objective.entityState.entityID];
+
+    if (!objectiveColor) {
+      // We should not get here. Choose unique color that stands out if we do.
+      return 'pink';
+    }
+
+    return objectiveColor.color;
   }
 }

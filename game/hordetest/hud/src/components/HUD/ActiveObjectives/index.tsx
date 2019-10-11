@@ -23,11 +23,27 @@ export interface State {
 
 export function ActiveObjectives() {
   const activeObjectivesContext = useContext(ActiveObjectivesContext);
+
+  function getColor(objective: ActiveObjective) {
+    const objectiveColor = activeObjectivesContext.colorAssign[objective.entityState.entityID];
+
+    if (!objectiveColor) {
+      // We should not get here. Choose unique color that stands out if we do.
+      return 'pink';
+    }
+
+    return objectiveColor.color;
+  }
+
   return (
     <Container>
       {activeObjectivesContext.activeObjectives.map((objective) => {
         return (
-          <ActiveObjective key={objective.entityState.entityID} activeObjective={objective} />
+          <ActiveObjective
+            key={objective.entityState.entityID}
+            activeObjective={objective}
+            color={getColor(objective)}
+          />
         );
       })}
     </Container>

@@ -55,7 +55,7 @@ const DirectionalIndicator = styled.div`
 
 const Icon = styled.div`
   font-size: 26px;
-  color: #29BFE0;
+  color: ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) => props.color};
 `;
 
 const Info = styled.div`
@@ -124,6 +124,7 @@ interface ActiveObjectiveProps {
   activeObjective: ActiveObjective;
   viewBearing: number;
   playerPosition: Vec3f;
+  color: string;
 }
 
 export interface State {
@@ -145,8 +146,10 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
     return (
       <Container>
         <Circle>
-          <DirectionalIndicator style={this.getDirectionIndicator()} className='fas fa-caret-down' />
-          <Icon className={activeObjective.entityState.iconClass} />
+          {this.state.minimized &&
+            <DirectionalIndicator style={this.getDirectionIndicator()} className='fas fa-caret-down' />
+          }
+          <Icon className={activeObjective.entityState.iconClass} color={this.props.color} />
         </Circle>
         <Info className={minimizedClassName}>
           <Name className={minimizedClassName}>{activeObjective.entityState.name}</Name>
@@ -167,11 +170,11 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
 
   public componentDidUpdate() {
     const distance = this.getDistance();
-    if (this.state.minimized && distance < 20) {
+    if (this.state.minimized && distance < 40) {
       this.setState({ minimized: false });
     }
 
-    if (!this.state.minimized && distance >= 20) {
+    if (!this.state.minimized && distance >= 40) {
       this.setState({ minimized: true });
     }
   }
@@ -228,6 +231,7 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
 
 export interface Props {
   activeObjective: ActiveObjective;
+  color: string;
 }
 
 export function ActiveObjective(props: Props) {
@@ -235,6 +239,7 @@ export function ActiveObjective(props: Props) {
   const playerPositionContext = useContext(PlayerPositionContext);
   return (
     <ActiveObjectiveWithInjectedContext
+      color={props.color}
       activeObjective={props.activeObjective}
       viewBearing={viewBearingContext.viewBearing}
       playerPosition={playerPositionContext.playerPosition}
