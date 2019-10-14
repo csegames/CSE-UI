@@ -16,7 +16,7 @@ const INDICATOR_DIMENSIONS = 20;
 const Container = styled.div`
   display: flex;
   align-items: center;
-  margin: 10px 0;
+  margin: 5px 0;
 `;
 
 const Circle = styled.div`

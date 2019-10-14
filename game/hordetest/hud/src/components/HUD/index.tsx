@@ -10,13 +10,10 @@ import { styled } from '@csegames/linaria/react';
 import { Chat } from 'cushared/components/Chat';
 import { DevUI } from 'cushared/components/DevUI';
 
-import { HealthBar } from './HealthBar';
 // import { ChannelBar } from './ChannelBar';
 import { MatchInfo } from './MatchInfo';
 import { Crosshair } from './Crosshair';
-import { ActionButtons } from './ActionButtons';
 import { KillStreakCounter } from './KillStreakCounter';
-import { UltimateReady } from './UltimateReady';
 import { PlayerTrackers } from './PlayerTrackers';
 import { Respawn } from './Respawn';
 import { MenuModal } from '../fullscreen/MenuModal';
@@ -31,6 +28,9 @@ import { Console } from '../HUD/Console';
 import { LoadingScreen } from '../fullscreen/LoadingScreen';
 import { ImagePreloader } from './ImagePreloader';
 import { ContextProviders } from '../context';
+import { SelfHealthBar } from './SelfHealthBar';
+import { FriendlyHealthBars } from './FriendlyHealthBars';
+import { TestButton } from './FriendlyHealthBars/TestButton';
 
 const Container = styled.div`
   width: 100%;
@@ -84,15 +84,23 @@ const CrosshairPosition = styled.div`
 const ChatPosition = styled.div`
   position: fixed;
   left: 0px;
-  bottom: 50px;
+  bottom: 200px;
   width: 480px;
   height: 240px;
 `;
 
-const HealthBarPosition = styled.div`
+const SelfHealthBarPosition = styled.div`
   position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 20px;
+  bottom: 20px;
+
+  display: flex;
+  align-items: center;
+`;
+
+const FriendlyHealthBarsPosition = styled.div`
+  position: fixed;
+  right: 20px;
   bottom: 20px;
 
   display: flex;
@@ -105,7 +113,7 @@ const CompassPosition =  styled.div`
   left: 50%;
   transform: translateX(-50%);
   width: 500px;
-  height: 55px;
+  height: 65px;
   pointer-events: none;
 `;
 
@@ -114,26 +122,12 @@ const CompassPosition =  styled.div`
 //   margin-left: 15px;
 // `;
 
-const ActionsContainer = styled.div`
-  position: fixed;
-  right: 25px;
-  bottom: 10px;
-`;
-
 // const ShieldBarPosition = styled.div`
 //   position: fixed;
 //   top: calc(50% - 100px);
 //   left: 50%;
 //   transform: translate(-50%, -50%);
 // `;
-
-const UltimateReadyPosition = styled.div`
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 130px;
-  pointer-events: none;
-`;
 
 // const ChannelBarPosition = styled.div`
 //   position: fixed;
@@ -145,8 +139,7 @@ const UltimateReadyPosition = styled.div`
 
 const AnnouncementsPosition = styled.div`
   position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 130px;
   right: 0;
   pointer-events: none;
 `;
@@ -194,6 +187,8 @@ export class HUD extends React.Component<Props> {
           </ReloadButtonContainer>
           <Console />
 
+          <TestButton />
+
           <CompassPosition>
             <Compass />
           </CompassPosition>
@@ -218,10 +213,6 @@ export class HUD extends React.Component<Props> {
             <ShieldBar current={95} max={100} />
           </ShieldBarPosition> */}
 
-          <UltimateReadyPosition>
-            <UltimateReady />
-          </UltimateReadyPosition>
-
           {/* <ChannelBarPosition>
             <ChannelBar channelType={'Bandage'} current={60} max={100} />
           </ChannelBarPosition> */}
@@ -230,13 +221,13 @@ export class HUD extends React.Component<Props> {
             <ActiveObjectives />
           </AnnouncementsPosition>
 
-          <HealthBarPosition>
-            <HealthBar />
-          </HealthBarPosition>
+          <SelfHealthBarPosition>
+            <SelfHealthBar />
+          </SelfHealthBarPosition>
 
-          <ActionsContainer>
-            <ActionButtons />
-          </ActionsContainer>
+          <FriendlyHealthBarsPosition>
+            <FriendlyHealthBars />
+          </FriendlyHealthBarsPosition>
 
           <ChatPosition>
             <Chat accessToken={game.accessToken} />

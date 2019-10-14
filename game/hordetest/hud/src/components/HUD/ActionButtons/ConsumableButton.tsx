@@ -16,18 +16,19 @@ const Container = styled.div`
 const ItemList = styled.div`
   display: flex;
   position: absolute;
-  top: -12px;
-  left: 10px;
+  bottom: -13px;
+  left: 0px;
   right: 0;
   height: 20px;
 `;
 
 const Item = styled.div`
   font-size: 12px;
-  color: #1c1a16;
+  color: #fff;
+  opacity: 0.5;
 
   &.active {
-    color: #fff;
+    opacity: 1;
   }
 `;
 
@@ -52,14 +53,6 @@ export function ConsumableButton(props: Props) {
 
   return (
     <Container>
-      <ItemList>
-        {Object.values(consumableItemsState.items).map((item, i) => {
-          const activeClass = consumableItemsState.activeIndex === i ? 'active' : '';
-          return (
-            <Item className={`${item.iconClass || 'fas fa-question'} ${activeClass}`} />
-          );
-        })}
-      </ItemList>
       <ActionButton
         actionIconClass={
           (!isEmpty(consumableItemsState.items) && consumableItemsState.items[consumableItemsState.activeIndex].iconClass) ?
@@ -69,6 +62,14 @@ export function ConsumableButton(props: Props) {
         abilityID={props.abilityID}
         className={props.className}
       />
+      <ItemList>
+        {Object.values(consumableItemsState.items).map((item, i) => {
+          const activeClass = consumableItemsState.activeIndex === i ? 'active' : '';
+          return (
+            <Item className={`${item.iconClass || 'fas fa-question'} ${activeClass}`} />
+          );
+        })}
+      </ItemList>
     </Container>
   );
 }

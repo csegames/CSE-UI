@@ -24,18 +24,8 @@ export interface State {
   playerDirections: PlayerDirection[];
 }
 
-const colors = [
-  '#bd55fd',
-  '#63263b',
-  '#50b2e0',
-  '#d3af4d',
-  '#ab0d49',
-  '#d9d82d',
-  '#c1b2bf',
-  '#14820e',
-];
-
 export class PlayerTrackers extends React.Component<Props, State> {
+  private evh: EventHandle;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -52,7 +42,6 @@ export class PlayerTrackers extends React.Component<Props, State> {
           <PlayerTracker
             key={i}
             index={i}
-            color={colors[pt.id] || 'blue'}
             degrees={pt.angle}
             screenPos={pt.screenPos}
             scale={pt.scale}
@@ -63,7 +52,11 @@ export class PlayerTrackers extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    hordetest.game.onPlayerDirectionUpdate(this.handlePlayerDirectionUpdate);
+    this.evh = hordetest.game.onPlayerDirectionUpdate(this.handlePlayerDirectionUpdate);
+  }
+
+  public componentWillUnmount() {
+    this.evh.clear();
   }
 
   private handlePlayerDirectionUpdate = (playerDirections: PlayerDirection[]) => {

@@ -65,10 +65,22 @@ export const EE_OnActiveObjectivesUpdate = 'activeObjectives.update';
 regMap[EE_OnActiveObjectivesUpdate] = 'onActiveObjectivesUpdate';
 
 /**
- * A scenario round that the current player is in has ended.
+ * Called when a scenario round that the current player is in has ended.
  */
-export const EE_ScenarioRoundEnd = 'scenarioRoundEnd';
-regMap[EE_ScenarioRoundEnd] = 'onScenarioRoundEnded';
+export const EE_OnScenarioRoundEnd = 'scenarioRoundEnd';
+regMap[EE_OnScenarioRoundEnd] = 'onScenarioRoundEnded';
+
+/**
+ * Called when an entity has been updated
+ */
+export const EE_OnEntityStateUpdate = 'entityState.update';
+regMap[EE_OnEntityStateUpdate] = 'onEntityStateUpdate';
+
+/**
+ * Called when an entity has been removed
+ */
+export const EE_OnEntityStateRemoved = 'entityState.removed';
+regMap[EE_OnEntityStateRemoved] = 'onEntityStateRemoved';
 
 /**
  * Initialize engine event forwarding

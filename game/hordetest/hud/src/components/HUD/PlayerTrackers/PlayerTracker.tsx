@@ -14,24 +14,25 @@ const Container = styled.div`
 `;
 
 const Diamond = styled.div`
-  width: 10px;
-  height: 10px;
-  opacity: 0.85;
+  width: 12px;
+  height: 12px;
+  border: 2px solid black;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) => props.color};
+  background-color: white;
   color: white;
   transform: rotate(45deg);
 `;
 
 export interface Props {
   index: number;
-  color: string;
   degrees: number;
   scale: number;
   screenPos: Vec2f;
 }
+
+const FLUSH_MARGIN = 10;
 
 export function PlayerTracker(props: Props) {
   // function getAlignment() {
@@ -113,22 +114,22 @@ export function PlayerTracker(props: Props) {
     let bottom: string | number = 'auto';
     let transition = '';
     if (screenPos.x < 0) {
-      left = 0;
+      left = FLUSH_MARGIN;
       xFlush = true;
     }
 
     if (screenPos.x > 1) {
-      right = 0;
+      right = FLUSH_MARGIN;
       xFlush = true;
     }
 
     if (screenPos.y < 0) {
-      top = 0;
+      top = FLUSH_MARGIN;
       yFlush = true;
     }
 
     if (screenPos.y > 1) {
-      bottom = 0;
+      bottom = FLUSH_MARGIN;
       yFlush = true;
     }
 
@@ -154,7 +155,7 @@ export function PlayerTracker(props: Props) {
   const alignment = getAlignment();
   return (
     <Container style={alignment}>
-      <Diamond color={props.color}></Diamond>
+      <Diamond />
     </Container>
   );
 }

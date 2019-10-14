@@ -16,6 +16,7 @@ declare global {
 
   interface PlayerStateModel extends EntityStateModel {
     type: 'player';
+    characterID: string;
     health: CurrentMax[];
     blood: CurrentMax;
     stamina: CurrentMax;
@@ -52,6 +53,7 @@ export function defaultPlayerStateModel(): PlayerStateModel {
   return {
     ...defaultEntityStateModel(),
     type: 'player',
+    characterID: 'default-character-id',
     health: [defaultCurrentMax()],
     stamina: defaultCurrentMax(),
     blood: defaultCurrentMax(),
@@ -60,6 +62,7 @@ export function defaultPlayerStateModel(): PlayerStateModel {
 }
 
 export const EntityState_Update = 'entityState.update';
+export const EntityState_Removed = 'entityState.removed';
 
 function onReceiveEntityStateUpdate(state: AnyEntityState) {
   if (game.debug) {
@@ -87,8 +90,23 @@ function onReceiveEntityStateUpdate(state: AnyEntityState) {
   executeUpdateCallbacks(hordetest._devGame.entities[state.entityID]);
 }
 
+function onReceiveEntityStateRemoved(entityID: string) {
+  if (game.debug) {
+    console.groupCollapsed(`Client > ${EntityState_Removed}`);
+    console.log(entityID);
+    console.groupEnd();
+  }
+
+  if (typeof hordetest._devGame.entities[entityID] === 'undefined') {
+    return;
+  }
+
+  delete hordetest._devGame.entities[entityID];
+}
+
 export default function() {
   if (typeof engine !== 'undefined') {
     engine.on(EntityState_Update, onReceiveEntityStateUpdate);
+    engine.on(EntityState_Removed, onReceiveEntityStateRemoved);
   }
 }

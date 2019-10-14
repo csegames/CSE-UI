@@ -8,6 +8,7 @@ import React from 'react';
 import { ActionButton } from './ActionButton';
 
 export interface Props {
+  type: 'weak' | 'strong' | 'ultimate';
   actionIconClass: string;
   keybindText: string;
   keybindIconClass?: string;
@@ -16,7 +17,7 @@ export interface Props {
 }
 
 export interface State {
-  cooldownTimer: number;
+  cooldownTimer: CurrentMax & Timing & { progress: number };
 }
 
 export class AbilityButton extends React.Component<Props, State> {
@@ -24,7 +25,7 @@ export class AbilityButton extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      cooldownTimer: 0,
+      cooldownTimer: { start: 0, duration: 0, current: 0, max: 0, progress: 0 },
     };
   }
 
@@ -37,6 +38,7 @@ export class AbilityButton extends React.Component<Props, State> {
         className={this.props.className}
         cooldownTimer={this.state.cooldownTimer}
         keybindIconClass={this.props.keybindIconClass}
+        showActiveAnim={this.shouldShowActiveAnim()}
       />
     );
   }
@@ -57,6 +59,10 @@ export class AbilityButton extends React.Component<Props, State> {
     this.abilityStateHandle.clear();
   }
 
+  private shouldShowActiveAnim = () => {
+    return this.props.type === 'ultimate' && this.state.cooldownTimer.current === 0;
+  }
+
   private checkStartCountdown = () => {
     const ability = hordetest.game.abilityStates[this.props.abilityID];
     if (ability.status & AbilityButtonState.Cooldown) {
@@ -65,16 +71,39 @@ export class AbilityButton extends React.Component<Props, State> {
   }
 
   private startCountdown = (cooldown: Timing) => {
-    if (cooldown && this.state.cooldownTimer === 0) {
-      this.setState({ cooldownTimer: Math.round(this.getTimingEnd(cooldown) / 1000) });
-      window.setTimeout(this.decrementCountdown, 1000);
+    if (cooldown && this.state.cooldownTimer.current === 0) {
+      const timer = Math.round(this.getTimingEnd(cooldown) / 1000);
+      this.setState({ cooldownTimer: { ...cloneDeep(cooldown), current: timer, max: timer, progress: 100 } });
+      window.setTimeout(this.updateProgress, 66);
     }
   }
 
-  private decrementCountdown = () => {
-    if (!this.state.cooldownTimer) return;
-    this.setState({ cooldownTimer: this.state.cooldownTimer - 1 });
-    window.setTimeout(this.decrementCountdown, 1000);
+  private updateProgress = () => {
+    const currentProgress = this.getCurrentProgress();
+
+    this.setState({
+      cooldownTimer: {
+        ...this.state.cooldownTimer,
+        current: Number(currentProgress.current.toFixed(0)),
+        progress: currentProgress.progress,
+      },
+    });
+
+    if (currentProgress.current === 0) return;
+    window.setTimeout(this.updateProgress, 66);
+  }
+
+  private getCurrentProgress = () => {
+    const elapsed = game.worldTime - this.state.cooldownTimer.start;
+    let current = this.state.cooldownTimer.max - elapsed;
+    if (current < 0) {
+      current = 0;
+    }
+
+    return {
+      progress: current / this.state.cooldownTimer.max * 100,
+      current,
+    };
   }
 
   private getTimingEnd = (timing: DeepImmutableObject<Timing>) => {

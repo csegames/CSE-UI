@@ -14,19 +14,6 @@ const ActionButtonsContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: -12px;
-    right: 0;
-    left: -60px;
-    height: 90%;
-    width: 130%;
-    background-image: url(../images/hud/skills-border.png);
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-  }
 `;
 
 const ActionButtonSpacing = css`
@@ -70,9 +57,10 @@ export function ActionButtons(props: Props) {
     }
   }, [hordetest.game.abilityBarState]);
 
-  function renderAbilityButton(ability: AbilityBarItem, i: number) {
+  function renderAbilityButton(ability: AbilityBarItem, i: number, type: 'weak' | 'strong' | 'ultimate') {
     return (
       <AbilityButton
+        type={type}
         key={ability.id}
         abilityID={ability.id}
         className={ActionButtonSpacing}
@@ -85,9 +73,9 @@ export function ActionButtons(props: Props) {
 
   return (
     <ActionButtonsContainer>
-      {weakAbility && weakAbility.id >= 0 && renderAbilityButton(weakAbility, 0)}
-      {strongAbility && strongAbility.id >= 0 && renderAbilityButton(strongAbility, 1)}
-      {ultimateAbility && ultimateAbility.id >= 0 && renderAbilityButton(ultimateAbility, 2)}
+      {weakAbility && weakAbility.id >= 0 && renderAbilityButton(weakAbility, 0, 'weak')}
+      {strongAbility && strongAbility.id >= 0 && renderAbilityButton(strongAbility, 1, 'strong')}
+      {ultimateAbility && ultimateAbility.id >= 0 && renderAbilityButton(ultimateAbility, 2, 'ultimate')}
       <ConsumableButton
         className={ActionButtonSpacing}
         actionIconClass={index2Icon[3]}

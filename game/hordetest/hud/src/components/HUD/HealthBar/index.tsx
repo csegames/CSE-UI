@@ -4,8 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import { throttle } from 'lodash';
+import React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { ResourceBar } from 'components/shared/ResourceBar';
@@ -13,8 +12,6 @@ import { ChampionProfile } from './ChampionProfile';
 
 const Container = styled.div`
   display: flex;
-  padding: 15px;
-  background-image: url(../images/hud/main-health-border.png);
   background-repeat: no-repeat;
   background-size: 100% 100%;
 `;
@@ -24,7 +21,7 @@ const ChampionProfileSpacing = styled.div`
 `;
 
 const ResourcesContainer = styled.div`
-  width: 215px;
+  width: ${(props: { width: number } & React.HTMLProps<HTMLDivElement>) => props.width ? `${props.width}px` : '215px'};
   user-select: none;
   pointer-events: none;
 `;
@@ -50,58 +47,43 @@ const ResourceContainer = css`
 `;
 
 export interface Props {
+  divineBarrier: CurrentMax;
+  health: CurrentMax;
+  championResource: CurrentMax;
+  resourcesWidth?: number;
+  hideChampionResource?: boolean;
 }
 
 export function HealthBar(props: Props) {
-  const gameHealth = hordetest.game.selfPlayerState.health;
-  const [health, setHealth] = useState({ current: gameHealth[0].current, max: gameHealth[0].max });
-  const throttledSetHealth = useRef(throttle((val) => setHealth(val), 200));
-
-  const [resource, setResource] = useState({ ...hordetest.game.selfPlayerState.stamina });
-  const throttledSetResource = useRef(throttle((val) => setResource(val), 200));
-
-  const [divineBarrier, setDivineBarrier] = useState({ ...hordetest.game.selfPlayerState.blood });
-  const throttledSetDivineBarrier = useRef(throttle((val) => setDivineBarrier(val), 200));
-
-  useEffect(() => {
-    const handle = hordetest.game.selfPlayerState.onUpdated(() => {
-      throttledSetHealth.current(hordetest.game.selfPlayerState.health[0]);
-      throttledSetResource.current(hordetest.game.selfPlayerState.stamina);
-      throttledSetDivineBarrier.current(hordetest.game.selfPlayerState.blood);
-    });
-
-    return () => {
-      handle.clear();
-    }
-  }, [hordetest.game.selfPlayerState.health[0], hordetest.game.selfPlayerState.stamina]);
-
   return (
     <Container>
       <ChampionProfileSpacing>
         <ChampionProfile />
       </ChampionProfileSpacing>
-      <ResourcesContainer>
+      <ResourcesContainer width={props.resourcesWidth}>
         <ResourceBar
           type='blue'
           containerStyles={DivineBarrierContainer}
-          current={divineBarrier.current}
-          max={divineBarrier.max}
+          current={props.divineBarrier.current}
+          max={props.divineBarrier.max}
         />
 
         <ResourceBar
           type='green'
           containerStyles={HealthBarContainer}
-          current={health.current}
-          max={health.max}
+          current={props.health.current}
+          max={props.health.max}
         />
 
-        <ResourceBar
-          hideText
-          type='orange'
-          containerStyles={ResourceContainer}
-          current={resource.current}
-          max={resource.max}
-        />
+        {!props.hideChampionResource &&
+          <ResourceBar
+            hideText
+            type='orange'
+            containerStyles={ResourceContainer}
+            current={props.championResource.current}
+            max={props.championResource.max}
+          />
+        }
       </ResourcesContainer>
     </Container>
   );

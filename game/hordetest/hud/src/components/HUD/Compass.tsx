@@ -12,7 +12,6 @@ const Container = styled.div`
   position: relative;
   height: 100%;
   width: 100%;
-  font-size: 12px;
   font-family: Lato;
   font-weight: bold;
   overflow: hidden;
@@ -65,15 +64,16 @@ const Cardinal = styled.div`
   position: absolute;
   margin: 0;
   padding: 0;
-  bottom: 0;
+  top: 25px;
   margin-top: 15px;
   color: white;
   width: 30px;
   text-align: center;
   transform: translateX(-50%);
+  font-size: 16px;
 
   &.direction {
-    font-size: 15px;
+    font-size: 22px;
   }
 `;
 

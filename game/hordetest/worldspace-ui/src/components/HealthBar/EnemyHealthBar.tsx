@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { HealthBarState } from '.';
+import { HealthBarState } from '..';
 
 const Container = styled.div`
   display: flex;
@@ -31,13 +31,9 @@ const BarContainer = styled.div`
   height: 12px;
   margin-left: 5px;
   border: 2px solid black;
-  background-color: #00254f;
+  background-color: #3d0000;
   transform: skewX(-10deg);
   z-index: -1;
-
-  &.enemy {
-    background-color: #3d0000;
-  }
 `;
 
 const Bar = styled.div`
@@ -46,44 +42,21 @@ const Bar = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: #29aae1;
+  background-color: #c2272d;
   z-index: 0;
-
-  &.enemy {
-    background-color: #c2272d;
-  }
-`;
-
-const BarText = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  text-align: center;
-  color: white;
-  font-family: Lato;
-  font-weight: bold;
-  color: white;
-  font-size: 12px;
-  line-height: 10px;
-  transform: skewX(10deg);
 `;
 
 export interface Props {
   state: HealthBarState;
 }
 
-export function HealthBar(props: Props) {
+export function EnemyHealthBar(props: Props) {
   const { state } = props;
-  const enemyClass = state.isEnemy ? 'enemy' : '';
   return (
     <Container>
       <NameOfPlayer>{state.name}</NameOfPlayer>
-      <BarContainer className={enemyClass}>
-        <Bar
-          className={enemyClass}
-          style={{ width: `${(state.current / state.max) * 100}%` }}
-        />
-        <BarText>{state.current} / {state.max}</BarText>
+      <BarContainer>
+        <Bar style={{ width: `${(state.current / state.max) * 100}%` }} />
       </BarContainer>
     </Container>
   );

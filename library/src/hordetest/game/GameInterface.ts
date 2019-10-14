@@ -34,9 +34,21 @@ export interface GameInterface extends GameModel {
 
   /**
    * Subscribe to ActiveObjective updates
-   * @param {(activeObjectives: ActiveObjectives[]) => any} callback function to be executed with a Active Objectives update
+   * @param {(activeObjectives: ActiveObjectives[]) => any} callback function to be executed with an Active Objectives update
    */
   onActiveObjectivesUpdate: (callback: (activeObjectives: ActiveObjective[]) => any) => EventHandle;
+
+  /**
+   * Subscribe to EntityState updates
+   * * @param {(entityState: AnyEntityStateModel) => any} callback function to be executed with an Entity State update
+   */
+  onEntityStateUpdate: (callback: (entityState: AnyEntityStateModel) => any) => EventHandle;
+
+  /**
+   * Subscribe to EntityState removes
+   * * @param {(entityID: string) => any} callback function to be executed with an Entity State remove
+   */
+  onEntityStateRemoved: (callback: (entityID: string) => any) => EventHandle;
 
   /**
    * Subscribes a function to be executed when a scenario round ends.
