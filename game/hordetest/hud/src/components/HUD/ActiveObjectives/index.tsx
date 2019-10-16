@@ -35,11 +35,9 @@ export function ActiveObjectives() {
     return objectiveColor.color;
   }
 
-  const sortedObjectives = activeObjectivesContext.activeObjectives.sort((a, b) =>
-    a.entityState.entityID.localeCompare(b.entityState.entityID));
   return (
     <Container>
-      {sortedObjectives.map((objective) => {
+      {activeObjectivesContext.activeObjectives.map((objective) => {
         return (
           <ActiveObjective
             key={objective.entityState.entityID}
