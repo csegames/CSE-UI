@@ -294,6 +294,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
                   character.archetype === Archetype.WintersShadow ? '45% 25%' :
                   character.archetype === Archetype.WaveWeaver ? '50% 42%' :
                   character.archetype === Archetype.Minstrel ? '45% 37%' :
+                  character.archetype === Archetype.Skald ? '50% 30%' :
                   '50% 20%',
                 transform: flipImage ? 'scale(-1, 1)' : 'none',
               }}
@@ -310,6 +311,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
                   character.archetype === Archetype.WintersShadow ? '45% 25%' :
                   character.archetype === Archetype.WaveWeaver ? '50% 42%' :
                   character.archetype === Archetype.Minstrel ? '45% 37%' :
+                  character.archetype === Archetype.Skald ? '50% 30%' :
                   '50% 20%',
                 transform: flipImage ? 'scale(-1, 1)' : 'none',
               }}

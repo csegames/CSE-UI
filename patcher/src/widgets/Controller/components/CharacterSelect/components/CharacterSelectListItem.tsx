@@ -180,6 +180,19 @@ const DruidClass = styled.div`
   ${ClassMask}
 `;
 
+const SkaldClass = styled.div`
+  display: block;
+  position: absolute;
+  background-size: 340%;
+  background-position: 50% 30%;
+  width: 120px;
+  height: 70px;
+  bottom: 5px;
+  left: -40px;
+  ${ClassMask}
+`;
+
+
 const DeleteButton = styled.div`
   display: block;
   position: absolute;
@@ -337,6 +350,13 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
       case 'LuchorpanMaleDruid':
       case 'LuchorpanFemaleDruid': {
         return <DruidClass style={{ backgroundImage: `url(${classImg})` }} />;
+      }
+
+      case 'HumanMaleSkald':
+      case 'HumanFemaleSkald':
+      case 'ValkyrieMaleSkald':
+      case 'ValkyrieFemaleSkald': {
+        return <SkaldClass style={{ backgroundImage: `url(${classImg})` }} />;
       }
 
       case 'HumanMaleEmpath':
