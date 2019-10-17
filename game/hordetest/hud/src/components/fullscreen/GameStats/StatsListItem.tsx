@@ -7,8 +7,9 @@
 import React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
-import { ResourceBar } from '../../shared/ResourceBar';
 import { OvermindCharacterSummary } from '@csegames/library/lib/hordetest/graphql/schema';
+import { formatTime } from 'lib/timeHelpers';
+import { ResourceBar } from '../../shared/ResourceBar';
 
 const Container = styled.div`
   display: flex;
@@ -133,7 +134,7 @@ export function StatsListItem(props: Props) {
         {renderBar(props.playerStat.longestKillStreak.toString(), statsCurrentPercentage.killStreak)}
       </Section>
       <Section>
-        {renderBar(props.playerStat.longestLife.toString(), statsCurrentPercentage.longestLife)}
+        {renderBar(formatTime(props.playerStat.longestLife), statsCurrentPercentage.longestLife)}
       </Section>
       <Section>
         {renderBar(props.playerStat.damageApplied.toString(), statsCurrentPercentage.totalDamage)}

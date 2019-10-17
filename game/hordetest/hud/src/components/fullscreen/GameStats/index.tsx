@@ -15,6 +15,7 @@ import { StatsList } from './StatsList';
 import { Highlights } from './Highlights';
 import { Button } from '../Button';
 import { InputContext } from 'components/context/InputContext';
+import { formatTime } from 'lib/timeHelpers';
 
 const query = gql`
   query GameStatsQuery($scenarioID: String!, $shardID: Int!) {
@@ -143,7 +144,7 @@ export class GameStats extends React.Component<Props, State> {
                     <Title>GAME STATS</Title>
                     <MatchTitleInfo>
                       <GameMode>Group Survival</GameMode>
-                      <div>Match Time: {overmindSummary.totalRunTime}</div>
+                      <div>Match Time: {formatTime(overmindSummary.totalRunTime)}</div>
                     </MatchTitleInfo>
                   </TitleContainer>
                   {isConsole ?

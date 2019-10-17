@@ -7,6 +7,7 @@
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { OvermindSummaryDBModel, OvermindCharacterSummary } from '@csegames/library/lib/hordetest/graphql/schema';
+import { formatTime } from 'lib/timeHelpers';
 
 const Container = styled.div`
   display: flex;
@@ -233,7 +234,7 @@ export function Highlights(props: Props) {
         <BGOverlay />
         <PlayerName>{p.player.userName}</PlayerName>
         <StatContainer>
-          <StatNumber>{p.statNumber}</StatNumber>
+          <StatNumber>{p.statName === 'longest life' ? formatTime(p.statNumber) : p.statNumber}</StatNumber>
           <StatName>{p.statName}</StatName>
         </StatContainer>
       </HighlightContainer>
