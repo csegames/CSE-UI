@@ -129,14 +129,17 @@ interface ActiveObjectiveProps {
 
 export interface State {
   minimized: boolean;
+  entityState: ObjectiveEntityState;
 }
 
 class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjectiveProps, State> {
   private minimizeTimeout: number;
+  private evh: EventHandle;
   constructor(props: ActiveObjectiveProps) {
     super(props);
     this.state = {
       minimized: false,
+      entityState: props.activeObjective.entityState
     };
   }
 
@@ -166,6 +169,7 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
 
   public componentDidMount() {
     this.minimizeTimeout = window.setTimeout(this.handleInitialMinimize, 4000);
+    this.evh = hordetest.game.onEntityStateUpdate(this.handleEntityStateUpdate);
   }
 
   public componentDidUpdate() {
@@ -182,21 +186,30 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
   public componentWillUnmount() {
     window.clearTimeout(this.minimizeTimeout);
     this.minimizeTimeout = null;
+
+    this.evh.clear();
   }
 
   private handleInitialMinimize = () => {
     this.setState({ minimized: true });
   }
 
+  private handleEntityStateUpdate = (state: AnyEntityStateModel) => {
+    if (state.entityID === this.state.entityState.entityID) {
+      const objectiveState = (state as any) as ObjectiveEntityState;
+      this.setState({ entityState: cloneDeep(objectiveState) });
+    }
+  }
+
   private getCaptureProgress = () => {
-    const { current, max } = this.props.activeObjective.entityState.objectiveProgress;
+    const { current, max } = this.state.entityState.objectiveProgress;
     return (current / max) * 100;
   }
 
   private getDistance = () => {
     const distance = Number(utils.distanceVec3(
       this.props.playerPosition,
-      this.props.activeObjective.entityState.position,
+      this.state.entityState.position,
     ).toFixed(0));
     return distance;
   }
