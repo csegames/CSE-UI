@@ -33,7 +33,6 @@ const queryString = `
       statusTags
       stacking {
         group
-        refreshTimedDurations
         removalOrder
       }
     }

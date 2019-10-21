@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
-import { utils } from '@csegames/library/lib/camelotunchained';
+import { utils } from '@csegames/library/lib/_baseGame';
 import { HD_SCALE } from 'fullscreen/lib/constants';
 
 // #region Container constants
