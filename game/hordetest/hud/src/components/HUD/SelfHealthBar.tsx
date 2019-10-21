@@ -10,15 +10,25 @@ import { throttle } from 'lodash';
 
 import { HealthBar } from './HealthBar';
 import { ActionButtons } from './ActionButtons';
+import { Consumables } from './Consumables';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
+const ConsumablesContainer = styled.div`
+  margin-left: -23px;
+  margin-bottom: 5px;
+`;
+
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const ActionButtonsContainer = styled.div`
-  margin-left: 7px;
-  margin-bottom: 10px;
+  margin-left: 15px;
 `;
 
 export interface Props {
@@ -60,10 +70,15 @@ export function SelfHealthBar(props: Props) {
 
   return (
     <Container>
-      <ActionButtonsContainer>
-        <ActionButtons />
-      </ActionButtonsContainer>
-      <HealthBar health={health} championResource={resource} divineBarrier={divineBarrier} />
+      <ConsumablesContainer>
+        <Consumables />
+      </ConsumablesContainer>
+      <Row>
+        <HealthBar health={health} championResource={resource} divineBarrier={divineBarrier} />
+        <ActionButtonsContainer>
+          <ActionButtons />
+        </ActionButtonsContainer>
+      </Row>
     </Container>
   );
 }

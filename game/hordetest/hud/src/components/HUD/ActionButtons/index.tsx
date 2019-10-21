@@ -8,7 +8,6 @@ import React, { useState, useEffect } from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { AbilityButton } from './AbilityButton';
-import { ConsumableButton } from './ConsumableButton';
 
 const ActionButtonsContainer = styled.div`
   position: relative;
@@ -76,10 +75,6 @@ export function ActionButtons(props: Props) {
       {weakAbility && weakAbility.id >= 0 && renderAbilityButton(weakAbility, 0, 'weak')}
       {strongAbility && strongAbility.id >= 0 && renderAbilityButton(strongAbility, 1, 'strong')}
       {ultimateAbility && ultimateAbility.id >= 0 && renderAbilityButton(ultimateAbility, 2, 'ultimate')}
-      <ConsumableButton
-        className={ActionButtonSpacing}
-        actionIconClass={index2Icon[3]}
-      />
     </ActionButtonsContainer>
   );
 }

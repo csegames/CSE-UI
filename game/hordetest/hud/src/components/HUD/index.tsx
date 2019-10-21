@@ -91,7 +91,7 @@ const ChatPosition = styled.div`
 
 const SelfHealthBarPosition = styled.div`
   position: fixed;
-  left: 20px;
+  left: 40px;
   bottom: 20px;
 
   display: flex;

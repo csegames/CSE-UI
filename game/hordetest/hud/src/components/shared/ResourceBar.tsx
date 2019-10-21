@@ -117,8 +117,6 @@ const Fill = styled.div`
   }
 `;
 
-// box-shadow: inset -3px 1px 15px rgba(255, 255, 255, 0.8);
-
 const Text = styled.div`
   font-family: Colus;
   color: white;
@@ -139,17 +137,19 @@ export interface Props {
   hideText?: boolean;
   containerStyles?: string;
   isSquare?: boolean;
+  unsquareText?: boolean;
 }
 
 export function ResourceBar(props: Props) {
   const squareClass = props.isSquare ? 'square' : '';
+  const textSquareClass = !props.unsquareText && props.isSquare ? 'square' : '';
   return (
     <ResourceBarContainer className={`${squareClass} ${props.containerStyles || ''}`}>
       <FillContainer className={props.type} style={{ width: `${(props.current / props.max) * 100}%` }}>
         <Fill className={props.type} />
       </FillContainer>
       {!props.hideText && !props.text &&
-        <Text className={squareClass}>
+        <Text className={textSquareClass}>
           {Math.round(props.current).toFixed(0)} / {Math.round(props.max).toFixed(0)}
         </Text>
       }

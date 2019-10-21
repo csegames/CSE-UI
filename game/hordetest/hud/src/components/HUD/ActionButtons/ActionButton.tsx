@@ -20,8 +20,8 @@ const Button = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   background-color: rgba(0, 0, 0, 0.5);
   transform: skewX(-10deg);
 
@@ -55,10 +55,11 @@ const ActionIcon = styled.span`
 `;
 
 const KeybindBox = styled.div`
+  position: absolute;
+  bottom: -8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
   width: 25px;
   height: 17px;
   background-color: rgba(0, 0, 0, 0.7);
@@ -176,12 +177,6 @@ export function ActionButton(props: Props) {
   const onCooldown = isOnCooldown();
   return (
     <ActionButtonContainer className={props.className}>
-      <KeybindBox>
-        {props.keybindIconClass ?
-          <KeybindText className={props.keybindIconClass}></KeybindText> :
-          <KeybindText>{props.keybindText}</KeybindText>
-        }
-      </KeybindBox>
       <Button className={props.showActiveAnim ? 'activeAnim' : ''}>
         <ActionIcon className={`${props.actionIconClass} ${onCooldown ? 'cooldown' : ''}`} />
         {onCooldown &&
@@ -202,6 +197,12 @@ export function ActionButton(props: Props) {
           </>
         }
       </Button>
+      <KeybindBox>
+        {props.keybindIconClass ?
+          <KeybindText className={props.keybindIconClass}></KeybindText> :
+          <KeybindText>{props.keybindText}</KeybindText>
+        }
+      </KeybindBox>
     </ActionButtonContainer>
   );
 }

@@ -21,28 +21,29 @@ const ChampionProfileSpacing = styled.div`
 `;
 
 const ResourcesContainer = styled.div`
-  width: ${(props: { width: number } & React.HTMLProps<HTMLDivElement>) => props.width ? `${props.width}px` : '215px'};
+  width: ${(props: { width: number } & React.HTMLProps<HTMLDivElement>) => props.width ? `${props.width}px` : '195px'};
   user-select: none;
   pointer-events: none;
+  transform: skewX(-10deg);
 `;
 
 const DivineBarrierContainer = css`
   width: 100%;
   height: 13px;
   border: 3px solid black;
+  margin-bottom: 1px;
 `;
 
 const HealthBarContainer = css`
   width: 100%;
   height: 13px;
-  margin-left: -4px;
   border: 3px solid black;
+  margin-bottom: 5px;
 `;
 
 const ResourceContainer = css`
   width: 100%;
   height: 5px;
-  margin-left: -8px;
   border: 3px solid black;
 `;
 
@@ -62,6 +63,8 @@ export function HealthBar(props: Props) {
       </ChampionProfileSpacing>
       <ResourcesContainer width={props.resourcesWidth}>
         <ResourceBar
+          isSquare
+          unsquareText
           type='blue'
           containerStyles={DivineBarrierContainer}
           current={props.divineBarrier.current}
@@ -69,6 +72,8 @@ export function HealthBar(props: Props) {
         />
 
         <ResourceBar
+          isSquare
+          unsquareText
           type='green'
           containerStyles={HealthBarContainer}
           current={props.health.current}
@@ -77,6 +82,7 @@ export function HealthBar(props: Props) {
 
         {!props.hideChampionResource &&
           <ResourceBar
+            isSquare
             hideText
             type='orange'
             containerStyles={ResourceContainer}
