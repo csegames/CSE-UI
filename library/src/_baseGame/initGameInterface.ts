@@ -125,6 +125,7 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
     options: {},
     keybinds: {},
     worldTime: 0,
+    fps: 0,
 
     reloadUI: noOp,
     quit: noOp,

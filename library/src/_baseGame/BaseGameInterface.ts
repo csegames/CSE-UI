@@ -59,6 +59,11 @@ export interface BaseGameModel {
   worldTime: number;
 
   /**
+   * Frames per second
+   */
+  fps: number;
+
+  /**
    * Forces the client to reload the entire UI
    */
   reloadUI: () => void;

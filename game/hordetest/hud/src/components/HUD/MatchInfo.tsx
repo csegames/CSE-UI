@@ -23,27 +23,43 @@ const Item = styled.div`
   text-transform: uppercase;
 `;
 
-const ItemIcon = styled.span`
-  margin-right: 5px;
-`;
-
 export interface Props {
 }
 
-export function MatchInfo(props: Props) {
-  function renderMatchInfoItem(iconClass: string, text: string) {
+export interface State {
+  fps: number;
+}
+
+export class MatchInfo extends React.Component<Props, State> {
+  private updateFPSInterval: number;
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      fps: Math.round(game.fps),
+    };
+  }
+
+  public render() {
     return (
-      <Item>
-        <ItemIcon className={iconClass}></ItemIcon>
-        {text}
-      </Item>
+      <MatchInfoContainer>
+        <Item>30:13</Item>
+        <Item>1523 Kills</Item>
+        <Item>{this.state.fps} FPS</Item>
+      </MatchInfoContainer>
     );
   }
-  return (
-    <MatchInfoContainer>
-      {renderMatchInfoItem('far fa-clock', '30:13')}
-      {renderMatchInfoItem('icon-enemy', 'Wave 13')}
-      {renderMatchInfoItem('icon-sword-tab', '1523')}
-    </MatchInfoContainer>
-  );
+
+  public componentDidMount() {
+    this.updateFPSInterval = window.setInterval(this.updateFPS, 500);
+  }
+
+  public componentWillUnmount() {
+    window.clearInterval(this.updateFPSInterval);
+  }
+
+  private updateFPS = () => {
+    if (!game.fps.floatEquals(this.state.fps, 1)) {
+      this.setState({ fps: Math.round(game.fps) });
+    }
+  }
 }
