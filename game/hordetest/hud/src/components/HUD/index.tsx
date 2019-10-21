@@ -62,8 +62,8 @@ const MatchInfoPosition = styled.div`
 const KillStreakPosition = styled.div`
   position: fixed;
   top: 50%;
-  transform: translateY(-50%);
-  left: 20px;
+  transform: translate(-50%, -50%);
+  left: 318px;
 `;
 
 const PopupAnnouncementsPosition = styled.div`

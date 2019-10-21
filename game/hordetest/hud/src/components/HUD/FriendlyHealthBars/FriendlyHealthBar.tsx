@@ -69,7 +69,7 @@ export class FriendlyHealthBar extends React.Component<Props, State> {
 
   private getEntityStateByName = () => {
     const entity = Object.values(hordetest.game.entities).find(entity => entity.name === this.props.playerName);
-    return entity as AnyEntityState;
+    return cloneDeep(entity) as AnyEntityState;
   }
 
   private handleEntityStateUpdate = (state: AnyEntityState) => {

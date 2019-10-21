@@ -83,6 +83,12 @@ export const EE_OnEntityStateRemoved = 'entityState.removed';
 regMap[EE_OnEntityStateRemoved] = 'onEntityStateRemoved';
 
 /**
+ * Called when there is an update to a players killstreak
+ */
+export const EE_OnKillStreakUpdate = 'killStreak.update';
+regMap[EE_OnKillStreakUpdate] = 'onKillStreakUpdate';
+
+/**
  * Initialize engine event forwarding
  */
 export function initEventForwarding() {

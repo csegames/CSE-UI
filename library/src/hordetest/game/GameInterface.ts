@@ -66,6 +66,11 @@ export interface GameInterface extends GameModel {
     ) => any,
   ) => EventHandle;
 
+  /**
+   * Subscribe to Kill Streak updates
+   */
+  onKillStreakUpdate: (callback: (newCount: number, newTimerStart: number, newTimerDuration: number) => any) => EventHandle;
+
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */
   /* -------------------------------------------------- */
