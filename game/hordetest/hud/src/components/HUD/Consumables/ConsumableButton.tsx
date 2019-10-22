@@ -5,7 +5,6 @@
  */
 
 import React from 'react';
-import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 
 const Container = styled.div`
@@ -47,14 +46,10 @@ const KeybindBox = styled.div`
   color: white;
   background-color: rgba(0, 0, 0, 0.8);
   white-space: nowrap;
-  transform: skewX(10deg);
-`;
-
-const UseKeybind = css`
   position: absolute;
   left: 50%;
   bottom: -4px;
-  transform: translateX(-50%);
+  transform: skewX(10deg) translateX(-50%);
 `;
 
 const Image = styled.img`
@@ -79,8 +74,8 @@ export function ConsumableButton(props: Props) {
       </Button>
       {props.item && props.isActive && (
         props.useKeybind.iconClass ?
-        <KeybindBox className={`${props.useKeybind.iconClass} ${UseKeybind}`}></KeybindBox> :
-        <KeybindBox className={UseKeybind}>{props.useKeybind.name}</KeybindBox>
+        <KeybindBox className={props.useKeybind.iconClass}></KeybindBox> :
+        <KeybindBox>{props.useKeybind.name}</KeybindBox>
       )}
     </Container>
   );
