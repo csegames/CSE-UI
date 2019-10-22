@@ -30,7 +30,6 @@ import { ImagePreloader } from './ImagePreloader';
 import { ContextProviders } from '../context';
 import { SelfHealthBar } from './SelfHealthBar';
 import { FriendlyHealthBars } from './FriendlyHealthBars';
-import { TestButton } from './FriendlyHealthBars/TestButton';
 
 const Container = styled.div`
   width: 100%;
@@ -186,8 +185,6 @@ export class HUD extends React.Component<Props> {
             <div onClick={() => game.reloadUI()}>Reload UI</div>
           </ReloadButtonContainer>
           <Console />
-
-          <TestButton />
 
           <CompassPosition>
             <Compass />
