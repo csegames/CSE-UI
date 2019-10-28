@@ -144,7 +144,7 @@ export class Build extends React.PureComponent<BuildProps, BuildState> {
   }
 
   private onClose = () => {
-    game.trigger(camelotunchained.game.engineEvents.EE_OnToggleBuildSelector);
+    engine.trigger(camelotunchained.game.engineEvents.EE_OnToggleBuildSelector);
   }
 
   private onSearchChange = (val: string) => {
