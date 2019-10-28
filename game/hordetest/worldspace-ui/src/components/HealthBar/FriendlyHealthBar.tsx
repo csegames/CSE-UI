@@ -9,10 +9,10 @@ import { styled } from '@csegames/linaria/react';
 import { HealthBarState } from '..';
 
 const Container = styled.div`
-  font-family: Lato;
+  font-family: Exo;
   font-weight: bold;
   color: white;
-  font-size: 12px;
+  font-size: 14px;
   margin-left: 7px;
   margin-bottom: 2px;
   width: 100%;

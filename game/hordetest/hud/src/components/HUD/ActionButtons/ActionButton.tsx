@@ -67,6 +67,7 @@ const KeybindBox = styled.div`
 
 const KeybindText = styled.span`
   color: white;
+  font-family: Exo;
   font-weight: bold;
   font-size: 14px;
 `;

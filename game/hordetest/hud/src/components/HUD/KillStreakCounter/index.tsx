@@ -33,7 +33,7 @@ export class  KillStreakCounter extends React.Component<{}, State> {
   }
 
   public render() {
-    return this.state.killStreakCounter.newCount > COMBO_NUMBER_TO_SHOW && (
+    return this.state.killStreakCounter.newCount >= COMBO_NUMBER_TO_SHOW && (
       <Counter killStreakCounter={this.state.killStreakCounter} onTimerFinish={this.clearKillStreakCounter} />
     );
   }

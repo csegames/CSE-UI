@@ -17,6 +17,8 @@ const Item = styled.div`
   display: flex;
   align-items: center;
   font-weight: bold;
+  font-family: Exo;
+  font-weight: bold;
   font-size: 20px;
   color: white;
   text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);

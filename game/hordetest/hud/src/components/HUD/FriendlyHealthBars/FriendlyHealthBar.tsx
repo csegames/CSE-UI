@@ -18,8 +18,7 @@ const PlayerName = styled.div`
   font-size: 12px;
   width: 130px;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 1);
-  font-family: Lato;
-  font-weight: bold;
+  font-family: Exo;
   color: white;
   text-overflow: ellipsis;
   white-space: nowrap;

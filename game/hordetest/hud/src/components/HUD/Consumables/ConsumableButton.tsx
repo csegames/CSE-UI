@@ -40,11 +40,13 @@ const KeybindBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 3px;
-  height: 14px;
-  font-size: 10px;
+  font-size: 14px;
+  font-family: Exo;
+  font-weight: bold;
   color: white;
-  background-color: rgba(0, 0, 0, 0.8);
+  width: 25px;
+  height: 17px;
+  background-color: rgba(0, 0, 0, 0.7);
   white-space: nowrap;
   position: absolute;
   left: 50%;

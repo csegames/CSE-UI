@@ -169,3 +169,32 @@
   font-weight: bold;
   src: url('../font/Lato/Lato-BoldItalic.ttf') format('truetype');
 }
+
+// Exo
+@font-face {
+  font-family: 'Exo';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../font/Exo/Exo-Bold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Exo';
+  font-style: italic;
+  font-weight: normal;
+  src: url('../font/Exo/Exo-BoldItalic.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Exo';
+  font-style: normal;
+  font-weight: bold;
+  src: url('../font/Exo/Exo-Black.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Exo';
+  font-style: italic;
+  font-weight: bold;
+  src: url('../font/Exo/Exo-BlackItalic.otf') format('opentype');
+}

@@ -78,6 +78,7 @@ const Info = styled.div`
 
 const Name = styled.div`
   font-size: 16px;
+  font-family: Exo;
   text-transform: uppercase;
   color: white;
   opacity: 1;
@@ -95,6 +96,7 @@ const BottomInfo = styled.div`
 
 const DistanceText = styled.div`
   font-size: 14px;
+  font-family: Exo;
   text-transform: uppercase;
   color: white;
   margin-right: 5px;

@@ -12,8 +12,7 @@ const Container = styled.div`
   position: relative;
   height: 100%;
   width: 100%;
-  font-family: Lato;
-  font-weight: bold;
+  font-family: Exo;
   overflow: hidden;
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 84%, transparent 100%);
 `;
@@ -47,6 +46,8 @@ const IndicatorContainer = styled.div`
 `;
 
 const IndicatorNumber = styled.div`
+  font-family: Exo;
+  font-weight: bold;
   font-size: 18px;
   color: white;
 `;

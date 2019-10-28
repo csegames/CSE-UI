@@ -47,6 +47,10 @@ const ResourceContainer = css`
   border: 3px solid black;
 `;
 
+const TextStyles = css`
+  font-family: Exo;
+`;
+
 export interface Props {
   divineBarrier: CurrentMax;
   health: CurrentMax;
@@ -69,6 +73,7 @@ export function HealthBar(props: Props) {
           containerStyles={DivineBarrierContainer}
           current={props.divineBarrier.current}
           max={props.divineBarrier.max}
+          textStyles={TextStyles}
         />
 
         <ResourceBar
@@ -78,6 +83,7 @@ export function HealthBar(props: Props) {
           containerStyles={HealthBarContainer}
           current={props.health.current}
           max={props.health.max}
+          textStyles={TextStyles}
         />
 
         {!props.hideChampionResource &&

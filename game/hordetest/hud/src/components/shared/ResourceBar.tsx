@@ -138,6 +138,7 @@ export interface Props {
   containerStyles?: string;
   isSquare?: boolean;
   unsquareText?: boolean;
+  textStyles?: string;
 }
 
 export function ResourceBar(props: Props) {
@@ -149,7 +150,7 @@ export function ResourceBar(props: Props) {
         <Fill className={props.type} />
       </FillContainer>
       {!props.hideText && !props.text &&
-        <Text className={textSquareClass}>
+        <Text className={`${textSquareClass} ${props.textStyles ? props.textStyles : ''}`}>
           {Math.round(props.current).toFixed(0)} / {Math.round(props.max).toFixed(0)}
         </Text>
       }

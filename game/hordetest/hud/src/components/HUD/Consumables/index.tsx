@@ -15,11 +15,13 @@ const Container = styled.div`
 `;
 
 const KeybindBox = styled.div`
-  padding: 0 5px;
-  height: 16px;
-  font-size: 10px;
+  font-family: Exo;
+  font-weight: bold;
+  font-size: 14px;
   color: white;
-  background-color: rgba(0, 0, 0, 0.8);
+  width: 25px;
+  height: 17px;
+  background-color: rgba(0, 0, 0, 0.7);
   white-space: nowrap;
   display: flex;
   align-items: center;
@@ -32,7 +34,7 @@ const NextKeybind = css`
 
 const NextArrow = styled.div`
   margin-left: 3px;
-  margin-top: 2px;
+  margin-top: 4px;
   font-size: 8px;
 `;
 
@@ -42,7 +44,7 @@ const PrevKeybind = css`
 
 const PrevArrow = styled.div`
   margin-right: 3px;
-  margin-top: 2px;
+  margin-top: 4px;
   font-size: 8px;
 `;
 
@@ -71,7 +73,7 @@ export class Consumables extends React.Component<Props, State> {
           <KeybindBox className={`${keybindForPrior.iconClass} ${PrevKeybind}`}></KeybindBox> :
           <KeybindBox className={PrevKeybind}>
             <PrevArrow className='fas fa-chevron-left'></PrevArrow>
-            {keybindForPrior.name}
+            <div>{keybindForPrior.name}</div>
           </KeybindBox>
         }
 
@@ -104,7 +106,7 @@ export class Consumables extends React.Component<Props, State> {
         {keybindForNext.iconClass ?
           <KeybindBox className={`${keybindForNext.iconClass} ${NextKeybind}`}></KeybindBox> :
           <KeybindBox className={NextKeybind}>
-            {keybindForNext.name}
+            <div>{keybindForNext.name}</div>
             <NextArrow className='fas fa-chevron-right'></NextArrow>
           </KeybindBox>
         }
