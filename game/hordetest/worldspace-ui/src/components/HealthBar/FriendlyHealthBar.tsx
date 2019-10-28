@@ -18,7 +18,6 @@ const Container = styled.div`
   width: 100%;
   text-shadow: 2px 2px 4px black;
   text-align: center;
-  background-color: blue;
 `;
 
 export interface Props {

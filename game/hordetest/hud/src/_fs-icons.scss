@@ -25,6 +25,33 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.fs-icon-rune-damage:before {
+  content: "\e91c";
+}
+.fs-icon-rune-health:before {
+  content: "\e91d";
+}
+.fs-icon-rune-barrier:before {
+  content: "\e91e";
+}
+.fs-icon-knight-long-jump:before {
+  content: "\e916";
+}
+.fs-icon-knight-retaliate:before {
+  content: "\e917";
+}
+.fs-icon-knight-shield-bash:before {
+  content: "\e918";
+}
+.fs-icon-knight-crusader-strike:before {
+  content: "\e919";
+}
+.fs-icon-knight-fortify:before {
+  content: "\e91a";
+}
+.fs-icon-knight-guard:before {
+  content: "\e91b";
+}
 .fs-icon-celt-inspire:before {
   content: "\e910";
 }

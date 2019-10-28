@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { throttle } from 'lodash';
 
@@ -34,51 +34,102 @@ const ActionButtonsContainer = styled.div`
 export interface Props {
 }
 
-export function SelfHealthBar(props: Props) {
-  const gameHealth = hordetest.game.selfPlayerState.health;
-  const [health, setHealth] = useState({ current: gameHealth[0].current, max: gameHealth[0].max });
-  const throttledSetHealth = useRef(throttle((val) => setHealth(val), 200));
+export interface State {
+  health: CurrentMax;
+  resource: CurrentMax;
+  divineBarrier: CurrentMax;
 
-  const [resource, setResource] = useState({ ...hordetest.game.selfPlayerState.stamina });
-  const throttledSetResource = useRef(throttle((val) => setResource(val), 200));
+  // Use RuneType enum as key
+  collectedRunes: { [runeType: number]: number };
+}
+// throttle 200
+export class SelfHealthBar extends React.Component<Props, State> {
+  private evh: EventHandle[] = [];
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      health: {
+        current: hordetest.game.selfPlayerState.health[0].current,
+        max: hordetest.game.selfPlayerState.health[0].max,
+      },
+      resource: { ...(cloneDeep(hordetest.game.selfPlayerState.stamina)) },
+      divineBarrier: { ...(cloneDeep(hordetest.game.selfPlayerState.blood)) },
+      collectedRunes: {
+        [RuneType.Weapon]: 0,
+        [RuneType.Protection]: 0,
+        [RuneType.Health]: 0,
+      },
+    };
 
-  const [divineBarrier, setDivineBarrier] = useState({ ...hordetest.game.selfPlayerState.blood });
-  const throttledSetDivineBarrier = useRef(throttle((val) => setDivineBarrier(val), 200));
+    this.handlePlayerStateUpdate = throttle(this.handlePlayerStateUpdate, 200);
+  }
 
-  useEffect(() => {
-    const handle = hordetest.game.selfPlayerState.onUpdated(() => {
-      if (!hordetest.game.selfPlayerState.health[0].current.floatEquals(health.current) ||
-          !hordetest.game.selfPlayerState.health[0].max.floatEquals(health.max)) {
-        throttledSetHealth.current(hordetest.game.selfPlayerState.health[0]);
-      }
+  public render() {
+    const { health, resource, divineBarrier, collectedRunes } = this.state;
+    return (
+      <Container>
+        <ConsumablesContainer>
+          <Consumables />
+        </ConsumablesContainer>
+        <Row>
+          <HealthBar
+            health={health}
+            championResource={resource}
+            divineBarrier={divineBarrier}
+            collectedRunes={collectedRunes}
+          />
+          <ActionButtonsContainer>
+            <ActionButtons />
+          </ActionButtonsContainer>
+        </Row>
+      </Container>
+    );
+  }
 
-      if (!hordetest.game.selfPlayerState.stamina.current.floatEquals(resource.current) ||
-          !hordetest.game.selfPlayerState.stamina.max.floatEquals(resource.max)) {
-        throttledSetResource.current(hordetest.game.selfPlayerState.stamina);
-      }
+  public componentDidMount() {
+    this.evh.push(hordetest.game.selfPlayerState.onUpdated(this.handlePlayerStateUpdate));
+    this.evh.push(hordetest.game.onCollectedRunesUpdate(this.handleCollectedRunesUpdate));
+  }
 
-      if (!hordetest.game.selfPlayerState.blood.current.floatEquals(divineBarrier.current) ||
-          !hordetest.game.selfPlayerState.blood.max.floatEquals(divineBarrier.max)) {
-        throttledSetDivineBarrier.current(hordetest.game.selfPlayerState.blood);
-      }
-    });
+  public componentWillUnmount() {
+    this.evh.forEach(e => e.clear());
+  }
 
-    return () => {
-      handle.clear();
+  private handlePlayerStateUpdate = () => {
+    const { health, resource, divineBarrier } = this.state;
+    let stateUpdate: Partial<State> = {};
+    if (!hordetest.game.selfPlayerState.health[0].current.floatEquals(health.current) ||
+        !hordetest.game.selfPlayerState.health[0].max.floatEquals(health.max)) {
+      stateUpdate = {
+        ...stateUpdate,
+        health: cloneDeep(hordetest.game.selfPlayerState.health[0]),
+      };
     }
-  }, [hordetest.game.selfPlayerState.health[0], hordetest.game.selfPlayerState.stamina]);
 
-  return (
-    <Container>
-      <ConsumablesContainer>
-        <Consumables />
-      </ConsumablesContainer>
-      <Row>
-        <HealthBar health={health} championResource={resource} divineBarrier={divineBarrier} />
-        <ActionButtonsContainer>
-          <ActionButtons />
-        </ActionButtonsContainer>
-      </Row>
-    </Container>
-  );
+    if (!hordetest.game.selfPlayerState.stamina.current.floatEquals(resource.current) ||
+        !hordetest.game.selfPlayerState.stamina.max.floatEquals(resource.max)) {
+      stateUpdate = {
+        ...stateUpdate,
+        resource: cloneDeep(hordetest.game.selfPlayerState.stamina),
+      };
+    }
+
+    if (!hordetest.game.selfPlayerState.blood.current.floatEquals(divineBarrier.current) ||
+        !hordetest.game.selfPlayerState.blood.max.floatEquals(divineBarrier.max)) {
+      stateUpdate = {
+        ...stateUpdate,
+        divineBarrier: cloneDeep(hordetest.game.selfPlayerState.blood),
+      }
+    }
+
+    if (Object.keys(stateUpdate).length > 0) {
+      this.setState(stateUpdate as State);
+    }
+  }
+
+  private handleCollectedRunesUpdate = (runes: { [runeType: number]: number }) => {
+    if (!runes) return;
+
+    this.setState({ collectedRunes: runes });
+  }
 }

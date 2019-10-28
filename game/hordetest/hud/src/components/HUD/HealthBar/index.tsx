@@ -9,6 +9,7 @@ import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { ResourceBar } from 'components/shared/ResourceBar';
 import { ChampionProfile } from './ChampionProfile';
+import { Rune } from './Rune';
 
 const Container = styled.div`
   display: flex;
@@ -27,18 +28,23 @@ const ResourcesContainer = styled.div`
   transform: skewX(-10deg);
 `;
 
-const DivineBarrierContainer = css`
+const ResourceBarContainer = styled.div`
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
   width: 100%;
+
+  &.flex-end {
+    align-items: flex-end;
+  }
+`;
+
+const MainResourceStyles = css`
+  flex: 1;
   height: 13px;
   border: 3px solid black;
   margin-bottom: 1px;
-`;
-
-const HealthBarContainer = css`
-  width: 100%;
-  height: 13px;
-  border: 3px solid black;
-  margin-bottom: 5px;
 `;
 
 const ResourceContainer = css`
@@ -57,6 +63,7 @@ export interface Props {
   championResource: CurrentMax;
   resourcesWidth?: number;
   hideChampionResource?: boolean;
+  collectedRunes?: { [runeType: number]: number };
 }
 
 export function HealthBar(props: Props) {
@@ -66,35 +73,50 @@ export function HealthBar(props: Props) {
         <ChampionProfile />
       </ChampionProfileSpacing>
       <ResourcesContainer width={props.resourcesWidth}>
-        <ResourceBar
-          isSquare
-          unsquareText
-          type='blue'
-          containerStyles={DivineBarrierContainer}
-          current={props.divineBarrier.current}
-          max={props.divineBarrier.max}
-          textStyles={TextStyles}
-        />
-
-        <ResourceBar
-          isSquare
-          unsquareText
-          type='green'
-          containerStyles={HealthBarContainer}
-          current={props.health.current}
-          max={props.health.max}
-          textStyles={TextStyles}
-        />
-
-        {!props.hideChampionResource &&
+        <ResourceBarContainer>
           <ResourceBar
             isSquare
-            hideText
-            type='orange'
-            containerStyles={ResourceContainer}
-            current={props.championResource.current}
-            max={props.championResource.max}
+            unsquareText
+            type='blue'
+            containerStyles={MainResourceStyles}
+            current={props.divineBarrier.current}
+            max={props.divineBarrier.max}
+            textStyles={TextStyles}
           />
+          {props.collectedRunes &&
+            <Rune runeType={RuneType.Protection} value={props.collectedRunes[RuneType.Protection]} />
+          }
+        </ResourceBarContainer>
+
+        <ResourceBarContainer>
+          <ResourceBar
+            isSquare
+            unsquareText
+            type='green'
+            containerStyles={MainResourceStyles}
+            current={props.health.current}
+            max={props.health.max}
+            textStyles={TextStyles}
+          />
+          {props.collectedRunes &&
+            <Rune runeType={RuneType.Health} value={props.collectedRunes[RuneType.Health]} />
+          }
+        </ResourceBarContainer>
+
+        {!props.hideChampionResource &&
+          <ResourceBarContainer className='flex-end'>
+            <ResourceBar
+              isSquare
+              hideText
+              type='orange'
+              containerStyles={ResourceContainer}
+              current={props.championResource.current}
+              max={props.championResource.max}
+            />
+            {props.collectedRunes &&
+              <Rune runeType={RuneType.Weapon} value={props.collectedRunes[RuneType.Weapon]} />
+            }
+          </ResourceBarContainer>
         }
       </ResourcesContainer>
     </Container>

@@ -71,6 +71,11 @@ export interface GameInterface extends GameModel {
    */
   onKillStreakUpdate: (callback: (newCount: number, newTimerStart: number, newTimerDuration: number) => any) => EventHandle;
 
+  /**
+   * Subscribe to Collected Runes updates
+   */
+  onCollectedRunesUpdate: (callback: (runes: { [rune: number]: number }) => any) => EventHandle;
+
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */
   /* -------------------------------------------------- */

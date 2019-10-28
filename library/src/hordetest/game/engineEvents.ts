@@ -89,6 +89,12 @@ export const EE_OnKillStreakUpdate = 'killStreak.update';
 regMap[EE_OnKillStreakUpdate] = 'onKillStreakUpdate';
 
 /**
+ * Called when there is an update to a players runes
+ */
+export const EE_OnCollectedRunesUpdate = 'collectedRunes.update';
+regMap[EE_OnCollectedRunesUpdate] = 'onCollectedRunesUpdate';
+
+/**
  * Initialize engine event forwarding
  */
 export function initEventForwarding() {
