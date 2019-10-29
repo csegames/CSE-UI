@@ -10,9 +10,8 @@ import { HealthBarState } from '..';
 
 const Container = styled.div`
   font-family: Exo;
-  font-weight: bold;
   color: white;
-  font-size: 14px;
+  font-size: 16px;
   margin-left: 7px;
   margin-bottom: 2px;
   width: 100%;
