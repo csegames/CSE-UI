@@ -9,6 +9,7 @@ import { styled } from '@csegames/linaria/react';
 import { EditingMode } from './index';
 import { EquipmentItem } from './EquipmentItem';
 import { ChampionSelect } from './ChampionSelect';
+import { Title } from '../../Title';
 
 import { ChampionInfo } from './testData';
 import { Skin } from '../Store/testData';
@@ -22,16 +23,6 @@ const ChampionName = styled.div`
   font-family: Colus;
   font-size: 23px;
   color: white;
-`;
-
-const EquipmentTitle = styled.div`
-  font-family: Colus;
-  font-size: 18px;
-  color: #a9a9a9;
-  border-width: 0px;
-  border-bottom-width: 2px;
-  border-image: url(../images/fullscreen/underline-border.png);
-  border-image-slice: 2;
 `;
 
 const EquipmentContainer = styled.div`
@@ -208,7 +199,7 @@ export function ChampionInfoDisplay(props: Props) {
         onSelectChampion={props.onSelectChampion}
       />
       <EquipmentContainer>
-        <EquipmentTitle>{getEquipmentTitle()}</EquipmentTitle>
+        <Title>{getEquipmentTitle()}</Title>
         <EquipmentItemsContainer>
           {renderEquipmentDisplay()}
         </EquipmentItemsContainer>

@@ -12,6 +12,7 @@ import { Play } from './Play';
 import { ChampionProfile } from './ChampionProfile';
 import { Store } from './Store';
 import { BattlePass } from './BattlePass';
+import { CareerStats } from './CareerStats';
 
 const Container = styled.div`
   position: relative;
@@ -56,6 +57,18 @@ const GenericScreenContainer = styled.div`
   width: 100%;
   height: calc(100% - 93px);
   top: 93px;
+`;
+
+const FullScreenImage = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: url(../images/fullscreen/fullscreen-image-bg.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: -1;
 `;
 
 export interface Props {
@@ -109,6 +122,15 @@ export function StartScreen(props: Props) {
         return (
           <GenericScreenContainer>
             <BattlePass />
+          </GenericScreenContainer>
+        );
+      }
+
+      case StartScreenRoute.Career: {
+        return (
+          <GenericScreenContainer>
+            <FullScreenImage />
+            <CareerStats />
           </GenericScreenContainer>
         );
       }
