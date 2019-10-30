@@ -25,29 +25,13 @@ const Kills = styled.div`
   color: white;
   margin-right: 3px;
 
-  &.slideIn {
-    animation: slideIn ${ANIMATION_DURATION}s forwards;
+  &.animation {
+    animation: animation ${ANIMATION_DURATION}s forwards;
   }
 
-  &.bigNumber {
-    animation: bigNumber ${ANIMATION_DURATION}s forwards;
-  }
-
-  @keyframes slideIn {
+  @keyframes animation {
     from {
-      transform: translateY(-50%);
-      opacity: 0;
-    }
-
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes bigNumber {
-    from {
-      transform: scale(1.3);
+      transform: scale(1.5);
     }
 
     to {
@@ -116,7 +100,7 @@ export interface Props {
 
 export interface State {
   timerProgress: number;
-  shouldPlaySlideAnimation: boolean;
+  shouldPlayNumberChangeAnimation: boolean;
   shouldPlayBigNumberAnimation: boolean;
 }
 
@@ -128,13 +112,13 @@ export class Counter extends React.Component<Props, State> {
     super(props);
     this.state = {
       timerProgress: 0,
-      shouldPlaySlideAnimation: false,
+      shouldPlayNumberChangeAnimation: false,
       shouldPlayBigNumberAnimation: false,
     }
   }
 
   public render() {
-    const slideAnimationClass = this.state.shouldPlaySlideAnimation ? 'slideIn' : '';
+    const slideAnimationClass = this.state.shouldPlayNumberChangeAnimation ? 'animation' : '';
     const bigNumberAnimationClass = this.state.shouldPlayBigNumberAnimation ? 'bigNumber' : '';
     return (
       <KillStreakCounterContainer>
@@ -179,10 +163,10 @@ export class Counter extends React.Component<Props, State> {
 
   private playSlideAnimation = () => {
     window.clearTimeout(this.playSlideHandle);
-    this.setState({ shouldPlaySlideAnimation: true });
+    this.setState({ shouldPlayNumberChangeAnimation: true });
 
     this.playSlideHandle = window.setTimeout(() => {
-      this.setState({ shouldPlaySlideAnimation: false });
+      this.setState({ shouldPlayNumberChangeAnimation: false });
     }, ANIMATION_DURATION * 1000);
   }
 
