@@ -30,7 +30,9 @@ import { ImagePreloader } from './ImagePreloader';
 import { ContextProviders } from '../context';
 import { SelfHealthBar } from './SelfHealthBar';
 import { FriendlyHealthBars } from './FriendlyHealthBars';
-import { TestButton } from './FriendlyHealthBars/TestButton';
+import { PlayerMessage } from './PlayerMessage';
+import { RuneFullScreenEffects } from './FullScreenEffects/Runes';
+// import { LowHealthFullScreenEffects } from './FullScreenEffects/LowHealth';
 
 const Container = styled.div`
   width: 100%;
@@ -129,13 +131,13 @@ const CompassPosition =  styled.div`
 //   transform: translate(-50%, -50%);
 // `;
 
-// const ChannelBarPosition = styled.div`
-//   position: fixed;
-//   left: 50%;
-//   bottom: 230px;
-//   transform: translateX(-50%);
-//   pointer-events: none;
-// `;
+const PlayerMessagePosition = styled.div`
+  position: fixed;
+  left: 50%;
+  bottom: 260px;
+  transform: translateX(-50%);
+  pointer-events: none;
+`;
 
 const AnnouncementsPosition = styled.div`
   position: fixed;
@@ -181,13 +183,13 @@ export class HUD extends React.Component<Props> {
       <ContextProviders>
         <Container>
           <ImagePreloader />
+          {/* <LowHealthFullScreenEffects /> */}
+          <RuneFullScreenEffects />
           <DevUI />
           <ReloadButtonContainer>
             <div onClick={() => game.reloadUI()}>Reload UI</div>
           </ReloadButtonContainer>
           <Console />
-
-          <TestButton />
 
           <CompassPosition>
             <Compass />
@@ -213,9 +215,9 @@ export class HUD extends React.Component<Props> {
             <ShieldBar current={95} max={100} />
           </ShieldBarPosition> */}
 
-          {/* <ChannelBarPosition>
-            <ChannelBar channelType={'Bandage'} current={60} max={100} />
-          </ChannelBarPosition> */}
+          <PlayerMessagePosition>
+            <PlayerMessage />
+          </PlayerMessagePosition>
 
           <AnnouncementsPosition>
             <ActiveObjectives />

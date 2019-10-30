@@ -10,6 +10,7 @@ import { styled } from '@csegames/linaria/react';
 import { ResourceBar } from 'components/shared/ResourceBar';
 import { ChampionProfile } from './ChampionProfile';
 import { Rune } from './Rune';
+import { LOW_HEALTH_PERCENT } from '../FullScreenEffects/LowHealth';
 
 const Container = styled.div`
   display: flex;
@@ -63,9 +64,10 @@ export interface Props {
   championResource: CurrentMax;
   resourcesWidth?: number;
   hideChampionResource?: boolean;
-  collectedRunes?: { [runeType: number]: number };
   championProfileStyles?: string;
   hideMax?: boolean;
+  collectedRunes?: { [runeType: number]: number };
+  runeBonuses?: { [runeType: number]: number };
 }
 
 export function HealthBar(props: Props) {
@@ -87,7 +89,11 @@ export function HealthBar(props: Props) {
             textStyles={TextStyles}
           />
           {props.collectedRunes &&
-            <Rune runeType={RuneType.Protection} value={props.collectedRunes[RuneType.Protection]} />
+            <Rune
+              runeType={RuneType.Protection}
+              value={props.collectedRunes[RuneType.Protection]}
+              bonus={props.runeBonuses[RuneType.Protection]}
+            />
           }
         </ResourceBarContainer>
 
@@ -95,7 +101,7 @@ export function HealthBar(props: Props) {
           <ResourceBar
             isSquare
             unsquareText
-            type='green'
+            type={(props.health.current / props.health.max * 100) <= LOW_HEALTH_PERCENT ? 'red' : 'green'}
             containerStyles={MainResourceStyles}
             current={props.health.current}
             max={props.health.max}
@@ -103,7 +109,11 @@ export function HealthBar(props: Props) {
             textStyles={TextStyles}
           />
           {props.collectedRunes &&
-            <Rune runeType={RuneType.Health} value={props.collectedRunes[RuneType.Health]} />
+            <Rune
+              runeType={RuneType.Health}
+              value={props.collectedRunes[RuneType.Health]}
+              bonus={props.runeBonuses[RuneType.Health]}
+            />
           }
         </ResourceBarContainer>
 
@@ -118,7 +128,11 @@ export function HealthBar(props: Props) {
               max={props.championResource.max}
             />
             {props.collectedRunes &&
-              <Rune runeType={RuneType.Weapon} value={props.collectedRunes[RuneType.Weapon]} />
+              <Rune
+                runeType={RuneType.Weapon}
+                value={props.collectedRunes[RuneType.Weapon]}
+                bonus={props.runeBonuses[RuneType.Weapon]}
+              />
             }
           </ResourceBarContainer>
         }

@@ -31,6 +31,10 @@ const ActionButtonsContainer = styled.div`
   margin-left: 15px;
 `;
 
+interface Runes {
+  [runeType: number]: number;
+}
+
 export interface Props {
 }
 
@@ -40,7 +44,8 @@ export interface State {
   divineBarrier: CurrentMax;
 
   // Use RuneType enum as key
-  collectedRunes: { [runeType: number]: number };
+  collectedRunes: Runes;
+  runeBonuses: Runes;
 }
 // throttle 200
 export class SelfHealthBar extends React.Component<Props, State> {
@@ -59,13 +64,18 @@ export class SelfHealthBar extends React.Component<Props, State> {
         [RuneType.Protection]: 0,
         [RuneType.Health]: 0,
       },
+      runeBonuses: {
+        [RuneType.Weapon]: 0,
+        [RuneType.Protection]: 0,
+        [RuneType.Health]: 0,
+      },
     };
 
     this.handlePlayerStateUpdate = throttle(this.handlePlayerStateUpdate, 200);
   }
 
   public render() {
-    const { health, resource, divineBarrier, collectedRunes } = this.state;
+    const { health, resource, divineBarrier, collectedRunes, runeBonuses } = this.state;
     return (
       <Container>
         <ConsumablesContainer>
@@ -77,6 +87,7 @@ export class SelfHealthBar extends React.Component<Props, State> {
             championResource={resource}
             divineBarrier={divineBarrier}
             collectedRunes={collectedRunes}
+            runeBonuses={runeBonuses}
           />
           <ActionButtonsContainer>
             <ActionButtons />
@@ -127,9 +138,9 @@ export class SelfHealthBar extends React.Component<Props, State> {
     }
   }
 
-  private handleCollectedRunesUpdate = (runes: { [runeType: number]: number }) => {
+  private handleCollectedRunesUpdate = (runes: Runes, runeBonuses: Runes) => {
     if (!runes) return;
 
-    this.setState({ collectedRunes: runes });
+    this.setState({ collectedRunes: runes, runeBonuses });
   }
 }

@@ -73,11 +73,19 @@ const Fill = styled.div`
   &.blue {
     background-color: #2a52b9;
     &:before {
-      background: linear-gradient(138deg, transparent 70%, rgba(5, 255, 251,  0.6));
+      background: linear-gradient(138deg, transparent 70%, rgba(5, 255, 251, 0.6));
     }
 
     &:after {
       border: 2px solid rgba(40, 235, 255, 0.25);
+    }
+  }
+
+  &.red {
+    background: #D22026;
+
+    &:after {
+      border: 2px solid rgba(254, 255, 64, 0.3);
     }
   }
 

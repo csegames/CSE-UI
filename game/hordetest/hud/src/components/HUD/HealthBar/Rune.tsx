@@ -6,6 +6,8 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
+import { sendPlayerMessage } from '../PlayerMessage';
+import { showRunFullScreenEffect } from '../FullScreenEffects/Runes';
 
 const ANIMATION_DURATION = 2;
 
@@ -82,6 +84,7 @@ const RuneIcon = styled.span`
 
 export interface Props {
   runeType: RuneType;
+  bonus: number;
   value: number;
 }
 
@@ -113,7 +116,9 @@ export class Rune extends React.Component<Props, State> {
   }
 
   public componentDidUpdate(prevProps: Props) {
-    if (prevProps.value !== this.props.value) {
+    if (this.props.value && prevProps.value !== this.props.value) {
+      window.setTimeout(() => sendPlayerMessage(this.getMessage(prevProps), 3000, RuneType[this.props.runeType]), 200);
+      showRunFullScreenEffect(this.props.runeType);
       this.playUpdateAnimation();
     }
   }
@@ -129,6 +134,29 @@ export class Rune extends React.Component<Props, State> {
     this.updateAnimationHandle = window.setTimeout(() => {
       this.setState({ shouldPlayUpdateAnimation: false });
     }, ANIMATION_DURATION * 1000);
+  }
+
+  private getMessage = (prevProps: Props) => {
+    switch (this.props.runeType) {
+      case RuneType.Weapon: {
+        return `+${this.props.bonus - prevProps.bonus}% Damage`;
+      }
+      case RuneType.Health: {
+        const multiplier = (this.props.bonus - prevProps.bonus) / 100;
+        const baseStat = this.getBaseStat();
+
+        return `+${Math.round(baseStat * multiplier)} Health`;
+      }
+      case RuneType.Protection: {
+        const multiplier = (this.props.bonus - prevProps.bonus) / 100;
+        const baseStat = this.getBaseStat();
+
+        return `+${Math.round(baseStat * multiplier)} Divine Barrier`;
+      }
+      default: {
+        return '';
+      }
+    }
   }
 
   private getRuneClassName = () => {
@@ -161,6 +189,26 @@ export class Rune extends React.Component<Props, State> {
       }
       default: {
         return '';
+      }
+    }
+  }
+
+  private getBaseStat = () => {
+    switch (this.props.runeType) {
+      case RuneType.Health: {
+        const maxHealth = hordetest.game.selfPlayerState.health[0].max;
+        const multiplier = 1 + (this.props.bonus / 100);
+        return maxHealth / multiplier;
+      }
+
+      case RuneType.Protection: {
+        const maxProt = hordetest.game.selfPlayerState.blood.max;
+        const multiplier = 1 + (this.props.bonus / 100);
+        return maxProt / multiplier;
+      }
+
+      default: {
+        return 0;
       }
     }
   }
