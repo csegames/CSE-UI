@@ -74,6 +74,6 @@ export class FriendlyHealthBar extends React.Component<Props, State> {
   private handleEntityStateUpdate = (state: AnyEntityState) => {
     if (state.name !== this.props.playerName) return;
 
-    this.setState({ entityState: state });
+    this.setState({ entityState: cloneDeep(state) });
   }
 }
