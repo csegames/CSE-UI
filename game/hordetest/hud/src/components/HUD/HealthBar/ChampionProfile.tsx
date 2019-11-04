@@ -10,8 +10,8 @@ import { styled } from '@csegames/linaria/react';
 const ChampionProfileContainer = styled.div`
   display: flex;
   align-items: center;
-  width: 49px;
-  height: 49px;
+  width: 75px;
+  height: 75px;
   justify-content: center;
   border: 3px solid #1a1a1a;
   background-color: black;
@@ -38,11 +38,12 @@ const Image = styled.img`
 `;
 
 export interface Props {
+  containerStyles?: string;
 }
 
 export function ChampionProfile(props: Props) {
   return (
-    <ChampionProfileContainer>
+    <ChampionProfileContainer className={props.containerStyles ? props.containerStyles : ''}>
       <ProfileBox>
         <Image src='images/fullscreen/character-select/face.png' />
       </ProfileBox>

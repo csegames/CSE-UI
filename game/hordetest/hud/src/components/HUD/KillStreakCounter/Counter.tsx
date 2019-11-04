@@ -14,12 +14,12 @@ const KillStreakCounterContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  width: 160px;
+  width: 200px;
 `;
 
 const Kills = styled.div`
-  font-size: 40px;
-  line-height: 40px;
+  font-size: 52px;
+  line-height: 52px;
   text-transform: uppercase;
   font-family: Colus;
   color: white;
@@ -46,8 +46,8 @@ const Content = styled.div`
 
 const BG = styled.div`
   position: absolute;
-  width: 300px;
-  height: 50px;
+  width: 390px;
+  height: 65px;
   transform: skewX(40deg);
   left: -15%;
   z-index: -1;
@@ -71,8 +71,8 @@ const BG = styled.div`
 
 const Text = styled.div`
   color: white;
-  font-size: 16px;
-  line-height: 16px;
+  font-size: 21px;
+  line-height: 21px;
   text-transform: uppercase;
   font-family: Colus;
 `;
@@ -80,7 +80,7 @@ const Text = styled.div`
 const BarContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 8px;
+  height: 10px;
   border: 2px solid #bdbab4;
 `;
 

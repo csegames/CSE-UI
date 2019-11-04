@@ -10,7 +10,7 @@ import { styled } from '@csegames/linaria/react';
 const ANIMATION_DURATION = 2;
 
 const RuneContainer = styled.div`
-  padding: 1px 5px;
+  padding: 6px 5px;
   margin-left: 3px;
   font-family: Exo;
   font-size: 13px;
@@ -26,7 +26,8 @@ const RuneContainer = styled.div`
 
   &.damage {
     position: relative;
-    background-color: rgba(0, 0, 0, 1);
+    padding: 2px 5px;
+    background-color: #a34603;
   }
 `;
 

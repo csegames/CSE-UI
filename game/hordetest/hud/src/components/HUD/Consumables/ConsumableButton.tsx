@@ -21,8 +21,8 @@ const Button = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 43px;
-  height: 43px;
+  width: 49px;
+  height: 49px;
   margin: 0 3px;
   background-color: rgba(0, 0, 0, 0.5);
   transform: scale(1);

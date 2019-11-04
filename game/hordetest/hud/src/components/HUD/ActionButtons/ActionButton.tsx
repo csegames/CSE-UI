@@ -20,8 +20,8 @@ const Button = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 55px;
-  height: 55px;
+  width: 53px;
+  height: 53px;
   background-color: rgba(0, 0, 0, 0.5);
   transform: skewX(-10deg);
 

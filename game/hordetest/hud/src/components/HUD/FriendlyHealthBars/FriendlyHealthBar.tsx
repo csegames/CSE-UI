@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { HealthBar } from '../HealthBar';
 
@@ -23,6 +24,11 @@ const PlayerName = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+`;
+
+const ChampionProfileStyle = css`
+  height: 49px;
+  width: 49px;
 `;
 
 export interface Props {
@@ -51,7 +57,8 @@ export class FriendlyHealthBar extends React.Component<Props, State> {
           health={entityState.health[0]}
           championResource={entityState.stamina}
           divineBarrier={entityState.blood}
-          resourcesWidth={80}
+          resourcesWidth={100}
+          championProfileStyles={ChampionProfileStyle}
         />
         <PlayerName>{this.props.playerName}</PlayerName>
       </Container>

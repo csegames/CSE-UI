@@ -22,7 +22,7 @@ const ChampionProfileSpacing = styled.div`
 `;
 
 const ResourcesContainer = styled.div`
-  width: ${(props: { width: number } & React.HTMLProps<HTMLDivElement>) => props.width ? `${props.width}px` : '195px'};
+  width: ${(props: { width: number } & React.HTMLProps<HTMLDivElement>) => props.width ? `${props.width}px` : '200px'};
   user-select: none;
   pointer-events: none;
   transform: skewX(-10deg);
@@ -42,14 +42,14 @@ const ResourceBarContainer = styled.div`
 
 const MainResourceStyles = css`
   flex: 1;
-  height: 13px;
+  height: 23px;
   border: 3px solid black;
   margin-bottom: 1px;
 `;
 
 const ResourceContainer = css`
   width: 100%;
-  height: 5px;
+  height: 8px;
   border: 3px solid black;
 `;
 
@@ -64,13 +64,14 @@ export interface Props {
   resourcesWidth?: number;
   hideChampionResource?: boolean;
   collectedRunes?: { [runeType: number]: number };
+  championProfileStyles?: string;
 }
 
 export function HealthBar(props: Props) {
   return (
     <Container>
       <ChampionProfileSpacing>
-        <ChampionProfile />
+        <ChampionProfile containerStyles={props.championProfileStyles} />
       </ChampionProfileSpacing>
       <ResourcesContainer width={props.resourcesWidth}>
         <ResourceBarContainer>

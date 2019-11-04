@@ -10,7 +10,7 @@ import * as utils from '@csegames/library/lib/_baseGame/utils';
 import { ViewBearingContext } from 'components/context/ViewBearingContext';
 import { PlayerPositionContext } from 'components/context/PlayerPositionContext';
 
-const CIRCLE_DIAMETER = 60;
+const CIRCLE_DIAMETER = 78;
 const INDICATOR_DIMENSIONS = 20;
 
 const Container = styled.div`
@@ -67,7 +67,7 @@ const Info = styled.div`
   padding-right: 20px;
   margin-left: -40px;
   width: 200px;
-  height: 40px;
+  height: 52px;
   background: linear-gradient(to right, rgba(26, 26, 26, 0.9), rgba(26, 26, 26, 0.5));
   transition: width 0.8s;
 
@@ -92,6 +92,7 @@ const BottomInfo = styled.div`
   display: flex;
   align-items: center;
   flex: 1;
+  max-height: fit-content;
 `;
 
 const DistanceText = styled.div`

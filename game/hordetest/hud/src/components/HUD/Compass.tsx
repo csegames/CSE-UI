@@ -37,7 +37,7 @@ const GradientBackground = styled.div`
 
 const IndicatorContainer = styled.div`
   position: absolute;
-  top: 0;
+  top: -5px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -48,13 +48,14 @@ const IndicatorContainer = styled.div`
 const IndicatorNumber = styled.div`
   font-family: Exo;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 23px;
   color: white;
 `;
 
 const Indicator = styled.div`
-  width: 8px;
-  height: 8px;
+  width: 11px;
+  height: 11px;
+  margin-top: -2px;
   border: 2px solid white;
   border-top-width: 0px;
   border-left-width: 0px;
@@ -71,10 +72,10 @@ const Cardinal = styled.div`
   width: 30px;
   text-align: center;
   transform: translateX(-50%);
-  font-size: 16px;
+  font-size: 21px;
 
   &.direction {
-    font-size: 22px;
+    font-size: 29px;
   }
 `;
 
@@ -83,7 +84,7 @@ const Objective = styled.div`
   margin: 0;
   padding: 0;
   top: 20px;
-  font-size: 20px;
+  font-size: 26px;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
   -webkit-text-stroke-width: 8px;
   -webkit-text-stroke-color: black;

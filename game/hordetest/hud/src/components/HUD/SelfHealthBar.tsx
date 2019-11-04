@@ -24,7 +24,7 @@ const ConsumablesContainer = styled.div`
 
 const Row = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-end;
 `;
 
 const ActionButtonsContainer = styled.div`

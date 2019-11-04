@@ -12,6 +12,7 @@ import { ConsumableButton } from './ConsumableButton';
 const Container = styled.div`
   display: flex;
   align-items: center;
+  margin-left: 2px;
 `;
 
 const KeybindBox = styled.div`
