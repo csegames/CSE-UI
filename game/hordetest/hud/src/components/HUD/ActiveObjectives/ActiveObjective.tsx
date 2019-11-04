@@ -11,6 +11,7 @@ import { ViewBearingContext } from 'components/context/ViewBearingContext';
 import { PlayerPositionContext } from 'components/context/PlayerPositionContext';
 
 const CIRCLE_DIAMETER = 78;
+const ARROW_MARGIN = 3;
 const INDICATOR_DIMENSIONS = 20;
 
 const Container = styled.div`
@@ -32,12 +33,29 @@ const Circle = styled.div`
   &:before {
     content: '';
     position: absolute;
-    top: 3px;
-    right: 3px;
-    bottom: 3px;
-    left: 3px;
+    top: ${ARROW_MARGIN}px;
+    right: ${ARROW_MARGIN}px;
+    bottom: ${ARROW_MARGIN}px;
+    left: ${ARROW_MARGIN}px;
     border-radius: 50%;
+    border: 2px solid #ffffff;
+  }
+
+  &.danger {
+    animation: pulse 0.3s infinite alternate;
+  }
+
+  &.danger:before {
     border: 2px solid #fe0000;
+  }
+
+  @keyframes pulse {
+    from {
+      background-color: #fe0000;
+    }
+    to {
+      background-color: #1A1A1A;
+    }
   }
 `;
 
@@ -74,6 +92,10 @@ const Info = styled.div`
   &.minimized {
     width: 30px;
   }
+
+  &.danger {
+    width: 200px;
+  }
 `;
 
 const Name = styled.div`
@@ -85,6 +107,10 @@ const Name = styled.div`
 
   &.minimized {
     display: none;
+  }
+
+  &.danger {
+    display: block;
   }
 `;
 
@@ -112,6 +138,10 @@ const ProgressBarContainer = styled.div`
   &.minimized {
     display: none;
   }
+
+  &.danger {
+    display: block;
+  }
 `;
 
 const ProgressBar = styled.div`
@@ -131,37 +161,41 @@ interface ActiveObjectiveProps {
 }
 
 export interface State {
-  minimized: boolean;
+  isMinimized: boolean;
+  isDanger: boolean;
   entityState: ObjectiveEntityState;
 }
 
 class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjectiveProps, State> {
   private minimizeTimeout: number;
+  private dangerTimeout: number;
   private evh: EventHandle;
   constructor(props: ActiveObjectiveProps) {
     super(props);
     this.state = {
-      minimized: false,
+      isMinimized: false,
+      isDanger: false,
       entityState: props.activeObjective.entityState
     };
   }
 
   public render() {
     const { activeObjective } = this.props;
-    const minimizedClassName = this.state.minimized ? 'minimized' : '';
+    const minimizedClassName = this.state.isMinimized ? 'minimized' : '';
+    const dangerClassName = this.state.isDanger ? 'danger' : '';
     return (
       <Container>
-        <Circle>
-          {this.state.minimized &&
+        <Circle className={dangerClassName}>
+          {this.state.isMinimized &&
             <DirectionalIndicator style={this.getDirectionIndicator()} className='fas fa-caret-down' />
           }
           <Icon className={activeObjective.entityState.iconClass} color={this.props.color} />
         </Circle>
-        <Info className={minimizedClassName}>
-          <Name className={minimizedClassName}>{activeObjective.entityState.name}</Name>
+        <Info className={`${minimizedClassName} ${dangerClassName}`}>
+          <Name className={`${minimizedClassName} ${dangerClassName}`}>{activeObjective.entityState.name}</Name>
           <BottomInfo>
             <DistanceText>{this.getDistance()}m</DistanceText>
-            <ProgressBarContainer className={minimizedClassName}>
+            <ProgressBarContainer className={`${minimizedClassName} ${dangerClassName}`}>
               <ProgressBar style={{ width: `${this.getCaptureProgress()}%` }} />
             </ProgressBarContainer>
           </BottomInfo>
@@ -175,14 +209,19 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
     this.evh = hordetest.game.onEntityStateUpdate(this.handleEntityStateUpdate);
   }
 
-  public componentDidUpdate() {
+  public componentDidUpdate(prevProps: Props, prevState: State) {
     const distance = this.getDistance();
-    if (this.state.minimized && distance < 40) {
-      this.setState({ minimized: false });
+    if (this.state.isMinimized && distance < 40) {
+      this.setState({ isMinimized: false });
     }
 
-    if (!this.state.minimized && distance >= 40) {
-      this.setState({ minimized: true });
+    if (!this.state.isMinimized && distance >= 40) {
+      this.setState({ isMinimized: true });
+    }
+
+    if (prevState.entityState.objectiveProgress.current > this.state.entityState.objectiveProgress.current) {
+      // If losing progress, expand the widget to show that it's losing progress
+      this.showDanger();
     }
   }
 
@@ -194,7 +233,7 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
   }
 
   private handleInitialMinimize = () => {
-    this.setState({ minimized: true });
+    this.setState({ isMinimized: true });
   }
 
   private handleEntityStateUpdate = (state: AnyEntityStateModel) => {
@@ -202,6 +241,20 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
       const objectiveState = (state as any) as ObjectiveEntityState;
       this.setState({ entityState: cloneDeep(objectiveState) });
     }
+  }
+
+  private showDanger = () => {
+    if (this.dangerTimeout) {
+      window.clearTimeout(this.dangerTimeout);
+    }
+
+    if (!this.state.isDanger) {
+      this.setState({ isDanger: true });
+    }
+
+    this.dangerTimeout = window.setTimeout(() => {
+      this.setState({ isDanger: false });
+    }, 2000);
   }
 
   private getCaptureProgress = () => {
@@ -234,8 +287,8 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
 
     let radians = -(Math.atan2(objectiveVector.y, objectiveVector.x) - Math.atan2(playerVector.y, playerVector.x));
 
-    const x = (radius - 5) * Math.cos(radians) + (radius - INDICATOR_DIMENSIONS / 2);
-    const y = (radius - 5) * Math.sin(radians) + (radius - INDICATOR_DIMENSIONS / 2);
+    const x = (radius - 10) * Math.cos(radians) + (radius - INDICATOR_DIMENSIONS / 2);
+    const y = (radius - 10) * Math.sin(radians) + (radius - INDICATOR_DIMENSIONS / 2);
 
     return {
       top: y,

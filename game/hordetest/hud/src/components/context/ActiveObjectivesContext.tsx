@@ -29,6 +29,7 @@ export const ActiveObjectivesContext = React.createContext(getDefaultActiveObjec
 
 export class ActiveObjectivesContextProvider extends React.Component<{}, ActiveObjectivesContextState> {
   private eventHandle: EventHandle;
+  private scenarioEVH: EventHandle;
   constructor(props: {}) {
     super(props);
 
@@ -45,6 +46,7 @@ export class ActiveObjectivesContextProvider extends React.Component<{}, ActiveO
 
   public componentDidMount() {
     this.eventHandle = hordetest.game.onActiveObjectivesUpdate(this.handleActiveObjectivesUpdate);
+    this.scenarioEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
 
     // ----- DEBUG DATA -----
     // this.setState({
@@ -60,10 +62,17 @@ export class ActiveObjectivesContextProvider extends React.Component<{}, ActiveO
 
   public componentWillUnmount() {
     this.eventHandle.clear();
+    this.scenarioEVH.clear();
   }
 
   private handleActiveObjectivesUpdate = (activeObjectives: ActiveObjective[]) => {
     this.setState({ activeObjectives, colorAssign: this.getUpdatedColorAssign(activeObjectives) });
+  }
+
+  private handleScenarioRoundEnded = (scenarioID: string, roundID: string, didEnd: boolean) => {
+    if (didEnd) {
+      this.setState({ colorAssign: {} });
+    }
   }
 
   private getUpdatedColorAssign = (activeObjectives: ActiveObjective[]) => {
