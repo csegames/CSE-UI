@@ -115,6 +115,14 @@ const Fill = styled.div`
       border: 2px solid rgba(201, 26, 20, 0.3);
     }
   }
+
+  &.rage {
+    background: linear-gradient(to right, #ffb000, #ffff98);
+
+    &:after {
+      border: 2px solid rgba(254, 255, 64, 0.3);
+    }
+  }
 `;
 
 const Text = styled.div`
@@ -130,7 +138,7 @@ const Text = styled.div`
 `;
 
 export interface Props {
-  type: 'blue' | 'green' | 'orange' | 'red';
+  type: 'blue' | 'green' | 'orange' | 'red' | 'rage';
   current: number;
   max: number;
   text?: string;

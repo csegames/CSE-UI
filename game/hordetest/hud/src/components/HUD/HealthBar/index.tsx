@@ -112,7 +112,7 @@ export function HealthBar(props: Props) {
             <ResourceBar
               isSquare
               hideText
-              type='orange'
+              type='rage'
               containerStyles={ResourceContainer}
               current={props.championResource.current}
               max={props.championResource.max}
