@@ -65,6 +65,7 @@ export interface Props {
   hideChampionResource?: boolean;
   collectedRunes?: { [runeType: number]: number };
   championProfileStyles?: string;
+  hideMax?: boolean;
 }
 
 export function HealthBar(props: Props) {
@@ -82,6 +83,7 @@ export function HealthBar(props: Props) {
             containerStyles={MainResourceStyles}
             current={props.divineBarrier.current}
             max={props.divineBarrier.max}
+            text={props.hideMax ? props.divineBarrier.current.toString() : ''}
             textStyles={TextStyles}
           />
           {props.collectedRunes &&
@@ -97,6 +99,7 @@ export function HealthBar(props: Props) {
             containerStyles={MainResourceStyles}
             current={props.health.current}
             max={props.health.max}
+            text={props.hideMax ? props.health.current.toString() : ''}
             textStyles={TextStyles}
           />
           {props.collectedRunes &&

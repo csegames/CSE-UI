@@ -53,6 +53,7 @@ export class FriendlyHealthBar extends React.Component<Props, State> {
     return (
       <Container>
         <HealthBar
+          hideMax
           hideChampionResource
           health={entityState.health[0]}
           championResource={entityState.stamina}
