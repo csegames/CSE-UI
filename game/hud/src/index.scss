@@ -40,7 +40,7 @@ body {
   // widgets
   @import './components/hud/BuildingOLD/index';
   // external scss
-  @import '@csegames/camelot-unchained/lib/components/Chat/index.scss';
+  @import '../node_modules/@csegames/camelot-unchained/lib/components/Chat/index.scss';
   .chat-window {
     position: relative;
     overflow: hidden;
