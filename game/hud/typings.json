@@ -15,6 +15,6 @@
     "yargs-parser": "github:cumodsquad/Typings/yargs-parser/yargs-parser.d.ts"
   },
   "dependencies": {
-    "index": "github:gaearon/redux-thunk/index.d.ts"
+    "index": "github:reduxjs/redux-thunk/src/index.d.ts"
   }
 }
