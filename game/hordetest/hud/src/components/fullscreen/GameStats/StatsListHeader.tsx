@@ -45,7 +45,8 @@ const Section = styled.div`
 `;
 
 const ButtonSpacing = styled.div`
-  width: 28px;
+  width: 52px;
+  margin-left: 10px;
 `;
 
 export interface Props {

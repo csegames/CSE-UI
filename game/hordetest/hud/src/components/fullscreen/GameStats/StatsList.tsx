@@ -22,6 +22,9 @@ const ListContainer = styled.div`
 
 export interface Props {
   overmindSummary: OvermindSummaryDBModel;
+  thumbsUp: { [characterID: string]: string[] };
+  onThumbsUpClick: (characterID: string) => void;
+  onRevokeClick: (characterID: string) => void;
 }
 
 export enum SortBy {
@@ -110,7 +113,13 @@ export function StatsList(props: Props) {
       <ListContainer>
         {getSortedPlayers().map((playerStat) => {
           return (
-            <StatsListItem playerStat={playerStat} players={props.overmindSummary.characterSummaries} />
+            <StatsListItem
+              playerStat={playerStat}
+              players={props.overmindSummary.characterSummaries}
+              thumbsUp={props.thumbsUp}
+              onThumbsUpClick={props.onThumbsUpClick}
+              onRevokeClick={props.onRevokeClick}
+            />
           );
         })}
       </ListContainer>

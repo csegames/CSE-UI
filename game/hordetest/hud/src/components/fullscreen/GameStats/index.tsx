@@ -9,7 +9,14 @@ import gql from 'graphql-tag';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
-import { OvermindSummaryDBModel } from '@csegames/library/lib/hordetest/graphql/schema';
+import { SubscriptionResult } from '@csegames/library/lib/_baseGame/graphql/subscription';
+import * as webAPI from '@csegames/library/lib/camelotunchained/webAPI';
+import {
+  OvermindSummaryDBModel,
+  OvermindSummaryAlert,
+  ScenarioAlertCategory,
+  IScenarioAlert,
+} from '@csegames/library/lib/hordetest/graphql/schema';
 
 import { StatsList } from './StatsList';
 import { Highlights } from './Highlights';
@@ -36,6 +43,26 @@ const query = gql`
         longestLife
         raceID
         userName
+        thumbsUpReward
+      }
+    }
+  }
+`;
+
+const subscription = gql`
+  subscription GameStatsSubscription($scenarioID: String!) {
+    scenarioAlerts(scenarioID: $scenarioID) {
+      targetID
+      category
+      when
+
+      ... on OvermindSummaryAlert {
+        summary {
+          characterSummaries {
+            characterID
+            thumbsUpReward
+          }
+        }
       }
     }
   }
@@ -111,6 +138,7 @@ export interface Props {
 
 export interface State {
   overmindSummary: OvermindSummaryDBModel;
+  thumbsUp: { [characterID: string]: string[] };
 }
 
 export class GameStats extends React.Component<Props, State> {
@@ -118,6 +146,7 @@ export class GameStats extends React.Component<Props, State> {
     super(props);
     this.state = {
       overmindSummary: null,
+      thumbsUp: {},
     };
   }
 
@@ -135,7 +164,14 @@ export class GameStats extends React.Component<Props, State> {
                   shardID: game.shardID,
                 },
               }}
+              subscription={{
+                query: subscription,
+                variables: {
+                  scenarioID: this.props.scenarioID,
+                },
+              }}
               onQueryResult={this.handleQueryResult}
+              subscriptionHandler={this.handleSubscriptionResult}
             />
             {overmindSummary &&
               <>
@@ -163,7 +199,12 @@ export class GameStats extends React.Component<Props, State> {
                 </TopContainer>
                 <MainSection>
                   <StatsListSection>
-                    <StatsList overmindSummary={overmindSummary} />
+                    <StatsList
+                      overmindSummary={overmindSummary}
+                      thumbsUp={this.state.thumbsUp}
+                      onThumbsUpClick={this.onThumbsUpClick}
+                      onRevokeClick={this.onRevokeClick}
+                    />
                   </StatsListSection>
                   <HighlightsSection>
                     <Highlights overmindSummary={overmindSummary} />
@@ -182,5 +223,49 @@ export class GameStats extends React.Component<Props, State> {
 
     const overmindSummary: OvermindSummaryDBModel = gql.data.overmindsummary;
     this.setState({ overmindSummary });
+  }
+
+  private handleSubscriptionResult = (result: SubscriptionResult<{ scenarioAlerts: IScenarioAlert }>, data: any) => {
+    if (!result.data && !result.data.scenarioAlerts) return data;
+    if (result.data.scenarioAlerts.category !== ScenarioAlertCategory.Summary) return data;
+
+    const scenarioAlerts = result.data.scenarioAlerts as OvermindSummaryAlert;
+    const thumbsUp = {};
+    scenarioAlerts.summary.characterSummaries.forEach((summary) => {
+      if (summary.thumbsUpReward === '0000000000000000000000') return;
+
+      if (thumbsUp[summary.thumbsUpReward]) {
+        thumbsUp[summary.thumbsUpReward].push(summary.characterID);
+      } else {
+        thumbsUp[summary.thumbsUpReward] = [summary.characterID];
+      }
+    });
+
+    this.setState({ thumbsUp });
+    return data;
+  }
+
+  private onThumbsUpClick = async (characterID: string) => {
+    await webAPI.ScenarioAPI.RewardThumbsUp(webAPI.defaultConfig, game.shardID, this.props.scenarioID, characterID);
+
+    const thumbsUp = cloneDeep(this.state.thumbsUp);
+    if (thumbsUp[characterID]) {
+      if (!thumbsUp[characterID].includes(hordetest.game.selfPlayerState.characterID)) {
+        thumbsUp[characterID].push(hordetest.game.selfPlayerState.characterID);
+      }
+    } else {
+      thumbsUp[characterID] = [hordetest.game.selfPlayerState.characterID];
+    }
+
+    this.setState({ thumbsUp });
+  }
+
+  private onRevokeClick = async (characterID: string) => {
+    await webAPI.ScenarioAPI.RevokeThumbsUp(webAPI.defaultConfig, game.shardID, this.props.scenarioID);
+
+    const thumbsUp = cloneDeep(this.state.thumbsUp);
+    thumbsUp[characterID] = thumbsUp[characterID].filter(id => id !== hordetest.game.selfPlayerState.characterID);
+
+    this.setState({ thumbsUp });
   }
 }

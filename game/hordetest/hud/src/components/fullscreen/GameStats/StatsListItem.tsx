@@ -10,10 +10,10 @@ import { styled } from '@csegames/linaria/react';
 import { OvermindCharacterSummary } from '@csegames/library/lib/hordetest/graphql/schema';
 import { formatTime } from 'lib/timeHelpers';
 import { ResourceBar } from '../../shared/ResourceBar';
+import { ThumbsUpButton } from './ThumbsUpButton';
 
 const Container = styled.div`
-  display: flex;
-  align-items: center;
+  display: flex;  align-items: center;
   padding: 10px;
 `;
 
@@ -50,6 +50,10 @@ const Section = styled.div`
   margin: 0 10px;
 `;
 
+const ThumbsUpButtonSpacing = styled.div`
+  margin-left: 10px;
+`;
+
 const BarStyles = css`
   height: 25px;
   filter: grayscale(83%);
@@ -57,29 +61,12 @@ const BarStyles = css`
   border: 3px solid #38425b;
 `;
 
-const ThumbsupButton = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 28px;
-  width: 28px;
-  font-size: 18px;
-  background-color: #2d2d2d;
-  color: #517eeb;
-  cursor: pointer;
-
-  &:hover {
-    filter: brightness(150%);
-  }
-
-  &:active {
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
-  }
-`;
-
 export interface Props {
   playerStat: OvermindCharacterSummary;
   players: OvermindCharacterSummary[];
+  thumbsUp: { [characterID: string]: string[] };
+  onThumbsUpClick: (characterID: string) => void;
+  onRevokeClick: (characterID: string) => void;
 }
 
 export function StatsListItem(props: Props) {
@@ -119,6 +106,14 @@ export function StatsListItem(props: Props) {
     );
   }
 
+  function onThumbsUpClick() {
+    props.onThumbsUpClick(props.playerStat.characterID);
+  }
+
+  function onRevokeClick() {
+    props.onRevokeClick(props.playerStat.characterID);
+  }
+
   const statsCurrentPercentage = getStatsCurrentPercentage();
   return (
     <Container>
@@ -142,9 +137,14 @@ export function StatsListItem(props: Props) {
       <Section>
         {renderBar(props.playerStat.damageTaken.toString(), statsCurrentPercentage.damageTaken)}
       </Section>
-      <ThumbsupButton>
-        <span className='icon-thumbsup'></span>
-      </ThumbsupButton>
+      <ThumbsUpButtonSpacing>
+        <ThumbsUpButton
+          thumbsUp={props.thumbsUp}
+          characterID={props.playerStat.characterID}
+          onThumbsUpClick={onThumbsUpClick}
+          onRevokeClick={onRevokeClick}
+        />
+      </ThumbsUpButtonSpacing>
     </Container>
   );
 }
