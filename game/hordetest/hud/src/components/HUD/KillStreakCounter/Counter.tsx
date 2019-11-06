@@ -48,9 +48,10 @@ const BG = styled.div`
   position: absolute;
   width: 390px;
   height: 65px;
-  transform: skewX(40deg);
   left: -15%;
   z-index: -1;
+  -webkit-mask-image: url(../images/hud/kill-counter.svg);
+  -webkit-mask-size: contain;
   background: ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) =>
     `linear-gradient(to right, ${props.color}, transparent)`};
 
@@ -60,11 +61,11 @@ const BG = styled.div`
 
   @keyframes bigNumber {
     from {
-      transform: skewX(40deg) translateX(50%);
+      transform: translateX(50%);
     }
 
     to {
-      transform: skewX(40deg) translateX(0%);
+      transform: translateX(0%);
     }
   }
 `;
