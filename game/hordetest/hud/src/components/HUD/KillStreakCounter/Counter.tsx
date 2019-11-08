@@ -9,12 +9,16 @@ import { styled } from '@csegames/linaria/react';
 import { KillStreakCounterData } from '.';
 
 const ANIMATION_DURATION = 0.3;
+const MESSAGE_ANIMATION_DURATION = 5;
 
 const KillStreakCounterContainer = styled.div`
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  width: 200px;
+  justify-content: center;
+  width: 150px;
+  height: 105px;
 `;
 
 const Kills = styled.div`
@@ -41,19 +45,22 @@ const Kills = styled.div`
 `;
 
 const Content = styled.div`
-  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const BG = styled.div`
   position: absolute;
-  width: 390px;
-  height: 65px;
-  left: -15%;
+  width: 300px;
+  height: 85px;
+  left: -70%;
   z-index: -1;
   -webkit-mask-image: url(../images/hud/kill-counter.svg);
   -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
   background: ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) =>
-    `linear-gradient(to right, ${props.color}, transparent)`};
+    `linear-gradient(to left, ${props.color}, transparent 90%)`};
 
   &.bigNumber {
     animation: bigNumber ${ANIMATION_DURATION}s forwards;
@@ -61,7 +68,7 @@ const BG = styled.div`
 
   @keyframes bigNumber {
     from {
-      transform: translateX(50%);
+      transform: translateX(-50%);
     }
 
     to {
@@ -72,6 +79,7 @@ const BG = styled.div`
 
 const Text = styled.div`
   color: white;
+  margin-left: 5px;
   font-size: 21px;
   line-height: 21px;
   text-transform: uppercase;
@@ -80,9 +88,10 @@ const Text = styled.div`
 
 const BarContainer = styled.div`
   position: relative;
-  width: 100%;
-  height: 10px;
+  width: 70%;
+  height: 7px;
   border: 2px solid #bdbab4;
+  transform: skewX(-20deg);
 `;
 
 const Fill = styled.div`
@@ -94,6 +103,51 @@ const Fill = styled.div`
   background-color: #f7f7f7;
 `;
 
+const Message = styled.div`
+  position: absolute;
+  top: 50%;
+  font-size: 25px;
+  font-family: Colus;
+  font-weight: bold;
+  color: white;
+  transform: translate(95%, -50%);
+  white-space: nowrap;
+  text-shadow:
+    ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) => props.color} 0px 0px 20px,
+    ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) => props.color} 0px 0px 30px,
+    ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) => props.color} 0px 0px 40px,
+    ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) => props.color} 0px 0px 50px,
+    ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) => props.color} 0px 0px 75px;
+
+  &.animation {
+    animation: pop ${MESSAGE_ANIMATION_DURATION}s forwards;
+  }
+
+  @keyframes pop {
+    0% {
+      opacity: 0;
+      transform: translate(85%, -50%) scale(1);
+    }
+
+    5% {
+      opacity: 1;
+      transform: translate(85%, -50%) scale(1.5);
+    }
+
+    10% {
+      transform: translate(85%, -50%) scale(1);
+    }
+
+    80% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+`;
+
 export interface Props {
   killStreakCounter: KillStreakCounterData;
   onTimerFinish: () => void;
@@ -103,42 +157,53 @@ export interface State {
   timerProgress: number;
   shouldPlayNumberChangeAnimation: boolean;
   shouldPlayBigNumberAnimation: boolean;
+  shouldPlayMessageAnimation: boolean;
+  killStreakMessage: string;
 }
 
 export class Counter extends React.Component<Props, State> {
   private timerHandle: number;
   private playSlideHandle: number;
   private playBigNumberHandle: number;
+  private playMessageHandle: number;
   constructor(props: Props) {
     super(props);
     this.state = {
       timerProgress: 0,
       shouldPlayNumberChangeAnimation: false,
       shouldPlayBigNumberAnimation: false,
+      shouldPlayMessageAnimation: false,
+      killStreakMessage: '',
     }
   }
 
   public render() {
     const slideAnimationClass = this.state.shouldPlayNumberChangeAnimation ? 'animation' : '';
     const bigNumberAnimationClass = this.state.shouldPlayBigNumberAnimation ? 'bigNumber' : '';
+    const messageAnimationClass = this.state.shouldPlayMessageAnimation ? 'animation' : '';
+    const color = this.getColor();
+
     return (
       <KillStreakCounterContainer>
-        <BG color={this.getColor()} className={bigNumberAnimationClass} />
-        <Kills className={`${slideAnimationClass} ${bigNumberAnimationClass}`}>
-          {this.props.killStreakCounter.newCount}
-        </Kills>
+        <BG color={color} className={bigNumberAnimationClass} />
         <Content>
-          <Text>Kills</Text>
-          <BarContainer>
-            <Fill style={{ width: `${this.state.timerProgress}%` }} />
-          </BarContainer>
+          <Kills className={`${slideAnimationClass} ${bigNumberAnimationClass}`}>
+            {this.props.killStreakCounter.newCount}
+          </Kills>
+          {this.props.killStreakCounter.newCount < 10 && <Text>Kills</Text>}
         </Content>
+        <BarContainer>
+          <Fill style={{ width: `${this.state.timerProgress}%` }} />
+        </BarContainer>
+        <Message color={color} className={messageAnimationClass}>{this.state.killStreakMessage}</Message>
       </KillStreakCounterContainer>
     );
   }
 
   public componentDidMount() {
     this.timerHandle = window.setInterval(this.updateTimer, 30);
+    this.checkForBGAnimation();
+    this.checkForMessage();
   }
 
   public componentDidUpdate(prevProps: Props) {
@@ -148,21 +213,66 @@ export class Counter extends React.Component<Props, State> {
 
       this.timerHandle = window.setInterval(this.updateTimer, 30);
 
-      this.playSlideAnimation();
+      this.playNumberChangeAnimation();
 
-      if (prevProps.killStreakCounter.newCount < 10 && this.props.killStreakCounter.newCount >= 10) {
-        this.playBGAnimation();
-      } else if (prevProps.killStreakCounter.newCount < 20 && this.props.killStreakCounter.newCount >= 20) {
-        this.playBGAnimation();
-      } else if (prevProps.killStreakCounter.newCount < 50 && this.props.killStreakCounter.newCount >= 50) {
-        this.playBGAnimation();
-      } else if (prevProps.killStreakCounter.newCount < 100 && this.props.killStreakCounter.newCount >= 100) {
-        this.playBGAnimation();
-      }
+      this.checkForBGAnimation(prevProps);
+      this.checkForMessage(prevProps);
     }
   }
 
-  private playSlideAnimation = () => {
+  private checkForBGAnimation = (prevProps?: Props) => {
+    if ((!prevProps || prevProps.killStreakCounter.newCount < 10) && this.props.killStreakCounter.newCount >= 10) {
+      this.playBGAnimation();
+    } else if ((!prevProps || prevProps.killStreakCounter.newCount < 50) && this.props.killStreakCounter.newCount >= 50) {
+      this.playBGAnimation();
+    } else if ((!prevProps || prevProps.killStreakCounter.newCount < 150) && this.props.killStreakCounter.newCount >= 150) {
+      this.playBGAnimation();
+    } else if ((!prevProps || prevProps.killStreakCounter.newCount < 400) && this.props.killStreakCounter.newCount >= 400) {
+      this.playBGAnimation();
+    }
+  }
+
+  private checkForMessage = (prevProps?: Props) => {
+    let message = '';
+    if ((!prevProps || prevProps.killStreakCounter.newCount < 10) && this.props.killStreakCounter.newCount >= 10) {
+      message = 'Multi-Kill!';
+    }
+
+    if ((!prevProps || prevProps.killStreakCounter.newCount < 50) && this.props.killStreakCounter.newCount >= 50) {
+      message = 'Ultra-Kill!';
+    }
+
+    if ((!prevProps || prevProps.killStreakCounter.newCount < 100) && this.props.killStreakCounter.newCount >= 100) {
+      message = 'Killing Spree!';
+    }
+
+    if ((!prevProps || prevProps.killStreakCounter.newCount < 150) && this.props.killStreakCounter.newCount >= 150) {
+      message = 'Mega-Kill!'
+    }
+
+    if ((!prevProps || prevProps.killStreakCounter.newCount < 200) && this.props.killStreakCounter.newCount >= 200) {
+      message = 'Ludicrous!';
+    }
+
+    if ((!prevProps || prevProps.killStreakCounter.newCount < 250) && this.props.killStreakCounter.newCount >= 250) {
+      message = 'Rampage!';
+    }
+
+    if ((!prevProps || prevProps.killStreakCounter.newCount < 300) && this.props.killStreakCounter.newCount >= 300) {
+      message = 'Unstoppable!';
+    }
+
+    if ((!prevProps || prevProps.killStreakCounter.newCount < 400) && this.props.killStreakCounter.newCount >= 400) {
+      message = 'Monster Kill!';
+    }
+
+    if (message !== '') {
+      this.setState({ shouldPlayMessageAnimation: false })
+      this.playMessageAnimation(message);
+    }
+  }
+
+  private playNumberChangeAnimation = () => {
     window.clearTimeout(this.playSlideHandle);
     this.setState({ shouldPlayNumberChangeAnimation: true });
 
@@ -178,6 +288,15 @@ export class Counter extends React.Component<Props, State> {
     this.playBigNumberHandle = window.setTimeout(() => {
       this.setState({ shouldPlayBigNumberAnimation: false });
     }, ANIMATION_DURATION * 1000);
+  }
+
+  private playMessageAnimation = (message: string) => {
+    window.clearTimeout(this.playMessageHandle);
+    this.setState({ shouldPlayMessageAnimation: true, killStreakMessage: message });
+
+    this.playMessageHandle = window.setTimeout(() => {
+      this.setState({ shouldPlayMessageAnimation: false, killStreakMessage: '' });
+    }, MESSAGE_ANIMATION_DURATION * 1000);
   }
 
   private updateTimer = () => {
