@@ -58,6 +58,20 @@ const TextStyles = css`
   font-family: Exo;
 `;
 
+const DamageMultiplier = styled.div`
+  position: relative;
+  padding: 2px 5px;
+  background-color: #a34603;
+  margin-left: 3px;
+  font-family: Exo;
+  font-size: 13px;
+  color: white;
+`;
+
+const DamageMultiplierText =  styled.div`
+  transform: skewX(10deg);
+`;
+
 export interface Props {
   divineBarrier: CurrentMax;
   health: CurrentMax;
@@ -127,6 +141,11 @@ export function HealthBar(props: Props) {
               current={props.championResource.current}
               max={props.championResource.max}
             />
+            {props.collectedRunes && props.runeBonuses &&
+              <DamageMultiplier>
+                <DamageMultiplierText>{(props.runeBonuses[RuneType.Weapon] / 100) + 1}x</DamageMultiplierText>
+              </DamageMultiplier>
+            }
             {props.collectedRunes &&
               <Rune
                 runeType={RuneType.Weapon}
