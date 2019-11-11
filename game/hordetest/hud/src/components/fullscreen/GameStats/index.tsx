@@ -218,6 +218,10 @@ export class GameStats extends React.Component<Props, State> {
     );
   }
 
+  public componentWillUnmount() {
+    game.playGameSound(SoundEvents.PLAY_SCENARIO_RESET);
+  }
+
   private handleQueryResult = (gql: GraphQLResult<{ overmindsummary: OvermindSummaryDBModel }>) => {
     if (!gql || !gql.data || !gql.data.overmindsummary) return gql;
 

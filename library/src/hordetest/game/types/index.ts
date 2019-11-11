@@ -12,3 +12,4 @@ import './Consumables';
 import './PlayerDirection';
 import './ActiveObjective';
 import './RuneType';
+import './SoundEvents';

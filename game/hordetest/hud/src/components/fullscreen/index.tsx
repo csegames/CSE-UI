@@ -169,6 +169,7 @@ export class FullScreen extends React.Component<Props, State> {
   private handleScenarioRoundEnded = (scenarioID: string, roundID: string, didEnd: boolean) => {
     if (didEnd) {
       this.setState({ isVisible: true, scenarioID, currentRoute: Route.EndGameStats });
+      game.playGameSound(SoundEvents.PLAY_SCENARIO_END);
     }
   }
 
