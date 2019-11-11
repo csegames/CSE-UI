@@ -7,7 +7,7 @@
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
 
-export function showRunFullScreenEffect(type: RuneType) {
+export function showRuneFullScreenEffect(type: RuneType) {
   game.trigger('show-rune-full-screen-effects', type);
 }
 
@@ -77,13 +77,15 @@ export class RuneFullScreenEffects extends React.Component<{}, State> {
 
   private handleShow = (runeType: RuneType) => {
     if (this.hideTimeout) {
-      window.clearTimeout(this.hideTimeout);
+      this.setState({ runeType });
+      return;
     }
 
     this.setState({ isVisible: true, runeType });
 
     this.hideTimeout = window.setTimeout(() => {
       this.setState({ isVisible: false, runeType: null });
+      this.hideTimeout = null;
     }, HIDE_DURATION * 1000);
   }
 }

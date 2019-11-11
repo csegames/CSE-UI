@@ -7,7 +7,7 @@
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { sendPlayerMessage } from '../PlayerMessage';
-import { showRunFullScreenEffect } from '../FullScreenEffects/Runes';
+import { showRuneFullScreenEffect } from '../FullScreenEffects/Runes';
 
 const ANIMATION_DURATION = 2;
 
@@ -118,7 +118,7 @@ export class Rune extends React.Component<Props, State> {
   public componentDidUpdate(prevProps: Props) {
     if (this.props.value && prevProps.value !== this.props.value) {
       window.setTimeout(() => sendPlayerMessage(this.getMessage(prevProps), 3000, RuneType[this.props.runeType]), 200);
-      showRunFullScreenEffect(this.props.runeType);
+      showRuneFullScreenEffect(this.props.runeType);
       this.playUpdateAnimation();
     }
   }
