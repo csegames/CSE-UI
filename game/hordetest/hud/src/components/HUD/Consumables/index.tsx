@@ -13,6 +13,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   margin-left: 2px;
+  filter: brightness(100%);
 `;
 
 const KeybindBox = styled.div`
