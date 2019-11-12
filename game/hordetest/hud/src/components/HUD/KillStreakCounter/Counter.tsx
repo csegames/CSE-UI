@@ -18,7 +18,7 @@ const KillStreakCounterContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: 150px;
-  height: 105px;
+  height: 95px;
 `;
 
 const Kills = styled.div`
@@ -105,12 +105,12 @@ const Fill = styled.div`
 
 const Message = styled.div`
   position: absolute;
-  top: 50%;
+  top: -50%;
   font-size: 25px;
   font-family: Colus;
   font-weight: bold;
   color: white;
-  transform: translate(95%, -50%);
+  transform: translate(0%, 100%);
   white-space: nowrap;
   text-shadow:
     ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) => props.color} 0px 0px 20px,
@@ -126,16 +126,16 @@ const Message = styled.div`
   @keyframes pop {
     0% {
       opacity: 0;
-      transform: translate(85%, -50%) scale(1);
+      transform: translate(0%, 100%) scale(1);
     }
 
     5% {
       opacity: 1;
-      transform: translate(85%, -50%) scale(1.5);
+      transform: translate(0%, 100%) scale(1.5);
     }
 
     10% {
-      transform: translate(85%, -50%) scale(1);
+      transform: translate(0%, 100%) scale(1);
     }
 
     80% {
@@ -190,7 +190,7 @@ export class Counter extends React.Component<Props, State> {
           <Kills className={`${slideAnimationClass} ${bigNumberAnimationClass}`}>
             {this.props.killStreakCounter.newCount}
           </Kills>
-          {this.props.killStreakCounter.newCount < 10 && <Text>Kills</Text>}
+          <Text>Kills</Text>
         </Content>
         <BarContainer>
           <Fill style={{ width: `${this.state.timerProgress}%` }} />
@@ -223,11 +223,11 @@ export class Counter extends React.Component<Props, State> {
   private checkForBGAnimation = (prevProps?: Props) => {
     if ((!prevProps || prevProps.killStreakCounter.newCount < 10) && this.props.killStreakCounter.newCount >= 10) {
       this.playBGAnimation();
-    } else if ((!prevProps || prevProps.killStreakCounter.newCount < 50) && this.props.killStreakCounter.newCount >= 50) {
+    } else if ((!prevProps || prevProps.killStreakCounter.newCount < 100) && this.props.killStreakCounter.newCount >= 100) {
       this.playBGAnimation();
-    } else if ((!prevProps || prevProps.killStreakCounter.newCount < 150) && this.props.killStreakCounter.newCount >= 150) {
+    } else if ((!prevProps || prevProps.killStreakCounter.newCount < 300) && this.props.killStreakCounter.newCount >= 300) {
       this.playBGAnimation();
-    } else if ((!prevProps || prevProps.killStreakCounter.newCount < 400) && this.props.killStreakCounter.newCount >= 400) {
+    } else if ((!prevProps || prevProps.killStreakCounter.newCount < 600) && this.props.killStreakCounter.newCount >= 600) {
       this.playBGAnimation();
     }
   }
@@ -235,19 +235,19 @@ export class Counter extends React.Component<Props, State> {
   private checkForMessage = (prevProps?: Props) => {
     let message = '';
     if ((!prevProps || prevProps.killStreakCounter.newCount < 10) && this.props.killStreakCounter.newCount >= 10) {
-      message = 'Multi-Kill!';
-    }
-
-    if ((!prevProps || prevProps.killStreakCounter.newCount < 50) && this.props.killStreakCounter.newCount >= 50) {
-      message = 'Ultra-Kill!';
-    }
-
-    if ((!prevProps || prevProps.killStreakCounter.newCount < 100) && this.props.killStreakCounter.newCount >= 100) {
       message = 'Killing Spree!';
     }
 
+    if ((!prevProps || prevProps.killStreakCounter.newCount < 50) && this.props.killStreakCounter.newCount >= 50) {
+      message = 'Dominating!';
+    }
+
+    if ((!prevProps || prevProps.killStreakCounter.newCount < 100) && this.props.killStreakCounter.newCount >= 100) {
+      message = 'Wow!';
+    }
+
     if ((!prevProps || prevProps.killStreakCounter.newCount < 150) && this.props.killStreakCounter.newCount >= 150) {
-      message = 'Mega-Kill!'
+      message = 'Massacre!'
     }
 
     if ((!prevProps || prevProps.killStreakCounter.newCount < 200) && this.props.killStreakCounter.newCount >= 200) {
@@ -263,11 +263,18 @@ export class Counter extends React.Component<Props, State> {
     }
 
     if ((!prevProps || prevProps.killStreakCounter.newCount < 400) && this.props.killStreakCounter.newCount >= 400) {
-      message = 'Monster Kill!';
+      message = 'Godlike!';
+    }
+
+    if ((!prevProps || prevProps.killStreakCounter.newCount < 600) && this.props.killStreakCounter.newCount >= 600) {
+      message = 'Legendary!';
+    }
+
+    if ((!prevProps || prevProps.killStreakCounter.newCount < 1000) && this.props.killStreakCounter.newCount >= 1000) {
+      message = 'Total Annihilation!';
     }
 
     if (message !== '') {
-      this.setState({ shouldPlayMessageAnimation: false })
       this.playMessageAnimation(message);
     }
   }
@@ -292,7 +299,12 @@ export class Counter extends React.Component<Props, State> {
 
   private playMessageAnimation = (message: string) => {
     window.clearTimeout(this.playMessageHandle);
-    this.setState({ shouldPlayMessageAnimation: true, killStreakMessage: message });
+    if (this.state.shouldPlayMessageAnimation) {
+      this.setState({ shouldPlayMessageAnimation: false, killStreakMessage: '' });
+      window.setTimeout(() => this.setState({ shouldPlayMessageAnimation: true, killStreakMessage: message }), 5);
+    } else {
+      this.setState({ shouldPlayMessageAnimation: true, killStreakMessage: message });
+    }
 
     this.playMessageHandle = window.setTimeout(() => {
       this.setState({ shouldPlayMessageAnimation: false, killStreakMessage: '' });
