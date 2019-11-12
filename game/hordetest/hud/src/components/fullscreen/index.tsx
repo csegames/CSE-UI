@@ -151,7 +151,7 @@ export class FullScreen extends React.Component<Props, State> {
   }
 
   private onLockIn = () => {
-    this.navigateTo(Route.EndGameStats);
+    // this.navigateTo(Route.EndGameStats);
   }
 
   private goToStart = () => {

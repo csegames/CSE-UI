@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { Champion } from './index';
+import { ChampionInfo } from '@csegames/library/lib/hordetest/graphql/schema';
 
 const Container = styled.div`
 
@@ -39,13 +39,13 @@ const AbilityIcon = styled.div`
 const AbilityInfoContainer = styled.div`
 `;
 
-const AbilityType = styled.div`
-  font-size: 15px;
-  color: #818080;
-  font-family: Lato;
-  font-weight: bold;
-  text-transform: uppercase;
-`;
+// const AbilityType = styled.div`
+//   font-size: 15px;
+//   color: #818080;
+//   font-family: Lato;
+//   font-weight: bold;
+//   text-transform: uppercase;
+// `;
 
 const AbilityName = styled.div`
   font-family: Colus;
@@ -54,7 +54,7 @@ const AbilityName = styled.div`
 `;
 
 export interface Props {
-  selectedChampion: Champion;
+  selectedChampion: ChampionInfo;
 }
 
 export function ChampionInfo(props: Props) {
@@ -67,7 +67,6 @@ export function ChampionInfo(props: Props) {
             <AbilityContainer>
               <AbilityIcon className={ability.iconClass} />
               <AbilityInfoContainer>
-                <AbilityType>{ability.type}</AbilityType>
                 <AbilityName>{ability.name}</AbilityName>
               </AbilityInfoContainer>
             </AbilityContainer>

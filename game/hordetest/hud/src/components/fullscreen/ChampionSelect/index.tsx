@@ -5,13 +5,14 @@
  *
  */
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { Header } from '../Header';
 import { ChampionPick } from './ChampionPick';
 import { ChampionInfo } from './ChampionInfo';
 import { LockedList } from './LockedList';
 import { LockIn } from './LockIn';
+import { ChampionInfoContext } from 'context/ChampionInfoContext';
 
 const Container = styled.div`
   position: relative;
@@ -75,10 +76,10 @@ const SelectedChampionContainer = styled.div`
 
 const SelectedChampionImage = styled.img`
   position: absolute;
-  width: 100%;
-  height: 120%;
-  object-fit: cover;
-  top: -20%;
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  right: 5%;
 `;
 
 const ChampionInfoContainer = styled.div`
@@ -122,75 +123,6 @@ export interface Champion {
   abilities: { type: 'light' | 'heavy' | 'ultimate', name: string, iconClass: string }[];
 }
 
-const champions: Champion[] = [
-  {
-    id: 'test1',
-    name: 'Berserker',
-    previewImage: 'images/fullscreen/character-select/face.png',
-    image: 'images/fullscreen/startscreen/human-m-blackguard.png',
-    abilities: [
-      { type: 'light', name: 'Cleave', iconClass: 'icon-icon-axe' },
-      { type: 'heavy', name: 'Iron Claw', iconClass: 'icon-permissions' },
-      { type: 'ultimate', name: 'Undying Rage', iconClass: 'icon-shout-tab' },
-    ],
-  },
-  {
-    id: 'test2',
-    name: 'Amazon',
-    previewImage: 'images/fullscreen/character-select/face.png',
-    image: 'images/fullscreen/startscreen/human-m-blackguard.png',
-    abilities: [
-      { type: 'light', name: 'Javelin Toss', iconClass: 'icon-category-spear' },
-      { type: 'heavy', name: 'Steady Shot', iconClass: 'icon-bow-arrow-tab' },
-      { type: 'ultimate', name: 'Horse Charge', iconClass: 'icon-horse' },
-    ],
-  },
-  {
-    id: 'test3',
-    name: 'Berserker 3',
-    previewImage: 'images/fullscreen/character-select/face.png',
-    image: 'images/fullscreen/startscreen/human-m-blackguard.png',
-    abilities: [
-      { type: 'light', name: 'Cleave', iconClass: 'icon-icon-axe' },
-      { type: 'heavy', name: 'Iron Claw', iconClass: 'icon-permissions' },
-      { type: 'ultimate', name: 'Undying Rage', iconClass: 'icon-shout-tab' },
-    ],
-  },
-  {
-    id: 'test4',
-    name: 'Berserker 4',
-    previewImage: 'images/fullscreen/character-select/face.png',
-    image: 'images/fullscreen/startscreen/human-m-blackguard.png',
-    abilities: [
-      { type: 'light', name: 'Cleave', iconClass: 'icon-icon-axe' },
-      { type: 'heavy', name: 'Iron Claw', iconClass: 'icon-permissions' },
-      { type: 'ultimate', name: 'Undying Rage', iconClass: 'icon-shout-tab' },
-    ],
-  },
-  {
-    id: 'test5',
-    name: 'Berserker 5',
-    previewImage: 'images/fullscreen/character-select/face.png',
-    image: 'images/fullscreen/startscreen/human-m-blackguard.png',
-    abilities: [
-      { type: 'light', name: 'Cleave', iconClass: 'icon-icon-axe' },
-      { type: 'heavy', name: 'Iron Claw', iconClass: 'icon-permissions' },
-      { type: 'ultimate', name: 'Undying Rage', iconClass: 'icon-shout-tab' },
-    ],
-  },
-  {
-    id: 'test6',
-    name: 'Berserker 6',
-    previewImage: 'images/fullscreen/character-select/face.png',
-    image: 'images/fullscreen/startscreen/human-m-blackguard.png',
-    abilities: [
-      { type: 'light', name: 'Cleave', iconClass: 'icon-icon-axe' },
-      { type: 'heavy', name: 'Iron Claw', iconClass: 'icon-permissions' },
-      { type: 'ultimate', name: 'Undying Rage', iconClass: 'icon-shout-tab' },
-    ],
-  },
-];
-
 const players = [
   { name: 'Player 1', isLocked: false, image: 'images/fullscreen/character-select/selected-face.png' },
   { name: 'Player 2', isLocked: false, image: 'images/fullscreen/character-select/selected-face.png' },
@@ -203,13 +135,19 @@ const players = [
 ];
 
 export function ChampionSelect(props: Props) {
+  const { champions, championCostumes } = useContext(ChampionInfoContext);
   const [selectedChampion, setSelectedChampion] = useState(champions[0]);
+
+  function getChampionCostumeInfo(championID: string) {
+    return championCostumes.find(c => c.requiredChampionID === championID);
+  }
 
   function onChampionPick(championID: string) {
     const champion = champions.find(c => championID === c.id);
     setSelectedChampion(champion);
   }
 
+  const selectedChampionCostumeInfo = getChampionCostumeInfo(selectedChampion.id);
   return (
     <Container>
       <HeaderContainer>
@@ -228,11 +166,12 @@ export function ChampionSelect(props: Props) {
         <ConsoleNavIcon className='icon-xb-lb' />
         {champions.map((champion) => {
           const isSelected = champion.id === selectedChampion.id;
+          const championCostumeInfo = getChampionCostumeInfo(champion.id);
           return (
             <ChampionPick
               isSelected={isSelected}
               id={champion.id}
-              image={champion.previewImage}
+              image={championCostumeInfo.thumbnailURL}
               onClick={onChampionPick}
             />
           );
@@ -240,7 +179,7 @@ export function ChampionSelect(props: Props) {
         <ConsoleNavIcon className='icon-xb-rb' />
       </ChampionPickContainer>
       <SelectedChampionContainer>
-        <SelectedChampionImage src={selectedChampion.image} />
+        <SelectedChampionImage src={selectedChampionCostumeInfo.standingImageURL} />
       </SelectedChampionContainer>
       <ChampionInfoContainer>
         <ChampionInfo selectedChampion={selectedChampion} />

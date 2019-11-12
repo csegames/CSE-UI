@@ -21,6 +21,9 @@ declare global {
     blood: CurrentMax;
     stamina: CurrentMax;
     level: number;
+    race: Race;
+    gender: Gender;
+    classID: Archetype;
   }
 
   type AnyEntityStateModel = PlayerStateModel;

@@ -21,7 +21,6 @@ declare global {
    */
   interface SelfPlayerStateModel extends PlayerStateModel {
     characterID: string;
-    championID: string;
     facing: Facing2fDegrees;
     playerDifferentiator: number;
     viewBearing: number;
@@ -45,7 +44,6 @@ function initDefault(): SelfPlayerState {
   return {
     ...defaultPlayerStateModel(),
     characterID: 'unknown',
-    championID: 'unknown',
     facing: { yaw: 0, pitch: 0 },
     playerDifferentiator: -1,
     viewBearing: 0,

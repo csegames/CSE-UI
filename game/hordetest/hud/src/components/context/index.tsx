@@ -10,19 +10,22 @@ import { ScreenContextProvider } from './ScreenContext';
 import { ViewBearingContextProvider } from './ViewBearingContext';
 import { ActiveObjectivesContextProvider } from './ActiveObjectivesContext';
 import { PlayerPositionContextProvider } from './PlayerPositionContext';
+import { ChampionInfoContextProvider } from './ChampionInfoContext';
 
 export class ContextProviders extends React.Component<{}> {
   public render() {
     return (
       <InputContextProvider>
         <ScreenContextProvider>
-          <ViewBearingContextProvider>
-            <ActiveObjectivesContextProvider>
-              <PlayerPositionContextProvider>
-                {this.props.children}
-              </PlayerPositionContextProvider>
-            </ActiveObjectivesContextProvider>
-          </ViewBearingContextProvider>
+          <ChampionInfoContextProvider>
+            <ViewBearingContextProvider>
+              <ActiveObjectivesContextProvider>
+                <PlayerPositionContextProvider>
+                  {this.props.children}
+                </PlayerPositionContextProvider>
+              </ActiveObjectivesContextProvider>
+            </ViewBearingContextProvider>
+          </ChampionInfoContextProvider>
         </ScreenContextProvider>
       </InputContextProvider>
     );
