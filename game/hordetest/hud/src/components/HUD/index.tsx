@@ -23,7 +23,7 @@ import { Settings } from '../fullscreen/Settings';
 import { FullScreen } from '../fullscreen';
 import { PopupAnnouncement } from './Announcements/Popup';
 import { Compass } from './Compass';
-import { ActiveObjectives } from './ActiveObjectives';
+import { Objectives } from './Objectives';
 import { Console } from '../HUD/Console';
 import { LoadingScreen } from '../fullscreen/LoadingScreen';
 import { ImagePreloader } from './ImagePreloader';
@@ -220,7 +220,7 @@ export class HUD extends React.Component<Props> {
           </PlayerMessagePosition>
 
           <AnnouncementsPosition>
-            <ActiveObjectives />
+            <Objectives />
           </AnnouncementsPosition>
 
           <SelfHealthBarPosition>

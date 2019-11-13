@@ -4,11 +4,4 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import './CurrentMax';
-import './Vec2f';
-import './Vec3f';
-import './Ability';
-import './Consumables';
-import './PlayerDirection';
-import './Objective';
-import './SoundEvents';
+export * from './definitions';

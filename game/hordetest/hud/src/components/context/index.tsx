@@ -8,7 +8,7 @@ import React from 'react';
 import { InputContextProvider } from './InputContext';
 import { ScreenContextProvider } from './ScreenContext';
 import { ViewBearingContextProvider } from './ViewBearingContext';
-import { ActiveObjectivesContextProvider } from './ActiveObjectivesContext';
+import { ObjectivesContextProvider } from './ObjectivesContext';
 import { PlayerPositionContextProvider } from './PlayerPositionContext';
 import { ChampionInfoContextProvider } from './ChampionInfoContext';
 
@@ -19,11 +19,11 @@ export class ContextProviders extends React.Component<{}> {
         <ScreenContextProvider>
           <ChampionInfoContextProvider>
             <ViewBearingContextProvider>
-              <ActiveObjectivesContextProvider>
+              <ObjectivesContextProvider>
                 <PlayerPositionContextProvider>
                   {this.props.children}
                 </PlayerPositionContextProvider>
-              </ActiveObjectivesContextProvider>
+              </ObjectivesContextProvider>
             </ViewBearingContextProvider>
           </ChampionInfoContextProvider>
         </ScreenContextProvider>

@@ -110,12 +110,12 @@ export class FullScreen extends React.Component<Props, State> {
         return (
           <StartScreen onReady={this.onReady} />
         );
-      };
+      }
       case Route.ChampionSelect: {
         return (
           <ChampionSelect gameMode={'Survival'} difficulty={'Normal'} onLockIn={this.onLockIn} />
         );
-      };
+      }
       case Route.EndGameStats: {
         return (
           <GameStats scenarioID={this.state.scenarioID} onLeaveClick={this.goToStart} />

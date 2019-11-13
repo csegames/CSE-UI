@@ -33,10 +33,10 @@ export interface GameInterface extends GameModel {
   onPlayerDirectionUpdate: (callback: (playerDirections: PlayerDirection[]) => any) => EventHandle;
 
   /**
-   * Subscribe to ActiveObjective updates
+   * Subscribe to Objective updates
    * @param {(activeObjectives: ActiveObjectives[]) => any} callback function to be executed with an Active Objectives update
    */
-  onActiveObjectivesUpdate: (callback: (activeObjectives: ActiveObjective[]) => any) => EventHandle;
+  onObjectivesUpdate: (callback: (objectives: ObjectiveEntityState[]) => any) => EventHandle;
 
   /**
    * Subscribe to EntityState updates

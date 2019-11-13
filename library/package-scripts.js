@@ -75,6 +75,11 @@ module.exports = {
         local: 'download http://localhost:1337/codegen/definitions.ts > ./src/camelotunchained/webAPI/definitions.ts',
         localserver: 'download http://localhost:8000/codegen/definitions.ts > ./src/camelotunchained/webAPI/definitions.ts',
       },
+      hordetest: {
+        default: 'download https://omeletteapi.camelotunchained.com/codegen/definitions.ts > ./src/hordetest/webAPI/definitions.ts',
+        local: 'download http://localhost:1337/codegen/definitions.ts > ./src/hordetest/webAPI/definitions.ts',
+        localserver: 'download http://localhost:8000/codegen/definitions.ts > ./src/hordetest/webAPI/definitions.ts',
+      },
     },
     gql: {
       camelotunchained: {

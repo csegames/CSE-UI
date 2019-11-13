@@ -9,15 +9,19 @@ import { styled } from '@csegames/linaria/react';
 import * as utils from '@csegames/library/lib/_baseGame/utils';
 import { ViewBearingContext } from 'components/context/ViewBearingContext';
 import { PlayerPositionContext } from 'components/context/PlayerPositionContext';
+import { arc2path, currentMax2circleDegrees } from 'lib/circleHelpers';
 
 const CIRCLE_DIAMETER = 78;
-const ARROW_MARGIN = 3;
 const INDICATOR_DIMENSIONS = 20;
 
 const Container = styled.div`
   display: flex;
   align-items: center;
   margin: 5px 0;
+
+  &.Unstarted {
+    opacity: 0.5;
+  }
 `;
 
 const Circle = styled.div`
@@ -30,23 +34,16 @@ const Circle = styled.div`
   border-radius: 50%;
   background-color: #1A1A1A;
 
-  &:before {
-    content: '';
-    position: absolute;
-    top: ${ARROW_MARGIN}px;
-    right: ${ARROW_MARGIN}px;
-    bottom: ${ARROW_MARGIN}px;
-    left: ${ARROW_MARGIN}px;
-    border-radius: 50%;
-    border: 2px solid #ffffff;
+  &.Health {
+    background-color: #004B0B;
+  }
+
+  &.Mana {
+    background-color: #5E5000;
   }
 
   &.danger {
     animation: pulse 0.3s infinite alternate;
-  }
-
-  &.danger:before {
-    border: 2px solid #fe0000;
   }
 
   @keyframes pulse {
@@ -72,8 +69,23 @@ const DirectionalIndicator = styled.div`
 `;
 
 const Icon = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 26px;
-  color: ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) => props.color};
+  color: white;
+`;
+
+const ObjectiveIndicator = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #1A1A1A;
+  font-size: 18px;
+  font-family: Exo;
+  font-weight: bold;
 `;
 
 const Info = styled.div`
@@ -88,6 +100,14 @@ const Info = styled.div`
   height: 52px;
   background: linear-gradient(to right, rgba(26, 26, 26, 0.9), rgba(26, 26, 26, 0.5));
   transition: width 0.8s;
+
+  &.Health {
+    background: linear-gradient(to right, rgba(0, 75, 11, 0.9),  rgba(0, 75, 11, 0.5));
+  }
+
+  &.Mana {
+    background: linear-gradient(to right, rgba(94, 80, 0, 0.9), rgba(94, 80, 0, 0.5));
+  }
 
   &.minimized {
     width: 30px;
@@ -129,35 +149,11 @@ const DistanceText = styled.div`
   margin-right: 5px;
 `;
 
-const ProgressBarContainer = styled.div`
-  position: relative;
-  flex: 1;
-  height: 3px;
-  border: 1px solid white;
-
-  &.minimized {
-    display: none;
-  }
-
-  &.danger {
-    display: block;
-  }
-`;
-
-const ProgressBar = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background-color: white;
-`;
-
-interface ActiveObjectiveProps {
-  activeObjective: ActiveObjective;
+interface ObjectiveProps {
+  objective: ObjectiveEntityState;
   viewBearing: number;
   playerPosition: Vec3f;
-  color: string;
+  indicator: string;
 }
 
 export interface State {
@@ -166,38 +162,58 @@ export interface State {
   entityState: ObjectiveEntityState;
 }
 
-class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjectiveProps, State> {
+class ObjectiveWithInjectedContext extends React.Component<ObjectiveProps, State> {
   private minimizeTimeout: number;
   private dangerTimeout: number;
   private evh: EventHandle;
-  constructor(props: ActiveObjectiveProps) {
+  constructor(props: ObjectiveProps) {
     super(props);
     this.state = {
       isMinimized: false,
       isDanger: false,
-      entityState: props.activeObjective.entityState
+      entityState: props.objective
     };
   }
 
   public render() {
-    const { activeObjective } = this.props;
+    const { objective } = this.props;
+    const { current, max } = this.state.entityState.objective.progress;
     const minimizedClassName = this.state.isMinimized ? 'minimized' : '';
     const dangerClassName = this.state.isDanger ? 'danger' : '';
+    const objectiveType = this.getObjectiveType();
+
+    const SVGCircleDiameter = CIRCLE_DIAMETER - 15;
+
     return (
-      <Container>
-        <Circle className={dangerClassName}>
+      <Container className={ObjectiveState[objective.objective.state]}>
+        <Circle className={`${dangerClassName} ${objectiveType}`}>
           {this.state.isMinimized &&
             <DirectionalIndicator style={this.getDirectionIndicator()} className='fas fa-caret-down' />
           }
-          <Icon className={activeObjective.entityState.iconClass} color={this.props.color} />
+          <Icon className={objective.iconClass}>
+            <ObjectiveIndicator>{this.props.indicator}</ObjectiveIndicator>
+          </Icon>
+          <svg height={SVGCircleDiameter * 2} width={SVGCircleDiameter * 2} style={{ position: 'absolute' }}>
+            <path
+              d={
+                arc2path(
+                  SVGCircleDiameter,
+                  SVGCircleDiameter,
+                  SVGCircleDiameter / 2,
+                  360 - currentMax2circleDegrees(current, max),
+                  360
+                )
+              }
+              strokeWidth='4px'
+              stroke={this.state.isDanger ? '#fe0000' : '#ffffff'}
+              fill='transparent'
+            />
+          </svg>
         </Circle>
-        <Info className={`${minimizedClassName} ${dangerClassName}`}>
-          <Name className={`${minimizedClassName} ${dangerClassName}`}>{activeObjective.entityState.name}</Name>
+        <Info className={`${minimizedClassName} ${dangerClassName} ${objectiveType}`}>
+          <Name className={`${minimizedClassName} ${dangerClassName}`}>{objective.name}</Name>
           <BottomInfo>
             <DistanceText>{this.getDistance()}m</DistanceText>
-            <ProgressBarContainer className={`${minimizedClassName} ${dangerClassName}`}>
-              <ProgressBar style={{ width: `${this.getCaptureProgress()}%` }} />
-            </ProgressBarContainer>
           </BottomInfo>
         </Info>
       </Container>
@@ -219,7 +235,7 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
       this.setState({ isMinimized: true });
     }
 
-    if (prevState.entityState.objectiveProgress.current > this.state.entityState.objectiveProgress.current) {
+    if (prevState.entityState.objective.progress.current > this.state.entityState.objective.progress.current) {
       // If losing progress, expand the widget to show that it's losing progress
       this.showDanger();
     }
@@ -243,6 +259,23 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
     }
   }
 
+  private getObjectiveType = () => {
+    const name = this.props.objective.name.toLowerCase();
+    if (name.includes('tower')) {
+      return 'Tower';
+    }
+
+    if (name.includes('health')) {
+      return 'Health';
+    }
+
+    if (name.includes('mana')) {
+      return 'Mana';
+    }
+
+    return '';
+  }
+
   private showDanger = () => {
     if (this.dangerTimeout) {
       window.clearTimeout(this.dangerTimeout);
@@ -257,11 +290,6 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
     }, 2000);
   }
 
-  private getCaptureProgress = () => {
-    const { current, max } = this.state.entityState.objectiveProgress;
-    return (current / max) * 100;
-  }
-
   private getDistance = () => {
     const distance = Number(utils.distanceVec3(
       this.props.playerPosition,
@@ -273,7 +301,7 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
   private getDirectionIndicator = () => {
     const radius = CIRCLE_DIAMETER / 2;
 
-    const { bearingDegrees } = this.props.activeObjective;
+    const { bearingDegrees } = this.props.objective.objective;
     const bearingRadians = (360 - bearingDegrees) * Math.PI / 180;
     const objectiveVector = { x: Math.cos(bearingRadians),y: Math.sin(bearingRadians) };
 
@@ -287,8 +315,8 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
 
     let radians = -(Math.atan2(objectiveVector.y, objectiveVector.x) - Math.atan2(playerVector.y, playerVector.x));
 
-    const x = (radius - 10) * Math.cos(radians) + (radius - INDICATOR_DIMENSIONS / 2);
-    const y = (radius - 10) * Math.sin(radians) + (radius - INDICATOR_DIMENSIONS / 2);
+    const x = (radius - 17) * Math.cos(radians) + (radius - INDICATOR_DIMENSIONS / 2);
+    const y = (radius - 17) * Math.sin(radians) + (radius - INDICATOR_DIMENSIONS / 2);
 
     return {
       top: y,
@@ -299,17 +327,17 @@ class ActiveObjectiveWithInjectedContext extends React.Component<ActiveObjective
 }
 
 export interface Props {
-  activeObjective: ActiveObjective;
-  color: string;
+  objective: ObjectiveEntityState;
+  indicator: string;
 }
 
-export function ActiveObjective(props: Props) {
+export function Objective(props: Props) {
   const viewBearingContext = useContext(ViewBearingContext);
   const playerPositionContext = useContext(PlayerPositionContext);
   return (
-    <ActiveObjectiveWithInjectedContext
-      color={props.color}
-      activeObjective={props.activeObjective}
+    <ObjectiveWithInjectedContext
+      indicator={props.indicator}
+      objective={props.objective}
       viewBearing={viewBearingContext.viewBearing}
       playerPosition={playerPositionContext.playerPosition}
     />

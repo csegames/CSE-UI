@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { ActiveObjectivesContext, ActiveObjectivesContextState } from 'components/context/ActiveObjectivesContext';
+import { ObjectivesContext, ObjectivesContextState } from 'components/context/ObjectivesContext';
 
 const Container = styled.div`
   position: relative;
@@ -81,15 +81,49 @@ const Cardinal = styled.div`
 
 const Objective = styled.div`
   position: absolute;
+  display: flex;
+  align-items: center;
   margin: 0;
   padding: 0;
   top: 20px;
   font-size: 26px;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-  -webkit-text-stroke-width: 8px;
-  -webkit-text-stroke-color: black;
   transform: translateX(-50%);
-  color: ${(props: { color: string } & React.HTMLProps<HTMLDivElement>) => props.color};
+  color: white;
+
+  &:before {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    -webkit-text-stroke-width: 8px;
+    -webkit-text-stroke-color: black;
+  }
+
+  &.Health:before {
+    text-shadow: 2px 2px 5px rgba(0, 75, 11, 0.7);
+    -webkit-text-stroke-width: 8px;
+    -webkit-text-stroke-color: rgba(0, 75, 11, 0.7);
+    color: rgba(0, 75, 11, 1);
+  }
+
+  &.Mana:before {
+    text-shadow: 2px 2px 5px rgba(94, 80, 0, 0.7);
+    -webkit-text-stroke-width: 8px;
+    -webkit-text-stroke-color: rgba(94, 80, 0, 0.7);
+    color: rgba(94, 80, 0, 1);
+  }
+
+  &.Unstarted {
+    opacity: 0.5;
+  }
+`;
+
+const ObjectiveIndicator = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  font-size: 16px;
+  font-family: Exo;
+  font-weight: bold;
 `;
 
 export interface Props {
@@ -113,8 +147,8 @@ export class Compass extends React.Component<Props, State> {
   public render() {
     const facing: number = this.state.facing;
     return (
-      <ActiveObjectivesContext.Consumer>
-        {(activeObjectivesContext) => (
+      <ObjectivesContext.Consumer>
+        {(objectivesContext) => (
           <Container>
             <TopBorder />
             <GradientBackground />
@@ -146,18 +180,19 @@ export class Compass extends React.Component<Props, State> {
             <Cardinal className='direction' style={this.position(facing, 315)}>NW</Cardinal>
             <Cardinal style={this.position(facing, 330)}>330</Cardinal>
             <Cardinal style={this.position(facing, 345)}>345</Cardinal>
-            {activeObjectivesContext.activeObjectives.map((objective) => {
+            {this.getCompassObjectives(objectivesContext.objectives).map((entity) => {
+              const stateClassName = ObjectiveState[entity.objective.state];
               return (
                 <Objective
-                  style={this.position(facing, objective.bearingDegrees)}
-                  className={objective.entityState.iconClass}
-                  color={this.getObjectiveColor(objective, activeObjectivesContext)}
-                />
+                  style={this.position(facing, entity.objective.bearingDegrees)}
+                  className={`${entity.iconClass} ${stateClassName} ${this.getObjectiveType(entity)}`}>
+                  <ObjectiveIndicator>{this.getObjectiveIndicator(entity, objectivesContext)}</ObjectiveIndicator>
+                </Objective>
               );
             })}
           </Container>
         )}
-      </ActiveObjectivesContext.Consumer>
+      </ObjectivesContext.Consumer>
     );
   }
 
@@ -167,6 +202,10 @@ export class Compass extends React.Component<Props, State> {
 
   public componentWillUnmount() {
     this.playerStateEVH.clear();
+  }
+
+  private getCompassObjectives = (allObjectives: ObjectiveEntityState[]) => {
+    return allObjectives.filter((entity) => entity.objective.visibility & ObjectiveUIVisibility.Compass);
   }
 
   private convertToMinusAngle = (angle: number) => {
@@ -194,14 +233,31 @@ export class Compass extends React.Component<Props, State> {
     return {left: this.angleToPercentage(facing, angle) + '%'};
   }
 
-  private getObjectiveColor = (objective: ActiveObjective, activeObjectivesContext: ActiveObjectivesContextState) => {
-    const objectiveColor = activeObjectivesContext.colorAssign[objective.entityState.entityID];
+  private getObjectiveIndicator = (objective: ObjectiveEntityState, objectivesContext: ObjectivesContextState) => {
+    const objectiveIndicator = objectivesContext.indicatorAssign[objective.entityID];
 
-    if (!objectiveColor) {
-      // We should not get here. Choose unique color that stands out if we do.
-      return 'pink';
+    if (!objectiveIndicator) {
+      // We should not get here. Choose unique Indicator that stands out if we do.
+      return 'idk';
     }
 
-    return objectiveColor.color;
+    return objectiveIndicator.indicator;
+  }
+
+  private getObjectiveType = (objective: ObjectiveEntityState) => {
+    const name = objective.name.toLowerCase();
+    if (name.includes('tower')) {
+      return 'Tower';
+    }
+
+    if (name.includes('health')) {
+      return 'Health';
+    }
+
+    if (name.includes('mana')) {
+      return 'Mana';
+    }
+
+    return '';
   }
 }

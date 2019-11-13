@@ -59,10 +59,10 @@ export const EE_OnPlayerDirectionUpdate = 'playerDirections.update';
 regMap[EE_OnPlayerDirectionUpdate] = 'onPlayerDirectionUpdate';
 
 /**
- * Called when new obvjectives are active, or the players facing changes relative to the objective's position.
+ * Called when new obvjectives are introduced, or the players facing changes relative to the objective's position.
  */
-export const EE_OnActiveObjectivesUpdate = 'activeObjectives.update';
-regMap[EE_OnActiveObjectivesUpdate] = 'onActiveObjectivesUpdate';
+export const EE_OnObjectivesUpdate = 'objectives.update';
+regMap[EE_OnObjectivesUpdate] = 'onObjectivesUpdate';
 
 /**
  * Called when a scenario round that the current player is in has ended.
