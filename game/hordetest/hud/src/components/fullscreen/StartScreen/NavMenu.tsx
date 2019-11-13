@@ -30,6 +30,7 @@ export enum StartScreenRoute {
   BattlePass,
   Store,
   Career,
+  Leaderboards,
 }
 
 export interface Props {
@@ -60,6 +61,7 @@ export function NavMenu(props: Props) {
             {renderRouteButton(StartScreenRoute.Champions)}
             {renderRouteButton(StartScreenRoute.BattlePass)}
             {renderRouteButton(StartScreenRoute.Career)}
+            {renderRouteButton(StartScreenRoute.Leaderboards)}
             {renderRouteButton(StartScreenRoute.Store)}
             {inputContext.isConsole && <ButtonIcon className='icon-xb-rb' />}
           </Container>

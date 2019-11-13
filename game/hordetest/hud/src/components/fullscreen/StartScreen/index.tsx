@@ -13,6 +13,7 @@ import { ChampionProfile } from './ChampionProfile';
 import { Store } from './Store';
 import { BattlePass } from './BattlePass';
 import { CareerStats } from './CareerStats';
+import { Leaderboards } from './Leaderboards';
 
 const Container = styled.div`
   position: relative;
@@ -131,6 +132,14 @@ export function StartScreen(props: Props) {
           <GenericScreenContainer>
             <FullScreenImage />
             <CareerStats />
+          </GenericScreenContainer>
+        );
+      }
+
+      case StartScreenRoute.Leaderboards: {
+        return (
+          <GenericScreenContainer>
+            <Leaderboards />
           </GenericScreenContainer>
         );
       }
