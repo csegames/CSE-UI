@@ -6,8 +6,8 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { ChampionInfo } from './testData';
 import { ActionButton } from '../../ActionButton';
+import { Champion } from '.';
 
 const Container = styled.div`
   width: 65%;
@@ -55,31 +55,31 @@ const Icon = styled.div`
   color: #c1c1c1;
 `;
 
-const Keybind = styled.div`
-  margin-top: 10px;
-  font-size: 12px;
-  line-height: 12px;
-  background-color: black;
-  width: 18px;
-  height: 18px;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+// const Keybind = styled.div`
+//   margin-top: 10px;
+//   font-size: 12px;
+//   line-height: 12px;
+//   background-color: black;
+//   width: 18px;
+//   height: 18px;
+//   color: white;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// `;
 
 const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const AbilityType = styled.div`
-  font-size: 12px;
-  font-family: Lato;
-  font-weight: bold;
-  color: #565656;
-  margin-top: 5px;
-`;
+// const AbilityType = styled.div`
+//   font-size: 12px;
+//   font-family: Lato;
+//   font-weight: bold;
+//   color: #565656;
+//   margin-top: 5px;
+// `;
 
 const AbilityName = styled.div`
   font-size: 24px;
@@ -101,7 +101,7 @@ const ButtonPosition = styled.div`
 `;
 
 export interface Props {
-  selectedChampion: ChampionInfo;
+  selectedChampion: Champion;
 }
 
 export function SkillInfo(props: Props) {
@@ -118,10 +118,10 @@ export function SkillInfo(props: Props) {
             <ListItem>
               <IconContainer>
                 <Icon className={ability.iconClass} />
-                <Keybind>{ability.keybind}</Keybind>
+                {/* <Keybind>{ability.keybind}</Keybind> */}
               </IconContainer>
               <InfoContainer>
-                <AbilityType>{ability.type.toUpperCase()}</AbilityType>
+                {/* <AbilityType>{ability.type.toUpperCase()}</AbilityType> */}
                 <AbilityName>{ability.name}</AbilityName>
                 <AbilityDescription>{ability.description}</AbilityDescription>
               </InfoContainer>

@@ -8,10 +8,8 @@ import React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { EditingMode } from './index';
 import { EquipmentItem } from './EquipmentItem';
-import { ChampionSelect } from './ChampionSelect';
 import { Title } from '../../Title';
-
-import { ChampionInfo } from './testData';
+import { Champion } from './index';
 import { Skin } from '../Store/testData';
 
 const Container = styled.div`
@@ -52,27 +50,29 @@ const EquipmentItemsContainer = styled.div`
 `;
 
 export interface Props {
-  champions: ChampionInfo[];
+  champions: Champion[];
   editingMode: EditingMode;
-  selectedChampion: ChampionInfo;
+  selectedChampion: Champion;
   selectedPreviewSkinInfo: Skin;
   onEditingModeChange: (editingMode: EditingMode) => void;
   onSkinChange: (id: string) => void;
   onWeaponChange: (id: string) => void;
   setSelectedPreviewSkinInfo: (skin: Skin, hideButtons?: boolean) => void;
-  onSelectChampion: (champion: ChampionInfo) => void;
+  onSelectChampion: (champion: Champion) => void;
   onSave: (skin: Skin) => void;
 }
 
 export function ChampionInfoDisplay(props: Props) {
   function getSelectedSkin() {
-    const { selectedChampion } = props;
-    return selectedChampion.availableSkins.find(s => s.id === selectedChampion.selectedSkinId);
+    // const { selectedChampion } = props;
+    // return selectedChampion.availableSkins.find(s => s.id === selectedChampion.selectedSkinId);
+    return null as any;
   }
 
   function getSelectedWeapon() {
-    const { selectedChampion } = props;
-    return selectedChampion.availableWeapons.find(w => w.id === selectedChampion.selectedWeaponId);
+    // const { selectedChampion } = props;
+    // return selectedChampion.availableWeapons.find(w => w.id === selectedChampion.selectedWeaponId);
+    return null as any;
   }
 
   function onEditSkinClick() {
@@ -151,11 +151,13 @@ export function ChampionInfoDisplay(props: Props) {
   }
 
   function renderSkinEdit() {
-    const sortedSkins = props.selectedChampion.availableSkins.sort((a, b) => a.rarity - b.rarity);
-    return sortedSkins.map((skin) => {
+    // const sortedSkins = props.selectedChampion.availableSkins.sort((a, b) => a.rarity - b.rarity);
+    const sortedSkins: any = [];
+    return sortedSkins.map((skin: any) => {
       const selectedPreviewSkinClass = props.selectedPreviewSkinInfo.id === skin.id ? 'selected-preview' : '';
-      const isSelected = props.selectedPreviewSkinInfo.isUnlocked ? skin.id === props.selectedPreviewSkinInfo.id :
-        skin.id === props.selectedChampion.selectedSkinId;
+      // const isSelected = props.selectedPreviewSkinInfo.isUnlocked ? skin.id === props.selectedPreviewSkinInfo.id :
+      //   skin.id === props.selectedChampion.selectedSkinId;
+      const isSelected = false;
       return (
         <EquipmentItem
           shouldShowStatus
@@ -170,11 +172,13 @@ export function ChampionInfoDisplay(props: Props) {
   }
 
   function renderWeaponEdit() {
-    const sortedWeapons = props.selectedChampion.availableWeapons.sort((a, b) => a.rarity - b.rarity);
-    return sortedWeapons.map((weapon) => {
+    // const sortedWeapons = props.selectedChampion.availableWeapons.sort((a, b) => a.rarity - b.rarity);
+    const sortedWeapons: any = [];
+    return sortedWeapons.map((weapon: any) => {
       const selectedPreviewSkinClass = props.selectedPreviewSkinInfo.id === weapon.id ? 'selected-preview' : '';
-      const isSelected = props.selectedPreviewSkinInfo.isUnlocked ? weapon.id === props.selectedPreviewSkinInfo.id :
-        weapon.id === props.selectedChampion.selectedWeaponId;
+      // const isSelected = props.selectedPreviewSkinInfo.isUnlocked ? weapon.id === props.selectedPreviewSkinInfo.id :
+      //   weapon.id === props.selectedChampion.selectedWeaponId;
+      const isSelected = false;
       return (
         <EquipmentItem
           shouldShowStatus
@@ -193,11 +197,6 @@ export function ChampionInfoDisplay(props: Props) {
   return (
     <Container>
       <ChampionName>{props.selectedChampion.name}</ChampionName>
-      <ChampionSelect
-        champions={props.champions}
-        selectedChampion={props.selectedChampion}
-        onSelectChampion={props.onSelectChampion}
-      />
       <EquipmentContainer>
         <Title>{getEquipmentTitle()}</Title>
         <EquipmentItemsContainer>

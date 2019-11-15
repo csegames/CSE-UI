@@ -4,17 +4,19 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { ChampionInfoDisplay } from './ChampionInfoDisplay';
+import { ChampionSelect } from './ChampionSelect';
 import { SkinInfo } from './SkinInfo';
 import { SkillInfo } from './SkillInfo';
 import { ActionButton } from '../../ActionButton';
 
 import { Skin, StoreItemType } from '../Store/testData';
-import { champions, ChampionInfo } from './testData';
-import { InputContext } from 'components/context/InputContext';
+import { InputContext } from 'context/InputContext';
+import { ChampionInfoContext } from 'context/ChampionInfoContext';
+import { ChampionInfo, ChampionCostumeInfo } from '@csegames/library/lib/hordetest/graphql/schema';
 
 const Container = styled.div`
   position: relative;
@@ -30,15 +32,16 @@ const ChampionImage = styled.img`
   height: 100%;
 
   &.should-offset {
-    bottom: -20%;
-    width: 120%;
-    height: 120%;
+    bottom: -25%;
+    right: -20%;
+    width: 110%;
+    height: 110%;
   }
 `;
 
 const ChampionInfoPosition = styled.div`
   position: absolute;
-  top: 10%;
+  top: 20%;
   left: 20%;
 `;
 
@@ -73,6 +76,10 @@ const ConsoleSelectSpacing = css`
   margin-right: 20px;
 `;
 
+// const ChampionSelectPosition = styled.div`
+
+// `;
+
 export interface Props {
 }
 
@@ -85,9 +92,15 @@ export enum EditingMode {
   Logo,
 }
 
+export interface Champion extends ChampionInfo {
+  costumes: ChampionCostumeInfo[];
+}
+
 export function ChampionProfile(props: Props) {
+  const inputContext = useContext(InputContext);
+  const championInfoContext = useContext(ChampionInfoContext);
   const [editingMode, setEditingMode] = useState(EditingMode.None);
-  const [selectedChampion, setSelectedChampion] = useState(champions[0]);
+  const [selectedChampion, setSelectedChampion] = useState(getChampions()[0]);
   const [selectedPreviewSkinInfo, setSelectedPreviewSkinInfo] = useState<Skin>(null);
   const [hideSkinButtons, setHideSkinButtons] = useState(true);
 
@@ -110,16 +123,16 @@ export function ChampionProfile(props: Props) {
     setEditingMode(editingMode)
   }
 
-  function onSelectChampion(champion: ChampionInfo) {
+  function onSelectChampion(champion: Champion) {
     setSelectedChampion(champion);
 
     switch (editingMode) {
       case EditingMode.Skin: {
-        setSelectedPreviewSkinInfo(champion.availableSkins.find(s => s.id === champion.selectedSkinId));
+        // setSelectedPreviewSkinInfo(champion.find(s => s.id === champion.costumes.));
         return;
       }
       case EditingMode.Weapon: {
-        setSelectedPreviewSkinInfo(champion.availableWeapons.find(s => s.id === champion.selectedWeaponId));
+        // setSelectedPreviewSkinInfo(champion.availableWeapons.find(s => s.id === champion.selectedWeaponId));
         return;
       }
       default: return;
@@ -127,18 +140,18 @@ export function ChampionProfile(props: Props) {
   }
 
   function onSkinChange(skinId: string) {
-    const newSelectedChampion: ChampionInfo = {
+    const newSelectedChampion: Champion = {
       ...selectedChampion,
-      selectedSkinId: skinId,
+      // selectedSkinId: skinId,
     };
     setSelectedChampion(newSelectedChampion);
     setHideSkinButtons(true);
   }
 
   function onWeaponChange(weaponId: string) {
-    const newSelectedChampion: ChampionInfo = {
+    const newSelectedChampion: Champion = {
       ...selectedChampion,
-      selectedWeaponId: weaponId,
+      // selectedWeaponId: weaponId,
     };
     setSelectedChampion(newSelectedChampion);
     setHideSkinButtons(true);
@@ -166,54 +179,68 @@ export function ChampionProfile(props: Props) {
     }
   }
 
+  function getChampions(): Champion[] {
+    const champions = cloneDeep(championInfoContext.champions);
+    return champions.map((champ) => {
+      const championCostumes = championInfoContext.championCostumes.filter(costume =>
+        costume.requiredChampionID === champ.id);
+      return {
+        ...champ,
+        costumes: championCostumes,
+      };
+    });
+  }
+
   const offsetClass = editingMode === EditingMode.None ? 'should-offset' : 'no-offset';
+  const champions = getChampions();
   return (
-    <InputContext.Consumer>
-      {({ isConsole }) => (
-        <Container>
-          <ChampionImage className={offsetClass} src={selectedChampion.image} />
-          <ChampionInfoPosition>
-            <ChampionInfoDisplay
-              onSave={onSave}
-              champions={champions}
-              selectedPreviewSkinInfo={selectedPreviewSkinInfo}
-              selectedChampion={selectedChampion}
-              editingMode={editingMode}
-              onEditingModeChange={onEditingModeChanged}
-              onWeaponChange={onWeaponChange}
-              onSkinChange={onSkinChange}
-              setSelectedPreviewSkinInfo={onSelectedPreviewSkinInfoChange}
-              onSelectChampion={onSelectChampion}
-            />
-          </ChampionInfoPosition>
-          <SkinInfoPosition className={offsetClass}>
-            <SkinInfo
-              hideSkinButtons={hideSkinButtons}
-              selectedPreviewSkinInfo={selectedPreviewSkinInfo}
-              onSave={onSave}
-            />
-          </SkinInfoPosition>
-          {!isConsole ?
-            <ButtonPosition>
-              {editingMode === EditingMode.None ?
-                <ActionButton onClick={onShowSkills}>Show skills</ActionButton> :
-                <ActionButton onClick={onReset}>Cancel</ActionButton>
-              }
-            </ButtonPosition> :
-            <ButtonPosition>
-              {editingMode === EditingMode.None &&
-                <ActionButton className={ConsoleSelectSpacing}>
-                  <ConsoleIcon className='icon-xb-a'></ConsoleIcon> Select
-                </ActionButton>
-              }
-              {editingMode === EditingMode.None ?
-                <ActionButton><ConsoleIcon className='icon-xb-x'></ConsoleIcon> Show Skills</ActionButton> :
-                <ActionButton><ConsoleIcon className='icon-xb-x'></ConsoleIcon> Cancel</ActionButton>
-              }
-            </ButtonPosition>
+    <Container>
+      <ChampionImage className={offsetClass} src={selectedChampion.costumes[0].standingImageURL} />
+      <ChampionSelect
+        champions={champions}
+        selectedChampion={selectedChampion}
+        onSelectChampion={onSelectChampion}
+      />
+      <ChampionInfoPosition>
+        <ChampionInfoDisplay
+          onSave={onSave}
+          champions={champions}
+          selectedPreviewSkinInfo={selectedPreviewSkinInfo}
+          selectedChampion={selectedChampion}
+          editingMode={editingMode}
+          onEditingModeChange={onEditingModeChanged}
+          onWeaponChange={onWeaponChange}
+          onSkinChange={onSkinChange}
+          setSelectedPreviewSkinInfo={onSelectedPreviewSkinInfoChange}
+          onSelectChampion={onSelectChampion}
+        />
+      </ChampionInfoPosition>
+      <SkinInfoPosition className={offsetClass}>
+        <SkinInfo
+          hideSkinButtons={hideSkinButtons}
+          selectedPreviewSkinInfo={selectedPreviewSkinInfo}
+          onSave={onSave}
+        />
+      </SkinInfoPosition>
+      {!inputContext.isConsole ?
+        <ButtonPosition>
+          {editingMode === EditingMode.None ?
+            <ActionButton onClick={onShowSkills}>Show skills</ActionButton> :
+            <ActionButton onClick={onReset}>Cancel</ActionButton>
           }
-        </Container>
-      )}
-    </InputContext.Consumer>
+        </ButtonPosition> :
+        <ButtonPosition>
+          {editingMode === EditingMode.None &&
+            <ActionButton className={ConsoleSelectSpacing}>
+              <ConsoleIcon className='icon-xb-a'></ConsoleIcon> Select
+            </ActionButton>
+          }
+          {editingMode === EditingMode.None ?
+            <ActionButton><ConsoleIcon className='icon-xb-x'></ConsoleIcon> Show Skills</ActionButton> :
+            <ActionButton><ConsoleIcon className='icon-xb-x'></ConsoleIcon> Cancel</ActionButton>
+          }
+        </ButtonPosition>
+      }
+    </Container>
   );
 }
