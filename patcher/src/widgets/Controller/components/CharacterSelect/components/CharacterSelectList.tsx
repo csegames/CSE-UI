@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 
 import { ControllerContext, PatcherServer } from '../../../ControllerContext';
-import { patcher, canAccessChannel, ChannelStatus, PatchChannelMode } from '../../../../../services/patcher';
+import { patcher, ChannelStatus, PatchChannelMode } from '../../../../../services/patcher';
 import CharacterList from './CharacterList';
 import ServerOptionsMenu from './ServerOptionsMenu';
 import { APIServerStatus } from '../../ControllerDisplay/index';
@@ -138,11 +138,8 @@ class CharacterSelectList extends React.Component<Props, CharacterSelectListStat
 
   private getServers = () => {
     const { servers, selectedServer } = this.props;
-    const serversForPermission = _.values(servers).filter((server) => {
-      return canAccessChannel(patcher.getPermissions(), server.channelPatchPermissions);
-    });
     const localLastPlay = JSON.parse(localStorage.getItem('cse-patcher-lastplay'));
-    const sortedServers = _.sortBy(serversForPermission, [
+    const sortedServers = _.sortBy(servers, [
       localLastPlay ? (server: any) => server.name === localLastPlay.serverName ? -1 : 0 : null,
       (server: any) => server.available ? -1 : 0,
       selectedServer ? (server: any) => server.shardID === selectedServer.shardID ? -1 : 0 : null
