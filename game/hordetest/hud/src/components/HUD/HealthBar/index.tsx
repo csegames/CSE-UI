@@ -62,7 +62,7 @@ const DamageMultiplier = styled.div`
   position: relative;
   padding: 2px 5px;
   background-color: #a34603;
-  margin-left: 3px;
+  margin-left: 8px;
   font-family: Exo;
   font-size: 13px;
   color: white;

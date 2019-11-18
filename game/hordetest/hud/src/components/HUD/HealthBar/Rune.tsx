@@ -12,7 +12,10 @@ import { showRuneFullScreenEffect } from '../FullScreenEffects/Runes';
 const ANIMATION_DURATION = 2;
 
 const RuneContainer = styled.div`
-  padding: 6px 5px;
+  padding: 6px 0;
+  text-align: center;
+  width: 35px;
+  max-width: 35px;
   margin-left: 3px;
   font-family: Exo;
   font-size: 13px;
