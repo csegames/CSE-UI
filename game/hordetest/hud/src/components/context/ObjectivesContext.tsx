@@ -29,7 +29,6 @@ export const ObjectivesContext = React.createContext(getDefaultObjectivesContext
 
 export class ObjectivesContextProvider extends React.Component<{}, ObjectivesContextState> {
   private eventHandle: EventHandle;
-  private scenarioEVH: EventHandle;
   constructor(props: {}) {
     super(props);
 
@@ -46,7 +45,6 @@ export class ObjectivesContextProvider extends React.Component<{}, ObjectivesCon
 
   public componentDidMount() {
     this.eventHandle = hordetest.game.onObjectivesUpdate(this.handleObjectivesUpdate);
-    this.scenarioEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
 
     // ----- DEBUG DATA -----
     // @ts-ignore
@@ -57,16 +55,13 @@ export class ObjectivesContextProvider extends React.Component<{}, ObjectivesCon
 
   public componentWillUnmount() {
     this.eventHandle.clear();
-    this.scenarioEVH.clear();
   }
 
   private handleObjectivesUpdate = (objectives: ObjectiveEntityState[]) => {
-    this.setState({ objectives: cloneDeep(objectives), indicatorAssign: this.getUpdatedIndicatorAssign(objectives) });
-  }
-
-  private handleScenarioRoundEnded = (scenarioID: string, roundID: string, didEnd: boolean) => {
-    if (didEnd) {
-      this.setState({ indicatorAssign: {} });
+    if (objectives.length === 0) {
+      this.setState({ objectives: cloneDeep(objectives), indicatorAssign: {} });
+    } else {
+      this.setState({ objectives: cloneDeep(objectives), indicatorAssign: this.getUpdatedIndicatorAssign(objectives) });
     }
   }
 
@@ -92,7 +87,7 @@ export class ObjectivesContextProvider extends React.Component<{}, ObjectivesCon
     indicatorAssignArray: ObjectiveIndicator[]
   ): string => {
     const foundIndex = indicatorAssignArray.find((objectiveIndicator) => (
-      objectiveIndicator.iconClass === objective.iconClass && objectiveIndicator.indicator === INDICATORS[indicatorIndex]
+      objectiveIndicator.indicator === INDICATORS[indicatorIndex]
     ));
 
     if (foundIndex) {

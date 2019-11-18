@@ -260,7 +260,7 @@ class ObjectiveWithInjectedContext extends React.Component<ObjectiveProps, State
   }
 
   private getObjectiveType = () => {
-    const name = this.props.objective.name.toLowerCase();
+    const name = this.props.objective.iconClass.toLowerCase();
     if (name.includes('tower')) {
       return 'Tower';
     }

@@ -245,7 +245,7 @@ export class Compass extends React.Component<Props, State> {
   }
 
   private getObjectiveType = (objective: ObjectiveEntityState) => {
-    const name = objective.name.toLowerCase();
+    const name = objective.iconClass.toLowerCase();
     if (name.includes('tower')) {
       return 'Tower';
     }
