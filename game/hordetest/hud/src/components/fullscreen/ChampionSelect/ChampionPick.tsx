@@ -5,8 +5,9 @@
  *
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
+import { ChampionSelectContext } from './context/ChampionSelectContext';
 
 const Container = styled.div`
   position: relative;
@@ -60,9 +61,16 @@ export interface Props {
 }
 
 export function ChampionPick(props: Props) {
+  const { onChampionSelect } = useContext(ChampionSelectContext);
   const selectedClass = props.isSelected ? 'selected' : '';
+
+  function onClick(id: string) {
+    props.onClick(id);
+    onChampionSelect(id);
+  }
+
   return (
-    <Container className={selectedClass} onClick={() => props.onClick(props.id)}>
+    <Container className={selectedClass} onClick={() => onClick(props.id)}>
       <Image src={props.image} />
     </Container>
   );

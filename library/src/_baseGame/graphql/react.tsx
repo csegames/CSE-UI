@@ -240,8 +240,9 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
       } else {
         s = props.subscription;
       }
+
       this.subscription = withDefaults(s, defaultSubscription);
-      this.subscriptionOptions = withDefaults<Options<any>>(s, defaultSubscriptionOpts());
+      this.subscriptionOptions = { ...defaultSubscriptionOpts(), ...s };
     }
   }
 

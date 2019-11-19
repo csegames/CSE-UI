@@ -62,7 +62,7 @@ export function defaultPlayerStateModel(): PlayerStateModel {
     blood: defaultCurrentMax(),
     level: 1,
     race: Race.PerftestMultiStabber,
-    classID: Archetype.Physician,
+    classID: null,
     gender: Gender.Male,
   };
 }

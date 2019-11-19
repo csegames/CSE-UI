@@ -5,9 +5,9 @@
  */
 
 import React from 'react';
-import { styled } from '@csegames/linaria/react';
+import { css } from '@csegames/linaria';
 
-const Container = styled.div`
+const Container = css`
   position: relative;
   cursor: pointer;
   font-family: Colus;
@@ -64,17 +64,21 @@ const Container = styled.div`
 export interface Props {
   type: 'primary' | 'secondary' | 'blue' | 'gray';
   text: string | JSX.Element | JSX.Element[];
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   styles?: string;
   disabled?: boolean;
 }
 
 export function Button(props: Props) {
+  function onClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.persist();
+    props.onClick(e);
+  }
   return (
-    <Container
-      onClick={props.onClick}
-      className={`${props.type} ${props.styles || ''} ${props.disabled ? 'disabled' : ''}`}>
+    <button
+      onClick={onClick}
+      className={`${props.type} ${props.styles || ''} ${props.disabled ? 'disabled' : ''} ${Container}`}>
       {props.text}
-    </Container>
+    </button>
   );
 }

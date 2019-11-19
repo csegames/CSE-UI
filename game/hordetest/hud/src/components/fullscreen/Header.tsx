@@ -39,7 +39,7 @@ export interface Props {
 export function Header(props: Props) {
   const selectedClass = props.isSelected ? 'selected' : '';
   return (
-    <Container className={`${props.className} ${selectedClass}`} onClick={props.onClick}>
+    <Container className={`${props.className || ''} ${selectedClass}`} onClick={props.onClick}>
       {props.children}
     </Container>
   );

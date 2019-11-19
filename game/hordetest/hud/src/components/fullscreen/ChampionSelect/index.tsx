@@ -7,12 +7,16 @@
 
 import React, { useState, useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
+
 import { Header } from '../Header';
 import { ChampionPick } from './ChampionPick';
 import { ChampionInfo } from './ChampionInfo';
 import { LockedList } from './LockedList';
 import { LockIn } from './LockIn';
 import { ChampionInfoContext } from 'context/ChampionInfoContext';
+import { MatchmakingContext } from 'context/MatchmakingContext';
+import { ChampionSelectContextProvider } from './context/ChampionSelectContext';
+import { webAPI } from '@csegames/library/lib/hordetest';
 
 const Container = styled.div`
   position: relative;
@@ -112,7 +116,6 @@ const ConsoleNavIcon = styled.div`
 export interface Props {
   gameMode: string;
   difficulty: string;
-  onLockIn: () => void;
 }
 
 export interface Champion {
@@ -123,20 +126,11 @@ export interface Champion {
   abilities: { type: 'light' | 'heavy' | 'ultimate', name: string, iconClass: string }[];
 }
 
-const players = [
-  { name: 'Player 1', isLocked: false, image: 'images/fullscreen/character-select/selected-face.png' },
-  { name: 'Player 2', isLocked: false, image: 'images/fullscreen/character-select/selected-face.png' },
-  { name: 'Player 3', isLocked: true, image: 'images/fullscreen/character-select/selected-face.png' },
-  { name: 'Player 4', isLocked: false, image: 'images/fullscreen/character-select/selected-face.png' },
-  { name: 'Player 5', isLocked: true, image: 'images/fullscreen/character-select/selected-face.png' },
-  { name: 'Player 6', isLocked: false, image: 'images/fullscreen/character-select/selected-face.png' },
-  { name: 'Player 7', isLocked: false, image: 'images/fullscreen/character-select/selected-face.png' },
-  { name: 'Player 8', isLocked: true, image: 'images/fullscreen/character-select/selected-face.png' },
-];
-
 export function ChampionSelect(props: Props) {
   const { champions, championCostumes } = useContext(ChampionInfoContext);
+  const { matchID } = useContext(MatchmakingContext);
   const [selectedChampion, setSelectedChampion] = useState(champions[0]);
+  const [isLocked, setIsLocked] = useState(false);
 
   function getChampionCostumeInfo(championID: string) {
     return championCostumes.find(c => c.requiredChampionID === championID);
@@ -145,51 +139,70 @@ export function ChampionSelect(props: Props) {
   function onChampionPick(championID: string) {
     const champion = champions.find(c => championID === c.id);
     setSelectedChampion(champion);
+    updateSelectedChampion(championID);
+  }
+
+  async function updateSelectedChampion(championID: string) {
+    const request = {
+      championID,
+    };
+    await webAPI.ChampionAPI.SelectChampion(webAPI.defaultConfig, request as any);
+  }
+
+  async function onLockIn() {
+    setIsLocked(true);
+    const res = await webAPI.ChampionAPI.LockInChampionSelection(webAPI.defaultConfig);
+    if (!res.ok) {
+      // TODO: Handle why this is not OK
+      setIsLocked(false);
+    }
   }
 
   const selectedChampionCostumeInfo = getChampionCostumeInfo(selectedChampion.id);
   return (
-    <Container>
-      <HeaderContainer>
-        <HeaderItemContainer>
-          <GameModeContainer>
-            <GameModeText>{props.gameMode}</GameModeText>
-            <GameModeDifficulty>{props.difficulty}</GameModeDifficulty>
-          </GameModeContainer>
-        </HeaderItemContainer>
-        <HeaderItemContainer className='align-center'>
-          <Header isSelected>Select your champion</Header>
-        </HeaderItemContainer>
-        <HeaderItemContainer />
-      </HeaderContainer>
-      <ChampionPickContainer>
-        <ConsoleNavIcon className='icon-xb-lb' />
-        {champions.map((champion) => {
-          const isSelected = champion.id === selectedChampion.id;
-          const championCostumeInfo = getChampionCostumeInfo(champion.id);
-          return (
-            <ChampionPick
-              isSelected={isSelected}
-              id={champion.id}
-              image={championCostumeInfo.thumbnailURL}
-              onClick={onChampionPick}
-            />
-          );
-        })}
-        <ConsoleNavIcon className='icon-xb-rb' />
-      </ChampionPickContainer>
-      <SelectedChampionContainer>
-        <SelectedChampionImage src={selectedChampionCostumeInfo.standingImageURL} />
-      </SelectedChampionContainer>
-      <ChampionInfoContainer>
-        <ChampionInfo selectedChampion={selectedChampion} />
-      </ChampionInfoContainer>
-      <LockedListContainer>
-        <LockedList players={players} />
-      </LockedListContainer>
-      <LockInPosition>
-        <LockIn onLockIn={props.onLockIn} />
-      </LockInPosition>
-    </Container>
+    <ChampionSelectContextProvider matchID={matchID}>
+      <Container>
+        <HeaderContainer>
+          <HeaderItemContainer>
+            <GameModeContainer>
+              <GameModeText>{props.gameMode}</GameModeText>
+              <GameModeDifficulty>{props.difficulty}</GameModeDifficulty>
+            </GameModeContainer>
+          </HeaderItemContainer>
+          <HeaderItemContainer className='align-center'>
+            <Header isSelected>Select your champion</Header>
+          </HeaderItemContainer>
+          <HeaderItemContainer />
+        </HeaderContainer>
+        <ChampionPickContainer>
+          <ConsoleNavIcon className='icon-xb-lb' />
+          {champions.map((champion) => {
+            const isSelected = champion.id === selectedChampion.id;
+            const championCostumeInfo = getChampionCostumeInfo(champion.id);
+            return (
+              <ChampionPick
+                isSelected={isSelected}
+                id={champion.id}
+                image={championCostumeInfo.thumbnailURL}
+                onClick={onChampionPick}
+              />
+            );
+          })}
+          <ConsoleNavIcon className='icon-xb-rb' />
+        </ChampionPickContainer>
+        <SelectedChampionContainer>
+          <SelectedChampionImage src={selectedChampionCostumeInfo.standingImageURL} />
+        </SelectedChampionContainer>
+        <ChampionInfoContainer>
+          <ChampionInfo selectedChampion={selectedChampion} />
+        </ChampionInfoContainer>
+        <LockedListContainer>
+          <LockedList />
+        </LockedListContainer>
+        <LockInPosition>
+          <LockIn isLocked={isLocked} onLockIn={onLockIn} />
+        </LockInPosition>
+      </Container>
+    </ChampionSelectContextProvider>
   );
 }

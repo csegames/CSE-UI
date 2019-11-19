@@ -73,7 +73,6 @@ const FullScreenImage = styled.div`
 `;
 
 export interface Props {
-  onReady: () => void;
 }
 
 export function StartScreen(props: Props) {
@@ -98,7 +97,7 @@ export function StartScreen(props: Props) {
       case StartScreenRoute.Play: {
         return (
           <PlayContainer>
-            <Play onReady={props.onReady} />
+            <Play />
           </PlayContainer>
         );
       }

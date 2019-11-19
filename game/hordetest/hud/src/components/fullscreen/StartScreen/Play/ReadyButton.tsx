@@ -4,29 +4,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
-import gql from 'graphql-tag';
+import React, { useContext } from 'react';
+// import gql from 'graphql-tag';
 // import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
-import * as webAPI from '@csegames/library/lib/camelotunchained/webAPI';
-import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
+import { webAPI } from '@csegames/library/lib/hordetest';
+import { IMatchmakingUpdate, MatchmakingUpdateType } from '@csegames/library/lib/hordetest/graphql/schema';
 
 import { InputContext, InputContextState } from 'context/InputContext';
+import { MatchmakingContext, MatchmakingContextState, onMatchmakingUpdate } from 'context/MatchmakingContext';
+import { WarbandContext, WarbandContextState } from 'context/WarbandContext';
 // import { Button } from '../../Button';
-import { Match } from '@csegames/library/lib/_baseGame/graphql/schema';
-
-const query = gql`
-  query ReadyButtonQuery {
-    myScenarioQueue {
-      availableMatches {
-        id
-        name
-        isQueued
-        isInScenario
-      }
-    }
-  }
-`;
 
 const ReadyButtonStyle = styled.div`
   position: relative;
@@ -48,6 +36,11 @@ const ReadyButtonStyle = styled.div`
   border: 2px solid #ff9e57;
   font-family: Colus;
 
+  &.searching {
+    pointer-events: none;
+    filter: grayscale(100%);
+  }
+
   div, span {
     cursor: pointer;
   }
@@ -61,19 +54,19 @@ const ReadyButtonStyle = styled.div`
   }
 `;
 
-const QueueTimerText = styled.div`
-  font-size: 20px;
-`;
+// const QueueTimerText = styled.div`
+//   font-size: 20px;
+// `;
 
 const ConsoleButton = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const QueuedButton = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
+// const QueuedButton = styled.div`
+//   display: flex;
+//   flex-direction: column;
+// `;
 
 const ButtonIcon = styled.span`
   font-size: 24px;
@@ -81,53 +74,55 @@ const ButtonIcon = styled.span`
 `;
 
 export interface Props {
+  warbandContextState: WarbandContextState;
+  inputContext: InputContextState;
+  matchmakingContext: MatchmakingContextState;
+
   onReady: () => void;
+  onUnready: () => void;
 }
 
 export interface State {
-  match: Match;
-  inQueueTimer: number;
-  isCancelling: boolean;
+  isReady: boolean;
+  isSearching: boolean;
 }
 
-export class ReadyButton extends React.Component<Props, State> {
-  private pollIntervalHandle: number;
-  private graphql: GraphQLResult<any>;
-
+class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
+  private matchmakingEVH: EventHandle;
   constructor(props: Props) {
     super(props);
+
     this.state = {
-      match: null,
-      inQueueTimer: 0,
-      isCancelling: false,
-    }
+      isReady: false,
+      isSearching: false,
+    };
   }
 
   public render() {
+    const { inputContext } = this.props;
+    const searchingClass = this.state.isSearching ? 'searching' : '';
     return (
-      <InputContext.Consumer>
-        {(inputContext: InputContextState) => (
-            <>
-              <GraphQL query={query} onQueryResult={this.handleQueryResult} />
-              <ReadyButtonStyle onClick={this.onClick}>{this.renderButton(inputContext.isConsole)}</ReadyButtonStyle>
-            </>
-        )}
-      </InputContext.Consumer>
+      <ReadyButtonStyle
+        className={searchingClass}
+        onClick={this.onClick}>
+          {this.renderButton(inputContext.isConsole)}
+      </ReadyButtonStyle>
     );
   }
 
   private renderButton = (isConsole: boolean) => {
-    if (this.state.isCancelling) {
-      return <ConsoleButton>Cancelling...</ConsoleButton>;
+    if (this.state.isSearching) {
+      return 'Searching...';
     }
 
-    if (this.state.match && this.state.match.isQueued) {
+    if (this.state.isReady) {
       return (
-        <QueuedButton>
-          {isConsole ? <ConsoleButton><ButtonIcon className='icon-xb-a' /> Cancel</ConsoleButton> : 'Cancel'}
-          <QueueTimerText>{this.state.inQueueTimer}s</QueueTimerText>
-        </QueuedButton>
-      )
+        isConsole ?
+          <ConsoleButton>
+            <ButtonIcon className='icon-xb-a'></ButtonIcon> Unready
+          </ConsoleButton> :
+          'Unready'
+      );
     }
 
     return (
@@ -139,109 +134,82 @@ export class ReadyButton extends React.Component<Props, State> {
     )
   }
 
-  public componentWillUnmount() {
-    this.stopPollCheck();
+  public componentDidMount() {
+    this.matchmakingEVH = onMatchmakingUpdate(this.handleMatchmakingUpdate);
+
+    const myMemberState = this.props.warbandContextState.groupMembers[hordetest.game.selfPlayerState.characterID];
+    if (myMemberState && myMemberState.isReady) {
+      this.setState({ isReady: true });
+    }
+  }
+
+  public componentDidUpdate(prevProps: Props) {
+    const prevMemberState = prevProps.warbandContextState.groupMembers[hordetest.game.selfPlayerState.characterID];
+    const myMemberState = this.props.warbandContextState.groupMembers[hordetest.game.selfPlayerState.characterID];
+
+    const prevIsReady = prevMemberState && prevMemberState.isReady;
+    const myIsReady = myMemberState && myMemberState.isReady;
+    if (prevIsReady !== myIsReady) {
+      this.setState({ isReady: myIsReady });
+    }
+  }
+
+  public componentWillUnmout() {
+    this.matchmakingEVH.clear();
+  }
+
+  private handleMatchmakingUpdate = (matchmakingUpdate: IMatchmakingUpdate) => {
+    switch (matchmakingUpdate.type) {
+      case MatchmakingUpdateType.Entered: {
+        this.setState({ isSearching: true });
+        break;
+      }
+    }
   }
 
   private onClick = () => {
-    // TEMP
-    this.props.onReady();
-    return;
-
-    // Real matchmaking logic
-    const { match } = this.state;
-
-    if (match && match.isQueued) {
-      this.removeFromQueue();
+    if (this.state.isReady) {
+      this.setState({ isReady: false });
+      this.unready();
     } else {
-      this.addToQueue();
+      this.setState({ isReady: true });
+      this.readyUp();
     }
   }
 
-  private handleQueryResult = (gql: GraphQLResult<any>) => {
-    this.graphql = gql;
-    if (!gql || !gql.data || !gql.data.myScenarioQueue) return gql;
-
-    const availableMatches = gql.data.myScenarioQueue.availableMatches;
-    const availableMatch: Match = availableMatches.find((match: Match) => match.name === 'Horde Test');
-
-    if (!availableMatch) {
-      return gql;
-    }
-
-    if (!this.state.match && availableMatch.isQueued) {
-      this.startPollCheck();
-    }
-
-    this.setState({ match: availableMatch });
-    return gql;
-  }
-
-  private addToQueue = async () => {
-    const { match } = this.state;
-    if (!match.id || match.isQueued || match.isInScenario) return;
-
-    const res = await webAPI.ScenarioAPI.AddToQueue(
-      webAPI.defaultConfig,
-      game.shardID,
-      hordetest.game.selfPlayerState.characterID,
-      match.id,
-    );
-
-    if (res.ok) {
-      this.setState({ match: { ...this.state.match, isQueued: true } });
-      this.startPollCheck();
-    }
-  }
-
-  private removeFromQueue = async () => {
-    const { match } = this.state;
-    if (!match.id) return;
-
-    const res = await webAPI.ScenarioAPI.RemoveFromQueue(
-      webAPI.defaultConfig,
-      game.shardID,
-      hordetest.game.selfPlayerState.characterID,
-      match.id,
-    );
-
-    if (res.ok) {
-      this.setState({ isCancelling: true });
-    }
-  }
-
-  private startPollCheck = () => {
-    this.pollIntervalHandle = window.setInterval(this.handlePollCheck, 1000);
-  }
-
-  private stopPollCheck = () => {
-    if (this.pollIntervalHandle) {
-      window.clearInterval(this.pollIntervalHandle);
-      this.pollIntervalHandle = null;
-    }
-  }
-
-  private handlePollCheck = () => {
-    if (this.state.match.isInScenario) {
-      this.stopPollCheck();
-      this.setState({ inQueueTimer: 0 });
+  private readyUp = async () => {
+    const res = await webAPI.GroupsAPI.ReadyUpV1(webAPI.defaultConfig, this.props.warbandContextState.groupID);
+    if (!res.ok) {
+      // TODO: Handle error
+      this.setState({ isReady: false });
+    } else {
       this.props.onReady();
-      return;
     }
-
-    if (!this.state.match.isQueued) {
-      this.stopPollCheck();
-      this.setState({ isCancelling: false, inQueueTimer: 0 });
-      return;
-    }
-
-    const newTime = this.state.inQueueTimer + 1;
-
-    if (this.graphql && newTime % 2 === 0) {
-      // refetch every 5 seconds
-      this.graphql.refetch();
-    }
-
-    this.setState({ inQueueTimer: newTime });
   }
+
+  private unready = async () => {
+    const res = await webAPI.GroupsAPI.UnReadyV1(webAPI.defaultConfig, this.props.warbandContextState.groupID);
+    if (!res.ok) {
+      // TODO: Handle error
+      this.setState({ isReady: true });
+    } else {
+      this.props.onUnready();
+    }
+  }
+}
+
+export function ReadyButton(props: { onReady: () => void, onUnready: () => void }) {
+  const inputContextState = useContext(InputContext);
+  const matchmakingContextState = useContext(MatchmakingContext);
+  const warbandContextState = useContext(WarbandContext);
+
+  return (
+    <ReadyButtonWithInjectedContext
+      warbandContextState={warbandContextState}
+      inputContext={inputContextState}
+      matchmakingContext={matchmakingContextState}
+      onReady={props.onReady}
+      onUnready={props.onUnready}
+    />
+  )
 }

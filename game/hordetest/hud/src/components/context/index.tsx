@@ -6,28 +6,39 @@
 
 import React from 'react';
 import { InputContextProvider } from './InputContext';
-import { ScreenContextProvider } from './ScreenContext';
 import { ViewBearingContextProvider } from './ViewBearingContext';
 import { ObjectivesContextProvider } from './ObjectivesContext';
 import { PlayerPositionContextProvider } from './PlayerPositionContext';
 import { ChampionInfoContextProvider } from './ChampionInfoContext';
+import { WarbandContextProvider } from './WarbandContext';
+import { MatchmakingContextProvider } from './MatchmakingContext';
 
 export class ContextProviders extends React.Component<{}> {
   public render() {
     return (
       <InputContextProvider>
-        <ScreenContextProvider>
-          <ChampionInfoContextProvider>
-            <ViewBearingContextProvider>
-              <ObjectivesContextProvider>
-                <PlayerPositionContextProvider>
-                  {this.props.children}
-                </PlayerPositionContextProvider>
-              </ObjectivesContextProvider>
-            </ViewBearingContextProvider>
-          </ChampionInfoContextProvider>
-        </ScreenContextProvider>
+        <ViewBearingContextProvider>
+          <ObjectivesContextProvider>
+            <PlayerPositionContextProvider>
+              {this.props.children}
+            </PlayerPositionContextProvider>
+          </ObjectivesContextProvider>
+        </ViewBearingContextProvider>
       </InputContextProvider>
+    );
+  }
+}
+
+export class FullScreenContextProviders extends React.Component<{}> {
+  public render() {
+    return (
+      <ChampionInfoContextProvider>
+        <MatchmakingContextProvider>
+          <WarbandContextProvider>
+            {this.props.children}
+          </WarbandContextProvider>
+        </MatchmakingContextProvider>
+      </ChampionInfoContextProvider>
     );
   }
 }

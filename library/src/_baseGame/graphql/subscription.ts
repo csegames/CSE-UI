@@ -128,7 +128,9 @@ export class SubscriptionManager {
   public subscribe = <T>(
     subscription: Subscription,
     onData: OnData<T>,
-    onError?: OnError) => {
+    onError?: OnError,
+    options?: any) => {
+    this.initPayload = options.initPayload;
     const id = `gql-subscription-operation-${this.idCounter++}`;
 
     let payload;
@@ -184,6 +186,7 @@ export class SubscriptionManager {
     if (this.debug) {
       this.log('init');
     }
+
     this.socket.send(JSON.stringify({
       type: GQL_CONNECTION_INIT,
       payload: this.initPayload,
@@ -324,7 +327,7 @@ export function subscribe<DataType>(
   }
 
   return {
-    id: subscriptionManager.subscribe(subscription, onData, onError),
+    id: subscriptionManager.subscribe(subscription, onData, onError, options),
     subscriptions: subscriptionManager,
   };
 }

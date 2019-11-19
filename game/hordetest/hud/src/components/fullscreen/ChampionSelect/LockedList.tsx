@@ -5,8 +5,9 @@
  *
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
+import { ChampionSelectContext } from './context/ChampionSelectContext';
 
 const Container = styled.div`
 `;
@@ -51,18 +52,23 @@ const NameOfPlayer = styled.div`
 `;
 
 export interface Props {
-  players: { name: string, isLocked: boolean, image: string }[];
 }
 
 export function LockedList(props: Props) {
+  const { playerStates } = useContext(ChampionSelectContext);
+
   return (
     <Container>
-      {props.players.map((player) => {
+      {Object.values(playerStates).map((player) => {
         const lockedClass = player.isLocked ? 'locked' : '';
+        const championID = player.championID ? player.championID : '';
+        const isLocked = player.isLocked ? true : false;
         return (
           <ListItem className={lockedClass}>
-            <BGImage src={player.image} />
-            <NameOfPlayer>{player.name} {player.isLocked ? 'is locked in' : ''}</NameOfPlayer>
+            <BGImage src={'images/fullscreen/character-select/selected-face.png'} />
+            <NameOfPlayer>
+              {player.characterID} - {championID} {isLocked ? 'is locked in' : ''}
+            </NameOfPlayer>
           </ListItem>
         );
       })}

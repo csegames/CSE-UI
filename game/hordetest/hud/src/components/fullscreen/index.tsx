@@ -77,6 +77,7 @@ export class FullScreen extends React.Component<Props, State> {
   private hideEVH: EventHandle;
   private navigateEVH: EventHandle;
   private scenarioEndedEVH: EventHandle;
+  private matchmakingEVH: EventHandle;
 
   constructor(props: Props) {
     super(props);
@@ -108,12 +109,12 @@ export class FullScreen extends React.Component<Props, State> {
     switch (this.state.currentRoute) {
       case Route.Start: {
         return (
-          <StartScreen onReady={this.onReady} />
+          <StartScreen />
         );
       }
       case Route.ChampionSelect: {
         return (
-          <ChampionSelect gameMode={'Survival'} difficulty={'Normal'} onLockIn={this.onLockIn} />
+          <ChampionSelect gameMode={'Survival'} difficulty={'Normal'} />
         );
       }
       case Route.EndGameStats: {
@@ -136,6 +137,7 @@ export class FullScreen extends React.Component<Props, State> {
     this.hideEVH.clear();
     this.navigateEVH.clear();
     this.scenarioEndedEVH.clear();
+    this.matchmakingEVH.clear();
   }
 
   private show = () => {
@@ -144,14 +146,7 @@ export class FullScreen extends React.Component<Props, State> {
 
   private hide = () => {
     this.setState({ isVisible: false, currentRoute: Route.Start });
-  }
-
-  private onReady = () => {
-    this.navigateTo(Route.ChampionSelect);
-  }
-
-  private onLockIn = () => {
-    // this.navigateTo(Route.EndGameStats);
+    game.trigger('hide-middle-modal');
   }
 
   private goToStart = () => {

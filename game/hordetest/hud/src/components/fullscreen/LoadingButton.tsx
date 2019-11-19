@@ -22,6 +22,11 @@ const Container = styled.div`
     cursor: pointer;
   }
 
+  &.disabled {
+    filter: grayscale(100%);
+    pointer-events: none;
+  }
+
   &:hover {
     filter: brightness(120%);
   }
@@ -62,11 +67,13 @@ export interface Props {
   text: string | JSX.Element | JSX.Element[];
   onClick?: () => void;
   styles?: string;
+  disabled?: boolean;
 }
 
 export function LoadingButton(props: Props) {
+  const disabledClassName = props.disabled ? 'disabled' : '';
   return (
-    <Container onClick={props.onClick} className={props.styles || ''}>
+    <Container onClick={props.onClick} className={`${props.styles || ''} ${disabledClassName}`}>
       <ButtonBackground />
       <ButtonLoad style={{ width: `${(props.current / props.max) * 100}%` }} />
       <TextContainer>{props.text}</TextContainer>

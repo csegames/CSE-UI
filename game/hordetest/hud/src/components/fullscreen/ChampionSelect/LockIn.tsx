@@ -48,6 +48,7 @@ const ConsoleIcon = styled.span`
 `;
 
 export interface Props {
+  isLocked: boolean;
   onLockIn: () => void;
 }
 
@@ -76,6 +77,7 @@ export class LockIn extends React.Component<Props, State> {
           <Container>
             {!inputContext.isConsole ?
               <LoadingButton
+                disabled={this.props.isLocked}
                 current={this.state.currentPercentage}
                 max={100}
                 styles={LockInButton}
@@ -90,6 +92,7 @@ export class LockIn extends React.Component<Props, State> {
                 }
               /> :
               <LoadingButton
+                disabled={this.props.isLocked}
                 current={this.state.currentPercentage}
                 max={100}
                 styles={LockInButton}

@@ -5,25 +5,8 @@
  */
 
 import React from 'react';
-import { styled } from '@csegames/linaria/react';
 import { ItemContainer } from './ItemContainer';
-
-const SearchBox = styled.input`
-  height: 25px;
-  width: 100%;
-  background-color: black;
-  color: white;
-  margin: 2px;
-  border: 0;
-  padding: 0 10px;
-  outline: none;
-  box-shadow: 0 0 1px transparent;
-  transition: box-shadow 0.3s;
-
-  &:focus {
-    box-shadow: 0 0 1px rgba(239,190,152,1);
-  }
-`;
+import { Input } from '../Input';
 
 export interface Props {
   searchValue: string;
@@ -37,7 +20,7 @@ export function SearchBar(props: Props) {
 
   return (
     <ItemContainer>
-      <SearchBox placeholder='Search' value={props.searchValue} onChange={onChange} />
+      <Input placeholder='Search' value={props.searchValue} onChange={onChange} />
     </ItemContainer>
   );
 }
