@@ -25,6 +25,10 @@ const Button = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   transform: skewX(-10deg);
 
+  &.disabled {
+    box-shadow: inset 0 0 0 5px #AF000D;
+  }
+
   &.activeAnim {
     background: linear-gradient( to bottom left, #F37326 , #FCCA21);
     animation-name: glow;
@@ -48,6 +52,10 @@ const ActionIcon = styled.span`
   font-size: 40px;
   color: white;
   transform: skewX(10deg);
+
+  &.disabled {
+    opacity: 0.8;
+  }
 
   &.cooldown {
     color: #777e84;
@@ -159,6 +167,18 @@ const Spark = styled.div`
   }
 `;
 
+const DisabledSlash = styled.img`
+  position: absolute;
+  top: -20%;
+  right: 0;
+  left: -20%;
+  bottom: 0;
+  width: 140%;
+  height: 140%;
+  object-fit: contain;
+  transform: rotate(-5deg)
+`;
+
 export interface Props {
   actionIconClass: string;
   keybindText: string;
@@ -167,6 +187,7 @@ export interface Props {
   className?: string;
   cooldownTimer?: CurrentMax & { progress: number };
   showActiveAnim?: boolean;
+  disabled?: boolean;
 }
 
 export function ActionButton(props: Props) {
@@ -176,10 +197,12 @@ export function ActionButton(props: Props) {
 
   const { cooldownTimer } = props;
   const onCooldown = isOnCooldown();
+  const disabledClass = props.disabled ? 'disabled' : '';
+  const activeAnimClass = props.showActiveAnim && !props.disabled ? 'activeAnim' : '';
   return (
     <ActionButtonContainer className={props.className}>
-      <Button className={props.showActiveAnim ? 'activeAnim' : ''}>
-        <ActionIcon className={`${props.actionIconClass} ${onCooldown ? 'cooldown' : ''}`} />
+      <Button className={`${disabledClass} ${activeAnimClass}`}>
+        <ActionIcon className={`${props.actionIconClass} ${disabledClass} ${onCooldown ? 'cooldown' : ''}`} />
         {onCooldown &&
           <CooldownContainer>
             <CooldownOverlay
@@ -188,7 +211,7 @@ export function ActionButton(props: Props) {
             <CooldownText>{cooldownTimer.current}</CooldownText>
           </CooldownContainer>
         }
-        {props.showActiveAnim &&
+        {props.showActiveAnim && !props.disabled &&
           <>
             <Spark>♦ </Spark>
             <Spark className='s2'>♦ </Spark>
@@ -197,6 +220,7 @@ export function ActionButton(props: Props) {
             <Spark className='s5'>♦ </Spark>
           </>
         }
+        {props.disabled && <DisabledSlash src='images/hud/disabled.svg' />}
       </Button>
       <KeybindBox>
         {props.keybindIconClass ?

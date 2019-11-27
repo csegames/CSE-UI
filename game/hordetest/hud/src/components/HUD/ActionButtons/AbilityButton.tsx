@@ -18,6 +18,7 @@ export interface Props {
 
 export interface State {
   cooldownTimer: CurrentMax & Timing & { progress: number };
+  isReady: boolean;
 }
 
 export class AbilityButton extends React.Component<Props, State> {
@@ -26,12 +27,14 @@ export class AbilityButton extends React.Component<Props, State> {
     super(props);
     this.state = {
       cooldownTimer: { start: 0, duration: 0, current: 0, max: 0, progress: 0 },
+      isReady: this.getIsReady(),
     };
   }
 
   public render() {
     return (
       <ActionButton
+        disabled={!this.state.isReady}
         actionIconClass={this.props.actionIconClass}
         keybindText={this.props.keybindText}
         abilityID={this.props.abilityID}
@@ -51,6 +54,7 @@ export class AbilityButton extends React.Component<Props, State> {
       // Check on updated
       this.abilityStateHandle = hordetest.game.abilityStates[this.props.abilityID].onUpdated(() => {
         this.checkStartCountdown();
+        this.checkIsReady();
       });
     }
   }
@@ -67,6 +71,13 @@ export class AbilityButton extends React.Component<Props, State> {
     const ability = hordetest.game.abilityStates[this.props.abilityID];
     if (ability.status & AbilityButtonState.Cooldown) {
       this.startCountdown(ability.timing)
+    }
+  }
+
+  private checkIsReady = () => {
+    const isReady = this.getIsReady();
+    if (isReady !== this.state.isReady) {
+      this.setState({ isReady });
     }
   }
 
@@ -109,5 +120,16 @@ export class AbilityButton extends React.Component<Props, State> {
   private getTimingEnd = (timing: DeepImmutableObject<Timing>) => {
     const timingEnd = ((timing.start + timing.duration) - game.worldTime) * 1000;
     return timingEnd;
+  }
+
+  private getIsReady = () => {
+    if (!this.props.abilityID) return false;
+
+    const ability = hordetest.game.abilityStates[this.props.abilityID];
+    if (ability.status & AbilityButtonState.Unusable) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }
