@@ -106,6 +106,16 @@ export interface GameInterface extends GameModel {
   abilityBarState: AbilityBarState;
 
   /**
+   * List of class defs
+   */
+  classes: CharacterClassDef[];
+
+  /**
+   * List of race defs
+   */
+  races: CharacterRaceDef[];
+
+  /**
    * Current state of the consumable items
    */
   consumableItemsState: ConsumableItemsState;

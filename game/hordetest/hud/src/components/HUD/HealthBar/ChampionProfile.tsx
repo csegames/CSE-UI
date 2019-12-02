@@ -42,10 +42,17 @@ export interface Props {
 }
 
 export function ChampionProfile(props: Props) {
+  function getProfileImage() {
+    const myRace = hordetest.game.races.find(r => r.id === hordetest.game.selfPlayerState.race);
+    if (!myRace) return 'images/fullscreen/character-select/face.png';
+
+    return myRace.thumbnailURL;
+  }
+
   return (
     <ChampionProfileContainer className={props.containerStyles ? props.containerStyles : ''}>
       <ProfileBox>
-        <Image src='images/fullscreen/character-select/face.png' />
+        <Image src={getProfileImage()} />
       </ProfileBox>
     </ChampionProfileContainer>
   );

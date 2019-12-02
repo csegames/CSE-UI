@@ -31,6 +31,9 @@ export default function(isAttached: boolean) {
   initConsumableItemsState();
 
 
+  hordetest._devGame.classes = (_devGame as any).classes;
+  hordetest._devGame.races = (_devGame as any).races;
+
   // READY!
   _devGame.ready = true;
 }

@@ -22,12 +22,6 @@ const ActionButtonSpacing = css`
 export interface Props {
 }
 
-const index2Icon = [
-  'fs-icon-berserker-frozen-wrath',
-  'fs-icon-berserker-ground-slam',
-  'fs-icon-berserker-enrage'
-];
-
 export function ActionButtons(props: Props) {
   const [weakAbility, setWeakAbility] = useState(cloneDeep(hordetest.game.abilityBarState.weak));
   const [strongAbility, setStrongAbility] = useState(cloneDeep(hordetest.game.abilityBarState.strong));
@@ -56,6 +50,19 @@ export function ActionButtons(props: Props) {
     }
   }, [hordetest.game.abilityBarState]);
 
+  function getAbilityIconClass(abilityIndex: number) {
+    const myClass = hordetest.game.classes.find(c => c.id === hordetest.game.selfPlayerState.classID);
+    if  (!myClass) {
+      console.error('Could not find character def class for ability icon class');
+      return '';
+    }
+
+    const ability = myClass.abilities[abilityIndex];
+    if (!ability) return '';
+
+    return ability.iconClass;
+  }
+
   function renderAbilityButton(ability: AbilityBarItem, i: number, type: 'weak' | 'strong' | 'ultimate') {
     return (
       <AbilityButton
@@ -63,7 +70,7 @@ export function ActionButtons(props: Props) {
         key={ability.id}
         abilityID={ability.id}
         className={ActionButtonSpacing}
-        actionIconClass={index2Icon[i]}
+        actionIconClass={getAbilityIconClass(i)}
         keybindText={ability.boundKeyName}
         keybindIconClass={ability.binding.iconClass}
       />
@@ -72,9 +79,9 @@ export function ActionButtons(props: Props) {
 
   return (
     <ActionButtonsContainer>
-      {weakAbility && weakAbility.id >= 0 && renderAbilityButton(weakAbility, 0, 'weak')}
-      {strongAbility && strongAbility.id >= 0 && renderAbilityButton(strongAbility, 1, 'strong')}
-      {ultimateAbility && ultimateAbility.id >= 0 && renderAbilityButton(ultimateAbility, 2, 'ultimate')}
+      {weakAbility && weakAbility.id >= 0 && renderAbilityButton(weakAbility, 2, 'weak')}
+      {strongAbility && strongAbility.id >= 0 && renderAbilityButton(strongAbility, 3, 'strong')}
+      {ultimateAbility && ultimateAbility.id >= 0 && renderAbilityButton(ultimateAbility, 4, 'ultimate')}
     </ActionButtonsContainer>
   );
 }
