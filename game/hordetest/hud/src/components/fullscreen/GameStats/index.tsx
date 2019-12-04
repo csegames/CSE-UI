@@ -10,7 +10,7 @@ import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 import { SubscriptionResult } from '@csegames/library/lib/_baseGame/graphql/subscription';
-import * as webAPI from '@csegames/library/lib/camelotunchained/webAPI';
+import * as webAPI from '@csegames/library/lib/hordetest/webAPI';
 import {
   OvermindSummaryDBModel,
   OvermindSummaryAlert,

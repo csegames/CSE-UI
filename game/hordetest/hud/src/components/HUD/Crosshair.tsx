@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@csegames/linaria/react';
 
 const CrosshairImage = styled.img`
@@ -13,7 +13,27 @@ const CrosshairImage = styled.img`
 `;
 
 export function Crosshair() {
-  return (
+  const [isVisible, setIsVisible] = useState(cloneDeep(hordetest.game.selfPlayerState.isAlive));
+
+  useEffect((() => {
+    const evh = hordetest.game.selfPlayerState.onUpdated(() => {
+      if (hordetest.game.selfPlayerState.isAlive) {
+        if (!isVisible) {
+          setIsVisible(true);
+        }
+      } else {
+        if (isVisible) {
+          setIsVisible(false);
+        }
+      }
+    });
+
+    return () => {
+      evh.clear();
+    };
+  }));
+
+  return isVisible ? (
     <CrosshairImage src={'images/hud/crosshair.png'} />
-  );
+  ) : null;
 }

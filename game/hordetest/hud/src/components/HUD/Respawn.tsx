@@ -8,100 +8,141 @@ import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { InputContext } from 'components/context/InputContext';
 
-export const RespawnDimensions = {
-  width: 532,
-  height: 166,
-  widthUHD: 1064,
-  heightUHD: 332,
-};
-
 const Container = styled.div`
-  position: relative;
-  pointer-events: all;
-  width: ${RespawnDimensions.widthUHD}px;
-  height: ${RespawnDimensions.heightUHD}px;
-  background-image: url(../images/hud/respawn/uhd/banner.png);
-  background-size: 100% auto;
-  background-repeat: no-repeat;
-  background-position: center center;
-  z-index: -1;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: radial-gradient(transparent, rgba(0, 0, 0, 0.9) 50%, rgba(0, 0, 0, 1) 80%);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
 
-  @media (max-width: 1920px) {
-    width: ${RespawnDimensions.width}px;
-    height: ${RespawnDimensions.height}px;
-    background-image: url(../images/hud/respawn/hd/banner.png);
+  &:before {
+    content: '';
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: -1;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
   }
 `;
 
-const Content = styled.div`
+const Banner = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-`;
+  width: 473px;
+  height: 1080px;
+  background-image: url(../images/hud/respawn/banner.png);
+  background-size: contain;
+  pointer-events: all;
+  animation: bounceIn 0.5s forwards;
+  animation-delay: 0.5s;
+  margin-top: -1080px;
 
-const RespawnText = styled.div`
-  font-family: Caudex;
-  text-transform: uppercase;
-  color: #F5D699;
-  cursor: default;
-  font-size: 48px;
-  letter-spacing: 2px;
-  margin-bottom: 10px;
+  @keyframes bounceIn {
+    0% {
+      maring-top: -1080px;
+    }
 
-  @media (max-width: 1920px) {
-    font-size: 26px;
-    letter-spacing: 1px;
-    margin-bottom: 5px;
+    80% {
+      margin-top: 0px;
+    }
+
+    100% {
+      margin-top: -20px;
+    }
   }
 `;
 
-const RespawnButton = styled.div`
-  position: relative;
-  font-family: Caudex;
-  background-color: rgba(17, 17, 17, 0.8);
-  color: #ffdfa0;
-  cursor: pointer;
+const DeadText = styled.div`
+  width: 298px;
+  height: 132px;
+  background-image: url(../images/hud/respawn/dead-text.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin-bottom: 30px;
+`;
+
+const Button = styled.div`
+  padding: 10px;
   text-transform: uppercase;
-  transition: all ease .2s;
-  z-index: 10;
-  font-size: 28px;
-  letter-spacing: 0.4em;
-  padding: 8px 20px;
-  border: 2px solid #404040;
-  border-width: 2px 1px 2px 1px;
-  border-image: url(../images/hud/respawn/uhd/button-border-gold.png);
-  border-image-slice: 2 1 2 1;
-  margin: 6px;
+  font-family: Colus;
+  font-size: 22px;
+  background-color: transparent;
+  transition: background-color 0.2s;
+  border: 3px solid #f9e163;
+  color: #f9e163;
+  cursor: pointer;
+  letter-spacing: 2px;
+
+  &.leave {
+    color: white;
+    border: 3px solid #f9e163;
+    color: #f9e163;
+  }
 
   &:hover {
-    background-image: url(../images/hud/respawn/uhd/button-glow.png);
+    background-color: rgba(255, 255, 255, 0.2);
   }
+`;
 
-  &.highlight {
-    background-image: url(../images/hud/respawn/uhd/button-glow.png);
+const HeartsContainer = styled.div`
+  position: relative;
+  display: flex;
+  margin-bottom: 5px;
+`;
+
+const DashLine = styled.div`
+  position: absolute;
+  width: 246px;
+  height: 3px;
+  background-image: url(../images/hud/respawn/dash-line.png);
+  background-size: contain;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+`;
+
+const Heart = styled.div`
+  font-size: 24px;
+  color: black;
+  -webkit-text-stroke-width: 10px;
+  -webkit-text-stroke-color: #666666;
+  margin: 0 8px;
+  z-index: 1;
+
+  &.life {
+    color: #f9042b;
+    -webkit-text-stroke-color: #fff1e7;
+    z-index: 3;
   }
+`;
 
-  @media (max-width: 1920px) {
-    font-size: 14px;
-    letter-spacing: .2em;
-    padding: 4px 10px;
-    border: 1px solid #404040;
-    border-width: 2px 1px 2px 1px;
-    border-image: url(../images/hud/respawn/hd/button-border-gold.png);
-    border-image-slice: 2 1 2 1;
-    margin: 3px;
-
-    &:hover {
-      background-image: url(../images/hud/gamemenu/button-glow.png);
-    }
-
-    &.highlight {
-      background-image: url(../images/hud/gamemenu/button-glow.png);
-    }
-  }
+const LivesText = styled.div`
+  color: #969696;
+  font-size: 14px;
+  font-family: Colus;
+  margin-bottom: 30px;
+  text-transform: uppercase;
 `;
 
 export interface Props {
@@ -124,15 +165,30 @@ class RespawnWithInjectedContext extends React.Component<Props, State> {
   }
 
   public render() {
+    const playerState = hordetest.game.selfPlayerState;
+    const hearts = Array.from(Array(playerState.maxDeaths));
+    const livesLeft = playerState.maxDeaths - playerState.currentDeaths;
     return this.state.visible ? (
         <Container data-input-group='block'>
-          <Content>
-            <RespawnText>You died!</RespawnText>
-            <RespawnButton className={this.props.isConsole ? 'highlight' : ''} onClick={this.onRespawn}>
-              {this.props.isConsole && <span className={game.gamepadSelectBinding.iconClass}></span>}
-              Respawn
-            </RespawnButton>
-          </Content>
+          <Banner>
+            <DeadText />
+            <HeartsContainer>
+              {hearts.map((_, i) => {
+                const isLife = i + 1 <= livesLeft;
+                const lifeClass = isLife ? 'life' : '';
+                return (
+                  <Heart className={`${lifeClass} fs-icon-misc-heart`} />
+                );
+              })}
+
+              <DashLine />
+            </HeartsContainer>
+            <LivesText>{livesLeft} {livesLeft !== 1 ? 'Lives' : 'Life'} Left</LivesText>
+            {playerState.currentDeaths < playerState.maxDeaths ?
+              <Button onClick={this.onRespawn}>Respawn</Button> :
+              <Button className='leave' onClick={this.onRespawn}>Leave Match</Button>
+            }
+          </Banner>
         </Container>
     ) : null;
   }

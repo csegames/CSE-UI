@@ -24,6 +24,8 @@ declare global {
     race: Race;
     gender: Gender;
     classID: Archetype;
+    currentDeaths: number;
+    maxDeaths: number;
   }
 
   type AnyEntityStateModel = PlayerStateModel;
@@ -64,6 +66,8 @@ export function defaultPlayerStateModel(): PlayerStateModel {
     race: Race.PerftestMultiStabber,
     classID: null,
     gender: Gender.Male,
+    currentDeaths: 0,
+    maxDeaths: 0,
   };
 }
 

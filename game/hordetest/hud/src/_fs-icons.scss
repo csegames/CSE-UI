@@ -25,6 +25,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.fs-icon-misc-heart:before {
+  content: "\e937";
+}
+.fs-icon-debuff-paralyze:before {
+  content: "\e931";
+}
+.fs-icon-debuff-silence:before {
+  content: "\e932";
+}
+.fs-icon-debuff-slime:before {
+  content: "\e933";
+}
+.fs-icon-debuff-stun:before {
+  content: "\e934";
+}
+.fs-icon-debuff-fire:before {
+  content: "\e935";
+}
+.fs-icon-debuff-ice:before {
+  content: "\e936";
+}
 .fs-icon-amazon-bow-strike:before {
   content: "\e90a";
 }
