@@ -76,6 +76,7 @@ export interface Props {
   divineBarrier: CurrentMax;
   health: CurrentMax;
   championResource: CurrentMax;
+  race: Race;
   resourcesWidth?: number;
   hideChampionResource?: boolean;
   championProfileStyles?: string;
@@ -88,7 +89,7 @@ export function HealthBar(props: Props) {
   return (
     <Container>
       <ChampionProfileSpacing>
-        <ChampionProfile containerStyles={props.championProfileStyles} />
+        <ChampionProfile race={props.race} containerStyles={props.championProfileStyles} />
       </ChampionProfileSpacing>
       <ResourcesContainer width={props.resourcesWidth}>
         <ResourceBarContainer>

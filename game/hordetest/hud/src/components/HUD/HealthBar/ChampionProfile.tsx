@@ -28,22 +28,23 @@ const ProfileBox = styled.div`
 
 const Image = styled.img`
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  top: -5%;
+  right: -5%;
+  bottom: -5%;
+  left: -7%;
   object-fit: cover;
-  width: 100%;
-  height: 100%;
+  width: 115%;
+  height: 115%;
 `;
 
 export interface Props {
+  race: Race;
   containerStyles?: string;
 }
 
 export function ChampionProfile(props: Props) {
   function getProfileImage() {
-    const myRace = hordetest.game.races.find(r => r.id === hordetest.game.selfPlayerState.race);
+    const myRace = hordetest.game.races.find(r => r.id === props.race);
     if (!myRace) return 'images/fullscreen/character-select/face.png';
 
     return myRace.thumbnailURL;

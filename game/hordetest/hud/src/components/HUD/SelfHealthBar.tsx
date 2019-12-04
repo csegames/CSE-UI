@@ -88,6 +88,7 @@ export class SelfHealthBar extends React.Component<Props, State> {
             divineBarrier={divineBarrier}
             collectedRunes={collectedRunes}
             runeBonuses={runeBonuses}
+            race={hordetest.game.selfPlayerState.race}
           />
           <ActionButtonsContainer>
             <ActionButtons />

@@ -60,6 +60,7 @@ export class FriendlyHealthBar extends React.Component<Props, State> {
           divineBarrier={entityState.blood}
           resourcesWidth={100}
           championProfileStyles={ChampionProfileStyle}
+          race={this.state.entityState.race}
         />
         <PlayerName>{this.props.playerName}</PlayerName>
       </Container>
