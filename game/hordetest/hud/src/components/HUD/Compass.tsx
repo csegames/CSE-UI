@@ -14,7 +14,7 @@ const Container = styled.div`
   width: 100%;
   font-family: Exo;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 84%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 10%, black 30%, black 70%, transparent 90%)
 `;
 
 const TopBorder = styled.div`
@@ -37,7 +37,7 @@ const GradientBackground = styled.div`
 
 const IndicatorContainer = styled.div`
   position: absolute;
-  top: -5px;
+  top: 0px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -48,14 +48,14 @@ const IndicatorContainer = styled.div`
 const IndicatorNumber = styled.div`
   font-family: Exo;
   font-weight: bold;
-  font-size: 23px;
+  font-size: 20px;
   color: white;
 `;
 
 const Indicator = styled.div`
   width: 11px;
   height: 11px;
-  margin-top: -2px;
+  margin-top: -3px;
   border: 2px solid white;
   border-top-width: 0px;
   border-left-width: 0px;
@@ -67,15 +67,17 @@ const Cardinal = styled.div`
   margin: 0;
   padding: 0;
   top: 25px;
-  margin-top: 15px;
+  margin-top: 10px;
   color: white;
   width: 30px;
   text-align: center;
   transform: translateX(-50%);
-  font-size: 21px;
+  line-height: 35px;
+  font-size: 14px;
 
   &.direction {
     font-size: 29px;
+    margin-top: 12px
   }
 `;
 
@@ -159,25 +161,25 @@ export class Compass extends React.Component<Props, State> {
             <Cardinal className='direction' style={this.position(facing, 0)}>N</Cardinal>
             <Cardinal style={this.position(facing, 15)}>15</Cardinal>
             <Cardinal style={this.position(facing, 30)}>30</Cardinal>
-            <Cardinal className='direction' style={this.position(facing, 45)}>NE</Cardinal>
+            <Cardinal style={this.position(facing, 45)}>NE</Cardinal>
             <Cardinal style={this.position(facing, 60)}>60</Cardinal>
             <Cardinal style={this.position(facing, 75)}>75</Cardinal>
             <Cardinal className='direction' style={this.position(facing, 90)}>E</Cardinal>
             <Cardinal style={this.position(facing, 105)}>105</Cardinal>
             <Cardinal style={this.position(facing, 120)}>120</Cardinal>
-            <Cardinal className='direction' style={this.position(facing, 135)}>SE</Cardinal>
+            <Cardinal style={this.position(facing, 135)}>SE</Cardinal>
             <Cardinal style={this.position(facing, 150)}>150</Cardinal>
             <Cardinal style={this.position(facing, 165)}>165</Cardinal>
             <Cardinal className='direction' style={this.position(facing, 180)}>S</Cardinal>
             <Cardinal style={this.position(facing, 195)}>195</Cardinal>
             <Cardinal style={this.position(facing, 210)}>210</Cardinal>
-            <Cardinal className='direction' style={this.position(facing, 225)}>SW</Cardinal>
+            <Cardinal style={this.position(facing, 225)}>SW</Cardinal>
             <Cardinal style={this.position(facing, 240)}>240</Cardinal>
             <Cardinal style={this.position(facing, 255)}>255</Cardinal>
             <Cardinal className='direction' style={this.position(facing, 270)}>W</Cardinal>
             <Cardinal style={this.position(facing, 285)}>285</Cardinal>
             <Cardinal style={this.position(facing, 300)}>300</Cardinal>
-            <Cardinal className='direction' style={this.position(facing, 315)}>NW</Cardinal>
+            <Cardinal style={this.position(facing, 315)}>NW</Cardinal>
             <Cardinal style={this.position(facing, 330)}>330</Cardinal>
             <Cardinal style={this.position(facing, 345)}>345</Cardinal>
             {this.getCompassObjectives(objectivesContext.objectives).map((entity) => {
