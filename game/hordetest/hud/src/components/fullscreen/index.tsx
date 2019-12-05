@@ -41,21 +41,6 @@ const ChatPosition = styled.div`
   height: 240px;
 `;
 
-const OpenFullScreenButton = styled.div`
-  position: fixed;
-  top: 5px;
-  left: 90px;
-  pointer-events: all;
-  cursor: pointer;
-  color: white;
-  background-color: orange;
-  padding: 5px;
-
-  &:hover {
-    filter: brightness(110%);
-  }
-`;
-
 export enum Route {
   Start,
   ChampionSelect,
@@ -74,10 +59,10 @@ export interface State {
 
 export class FullScreen extends React.Component<Props, State> {
   private showEVH: EventHandle;
-  private hideEVH: EventHandle;
+  private showChatEVH: EventHandle;
+  private hideChatEVH: EventHandle;
   private navigateEVH: EventHandle;
   private scenarioEndedEVH: EventHandle;
-  private matchmakingEVH: EventHandle;
 
   constructor(props: Props) {
     super(props);
@@ -102,7 +87,7 @@ export class FullScreen extends React.Component<Props, State> {
           </ChatPosition>
         }
       </Container>
-    ) : <OpenFullScreenButton onClick={this.show}>Open Full Screen</OpenFullScreenButton>
+    ) : null;
   }
 
   private renderRoute = () => {
@@ -126,18 +111,19 @@ export class FullScreen extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    this.showEVH = game.on('show-fullscreen-chat', this.handleShowFullScreenChat);
-    this.hideEVH = game.on('hide-fullscreen-chat', this.handleHideFullScreenChat);
+    this.showEVH = game.on('show-fullscreen', this.show);
+    this.showChatEVH = game.on('show-fullscreen-chat', this.handleShowFullScreenChat);
+    this.hideChatEVH = game.on('hide-fullscreen-chat', this.handleHideFullScreenChat);
     this.navigateEVH = game.on('fullscreen-navigate', this.navigateTo);
     this.scenarioEndedEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
   }
 
   public componentWillUnmount() {
     this.showEVH.clear();
-    this.hideEVH.clear();
+    this.showChatEVH.clear();
+    this.hideChatEVH.clear();
     this.navigateEVH.clear();
     this.scenarioEndedEVH.clear();
-    this.matchmakingEVH.clear();
   }
 
   private show = () => {

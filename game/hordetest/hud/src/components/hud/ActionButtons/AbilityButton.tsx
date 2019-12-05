@@ -34,6 +34,7 @@ export class AbilityButton extends React.Component<Props, State> {
   public render() {
     return (
       <ActionButton
+        showActiveAnim={this.shouldShowActiveAnim()}
         disabled={!this.state.isReady}
         actionIconClass={this.props.actionIconClass}
         keybindText={this.props.keybindText}
@@ -41,7 +42,6 @@ export class AbilityButton extends React.Component<Props, State> {
         className={this.props.className}
         cooldownTimer={this.state.cooldownTimer}
         keybindIconClass={this.props.keybindIconClass}
-        showActiveAnim={this.shouldShowActiveAnim()}
       />
     );
   }
@@ -64,7 +64,7 @@ export class AbilityButton extends React.Component<Props, State> {
   }
 
   private shouldShowActiveAnim = () => {
-    return this.props.type === 'ultimate' && this.state.cooldownTimer.current === 0;
+    return this.state.cooldownTimer.current === 0;
   }
 
   private checkStartCountdown = () => {

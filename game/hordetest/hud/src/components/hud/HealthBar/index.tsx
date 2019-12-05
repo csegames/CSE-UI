@@ -9,11 +9,11 @@ import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { ResourceBar } from 'components/shared/ResourceBar';
 import { ChampionProfile } from './ChampionProfile';
-import { Rune } from './Rune';
 import { LOW_HEALTH_PERCENT } from '../FullScreenEffects/LowHealth';
 
 const Container = styled.div`
   display: flex;
+  align-items: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
 `;
@@ -43,33 +43,26 @@ const ResourceBarContainer = styled.div`
 
 const MainResourceStyles = css`
   flex: 1;
-  height: 23px;
-  border: 3px solid black;
+  height: 26px;
+  border: 3px solid #002e0b;
+  margin-bottom: 1px;
+`;
+
+const BarrierStyles = css`
+  flex: 1;
+  height: 26px;
+  border: 3px solid #002938;
   margin-bottom: 1px;
 `;
 
 const ResourceContainer = css`
   width: 100%;
-  height: 8px;
-  border: 3px solid black;
+  height: 10px;
+  border: 3px solid #1e1d00;
 `;
 
 const TextStyles = css`
   font-family: Exo;
-`;
-
-const DamageMultiplier = styled.div`
-  position: relative;
-  padding: 2px 5px;
-  background-color: #a34603;
-  margin-left: 8px;
-  font-family: Exo;
-  font-size: 13px;
-  color: white;
-`;
-
-const DamageMultiplierText =  styled.div`
-  transform: skewX(10deg);
 `;
 
 export interface Props {
@@ -97,21 +90,13 @@ export function HealthBar(props: Props) {
             isSquare
             unsquareText
             type='blue'
-            containerStyles={MainResourceStyles}
+            containerStyles={BarrierStyles}
             current={props.divineBarrier.current}
             max={props.divineBarrier.max}
             text={props.hideMax ? props.divineBarrier.current.toString() : ''}
             textStyles={TextStyles}
           />
-          {props.collectedRunes &&
-            <Rune
-              runeType={RuneType.Protection}
-              value={props.collectedRunes[RuneType.Protection]}
-              bonus={props.runeBonuses[RuneType.Protection]}
-            />
-          }
         </ResourceBarContainer>
-
         <ResourceBarContainer>
           <ResourceBar
             isSquare
@@ -123,13 +108,6 @@ export function HealthBar(props: Props) {
             text={props.hideMax ? props.health.current.toString() : ''}
             textStyles={TextStyles}
           />
-          {props.collectedRunes &&
-            <Rune
-              runeType={RuneType.Health}
-              value={props.collectedRunes[RuneType.Health]}
-              bonus={props.runeBonuses[RuneType.Health]}
-            />
-          }
         </ResourceBarContainer>
 
         {!props.hideChampionResource &&
@@ -142,18 +120,6 @@ export function HealthBar(props: Props) {
               current={props.championResource.current}
               max={props.championResource.max}
             />
-            {props.collectedRunes && props.runeBonuses &&
-              <DamageMultiplier>
-                <DamageMultiplierText>{(props.runeBonuses[RuneType.Weapon] / 100) + 1}x</DamageMultiplierText>
-              </DamageMultiplier>
-            }
-            {props.collectedRunes &&
-              <Rune
-                runeType={RuneType.Weapon}
-                value={props.collectedRunes[RuneType.Weapon]}
-                bonus={props.runeBonuses[RuneType.Weapon]}
-              />
-            }
           </ResourceBarContainer>
         }
       </ResourcesContainer>

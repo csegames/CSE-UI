@@ -31,6 +31,16 @@ const ChampionProfileStyle = css`
   width: 49px;
 `;
 
+const Hearts = styled.div`
+  display: flex;
+  margin-left: 49px;
+`;
+
+const Heart = styled.div`
+  font-size: 18px;
+  color: #ff0000;
+`;
+
 export interface Props {
   playerName: string;
 }
@@ -50,8 +60,10 @@ export class FriendlyHealthBar extends React.Component<Props, State> {
 
   public render() {
     const { entityState } = this.state;
+    const hearts = Array.from(Array(entityState.maxDeaths - entityState.currentDeaths));
     return (
       <Container>
+        <PlayerName>{this.props.playerName}</PlayerName>
         <HealthBar
           hideMax
           hideChampionResource
@@ -62,7 +74,13 @@ export class FriendlyHealthBar extends React.Component<Props, State> {
           championProfileStyles={ChampionProfileStyle}
           race={this.state.entityState.race}
         />
-        <PlayerName>{this.props.playerName}</PlayerName>
+        <Hearts>
+          {hearts.map(() => {
+            return (
+              <Heart className={'fs-icon-misc-heart'} />
+            );
+          })}
+        </Hearts>
       </Container>
     );
   }

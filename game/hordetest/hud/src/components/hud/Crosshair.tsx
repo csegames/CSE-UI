@@ -7,6 +7,11 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from '@csegames/linaria/react';
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const CrosshairImage = styled.img`
   width: 45px;
   height: 45px;
@@ -34,6 +39,8 @@ export function Crosshair() {
   }));
 
   return isVisible ? (
-    <CrosshairImage src={'images/hud/crosshair.png'} />
+    <Container>
+      <CrosshairImage src={'images/hud/crosshair.png'} />
+    </Container>
   ) : null;
 }

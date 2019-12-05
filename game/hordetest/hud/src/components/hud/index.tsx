@@ -14,6 +14,7 @@ import { DevUI } from 'cushared/components/DevUI';
 // import { ChannelBar } from './ChannelBar';
 import { MatchInfo } from './MatchInfo';
 import { Crosshair } from './Crosshair';
+import { DivineBarrierBar } from './DivineBarrierBar';
 import { KillStreakCounter } from './KillStreakCounter';
 import { PlayerTrackers } from './PlayerTrackers';
 import { Respawn } from './Respawn';
@@ -26,6 +27,7 @@ import { Console } from '../HUD/Console';
 import { LoadingScreen } from '../fullscreen/LoadingScreen';
 import { ImagePreloader } from './ImagePreloader';
 import { SelfHealthBar } from './SelfHealthBar';
+import { Consumables } from './Consumables';
 import { FriendlyHealthBars } from './FriendlyHealthBars';
 import { PlayerMessage } from './PlayerMessage';
 import { RuneFullScreenEffects } from './FullScreenEffects/Runes';
@@ -34,26 +36,12 @@ import { LeftModal } from '../fullscreen/LeftModal';
 import { RightModal } from '../fullscreen/RightModal';
 import { MiddleModal } from '../fullscreen/MiddleModal';
 import { ActionAlert } from '../shared/ActionAlert';
+import { ExtraButtons } from './ExtraButtons';
 // import { LowHealthFullScreenEffects } from './FullScreenEffects/LowHealth';
 
 const Container = styled.div`
   width: 100%;
   height: 100%;
-`;
-
-const ReloadButtonContainer = styled.div`
-  position: fixed;
-  top: 5px;
-  left: 5px;
-  pointer-events: all;
-  cursor: pointer;
-  color: white;
-  background-color: orange;
-  padding: 5px;
-
-  &:hover {
-    filter: brightness(110%);
-  }
 `;
 
 const MatchInfoPosition = styled.div`
@@ -78,6 +66,13 @@ const PopupAnnouncementsPosition = styled.div`
   transform: translate(-50%, -50%);
 `;
 
+const DivineBarrierBarPosition = styled.div`
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
 const CrosshairPosition = styled.div`
   position: fixed;
   top: 50%;
@@ -88,7 +83,7 @@ const CrosshairPosition = styled.div`
 const ChatPosition = styled.div`
   position: fixed;
   left: 0px;
-  bottom: 200px;
+  bottom: 220px;
   width: 480px;
   height: 240px;
 `;
@@ -97,15 +92,18 @@ const SelfHealthBarPosition = styled.div`
   position: fixed;
   left: 40px;
   bottom: 20px;
+`;
 
-  display: flex;
-  align-items: center;
+const ConsumablesPosition = styled.div`
+  position: fixed;
+  right: 40px;
+  bottom: 20px;
 `;
 
 const FriendlyHealthBarsPosition = styled.div`
   position: fixed;
-  right: 20px;
-  bottom: 20px;
+  left: 20px;
+  top: 20px;
 
   display: flex;
   align-items: center;
@@ -149,7 +147,7 @@ const AnnouncementsPosition = styled.div`
 `;
 
 const PlayerTrackersPosition = styled.div`
-  position: fixed;
+  position: fixed;w
   top: 0;
   right: 0;
   bottom: 0;
@@ -168,6 +166,12 @@ const SettingsContainer = styled.div`
   pointer-events: none;
 `;
 
+const ExtraButtonsPosition = styled.div`
+  position: fixed;
+  top: 180px;
+  left: 5px;
+`;
+
 export interface Props {
 }
 
@@ -181,9 +185,10 @@ export class HUD extends React.Component<Props> {
           {/* <LowHealthFullScreenEffects /> */}
           <RuneFullScreenEffects />
           <DevUI />
-          <ReloadButtonContainer>
-            <div onClick={() => game.reloadUI()}>Reload UI</div>
-          </ReloadButtonContainer>
+          <ExtraButtonsPosition>
+            <ExtraButtons />
+          </ExtraButtonsPosition>
+
           <Console />
 
           <CompassPosition>
@@ -193,6 +198,10 @@ export class HUD extends React.Component<Props> {
           <PopupAnnouncementsPosition>
             <PopupAnnouncement />
           </PopupAnnouncementsPosition>
+
+          <DivineBarrierBarPosition>
+            <DivineBarrierBar />
+          </DivineBarrierBarPosition>
 
           <CrosshairPosition>
             <Crosshair />
@@ -221,6 +230,10 @@ export class HUD extends React.Component<Props> {
           <SelfHealthBarPosition>
             <SelfHealthBar />
           </SelfHealthBarPosition>
+
+          <ConsumablesPosition>
+            <Consumables />
+          </ConsumablesPosition>
 
           <FriendlyHealthBarsPosition>
             <FriendlyHealthBars />

@@ -57,8 +57,8 @@ const Line = styled.div`
 
 const ToggleConsolePosition = styled.div`
   position: fixed;
-  top: 5px;
-  left: 223px;
+  top: 20px;
+  left: 5px;
   pointer-events: all;
   cursor: pointer;
   color: white;
@@ -120,15 +120,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
   }
 
   public render() {
-    if (!this.state.show) {
-      return (
-        <ToggleConsolePosition onClick={() => game.trigger('navigate', 'console')}>
-          Open Console
-        </ToggleConsolePosition>
-      );
-    }
-
-    return (
+    return this.state.show ? (
       <Container data-input-group='block'>
         <ToggleConsolePosition onClick={() => game.trigger('navigate', 'console')}>
           Close Console
@@ -156,7 +148,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
           <ObjectDisplay data={Console.getAPIData()} skipFunctions />
         </InfoWrapper>
       </Container>
-    );
+    ) : null;
   }
 
   public shouldComponentUpdate() {

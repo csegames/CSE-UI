@@ -6,6 +6,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
+import { Champions } from '../../context/ChampionInfoContext';
 
 const ActionButtonContainer = styled.div`
   position: relative;
@@ -20,8 +21,8 @@ const Button = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 53px;
-  height: 53px;
+  width: 75px;
+  height: 75px;
   background-color: rgba(0, 0, 0, 0.5);
   transform: skewX(-10deg);
 
@@ -30,26 +31,27 @@ const Button = styled.div`
   }
 
   &.activeAnim {
-    background: linear-gradient( to bottom left, #F37326 , #FCCA21);
-    animation-name: glow;
-    animation-duration: .8s;
-    animation-timing-function: ease-in-out;
-    animation-delay: 0;
-    animation-direction: alternate;
-    animation-iteration-count: infinite;
-    animation-fill-mode: none;
-    animation-play-state: running;
+  }
 
-    @keyframes glow {
-      0% {
-        filter:brightness(130%);
-      }
-    }
+  &.knight {
+    background-color: #2fb5ca
+  }
+
+  &.berserker {
+    background-color: red;
+  }
+
+  &.amazon {
+    background-color: orange;
+  }
+
+  &.celt {
+    background-color: green;
   }
 `;
 
 const ActionIcon = styled.span`
-  font-size: 40px;
+  font-size: 60px;
   color: white;
   transform: skewX(10deg);
 
@@ -108,65 +110,6 @@ const CooldownText = styled.div`
   -webkit-text-stroke-color: black;
 `;
 
-const Spark = styled.div`
-  position: absolute;
-  color: orange;
-  margin-top: -50px;
-  font-size: 15px;
-  animation-name: spark;
-  animation-duration: 1s;
-  animation-timing-function: ease-out;
-  animation-delay: 0;
-  animation-direction: normal;
-  animation-iteration-count: infinite;
-  animation-fill-mode: none;
-  animation-play-state: running;
-
-  @keyframes spark {
-    0% {
-      transform: scale(0.5);
-      opacity: 0.2;
-      margin-top: 0px;
-      margin-left: 0px;
-    }
-    70% {
-      transform: scale(1);
-      opacity: 0.8;
-      color: #FBB03B;
-    }
-    100% {
-      transform: scale(0.8);
-      opacity: 0.2;
-    }
-  }
-
-  &.s2 {
-    left: 45%;
-    font-size: 20px;
-    animation-duration: .8s;
-  }
-
-  &.s3 {
-    left: 15%;
-    font-size: 15px;
-    animation-duration: .6s;
-  }
-
-  &.s4 {
-    left: 45%;
-    font-size: 10px;
-    animation-duration: 1.3s;
-    color: #F37326;
-  }
-
-  &.s5 {
-    padding-left: 5px;
-    font-size: 10px;
-    animation-duration: 2s;
-    color :#F37326;
-  }
-`;
-
 const DisabledSlash = styled.img`
   position: absolute;
   top: -20%;
@@ -195,13 +138,41 @@ export function ActionButton(props: Props) {
     return typeof props.cooldownTimer !== 'undefined' && props.cooldownTimer.current !== 0;
   }
 
+  function getMyChampion() {
+    const myChampion = hordetest.game.classes.find(c => c.id === hordetest.game.selfPlayerState.classID);
+    if (!myChampion) return null;
+
+    return myChampion as CharacterClassDef;
+  }
+
+  function getChampionClass() {
+    const myChampion = getMyChampion();
+    if (!myChampion) return '';
+
+    switch (myChampion.id) {
+      case Champions.Knight: {
+        return 'knight';
+      }
+      case Champions.Berserker: {
+        return 'berserker'
+      }
+      case Champions.Celt: {
+        return 'celt';
+      }
+      case Champions.Amazon: {
+        return 'amazon';
+      }
+      default: '';
+    }
+  }
+
   const { cooldownTimer } = props;
   const onCooldown = isOnCooldown();
   const disabledClass = props.disabled ? 'disabled' : '';
   const activeAnimClass = props.showActiveAnim && !props.disabled ? 'activeAnim' : '';
   return (
     <ActionButtonContainer className={props.className}>
-      <Button className={`${disabledClass} ${activeAnimClass}`}>
+      <Button className={`${disabledClass} ${activeAnimClass} ${getChampionClass()}`}>
         <ActionIcon className={`${props.actionIconClass} ${disabledClass} ${onCooldown ? 'cooldown' : ''}`} />
         {onCooldown &&
           <CooldownContainer>
@@ -210,15 +181,6 @@ export function ActionButton(props: Props) {
             />
             <CooldownText>{cooldownTimer.current}</CooldownText>
           </CooldownContainer>
-        }
-        {props.showActiveAnim && !props.disabled &&
-          <>
-            <Spark>♦ </Spark>
-            <Spark className='s2'>♦ </Spark>
-            <Spark className='s3'>♦ </Spark>
-            <Spark className='s4'>♦ </Spark>
-            <Spark className='s5'>♦ </Spark>
-          </>
         }
         {props.disabled && <DisabledSlash src='images/hud/disabled.svg' />}
       </Button>
