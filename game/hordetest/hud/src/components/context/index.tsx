@@ -12,6 +12,7 @@ import { PlayerPositionContextProvider } from './PlayerPositionContext';
 import { ChampionInfoContextProvider } from './ChampionInfoContext';
 import { WarbandContextProvider } from './WarbandContext';
 import { MatchmakingContextProvider } from './MatchmakingContext';
+import { StatusContextProvider } from './StatusContext';
 
 export class ContextProviders extends React.Component<{}> {
   public render() {
@@ -20,7 +21,9 @@ export class ContextProviders extends React.Component<{}> {
         <ViewBearingContextProvider>
           <ObjectivesContextProvider>
             <PlayerPositionContextProvider>
-              {this.props.children}
+              <StatusContextProvider>
+                {this.props.children}
+              </StatusContextProvider>
             </PlayerPositionContextProvider>
           </ObjectivesContextProvider>
         </ViewBearingContextProvider>

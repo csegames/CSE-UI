@@ -12,6 +12,7 @@ declare global {
     name: string;
     isAlive: boolean;
     position: Vec3f;
+    statuses: ArrayMap<{ id: number; } & Timing>;
   }
 
   interface PlayerStateModel extends EntityStateModel {
@@ -44,6 +45,7 @@ function defaultEntityStateModel(): EntityStateModel {
     name: 'unknown',
     isAlive: false,
     position: { x: NaN, y: NaN, z: NaN },
+    statuses: {},
   };
 }
 

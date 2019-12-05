@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { throttle } from 'lodash';
+import { throttle, isEqual } from 'lodash';
 
 import { HealthBar } from './HealthBar';
 import { ActionButtons } from './ActionButtons';
@@ -101,6 +101,7 @@ export interface State {
   health: CurrentMax;
   resource: CurrentMax;
   divineBarrier: CurrentMax;
+  statuses: ArrayMap<{ id: number } & Timing>;
 
   // Use RuneType enum as key
   collectedRunes: Runes;
@@ -119,6 +120,7 @@ export class SelfHealthBar extends React.Component<Props, State> {
       },
       resource: { ...(cloneDeep(hordetest.game.selfPlayerState.stamina)) },
       divineBarrier: { ...(cloneDeep(hordetest.game.selfPlayerState.blood)) },
+      statuses: {},
       collectedRunes: {
         [RuneType.Weapon]: 0,
         [RuneType.Protection]: 0,
@@ -229,6 +231,13 @@ export class SelfHealthBar extends React.Component<Props, State> {
         ...stateUpdate,
         isAlive: cloneDeep(hordetest.game.selfPlayerState.isAlive),
       };
+    }
+
+    if (!isEqual(hordetest.game.selfPlayerState.statuses, this.state.statuses)) {
+      stateUpdate = {
+        ...stateUpdate,
+        statuses: cloneDeep(hordetest.game.selfPlayerState.statuses),
+      }
     }
 
     if (Object.keys(stateUpdate).length > 0) {
