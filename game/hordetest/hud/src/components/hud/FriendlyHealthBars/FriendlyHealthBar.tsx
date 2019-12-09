@@ -33,7 +33,7 @@ const ChampionProfileStyle = css`
 
 const Hearts = styled.div`
   display: flex;
-  margin-left: 49px;
+  margin-left: 55px;
 `;
 
 const Heart = styled.div`
@@ -67,10 +67,11 @@ export class FriendlyHealthBar extends React.Component<Props, State> {
         <HealthBar
           hideMax
           hideChampionResource
+          isAlive={entityState.isAlive}
           health={entityState.health[0]}
           championResource={entityState.stamina}
           divineBarrier={entityState.blood}
-          resourcesWidth={100}
+          resourcesWidth={75}
           championProfileStyles={ChampionProfileStyle}
           race={this.state.entityState.race}
         />

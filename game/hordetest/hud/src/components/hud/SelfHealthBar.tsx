@@ -97,6 +97,7 @@ export interface Props {
 }
 
 export interface State {
+  isAlive: boolean;
   health: CurrentMax;
   resource: CurrentMax;
   divineBarrier: CurrentMax;
@@ -111,6 +112,7 @@ export class SelfHealthBar extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      isAlive: cloneDeep(hordetest.game.selfPlayerState.isAlive),
       health: {
         current: hordetest.game.selfPlayerState.health[0].current,
         max: hordetest.game.selfPlayerState.health[0].max,
@@ -133,13 +135,14 @@ export class SelfHealthBar extends React.Component<Props, State> {
   }
 
   public render() {
-    const { health, resource, divineBarrier, collectedRunes, runeBonuses } = this.state;
+    const { isAlive, health, resource, divineBarrier, collectedRunes, runeBonuses } = this.state;
     const playerState = hordetest.game.selfPlayerState;
     const hearts = Array.from(Array(playerState.maxDeaths - playerState.currentDeaths));
     return (
       <Container>
         <HealthBarContainer>
           <HealthBar
+            isAlive={isAlive}
             resourcesWidth={320}
             divineBarrier={divineBarrier}
             health={health}
@@ -195,7 +198,7 @@ export class SelfHealthBar extends React.Component<Props, State> {
   }
 
   private handlePlayerStateUpdate = () => {
-    const { health, resource, divineBarrier } = this.state;
+    const { health, resource, divineBarrier, isAlive } = this.state;
     let stateUpdate: Partial<State> = {};
     if (!hordetest.game.selfPlayerState.health[0].current.floatEquals(health.current) ||
         !hordetest.game.selfPlayerState.health[0].max.floatEquals(health.max)) {
@@ -218,7 +221,14 @@ export class SelfHealthBar extends React.Component<Props, State> {
       stateUpdate = {
         ...stateUpdate,
         divineBarrier: cloneDeep(hordetest.game.selfPlayerState.blood),
-      }
+      };
+    }
+
+    if (hordetest.game.selfPlayerState.isAlive !== isAlive) {
+      stateUpdate = {
+        ...stateUpdate,
+        isAlive: cloneDeep(hordetest.game.selfPlayerState.isAlive),
+      };
     }
 
     if (Object.keys(stateUpdate).length > 0) {

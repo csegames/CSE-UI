@@ -1,0 +1,14 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="37" height="38" viewBox="0 0 37 38">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ec2227;
+      }
+    </style>
+  </defs>
+  <title>dead-x</title>
+  <g>
+    <polygon class="cls-1" points="0 0 17 21 37 37 23 17 0 0"/>
+    <polygon class="cls-1" points="37 0 17 16 0 37 22 21 37 0"/>
+  </g>
+</svg>

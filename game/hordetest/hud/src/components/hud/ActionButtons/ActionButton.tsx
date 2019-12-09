@@ -48,6 +48,10 @@ const Button = styled.div`
   &.celt {
     background-color: green;
   }
+
+  &.cooldown {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
 `;
 
 const ActionIcon = styled.span`
@@ -168,12 +172,13 @@ export function ActionButton(props: Props) {
 
   const { cooldownTimer } = props;
   const onCooldown = isOnCooldown();
+  const cooldownClass = onCooldown ? 'cooldown' : '';
   const disabledClass = props.disabled ? 'disabled' : '';
   const activeAnimClass = props.showActiveAnim && !props.disabled ? 'activeAnim' : '';
   return (
     <ActionButtonContainer className={props.className}>
-      <Button className={`${disabledClass} ${activeAnimClass} ${getChampionClass()}`}>
-        <ActionIcon className={`${props.actionIconClass} ${disabledClass} ${onCooldown ? 'cooldown' : ''}`} />
+      <Button className={`${disabledClass} ${activeAnimClass} ${getChampionClass()} ${cooldownClass}`}>
+        <ActionIcon className={`${props.actionIconClass} ${disabledClass} ${cooldownClass}`} />
         {onCooldown &&
           <CooldownContainer>
             <CooldownOverlay

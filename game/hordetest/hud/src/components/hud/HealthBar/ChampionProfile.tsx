@@ -24,6 +24,7 @@ const ProfileBox = styled.div`
   width: 100%;
   height: 100%;
   transform: skewX(10deg);
+  overflow: hidden;
 `;
 
 const Image = styled.img`
@@ -37,8 +38,19 @@ const Image = styled.img`
   height: 115%;
 `;
 
+const DeadX = styled.img`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110%;
+  height: 110%;
+  object-fit: contain;
+`;
+
 export interface Props {
   race: Race;
+  isAlive: boolean;
   containerStyles?: string;
 }
 
@@ -55,6 +67,7 @@ export function ChampionProfile(props: Props) {
       <ProfileBox>
         <Image src={getProfileImage()} />
       </ProfileBox>
+      {!props.isAlive && <DeadX src={'images/hud/dead-x.svg'} />}
     </ChampionProfileContainer>
   );
 }

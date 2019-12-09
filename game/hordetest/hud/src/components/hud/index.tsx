@@ -106,7 +106,7 @@ const FriendlyHealthBarsPosition = styled.div`
   top: 20px;
 
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 const CompassPosition =  styled.div`
@@ -168,7 +168,7 @@ const SettingsContainer = styled.div`
 
 const ExtraButtonsPosition = styled.div`
   position: fixed;
-  top: 180px;
+  top: 500px;
   left: 5px;
 `;
 

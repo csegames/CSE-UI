@@ -66,10 +66,11 @@ const TextStyles = css`
 `;
 
 export interface Props {
-  divineBarrier: CurrentMax;
   health: CurrentMax;
-  championResource: CurrentMax;
   race: Race;
+  isAlive: boolean;
+  divineBarrier: CurrentMax;
+  championResource: CurrentMax;
   resourcesWidth?: number;
   hideChampionResource?: boolean;
   championProfileStyles?: string;
@@ -82,7 +83,7 @@ export function HealthBar(props: Props) {
   return (
     <Container>
       <ChampionProfileSpacing>
-        <ChampionProfile race={props.race} containerStyles={props.championProfileStyles} />
+        <ChampionProfile isAlive={props.isAlive} race={props.race} containerStyles={props.championProfileStyles} />
       </ChampionProfileSpacing>
       <ResourcesContainer width={props.resourcesWidth}>
         <ResourceBarContainer>
@@ -103,8 +104,8 @@ export function HealthBar(props: Props) {
             unsquareText
             type={(props.health.current / props.health.max * 100) <= LOW_HEALTH_PERCENT ? 'red' : 'green'}
             containerStyles={MainResourceStyles}
-            current={props.health.current}
-            max={props.health.max}
+            current={props.health.current === 0 ? 100 : props.health.current}
+            max={props.health.current === 0 ? 100 : props.health.max}
             text={props.hideMax ? props.health.current.toString() : ''}
             textStyles={TextStyles}
           />
