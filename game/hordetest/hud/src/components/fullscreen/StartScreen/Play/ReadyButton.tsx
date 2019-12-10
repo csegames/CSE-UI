@@ -80,6 +80,7 @@ export interface Props {
 
   onReady: () => void;
   onUnready: () => void;
+  enterMatchmaking: () => void;
 }
 
 export interface State {
@@ -178,6 +179,11 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   }
 
   private readyUp = async () => {
+    if (!this.props.warbandContextState.groupID) {
+      this.props.enterMatchmaking();
+      return;
+    }
+
     const res = await webAPI.GroupsAPI.ReadyUpV1(webAPI.defaultConfig, this.props.warbandContextState.groupID);
     if (!res.ok) {
       // TODO: Handle error
@@ -198,7 +204,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   }
 }
 
-export function ReadyButton(props: { onReady: () => void, onUnready: () => void }) {
+export function ReadyButton(props: { onReady: () => void, onUnready: () => void, enterMatchmaking: () => void }) {
   const inputContextState = useContext(InputContext);
   const matchmakingContextState = useContext(MatchmakingContext);
   const warbandContextState = useContext(WarbandContext);
@@ -210,6 +216,7 @@ export function ReadyButton(props: { onReady: () => void, onUnready: () => void 
       matchmakingContext={matchmakingContextState}
       onReady={props.onReady}
       onUnready={props.onUnready}
+      enterMatchmaking={props.enterMatchmaking}
     />
   )
 }

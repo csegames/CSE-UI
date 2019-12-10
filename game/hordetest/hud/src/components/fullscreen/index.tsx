@@ -48,26 +48,23 @@ export enum Route {
 }
 
 export interface Props {
+  onConnectToServer: () => void;
 }
 
 export interface State {
-  isVisible: boolean;
   isChatVisible: boolean;
   currentRoute: Route;
   scenarioID: string;
 }
 
 export class FullScreen extends React.Component<Props, State> {
-  private showEVH: EventHandle;
   private showChatEVH: EventHandle;
   private hideChatEVH: EventHandle;
   private navigateEVH: EventHandle;
-  private scenarioEndedEVH: EventHandle;
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      isVisible: false,
       isChatVisible: true,
       currentRoute: Route.Start,
       scenarioID: '',
@@ -75,10 +72,10 @@ export class FullScreen extends React.Component<Props, State> {
   }
 
   public render() {
-    return this.state.isVisible ? (
+    return (
       <Container>
         {this.renderRoute()}
-        <HideButton onClick={this.hide}>
+        <HideButton onClick={() => game.trigger('hide-fullscreen')}>
           <Button type='blue' text='Hide Full Screen UI' />
         </HideButton>
         {this.state.isChatVisible &&
@@ -87,7 +84,7 @@ export class FullScreen extends React.Component<Props, State> {
           </ChatPosition>
         }
       </Container>
-    ) : null;
+    );
   }
 
   private renderRoute = () => {
@@ -99,7 +96,11 @@ export class FullScreen extends React.Component<Props, State> {
       }
       case Route.ChampionSelect: {
         return (
-          <ChampionSelect gameMode={'Survival'} difficulty={'Normal'} />
+          <ChampionSelect
+            gameMode={'Survival'}
+            difficulty={'Normal'}
+            onConnectToServer={this.props.onConnectToServer}
+          />
         );
       }
       case Route.EndGameStats: {
@@ -111,28 +112,15 @@ export class FullScreen extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    this.showEVH = game.on('show-fullscreen', this.show);
     this.showChatEVH = game.on('show-fullscreen-chat', this.handleShowFullScreenChat);
     this.hideChatEVH = game.on('hide-fullscreen-chat', this.handleHideFullScreenChat);
     this.navigateEVH = game.on('fullscreen-navigate', this.navigateTo);
-    this.scenarioEndedEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
   }
 
   public componentWillUnmount() {
-    this.showEVH.clear();
     this.showChatEVH.clear();
     this.hideChatEVH.clear();
     this.navigateEVH.clear();
-    this.scenarioEndedEVH.clear();
-  }
-
-  private show = () => {
-    this.setState({ isVisible: true });
-  }
-
-  private hide = () => {
-    this.setState({ isVisible: false, currentRoute: Route.Start });
-    game.trigger('hide-middle-modal');
   }
 
   private goToStart = () => {
@@ -145,13 +133,6 @@ export class FullScreen extends React.Component<Props, State> {
 
   private handleHideFullScreenChat = () => {
     this.setState({ isChatVisible: false });
-  }
-
-  private handleScenarioRoundEnded = (scenarioID: string, roundID: string, didEnd: boolean) => {
-    if (didEnd) {
-      this.setState({ isVisible: true, scenarioID, currentRoute: Route.EndGameStats });
-      game.playGameSound(SoundEvents.PLAY_SCENARIO_END);
-    }
   }
 
   private navigateTo = (route: Route) => {

@@ -93,6 +93,21 @@ export interface BaseGameModel {
   playGameSound: (soundID: number) => void;
 
   /* -------------------------------------------------- */
+  /* Client -> Server CONTROLLER                                 */
+  /* -------------------------------------------------- */
+  /**
+   * Called when matchmaking and champion select are finished to connect to a game server
+   */
+  connectToServer: (server: string, port: number) => void;
+
+  /**
+   * Client -> Server status information
+   */
+  isConnectedToServer: boolean;
+  isConnectedOrConnectingToServer: boolean;
+  isDisconnectingFromAllServers: boolean;
+
+  /* -------------------------------------------------- */
   /* CONSOLE CONTROLLER                                 */
   /* -------------------------------------------------- */
 

@@ -187,7 +187,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
               />
             }
           </div>
-          <ReadyButton onReady={this.onReady} onUnready={this.onUnready} />
+          <ReadyButton onReady={this.onReady} onUnready={this.onUnready} enterMatchmaking={this.enterMatchmaking} />
         </BottomRightSection>
         <PlayerView isReady={this.state.isReady} />
         <>

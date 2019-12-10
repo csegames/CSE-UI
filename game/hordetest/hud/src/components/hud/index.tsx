@@ -175,9 +175,34 @@ const ExtraButtonsPosition = styled.div`
 export interface Props {
 }
 
+export interface State {
+  isLobbyVisible: boolean;
+  scenarioID: string;
+}
+
 // tslint:disable-next-line:function-name
-export class HUD extends React.Component<Props> {
+export class HUD extends React.Component<Props, State> {
+  private showEVH: EventHandle;
+  private hideEVH: EventHandle;
+  private scenarioEndedEVH: EventHandle;
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      // Show the lobby by default if we are connected or connecting to a game server
+      isLobbyVisible: !game.isConnectedOrConnectingToServer,
+      scenarioID: '',
+    }
+  }
+
   public render() {
+    if (this.state.isLobbyVisible) {
+      return (
+        <FullScreenContextProviders>
+          <FullScreen onConnectToServer={this.onConnectToServer} />
+        </FullScreenContextProviders>
+      );
+    }
+
     return (
       <ContextProviders>
         <Container>
@@ -253,10 +278,6 @@ export class HUD extends React.Component<Props> {
             <Settings />
           </SettingsContainer>
 
-          <FullScreenContextProviders>
-            <FullScreen />
-          </FullScreenContextProviders>
-
           <MenuModal />
           <LeftModal />
           <RightModal />
@@ -266,5 +287,36 @@ export class HUD extends React.Component<Props> {
         </Container>
       </ContextProviders>
     );
+  }
+
+  public componentDidMount() {
+    this.showEVH = game.on('show-fullscreen', this.show);
+    this.hideEVH = game.on('hide-fullscreen', this.hide);
+  }
+
+  public componentWillUnmount() {
+    this.showEVH.clear();
+    this.hideEVH.clear();
+    this.scenarioEndedEVH.clear();
+  }
+
+  private show = () => {
+    this.setState({ isLobbyVisible: true });
+  }
+
+  private hide = () => {
+    this.setState({ isLobbyVisible: false });
+    game.trigger('hide-middle-modal');
+  }
+
+  private onConnectToServer = () => {
+    this.scenarioEndedEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
+  }
+
+  private handleScenarioRoundEnded = (scenarioID: string, roundID: string, didEnd: boolean) => {
+    if (didEnd) {
+      this.setState({ isLobbyVisible: true, scenarioID });
+      game.playGameSound(SoundEvents.PLAY_SCENARIO_END);
+    }
   }
 }

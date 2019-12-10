@@ -26,11 +26,8 @@ if (process.env.CUUI_LS_ENABLE_WHY_DID_YOU_UPDATE) {
   // tslint:enable
 }
 
-// TODO: NEED TO CHANGE CHARACTER ID to something else, there is no character ID in hordetest.
 function readyCheck() {
-  if ((!hordetest.game.selfPlayerState['characterID'] ||
-        hordetest.game.selfPlayerState['characterID'] === 'unknown') &&
-        game.isClientAttached) {
+  if (game.accessToken === 'developer' && game.isClientAttached) {
     setTimeout(readyCheck, 100);
     return;
   }

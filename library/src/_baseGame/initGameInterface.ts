@@ -171,6 +171,11 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
       removeLast: noOp,
       clearAll: noOp,
     },
+
+    connectToServer: noOp,
+    isConnectedOrConnectingToServer: false,
+    isConnectedToServer: false,
+    isDisconnectingFromAllServers: false,
   };
 
   return withOverrides({

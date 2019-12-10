@@ -5,8 +5,14 @@
  *
  */
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
+import { webAPI } from '@csegames/library/lib/hordetest';
+import {
+  IMatchmakingUpdate,
+  MatchmakingUpdateType,
+  MatchmakingServerReady,
+} from '@csegames/library/lib/hordetest/graphql/schema';
 
 import { Header } from '../Header';
 import { ChampionPick } from './ChampionPick';
@@ -14,9 +20,8 @@ import { ChampionInfo } from './ChampionInfo';
 import { LockedList } from './LockedList';
 import { LockIn } from './LockIn';
 import { ChampionInfoContext } from 'context/ChampionInfoContext';
-import { MatchmakingContext } from 'context/MatchmakingContext';
+import { MatchmakingContext, onMatchmakingUpdate } from 'context/MatchmakingContext';
 import { ChampionSelectContextProvider } from './context/ChampionSelectContext';
-import { webAPI } from '@csegames/library/lib/hordetest';
 
 const Container = styled.div`
   position: relative;
@@ -116,6 +121,7 @@ const ConsoleNavIcon = styled.div`
 export interface Props {
   gameMode: string;
   difficulty: string;
+  onConnectToServer: () => void;
 }
 
 export interface Champion {
@@ -132,6 +138,14 @@ export function ChampionSelect(props: Props) {
   const [selectedChampion, setSelectedChampion] = useState(champions[0]);
   const [isLocked, setIsLocked] = useState(false);
 
+  useEffect(() => {
+    const matchmakingEVH = onMatchmakingUpdate(handleMatchmakingUpdate);
+
+    return () => {
+      matchmakingEVH.clear();
+    };
+  });
+
   function getChampionCostumeInfo(championID: string) {
     return championCostumes.find(c => c.requiredChampionID === championID);
   }
@@ -140,6 +154,14 @@ export function ChampionSelect(props: Props) {
     const champion = champions.find(c => championID === c.id);
     setSelectedChampion(champion);
     updateSelectedChampion(championID);
+  }
+
+  function handleMatchmakingUpdate(matchmakingUpdate: IMatchmakingUpdate) {
+    if (matchmakingUpdate.type === MatchmakingUpdateType.ServerReady) {
+      const { host, port } = matchmakingUpdate as MatchmakingServerReady;
+      game.connectToServer(host, port);
+      props.onConnectToServer();
+    }
   }
 
   async function updateSelectedChampion(championID: string) {
