@@ -102,8 +102,8 @@ const ConsumablesPosition = styled.div`
 
 const FriendlyHealthBarsPosition = styled.div`
   position: fixed;
-  left: 20px;
-  top: 20px;
+  left: 5px;
+  top: 5px;
 
   display: flex;
   align-items: flex-start;

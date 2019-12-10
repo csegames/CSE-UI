@@ -12,7 +12,8 @@ import { HealthBar } from '../HealthBar';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 0 15px;
+  margin: 0 -5px;
+  transform: scale(0.8);
 `;
 
 const PlayerName = styled.div`
@@ -71,7 +72,7 @@ export class FriendlyHealthBar extends React.Component<Props, State> {
           health={entityState.health[0]}
           championResource={entityState.stamina}
           divineBarrier={entityState.blood}
-          resourcesWidth={75}
+          resourcesWidth={70}
           championProfileStyles={ChampionProfileStyle}
           race={this.state.entityState.race}
         />
