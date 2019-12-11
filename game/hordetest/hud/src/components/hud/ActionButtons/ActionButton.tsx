@@ -70,12 +70,14 @@ const ActionIcon = styled.span`
 
 const KeybindBox = styled.div`
   position: absolute;
-  bottom: -8px;
+  bottom: 0;
+  left: -5px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 25px;
   height: 17px;
+  transform: skewX(-10deg);
   background-color: rgba(0, 0, 0, 0.7);
 `;
 

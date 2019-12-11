@@ -31,23 +31,25 @@ const KeybindBox = styled.div`
 `;
 
 const NextKeybind = css`
-  margin-left: 5px;
+  margin-left: 10px;
+  padding: 3px;
 `;
 
 const NextArrow = styled.div`
   margin-left: 3px;
   margin-top: 4px;
-  font-size: 8px;
+  font-size: 10px;
 `;
 
 const PrevKeybind = css`
-  margin-right: 5px;
+  margin-right: 10px;
+  padding: 3px;
 `;
 
 const PrevArrow = styled.div`
   margin-right: 3px;
   margin-top: 4px;
-  font-size: 8px;
+  font-size: 10px;
 `;
 
 export interface Props {

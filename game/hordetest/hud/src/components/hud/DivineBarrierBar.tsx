@@ -11,7 +11,7 @@ const Container = styled.div`
   position: relative;
   width: 200px;
   height: 37px;
-  opacity: 0.2;
+  opacity: 0;
   transition: opacity 0.3s;
 
   &.active {

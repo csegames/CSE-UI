@@ -49,9 +49,9 @@ const KeybindBox = styled.div`
   background-color: rgba(0, 0, 0, 0.7);
   white-space: nowrap;
   position: absolute;
-  left: 50%;
-  bottom: -4px;
-  transform: skewX(10deg) translateX(-50%);
+  left: -4px;
+  bottom: -3px;
+  transform: skewX(10deg);
 `;
 
 const Image = styled.img`
