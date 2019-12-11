@@ -34,23 +34,23 @@ const Button = styled.div`
   }
 
   &.knight {
-    background-color: #2fb5ca
+    background-color: rgb(124, 122, 81);
   }
 
   &.berserker {
-    background-color: red;
+    background-color: rgb(69, 119, 134);
   }
 
   &.amazon {
-    background-color: orange;
+    background-color: rgb(135, 89, 70);
   }
 
   &.celt {
-    background-color: green;
+    background-color: rgb(68, 130, 117);
   }
 
   &.cooldown {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
   }
 `;
 

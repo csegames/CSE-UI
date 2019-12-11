@@ -15,7 +15,7 @@ const ChampionProfileContainer = styled.div`
   height: 75px;
   justify-content: center;
   border: 3px solid #1a1a1a;
-  background-color: black;
+  background-color: rgb(51, 51, 51);
   transform: skewX(-10deg);
   overflow: hidden;
 `;
