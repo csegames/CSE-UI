@@ -66,8 +66,8 @@ export function LeftOptions(props: Props) {
       <Item onClick={onSettingsClick}>Settings</Item>
       {/* <Item>Select Game Mode</Item> */}
       <Item>Support</Item>
-      <Item>Legal</Item>
-      <Item>News</Item>
+      {/* <Item>Legal</Item>
+      <Item>News</Item> */}
       <Item>Credits</Item>
       <Item className='exit' onClick={onExitClick}>Exit</Item>
     </Container>

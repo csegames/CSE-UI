@@ -7,7 +7,8 @@
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { LeftOptions } from './LeftOptions';
-import { Social } from './Social';
+import { AbilityInfo } from './AbilityInfo';
+// import { Social } from './Social';
 
 const Container = styled.div`
   position: fixed;
@@ -15,7 +16,7 @@ const Container = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.9);
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
@@ -43,7 +44,9 @@ export class MenuModal extends React.Component<{}, State> {
 
   public render() {
     return (
-      <Container onClick={this.hide} className={this.state.isVisible ? 'visible' : ''}></Container>
+      <Container onClick={this.hide} className={this.state.isVisible ? 'visible' : ''}>
+        {this.state.isVisible && <AbilityInfo />}
+      </Container>
     );
   }
 
@@ -72,12 +75,12 @@ export class MenuModal extends React.Component<{}, State> {
 
     const hideOverlay = true;
     game.trigger('show-left-modal', <LeftOptions />, hideOverlay);
-    game.trigger('show-right-modal', <Social />, hideOverlay);
+    // game.trigger('show-right-modal', <Social />, hideOverlay);
   }
 
   private hide = () => {
     this.setState({ isVisible: false });
     game.trigger('hide-left-modal');
-    game.trigger('hide-right-modal');
+    // game.trigger('hide-right-modal');
   }
 }
