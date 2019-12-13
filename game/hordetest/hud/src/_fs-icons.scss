@@ -25,26 +25,56 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.fs-icon-misc-heart:before {
-  content: "\e937";
-}
-.fs-icon-debuff-paralyze:before {
+.fs-icon-effects-haste:before {
   content: "\e931";
 }
-.fs-icon-debuff-silence:before {
+.fs-icon-effects-ice:before {
   content: "\e932";
 }
-.fs-icon-debuff-slime:before {
+.fs-icon-effects-inspire:before {
   content: "\e933";
 }
-.fs-icon-debuff-stun:before {
+.fs-icon-effects-paralyze:before {
   content: "\e934";
 }
-.fs-icon-debuff-fire:before {
+.fs-icon-effects-rally:before {
   content: "\e935";
 }
-.fs-icon-debuff-ice:before {
+.fs-icon-effects-retaliate:before {
   content: "\e936";
+}
+.fs-icon-effects-silence:before {
+  content: "\e938";
+}
+.fs-icon-effects-slime:before {
+  content: "\e939";
+}
+.fs-icon-effects-strength:before {
+  content: "\e93a";
+}
+.fs-icon-effects-stun:before {
+  content: "\e93b";
+}
+.fs-icon-effects-curse:before {
+  content: "\e93c";
+}
+.fs-icon-effects-enrage:before {
+  content: "\e93d";
+}
+.fs-icon-effects-fearless:before {
+  content: "\e93e";
+}
+.fs-icon-effects-fire:before {
+  content: "\e93f";
+}
+.fs-icon-effects-fortify:before {
+  content: "\e940";
+}
+.fs-icon-effects-guard:before {
+  content: "\e941";
+}
+.fs-icon-misc-heart:before {
+  content: "\e937";
 }
 .fs-icon-amazon-bow-strike:before {
   content: "\e90a";

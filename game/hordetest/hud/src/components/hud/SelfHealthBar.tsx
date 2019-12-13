@@ -152,6 +152,7 @@ export class SelfHealthBar extends React.Component<Props, State> {
             collectedRunes={collectedRunes}
             runeBonuses={runeBonuses}
             race={hordetest.game.selfPlayerState.race}
+            statuses={this.state.statuses}
           />
         </HealthBarContainer>
         <ExtrasContainer>

@@ -9,6 +9,7 @@ import { styled } from '@csegames/linaria/react';
 import { StatusContext } from 'context/StatusContext';
 
 const ChampionProfileContainer = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   width: 75px;
@@ -39,13 +40,44 @@ const Image = styled.img`
   height: 115%;
 `;
 
-const DebuffIcon = styled.div`
+const EffectOverlay = styled.div`
   position: absolute;
-  font-size: 50px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  &.hostile {
+    background-color: rgba(145, 0, 0, 0.5);
+  }
+`;
+
+const EffectIcon = styled.div`
+  position: absolute;
+  font-size: 60px;
   color: white;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 0.7s infinite alternate;
+  transform: skewX(10deg);
+
+  @keyframes pulse {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0.6;
+    }
+  }
 `;
 
 const DeadX = styled.img`
@@ -74,28 +106,33 @@ export function ChampionProfile(props: Props) {
     return myRace.thumbnailURL;
   }
 
-  function getDebuffIconClass() {
-    if (!props.statuses) return '';
+  function getEffectInfo() {
+    if (!props.statuses) return null;
 
     const statuses = Object.values(props.statuses);
 
-    let statusDef: { id: string, numericID: number, name: string, iconClass: string } = null;
+    let statusDef: { id: string, numericID: number, name: string, iconClass: string, statusTags: string[] } = null;
     statuses.forEach((status) => {
       if (!statusDef) {
-        statusDef = statusDefs.find(def => def.numericID === status.id && def.statusTags.includes('hostile'));
+        statusDef = statusDefs.find(def => def.numericID === status.id && def.iconClass);
       }
     });
 
-    if (!statusDef) return '';
-    return statusDef.iconClass;
+    if (!statusDef) return null;
+    return statusDef;
   }
 
+  const effect = getEffectInfo();
   return (
     <ChampionProfileContainer className={props.containerStyles ? props.containerStyles : ''}>
       <ProfileBox>
         <Image src={getProfileImage()} />
-        <DebuffIcon className={getDebuffIconClass()} />
       </ProfileBox>
+      {effect &&
+        <EffectOverlay className={effect.statusTags.includes('hostile') ? 'hostile' : ''}>
+          <EffectIcon className={effect.iconClass} />
+        </EffectOverlay>
+      }
       {!props.isAlive && <DeadX src={'images/hud/dead-x.svg'} />}
     </ChampionProfileContainer>
   );
