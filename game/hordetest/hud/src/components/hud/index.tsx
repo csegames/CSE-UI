@@ -198,7 +198,14 @@ export class HUD extends React.Component<Props, State> {
     if (this.state.isLobbyVisible) {
       return (
         <FullScreenContextProviders>
-          <FullScreen onConnectToServer={this.onConnectToServer} />
+          <FullScreen scenarioID={this.state.scenarioID} onConnectToServer={this.onConnectToServer} />
+
+          <MenuModal />
+          <LeftModal />
+          <RightModal />
+          <MiddleModal />
+          <ActionAlert />
+          <LoadingScreen />
         </FullScreenContextProviders>
       );
     }
@@ -292,6 +299,10 @@ export class HUD extends React.Component<Props, State> {
   public componentDidMount() {
     this.showEVH = game.on('show-fullscreen', this.show);
     this.hideEVH = game.on('hide-fullscreen', this.hide);
+
+    if (hordetest.game.onScenarioRoundEnded) {
+      this.onConnectToServer();
+    }
   }
 
   public componentWillUnmount() {

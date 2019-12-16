@@ -48,13 +48,13 @@ export enum Route {
 }
 
 export interface Props {
+  scenarioID: string;
   onConnectToServer: () => void;
 }
 
 export interface State {
   isChatVisible: boolean;
   currentRoute: Route;
-  scenarioID: string;
 }
 
 export class FullScreen extends React.Component<Props, State> {
@@ -66,8 +66,7 @@ export class FullScreen extends React.Component<Props, State> {
     super(props);
     this.state = {
       isChatVisible: true,
-      currentRoute: Route.Start,
-      scenarioID: '',
+      currentRoute: props.scenarioID ? Route.EndGameStats : Route.Start,
     };
   }
 
@@ -105,7 +104,7 @@ export class FullScreen extends React.Component<Props, State> {
       }
       case Route.EndGameStats: {
         return (
-          <GameStats scenarioID={this.state.scenarioID} onLeaveClick={this.goToStart} />
+          <GameStats scenarioID={this.props.scenarioID} onLeaveClick={this.goToStart} />
         );
       }
     }
