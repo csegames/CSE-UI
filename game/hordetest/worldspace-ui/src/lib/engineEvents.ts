@@ -85,6 +85,17 @@ function onUpdatePlayerDifferentiator(callback: (
   engine.on('updatePlayerDifferentiator', callback);
 }
 
+function onUpdateObjective(callback: (
+  cell: number,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  objectiveState: ObjectiveEntityState,
+) => void) {
+  engine.on('updateObjective', callback);
+}
+
 export const engineEvents = {
   onUpdateProgressBar,
   onUpdateWorldUI,
@@ -93,4 +104,5 @@ export const engineEvents = {
   onUpdateInteractable,
   onUpdateInteractionBar,
   onUpdatePlayerDifferentiator,
+  onUpdateObjective,
 };
