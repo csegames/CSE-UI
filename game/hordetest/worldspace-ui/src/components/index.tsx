@@ -65,9 +65,13 @@ export interface InteractableState extends WorldUIState {
 
 export interface InteractionBarState extends WorldUIState {
   type: WorldUIWidgetType.InteractionBar;
-  name: string;
-  progress: number;
-  keybind: Binding;
+  name: string,
+  description: string,
+  gameplayType: ItemGameplayType,
+  iconClass: string,
+  iconURL: string,
+  progress?: number,
+  keybind?: Binding,
 }
 
 export interface PlayerDifferentiatorState extends WorldUIState {
@@ -103,7 +107,6 @@ export class WorldUI extends React.Component<{}, State> {
     engineEvents.onRemoveWorldUI(this.handleRemoveWorldUI);
     engineEvents.onUpdateProgressBar(this.handleUpdateProgressBar);
     engineEvents.onUpdateHealthBar(this.handleUpdateHealthBar);
-    engineEvents.onUpdateInteractable(this.handleUpdateInteractable);
     engineEvents.onUpdateInteractionBar(this.handleUpdateInteractionBar);
     // engineEvents.onUpdatePlayerDifferentiator(this.handleUpdatePlayerDifferentiator);
   }
@@ -219,26 +222,6 @@ export class WorldUI extends React.Component<{}, State> {
     this.createOrUpdateWorldUI(newHealthBarState);
   }
 
-  private handleUpdateInteractable = (
-    id: number,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    name: string,
-  ) => {
-    const newInteractableState: InteractableState = cloneDeep({
-      type: WorldUIWidgetType.Interactable,
-      id,
-      x,
-      y,
-      width,
-      height,
-      name,
-    });
-    this.createOrUpdateWorldUI(newInteractableState);
-  }
-
   private handleUpdateInteractionBar = (
     id: number,
     x: number,
@@ -246,8 +229,12 @@ export class WorldUI extends React.Component<{}, State> {
     width: number,
     height: number,
     name: string,
-    progress: number,
-    keybind: Binding,
+    description: string,
+    gameplayType: ItemGameplayType,
+    iconClass: string,
+    iconURL: string,
+    progress?: number,
+    keybind?: Binding,
   ) => {
     const newInteractionBarState: InteractionBarState = cloneDeep({
       type: WorldUIWidgetType.InteractionBar,
@@ -257,6 +244,10 @@ export class WorldUI extends React.Component<{}, State> {
       width,
       height,
       name,
+      description,
+      gameplayType,
+      iconClass,
+      iconURL,
       progress,
       keybind,
     });

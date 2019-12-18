@@ -51,6 +51,8 @@ function onUpdateInteractable(callback: (
   width: number,
   height: number,
   name: string,
+  description: string,
+  gameplayType: ItemGameplayType,
 ) => void) {
   engine.on('updateInteractable', callback);
 }
@@ -62,8 +64,12 @@ function onUpdateInteractionBar(callback: (
   width: number,
   height: number,
   name: string,
-  progress: number,
-  keybind: Binding,
+  description: string,
+  gameplayType: ItemGameplayType,
+  iconClass: string,
+  iconURL: string,
+  progress?: number,
+  keybind?: Binding,
 ) => void) {
   engine.on('updateInteractionBar', callback);
 }
