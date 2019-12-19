@@ -11,7 +11,7 @@ import {
   Gender as GraphQLGender,
   Race as GraphQLRace,
   Archetype as GraphQLArchetype,
-} from '@csegames/library/lib/_baseGame/graphql/schema';
+} from '@csegames/library/lib/camelotunchained/graphql/schema';
 import { utils } from '@csegames/library/lib/camelotunchained';
 import { TabItem } from 'cseshared/components/TabPanel';
 

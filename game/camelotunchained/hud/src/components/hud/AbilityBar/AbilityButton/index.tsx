@@ -259,7 +259,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
     }
   }
 
-  private setDisruptionRing = (info: { id: number, disruption: CurrentMax, clockwise: boolean }) => {
+  private setDisruptionRing = (info: { id: number, disruption: CurrentMaxValue, clockwise: boolean }) => {
     const { id, disruption, clockwise } = info;
     let ring = this.rings[id];
     const disruptionEnd = disruption.max;
@@ -337,7 +337,7 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
   }
 
   private runTimerAnimation = (timing: Timing,
-                              disruption: CurrentMax,
+                              disruption: CurrentMaxValue,
                               isClockwise: boolean,
                               shouldPlayHit?: boolean,
                               overrideCurrentTimer?: boolean) => {

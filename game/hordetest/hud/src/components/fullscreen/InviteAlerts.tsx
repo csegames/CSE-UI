@@ -11,7 +11,7 @@ import { styled } from '@csegames/linaria/react';
 import { GraphQL, GraphQLResult  } from '@csegames/library/lib/_baseGame/graphql/react';
 import { SubscriptionResult } from '@csegames/library/lib/_baseGame/graphql/subscription';
 import { IInteractiveAlert, GroupAlert } from '@csegames/library/lib/hordetest/graphql/schema';
-import { AlertCategory } from '@csegames/library/lib/_baseGame/graphql/schema';
+import { AlertCategory } from '@csegames/library/lib/camelotunchained/graphql/schema';
 import { Button } from './Button';
 import { webAPI } from '@csegames/library/lib/hordetest';
 import { showActionAlert } from 'components/shared/ActionAlert';

@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { webAPI } from '@csegames/library/lib/camelotunchained';
-import { patcher } from '../../../../services/patcher';
+// import { webAPI } from '@csegames/library/lib/camelotunchained';
+// import { patcher } from '../../../../services/patcher';
 
 export interface AttributeOffsetInfo {
   race: Race;
@@ -46,28 +46,28 @@ export function fetchAttributeOffsetsFailed(error: any) {
   };
 }
 
-export function fetchAttributeOffsets(shard: number = 1, apiHost: string) {
-  return (dispatch: (action: any) => any) => {
-    dispatch(requestAttributeOffsets());
-    return getAttributeOffsets(dispatch, shard, apiHost);
-  };
-}
+// export function fetchAttributeOffsets(shard: number = 1, apiHost: string) {
+//   return (dispatch: (action: any) => any) => {
+//     dispatch(requestAttributeOffsets());
+//     return getAttributeOffsets(dispatch, shard, apiHost);
+//   };
+// }
 
-async function getAttributeOffsets(dispatch: (action: any) => any, shard: number, apiHost: string) {
-  try {
-    const config: RequestConfig = () => ({
-      url: apiHost,
-      headers: {
-        Authorization: `Bearer ${patcher.getAccessToken()}`,
-      },
-    });
-    const res = await webAPI.GameDataAPI.GetAttributeOffsetsV1(config, shard);
-    const data = JSON.parse(res.data);
-    dispatch(res.ok ? fetchAttributeOffsetsSuccess(data) : fetchAttributeOffsetsFailed(data));
-  } catch (err) {
-    fetchAttributeOffsetsFailed(err);
-  }
-}
+// async function getAttributeOffsets(dispatch: (action: any) => any, shard: number, apiHost: string) {
+//   try {
+//     const config: RequestConfig = () => ({
+//       url: apiHost,
+//       headers: {
+//         Authorization: `Bearer ${patcher.getAccessToken()}`,
+//       },
+//     });
+//     const res = await webAPI.GameDataAPI.GetAttributeOffsetsV1(config, shard);
+//     const data = JSON.parse(res.data);
+//     dispatch(res.ok ? fetchAttributeOffsetsSuccess(data) : fetchAttributeOffsetsFailed(data));
+//   } catch (err) {
+//     fetchAttributeOffsetsFailed(err);
+//   }
+// }
 
 export interface AttributeOffsetsState {
   isFetching?: boolean;

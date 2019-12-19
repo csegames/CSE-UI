@@ -9,7 +9,7 @@ import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { has, uniqBy } from 'lodash';
 import { query } from '@csegames/library/lib/_baseGame/graphql/query';
-import { CUQuery } from '@csegames/library/lib/_baseGame/graphql/schema';
+import { CUQuery } from '@csegames/library/lib/camelotunchained/graphql/schema';
 
 import Animate from '../../lib/Animate';
 import ResponseError from '../../lib/ResponseError';

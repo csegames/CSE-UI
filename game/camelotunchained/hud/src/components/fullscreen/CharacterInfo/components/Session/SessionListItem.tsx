@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { utils } from '@csegames/library/lib/camelotunchained';
-import { SkillPartsUsedField } from '@csegames/library/lib/_baseGame/graphql/schema';
+import { SkillPartsUsedField } from '@csegames/library/lib/camelotunchained/graphql/schema';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 // #region Container constants
