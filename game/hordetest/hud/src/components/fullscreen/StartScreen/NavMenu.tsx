@@ -59,9 +59,9 @@ export function NavMenu(props: Props) {
             {inputContext.isConsole && <ButtonIcon className='icon-xb-lb' />}
             {renderRouteButton(StartScreenRoute.Play)}
             {renderRouteButton(StartScreenRoute.Champions)}
-            {renderRouteButton(StartScreenRoute.BattlePass)}
+            {/* {renderRouteButton(StartScreenRoute.BattlePass)} */}
             {renderRouteButton(StartScreenRoute.Career)}
-            {renderRouteButton(StartScreenRoute.Leaderboards)}
+            {/* {renderRouteButton(StartScreenRoute.Leaderboards)} */}
             {renderRouteButton(StartScreenRoute.Store)}
             {inputContext.isConsole && <ButtonIcon className='icon-xb-rb' />}
           </Container>
