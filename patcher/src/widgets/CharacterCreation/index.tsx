@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import { createStore, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { webAPI } from '@csegames/library/lib/camelotunchained';
+import '@csegames/library/lib/camelotunchained';
 
 import { view } from '../../components/OverlayView';
 import FactionSelect from './components/FactionSelect';
@@ -24,7 +24,6 @@ import CharCreationHeader from './components/CharCreationHeader';
 import LoadingOverlay from './components/LoadingOverlay';
 
 // tslint:disable-next-line
-
 import {
   StatsSelectContext,
   StatsSelectContextProvider,
@@ -49,7 +48,7 @@ import {
   resetBanesAndBoons,
   fetchTraits,
 } from './services/session/banesAndBoons';
-import { patcher } from '../../services/patcher';
+import { checkAPIServer } from '../../lib/checkAPIServer';
 export { CharacterCreationModel } from './services/session/character';
 
 const store = createStore(reducer, applyMiddleware(thunk as any));
@@ -551,13 +550,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
   }
 
   private isApiServerOnline = async () => {
-    const config = () => ({
-      url: this.props.apiHost,
-      headers: {
-        Authorization: `Bearer ${patcher.getAccessToken()}`,
-      },
-    });
-    const res = await webAPI.ServersAPI.GetServersV1(config);
+    const res = await checkAPIServer(this.props.apiHost);
     this.setState({ checkingApiServer: false });
     return res;
   }

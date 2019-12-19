@@ -14,6 +14,8 @@ import { Provider } from 'react-redux';
 import { thunkMiddleware } from './lib/reduxUtils';
 import reducer from './services/session';
 import PatcherApp from './components/App';
+import '@csegames/library/lib/_baseGame';
+import '@csegames/library/lib/camelotunchained';
 
 const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 const root = document.getElementById('Patcher');

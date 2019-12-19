@@ -5,11 +5,9 @@
  */
 
 import * as React from 'react';
-import { webAPI } from '@csegames/library/lib/camelotunchained';
 
 import ControllerDisplayView from './ControllerDisplayView';
 import { Routes } from '../../../../services/session/routes';
-import { patcher } from '../../../../services/patcher';
 import {
   ControllerContextProvider,
   ControllerContext,
@@ -18,6 +16,7 @@ import {
   ServerType,
 } from '../../ControllerContext';
 import { SimpleCharacter } from 'gql/interfaces';
+import { checkAPIServer } from '../../../../lib/checkAPIServer';
 
 export interface APIServerStatus {
   [apiHost: string]: 'Online' | 'Offline';
@@ -90,15 +89,9 @@ class ControllerDisplay extends React.PureComponent<Props, ControllerDisplayStat
     const { servers } = this.props;
     const apiServerStatus = {};
     Object.keys(servers).forEach((_key) => {
-      const config: RequestConfig = () => ({
-        url: servers[_key].apiHost + '/',
-        headers: {
-          Authorization: `Bearer ${patcher.getAccessToken()}`,
-        },
-      });
-      webAPI.ServersAPI.GetServersV1(config)
-        .then((_res) => {
-          if (_res.ok) {
+      checkAPIServer(servers[_key].apiHost)
+        .then((ok) => {
+          if (ok) {
             apiServerStatus[servers[_key].apiHost] = 'Online';
           } else {
             apiServerStatus[servers[_key].apiHost] = 'Offline';
