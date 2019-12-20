@@ -168,14 +168,14 @@ module.exports = function (e, argv = {}) {
                     cacheDirectory: path.resolve(CACHE_ROOT, 'babel-loader'),
                   },
                 },
-                {
-                  loader: require.resolve('eslint-loader'),
-                  query: {
-                    emitError: true,
-                    emitWarning: true,
-                    failOnError: true,
-                  }
-                },
+                // {
+                //   loader: require.resolve('eslint-loader'),
+                //   query: {
+                //     emitError: true,
+                //     emitWarning: true,
+                //     failOnError: true,
+                //   }
+                // },
                 {
                   loader: '@csegames/linaria/loader',
                   options: {
@@ -318,7 +318,7 @@ module.exports = function (e, argv = {}) {
       ...(!IS_CI ? [
         new ForkTsCheckerWebpackPlugin({
           checkSyntacticErrors: true,
-          tslint: true, // can turn this off if required
+          tslint: false, // can turn this off if required
           formatter: 'codeframe',
           async: false,
         }),

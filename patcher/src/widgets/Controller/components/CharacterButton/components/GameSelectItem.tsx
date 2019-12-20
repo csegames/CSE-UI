@@ -73,6 +73,16 @@ const GameName = styled.div`
   }
 `;
 
+function serverTypeToProductType(serverType: ServerType) {
+  switch (serverType) {
+    case ServerType.CUGAME: return Product.CamelotUnchained;
+    case ServerType.COLOSSUS: return Product.Colossus;
+    case ServerType.CUBE: return Product.Cube;
+    default: return Product.Tools;
+  }
+}
+
+
 export interface GameSelectItemProps {
   type: ServerType;
   onSelectServerType: (type: ServerType) => void;
@@ -97,7 +107,12 @@ class GameSelectItem extends React.Component<GameSelectItemProps, GameSelectItem
       <Container>
         <GameImage
           style={{ backgroundImage: `url(${serverTypeToIcon(type)})` }}
-          onClick={() => this.props.onSelectServerType(type)}
+          onClick={() => {
+            // BAD HACK
+            game.trigger('product-selection-changed', serverTypeToProductType(type));
+            // END BAD HACK
+            this.props.onSelectServerType(type);
+          }}
           onMouseOver={this.showGameName}
           onMouseLeave={this.hideGameName}
         />

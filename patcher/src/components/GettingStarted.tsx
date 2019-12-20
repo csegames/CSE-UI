@@ -7,6 +7,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
+import { usePatcherState } from '../services/session/patcherState';
 
 const Container = styled.div`
   top: 150px;
@@ -63,8 +64,10 @@ export interface State {
 
 }
 
-class GettingStarted extends React.Component<Props, State> {
-  public render() {
+export function GettingStarted(props: Props) {
+  const [state] = usePatcherState();
+  // show this only for CU.
+  if (state.selectedProduct === Product.CamelotUnchained) {
     return (
       <Container>
         <Dudes>
@@ -94,6 +97,7 @@ class GettingStarted extends React.Component<Props, State> {
       </Container>
     );
   }
+  return null;
 }
 
 export default GettingStarted;

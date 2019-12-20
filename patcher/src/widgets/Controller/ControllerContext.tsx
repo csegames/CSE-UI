@@ -37,6 +37,7 @@ export enum ServerType {
   CUGAME,
   CUBE,
   CHANNEL,
+  COLOSSUS,
   UNKNOWN,
   HIDDEN,
 }
@@ -71,6 +72,7 @@ export function serverTypeToIcon(t: ServerType) {
     case ServerType.CUBE: return 'images/controller/cube-logo.png';
     case ServerType.CHANNEL: return 'images/controller/tools-logo.png';
     case ServerType.UNKNOWN: return 'ERROR';
+    case ServerType.COLOSSUS: return 'images/colossus/logo.png';
   }
 }
 
@@ -108,14 +110,14 @@ export function webAPIServerToPatcherServer(server: ServerModel): PatcherServer 
   return merge({
     name: server.name,
     available: (server.status as any) === ServerStatus.Online,
-    type: ServerType.CUGAME,
+    type: getServerTypeFromChannel(channel.channelID, ServerType.CUGAME),
     channelStatus: channel ? channel.channelStatus : ChannelStatus.NotInstalled,
     apiHost: server.apiHost,
     mode: channel ? channel.mode : PatchChannelMode.Automatic,
   }, server);
 }
 
-function getServerTypeFromChannel(channelID: number): ServerType {
+function getServerTypeFromChannel(channelID: number, defaultsTo: ServerType = ServerType.CHANNEL): ServerType {
   switch (channelID) {
     case 4: return ServerType.CUGAME;
     case 27: return ServerType.CUBE;
@@ -125,7 +127,8 @@ function getServerTypeFromChannel(channelID: number): ServerType {
     case 11: {
       return ServerType.HIDDEN;
     }
-    default: return ServerType.CHANNEL;
+    case 2000: case 2100: return ServerType.COLOSSUS;
+    default: return defaultsTo;
   }
 }
 

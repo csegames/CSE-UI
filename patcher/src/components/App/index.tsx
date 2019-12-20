@@ -17,7 +17,10 @@ import { ChatState, showChat } from '../../services/session/chat';
 import { TopVeil, TopLeftVeil, BottomVeil, BottomLeftVeil, BottomRightVeil } from '../Viels';
 
 // Components
-import Hero from '../Hero';
+import CUHero from '../CUHero';
+import { CSEHero } from '../CSEHero';
+import { ColossusHero } from '../ColossusHero';
+import { ToolsHero } from '../ToolsHero';
 import Sound from '../Sound';
 import Header from '../Header';
 import WindowHeader from '../WindowHeader';
@@ -41,7 +44,28 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
   public name = 'cse-patcher';
   private heroContentInterval: any = null;
 
+  private patcherStateUpdateHandleBadBadBad: EventHandle = null;
+
   public render() {
+
+    let hero = <CSEHero />;
+    if (window.patcherState.loggedIn) {
+      switch (window.patcherState.selectedProduct) {
+        case Product.CamelotUnchained: case Product.Cube:
+          hero = (<CUHero isFetching={this.props.heroContentState.isFetching}
+                          lastUpdated={this.props.heroContentState.lastFetchSuccess}
+                          items={this.props.heroContentState.items} />);
+          break;
+          case Product.Colossus:
+            hero = <ColossusHero />;
+            break;
+          case Product.Tools:
+            hero = <ToolsHero />;
+            break;
+      }
+    }
+    
+
     return (
       <div className='PatcherApp'>
         <TopVeil />
@@ -59,9 +83,7 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
                 openChat={this.showChat} />
 
         <div className='PatcherApp__content'>
-          <Hero isFetching={this.props.heroContentState.isFetching}
-                lastUpdated={this.props.heroContentState.lastFetchSuccess}
-                items={this.props.heroContentState.items} />
+          {hero}
         </div>
 
         <Controller onLogIn={this.onLogIn} activeRoute={this.props.currentRoute} />
@@ -72,6 +94,10 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
   }
 
   public componentDidMount() {
+
+    // bad bad bad
+    this.patcherStateUpdateHandleBadBadBad = game.on('update', () => this.forceUpdate());
+
     // fetch initial hero content and then every 30 minutes validate & fetch hero content.
     if (!this.props.heroContentState.isFetching) this.props.dispatch(fetchHeroContent());
     this.heroContentInterval = setInterval(() => {
@@ -98,6 +124,8 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
   public componentWillUnmount() {
     // unregister intervals
     clearInterval(this.heroContentInterval);
+
+    if (this.patcherStateUpdateHandleBadBadBad) this.patcherStateUpdateHandleBadBadBad.clear();
   }
 
   public componentDidUpdate() {
