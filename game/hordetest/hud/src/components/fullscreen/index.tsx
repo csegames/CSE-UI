@@ -7,7 +7,7 @@
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
 
-import { Chat } from 'cushared/components/Chat';
+// import { Chat } from 'cushared/components/Chat';
 import { StartScreen } from './StartScreen';
 import { ChampionSelect } from './ChampionSelect';
 import { Button } from './Button';
@@ -33,13 +33,13 @@ const HideButton = styled.div`
   z-index: 10;
 `;
 
-const ChatPosition = styled.div`
-  position: fixed;
-  left: 0px;
-  bottom: 50px;
-  width: 480px;
-  height: 240px;
-`;
+// const ChatPosition = styled.div`
+//   position: fixed;
+//   left: 0px;
+//   bottom: 50px;
+//   width: 480px;
+//   height: 240px;
+// `;
 
 export enum Route {
   Start,
@@ -48,13 +48,13 @@ export enum Route {
 }
 
 export interface Props {
+  scenarioID: string;
   onConnectToServer: () => void;
 }
 
 export interface State {
   isChatVisible: boolean;
   currentRoute: Route;
-  scenarioID: string;
 }
 
 export class FullScreen extends React.Component<Props, State> {
@@ -66,8 +66,7 @@ export class FullScreen extends React.Component<Props, State> {
     super(props);
     this.state = {
       isChatVisible: true,
-      currentRoute: Route.Start,
-      scenarioID: '',
+      currentRoute: props.scenarioID ? Route.EndGameStats : Route.Start,
     };
   }
 
@@ -78,11 +77,11 @@ export class FullScreen extends React.Component<Props, State> {
         <HideButton onClick={() => game.trigger('hide-fullscreen')}>
           <Button type='blue' text='Hide Full Screen UI' />
         </HideButton>
-        {this.state.isChatVisible &&
+        {/* {this.state.isChatVisible &&
           <ChatPosition>
             <Chat accessToken={game.accessToken} />
           </ChatPosition>
-        }
+        } */}
       </Container>
     );
   }
@@ -105,7 +104,7 @@ export class FullScreen extends React.Component<Props, State> {
       }
       case Route.EndGameStats: {
         return (
-          <GameStats scenarioID={this.state.scenarioID} onLeaveClick={this.goToStart} />
+          <GameStats scenarioID={this.props.scenarioID} onLeaveClick={this.goToStart} />
         );
       }
     }

@@ -52,12 +52,12 @@ export interface Props {
 
 export function EnemyHealthBar(props: Props) {
   const { state } = props;
-  return (
+  return state.current > 0 ? (
     <Container>
       <NameOfPlayer>{state.name}</NameOfPlayer>
       <BarContainer>
         <Bar style={{ width: `${(state.current / state.max) * 100}%` }} />
       </BarContainer>
     </Container>
-  );
+  ) : null;
 }

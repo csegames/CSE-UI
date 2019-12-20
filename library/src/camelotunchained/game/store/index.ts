@@ -9,7 +9,7 @@
  */
 import { useState } from 'react';
 import { query } from '../../../_baseGame/graphql/query';
-import { CUQuery, Ability, StatusDef } from '../../../_baseGame/graphql/schema';
+import { CUQuery, Ability, StatusDef } from '../../graphql/schema';
 
 const queryString = `
 {

@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { webAPI } from '@csegames/library/lib/camelotunchained';
-import { patcher } from '../../../../services/patcher';
+// import { webAPI } from '@csegames/library/lib/camelotunchained';
+// import { patcher } from '../../../../services/patcher';
 
 const totalPoints = 30;
 
@@ -72,36 +72,36 @@ export function fetchAttributesFailed(error: any) {
   };
 }
 
-export function fetchAttributes(shard: number = 1, apiHost: string) {
-  return (dispatch: (action: any) => any) => {
-    dispatch(requestAttributes());
-    return getAttributeInfo(dispatch, shard, apiHost);
-  };
-}
+// export function fetchAttributes(shard: number = 1, apiHost: string) {
+//   return (dispatch: (action: any) => any) => {
+//     dispatch(requestAttributes());
+//     return getAttributeInfo(dispatch, shard, apiHost);
+//   };
+// }
 
-async function getAttributeInfo(dispatch: (action: any) => any, shard: number, apiHost: string) {
-  try {
-    const config: RequestConfig = () => ({
-      url: apiHost,
-      headers: {
-        Authorization: `Bearer ${patcher.getAccessToken()}`,
-      },
-    });
-    const res = await webAPI.GameDataAPI.GetAttributeInfoV1(config, shard);
-    const data = JSON.parse(res.data);
-    if (res.ok) {
-      data.map((a: any) => {
-        a.allocatedPoints = 0;
-        a.minValue = a.baseValue;
-      });
-      dispatch(fetchAttributesSuccess(data));
-    } else {
-      dispatch(fetchAttributesFailed(data));
-    }
-  } catch (err) {
-    dispatch(fetchAttributesFailed(err));
-  }
-}
+// async function getAttributeInfo(dispatch: (action: any) => any, shard: number, apiHost: string) {
+//   try {
+//     const config: RequestConfig = () => ({
+//       url: apiHost,
+//       headers: {
+//         Authorization: `Bearer ${patcher.getAccessToken()}`,
+//       },
+//     });
+//     const res = await webAPI.GameDataAPI.GetAttributeInfoV1(config, shard);
+//     const data = JSON.parse(res.data);
+//     if (res.ok) {
+//       data.map((a: any) => {
+//         a.allocatedPoints = 0;
+//         a.minValue = a.baseValue;
+//       });
+//       dispatch(fetchAttributesSuccess(data));
+//     } else {
+//       dispatch(fetchAttributesFailed(data));
+//     }
+//   } catch (err) {
+//     dispatch(fetchAttributesFailed(err));
+//   }
+// }
 
 export interface AttributesState {
   isFetching?: boolean;

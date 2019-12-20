@@ -8,7 +8,7 @@ import React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { StatBlock } from './StatBlock';
-import { List } from './List';
+// import { List } from './List';
 import { Title } from 'components/fullscreen/Title';
 
 const Container = styled.div`
@@ -31,9 +31,9 @@ const StatBlockContainer = styled.div`
   flex: 1;
 `;
 
-const ListContainer = styled.div`
-  flex: 1;
-`;
+// const ListContainer = styled.div`
+//   flex: 1;
+// `;
 
 const TopStatBlockSpacing = css`
   margin-top: 10px;
@@ -114,9 +114,9 @@ export function CareerStats(props: Props) {
           />
         </StatBlockContainer>
       </LeftSection>
-      <ListContainer>
+      {/* <ListContainer>
         <List />
-      </ListContainer>
+      </ListContainer> */}
     </Container>
   );
 }

@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { MetricsData } from '@csegames/library/lib/_baseGame/graphql/schema';
+import { MetricsData } from '@csegames/library/lib/camelotunchained/graphql/schema';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 
 const PlayerCount = styled.span`

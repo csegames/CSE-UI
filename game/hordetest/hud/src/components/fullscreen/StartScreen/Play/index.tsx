@@ -11,7 +11,7 @@ import { webAPI } from '@csegames/library/lib/hordetest';
 
 import { WarbandContext, onActiveGroupUpdate, WarbandContextState } from 'context/WarbandContext';
 import { InputContext, InputContextState } from 'context/InputContext';
-import { InfoSection } from './InfoSection';
+// import { InfoSection } from './InfoSection';
 import { Button } from 'components/fullscreen/Button';
 import { PlayerView } from './PlayerView';
 import { ReadyButton } from './ReadyButton';
@@ -27,13 +27,13 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const RightSection = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  width: 300px;
-`;
+// const RightSection = styled.div`
+//   position: absolute;
+//   top: 0;
+//   right: 0;
+//   height: 100%;
+//   width: 300px;
+// `;
 
 const BottomRightSection = styled.div`
   display: flex;
@@ -155,9 +155,9 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
     return (
       <Container>
         <InviteAlerts />
-        <RightSection>
+        {/* <RightSection>
           <InfoSection />
-        </RightSection>
+        </RightSection> */}
         <BottomRightSection>
           {warbandContext.groupID &&
             <Button
@@ -167,13 +167,15 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
               onClick={this.onLeaveClick}
             />
           }
-          <Button
+          {/* <Button
             styles={SocialButtonStyles}
             type='blue'
             text={<div><ButtonIcon className='icon-people'></ButtonIcon>7</div>}
-          />
+          /> */}
           <div>
-            <PartyText>Party 5 / 8</PartyText>
+            <PartyText>
+              Party {warbandContext.groupID ? Object.keys(warbandContext.groupMembers).length : 1} / 6
+            </PartyText>
             {!inputContext.isConsole ?
               <Button styles={SocialButtonStyles} type='blue' text={'Invite Friend'} onClick={this.handleInviteFriend} /> :
               <Button
