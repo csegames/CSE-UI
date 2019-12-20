@@ -38,27 +38,25 @@ const ResourceBarContainer = styled.div`
 
   &.flex-end {
     align-items: flex-end;
+    margin-top: 10px;
   }
 `;
 
 const MainResourceStyles = css`
   flex: 1;
   height: 26px;
-  border: 3px solid #002e0b;
   margin-bottom: 1px;
 `;
 
 const BarrierStyles = css`
   flex: 1;
   height: 26px;
-  border: 3px solid #002938;
   margin-bottom: 1px;
 `;
 
 const ResourceContainer = css`
   width: 100%;
-  height: 10px;
-  border: 3px solid #1e1d00;
+  height: 13px;
 `;
 
 const TextStyles = css`

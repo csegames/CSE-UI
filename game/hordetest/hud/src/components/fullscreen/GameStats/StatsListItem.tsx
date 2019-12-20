@@ -55,10 +55,9 @@ const ThumbsUpButtonSpacing = styled.div`
 `;
 
 const BarStyles = css`
-  height: 25px;
-  filter: grayscale(83%);
-  background-color: #1d2c54;
-  border: 3px solid #38425b;
+  height: 30px;
+  filter: grayscale(20%);
+  background-color: #2a3754;
 `;
 
 export interface Props {

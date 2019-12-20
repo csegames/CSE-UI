@@ -21,7 +21,7 @@ const PreviewImageSpacing = styled.div`
 
 const ChampionInfo = styled.div`
   flex: 1.5;
-  color: #636363;
+  color: #b6b6b6;
   font-family: Colus;
   font-size: 13px;
   cursor: pointer;
@@ -33,7 +33,7 @@ const ChampionInfo = styled.div`
 
 const Section = styled.div`
   flex: 1;
-  color: #636363;
+  color: #b6b6b6;
   margin: 0 10px;
   font-family: Colus;
   font-size: 13px;

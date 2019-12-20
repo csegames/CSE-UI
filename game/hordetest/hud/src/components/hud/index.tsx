@@ -90,14 +90,14 @@ const ChatPosition = styled.div`
 
 const SelfHealthBarPosition = styled.div`
   position: fixed;
-  left: 40px;
-  bottom: 20px;
+  left: 5%;
+  bottom: 3%;
 `;
 
 const ConsumablesPosition = styled.div`
   position: fixed;
   right: 40px;
-  bottom: 20px;
+  bottom: 3%;
 `;
 
 const FriendlyHealthBarsPosition = styled.div`

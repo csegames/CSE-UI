@@ -19,7 +19,7 @@ const HighlightContainer = styled.div`
   position: relative;
   width: 300px;
   height: 300px;
-  border-width: 5px;
+  border-width: 2px;
   border-style: solid;
   border-image: linear-gradient(to bottom right, #fece71, #81603c);
   border-image-slice: 5;
