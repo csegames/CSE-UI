@@ -52,6 +52,10 @@ export function createCharacter(model: CharacterCreationModel,
       const res = await webAPI.CharactersAPI.CreateCharacterV2(config, shard, model);
       if (res.ok) {
         dispatch(createCharacterSuccess(model));
+        // LOG OUT RESULT
+        console.log('Character successfully created');
+        console.log(JSON.stringify(res));
+        // LOG OUT RESULT
         return;
       }
       const errorData = JSON.parse(res.data);

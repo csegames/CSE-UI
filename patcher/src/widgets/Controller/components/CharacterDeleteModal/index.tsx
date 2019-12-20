@@ -83,6 +83,11 @@ class CharacterDeleteModal extends React.Component<Props, CharacterDeleteModalSt
 
         this.setState({ success: true, error: null, deleting: false });
 
+        // LOG OUT RESULT
+        console.log('Character sucessfully deleted');
+        console.log(JSON.stringify(res));
+        // LOG OUT RESULT
+
         setTimeout(() => {
           this.props.onSuccess(character.id);
           this.props.refetchCharacters();

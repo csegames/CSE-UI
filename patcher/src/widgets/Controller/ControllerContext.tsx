@@ -280,6 +280,13 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
     }
 
     if (!graphql.data) return graphql;
+    // All logs go out to the console.log file, do this to help debug when characters aren't updating
+    console.log('--------- Shard Characters ---------');
+    const charactersLog = graphql.data.shardCharacters.map((char) => {
+      return `(CharacterID: ${char.id} Name: ${char.name})`;
+    });
+    console.log(JSON.stringify(charactersLog));
+
     const characters = this.getCharacters(graphql);
     const servers = this.getServers(graphql, characters);
     this.setState({ characters, servers, refetch: graphql.refetch });
