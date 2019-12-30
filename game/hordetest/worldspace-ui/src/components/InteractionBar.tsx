@@ -10,37 +10,33 @@ import { InteractionBarState } from '.';
 
 const Wrapper = styled.div`
   display: flex;
-  justify-content: center;
   align-items: flex-end;
   width: 100%;
   height: 100%;
 `;
 
 const Container = styled.div`
-  border: 2px solid black;
   display: flex;
-  width: fit-content;
-  transform: skewX(-10deg);
-`;
+  flex-direction: column;
+  padding: 5px;
+  padding-bottom: 30px;
+  width: calc(100% - 10px);
+  height: fit-content;
 
-const KeybindBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 25px;
-  background-color: black;
-  color: white;
-  font-size: 18px;
-  font-family: Colus;
-`;
+  &.Consumable {
+    background: linear-gradient(to bottom, #8c8d8d 50%, rgba(140, 141, 141, 0.7), transparent);
+  }
 
-const KeybindText = styled.div`
-  transform: skewX(10deg);
-  transition: color 0.1s;
+  &.Trap {
+    background: linear-gradient(to bottom, #d8ae04 50%, rgba(216, 174, 4, 0.7), transparent);
+  }
 
-  &.pressed {
-    color: #4D4D4D;
+  &.Bomb {
+    background: linear-gradient(to bottom, #93278f 50%, rgba(147, 39, 143, 0.7), transparent);
+  }
+
+  &.Barricade {
+    background: linear-gradient(to bottom, #077ab9 50%, rgba(7, 122, 185, 0.7), transparent);
   }
 `;
 
@@ -48,10 +44,12 @@ const BarContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  min-width: 130px;
-  height: 25px;
-  background-color: #1C1F1F;
-  z-index: -1;
+  min-width: calc(100% - 6px);
+  height: 15px;
+  border: 3px solid black;
+  background-color: #1e1e1e;
+  margin-bottom: 5px;
+  z-index: 0;
 `;
 
 const Bar = styled.div`
@@ -60,17 +58,73 @@ const Bar = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: #4D4D4D;
-  z-index: 0;
+  height: 100%;
+  width: ${(props: { width: number } & React.HTMLProps<HTMLDivElement>) => props.width}%;
+  background-color: #777777;
+  z-index: -1;
 `;
 
-const NameText = styled.div`
-  font-size: 14px;
+const BarText = styled.div`
   color: white;
   font-family: Lato;
-  margin-left: 10px;
-  transform: skewX(10deg);
-  z-index: 10;
+  font-weight: bold;
+  font-size: 16px;
+  color: white;
+  z-index: 1;
+`;
+
+const KeybindIcon = styled.span`
+  font-size: 16px;
+  margin-right: 15px;
+  margin-left: 5px;
+  opacity: 1;
+  transition: opacity 0.2s;
+
+  &.pressed {
+    opacity: 0.7;
+  }
+`;
+
+const ItemInfoContainer = styled.div`
+  padding: 0 10px;
+`;
+
+const GameTypeText = styled.div`
+  font-family: Lato;
+  font-weight: bold;
+  font-size: 10px;
+  text-transform: uppercase;
+
+  &.Consumable {
+    color: #c7c7c7;
+  }
+
+  &.Trap {
+    color: #fff77f;
+  }
+
+  &.Bomb {
+    color: #ff7ffa;
+  }
+
+  &.Barricade {
+    color: #7fdcff;
+  }
+`;
+
+const ItemName = styled.div`
+  font-family: Lato;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 16px;
+  color: #FFF;
+  margin-bottom: 5px;
+`;
+
+const ItemDescription = styled.div`
+  font-family: Lato;
+  font-size: 12px;
+  color: #FFF;
 `;
 
 export interface Props {
@@ -92,24 +146,29 @@ export class InteractionBar extends React.Component<Props, State> {
   public render() {
     const { state } = this.props;
     const pressedClassName = this.state.isPressed ? 'pressed' : '';
-    return (
+    return state.keybind ? (
       <Wrapper>
-        <Container>
-          {state.keybind.iconClass ?
-            <KeybindBox>
-              <KeybindText className={`${pressedClassName} ${state.keybind.iconClass}`}></KeybindText>
-            </KeybindBox> :
-            <KeybindBox>
-              <KeybindText className={pressedClassName}>{state.keybind.name}</KeybindText>
-            </KeybindBox>
-          }
+        <Container className={ItemGameplayType[state.gameplayType]}>
           <BarContainer>
-            <Bar style={{ width: `${state.progress * 100}%` }} />
-            <NameText>{state.name}</NameText>
+            <Bar width={state.progress ? state.progress * 100 : 0} />
+            <BarText>
+              {state.keybind ?
+                (state.keybind.iconClass ?
+                  <KeybindIcon className={`${pressedClassName} ${state.keybind.iconClass}`}></KeybindIcon> :
+                  <KeybindIcon className={pressedClassName}>{state.keybind.name}</KeybindIcon>) : null}
+              Pick up
+            </BarText>
           </BarContainer>
+          <ItemInfoContainer>
+            <GameTypeText className={ItemGameplayType[state.gameplayType]}>
+              {ItemGameplayType[state.gameplayType]}
+            </GameTypeText>
+            <ItemName>{state.name}</ItemName>
+            <ItemDescription>{state.description}</ItemDescription>
+          </ItemInfoContainer>
         </Container>
       </Wrapper>
-    );
+    ) : null;
   }
 
   public componentDidUpdate(prevProps: Props) {

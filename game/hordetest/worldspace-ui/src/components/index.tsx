@@ -11,6 +11,10 @@ import { HealthBar } from './HealthBar';
 import { InteractionBar } from './InteractionBar';
 import { Interactable } from './Interactable';
 import { PlayerDifferentiator } from './PlayerDifferentiator';
+import { Objective, ObjectiveIndicator } from './Objective';
+
+// tslint:disable-next-line
+const OBJECTIVE_INDICATORS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
 interface ContainerProps extends React.HTMLProps<HTMLDivElement> {
   worldUIState: WorldUIState;
@@ -33,6 +37,7 @@ export enum WorldUIWidgetType {
   Interactable,
   InteractionBar,
   PlayerDifferentiator,
+  Objective,
 }
 
 export interface WorldUIState {
@@ -65,9 +70,13 @@ export interface InteractableState extends WorldUIState {
 
 export interface InteractionBarState extends WorldUIState {
   type: WorldUIWidgetType.InteractionBar;
-  name: string;
-  progress: number;
-  keybind: Binding;
+  name: string,
+  description: string,
+  gameplayType: ItemGameplayType,
+  iconClass: string,
+  iconURL: string,
+  progress?: number,
+  keybind?: Binding,
 }
 
 export interface PlayerDifferentiatorState extends WorldUIState {
@@ -75,11 +84,17 @@ export interface PlayerDifferentiatorState extends WorldUIState {
   differentiator: number;
 }
 
+export interface ObjectiveState extends WorldUIState {
+  type: WorldUIWidgetType.Objective;
+  objectiveState: ObjectiveEntityState;
+}
+
 export type WorldUIType = WorldUIState | ProgressBarState | HealthBarState |
   InteractableState | InteractionBarState | PlayerDifferentiatorState;
 
 export interface State {
   worldUIs: { [id: number]: WorldUIType };
+  objectiveIndicatorAssign: {[entityID: string]: ObjectiveIndicator};
 }
 
 export class WorldUI extends React.Component<{}, State> {
@@ -87,6 +102,7 @@ export class WorldUI extends React.Component<{}, State> {
     super(props);
     this.state = {
       worldUIs: {},
+      objectiveIndicatorAssign: {},
     };
   }
 
@@ -103,8 +119,8 @@ export class WorldUI extends React.Component<{}, State> {
     engineEvents.onRemoveWorldUI(this.handleRemoveWorldUI);
     engineEvents.onUpdateProgressBar(this.handleUpdateProgressBar);
     engineEvents.onUpdateHealthBar(this.handleUpdateHealthBar);
-    engineEvents.onUpdateInteractable(this.handleUpdateInteractable);
     engineEvents.onUpdateInteractionBar(this.handleUpdateInteractionBar);
+    engineEvents.onUpdateObjective(this.handleUpdateObjective);
     // engineEvents.onUpdatePlayerDifferentiator(this.handleUpdatePlayerDifferentiator);
   }
 
@@ -142,6 +158,14 @@ export class WorldUI extends React.Component<{}, State> {
         return (
           <WorldUIContainer worldUIState={worldUI}>
             <PlayerDifferentiator state={worldUI as PlayerDifferentiatorState} />
+          </WorldUIContainer>
+        );
+      }
+
+      case WorldUIWidgetType.Objective: {
+        return (
+          <WorldUIContainer worldUIState={worldUI}>
+            <Objective state={worldUI as ObjectiveState} />
           </WorldUIContainer>
         );
       }
@@ -219,26 +243,6 @@ export class WorldUI extends React.Component<{}, State> {
     this.createOrUpdateWorldUI(newHealthBarState);
   }
 
-  private handleUpdateInteractable = (
-    id: number,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    name: string,
-  ) => {
-    const newInteractableState: InteractableState = cloneDeep({
-      type: WorldUIWidgetType.Interactable,
-      id,
-      x,
-      y,
-      width,
-      height,
-      name,
-    });
-    this.createOrUpdateWorldUI(newInteractableState);
-  }
-
   private handleUpdateInteractionBar = (
     id: number,
     x: number,
@@ -246,8 +250,12 @@ export class WorldUI extends React.Component<{}, State> {
     width: number,
     height: number,
     name: string,
-    progress: number,
-    keybind: Binding,
+    description: string,
+    gameplayType: ItemGameplayType,
+    iconClass: string,
+    iconURL: string,
+    progress?: number,
+    keybind?: Binding,
   ) => {
     const newInteractionBarState: InteractionBarState = cloneDeep({
       type: WorldUIWidgetType.InteractionBar,
@@ -257,6 +265,10 @@ export class WorldUI extends React.Component<{}, State> {
       width,
       height,
       name,
+      description,
+      gameplayType,
+      iconClass,
+      iconURL,
       progress,
       keybind,
     });
@@ -284,6 +296,60 @@ export class WorldUI extends React.Component<{}, State> {
 
   //   this.createOrUpdateWorldUI(newDifferentiatorState);
   // }
+
+  private handleUpdateObjective = (
+    id: number,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    objectiveState: ObjectiveEntityState,
+  ) => {
+    const newObjectiveState: ObjectiveState = {
+      type: WorldUIWidgetType.Objective,
+      id,
+      x,
+      y,
+      width,
+      height,
+      objectiveState: cloneDeep(objectiveState),
+    };
+
+    console.log('Update Objectives!!');
+    console.log(newObjectiveState);
+    this.setState({ objectiveIndicatorAssign: this.getUpdatedObjectiveIndicatorAssign(newObjectiveState.objectiveState) });
+    this.createOrUpdateWorldUI(newObjectiveState);
+  }
+
+  private getUpdatedObjectiveIndicatorAssign = (objective: ObjectiveEntityState) => {
+    const indicatorAssign = cloneDeep(this.state.objectiveIndicatorAssign);
+
+    const entityID = objective.entityID;
+    if (!indicatorAssign[entityID]) {
+      const indicatorAssignArray = Object.values(indicatorAssign);
+      const indicator = this.getObjectiveIndicator(0, objective, indicatorAssignArray);
+
+      indicatorAssign[entityID] = { iconClass: objective.iconClass, name: objective.name, indicator };
+    }
+
+    return indicatorAssign;
+  }
+
+  private getObjectiveIndicator = (
+    indicatorIndex: number,
+    objective: ObjectiveEntityState,
+    indicatorAssignArray: ObjectiveIndicator[]
+  ): string => {
+    const foundIndex = indicatorAssignArray.find((objectiveIndicator) => (
+      objectiveIndicator.indicator === OBJECTIVE_INDICATORS[indicatorIndex]
+    ));
+
+    if (foundIndex) {
+      return this.getObjectiveIndicator(indicatorIndex + 1, objective, indicatorAssignArray);
+    }
+
+    return OBJECTIVE_INDICATORS[indicatorIndex];
+  }
 
   private createOrUpdateWorldUI = (newWorldUI: WorldUIType) => {
     const worldUIs = { ...this.state.worldUIs };
