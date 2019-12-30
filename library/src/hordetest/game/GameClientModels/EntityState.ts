@@ -27,6 +27,10 @@ declare global {
     classID: Archetype;
     currentDeaths: number;
     maxDeaths: number;
+    scenarioRoundState: ScenarioRoundState;
+
+    // in world time
+    scenarioRoundStateEndTime: number;
   }
 
   type AnyEntityStateModel = PlayerStateModel;
@@ -70,6 +74,8 @@ export function defaultPlayerStateModel(): PlayerStateModel {
     gender: Gender.Male,
     currentDeaths: 0,
     maxDeaths: 0,
+    scenarioRoundState: ScenarioRoundState.Uninitialized,
+    scenarioRoundStateEndTime: 0,
   };
 }
 
