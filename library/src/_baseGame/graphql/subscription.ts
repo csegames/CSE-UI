@@ -22,7 +22,7 @@ export interface Options<DataType> extends WebSocketOptions {
 
 export function defaultSubscriptionOpts(): Options<any> {
   return {
-    url: `${game.webAPIHost}/graphql`.replace(/(http)(s?:\/\/)/, 'ws$2'),
+    url: () => `${game.webAPIHost}/graphql`.replace(/(http)(s?:\/\/)/, 'ws$2'),
     protocols: 'graphql-ws',
     reconnectInterval: 15000,
     connectTimeout: 5000,

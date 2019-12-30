@@ -13,6 +13,7 @@ const Screen = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
+  pointer-events: none !important;
 `;
 
 export interface Props {

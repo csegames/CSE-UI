@@ -6,6 +6,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { styled } from '@csegames/linaria/react';
+import { parseMessageForSlashCommand } from '@csegames/library/lib/_baseGame';
 
 import { useChatTheme } from '../theme';
 import { View } from '../state/viewsState';
@@ -24,6 +25,7 @@ const Input = styled.textarea`
   background: transparent;
   border: 0px;
   text-shadow: 1px 2px 2px #474747;
+  pointer-events: auto !important;
   :focus {
     border: 0px;
     outline: none !important;
@@ -60,7 +62,7 @@ function getTarget(text: string, rooms: RoomsState, tab: View): [boolean, string
     return [true, message, name];
   }
 
-  return [false, split[1].trim(), rooms.getRoomIDFromShortcut(shortcut)];
+  return [false, split[1] ? split[1].trim() : '', rooms.getRoomIDFromShortcut(shortcut)];
 }
 
 export interface Props {
@@ -84,7 +86,7 @@ export function ChatInput(props: Props) {
     handles.push(game.onBeginChat(m => {
       setState({...state, value: m});
       if (inputRef.current) {
-        inputRef.current.focus();
+        setTimeout(() => inputRef.current.focus(), 1);
       }
     }));
     // handles.push(game.onPushChat(m => setState({...state, value: state.value + m})));
@@ -114,6 +116,13 @@ export function ChatInput(props: Props) {
           } else {
             chat.sendMessageToRoom(message, target);
             console.log(`sending message to room | ${message} | ${target}`)
+          }
+        }
+        if (e.currentTarget.value.startsWith('/') && !target) {
+          const cmd = e.currentTarget.value.replace('/', '');
+          if (parseMessageForSlashCommand(cmd)) {
+          } else {
+            game.sendSlashCommand(cmd);
           }
         }
       } catch(err) {

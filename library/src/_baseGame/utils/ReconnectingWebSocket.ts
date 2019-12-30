@@ -9,7 +9,7 @@ import { getBooleanEnv } from './env';
 
 export interface WebSocketOptions {
   // WebSocket url, default '/graphql'
-  url: string;
+  url: () => string;
 
   // WebSocket protocols, default value 'graphql-ws'
   protocols: string | string[];
@@ -32,7 +32,7 @@ export interface WebSocketOptions {
 }
 
 export const defaultWebSocketOptions: WebSocketOptions = {
-  url: "/chat",
+  url: () => "/chat",
   protocols: "",
   reconnectInterval: 15000,
   connectTimeout: 5000,
@@ -47,7 +47,7 @@ export class ReconnectingWebSocket {
   private messageCount: number;
   private reconnectInterval: number;
   private connectTimeoutInterval: number;
-  private url: string;
+  private url: () => string;
   private protocols: string | string[];
   private socket: WebSocket;
   private state: number;
@@ -138,11 +138,11 @@ export class ReconnectingWebSocket {
     this.reconnecting = false;
     this.wantConnect = true;
     if (this.debug) {
-      this.log(`connect => url: '${this.url}', protocols: '${this.protocols}'`);
+      this.log(`connect => url: '${this.url()}', protocols: '${this.protocols}'`);
     }
 
     try {
-      this.socket = new WebSocket(this.url, this.protocols);
+      this.socket = new WebSocket(this.url(), this.protocols);
       this.socket.binaryType = 'arraybuffer';
       this.socket.onerror = this.error;
       this.socket.onmessage = this.message;

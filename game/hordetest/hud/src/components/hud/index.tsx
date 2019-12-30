@@ -172,7 +172,7 @@ const SettingsContainer = styled.div`
 const ExtraButtonsPosition = styled.div`
   position: fixed;
   top: 500px;
-  left: 5px;
+  right: 5px;
 `;
 
 export interface Props {

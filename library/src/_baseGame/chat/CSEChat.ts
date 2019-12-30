@@ -13,21 +13,21 @@ const chat = require('./chat_pb.js');
 
 export interface Options extends Partial<WebSocketOptions> {
   // data to send to the server on connection init
-  shardID: number;
-  characterID: string;
+  shardID: () => number;
+  characterID: () => string;
   token: () => string;
 }
 
 export function defaultOpts(): Options {
   return {
-    url: `ws://localhost:9990/chat`,
+    url: () => `ws://localhost:9990/chat`,
     protocols: 'chat-ws',
     reconnectInterval: 15000,
     connectTimeout: 5000,
     debug: false,
 
-    characterID: '',
-    shardID: 1,
+    characterID: () => '',
+    shardID: () => 1,
     token: () => ''
   };
 }
@@ -55,9 +55,9 @@ export class CSEChat {
   private socket: ReconnectingWebSocket;
   private options: Partial<Options>;
   private eventEmitter: EventEmitter;
-  private characterID: string;
-  private shardID: number;
-  private senderID: string;
+  private characterID: () => string;
+  private shardID: () => number;
+  private senderID: () => string;
   private initialized: boolean;
 
   public constructor() {
@@ -109,8 +109,8 @@ export class CSEChat {
   private sendAuth = () => {
     this.socket.send(
       JSON.stringify({
-        shard: this.options.shardID,
-        characterID: this.characterID,
+        shard: this.options.shardID(),
+        characterID: this.characterID(),
         token: this.options.token()
       })
     );
@@ -303,7 +303,7 @@ export class CSEChat {
     const chatMessage = new chat.ChatMessage();
     chatMessage.setType(2); // Room
     chatMessage.setContent(content);
-    chatMessage.setSenderid(this.senderID);
+    chatMessage.setSenderid(this.senderID());
     chatMessage.setTargetid(roomID);
 
     const union = new chat.ChatServerUnionMessage();
@@ -320,7 +320,7 @@ export class CSEChat {
     const chatMessage = new chat.ChatMessage();
     chatMessage.setType(1); // Direct
     chatMessage.setContent(content);
-    chatMessage.setSenderid(this.senderID);
+    chatMessage.setSenderid(this.senderID());
     if (targetUserID) chatMessage.setTargetid(targetUserID);
     if (targetUserName) chatMessage.setTargetName(targetUserName);
 

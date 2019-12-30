@@ -15,9 +15,10 @@ declare global {
 async function initChat() {
   window.chat.initialize({
     // url: `ws://localhost:8100/chat`,
-    url: `wss://${game.serverHost}:4543/chat`,
-    characterID: game.characterID,
-    shardID: game.shardID,
+    url: () => `wss://${game.serverHost}:4543/chat`,
+    // url: `ws://${game.serverHost}:8100/chat`,
+    characterID: () => game.characterID,
+    shardID: () => game.shardID,
     onerror: err => console.error(`Chat | ${err.message}`),
     protocols: 'chat-ws',
     token: () => game.accessToken,
