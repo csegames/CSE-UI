@@ -6,7 +6,7 @@
 
 import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
-import { ObjectivesContext } from 'components/context/ObjectivesContext';
+import { ObjectivesContext, ObjectiveState } from 'components/context/ObjectivesContext';
 import { Objective } from './Objective';
 
 const Container = styled.div`
@@ -24,15 +24,8 @@ export interface State {
 export function Objectives() {
   const objectivesContext = useContext(ObjectivesContext);
 
-  function getIndicator(objective: ObjectiveEntityState) {
-    const objectiveIndicator = objectivesContext.indicatorAssign[objective.entityID];
-
-    if (!objectiveIndicator) {
-      // We should not get here. Choose unique color that stands out if we do.
-      return 'idk';
-    }
-
-    return objectiveIndicator.indicator;
+  function getIndicator(objective: ObjectiveState) {
+    return objective.indicator;
   }
 
   function getHUDObjectives() {

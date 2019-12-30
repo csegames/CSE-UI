@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { ObjectivesContext, ObjectivesContextState } from 'components/context/ObjectivesContext';
+import { ObjectivesContext, ObjectivesContextState, ObjectiveState } from 'components/context/ObjectivesContext';
 
 const Container = styled.div`
   position: relative;
@@ -188,7 +188,7 @@ export class Compass extends React.Component<Props, State> {
                 <Objective
                   style={this.position(facing, entity.objective.bearingDegrees)}
                   className={`${entity.iconClass} ${stateClassName} ${this.getObjectiveType(entity)}`}>
-                  <ObjectiveIndicator>{this.getObjectiveIndicator(entity, objectivesContext)}</ObjectiveIndicator>
+                  <ObjectiveIndicator>{this.getObjectiveIndicator(entity)}</ObjectiveIndicator>
                 </Objective>
               );
             })}
@@ -235,15 +235,8 @@ export class Compass extends React.Component<Props, State> {
     return {left: this.angleToPercentage(facing, angle) + '%'};
   }
 
-  private getObjectiveIndicator = (objective: ObjectiveEntityState, objectivesContext: ObjectivesContextState) => {
-    const objectiveIndicator = objectivesContext.indicatorAssign[objective.entityID];
-
-    if (!objectiveIndicator) {
-      // We should not get here. Choose unique Indicator that stands out if we do.
-      return 'idk';
-    }
-
-    return objectiveIndicator.indicator;
+  private getObjectiveIndicator = (objective: ObjectiveState) => {
+    return objective.indicator;
   }
 
   private getObjectiveType = (objective: ObjectiveEntityState) => {

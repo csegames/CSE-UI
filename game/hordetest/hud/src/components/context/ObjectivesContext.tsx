@@ -6,23 +6,19 @@
 
 import React from 'react';
 
-interface ObjectiveIndicator {
-  iconClass: string;
-  name: string;
-  indicator: string;
-}
-
 // tslint:disable-next-line
 const INDICATORS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
+export interface ObjectiveState extends ObjectiveEntityState {
+  indicator: string;
+}
+
 export interface ObjectivesContextState {
-  objectives: ObjectiveEntityState[];
-  indicatorAssign: {[entityID: string]: ObjectiveIndicator};
+  objectives: ObjectiveState[];
 }
 
 const getDefaultObjectivesContextState = (): ObjectivesContextState => ({
   objectives: [],
-  indicatorAssign: {},
 });
 
 export const ObjectivesContext = React.createContext(getDefaultObjectivesContextState());
@@ -58,42 +54,32 @@ export class ObjectivesContextProvider extends React.Component<{}, ObjectivesCon
   }
 
   private handleObjectivesUpdate = (objectives: ObjectiveEntityState[]) => {
+    const sortedObjectives = cloneDeep(objectives).sort((a, b) => a.objective.index - b.objective.index).map((obj) => ({
+      ...obj,
+      indicator: INDICATORS[obj.objective.index],
+    }));
     if (objectives.length === 0) {
-      this.setState({ objectives: cloneDeep(objectives), indicatorAssign: {} });
+      this.setState({ objectives: sortedObjectives });
     } else {
-      this.setState({ objectives: cloneDeep(objectives), indicatorAssign: this.getUpdatedIndicatorAssign(objectives) });
+      this.setState({ objectives: sortedObjectives });
     }
   }
 
   private getUpdatedIndicatorAssign = (objectives: ObjectiveEntityState[]) => {
-    const indicatorAssign = cloneDeep(this.state.indicatorAssign);
+    const indicatorAssign = {};
 
     objectives.forEach((objective) => {
       const entityID = objective.entityID;
       if (!indicatorAssign[entityID]) {
-        const indicatorAssignArray = Object.values(indicatorAssign);
-        const indicator = this.getIndicator(0, objective, indicatorAssignArray);
-
-        indicatorAssign[entityID] = { iconClass: objective.iconClass, name: objective.name, indicator };
+        indicatorAssign[entityID] = {
+          index: objective.objective.index,
+          iconClass: objective.iconClass,
+          name: objective.name,
+          indicator : INDICATORS[objective.objective.index],
+        };
       }
     });
 
     return indicatorAssign;
-  }
-
-  private getIndicator = (
-    indicatorIndex: number,
-    objective: ObjectiveEntityState,
-    indicatorAssignArray: ObjectiveIndicator[]
-  ): string => {
-    const foundIndex = indicatorAssignArray.find((objectiveIndicator) => (
-      objectiveIndicator.indicator === INDICATORS[indicatorIndex]
-    ));
-
-    if (foundIndex) {
-      return this.getIndicator(indicatorIndex + 1, objective, indicatorAssignArray);
-    }
-
-    return INDICATORS[indicatorIndex];
   }
 }

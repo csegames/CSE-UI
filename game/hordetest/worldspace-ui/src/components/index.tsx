@@ -11,7 +11,7 @@ import { HealthBar } from './HealthBar';
 import { InteractionBar } from './InteractionBar';
 import { Interactable } from './Interactable';
 import { PlayerDifferentiator } from './PlayerDifferentiator';
-import { Objective, ObjectiveIndicator } from './Objective';
+import { Objective } from './Objective';
 
 // tslint:disable-next-line
 const OBJECTIVE_INDICATORS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -87,6 +87,7 @@ export interface PlayerDifferentiatorState extends WorldUIState {
 export interface ObjectiveState extends WorldUIState {
   type: WorldUIWidgetType.Objective;
   objectiveState: ObjectiveEntityState;
+  indicator: string;
 }
 
 export type WorldUIType = WorldUIState | ProgressBarState | HealthBarState |
@@ -94,7 +95,6 @@ export type WorldUIType = WorldUIState | ProgressBarState | HealthBarState |
 
 export interface State {
   worldUIs: { [id: number]: WorldUIType };
-  objectiveIndicatorAssign: {[entityID: string]: ObjectiveIndicator};
 }
 
 export class WorldUI extends React.Component<{}, State> {
@@ -102,7 +102,6 @@ export class WorldUI extends React.Component<{}, State> {
     super(props);
     this.state = {
       worldUIs: {},
-      objectiveIndicatorAssign: {},
     };
   }
 
@@ -305,6 +304,7 @@ export class WorldUI extends React.Component<{}, State> {
     height: number,
     objectiveState: ObjectiveEntityState,
   ) => {
+    const objectiveStateCopy = cloneDeep(objectiveState);
     const newObjectiveState: ObjectiveState = {
       type: WorldUIWidgetType.Objective,
       id,
@@ -312,43 +312,11 @@ export class WorldUI extends React.Component<{}, State> {
       y,
       width,
       height,
-      objectiveState: cloneDeep(objectiveState),
+      objectiveState: objectiveStateCopy,
+      indicator: OBJECTIVE_INDICATORS[objectiveStateCopy.objective.index],
     };
 
-    console.log('Update Objectives!!');
-    console.log(newObjectiveState);
-    this.setState({ objectiveIndicatorAssign: this.getUpdatedObjectiveIndicatorAssign(newObjectiveState.objectiveState) });
     this.createOrUpdateWorldUI(newObjectiveState);
-  }
-
-  private getUpdatedObjectiveIndicatorAssign = (objective: ObjectiveEntityState) => {
-    const indicatorAssign = cloneDeep(this.state.objectiveIndicatorAssign);
-
-    const entityID = objective.entityID;
-    if (!indicatorAssign[entityID]) {
-      const indicatorAssignArray = Object.values(indicatorAssign);
-      const indicator = this.getObjectiveIndicator(0, objective, indicatorAssignArray);
-
-      indicatorAssign[entityID] = { iconClass: objective.iconClass, name: objective.name, indicator };
-    }
-
-    return indicatorAssign;
-  }
-
-  private getObjectiveIndicator = (
-    indicatorIndex: number,
-    objective: ObjectiveEntityState,
-    indicatorAssignArray: ObjectiveIndicator[]
-  ): string => {
-    const foundIndex = indicatorAssignArray.find((objectiveIndicator) => (
-      objectiveIndicator.indicator === OBJECTIVE_INDICATORS[indicatorIndex]
-    ));
-
-    if (foundIndex) {
-      return this.getObjectiveIndicator(indicatorIndex + 1, objective, indicatorAssignArray);
-    }
-
-    return OBJECTIVE_INDICATORS[indicatorIndex];
   }
 
   private createOrUpdateWorldUI = (newWorldUI: WorldUIType) => {

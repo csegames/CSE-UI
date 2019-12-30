@@ -60,22 +60,16 @@ const Icon = styled.div`
   color: white;
 `;
 
-// const ObjectiveIndicator = styled.div`
-//   position: absolute;
-//   top: 50%;
-//   left: 50%;
-//   transform: translate(-50%, -50%);
-//   color: #1A1A1A;
-//   font-size: 18px;
-//   font-family: Exo;
-//   font-weight: bold;
-// `;
-
-export interface ObjectiveIndicator {
-  iconClass: string;
-  name: string;
-  indicator: string;
-}
+const ObjectiveIndicator = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #1A1A1A;
+  font-size: 18px;
+  font-family: Exo;
+  font-weight: bold;
+`;
 
 export interface Props {
   state: ObjectiveState;
@@ -105,7 +99,7 @@ export class Objective extends React.Component<Props, State> {
       <Container>
         <Circle className={`${dangerClassName} ${objectiveType}`}>
           <Icon className={state.objectiveState.iconClass}>
-            {/* <ObjectiveIndicator>{this.props.indicator}</ObjectiveIndicator> */}
+            <ObjectiveIndicator>{state.indicator}</ObjectiveIndicator>
           </Icon>
           <svg height={SVGCircleDiameter * 2} width={SVGCircleDiameter * 2} style={{ position: 'absolute' }}>
             <path
