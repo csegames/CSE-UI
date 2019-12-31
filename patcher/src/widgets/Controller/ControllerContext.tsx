@@ -180,7 +180,7 @@ export const ControllerContext = React.createContext(defaultControllerContextSta
 
 const query = {
   namedQuery: 'patcherControllerContext',
-  userNamedQueryCache: true,
+  useNamedQueryCache: false,
 };
 
 const subscription = gql`
