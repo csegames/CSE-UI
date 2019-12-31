@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { useChatPanes } from './state/panesState';
 import { Pane } from './views/Pane';
@@ -21,8 +21,6 @@ export interface Props {
 
 export function Chat(props: Props) {
   const [panes] = useChatPanes();
-
-  // const [minimized, setMinimized] = useState(false);
   const panesArr = Object.values(panes.panes);
   return (
     <Screen id='chat'>

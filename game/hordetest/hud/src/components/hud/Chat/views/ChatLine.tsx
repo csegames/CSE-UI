@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, Fragment } from 'react';
 import { styled } from '@csegames/linaria/react';
 
 import { useChatOptions } from '../state/optionsState';
@@ -76,13 +76,18 @@ export function ChatLine(props: Props) {
               [{opts.markup.roomNames ? `${room.name} (${room.shortcut[0]})`  : room.shortcut[0]}]&nbsp;
             </Room>
         }
-        <Author 
-          color={fromCSE ? chatline.color.cseAuthor : chatline.color.author}
-          onClick={() => console.log(`clicked ${props.message.senderName}`)}
-        >
-          {props.message.senderName}
-        </Author>
-        &gt;&nbsp;
+        {
+          props.message.senderName &&
+          <Fragment>
+            <Author 
+              color={fromCSE ? chatline.color.cseAuthor : chatline.color.author}
+              onClick={() => console.log(`clicked ${props.message.senderName}`)}
+            >
+              {props.message.senderName}
+            </Author>
+            &gt;&nbsp;
+          </Fragment>
+        }
         <Content color={chatline.color.content}>
           {parseText(props.message.content, opts)}
         </Content>

@@ -65,6 +65,8 @@ function getTarget(text: string, rooms: RoomsState, tab: View): [boolean, string
   return [false, split[1] ? split[1].trim() : '', rooms.getRoomIDFromShortcut(shortcut)];
 }
 
+const SENT_HISTORY_LENGTH = 20;
+
 export interface Props {
   view: View;
   isActive: boolean;
@@ -75,65 +77,75 @@ export function ChatInput(props: Props) {
   const chat = useChat();
   const [opts] = useChatOptions();
   const [rooms] = useRoomsState(opts);
-  const [state, setState] = useState({
-    value: '',
-  });
+  const [value, setValue] = useState('');
+  const sentMessages = useRef(new CircularArray<string>(SENT_HISTORY_LENGTH));
+  let sentHistoryIndex = useRef(-1);
 
   const inputRef = useRef(null);
 
   useEffect(() => {
     const handles: EventHandle[] = [];
     handles.push(game.onBeginChat(m => {
-      setState({...state, value: m});
-      if (inputRef.current) {
-        setTimeout(() => inputRef.current.focus(), 1);
-      }
+      setValue(v => {
+        if (inputRef.current) {
+          setTimeout(() => {
+            inputRef.current.focus();
+            inputRef.current.setSelectionRange(inputRef.current.value.length,inputRef.current.value.length);
+          }, 1);
+        }
+        return m;
+      });
     }));
-    // handles.push(game.onPushChat(m => setState({...state, value: state.value + m})));
-
     return () => handles.forEach(h => h.clear());
   }, [props.isActive]);
 
   function onChange(e: React.FormEvent<HTMLInputElement>) {
-    setState({
-      ...state,
-      value: e.currentTarget.value,
-    });
+    setValue(e.currentTarget.value);
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    // Handle shift + up-arrow (38)
+    if (e.shiftKey && e.keyCode === 38) {
+      e.preventDefault();
+      sentHistoryIndex.current++;
+      if (sentHistoryIndex.current >= sentMessages.current.length) {
+        sentHistoryIndex.current = 0;
+      } 
+      setValue(sentMessages.current.get(sentHistoryIndex.current));
+    }
+
+    // Enter
     if (e.keyCode === 13) {
       if (e.shiftKey) {
         return;
       }
       e.preventDefault();
       try {
-        const [isDM, message, target] = getTarget(e.currentTarget.value, rooms, props.view);
-        console.log(`target: ${target}`);
+        const val = e.currentTarget.value;
+        const [isDM, message, target] = getTarget(val, rooms, props.view);
         if (message && target) {
           if (isDM) {
             chat.sendDirectMessage(message, null, target);
           } else {
             chat.sendMessageToRoom(message, target);
-            console.log(`sending message to room | ${message} | ${target}`)
           }
-        }
-        if (e.currentTarget.value.startsWith('/') && !target) {
-          const cmd = e.currentTarget.value.replace('/', '');
+          sentMessages.current.push(val)
+        } else if (val.startsWith('/') && !target) {
+          const cmd = val.replace('/', '');
           if (parseMessageForSlashCommand(cmd)) {
+            sentMessages.current.push(val)
           } else {
             game.sendSlashCommand(cmd);
-          }
+            sentMessages.current.push(val)
+          } 
         }
       } catch(err) {
         console.log(err)
       }
 
       // clear input
-      setState({
-        ...state,
-        value: ''
-      });
+      setValue('');
+      sentHistoryIndex.current = -1
 
       if (inputRef.current) {
         inputRef.current.blur();
@@ -148,7 +160,7 @@ export function ChatInput(props: Props) {
       disabled={!props.view.allowChat()}
       onChange={onChange}
       onKeyDown={onKeyDown}
-      value={state.value}
+      value={value}
       color={theme.input.color}
       fontFamily={theme.input.fontFamily}
       placeholder={'Press enter to chat'}

@@ -143,8 +143,6 @@ function initAnnouncementRouting() {
 
   camelotunchained._devGame.onPassiveAlert = onPassiveAlert;
   camelotunchained._devGame.sendPassiveAlert = sendPassiveAlert;
-  _devGame.onSystemMessage = onSystemMessage;
-  _devGame.sendSystemMessage = sendSystemMessage;
 
   game.on(game.engineEvents.EE_OnAnnouncement,
     (type: AnnouncementType, message: string) => {
@@ -165,10 +163,4 @@ function sendPassiveAlert(message: string) {
   game.trigger('passiveAlert', message);
 }
 
-function onSystemMessage(callback: (message: string) => any) {
-  return game.on('systemMessage', callback);
-}
 
-function sendSystemMessage(message: string) {
-  game.trigger('systemMessage', message);
-}

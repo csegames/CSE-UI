@@ -56,6 +56,8 @@ export default function (isAttached: boolean) {
       = makeClientPromise((game, sID, rID, inS) => game.building._cse_dev_replaceShapes(sID, rID, inS));
 
     // EVENTS
+    _devGame.onSystemMessage = onSystemMessage;
+    _devGame.sendSystemMessage = sendSystemMessage;
     _devGame.onReady = onReady;
     _devGame.on = events_on;
     _devGame.once = events_once;
@@ -215,4 +217,12 @@ function noOp(...args: any[]): any {}
 
 function graphQLHost() {
   return game.webAPIHost + '/graphql';
+}
+
+function onSystemMessage(callback: (message: string) => any) {
+  return game.on('systemMessage', callback);
+}
+
+function sendSystemMessage(message: string) {
+  game.trigger('systemMessage', message);
 }

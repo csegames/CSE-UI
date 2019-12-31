@@ -104,6 +104,22 @@ export function ScrollView(props: Props) {
     }
   }
 
+  const onSystemMessage = (m: string) => {
+    if (props.view.filter.system) {
+      setState(state => ({
+        ...state,
+        messages: [{type: 2, content: m, senderFlag: 1, when: new Date()}].concat(state.messages),
+      }));
+      if (state.scrollOnAdd) {
+        setViewRange({
+          topIndex: Math.min(state.messages.length + 1, batchSize.current),
+          bottomIndex: 0,
+        });
+      }
+      updateTimeout();
+    }
+  }
+
   useEffect(() => {
     updateTimeout = () => {
       const showOrHide = (show: boolean) => {
@@ -130,6 +146,7 @@ export function ScrollView(props: Props) {
   useEffect(() => {
     const handles: EventHandle[] = [];
     handles.push(game.onBeginChat(updateTimeout));
+    handles.push(game.onSystemMessage(onSystemMessage));
     return () => handles.forEach(h => h.clear());
   }, []);
 
