@@ -8,7 +8,6 @@ import { OptionsState } from '../state/optionsState';
 // import { parseColors } from './colors';
 // import { parseBlink } from './blink';
 import { parseEmoji } from './emoji';
-import { parseHighlight } from './highlight';
 import { parseEmbeds } from './embeds';
 import { parseMarkdown } from './markdown';
 import { parseNewline } from './newline';
