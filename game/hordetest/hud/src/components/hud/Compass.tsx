@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { ObjectivesContext, ObjectiveState } from 'components/context/ObjectivesContext';
+import { ObjectivesContext, ObjectiveState as ObjectiveEntity } from 'components/context/ObjectivesContext';
 
 const Container = styled.div`
   position: relative;
@@ -206,7 +206,7 @@ export class Compass extends React.Component<Props, State> {
     this.playerStateEVH.clear();
   }
 
-  private getCompassObjectives = (allObjectives: ObjectiveState[]) => {
+  private getCompassObjectives = (allObjectives: ObjectiveEntity[]) => {
     return allObjectives.filter((entity) => entity.objective.visibility & ObjectiveUIVisibility.Compass);
   }
 
@@ -235,7 +235,7 @@ export class Compass extends React.Component<Props, State> {
     return {left: this.angleToPercentage(facing, angle) + '%'};
   }
 
-  private getObjectiveIndicator = (objective: ObjectiveState) => {
+  private getObjectiveIndicator = (objective: ObjectiveEntity) => {
     return objective.indicator;
   }
 
