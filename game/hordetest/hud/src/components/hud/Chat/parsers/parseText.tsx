@@ -17,7 +17,6 @@ export type Parser = (text: string, opts: OptionsState, next: Parser) => [string
 
 const parsers: Parser[] = [
   parseNewline,
-  parseHighlight,
   parseMarkdown,
   // parseColors,
   // parseBlink,
@@ -44,9 +43,7 @@ function parse(text: string, opts: OptionsState, next: Parser): [string, JSX.Ele
 }
 
 export function parseText(text: string, opts: OptionsState) {
-
   var [before, after] = parse(text, opts, parse);
-
   return (
     <>
       {before && before}
