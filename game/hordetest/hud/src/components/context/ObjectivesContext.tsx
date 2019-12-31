@@ -64,22 +64,4 @@ export class ObjectivesContextProvider extends React.Component<{}, ObjectivesCon
       this.setState({ objectives: sortedObjectives });
     }
   }
-
-  private getUpdatedIndicatorAssign = (objectives: ObjectiveEntityState[]) => {
-    const indicatorAssign = {};
-
-    objectives.forEach((objective) => {
-      const entityID = objective.entityID;
-      if (!indicatorAssign[entityID]) {
-        indicatorAssign[entityID] = {
-          index: objective.objective.index,
-          iconClass: objective.iconClass,
-          name: objective.name,
-          indicator : INDICATORS[objective.objective.index],
-        };
-      }
-    });
-
-    return indicatorAssign;
-  }
 }

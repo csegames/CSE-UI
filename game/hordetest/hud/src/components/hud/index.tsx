@@ -83,14 +83,6 @@ const CrosshairPosition = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-const ChatPosition = styled.div`
-  position: fixed;
-  left: 0px;
-  bottom: 220px;
-  width: 480px;
-  height: 240px;
-`;
-
 const SelfHealthBarPosition = styled.div`
   position: fixed;
   left: 5%;

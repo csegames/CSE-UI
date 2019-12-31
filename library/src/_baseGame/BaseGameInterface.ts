@@ -49,6 +49,11 @@ export interface BaseGameModel {
   shardID: number;
 
   /**
+   * Character ID for whatever player you are logged in as
+   */
+  characterID: string;
+
+  /**
    * Unique network Identifier (I think??)
    * TODO: Should we remove this?
    */

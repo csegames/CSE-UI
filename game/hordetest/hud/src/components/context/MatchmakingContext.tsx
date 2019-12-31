@@ -109,8 +109,8 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       }
 
       case MatchmakingUpdateType.Error: {
-        const { message } = matchmakingUpdate as MatchmakingError;
-        this.setState({ error: message });
+        const { error } = matchmakingUpdate as MatchmakingError;
+        this.setState({ error });
         break;
       }
     }

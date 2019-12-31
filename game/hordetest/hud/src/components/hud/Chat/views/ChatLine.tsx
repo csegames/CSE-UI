@@ -71,7 +71,7 @@ export function ChatLine(props: Props) {
             </Time>
         }
         {
-          (isRoom && opts.markup.roomnames) && 
+          (isRoom && opts.markup.roomNames) && 
             <Room color={rooms.getColor(room, opts)}>
               [{opts.markup.roomNames ? `${room.name} (${room.shortcut[0]})`  : room.shortcut[0]}]&nbsp;
             </Room>

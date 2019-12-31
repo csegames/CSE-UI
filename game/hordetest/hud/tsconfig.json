@@ -12,7 +12,7 @@
     "alwaysStrict": false,
     "skipLibCheck": true,
     "suppressImplicitAnyIndexErrors": true,
-    "forceConsistentCasingInFileNames": true,
+    "forceConsistentCasingInFileNames": false,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./src",
@@ -38,5 +38,6 @@
   },
   "resolution": "typings",
   "include": [
+    "src/**/*"
   ]
 }

@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { ObjectivesContext, ObjectivesContextState, ObjectiveState } from 'components/context/ObjectivesContext';
+import { ObjectivesContext, ObjectiveState } from 'components/context/ObjectivesContext';
 
 const Container = styled.div`
   position: relative;
@@ -206,7 +206,7 @@ export class Compass extends React.Component<Props, State> {
     this.playerStateEVH.clear();
   }
 
-  private getCompassObjectives = (allObjectives: ObjectiveEntityState[]) => {
+  private getCompassObjectives = (allObjectives: ObjectiveState[]) => {
     return allObjectives.filter((entity) => entity.objective.visibility & ObjectiveUIVisibility.Compass);
   }
 

@@ -8,6 +8,7 @@ import { createSharedState } from 'cseshared/lib/sharedState';
 export interface ChatPane {
   id: string;
   views: string[]; // what views to show and the order they are shown
+  tabs: string[];
   position: {
     width: number;
     height: number;
@@ -28,6 +29,7 @@ function initialState(): PanesState {
       default: {
         id: 'default',
         views: ['default'],
+        tabs: ['default'],
         position: {
           width: 500,
           height: 200,

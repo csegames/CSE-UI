@@ -120,6 +120,7 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
   const model: BaseGameModel = {
     patchResourceChannel: 4,
     shardID: 1,
+    characterID: 'test-characterID',
     pktHash: '',
     accessToken: 'developer',
     webAPIHost: 'https://hatcheryapi.camelotunchained.com',

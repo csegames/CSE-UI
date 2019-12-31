@@ -119,9 +119,6 @@ export interface GameInterface extends GameModel {
    * Current state of the consumable items
    */
   consumableItemsState: ConsumableItemsState;
-
-  characterID: string;
-
 }
 
 export type DevGameInterface = InternalGameInterfaceExt;

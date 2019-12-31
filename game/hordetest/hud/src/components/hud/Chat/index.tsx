@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { useChatPanes } from './state/panesState';
 import { Pane } from './views/Pane';

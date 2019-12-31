@@ -86,7 +86,7 @@ export function ScrollView(props: Props) {
     bottomIndex: 0,
   });
 
-  let updateTimeout = () => null;
+  let updateTimeout = (): void => null;
 
   const onNewMessage = (m: ChatMessage) => {
     if (props.view.filter.rooms.indexOf(m.targetID) >= 0) {

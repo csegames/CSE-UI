@@ -4,12 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { useChatPanes } from '../state/panesState';
 import { ChatView } from './ChatView';
 
-type ContainerProps = { width: number; height: number; bottom: number; left: number; };
+type ContainerProps = React.HTMLProps<HTMLDivElement> & { width: number; height: number; bottom: number; left: number; };
 const Container = styled.div`
   color: #999;
   position: absolute;

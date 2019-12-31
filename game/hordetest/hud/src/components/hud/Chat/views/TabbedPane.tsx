@@ -8,10 +8,10 @@ import React, { useState, useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { useChatTabs } from '../state/tabsState';
 import { TabHeader } from './TabHeader';
-import { TabBody } from './TabBody';
+// import { TabBody } from './TabBody';
 import { useChatPanes } from '../state/panesState';
 
-type ContainerProps = { width: number; height: number; top: number; left: number; };
+type ContainerProps = React.HTMLProps<HTMLDivElement> & { width: number; height: number; top: number; left: number; };
 const Container = styled.div`
   color: #999;
   position: absolute;
@@ -78,7 +78,7 @@ export function Pane(props: Props) {
   }, [tabs.activeTab]);
 
   return (
-    <Container id={'chat-pane-' + props.pane} {...pane.position}>
+    <Container id={'chat-pane-' + props.pane} {...pane.position as any}>
       <TabHeaders>
         <Menu onClick={e => console.log('menu')}>
           <i className="fas fa-bars"></i>
@@ -99,10 +99,10 @@ export function Pane(props: Props) {
           <i className="fal fa-plus"></i>
         </AddTab>
       </TabHeaders>
-      <TabBody
+      {/* <TabBody
         isActive={state.currentBody === tabs.activeTab}
         info={tabs.tabs[state.currentBody]}
-      />
+      /> */}
     </Container>
   );
 }
