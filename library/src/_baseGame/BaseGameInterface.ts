@@ -159,6 +159,11 @@ export interface BaseGameModel {
   resetKeybinds: () => void;
 
   /**
+   * Releases mouse capture
+   */
+  releaseMouseCapture: () => void;
+
+  /**
    * All options from the client
    */
   options: ArrayMap<GameOption>;

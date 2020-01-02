@@ -244,6 +244,8 @@ class RespawnWithInjectedContext extends React.Component<Props, State> {
     if (this.props.isConsole) {
       this.setWaitingForSelect(true);
       this.controllerSelectEVH = game.onControllerSelect(this.onRespawn);
+    } else {
+      game.releaseMouseCapture();
     }
 
     this.setState({ visible: true });

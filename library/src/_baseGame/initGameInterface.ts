@@ -140,6 +140,7 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
     clearKeybind: noOp,
     resetKeybinds: noOp,
     resetOptions: noOp,
+    releaseMouseCapture: noOp,
     setWaitingForSelect: noOp,
     gamepadSelectBinding: {
       name: 'Gamepad Select',
