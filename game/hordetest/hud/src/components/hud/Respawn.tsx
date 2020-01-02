@@ -82,6 +82,8 @@ const DeadText = styled.div`
 `;
 
 const Button = styled.div`
+  display: flex;
+  align-items: center;
   padding: 10px;
   text-transform: uppercase;
   font-family: Colus;
@@ -97,6 +99,10 @@ const Button = styled.div`
     color: white;
     border: 3px solid #f9e163;
     color: #f9e163;
+  }
+
+  &.highlight {
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
   &:hover {
@@ -185,7 +191,10 @@ class RespawnWithInjectedContext extends React.Component<Props, State> {
             </HeartsContainer>
             <LivesText>{livesLeft} {livesLeft !== 1 ? 'Lives' : 'Life'} Left</LivesText>
             {playerState.currentDeaths < playerState.maxDeaths ?
-              <Button onClick={this.onRespawn}>Respawn</Button> :
+              <Button className={this.props.isConsole ? 'highlight' : ''} onClick={this.onRespawn}>
+                {this.props.isConsole && <span className={game.gamepadSelectBinding.iconClass}></span>}
+                Respawn
+              </Button> :
               <Button className='leave' onClick={this.onRespawn}>Leave Match</Button>
             }
           </Banner>
