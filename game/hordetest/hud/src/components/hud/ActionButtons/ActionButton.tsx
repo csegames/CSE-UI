@@ -135,15 +135,12 @@ export interface Props {
   abilityID?: number;
   className?: string;
   cooldownTimer?: CurrentMax & { progress: number };
+  isOnCooldown?: boolean;
   showActiveAnim?: boolean;
   disabled?: boolean;
 }
 
 export function ActionButton(props: Props) {
-  function isOnCooldown() {
-    return typeof props.cooldownTimer !== 'undefined' && props.cooldownTimer.current !== 0;
-  }
-
   function getMyChampion() {
     const myChampion = hordetest.game.classes.find(c => c.id === hordetest.game.selfPlayerState.classID);
     if (!myChampion) return null;
@@ -172,16 +169,15 @@ export function ActionButton(props: Props) {
     }
   }
 
-  const { cooldownTimer } = props;
-  const onCooldown = isOnCooldown();
-  const cooldownClass = onCooldown ? 'cooldown' : '';
+  const { cooldownTimer, isOnCooldown } = props;
+  const cooldownClass = isOnCooldown ? 'cooldown' : '';
   const disabledClass = props.disabled ? 'disabled' : '';
   const activeAnimClass = props.showActiveAnim && !props.disabled ? 'activeAnim' : '';
   return (
     <ActionButtonContainer className={props.className}>
       <Button className={`${disabledClass} ${activeAnimClass} ${getChampionClass()} ${cooldownClass}`}>
         <ActionIcon className={`${props.actionIconClass} ${disabledClass} ${cooldownClass}`} />
-        {onCooldown &&
+        {isOnCooldown &&
           <CooldownContainer>
             <CooldownOverlay
               style={{ height: `${cooldownTimer.progress}%`}}
