@@ -44,4 +44,3 @@ export class InputContextProvider extends React.Component<{}, InputContextState>
     this.setState({ isConsole: usingGamepadState.usingGamepad });
   }
 }
-

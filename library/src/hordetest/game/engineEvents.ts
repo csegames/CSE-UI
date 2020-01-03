@@ -95,6 +95,12 @@ export const EE_OnCollectedRunesUpdate = 'collectedRunes.update';
 regMap[EE_OnCollectedRunesUpdate] = 'onCollectedRunesUpdate';
 
 /**
+ * Called when there are updates to the scenario
+ */
+export const EE_OnScenarioRoundUpdate = 'scenarioRound.update';
+regMap[EE_OnScenarioRoundUpdate] = 'onScenarioRoundUpdate';
+
+/**
  * Initialize engine event forwarding
  */
 export function initEventForwarding() {

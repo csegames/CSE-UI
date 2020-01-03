@@ -22,6 +22,7 @@ import { Respawn } from './Respawn';
 import { Settings } from '../fullscreen/Settings';
 import { FullScreen } from '../fullscreen';
 import { PopupAnnouncement } from './Announcements/Popup';
+import { ScenarioIntro } from './ScenarioIntro';
 import { Compass } from './Compass';
 import { Objectives } from './Objectives';
 import { Console } from '../hud/Console';
@@ -68,6 +69,14 @@ const PopupAnnouncementsPosition = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
 `;
+
+const ScenarioIntroPosition = styled.div`
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
 
 const DivineBarrierBarPosition = styled.div`
   position: fixed;
@@ -225,6 +234,10 @@ export class HUD extends React.Component<Props, State> {
           <PopupAnnouncementsPosition>
             <PopupAnnouncement />
           </PopupAnnouncementsPosition>
+
+          <ScenarioIntroPosition>
+            <ScenarioIntro />
+          </ScenarioIntroPosition>
 
           <DivineBarrierBarPosition>
             <DivineBarrierBar />
