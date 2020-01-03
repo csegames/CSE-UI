@@ -32,7 +32,6 @@ export class AbilityButton extends React.Component<Props, State> {
   }
 
   public render() {
-    const ability = hordetest.game.abilityStates[this.props.abilityID];
     return (
       <ActionButton
         showActiveAnim={this.shouldShowActiveAnim()}
@@ -42,7 +41,6 @@ export class AbilityButton extends React.Component<Props, State> {
         abilityID={this.props.abilityID}
         className={this.props.className}
         cooldownTimer={this.state.cooldownTimer}
-        isOnCooldown={!!(ability.status & AbilityButtonState.Cooldown)}
         keybindIconClass={this.props.keybindIconClass}
       />
     );
@@ -84,9 +82,10 @@ export class AbilityButton extends React.Component<Props, State> {
   }
 
   private startCountdown = (cooldown: Timing) => {
-    if (cooldown && this.state.cooldownTimer.current === 0) {
-      const timer = Math.ceil(this.getTimingEnd(cooldown));
-      this.setState({ cooldownTimer: { ...cloneDeep(cooldown), current: timer, max: cooldown.duration, progress: 100 } });
+    const cooldownClone = cloneDeep(cooldown);
+    if (cooldownClone && this.state.cooldownTimer.current === 0) {
+      const timer = Math.ceil(this.getTimingEnd(cooldownClone));
+      this.setState({ cooldownTimer: { ...cooldownClone, current: timer, max: cooldownClone.duration, progress: 100 } });
       window.setTimeout(this.updateProgress, 66);
     }
   }

@@ -169,7 +169,8 @@ export function ActionButton(props: Props) {
     }
   }
 
-  const { cooldownTimer, isOnCooldown } = props;
+  const { cooldownTimer } = props;
+  const isOnCooldown = typeof props.cooldownTimer !== 'undefined' && props.cooldownTimer.current !== 0;
   const cooldownClass = isOnCooldown ? 'cooldown' : '';
   const disabledClass = props.disabled ? 'disabled' : '';
   const activeAnimClass = props.showActiveAnim && !props.disabled ? 'activeAnim' : '';
