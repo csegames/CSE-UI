@@ -18,25 +18,25 @@ const Wrapper = styled.div`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 5px;
-  padding-bottom: 30px;
+  padding: 2px;
+  padding-bottom: 40px;
   width: calc(100% - 10px);
   height: fit-content;
 
   &.Consumable {
-    background: linear-gradient(to bottom, #8c8d8d 50%, rgba(140, 141, 141, 0.7), transparent);
+    background: linear-gradient(to bottom, rgba(119, 141, 140, 0.9) 50%, rgba(119, 141, 140, 0.7), transparent);
   }
 
   &.Trap {
-    background: linear-gradient(to bottom, #d8ae04 50%, rgba(216, 174, 4, 0.7), transparent);
+    background: linear-gradient(to bottom, rgba(221, 177, 0, 0.9) 50%, rgba(216, 174, 4, 0.7), transparent);
   }
 
   &.Bomb {
-    background: linear-gradient(to bottom, #93278f 50%, rgba(147, 39, 143, 0.7), transparent);
+    background: linear-gradient(to bottom, rgba(147, 39, 143, 0.9) 50%, rgba(147, 39, 143, 0.7), transparent);
   }
 
   &.Barricade {
-    background: linear-gradient(to bottom, #077ab9 50%, rgba(7, 122, 185, 0.7), transparent);
+    background: linear-gradient(to bottom, rgba(7, 122, 185, 0.9) 50%, rgba(7, 122, 185, 0.7), transparent);
   }
 `;
 
@@ -45,9 +45,8 @@ const BarContainer = styled.div`
   display: flex;
   align-items: center;
   min-width: calc(100% - 6px);
-  height: 15px;
-  border: 3px solid black;
-  background-color: #1e1e1e;
+  padding: 3px;
+  background-color: rgba(243, 243, 243, 0.2);
   margin-bottom: 5px;
   z-index: 0;
 `;
@@ -60,7 +59,7 @@ const Bar = styled.div`
   left: 0;
   height: 100%;
   width: ${(props: { width: number } & React.HTMLProps<HTMLDivElement>) => props.width}%;
-  background-color: #777777;
+  background-color: rgba(243, 243, 243, 0.8);
   z-index: -1;
 `;
 
@@ -68,7 +67,7 @@ const BarText = styled.div`
   color: white;
   font-family: Lato;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 14px;
   color: white;
   z-index: 1;
 `;
@@ -76,7 +75,7 @@ const BarText = styled.div`
 const KeybindIcon = styled.span`
   font-size: 16px;
   margin-right: 15px;
-  margin-left: 5px;
+  margin-left: 10px;
   opacity: 1;
   transition: opacity 0.2s;
 

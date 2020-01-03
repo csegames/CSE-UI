@@ -28,10 +28,10 @@ const NameOfPlayer = styled.div`
 const BarContainer = styled.div`
   position: relative;
   width: 120px;
-  height: 12px;
+  height: 8px;
   margin-left: 5px;
-  border: 2px solid black;
-  background-color: #3d0000;
+  border: 1px solid rgb(100, 36, 2);
+  background-color: #000000;
   transform: skewX(-10deg);
   z-index: -1;
 `;
