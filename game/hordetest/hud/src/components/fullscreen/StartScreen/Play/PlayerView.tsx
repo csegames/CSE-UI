@@ -125,11 +125,21 @@ const ProfileBox = styled.div`
   &.leader:before {
     content: '';
     position: absolute;
-    top: 0;
-    right: 0;
+    top: -5px;
+    right: -5px;
     width: 10px;
     height: 10px;
-    background-color: #ff7139;
+    background-color: #ffd805;
+  }
+  &.leader:after {
+    content: '';
+    position: absolute;    
+    top: -3px;
+    right: -3px;
+    width: 44px;
+    height: 44px;
+    border: 1px solid #ffd805;
+  }
   }
 `;
 

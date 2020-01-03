@@ -34,19 +34,19 @@ const Button = styled.div`
   }
 
   &.knight {
-    background-color: rgb(124, 122, 81);
+    background-color: rgba(248, 193, 5, 0.85);
   }
 
   &.berserker {
-    background-color: rgb(69, 119, 134);
+    background-color: rgba(5, 200, 248, 0.85);
   }
 
   &.amazon {
-    background-color: rgb(135, 89, 70);
+    background-color: rgba(243, 94, 5, 0.85);
   }
 
   &.celt {
-    background-color: rgb(68, 130, 117);
+    background-color: rgba(5, 233, 171, 0.85);
   }
 
   &.cooldown {
