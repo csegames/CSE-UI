@@ -4,9 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { Champion } from './index';
+import { ColossusProfileContext } from 'context/ColossusProfileContext';
 // import { EditingMode } from '.';
 
 const Container = styled.div`
@@ -60,6 +61,14 @@ const Image = styled.img`
   height: 100%;
 `;
 
+const StarIcon = styled.span`
+  position: absolute;
+  font-size: 18px;
+  top: 5px;
+  right: 5px;
+  color: #ffc400;
+`;
+
 export interface Props {
   champions: Champion[];
   selectedChampion: Champion;
@@ -67,6 +76,9 @@ export interface Props {
 }
 
 export function ChampionSelect(props: Props) {
+  const colossusProfileContext = useContext(ColossusProfileContext);
+
+  const defaultChampion = colossusProfileContext.colossusProfile.defaultChampion;
   return (
     <Container>
       {props.champions.map((champion) => {
@@ -74,6 +86,7 @@ export function ChampionSelect(props: Props) {
         return (
           <ChampionContainer className={selectedClassName} onClick={() => props.onSelectChampion(champion)}>
             <Image src={champion.costumes[0].thumbnailURL} />
+            {defaultChampion && defaultChampion.championID === champion.id ? <StarIcon className='fas fa-star' /> : null}
           </ChampionContainer>
         );
       })}

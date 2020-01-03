@@ -7,7 +7,11 @@
 
 import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
+import { ChampionCostumeInfo, ChampionInfo } from '@csegames/library/lib/hordetest/graphql/schema';
+
 import { WarbandContext } from 'components/context/WarbandContext';
+import { ColossusProfileContext } from 'components/context/ColossusProfileContext';
+import { ChampionInfoContext } from 'components/context/ChampionInfoContext';
 
 const Container = styled.div`
   display: flex;
@@ -65,7 +69,7 @@ const PlayerImage = styled.div`
   transform: translate(-50%, -50%);
   width: 500px;
   height: 800px;
-  background-image: url(../images/fullscreen/startscreen/human-m-blackguard.png);
+  background-image: ${(props: { image: string } & React.HTMLProps<HTMLDivElement>) => `url(${props.image})`};
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -149,6 +153,10 @@ const Ready = styled.div`
   }
 `;
 
+export interface Champion extends ChampionInfo {
+  costumes: ChampionCostumeInfo[];
+}
+
 export interface Player {
   id: string;
   image: string;
@@ -160,6 +168,8 @@ export interface Props {
 
 export function PlayerView(props: Props) {
   const warbandContextState = useContext(WarbandContext);
+  const colossusProfileContext = useContext(ColossusProfileContext);
+  const championInfoContext = useContext(ChampionInfoContext);
 
   function getClassName(index: number) {
     switch (index) {
@@ -193,6 +203,28 @@ export function PlayerView(props: Props) {
     return groupMembers;
   }
 
+  function getChampions(): Champion[] {
+    const champions = cloneDeep(championInfoContext.champions);
+    return champions.map((champ) => {
+      const championCostumes = championInfoContext.championCostumes.filter(costume =>
+        costume.requiredChampionID === champ.id);
+      return {
+        ...champ,
+        costumes: championCostumes,
+      };
+    });
+  }
+
+  function getMyDefaultChampionImage() {
+    if (colossusProfileContext.colossusProfile && colossusProfileContext.colossusProfile.defaultChampion) {
+      const champ = getChampions().find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.championID);
+      return champ.costumes.find(c =>
+        c.id === colossusProfileContext.colossusProfile.defaultChampion.costumeID).standingImageURL;
+    }
+
+    return '../images/fullscreen/startscreen/human-m-blackguard.png';
+  }
+
   if (warbandContextState.groupID) {
     return (
       <Container>
@@ -201,7 +233,10 @@ export function PlayerView(props: Props) {
             <>
               <PlayerPosition className={getClassName(i)}>
                 <PlayerContainer>
-                  <PlayerImage className={'player-image'} />
+                  <PlayerImage
+                    className={'player-image'}
+                    image={'../images/fullscreen/startscreen/human-m-blackguard.png'}
+                  />
                 </PlayerContainer>
               </PlayerPosition>
               <PlayerInfoContainer className={getClassName(i)}>
@@ -223,7 +258,7 @@ export function PlayerView(props: Props) {
     <Container>
       <PlayerPosition className={getClassName(0)}>
         <PlayerContainer>
-          <PlayerImage className={'player-image'} />
+          <PlayerImage className={'player-image'} image={getMyDefaultChampionImage()} />
         </PlayerContainer>
       </PlayerPosition>
       <PlayerInfoContainer className={getClassName(0)}>

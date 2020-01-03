@@ -7,6 +7,7 @@
 import React, { useState, useContext } from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
+import { webAPI } from '@csegames/library/lib/hordetest';
 import { ChampionInfoDisplay } from './ChampionInfoDisplay';
 import { ChampionSelect } from './ChampionSelect';
 import { SkinInfo } from './SkinInfo';
@@ -16,6 +17,7 @@ import { ActionButton } from '../../ActionButton';
 import { Skin, StoreItemType } from '../Store/testData';
 import { InputContext } from 'context/InputContext';
 import { ChampionInfoContext } from 'context/ChampionInfoContext';
+import { ColossusProfileContext } from 'context/ColossusProfileContext';
 import { ChampionInfo, ChampionCostumeInfo } from '@csegames/library/lib/hordetest/graphql/schema';
 
 const Container = styled.div`
@@ -99,8 +101,9 @@ export interface Champion extends ChampionInfo {
 export function ChampionProfile(props: Props) {
   const inputContext = useContext(InputContext);
   const championInfoContext = useContext(ChampionInfoContext);
+  const colossusProfileContext = useContext(ColossusProfileContext);
   const [editingMode, setEditingMode] = useState(EditingMode.None);
-  const [selectedChampion, setSelectedChampion] = useState(getChampions()[0]);
+  const [selectedChampion, setSelectedChampion] = useState(getDefaultChampion());
   const [selectedPreviewSkinInfo, setSelectedPreviewSkinInfo] = useState<Skin>(null);
   const [hideSkinButtons, setHideSkinButtons] = useState(true);
 
@@ -171,6 +174,7 @@ export function ChampionProfile(props: Props) {
       }
     }
   }
+
   function onSelectedPreviewSkinInfoChange(skin: Skin, hideSkinButtons?: boolean) {
     setSelectedPreviewSkinInfo(skin);
 
@@ -189,6 +193,27 @@ export function ChampionProfile(props: Props) {
         costumes: championCostumes,
       };
     });
+  }
+
+  function getDefaultChampion() {
+    if (colossusProfileContext.colossusProfile.defaultChampion) {
+      return getChampions().find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.championID);
+    } else {
+      return getChampions()[0];
+    }
+  }
+
+  async function onSetAsDefault() {
+    const res = await webAPI.ProfileAPI.SetDefaultChampion(
+      webAPI.defaultConfig,
+      game.shardID,
+      selectedChampion.id as any,
+      selectedChampion.costumes[0].id as any,
+    );
+
+    if (res.ok) {
+      colossusProfileContext.graphql.refetch();
+    }
   }
 
   const offsetClass = editingMode === EditingMode.None ? 'should-offset' : 'no-offset';
@@ -224,6 +249,7 @@ export function ChampionProfile(props: Props) {
       </SkinInfoPosition>
       {!inputContext.isConsole ?
         <ButtonPosition>
+            <ActionButton style={{ marginRight: 10 }} onClick={onSetAsDefault}>Set As Default</ActionButton>
           {editingMode === EditingMode.None ?
             <ActionButton onClick={onShowSkills}>Show skills</ActionButton> :
             <ActionButton onClick={onReset}>Cancel</ActionButton>

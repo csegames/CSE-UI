@@ -13,6 +13,7 @@ import { ChampionInfoContextProvider } from './ChampionInfoContext';
 import { WarbandContextProvider } from './WarbandContext';
 import { MatchmakingContextProvider } from './MatchmakingContext';
 import { StatusContextProvider } from './StatusContext';
+import { ColossusProfileProvider } from './ColossusProfileContext';
 
 export class ContextProviders extends React.Component<{}> {
   public render() {
@@ -39,7 +40,9 @@ export class FullScreenContextProviders extends React.Component<{}> {
         <MatchmakingContextProvider>
           <WarbandContextProvider>
             <InputContextProvider>
-              {this.props.children}
+              <ColossusProfileProvider>
+                {this.props.children}
+              </ColossusProfileProvider>
             </InputContextProvider>
           </WarbandContextProvider>
         </MatchmakingContextProvider>
