@@ -30,7 +30,7 @@ const BarContainer = styled.div`
 const Bar = styled.div`
   height: 100%;
   width: ${(props: { width: number & React.HTMLProps<HTMLDivElement> }) => props.width}%;
-  background-color: #3bccff;
+  background: linear-gradient(to right, #2869d5 60%, #04c8d5) ;
   transition: width 0.1s linear;
 `;
 

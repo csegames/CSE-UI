@@ -19,6 +19,7 @@ const Container = styled.div`
 const PlayerName = styled.div`
   font-size: 12px;
   width: 130px;
+  padding:0px 0px 5px 5px;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 1);
   font-family: Exo;
   color: white;
