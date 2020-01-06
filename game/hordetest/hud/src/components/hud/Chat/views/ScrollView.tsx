@@ -31,6 +31,7 @@ const ListViewContainer = styled.div`
   direction: rtl;
   opacity: ${(props: LVProps) => props.show ? '1' : '0'};
   transition: opacity 0.5s;
+  pointer-events: all;
 `;
 
 

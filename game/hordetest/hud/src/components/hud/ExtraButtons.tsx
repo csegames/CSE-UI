@@ -9,7 +9,6 @@ import { styled } from '@csegames/linaria/react';
 
 const ExtraButtonsContainer = styled.div`
   display: flex;
-  flex-direction: column;
 `;
 
 const ExtraButton = styled.div`
@@ -18,7 +17,8 @@ const ExtraButton = styled.div`
   color: white;
   background-color: orange;
   padding: 5px;
-  margin: 2.5px 0;
+  margin: 0 2.5px;
+  font-size: 16px;
 
   &:hover {
     filter: brightness(110%);
@@ -28,12 +28,14 @@ const ExtraButton = styled.div`
 export function ExtraButtons() {
   return (
     <ExtraButtonsContainer>
-      <ExtraButton>
-        <div onClick={() => game.reloadUI()}>Reload UI</div>
+      <ExtraButton onClick={() => game.reloadUI()}>
+        <span className='fas fa-sync'></span>
       </ExtraButton>
-      <ExtraButton onClick={() => game.trigger('show-fullscreen')}>Open Full Screen</ExtraButton>
+      <ExtraButton onClick={() => game.trigger('show-fullscreen')}>
+        <span className='fas fa-expand'></span>
+      </ExtraButton>
       <ExtraButton onClick={() => game.trigger('navigate', 'console')}>
-        Open Console
+        <span className='fas fa-terminal'></span>
       </ExtraButton>
     </ExtraButtonsContainer>
   );

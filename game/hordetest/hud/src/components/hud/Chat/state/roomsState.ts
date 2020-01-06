@@ -92,7 +92,6 @@ export function useRoomsState(opts: OptionsState, observedKeys: string[] = null)
       })
     }));
 
-    console.log('on directory registered');
     handles.push(chat.onDirectory(dir => {
       setState(directoryReceived(sharedState.state, dir, opts));
     }));
@@ -300,7 +299,6 @@ function getMessages(rooms: string[]): ChatMessage[] {
 }
 
 function directoryReceived(state: RoomsState, directory: RoomsDirectory, opts: OptionsState): RoomsState {
-  console.log('dir received');
   // we got a new directory, so update our whole state
   const oldRooms = state.rooms;
   const rooms: Dictionary<Room> = {};
@@ -330,7 +328,6 @@ function directoryReceived(state: RoomsState, directory: RoomsDirectory, opts: O
     shortcut.forEach(s => shortcuts[s] = r.roomID);
 
     if (!sharedState.messages[r.roomID]) {
-      console.log('dir received : init for room id ' + r.roomID);
       sharedState.messages[r.roomID] = new CircularArray<ChatMessage>(opts.messageBufferSize);
     }
   });

@@ -33,7 +33,7 @@ const ActiveContainer = styled.div`
   position: relative;
   background: #0f0f0f;
   cursor: pointer;
-  
+
   &::before {
     content: "";
     background-image: -webkit-linear-gradient(transparent, #ddd);

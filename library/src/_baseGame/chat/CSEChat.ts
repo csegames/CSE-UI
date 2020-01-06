@@ -526,8 +526,6 @@ export class CSEChat {
       new Uint8Array(event.data, 0, event.data.byteLength)
     );
 
-    console.log('message type: ' +  ChatClientUnionMessage_MessageTypes[msg.getType()]);
-
     switch (msg.getType()) {
       case ChatClientUnionMessage_MessageTypes.CHATMESSAGE:
         const chat = msg.getChat();
@@ -825,7 +823,6 @@ export class CSEChat {
             category: info.getCategory(),
           })),
         };
-        console.log(JSON.stringify(dir));
         this.eventEmitter.emit(
           ChatClientUnionMessage_MessageTypes[
             ChatClientUnionMessage_MessageTypes.DIRECTORY

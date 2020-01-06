@@ -81,7 +81,7 @@ export function ChatInput(props: Props) {
   const sentMessages = useRef(new CircularArray<string>(SENT_HISTORY_LENGTH));
   let sentHistoryIndex = useRef(-1);
 
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handles: EventHandle[] = [];
@@ -110,7 +110,17 @@ export function ChatInput(props: Props) {
       sentHistoryIndex.current++;
       if (sentHistoryIndex.current >= sentMessages.current.length) {
         sentHistoryIndex.current = 0;
-      } 
+      }
+      setValue(sentMessages.current.get(sentHistoryIndex.current));
+    }
+
+    // Handle shift + down-arrow (40)
+    if (e.shiftKey && e.keyCode === 40) {
+      e.preventDefault();
+      sentHistoryIndex.current--;
+      if (sentHistoryIndex.current < 0) {
+        sentHistoryIndex.current = sentMessages.current.length;
+      }
       setValue(sentMessages.current.get(sentHistoryIndex.current));
     }
 
@@ -137,7 +147,7 @@ export function ChatInput(props: Props) {
           } else {
             game.sendSlashCommand(cmd);
             sentMessages.current.push(val)
-          } 
+          }
         }
       } catch(err) {
         console.log(err)
@@ -154,7 +164,7 @@ export function ChatInput(props: Props) {
   }
 
   return (
-    <Input 
+    <Input
       ref={inputRef}
       rows={1}
       disabled={!props.view.allowChat()}

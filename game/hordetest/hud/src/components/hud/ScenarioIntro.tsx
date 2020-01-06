@@ -101,6 +101,9 @@ export class ScenarioIntro extends React.Component<Props, State> {
 
   public componentWillUnmount() {
     this.evh.clear();
+
+    window.clearTimeout(this.animateTimeout);
+    window.clearTimeout(this.countdownTimeout);
   }
 
   private handleScenarioRoundUpdate = (newScenarioState: ScenarioRoundState, newScenarioStateEndTime: number) => {
