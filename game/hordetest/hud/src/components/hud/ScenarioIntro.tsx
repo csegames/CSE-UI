@@ -82,7 +82,7 @@ export class ScenarioIntro extends React.Component<Props, State> {
     this.state = {
       scenarioState: hordetest.game.selfPlayerState.scenarioRoundState,
       scenarioStateEndTime: hordetest.game.selfPlayerState.scenarioRoundStateEndTime,
-      message: '0',
+      message: '',
       shouldAnimate: false
     };
   }
