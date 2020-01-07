@@ -148,7 +148,7 @@ class CharacterList extends React.PureComponent<Props, CharacterListState> {
           <GraphQL
             subscription={{
               query: subscription,
-              url: (this.props.server.apiHost + '/graphql').replace('http', 'ws'),
+              url: () => (this.props.server.apiHost + '/graphql').replace('http', 'ws'),
               initPayload: {
                 Authorization: `Bearer ${patcher.getAccessToken()}`,
               },

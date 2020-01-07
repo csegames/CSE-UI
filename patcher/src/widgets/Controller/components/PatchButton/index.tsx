@@ -204,29 +204,34 @@ class PatchButton extends React.Component<Props, PatchButtonState> {
     let launchString = this.commands ? this.commands.toLowerCase() : '';
     if (selectedCharacter && selectedCharacter.id !== '' && selectedServer.channelID !== 27) {
 
-      if (!launchString.includes('servershardid') &&
-          !launchString.includes('server =') &&
-          !launchString.includes('server=')) {
-        launchString += ` servershardid=${selectedServer.shardID}`;
-      }
-
-      if (!launchString.includes('masterserver=') && !launchString.includes('masterserver =')) {
-        launchString += ` masterserver=${selectedServer.apiHost.replace('https://', '')}`;
-      }
-
-      if (!launchString.includes('character=') &&
-          !launchString.includes('character =')) {
-        launchString += ` character=${selectedCharacter.id}`;
-      }
+      launchString = this.addUniqueToLaunchString(
+        launchString,
+        ['servershardid', 'server'],
+        `servershardid=${selectedServer.shardID}`,
+      );
+      launchString = this.addUniqueToLaunchString(
+        launchString,
+        'masterserver',
+        `masterserver=${selectedServer.apiHost.replace('https://', '')}`,
+      );
+      launchString = this.addUniqueToLaunchString(
+        launchString,
+        'character',
+        `character=${selectedCharacter.id}`,
+      );
 
       const apiHost = selectedServer.apiHost || 'https://api.camelotunchained.com';
+      launchString = this.addUniqueToLaunchString(
+        launchString,
+        'webapihost',
+        `webapihost=${apiHost}`,
+      );
 
-      if (!launchString.includes('webapihost=') &&
-          !launchString.includes('webapihost =')) {
-        launchString += ` webapihost=${apiHost}`;
-      }
-
-      launchString += ' autoconnect=1';
+      launchString = this.addUniqueToLaunchString(
+        launchString,
+        'autoconnect',
+        'autoconnect=1'
+      );
     }
 
     if (selectedServer.name === 'Editor') {
@@ -236,6 +241,30 @@ class PatchButton extends React.Component<Props, PatchButtonState> {
     patcher.launchChannelfunction(selectedServer.channelID | 0, launchString);
     this.channelUpdateTimeout = window.setTimeout(() => this.props.updateChannels(), 200);
     this.playSound('select');
+  }
+
+  private addUniqueToLaunchString = (launchString: string, keys: string | string[], value: string) => {
+    // Only adds to launch string if the given keys have not already been defined
+    let launchStringClone = launchString;
+    let doesInclude = false;
+
+    if (!Array.isArray(keys)) {
+      if (launchString.includes(`${keys}=`) || launchString.includes(`${keys} =`)) {
+        doesInclude = true;
+      }
+    } else {
+      keys.forEach((key) => {
+        if (launchString.includes(`${key}=`) || launchString.includes(`${key} =`)) {
+          doesInclude = true;
+        }
+      });
+    }
+
+    if (!doesInclude) {
+      launchString += ` ${value}`;
+    }
+
+    return launchStringClone;
   }
 
   private install = () => {

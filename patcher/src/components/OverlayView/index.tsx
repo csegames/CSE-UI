@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 
-import { Chat } from '../../components/Chat';
+
 import { patcher } from '../../services/patcher';
 
 // views
@@ -69,7 +69,7 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
         {this.renderView(false)}
         {this.renderView(true)}
 
-        {patcher.hasAccessToken() ?
+        {/* {patcher.hasAccessToken() ?
         <div className={`View ${this.state.currentView === view.CHAT ? 'View--show' : 'View--hide'}`}>
           <Chat
             url={'ws://localhost:9990/chat'}
@@ -79,7 +79,7 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
             getAccessToken={patcher.getAccessToken}
           />
         </div>
-        : null }
+        : null } */}
 
         {patcher.hasAccessToken() ?
           <div className={`View ${this.state.currentView === view.CHARACTERCREATION ? 'View--show' : 'View--hide'}`}>

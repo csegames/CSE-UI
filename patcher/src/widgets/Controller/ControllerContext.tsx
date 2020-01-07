@@ -136,7 +136,7 @@ function channelToPatcherServer(channel: Channel): PatcherServer {
   const type = getServerTypeFromChannel(channel.channelID);
   return {
     name: channel.channelName,
-    available: type !== ServerType.CUGAME,
+    available: type !== ServerType.CUGAME && type !== ServerType.COLOSSUS,
     type,
     channelStatus: channel.channelStatus,
     channelID: channel.channelID,
@@ -225,7 +225,7 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
             onQueryResult={this.handleQueryResult}
             subscription={{
               query: subscription,
-              url: (patcher.apiHost() + '/graphql').replace('http', 'ws'),
+              url: () => (patcher.apiHost() + '/graphql').replace('http', 'ws'),
               initPayload: {
                 Authorization: `Bearer ${patcher.getAccessToken()}`,
               },

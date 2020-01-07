@@ -152,7 +152,7 @@ class CharacterSelect extends React.Component<Props, CharacterSelectState> {
     const servers = {};
     Object.keys(this.props.servers).forEach((serverKey) => {
       const server = this.props.servers[serverKey];
-      if (server.type === ServerType.CUGAME) {
+      if (server.type === ServerType.CUGAME || server.type === ServerType.COLOSSUS) {
         servers[serverKey] = server;
       }
     });
