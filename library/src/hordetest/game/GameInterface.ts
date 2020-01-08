@@ -111,12 +111,12 @@ export interface GameInterface extends GameModel {
   abilityBarState: AbilityBarState;
 
   /**
-   * List of class defs
+   * List of class defs - champions
    */
   classes: CharacterClassDef[];
 
   /**
-   * List of race defs
+   * List of race defs - costumes
    */
   races: CharacterRaceDef[];
 

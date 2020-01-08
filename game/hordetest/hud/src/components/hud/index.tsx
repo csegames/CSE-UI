@@ -39,6 +39,7 @@ import { RightModal } from '../fullscreen/RightModal';
 import { MiddleModal } from '../fullscreen/MiddleModal';
 import { ActionAlert } from '../shared/ActionAlert';
 import { ExtraButtons } from './ExtraButtons';
+import { UrgentMessage } from './UrgentMessage';
 // import { LowHealthFullScreenEffects } from './FullScreenEffects/LowHealth';
 
 
@@ -89,6 +90,13 @@ const CrosshairPosition = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
+const UrgentMessagePosition = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 60%;
   transform: translate(-50%, -50%);
 `;
 
@@ -246,6 +254,10 @@ export class HUD extends React.Component<Props, State> {
           <CrosshairPosition>
             <Crosshair />
           </CrosshairPosition>
+
+          <UrgentMessagePosition>
+            <UrgentMessage />
+          </UrgentMessagePosition>
 
           <MatchInfoPosition>
             <MatchInfo />

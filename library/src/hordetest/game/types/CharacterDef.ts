@@ -27,5 +27,6 @@ declare global {
     thumbnailURL: string;
     standingImageURL: string;
     championSelectImageURL: string;
+    resourceName: string;
   }
 }
