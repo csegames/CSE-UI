@@ -208,6 +208,10 @@ export class Settings extends React.Component<Props, State> {
         return <CategoryMenu optionCategory={OptionCategory.Rendering} onOptionChange={this.onOptionChange} />;
       }
 
+      case SettingsRoute.Miscellaneous: {
+        return <CategoryMenu optionCategory={OptionCategory.UI} onOptionChange={this.onOptionChange} />;
+      }
+
       default: {
         return null;
       }

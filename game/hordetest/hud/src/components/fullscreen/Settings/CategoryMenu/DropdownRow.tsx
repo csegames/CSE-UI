@@ -21,7 +21,7 @@ export interface Props {
 export function DropdownRow(props: Props) {
   return (
     <ItemContainer>
-      <div>{props.option.name.toTitleCase()}</div>
+      <div>{props.option.displayName.toTitleCase()}</div>
 
       <DropDown
         items={Object.values(props.option.selectValues)}

@@ -28,7 +28,8 @@ export enum SettingsRoute {
   Keybinds,
   Input,
   Audio,
-  Graphics
+  Graphics,
+  Miscellaneous,
 }
 
 export interface Props {
@@ -59,6 +60,7 @@ export function NavMenu(props: Props) {
             {renderRouteButton(SettingsRoute.Input)}
             {renderRouteButton(SettingsRoute.Audio)}
             {renderRouteButton(SettingsRoute.Graphics)}
+            {renderRouteButton(SettingsRoute.Miscellaneous)}
             {inputContext.isConsole && <ButtonIcon className='icon-xb-rb' />}
           </Container>
         );

@@ -64,7 +64,7 @@ export function CheckboxRow(props: Props) {
   const checkboxClassName = props.option.value === true ? 'on' : 'off';
   return (
     <ItemContainer className={ItemContainerStyles} onClick={onClick}>
-      <div>{props.option.name.toTitleCase()}</div>
+      <div>{props.option.displayName.toTitleCase()}</div>
       <Checkbox className={'checkbox ' + checkboxClassName}></Checkbox>
     </ItemContainer>
   );

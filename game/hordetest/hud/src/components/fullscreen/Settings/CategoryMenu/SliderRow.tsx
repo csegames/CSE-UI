@@ -64,7 +64,7 @@ export function SliderRow(props: Props) {
   return (
     <ItemContainer>
       <div>
-        {props.option.name.toTitleCase()}
+        {props.option.displayName.toTitleCase()}
       </div>
 
       <SliderContainer>

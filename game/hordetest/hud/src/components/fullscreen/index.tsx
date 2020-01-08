@@ -11,6 +11,10 @@ import { StartScreen } from './StartScreen';
 import { ChampionSelect } from './ChampionSelect';
 import { Button } from './Button';
 import { GameStats } from './GameStats';
+import { Settings } from './Settings';
+import { IntroVideo } from './IntroVideo';
+
+const HAS_PLAYED_INTRO = 'has-played-intro';
 
 const Container = styled.div`
   position: fixed;
@@ -32,6 +36,16 @@ const HideButton = styled.div`
   z-index: 10;
 `;
 
+const SettingsContainer = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 10;
+`;
+
 // const ChatPosition = styled.div`
 //   position: fixed;
 //   left: 0px;
@@ -41,6 +55,7 @@ const HideButton = styled.div`
 // `;
 
 export enum Route {
+  IntroVideo,
   Start,
   ChampionSelect,
   EndGameStats,
@@ -65,7 +80,7 @@ export class FullScreen extends React.Component<Props, State> {
     super(props);
     this.state = {
       isChatVisible: true,
-      currentRoute: props.scenarioID ? Route.EndGameStats : Route.Start,
+      currentRoute: this.getDefaultRoute(),
     };
   }
 
@@ -76,6 +91,9 @@ export class FullScreen extends React.Component<Props, State> {
         <HideButton onClick={() => game.trigger('hide-fullscreen')}>
           <Button type='blue' text='Hide Full Screen UI' />
         </HideButton>
+        <SettingsContainer>
+          <Settings />
+        </SettingsContainer>
         {/* {this.state.isChatVisible &&
           <ChatPosition>
           </ChatPosition>
@@ -86,6 +104,11 @@ export class FullScreen extends React.Component<Props, State> {
 
   private renderRoute = () => {
     switch (this.state.currentRoute) {
+      case Route.IntroVideo: {
+        return (
+          <IntroVideo onIntroVideoEnd={this.goToStart} />
+        );
+      }
       case Route.Start: {
         return (
           <StartScreen />
@@ -118,6 +141,35 @@ export class FullScreen extends React.Component<Props, State> {
     this.showChatEVH.clear();
     this.hideChatEVH.clear();
     this.navigateEVH.clear();
+  }
+
+  private getDefaultRoute = () => {
+    if (this.props.scenarioID) {
+      return Route.EndGameStats;
+    }
+
+    if (this.shouldPlayIntroVideo()) {
+      return Route.IntroVideo;
+    }
+
+    return Route.Start;
+  }
+
+  private shouldPlayIntroVideo = () => {
+    // First check local storage and then check settings to see if we want to play it
+    const hasPlayedIntro = localStorage.getItem(HAS_PLAYED_INTRO);
+    if (!hasPlayedIntro) {
+      // We have never played the intro for this player, don't even look at settings options.
+      localStorage.setItem(HAS_PLAYED_INTRO, 'true');
+      return true;
+    }
+
+    const optShowIntroVideo = Object.values(game.options).find(o => o.name === 'optShowIntroVideo');
+    if (!optShowIntroVideo.value) {
+      return false;
+    }
+
+    return true;
   }
 
   private goToStart = () => {
