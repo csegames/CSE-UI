@@ -180,7 +180,7 @@ export class ChampionSelectContextProvider extends React.Component<Props, Champi
 
   private onChampionSelect = (championID: string) => {
     const playerStates = { ...this.state.playerStates };
-    const myCharacterID = hordetest.game.selfPlayerState.characterID;
+    const myCharacterID = game.characterID;
     playerStates[myCharacterID] = { ...playerStates[myCharacterID], championID };
 
     this.setState({ playerStates });

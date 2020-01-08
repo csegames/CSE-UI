@@ -233,7 +233,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
     const res = await webAPI.GroupsAPI.InviteV1(
       webAPI.defaultConfig,
       game.shardID,
-      hordetest.game.selfPlayerState.characterID,
+      game.characterID,
       this.props.warbandContext.groupID,
       INVALID_ID,
       this.state.inviteName,
@@ -252,7 +252,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
     const { warbandContext } = this.props;
     const notReadyMembers = Object.values(warbandContext.groupMembers).filter(m => !m.isReady);
 
-    const myMemberState = warbandContext.groupMembers[hordetest.game.selfPlayerState.characterID];
+    const myMemberState = warbandContext.groupMembers[game.characterID];
     if (notReadyMembers.length === 0 && myMemberState.isLeader && !this.enteredMatchmaking) {
       this.enterMatchmaking();
     }
@@ -273,14 +273,14 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
   private onLeaveClick = () => {
     const { groupID } = this.props.warbandContext;
     if (this.isLeader()) {
-      webAPI.GroupsAPI.DisbandV1(webAPI.defaultConfig, game.shardID, hordetest.game.selfPlayerState.characterID, groupID);
+      webAPI.GroupsAPI.DisbandV1(webAPI.defaultConfig, game.shardID, game.characterID, groupID);
     } else {
-      webAPI.GroupsAPI.QuitV1(webAPI.defaultConfig, game.shardID, hordetest.game.selfPlayerState.characterID, groupID);
+      webAPI.GroupsAPI.QuitV1(webAPI.defaultConfig, game.shardID, game.characterID, groupID);
     }
   }
 
   private isLeader = () => {
-    return this.props.warbandContext.groupMembers[hordetest.game.selfPlayerState.characterID].isLeader;
+    return this.props.warbandContext.groupMembers[game.characterID].isLeader;
   }
 
   private onReady = () => {

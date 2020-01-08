@@ -206,7 +206,7 @@ export function PlayerView(props: Props) {
 
   function getSortedMembers() {
     const groupMembers = Object.values(warbandContextState.groupMembers);
-    const myIndex = groupMembers.findIndex(m => m.characterID === hordetest.game.selfPlayerState.characterID);
+    const myIndex = groupMembers.findIndex(m => m.characterID === game.characterID);
     const memberInfo = groupMembers[myIndex];
     groupMembers.splice(myIndex, 1);
     groupMembers.unshift(memberInfo);
@@ -263,7 +263,6 @@ export function PlayerView(props: Props) {
     );
   }
 
-  const player = hordetest.game.selfPlayerState;
   return (
     <Container>
       <PlayerPosition className={getClassName(0)}>
@@ -274,7 +273,7 @@ export function PlayerView(props: Props) {
       <PlayerInfoContainer className={getClassName(0)}>
         <ProfileBox className={true ? 'leader' : ''} />
         <TextContainer>
-          <Name>{player.name}</Name>
+          <Name>You</Name>
           <Ready className={props.isReady ? '' : 'not-ready'}>{props.isReady ? 'Ready' : 'Not Ready'}</Ready>
         </TextContainer>
       </PlayerInfoContainer>

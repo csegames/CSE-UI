@@ -119,10 +119,10 @@ export class ThumbsUpButton extends React.Component<Props, State> {
 
   public render() {
     const { thumbsUp, characterID } = this.props;
-    const isSelf = characterID === hordetest.game.selfPlayerState.characterID;
+    const isSelf = characterID === game.characterID;
     const thisThumbsUp = thumbsUp[characterID] || [];
     const selfHasVoted = this.selfHasVoted();
-    const selfHasVotedFor = thisThumbsUp.includes(hordetest.game.selfPlayerState.characterID);
+    const selfHasVotedFor = thisThumbsUp.includes(game.characterID);
     const thumbsUpAmount = thisThumbsUp.length;
     const animationClass = this.state.shouldPlayAnimation ? 'animation' : '';
 
@@ -190,7 +190,7 @@ export class ThumbsUpButton extends React.Component<Props, State> {
   private selfHasVoted = () => {
     let selfHasVoted = false;
     Object.values(this.props.thumbsUp).forEach((charIDList) => {
-      if (charIDList.includes(hordetest.game.selfPlayerState.characterID)) {
+      if (charIDList.includes(game.characterID)) {
         selfHasVoted = true;
       }
     });

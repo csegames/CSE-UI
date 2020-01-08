@@ -138,15 +138,15 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   public componentDidMount() {
     this.matchmakingEVH = onMatchmakingUpdate(this.handleMatchmakingUpdate);
 
-    const myMemberState = this.props.warbandContextState.groupMembers[hordetest.game.selfPlayerState.characterID];
+    const myMemberState = this.props.warbandContextState.groupMembers[game.characterID];
     if (myMemberState && myMemberState.isReady) {
       this.setState({ isReady: true });
     }
   }
 
   public componentDidUpdate(prevProps: Props) {
-    const prevMemberState = prevProps.warbandContextState.groupMembers[hordetest.game.selfPlayerState.characterID];
-    const myMemberState = this.props.warbandContextState.groupMembers[hordetest.game.selfPlayerState.characterID];
+    const prevMemberState = prevProps.warbandContextState.groupMembers[game.characterID];
+    const myMemberState = this.props.warbandContextState.groupMembers[game.characterID];
 
     const prevIsReady = prevMemberState && prevMemberState.isReady;
     const myIsReady = myMemberState && myMemberState.isReady;

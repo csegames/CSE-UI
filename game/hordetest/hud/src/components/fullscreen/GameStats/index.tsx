@@ -254,11 +254,11 @@ export class GameStats extends React.Component<Props, State> {
 
     const thumbsUp = cloneDeep(this.state.thumbsUp);
     if (thumbsUp[characterID]) {
-      if (!thumbsUp[characterID].includes(hordetest.game.selfPlayerState.characterID)) {
-        thumbsUp[characterID].push(hordetest.game.selfPlayerState.characterID);
+      if (!thumbsUp[characterID].includes(game.characterID)) {
+        thumbsUp[characterID].push(game.characterID);
       }
     } else {
-      thumbsUp[characterID] = [hordetest.game.selfPlayerState.characterID];
+      thumbsUp[characterID] = [game.characterID];
     }
 
     this.setState({ thumbsUp });
@@ -268,7 +268,7 @@ export class GameStats extends React.Component<Props, State> {
     await webAPI.ScenarioAPI.RevokeThumbsUp(webAPI.defaultConfig, game.shardID, this.props.scenarioID);
 
     const thumbsUp = cloneDeep(this.state.thumbsUp);
-    thumbsUp[characterID] = thumbsUp[characterID].filter(id => id !== hordetest.game.selfPlayerState.characterID);
+    thumbsUp[characterID] = thumbsUp[characterID].filter(id => id !== game.characterID);
 
     this.setState({ thumbsUp });
   }

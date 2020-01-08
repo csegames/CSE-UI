@@ -8,6 +8,7 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 import { ChampionDBModel, DefaultChampionDBModel, MatchStatsDBModel } from '@csegames/library/lib/hordetest/graphql/schema';
+import { QueryOptions } from '@csegames/library/lib/_baseGame/graphql/query';
 
 const query = gql`
   query ColossusProfileContextQuery {
@@ -75,7 +76,7 @@ export class ColossusProfileProvider extends React.Component<{}, ColossusProfile
   public render() {
     return (
       <ColossusProfileContext.Provider value={this.state}>
-        <GraphQL query={query} onQueryResult={this.handleQueryResult} />
+        <GraphQL query={query} useConfig={this.config} onQueryResult={this.handleQueryResult} />
         {this.props.children}
       </ColossusProfileContext.Provider>
     );
@@ -87,6 +88,25 @@ export class ColossusProfileProvider extends React.Component<{}, ColossusProfile
     }
 
     this.setState({ graphql, colossusProfile: graphql.data.colossusProfile });
+  }
+
+  private config = () => {
+    const queryConfig: QueryOptions = {
+      url: game.webAPIHost + '/graphql',
+      requestOptions: {
+        headers: {
+          Authorization: `Bearer ${game.accessToken}`,
+          shardID: `${game.shardID}`,
+          characterID: game.characterID,
+        },
+      },
+      stringifyVariables: false,
+    };
+
+    return {
+      queryConf: queryConfig,
+      subsConf: null as any,
+    };
   }
 }
 

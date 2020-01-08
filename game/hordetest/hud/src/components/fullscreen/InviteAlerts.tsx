@@ -105,7 +105,7 @@ export function InviteAlerts(props: Props) {
     const res = await webAPI.GroupsAPI.JoinV1(
       webAPI.defaultConfig,
       game.shardID,
-      hordetest.game.selfPlayerState.characterID,
+      game.characterID,
       groupAlert.forGroup,
       groupAlert.code,
     );
@@ -170,7 +170,7 @@ export function InviteAlerts(props: Props) {
           subscription={{
             query: interactiveAlertSubscription,
             initPayload: {
-              characterID: hordetest.game.selfPlayerState.characterID,
+              characterID: game.characterID,
               token: game.accessToken,
               shardID: game.shardID,
             }
