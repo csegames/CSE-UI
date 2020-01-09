@@ -109,8 +109,11 @@ export class UrgentMessage extends React.Component<Props, State> {
   }
 
   private initializeResourceName = () => {
-    if (!hordetest.game.races) return;
-    this.resourceName = hordetest.game.races.find(r => r.id === hordetest.game.selfPlayerState.race).resourceName;
+    if (this.resourceName || !hordetest.game.races) return;
+    const race = hordetest.game.races.find(r => r.id === hordetest.game.selfPlayerState.race);
+    if (race) {
+      this.resourceName = race.resourceName;
+    }
   }
 
   private initializeActivatedListeners = () => {
