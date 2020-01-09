@@ -10,10 +10,9 @@ export {};
 declare global {
   enum ItemGameplayType {
     None = 0,
-    Consumable = 1,
-    Trap = 2,
-    Bomb = 3,
-    Barricade = 4,
+    Throw = 1,
+    Deploy = 2,
+    Consume = 3,
   }
 
   interface Window {
@@ -22,10 +21,9 @@ declare global {
 }
 
 enum ItemGameplayType {
-  None,
-  Consumable,
-  Trap,
-  Bomb,
-  Barricade,
+  None = 0,
+  Throw = 1,
+  Deploy = 2,
+  Consume = 3,
 }
 window.ItemGameplayType = ItemGameplayType;

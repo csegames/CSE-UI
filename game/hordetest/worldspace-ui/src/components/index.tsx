@@ -9,7 +9,6 @@ import { styled } from '@csegames/linaria/react';
 import { engineEvents } from 'lib/engineEvents';
 import { HealthBar } from './HealthBar';
 import { InteractionBar } from './InteractionBar';
-import { Interactable } from './Interactable';
 import { PlayerDifferentiator } from './PlayerDifferentiator';
 import { Objective } from './Objective';
 
@@ -34,7 +33,6 @@ export enum WorldUIWidgetType {
   Default,
   ProgressBar,
   HealthBar,
-  Interactable,
   InteractionBar,
   PlayerDifferentiator,
   Objective,
@@ -63,11 +61,6 @@ export interface HealthBarState extends WorldUIState {
   max: number;
 }
 
-export interface InteractableState extends WorldUIState {
-  type: WorldUIWidgetType.Interactable;
-  name: string;
-}
-
 export interface InteractionBarState extends WorldUIState {
   type: WorldUIWidgetType.InteractionBar;
   name: string,
@@ -91,7 +84,7 @@ export interface ObjectiveState extends WorldUIState {
 }
 
 export type WorldUIType = WorldUIState | ProgressBarState | HealthBarState |
-  InteractableState | InteractionBarState | PlayerDifferentiatorState;
+  InteractionBarState | PlayerDifferentiatorState;
 
 export interface State {
   worldUIs: { [id: number]: WorldUIType };
@@ -133,14 +126,6 @@ export class WorldUI extends React.Component<{}, State> {
         return (
           <WorldUIContainer worldUIState={worldUI}>
             <HealthBar state={worldUI as HealthBarState} />
-          </WorldUIContainer>
-        );
-      }
-
-      case WorldUIWidgetType.Interactable: {
-        return (
-          <WorldUIContainer worldUIState={worldUI}>
-            <Interactable state={worldUI as InteractableState} />
           </WorldUIContainer>
         );
       }

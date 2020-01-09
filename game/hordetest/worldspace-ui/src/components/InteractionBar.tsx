@@ -23,19 +23,15 @@ const Container = styled.div`
   width: calc(100% - 10px);
   height: fit-content;
 
-  &.Consumable {
-    background: linear-gradient(to bottom, rgba(119, 141, 140, 0.9) 50%, rgba(119, 141, 140, 0.7), transparent);
-  }
-
-  &.Trap {
+  &.Deploy {
     background: linear-gradient(to bottom, rgba(221, 177, 0, 0.9) 50%, rgba(216, 174, 4, 0.7), transparent);
   }
 
-  &.Bomb {
+  &.Throw {
     background: linear-gradient(to bottom, rgba(147, 39, 143, 0.9) 50%, rgba(147, 39, 143, 0.7), transparent);
   }
 
-  &.Barricade {
+  &.Consume {
     background: linear-gradient(to bottom, rgba(7, 122, 185, 0.9) 50%, rgba(7, 122, 185, 0.7), transparent);
   }
 `;
@@ -94,19 +90,15 @@ const GameTypeText = styled.div`
   font-size: 10px;
   text-transform: uppercase;
 
-  &.Consumable {
-    color: #c7c7c7;
-  }
-
-  &.Trap {
+  &.Deploy {
     color: #fff77f;
   }
 
-  &.Bomb {
+  &.Throw {
     color: #ff7ffa;
   }
 
-  &.Barricade {
+  &.Consume {
     color: #7fdcff;
   }
 `;
