@@ -76,7 +76,7 @@ export class UrgentMessage extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    this.resourceName = hordetest.game.races.find(r => r.id === hordetest.game.selfPlayerState.race).resourceName;
+    this.initializeResourceName();
     this.initializeActivatedListeners();
   }
 
@@ -84,6 +84,12 @@ export class UrgentMessage extends React.Component<Props, State> {
     if (!this.weakEVH || !this.strongEVH || !this.ultimateEVH) {
       // An activated listener has not been initialized yet
       this.initializeActivatedListeners();
+      return;
+    }
+
+    if (!this.resourceName) {
+      // A resource name has not been initialized yet
+      this.initializeResourceName();
       return;
     }
   }
@@ -100,6 +106,11 @@ export class UrgentMessage extends React.Component<Props, State> {
     if (this.ultimateEVH) {
       this.ultimateEVH.clear();
     }
+  }
+
+  private initializeResourceName = () => {
+    if (!hordetest.game.races) return;
+    this.resourceName = hordetest.game.races.find(r => r.id === hordetest.game.selfPlayerState.race).resourceName;
   }
 
   private initializeActivatedListeners = () => {
