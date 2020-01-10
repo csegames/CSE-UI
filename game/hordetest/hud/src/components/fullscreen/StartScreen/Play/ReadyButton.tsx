@@ -126,13 +126,23 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
       );
     }
 
+    if (this.props.warbandContextState.groupID) {
+      return (
+        isConsole ?
+          <ConsoleButton>
+            <ButtonIcon className='icon-xb-a'></ButtonIcon> Ready
+          </ConsoleButton> :
+          'Ready'
+      );
+    }
+
     return (
       isConsole ?
         <ConsoleButton>
-          <ButtonIcon className='icon-xb-a'></ButtonIcon> Ready
+          <ButtonIcon className='icon-xb-a'></ButtonIcon> Play
         </ConsoleButton> :
-        'Ready'
-    )
+        'Play'
+    );
   }
 
   public componentDidMount() {
