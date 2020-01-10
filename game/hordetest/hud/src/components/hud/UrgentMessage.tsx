@@ -54,9 +54,12 @@ export class UrgentMessage extends React.Component<Props, State> {
   private weakEVH: EventHandle;
   private strongEVH: EventHandle;
   private ultimateEVH: EventHandle;
+  private playerStateEVH: EventHandle;
   private timerTimeout: number;
   private animateTimeout: number;
   private resourceName: string;
+
+  private currentChampion: number = cloneDeep(hordetest.game.selfPlayerState).classID;
 
   constructor(props: Props) {
     super(props);
@@ -76,8 +79,10 @@ export class UrgentMessage extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    this.initializeResourceName();
-    this.initializeActivatedListeners();
+      this.initializeResourceName();
+      this.initializeActivatedListeners();
+
+      this.playerStateEVH = hordetest.game.selfPlayerState.onUpdated(this.onSelfPlayerStateUpdate);
   }
 
   public componentDidUpdate() {
@@ -95,16 +100,10 @@ export class UrgentMessage extends React.Component<Props, State> {
   }
 
   public componentWillUnmount() {
-    if (this.weakEVH) {
-      this.weakEVH.clear();
-    }
+    this.clearAbilityEventHandlers();
 
-    if (this.strongEVH) {
-      this.strongEVH.clear();
-    }
-
-    if (this.ultimateEVH) {
-      this.ultimateEVH.clear();
+    if (this.playerStateEVH) {
+      this.playerStateEVH.clear();
     }
   }
 
@@ -119,21 +118,22 @@ export class UrgentMessage extends React.Component<Props, State> {
   private initializeActivatedListeners = () => {
     const weakAbility = hordetest.game.abilityStates[hordetest.game.abilityBarState.weak.id];
     if (weakAbility && !this.weakEVH) {
-      this.weakEVH = weakAbility.onActivated(() => this.onHandleAbilityActivated(weakAbility));
+      this.weakEVH = weakAbility.onActivated(() => this.onHandleAbilityActivated(weakAbility.id));
     }
 
     const strongAbility = hordetest.game.abilityStates[hordetest.game.abilityBarState.strong.id];
     if (strongAbility && !this.strongEVH) {
-      this.strongEVH = strongAbility.onActivated(() => this.onHandleAbilityActivated(strongAbility));
+      this.strongEVH = strongAbility.onActivated(() => this.onHandleAbilityActivated(strongAbility.id));
     }
 
     const ultimateAbility = hordetest.game.abilityStates[hordetest.game.abilityBarState.ultimate.id];
     if (ultimateAbility && !this.ultimateEVH) {
-      this.ultimateEVH = ultimateAbility.onActivated(() => this.onHandleAbilityActivated(ultimateAbility));
+      this.ultimateEVH = ultimateAbility.onActivated(() => this.onHandleAbilityActivated(ultimateAbility.id));
     }
   }
 
-  private onHandleAbilityActivated = (ability: AbilityState) => {
+  private onHandleAbilityActivated = (abilityID: number) => {
+    const ability = hordetest.game.abilityStates[abilityID];
     if (!(ability.status & AbilityButtonState.Unusable)) {
       if (this.state.isVisible) {
         this.setState({ isVisible: false, message: '' });
@@ -143,6 +143,18 @@ export class UrgentMessage extends React.Component<Props, State> {
 
     if (ability.error & AbilityButtonErrorFlag.NotEnoughResource) {
       this.showNoResourceMessage();
+    }
+  }
+
+  private onSelfPlayerStateUpdate = () => {
+    const playerStateClone = cloneDeep(hordetest.game.selfPlayerState);
+    if (playerStateClone.classID !== this.currentChampion) {
+      this.clearAbilityEventHandlers();
+      this.resourceName = null;
+
+      this.initializeActivatedListeners();
+      this.initializeActivatedListeners();
+      this.currentChampion = playerStateClone.classID;
     }
   }
 
@@ -174,5 +186,22 @@ export class UrgentMessage extends React.Component<Props, State> {
       this.setState({ playAnimation: false });
       this.animateTimeout = null;
     }, 300);
+  }
+
+  private clearAbilityEventHandlers = () => {
+    if (this.weakEVH) {
+      this.weakEVH.clear();
+      this.weakEVH = null;
+    }
+
+    if (this.strongEVH) {
+      this.strongEVH.clear();
+      this.strongEVH = null;
+    }
+
+    if (this.ultimateEVH) {
+      this.ultimateEVH.clear();
+      this.ultimateEVH = null;
+    }
   }
 }
