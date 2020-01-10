@@ -14,23 +14,12 @@ const Container = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  background: radial-gradient(transparent, rgba(0, 0, 0, 0.9) 50%, rgba(0, 0, 0, 1) 80%);
+  background: rgba(56, 7, 9, 0.7);
   display: flex;
   justify-content: center;
   pointer-events: none;
   opacity: 0;
   animation: fadeIn 0.5s forwards;
-
-  &:before {
-    content: '';
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: -1;
-  }
 
   @keyframes fadeIn {
     from {
@@ -84,21 +73,20 @@ const DeadText = styled.div`
 const Button = styled.div`
   display: flex;
   align-items: center;
-  padding: 10px;
+  justify-content: center;
+  padding: 13px 0;
+  min-width: 275px;
   text-transform: uppercase;
   font-family: Colus;
-  font-size: 22px;
-  background-color: transparent;
+  font-size: 24px;
+  background-color: rgba(238, 168, 43, 0.5);
   transition: background-color 0.2s;
   border: 3px solid #f9e163;
-  color: #f9e163;
+  color: white;
   cursor: pointer;
   letter-spacing: 2px;
 
   &.leave {
-    color: white;
-    border: 3px solid #f9e163;
-    color: #f9e163;
   }
 
   &.highlight {
