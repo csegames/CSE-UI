@@ -67,7 +67,7 @@ const PlayerImage = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 500px;
+  width: 600px;
   height: 800px;
   background-image: ${(props: { image: string } & React.HTMLProps<HTMLDivElement>) => `url(${props.image})`};
   background-size: cover;
@@ -120,7 +120,11 @@ const ProfileBox = styled.div`
   width: 40px;
   height: 40px;
   background-color: #7e7e7e;
-  margin-right: 5px;
+  margin-right: 10px;
+  background-image: ${(props: { image: string } & React.HTMLProps<HTMLDivElement>) => `url(${props.image})`};
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
 
   &.leader:before {
     content: '';
@@ -133,19 +137,20 @@ const ProfileBox = styled.div`
   }
   &.leader:after {
     content: '';
-    position: absolute;    
+    position: absolute;
     top: -3px;
     right: -3px;
     width: 44px;
     height: 44px;
     border: 1px solid #ffd805;
   }
-  }
 `;
 
 const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 0 5px;
 `;
 
 const Name = styled.div`
@@ -225,14 +230,13 @@ export function PlayerView(props: Props) {
     });
   }
 
-  function getMyDefaultChampionImage() {
+  function getMyDefaultChampion() {
     if (colossusProfileContext.colossusProfile && colossusProfileContext.colossusProfile.defaultChampion) {
       const champ = getChampions().find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.championID);
-      return champ.costumes.find(c =>
-        c.id === colossusProfileContext.colossusProfile.defaultChampion.costumeID).standingImageURL;
+      return champ.costumes.find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.costumeID);
     }
 
-    return '../images/fullscreen/startscreen/human-m-blackguard.png';
+    return null;
   }
 
   if (warbandContextState.groupID) {
@@ -245,12 +249,12 @@ export function PlayerView(props: Props) {
                 <PlayerContainer>
                   <PlayerImage
                     className={'player-image'}
-                    image={'../images/fullscreen/startscreen/human-m-blackguard.png'}
+                    image={'images/fullscreen/startscreen/human-m-blackguard.png'}
                   />
                 </PlayerContainer>
               </PlayerPosition>
               <PlayerInfoContainer className={getClassName(i)}>
-                <ProfileBox className={player.isLeader ? 'leader' : ''} />
+                <ProfileBox className={player.isLeader ? 'leader' : ''} image={''} />
                 <TextContainer>
                   <Name>{player.name}</Name>
                   <Ready className={player.isReady ? '' : 'not-ready'}>{player.isReady ? 'Ready' : 'Not Ready'}</Ready>
@@ -263,20 +267,89 @@ export function PlayerView(props: Props) {
     );
   }
 
+  const defaultChampion = getMyDefaultChampion();
+  const standingImage = defaultChampion ? defaultChampion.standingImageURL :
+    'images/fullscreen/startscreen/human-m-blackguard.png';
+  const thumbnailImage = defaultChampion ? defaultChampion.thumbnailURL : '';
   return (
     <Container>
       <PlayerPosition className={getClassName(0)}>
         <PlayerContainer>
-          <PlayerImage className={'player-image'} image={getMyDefaultChampionImage()} />
+          <PlayerImage className={'player-image'} image={standingImage} />
         </PlayerContainer>
       </PlayerPosition>
       <PlayerInfoContainer className={getClassName(0)}>
-        <ProfileBox className={true ? 'leader' : ''} />
+        <ProfileBox className={true ? 'leader' : ''} image={thumbnailImage} />
         <TextContainer>
           <Name>You</Name>
           <Ready className={props.isReady ? '' : 'not-ready'}>{props.isReady ? 'Ready' : 'Not Ready'}</Ready>
         </TextContainer>
       </PlayerInfoContainer>
+
+      {/* <PlayerPosition className={getClassName(1)}>
+        <PlayerContainer>
+          <PlayerImage className={'player-image'} image={'images/hud/champions/berserker.png'} />
+        </PlayerContainer>
+      </PlayerPosition>
+      <PlayerInfoContainer className={getClassName(1)}>
+        <ProfileBox className={true ? 'leader' : ''} image={thumbnailImage} />
+        <TextContainer>
+          <Name>You</Name>
+          <Ready className={props.isReady ? '' : 'not-ready'}>{props.isReady ? 'Ready' : 'Not Ready'}</Ready>
+        </TextContainer>
+      </PlayerInfoContainer>
+
+      <PlayerPosition className={getClassName(2)}>
+        <PlayerContainer>
+          <PlayerImage className={'player-image'} image={'images/hud/champions/amazon.png'} />
+        </PlayerContainer>
+      </PlayerPosition>
+      <PlayerInfoContainer className={getClassName(2)}>
+        <ProfileBox className={true ? 'leader' : ''} image={thumbnailImage} />
+        <TextContainer>
+          <Name>You</Name>
+          <Ready className={props.isReady ? '' : 'not-ready'}>{props.isReady ? 'Ready' : 'Not Ready'}</Ready>
+        </TextContainer>
+      </PlayerInfoContainer>
+
+      <PlayerPosition className={getClassName(3)}>
+        <PlayerContainer>
+          <PlayerImage className={'player-image'} image={'images/hud/champions/amazon.png'} />
+        </PlayerContainer>
+      </PlayerPosition>
+      <PlayerInfoContainer className={getClassName(3)}>
+        <ProfileBox className={true ? 'leader' : ''} image={thumbnailImage} />
+        <TextContainer>
+          <Name>You</Name>
+          <Ready className={props.isReady ? '' : 'not-ready'}>{props.isReady ? 'Ready' : 'Not Ready'}</Ready>
+        </TextContainer>
+      </PlayerInfoContainer>
+
+      <PlayerPosition className={getClassName(4)}>
+        <PlayerContainer>
+          <PlayerImage className={'player-image'} image={'images/hud/champions/knight.png'} />
+        </PlayerContainer>
+      </PlayerPosition>
+      <PlayerInfoContainer className={getClassName(4)}>
+        <ProfileBox className={true ? 'leader' : ''} image={thumbnailImage} />
+        <TextContainer>
+          <Name>You</Name>
+          <Ready className={props.isReady ? '' : 'not-ready'}>{props.isReady ? 'Ready' : 'Not Ready'}</Ready>
+        </TextContainer>
+      </PlayerInfoContainer>
+
+      <PlayerPosition className={getClassName(5)}>
+        <PlayerContainer>
+          <PlayerImage className={'player-image'} image={'images/hud/champions/knight.png'} />
+        </PlayerContainer>
+      </PlayerPosition>
+      <PlayerInfoContainer className={getClassName(5)}>
+        <ProfileBox className={true ? 'leader' : ''} image={thumbnailImage} />
+        <TextContainer>
+          <Name>You</Name>
+          <Ready className={props.isReady ? '' : 'not-ready'}>{props.isReady ? 'Ready' : 'Not Ready'}</Ready>
+        </TextContainer>
+      </PlayerInfoContainer> */}
     </Container>
   );
 }

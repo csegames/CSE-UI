@@ -5,8 +5,6 @@
  */
 
 import React, { useContext } from 'react';
-// import gql from 'graphql-tag';
-// import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/library/lib/hordetest';
 import { IMatchmakingUpdate, MatchmakingUpdateType } from '@csegames/library/lib/hordetest/graphql/schema';
@@ -14,7 +12,6 @@ import { IMatchmakingUpdate, MatchmakingUpdateType } from '@csegames/library/lib
 import { InputContext, InputContextState } from 'context/InputContext';
 import { MatchmakingContext, MatchmakingContextState, onMatchmakingUpdate } from 'context/MatchmakingContext';
 import { WarbandContext, WarbandContextState } from 'context/WarbandContext';
-// import { Button } from '../../Button';
 
 const ReadyButtonStyle = styled.div`
   position: relative;
