@@ -85,6 +85,12 @@ export const EE_OnControllerSelect = 'select';
 regMap[EE_OnControllerSelect] = 'onControllerSelect';
 
 /**
+ * Called when there is a network failure. e.g. Game Server shuts down unexpectedly
+ */
+export const EE_OnNetworkFailure = 'networkFailure';
+regMap[EE_OnNetworkFailure] = 'onNetworkFailure';
+
+/**
  * Initialize engine event forwarding
  */
 export default function() {

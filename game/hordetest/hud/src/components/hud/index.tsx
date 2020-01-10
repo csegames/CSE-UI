@@ -37,6 +37,7 @@ import { MenuModal } from '../fullscreen/MenuModal';
 import { LeftModal } from '../fullscreen/LeftModal';
 import { RightModal } from '../fullscreen/RightModal';
 import { MiddleModal } from '../fullscreen/MiddleModal';
+import { Error } from '../fullscreen/Error';
 import { ActionAlert } from '../shared/ActionAlert';
 import { ExtraButtons } from './ExtraButtons';
 import { UrgentMessage } from './UrgentMessage';
@@ -197,6 +198,8 @@ export class HUD extends React.Component<Props, State> {
   private showEVH: EventHandle;
   private hideEVH: EventHandle;
   private scenarioEndedEVH: EventHandle;
+  private networkFailureEVH: EventHandle;
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -315,8 +318,9 @@ export class HUD extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    this.showEVH = game.on('show-fullscreen', this.show);
-    this.hideEVH = game.on('hide-fullscreen', this.hide);
+    this.showEVH = game.on('show-fullscreen', this.showLobby);
+    this.hideEVH = game.on('hide-fullscreen', this.hideLobby);
+    this.networkFailureEVH = game.onNetworkFailure(this.handleNetworkFailure);
 
     if (hordetest.game.onScenarioRoundEnded) {
       this.onConnectToServer();
@@ -327,13 +331,14 @@ export class HUD extends React.Component<Props, State> {
     this.showEVH.clear();
     this.hideEVH.clear();
     this.scenarioEndedEVH.clear();
+    this.networkFailureEVH.clear();
   }
 
-  private show = () => {
+  private showLobby = () => {
     this.setState({ isLobbyVisible: true });
   }
 
-  private hide = () => {
+  private hideLobby = () => {
     this.setState({ isLobbyVisible: false });
     game.trigger('hide-middle-modal');
   }
@@ -346,6 +351,13 @@ export class HUD extends React.Component<Props, State> {
     if (didEnd) {
       this.setState({ isLobbyVisible: true, scenarioID });
       game.playGameSound(SoundEvents.PLAY_SCENARIO_END);
+    }
+  }
+
+  private handleNetworkFailure = (errorMsg: string, errorCode: number) => {
+    if (!game.isConnectedToServer) {
+      this.showLobby();
+      game.trigger('show-middle-modal', <Error title='Network Failure' message={errorMsg} errorCode={errorCode} />);
     }
   }
 }

@@ -393,6 +393,11 @@ export interface BaseGameInterface extends BaseGameModel {
    */
   onControllerSelect: (callback: () => any) => EventHandle;
 
+  /**
+   * Subscript to network failure events
+   */
+  onNetworkFailure: (callback: (errorMsg: string, errorCode: number) => any) => EventHandle;
+
   /* -------------------------------------------------- */
   /* TASKS                                              */
   /* -------------------------------------------------- */
