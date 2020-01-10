@@ -37,7 +37,7 @@ const subscription = gql`
       }
 
       ... on MatchmakingError {
-        error
+        message
       }
     }
   }
