@@ -25,28 +25,28 @@ const Logo = styled.div`
   position: fixed;
   left: 60px;
   bottom: 32px;
-  width: 197px;
-  height: 53px;
-  background-image: url(../images/temp-logo.png);
+  width: 252px;
+  height: 66px;
+  background-image: url(../images/logo.png);
   background-size: contain;
+  background-repeat: no-repeat;
 `;
 
-const LoadingAnimIconPosition = styled.div`
+const LoadingTextPosition = styled.div`
   position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 0px;
+  right: 20px;
+  bottom: 10px;
+  display: flex;
+  align-items: center;
 `;
 
-const LoadingText = styled.div`
-  position: fixed;
-  right: 60px;
-  bottom: 32px;
+const Text = styled.div`
   width: fit-content;
   text-align: right;
-  font-size: 19px;
+  font-size: 17px;
   color: white;
   font-family: Colus;
+  margin-right: 30px;
 `;
 
 export interface Props {
@@ -70,10 +70,11 @@ export class LoadingScreen extends React.Component<Props, State> {
     return this.state.loadingState && this.state.loadingState.visible ? (
       <Container>
         <Logo />
-        <LoadingAnimIconPosition>
+        <LoadingTextPosition>
+          <Text>{this.state.loadingState.message}</Text>
+
           <LoadingAnimIcon />
-        </LoadingAnimIconPosition>
-        <LoadingText>{this.state.loadingState.message}</LoadingText>
+        </LoadingTextPosition>
       </Container>
     ) : null;
   }

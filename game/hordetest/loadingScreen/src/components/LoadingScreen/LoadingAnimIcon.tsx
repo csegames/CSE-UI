@@ -11,11 +11,8 @@ const Sprite = css`
   display: inline-block;
   overflow: hidden;
   background-repeat: no-repeat;
-  filter: brightness(0) invert(1);
-  opacity: 0.2;
-  transform: scale(0.5);
-  width: 300px;
-  height: 300px;
+  width: 100px;
+  height: 100px;
 `;
 
 export interface Props {
