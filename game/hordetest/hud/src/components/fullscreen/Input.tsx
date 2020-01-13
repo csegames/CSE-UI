@@ -10,15 +10,16 @@ export const Input = styled.input`
   height: 25px;
   width: 100%;
   background-color: black;
-  color: white;
   margin: 2px;
   border: 0;
   padding: 0 10px;
   outline: none;
-  box-shadow: 0 0 1px transparent;
-  transition: box-shadow 0.3s;
+  border: 2px solid #4D4D4D;
+  border-color: #4D4D4D;
+  color: white;
+  transition: border-color 0.2s;
 
   &:focus {
-    box-shadow: 0 0 1px rgba(239,190,152,1);
+    border-color: #52CFFD;
   }
 `;

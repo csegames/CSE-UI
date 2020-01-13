@@ -82,13 +82,28 @@ export function MiddleModal(props: Props) {
     hideModal();
   }
 
-  const visibilityClassName = isVisible ? 'visible' : '';
   return (
-    <>
-      <Overlay className={visibilityClassName} onClick={onClickOverlay} />
-      <Container className={visibilityClassName}>
-        {content}
-      </Container>
-    </>
+    <MiddleModalComponent isVisible={isVisible} onClickOverlay={onClickOverlay}>
+      {content}
+    </MiddleModalComponent>
   );
+}
+
+export interface ComponentProps {
+  isVisible: boolean;
+  onClickOverlay: () => void;
+}
+
+export class MiddleModalComponent extends React.Component<ComponentProps> {
+  public render() {
+    const visibilityClassName = this.props.isVisible ? 'visible' : '';
+    return (
+      <>
+        <Overlay className={visibilityClassName} onClick={this.props.onClickOverlay} />
+        <Container className={visibilityClassName}>
+          {this.props.children}
+        </Container>
+      </>
+    );
+  }
 }

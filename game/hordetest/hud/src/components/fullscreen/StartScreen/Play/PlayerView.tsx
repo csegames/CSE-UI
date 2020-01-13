@@ -78,7 +78,7 @@ const PlayerImage = styled.div`
 const PlayerInfoContainer = styled.div`
   position: absolute;
   left: 50%;
-  bottom: 30%;
+  bottom: 20%;
   width: 300px;
   display: flex;
   align-items: center;
@@ -91,27 +91,27 @@ const PlayerInfoContainer = styled.div`
 
   &.One {
     transform: translateX(-125%);
-    bottom: 35%;
+    bottom: 25%;
   }
 
   &.Two {
     transform: translateX(25%);
-    bottom: 35%;
+    bottom: 25%;
   }
 
   &.Three {
     transform: translateX(-200%);
-    bottom: 37%;
+    bottom: 27%;
   }
 
   &.Four {
     transform: translateX(100%);
-    bottom: 37%;
+    bottom: 27%;
   }
 
   &.Five {
     transform: translateX(-275%);
-    bottom: 39%;
+    bottom: 29%;
   }
 `;
 
@@ -149,7 +149,6 @@ const ProfileBox = styled.div`
 const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: rgba(0, 0, 0, 0.8);
   padding: 0 5px;
 `;
 
@@ -185,6 +184,7 @@ export function PlayerView(props: Props) {
   const warbandContextState = useContext(WarbandContext);
   const colossusProfileContext = useContext(ColossusProfileContext);
   const championInfoContext = useContext(ChampionInfoContext);
+  const champions = getChampions();
 
   function getClassName(index: number) {
     switch (index) {
@@ -232,12 +232,16 @@ export function PlayerView(props: Props) {
 
   function getMyDefaultChampion() {
     if (colossusProfileContext.colossusProfile && colossusProfileContext.colossusProfile.defaultChampion) {
-      const champ = getChampions().find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.championID);
+      const champ = champions.find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.championID);
       return champ.costumes.find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.costumeID);
     }
 
     return null;
   }
+
+  // function getMemberChampionInfo(member: PartialGroupMemberState) {
+  //   champions.find(champion => champion.id)
+  // }
 
   if (warbandContextState.groupID) {
     return (
@@ -285,8 +289,8 @@ export function PlayerView(props: Props) {
           <Ready className={props.isReady ? '' : 'not-ready'}>{props.isReady ? 'Ready' : 'Not Ready'}</Ready>
         </TextContainer>
       </PlayerInfoContainer>
-
-      {/* <PlayerPosition className={getClassName(1)}>
+{/*
+      <PlayerPosition className={getClassName(1)}>
         <PlayerContainer>
           <PlayerImage className={'player-image'} image={'images/hud/champions/berserker.png'} />
         </PlayerContainer>

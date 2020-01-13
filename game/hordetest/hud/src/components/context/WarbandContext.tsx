@@ -65,6 +65,7 @@ const warbandQuery = gql`
       members {
         characterID
         classID
+        race
         name
         isLeader
         isReady
