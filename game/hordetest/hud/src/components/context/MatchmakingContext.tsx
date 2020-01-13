@@ -16,6 +16,7 @@ import {
   MatchmakingError,
 } from '@csegames/library/lib/hordetest/graphql/schema';
 import { Route } from 'components/fullscreen';
+import { Error } from 'components/fullscreen/Error';
 
 export function onMatchmakingUpdate(callback: (matchmakingUpdate: IMatchmakingUpdate) => any): EventHandle {
   return game.on('subscription-matchmakingUpdates', callback);
@@ -95,7 +96,6 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
         const { host, port } = matchmakingUpdate as MatchmakingServerReady;
 
         // CONNECT TO GAME SERVER
-
         this.setState({ host, port });
         break;
       }
@@ -109,8 +109,12 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       }
 
       case MatchmakingUpdateType.Error: {
-        const { error } = matchmakingUpdate as MatchmakingError;
-        this.setState({ error });
+        const msg = (matchmakingUpdate as MatchmakingError).message;
+        console.error(msg)
+        this.setState({ error: msg }, () => {
+          game.trigger('fullscreen-navigate', Route.Start);
+          game.trigger('show-middle-modal', <Error title='Failed' message={msg} errorCode={1003} />);
+        });
         break;
       }
     }

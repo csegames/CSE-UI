@@ -63,6 +63,7 @@ export enum Route {
 
 export interface Props {
   scenarioID: string;
+  startingRoute?: Route;
   onConnectToServer: () => void;
 }
 
@@ -152,6 +153,10 @@ export class FullScreen extends React.Component<Props, State> {
       return Route.IntroVideo;
     }
 
+    if (this.props.startingRoute) {
+      return this.props.startingRoute;
+    }
+
     return Route.Start;
   }
 
@@ -172,7 +177,7 @@ export class FullScreen extends React.Component<Props, State> {
     return true;
   }
 
-  private goToStart = () => {
+  public goToStart = () => {
     this.navigateTo(Route.Start);
   }
 

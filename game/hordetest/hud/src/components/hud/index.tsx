@@ -199,21 +199,23 @@ export class HUD extends React.Component<Props, State> {
   private hideEVH: EventHandle;
   private scenarioEndedEVH: EventHandle;
   private networkFailureEVH: EventHandle;
+  private fullscreenRef: React.RefObject<FullScreen>;
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      // Show the lobby by default if we are connected or connecting to a game server
+      // Show the lobby by default if we are not connected or connecting to a game server
       isLobbyVisible: !game.isConnectedOrConnectingToServer,
       scenarioID: '',
     }
+    this.fullscreenRef = React.createRef()
   }
 
   public render() {
     if (this.state.isLobbyVisible) {
       return (
         <FullScreenContextProviders>
-          <FullScreen scenarioID={this.state.scenarioID} onConnectToServer={this.onConnectToServer} />
+          <FullScreen ref={this.fullscreenRef} scenarioID={this.state.scenarioID} onConnectToServer={this.onConnectToServer} />
 
           <MenuModal />
           <LeftModal />
@@ -357,6 +359,7 @@ export class HUD extends React.Component<Props, State> {
   private handleNetworkFailure = (errorMsg: string, errorCode: number) => {
     if (!game.isConnectedToServer) {
       this.showLobby();
+      this.fullscreenRef.current.goToStart();
       game.trigger('show-middle-modal', <Error title='Network Failure' message={errorMsg} errorCode={errorCode} />);
     }
   }

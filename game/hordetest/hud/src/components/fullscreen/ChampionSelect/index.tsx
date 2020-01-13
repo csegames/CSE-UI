@@ -138,6 +138,8 @@ export function ChampionSelect(props: Props) {
   const [selectedChampion, setSelectedChampion] = useState(champions[0]);
   const [isLocked, setIsLocked] = useState(false);
 
+  updateSelectedChampion(selectedChampion.id, getChampionCostumeInfo(selectedChampion.id).id);
+
   useEffect(() => {
     const matchmakingEVH = onMatchmakingUpdate(handleMatchmakingUpdate);
 
@@ -151,24 +153,32 @@ export function ChampionSelect(props: Props) {
   }
 
   function onChampionPick(championID: string) {
+    if (this.isLocked) {
+      return;
+    }
     const champion = champions.find(c => championID === c.id);
     setSelectedChampion(champion);
-    updateSelectedChampion(championID);
+    const costumeinfo = getChampionCostumeInfo(championID);
+    updateSelectedChampion(championID, costumeinfo.id);
   }
 
   function handleMatchmakingUpdate(matchmakingUpdate: IMatchmakingUpdate) {
     if (matchmakingUpdate.type === MatchmakingUpdateType.ServerReady) {
       const { host, port } = matchmakingUpdate as MatchmakingServerReady;
+      console.error("Connecting to " + host + ":" + port)
       game.connectToServer(host, port);
       props.onConnectToServer();
     }
   }
 
-  async function updateSelectedChampion(championID: string) {
-    const request = {
-      championID,
+  async function updateSelectedChampion(championID: string, costumeID: string) {
+    const request:SelectChampionRequest = {
+      ChampionID: championID,
+      ChampionMetaData: {
+        costume: costumeID
+      }
     };
-    await webAPI.ChampionAPI.SelectChampion(webAPI.defaultConfig, request as any);
+    await webAPI.ChampionAPI.SelectChampion(webAPI.defaultConfig, request);
   }
 
   async function onLockIn() {
