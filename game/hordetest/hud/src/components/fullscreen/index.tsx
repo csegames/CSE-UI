@@ -63,8 +63,9 @@ export enum Route {
 
 export interface Props {
   scenarioID: string;
-  startingRoute?: Route;
   onConnectToServer: () => void;
+  
+  startingRoute?: Route;
 }
 
 export interface State {

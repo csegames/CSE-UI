@@ -171,7 +171,7 @@ export function ChampionSelect(props: Props) {
   }
 
   async function updateSelectedChampion(championID: string, costumeID: string) {
-    const request:SelectChampionRequest = {
+    const request: SelectChampionRequest = {
       ChampionID: championID,
       ChampionMetaData: {
         costume: costumeID
