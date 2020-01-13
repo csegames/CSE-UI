@@ -19,6 +19,15 @@ export interface Props {
 }
 
 export function DropdownRow(props: Props) {
+  function onSelect(selectValue: SelectValue) {
+    const newOption: SelectOption = {
+      ...cloneDeep(props.option),
+      value: selectValue,
+    };
+
+    props.onChange(newOption);
+  }
+
   return (
     <ItemContainer>
       <div>{props.option.displayName.toTitleCase()}</div>
@@ -26,7 +35,7 @@ export function DropdownRow(props: Props) {
       <DropDown
         items={Object.values(props.option.selectValues)}
         selected={props.option.value}
-        onSelect={() => {}}
+        onSelect={onSelect}
         renderItem={optionItem => <div>{optionItem.description}</div>}
         listBoxStyles={ListBoxStyles}
       />
