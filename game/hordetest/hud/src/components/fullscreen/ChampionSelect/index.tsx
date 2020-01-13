@@ -165,7 +165,6 @@ export function ChampionSelect(props: Props) {
   function handleMatchmakingUpdate(matchmakingUpdate: IMatchmakingUpdate) {
     if (matchmakingUpdate.type === MatchmakingUpdateType.ServerReady) {
       const { host, port } = matchmakingUpdate as MatchmakingServerReady;
-      console.error("Connecting to " + host + ":" + port)
       game.connectToServer(host, port);
       props.onConnectToServer();
     }

@@ -110,7 +110,6 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
       case MatchmakingUpdateType.Error: {
         const msg = (matchmakingUpdate as MatchmakingError).message;
-        console.error(msg)
         this.setState({ error: msg }, () => {
           game.trigger('fullscreen-navigate', Route.Start);
           game.trigger('show-middle-modal', <Error title='Failed' message={msg} errorCode={1003} />);
