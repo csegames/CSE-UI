@@ -39,7 +39,7 @@ export class FullScreenContextProviders extends React.Component<{}> {
       <ChampionInfoContextProvider>
         <MatchmakingContextProvider>
           <WarbandContextProvider>
-            <InputContextProvider>
+            <InputContextProvider disabled>
               <ColossusProfileProvider>
                 {this.props.children}
               </ColossusProfileProvider>

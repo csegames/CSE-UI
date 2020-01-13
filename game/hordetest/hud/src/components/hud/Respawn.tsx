@@ -183,7 +183,10 @@ class RespawnWithInjectedContext extends React.Component<Props, State> {
                 {this.props.isConsole && <span className={game.gamepadSelectBinding.iconClass}></span>}
                 Respawn
               </Button> :
-              <Button className='leave' onClick={this.onRespawn}>Leave Match</Button>
+              <Button className='leave' onClick={this.onRespawn}>
+                {this.props.isConsole && <span className={game.gamepadSelectBinding.iconClass}></span>}
+                Leave Match
+              </Button>
             }
           </Banner>
         </Container>

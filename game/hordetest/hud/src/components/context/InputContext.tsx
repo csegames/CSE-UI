@@ -10,18 +10,24 @@ export interface InputContextState {
   isConsole: boolean;
 }
 
+export interface Props {
+  // Disabling is used by the full screen input context provider
+  // since we don't have any controller support in the full screen.
+  disabled?: boolean;
+}
+
 const getDefaultInputContextState = (): InputContextState => ({
   isConsole: game.usingGamepadState ? game.usingGamepadState.usingGamepad : false,
 });
 
 export const InputContext = React.createContext(getDefaultInputContextState());
 
-export class InputContextProvider extends React.Component<{}, InputContextState> {
+export class InputContextProvider extends React.Component<Props, InputContextState> {
   private eventHandle: EventHandle;
-  constructor(props: {}) {
+  constructor(props: Props) {
     super(props);
 
-    this.state = getDefaultInputContextState();
+    this.state = props.disabled ? { isConsole: false } : getDefaultInputContextState();
   }
 
   public render() {
@@ -41,6 +47,7 @@ export class InputContextProvider extends React.Component<{}, InputContextState>
   }
 
   private handleUsingGamepadStateUpdate = (usingGamepadState: UsingGamepadState) => {
+    if (this.props.disabled) return;
     this.setState({ isConsole: usingGamepadState.usingGamepad });
   }
 }

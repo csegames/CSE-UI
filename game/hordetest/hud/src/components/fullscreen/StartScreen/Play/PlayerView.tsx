@@ -239,10 +239,6 @@ export function PlayerView(props: Props) {
     return null;
   }
 
-  // function getMemberChampionInfo(member: PartialGroupMemberState) {
-  //   champions.find(champion => champion.id)
-  // }
-
   if (warbandContextState.groupID) {
     return (
       <Container>
@@ -289,8 +285,8 @@ export function PlayerView(props: Props) {
           <Ready className={props.isReady ? '' : 'not-ready'}>{props.isReady ? 'Ready' : 'Not Ready'}</Ready>
         </TextContainer>
       </PlayerInfoContainer>
-{/*
-      <PlayerPosition className={getClassName(1)}>
+
+      {/* <PlayerPosition className={getClassName(1)}>
         <PlayerContainer>
           <PlayerImage className={'player-image'} image={'images/hud/champions/berserker.png'} />
         </PlayerContainer>
