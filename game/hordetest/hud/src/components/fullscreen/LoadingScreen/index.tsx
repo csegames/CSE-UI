@@ -15,7 +15,7 @@ const Container = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  background-image: url(../images/bg.jpg);
+  background-image: url(../images/fullscreen/loadingscreen/bg.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   background-color: black;
@@ -27,7 +27,7 @@ const Logo = styled.div`
   bottom: 32px;
   width: 252px;
   height: 66px;
-  background-image: url(../images/logo.png);
+  background-image: url(../images/fullscreen/loadingscreen/logo.png);
   background-size: contain;
   background-repeat: no-repeat;
 `;

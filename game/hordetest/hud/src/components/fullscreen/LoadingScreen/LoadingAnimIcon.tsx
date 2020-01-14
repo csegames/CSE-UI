@@ -21,7 +21,7 @@ export interface Props {
 export class LoadingAnimIcon extends React.Component<Props> {
   public render() {
     return (
-      <img className={Sprite} src='images/loading-anim.gif' />
+      <img className={Sprite} src='images/fullscreen/loadingscreen/loading-anim.gif' />
     );
   }
 }
