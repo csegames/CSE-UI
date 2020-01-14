@@ -13,6 +13,7 @@ import { IMatchmakingUpdate, MatchmakingUpdateType } from '@csegames/library/lib
 import { InputContext, InputContextState } from 'context/InputContext';
 import { MatchmakingContext, MatchmakingContextState, onMatchmakingUpdate } from 'context/MatchmakingContext';
 import { WarbandContext, WarbandContextState } from 'context/WarbandContext';
+import { Error } from '../../Error';
 
 const ReadyButtonStyle = styled.div`
   position: relative;
@@ -111,10 +112,6 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   }
 
   private renderButton = (isConsole: boolean) => {
-    if (this.state.isSearching) {
-      return 'Searching...';
-    }
-
     if (this.state.isReady && !this.props.warbandContextState.groupID) {
       return (
         isConsole ?
@@ -189,50 +186,89 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
 
   private onClick = () => {
     if (this.state.isReady) {
-      this.unready();
+      if (this.props.warbandContextState.groupID) {
+        // group
+        this.unready();
+      } else {
+        // solo
+        this.cancelMatchmaking();
+      }
     } else {
-      this.readyUp();
+      if (this.props.warbandContextState.groupID) {
+        // group
+        this.readyUp();
+      } else {
+        // solo
+        this.enterMatchmaking();
+      }
     }
   }
 
   private readyUp = async () => {
-    if (!this.props.warbandContextState.groupID) {
-      // If solo, just enter matchmaking
-      const res = await this.props.enterMatchmaking();
-      if (res.ok) {
-        this.setState({ isReady: true });
-      }
-      return;
-    }
-
     const res = await webAPI.GroupsAPI.ReadyUpV1(webAPI.defaultConfig, this.props.warbandContextState.groupID);
-    if (!res.ok) {
-      // TODO: Handle error
-      this.setState({ isReady: false });
-    } else {
+    if (res.ok) {
       this.props.onReady();
       this.setState({ isReady: true });
+    } else {
+      // Show error modal
+      try {
+        const data = JSON.parse(res.data).FieldCodes[0];
+        this.showErrorModal('Failed To Ready', data.Message, data.Code);
+      } catch (e) {
+        this.showErrorModal('Failed To Ready', 'Unknown reason', -1);
+      }
     }
   }
 
   private unready = async () => {
-    if (!this.props.warbandContextState.groupID) {
-      // If solo, just cancel matchmaking
-      const res = await this.props.cancelMatchmaking();
-      if (res.ok) {
-        this.setState({ isReady: false });
-      }
-      return;
-    }
-
     const res = await webAPI.GroupsAPI.UnReadyV1(webAPI.defaultConfig, this.props.warbandContextState.groupID);
-    if (!res.ok) {
-      // TODO: Handle error
-      this.setState({ isReady: true });
-    } else {
+    if (res.ok) {
       this.props.onUnready();
       this.setState({ isReady: false });
+    } else {
+      // Show error modal
+      try {
+        const data = JSON.parse(res.data).FieldCodes[0];
+        this.showErrorModal('Failed To Unready', data.Message, data.Code);
+      } catch (e) {
+        this.showErrorModal('Failed To Unready', 'Unknown reason', -1);
+      }
     }
+  }
+
+  private enterMatchmaking = async () => {
+    const res = await this.props.enterMatchmaking();
+    if (res.ok) {
+      this.setState({ isReady: true });
+    } else {
+      // Show error modal
+      try {
+        const data = JSON.parse(res.data).FieldCodes[0];
+        this.showErrorModal('Failed To Enter Matchmaking', data.Message, data.Code);
+      } catch (e) {
+        this.showErrorModal('Failed To Enter Matchmaking', 'Unknown reason', -1);
+      }
+    }
+  }
+
+  private cancelMatchmaking = async () => {
+    // If solo, just cancel matchmaking
+    const res = await this.props.cancelMatchmaking();
+    if (res.ok) {
+      this.setState({ isReady: false });
+    } else {
+      // Show error modal
+      try {
+        const data = JSON.parse(res.data).FieldCodes[0];
+        this.showErrorModal('Failed To Cancel Matchmaking', data.Message, data.Code);
+      } catch (e) {
+        this.showErrorModal('Failed To Cancel Matchmaking', 'Unknown reason', -1);
+      }
+    }
+  }
+
+  private showErrorModal = (title: string, message: string, errorCode: number) => {
+    game.trigger('show-middle-modal', <Error title={title} message={message} errorCode={errorCode} />)
   }
 }
 
