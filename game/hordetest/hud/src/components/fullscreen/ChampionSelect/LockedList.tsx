@@ -7,6 +7,7 @@
 
 import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
+import { ChampionInfoContext } from 'context/ChampionInfoContext';
 import { ChampionSelectContext } from './context/ChampionSelectContext';
 
 const Container = styled.div`
@@ -30,7 +31,7 @@ const ListItem = styled.div`
       right: 0;
       bottom: 0;
       left: 0;
-      background: linear-gradient(to top, rgba(236, 156, 48, 0.7), transparent);
+      background: linear-gradient(to top, rgba(49, 95, 183, 0.7), transparent);
     }
   }
 `;
@@ -56,6 +57,7 @@ export interface Props {
 
 export function LockedList(props: Props) {
   const { playerStates } = useContext(ChampionSelectContext);
+  const championContext = useContext(ChampionInfoContext);
 
   return (
     <Container>
@@ -63,11 +65,14 @@ export function LockedList(props: Props) {
         const lockedClass = player.isLocked ? 'locked' : '';
         const championID = player.championID ? player.championID : '';
         const isLocked = player.isLocked ? true : false;
+        const championCostumeInfo = championContext.championCostumes.find(c => c.requiredChampionID === championID);
+        const championInfo = championContext.champions.find(c => c.id === championID);
+
         return (
           <ListItem className={lockedClass}>
-            <BGImage src={'images/fullscreen/character-select/selected-face.png'} />
+            <BGImage src={championCostumeInfo.championSelectImageURL} />
             <NameOfPlayer>
-              {player.characterID} - {championID} {isLocked ? 'is locked in' : ''}
+              {player.characterID ? `${player.characterID} -` : ''} {championInfo.name} {isLocked ? 'is locked in' : ''}
             </NameOfPlayer>
           </ListItem>
         );

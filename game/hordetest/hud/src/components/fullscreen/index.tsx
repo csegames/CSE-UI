@@ -113,7 +113,7 @@ export class FullScreen extends React.Component<Props, State> {
       }
       case Route.Start: {
         return (
-          <StartScreen />
+          <StartScreen testCharacterSelect={this.testCharacterSelect} />
         );
       }
       case Route.ChampionSelect: {
@@ -192,5 +192,9 @@ export class FullScreen extends React.Component<Props, State> {
 
   private navigateTo = (route: Route) => {
     this.setState({ currentRoute: route });
+  }
+
+  private testCharacterSelect = () => {
+    this.setState({ currentRoute: Route.ChampionSelect });
   }
 }

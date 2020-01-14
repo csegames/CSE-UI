@@ -217,6 +217,9 @@ export function Play() {
   const warbandContext = useContext(WarbandContext);
   const inputContext = useContext(InputContext);
   return (
-    <PlayWithInjectedContext warbandContext={warbandContext} inputContext={inputContext} />
+    <PlayWithInjectedContext
+      warbandContext={warbandContext}
+      inputContext={inputContext}
+    />
   );
 }

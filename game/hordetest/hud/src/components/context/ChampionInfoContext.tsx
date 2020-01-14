@@ -19,6 +19,8 @@ const query = gql`
       standingImageURL
       championSelectImageURL
       thumbnailURL
+      cardImageURL
+      backgroundImageURL
     }
 
     champions {

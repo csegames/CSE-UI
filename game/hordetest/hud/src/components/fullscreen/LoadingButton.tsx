@@ -16,7 +16,7 @@ const Container = styled.div`
   transition: filter 0.2s;
   text-align: center;
   user-select: none;
-  border: 2px solid #ff9e57;
+  border: 2px solid #77a5f2;
 
   div, span {
     cursor: pointer;
@@ -52,8 +52,8 @@ const ButtonLoad = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  box-shadow: inset 0 5px 50px 5px rgba(255, 150, 0, 0.5);
-  background: linear-gradient(to bottom, #ffd200, #a53d13);
+  box-shadow: inset 0 5px 50px 5px rgba(19, 58, 83, 0.5);
+  background: linear-gradient(to bottom, #52CFFD, #315fb7);
   z-index: -1;
 `;
 

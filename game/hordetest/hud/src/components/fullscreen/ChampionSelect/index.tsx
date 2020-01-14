@@ -21,12 +21,15 @@ import { LockedList } from './LockedList';
 import { LockIn } from './LockIn';
 import { ChampionInfoContext } from 'context/ChampionInfoContext';
 import { MatchmakingContext, onMatchmakingUpdate } from 'context/MatchmakingContext';
+import { InputContext } from 'context/InputContext';
 import { ChampionSelectContextProvider } from './context/ChampionSelectContext';
 
 const Container = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  background-color: black;
+  z-index: 0;
 `;
 
 const HeaderContainer = styled.div`
@@ -73,6 +76,18 @@ const ChampionPickContainer = styled.div`
   width: 100%;
 `;
 
+const SelectedChampionBackground = styled.img`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+`;
+
 const SelectedChampionContainer = styled.div`
   position: relative;
   width: 60%;
@@ -100,8 +115,8 @@ const ChampionInfoContainer = styled.div`
 
 const LockedListContainer = styled.div`
   position: absolute;
-  top: 75px;
-  right: 28px;
+  top: 80px;
+  left: 28px;
 `;
 
 const LockInPosition = styled.div`
@@ -135,6 +150,7 @@ export interface Champion {
 export function ChampionSelect(props: Props) {
   const { champions, championCostumes } = useContext(ChampionInfoContext);
   const { matchID } = useContext(MatchmakingContext);
+  const inputContext = useContext(InputContext);
   const [selectedChampion, setSelectedChampion] = useState(champions[0]);
   const [isLocked, setIsLocked] = useState(false);
 
@@ -193,6 +209,7 @@ export function ChampionSelect(props: Props) {
   return (
     <ChampionSelectContextProvider matchID={matchID}>
       <Container>
+        <SelectedChampionBackground src={selectedChampionCostumeInfo.backgroundImageURL} />
         <HeaderContainer>
           <HeaderItemContainer>
             <GameModeContainer>
@@ -206,7 +223,7 @@ export function ChampionSelect(props: Props) {
           <HeaderItemContainer />
         </HeaderContainer>
         <ChampionPickContainer>
-          <ConsoleNavIcon className='icon-xb-lb' />
+          {inputContext.isConsole && <ConsoleNavIcon className='icon-xb-lb' />}
           {champions.map((champion) => {
             const isSelected = champion.id === selectedChampion.id;
             const championCostumeInfo = getChampionCostumeInfo(champion.id);
@@ -219,7 +236,7 @@ export function ChampionSelect(props: Props) {
               />
             );
           })}
-          <ConsoleNavIcon className='icon-xb-rb' />
+          {inputContext.isConsole && <ConsoleNavIcon className='icon-xb-rb' />}
         </ChampionPickContainer>
         <SelectedChampionContainer>
           <SelectedChampionImage src={selectedChampionCostumeInfo.standingImageURL} />
