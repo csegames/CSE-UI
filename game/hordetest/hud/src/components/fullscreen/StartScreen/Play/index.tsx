@@ -128,7 +128,12 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
               />
             }
           </div>
-          <ReadyButton onReady={this.onReady} onUnready={this.onUnready} enterMatchmaking={this.enterMatchmaking} />
+          <ReadyButton
+            onReady={this.onReady}
+            onUnready={this.onUnready}
+            enterMatchmaking={this.enterMatchmaking}
+            cancelMatchmaking={this.cancelMatchmaking}
+          />
         </BottomRightSection>
         <PlayerView isReady={this.state.isReady} />
         <InviteFriendModal isVisible={this.state.isModalVisible} onClickOverlay={this.onClickOverlay} />
@@ -154,6 +159,18 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
     if (!res.ok) {
       this.enteredMatchmaking = false;
     }
+
+    return res;
+  }
+
+  private cancelMatchmaking = async () => {
+    const res = await webAPI.MatchmakingAPI.CancelMatchmaking(webAPI.defaultConfig, {});
+
+    if (res.ok) {
+      this.enteredMatchmaking = false;
+    }
+
+    return res;
   }
 
   private handleActiveGroupUpdate = () => {

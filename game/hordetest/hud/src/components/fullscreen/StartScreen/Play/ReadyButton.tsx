@@ -6,6 +6,7 @@
 
 import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
+import { RequestResult } from '@csegames/library/lib/_baseGame';
 import { webAPI } from '@csegames/library/lib/hordetest';
 import { IMatchmakingUpdate, MatchmakingUpdateType } from '@csegames/library/lib/hordetest/graphql/schema';
 
@@ -77,7 +78,8 @@ export interface Props {
 
   onReady: () => void;
   onUnready: () => void;
-  enterMatchmaking: () => void;
+  enterMatchmaking: () => Promise<RequestResult>;
+  cancelMatchmaking:  () => Promise<RequestResult>;
 }
 
 export interface State {
@@ -111,6 +113,16 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   private renderButton = (isConsole: boolean) => {
     if (this.state.isSearching) {
       return 'Searching...';
+    }
+
+    if (this.state.isReady && !this.props.warbandContextState.groupID) {
+      return (
+        isConsole ?
+          <ConsoleButton>
+            <ButtonIcon className='icon-xb-a'></ButtonIcon> Cancel
+          </ConsoleButton> :
+          'Cancel'
+      );
     }
 
     if (this.state.isReady) {
@@ -177,17 +189,19 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
 
   private onClick = () => {
     if (this.state.isReady) {
-      this.setState({ isReady: false });
       this.unready();
     } else {
-      this.setState({ isReady: true });
       this.readyUp();
     }
   }
 
   private readyUp = async () => {
     if (!this.props.warbandContextState.groupID) {
-      this.props.enterMatchmaking();
+      // If solo, just enter matchmaking
+      const res = await this.props.enterMatchmaking();
+      if (res.ok) {
+        this.setState({ isReady: true });
+      }
       return;
     }
 
@@ -197,21 +211,37 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
       this.setState({ isReady: false });
     } else {
       this.props.onReady();
+      this.setState({ isReady: true });
     }
   }
 
   private unready = async () => {
+    if (!this.props.warbandContextState.groupID) {
+      // If solo, just cancel matchmaking
+      const res = await this.props.cancelMatchmaking();
+      if (res.ok) {
+        this.setState({ isReady: false });
+      }
+      return;
+    }
+
     const res = await webAPI.GroupsAPI.UnReadyV1(webAPI.defaultConfig, this.props.warbandContextState.groupID);
     if (!res.ok) {
       // TODO: Handle error
       this.setState({ isReady: true });
     } else {
       this.props.onUnready();
+      this.setState({ isReady: false });
     }
   }
 }
 
-export function ReadyButton(props: { onReady: () => void, onUnready: () => void, enterMatchmaking: () => void }) {
+export function ReadyButton(props: {
+  onReady: () => void,
+  onUnready: () => void,
+  enterMatchmaking: () => Promise<RequestResult>,
+  cancelMatchmaking:  () => Promise<RequestResult>,
+}) {
   const inputContextState = useContext(InputContext);
   const matchmakingContextState = useContext(MatchmakingContext);
   const warbandContextState = useContext(WarbandContext);
@@ -224,6 +254,7 @@ export function ReadyButton(props: { onReady: () => void, onUnready: () => void,
       onReady={props.onReady}
       onUnready={props.onUnready}
       enterMatchmaking={props.enterMatchmaking}
+      cancelMatchmaking={props.cancelMatchmaking}
     />
   )
 }
