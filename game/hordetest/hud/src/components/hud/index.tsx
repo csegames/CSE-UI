@@ -37,6 +37,7 @@ import { MenuModal } from '../fullscreen/MenuModal';
 import { LeftModal } from '../fullscreen/LeftModal';
 import { RightModal } from '../fullscreen/RightModal';
 import { MiddleModal } from '../fullscreen/MiddleModal';
+
 import { Error } from '../fullscreen/Error';
 import { ActionAlert } from '../shared/ActionAlert';
 import { ExtraButtons } from './ExtraButtons';
