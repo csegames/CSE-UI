@@ -22,7 +22,7 @@ export function defaultOpts(): Options {
   return {
     url: () => `ws://localhost:9990/chat`,
     protocols: 'chat-ws',
-    reconnectInterval: 15000,
+    reconnectInterval: 1,
     connectTimeout: 5000,
     debug: false,
 
