@@ -20,9 +20,9 @@ export interface Options extends Partial<WebSocketOptions> {
 
 export function defaultOpts(): Options {
   return {
-    url: () => `ws://localhost:9990/chat`,
+    url: () => `ws://${game.serverHost}:9990/chat`,
     protocols: 'chat-ws',
-    reconnectInterval: 1,
+    reconnectInterval: 500,
     connectTimeout: 5000,
     debug: false,
 
