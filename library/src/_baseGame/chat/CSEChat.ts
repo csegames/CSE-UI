@@ -9,6 +9,7 @@ import {
 } from '../utils/ReconnectingWebSocket';
 import { createEventEmitter, EventEmitter } from '../utils/EventEmitter';
 import './chatProtoTypes';
+import { isWebSocketUrl } from '../utils/urlUtils';
 const chat = require('./chat_pb.js');
 
 export interface Options extends Partial<WebSocketOptions> {
@@ -67,6 +68,12 @@ export class CSEChat {
   public initialize(options: Partial<Options>) {
     this.options = withDefaults(options, defaultOpts());
 
+    const url = this.options.url();
+    if (!url || !isWebSocketUrl(url)) {
+      console.error('Attempted to initialize websocket connection with invalid URL: ' + url);
+      return;
+    }
+
     this.characterID = options.characterID;
     this.shardID = options.shardID;
 
@@ -81,6 +88,7 @@ export class CSEChat {
   public connect() {
     if (!this.initialized) {
       console.error('Attempted to connect to chat when not initialized.');
+      return;
     }
     if (this.socket) {
       return;

@@ -21,6 +21,7 @@ import './textUtils';
 import './distance';
 import './CircularArray';
 import './idGen';
+import './urlUtils';
 
 export * from './arrayUtils';
 export * from './EventEmitter';
@@ -39,6 +40,7 @@ export * from './textUtils';
 export * from './distance';
 export * from './CircularArray';
 export * from './idGen';
+export * from './urlUtils';
 
 import stringContains from '../../_baseGame/utils/stringContains';
 

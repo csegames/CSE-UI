@@ -46,7 +46,6 @@ export class MatchInfo extends React.Component<Props, State> {
   }
 
   public render() {
-    console.log(`render match info: ${game.worldTime - this.state.roundStartTime}`)
     return (
       <MatchInfoContainer>
         <Item>{moment((game.worldTime - this.state.roundStartTime)* 1000).format('h:mm:ss')}</Item>

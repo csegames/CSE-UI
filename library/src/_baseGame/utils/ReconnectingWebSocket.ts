@@ -6,6 +6,7 @@
 import { createEventEmitter, EventEmitter } from './EventEmitter';
 import * as Raven from 'raven-js';
 import { getBooleanEnv } from './env';
+import { isWebSocketUrl } from './urlUtils';
 
 export interface WebSocketOptions {
   // WebSocket url, default '/graphql'
@@ -75,6 +76,13 @@ export class ReconnectingWebSocket {
     this.connectTimeoutInterval = opts.connectTimeout;
     this.reconnectInterval = opts.reconnectInterval;
     this.debug = opts.debug;
+
+    const urlString = this.url();
+    if (!urlString || !isWebSocketUrl(urlString)) {
+      console.error('Trying to connect to a websocket using and invalid url: ' + this.url());
+      return;
+    }
+
     this.connect();
     this.eventEmitter = createEventEmitter();
   }
@@ -159,7 +167,7 @@ export class ReconnectingWebSocket {
             this.connectTimeoutInterval +
             " ms. Reconnecting in " +
             this.reconnectInterval +
-            " ms."
+            " ms. Url: " + this.url()
         );
         this.reconnect();
       }
