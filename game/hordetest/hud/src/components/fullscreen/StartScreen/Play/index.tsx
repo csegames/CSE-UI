@@ -152,7 +152,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
   private enterMatchmaking = async () => {
     this.enteredMatchmaking = true;
     const request = {
-      mode: 'inttest',
+      mode: game.matchmakingGameMode,
     };
     const res = await webAPI.MatchmakingAPI.EnterMatchmaking(webAPI.defaultConfig, request as any);
 

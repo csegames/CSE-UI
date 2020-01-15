@@ -54,6 +54,11 @@ export interface BaseGameModel {
   characterID: string;
 
   /**
+   * Matchmaking game mode. 1:1 with scenario def atm
+   */
+  matchmakingGameMode: string;
+
+  /**
    * Unique network Identifier (I think??)
    * TODO: Should we remove this?
    */

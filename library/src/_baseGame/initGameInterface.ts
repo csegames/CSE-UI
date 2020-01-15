@@ -129,6 +129,7 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
     keybinds: {},
     worldTime: 0,
     fps: 0,
+    matchmakingGameMode: "inttest",
 
     reloadUI: noOp,
     quit: noOp,
