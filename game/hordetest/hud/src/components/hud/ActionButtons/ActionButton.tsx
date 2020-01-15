@@ -25,6 +25,8 @@ const Button = styled.div`
   height: 75px;
   background-color: rgba(0, 0, 0, 0.5);
   transform: skewX(-10deg);
+  outline: 1px solid rgba(252, 244, 255, 0.3);
+  outline-offset: -5px;
 
   &.disabled {
     box-shadow: inset 0 0 0 5px #AF000D;
@@ -34,19 +36,19 @@ const Button = styled.div`
   }
 
   &.knight {
-    background-color: rgba(248, 193, 5, 0.85);
+    background-color: rgba(228, 180, 47, 0.85);
   }
 
   &.berserker {
-    background-color: rgba(5, 200, 248, 0.85);
+    background-color: rgba(63, 211, 255, 0.85);
   }
 
   &.amazon {
-    background-color: rgba(243, 94, 5, 0.85);
+    background-color: rgba(227, 112, 39, 0.85);
   }
 
   &.celt {
-    background-color: rgba(5, 233, 171, 0.85);
+    background-color: rgba(62, 221, 185, 0.85);
   }
 
   &.cooldown {
@@ -105,6 +107,7 @@ const CooldownOverlay = styled.div`
   bottom: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.8);
+  border-top: 2px solid rgba(255, 255, 255, 0.8);
 `;
 
 const CooldownText = styled.div`
