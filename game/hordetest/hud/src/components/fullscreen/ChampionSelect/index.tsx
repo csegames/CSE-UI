@@ -137,6 +137,7 @@ export interface Props {
   gameMode: string;
   difficulty: string;
   onConnectToServer: () => void;
+  onTimerEnd: () => void;
 }
 
 export interface Champion {
@@ -248,7 +249,7 @@ export function ChampionSelect(props: Props) {
           <LockedList />
         </LockedListContainer>
         <LockInPosition>
-          <LockIn isLocked={isLocked} onLockIn={onLockIn} />
+          <LockIn isLocked={isLocked} onLockIn={onLockIn} onTimerEnd={props.onTimerEnd} />
         </LockInPosition>
       </Container>
     </ChampionSelectContextProvider>

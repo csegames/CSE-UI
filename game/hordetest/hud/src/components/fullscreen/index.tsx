@@ -113,7 +113,7 @@ export class FullScreen extends React.Component<Props, State> {
       }
       case Route.Start: {
         return (
-          <StartScreen testCharacterSelect={this.testCharacterSelect} />
+          <StartScreen />
         );
       }
       case Route.ChampionSelect: {
@@ -122,6 +122,7 @@ export class FullScreen extends React.Component<Props, State> {
             gameMode={'Survival'}
             difficulty={'Normal'}
             onConnectToServer={this.props.onConnectToServer}
+            onTimerEnd={this.props.onConnectToServer}
           />
         );
       }
@@ -192,9 +193,5 @@ export class FullScreen extends React.Component<Props, State> {
 
   private navigateTo = (route: Route) => {
     this.setState({ currentRoute: route });
-  }
-
-  private testCharacterSelect = () => {
-    this.setState({ currentRoute: Route.ChampionSelect });
   }
 }

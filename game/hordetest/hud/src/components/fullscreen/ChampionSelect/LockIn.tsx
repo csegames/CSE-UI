@@ -50,6 +50,7 @@ const ConsoleIcon = styled.span`
 export interface Props {
   isLocked: boolean;
   onLockIn: () => void;
+  onTimerEnd: () => void;
 }
 
 export interface State {
@@ -146,6 +147,7 @@ export class LockIn extends React.Component<Props, State> {
 
     if (this.timeElapsed >= 30000) {
       this.stopBarTimer();
+      this.props.onTimerEnd();
       this.setState({ timer: 0, currentPercentage: 0 });
       return;
     }

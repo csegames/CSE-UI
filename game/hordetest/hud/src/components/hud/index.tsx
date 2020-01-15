@@ -215,7 +215,11 @@ export class HUD extends React.Component<Props, State> {
     if (this.state.isLobbyVisible) {
       return (
         <FullScreenContextProviders>
-          <FullScreen ref={this.fullscreenRef} scenarioID={this.state.scenarioID} onConnectToServer={this.onConnectToServer} />
+          <FullScreen
+            ref={this.fullscreenRef}
+            scenarioID={this.state.scenarioID}
+            onConnectToServer={this.onConnectToServer}
+          />
 
           <MenuModal />
           <LeftModal />
@@ -347,9 +351,7 @@ export class HUD extends React.Component<Props, State> {
 
   private onConnectToServer = () => {
     this.scenarioEndedEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
-    if (game.isConnectedOrConnectingToServer) {
-      this.hideLobby();
-    }
+    this.hideLobby();
   }
 
   private handleScenarioRoundEnded = (scenarioID: string, roundID: string, didEnd: boolean) => {
