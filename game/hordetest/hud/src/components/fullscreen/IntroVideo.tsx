@@ -22,13 +22,13 @@ export class IntroVideo extends React.Component<Props> {
   public render() {
     return (
       <Container>
-        <video
+        {/* <video
           autoPlay
           width='100%'
           height='100%'
-          onEnded={this.props.onIntroVideoEnd}>
+          onEnded={this.props.onIntroVideoEnd}> */}
             {/* <source src='images/fullscreen/test_intro.webm' type='video/webm'></source> */}
-        </video>
+        {/* </video> */}
       </Container>
     );
   }
