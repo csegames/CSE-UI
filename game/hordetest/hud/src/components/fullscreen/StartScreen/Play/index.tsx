@@ -164,7 +164,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
   }
 
   private cancelMatchmaking = async () => {
-    const res = await webAPI.MatchmakingAPI.CancelMatchmaking(webAPI.defaultConfig, {});
+    const res = await webAPI.MatchmakingAPI.CancelMatchmaking(webAPI.defaultConfig);
 
     if (res.ok) {
       this.enteredMatchmaking = false;

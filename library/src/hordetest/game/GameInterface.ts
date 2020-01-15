@@ -69,7 +69,7 @@ export interface GameInterface extends GameModel {
   /**
    * Subscribes a function to be executed when the state of the scenario changes
    */
-  onScenarioRoundUpdate: (callback: (state: ScenarioRoundState, stateEndTime: number) => any) => EventHandle;
+  onScenarioRoundUpdate: (callback: (state: ScenarioRoundState, stateStartTime: number, stateEndTime: number) => any) => EventHandle;
 
   /**
    * Subscribe to Kill Streak updates

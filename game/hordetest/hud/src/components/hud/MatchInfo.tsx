@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import moment from 'moment';
 import { styled } from '@csegames/linaria/react';
 
 const MatchInfoContainer = styled.div`
@@ -30,21 +31,25 @@ export interface Props {
 
 export interface State {
   fps: number;
+  roundStartTime: number;
 }
 
 export class MatchInfo extends React.Component<Props, State> {
   private updateFPSInterval: number;
+  private roundUpdateHandle: EventHandle;
   constructor(props: Props) {
     super(props);
     this.state = {
       fps: Math.round(game.fps),
+      roundStartTime: 0,
     };
   }
 
   public render() {
+    console.log(`render match info: ${game.worldTime - this.state.roundStartTime}`)
     return (
       <MatchInfoContainer>
-        <Item>30:13</Item>
+        <Item>{moment((game.worldTime - this.state.roundStartTime)* 1000).format('h:mm:ss')}</Item>
         <Item>1523 Kills</Item>
         <Item>{this.state.fps} FPS</Item>
       </MatchInfoContainer>
@@ -53,15 +58,24 @@ export class MatchInfo extends React.Component<Props, State> {
 
   public componentDidMount() {
     this.updateFPSInterval = window.setInterval(this.updateFPS, 500);
+    this.roundUpdateHandle = hordetest.game.onScenarioRoundUpdate(this.handleScenarioRoundUpdate);
+
   }
 
   public componentWillUnmount() {
     window.clearInterval(this.updateFPSInterval);
+    this.roundUpdateHandle.clear();
   }
 
   private updateFPS = () => {
-    if (!game.fps.floatEquals(this.state.fps, 1)) {
-      this.setState({ fps: Math.round(game.fps) });
-    }
+    this.setState(s => ({ ...s, fps: Math.round(game.fps) }));
+    this.forceUpdate();
+  }
+
+  private handleScenarioRoundUpdate = (newScenarioState: ScenarioRoundState, newScenarioStateStartTime: number, newScenarioStateEndTime: number) => {
+    this.setState(s => ({
+      ...s,
+      roundStartTime: newScenarioStateStartTime,
+    }));
   }
 }

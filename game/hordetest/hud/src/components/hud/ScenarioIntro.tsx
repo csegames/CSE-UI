@@ -69,6 +69,7 @@ export interface Props {
 export interface State {
   scenarioState: ScenarioRoundState;
   scenarioStateEndTime: number;
+  scenarioStateStartTime: number;
   message: string;
   shouldAnimate: boolean;
 }
@@ -82,6 +83,7 @@ export class ScenarioIntro extends React.Component<Props, State> {
     this.state = {
       scenarioState: hordetest.game.selfPlayerState.scenarioRoundState,
       scenarioStateEndTime: hordetest.game.selfPlayerState.scenarioRoundStateEndTime,
+      scenarioStateStartTime: hordetest.game.selfPlayerState.scenarioRoundStateStartTime,
       message: '',
       shouldAnimate: false
     };
@@ -106,15 +108,15 @@ export class ScenarioIntro extends React.Component<Props, State> {
     window.clearTimeout(this.countdownTimeout);
   }
 
-  private handleScenarioRoundUpdate = (newScenarioState: ScenarioRoundState, newScenarioStateEndTime: number) => {
+  private handleScenarioRoundUpdate = (newScenarioState: ScenarioRoundState, newScenarioStateStartTime: number, newScenarioStateEndTime: number) => {
     if (this.state.scenarioState !== ScenarioRoundState.WaitingForConnections &&
         newScenarioState === ScenarioRoundState.WaitingForConnections) {
-      this.updateCountdown(newScenarioStateEndTime - game.worldTime);
+      this.updateMatchDuration(game.worldTime - newScenarioStateStartTime);
     }
 
     if (this.state.scenarioState !== ScenarioRoundState.Countdown && newScenarioState === ScenarioRoundState.Countdown) {
       this.stopCountdown();
-      this.updateCountdown(newScenarioStateEndTime - game.worldTime);
+      this.updateMatchDuration(game.worldTime - newScenarioStateStartTime);
     }
 
     if (this.state.scenarioState === ScenarioRoundState.Countdown && newScenarioState !== ScenarioRoundState.Countdown) {
@@ -122,7 +124,11 @@ export class ScenarioIntro extends React.Component<Props, State> {
       this.showGoMessage();
     }
 
-    this.setState({ scenarioState: newScenarioState, scenarioStateEndTime: newScenarioStateEndTime });
+    this.setState({
+      scenarioState: newScenarioState,
+      scenarioStateStartTime: newScenarioStateStartTime,
+      scenarioStateEndTime: newScenarioStateEndTime,
+    });
   }
 
   private renderMessage = () => {
@@ -154,18 +160,15 @@ export class ScenarioIntro extends React.Component<Props, State> {
     }
   }
 
-  private updateCountdown = (countdown: number) => {
+  private updateMatchDuration = (countdown: number) => {
     this.setState({ shouldAnimate: true, message: Math.round(countdown).toString() });
 
     this.animateTimeout = window.setTimeout(() => {
       this.setState({ shouldAnimate: false });
     }, 200);
 
-    const newCountdown = countdown - 1;
     this.countdownTimeout = window.setTimeout(() => {
-      if (newCountdown > 0) {
-        this.updateCountdown(newCountdown);
-      }
+        this.updateMatchDuration(game.worldTime - this.state.scenarioStateStartTime);
     }, 1000);
   }
 

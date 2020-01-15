@@ -31,6 +31,7 @@ declare global {
 
     // in world time
     scenarioRoundStateEndTime: number;
+    scenarioRoundStateStartTime: number;
   }
 
   type AnyEntityStateModel = PlayerStateModel;
@@ -76,6 +77,7 @@ export function defaultPlayerStateModel(): PlayerStateModel {
     maxDeaths: 0,
     scenarioRoundState: ScenarioRoundState.Uninitialized,
     scenarioRoundStateEndTime: 0,
+    scenarioRoundStateStartTime: 0,
   };
 }
 
