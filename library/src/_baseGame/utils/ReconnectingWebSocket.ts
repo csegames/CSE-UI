@@ -182,6 +182,10 @@ export class ReconnectingWebSocket {
       this.log("reconnecting");
     }
 
+    try {
+      this.socket.close();
+    } catch {
+    }
     this.socket = null;
     if (this.reconnectInterval < 0) return;
     setTimeout(() => {
