@@ -147,7 +147,6 @@ export class LockIn extends React.Component<Props, State> {
     if (this.timeElapsed >= 30000) {
       this.stopBarTimer();
       this.setState({ timer: 0, currentPercentage: 0 });
-      this.props.onLockIn();
       return;
     }
 
