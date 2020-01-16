@@ -111,12 +111,12 @@ export class ScenarioIntro extends React.Component<Props, State> {
   private handleScenarioRoundUpdate = (newScenarioState: ScenarioRoundState, newScenarioStateStartTime: number, newScenarioStateEndTime: number) => {
     if (this.state.scenarioState !== ScenarioRoundState.WaitingForConnections &&
         newScenarioState === ScenarioRoundState.WaitingForConnections) {
-      this.updateMatchDuration(game.worldTime - newScenarioStateStartTime);
+      this.updateCountdown(newScenarioStateEndTime - game.worldTime);
     }
 
     if (this.state.scenarioState !== ScenarioRoundState.Countdown && newScenarioState === ScenarioRoundState.Countdown) {
       this.stopCountdown();
-      this.updateMatchDuration(game.worldTime - newScenarioStateStartTime);
+      this.updateCountdown(newScenarioStateEndTime - game.worldTime);
     }
 
     if (this.state.scenarioState === ScenarioRoundState.Countdown && newScenarioState !== ScenarioRoundState.Countdown) {
@@ -160,15 +160,18 @@ export class ScenarioIntro extends React.Component<Props, State> {
     }
   }
 
-  private updateMatchDuration = (countdown: number) => {
+  private updateCountdown = (countdown: number) => {
     this.setState({ shouldAnimate: true, message: Math.round(countdown).toString() });
 
     this.animateTimeout = window.setTimeout(() => {
       this.setState({ shouldAnimate: false });
     }, 200);
 
+    const newCountdown = countdown - 1;
     this.countdownTimeout = window.setTimeout(() => {
-        this.updateMatchDuration(game.worldTime - this.state.scenarioStateStartTime);
+      if (newCountdown > 0) {
+        this.updateCountdown(newCountdown);
+      }
     }, 1000);
   }
 
