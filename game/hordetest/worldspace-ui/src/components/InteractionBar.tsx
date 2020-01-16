@@ -55,7 +55,7 @@ const Bar = styled.div`
   left: 0;
   height: 100%;
   width: ${(props: { width: number } & React.HTMLProps<HTMLDivElement>) => props.width}%;
-  background-color: rgba(243, 243, 243, 0.8);
+  background-color:  rgba(20, 20, 20, 0.5);
   z-index: -1;
 `;
 
@@ -106,7 +106,7 @@ const GameTypeText = styled.div`
 const ItemName = styled.div`
   font-family: Lato;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 16px;
   color: #FFF;
   margin-bottom: 5px;

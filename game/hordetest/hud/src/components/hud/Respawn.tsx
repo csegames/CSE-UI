@@ -14,7 +14,7 @@ const Container = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  background: rgba(56, 7, 9, 0.7);
+  background: rgba(56, 7, 9, 0.4);
   display: flex;
   justify-content: center;
   pointer-events: none;

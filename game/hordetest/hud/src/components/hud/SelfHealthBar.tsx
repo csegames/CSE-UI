@@ -36,6 +36,8 @@ const GeneralInfoContainer = styled.div`
   height: 75px;
   background-color: rgba(0, 0, 0, 0.7);
   transform: skewX(-10deg);
+  outline: 1px solid rgba(255, 255, 255, 0.4);
+  outline-offset: -5px;
 `;
 
 const HeartsContainer = styled.div`
