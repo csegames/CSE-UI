@@ -72,6 +72,9 @@ const Container = styled.div`
   width: calc(100% - 50px);
   height: calc(100% - 50px);
   padding: 25px;
+  background-image: url(../images/fullscreen/gamestats/end-match-bg.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
 `;
 
 const TopContainer = styled.div`

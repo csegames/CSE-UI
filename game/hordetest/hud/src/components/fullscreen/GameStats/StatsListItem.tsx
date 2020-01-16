@@ -4,10 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { OvermindCharacterSummary } from '@csegames/library/lib/hordetest/graphql/schema';
+
+import { ChampionInfoContext } from 'context/ChampionInfoContext';
 import { formatTime } from 'lib/timeHelpers';
 import { ResourceBar } from '../../shared/ResourceBar';
 import { ThumbsUpButton } from './ThumbsUpButton';
@@ -56,8 +58,11 @@ const ThumbsUpButtonSpacing = styled.div`
 
 const BarStyles = css`
   height: 30px;
-  filter: grayscale(20%);
   background-color: #2a3754;
+
+  &.isSelf {
+    filter: grayscale(30%);
+  }
 `;
 
 export interface Props {
@@ -69,6 +74,8 @@ export interface Props {
 }
 
 export function StatsListItem(props: Props) {
+  const championInfoContext = useContext(ChampionInfoContext);
+
   function getStatsCurrentPercentage() {
     let totalKills = 0;
     let bestKillStreak = 0;
@@ -100,8 +107,18 @@ export function StatsListItem(props: Props) {
   }
 
   function renderBar(numberText: string, current: number) {
+    const isSelf = hordetest.game.selfPlayerState ?
+      props.playerStat.characterID === hordetest.game.selfPlayerState.characterID :
+      props.playerStat.characterID === game.characterID;
     return (
-      <ResourceBar isSquare type='blue' current={current} max={100} text={numberText} containerStyles={BarStyles} />
+      <ResourceBar
+        isSquare
+        type='blue'
+        current={current}
+        max={100}
+        text={numberText}
+        containerStyles={`${BarStyles} ${isSelf ? 'self' : ''}`}
+      />
     );
   }
 
@@ -113,13 +130,23 @@ export function StatsListItem(props: Props) {
     props.onRevokeClick(props.playerStat.characterID);
   }
 
+  function getChampionInfo() {
+    const playerChampion = championInfoContext.champions.find(champion => champion.id === props.playerStat.classID);
+    const playerCostume = championInfoContext.championCostumes.find(costume => costume.id === props.playerStat.raceID);
+    return {
+      ...playerChampion,
+      costume: playerCostume,
+    }
+  }
+
   const statsCurrentPercentage = getStatsCurrentPercentage();
+  const championInfo = getChampionInfo();
   return (
     <Container>
-      <ChampionProfile src={'images/fullscreen/character-select/face.png'} />
+      <ChampionProfile src={championInfo && championInfo.costume ? championInfo.costume.thumbnailURL : ''} />
       <ChampionInfo>
         <PlayerName>{props.playerStat.userName}</PlayerName>
-        <ChampionName>{'Champion Name'}</ChampionName>
+        <ChampionName>{championInfo ? championInfo.name : 'Champion Name'}</ChampionName>
       </ChampionInfo>
       <Section>
         {renderBar(props.playerStat.kills.toString(), statsCurrentPercentage.kills)}
