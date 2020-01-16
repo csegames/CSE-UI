@@ -199,15 +199,17 @@ export class GameStats extends React.Component<Props, State> {
                 </TopContainer>
                 <MainSection>
                   <StatsListSection>
-                    <StatsList
-                      overmindSummary={overmindSummary}
-                      thumbsUp={this.state.thumbsUp}
-                      onThumbsUpClick={this.onThumbsUpClick}
-                      onRevokeClick={this.onRevokeClick}
-                    />
+                    {overmindSummary.characterSummaries &&
+                      <StatsList
+                        overmindSummary={overmindSummary}
+                        thumbsUp={this.state.thumbsUp}
+                        onThumbsUpClick={this.onThumbsUpClick}
+                        onRevokeClick={this.onRevokeClick}
+                      />
+                    }
                   </StatsListSection>
                   <HighlightsSection>
-                    <Highlights overmindSummary={overmindSummary} />
+                    {overmindSummary.characterSummaries && <Highlights overmindSummary={overmindSummary} />}
                   </HighlightsSection>
                 </MainSection>
               </>
