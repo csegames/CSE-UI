@@ -70,9 +70,9 @@ export function LockedList(props: Props) {
 
         return (
           <ListItem className={lockedClass}>
-            <BGImage src={championCostumeInfo.championSelectImageURL} />
+            <BGImage src={championCostumeInfo ? championCostumeInfo.championSelectImageURL : ""} />
             <NameOfPlayer>
-              {player.characterID ? `${player.characterID} -` : ''} {championInfo.name} {isLocked ? 'is locked in' : ''}
+              {player.characterID ? `${player.characterID} -` : ''} {championInfo ? championInfo.name : "UNKNOWN"} {isLocked ? 'is locked in' : ''}
             </NameOfPlayer>
           </ListItem>
         );

@@ -230,10 +230,15 @@ export function PlayerView(props: Props) {
     });
   }
 
-  function getMyDefaultChampion() {
+  function getMyDefaultChampion(): ChampionCostumeInfo {
     if (colossusProfileContext.colossusProfile && colossusProfileContext.colossusProfile.defaultChampion) {
       const champ = champions.find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.championID);
-      return champ.costumes.find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.costumeID);
+      if (champ && champ.costumes) {
+        return champ.costumes.find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.costumeID);
+      }
+      else {
+        console.error("Default champ or champ costumes missing!");
+      }
     }
 
     return null;

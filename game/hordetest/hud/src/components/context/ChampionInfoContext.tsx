@@ -79,7 +79,10 @@ export class ChampionInfoContextProvider extends React.Component<{}, ChampionInf
   }
 
   private handleQueryResult = (query: GraphQLResult<ChampionInfoContextState>) => {
-    if (!query || !query.data || !query.data.championCostumes || !query.data.champions) return query;
+    if (!query || !query.data || !query.data.championCostumes || !query.data.champions) {
+      console.error("Missing data, championCostumes, or champions from ChampionInfoContextQuery query");
+      return query;
+    }
 
     this.setState({ championCostumes: query.data.championCostumes, champions: query.data.champions });
     return query;

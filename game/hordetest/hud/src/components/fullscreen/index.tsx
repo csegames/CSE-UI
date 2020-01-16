@@ -63,7 +63,7 @@ export enum Route {
 
 export interface Props {
   scenarioID: string;
-  onConnectToServer: () => void;
+  onConnectToServer: (fromMatchmaking?: boolean) => void;
 
   startingRoute?: Route;
 }
