@@ -60,6 +60,7 @@ export class CSEChat {
   private shardID: () => number;
   private senderID: () => string;
   private initialized: boolean;
+  private messageQueue: any[] = [];
 
   public constructor() {
     this.eventEmitter = createEventEmitter();
@@ -99,6 +100,13 @@ export class CSEChat {
       this.sendPing();
       this.requestDirectory();
       this.eventEmitter.emit('connected');
+      setTimeout(() => {
+        if (this.messageQueue && this.messageQueue.length > 0) {
+          const toSend = this.messageQueue.slice();
+          this.messageQueue = [];
+          toSend.forEach(m => this.sendProtoMessage(m));
+        }
+      }, 100);
     }
     this.socket.onerror = (err) => {
       this.eventEmitter.emit('error', err);
@@ -842,7 +850,9 @@ export class CSEChat {
   }
 
   private sendProtoMessage = (msg: any) => {
-    if (!this.connected) return;
+    if (!this.connected) {
+      this.messageQueue.push(msg);
+    };
     this.socket.send(msg.serializeBinary());
   };
 

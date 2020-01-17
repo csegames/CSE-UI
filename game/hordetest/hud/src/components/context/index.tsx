@@ -23,7 +23,9 @@ export class ContextProviders extends React.Component<{}> {
           <ObjectivesContextProvider>
             <PlayerPositionContextProvider>
               <StatusContextProvider>
-                {this.props.children}
+                <ChampionInfoContextProvider>
+                  {this.props.children}
+                </ChampionInfoContextProvider>
               </StatusContextProvider>
             </PlayerPositionContextProvider>
           </ObjectivesContextProvider>

@@ -4,9 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { OvermindSummaryDBModel, OvermindCharacterSummary } from '@csegames/library/lib/hordetest/graphql/schema';
+
+import { ChampionInfoContext } from 'context/ChampionInfoContext';
 import { formatTime } from 'lib/timeHelpers';
 
 const Container = styled.div`
@@ -25,6 +27,7 @@ const HighlightContainer = styled.div`
   border-image-slice: 5;
   background-color: #242424;
   margin: 13px;
+  text-align: center;
 `;
 
 const ChampionImage = styled.img`
@@ -33,7 +36,7 @@ const ChampionImage = styled.img`
   right: 0;
   bottom: 0;
   left: 0;
-  object-fit: contain;
+  object-fit: cover;
   width: 100%;
   height: 100%;
 `;
@@ -49,26 +52,36 @@ const BGOverlay = styled.div`
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent, rgba(0, 0, 0, 0.6));
 `;
 
-const PlayerName = styled.div`
+const PlayerInfoContainer = styled.div`
   position: absolute;
   top: 15px;
-  left: 15px;
+  width: 100%;
+`;
+
+const PlayerName = styled.div`
   font-size: 23px;
   font-family: Lato;
   font-weight: bold;
-  color: #fff;
+  color: white;
+`;
+
+const ChampionName = styled.div`
+  font-size: 16px;
+  font-family: Lato;
+  color: white;
+  opacity: 0.7;
 `;
 
 const StatContainer = styled.div`
   position: absolute;
-  left: 15px;
   bottom: 15px;
+  width: 100%;
 `;
 
 const StatNumber = styled.div`
   font-family: Colus;
   font-size: 35px;
-  color: #fff;
+  color: white;
 `;
 
 const StatName = styled.div`
@@ -92,6 +105,8 @@ interface PlayerDifference extends HighlightStat {
 }
 
 export function Highlights(props: Props) {
+  const championInfoContext = useContext(ChampionInfoContext);
+
   function getHighlightPlayers() {
     let totalKills = 0;
     let totalDamage = 0;
@@ -227,12 +242,26 @@ export function Highlights(props: Props) {
     return sortedHighlightStats;
   }
 
+  function getChampionInfo(player: OvermindCharacterSummary) {
+    const champion = championInfoContext.champions.find(champion => champion.id === player.classID);
+    const costume = championInfoContext.championCostumes.find(costume => costume.id === player.raceID);
+
+    return {
+      ...champion,
+      costume,
+    };
+  }
+
   function renderHighlight(p: HighlightStat) {
+    const championInfo = getChampionInfo(p.player);
     return (
       <HighlightContainer>
-        <ChampionImage src={'images/fullscreen/character-select/face.png'} />
+        <ChampionImage src={championInfo && championInfo.costume ? championInfo.costume.cardImageURL : ''} />
         <BGOverlay />
-        <PlayerName>{p.player.userName}</PlayerName>
+        <PlayerInfoContainer>
+          <PlayerName>{p.player.userName}</PlayerName>
+          <ChampionName>{championInfo ? championInfo.name : ''}</ChampionName>
+        </PlayerInfoContainer>
         <StatContainer>
           <StatNumber>{p.statName === 'longest life' ? formatTime(p.statNumber) : p.statNumber}</StatNumber>
           <StatName>{p.statName}</StatName>

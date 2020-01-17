@@ -7,6 +7,8 @@
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
 
+import { SetDisplayName } from '../SetDisplayName';
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -59,17 +61,22 @@ export function LeftOptions(props: Props) {
     game.quit();
   }
 
+  function showChangeDisplayName() {
+    game.trigger('show-middle-modal', <SetDisplayName />)
+  }
+
   return (
     <Container>
       <MenuTitle>Menu</MenuTitle>
       {/* <Item>Battle Log</Item> */}
       <Item onClick={onSettingsClick}>Settings</Item>
+      <Item onClick={showChangeDisplayName}>Change Display Name</Item>
       {/* <Item>Select Game Mode</Item> */}
       <Item>Support</Item>
       {/* <Item>Legal</Item>
       <Item>News</Item> */}
       <Item>Credits</Item>
-      <Item className='exit' onClick={onExitClick}>Exit</Item>
+      <Item className='exit' onClick={onExitClick}>Exit Game</Item>
     </Container>
   );
 }

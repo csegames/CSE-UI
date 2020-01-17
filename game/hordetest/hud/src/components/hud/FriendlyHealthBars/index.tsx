@@ -29,7 +29,7 @@ export class FriendlyHealthBars extends React.Component<Props, State> {
 
   public render() {
     const sortedPlayers = Object.keys(this.state.friendlyPlayers).sort((a, b) => a.localeCompare(b));
-    return sortedPlayers.map((playerName) => {
+    return sortedPlayers.slice(0, 5).map((playerName) => {
       return <FriendlyHealthBar playerName={playerName} />;
     });
   }
@@ -78,7 +78,7 @@ export class FriendlyHealthBars extends React.Component<Props, State> {
       notAddedEntities.push({ name: entity.name, entityID: entity.entityID });
     });
 
-    if (notAddedEntities.length > 0) {
+    if (currentFriendlyHealthBarsAmount < HEALTH_BAR_LIMIT && notAddedEntities.length > 0) {
       const friendsNeeded = HEALTH_BAR_LIMIT - currentFriendlyHealthBarsAmount;
       notAddedEntities.slice(0, friendsNeeded);
       notAddedEntities.forEach((entity) => {

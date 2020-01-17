@@ -5,13 +5,19 @@
  */
 
 import React from 'react';
-import moment from 'moment';
+import { throttle } from 'lodash';
+import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
+import { formatTime } from '../../lib/timeHelpers';
 
 const MatchInfoContainer = styled.div`
   display: flex;
   width: 300px;
   justify-content: space-between;
+`;
+
+const Icon = styled.span`
+  margin-right: 5px;
 `;
 
 const Item = styled.div`
@@ -26,44 +32,65 @@ const Item = styled.div`
   text-transform: uppercase;
 `;
 
+const MatchTimerStyle = css`
+  width: 90px;
+`;
+
 export interface Props {
 }
 
 export interface State {
   fps: number;
   roundStartTime: number;
+  totalKills: number;
 }
 
 export class MatchInfo extends React.Component<Props, State> {
   private updateFPSInterval: number;
-  private roundUpdateHandle: EventHandle;
+  private roundUpdateEVH: EventHandle;
+  private playerStateEVH: EventHandle;
   constructor(props: Props) {
     super(props);
+
+    this.handlePlayerStateUpdate = throttle(this.handlePlayerStateUpdate, 1000);
+
+    const playerClone = cloneDeep(hordetest.game.selfPlayerState);
     this.state = {
       fps: Math.round(game.fps),
-      roundStartTime: 0,
+      roundStartTime: playerClone.scenarioRoundState === ScenarioRoundState.Running ?
+        playerClone.scenarioRoundStateStartTime : 0,
+      totalKills: playerClone.totalKills || 0,
     };
   }
 
   public render() {
     return (
       <MatchInfoContainer>
-        <Item>{moment((game.worldTime - this.state.roundStartTime)* 1000).format('h:mm:ss')}</Item>
-        <Item>1523 Kills</Item>
-        <Item>{this.state.fps} FPS</Item>
+        <Item className={MatchTimerStyle}>
+          <Icon className='fs-icon-misc-time'></Icon>
+          {formatTime(game.worldTime - this.state.roundStartTime)}
+        </Item>
+        <Item>
+          <Icon className='fs-icon-misc-kills'></Icon>
+          {this.state.totalKills} Kills
+        </Item>
+        <Item>
+          {this.state.fps} FPS
+        </Item>
       </MatchInfoContainer>
     );
   }
 
   public componentDidMount() {
     this.updateFPSInterval = window.setInterval(this.updateFPS, 500);
-    this.roundUpdateHandle = hordetest.game.onScenarioRoundUpdate(this.handleScenarioRoundUpdate);
-
+    this.roundUpdateEVH = hordetest.game.onScenarioRoundUpdate(this.handleScenarioRoundUpdate);
+    this.playerStateEVH = hordetest.game.selfPlayerState.onUpdated(this.handlePlayerStateUpdate);
   }
 
   public componentWillUnmount() {
     window.clearInterval(this.updateFPSInterval);
-    this.roundUpdateHandle.clear();
+    this.roundUpdateEVH.clear();
+    this.playerStateEVH.clear();
   }
 
   private updateFPS = () => {
@@ -71,10 +98,20 @@ export class MatchInfo extends React.Component<Props, State> {
     this.forceUpdate();
   }
 
-  private handleScenarioRoundUpdate = (newScenarioState: ScenarioRoundState, newScenarioStateStartTime: number, newScenarioStateEndTime: number) => {
-    this.setState(s => ({
-      ...s,
-      roundStartTime: newScenarioStateStartTime,
-    }));
+  private handleScenarioRoundUpdate = (newScenarioState: ScenarioRoundState, newScenarioStateStartTime: number) => {
+    if (newScenarioState === ScenarioRoundState.Running) {
+      this.setState(s => ({
+        ...s,
+        roundStartTime: newScenarioStateStartTime,
+      }));
+    }
+  }
+
+  private handlePlayerStateUpdate = () => {
+    const playerStateClone = cloneDeep(hordetest.game.selfPlayerState);
+
+    if (playerStateClone && playerStateClone.totalKills && !playerStateClone.totalKills.floatEquals(this.state.totalKills)) {
+      this.setState({ totalKills: playerStateClone.totalKills });
+    }
   }
 }

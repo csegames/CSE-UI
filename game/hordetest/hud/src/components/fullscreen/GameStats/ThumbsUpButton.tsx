@@ -119,7 +119,8 @@ export class ThumbsUpButton extends React.Component<Props, State> {
 
   public render() {
     const { thumbsUp, characterID } = this.props;
-    const isSelf = characterID === game.characterID;
+    const isSelf = hordetest.game.selfPlayerState ? characterID === hordetest.game.selfPlayerState.characterID :
+      characterID === game.characterID;
     const thisThumbsUp = thumbsUp[characterID] || [];
     const selfHasVoted = this.selfHasVoted();
     const selfHasVotedFor = thisThumbsUp.includes(game.characterID);

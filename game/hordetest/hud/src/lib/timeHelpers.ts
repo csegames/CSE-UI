@@ -5,8 +5,15 @@
  */
 
 export function formatTime(totalSeconds: number) {
-  const minutes = Math.floor(totalSeconds / 60);
-  const remainingSeconds = totalSeconds % 60;
+  if (typeof totalSeconds !== 'number') return;
 
-  return `${minutes}:${remainingSeconds}`;
+  const date = new Date(null);
+  date.setSeconds(totalSeconds);
+
+  try {
+    return date.toISOString().substr(14, 5);
+  } catch (e) {
+    console.error(e);
+    return '00:00';
+  }
 }

@@ -37,6 +37,7 @@ import { MenuModal } from '../fullscreen/MenuModal';
 import { LeftModal } from '../fullscreen/LeftModal';
 import { RightModal } from '../fullscreen/RightModal';
 import { MiddleModal } from '../fullscreen/MiddleModal';
+
 import { Error } from '../fullscreen/Error';
 import { ActionAlert } from '../shared/ActionAlert';
 import { ExtraButtons } from './ExtraButtons';
@@ -124,7 +125,7 @@ const FriendlyHealthBarsPosition = styled.div`
 
 const CompassPosition =  styled.div`
   position: fixed;
-  top: 20px;
+  top: 80px;
   left: 50%;
   transform: translateX(-50%);
   width: 600px;
