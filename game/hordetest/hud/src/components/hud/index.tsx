@@ -198,6 +198,7 @@ export interface State {
 export class HUD extends React.Component<Props, State> {
   private showEVH: EventHandle;
   private hideEVH: EventHandle;
+  private resetEVH: EventHandle;
   private scenarioEndedEVH: EventHandle;
   private networkFailureEVH: EventHandle;
   private fullscreenRef: React.RefObject<FullScreen>;
@@ -327,6 +328,7 @@ export class HUD extends React.Component<Props, State> {
   public componentDidMount() {
     this.showEVH = game.on('show-fullscreen', this.showLobby);
     this.hideEVH = game.on('hide-fullscreen', this.hideLobby);
+    this.resetEVH = game.on('reset-fullscreen', this.resetFullscreen);
     this.networkFailureEVH = game.onNetworkFailure(this.handleNetworkFailure);
 
     if (game.isConnectedOrConnectingToServer) {
@@ -337,6 +339,7 @@ export class HUD extends React.Component<Props, State> {
   public componentWillUnmount() {
     this.showEVH.clear();
     this.hideEVH.clear();
+    this.resetEVH.clear();
     this.scenarioEndedEVH.clear();
     this.networkFailureEVH.clear();
   }
@@ -364,9 +367,13 @@ export class HUD extends React.Component<Props, State> {
 
   private handleNetworkFailure = (errorMsg: string, errorCode: number) => {
     if (!game.isConnectedToServer) {
-      this.showLobby();
-      this.fullscreenRef.current.goToStart();
+      this.resetFullscreen();
       game.trigger('show-middle-modal', <Error title='Network Failure' message={errorMsg} errorCode={errorCode} />);
     }
+  }
+
+  private resetFullscreen = () => {
+      this.showLobby();
+      this.fullscreenRef.current.goToStart();
   }
 }

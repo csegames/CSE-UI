@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useContext, useEffect } from 'react';
+import gql from 'graphql-tag';
 import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/library/lib/hordetest';
 import {
@@ -13,6 +14,7 @@ import {
   MatchmakingUpdateType,
   MatchmakingServerReady,
 } from '@csegames/library/lib/hordetest/graphql/schema';
+import { query } from '@csegames/library/lib/_baseGame/graphql/query'
 
 import { Header } from '../Header';
 import { ChampionPick } from './ChampionPick';
@@ -24,6 +26,7 @@ import { MatchmakingContext, onMatchmakingUpdate } from 'context/MatchmakingCont
 import { InputContext } from 'context/InputContext';
 import { ColossusProfileContext } from 'context/ColossusProfileContext';
 import { ChampionSelectContextProvider } from './context/ChampionSelectContext';
+import { Error } from 'components/fullscreen/Error';
 
 const Container = styled.div`
   position: relative;
@@ -194,10 +197,70 @@ export function ChampionSelect(props: Props) {
   function handleMatchmakingUpdate(matchmakingUpdate: IMatchmakingUpdate) {
     if (matchmakingUpdate.type === MatchmakingUpdateType.ServerReady) {
       const { host, port } = matchmakingUpdate as MatchmakingServerReady;
-      game.connectToServer(host, port);
-      props.onConnectToServer(true);
+      connect(host, port, 0);
     }
   }
+
+  function connect(host: string, port: number, tries: number) {
+    game.connectToServer(host, port);
+    window.setTimeout(() => checkConnected(host, port, ++tries), 500);
+  }
+
+  async function checkConnected(host: string, port: number, tries: number) {
+    if (game.isConnectedToServer) {
+      props.onConnectToServer(true);
+      return;
+    }
+
+    if (game.isConnectedOrConnectingToServer) {
+      // check again in another timeout
+      window.setTimeout(() => checkConnected(host, port, tries), 500);
+      return;
+    }
+
+    // give up after 15 seconds / 30 tries
+    if (tries > 30) {
+      game.trigger('show-middle-modal', <Error title='Failed' message={'Failed to establish connection to game server.'} errorCode={1010} />);
+      game.trigger('reset-fullscreen');
+      return;
+    }
+
+    try {
+      const response = await query<any>(gql`
+{
+  serverState(server:"${host}:${port}") {
+    status
+  }
+}`,   {
+        url: game.webAPIHost + '/graphql',
+        requestOptions: {
+          headers: {
+            Authorization: `Bearer ${game.accessToken}`,
+            shardID: `${game.shardID}`,
+            characterID: `${game.characterID},`
+          },
+        },
+      });
+
+      const status = response.data.serverState.status;
+      if (status === 'Running' || status === 'Reserved') {
+        // try again.
+        connect(host, port, tries);
+        return;
+      } else {
+        // fail out.
+        game.trigger('show-middle-modal', <Error title='Failed' message={'Failed to establish connection to game server.'} errorCode={1011} />);
+        // reset back to lobby
+        game.trigger('reset-fullscreen');
+      }
+    } catch (err) {
+      // failed to check status... so just fail out
+      // reset back to lobby
+      game.trigger('show-middle-modal', <Error title='Failed' message={'Failed to establish connection to game server.'} errorCode={1009} />);
+      game.trigger('reset-fullscreen');
+    }
+  }
+
 
   async function updateSelectedChampion(championID: string, costumeID: string) {
     const request: SelectChampionRequest = {
