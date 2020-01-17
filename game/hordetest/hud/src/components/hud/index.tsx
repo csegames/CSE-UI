@@ -329,7 +329,7 @@ export class HUD extends React.Component<Props, State> {
     this.hideEVH = game.on('hide-fullscreen', this.hideLobby);
     this.networkFailureEVH = game.onNetworkFailure(this.handleNetworkFailure);
 
-    if (hordetest.game.onScenarioRoundEnded) {
+    if (game.isConnectedOrConnectingToServer) {
       this.onConnectToServer();
     }
   }
@@ -350,7 +350,7 @@ export class HUD extends React.Component<Props, State> {
     game.trigger('hide-middle-modal');
   }
 
-  private onConnectToServer = () => {
+  private onConnectToServer = (fromMatchmaking: boolean = false) => {
     this.scenarioEndedEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
     this.hideLobby();
   }

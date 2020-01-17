@@ -136,7 +136,7 @@ const ConsoleNavIcon = styled.div`
 export interface Props {
   gameMode: string;
   difficulty: string;
-  onConnectToServer: () => void;
+  onConnectToServer: (fromMatchmaking?: boolean) => void;
   onTimerEnd: () => void;
 }
 
@@ -183,7 +183,7 @@ export function ChampionSelect(props: Props) {
     if (matchmakingUpdate.type === MatchmakingUpdateType.ServerReady) {
       const { host, port } = matchmakingUpdate as MatchmakingServerReady;
       game.connectToServer(host, port);
-      props.onConnectToServer();
+      props.onConnectToServer(true);
     }
   }
 
