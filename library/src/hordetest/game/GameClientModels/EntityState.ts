@@ -27,6 +27,7 @@ declare global {
     classID: Archetype;
     currentDeaths: number;
     maxDeaths: number;
+    totalKills: number;
     scenarioRoundState: ScenarioRoundState;
 
     // in world time
@@ -75,6 +76,7 @@ export function defaultPlayerStateModel(): PlayerStateModel {
     gender: Gender.Male,
     currentDeaths: 0,
     maxDeaths: 0,
+    totalKills: 0,
     scenarioRoundState: ScenarioRoundState.Uninitialized,
     scenarioRoundStateEndTime: 0,
     scenarioRoundStateStartTime: 0,

@@ -5,8 +5,15 @@
  */
 
 export function formatTime(totalSeconds: number) {
+  if (typeof totalSeconds !== 'number') return;
+
   const date = new Date(null);
   date.setSeconds(totalSeconds);
 
-  return date.toISOString().substr(14, 5);
+  try {
+    return date.toISOString().substr(14, 5);
+  } catch (e) {
+    console.error(e);
+    return '00:00';
+  }
 }
