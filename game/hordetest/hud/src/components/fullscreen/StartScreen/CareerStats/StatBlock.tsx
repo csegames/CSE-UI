@@ -18,6 +18,8 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 0;
+  outline: 2px solid rgba(255, 255, 255, 0.15);
+  outline-offset: -15px;
 `;
 
 const BestText = styled.div`

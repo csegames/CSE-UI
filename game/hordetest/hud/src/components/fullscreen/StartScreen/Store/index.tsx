@@ -30,9 +30,10 @@ const ItemsContainer = styled.div`
   height: 75%;
   overflow: auto;
   align-self: center;
+  background: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, .5));
 
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
     height: 6px;
   }
 

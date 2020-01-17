@@ -46,13 +46,17 @@ const Container = css`
   &.blue {
     box-shadow: inset 0 5px 50px 5px rgba(19, 58, 83, 0.5);
     background: linear-gradient(to bottom, #52CFFD, #315fb7);
-    border: 2px solid #77a5f2;
+    border: 0px solid #77a5f2;
+    outline: 1px solid rgba(102, 184, 255, 1);
+    outline-offset: -4px; 
   }
 
   &.gray {
     box-shadow: inset 0 5px 50px 5px rgba(255, 255, 255, 0.1);
     background: linear-gradient(to bottom, #4c4c4c, #2b2b2b);
-    border: 2px solid #6d6d6d;
+    border: 0px solid #6d6d6d;
+    outline: 1px solid rgba(111, 111, 111, 1);
+    outline-offset: -4px;
   }
 
   &.disabled {

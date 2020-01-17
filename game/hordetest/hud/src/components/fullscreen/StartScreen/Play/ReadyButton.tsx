@@ -34,6 +34,8 @@ const ReadyButtonStyle = styled.div`
   background: linear-gradient(to bottom, #ffd200, #a53d13);
   border: 2px solid #ff9e57;
   font-family: Colus;
+  outline: 1px solid rgba(255, 216, 65, 1);
+  outline-offset: -8px;
 
   &.searching {
     pointer-events: none;

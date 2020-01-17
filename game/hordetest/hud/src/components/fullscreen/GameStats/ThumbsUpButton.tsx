@@ -15,8 +15,8 @@ const ThumbsupButton = css`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 26px;
-  width: 52px;
+  height: 30px;
+  width: 56px;
   font-size: 16px;
   padding: 0;
   cursor: pointer;
@@ -46,7 +46,7 @@ const ThumbsupSelf = styled.div`
   align-items: center;
   justify-content: center;
   height: 26px;
-  width: 52px;
+  width: 56px;
   color: white;
   border: 2px solid #77a5f2;
   font-size: 16px;

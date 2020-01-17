@@ -34,10 +34,10 @@ const ChampionImage = styled.img`
   height: 100%;
 
   &.should-offset {
-    bottom: -25%;
-    right: -20%;
-    width: 110%;
-    height: 110%;
+    bottom: -45%;
+    right: -30%;
+    width: 140%;
+    height: 140%;
   }
 `;
 
@@ -249,7 +249,7 @@ export function ChampionProfile(props: Props) {
       </SkinInfoPosition>
       {!inputContext.isConsole ?
         <ButtonPosition>
-            <ActionButton style={{ marginRight: 10 }} onClick={onSetAsDefault}>Set As Default</ActionButton>
+            <ActionButton style={{ marginRight: 30 }} onClick={onSetAsDefault}>Set As Default</ActionButton>
           {editingMode === EditingMode.None ?
             <ActionButton onClick={onShowSkills}>Show skills</ActionButton> :
             <ActionButton onClick={onReset}>Cancel</ActionButton>

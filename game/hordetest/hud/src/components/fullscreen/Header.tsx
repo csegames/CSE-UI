@@ -16,11 +16,12 @@ const Container = styled.div`
   color: white;
   text-transform: uppercase;
   cursor: pointer;
-  transition: 0.2s color;
   font-family: Colus;
+  transition: all 0.2s ease-in;
 
   &:hover {
     color: #85d2ff;
+    background: linear-gradient(to bottom, rgba(36, 55, 97, 1), rgba(36, 55, 97, 0.7), transparent);
   }
 
   &.selected {

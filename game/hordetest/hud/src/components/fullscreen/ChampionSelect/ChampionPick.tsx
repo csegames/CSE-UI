@@ -11,7 +11,9 @@ import { ChampionSelectContext } from './context/ChampionSelectContext';
 
 const Container = styled.div`
   position: relative;
-  border: 5px solid #494949;
+  border: 2px solid #494949;
+  outline: 1px solid rgba(196, 253, 255, 0.6);
+  outline-offset: -4px;
   width: 90px;
   height: 90px;
   cursor: pointer;
@@ -33,6 +35,7 @@ const Container = styled.div`
   }
 
   &:hover {
+    filter: brightness(120%);
     &:after {
       opacity: 1;
       visibility: visible;

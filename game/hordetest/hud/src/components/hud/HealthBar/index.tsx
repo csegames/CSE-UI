@@ -45,13 +45,11 @@ const ResourceBarContainer = styled.div`
 const MainResourceStyles = css`
   flex: 1;
   height: 26px;
-  margin-bottom: 1px;
 `;
 
 const BarrierStyles = css`
   flex: 1;
   height: 26px;
-  margin-bottom: 1px;
 `;
 
 const ResourceContainer = css`

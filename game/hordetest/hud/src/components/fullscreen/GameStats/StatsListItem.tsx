@@ -17,6 +17,11 @@ import { ThumbsUpButton } from './ThumbsUpButton';
 const Container = styled.div`
   display: flex;  align-items: center;
   padding: 10px;
+  transition: all 0.2s ease-in;
+
+  &:hover {
+    background: linear-gradient(to right, rgba(65, 116, 255, 0.4), transparent);
+  }
 `;
 
 const ChampionProfile = styled.img`
@@ -44,7 +49,7 @@ const ChampionName = styled.div`
   font-family: Lato;
   font-weight: bold;
   font-size: 12px;
-  color: #6c6c6c;
+  color: #8c8c8c;
 `;
 
 const Section = styled.div`
@@ -53,15 +58,15 @@ const Section = styled.div`
 `;
 
 const ThumbsUpButtonSpacing = styled.div`
-  margin-left: 10px;
 `;
 
 const BarStyles = css`
-  height: 30px;
+  height: 15px;
   background-color: #2a3754;
+  filter: grayscale(70%);
 
-  &.isSelf {
-    filter: grayscale(30%);
+  &.self {
+    filter: grayscale(0);
   }
 `;
 

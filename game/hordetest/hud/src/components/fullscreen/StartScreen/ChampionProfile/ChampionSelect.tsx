@@ -19,7 +19,9 @@ const Container = styled.div`
 
 const ChampionContainer = styled.div`
   position: relative;
-  border: 5px solid #494949;
+  border: 2px solid #494949;
+  outline: 1px solid rgba(196, 253, 255, 0.6);
+  outline-offset: -4px;
   width: 90px;
   height: 90px;
   cursor: pointer;
@@ -41,6 +43,7 @@ const ChampionContainer = styled.div`
   }
 
   &:hover {
+    filter: brightness(120%);
     &:after {
       opacity: 1;
       visibility: visible;
@@ -63,10 +66,10 @@ const Image = styled.img`
 
 const StarIcon = styled.span`
   position: absolute;
-  font-size: 18px;
-  top: 5px;
-  right: 5px;
-  color: #ffc400;
+  font-size: 15px;
+  top: -8px;
+  right: 35px;
+  color: #fffe7d; 
 `;
 
 export interface Props {

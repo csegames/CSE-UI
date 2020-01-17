@@ -54,7 +54,7 @@ const BGOverlay = styled.div`
 
 const PlayerInfoContainer = styled.div`
   position: absolute;
-  top: 15px;
+  top: 5px;
   width: 100%;
 `;
 
@@ -74,7 +74,7 @@ const ChampionName = styled.div`
 
 const StatContainer = styled.div`
   position: absolute;
-  bottom: 15px;
+  bottom: 5px;
   width: 100%;
 `;
 
@@ -86,8 +86,9 @@ const StatNumber = styled.div`
 
 const StatName = styled.div`
   font-family: Colus;
-  font-size: 18px;
-  color: #aaa9a9;
+  font-size: 16px;
+  color: white;
+  opacity: 0.7;
 `;
 
 export interface Props {

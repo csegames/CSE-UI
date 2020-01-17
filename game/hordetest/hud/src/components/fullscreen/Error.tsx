@@ -24,7 +24,7 @@ const Title = styled.div`
 
 const Message = styled.div`
   font-size: 22px;
-  color: #4E4E4E;
+  color: #7d7d7d;
   font-family: Lato;
   font-weight: bold;
   margin-bottom: 5px;
@@ -32,7 +32,7 @@ const Message = styled.div`
 
 const Code = styled.div`
   font-size: 22px;
-  color: #2C2C2C;
+  color: #7d4442;
   font-family: Lato;
   font-weight: bold;
   margin-bottom: 20px;

@@ -85,6 +85,8 @@ const Button = styled.div`
   color: white;
   cursor: pointer;
   letter-spacing: 2px;
+  outline: 1px solid rgb(255, 219, 145);
+  outline-offset: -8px;
 
   &.leave {
   }
