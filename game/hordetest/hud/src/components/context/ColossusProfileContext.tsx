@@ -60,7 +60,11 @@ export interface ColossusProfileState {
 }
 
 const getDefaultColossusProfileState = (): ColossusProfileState => ({
-  colossusProfile: null,
+  colossusProfile: {
+    defaultChampion: null,
+    champions: null,
+    lifetimeStats: null,
+  },
   graphql: null,
 });
 

@@ -21,9 +21,15 @@ const ListItem = styled.div`
   margin-bottom: 7px;
   background-color: rgba(0, 0, 0, 0.9);
   background-size: cover;
+  filter: grayscale(100%);
+
+  &.self {
+    filter: grayscale(0%);
+  }
 
   &.locked {
     border: 2px solid #ec9c30;
+    filter: grayscale(0%);
     &:before {
       content: '';
       position: absolute;
