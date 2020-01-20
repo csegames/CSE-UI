@@ -21,15 +21,21 @@ const ListItem = styled.div`
   margin-bottom: 7px;
   background-color: rgba(0, 0, 0, 0.9);
   background-size: cover;
-  filter: grayscale(100%);
+  filter: grayscale(100%) brightness(.4);
+  -webkit-mask-image: linear-gradient(to left, transparent 15%, black 55%);
 
   &.self {
-    filter: grayscale(0%);
+    filter: grayscale(90%);
   }
 
   &.locked {
-    border: 2px solid #ec9c30;
-    filter: grayscale(0%);
+    filter: grayscale(0%) brightness(1.3);
+    border: 2px rgb(102, 216, 255) solid;
+    outline: 1px solid rgba(88, 238, 255, 0.35);
+    outline-offset: -6px;
+    position: absolute;
+    margin-left: -15px;
+    transition: .2s all ease;
     &:before {
       content: '';
       position: absolute;

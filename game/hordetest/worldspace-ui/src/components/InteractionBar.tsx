@@ -55,7 +55,7 @@ const Bar = styled.div`
   left: 0;
   height: 100%;
   width: ${(props: { width: number } & React.HTMLProps<HTMLDivElement>) => props.width}%;
-  background-color:  rgba(20, 20, 20, 0.5);
+  background-color:  rgba(20, 20, 20, 0.7);
   z-index: -1;
 `;
 

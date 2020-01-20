@@ -19,7 +19,7 @@ const Container = styled.div`
   cursor: pointer;
   margin: 0 7px;
   background-color: rgba(0, 0, 0, 0.9);
-  transition: border-color 0.2s;
+  transition: all 0.1s ease-out;
 
   &:after {
     content: '';
@@ -35,6 +35,7 @@ const Container = styled.div`
   }
 
   &:hover {
+    transform:scale(1.1);
     filter: brightness(120%);
     &:after {
       opacity: 1;
@@ -44,6 +45,7 @@ const Container = styled.div`
 
   &.selected {
     border-color: #7fcfff;
+    transform:scale(1.1);
     &:after {
       opacity: 1;
       visibility: visible;

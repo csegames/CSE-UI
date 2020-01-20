@@ -78,6 +78,9 @@ const ChampionPickContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+  position: fixed;
+  z-index: 1;
+  bottom: 150px;  
 `;
 
 const SelectedChampionBackground = styled.img`
@@ -93,13 +96,15 @@ const SelectedChampionBackground = styled.img`
 `;
 
 const SelectedChampionContainer = styled.div`
-  position: relative;
-  width: 60%;
-  height: 100%;
+  position: absolute;
+  width: 80%;
+  height: 140%;
   pointer-events: none;
   top: 0;
   bottom: 0;
-  left: 0;
+  right: 15%;
+  left: auto;
+  -webkit-mask-image: linear-gradient(to top, transparent 25%, black 65%);
 `;
 
 const SelectedChampionImage = styled.img`
@@ -112,7 +117,7 @@ const SelectedChampionImage = styled.img`
 
 const ChampionInfoContainer = styled.div`
   position: absolute;
-  left: 60%;
+  left: 20%;
   top: 50%;
   transform: translate(-50%, -50%);
 `;
@@ -120,14 +125,14 @@ const ChampionInfoContainer = styled.div`
 const LockedListContainer = styled.div`
   position: absolute;
   top: 80px;
-  left: 28px;
+  right: 28px;
 `;
 
 const LockInPosition = styled.div`
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 70px;
+  bottom: 60px;
 `;
 
 const ConsoleNavIcon = styled.div`
