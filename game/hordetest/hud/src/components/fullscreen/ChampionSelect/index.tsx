@@ -228,7 +228,7 @@ export function ChampionSelect(props: Props) {
     try {
       const response = await query<any>(gql`
 {
-  serverState(server:"${host}:${port}") {
+  serverState(server:"${host}:${port}", match: "${matchID}") {
     status
   }
 }`,   {
