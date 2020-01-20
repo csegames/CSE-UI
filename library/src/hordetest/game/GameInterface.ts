@@ -83,6 +83,7 @@ export interface GameInterface extends GameModel {
     callback: (
       runes: { [rune: number]: number },
       runeBonuses: { [rune: number]: number },
+      maxRunesAllowed: { [rune: number]: number },
     ) => any
   ) => EventHandle;
 

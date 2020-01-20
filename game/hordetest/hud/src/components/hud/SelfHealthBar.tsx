@@ -63,7 +63,7 @@ const RuneItem = styled.div`
   font-size: 18px;
 `;
 
-const RuneIcon = styled.div`
+const RuneColor = styled.span`
   &.Protection {
     color: #00ffff;
   }
@@ -108,6 +108,7 @@ export interface State {
   // Use RuneType enum as key
   collectedRunes: Runes;
   runeBonuses: Runes;
+  maxRunesAllowed: Runes;
 }
 // throttle 200
 export class SelfHealthBar extends React.Component<Props, State> {
@@ -133,13 +134,18 @@ export class SelfHealthBar extends React.Component<Props, State> {
         [RuneType.Protection]: 0,
         [RuneType.Health]: 0,
       },
+      maxRunesAllowed: {
+        [RuneType.Weapon]: 0,
+        [RuneType.Protection]: 0,
+        [RuneType.Health]: 0,
+      }
     };
 
     this.handlePlayerStateUpdate = throttle(this.handlePlayerStateUpdate, 200);
   }
 
   public render() {
-    const { isAlive, health, resource, divineBarrier, collectedRunes, runeBonuses } = this.state;
+    const { isAlive, health, resource, divineBarrier, collectedRunes, runeBonuses, maxRunesAllowed } = this.state;
     const playerState = hordetest.game.selfPlayerState;
     const hearts = Array.from(Array(playerState.maxDeaths - playerState.currentDeaths));
     return (
@@ -169,18 +175,27 @@ export class SelfHealthBar extends React.Component<Props, State> {
 
             <RunesContainer>
               <RuneItem>
-                <RuneIcon className={'fs-icon-rune-barrier Protection'} />
-                <RuneBoldNumber>{collectedRunes[RuneType.Protection]}</RuneBoldNumber>
+                <RuneColor className={'fs-icon-rune-barrier Protection'} />
+                <RuneBoldNumber>
+                  {collectedRunes[RuneType.Protection]} /
+                  <RuneColor className='Protection'>{maxRunesAllowed[RuneType.Protection]}</RuneColor>
+                </RuneBoldNumber>
                 <RuneBonus>({runeBonuses[RuneType.Protection]}%)</RuneBonus>
               </RuneItem>
               <RuneItem>
-                <RuneIcon className={'fs-icon-rune-health Health'} />
-                <RuneBoldNumber>{collectedRunes[RuneType.Health]}</RuneBoldNumber>
+                <RuneColor className={'fs-icon-rune-health Health'} />
+                <RuneBoldNumber>
+                  {collectedRunes[RuneType.Health]} /
+                  <RuneColor className='Health'>{maxRunesAllowed[RuneType.Health]}</RuneColor>
+                </RuneBoldNumber>
                 <RuneBonus>({runeBonuses[RuneType.Health]}%)</RuneBonus>
               </RuneItem>
               <RuneItem>
-                <RuneIcon className={'fs-icon-rune-damage Weapon'} />
-                <RuneBoldNumber>{collectedRunes[RuneType.Weapon]}</RuneBoldNumber>
+                <RuneColor className={'fs-icon-rune-damage Weapon'} />
+                <RuneBoldNumber>
+                  {collectedRunes[RuneType.Weapon]} /
+                  <RuneColor className='Weapon'>{maxRunesAllowed[RuneType.Weapon]}</RuneColor>
+                </RuneBoldNumber>
                 <RuneBonus>({runeBonuses[RuneType.Weapon]}%)</RuneBonus>
               </RuneItem>
             </RunesContainer>
@@ -248,9 +263,9 @@ export class SelfHealthBar extends React.Component<Props, State> {
     }
   }
 
-  private handleCollectedRunesUpdate = (runes: Runes, runeBonuses: Runes) => {
+  private handleCollectedRunesUpdate = (runes: Runes, runeBonuses: Runes, maxRunesAllowed: Runes) => {
     if (!runes) return;
 
-    this.setState({ collectedRunes: runes, runeBonuses });
+    this.setState({ collectedRunes: runes, runeBonuses, maxRunesAllowed });
   }
 }
