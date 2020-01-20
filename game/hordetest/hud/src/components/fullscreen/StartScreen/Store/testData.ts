@@ -50,10 +50,46 @@ export const skins: StoreItem[] = [
     isUnlocked: false,
     id: 'bundle1',
     name: 'Champion Bundle: Quick Details',
-    image: 'images/fullscreen/startscreen/store/tempFeaturedImage.png',
+    image: 'images/fullscreen/startscreen/store/bundle-champ.jpg',
     cost: 4000,
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
     // isFeatured: true,
+  },
+
+  {
+    type: StoreItemType.Bundle,
+    isFeatured: true,
+    isUnlocked: false,
+    id: 'bundle2',
+    name: 'Champion Bundle: Awesome Bundle',
+    image: 'images/fullscreen/startscreen/store/bundle-weapon.jpg',
+    cost: 5000,
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+  },
+
+  {
+    type: StoreItemType.Skin,
+    isFeatured: true,
+    isUnlocked: false,
+    id: 'skin1',
+    name: 'Amazon Skin',
+    image: 'images/fullscreen/startscreen/store/skins-amazon.png',
+    cost: 500,
+    rarity: Rarity.Legendary,
+    description: 'Lorem ipsum dolor sit amet',
+  },
+
+
+  {
+    type: StoreItemType.Skin,
+    isFeatured: true,
+    isUnlocked: false,
+    id: 'skin2',
+    name: 'Knight Skin',
+    image: 'images/fullscreen/startscreen/store/skins-knight.png',
+    cost: 500,
+    rarity: Rarity.Epic,
+    description: 'Lorem ipsum dolor sit amet',
   },
 
   // !!!! WEAPON !!!!
