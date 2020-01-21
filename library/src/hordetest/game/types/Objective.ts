@@ -24,7 +24,7 @@ declare global {
     type: "item";
     iconClass: string;
     objective: {
-      index: number;
+      indicator: number;
       visibility: ObjectiveUIVisibility;
       state: ObjectiveState;
       progress: CurrentMax;

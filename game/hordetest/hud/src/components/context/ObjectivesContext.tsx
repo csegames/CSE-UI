@@ -54,10 +54,11 @@ export class ObjectivesContextProvider extends React.Component<{}, ObjectivesCon
   }
 
   private handleObjectivesUpdate = (objectives: ObjectiveEntityState[]) => {
-    const sortedObjectives = cloneDeep(objectives).sort((a, b) => a.objective.index - b.objective.index).map((obj) => ({
-      ...obj,
-      indicator: INDICATORS[obj.objective.index],
-    }));
+    const sortedObjectives = cloneDeep(objectives).sort((a, b) => a.objective.indicator - b.objective.indicator)
+      .map((obj) => ({
+        ...obj,
+        indicator: INDICATORS[obj.objective.indicator],
+      }));
     if (objectives.length === 0) {
       this.setState({ objectives: sortedObjectives });
     } else {
