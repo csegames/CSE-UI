@@ -18,6 +18,7 @@ const query = gql`
         name
         statusTags
         iconClass
+        blocksAbilities
       }
     }
   }
@@ -30,6 +31,7 @@ export interface StatusContextState {
     name: string;
     statusTags: string[];
     iconClass: string;
+    blocksAbilities: boolean;
   }[];
 }
 

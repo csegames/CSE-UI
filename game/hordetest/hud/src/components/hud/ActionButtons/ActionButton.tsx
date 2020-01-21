@@ -54,6 +54,15 @@ const Button = styled.div`
   &.cooldown {
     background-color: rgba(0, 0, 0, 0.7);
   }
+
+  &.NotEnoughResource {
+    background-color: rgba(255, 206, 82, 0.5);
+    box-shadow: inset 0 0 0 5px rgba(255, 206, 82, 1);
+  }
+
+  &.BlockedByStatus {
+    background-color: rgba(255, 0, 0, 0.5);
+  }
 `;
 
 const ActionIcon = styled.span`
@@ -90,17 +99,6 @@ const KeybindText = styled.span`
   font-size: 14px;
 `;
 
-const CooldownContainer = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left:0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 const CooldownOverlay = styled.div`
   position: absolute;
   right: 0;
@@ -108,9 +106,21 @@ const CooldownOverlay = styled.div`
   left: 0;
   background-color: rgba(0, 0, 0, 0.8);
   border-top: 2px solid rgba(255, 255, 255, 0.8);
+
+  &.BlockedByStatus {
+    background-color: rgba(255, 0, 0, 0.6);
+  }
 `;
 
 const CooldownText = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: Colus;
   color: white;
   font-size: 30px;
@@ -141,6 +151,7 @@ export interface Props {
   isOnCooldown?: boolean;
   showActiveAnim?: boolean;
   disabled?: boolean;
+  abilityDisabledReason?: AbilityButtonErrorFlag;
 }
 
 export function ActionButton(props: Props) {
@@ -172,24 +183,42 @@ export function ActionButton(props: Props) {
     }
   }
 
+  function getDisabledReasonClass() {
+    if (typeof props.abilityDisabledReason === 'undefined') return '';
+
+    if (props.abilityDisabledReason & AbilityButtonErrorFlag.NotEnoughResource) {
+      return 'NotEnoughResource';
+    }
+
+    if (props.abilityDisabledReason & AbilityButtonErrorFlag.BlockedByStatus) {
+      return 'BlockedByStatus';
+    }
+
+    return '';
+  }
+
+  function getDisabledSlashIcon() {
+    if (props.abilityDisabledReason & AbilityButtonErrorFlag.NotEnoughResource) {
+      return 'images/hud/actionbutton/disabled-resource.svg';
+    }
+
+    return 'images/hud/actionbutton/disabled.svg';
+  }
+
   const { cooldownTimer } = props;
   const isOnCooldown = typeof props.cooldownTimer !== 'undefined' && props.cooldownTimer.current !== 0;
   const cooldownClass = isOnCooldown ? 'cooldown' : '';
   const disabledClass = props.disabled ? 'disabled' : '';
   const activeAnimClass = props.showActiveAnim && !props.disabled ? 'activeAnim' : '';
+  const disabledReasonClass = getDisabledReasonClass();
   return (
     <ActionButtonContainer className={props.className}>
-      <Button className={`${disabledClass} ${activeAnimClass} ${getChampionClass()} ${cooldownClass}`}>
+      <Button
+        className={`${disabledClass} ${activeAnimClass} ${getChampionClass()} ${cooldownClass} ${disabledReasonClass}`}>
         <ActionIcon className={`${props.actionIconClass} ${disabledClass} ${cooldownClass}`} />
-        {isOnCooldown &&
-          <CooldownContainer>
-            <CooldownOverlay
-              style={{ height: `${cooldownTimer.progress}%`}}
-            />
-            <CooldownText>{cooldownTimer.current}</CooldownText>
-          </CooldownContainer>
-        }
-        {props.disabled && <DisabledSlash src='images/hud/disabled.svg' />}
+        {isOnCooldown && <CooldownOverlay className={disabledReasonClass} style={{ height: `${cooldownTimer.progress}%`}} />}
+        {props.disabled && <DisabledSlash src={getDisabledSlashIcon()} />}
+        {isOnCooldown && <CooldownText>{cooldownTimer.current}</CooldownText>}
       </Button>
       <KeybindBox>
         {props.keybindIconClass ?

@@ -33,6 +33,7 @@ declare global {
     NoWeapon = 1 << 1,
     NotEnoughResource = 1 << 2,
     BlockedByStatus = 1 << 3,
+    Other = 1 << 4,
   }
 
   enum AbilityTrack {
@@ -100,6 +101,7 @@ enum AbilityButtonErrorFlag {
   NoWeapon = 1 << 1,
   NotEnoughResource = 1 << 2,
   BlockedByStatus = 1 << 3,
+  Other = 1 << 4,
 }
 window.AbilityButtonErrorFlag = AbilityButtonErrorFlag;
 

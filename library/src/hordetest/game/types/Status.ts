@@ -2,13 +2,15 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
  */
 
-import './Ability';
-import './Consumables';
-import './PlayerDirection';
-import './Objective';
-import './SoundEvents';
-import './CharacterDef';
-import './ItemGameplayType';
-import './Status';
+export {};
+
+declare global {
+  interface Status {
+    id: number;
+    duration: number;
+    startTime: number;
+  }
+}

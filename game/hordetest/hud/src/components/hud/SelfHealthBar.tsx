@@ -103,7 +103,7 @@ export interface State {
   health: CurrentMax;
   resource: CurrentMax;
   divineBarrier: CurrentMax;
-  statuses: ArrayMap<{ id: number } & Timing>;
+  statuses: ArrayMap<Status>;
 
   // Use RuneType enum as key
   collectedRunes: Runes;

@@ -4,10 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { ActionButton } from './ActionButton';
+import { StatusContext, StatusContextState } from 'context/StatusContext';
+import { findBlockingStatuses, findMostBlockingStatus } from '../../../lib/statusHelpers';
 
-export interface Props {
+export interface ComponentProps {
   type: 'weak' | 'strong' | 'ultimate';
   actionIconClass: string;
   keybindText: string;
@@ -16,15 +18,23 @@ export interface Props {
   className?: string;
 }
 
+export interface InjectedProps {
+  statusContext: StatusContextState;
+}
+
+export type Props = ComponentProps & InjectedProps;
+
 export interface State {
   cooldownTimer: CurrentMax & Timing & { progress: number };
   isReady: boolean;
 }
 
-export class AbilityButton extends React.Component<Props, State> {
+class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
   private abilityStateHandle: EventHandle;
+  private playerStateHandle: EventHandle;
   constructor(props: Props) {
     super(props);
+
     this.state = {
       cooldownTimer: { start: 0, duration: 0, current: 0, max: 0, progress: 0 },
       isReady: this.getIsReady(),
@@ -32,10 +42,12 @@ export class AbilityButton extends React.Component<Props, State> {
   }
 
   public render() {
+    const ability = this.getAbility();
     return (
       <ActionButton
         showActiveAnim={this.shouldShowActiveAnim()}
         disabled={!this.state.isReady}
+        abilityDisabledReason={ability ? ability.error : null}
         actionIconClass={this.props.actionIconClass}
         keybindText={this.props.keybindText}
         abilityID={this.props.abilityID}
@@ -53,14 +65,19 @@ export class AbilityButton extends React.Component<Props, State> {
 
       // Check on updated
       this.abilityStateHandle = hordetest.game.abilityStates[this.props.abilityID].onUpdated(() => {
-        this.checkStartCountdown();
         this.checkIsReady();
+        this.checkStartCountdown();
+      });
+
+      this.playerStateHandle = hordetest.game.selfPlayerState.onUpdated(() => {
+        this.checkStartCountdown();
       });
     }
   }
 
   public componentWillUnmount() {
     this.abilityStateHandle.clear();
+    this.playerStateHandle.clear();
   }
 
   private shouldShowActiveAnim = () => {
@@ -68,9 +85,26 @@ export class AbilityButton extends React.Component<Props, State> {
   }
 
   private checkStartCountdown = () => {
-    const ability = hordetest.game.abilityStates[this.props.abilityID];
+    const ability = this.getAbility();
+    if (!ability) return;
+
     if (ability.status & AbilityButtonState.Cooldown) {
-      this.startCountdown(ability.timing)
+      this.startCountdown(ability.timing);
+      return;
+    }
+
+    if (ability.error & AbilityButtonErrorFlag.BlockedByStatus) {
+      const playerStatuses = cloneDeep(hordetest.game.selfPlayerState).statuses;
+      const blockingStatuses = findBlockingStatuses(playerStatuses, this.props.statusContext);
+      if (blockingStatuses.length === 0) {
+        // If we get here, player state have not gotten an update yet. We're listening to selfPlayerState updates
+        // so if we hit this case it should be resolved with the next update.
+        return;
+      }
+
+      const blockingStatus = findMostBlockingStatus(blockingStatuses);
+      this.startCountdown({ start: blockingStatus.startTime, duration: blockingStatus.duration });
+      return;
     }
   }
 
@@ -85,13 +119,20 @@ export class AbilityButton extends React.Component<Props, State> {
     const cooldownClone = cloneDeep(cooldown);
     if (cooldownClone && this.state.cooldownTimer.current === 0) {
       const timer = Math.ceil(this.getTimingEnd(cooldownClone));
-      this.setState({ cooldownTimer: { ...cooldownClone, current: timer, max: cooldownClone.duration, progress: 100 } });
+      this.setState({
+        cooldownTimer: {
+          ...cooldownClone,
+          current: timer,
+          max: cooldownClone.duration,
+          progress: this.getProgress(cooldownClone.start, cooldownClone.duration).progress,
+        },
+      });
       window.setTimeout(this.updateProgress, 66);
     }
   }
 
   private updateProgress = () => {
-    const currentProgress = this.getCurrentProgress();
+    const currentProgress = this.getProgress(this.state.cooldownTimer.start, this.state.cooldownTimer.max);
 
     this.setState({
       cooldownTimer: {
@@ -105,15 +146,15 @@ export class AbilityButton extends React.Component<Props, State> {
     window.setTimeout(this.updateProgress, 66);
   }
 
-  private getCurrentProgress = () => {
-    const elapsed = game.worldTime - this.state.cooldownTimer.start;
-    let current = this.state.cooldownTimer.max - elapsed;
+  private getProgress = (start: number, max: number) => {
+    const elapsed = game.worldTime - start;
+    let current = max - elapsed;
     if (current < 0) {
       current = 0;
     }
 
     return {
-      progress: current / this.state.cooldownTimer.max * 100,
+      progress: current / max * 100,
       current,
     };
   }
@@ -124,13 +165,29 @@ export class AbilityButton extends React.Component<Props, State> {
   }
 
   private getIsReady = () => {
-    if (!this.props.abilityID) return false;
+    const ability = this.getAbility();
+    if (!ability) {
+      return false;
+    }
 
-    const ability = hordetest.game.abilityStates[this.props.abilityID];
     if (ability.status & AbilityButtonState.Unusable) {
       return false;
     } else {
       return true;
     }
   }
+
+  private getAbility = () => {
+    if (!this.props.abilityID) return null;
+
+    return hordetest.game.abilityStates[this.props.abilityID];
+  }
+}
+
+export function AbilityButton(props: ComponentProps) {
+  const statusContext = useContext(StatusContext);
+
+  return (
+    <AbilityButtonWithInjectedContext {...props} statusContext={statusContext} />
+  );
 }

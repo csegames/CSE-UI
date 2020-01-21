@@ -94,7 +94,7 @@ export interface Props {
   race: Race;
   isAlive: boolean;
   containerStyles?: string;
-  statuses: ArrayMap<{ id: number } & Timing>;
+  statuses: ArrayMap<Status>;
 }
 
 export function ChampionProfile(props: Props) {

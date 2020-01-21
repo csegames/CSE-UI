@@ -73,7 +73,7 @@ export interface Props {
   hideMax?: boolean;
   collectedRunes?: { [runeType: number]: number };
   runeBonuses?: { [runeType: number]: number };
-  statuses?: ArrayMap<{ id: number; } & Timing>;
+  statuses?: ArrayMap<Status>;
 }
 
 export function HealthBar(props: Props) {

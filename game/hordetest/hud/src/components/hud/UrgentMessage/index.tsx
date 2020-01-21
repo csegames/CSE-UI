@@ -5,15 +5,19 @@
  *
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
+import { StatusContext, StatusContextState } from 'context/StatusContext';
+import { TimerBar } from './TimerBar';
+import { findBlockingStatuses, findMostBlockingStatus } from '../../../lib/statusHelpers';
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
   text-transform: uppercase;
   font-family: Exo;
   font-weight: bold;
   font-size: 23px;
-  color: #ffce52;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s;
@@ -41,16 +45,35 @@ const Container = styled.div`
   }
 `;
 
+const Message = styled.div`
+  &.NotEnoughResource {
+    color: #ffce52;
+  }
+
+  &.BlockedByStatus {
+    color: red;
+  }
+`;
+
+enum MessageType {
+  None = 0,
+  NotEnoughResource,
+  BlockedByStatus,
+}
+
 export interface Props {
+  statusContext: StatusContextState;
 }
 
 export interface State {
   isVisible: boolean;
   playAnimation: boolean;
   message: string;
+  messageType: MessageType;
+  blockingStatus: Status;
 }
 
-export class UrgentMessage extends React.Component<Props, State> {
+class UrgentMessageWithInjectedContext extends React.Component<Props, State> {
   private weakEVH: EventHandle;
   private strongEVH: EventHandle;
   private ultimateEVH: EventHandle;
@@ -67,6 +90,12 @@ export class UrgentMessage extends React.Component<Props, State> {
       isVisible: false,
       playAnimation: false,
       message: '',
+      messageType: MessageType.None,
+      blockingStatus: {
+        id: 0,
+        duration: 0,
+        startTime: 0,
+      },
     };
   }
 
@@ -74,7 +103,9 @@ export class UrgentMessage extends React.Component<Props, State> {
     const animateClass = this.state.playAnimation ? 'animate' : '';
     const visibilityClass = this.state.isVisible ? 'visible' : '';
     return (
-      <Container className={`${animateClass} ${visibilityClass}`}>{this.state.message}</Container>
+      <Container className={`${animateClass} ${visibilityClass}`}>
+        {this.renderMessage()}
+      </Container>
     );
   }
 
@@ -107,6 +138,31 @@ export class UrgentMessage extends React.Component<Props, State> {
     }
   }
 
+  private renderMessage = () => {
+    switch (this.state.messageType) {
+      case MessageType.BlockedByStatus: {
+        return (
+          <>
+            <Message className={`${MessageType[MessageType.BlockedByStatus]} ${this.state.message}`}>
+              {this.state.message}
+            </Message>
+            <TimerBar duration={this.state.blockingStatus.duration} startTime={this.state.blockingStatus.startTime} />
+          </>
+        );
+      }
+
+      case MessageType.NotEnoughResource: {
+        return (
+          <Message className={MessageType[MessageType.NotEnoughResource]}>{this.state.message}</Message>
+        );
+      }
+
+      default: {
+        return null;
+      }
+    }
+  }
+
   private initializeResourceName = () => {
     if (this.resourceName || !hordetest.game.races) return;
     const race = hordetest.game.races.find(r => r.id === hordetest.game.selfPlayerState.race);
@@ -136,8 +192,13 @@ export class UrgentMessage extends React.Component<Props, State> {
     const ability = hordetest.game.abilityStates[abilityID];
     if (!(ability.status & AbilityButtonState.Unusable)) {
       if (this.state.isVisible) {
-        this.setState({ isVisible: false, message: '' });
+        this.setState({ isVisible: false, message: '', messageType: MessageType.None });
       }
+      return;
+    }
+
+    if (ability.error & AbilityButtonErrorFlag.BlockedByStatus) {
+      this.showBlockedByStatusMessage();
       return;
     }
 
@@ -159,20 +220,51 @@ export class UrgentMessage extends React.Component<Props, State> {
   }
 
   private showNoResourceMessage = () => {
-    this.setState({ isVisible: true, message: `Out of ${this.resourceName}` });
+    this.setState({ isVisible: true, message: `Out of ${this.resourceName}`, messageType: MessageType.NotEnoughResource });
     this.startTimer();
     this.animateMessage();
   }
 
-  private startTimer = () => {
+  private showBlockedByStatusMessage = () => {
+    const playerStateClone = cloneDeep(hordetest.game.selfPlayerState);
+
+    // Find which status is blocking
+    const blockingStatuses = findBlockingStatuses(playerStateClone.statuses, this.props.statusContext);
+    const blockingStatus = findMostBlockingStatus(blockingStatuses);
+    const blockingStatusDef = this.props.statusContext.statusDefs.find(def => blockingStatus.id === def.numericID);
+    const messageDuration = blockingStatus.duration - (game.worldTime - blockingStatus.startTime);
+    if (!blockingStatusDef) {
+      // We should always have the statusDef for a blocking status, if we don't default to a basic message
+      this.setState({
+        isVisible: true,
+        message: 'Blocked by status',
+        messageType: MessageType.BlockedByStatus,
+        blockingStatus,
+      });
+      this.startTimer(messageDuration * 1000);
+      this.animateMessage();
+      return;
+    }
+
+    this.setState({
+      isVisible: true,
+      message: blockingStatusDef.name,
+      messageType: MessageType.BlockedByStatus,
+      blockingStatus,
+    });
+    this.startTimer(messageDuration * 1000);
+    this.animateMessage();
+  }
+
+  private startTimer = (duration?: number) => {
     if (this.timerTimeout) {
       window.clearTimeout(this.timerTimeout);
     }
 
     this.timerTimeout = window.setTimeout(() => {
-      this.setState({ isVisible: false });
+      this.setState({ isVisible: false, messageType: MessageType.None });
       this.timerTimeout = null;
-    }, 3000);
+    }, duration ? duration : 3000);
   }
 
   private animateMessage = () => {
@@ -204,4 +296,11 @@ export class UrgentMessage extends React.Component<Props, State> {
       this.ultimateEVH = null;
     }
   }
+}
+
+export function UrgentMessage() {
+  const statusContext = useContext(StatusContext);
+  return (
+    <UrgentMessageWithInjectedContext statusContext={statusContext} />
+  );
 }
