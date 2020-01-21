@@ -29,6 +29,7 @@ declare global {
       state: ObjectiveState;
       progress: CurrentMax;
       bearingDegrees: number;
+      footprintRadius: number;
     }
   }
 }

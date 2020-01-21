@@ -183,6 +183,9 @@ class ObjectiveWithInjectedContext extends React.Component<ObjectiveProps, State
     const objectiveType = this.getObjectiveType();
 
     const SVGCircleDiameter = CIRCLE_DIAMETER - 15;
+    const distanceToTarget = this.getDistance();
+    const distanceWithRadius = distanceToTarget - this.state.entityState.objective.footprintRadius < 0 ? 0 :
+      distanceToTarget - this.state.entityState.objective.footprintRadius;
 
     return (
       <Container className={ObjectiveState[objective.objective.state]}>
@@ -213,7 +216,7 @@ class ObjectiveWithInjectedContext extends React.Component<ObjectiveProps, State
         <Info className={`${minimizedClassName} ${dangerClassName} ${objectiveType}`}>
           <Name className={`${minimizedClassName} ${dangerClassName}`}>{objective.name}</Name>
           <BottomInfo>
-            <DistanceText>{this.getDistance()}m</DistanceText>
+            <DistanceText>{distanceWithRadius}m</DistanceText>
           </BottomInfo>
         </Info>
       </Container>
@@ -227,11 +230,11 @@ class ObjectiveWithInjectedContext extends React.Component<ObjectiveProps, State
 
   public componentDidUpdate(prevProps: Props, prevState: State) {
     const distance = this.getDistance();
-    if (this.state.isMinimized && distance < 40) {
+    if (this.state.isMinimized && distance - this.state.entityState.objective.footprintRadius < 40) {
       this.setState({ isMinimized: false });
     }
 
-    if (!this.state.isMinimized && distance >= 40) {
+    if (!this.state.isMinimized && distance - this.state.entityState.objective.footprintRadius >= 40) {
       this.setState({ isMinimized: true });
     }
 
