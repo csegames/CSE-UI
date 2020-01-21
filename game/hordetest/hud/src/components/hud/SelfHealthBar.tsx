@@ -54,13 +54,16 @@ const Heart = styled.div`
 const RunesContainer = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   margin-left: 5px;
 `;
 
 const RuneItem = styled.div`
   display: flex;
   align-items: center;
-  font-size: 18px;
+  flex-wrap: nowrap;
+  whitespace: nowrap;
+  font-size: 14px;
 `;
 
 const RuneColor = styled.span`
@@ -79,7 +82,6 @@ const RuneColor = styled.span`
 
 const RuneBoldNumber = styled.div`
   font-family: Exo;
-  font-weight: bold;
   color: white;
   margin-left: 2px;
 `;
