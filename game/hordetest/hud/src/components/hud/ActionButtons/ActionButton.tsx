@@ -156,7 +156,7 @@ export interface Props {
 
 export function ActionButton(props: Props) {
   function getMyChampion() {
-    const myChampion = hordetest.game.classes.find(c => c.id === hordetest.game.selfPlayerState.classID);
+    const myChampion = hordetest.game.classes.find(c => c.id === cloneDeep(hordetest.game.selfPlayerState).classID);
     if (!myChampion) return null;
 
     return myChampion as CharacterClassDef;

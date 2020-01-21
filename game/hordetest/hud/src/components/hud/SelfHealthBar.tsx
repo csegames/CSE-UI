@@ -224,7 +224,7 @@ export class SelfHealthBar extends React.Component<Props, State> {
         !hordetest.game.selfPlayerState.health[0].max.floatEquals(health.max)) {
       stateUpdate = {
         ...stateUpdate,
-        health: cloneDeep(hordetest.game.selfPlayerState.health[0]),
+        health: cloneDeep(hordetest.game.selfPlayerState).health[0],
       };
     }
 
@@ -232,7 +232,7 @@ export class SelfHealthBar extends React.Component<Props, State> {
         !hordetest.game.selfPlayerState.stamina.max.floatEquals(resource.max)) {
       stateUpdate = {
         ...stateUpdate,
-        resource: cloneDeep(hordetest.game.selfPlayerState.stamina),
+        resource: cloneDeep(hordetest.game.selfPlayerState).stamina,
       };
     }
 
@@ -240,21 +240,21 @@ export class SelfHealthBar extends React.Component<Props, State> {
         !hordetest.game.selfPlayerState.blood.max.floatEquals(divineBarrier.max)) {
       stateUpdate = {
         ...stateUpdate,
-        divineBarrier: cloneDeep(hordetest.game.selfPlayerState.blood),
+        divineBarrier: cloneDeep(hordetest.game.selfPlayerState).blood,
       };
     }
 
     if (hordetest.game.selfPlayerState.isAlive !== isAlive) {
       stateUpdate = {
         ...stateUpdate,
-        isAlive: cloneDeep(hordetest.game.selfPlayerState.isAlive),
+        isAlive: cloneDeep(hordetest.game.selfPlayerState).isAlive,
       };
     }
 
     if (!isEqual(hordetest.game.selfPlayerState.statuses, this.state.statuses)) {
       stateUpdate = {
         ...stateUpdate,
-        statuses: cloneDeep(hordetest.game.selfPlayerState.statuses),
+        statuses: cloneDeep(hordetest.game.selfPlayerState).statuses,
       }
     }
 

@@ -27,6 +27,7 @@ export type Props = ComponentProps & InjectedProps;
 export interface State {
   cooldownTimer: CurrentMax & Timing & { progress: number };
   isReady: boolean;
+  abilityDisabledReason: AbilityButtonErrorFlag;
 }
 
 class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
@@ -35,19 +36,20 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
+    const ability = this.getAbility();
     this.state = {
       cooldownTimer: { start: 0, duration: 0, current: 0, max: 0, progress: 0 },
       isReady: this.getIsReady(),
+      abilityDisabledReason: ability ? ability.error : AbilityButtonErrorFlag.None,
     };
   }
 
   public render() {
-    const ability = this.getAbility();
     return (
       <ActionButton
         showActiveAnim={this.shouldShowActiveAnim()}
         disabled={!this.state.isReady}
-        abilityDisabledReason={ability ? ability.error : null}
+        abilityDisabledReason={this.state.abilityDisabledReason}
         actionIconClass={this.props.actionIconClass}
         keybindText={this.props.keybindText}
         abilityID={this.props.abilityID}
@@ -67,6 +69,7 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
       this.abilityStateHandle = hordetest.game.abilityStates[this.props.abilityID].onUpdated(() => {
         this.checkIsReady();
         this.checkStartCountdown();
+        this.checkAbilityDisabledReason();
       });
 
       this.playerStateHandle = hordetest.game.selfPlayerState.onUpdated(() => {
@@ -84,7 +87,7 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
     return this.state.cooldownTimer.current === 0;
   }
 
-  private checkStartCountdown = () => {
+  private checkStartCountdown = (playerStatuses?: Status[]) => {
     const ability = this.getAbility();
     if (!ability) return;
 
@@ -115,6 +118,13 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
     }
   }
 
+  private checkAbilityDisabledReason = () => {
+    const ability = this.getAbility();
+    if (ability.error !== this.state.abilityDisabledReason) {
+      this.setState({ abilityDisabledReason: ability.error });
+    }
+  }
+
   private startCountdown = (cooldown: Timing) => {
     const cooldownClone = cloneDeep(cooldown);
     if (cooldownClone && this.state.cooldownTimer.current === 0) {
@@ -133,16 +143,20 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
 
   private updateProgress = () => {
     const currentProgress = this.getProgress(this.state.cooldownTimer.start, this.state.cooldownTimer.max);
+    const current = Number(currentProgress.current.toFixed(0));
 
-    this.setState({
-      cooldownTimer: {
-        ...this.state.cooldownTimer,
-        current: Number(currentProgress.current.toFixed(0)),
-        progress: currentProgress.progress,
-      },
+    this.setState((state) => {
+      return {
+        ...state,
+        cooldownTimer: {
+          ...this.state.cooldownTimer,
+          current,
+          progress: currentProgress.progress,
+        },
+      }
     });
 
-    if (currentProgress.current === 0) return;
+    if (current === 0) return;
     window.setTimeout(this.updateProgress, 66);
   }
 
@@ -178,9 +192,9 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
   }
 
   private getAbility = () => {
-    if (!this.props.abilityID) return null;
+    if (!this.props.abilityID || !hordetest.game.abilityStates[this.props.abilityID]) return null;
 
-    return hordetest.game.abilityStates[this.props.abilityID];
+    return cloneDeep(hordetest.game.abilityStates[this.props.abilityID]);
   }
 }
 
