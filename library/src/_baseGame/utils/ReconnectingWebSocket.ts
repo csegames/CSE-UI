@@ -23,6 +23,8 @@ export interface WebSocketOptions {
   // timed out, default 2000
   connectTimeout: number;
 
+  maxRetries: number;
+
   // If true, logs actions taken, default false
   debug: boolean;
 
@@ -37,6 +39,7 @@ export const defaultWebSocketOptions: WebSocketOptions = {
   protocols: "",
   reconnectInterval: 500,
   connectTimeout: 5000,
+  maxRetries: 20,
   debug: getBooleanEnv('CUUI_LIB_DEBUG_WEB_SOCKET', false),
   onopen: function(event: Event) {},
   onclose: function(event: CloseEvent) {},
@@ -57,6 +60,8 @@ export class ReconnectingWebSocket {
   private reconnecting: boolean;
   private wantConnect: boolean;
   private eventEmitter: EventEmitter;
+  private retryCounter: number;
+  private maxRetries: number;
 
   public get isOpen() {
     return this.socket && this.socket.readyState === WebSocket.OPEN;
@@ -76,6 +81,8 @@ export class ReconnectingWebSocket {
     this.connectTimeoutInterval = opts.connectTimeout;
     this.reconnectInterval = opts.reconnectInterval;
     this.debug = opts.debug;
+    this.retryCounter = 1;
+    this.maxRetries = opts.maxRetries;
 
     const urlString = this.url();
     if (!urlString || !isWebSocketUrl(urlString)) {
@@ -175,8 +182,10 @@ export class ReconnectingWebSocket {
   };
 
   private reconnect = () => {
-    if (!this.wantConnect || this.reconnecting) return;
+    if (!this.wantConnect || this.reconnecting || this.retryCounter >= this.maxRetries) return;
     this.reconnecting = true;
+
+    this.retryCounter++;
 
     if (this.debug) {
       this.log("reconnecting");
@@ -190,7 +199,7 @@ export class ReconnectingWebSocket {
     if (this.reconnectInterval < 0) return;
     setTimeout(() => {
       this.connect();
-    }, this.reconnectInterval);
+    }, this.reconnectInterval * this.retryCounter);
   };
 
   private message = (e: MessageEvent) => {
@@ -219,6 +228,7 @@ export class ReconnectingWebSocket {
       this.log("connection open");
     }
     clearTimeout(this.connectTimeoutHandle);
+    this.retryCounter = 1;
     this._onopen(e);
   };
 

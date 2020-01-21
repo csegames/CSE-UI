@@ -26,6 +26,7 @@ export function defaultSubscriptionOpts(): Options<any> {
     protocols: 'graphql-ws',
     reconnectInterval: 500,
     connectTimeout: 5000,
+    maxRetries: 20,
     initPayload: {
       shardID: game.shardID,
       token: game.accessToken,
