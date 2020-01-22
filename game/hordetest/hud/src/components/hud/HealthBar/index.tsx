@@ -73,7 +73,6 @@ export interface Props {
   hideMax?: boolean;
   collectedRunes?: { [runeType: number]: number };
   runeBonuses?: { [runeType: number]: number };
-  statuses?: ArrayMap<Status>;
 }
 
 export function HealthBar(props: Props) {
@@ -84,7 +83,6 @@ export function HealthBar(props: Props) {
           isAlive={props.isAlive}
           race={props.race}
           containerStyles={props.championProfileStyles}
-          statuses={props.statuses}
         />
       </ChampionProfileSpacing>
       <ResourcesContainer width={props.resourcesWidth}>

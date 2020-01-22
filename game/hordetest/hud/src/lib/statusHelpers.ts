@@ -21,8 +21,12 @@ export function findMostBlockingStatus(blockingStatuses: Status[]) {
   // A player can have multiple blocking statuses applied to them at a given time ex) You're stunned and frozen
   // Find the status with the most amount of time left to show in the UI
   return blockingStatuses.sort((a, b) => {
-    const remainingDurationA = a.duration - (game.worldTime - a.startTime);
-    const remainingDurationB = b.duration - (game.worldTime - b.startTime);
+    const remainingDurationA = getStatusRemainingDuration(a.duration, a.startTime);
+    const remainingDurationB = getStatusRemainingDuration(b.duration, b.startTime);
     return remainingDurationB - remainingDurationA;
   })[0];
+}
+
+export function getStatusRemainingDuration(fullDuration: number, startTime: number) {
+  return fullDuration - (game.worldTime - startTime);
 }

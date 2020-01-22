@@ -6,14 +6,20 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { throttle, isEqual } from 'lodash';
+import { throttle } from 'lodash';
 
+import { StatusBar } from './StatusBar';
 import { HealthBar } from './HealthBar';
 import { ActionButtons } from './ActionButtons';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const StatusBarContainer = styled.div`
+  margin-bottom: 5px;
+  margin-left: 30px;
 `;
 
 const HealthBarContainer = styled.div`
@@ -105,7 +111,6 @@ export interface State {
   health: CurrentMax;
   resource: CurrentMax;
   divineBarrier: CurrentMax;
-  statuses: ArrayMap<Status>;
 
   // Use RuneType enum as key
   collectedRunes: Runes;
@@ -125,7 +130,6 @@ export class SelfHealthBar extends React.Component<Props, State> {
       },
       resource: { ...(cloneDeep(hordetest.game.selfPlayerState.stamina)) },
       divineBarrier: { ...(cloneDeep(hordetest.game.selfPlayerState.blood)) },
-      statuses: {},
       collectedRunes: {
         [RuneType.Weapon]: 0,
         [RuneType.Protection]: 0,
@@ -152,6 +156,10 @@ export class SelfHealthBar extends React.Component<Props, State> {
     const hearts = Array.from(Array(playerState.maxDeaths - playerState.currentDeaths));
     return (
       <Container>
+        <StatusBarContainer>
+          <StatusBar />
+        </StatusBarContainer>
+
         <HealthBarContainer>
           <HealthBar
             isAlive={isAlive}
@@ -162,7 +170,6 @@ export class SelfHealthBar extends React.Component<Props, State> {
             collectedRunes={collectedRunes}
             runeBonuses={runeBonuses}
             race={hordetest.game.selfPlayerState.race}
-            statuses={this.state.statuses}
           />
         </HealthBarContainer>
         <ExtrasContainer>
@@ -251,13 +258,6 @@ export class SelfHealthBar extends React.Component<Props, State> {
         ...stateUpdate,
         isAlive: cloneDeep(hordetest.game.selfPlayerState).isAlive,
       };
-    }
-
-    if (!isEqual(hordetest.game.selfPlayerState.statuses, this.state.statuses)) {
-      stateUpdate = {
-        ...stateUpdate,
-        statuses: cloneDeep(hordetest.game.selfPlayerState).statuses,
-      }
     }
 
     if (Object.keys(stateUpdate).length > 0) {

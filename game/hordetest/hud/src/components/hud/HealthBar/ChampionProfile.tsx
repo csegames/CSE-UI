@@ -4,9 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useContext } from 'react';
+import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { StatusContext } from 'context/StatusContext';
 
 const ChampionProfileContainer = styled.div`
   position: relative;
@@ -40,46 +39,6 @@ const Image = styled.img`
   height: 115%;
 `;
 
-const EffectOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-
-  &.hostile {
-    background-color: rgba(145, 0, 0, 0.5);
-  }
-`;
-
-const EffectIcon = styled.div`
-  position: absolute;
-  font-size: 60px;
-  color: white;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: pulse 0.7s infinite alternate;
-  transform: skewX(10deg);
-
-  @keyframes pulse {
-    from {
-      opacity: 1;
-    }
-
-    to {
-      opacity: 0.6;
-    }
-  }
-`;
-
 const DeadX = styled.img`
   position: absolute;
   width: 110%;
@@ -94,11 +53,9 @@ export interface Props {
   race: Race;
   isAlive: boolean;
   containerStyles?: string;
-  statuses: ArrayMap<Status>;
 }
 
 export function ChampionProfile(props: Props) {
-  const { statusDefs } = useContext(StatusContext);
   function getProfileImage() {
     const myRace = hordetest.game.races.find(r => r.id === props.race);
     if (!myRace) return 'images/fullscreen/character-select/face.png';
@@ -106,33 +63,11 @@ export function ChampionProfile(props: Props) {
     return myRace.thumbnailURL;
   }
 
-  function getEffectInfo() {
-    if (!props.statuses) return null;
-
-    const statuses = Object.values(props.statuses);
-
-    let statusDef: { id: string, numericID: number, name: string, iconClass: string, statusTags: string[] } = null;
-    statuses.forEach((status) => {
-      if (!statusDef) {
-        statusDef = statusDefs.find(def => def.numericID === status.id && def.iconClass);
-      }
-    });
-
-    if (!statusDef) return null;
-    return statusDef;
-  }
-
-  const effect = getEffectInfo();
   return (
     <ChampionProfileContainer className={props.containerStyles ? props.containerStyles : ''}>
       <ProfileBox>
         <Image src={getProfileImage()} />
       </ProfileBox>
-      {effect &&
-        <EffectOverlay className={effect.statusTags.includes('hostile') ? 'hostile' : ''}>
-          <EffectIcon className={effect.iconClass} />
-        </EffectOverlay>
-      }
       {!props.isAlive && <DeadX src={'images/hud/dead-x.svg'} />}
     </ChampionProfileContainer>
   );

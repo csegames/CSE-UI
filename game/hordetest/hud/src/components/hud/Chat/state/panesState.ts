@@ -33,7 +33,7 @@ function initialState(): PanesState {
         position: {
           width: 500,
           height: 200,
-          bottom: 250,
+          bottom: 260,
           left: 25,
         },
       },
