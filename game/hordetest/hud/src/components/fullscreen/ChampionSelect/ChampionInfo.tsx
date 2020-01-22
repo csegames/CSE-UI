@@ -128,7 +128,7 @@ export function ChampionInfo(props: Props) {
         // 3 ability
         return <KeyBindIcon>3</KeyBindIcon>;
       }
-      
+
       default: {
         return null;
       }

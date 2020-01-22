@@ -8,7 +8,7 @@
 import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { ChampionInfoContext } from 'context/ChampionInfoContext';
-import { ChampionSelectContext } from './context/ChampionSelectContext';
+import { ChampionSelectContext, ChampionSelectPlayer } from './context/ChampionSelectContext';
 
 const Container = styled.div`
 `;
@@ -71,6 +71,20 @@ export function LockedList(props: Props) {
   const { playerStates } = useContext(ChampionSelectContext);
   const championContext = useContext(ChampionInfoContext);
 
+  function getPlayerChampion(player: ChampionSelectPlayer) {
+    if (player.championID) {
+      const championInfo = championContext.champions.find(c => c.id === player.championID);
+
+      if (championInfo) {
+        return championInfo;
+      }
+    }
+
+    // We don't have a championID for that player for some reason.
+    // Just default to having the first champion in the list because that's the only valid case where this should happen.
+    return championContext.champions[0];
+  }
+
   return (
     <Container>
       {Object.values(playerStates).map((player) => {
@@ -78,13 +92,13 @@ export function LockedList(props: Props) {
         const championID = player.championID ? player.championID : '';
         const isLocked = player.isLocked ? true : false;
         const championCostumeInfo = championContext.championCostumes.find(c => c.requiredChampionID === championID);
-        const championInfo = championContext.champions.find(c => c.id === championID);
+        const championInfo = getPlayerChampion(player);
 
         return (
           <ListItem className={lockedClass}>
             <BGImage src={championCostumeInfo ? championCostumeInfo.championSelectImageURL : ""} />
             <NameOfPlayer>
-              {player.characterID ? `${player.characterID} -` : ''} {championInfo ? championInfo.name : "UNKNOWN"} {isLocked ? 'is locked in' : ''}
+              {player.characterID ? `${player.characterID} -` : ''} {championInfo ? championInfo.name : ''} {isLocked ? 'is locked in' : ''}
             </NameOfPlayer>
           </ListItem>
         );
