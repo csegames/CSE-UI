@@ -17,6 +17,7 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { ErrorBoundary } from 'cseshared/components/ErrorBoundary';
 import { HUD } from 'components/HUD';
+import { SharedContextProviders } from 'context/index';
 import initialize from './services/initialization';
 
 if (process.env.CUUI_LS_ENABLE_WHY_DID_YOU_UPDATE) {
@@ -36,7 +37,9 @@ function readyCheck() {
 
   ReactDom.render(
     <ErrorBoundary outputErrorToConsole>
-      <HUD />
+      <SharedContextProviders>
+        <HUD />
+      </SharedContextProviders>
     </ErrorBoundary>,
   document.getElementById('hordetest'));
 }

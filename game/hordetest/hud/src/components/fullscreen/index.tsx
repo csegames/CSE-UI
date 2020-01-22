@@ -13,8 +13,7 @@ import { Button } from './Button';
 import { GameStats } from './GameStats';
 import { Settings } from './Settings';
 import { IntroVideo } from './IntroVideo';
-
-const HAS_PLAYED_INTRO = 'has-played-intro';
+import { FullScreenNavContext, Route, fullScreenNavigateTo } from 'context/FullScreenNavContext';
 
 const Container = styled.div`
   position: fixed;
@@ -54,58 +53,52 @@ const SettingsContainer = styled.div`
 //   height: 240px;
 // `;
 
-export enum Route {
-  IntroVideo,
-  Start,
-  ChampionSelect,
-  EndGameStats,
-}
-
 export interface Props {
   scenarioID: string;
   onConnectToServer: (fromMatchmaking?: boolean) => void;
-
-  startingRoute?: Route;
 }
 
 export interface State {
   isChatVisible: boolean;
-  currentRoute: Route;
 }
 
 export class FullScreen extends React.Component<Props, State> {
   private showChatEVH: EventHandle;
   private hideChatEVH: EventHandle;
-  private navigateEVH: EventHandle;
 
   constructor(props: Props) {
     super(props);
     this.state = {
       isChatVisible: true,
-      currentRoute: this.getDefaultRoute(),
     };
   }
 
   public render() {
     return (
-      <Container>
-        {this.renderRoute()}
-        <HideButton onClick={() => game.trigger('hide-fullscreen')}>
-          <Button type='blue' text='Hide Full Screen UI' />
-        </HideButton>
-        <SettingsContainer>
-          <Settings />
-        </SettingsContainer>
-        {/* {this.state.isChatVisible &&
-          <ChatPosition>
-          </ChatPosition>
-        } */}
-      </Container>
+      <FullScreenNavContext.Consumer>
+        {(context) => {
+          return (
+            <Container>
+              {this.renderRoute(context.currentRoute)}
+              <HideButton onClick={() => game.trigger('hide-fullscreen')}>
+                <Button type='blue' text='Hide Full Screen UI' />
+              </HideButton>
+              <SettingsContainer>
+                <Settings />
+              </SettingsContainer>
+              {/* {this.state.isChatVisible &&
+                <ChatPosition>
+                </ChatPosition>
+              } */}
+            </Container>
+          );
+        }}
+      </FullScreenNavContext.Consumer>
     );
   }
 
-  private renderRoute = () => {
-    switch (this.state.currentRoute) {
+  private renderRoute = (currentRoute: Route) => {
+    switch (currentRoute) {
       case Route.IntroVideo: {
         return (
           <IntroVideo onIntroVideoEnd={this.goToStart} />
@@ -137,50 +130,16 @@ export class FullScreen extends React.Component<Props, State> {
   public componentDidMount() {
     this.showChatEVH = game.on('show-fullscreen-chat', this.handleShowFullScreenChat);
     this.hideChatEVH = game.on('hide-fullscreen-chat', this.handleHideFullScreenChat);
-    this.navigateEVH = game.on('fullscreen-navigate', this.navigateTo);
   }
 
   public componentWillUnmount() {
     this.showChatEVH.clear();
     this.hideChatEVH.clear();
-    this.navigateEVH.clear();
   }
 
-  private getDefaultRoute = () => {
-    if (this.props.scenarioID) {
-      return Route.EndGameStats;
-    }
 
-    if (this.shouldPlayIntroVideo()) {
-      return Route.IntroVideo;
-    }
-
-    if (this.props.startingRoute) {
-      return this.props.startingRoute;
-    }
-
-    return Route.Start;
-  }
-
-  private shouldPlayIntroVideo = () => {
-    // First check local storage and then check settings to see if we want to play it
-    const hasPlayedIntro = localStorage.getItem(HAS_PLAYED_INTRO);
-    if (!hasPlayedIntro) {
-      // We have never played the intro for this player, don't even look at settings options.
-      localStorage.setItem(HAS_PLAYED_INTRO, 'true');
-      return true;
-    }
-
-    const optShowIntroVideo = Object.values(game.options).find(o => o.name === 'optShowIntroVideo');
-    if (!optShowIntroVideo.value) {
-      return false;
-    }
-
-    return true;
-  }
-
-  public goToStart = () => {
-    this.navigateTo(Route.Start);
+  private goToStart = () => {
+    fullScreenNavigateTo(Route.Start);
   }
 
   private handleShowFullScreenChat = () => {
@@ -189,9 +148,5 @@ export class FullScreen extends React.Component<Props, State> {
 
   private handleHideFullScreenChat = () => {
     this.setState({ isChatVisible: false });
-  }
-
-  private navigateTo = (route: Route) => {
-    this.setState({ currentRoute: route });
   }
 }

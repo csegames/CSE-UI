@@ -15,7 +15,7 @@ import {
   MatchmakingKickOff,
   MatchmakingError,
 } from '@csegames/library/lib/hordetest/graphql/schema';
-import { Route } from 'components/fullscreen';
+import { Route, fullScreenNavigateTo } from 'context/FullScreenNavContext';
 import { Error } from 'components/fullscreen/Error';
 
 export function onMatchmakingUpdate(callback: (matchmakingUpdate: IMatchmakingUpdate) => any): EventHandle {
@@ -103,7 +103,7 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       case MatchmakingUpdateType.KickOff: {
         const { matchID, secondsToWait, serializedTeamMates } = matchmakingUpdate as MatchmakingKickOff;
         this.setState({ matchID, secondsToWait, teamMates: serializedTeamMates  }, () => {
-          game.trigger('fullscreen-navigate', Route.ChampionSelect);
+          fullScreenNavigateTo(Route.ChampionSelect);
         });
         break;
       }
@@ -111,7 +111,7 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       case MatchmakingUpdateType.Error: {
         const msg = (matchmakingUpdate as MatchmakingError).message;
         this.setState({ error: msg }, () => {
-          game.trigger('fullscreen-navigate', Route.Start);
+          fullScreenNavigateTo(Route.Start);
           game.trigger('show-middle-modal', <Error title='Failed' message={msg} errorCode={1003} />);
         });
         break;

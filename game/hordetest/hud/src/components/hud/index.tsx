@@ -4,10 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 
 import { ContextProviders, FullScreenContextProviders } from '../context';
+import { FullScreenNavContext, FullScreenNavContextState, fullScreenNavigateTo, Route } from 'context/FullScreenNavContext';
 // import { Chat } from 'cseshared/components/Chat';
 import { Chat } from './Chat';
 import { DevUI } from '../shared/DevUI';
@@ -186,7 +187,8 @@ const ExtraButtonsPosition = styled.div`
   bottom: 0px;
 `;
 
-export interface Props {
+interface Props {
+  fullScreenNavContext: FullScreenNavContextState;
 }
 
 export interface State {
@@ -195,13 +197,12 @@ export interface State {
 }
 
 // tslint:disable-next-line:function-name
-export class HUD extends React.Component<Props, State> {
+class HUDWithInjectedContext extends React.Component<Props, State> {
   private showEVH: EventHandle;
   private hideEVH: EventHandle;
   private resetEVH: EventHandle;
   private scenarioEndedEVH: EventHandle;
   private networkFailureEVH: EventHandle;
-  private fullscreenRef: React.RefObject<FullScreen>;
 
   constructor(props: Props) {
     super(props);
@@ -210,18 +211,13 @@ export class HUD extends React.Component<Props, State> {
       isLobbyVisible: !game.isConnectedOrConnectingToServer,
       scenarioID: '',
     }
-    this.fullscreenRef = React.createRef()
   }
 
   public render() {
     if (this.state.isLobbyVisible) {
       return (
         <FullScreenContextProviders>
-          <FullScreen
-            ref={this.fullscreenRef}
-            scenarioID={this.state.scenarioID}
-            onConnectToServer={this.onConnectToServer}
-          />
+          <FullScreen scenarioID={this.state.scenarioID} onConnectToServer={this.onConnectToServer} />
 
           <MenuModal />
           <LeftModal />
@@ -353,19 +349,25 @@ export class HUD extends React.Component<Props, State> {
     game.trigger('hide-middle-modal');
   }
 
-  private onConnectToServer = (fromMatchmaking: boolean = false) => {
+  private onConnectToServer = () => {
     this.scenarioEndedEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
     this.hideLobby();
   }
 
   private handleScenarioRoundEnded = (scenarioID: string, roundID: string, didEnd: boolean) => {
     if (didEnd) {
+      fullScreenNavigateTo(Route.EndGameStats);
       this.setState({ isLobbyVisible: true, scenarioID });
       game.playGameSound(SoundEvents.PLAY_SCENARIO_END);
     }
   }
 
   private handleNetworkFailure = (errorMsg: string, errorCode: number) => {
+    // Add a failsafe in case we get a network failure event when the game server cleanly shuts down.
+    if (this.props.fullScreenNavContext.currentRoute === Route.EndGameStats) {
+      return;
+    }
+
     if (!game.isConnectedToServer) {
       this.resetFullscreen();
       game.trigger('show-middle-modal', <Error title='Network Failure' message={errorMsg} errorCode={errorCode} />);
@@ -373,7 +375,14 @@ export class HUD extends React.Component<Props, State> {
   }
 
   private resetFullscreen = () => {
-      this.showLobby();
-      this.fullscreenRef.current.goToStart();
+    this.showLobby();
+    fullScreenNavigateTo(Route.Start);
   }
+}
+
+export function HUD() {
+  const fullScreenNavContext = useContext(FullScreenNavContext);
+  return (
+    <HUDWithInjectedContext fullScreenNavContext={fullScreenNavContext} />
+  );
 }
