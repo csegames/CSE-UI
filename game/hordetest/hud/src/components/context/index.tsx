@@ -14,6 +14,19 @@ import { WarbandContextProvider } from './WarbandContext';
 import { MatchmakingContextProvider } from './MatchmakingContext';
 import { StatusContextProvider } from './StatusContext';
 import { ColossusProfileProvider } from './ColossusProfileContext';
+import { FullScreenNavContextProvider } from './FullScreenNavContext';
+
+export class SharedContextProviders extends React.Component<{}> {
+  public render() {
+    return (
+      <FullScreenNavContextProvider>
+        <ChampionInfoContextProvider>
+          {this.props.children}
+        </ChampionInfoContextProvider>
+      </FullScreenNavContextProvider>
+    );
+  }
+}
 
 export class ContextProviders extends React.Component<{}> {
   public render() {
@@ -23,9 +36,7 @@ export class ContextProviders extends React.Component<{}> {
           <ObjectivesContextProvider>
             <PlayerPositionContextProvider>
               <StatusContextProvider>
-                <ChampionInfoContextProvider>
-                  {this.props.children}
-                </ChampionInfoContextProvider>
+                {this.props.children}
               </StatusContextProvider>
             </PlayerPositionContextProvider>
           </ObjectivesContextProvider>
