@@ -178,11 +178,18 @@ export function ChampionSelect(props: Props) {
   });
 
   function getDefaultSelectedChampion() {
-    if (colossusProfileContext.colossusProfile && colossusProfileContext.colossusProfile.defaultChampion) {
-      return champions.find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.championID);
-    } else {
-      return champions[0];
+    const colossusProfile = colossusProfileContext.colossusProfile;
+    if (colossusProfile && colossusProfile.defaultChampion && colossusProfile.defaultChampion.championID) {
+      const colossusProfileChampion = champions.find(c => c.id === colossusProfile.defaultChampion.championID);
+
+      if (colossusProfileChampion) {
+        return colossusProfileChampion;
+      } else {
+        console.error('User had a ColossusProfile default champion with an invalid championID');
+      }
     }
+
+    return champions[0];
   }
 
   function getChampionCostumeInfo(championID: string) {
@@ -232,11 +239,11 @@ export function ChampionSelect(props: Props) {
 
     try {
       const response = await query<any>(gql`
-{
-  serverState(server:"${host}:${port}", match: "${matchID}") {
-    status
-  }
-}`,   {
+        {
+          serverState(server:"${host}:${port}", match: "${matchID}") {
+            status
+          }
+        }`,   {
         url: game.webAPIHost + '/graphql',
         requestOptions: {
           headers: {

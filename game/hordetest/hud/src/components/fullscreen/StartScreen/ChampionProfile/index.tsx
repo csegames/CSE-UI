@@ -239,11 +239,19 @@ export function ChampionProfile(props: Props) {
   }
 
   function getDefaultChampion() {
-    if (colossusProfileContext.colossusProfile.defaultChampion) {
-      return getChampions().find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.championID);
-    } else {
-      return getChampions()[0];
+    const colossusProfile = colossusProfileContext.colossusProfile;
+    if (colossusProfile && colossusProfile.defaultChampion && colossusProfile.defaultChampion.championID) {
+      const colossusProfileChampion =
+        getChampions().find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.championID);
+
+        if (colossusProfileChampion) {
+          return colossusProfileChampion;
+        } else {
+          console.error('User had a ColossusProfile default champion with an invalid championID');
+        }
     }
+
+    return getChampions()[0];
   }
 
   async function onSetAsDefault() {
