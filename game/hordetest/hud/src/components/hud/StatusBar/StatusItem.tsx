@@ -14,33 +14,37 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   transform: skewX(-10deg);
   margin: 0 2.5px;
 
   &.friendly {
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(255, 255, 255, 0.0);
+    border: 2px solid rgba(255, 255, 255, 0.8);
   }
 
   &.hostile {
-    background-color: rgba(255, 0, 0, 0.6);
+    background-color: rgba(150, 0, 0, 0.0);
+    border: 2px solid rgba(150, 0, 0, 0.8);
+    color: rgb(255, 205, 217);
   }
 `;
 
 const TimerOverlay = styled.div`
   position: absolute;
-  top: 0;
   right: 0;
   bottom: 0;
   left: 0;
 
   &.friendly {
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(255, 255, 255, 0.8);
+    border-top: 1px solid rgba(255,255, 255, 0.6);
   }
 
   &.hostile {
-    background-color: rgba(255, 0, 0, 0.6);
+    background-color: rgba(150, 0, 0, 0.8);
+    border-top: 1px solid rgba(255,255, 255, 0.6);
   }
 `;
 
@@ -48,6 +52,7 @@ const Icon = styled.div`
   font-size: 45px;
   color: white;
   transform: skewX(10deg);
+  
 `;
 
 export interface Props {
@@ -107,6 +112,6 @@ export class StatusItem extends React.Component<Props, State> {
       current = 0;
     }
 
-    return 100 - ((current / fullDuration) * 100);
+    return ((current / fullDuration) * 100);
   }
 }
