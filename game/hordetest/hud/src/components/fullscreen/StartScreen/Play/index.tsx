@@ -38,6 +38,20 @@ const BottomRightSection = styled.div`
   position: absolute;
   bottom: 15px;
   right: 15px;
+  opacity: 0;
+  margin-bottom: -10%;
+  animation: slideIn 0.3s forwards ;
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      margin-bottom: -10%;
+    }
+    to {
+      opacity: 1;
+      margin-bottom: 0;
+    }
+  } 
 `;
 
 const PartyText = styled.div`

@@ -53,6 +53,7 @@ const ReadyButtonStyle = styled.div`
   &:active {
     filter: brightness(90%);
   }
+
 `;
 
 // const QueueTimerText = styled.div`

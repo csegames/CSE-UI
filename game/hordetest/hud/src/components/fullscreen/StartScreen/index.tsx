@@ -26,6 +26,20 @@ const TopSection = styled.div`
   top: 0;
   left: 0;
   right: 0;
+  opacity: 0;
+  margin-top: -10%;
+  animation: slideIn 0.3s forwards ;
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      margin-top: -10%;
+    }
+    to {
+      opacity: 1;
+      margin-top: 0;
+    }
+  } 
 `;
 
 const Hamburger = styled.div`

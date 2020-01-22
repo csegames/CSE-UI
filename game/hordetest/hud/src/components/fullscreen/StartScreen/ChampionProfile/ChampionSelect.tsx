@@ -57,6 +57,21 @@ const ChampionContainer = styled.div`
       visibility: visible;
     }
   }
+
+  opacity: 0;  
+  margin-top: -5%;
+  animation: slideIn 0.3s forwards ;
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      margin-top: -5%;
+    }
+    to {
+      opacity: 1;
+      margin-top: 0;
+    }
+  } 
 `;
 
 const Image = styled.img`

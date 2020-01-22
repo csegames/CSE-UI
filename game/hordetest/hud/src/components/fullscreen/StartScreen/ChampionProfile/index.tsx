@@ -39,12 +39,41 @@ const ChampionImage = styled.img`
     width: 140%;
     height: 140%;
   }
+
+  opacity: 0;  
+  margin-right: -10%;
+  animation: slideIn 0.6s forwards ;
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      margin-right: -10%;
+    }
+    to {
+      opacity: 1;
+      margin-right: 0;
+    }
+  } 
 `;
 
 const ChampionInfoPosition = styled.div`
   position: absolute;
   top: 20%;
   left: 20%;
+  opacity: 0;
+  margin-left: -10%;
+  animation: slideIn 0.5s forwards ;
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      margin-left: -10%;
+    }
+    to {
+      opacity: 1;
+      margin-left: 0;
+    }
+  } 
 `;
 
 const SkinInfoPosition = styled.div`
@@ -68,6 +97,20 @@ const ButtonPosition = styled.div`
   position: absolute;
   right: 40px;
   bottom: 40px;
+  opacity: 0;
+  margin-top: -10%;
+  animation: slideIn 0.3s forwards ;
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      margin-bottom: -10%;
+    }
+    to {
+      opacity: 1;
+      margin-bottom: 0;
+    }
+  } 
 `;
 
 const ConsoleIcon = styled.span`
