@@ -226,6 +226,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
         url: this.queryOptions.url,
         requestOptions: this.queryOptions.requestOptions,
         stringifyVariables: this.queryOptions.stringifyVariables,
+        disableBatching: this.queryOptions.disableBatching,
       });
     }
 
@@ -384,6 +385,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
           url: this.queryOptions.url,
           requestOptions: this.queryOptions.requestOptions,
           stringifyVariables: this.queryOptions.stringifyVariables,
+          disableBatching: this.queryOptions.disableBatching,
         });
 
         const q = typeof this.props.query === 'string' ? { query: this.props.query } : this.props.query;
@@ -397,6 +399,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
           url: this.props.query.url || defaultOpts.url,
           pollInterval: this.props.query.pollInterval || 0,
           stringifyVariables: this.props.query.stringifyVariables || defaultOpts.stringifyVariables,
+          disableBatching: this.props.query.disableBatching || defaultOpts.disableBatching,
           requestOptions: this.props.query.requestOptions || defaultOpts.requestOptions,
         };
       } else {
@@ -406,6 +409,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
           pollInterval: 0,
           stringifyVariables: defaultOpts.stringifyVariables,
           requestOptions: defaultOpts.requestOptions,
+          disableBatching: defaultOpts.disableBatching,
         };
       }
 
@@ -414,6 +418,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
         url: this.queryOptions.url,
         requestOptions: this.queryOptions.requestOptions,
         stringifyVariables: this.queryOptions.stringifyVariables,
+        disableBatching: this.queryOptions.disableBatching,
       });
     }
 

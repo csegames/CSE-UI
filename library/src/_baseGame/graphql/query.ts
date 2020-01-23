@@ -9,6 +9,9 @@ import { DocumentNode } from 'graphql';
 import * as Raven from 'raven-js';
 import { print } from 'graphql/index.js';
 
+
+const Batching_Interval = 500; // ms time for batching requests from first request.
+
 // Query Definition as defined by apollo-codegen
 export interface LegacyGraphqlDefinition {
   kind: string;
@@ -30,6 +33,7 @@ export interface QueryOptions {
   url: string;
   requestOptions: RequestOptions;
   stringifyVariables: boolean;
+  disableBatching: boolean;
 }
 
 export interface GraphQLQuery {
@@ -83,7 +87,108 @@ function getMessage(obj: { message: string }) {
   return obj.message;
 }
 
+ let batchHandle = null;
+ const queryQueue: {
+  query: GraphQLQuery;
+  resolve: (data: any) => void;
+  reject: (reason: any) => void; 
+ }[] = [];
+
+
+async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<GraphQLQueryResult<T>> {
+  
+  // reset batch Handle
+  batchHandle = null;
+  const requests = queryQueue.splice(0, queryQueue.length);
+
+  console.log(`executing batched graphql with ${requests.length} batched requests.`);
+
+  const opts = withDefaults(options, game.graphQL.defaultOptions());
+  const body = requests
+    .map(r => withDefaults(r.query, defaultQuery))
+    .map(q => ({
+      ...q,
+      query: parseQuery(q.query),
+      variables: opts.stringifyVariables ? JSON.stringify(q.variables) : q.variables,
+    }));
+
+  try {
+
+    const response = await httpRequest('post',
+      opts.url,
+      {},
+      body,
+      {
+        ...opts.requestOptions,
+        headers: {
+          ...opts.requestOptions.headers,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      },
+    );
+    if (response.ok) {
+
+      const results = response.json<any[]>();
+
+      for (let i = 0; i < requests.length; ++i) {
+
+        if (results.length < i) {
+          break;
+        }
+
+        const result = results[i];
+        var requestItem = requests[i];
+
+        requestItem.resolve({
+          data: result.data,
+          ok: result.data !== undefined && result.errors === undefined,
+          statusText: result.errors ? result.errors.map(getMessage).join(' ') : 'OK',
+          statusCode: result.status,
+        });
+      }
+    }
+
+    // TODO log sentry error here?
+    const errorMessage = response.statusText || response.data;
+    console.error(
+      'GraphQL Request Error:',
+      {
+        errors: errorMessage,
+      },
+    );
+
+    if (game.debug) {
+      console.group('GraphQL Request');
+      console.log(JSON.stringify(opts));
+      console.log(JSON.stringify(response));
+      console.groupEnd();
+    }
+    return errorResult(errorMessage, 408);
+
+  } catch (err) {
+    Raven.captureException(err);
+    return errorResult(err, 400);
+  }
+}
+
 export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptions>): Promise<GraphQLQueryResult<T>> {
+
+  if (options.disableBatching == false) {
+    // batch the query.
+
+    if (batchHandle === null) {
+      batchHandle = window.setTimeout(() => batchedQuery(options), Batching_Interval);
+    }
+
+    return new Promise<GraphQLQueryResult<T>>((resolve, reject) => {
+      queryQueue.push({
+        query,
+        resolve,
+        reject
+      });
+    });
+  }
 
   const q = withDefaults(query, defaultQuery);
   const opts = withDefaults(options, game.graphQL.defaultOptions());
@@ -168,3 +273,5 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
     return errorResult(err, 400);
   }
 }
+
+

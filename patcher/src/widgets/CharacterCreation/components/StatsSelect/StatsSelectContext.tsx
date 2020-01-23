@@ -152,6 +152,7 @@ export class StatsSelectContextProvider extends React.Component<Props, ProviderS
         },
       },
       stringifyVariables: false,
+      disableBatching: false,
     };
 
     return {

@@ -16,6 +16,7 @@ export function getConfig() {
       },
     },
     stringifyVariables: false,
+    disableBatching: false,
   };
 
   return {

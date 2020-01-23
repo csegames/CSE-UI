@@ -267,6 +267,7 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
         },
       },
       stringifyVariables: false,
+      disableBatching: false,
     };
 
     return {
