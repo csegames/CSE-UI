@@ -5,13 +5,12 @@
  */
 
 import React, { useState, useRef } from 'react';
-import gql from 'graphql-tag';
 import { styled } from '@csegames/linaria/react';
 import { css } from '@csegames/linaria';
-import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 import { webAPI } from '@csegames/library/lib/hordetest';
 
 import { Button } from './Button';
+import { MyUserContext, MyUserContextState } from 'components/context/MyUserContext';
 
 const Container = styled.div`
   display: flex;
@@ -74,19 +73,10 @@ const Cancel = styled.a`
   color: #acacac;
 `;
 
-const query = gql`
-{
-  myUser {
-    id
-    created
-    lastLogin
-  	displayName
-    backerLevel
-  }
+export interface Props {
 }
-`;
 
-export function SetDisplayName(props: {}) {
+export function SetDisplayName(props: Props) {
   const [state, setState] = useState({
     waitingOnRequest: false,
     lastError: '',
@@ -127,22 +117,28 @@ export function SetDisplayName(props: {}) {
   }
 
   return (
-    <GraphQL query={{ query }}>
-      {(graphql: GraphQLResult<any>) => {
-        const name = graphql && graphql.data && graphql.data.myUser.displayName;
+    <MyUserContext.Consumer>
+      {(userContext: MyUserContextState) => {
+        const name = userContext.myUser ? userContext.myUser.displayName : '';
         return (
           <Container>
             <Title>Choose Your Name</Title>
               <Input ref={inputRef} type='text' name='display-name' placeholder={name} />
               <ErrorText>{state.lastError}</ErrorText>
               <ButtonsContainer>
-                <Button disabled={state.waitingOnRequest} text='Continue' type='blue' onClick={setDisplayname} styles={ButtonStyles} />
+                <Button
+                  type='blue'
+                  text='Continue'
+                  disabled={state.waitingOnRequest}
+                  onClick={setDisplayname}
+                  styles={ButtonStyles}
+                />
               </ButtonsContainer>
               {name && <Cancel href='#' onClick={() => game.trigger('hide-middle-modal')}>cancel</Cancel>}
           </Container>
         );
       }}
-    </GraphQL>
+    </MyUserContext.Consumer>
   );
 }
 

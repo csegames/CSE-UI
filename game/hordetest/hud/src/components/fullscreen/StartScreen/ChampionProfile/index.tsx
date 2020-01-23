@@ -26,6 +26,18 @@ const Container = styled.div`
   height: 100%;
 `;
 
+const ErrorContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Lato;
+  font-size: 28px;
+  color: white;
+`;
+
 const ChampionImage = styled.img`
   position: absolute;
   object-fit: contain;
@@ -270,7 +282,7 @@ export function ChampionProfile(props: Props) {
 
   const offsetClass = editingMode === EditingMode.None ? 'should-offset' : 'no-offset';
   const champions = getChampions();
-  return (
+  return champions ? (
     <Container>
       <ChampionImage className={offsetClass} src={selectedChampion.costumes[0].standingImageURL} />
       <ChampionSelect
@@ -320,5 +332,6 @@ export function ChampionProfile(props: Props) {
         </ButtonPosition>
       }
     </Container>
-  );
+  ) :
+    <ErrorContainer>We are having some technical difficulties</ErrorContainer>;
 }

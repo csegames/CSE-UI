@@ -45,6 +45,11 @@ const subscription = gql`
 `;
 
 export interface MatchmakingContextState {
+  // MatchmakingEnter
+  isEntered: boolean;
+  onEnterMatchmaking: () => void;
+  onCancelMatchmaking: () => void;
+
   // MatchmakingServerReady
   host: string;
   port: number;
@@ -59,6 +64,9 @@ export interface MatchmakingContextState {
 }
 
 const getDefaultMatchmakingContextState = (): MatchmakingContextState => ({
+  isEntered: false,
+  onEnterMatchmaking: () => {},
+  onCancelMatchmaking: () => {},
   host: null,
   port: null,
   matchID: null,
@@ -73,7 +81,11 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
   constructor(props: {}) {
     super(props);
 
-    this.state = getDefaultMatchmakingContextState();
+    this.state = {
+      ...getDefaultMatchmakingContextState(),
+      onEnterMatchmaking: this.onEnterMatchmaking,
+      onCancelMatchmaking: this.onCancelMatchmaking,
+    }
   }
 
   public render() {
@@ -85,8 +97,16 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
     );
   }
 
+  private onEnterMatchmaking = () => {
+    this.setState({ isEntered: true });
+  }
+
+  private onCancelMatchmaking = () => {
+    this.setState({ isEntered: false });
+  }
+
   private handleSubscription = (result: SubscriptionResult<{ matchmakingUpdates: IMatchmakingUpdate }>, data: any) => {
-    if (!result.data && !result.data.matchmakingUpdates) return data;
+    if (!result.data || !result.data.matchmakingUpdates) return data;
 
     const matchmakingUpdate = result.data.matchmakingUpdates;
     game.trigger('subscription-matchmakingUpdates', matchmakingUpdate);
@@ -110,7 +130,7 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
       case MatchmakingUpdateType.Error: {
         const msg = (matchmakingUpdate as MatchmakingError).message;
-        this.setState({ error: msg }, () => {
+        this.setState({ error: msg, isEntered: false }, () => {
           fullScreenNavigateTo(Route.Start);
           game.trigger('show-middle-modal', <Error title='Failed' message={msg} errorCode={1003} />);
         });

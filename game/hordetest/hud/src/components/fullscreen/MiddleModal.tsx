@@ -57,6 +57,7 @@ export interface Props {
 export function MiddleModal(props: Props) {
   const [isVisible, setIsVisible] = useState(false);
   const [content, setContent] = useState(null);
+  const [overlayCloseDisabled, setOverlayCloseDisabled] = useState(false);
 
   useEffect(() => {
     const showHandle = game.on('show-middle-modal', showModal);
@@ -68,17 +69,23 @@ export function MiddleModal(props: Props) {
     };
   });
 
-  function showModal(content: React.ReactChildren) {
+  function showModal(content: React.ReactChildren, disableOverlayClose?: boolean) {
     setIsVisible(true);
     setContent(content);
+
+    if (disableOverlayClose) {
+      setOverlayCloseDisabled(true);
+    }
   }
 
   function hideModal() {
     setIsVisible(false);
     setContent(null);
+    setOverlayCloseDisabled(false);
   }
 
   function onClickOverlay() {
+    if (overlayCloseDisabled) return;
     hideModal();
   }
 

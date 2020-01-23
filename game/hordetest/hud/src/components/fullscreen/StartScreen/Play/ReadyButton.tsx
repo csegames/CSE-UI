@@ -87,7 +87,6 @@ export interface Props {
 }
 
 export interface State {
-  isReady: boolean;
   isSearching: boolean;
 }
 
@@ -97,7 +96,6 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      isReady: false,
       isSearching: false,
     };
   }
@@ -115,7 +113,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   }
 
   private renderButton = (isConsole: boolean) => {
-    if (this.state.isReady && !this.props.warbandContextState.groupID) {
+    if (this.props.matchmakingContext.isEntered && !this.props.warbandContextState.groupID) {
       return (
         isConsole ?
           <ConsoleButton>
@@ -125,7 +123,8 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
       );
     }
 
-    if (this.state.isReady) {
+    const myMemberState = this.props.warbandContextState.groupMembers[game.characterID];
+    if (myMemberState && myMemberState.isReady) {
       return (
         isConsole ?
           <ConsoleButton>
@@ -135,7 +134,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
       );
     }
 
-    if (this.props.warbandContextState.groupID) {
+    if (myMemberState && !myMemberState.isReady) {
       return (
         isConsole ?
           <ConsoleButton>
@@ -159,18 +158,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
 
     const myMemberState = this.props.warbandContextState.groupMembers[game.characterID];
     if (myMemberState && myMemberState.isReady) {
-      this.setState({ isReady: true });
-    }
-  }
-
-  public componentDidUpdate(prevProps: Props) {
-    const prevMemberState = prevProps.warbandContextState.groupMembers[game.characterID];
-    const myMemberState = this.props.warbandContextState.groupMembers[game.characterID];
-
-    const prevIsReady = prevMemberState && prevMemberState.isReady;
-    const myIsReady = myMemberState && myMemberState.isReady;
-    if (prevIsReady !== myIsReady) {
-      this.setState({ isReady: myIsReady });
+      this.props.matchmakingContext.onEnterMatchmaking();
     }
   }
 
@@ -188,20 +176,23 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   }
 
   private onClick = () => {
-    if (this.state.isReady) {
-      if (this.props.warbandContextState.groupID) {
-        // group
+    const { warbandContextState, matchmakingContext } = this.props;
+    if (warbandContextState.groupID) {
+      const myMemberState = warbandContextState.groupMembers[game.characterID];
+      if (!myMemberState) {
+        console.error('We are in a group but we dont have myMemberState. Group ID: ' + warbandContextState.groupID);
+        return;
+      }
+
+      if (myMemberState && myMemberState.isReady) {
         this.unready();
       } else {
-        // solo
-        this.cancelMatchmaking();
+        this.readyUp();
       }
     } else {
-      if (this.props.warbandContextState.groupID) {
-        // group
-        this.readyUp();
+      if (matchmakingContext.isEntered) {
+        this.cancelMatchmaking();
       } else {
-        // solo
         this.enterMatchmaking();
       }
     }
@@ -211,7 +202,6 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
     const res = await webAPI.GroupsAPI.ReadyUpV1(webAPI.defaultConfig, this.props.warbandContextState.groupID);
     if (res.ok) {
       this.props.onReady();
-      this.setState({ isReady: true });
     } else {
       // Show error modal
       try {
@@ -227,7 +217,6 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
     const res = await webAPI.GroupsAPI.UnReadyV1(webAPI.defaultConfig, this.props.warbandContextState.groupID);
     if (res.ok) {
       this.props.onUnready();
-      this.setState({ isReady: false });
     } else {
       // Show error modal
       try {
@@ -242,7 +231,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   private enterMatchmaking = async () => {
     const res = await this.props.enterMatchmaking();
     if (res.ok) {
-      this.setState({ isReady: true });
+      this.props.matchmakingContext.onEnterMatchmaking();
     } else {
       // Show error modal
       try {
@@ -258,7 +247,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
     // If solo, just cancel matchmaking
     const res = await this.props.cancelMatchmaking();
     if (res.ok) {
-      this.setState({ isReady: false });
+      this.props.matchmakingContext.onCancelMatchmaking();
     } else {
       // Show error modal
       try {

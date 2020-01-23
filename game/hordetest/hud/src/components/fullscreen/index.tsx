@@ -4,16 +4,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 
+import { FullScreenNavContext, FullScreenNavContextState, Route, fullScreenNavigateTo } from 'context/FullScreenNavContext';
 import { StartScreen } from './StartScreen';
 import { ChampionSelect } from './ChampionSelect';
 import { Button } from './Button';
 import { GameStats } from './GameStats';
 import { Settings } from './Settings';
 import { IntroVideo } from './IntroVideo';
-import { FullScreenNavContext, Route, fullScreenNavigateTo } from 'context/FullScreenNavContext';
 
 const Container = styled.div`
   position: fixed;
@@ -53,16 +53,22 @@ const SettingsContainer = styled.div`
 //   height: 240px;
 // `;
 
-export interface Props {
+interface InjectedProps {
+  fullScreenNavContext: FullScreenNavContextState;
+}
+
+export interface ComponentProps {
   scenarioID: string;
   onConnectToServer: (fromMatchmaking?: boolean) => void;
 }
+
+type Props = InjectedProps & ComponentProps;
 
 export interface State {
   isChatVisible: boolean;
 }
 
-export class FullScreen extends React.Component<Props, State> {
+class FullScreenWithInjectedContext extends React.Component<Props, State> {
   private showChatEVH: EventHandle;
   private hideChatEVH: EventHandle;
 
@@ -75,30 +81,34 @@ export class FullScreen extends React.Component<Props, State> {
 
   public render() {
     return (
-      <FullScreenNavContext.Consumer>
-        {(context) => {
-          return (
-            <Container>
-              {this.renderRoute(context.currentRoute)}
-              <HideButton onClick={() => game.trigger('hide-fullscreen')}>
-                <Button type='blue' text='Hide Full Screen UI' />
-              </HideButton>
-              <SettingsContainer>
-                <Settings />
-              </SettingsContainer>
-              {/* {this.state.isChatVisible &&
-                <ChatPosition>
-                </ChatPosition>
-              } */}
-            </Container>
-          );
-        }}
-      </FullScreenNavContext.Consumer>
+      <Container>
+        {this.renderRoute()}
+        <HideButton onClick={() => game.trigger('hide-fullscreen')}>
+          <Button type='blue' text='Hide Full Screen UI' />
+        </HideButton>
+        <SettingsContainer>
+          <Settings />
+        </SettingsContainer>
+        {/* {this.state.isChatVisible &&
+          <ChatPosition>
+          </ChatPosition>
+        } */}
+      </Container>
     );
   }
 
-  private renderRoute = (currentRoute: Route) => {
-    switch (currentRoute) {
+  public componentDidMount() {
+    this.showChatEVH = game.on('show-fullscreen-chat', this.handleShowFullScreenChat);
+    this.hideChatEVH = game.on('hide-fullscreen-chat', this.handleHideFullScreenChat);
+  }
+
+  public componentWillUnmount() {
+    this.showChatEVH.clear();
+    this.hideChatEVH.clear();
+  }
+
+  private renderRoute = () => {
+    switch (this.props.fullScreenNavContext.currentRoute) {
       case Route.IntroVideo: {
         return (
           <IntroVideo onIntroVideoEnd={this.goToStart} />
@@ -127,17 +137,6 @@ export class FullScreen extends React.Component<Props, State> {
     }
   }
 
-  public componentDidMount() {
-    this.showChatEVH = game.on('show-fullscreen-chat', this.handleShowFullScreenChat);
-    this.hideChatEVH = game.on('hide-fullscreen-chat', this.handleHideFullScreenChat);
-  }
-
-  public componentWillUnmount() {
-    this.showChatEVH.clear();
-    this.hideChatEVH.clear();
-  }
-
-
   private goToStart = () => {
     fullScreenNavigateTo(Route.Start);
   }
@@ -149,4 +148,11 @@ export class FullScreen extends React.Component<Props, State> {
   private handleHideFullScreenChat = () => {
     this.setState({ isChatVisible: false });
   }
+}
+
+export function FullScreen(props: ComponentProps) {
+  const fullScreenNavContext = useContext(FullScreenNavContext);
+  return (
+    <FullScreenWithInjectedContext {...props} fullScreenNavContext={fullScreenNavContext} />
+  );
 }

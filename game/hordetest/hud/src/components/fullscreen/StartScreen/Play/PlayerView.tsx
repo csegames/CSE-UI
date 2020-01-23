@@ -9,9 +9,10 @@ import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { ChampionCostumeInfo, ChampionInfo } from '@csegames/library/lib/hordetest/graphql/schema';
 
-import { WarbandContext } from 'components/context/WarbandContext';
-import { ColossusProfileContext } from 'components/context/ColossusProfileContext';
-import { ChampionInfoContext } from 'components/context/ChampionInfoContext';
+import { MyUserContext } from 'context/MyUserContext';
+import { WarbandContext } from 'context/WarbandContext';
+import { ColossusProfileContext } from 'context/ColossusProfileContext';
+import { ChampionInfoContext } from 'context/ChampionInfoContext';
 
 const Container = styled.div`
   display: flex;
@@ -184,6 +185,7 @@ export function PlayerView(props: Props) {
   const warbandContextState = useContext(WarbandContext);
   const colossusProfileContext = useContext(ColossusProfileContext);
   const championInfoContext = useContext(ChampionInfoContext);
+  const myUserContext = useContext(MyUserContext);
   const champions = getChampions();
 
   function getClassName(index: number) {
@@ -286,7 +288,7 @@ export function PlayerView(props: Props) {
       <PlayerInfoContainer className={getClassName(0)}>
         <ProfileBox className={true ? 'leader' : ''} image={thumbnailImage} />
         <TextContainer>
-          <Name>You</Name>
+          <Name>{myUserContext.myUser ? myUserContext.myUser.displayName : 'You'}</Name>
           <Ready className={props.isReady ? '' : 'not-ready'}>{props.isReady ? 'Ready' : 'Not Ready'}</Ready>
         </TextContainer>
       </PlayerInfoContainer>
