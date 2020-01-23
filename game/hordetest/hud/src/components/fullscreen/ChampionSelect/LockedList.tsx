@@ -33,7 +33,6 @@ const ListItem = styled.div`
     border: 2px rgb(102, 216, 255) solid;
     outline: 1px solid rgba(88, 238, 255, 0.35);
     outline-offset: -6px;
-    position: absolute;
     margin-left: -15px;
     transition: .2s all ease;
     &:before {
