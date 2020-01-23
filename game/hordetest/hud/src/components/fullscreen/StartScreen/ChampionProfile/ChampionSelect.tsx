@@ -58,10 +58,10 @@ const ChampionContainer = styled.div`
     }
   }
 
-  opacity: 0;  
+  opacity: 0;
   margin-top: -5%;
-  animation: slideIn 0.3s forwards ;
-  
+  animation: slideIn 0.5s forwards ;
+
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -71,7 +71,7 @@ const ChampionContainer = styled.div`
       opacity: 1;
       margin-top: 0;
     }
-  } 
+  }
 `;
 
 const Image = styled.img`
@@ -84,7 +84,7 @@ const StarIcon = styled.span`
   font-size: 15px;
   top: -8px;
   right: 35px;
-  color: #fffe7d; 
+  color: #fffe7d;
 `;
 
 export interface Props {

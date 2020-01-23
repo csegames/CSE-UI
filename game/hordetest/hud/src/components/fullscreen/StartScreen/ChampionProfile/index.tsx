@@ -40,10 +40,11 @@ const ChampionImage = styled.img`
     height: 140%;
   }
 
-  opacity: 0;  
+  opacity: 0;
   margin-right: -10%;
   animation: slideIn 0.6s forwards ;
-  
+  animation-delay: 0.3s
+
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -53,7 +54,7 @@ const ChampionImage = styled.img`
       opacity: 1;
       margin-right: 0;
     }
-  } 
+  }
 `;
 
 const ChampionInfoPosition = styled.div`
@@ -63,7 +64,7 @@ const ChampionInfoPosition = styled.div`
   opacity: 0;
   margin-left: -10%;
   animation: slideIn 0.5s forwards ;
-  
+  animation-delay: 0.2s
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -73,7 +74,7 @@ const ChampionInfoPosition = styled.div`
       opacity: 1;
       margin-left: 0;
     }
-  } 
+  }
 `;
 
 const SkinInfoPosition = styled.div`
@@ -100,7 +101,7 @@ const ButtonPosition = styled.div`
   opacity: 0;
   margin-top: -10%;
   animation: slideIn 0.3s forwards ;
-  
+
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -110,7 +111,7 @@ const ButtonPosition = styled.div`
       opacity: 1;
       margin-bottom: 0;
     }
-  } 
+  }
 `;
 
 const ConsoleIcon = styled.span`

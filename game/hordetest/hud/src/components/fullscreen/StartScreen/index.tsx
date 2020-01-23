@@ -28,8 +28,8 @@ const TopSection = styled.div`
   right: 0;
   opacity: 0;
   margin-top: -10%;
-  animation: slideIn 0.3s forwards ;
-  
+  animation: slideIn 0.5s forwards ;
+
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -39,7 +39,7 @@ const TopSection = styled.div`
       opacity: 1;
       margin-top: 0;
     }
-  } 
+  }
 `;
 
 const Hamburger = styled.div`

@@ -12,7 +12,7 @@ const Container = styled.div`
   flex: 1;
   min-width: calc(33% - 20px);
   margin: 20px 20px 0 0;
-  background-color: rgba(74, 74, 74, 0.2);
+  background-color: rgba(32, 32, 32, 0.7);
   display: flex;
   flex-direction: column;
   align-items: center;

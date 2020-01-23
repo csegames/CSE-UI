@@ -41,7 +41,7 @@ const BottomRightSection = styled.div`
   opacity: 0;
   margin-bottom: -10%;
   animation: slideIn 0.3s forwards ;
-  
+
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -51,7 +51,7 @@ const BottomRightSection = styled.div`
       opacity: 1;
       margin-bottom: 0;
     }
-  } 
+  }
 `;
 
 const PartyText = styled.div`

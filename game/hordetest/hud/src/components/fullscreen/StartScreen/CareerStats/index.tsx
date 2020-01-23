@@ -31,6 +31,55 @@ const StatBlockContainer = styled.div`
   flex: 1;
 `;
 
+const StatBlockAnimation = css`
+  animation: popIn 0.7s forwards;
+  bottom: -10%;
+  opacity: 0;
+  transform:scale(1);
+
+  &.stat1 {
+    animation-delay: 0.1s;
+  }
+
+  &.stat2 {
+    animation-delay: 0.2s;
+  }
+
+  &.stat3 {
+    animation-delay: 0.3s;
+  }
+
+  &.stat4 {
+    animation-delay: 0.25s;
+  }
+
+  &.stat5 {
+    animation-delay: 0.35s;
+  }
+
+  &.stat6 {
+    animation-delay: 0.45s;
+  }
+
+
+  @keyframes popIn {
+    0% {
+      opacity: 0;
+      bottom: -10%;
+      transform:scale(1);
+    }
+    70% {
+      bottom: 0;
+      transform:scale(1.05);
+    }
+    100% {
+      bottom: 0;
+      opacity: 1;
+      transform:scale(1);
+    }
+  }
+`;
+
 // const ListContainer = styled.div`
 //   flex: 1;
 // `;
@@ -42,10 +91,36 @@ const TopStatBlockSpacing = css`
 const TitleStyles = css`
   display: flex;
   justify-content: space-between;
+  opacity: 0;
+  margin-top: -5%;
+  animation: slideIn 0.5s forwards ;
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      margin-top: -5%;
+    }
+    to {
+      opacity: 1;
+      margin-top: 0;
+    }
+  }
 `;
 
 const ThumbsupContainer = styled.div`
   margin-right: 20px;
+  left: -5%;
+  opacity: 0;
+  animation: slideIn 0.3s forwards ;
+  animation-delay:0.3s;
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 const ThumbsUp = styled.span`
@@ -73,7 +148,7 @@ export function CareerStats(props: Props) {
             best={54234}
             total={2345123}
             average={21344}
-            containerStyles={TopStatBlockSpacing}
+            containerStyles={`${TopStatBlockSpacing} ${StatBlockAnimation} stat1`}
           />
           <StatBlock
             name='Kills'
@@ -81,7 +156,7 @@ export function CareerStats(props: Props) {
             best={54234}
             total={2345123}
             average={21344}
-            containerStyles={TopStatBlockSpacing}
+            containerStyles={`${TopStatBlockSpacing} ${StatBlockAnimation} stat2`}
           />
           <StatBlock
             name='Kill Streak'
@@ -89,7 +164,7 @@ export function CareerStats(props: Props) {
             best={234}
             total={2345123}
             average={21344}
-            containerStyles={TopStatBlockSpacing}
+            containerStyles={`${TopStatBlockSpacing} ${StatBlockAnimation} stat3`}
           />
           <StatBlock
             name='Longest Life'
@@ -97,6 +172,7 @@ export function CareerStats(props: Props) {
             best={321234}
             total={2345123}
             average={21344}
+            containerStyles={`${StatBlockAnimation} stat4`}
           />
           <StatBlock
             name='Damage Taken'
@@ -104,6 +180,7 @@ export function CareerStats(props: Props) {
             best={43567112}
             total={2345123}
             average={21344}
+            containerStyles={`${StatBlockAnimation} stat5`}
           />
           <StatBlock
             name='Total Damage'
@@ -111,6 +188,7 @@ export function CareerStats(props: Props) {
             best={214622432}
             total={2345123}
             average={21344}
+            containerStyles={`${StatBlockAnimation} stat6`}
           />
         </StatBlockContainer>
       </LeftSection>
