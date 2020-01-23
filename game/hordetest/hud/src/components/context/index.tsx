@@ -15,13 +15,16 @@ import { MatchmakingContextProvider } from './MatchmakingContext';
 import { StatusContextProvider } from './StatusContext';
 import { ColossusProfileProvider } from './ColossusProfileContext';
 import { FullScreenNavContextProvider } from './FullScreenNavContext';
+import { MyUserContextProvider } from './MyUserContext';
 
 export class SharedContextProviders extends React.Component<{}> {
   public render() {
     return (
       <FullScreenNavContextProvider>
         <ChampionInfoContextProvider>
-          {this.props.children}
+          <MyUserContextProvider>
+            {this.props.children}
+          </MyUserContextProvider>
         </ChampionInfoContextProvider>
       </FullScreenNavContextProvider>
     );
