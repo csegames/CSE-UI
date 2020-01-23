@@ -35,6 +35,7 @@ const subscription = gql`
       ... on MatchmakingKickOff {
         matchID
         secondsToWait
+        serializedTeamMates
       }
 
       ... on MatchmakingError {
@@ -122,6 +123,8 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
       case MatchmakingUpdateType.KickOff: {
         const { matchID, secondsToWait, serializedTeamMates } = matchmakingUpdate as MatchmakingKickOff;
+        console.log(matchID);
+        console.log(serializedTeamMates);
         this.setState({ matchID, secondsToWait, teamMates: serializedTeamMates  }, () => {
           fullScreenNavigateTo(Route.ChampionSelect);
         });

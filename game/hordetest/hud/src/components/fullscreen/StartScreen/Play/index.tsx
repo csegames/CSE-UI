@@ -40,7 +40,7 @@ const BottomRightSection = styled.div`
   right: 15px;
   opacity: 0;
   margin-bottom: -10%;
-  animation: slideIn 0.3s forwards ;
+  animation: slideIn 0.3s forwards;
 
   @keyframes slideIn {
     from {

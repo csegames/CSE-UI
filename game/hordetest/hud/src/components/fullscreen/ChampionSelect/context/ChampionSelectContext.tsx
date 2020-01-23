@@ -22,7 +22,8 @@ const subscription = gql`
       updaterCharacterID
 
       ... on ChampionSelectionUpdate {
-        championID,
+        displayName
+        championID
         championMetaData
       }
     }
@@ -35,6 +36,7 @@ const query = gql`
       matchID
       teamMates {
         characterID
+        displayName
         metaData
       }
     }
@@ -45,6 +47,7 @@ export interface ChampionSelectPlayer {
   characterID: string;
   isLocked: boolean;
   championID: string;
+  displayName: string;
 }
 
 export interface Props {
@@ -104,6 +107,7 @@ export class ChampionSelectContextProvider extends React.Component<Props, Champi
     championSelectInfo.teamMates.forEach((teamMate) => {
       if (!playerStates[teamMate.characterID]) {
         playerStates[teamMate.characterID] = {
+          displayName: teamMate.displayName,
           characterID: teamMate.characterID,
           ...JSON.parse(teamMate.metaData),
         };
@@ -130,6 +134,7 @@ export class ChampionSelectContextProvider extends React.Component<Props, Champi
           };
         } else {
           playerStates[update.updaterCharacterID] = {
+            displayName: update.displayName,
             characterID: update.updaterCharacterID,
             championID: update.championID,
             isLocked: false,

@@ -88,7 +88,6 @@ export function LockedList(props: Props) {
     <Container>
       {Object.values(playerStates).map((player) => {
         const lockedClass = player.isLocked ? 'locked' : '';
-        const isLocked = player.isLocked ? true : false;
         const championInfo = getPlayerChampion(player);
         const championCostumeInfo = championContext.championCostumes.find(c => c.requiredChampionID === championInfo.id);
 
@@ -96,7 +95,7 @@ export function LockedList(props: Props) {
           <ListItem className={lockedClass}>
             <BGImage src={championCostumeInfo ? championCostumeInfo.championSelectImageURL : ""} />
             <NameOfPlayer>
-              {player.characterID ? `${player.characterID} -` : ''} {championInfo ? championInfo.name : ''} {isLocked ? 'is locked in' : ''}
+              {player.displayName ? `${player.displayName} -` : ''} {championInfo ? championInfo.name : ''}
             </NameOfPlayer>
           </ListItem>
         );
