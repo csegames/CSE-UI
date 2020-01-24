@@ -170,15 +170,6 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
     this.enteredMatchmaking = true;
     this.setState({ isWaitingForRequest: true });
 
-    return new Promise((resolve) => {
-      window.setTimeout(() => {
-        this.setState({ isWaitingForRequest: false });
-        resolve(this.test());
-      }, 5000);
-    }) as any;
-  }
-
-  private test = async () => {
     const request = {
       mode: game.matchmakingGameMode,
     };
