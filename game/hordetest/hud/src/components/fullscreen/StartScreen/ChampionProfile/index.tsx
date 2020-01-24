@@ -270,7 +270,6 @@ export function ChampionProfile(props: Props) {
   async function onSetAsDefault() {
     const res = await webAPI.ProfileAPI.SetDefaultChampion(
       webAPI.defaultConfig,
-      game.shardID,
       selectedChampion.id as any,
       selectedChampion.costumes[0].id as any,
     );

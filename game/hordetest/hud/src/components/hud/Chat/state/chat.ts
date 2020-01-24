@@ -18,7 +18,6 @@ async function initChat() {
     url: () => `wss://${game.serverHost}:4543/chat`,
     // url: `ws://${game.serverHost}:8100/chat`,
     characterID: () => game.characterID,
-    shardID: () => game.shardID,
     onerror: err => console.error(`Chat | ${err.message}`),
     protocols: 'chat-ws',
     token: () => game.accessToken,

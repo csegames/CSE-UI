@@ -79,8 +79,7 @@ function defaultGraphQLOptions(): Partial<QueryOptions> {
     requestOptions: {
       headers: {
         Authorization: 'Bearer ' + game.accessToken,
-        characterID: hordetest.game.selfPlayerState ? hordetest.game.selfPlayerState.characterID : '',
-        shardID: String(game.shardID),
+        CharacterID: hordetest.game.selfPlayerState ? hordetest.game.selfPlayerState.characterID : '',
       },
     },
   };

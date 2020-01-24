@@ -148,8 +148,7 @@ export class StatsSelectContextProvider extends React.Component<Props, ProviderS
       requestOptions: {
         headers: {
           Authorization: `Bearer ${patcher.getAccessToken()}`,
-          shardID: `${this.props.shard}`,
-          characterID: '',
+          CharacterID: '',
         },
       },
       stringifyVariables: false,

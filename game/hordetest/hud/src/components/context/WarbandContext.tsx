@@ -120,7 +120,6 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
             initPayload: {
               characterID: hordetest.game.selfPlayerState.characterID,
               token: game.accessToken,
-              shardID: game.shardID,
             },
           }}
           subscriptionHandler={this.handleNotificationSubscription}
@@ -137,7 +136,6 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
               initPayload: {
                 characterID: hordetest.game.selfPlayerState.characterID,
                 token: game.accessToken,
-                shardID: game.shardID,
               },
             }}
             subscriptionHandler={this.handleUpdateSubscription}

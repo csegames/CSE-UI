@@ -13,8 +13,7 @@ export function gqlQuery(q: GraphQLQuery, options: RequestOptions = {}) {
       'api-version': `${game.apiVersion}`,
       'Content-Type': 'application/json',
       Authorization: `Bearer ${game.accessToken}`,
-      characterId: camelotunchained.game.selfPlayerState.characterID,
-      shardId: `${game.shardID}`,
+      CharacterId: camelotunchained.game.selfPlayerState.characterID,
       Accept: 'application/json',
     }, options.headers),
   };

@@ -15,8 +15,7 @@ export const HUDGraphQLQueryConfig = () => ({
   requestOptions: {
     headers: {
       Authorization: `Bearer ${game.accessToken}`,
-      shardID: `${game.shardID}`,
-      characterID: camelotunchained.game.selfPlayerState.characterID,
+      CharacterID: camelotunchained.game.selfPlayerState.characterID,
     },
   },
 });
@@ -24,9 +23,8 @@ export const HUDGraphQLQueryConfig = () => ({
 export const HUDGraphQLSubscriptionConfig = () => ({
   url: game.webAPIHost.replace('http', 'ws') + '/graphql',
   initPayload: {
-    shardID: game.shardID,
     Authorization: `Bearer ${game.accessToken}`,
-    characterID: camelotunchained.game.selfPlayerState.characterID,
+    CharacterID: camelotunchained.game.selfPlayerState.characterID,
   },
 });
 

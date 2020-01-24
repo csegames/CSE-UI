@@ -14,7 +14,6 @@ const chat = require('./chat_pb.js');
 
 export interface Options extends Partial<WebSocketOptions> {
   // data to send to the server on connection init
-  shardID: () => number;
   characterID: () => string;
   token: () => string;
 }
@@ -28,7 +27,6 @@ export function defaultOpts(): Options {
     debug: false,
 
     characterID: () => '',
-    shardID: () => 1,
     token: () => ''
   };
 }
@@ -57,7 +55,6 @@ export class CSEChat {
   private options: Partial<Options>;
   private eventEmitter: EventEmitter;
   private characterID: () => string;
-  private shardID: () => number;
   private senderID: () => string;
   private initialized: boolean;
   private messageQueue: any[] = [];
@@ -76,7 +73,6 @@ export class CSEChat {
     }
 
     this.characterID = options.characterID;
-    this.shardID = options.shardID;
 
     this.senderID = options.characterID;
     this.initialized = true;
@@ -125,7 +121,6 @@ export class CSEChat {
   private sendAuth = () => {
     this.socket.send(
       JSON.stringify({
-        shard: this.options.shardID(),
         characterID: this.characterID(),
         token: this.options.token()
       })

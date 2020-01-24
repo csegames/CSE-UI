@@ -28,8 +28,8 @@ export function defaultSubscriptionOpts(): Options<any> {
     connectTimeout: 5000,
     maxRetries: 20,
     initPayload: {
-      shardID: game.shardID,
       token: game.accessToken,
+      characterID: game.characterID,
     },
     debug: getBooleanEnv('CUUI_LIB_DEBUG_GRAPHQL_SUBSCRIPTION', false),
     onDataReceived: data => console.log(data),

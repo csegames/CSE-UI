@@ -104,8 +104,6 @@ export function InviteAlerts(props: Props) {
     const groupAlert = alert as GroupAlert;
     const res = await webAPI.GroupsAPI.JoinV1(
       webAPI.defaultConfig,
-      game.shardID,
-      game.characterID,
       groupAlert.forGroup,
       groupAlert.code,
     );
@@ -172,7 +170,6 @@ export function InviteAlerts(props: Props) {
             initPayload: {
               characterID: game.characterID,
               token: game.accessToken,
-              shardID: game.shardID,
             }
           }}
           subscriptionHandler={handleSubscription}

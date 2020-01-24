@@ -61,8 +61,6 @@ export function InviteFriendModal(props: Props) {
   async function onSendInviteClick() {
     const res = await webAPI.GroupsAPI.InviteV1(
       webAPI.defaultConfig,
-      game.shardID,
-      game.characterID,
       warbandContext.groupID,
       INVALID_ID,
       inviteName,

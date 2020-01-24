@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { CSEChat } from "@csegames/camelot-unchained/lib/chat/CSEChat";
+import { CSEChat } from "@csegames/library/lib/_baseGame/chat/CSEChat";
 
 declare global {
   interface Window {
@@ -19,9 +19,9 @@ async function initChat() {
     // const result = response.json<ChatServerAddress>();
     // console.log(`chat address from api ${result.Address}`);
     window.chat.initialize({
-      url: 'ws://chat.camelotunchained.com/chat', //result.Address,
-      characterID: 'h0HK3FdKsdIEVgeO0s3200', //game.selfPlayerState.characterID,
-      shardID: game.shardID,
+      url: () => `wss://${game.serverHost}:4543/chat`,
+      // url: `ws://${game.serverHost}:8100/chat`,
+      characterID: () => game.characterID,
       onerror: err => console.error(`Chat | ${err.message}`),
       protocols: 'chat-ws',
       token: () => game.accessToken,

@@ -227,7 +227,7 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
               query: subscription,
               url: () => (patcher.apiHost() + '/graphql').replace('http', 'ws'),
               initPayload: {
-                Authorization: `Bearer ${patcher.getAccessToken()}`,
+                token: patcher.getAccessToken(),
               },
             }}
             subscriptionHandler={this.handleSubscription}
@@ -263,8 +263,7 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
       requestOptions: {
         headers: {
           Authorization: `Bearer ${patcher.getAccessToken()}`,
-          shardID: `${game.shardID}`,
-          characterID: '',
+          CharacterID: '',
         },
       },
       stringifyVariables: false,

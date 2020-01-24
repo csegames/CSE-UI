@@ -25,7 +25,6 @@ import Watermark from 'hud/Watermark';
 import { LoadingScreen } from 'fullscreen/LoadingScreen';
 import { OfflineZoneSelect } from 'hud/OfflineZoneSelect';
 import HUDFullScreen from '../fullscreen';
-// import { DevUI } from 'cseshared/components/DevUI';
 import AbilityBar from 'hud/AbilityBar';
 import ScenarioPopup from 'hud/ScenarioPopup';
 import ScenarioResults from 'hud/ScenarioResults';
@@ -50,7 +49,7 @@ import { ImagePreloader } from './ImagePreloader';
 import { MiniScenarioScoreboard } from 'hud/LiveScenarioScoreboard/MiniScenarioScoreboard';
 import { FullScenarioScoreboard } from 'hud/LiveScenarioScoreboard/FullScenarioScoreboard';
 import { uiContextFromGame } from 'services/session/UIContext';
-import { DevUI } from 'cseshared/components/DevUI';
+import { DevUI } from '../shared/DevUI';
 import HUDZOrder from 'services/session/HUDZOrder';
 
 // import { ActionBars } from '../ActionBar/BarsView';

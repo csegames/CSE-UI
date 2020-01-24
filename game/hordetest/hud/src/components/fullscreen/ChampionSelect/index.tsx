@@ -250,8 +250,7 @@ export function ChampionSelect(props: Props) {
         requestOptions: {
           headers: {
             Authorization: `Bearer ${game.accessToken}`,
-            shardID: `${game.shardID}`,
-            characterID: `${game.characterID},`
+            CharacterID: `${game.characterID},`
           },
         },
       });

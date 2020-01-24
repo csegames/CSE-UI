@@ -255,7 +255,7 @@ export class GameStats extends React.Component<Props, State> {
   }
 
   private onThumbsUpClick = async (characterID: string) => {
-    await webAPI.ScenarioAPI.RewardThumbsUp(webAPI.defaultConfig, game.shardID, this.props.scenarioID, characterID);
+    await webAPI.ScenarioAPI.RewardThumbsUp(webAPI.defaultConfig, this.props.scenarioID, characterID);
 
     const thumbsUp = cloneDeep(this.state.thumbsUp);
     if (thumbsUp[characterID]) {
@@ -270,7 +270,7 @@ export class GameStats extends React.Component<Props, State> {
   }
 
   private onRevokeClick = async (characterID: string) => {
-    await webAPI.ScenarioAPI.RevokeThumbsUp(webAPI.defaultConfig, game.shardID, this.props.scenarioID);
+    await webAPI.ScenarioAPI.RevokeThumbsUp(webAPI.defaultConfig, this.props.scenarioID);
 
     const thumbsUp = cloneDeep(this.state.thumbsUp);
     thumbsUp[characterID] = thumbsUp[characterID].filter(id => id !== game.characterID);

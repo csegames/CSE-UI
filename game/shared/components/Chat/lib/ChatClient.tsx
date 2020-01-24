@@ -48,7 +48,6 @@ export class ChatClient {
     const provided = typeof options === 'function' ? options() : options;
     const chatOpts = {
       url: provided.url,
-      shardID: provided.shard,
       characterID: provided.characterID,
       token: provided.getAccessToken,
     }

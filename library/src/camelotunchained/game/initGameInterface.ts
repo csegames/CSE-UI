@@ -125,8 +125,7 @@ function defaultGraphQLOptions(): Partial<QueryOptions> {
     requestOptions: {
       headers: {
         Authorization: 'Bearer ' + game.accessToken,
-        characterID: camelotunchained.game.selfPlayerState ? camelotunchained.game.selfPlayerState.characterID : '',
-        shardID: String(game.shardID),
+        CharacterID: camelotunchained.game.selfPlayerState ? camelotunchained.game.selfPlayerState.characterID : '',
       },
     },
   };

@@ -378,7 +378,6 @@ class News extends React.Component<NewsProps, NewsState> {
       requestOptions: {
         headers: {
           Authorization: `Bearer ${game.accessToken}`,
-          shardID: `${game.shardID}`,
         },
       },
     });

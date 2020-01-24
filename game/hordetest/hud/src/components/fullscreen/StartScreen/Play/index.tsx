@@ -208,9 +208,9 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
   private onLeaveClick = () => {
     const { groupID } = this.props.warbandContext;
     if (this.isLeader()) {
-      webAPI.GroupsAPI.DisbandV1(webAPI.defaultConfig, game.shardID, game.characterID, groupID);
+      webAPI.GroupsAPI.DisbandV1(webAPI.defaultConfig, groupID);
     } else {
-      webAPI.GroupsAPI.QuitV1(webAPI.defaultConfig, game.shardID, game.characterID, groupID);
+      webAPI.GroupsAPI.QuitV1(webAPI.defaultConfig, groupID);
     }
   }
 

@@ -123,9 +123,8 @@ async function fetchData(this: InternalGameDataStore) {
       url: game.webAPIHost + '/graphql',
       requestOptions: {
         headers: {
-          characterID: camelotunchained.game.selfPlayerState.characterID,
+          CharacterID: camelotunchained.game.selfPlayerState.characterID,
           Authorization: 'Bearer ' + game.accessToken,
-          shardID: String(game.shardID),
         },
       },
     });
