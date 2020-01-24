@@ -166,7 +166,9 @@ export function ChampionSelect(props: Props) {
   const [isLocked, setIsLocked] = useState(false);
 
   useEffect(() => {
-    updateSelectedChampion(selectedChampion.id, getChampionCostumeInfo(selectedChampion.id).id);
+    if (selectedChampion) {
+      updateSelectedChampion(selectedChampion.id, getChampionCostumeInfo(selectedChampion.id).id);
+    }
   }, []);
 
   useEffect(() => {
@@ -293,11 +295,12 @@ export function ChampionSelect(props: Props) {
     }
   }
 
-  const selectedChampionCostumeInfo = getChampionCostumeInfo(selectedChampion.id);
+  const selectedChampionCostumeInfo = selectedChampion ? getChampionCostumeInfo(selectedChampion.id) : null;
   return (
     <ChampionSelectContextProvider matchID={matchID}>
       <Container>
-        <SelectedChampionBackground src={selectedChampionCostumeInfo.backgroundImageURL} />
+        <SelectedChampionBackground src={selectedChampionCostumeInfo ?
+          selectedChampionCostumeInfo.backgroundImageURL : 'images/hud/champions/berserker-champion-card-bg.jpg'} />
         <HeaderContainer>
           <HeaderItemContainer>
             <GameModeContainer>
@@ -313,7 +316,7 @@ export function ChampionSelect(props: Props) {
         <ChampionPickContainer>
           {inputContext.isConsole && <ConsoleNavIcon className='icon-xb-lb' />}
           {champions.map((champion) => {
-            const isSelected = champion.id === selectedChampion.id;
+            const isSelected = selectedChampion ? champion.id === selectedChampion.id : false;
             const championCostumeInfo = getChampionCostumeInfo(champion.id);
             return (
               <ChampionPick
@@ -327,7 +330,8 @@ export function ChampionSelect(props: Props) {
           {inputContext.isConsole && <ConsoleNavIcon className='icon-xb-rb' />}
         </ChampionPickContainer>
         <SelectedChampionContainer>
-          <SelectedChampionImage src={selectedChampionCostumeInfo.standingImageURL} />
+          <SelectedChampionImage src={selectedChampionCostumeInfo ?
+            selectedChampionCostumeInfo.standingImageURL : 'images/hud/champions/berserker.png'} />
         </SelectedChampionContainer>
         <ChampionInfoContainer>
           <ChampionInfo selectedChampion={selectedChampion} />

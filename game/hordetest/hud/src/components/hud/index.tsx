@@ -345,7 +345,9 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   }
 
   private hideLobby = () => {
-    this.setState({ isLobbyVisible: false });
+    this.setState({ isLobbyVisible: false }, () => {
+      fullScreenNavigateTo(Route.Start);
+    });
     game.trigger('hide-middle-modal');
   }
 
@@ -375,8 +377,8 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   }
 
   private resetFullscreen = () => {
-    this.showLobby();
     fullScreenNavigateTo(Route.Start);
+    this.showLobby();
   }
 }
 
