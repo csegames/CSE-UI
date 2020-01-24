@@ -80,7 +80,7 @@ const ChampionPickContainer = styled.div`
   width: 100%;
   position: fixed;
   z-index: 1;
-  bottom: 150px;  
+  bottom: 150px;
 `;
 
 const SelectedChampionBackground = styled.img`

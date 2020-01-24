@@ -5,6 +5,7 @@
  */
 
 import React, { useContext } from 'react';
+import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { RequestResult } from '@csegames/library/lib/_baseGame';
 import { webAPI } from '@csegames/library/lib/hordetest';
@@ -13,9 +14,10 @@ import { IMatchmakingUpdate, MatchmakingUpdateType } from '@csegames/library/lib
 import { InputContext, InputContextState } from 'context/InputContext';
 import { MatchmakingContext, MatchmakingContextState, onMatchmakingUpdate } from 'context/MatchmakingContext';
 import { WarbandContext, WarbandContextState } from 'context/WarbandContext';
+import { Button } from '../../Button';
 import { Error } from '../../Error';
 
-const ReadyButtonStyle = styled.div`
+const ReadyButtonStyle = css`
   position: relative;
   cursor: pointer;
   color: white;
@@ -79,6 +81,7 @@ export interface Props {
   warbandContextState: WarbandContextState;
   inputContext: InputContextState;
   matchmakingContext: MatchmakingContextState;
+  isWaitingForRequest: boolean;
 
   onReady: () => void;
   onUnready: () => void;
@@ -101,14 +104,17 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   }
 
   public render() {
-    const { inputContext } = this.props;
+    const { inputContext, isWaitingForRequest } = this.props;
     const searchingClass = this.state.isSearching ? 'searching' : '';
     return (
-      <ReadyButtonStyle
-        className={searchingClass}
+      <Button
+        type='primary'
+        styles={`${searchingClass} ${ReadyButtonStyle}`}
+        text={this.renderButton(inputContext.isConsole)}
+        isLoading={isWaitingForRequest}
         onClick={this.onClick}>
           {this.renderButton(inputContext.isConsole)}
-      </ReadyButtonStyle>
+      </Button>
     );
   }
 
@@ -269,6 +275,7 @@ export function ReadyButton(props: {
   onUnready: () => void,
   enterMatchmaking: () => Promise<RequestResult>,
   cancelMatchmaking:  () => Promise<RequestResult>,
+  isWaitingForRequest: boolean,
 }) {
   const inputContextState = useContext(InputContext);
   const matchmakingContextState = useContext(MatchmakingContext);
@@ -283,6 +290,7 @@ export function ReadyButton(props: {
       onUnready={props.onUnready}
       enterMatchmaking={props.enterMatchmaking}
       cancelMatchmaking={props.cancelMatchmaking}
+      isWaitingForRequest={props.isWaitingForRequest}
     />
   )
 }

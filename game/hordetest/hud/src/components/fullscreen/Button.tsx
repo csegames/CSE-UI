@@ -6,6 +6,7 @@
 
 import React from 'react';
 import { css } from '@csegames/linaria';
+import { styled } from '@csegames/linaria/react';
 
 const Container = css`
   position: relative;
@@ -48,7 +49,7 @@ const Container = css`
     background: linear-gradient(to bottom, #52CFFD, #315fb7);
     border: 0px solid #77a5f2;
     outline: 1px solid rgba(102, 184, 255, 1);
-    outline-offset: -4px; 
+    outline-offset: -4px;
   }
 
   &.gray {
@@ -65,24 +66,74 @@ const Container = css`
   }
 `;
 
+const LoadingAnim = styled.img`
+  width: 40px;
+  height: 40px;
+`;
+
 export interface Props {
   type: 'primary' | 'secondary' | 'blue' | 'gray';
   text: string | JSX.Element | JSX.Element[];
   onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   styles?: string;
   disabled?: boolean;
+  isLoading?: boolean;
 }
 
-export function Button(props: Props) {
-  function onClick(e: React.MouseEvent<HTMLButtonElement>) {
-    e.persist();
-    props.onClick(e);
+export interface State {
+  isLoadingAnimationPlaying: boolean;
+}
+
+export class Button extends React.Component<Props, State> {
+  private loadingAnimTimeout: number;
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      isLoadingAnimationPlaying: false,
+    };
   }
-  return (
-    <button
-      onClick={onClick}
-      className={`${props.type} ${props.styles || ''} ${props.disabled ? 'disabled' : ''} ${Container}`}>
-      {props.text}
-    </button>
-  );
+
+  public render() {
+    return (
+      <button
+        disabled={this.props.disabled || this.state.isLoadingAnimationPlaying}
+        onClick={this.onClick}
+        className={`${this.props.type} ${this.props.styles || ''} ${this.props.disabled ? 'disabled' : ''} ${Container}`}>
+        {this.state.isLoadingAnimationPlaying ?
+          <LoadingAnim src='images/fullscreen/loadingscreen/loading-anim.gif' /> :
+          this.props.text
+        }
+      </button>
+    );
+  }
+
+  public componentDidUpdate(prevProps: Props) {
+    if (!prevProps.isLoading && this.props.isLoading) {
+      this.playLoadingAnimation();
+    }
+
+    if (!this.props.isLoading && this.state.isLoadingAnimationPlaying) {
+      this.stopLoadingAnimation();
+    }
+  }
+
+  private onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.persist();
+    this.props.onClick(e);
+  }
+
+  private playLoadingAnimation = () => {
+    this.loadingAnimTimeout = window.setTimeout(() => {
+      this.setState({ isLoadingAnimationPlaying: true });
+    }, 100);
+  }
+
+  private stopLoadingAnimation = () => {
+    if (this.loadingAnimTimeout) {
+      window.clearTimeout();
+      this.loadingAnimTimeout = null;
+    }
+
+    this.setState({ isLoadingAnimationPlaying: false });
+  }
 }

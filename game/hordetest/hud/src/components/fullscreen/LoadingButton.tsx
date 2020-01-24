@@ -22,17 +22,17 @@ const Container = styled.div`
     cursor: pointer;
   }
 
-  &.disabled {
-    filter: grayscale(100%);
-    pointer-events: none;
-  }
-
   &:hover {
     filter: brightness(120%);
   }
 
   &:active {
     filter: brightness(90%);
+  }
+
+  &.disabled {
+    filter: grayscale(100%);
+    pointer-events: none;
   }
 `;
 

@@ -107,7 +107,7 @@ export class ChampionSelectContextProvider extends React.Component<Props, Champi
     championSelectInfo.teamMates.forEach((teamMate) => {
       if (!playerStates[teamMate.characterID]) {
         playerStates[teamMate.characterID] = {
-          displayName: '_display_name_',
+          displayName: teamMate.displayName,
           characterID: teamMate.characterID,
           ...JSON.parse(teamMate.metaData),
         };

@@ -90,6 +90,7 @@ export interface Props {
 export interface State {
   isModalVisible: boolean;
   isReady: boolean;
+  isWaitingForRequest: boolean;
 }
 
 class PlayWithInjectedContext extends React.Component<Props, State> {
@@ -100,6 +101,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
     this.state = {
       isModalVisible: false,
       isReady: false,
+      isWaitingForRequest: false,
     };
   }
 
@@ -147,6 +149,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
             onUnready={this.onUnready}
             enterMatchmaking={this.enterMatchmaking}
             cancelMatchmaking={this.cancelMatchmaking}
+            isWaitingForRequest={this.state.isWaitingForRequest}
           />
         </BottomRightSection>
         <PlayerView isReady={this.state.isReady} />
@@ -165,25 +168,38 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
 
   private enterMatchmaking = async () => {
     this.enteredMatchmaking = true;
+    this.setState({ isWaitingForRequest: true });
+
+    return new Promise((resolve) => {
+      window.setTimeout(() => {
+        this.setState({ isWaitingForRequest: false });
+        resolve(this.test());
+      }, 5000);
+    }) as any;
+  }
+
+  private test = async () => {
     const request = {
       mode: game.matchmakingGameMode,
     };
     const res = await webAPI.MatchmakingAPI.EnterMatchmaking(webAPI.defaultConfig, request as any);
-
     if (!res.ok) {
       this.enteredMatchmaking = false;
     }
 
+    this.setState({ isWaitingForRequest: false });
     return res;
   }
 
   private cancelMatchmaking = async () => {
+    this.setState({ isWaitingForRequest: true });
     const res = await webAPI.MatchmakingAPI.CancelMatchmaking(webAPI.defaultConfig);
 
     if (res.ok) {
       this.enteredMatchmaking = false;
     }
 
+    this.setState({ isWaitingForRequest: false });
     return res;
   }
 
