@@ -74,13 +74,25 @@ const GenericScreenContainer = styled.div`
   top: 93px;
 `;
 
-const FullScreenImage = styled.div`
+const CareerStatsBGImage = styled.div`
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  background-image: url(../images/fullscreen/fullscreen-image-bg.jpg);
+  background-image: url(../images/fullscreen/fullscreen-career-bg.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: -1;
+`;
+
+const StoreBGImage = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: url(../images/fullscreen/fullscreen-store-bg.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   z-index: -1;
@@ -127,6 +139,7 @@ export function StartScreen(props: Props) {
       case StartScreenRoute.Store: {
         return (
           <GenericScreenContainer>
+            <StoreBGImage />
             <Store />
           </GenericScreenContainer>
         );
@@ -143,7 +156,7 @@ export function StartScreen(props: Props) {
       case StartScreenRoute.Career: {
         return (
           <GenericScreenContainer>
-            <FullScreenImage />
+            <CareerStatsBGImage />
             <CareerStats />
           </GenericScreenContainer>
         );

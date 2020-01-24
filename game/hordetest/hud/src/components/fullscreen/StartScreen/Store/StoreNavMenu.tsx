@@ -79,8 +79,6 @@ export function StoreNavMenu(props: Props) {
       {renderNavItem(StoreRoute.Featured)}
       {renderNavItem(StoreRoute.Weapons)}
       {renderNavItem(StoreRoute.Skins)}
-      {renderNavItem(StoreRoute.Accessories)}
-      {renderNavItem(StoreRoute.CsePoints)}
     </Container>
   );
 }

@@ -26,13 +26,13 @@ const ItemsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 80%;
-  height: 75%;
+  height: 80%;
   overflow: auto;
   align-self: center;
   background: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, .5));
 
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
     height: 6px;
   }
 
@@ -42,7 +42,7 @@ const ItemsContainer = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #4f4f4f;
+    background: rgba( 100, 100, 100, 0.7);
   }
 
   opacity: 0;

@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { Skin, Rarity } from '../Store/testData';
+import { Skin, Rarity, Champion } from '../Store/testData';
 
 interface ContainerProps extends React.HTMLProps<HTMLDivElement> {
   width: string;
@@ -38,6 +38,44 @@ const Container = styled.div`
   &.Legendary {
     box-shadow: inset 0 0 0 2px #eec06a;
     background-color: #251f16;
+  }
+
+  &.Amazon {
+    background: url(../images/fullscreen/startscreen/store/weapons-bg-red.jpg) no-repeat;
+    background-size: cover;
+  }
+
+  &.Berserker {
+    background: url(../images/fullscreen/startscreen/store/weapons-bg-blue.jpg) no-repeat;
+    background-size: cover;
+  }
+
+  &.Knight {
+    background: url(../images/fullscreen/startscreen/store/weapons-bg-yellow.jpg) no-repeat;
+    background-size: cover;
+  }
+
+  &.Celt {
+    background: url(../images/fullscreen/startscreen/store/weapons-bg-green.jpg) no-repeat;
+    background-size: cover;
+  }
+
+  &.isComingSoon:after {
+    content: 'Coming soon';
+    font-family: Colus;
+    font-size: 20px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 170px;
+    color: white;
+    text-align: center;
+    outline: 1px solid rgba(255, 255, 255, 0.32);
+    outline-offset: -4px;
+    display: block;
+    padding: 5px 10px;
+    background: rgba( 0, 0, 0, 0.7);
+    transform: translate(-50%, -50%);
   }
 
   &.not-disabled {
@@ -139,12 +177,14 @@ export function EquipmentItem(props: Props) {
 
   const disabledClass = props.disabled ? 'disabled' : 'not-disabled';
   const rarityClass = props.skin ? Rarity[props.skin.rarity] : '';
+  const championClass = props.skin ? Champion[props.skin.champion] : '';
+  const isComingSoonClass = props.skin ? 'isComingSoon' : '';
   return (
     <Container
       width={props.width}
       height={props.height}
       margin={props.margin}
-      className={`${props.className} ${rarityClass} ${disabledClass}`}
+      className={`${props.className} ${rarityClass} ${disabledClass} ${championClass} ${isComingSoonClass}`}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
       onMouseEnter={onMouseEnter}

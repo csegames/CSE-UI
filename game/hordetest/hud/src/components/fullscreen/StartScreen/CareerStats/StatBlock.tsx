@@ -12,7 +12,7 @@ const Container = styled.div`
   flex: 1;
   min-width: calc(33% - 20px);
   margin: 20px 20px 0 0;
-  background-color: rgba(32, 32, 32, 0.7);
+  background-color: rgba(0, 0, 0, 0.75);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -65,7 +65,7 @@ const IconContainer = styled.div`
 
 const IconClass = styled.div`
   font-size: 200px;
-  color: #252525;
+  color: rgba(75, 94, 105, 0.20);
 `;
 
 export interface Props {

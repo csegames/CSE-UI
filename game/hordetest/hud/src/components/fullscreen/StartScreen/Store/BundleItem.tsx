@@ -36,6 +36,24 @@ const Container = styled.div`
       opacity: 1;
     }
   }
+
+  &.isComingSoon:after {
+    content: 'Coming soon';
+    font-family: Colus;
+    font-size: 20px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 170px;
+    color: white;
+    text-align: center;
+    outline: 1px solid rgba(255, 255, 255, 0.32);
+    outline-offset: -4px;
+    display: block;
+    padding: 5px 10px;
+    background: rgba( 0, 0, 0, 0.7);
+    transform: translate(-50%, -50%);
+  }
 `;
 
 const Image = styled.img`
@@ -84,8 +102,9 @@ export interface Props {
 }
 
 export function BundleItem(props: Props) {
+  const comingSoonClass = props.bundle.isComingSoon ? 'isComingSoon' : '';
   return (
-    <Container>
+    <Container className={comingSoonClass}>
       <Image src={props.bundle.image} />
       <CostContainer>
         <Name>{props.bundle.name}</Name>

@@ -32,9 +32,10 @@ const StatBlockContainer = styled.div`
 `;
 
 const StatBlockAnimation = css`
-  animation: popIn 0.5s forwards;
+  animation: popIn 0.7s forwards;
   bottom: -10%;
   opacity: 0;
+  transform: scale(1);
 
   &.stat1 {
     animation-delay: 0.1s;
@@ -65,10 +66,16 @@ const StatBlockAnimation = css`
     0% {
       opacity: 0;
       bottom: -10%;
+      transform:scale(1);
+    }
+    70%{
+      transform:scale(1.05);
+      bottom: 0;
     }
     100% {
       opacity: 1;
       bottom: 0;
+      transform:scale(1);
     }
   }
 `;
