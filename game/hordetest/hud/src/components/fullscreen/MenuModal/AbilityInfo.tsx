@@ -4,8 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
+import { ColossusProfileContext } from 'context/ColossusProfileContext';
+import { ChampionInfoContext } from 'context/ChampionInfoContext';
 
 const Container = styled.div`
   position: fixed;
@@ -140,6 +142,9 @@ export interface Props {
 }
 
 export function AbilityInfo(props: Props) {
+  const colossusProfileContext = useContext(ColossusProfileContext);
+  const championInfoContext = useContext(ChampionInfoContext);
+
   function getKeybindInfo(ability: 'primary' | 'secondary' | 'weak' | 'strong' | 'ultimate') {
     switch (ability) {
       case 'primary': {
@@ -162,7 +167,22 @@ export function AbilityInfo(props: Props) {
     }
   }
 
-  const myChampion = hordetest.game.classes.find(c => c.id === hordetest.game.selfPlayerState.classID);
+  function getMyChampion() {
+    if (!game.isConnectedToServer) {
+      // Show default champion
+      if (colossusProfileContext.colossusProfile && colossusProfileContext.colossusProfile.defaultChampion) {
+        const championID = colossusProfileContext.colossusProfile.defaultChampion.championID;
+        return championInfoContext.champions.find(c => c.id === championID);
+      }
+
+      // If we are not connected to game server and we don't have a default champion, just dont show anything.
+      return null;
+    } else {
+      return hordetest.game.classes.find(c => c.id === hordetest.game.selfPlayerState.classID);
+    }
+  }
+
+  const myChampion = getMyChampion();
   if (!myChampion) {
     return null;
   }

@@ -25,6 +25,7 @@ const PlayerPosition = styled.div`
   left: 50%;
   width: 300px;
   height: 500px;
+  pointer-events: none;
 
   &.Zero {
     transform: translateX(-50%);
