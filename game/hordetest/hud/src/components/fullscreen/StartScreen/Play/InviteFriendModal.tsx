@@ -73,8 +73,14 @@ export function InviteFriendModal(props: Props) {
       game.trigger('hide-middle-modal');
     } else {
       // failed
-      const reason = JSON.parse(res.data);
-      setErrorMessage(`Error: ${reason ? reason : 'Unknown reason.'}`);
+      try {
+        const reason = JSON.parse(res.data);
+        setErrorMessage(`Error: ${typeof reason === 'string' ?
+          reason : reason.FieldCodes[0] ?
+          reason.FieldCodes[0].Actions[0].Message : 'Unknown reason.'}`);
+      } catch (e) {
+        setErrorMessage('An Unknown error occured.')
+      }
     }
   }
 
