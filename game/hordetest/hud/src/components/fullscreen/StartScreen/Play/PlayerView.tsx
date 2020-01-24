@@ -290,7 +290,6 @@ export function PlayerView(props: Props) {
         <ProfileBox className={true ? 'leader' : ''} image={thumbnailImage} />
         <TextContainer>
           <Name>{myUserContext.myUser ? myUserContext.myUser.displayName : 'You'}</Name>
-          <Ready className={props.isReady ? '' : 'not-ready'}>{props.isReady ? 'Ready' : 'Not Ready'}</Ready>
         </TextContainer>
       </PlayerInfoContainer>
 
