@@ -25,8 +25,7 @@ const Container = styled.div`
 const ItemsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-top: 15px;
-  width: 55%;
+  width: 80%;
   height: 75%;
   overflow: auto;
   align-self: center;
@@ -44,6 +43,21 @@ const ItemsContainer = styled.div`
 
   &::-webkit-scrollbar-thumb {
     background-color: #4f4f4f;
+  }
+
+  opacity: 0;
+  margin-top: 10%;
+  animation: popIn 0.5s forwards ;
+
+  @keyframes popIn {
+    0% {
+      opacity: 0;
+      margin-top: 10%;
+    }
+    100% {
+      margin-top: 15px;
+      opacity: 1;
+    }
   }
 `;
 

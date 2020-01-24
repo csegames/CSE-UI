@@ -64,13 +64,13 @@ export class MatchInfo extends React.Component<Props, State> {
   public render() {
     return (
       <MatchInfoContainer>
-        <Item className={MatchTimerStyle}>
-          <Icon className='fs-icon-misc-time'></Icon>
-          {formatTime(game.worldTime - this.state.roundStartTime)}
-        </Item>
         <Item>
           <Icon className='fs-icon-misc-kills'></Icon>
           {this.state.totalKills} Kills
+        </Item>
+        <Item className={MatchTimerStyle}>
+          <Icon className='fs-icon-misc-time'></Icon>
+          {formatTime(game.worldTime - this.state.roundStartTime)}
         </Item>
         <Item>
           {this.state.fps} FPS

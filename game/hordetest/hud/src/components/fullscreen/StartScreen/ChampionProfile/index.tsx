@@ -54,9 +54,8 @@ const ChampionImage = styled.img`
 
   opacity: 0;
   margin-right: -10%;
-  animation: slideIn 0.6s forwards ;
-  animation-delay: 0.3s
-
+  animation: slideIn 0.7s forwards ;
+  animation-delay: 0.1s
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -75,8 +74,7 @@ const ChampionInfoPosition = styled.div`
   left: 20%;
   opacity: 0;
   margin-left: -10%;
-  animation: slideIn 0.5s forwards ;
-  animation-delay: 0.2s
+  animation: slideIn 0.6s forwards ;
   @keyframes slideIn {
     from {
       opacity: 0;

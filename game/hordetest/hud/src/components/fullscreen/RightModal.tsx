@@ -11,8 +11,8 @@ const Container = styled.div`
   position: fixed;
   top: 0;
   bottom: 0;
-  right: -25%;
-  width: 25%;
+  right: -45%;
+  width: 45%;
   height: 100%;
   background-image: url(../images/fullscreen/modal-right-bg.png);
   background-size: cover;

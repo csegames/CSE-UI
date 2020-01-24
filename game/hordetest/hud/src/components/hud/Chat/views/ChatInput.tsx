@@ -19,7 +19,7 @@ const Input = styled.textarea`
   resize: none;
   color: ${(props: InputProps) => props.color};
   font-family: ${(props: InputProps) => props.fontFamily};
-  font-size: 20px;
+  font-size: 16px;
   padding: 0px 8px;
   width: calc(100% - 16px);
   background: transparent;
@@ -41,9 +41,9 @@ const Input = styled.textarea`
     box-shadow: none !important;
   }
   &::placeholder {
-    color: white;
+    color: rgba(256,256,256,0.5) ;
     font-weight: 900;
-    font-size: 20px;
+    font-size: 16px;
     text-shadow: 2px 3px 2px #474747;
   }
 `;

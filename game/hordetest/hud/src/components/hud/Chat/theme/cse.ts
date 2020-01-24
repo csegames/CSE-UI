@@ -13,18 +13,18 @@ export default function(): ChatTheme {
         content: '#ccc',
         cseAuthor: 'yellow',
       },
-      fontFamily: 'TitilliumWeb',
+      fontFamily: 'Lato',
     },
     input: {
       color: 'white',
-      fontFamily: 'TitilliumWeb',
+      fontFamily: 'Lato',
     },
     tab: {
       activeOrnament: {
         hd: '',
         uhd: '',
       },
-      fontFamily: 'TitilliumWeb',
+      fontFamily: 'Lato',
     },
     pane: {
       style: {

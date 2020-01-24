@@ -35,6 +35,21 @@ const Container = styled.div`
     height: 3px;
     background: linear-gradient(to right, transparent, rgba(36, 55, 97, 1), transparent);
   }
+
+  opacity: 0;
+  margin-top: -5%;
+  animation: slideIn 0.5s forwards ;
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      margin-top: -5%;
+    }
+    to {
+      opacity: 1;
+      margin-top: 0;
+    }
+  }
 `;
 
 const HeaderStyles = css`

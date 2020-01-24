@@ -24,7 +24,6 @@ const ListViewContainer = styled.div`
     -webkit-box-shadow: inset 0 0 0px transparent !important;
   }
   &::-webkit-scrollbar-thumb {
-    border-radius: 2px;
     background: rgba(255, 255, 255, 0.7) !important;
     box-shadow: none !important;
   }
@@ -43,6 +42,7 @@ const ScrollContainer = styled.div`
   align-content: stretch;
   justify-content: flex-end;
   direction:ltr;
+  padding: 5px;
 `;
 
 export interface Props {

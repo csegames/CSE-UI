@@ -8,6 +8,7 @@ import React from 'react';
 import { styled } from '@csegames/linaria/react';
 
 const Container = styled.div`
+  display:none;
   position: relative;
   width: 200px;
   height: 37px;

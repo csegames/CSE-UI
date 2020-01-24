@@ -16,7 +16,7 @@ const Line = styled.div`
   width: calc(100% - 16px);
   text-shadow: 1px 2px 2px #474747;
   font-weight: 600;
-  font-size: 24px;
+  font-size: 16px;
 `;
 
 type TimeProps = {color: string;} & React.HTMLProps<HTMLSpanElement>;
