@@ -134,7 +134,7 @@ export class ChampionSelectContextProvider extends React.Component<Props, Champi
           };
         } else {
           playerStates[update.updaterCharacterID] = {
-            displayName: '_display_name_',
+            displayName: update.displayName,
             characterID: update.updaterCharacterID,
             championID: update.championID,
             isLocked: false,

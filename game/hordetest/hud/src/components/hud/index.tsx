@@ -365,7 +365,6 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
           this.handleNetworkFailure("A server could not be found. Please try again later.", 9007);
           this.props.matchmakingContext.onWaitingForServerHandled()
         }
-        
       });
     }
 

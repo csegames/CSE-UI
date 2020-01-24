@@ -10,6 +10,7 @@ import { styled } from '@csegames/linaria/react';
 import { ChampionInfoContext } from 'context/ChampionInfoContext';
 import { ChampionSelectContext, ChampionSelectPlayer } from './context/ChampionSelectContext';
 
+
 const Container = styled.div`
 `;
 
@@ -64,11 +65,12 @@ const NameOfPlayer = styled.div`
 `;
 
 export interface Props {
+  type: 'left' | 'right';
 }
 
 export function LockedList(props: Props) {
-  const { playerStates } = useContext(ChampionSelectContext);
   const championContext = useContext(ChampionInfoContext);
+  const championSelectContext = useContext(ChampionSelectContext);
 
   function getPlayerChampion(player: ChampionSelectPlayer) {
     if (player.championID) {
@@ -84,9 +86,17 @@ export function LockedList(props: Props) {
     return championContext.champions[0];
   }
 
+  function getPlayerStateList() {
+    if (props.type === 'left') {
+      return Object.values(championSelectContext.playerStates).slice(0, 5);
+    } else {
+      return Object.values(championSelectContext.playerStates).slice(5, 10);
+    }
+  }
+
   return (
     <Container>
-      {Object.values(playerStates).map((player) => {
+      {getPlayerStateList().map((player) => {
         const lockedClass = player.isLocked ? 'locked' : '';
         const championInfo = getPlayerChampion(player);
         const championCostumeInfo = championContext.championCostumes.find(c => c.requiredChampionID === championInfo.id);

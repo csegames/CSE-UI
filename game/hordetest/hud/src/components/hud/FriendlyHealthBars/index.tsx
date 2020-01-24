@@ -5,7 +5,14 @@
  */
 
 import React from 'react';
+import { styled } from '@csegames/linaria/react';
 import { FriendlyHealthBar } from './FriendlyHealthBar';
+
+const Container = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 650px;
+`;
 
 type EntityID = string;
 
@@ -16,7 +23,7 @@ export interface State {
   friendlyPlayers: { [name: string]: EntityID };
 }
 
-const HEALTH_BAR_LIMIT = 5;
+const HEALTH_BAR_LIMIT = 9;
 
 export class FriendlyHealthBars extends React.Component<Props, State> {
   private evh: EventHandle[] = [];
@@ -29,9 +36,13 @@ export class FriendlyHealthBars extends React.Component<Props, State> {
 
   public render() {
     const sortedPlayers = Object.keys(this.state.friendlyPlayers).sort((a, b) => a.localeCompare(b));
-    return sortedPlayers.slice(0, 5).map((playerName) => {
-      return <FriendlyHealthBar playerName={playerName} />;
-    });
+    return (
+      <Container>
+        {sortedPlayers.slice(0, 8).map((playerName) => {
+          return <FriendlyHealthBar playerName={playerName} />;
+        })};
+      </Container>
+    );
   }
 
   public componentDidMount() {
