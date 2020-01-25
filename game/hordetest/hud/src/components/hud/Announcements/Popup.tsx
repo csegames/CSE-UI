@@ -14,6 +14,7 @@ const Container = styled.div`
   padding: 10px;
   color: white;
   font-family: Colus;
+  text-align: center;
 
   &:before {
     content: '';

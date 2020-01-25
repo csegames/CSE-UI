@@ -118,16 +118,18 @@ export default () => {
   combatLogToString(null);
 
   // hook up for console messages to system messages
-  game.onConsoleText((text: string) => {
-    game.trigger('systemMessage', text);
+  // game.onConsoleText((text: string) => {
+  //   game.trigger('systemMessage', text);
+  // });
+
+  game.onAnnouncement((type: AnnouncementType, text: string) => {
+    if (type === AnnouncementType.Text) {
+      game.trigger('systemMessage', text);
+    }
   });
 
-  game.onAnnouncement((type: any, text: string) => {
-    game.trigger('systemMessage', text);
-  });
-
-  game.onCombatEvent((logs: CombatEvent[]) => {
-    const combatLogs = logs.map(combatLogToString);
-    game.trigger('combatlog_message', combatLogs);
-  });
+  // game.onCombatEvent((logs: CombatEvent[]) => {
+  //   const combatLogs = logs.map(combatLogToString);
+  //   game.trigger('combatlog_message', combatLogs);
+  // });
 }
