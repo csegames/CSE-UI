@@ -175,6 +175,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
     };
     const res = await webAPI.MatchmakingAPI.EnterMatchmaking(webAPI.defaultConfig, request as any);
     if (!res.ok) {
+      console.error(`Failed to enter matchmaking: ${res.data}`);
       this.enteredMatchmaking = false;
     }
 
@@ -188,6 +189,9 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
 
     if (res.ok) {
       this.enteredMatchmaking = false;
+    }
+    else {
+      console.error(`Failed to cancel matchmaking: ${res.data}`);
     }
 
     this.setState({ isWaitingForRequest: false });

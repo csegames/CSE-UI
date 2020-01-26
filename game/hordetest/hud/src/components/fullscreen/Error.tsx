@@ -53,12 +53,12 @@ const hideMiddleModal = () => {
   game.trigger('hide-middle-modal');
 }
 
-export function Error(props: Props) {
+export function ErrorComponent(props: Props) {
   return (
     <Container>
       <Title>{props.title}</Title>
-      <Message>{props.message}</Message>
-      <Code>Error Code: #{props.errorCode}</Code>
+      <Message>{props.message ? props.message : "An error ocurred. Please try again later"}</Message>
+      <Code>Error Code: #{props.errorCode > 0 ? props.errorCode : 19107}</Code>
       <Button type='gray' text='Continue' styles={ButtonStyle} onClick={hideMiddleModal} />
     </Container>
   );

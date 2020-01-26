@@ -70,7 +70,7 @@ export class MatchInfo extends React.Component<Props, State> {
         </Item>
         <Item className={MatchTimerStyle}>
           <Icon className='fs-icon-misc-time'></Icon>
-          {formatTime(game.worldTime - this.state.roundStartTime)}
+          {isFinite(game.worldTime) && isFinite(this.state.roundStartTime) ? formatTime(game.worldTime - this.state.roundStartTime) : "00:00"}
         </Item>
         <Item>
           {this.state.fps} FPS

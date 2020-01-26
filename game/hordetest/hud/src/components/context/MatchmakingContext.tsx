@@ -16,7 +16,8 @@ import {
   MatchmakingError,
 } from '@csegames/library/lib/hordetest/graphql/schema';
 import { Route, fullScreenNavigateTo } from 'context/FullScreenNavContext';
-import { Error } from 'components/fullscreen/Error';
+import { ErrorComponent } from 'components/fullscreen/Error';
+import { query } from '@csegames/library/lib/_baseGame/graphql/query'
 
 export function onMatchmakingUpdate(callback: (matchmakingUpdate: IMatchmakingUpdate) => any): EventHandle {
   return game.on('subscription-matchmakingUpdates', callback);
@@ -40,6 +41,7 @@ const subscription = gql`
 
       ... on MatchmakingError {
         message
+        code
       }
     }
   }
@@ -48,12 +50,15 @@ const subscription = gql`
 export interface MatchmakingContextState {
   // MatchmakingEnter
   isEntered: boolean;
+  timeSearching: number;
   onEnterMatchmaking: () => void;
   onCancelMatchmaking: () => void;
+  onWaitingForServerHandled: () => void;
 
   // MatchmakingServerReady
   host: string;
   port: number;
+  isWaitingOnServer: boolean;
 
   // MatchmakingKickOff
   matchID: string;
@@ -62,23 +67,29 @@ export interface MatchmakingContextState {
 
   // Error
   error: string;
+  errorCode: number
 }
 
 const getDefaultMatchmakingContextState = (): MatchmakingContextState => ({
   isEntered: false,
   onEnterMatchmaking: () => {},
   onCancelMatchmaking: () => {},
+  onWaitingForServerHandled: () => {},
   host: null,
   port: null,
   matchID: null,
   secondsToWait: null,
   teamMates: null,
   error: null,
+  errorCode: 0,
+  isWaitingOnServer: false,
+  timeSearching: 0
 });
 
 export const MatchmakingContext = React.createContext(getDefaultMatchmakingContextState());
 
 export class MatchmakingContextProvider extends React.Component<{}, MatchmakingContextState> {
+  private timeSearchingUpdateHandle: NodeJS.Timeout
   constructor(props: {}) {
     super(props);
 
@@ -86,6 +97,7 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       ...getDefaultMatchmakingContextState(),
       onEnterMatchmaking: this.onEnterMatchmaking,
       onCancelMatchmaking: this.onCancelMatchmaking,
+      onWaitingForServerHandled: this.onWaitingForServerHandled
     }
   }
 
@@ -99,11 +111,22 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
   }
 
   private onEnterMatchmaking = () => {
-    this.setState({ isEntered: true });
+    console.log("Matchmaking context understands we have entered matchmaking");
+    this.setState({ isEntered: true, timeSearching: 0 });
+    this.timeSearchingUpdateHandle = setInterval(() => {
+      this.setState({ timeSearching: this.state.timeSearching + 1 })
+    }, 1000);
   }
 
   private onCancelMatchmaking = () => {
-    this.setState({ isEntered: false });
+    console.log("Matchmaking context understands we have canceled matchmaking");
+    this.setState({ isEntered: false, timeSearching: 0 });
+    clearInterval(this.timeSearchingUpdateHandle);
+  }
+
+  private onWaitingForServerHandled = () => {
+    console.log("Matchmaking context understands we are done waiting for a server");
+    this.setState({ isWaitingOnServer: false, isEntered: false });
   }
 
   private handleSubscription = (result: SubscriptionResult<{ matchmakingUpdates: IMatchmakingUpdate }>, data: any) => {
@@ -116,27 +139,108 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       case MatchmakingUpdateType.ServerReady: {
         const { host, port } = matchmakingUpdate as MatchmakingServerReady;
 
-        // CONNECT TO GAME SERVER
-        this.setState({ host, port });
+        this.setState({ host, port, isEntered: false, isWaitingOnServer: false });
+        if (!game.isConnectedOrConnectingToServer) {
+          console.log(`Received matchmaking server ready. Calling connect ${host}:${port}. Clearing any forced loading screens`);
+          game.trigger("clearforceshow-loadingscreen");
+          this.tryConnect(host, port, 0);
+        }
+        else {
+          console.error(`Received matchmaking server ready for ${host}:${port}. In a game, ignoring it`)
+        }
         break;
       }
 
       case MatchmakingUpdateType.KickOff: {
         const { matchID, secondsToWait, serializedTeamMates } = matchmakingUpdate as MatchmakingKickOff;
-        this.setState({ matchID, secondsToWait, teamMates: serializedTeamMates  }, () => {
+        this.setState({ matchID, secondsToWait, teamMates: serializedTeamMates, isWaitingOnServer: true  }, () => {
+          clearInterval(this.timeSearchingUpdateHandle);
+          if (game.isConnectedToServer) {
+            console.error(`Received matchmaking kickoff. In a game, ignoring it`)
+            return;
+          }
+
+          console.log(`Received matchmaking kickoff. ${serializedTeamMates ? JSON.parse(serializedTeamMates).length : null} mates, ${secondsToWait} timeout`)
           fullScreenNavigateTo(Route.ChampionSelect);
         });
         break;
       }
 
       case MatchmakingUpdateType.Error: {
-        const msg = (matchmakingUpdate as MatchmakingError).message;
-        this.setState({ error: msg, isEntered: false }, () => {
-          fullScreenNavigateTo(Route.Start);
-          game.trigger('show-middle-modal', <Error title='Failed' message={msg} errorCode={1003} />);
+        const { message, code } = (matchmakingUpdate as MatchmakingError);
+        this.setState({ error: message, isEntered: false, isWaitingOnServer: false }, () => {
+          if (game.isConnectedToServer) {
+            console.error(`Received matchmaking error ${code} ${message}. In a game, ignoring it`)
+            return;
+          }
+          console.log(`Received matchmaking error ${code} ${message}. Showing fullscreen, navigating to start and popping up error`)
+          game.trigger("reset-fullscreen");
+          game.trigger('show-middle-modal', <ErrorComponent title='Matchmaking Failure' message={message} errorCode={code} />, true);
         });
         break;
       }
+    }
+  }
+
+    
+  private tryConnect(host: string, port: number, tries: number) {
+    game.connectToServer(host, port);
+    window.setTimeout(() => this.checkConnected(host, port, ++tries), 500);
+  }
+
+  private async checkConnected(host: string, port: number, tries: number) {
+    if (game.isConnectedToServer) {
+      //Extra failsafe
+      this.setState({ isWaitingOnServer:false});
+      return;
+    }
+
+    if (game.isConnectedOrConnectingToServer) {
+      // check again in another timeout
+      window.setTimeout(() => this.checkConnected(host, port, tries), 500);
+      return;
+    }
+
+    // give up after 15 seconds / 30 tries
+    if (tries > 30) {
+      game.trigger('show-middle-modal', <ErrorComponent title='Failed' message={'Failed to establish connection to game server.'} errorCode={1010} />, true);
+      game.trigger('reset-fullscreen');
+      return;
+    }
+
+    try {
+      const response = await query<any>(gql`
+        {
+          serverState(server:"${host}:${port}", match: "${this.state.matchID}") {
+            status
+          }
+        }`,   {
+        url: game.webAPIHost + '/graphql',
+        requestOptions: {
+          headers: {
+            Authorization: `Bearer ${game.accessToken}`,
+            CharacterID: `${game.characterID},`
+          },
+        },
+      });
+
+      const status = response.data.serverState.status;
+      if (status === 'Running' || status === 'Reserved') {
+        // try again.
+        this.tryConnect(host, port, tries);
+        return;
+      } else {
+        // fail out.
+        game.trigger('show-middle-modal', <ErrorComponent title='Failed' message={'Failed to establish connection to game server.'} errorCode={1011} />, true);
+        // reset back to lobby
+        game.trigger('reset-fullscreen');
+      }
+    } catch (err) {
+      // failed to check status... so just fail out
+      // reset back to lobby
+      console.error(err);
+      game.trigger('show-middle-modal', <ErrorComponent title='Failed' message={'Failed to establish connection to game server.'} errorCode={1009} />, true);
+      game.trigger('reset-fullscreen');
     }
   }
 }

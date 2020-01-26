@@ -169,7 +169,7 @@ export class ReconnectingWebSocket {
 
     setTimeout(() => {
       if (!this.isOpen && this.wantConnect) {
-        console.log(
+        console.warn(
           "failed to connect to WebSocket within " +
             this.connectTimeoutInterval +
             " ms. Reconnecting in " +
@@ -187,9 +187,7 @@ export class ReconnectingWebSocket {
 
     this.retryCounter++;
 
-    if (this.debug) {
-      this.log("reconnecting");
-    }
+    console.log(`Attempting to reconnect to WS ${this.url()}`)
 
     try {
       this.socket.close();
@@ -215,27 +213,21 @@ export class ReconnectingWebSocket {
 
   private error = (e: any) => {
     Raven.captureException(e);
-    if (this.debug) {
-      this.log(`error => ${JSON.stringify(e)}`);
-    }
+    console.warn(`WS connection error on ${this.url()}`)
     if (!e) return;
     this._onerror(e);
     this.reconnect();
   };
 
   private open = (e: Event) => {
-    if (this.debug) {
-      this.log("connection open");
-    }
+    console.log(`WS connection opened to ${this.url()}`)
     clearTimeout(this.connectTimeoutHandle);
     this.retryCounter = 1;
     this._onopen(e);
   };
 
   private closed = (e: CloseEvent) => {
-    if (this.debug) {
-      this.log("connection closed");
-    }
+    console.warn(`Lost WS connection to ${this.url()}`)
     this.reconnect();
     this._onclose(e);
   };

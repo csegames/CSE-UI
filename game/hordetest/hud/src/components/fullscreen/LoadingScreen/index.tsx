@@ -54,25 +54,33 @@ export interface Props {
 
 export interface State {
   loadingState: LoadingState;
+  forceMessage: string | null;
 }
 
 export class LoadingScreen extends React.Component<Props, State> {
   private loadingStateHandle: EventHandle;
+  private forceShowScreen: EventHandle;
+  private forceHideScreen: EventHandle;
 
   constructor(props: Props) {
     super(props);
     this.state = {
       loadingState: null,
+      forceMessage: null,
     };
   }
 
-  public render() {
-    return this.state.loadingState && this.state.loadingState.visible ? (
+  public render() { 
+    console.log(`Rendering loading screen: ${this.state.loadingState?this.state.loadingState.visible:false} ${this.state.forceMessage}`);
+    return (this.state.loadingState && this.state.loadingState.visible) || this.state.forceMessage ? (
       <Container>
         <Logo />
         <LoadingTextPosition>
+          {this.state.forceMessage ?
+          <Text>{this.state.forceMessage}</Text>
+          :
           <Text>{this.state.loadingState.message}</Text>
-
+          }
           <LoadingAnimIcon />
         </LoadingTextPosition>
       </Container>
@@ -80,12 +88,31 @@ export class LoadingScreen extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
+    this.forceShowScreen = game.on('forceshow-loadingscreen', (message:string, delay:number, continuation:Function) => { 
+      console.log(`Forcing loading screen to show with ${message}`);
+      this.setState({forceMessage: message})
+      setTimeout(continuation, (delay));
+    });
+
+    this.forceHideScreen = game.on("clearforceshow-loadingscreen", () => { 
+      console.log("Removing forced loading screen msg");
+      this.setState({forceMessage: null})
+    })
+
     this.loadingStateHandle = game.loadingState.onUpdated(() => {
-      this.setState({ loadingState: game.loadingState });
+      this.setState({ loadingState: game.loadingState, forceMessage: null }, () => {
+        console.log(`Explicit loading screen update: ${this.state.loadingState.message}`);
+      });
     });
   }
 
   public componentWillUnmount() {
+    this.forceShowScreen.clear();
+    this.forceShowScreen = null;
+
+    this.forceHideScreen.clear();
+    this.forceHideScreen = null;
+
     this.loadingStateHandle.clear();
     this.loadingStateHandle = null;
   }

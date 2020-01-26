@@ -15,7 +15,8 @@ import { InputContext, InputContextState } from 'context/InputContext';
 import { MatchmakingContext, MatchmakingContextState, onMatchmakingUpdate } from 'context/MatchmakingContext';
 import { WarbandContext, WarbandContextState } from 'context/WarbandContext';
 import { Button } from '../../Button';
-import { Error } from '../../Error';
+import { ErrorComponent } from '../../Error';
+import { formatTime } from 'lib/timeHelpers';
 
 const ReadyButtonStyle = css`
   position: relative;
@@ -77,6 +78,14 @@ const ButtonIcon = styled.span`
   margin-right: 5px;
 `;
 
+const SearchingTimerText = styled.div`
+  position:absolute;
+  top:58px;
+  left:0;
+  font-size: 12px;
+  width:100%;
+`;
+
 export interface Props {
   warbandContextState: WarbandContextState;
   inputContext: InputContextState;
@@ -91,6 +100,24 @@ export interface Props {
 
 export interface State {
   isSearching: boolean;
+}
+
+interface SearchingTimerStateProps {
+  matchmakingContext: MatchmakingContextState;
+}
+
+class SearchingTimer extends React.Component<SearchingTimerStateProps,{}> {
+  constructor(props: SearchingTimerStateProps) {
+    super(props);
+  }
+
+  public render() {
+    return (
+      <SearchingTimerText>
+        Searching {formatTime(this.props.matchmakingContext.timeSearching)}
+      </SearchingTimerText>
+    );
+  }
 }
 
 class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
@@ -119,13 +146,18 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   }
 
   private renderButton = (isConsole: boolean) => {
+    const matchmakingContext = this.props.matchmakingContext
     if (this.props.matchmakingContext.isEntered && !this.props.warbandContextState.groupID) {
       return (
         isConsole ?
           <ConsoleButton>
             <ButtonIcon className='icon-xb-a'></ButtonIcon> Cancel
           </ConsoleButton> :
-          'Cancel'
+          <span>
+            Cancel
+            <SearchingTimer matchmakingContext={matchmakingContext} />
+          </span>
+          
       );
     }
 
@@ -205,6 +237,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   }
 
   private readyUp = async () => {
+    console.log("Readying up...");
     const res = await webAPI.GroupsAPI.ReadyUpV1(webAPI.defaultConfig, this.props.warbandContextState.groupID);
     if (res.ok) {
       this.props.onReady();
@@ -214,12 +247,13 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
         const data = JSON.parse(res.data).FieldCodes[0];
         this.showErrorModal('Failed To Ready', data.Message, data.Code);
       } catch (e) {
-        this.showErrorModal('Failed To Ready', 'Unknown reason', -1);
+        this.showErrorModal('Failed To Ready', 'A problem ocurred. Please try again later', 19107);
       }
     }
   }
 
   private unready = async () => {
+    console.log("Unreadying...");
     const res = await webAPI.GroupsAPI.UnReadyV1(webAPI.defaultConfig, this.props.warbandContextState.groupID);
     if (res.ok) {
       this.props.onUnready();
@@ -229,12 +263,13 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
         const data = JSON.parse(res.data).FieldCodes[0];
         this.showErrorModal('Failed To Unready', data.Message, data.Code);
       } catch (e) {
-        this.showErrorModal('Failed To Unready', 'Unknown reason', -1);
+        this.showErrorModal('Failed To Unready', 'A problem ocurred. Please try again later', 19107);
       }
     }
   }
 
   private enterMatchmaking = async () => {
+    console.log("Entering matchmaking...")
     const res = await this.props.enterMatchmaking();
     if (res.ok) {
       this.props.matchmakingContext.onEnterMatchmaking();
@@ -244,13 +279,14 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
         const data = JSON.parse(res.data).FieldCodes[0];
         this.showErrorModal('Failed To Enter Matchmaking', data.Message, data.Code);
       } catch (e) {
-        this.showErrorModal('Failed To Enter Matchmaking', 'Unknown reason', -1);
+        this.showErrorModal('Failed To Enter Matchmaking', 'A problem ocurred. Please try again later', 19107);
       }
     }
   }
 
   private cancelMatchmaking = async () => {
     // If solo, just cancel matchmaking
+    console.log("Canceling matchmaking...")
     const res = await this.props.cancelMatchmaking();
     if (res.ok) {
       this.props.matchmakingContext.onCancelMatchmaking();
@@ -260,13 +296,15 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
         const data = JSON.parse(res.data).FieldCodes[0];
         this.showErrorModal('Failed To Cancel Matchmaking', data.Message, data.Code);
       } catch (e) {
-        this.showErrorModal('Failed To Cancel Matchmaking', 'Unknown reason', -1);
+        this.showErrorModal('Failed To Cancel Matchmaking', 'A problem ocurred. Please try again later', 19107);
       }
     }
   }
 
   private showErrorModal = (title: string, message: string, errorCode: number) => {
-    game.trigger('show-middle-modal', <Error title={title} message={message} errorCode={errorCode} />)
+    console.error(`Triggering error popup with ${title} ${message} ${errorCode}`);
+    console.error(new Error().stack)
+    game.trigger('show-middle-modal', <ErrorComponent title={title} message={message} errorCode={errorCode} />, true)
   }
 }
 

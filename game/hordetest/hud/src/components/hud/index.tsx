@@ -27,8 +27,6 @@ import { ScenarioIntro } from './ScenarioIntro';
 import { Compass } from './Compass';
 import { Objectives } from './Objectives';
 import { Console } from '../hud/Console';
-import { LoadingScreen } from '../fullscreen/LoadingScreen';
-import { ImagePreloader } from './ImagePreloader';
 import { SelfHealthBar } from './SelfHealthBar';
 import { Consumables } from './Consumables';
 import { FriendlyHealthBars } from './FriendlyHealthBars';
@@ -37,12 +35,12 @@ import { RuneFullScreenEffects } from './FullScreenEffects/Runes';
 import { MenuModal } from '../fullscreen/MenuModal';
 import { LeftModal } from '../fullscreen/LeftModal';
 import { RightModal } from '../fullscreen/RightModal';
-import { MiddleModal } from '../fullscreen/MiddleModal';
 
-import { Error } from '../fullscreen/Error';
+import { ErrorComponent } from '../fullscreen/Error';
 import { ActionAlert } from '../shared/ActionAlert';
 import { ExtraButtons } from './ExtraButtons';
 import { UrgentMessage } from './UrgentMessage';
+import { MatchmakingContext, MatchmakingContextState } from 'components/context/MatchmakingContext';
 // import { LowHealthFullScreenEffects } from './FullScreenEffects/LowHealth';
 
 
@@ -189,6 +187,7 @@ const ExtraButtonsPosition = styled.div`
 
 interface Props {
   fullScreenNavContext: FullScreenNavContextState;
+  matchmakingContext: MatchmakingContextState;
 }
 
 export interface State {
@@ -217,14 +216,12 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     if (this.state.isLobbyVisible) {
       return (
         <FullScreenContextProviders>
-          <FullScreen scenarioID={this.state.scenarioID} onConnectToServer={this.onConnectToServer} />
+          <FullScreen scenarioID={this.state.scenarioID} onSelectionTimeOver={this.onSelectionTimeOver} />
 
           <MenuModal />
           <LeftModal />
           <RightModal />
-          <MiddleModal />
           <ActionAlert />
-          <LoadingScreen />
         </FullScreenContextProviders>
       );
     }
@@ -232,7 +229,6 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     return (
       <ContextProviders>
         <Container>
-          <ImagePreloader />
           {/* <LowHealthFullScreenEffects /> */}
           <RuneFullScreenEffects />
           <DevUI />
@@ -313,9 +309,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
           <MenuModal />
           <LeftModal />
           <RightModal />
-          <MiddleModal />
           <ActionAlert />
-          <LoadingScreen />
         </Container>
       </ContextProviders>
     );
@@ -328,7 +322,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     this.networkFailureEVH = game.onNetworkFailure(this.handleNetworkFailure);
 
     if (game.isConnectedOrConnectingToServer) {
-      this.onConnectToServer();
+      this.onSelectionTimeOver()
     }
   }
 
@@ -341,23 +335,49 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   }
 
   private showLobby = () => {
+    console.log("Showing lobby");
     this.setState({ isLobbyVisible: true });
   }
 
   private hideLobby = () => {
+    console.log("Hiding lobby");
     this.setState({ isLobbyVisible: false }, () => {
       fullScreenNavigateTo(Route.Start);
     });
     game.trigger('hide-middle-modal');
   }
 
-  private onConnectToServer = () => {
+  private onSelectionTimeOver = () => {
+    // NOTE: This function is called at the end of the timer even if weve already transitioned to the loading screen
+    console.log("Selection timer ended.")
+    // Were joining into the scenario hopefully. Set up the round end handler
     this.scenarioEndedEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
+
+    //Show the loading screen and if we dont receive either a server ready or an error after 4 minutes
+    //then assume a network failure has happened.
+    //At the moment, the webapi has a 3 minute timeout on finding a server
+    if (this.props.matchmakingContext.isWaitingOnServer) {
+      const fourminutes = 4 * 60 * 60 * 1000;
+      console.log("Waiting on server. Force loading the loadingscreen");
+      game.trigger("forceshow-loadingscreen", "Looking for server", fourminutes, () => {
+        if (this.props.matchmakingContext.isWaitingOnServer) {
+          console.log("Timeout on Waiting on server. Returning to lobby with error");
+          this.handleNetworkFailure("A server could not be found. Please try again later.", 9007);
+          this.props.matchmakingContext.onWaitingForServerHandled()
+        }
+        
+      });
+    }
+
+    //TODO TIMEOUT HERE
+
+    //And lets hide the lobby
     this.hideLobby();
   }
 
   private handleScenarioRoundEnded = (scenarioID: string, roundID: string, didEnd: boolean) => {
     if (didEnd) {
+      console.log("Scenario round ended")
       fullScreenNavigateTo(Route.EndGameStats);
       this.setState({ isLobbyVisible: true, scenarioID });
       game.playGameSound(SoundEvents.PLAY_SCENARIO_END);
@@ -367,24 +387,29 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   private handleNetworkFailure = (errorMsg: string, errorCode: number) => {
     // Add a failsafe in case we get a network failure event when the game server cleanly shuts down.
     if (this.props.fullScreenNavContext.currentRoute === Route.EndGameStats) {
+      console.log("Network failure came in. Not showing because on end game stats");
       return;
     }
 
     if (!game.isConnectedToServer) {
+      console.log(`Handling network failure:(${errorCode}) ${errorMsg}...`);
       this.resetFullscreen();
-      game.trigger('show-middle-modal', <Error title='Network Failure' message={errorMsg} errorCode={errorCode} />);
+      game.trigger('show-middle-modal', <ErrorComponent title='Network Failure' message={errorMsg} errorCode={errorCode} />, true);
     }
   }
 
   private resetFullscreen = () => {
+    console.log("Reset fullscreen to start with lobby and no loading screen");
     fullScreenNavigateTo(Route.Start);
     this.showLobby();
+    game.trigger("clearforceshow-loadingscreen");
   }
 }
 
 export function HUD() {
   const fullScreenNavContext = useContext(FullScreenNavContext);
+  const matchmakingContext = useContext(MatchmakingContext);
   return (
-    <HUDWithInjectedContext fullScreenNavContext={fullScreenNavContext} />
+    <HUDWithInjectedContext fullScreenNavContext={fullScreenNavContext} matchmakingContext={matchmakingContext} />
   );
 }

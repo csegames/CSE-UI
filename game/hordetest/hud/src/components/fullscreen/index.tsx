@@ -59,7 +59,7 @@ interface InjectedProps {
 
 export interface ComponentProps {
   scenarioID: string;
-  onConnectToServer: (fromMatchmaking?: boolean) => void;
+  onSelectionTimeOver: () => void;
 }
 
 type Props = InjectedProps & ComponentProps;
@@ -124,8 +124,7 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
           <ChampionSelect
             gameMode={'Survival'}
             difficulty={'Normal'}
-            onConnectToServer={this.props.onConnectToServer}
-            onTimerEnd={this.props.onConnectToServer}
+            onTimerEnd={this.props.onSelectionTimeOver}
           />
         );
       }

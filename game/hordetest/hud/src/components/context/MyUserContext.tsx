@@ -62,7 +62,7 @@ export class MyUserContextProvider extends React.Component<Props, MyUserContextS
     if (!graphql.data || !graphql.data.myUser) return graphql;
 
     if (!graphql.data.myUser.displayName) {
-      game.trigger('show-middle-modal', <SetDisplayName />, true);
+      game.trigger('show-middle-modal', <SetDisplayName />, false, true);
     }
 
     this.setState({ myUser: graphql.data.myUser });

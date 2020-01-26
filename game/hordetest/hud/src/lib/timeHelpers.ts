@@ -13,7 +13,8 @@ export function formatTime(totalSeconds: number) {
   try {
     return date.toISOString().substr(14, 5);
   } catch (e) {
-    console.error(e);
+    console.error("Cant make date from seconds: " + totalSeconds + ". Err:" +e);
+    console.error(new Error().stack)
     return '00:00';
   }
 }

@@ -62,7 +62,7 @@ export function LeftOptions(props: Props) {
   }
 
   function showChangeDisplayName() {
-    game.trigger('show-middle-modal', <SetDisplayName />)
+    game.trigger('show-middle-modal', <SetDisplayName />, false, true)
   }
 
   return (

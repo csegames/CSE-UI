@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { styled } from '@csegames/linaria/react';
 
 const Container = styled.div`
@@ -54,46 +54,67 @@ const Overlay = styled.div`
 export interface Props {
 }
 
-export function MiddleModal(props: Props) {
-  const [isVisible, setIsVisible] = useState(false);
-  const [content, setContent] = useState(null);
-  const [overlayCloseDisabled, setOverlayCloseDisabled] = useState(false);
+export interface State {
+  isVisible:boolean;
+  content:any;
+  overlayCloseDisabled:boolean;
+}
 
-  useEffect(() => {
-    const showHandle = game.on('show-middle-modal', showModal);
-    const hideHandle = game.on('hide-middle-modal', hideModal);
+export class MiddleModal extends React.Component<Props, State> {
+  private showHandle: EventHandle;
+  private hideHandle: EventHandle;
 
-    return () => {
-      showHandle.clear();
-      hideHandle.clear();
-    };
-  });
+  constructor(props: Props) {
+    super(props)
 
-  function showModal(content: React.ReactChildren, disableOverlayClose?: boolean) {
-    setIsVisible(true);
-    setContent(content);
-
-    if (disableOverlayClose) {
-      setOverlayCloseDisabled(true);
+    this.state = {
+      isVisible: false,
+      content: null,
+      overlayCloseDisabled: false
     }
   }
 
-  function hideModal() {
-    setIsVisible(false);
-    setContent(null);
-    setOverlayCloseDisabled(false);
+  public componentDidMount() {
+    this.showHandle = game.on('show-middle-modal', this.showModal);
+    this.hideHandle = game.on('hide-middle-modal', this.hideModal);
   }
 
-  function onClickOverlay() {
-    if (overlayCloseDisabled) return;
-    hideModal();
+  public componentWillUnmount() {
+    this.showHandle.clear();
+    this.hideHandle.clear();
   }
 
-  return (
-    <MiddleModalComponent isVisible={isVisible} onClickOverlay={onClickOverlay}>
-      {content}
-    </MiddleModalComponent>
-  );
+  private showModal = (content: React.ReactChildren, isError:boolean, disableOverlayClose: boolean = false) => {
+    if (game.isConnectedToServer && isError) {
+      console.error("Tried to open the middle modal while in a game!");
+      return;
+    }
+    console.log(`Showing middle modal ${this.state.isVisible}`);
+    this.setState({content, overlayCloseDisabled: disableOverlayClose, isVisible: true }, () => {
+      console.log(`Done setting up middle modal to show ${this.state.isVisible}`);
+    });
+    
+  }
+
+  private hideModal = () => {
+    console.log("Middle model hiding");
+    this.setState({content: null, overlayCloseDisabled: false, isVisible: false });
+  }
+
+  private onClickOverlay = () => {
+    console.log(`Middle overlay clicked: Can Close? ${this.state.overlayCloseDisabled}`)
+    if (this.state.overlayCloseDisabled) return;
+    this.hideModal();
+  }
+
+  public render() {
+    return (
+      <MiddleModalComponent isVisible={this.state.isVisible} onClickOverlay={this.onClickOverlay}>
+        {this.state.content}
+      </MiddleModalComponent>
+    );
+  }
+  
 }
 
 export interface ComponentProps {

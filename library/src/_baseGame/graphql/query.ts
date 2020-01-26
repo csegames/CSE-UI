@@ -95,7 +95,7 @@ function getMessage(obj: { message: string }) {
  }[] = [];
 
 
-async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<GraphQLQueryResult<T>> {
+async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
   
   // reset batch Handle
   batchHandle = null;
@@ -151,24 +151,20 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<GraphQL
 
     // TODO log sentry error here?
     const errorMessage = response.statusText || response.data;
-    console.error(
-      'GraphQL Request Error:',
-      {
-        errors: errorMessage,
-      },
-    );
-
-    if (game.debug) {
-      console.group('GraphQL Request');
-      console.log(JSON.stringify(opts));
-      console.log(JSON.stringify(response));
-      console.groupEnd();
+    if (response.statusText != "OK") {
+      console.error(
+        'GraphQL Request Error:',
+        {
+          errors: errorMessage,
+        },
+      );
+      console.error(response.statusText);
+      console.error(response.data);
+      console.error(new Error().stack)
     }
-    return errorResult(errorMessage, 408);
 
   } catch (err) {
     Raven.captureException(err);
-    return errorResult(err, 400);
   }
 }
 
@@ -247,17 +243,23 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
 
     // TODO log sentry error here?
     const errorMessage = response.statusText || response.data;
-    console.error(
-      'GraphQL Request Error:',
-      {
-        errors: errorMessage,
-        query: q.query,
-        operationName: q.operationName,
-        namedQuery: q.namedQuery,
-        useNamedQueryCache: q.useNamedQueryCache,
-        variables: JSON.stringify(q.variables),
-      },
-    );
+    if (response.statusText != "OK") {
+      console.error(
+        'GraphQL Request Error:',
+        {
+          errors: errorMessage,
+          query: q.query,
+          operationName: q.operationName,
+          namedQuery: q.namedQuery,
+          useNamedQueryCache: q.useNamedQueryCache,
+          variables: JSON.stringify(q.variables),
+        },
+      );
+      console.error(response.statusText);
+      console.error(response.data);
+      console.error(new Error().stack)
+    }
+    
 
     if (game.debug) {
       console.group('GraphQL Request');
