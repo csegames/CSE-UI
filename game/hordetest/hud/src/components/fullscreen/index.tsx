@@ -124,7 +124,7 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
           <ChampionSelect
             gameMode={'Survival'}
             difficulty={'Normal'}
-            onTimerEnd={this.props.onSelectionTimeOver}
+            onSelectionTimeOver={this.props.onSelectionTimeOver}
           />
         );
       }

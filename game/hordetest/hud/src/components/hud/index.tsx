@@ -216,7 +216,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     if (this.state.isLobbyVisible) {
       return (
         <FullScreenContextProviders>
-          <FullScreen scenarioID={this.state.scenarioID} onSelectionTimeOver={this.onSelectionTimeOver} />
+          <FullScreen scenarioID={this.state.scenarioID} onSelectionTimeOver={this.beginWaitingForAServerFromMatchmaking} />
 
           <MenuModal />
           <LeftModal />
@@ -322,7 +322,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     this.networkFailureEVH = game.onNetworkFailure(this.handleNetworkFailure);
 
     if (game.isConnectedOrConnectingToServer) {
-      this.onSelectionTimeOver()
+      this.beginWaitingForAServerFromMatchmaking()
     }
   }
 
@@ -347,7 +347,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     game.trigger('hide-middle-modal');
   }
 
-  private onSelectionTimeOver = () => {
+  private beginWaitingForAServerFromMatchmaking = () => {
     // NOTE: This function is called at the end of the timer even if weve already transitioned to the loading screen
     console.log("Selection timer ended.")
     // Were joining into the scenario hopefully. Set up the round end handler

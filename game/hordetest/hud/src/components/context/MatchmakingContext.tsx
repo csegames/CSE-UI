@@ -18,6 +18,7 @@ import {
 import { Route, fullScreenNavigateTo } from 'context/FullScreenNavContext';
 import { ErrorComponent } from 'components/fullscreen/Error';
 import { query } from '@csegames/library/lib/_baseGame/graphql/query'
+import { TimerRef, startTimer, endTimer } from '@csegames/library/lib/_baseGame/utils/timerUtils';
 
 export function onMatchmakingUpdate(callback: (matchmakingUpdate: IMatchmakingUpdate) => any): EventHandle {
   return game.on('subscription-matchmakingUpdates', callback);
@@ -89,7 +90,7 @@ const getDefaultMatchmakingContextState = (): MatchmakingContextState => ({
 export const MatchmakingContext = React.createContext(getDefaultMatchmakingContextState());
 
 export class MatchmakingContextProvider extends React.Component<{}, MatchmakingContextState> {
-  private timeSearchingUpdateHandle: NodeJS.Timeout
+  private timeSearchingUpdateHandle: TimerRef = null
   constructor(props: {}) {
     super(props);
 
@@ -98,6 +99,13 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       onEnterMatchmaking: this.onEnterMatchmaking,
       onCancelMatchmaking: this.onCancelMatchmaking,
       onWaitingForServerHandled: this.onWaitingForServerHandled
+    }
+  }
+
+  public componentWillUnmount() {
+    if (this.timeSearchingUpdateHandle) {
+      endTimer(this.timeSearchingUpdateHandle);
+      this.timeSearchingUpdateHandle = null
     }
   }
 
@@ -113,15 +121,25 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
   private onEnterMatchmaking = () => {
     console.log("Matchmaking context understands we have entered matchmaking");
     this.setState({ isEntered: true, timeSearching: 0 });
-    this.timeSearchingUpdateHandle = setInterval(() => {
-      this.setState({ timeSearching: this.state.timeSearching + 1 })
-    }, 1000);
+    
+    //If someone waits in matchmaking for 30 minutes and nothing happens, then i guess the timer just stops. We probably have bigger problems
+    const thirtyMinutes = 30 * 60 * 60 * 1000;
+    
+    const interval = 60; //Choosing a non divisable number so the update will appear smoother
+    this.timeSearchingUpdateHandle = startTimer(thirtyMinutes, interval, (elapsed, remainingTime) => {
+      if (elapsed / 1000 > this.state.timeSearching) {
+        this.setState({ timeSearching: this.state.timeSearching + 1 })
+      }
+    });
   }
 
   private onCancelMatchmaking = () => {
     console.log("Matchmaking context understands we have canceled matchmaking");
     this.setState({ isEntered: false, timeSearching: 0 });
-    clearInterval(this.timeSearchingUpdateHandle);
+    if (this.timeSearchingUpdateHandle) {
+      endTimer(this.timeSearchingUpdateHandle);
+      this.timeSearchingUpdateHandle = null
+    }
   }
 
   private onWaitingForServerHandled = () => {
@@ -141,8 +159,9 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
         this.setState({ host, port, isEntered: false, isWaitingOnServer: false });
         if (!game.isConnectedOrConnectingToServer) {
-          console.log(`Received matchmaking server ready. Calling connect ${host}:${port}. Clearing any forced loading screens`);
-          game.trigger("clearforceshow-loadingscreen");
+          console.log(`Received matchmaking server ready. Calling connect ${host}:${port}`);
+
+          //We dont clear any forced loading screens here because we will clear the force during connection
           this.tryConnect(host, port, 0);
         }
         else {
@@ -154,7 +173,10 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       case MatchmakingUpdateType.KickOff: {
         const { matchID, secondsToWait, serializedTeamMates } = matchmakingUpdate as MatchmakingKickOff;
         this.setState({ matchID, secondsToWait, teamMates: serializedTeamMates, isWaitingOnServer: true  }, () => {
-          clearInterval(this.timeSearchingUpdateHandle);
+          if (this.timeSearchingUpdateHandle) {
+            endTimer(this.timeSearchingUpdateHandle);
+            this.timeSearchingUpdateHandle = null
+          }
           if (game.isConnectedToServer) {
             console.error(`Received matchmaking kickoff. In a game, ignoring it`)
             return;

@@ -137,7 +137,7 @@ const ConsoleNavIcon = styled.div`
 export interface Props {
   gameMode: string;
   difficulty: string;
-  onTimerEnd: () => void;
+  onSelectionTimeOver: () => void;
 }
 
 export interface Champion {
@@ -256,7 +256,7 @@ export function ChampionSelect(props: Props) {
           <LockedList />
         </LockedListContainer>
         <LockInPosition>
-          <LockIn isLocked={isLocked} onLockIn={onLockIn} onTimerEnd={props.onTimerEnd} />
+          <LockIn isLocked={isLocked} onLockIn={onLockIn} onSelectionTimeOver={props.onSelectionTimeOver} />
         </LockInPosition>
       </Container>
     </ChampionSelectContextProvider>
