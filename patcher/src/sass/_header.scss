@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
- 
+
 #cse-patcher-header {
   z-index: 15;
   margin-top: 15px;
@@ -17,9 +17,7 @@
   height: 100%;
   img {
     height: 90%;
-  }
-  .cse {
-    height: 175%;
+    zoom: normal;
   }
 }
 
@@ -29,9 +27,9 @@ nav {
     li {
       a {
         color: darken($color1,20%);
-        transition: 0.3s linear;  
+        transition: 0.3s linear;
         &:hover {
-            color: lighten($color1,20%); 
+            color: lighten($color1,20%);
             background: $gradient-nav;
         }
         .tiny {
@@ -47,10 +45,10 @@ nav {
         }
       }
       .active {
-        color: lighten($color1,20%); 
+        color: lighten($color1,20%);
         background: $gradient-nav;
       }
-      
+
     }
   }
 }
@@ -64,11 +62,11 @@ nav {
   height: 20px;
   background: $color2;
   z-index: 17;
-  
+
   ul {
     list-style: none;
     margin: 2.5px 2.5px;
-    
+
     li {
       float: right;
       margin: 0px 4px;

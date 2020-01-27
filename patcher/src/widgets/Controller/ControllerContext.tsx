@@ -72,7 +72,7 @@ export function serverTypeToIcon(t: ServerType) {
     case ServerType.CUBE: return 'images/controller/cube-logo.png';
     case ServerType.CHANNEL: return 'images/controller/tools-logo.png';
     case ServerType.UNKNOWN: return 'ERROR';
-    case ServerType.COLOSSUS: return 'images/colossus/logo.png';
+    case ServerType.COLOSSUS: return 'images/colossus/fs-icon.png';
   }
 }
 

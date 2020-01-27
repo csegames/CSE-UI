@@ -42,7 +42,7 @@ export function CSEHero(props: {}) {
   return (
     <Hero>
       <Content>
-        <Logo src='images/cse/cse_wallpaper01.jpg' />
+        <Logo src='images/cse/login-cse.jpg' />
       </Content>
     </Hero>
   )

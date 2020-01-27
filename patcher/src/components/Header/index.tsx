@@ -26,7 +26,7 @@ export function Header(props: HeaderProps) {
     return () => handles.forEach(handle => handle.clear());
   }, [dispatch]);
 
-  let logo = <img className='cse' src='images/cse/cse_logo.png' />;
+  let logo = <img className='cse' src='images/cse/cse-logo.png' />;
   let logoLink = 'https://camelotunchained.com/v2/';
   if (state.loggedIn) {
     switch (state.selectedProduct) {
@@ -34,7 +34,7 @@ export function Header(props: HeaderProps) {
         logo = <img src='images/cu_logo_metal.png' />;
         break;
       case Product.Colossus:
-        logo = <img src='images/colossus/logo.png' />;
+        logo = <img src='images/colossus/logo-ragnarok.png' />;
         logoLink = 'https://citystateentertainment.com/';
         break;
       default: break;
