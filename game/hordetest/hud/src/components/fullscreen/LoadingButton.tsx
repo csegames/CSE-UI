@@ -73,7 +73,7 @@ export interface Props {
 export function LoadingButton(props: Props) {
   const disabledClassName = props.disabled ? 'disabled' : '';
   return (
-    <Container onClick={props.onClick} className={`${props.styles || ''} ${disabledClassName}`}>
+    <Container onMouseDown={props.onClick} className={`${props.styles || ''} ${disabledClassName}`}>
       <ButtonBackground />
       <ButtonLoad style={{ width: `${(props.current / props.max) * 100}%` }} />
       <TextContainer>{props.text}</TextContainer>

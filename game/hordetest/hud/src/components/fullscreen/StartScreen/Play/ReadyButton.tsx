@@ -90,7 +90,6 @@ export interface Props {
   warbandContextState: WarbandContextState;
   inputContext: InputContextState;
   matchmakingContext: MatchmakingContextState;
-  isWaitingForRequest: boolean;
 
   onReady: () => void;
   onUnready: () => void;
@@ -131,63 +130,78 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   }
 
   public render() {
-    const { inputContext, isWaitingForRequest } = this.props;
+    const { inputContext } = this.props;
     const searchingClass = this.state.isSearching ? 'searching' : '';
-    return (
-      <Button
-        type='primary'
-        styles={`${searchingClass} ${ReadyButtonStyle}`}
-        text={this.renderButton(inputContext.isConsole)}
-        isLoading={isWaitingForRequest}
-        onClick={this.onClick}>
-          {this.renderButton(inputContext.isConsole)}
-      </Button>
-    );
-  }
 
-  private renderButton = (isConsole: boolean) => {
     const matchmakingContext = this.props.matchmakingContext
     if (this.props.matchmakingContext.isEntered && !this.props.warbandContextState.groupID) {
       return (
-        isConsole ?
-          <ConsoleButton>
-            <ButtonIcon className='icon-xb-a'></ButtonIcon> Cancel
-          </ConsoleButton> :
-          <span>
-            Cancel
-            <SearchingTimer matchmakingContext={matchmakingContext} />
-          </span>
-          
+        <Button
+          type='primary'
+          styles={`${searchingClass} ${ReadyButtonStyle}`}
+          text={
+            inputContext.isConsole ?
+            <ConsoleButton>
+              <ButtonIcon className='icon-xb-a'></ButtonIcon> Cancel
+            </ConsoleButton> :
+            <span>
+              Cancel
+              <SearchingTimer matchmakingContext={matchmakingContext} />
+            </span>
+          }
+          onClick={this.onClick}
+        />
       );
     }
 
     const myMemberState = this.props.warbandContextState.groupMembers[game.characterID];
     if (myMemberState && myMemberState.isReady) {
       return (
-        isConsole ?
-          <ConsoleButton>
-            <ButtonIcon className='icon-xb-a'></ButtonIcon> Unready
-          </ConsoleButton> :
-          'Unready'
+        <Button
+          type='primary'
+          styles={`${searchingClass} ${ReadyButtonStyle}`}
+          text={
+            inputContext.isConsole ?
+            <ConsoleButton>
+              <ButtonIcon className='icon-xb-a'></ButtonIcon> Unready
+            </ConsoleButton> :
+            'Unready'
+          }
+          onClick={this.onClick}
+        />
       );
     }
 
     if (myMemberState && !myMemberState.isReady) {
       return (
-        isConsole ?
-          <ConsoleButton>
-            <ButtonIcon className='icon-xb-a'></ButtonIcon> Ready
-          </ConsoleButton> :
-          'Ready'
+        <Button
+          type='primary'
+          styles={`${searchingClass} ${ReadyButtonStyle}`}
+          text={
+            inputContext.isConsole ?
+            <ConsoleButton>
+              <ButtonIcon className='icon-xb-a'></ButtonIcon> Ready
+            </ConsoleButton> :
+            'Ready'
+          }
+          onClick={this.onClick}
+        />
       );
     }
 
     return (
-      isConsole ?
-        <ConsoleButton>
-          <ButtonIcon className='icon-xb-a'></ButtonIcon> Play
-        </ConsoleButton> :
-        'Play'
+      <Button
+        type='primary'
+        styles={`${searchingClass} ${ReadyButtonStyle}`}
+        text={
+          inputContext.isConsole ?
+          <ConsoleButton>
+            <ButtonIcon className='icon-xb-a'></ButtonIcon> Play
+          </ConsoleButton> :
+          'Play'
+        }
+        onClick={this.onClick}
+      />
     );
   }
 
@@ -313,7 +327,6 @@ export function ReadyButton(props: {
   onUnready: () => void,
   enterMatchmaking: () => Promise<RequestResult>,
   cancelMatchmaking:  () => Promise<RequestResult>,
-  isWaitingForRequest: boolean,
 }) {
   const inputContextState = useContext(InputContext);
   const matchmakingContextState = useContext(MatchmakingContext);
@@ -328,7 +341,6 @@ export function ReadyButton(props: {
       onUnready={props.onUnready}
       enterMatchmaking={props.enterMatchmaking}
       cancelMatchmaking={props.cancelMatchmaking}
-      isWaitingForRequest={props.isWaitingForRequest}
     />
   )
 }
