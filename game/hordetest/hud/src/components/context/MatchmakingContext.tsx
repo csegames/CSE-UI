@@ -171,6 +171,7 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
           //We dont clear any forced loading screens here because we will clear the force during connection
           this.tryConnect(host, port, 0);
+          game.trigger('hide-fullscreen');
         }
         else {
           console.error(`Received matchmaking server ready for ${host}:${port}. In a game or connecting to one, ignoring it`)
