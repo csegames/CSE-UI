@@ -10,11 +10,13 @@ import { CSSTransitionGroup } from 'react-transition-group';
 
 const Container = styled.div`
   position: relative;
-  font-size: 36px;
+  font-size: 30px;
   padding: 10px;
   color: white;
   font-family: Colus;
   text-align: center;
+  text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.83), 15px 0px 15px rgba(0, 0, 0, 0.84), -15px 0px 15px rgba(0, 0, 0, 0.74), 1px 0px 14px rgba(0, 0, 0, 0.73), 1px 0px 14px rgba(0, 0, 0, 0.76);
+  background: linear-gradient(to right, transparent 10%, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8), transparent 90%);
 
   &:before {
     content: '';

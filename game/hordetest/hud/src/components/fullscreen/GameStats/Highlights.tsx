@@ -26,11 +26,14 @@ const HighlightContainer = styled.div`
   border-image: linear-gradient(to bottom right, #fece71, #81603c);
   border-image-slice: 5;
   background-color: #242424;
+  outline: rgba(255, 223, 5, 0.32) 1px solid;
+  outline-offset: -4px;
   margin: 13px;
   text-align: center;
 
   animation: popIn 1s forwards;
-  margin-top: 10%;
+  animation-delay: 0.5s;
+  margin-top: 100px;
   opacity: 0;
   transform: scale(1);
 
@@ -54,10 +57,10 @@ const HighlightContainer = styled.div`
   @keyframes popIn {
     0% {
       opacity: 0;
-      margin-top: 10%;
+      margin-top: 100px;
       transform:scale(1);
     }
-    70%{
+    80%{
       transform:scale(1.06);
       margin-top: 0;
     }

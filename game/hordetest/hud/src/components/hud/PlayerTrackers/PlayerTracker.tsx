@@ -16,11 +16,13 @@ const Container = styled.div`
 const Diamond = styled.div`
   width: 12px;
   height: 12px;
-  border: 2px solid black;
+  border: 1px solid black;
+  outline: 1px solid white;
+  outline-offset: 1px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: white;
+  background-color: cyan;
   color: white;
   transform: rotate(45deg);
 `;

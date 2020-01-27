@@ -41,7 +41,7 @@ const Input = styled.textarea`
     box-shadow: none !important;
   }
   &::placeholder {
-    color: rgba(256,256,256,0.5) ;
+    color: rgba(256,256,256,0.7) ;
     font-weight: 900;
     font-size: 16px;
     text-shadow: 2px 3px 2px #474747;
