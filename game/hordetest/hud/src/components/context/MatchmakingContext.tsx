@@ -20,6 +20,11 @@ import { ErrorComponent } from 'components/fullscreen/Error';
 import { query } from '@csegames/library/lib/_baseGame/graphql/query'
 import { TimerRef, startTimer, endTimer } from '@csegames/library/lib/_baseGame/utils/timerUtils';
 
+export enum PlayerNumberMode {
+  SixMan,
+  TenMan,
+}
+
 export function onMatchmakingUpdate(callback: (matchmakingUpdate: IMatchmakingUpdate) => any): EventHandle {
   return game.on('subscription-matchmakingUpdates', callback);
 }
@@ -69,6 +74,8 @@ export interface MatchmakingContextState {
   // Error
   error: string;
   errorCode: number
+
+  selectedPlayerNumberMode: PlayerNumberMode;
 }
 
 const getDefaultMatchmakingContextState = (): MatchmakingContextState => ({
@@ -84,7 +91,8 @@ const getDefaultMatchmakingContextState = (): MatchmakingContextState => ({
   error: null,
   errorCode: 0,
   isWaitingOnServer: false,
-  timeSearching: 0
+  timeSearching: 0,
+  selectedPlayerNumberMode: PlayerNumberMode.TenMan,
 });
 
 export const MatchmakingContext = React.createContext(getDefaultMatchmakingContextState());
@@ -204,7 +212,6 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
     }
   }
 
-    
   private tryConnect(host: string, port: number, tries: number) {
     game.connectToServer(host, port);
     window.setTimeout(() => this.checkConnected(host, port, ++tries), 500);

@@ -109,7 +109,7 @@ const SelectedChampionImage = styled.img`
 
 const ChampionInfoContainer = styled.div`
   position: absolute;
-  left: 20%;
+  left: 30%;
   top: 50%;
   transform: translate(-50%, -50%);
 `;
@@ -117,7 +117,14 @@ const ChampionInfoContainer = styled.div`
 const LockedListContainer = styled.div`
   position: absolute;
   top: 80px;
-  right: 28px;
+
+  &.right {
+    right: 28px;
+  }
+
+  &.left {
+    left: 28px;
+  }
 `;
 
 const LockInPosition = styled.div`
@@ -217,6 +224,7 @@ export function ChampionSelect(props: Props) {
       <Container>
         <SelectedChampionBackground src={selectedChampionCostumeInfo ?
           selectedChampionCostumeInfo.backgroundImageURL : 'images/hud/champions/berserker-champion-card-bg.jpg'} />
+
         <HeaderContainer>
           <HeaderItemContainer>
             <GameModeContainer>
@@ -229,6 +237,7 @@ export function ChampionSelect(props: Props) {
           </HeaderItemContainer>
           <HeaderItemContainer />
         </HeaderContainer>
+
         <ChampionPickContainer>
           {inputContext.isConsole && <ConsoleNavIcon className='icon-xb-lb' />}
           {champions.map((champion) => {
@@ -245,16 +254,24 @@ export function ChampionSelect(props: Props) {
           })}
           {inputContext.isConsole && <ConsoleNavIcon className='icon-xb-rb' />}
         </ChampionPickContainer>
+,
         <SelectedChampionContainer>
           <SelectedChampionImage src={selectedChampionCostumeInfo ?
             selectedChampionCostumeInfo.standingImageURL : 'images/hud/champions/berserker.png'} />
         </SelectedChampionContainer>
+
         <ChampionInfoContainer>
           <ChampionInfo selectedChampion={selectedChampion} />
         </ChampionInfoContainer>
-        <LockedListContainer>
-          <LockedList />
+
+        <LockedListContainer className='right'>
+          <LockedList type='right' />
         </LockedListContainer>
+
+        <LockedListContainer className='left'>
+          <LockedList type='left' />
+        </LockedListContainer>
+
         <LockInPosition>
           <LockIn isLocked={isLocked} onLockIn={onLockIn} onSelectionTimeOver={props.onSelectionTimeOver} />
         </LockInPosition>

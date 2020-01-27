@@ -10,7 +10,10 @@ import { styled } from '@csegames/linaria/react';
 import { ChampionInfo } from '@csegames/library/lib/hordetest/graphql/schema';
 
 const Container = styled.div`
-
+  &:hover .abilities {
+    margin-top: 0px;
+    opacity:1;
+  }
 `;
 
 const ChampionName = styled.div`
@@ -22,16 +25,11 @@ const ChampionName = styled.div`
 
 const AbilitiesContainer = styled.div`
   width: 320px;
-  opacity:0;
-  margin-top:-50px;
+  opacity: 0;
+  margin-top: -50px;
   padding: 15px;
   background: linear-gradient(rgba(0, 0, 0, 1), transparent);
   transition: .5s all ease;
-
-  &:hover{
-    margin-top:0px;
-    opacity:1;
-  }
 `;
 
 const AbilityContainer = styled.div`
@@ -139,7 +137,7 @@ export function ChampionInfo(props: Props) {
     <Container>
       <ChampionName>{props.selectedChampion.name}</ChampionName>
       <AbilityDescriptionButton>Attacks & Abilities</AbilityDescriptionButton>
-      <AbilitiesContainer>
+      <AbilitiesContainer className='abilities'>
         {props.selectedChampion.abilities.map((ability, i) => {
           return (
             <AbilityContainer>
