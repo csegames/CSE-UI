@@ -399,10 +399,15 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   }
 
   private resetFullscreen = () => {
-    console.log("Reset fullscreen to start with lobby and no loading screen");
-    fullScreenNavigateTo(Route.Start);
-    this.showLobby();
-    game.trigger("clearforceshow-loadingscreen");
+    if (!game.isConnectedOrConnectingToServer) {
+      console.log("Reset fullscreen to start with lobby and no loading screen");
+      fullScreenNavigateTo(Route.Start);
+      this.showLobby();
+      game.trigger("clearforceshow-loadingscreen");
+    }
+    else {
+      console.log("Tried to reset fullscreen while connected or connecting to a game! If we did that, we would pop the lobby up during a game. Ignoring request");
+    }
   }
 }
 

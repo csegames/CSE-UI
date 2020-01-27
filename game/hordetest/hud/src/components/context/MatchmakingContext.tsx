@@ -165,7 +165,7 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
           this.tryConnect(host, port, 0);
         }
         else {
-          console.error(`Received matchmaking server ready for ${host}:${port}. In a game, ignoring it`)
+          console.error(`Received matchmaking server ready for ${host}:${port}. In a game or connecting to one, ignoring it`)
         }
         break;
       }
@@ -177,8 +177,8 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
             endTimer(this.timeSearchingUpdateHandle);
             this.timeSearchingUpdateHandle = null
           }
-          if (game.isConnectedToServer) {
-            console.error(`Received matchmaking kickoff. In a game, ignoring it`)
+          if (game.isConnectedOrConnectingToServer) {
+            console.error(`Received matchmaking kickoff. In a game or already connecting to one, ignoring it`)
             return;
           }
 
@@ -191,8 +191,8 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       case MatchmakingUpdateType.Error: {
         const { message, code } = (matchmakingUpdate as MatchmakingError);
         this.setState({ error: message, isEntered: false, isWaitingOnServer: false }, () => {
-          if (game.isConnectedToServer) {
-            console.error(`Received matchmaking error ${code} ${message}. In a game, ignoring it`)
+          if (game.isConnectedOrConnectingToServer) {
+            console.error(`Received matchmaking error ${code} ${message}. In a game or connecting to one, ignoring it`)
             return;
           }
           console.log(`Received matchmaking error ${code} ${message}. Showing fullscreen, navigating to start and popping up error`)

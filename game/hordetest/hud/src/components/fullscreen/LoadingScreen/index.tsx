@@ -71,7 +71,6 @@ export class LoadingScreen extends React.Component<Props, State> {
   }
 
   public render() { 
-    console.log(`Rendering loading screen: ${this.state.loadingState?this.state.loadingState.visible:false} ${this.state.forceMessage}`);
     return (this.state.loadingState && this.state.loadingState.visible) || this.state.forceMessage ? (
       <Container>
         <Logo />
