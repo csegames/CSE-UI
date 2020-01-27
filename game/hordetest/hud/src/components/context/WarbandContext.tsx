@@ -18,6 +18,7 @@ import {
   GroupMemberRemovedUpdate,
 } from '@csegames/library/lib/hordetest/graphql/schema';
 import { GraphQLActiveWarband } from '@csegames/library/lib/hordetest/graphql/schema';
+import { preloadQueryEvents } from '../fullscreen/Preloader';
 
 export function onGroupNotification(callback: (myGroupNotifications: GroupNotification) => any): EventHandle {
   return game.on('subscription-groupNotification', callback);
@@ -103,6 +104,7 @@ interface UpdateSubscriptionResult {
 }
 
 export class WarbandContextProvider extends React.Component<{}, WarbandContextState> {
+  private isInitialQuery: boolean = true;
   constructor(props: {}) {
     super(props);
 
@@ -193,7 +195,12 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
   }
 
   private handleWarbandQueryResult = (query: GraphQLResult<{ myActiveWarband: GraphQLActiveWarband }>) => {
-    if (!query || !query.data || !query.data.myActiveWarband || !query.data.myActiveWarband.info) return query;
+    if (!query || !query.data || !query.data.myActiveWarband || !query.data.myActiveWarband.info) {
+      // Query failed but we don't want to hold up loading. In future, handle this a little better,
+      // maybe try to refetch a couple times and if not then just continue on the flow.
+      this.onDonePreloading();
+      return query;
+    }
 
     const warband = query.data.myActiveWarband;
     const groupMembers = {};
@@ -203,6 +210,14 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
     });
 
     this.setState({ groupID: warband.info.id, groupMembers });
+    this.onDonePreloading();
     return query;
+  }
+
+  private onDonePreloading = () => {
+    if (this.isInitialQuery) {
+      game.trigger(preloadQueryEvents.warbandContext);
+      this.isInitialQuery = false;
+    }
   }
 }

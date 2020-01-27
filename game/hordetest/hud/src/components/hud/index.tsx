@@ -35,6 +35,7 @@ import { RuneFullScreenEffects } from './FullScreenEffects/Runes';
 import { MenuModal } from '../fullscreen/MenuModal';
 import { LeftModal } from '../fullscreen/LeftModal';
 import { RightModal } from '../fullscreen/RightModal';
+import { Preloader } from '../fullscreen/Preloader';
 
 import { ErrorComponent } from '../fullscreen/Error';
 import { ActionAlert } from '../shared/ActionAlert';
@@ -191,6 +192,7 @@ interface Props {
 }
 
 export interface State {
+  isLoadingFinished: boolean;
   isLobbyVisible: boolean;
   scenarioID: string;
 }
@@ -202,10 +204,13 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   private resetEVH: EventHandle;
   private scenarioEndedEVH: EventHandle;
   private networkFailureEVH: EventHandle;
+  private loadTimeout: number;
+  private extraLoadTimeout: number;
 
   constructor(props: Props) {
     super(props);
     this.state = {
+      isLoadingFinished: false,
       // Show the lobby by default if we are not connected or connecting to a game server
       isLobbyVisible: !game.isConnectedOrConnectingToServer,
       scenarioID: '',
@@ -218,6 +223,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
         <FullScreenContextProviders>
           <FullScreen scenarioID={this.state.scenarioID} onSelectionTimeOver={this.beginWaitingForAServerFromMatchmaking} />
 
+          {!this.state.isLoadingFinished ? <Preloader onLoadComplete={this.handleLoadComplete} /> : null}
           <MenuModal />
           <LeftModal />
           <RightModal />
@@ -306,6 +312,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
             <Settings />
           </SettingsContainer>
 
+          {!this.state.isLoadingFinished ? <Preloader onLoadComplete={this.handleLoadComplete} /> : null}
           <MenuModal />
           <LeftModal />
           <RightModal />
@@ -321,6 +328,14 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     this.resetEVH = game.on('reset-fullscreen', this.resetFullscreen);
     this.networkFailureEVH = game.onNetworkFailure(this.handleNetworkFailure);
 
+    console.log('componentDidMount');
+
+    // Set a timeout of 10s if we fire a ReadyForDisplay
+    this.loadTimeout = window.setTimeout(() => {
+      console.error('Load completed before Preloader said it was. Is something getting stuck in Preloader?');
+      this.handleLoadComplete();
+    }, 10000);
+
     if (game.isConnectedOrConnectingToServer) {
       this.beginWaitingForAServerFromMatchmaking()
     }
@@ -332,6 +347,10 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     this.resetEVH.clear();
     this.scenarioEndedEVH.clear();
     this.networkFailureEVH.clear();
+
+    if (this.extraLoadTimeout) {
+
+    }
   }
 
   private showLobby = () => {
@@ -407,6 +426,17 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     else {
       console.log("Tried to reset fullscreen while connected or connecting to a game! If we did that, we would pop the lobby up during a game. Ignoring request");
     }
+  }
+
+  private handleLoadComplete = () => {
+    console.log('handleLoadComplete');
+    console.log('OnReadyForDisplay');
+    this.extraLoadTimeout = window.setTimeout(() => {
+      this.setState({ isLoadingFinished: true });
+      console.log('triggering');
+      engine.trigger('OnReadyForDisplay');
+      window.clearTimeout(this.loadTimeout);
+    }, 3000);
   }
 }
 

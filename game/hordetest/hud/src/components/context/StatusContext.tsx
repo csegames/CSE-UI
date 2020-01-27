@@ -8,6 +8,7 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 import { StatusDef } from '@csegames/library/lib/hordetest/graphql/schema';
+import { preloadQueryEvents } from '../fullscreen/Preloader';
 
 const query = gql`
   query StatusContextQuery {
@@ -42,6 +43,7 @@ const getDefaultStatusContextState = (): StatusContextState => ({
 export const StatusContext = React.createContext(getDefaultStatusContextState());
 
 export class StatusContextProvider extends React.Component<{}, StatusContextState> {
+  private isInitialQuery: boolean = true;
   constructor(props: {}) {
     super(props);
 
@@ -58,8 +60,22 @@ export class StatusContextProvider extends React.Component<{}, StatusContextStat
   }
 
   private handleQueryResult = (graphql: GraphQLResult<{ status: { statuses: StatusDef[] } }>) => {
-    if (!graphql || !graphql.data || !graphql.data.status || !graphql.data.status.statuses) return graphql;
+    if (!graphql || !graphql.data || !graphql.data.status || !graphql.data.status.statuses) {
+      // Query failed but we don't want to hold up loading. In future, handle this a little better,
+      // maybe try to refetch a couple times and if not then just continue on the flow.
+      this.onDonePreloading();
+      return graphql;
+    }
 
     this.setState({ statusDefs: graphql.data.status.statuses });
+    this.onDonePreloading();
+    return graphql;
+  }
+
+  private onDonePreloading = () => {
+    if (this.isInitialQuery) {
+      game.trigger(preloadQueryEvents.statusContext);
+      this.isInitialQuery = false;
+    }
   }
 }

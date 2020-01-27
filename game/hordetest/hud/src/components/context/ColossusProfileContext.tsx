@@ -9,6 +9,7 @@ import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 import { ChampionDBModel, DefaultChampionDBModel, MatchStatsDBModel } from '@csegames/library/lib/hordetest/graphql/schema';
 import { getConfig } from 'lib/gqlHelpers';
+import { preloadQueryEvents } from '../fullscreen/Preloader';
 
 const query = gql`
   query ColossusProfileContextQuery {
@@ -71,6 +72,7 @@ const getDefaultColossusProfileState = (): ColossusProfileState => ({
 export const ColossusProfileContext = React.createContext(getDefaultColossusProfileState());
 
 export class ColossusProfileProvider extends React.Component<{}, ColossusProfileState> {
+  private isInitialQuery: boolean = true;
   constructor(props: {}) {
     super(props);
 
@@ -88,10 +90,21 @@ export class ColossusProfileProvider extends React.Component<{}, ColossusProfile
 
   private handleQueryResult = (graphql: GraphQLResult<{ colossusProfile: ColossusProfileModel }>) => {
     if (!graphql || !graphql.data || !graphql.data.colossusProfile) {
+      // Query failed but we don't want to hold up loading. In future, handle this a little better,
+      // maybe try to refetch a couple times and if not then just continue on the flow.
+      this.onDonePreloading();
       return graphql;
     }
 
     this.setState({ graphql, colossusProfile: graphql.data.colossusProfile });
+    this.onDonePreloading();
+    return graphql;
+  }
+
+  private onDonePreloading = () => {
+    if (this.isInitialQuery) {
+      game.trigger(preloadQueryEvents.colossusProfileContext);
+      this.isInitialQuery = false;
+    }
   }
 }
-

@@ -10,6 +10,7 @@ import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/
 import { User } from '@csegames/library/lib/hordetest/graphql/schema';
 import { SetDisplayName } from '../fullscreen/SetDisplayName';
 import { getConfig } from 'lib/gqlHelpers';
+import { preloadQueryEvents } from '../fullscreen/Preloader';
 
 const query = gql`
   query MyUserContextQuery {
@@ -45,6 +46,7 @@ const getDefaultMyUserContextState = (): MyUserContextState => ({
 export const MyUserContext = React.createContext(getDefaultMyUserContextState());
 
 export class MyUserContextProvider extends React.Component<Props, MyUserContextState> {
+  private isInitialQuery: boolean = true;
   constructor(props: Props) {
     super(props);
 
@@ -61,13 +63,26 @@ export class MyUserContextProvider extends React.Component<Props, MyUserContextS
   }
 
   private handleQueryResult = (graphql: GraphQLResult<{ myUser: User }>) => {
-    if (!graphql.data || !graphql.data.myUser) return graphql;
+    if (!graphql.data || !graphql.data.myUser) {
+      // Query failed but we don't want to hold up loading. In future, handle this a little better,
+      // maybe try to refetch a couple times and if not then just continue on the flow.
+      this.onDonePreloading();
+      return graphql;
+    }
 
     if (!graphql.data.myUser.displayName) {
       game.trigger('show-middle-modal', <SetDisplayName onDisplayNameSet={graphql.refetch} />, false, true);
     }
 
     this.setState({ myUser: graphql.data.myUser, refetch: graphql.refetch });
+    this.onDonePreloading();
     return graphql;
+  }
+
+  private onDonePreloading = () => {
+    if (this.isInitialQuery) {
+      game.trigger(preloadQueryEvents.myUserContext);
+      this.isInitialQuery = false;
+    }
   }
 }

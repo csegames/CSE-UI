@@ -129,10 +129,10 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
   private onEnterMatchmaking = () => {
     console.log("Matchmaking context understands we have entered matchmaking");
     this.setState({ isEntered: true, timeSearching: 0 });
-    
+
     //If someone waits in matchmaking for 30 minutes and nothing happens, then i guess the timer just stops. We probably have bigger problems
     const thirtyMinutes = 30 * 60 * 60 * 1000;
-    
+
     const interval = 60; //Choosing a non divisable number so the update will appear smoother
     this.timeSearchingUpdateHandle = startTimer(thirtyMinutes, interval, (elapsed, remainingTime) => {
       if (elapsed / 1000 > this.state.timeSearching) {

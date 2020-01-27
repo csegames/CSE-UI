@@ -268,7 +268,7 @@ export function BattlePass(props: Props) {
             </BattlePassContainer>
             {isConsole && <ConsoleTriggerIcon className='icon-xb-rt'></ConsoleTriggerIcon>}
             <ChampionImageContainer>
-              <ChampionImage src={'images/fullscreen/startscreen/human-m-blackguard.png'} />
+              <ChampionImage src={'images/hud/champions/berserker.png'} />
               <SkinInfoPosition>
                 <SkinInfo hideSkinButtons selectedPreviewSkinInfo={selectedPreviewSkinInfo} />
               </SkinInfoPosition>

@@ -8,6 +8,7 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { GraphQLResult, GraphQL } from '@csegames/library/lib/_baseGame/graphql/react';
 import { ChampionCostumeInfo, ChampionInfo } from '@csegames/library/lib/hordetest/graphql/schema';
+import { preloadQueryEvents } from '../fullscreen/Preloader';
 
 const query = gql`
   query ChampionInfoContextQuery {
@@ -55,6 +56,7 @@ export enum Champions {
 }
 
 export class ChampionInfoContextProvider extends React.Component<{}, ChampionInfoContextState> {
+  private isInitialQuery: boolean = true;
   constructor(props: {}) {
     super(props);
 
@@ -81,10 +83,22 @@ export class ChampionInfoContextProvider extends React.Component<{}, ChampionInf
   private handleQueryResult = (query: GraphQLResult<ChampionInfoContextState>) => {
     if (!query || !query.data || !query.data.championCostumes || !query.data.champions) {
       console.error("Missing data, championCostumes, or champions from ChampionInfoContextQuery query");
+
+      // Query failed but we don't want to hold up loading. In future, handle this a little better,
+      // maybe try to refetch a couple times and if not then just continue on the flow.
+      this.onDonePreloading();
       return query;
     }
 
     this.setState({ championCostumes: query.data.championCostumes, champions: query.data.champions });
+    this.onDonePreloading();
     return query;
+  }
+
+  private onDonePreloading = () => {
+    if (this.isInitialQuery) {
+      game.trigger(preloadQueryEvents.championInfoContext);
+      this.isInitialQuery = false;
+    }
   }
 }
