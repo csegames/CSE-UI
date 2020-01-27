@@ -25,6 +25,7 @@ const query = gql`
 
 export interface MyUserContextState {
   myUser: User;
+  refetch: () => void;
 }
 
 export interface Props {
@@ -38,6 +39,7 @@ const getDefaultMyUserContextState = (): MyUserContextState => ({
     id: null,
     lastLogin: null,
   },
+  refetch: () => {},
 });
 
 export const MyUserContext = React.createContext(getDefaultMyUserContextState());
@@ -62,10 +64,10 @@ export class MyUserContextProvider extends React.Component<Props, MyUserContextS
     if (!graphql.data || !graphql.data.myUser) return graphql;
 
     if (!graphql.data.myUser.displayName) {
-      game.trigger('show-middle-modal', <SetDisplayName />, false, true);
+      game.trigger('show-middle-modal', <SetDisplayName onDisplayNameSet={graphql.refetch} />, false, true);
     }
 
-    this.setState({ myUser: graphql.data.myUser });
+    this.setState({ myUser: graphql.data.myUser, refetch: graphql.refetch });
     return graphql;
   }
 }

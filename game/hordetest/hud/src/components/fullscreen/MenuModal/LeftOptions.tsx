@@ -4,9 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 
+import { MyUserContext } from 'context/MyUserContext';
 import { SetDisplayName } from '../SetDisplayName';
 
 const Container = styled.div`
@@ -52,6 +53,8 @@ export interface Props {
 }
 
 export function LeftOptions(props: Props) {
+  const myUserContext = useContext(MyUserContext);
+
   function onSettingsClick() {
     game.trigger('navigate', 'settings');
     game.trigger('hide-menu-modal');
@@ -62,7 +65,11 @@ export function LeftOptions(props: Props) {
   }
 
   function showChangeDisplayName() {
-    game.trigger('show-middle-modal', <SetDisplayName />, false, true)
+    game.trigger('show-middle-modal', <SetDisplayName onDisplayNameSet={onDisplayNameSet} />, false, true)
+  }
+
+  function onDisplayNameSet() {
+    myUserContext.refetch();
   }
 
   return (

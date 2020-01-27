@@ -74,6 +74,7 @@ const Cancel = styled.a`
 `;
 
 export interface Props {
+  onDisplayNameSet: () => void;
 }
 
 export function SetDisplayName(props: Props) {
@@ -93,6 +94,7 @@ export function SetDisplayName(props: Props) {
       var result = await webAPI.DisplayNameAPI.SetDisplayName(webAPI.defaultConfig, wantName);
       if (result.ok) {
         // done, we'll close this.
+        props.onDisplayNameSet();
         setTimeout(() => {
           setState({
             waitingOnRequest: false,

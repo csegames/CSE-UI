@@ -93,7 +93,6 @@ export class MiddleModal extends React.Component<Props, State> {
     this.setState({content, overlayCloseDisabled: disableOverlayClose, isVisible: true }, () => {
       console.log(`Done setting up middle modal to show ${this.state.isVisible}`);
     });
-    
   }
 
   private hideModal = () => {
@@ -114,7 +113,6 @@ export class MiddleModal extends React.Component<Props, State> {
       </MiddleModalComponent>
     );
   }
-  
 }
 
 export interface ComponentProps {
