@@ -87,16 +87,20 @@ export function LockedList(props: Props) {
   }
 
   function getPlayerStateList() {
-    if (props.type === 'left') {
-      return Object.values(championSelectContext.playerStates).slice(0, 5);
+    const playerStates = Object.values(championSelectContext.playerStates);
+    if (props.type === 'right') {
+      return playerStates.slice(0, 5);
+    } else if (props.type === 'left' && playerStates.length > 5) {
+      return playerStates.slice(5, 10);
     } else {
-      return Object.values(championSelectContext.playerStates).slice(5, 10);
+      return [];
     }
   }
 
-  return (
+  const playerStateList = getPlayerStateList();
+  return playerStateList.length > 0 ? (
     <Container>
-      {getPlayerStateList().map((player) => {
+      {playerStateList.map((player) => {
         const lockedClass = player.isLocked ? 'locked' : '';
         const championInfo = getPlayerChampion(player);
         const championCostumeInfo = championContext.championCostumes.find(c => c.requiredChampionID === championInfo.id);
@@ -111,5 +115,5 @@ export function LockedList(props: Props) {
         );
       })}
     </Container>
-  );
+  ) : null;
 }

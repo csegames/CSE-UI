@@ -189,7 +189,7 @@ export function ChampionSelect(props: Props) {
   }
 
   function onChampionPick(championID: string) {
-    if (this.isLocked) {
+    if (isLocked) {
       return;
     }
     const champion = champions.find(c => championID === c.id);
@@ -245,6 +245,7 @@ export function ChampionSelect(props: Props) {
             const championCostumeInfo = getChampionCostumeInfo(champion.id);
             return (
               <ChampionPick
+                key={champion.id}
                 isSelected={isSelected}
                 id={champion.id}
                 image={championCostumeInfo.thumbnailURL}
