@@ -28,6 +28,45 @@ const HighlightContainer = styled.div`
   background-color: #242424;
   margin: 13px;
   text-align: center;
+
+  animation: popIn 1s forwards;
+  margin-top: 10%;
+  opacity: 0;
+  transform: scale(1);
+
+  &.card1 {
+    animation-delay: 0.5s;
+  }
+
+  &.card2 {
+    animation-delay: 1s;
+  }
+
+  &.card3 {
+    animation-delay: 1.5s;
+  }
+
+  &.card4 {
+    animation-delay: 2s;
+  }
+
+
+  @keyframes popIn {
+    0% {
+      opacity: 0;
+      margin-top: 10%;
+      transform:scale(1);
+    }
+    70%{
+      transform:scale(1.06);
+      margin-top: 0;
+    }
+    100% {
+      opacity: 1;
+      margin-top: 13px;
+      transform:scale(1);
+    }
+  }
 `;
 
 const ChampionImage = styled.img`
@@ -253,10 +292,10 @@ export function Highlights(props: Props) {
     };
   }
 
-  function renderHighlight(p: HighlightStat) {
+  function renderHighlight(p: HighlightStat, className: string) {
     const championInfo = getChampionInfo(p.player);
     return (
-      <HighlightContainer>
+      <HighlightContainer className={className}>
         <ChampionImage src={championInfo && championInfo.costume ? championInfo.costume.cardImageURL : ''} />
         <BGOverlay />
         <PlayerInfoContainer>
@@ -274,10 +313,10 @@ export function Highlights(props: Props) {
   const highlightPlayers = getHighlightPlayers();
   return (
     <Container>
-      {renderHighlight(highlightPlayers[0])}
-      {renderHighlight(highlightPlayers[1])}
-      {renderHighlight(highlightPlayers[2])}
-      {renderHighlight(highlightPlayers[3])}
+      {renderHighlight(highlightPlayers[0], 'card1')}
+      {renderHighlight(highlightPlayers[1], 'card2')}
+      {renderHighlight(highlightPlayers[2], 'card3')}
+      {renderHighlight(highlightPlayers[3], 'card4')}
     </Container>
   );
 }

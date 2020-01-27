@@ -82,6 +82,21 @@ const TopContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 40px;
+
+  opacity: 0;
+  margin-left: -10%;
+  animation: slideIn 0.3s forwards;
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      margin-left: -10%;
+    }
+    to {
+      opacity: 1;
+      margin-left: 0;
+    }
+  }
 `;
 
 const TitleContainer = styled.div`
@@ -116,6 +131,22 @@ const MainSection = styled.div`
 
 const StatsListSection = styled.div`
   flex: 1;
+
+  opacity: 0;
+  margin-left: -10%;
+  animation: slideIn 0.3s forwards;
+  animation-delay: 0.2s;
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      margin-left: -10%;
+    }
+    to {
+      opacity: 1;
+      margin-left: 0;
+    }
+  }
 `;
 
 const HighlightsSection = styled.div`

@@ -17,7 +17,6 @@ import { ThumbsUpButton } from './ThumbsUpButton';
 const Container = styled.div`
   display: flex;  align-items: center;
   padding: 10px;
-  transition: all 0.2s ease-in;
 
   &:hover {
     background: linear-gradient(to right, rgba(65, 116, 255, 0.4), transparent);

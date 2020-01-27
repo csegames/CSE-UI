@@ -16,7 +16,7 @@ const ThumbsupButton = css`
   align-items: center;
   justify-content: center;
   height: 30px;
-  width: 56px;
+  width: 60px;
   font-size: 16px;
   padding: 0;
   cursor: pointer;
@@ -31,7 +31,7 @@ const VotedFor = styled.div`
   align-items: center;
   justify-content: center;
   height: 26px;
-  width: 56px;
+  width: 60px;
   cursor: pointer;
   transition: filter 0.2s;
   color: white;
@@ -48,7 +48,7 @@ const ThumbsupSelf = styled.div`
   height: 26px;
   width: 56px;
   color: white;
-  border: 2px solid #77a5f2;
+  border: 1px solid #3c547b;
   font-size: 16px;
   padding: 0;
   pointer-events: none;
