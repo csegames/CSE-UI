@@ -11,6 +11,7 @@ import { webAPI } from '@csegames/library/lib/hordetest';
 
 import { WarbandContext, onActiveGroupUpdate, WarbandContextState } from 'context/WarbandContext';
 import { InputContext, InputContextState } from 'context/InputContext';
+import { MatchmakingContext, MatchmakingContextState, PlayerNumberMode } from 'context/MatchmakingContext';
 // import { InfoSection } from './InfoSection';
 import { Button } from 'components/fullscreen/Button';
 import { PlayerView } from './PlayerView';
@@ -85,6 +86,7 @@ const ButtonIcon = styled.span`
 export interface Props {
   warbandContext: WarbandContextState;
   inputContext: InputContextState;
+  matchmakingContext: MatchmakingContextState;
 }
 
 export interface State {
@@ -104,7 +106,8 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
   }
 
   public render() {
-    const { inputContext, warbandContext } = this.props;
+    const { inputContext, warbandContext, matchmakingContext } = this.props;
+    const maxPartySize = matchmakingContext.selectedPlayerNumberMode === PlayerNumberMode.SixMan ? 6 : 10;
     return (
       <Container>
         <InviteAlerts />
@@ -127,7 +130,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
           /> */}
           <div>
             <PartyText>
-              Party {warbandContext.groupID ? Object.keys(warbandContext.groupMembers).length : 1} / 6
+              Party {warbandContext.groupID ? Object.keys(warbandContext.groupMembers).length : 1} / {maxPartySize}
             </PartyText>
             {!inputContext.isConsole ?
               <Button styles={SocialButtonStyles} type='blue' text={'Invite Friend'} onClick={this.handleInviteFriend} /> :
@@ -232,10 +235,12 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
 export function Play() {
   const warbandContext = useContext(WarbandContext);
   const inputContext = useContext(InputContext);
+  const matchmakingContext = useContext(MatchmakingContext);
   return (
     <PlayWithInjectedContext
       warbandContext={warbandContext}
       inputContext={inputContext}
+      matchmakingContext={matchmakingContext}
     />
   );
 }

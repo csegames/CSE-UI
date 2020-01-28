@@ -328,8 +328,6 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     this.resetEVH = game.on('reset-fullscreen', this.resetFullscreen);
     this.networkFailureEVH = game.onNetworkFailure(this.handleNetworkFailure);
 
-    console.log('componentDidMount');
-
     // Set a timeout of 10s if we fire a ReadyForDisplay
     this.loadTimeout = window.setTimeout(() => {
       console.error('Load completed before Preloader said it was. Is something getting stuck in Preloader?');
@@ -429,11 +427,8 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   }
 
   private handleLoadComplete = () => {
-    console.log('handleLoadComplete');
-    console.log('OnReadyForDisplay');
     this.extraLoadTimeout = window.setTimeout(() => {
       this.setState({ isLoadingFinished: true });
-      console.log('triggering');
       engine.trigger('OnReadyForDisplay');
       window.clearTimeout(this.loadTimeout);
     }, 3000);
