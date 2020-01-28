@@ -327,6 +327,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     this.hideEVH = game.on('hide-fullscreen', this.hideLobby);
     this.resetEVH = game.on('reset-fullscreen', this.resetFullscreen);
     this.networkFailureEVH = game.onNetworkFailure(this.handleNetworkFailure);
+    this.scenarioEndedEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
 
     // Set a timeout of 10s if we fire a ReadyForDisplay
     this.loadTimeout = window.setTimeout(() => {
@@ -365,11 +366,6 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   }
 
   private beginWaitingForAServerFromMatchmaking = () => {
-    // NOTE: This function is called at the end of the timer even if weve already transitioned to the loading screen
-    console.log("Selection timer ended.");
-    // Were joining into the scenario hopefully. Set up the round end handler
-    this.scenarioEndedEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
-
     //Show the loading screen and if we dont receive either a server ready or an error after 4 minutes
     //then assume a network failure has happened.
     //At the moment, the webapi has a 3 minute timeout on finding a server
