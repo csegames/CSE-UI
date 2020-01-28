@@ -81,16 +81,24 @@ export function StatsListItem(props: Props) {
   const championInfoContext = useContext(ChampionInfoContext);
 
   function getStatsCurrentPercentage() {
-    let totalKills = 0;
+    let bestKills = 0;
     let bestKillStreak = 0;
     let bestLongestLife = 0;
-    let totalDamage = 0;
-    let totalDamageTaken = 0;
+    let bestDamage = 0;
+    let bestDamageTaken = 0;
 
     props.players.forEach((player) => {
-      totalKills += player.kills;
-      totalDamage += player.damageApplied;
-      totalDamageTaken += player.damageTaken;
+      if (player.kills > bestKills) {
+        bestKills = player.kills;
+      }
+
+      if (player.damageApplied > bestDamage) {
+        bestDamage = player.damageApplied;
+      }
+
+      if (player.damageTaken > bestDamageTaken) {
+        bestDamageTaken = player.damageTaken;
+      }
 
       if (player.longestKillStreak > bestKillStreak) {
         bestKillStreak = player.longestKillStreak;
@@ -102,11 +110,11 @@ export function StatsListItem(props: Props) {
     });
 
     return {
-      kills: (props.playerStat.kills / totalKills) * 100,
+      kills: (props.playerStat.kills / bestKills) * 100,
       killStreak: (props.playerStat.longestKillStreak / bestKillStreak) * 100,
       longestLife: (props.playerStat.longestLife / bestLongestLife) * 100,
-      totalDamage: (props.playerStat.damageApplied / totalDamage) * 100,
-      damageTaken: (props.playerStat.damageTaken / totalDamageTaken) * 100,
+      totalDamage: (props.playerStat.damageApplied / bestDamage) * 100,
+      damageTaken: (props.playerStat.damageTaken / bestDamageTaken) * 100,
     }
   }
 
