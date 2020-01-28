@@ -18,3 +18,18 @@ export function formatTime(totalSeconds: number) {
     return '00:00';
   }
 }
+
+export function formatHourTime(totalSeconds: number) {
+  if (typeof totalSeconds !== 'number') return;
+
+  const date = new Date(null);
+  date.setSeconds(totalSeconds);
+
+  try {
+    return date.toISOString().substr(11, 8);
+  } catch (e) {
+    console.error("Cant make date from seconds: " + totalSeconds + ". Err:" +e);
+    console.error(new Error().stack)
+    return '00:00';
+  }
+}

@@ -11,6 +11,7 @@ declare global {
   interface Number {
     floatEquals(n: number, epsilon?: number): boolean;
     printWithSeparator(separator: string): string;
+    toStringWithCommas
   }
 }
 

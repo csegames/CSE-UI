@@ -92,7 +92,6 @@ export function List() {
       (selectedChampion === 'Any' || p.championInfo.name === selectedChampion) && p.statType === selectedStat);
   }
 
-
   const sortedFilteredTopPlayers = getFilteredTopPlayers().sort((a, b) => b.statNumber - a.statNumber);
   return (
     <Container>

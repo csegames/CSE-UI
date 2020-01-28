@@ -39,11 +39,13 @@ const query = gql`
 export interface ChampionInfoContextState {
   championCostumes: ChampionCostumeInfo[];
   champions: ChampionInfo[];
+  championIDToChampion: { [championID: string]: ChampionInfo };
 }
 
 const getDefaultChampionInfoContextState = (): ChampionInfoContextState => ({
   championCostumes: [],
   champions: [],
+  championIDToChampion: {},
 });
 
 export const ChampionInfoContext = React.createContext(getDefaultChampionInfoContextState());
@@ -74,12 +76,6 @@ export class ChampionInfoContextProvider extends React.Component<{}, ChampionInf
     );
   }
 
-  public componentDidMount() {
-  }
-
-  public componentWillUnmount() {
-  }
-
   private handleQueryResult = (query: GraphQLResult<ChampionInfoContextState>) => {
     if (!query || !query.data || !query.data.championCostumes || !query.data.champions) {
       console.error("Missing data, championCostumes, or champions from ChampionInfoContextQuery query");
@@ -90,7 +86,16 @@ export class ChampionInfoContextProvider extends React.Component<{}, ChampionInf
       return query;
     }
 
-    this.setState({ championCostumes: query.data.championCostumes, champions: query.data.champions });
+    const championIDToChampion = {};
+    query.data.champions.forEach((champion) => {
+      championIDToChampion[champion.id] = champion;
+    });
+
+    this.setState({
+      championCostumes: query.data.championCostumes,
+      champions: query.data.champions,
+      championIDToChampion,
+    });
     this.onDonePreloading();
     return query;
   }

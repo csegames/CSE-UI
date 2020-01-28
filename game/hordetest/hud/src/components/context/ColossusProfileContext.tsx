@@ -52,11 +52,15 @@ const query = gql`
 export interface ColossusProfileModel {
   champions: ChampionDBModel[];
   defaultChampion: DefaultChampionDBModel;
-  lifetimeStats: MatchStatsDBModel;
+
+  // Items in the array are split into scenarios. If an item in the array contains a null scenarioID,
+  // that is the stats of of the scenarios combined.
+  lifetimeStats: MatchStatsDBModel[];
 }
 
 export interface ColossusProfileState {
   colossusProfile: ColossusProfileModel;
+  allTimeStats: MatchStatsDBModel;
   graphql: GraphQLResult<{ colossusProfile: ColossusProfileModel }>;
 }
 
@@ -66,6 +70,7 @@ const getDefaultColossusProfileState = (): ColossusProfileState => ({
     champions: null,
     lifetimeStats: null,
   },
+  allTimeStats: null,
   graphql: null,
 });
 
@@ -96,7 +101,11 @@ export class ColossusProfileProvider extends React.Component<{}, ColossusProfile
       return graphql;
     }
 
-    this.setState({ graphql, colossusProfile: graphql.data.colossusProfile });
+    this.setState({
+      graphql,
+      colossusProfile: graphql.data.colossusProfile,
+      allTimeStats: graphql.data.colossusProfile.lifetimeStats.find(stats => stats.scenarioID == null),
+    });
     this.onDonePreloading();
     return graphql;
   }
