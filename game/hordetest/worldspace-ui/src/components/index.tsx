@@ -56,7 +56,7 @@ export interface ProgressBarState extends WorldUIState {
 export interface HealthBarState extends WorldUIState {
   type: WorldUIWidgetType.HealthBar;
   name: string;
-  isEnemy: boolean;
+  kind: HealthBarKind;
   current: number;
   max: number;
 }
@@ -208,7 +208,7 @@ export class WorldUI extends React.Component<{}, State> {
     width: number,
     height: number,
     name: string,
-    isEnemy: boolean,
+    kind: HealthBarKind,
     current: number,
     max: number
   ) => {
@@ -220,7 +220,7 @@ export class WorldUI extends React.Component<{}, State> {
       width,
       height,
       name,
-      isEnemy,
+      kind,
       current,
       max,
     });
@@ -298,7 +298,7 @@ export class WorldUI extends React.Component<{}, State> {
       width,
       height,
       objectiveState: objectiveStateCopy,
-      indicator: OBJECTIVE_INDICATORS[objectiveStateCopy.objective.index],
+      indicator: OBJECTIVE_INDICATORS[objectiveStateCopy.objective.indicator],
     };
 
     // CODE IS USED TO FIND A BUG. DELETE WHEN FIXED

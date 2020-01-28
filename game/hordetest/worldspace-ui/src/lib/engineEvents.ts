@@ -37,7 +37,7 @@ function onUpdateHealthBar(callback: (
   width: number,
   height: number,
   name: string,
-  isEnemy: boolean,
+  kind: HealthBarKind,
   currentHealth: number,
   maxHealth: number,
 ) => void) {

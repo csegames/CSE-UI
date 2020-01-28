@@ -366,7 +366,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
 
   private beginWaitingForAServerFromMatchmaking = () => {
     // NOTE: This function is called at the end of the timer even if weve already transitioned to the loading screen
-    console.log("Selection timer ended.")
+    console.log("Selection timer ended.");
     // Were joining into the scenario hopefully. Set up the round end handler
     this.scenarioEndedEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
 

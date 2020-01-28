@@ -11,4 +11,5 @@ import './Objective';
 import './SoundEvents';
 import './CharacterDef';
 import './ItemGameplayType';
+import './HealthBarKind';
 import './Status';

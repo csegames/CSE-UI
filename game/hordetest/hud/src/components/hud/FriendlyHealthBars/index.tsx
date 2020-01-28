@@ -38,7 +38,7 @@ export class FriendlyHealthBars extends React.Component<Props, State> {
     const sortedPlayers = Object.keys(this.state.friendlyPlayers).sort((a, b) => a.localeCompare(b));
     return (
       <Container>
-        {sortedPlayers.slice(0, 8).map((playerName) => {
+        {sortedPlayers.slice(0, 9).map((playerName) => {
           return <FriendlyHealthBar playerName={playerName} />;
         })};
       </Container>
