@@ -112,6 +112,11 @@ export interface BaseGameModel {
   connectToServer: (server: string, port: number) => void;
 
   /**
+   * Called when player runs out of lives and clicks on Leave Match
+   */
+  disconnectFromAllServers: () => void;
+
+  /**
    * Client -> Server status information
    */
   isConnectedToServer: boolean;

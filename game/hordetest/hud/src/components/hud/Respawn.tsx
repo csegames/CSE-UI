@@ -143,6 +143,7 @@ const LivesText = styled.div`
 
 export interface Props {
   isConsole: boolean;
+  onLeaveMatch: () => void;
 }
 
 export interface State {
@@ -180,12 +181,12 @@ class RespawnWithInjectedContext extends React.Component<Props, State> {
               <DashLine />
             </HeartsContainer>
             <LivesText>{livesLeft} {livesLeft !== 1 ? 'Lives' : 'Life'} Left</LivesText>
-            {playerState.currentDeaths < playerState.maxDeaths ?
+            {playerState.currentDeaths < playerState.maxDeaths || playerState.maxDeaths === 0 ?
               <Button className={this.props.isConsole ? 'highlight' : ''} onClick={this.onRespawn}>
                 {this.props.isConsole && <span className={game.gamepadSelectBinding.iconClass}></span>}
                 Respawn
               </Button> :
-              <Button className='leave' onClick={this.onRespawn}>
+              <Button className='leave' onClick={this.onLeaveMatch}>
                 {this.props.isConsole && <span className={game.gamepadSelectBinding.iconClass}></span>}
                 Leave Match
               </Button>
@@ -256,16 +257,21 @@ class RespawnWithInjectedContext extends React.Component<Props, State> {
     hordetest.game.selfPlayerState.respawn('-1');
   }
 
+  private onLeaveMatch = () => {
+    game.disconnectFromAllServers();
+    this.props.onLeaveMatch();
+  }
+
   private setWaitingForSelect = (isWaitingForSelect: boolean) => {
     game.setWaitingForSelect(isWaitingForSelect);
   }
 }
 
-export function Respawn() {
+export function Respawn(props: { onLeaveMatch: () => void }) {
   return (
     <InputContext.Consumer>
       {({ isConsole }) => (
-        <RespawnWithInjectedContext isConsole={isConsole} />
+        <RespawnWithInjectedContext isConsole={isConsole} onLeaveMatch={props.onLeaveMatch} />
       )}
     </InputContext.Consumer>
   );

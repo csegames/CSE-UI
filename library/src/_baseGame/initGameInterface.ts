@@ -178,6 +178,7 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
     },
 
     connectToServer: noOp,
+    disconnectFromAllServers: noOp,
     isConnectedOrConnectingToServer: false,
     isConnectedToServer: false,
     isDisconnectingFromAllServers: false,

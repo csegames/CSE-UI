@@ -306,7 +306,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
             <PlayerTrackers />
           </PlayerTrackersPosition>
 
-          <Respawn />
+          <Respawn onLeaveMatch={this.resetFullscreen} />
 
           <SettingsContainer>
             <Settings />
@@ -415,7 +415,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   }
 
   private resetFullscreen = () => {
-    if (!game.isConnectedOrConnectingToServer) {
+    if (!game.isConnectedOrConnectingToServer || game.isDisconnectingFromAllServers) {
       console.log("Reset fullscreen to start with lobby and no loading screen");
       fullScreenNavigateTo(Route.Start);
       this.showLobby();
