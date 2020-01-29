@@ -24,9 +24,9 @@ export function defaultSubscriptionOpts(): Options<any> {
   return {
     url: () => `${game.webAPIHost}/graphql`.replace(/(http)(s?:\/\/)/, 'ws$2'),
     protocols: 'graphql-ws',
-    reconnectInterval: 500,
+    startReconnectInterval: 500,
+    maxReconnectInterval: 4000,
     connectTimeout: 5000,
-    maxRetries: 20,
     initPayload: {
       token: game.accessToken,
       characterID: game.characterID,
