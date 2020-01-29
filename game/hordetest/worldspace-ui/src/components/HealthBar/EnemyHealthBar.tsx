@@ -16,13 +16,14 @@ const Container = styled.div`
 `;
 
 const NameOfPlayer = styled.div`
-  font-family: Lato;
-  font-weight: bold;
+  font-family: Exo;
+  font-weight: normal;
   color: white;
   font-size: 12px;
   margin-left: 7px;
   margin-bottom: 2px;
   width: 120px;
+  text-shadow: 2px 2px 4px black;
 `;
 
 const BarContainer = styled.div`

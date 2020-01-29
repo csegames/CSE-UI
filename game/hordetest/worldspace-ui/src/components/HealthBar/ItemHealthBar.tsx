@@ -16,21 +16,22 @@ const Container = styled.div`
 `;
 
 const NameOfItem = styled.div`
-  font-family: Lato;
-  font-weight: bold;
+  font-family: Exo;
+  font-weight: normal;
   color: white;
   font-size: 12px;
   margin-left: 7px;
   margin-bottom: 2px;
-  width: 100%;
+  width: 200px;
+  text-shadow: 2px 2px 4px black;
 `;
 
 const BarContainer = styled.div`
   position: relative;
-  width: calc(100% - 10px);
+  width: 200px;
   height: 8px;
   margin-left: 5px;
-  border: 1px solid rgb(100, 36, 2);
+  border: 1px solid rgb(0, 0, 0);
   background-color: #000000;
   transform: skewX(-10deg);
   z-index: -1;
