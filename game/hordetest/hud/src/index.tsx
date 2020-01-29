@@ -15,7 +15,7 @@ import '@csegames/library/lib/hordetest';
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-// import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/browser';
 import initialize from './services/initialization';
 import { ErrorBoundary } from 'cseshared/components/ErrorBoundary';
 import { HUD } from 'components/HUD';
@@ -51,11 +51,14 @@ function readyCheck() {
 }
 
 function initializeSentry() {
-  Sentry.init({
-    dsn: 'https://1ba9a37f8d99473988d480a3e2ddf750@sentry.io/2050654',
-  });
+  if (game.isPublicBuild) {
+    Sentry.init({
+      dsn: 'https://2f9671b9d7bd4d81b623974447ac7a6f@sentry.io/2068594',
+      attachStacktrace: true,
+    });
 
-  Sentry.setUser({ characterID: game.characterID });
+    Sentry.setUser({ characterID: game.characterID });
+  }
 }
 
 readyCheck();

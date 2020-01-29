@@ -90,8 +90,10 @@ export class MyUserContextProvider extends React.Component<Props, MyUserContextS
   }
 
   private initializeSentryUserData = (myUser: User) => {
-    Sentry.setUser({
-      userInfo: myUser,
-    });
+    if (game.isPublicBuild) {
+      Sentry.setUser({
+        userInfo: myUser,
+      });
+    }
   }
 }

@@ -75,6 +75,11 @@ export interface BaseGameModel {
   fps: number;
 
   /**
+   * Whether or not client is on a public build (live to players)
+   */
+  isPublicBuild: boolean;
+
+  /**
    * Forces the client to reload the entire UI
    */
   reloadUI: () => void;
