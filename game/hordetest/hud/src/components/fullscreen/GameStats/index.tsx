@@ -151,7 +151,7 @@ const StatsListSection = styled.div`
 
 const HighlightsSection = styled.div`
   height: 100%;
-  width: 700px;
+  width: 680px;
 `;
 
 const ButtonStyle = css`

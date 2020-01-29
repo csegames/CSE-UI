@@ -17,9 +17,10 @@ import { ThumbsUpButton } from './ThumbsUpButton';
 const Container = styled.div`
   display: flex;  align-items: center;
   padding: 10px;
+  transition: background 0.1s;
 
   &:hover {
-    background: linear-gradient(to right, rgba(65, 116, 255, 0.4), transparent);
+    background: rgba(65, 116, 255, 0.17);
   }
 `;
 
@@ -63,6 +64,7 @@ const BarStyles = css`
   height: 15px;
   background-color: #2a3754;
   filter: grayscale(70%);
+  transition: width .5s ease-in;
 
   &.self {
     filter: grayscale(0);

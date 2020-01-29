@@ -58,15 +58,18 @@ const HighlightContainer = styled.div`
     0% {
       opacity: 0;
       margin-top: 100px;
+      filter: brightness(1);
       transform:scale(1);
     }
-    80%{
-      transform:scale(1.06);
-      margin-top: 0;
+    85%{
+      margin-top: 13px;
+      filter: brightness(1.7);
+      transform:scale(1.07);
     }
     100% {
       opacity: 1;
       margin-top: 13px;
+      filter: brightness(1);
       transform:scale(1);
     }
   }
