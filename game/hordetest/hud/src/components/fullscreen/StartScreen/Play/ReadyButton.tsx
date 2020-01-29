@@ -57,6 +57,12 @@ const ReadyButtonStyle = css`
     filter: brightness(90%);
   }
 
+  &:disabled {
+    pointer-events: none;
+    filter: grayscale(100%);
+  }
+}
+
 `;
 
 // const QueueTimerText = styled.div`
@@ -99,6 +105,8 @@ export interface Props {
 
 export interface State {
   isSearching: boolean;
+  disabled: boolean;
+  waitingOnMatchmakeRequest: boolean;
 }
 
 interface SearchingTimerStateProps {
@@ -121,11 +129,16 @@ class SearchingTimer extends React.Component<SearchingTimerStateProps,{}> {
 
 class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   private matchmakingEVH: EventHandle;
+  private matchmakeRequestTime: number;
+  private minDisabledTime: 2000;
+
   constructor(props: Props) {
     super(props);
 
     this.state = {
       isSearching: false,
+      disabled: false,
+      waitingOnMatchmakeRequest: false,
     };
   }
 
@@ -139,6 +152,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
         <Button
           type='primary'
           styles={`${searchingClass} ${ReadyButtonStyle}`}
+          disabled={this.state.disabled}
           text={
             inputContext.isConsole ?
             <ConsoleButton>
@@ -160,6 +174,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
         <Button
           type='primary'
           styles={`${searchingClass} ${ReadyButtonStyle}`}
+          disabled={this.state.disabled}
           text={
             inputContext.isConsole ?
             <ConsoleButton>
@@ -177,6 +192,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
         <Button
           type='primary'
           styles={`${searchingClass} ${ReadyButtonStyle}`}
+          disabled={this.state.disabled}
           text={
             inputContext.isConsole ?
             <ConsoleButton>
@@ -193,6 +209,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
       <Button
         type='primary'
         styles={`${searchingClass} ${ReadyButtonStyle}`}
+        disabled={this.state.disabled}
         text={
           inputContext.isConsole ?
           <ConsoleButton>
@@ -284,17 +301,44 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
 
   private enterMatchmaking = async () => {
     console.log("Entering matchmaking...")
-    const res = await this.props.enterMatchmaking();
-    if (res.ok) {
-      this.props.matchmakingContext.onEnterMatchmaking();
-    } else {
-      // Show error modal
-      try {
-        const data = JSON.parse(res.data).FieldCodes[0];
-        this.showErrorModal('Failed To Enter Matchmaking', data.Message, data.Code);
-      } catch (e) {
-        this.showErrorModal('Failed To Enter Matchmaking', 'A problem ocurred. Please try again later', 19107);
+    try {
+      this.setState(s => ({
+          ...s,
+          disabled: true,
+          waitingOnMatchmakeRequest: true,
+      }));
+      this.matchmakeRequestTime = Date.now();
+      setTimeout(() => {
+        if (this.state.waitingOnMatchmakeRequest) return;
+        this.setState(s => ({
+          ...s,
+          disabled: false,
+        }));
+      }, this.minDisabledTime);
+      const res = await this.props.enterMatchmaking();
+      this.setState(s => ({
+        ...s,
+        disabled: !(Date.now() - this.matchmakeRequestTime > this.minDisabledTime),
+        waitingOnMatchmakeRequest: false,
+      }));
+      if (res.ok) {
+        this.props.matchmakingContext.onEnterMatchmaking();
+      } else {
+        // Show error modal
+        try {
+          const data = JSON.parse(res.data).FieldCodes[0];
+          this.showErrorModal('Failed To Enter Matchmaking', data.Message, data.Code);
+        } catch (e) {
+          this.showErrorModal('Failed To Enter Matchmaking', 'A problem ocurred. Please try again later', 19107);
+        }
       }
+    } catch (err) {
+      this.showErrorModal('Failed To Enter Matchmaking', 'A problem ocurred. Please try again later', 19107);
+      this.setState(s => ({
+        ...s,
+        disabled: !(Date.now() - this.matchmakeRequestTime > this.minDisabledTime),
+        waitingOnMatchmakeRequest: false,
+      }));
     }
   }
 
