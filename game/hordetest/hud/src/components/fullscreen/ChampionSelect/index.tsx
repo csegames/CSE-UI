@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useContext, useEffect } from 'react';
+import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/library/lib/hordetest';
 
@@ -14,6 +15,7 @@ import { ChampionPick } from './ChampionPick';
 import { ChampionInfo } from './ChampionInfo';
 import { LockedList } from './LockedList';
 import { LockIn } from './LockIn';
+import { TransitionAnimation } from '../../shared/TransitionAnimation';
 import { ChampionInfoContext } from 'context/ChampionInfoContext';
 import { MatchmakingContext } from 'context/MatchmakingContext';
 import { InputContext } from 'context/InputContext';
@@ -112,29 +114,22 @@ const SelectedChampionBackground = styled.img`
   z-index: -1;
 `;
 
-const SelectedChampionContainer = styled.div`
-  position: absolute;
+const SelectedChampionContainer = css`
+  position: relative;
   width: 80%;
   height: 140%;
   pointer-events: none;
   top: 0;
   bottom: 0;
-  right: 15%;
   left: auto;
   -webkit-mask-image: linear-gradient(to top, transparent 25%, black 65%);
 `;
 
-const SelectedChampionImage = styled.img`
-  position: absolute;
-  width: 80%;
-  height: 80%;
-  object-fit: contain;
-  right: -5%;
-
+const SelectedChampionTransitionAnimation = css`
+  animation: slideIn 0.5s forwards;
   opacity: 0;
   margin-left: -10%;
-  animation: slideIn 0.7s forwards ;
-  animation-delay: 0.1s
+
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -145,6 +140,14 @@ const SelectedChampionImage = styled.img`
       margin-left: 0;
     }
   }
+`;
+
+const SelectedChampionImage = styled.img`
+  position: absolute;
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  right: -5%;
 `;
 
 const ChampionInfoContainer = styled.div`
@@ -179,6 +182,21 @@ const ConsoleNavIcon = styled.div`
   font-size: 30px;
   color: white;
   margin: 0 10px;
+`;
+
+const BackgroundAnimationClass = css`
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 export interface Props {
@@ -259,11 +277,19 @@ export function ChampionSelect(props: Props) {
   }
 
   const selectedChampionCostumeInfo = selectedChampion ? getChampionCostumeInfo(selectedChampion.id) : null;
+  const standingImage = selectedChampionCostumeInfo ?
+    selectedChampionCostumeInfo.standingImageURL : 'images/hud/champions/berserker.png';
+  const backgroundImage = selectedChampionCostumeInfo ? selectedChampionCostumeInfo.backgroundImageURL : 
+    'images/hud/champions/berserker-champion-card-bg.jpg';
   return (
     <ChampionSelectContextProvider matchID={matchID}>
       <Container>
-        <SelectedChampionBackground src={selectedChampionCostumeInfo ?
-          selectedChampionCostumeInfo.backgroundImageURL : 'images/hud/champions/berserker-champion-card-bg.jpg'} />
+        <TransitionAnimation
+          changeVariable={backgroundImage}
+          animationDuration={500}
+          animationClass={BackgroundAnimationClass}>
+          <SelectedChampionBackground src={backgroundImage} />
+        </TransitionAnimation>
 
         <HeaderContainer>
           <HeaderItemContainer>
@@ -295,11 +321,14 @@ export function ChampionSelect(props: Props) {
           })}
           {inputContext.isConsole && <ConsoleNavIcon className='icon-xb-rb' />}
         </ChampionPickContainer>
-,
-        <SelectedChampionContainer>
-          <SelectedChampionImage src={selectedChampionCostumeInfo ?
-            selectedChampionCostumeInfo.standingImageURL : 'images/hud/champions/berserker.png'} />
-        </SelectedChampionContainer>
+
+        <TransitionAnimation
+          changeVariable={standingImage}
+          animationDuration={500}
+          animationClass={SelectedChampionTransitionAnimation}
+          containerStyles={SelectedChampionContainer}>
+          <SelectedChampionImage src={standingImage} />
+        </TransitionAnimation>
 
         <ChampionInfoContainer>
           <ChampionInfo selectedChampion={selectedChampion} />

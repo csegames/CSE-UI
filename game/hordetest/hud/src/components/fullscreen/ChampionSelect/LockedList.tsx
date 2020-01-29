@@ -12,6 +12,39 @@ import { ChampionSelectContext, ChampionSelectPlayer } from './context/ChampionS
 
 
 const Container = styled.div`
+  &.left {
+    opacity: 0;
+    margin-left: -10%;
+    animation: slideIn 0.6s forwards;
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        margin-left: -10%;
+      }
+      to {
+        opacity: 1;
+        margin-left: 0;
+      }
+    }
+  }
+
+  &.right {
+    opacity: 0;
+    margin-right: -10%;
+    animation: slideIn 0.6s forwards;
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        margin-right: -10%;
+      }
+      to {
+        opacity: 1;
+        margin-right: 0;
+      }
+    }
+  }
 `;
 
 const ListItem = styled.div`
@@ -114,9 +147,9 @@ export function LockedList(props: Props) {
   const playerStateList = getPlayerStateList();
   const typeClass = props.type === 'left' ? 'left' : 'right';
   return playerStateList.length > 0 ? (
-    <Container>
+    <Container className={typeClass}>
       {playerStateList.map((player) => {
-        const lockedClass = player.isLocked ? '' : '';
+        const lockedClass = player.isLocked ? 'locked' : '';
         const championInfo = getPlayerChampion(player);
         const championCostumeInfo = championContext.championCostumes.find(c => c.requiredChampionID === championInfo.id);
 

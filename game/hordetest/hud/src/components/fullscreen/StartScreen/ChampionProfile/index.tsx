@@ -8,17 +8,19 @@ import React, { useState, useContext } from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/library/lib/hordetest';
+import { ChampionInfo, ChampionCostumeInfo } from '@csegames/library/lib/hordetest/graphql/schema';
+
 import { ChampionInfoDisplay } from './ChampionInfoDisplay';
 import { ChampionSelect } from './ChampionSelect';
 import { SkinInfo } from './SkinInfo';
 import { SkillInfo } from './SkillInfo';
 import { ActionButton } from '../../ActionButton';
-
 import { Skin, StoreItemType } from '../Store/testData';
 import { InputContext } from 'context/InputContext';
 import { ChampionInfoContext } from 'context/ChampionInfoContext';
 import { ColossusProfileContext } from 'context/ColossusProfileContext';
-import { ChampionInfo, ChampionCostumeInfo } from '@csegames/library/lib/hordetest/graphql/schema';
+import { TransitionAnimation } from '../../../shared/TransitionAnimation';
+
 
 const Container = styled.div`
   position: relative;
@@ -39,33 +41,9 @@ const ErrorContainer = styled.div`
 `;
 
 const ChampionImage = styled.img`
-  position: absolute;
   object-fit: contain;
-  pointer-events: none;
   width: 100%;
   height: 100%;
-
-  &.should-offset {
-    bottom: -45%;
-    right: -30%;
-    width: 140%;
-    height: 140%;
-  }
-
-  opacity: 0;
-  margin-right: -10%;
-  animation: slideIn 0.7s forwards ;
-  animation-delay: 0.1s
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      margin-right: -10%;
-    }
-    to {
-      opacity: 1;
-      margin-right: 0;
-    }
-  }
 `;
 
 const ChampionInfoPosition = styled.div`
@@ -74,7 +52,7 @@ const ChampionInfoPosition = styled.div`
   left: 20%;
   opacity: 0;
   margin-left: -10%;
-  animation: slideIn 0.6s forwards ;
+  animation: slideIn 0.6s forwards;
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -130,6 +108,38 @@ const ConsoleIcon = styled.span`
 
 const ConsoleSelectSpacing = css`
   margin-right: 20px;
+`;
+
+const AnimationContainerClass = css`
+  position: absolute;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  margin-right: -10%;
+  opacity: 0;
+
+  &.should-offset {
+    bottom: -45%;
+    right: -30%;
+    width: 140%;
+    height: 140%;
+  }
+`;
+
+const TransitionAnimationClass = css`
+  animation: slideIn 0.5s forwards;
+  opacity: 0;
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      margin-right: -10%;
+    }
+    to {
+      opacity: 1;
+      margin-right: 0;
+    }
+  }
 `;
 
 // const ChampionSelectPosition = styled.div`
@@ -284,10 +294,18 @@ export function ChampionProfile(props: Props) {
   {
     setSelectedChampion(getDefaultChampion());
   }
-  
+
+  const standingImage = selectedChampion.costumes[0].standingImageURL;
   return champions ? (
     <Container>
-      <ChampionImage className={offsetClass} src={selectedChampion.costumes[0].standingImageURL} />
+      <TransitionAnimation
+        defaultShouldPlayAnimation
+        changeVariable={standingImage}
+        containerStyles={`${AnimationContainerClass} ${offsetClass}`}
+        animationClass={TransitionAnimationClass}
+        animationDuration={500}>
+        <ChampionImage src={selectedChampion.costumes[0].standingImageURL} />
+      </TransitionAnimation>
       <ChampionSelect
         champions={champions}
         selectedChampion={selectedChampion}

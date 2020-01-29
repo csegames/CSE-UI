@@ -20,7 +20,7 @@ import initialize from './services/initialization';
 import { ErrorBoundary } from 'cseshared/components/ErrorBoundary';
 import { HUD } from 'components/HUD';
 import { SharedContextProviders } from 'context/index';
-import { LoadingScreen } from './components/fullscreen/LoadingScreen';
+// import { LoadingScreen } from './components/fullscreen/LoadingScreen';
 import { MiddleModal } from 'components/fullscreen/MiddleModal';
 
 if (process.env.CUUI_LS_ENABLE_WHY_DID_YOU_UPDATE) {
@@ -43,7 +43,7 @@ function readyCheck() {
     <ErrorBoundary outputErrorToConsole>
       <SharedContextProviders>
         <HUD />
-        <LoadingScreen />
+        {/* <LoadingScreen /> */}
         <MiddleModal/>
       </SharedContextProviders>
     </ErrorBoundary>,
