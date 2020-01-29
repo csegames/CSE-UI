@@ -20,16 +20,16 @@ const ChampionName = styled.div`
   font-family: Colus;
   color: white;
   text-transform: uppercase;
-  font-size: 48px;
+  font-size: 30px;
 `;
 
 const AbilitiesContainer = styled.div`
-  width: 320px;
+  width: 400px;
   opacity: 0;
   margin-top: -50px;
-  padding: 15px;
-  background: linear-gradient(rgba(0, 0, 0, 1), transparent);
-  transition: .5s all ease;
+  padding: 20px;
+  background: linear-gradient(to bottom right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.7));
+  transition: .4s all ease;
 `;
 
 const AbilityContainer = styled.div`
@@ -38,12 +38,12 @@ const AbilityContainer = styled.div`
 `;
 
 const AbilityIcon = styled.div`
-  font-size: 43px;
+  font-size: 40px;
   color: white;
   margin-right: 13px;
   border: 1px solid rgba(255, 255, 255, 0.33);
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   padding: 8px;
 `;
 
@@ -60,17 +60,18 @@ const AbilityInfoContainer = styled.div`
 
 const AbilityName = styled.div`
   font-family: Colus;
-  font-size: 18px;
+  font-size: 16px;
   color: white;
 `;
 
 const AbilityDescriptionButton = styled.div`
   display: block;
-  border: 2px solid white; 
+  border: 1px solid white;
+  background: rgba(0, 0, 0, 0.5);
   font-family: Lato;
   font-size: 14px;
   color: white;
-  width: 130px;
+  width: 60px;
   padding: 5px;
   text-align: center;
   opacity: .5;
@@ -81,7 +82,7 @@ const AbilityDescription = styled.div`
   font-family: Lato;
   font-size: 14px;
   color: rgb(185, 185, 185);
-  width: 250px;
+  width: 320px;
 `;
 
 const KeyBindIcon = styled.span`
@@ -102,27 +103,18 @@ export interface Props {
 export function ChampionInfo(props: Props) {
   function getIconClass(index: number) {
     switch (index) {
+
       case 0: {
-        // left click icon
-        return <KeyBindIcon className={'icon-mouse1'}></KeyBindIcon>
-      }
-
-      case 1: {
-        // right click icon
-        return <KeyBindIcon className={'icon-mouse2'}></KeyBindIcon>
-      }
-
-      case 2: {
         // 1 ability
         return <KeyBindIcon>1</KeyBindIcon>;
       }
 
-      case 3: {
+      case 1: {
         // 2 ability
         return <KeyBindIcon>2</KeyBindIcon>;
       }
 
-      case 4: {
+      case 2: {
         // 3 ability
         return <KeyBindIcon>3</KeyBindIcon>;
       }
@@ -136,9 +128,9 @@ export function ChampionInfo(props: Props) {
   return (
     <Container>
       <ChampionName>{props.selectedChampion.name}</ChampionName>
-      <AbilityDescriptionButton>Attacks & Abilities</AbilityDescriptionButton>
+      <AbilityDescriptionButton>Abilities</AbilityDescriptionButton>
       <AbilitiesContainer className='abilities'>
-        {props.selectedChampion.abilities.map((ability, i) => {
+        {props.selectedChampion.abilities.slice(2, 5).map((ability, i) => {
           return (
             <AbilityContainer>
               <AbilityIcon className={ability.iconClass} />

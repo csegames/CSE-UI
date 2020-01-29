@@ -36,6 +36,9 @@ const ListItem = styled.div`
     outline-offset: -6px;
     margin-left: -15px;
     transition: .2s all ease;
+    &.left {
+      margin-left: 15px;
+    }
     &:before {
       content: '';
       position: absolute;
@@ -43,8 +46,18 @@ const ListItem = styled.div`
       right: 0;
       bottom: 0;
       left: 0;
-      background: linear-gradient(to top, rgba(49, 95, 183, 0.7), transparent);
+      background: linear-gradient(to top, rgba(49, 95, 183, 0.4), transparent);
     }
+  }
+
+  &.left {
+    margin-left: 0px;
+    -webkit-mask-image: linear-gradient(to right, transparent 15%, black 55%);
+  }
+
+  &.left div {
+    left: auto;
+    right: 10px;
   }
 `;
 
@@ -62,6 +75,7 @@ const NameOfPlayer = styled.div`
   color: white;
   left: 10px;
   bottom: 7px;
+  text-shadow: 2px 2px 2px black;
 `;
 
 export interface Props {
@@ -98,15 +112,16 @@ export function LockedList(props: Props) {
   }
 
   const playerStateList = getPlayerStateList();
+  const typeClass = props.type === 'left' ? 'left' : 'right';
   return playerStateList.length > 0 ? (
     <Container>
       {playerStateList.map((player) => {
-        const lockedClass = player.isLocked ? 'locked' : '';
+        const lockedClass = player.isLocked ? '' : '';
         const championInfo = getPlayerChampion(player);
         const championCostumeInfo = championContext.championCostumes.find(c => c.requiredChampionID === championInfo.id);
 
         return (
-          <ListItem className={lockedClass}>
+          <ListItem className={`${lockedClass} ${typeClass}`}>
             <BGImage src={championCostumeInfo ? championCostumeInfo.championSelectImageURL : ""} />
             <NameOfPlayer>
               {player.displayName ? `${player.displayName} -` : ''} {championInfo ? championInfo.name : ''}

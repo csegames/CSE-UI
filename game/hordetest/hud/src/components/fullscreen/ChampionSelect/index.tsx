@@ -33,6 +33,17 @@ const HeaderContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+
+  opacity: 0;
+  animation: slideIn 0.5s forwards ;
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 const HeaderItemContainer = styled.div`
@@ -73,6 +84,20 @@ const ChampionPickContainer = styled.div`
   position: fixed;
   z-index: 1;
   bottom: 150px;
+  opacity: 0;
+  margin-bottom: -5%;
+  animation: slideIn 0.5s forwards ;
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      margin-bottom: -5%;
+    }
+    to {
+      opacity: 1;
+      margin-bottom: 0;
+    }
+  }
 `;
 
 const SelectedChampionBackground = styled.img`
@@ -104,26 +129,41 @@ const SelectedChampionImage = styled.img`
   width: 80%;
   height: 80%;
   object-fit: contain;
-  right: 5%;
+  right: -5%;
+
+  opacity: 0;
+  margin-left: -10%;
+  animation: slideIn 0.7s forwards ;
+  animation-delay: 0.1s
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      margin-left: -10%;
+    }
+    to {
+      opacity: 1;
+      margin-left: 0;
+    }
+  }
 `;
 
 const ChampionInfoContainer = styled.div`
   position: absolute;
-  left: 30%;
-  top: 50%;
+  left: 45%;
+  top: 40%;
   transform: translate(-50%, -50%);
 `;
 
 const LockedListContainer = styled.div`
   position: absolute;
-  top: 80px;
+  top: 100px;
 
   &.right {
-    right: 28px;
+    right: -60px;
   }
 
   &.left {
-    left: 28px;
+    left: -60px;
   }
 `;
 
