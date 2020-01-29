@@ -130,7 +130,7 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
     worldTime: 0,
     fps: 0,
     isPublicBuild: true,
-    matchmakingGameMode: "inttest",
+    matchmakingGameMode: "hordetest8",
 
     reloadUI: noOp,
     quit: noOp,
