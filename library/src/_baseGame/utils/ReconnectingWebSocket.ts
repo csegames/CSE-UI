@@ -17,13 +17,12 @@ export interface WebSocketOptions {
 
   // Timeout in ms to wait between connection attempts, default 1000
   // set to -1 to disable reconnects
-  reconnectInterval: number;
+  startReconnectInterval: number;
+  maxReconnectInterval: number;
 
   // How long to wait, in ms, before deciding that a connection attempt has
   // timed out, default 2000
   connectTimeout: number;
-
-  maxRetries: number;
 
   // If true, logs actions taken, default false
   debug: boolean;
@@ -37,9 +36,9 @@ export interface WebSocketOptions {
 export const defaultWebSocketOptions: WebSocketOptions = {
   url: () => "/chat",
   protocols: "",
-  reconnectInterval: 500,
+  startReconnectInterval: 500,
+  maxReconnectInterval: 4000,
   connectTimeout: 5000,
-  maxRetries: 20,
   debug: getBooleanEnv('CUUI_LIB_DEBUG_WEB_SOCKET', false),
   onopen: function(event: Event) {},
   onclose: function(event: CloseEvent) {},
@@ -50,6 +49,8 @@ export const defaultWebSocketOptions: WebSocketOptions = {
 export class ReconnectingWebSocket {
   private messageCount: number;
   private reconnectInterval: number;
+  private startReconnectInterval: number;
+  private maxReconnectInterval: number;
   private connectTimeoutInterval: number;
   private url: () => string;
   private protocols: string | string[];
@@ -60,8 +61,6 @@ export class ReconnectingWebSocket {
   private reconnecting: boolean;
   private wantConnect: boolean;
   private eventEmitter: EventEmitter;
-  private retryCounter: number;
-  private maxRetries: number;
 
   public get isOpen() {
     return this.socket && this.socket.readyState === WebSocket.OPEN;
@@ -79,10 +78,10 @@ export class ReconnectingWebSocket {
     this.url = opts.url;
     this.protocols = opts.protocols;
     this.connectTimeoutInterval = opts.connectTimeout;
-    this.reconnectInterval = opts.reconnectInterval;
+    this.reconnectInterval = opts.startReconnectInterval;
+    this.startReconnectInterval = opts.startReconnectInterval;
+    this.maxReconnectInterval = opts.maxReconnectInterval;
     this.debug = opts.debug;
-    this.retryCounter = 1;
-    this.maxRetries = opts.maxRetries;
 
     const urlString = this.url();
     if (!urlString || !isWebSocketUrl(urlString)) {
@@ -182,22 +181,19 @@ export class ReconnectingWebSocket {
   };
 
   private reconnect = () => {
-    if (!this.wantConnect || this.reconnecting || this.retryCounter >= this.maxRetries) return;
+    if (!this.wantConnect || this.reconnecting) return;
     this.reconnecting = true;
-
-    this.retryCounter++;
-
     console.log(`Attempting to reconnect to WS ${this.url()}`)
-
     try {
       this.socket.close();
     } catch {
     }
     this.socket = null;
     if (this.reconnectInterval < 0) return;
+    this.reconnectInterval = Math.min(this.reconnectInterval * 2, this.maxReconnectInterval);
     setTimeout(() => {
       this.connect();
-    }, this.reconnectInterval * this.retryCounter);
+    }, this.reconnectInterval);
   };
 
   private message = (e: MessageEvent) => {
@@ -222,7 +218,7 @@ export class ReconnectingWebSocket {
   private open = (e: Event) => {
     console.log(`WS connection opened to ${this.url()}`)
     clearTimeout(this.connectTimeoutHandle);
-    this.retryCounter = 1;
+    this.reconnectInterval = this.startReconnectInterval;
     this._onopen(e);
   };
 
