@@ -14,6 +14,7 @@ import { Button } from './Button';
 import { GameStats } from './GameStats';
 import { Settings } from './Settings';
 import { IntroVideo } from './IntroVideo';
+import { InviteAlerts } from './InviteAlerts';
 
 const Container = styled.div`
   position: fixed;
@@ -83,9 +84,12 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
     return (
       <Container>
         {this.renderRoute()}
-        <HideButton onClick={() => game.trigger('hide-fullscreen')}>
-          <Button type='blue' text='Hide Full Screen UI' />
-        </HideButton>
+        <InviteAlerts />
+        {!game.isPublicBuild &&
+          <HideButton onClick={() => game.trigger('hide-fullscreen')}>
+            <Button type='blue' text='Hide Full Screen UI' />
+          </HideButton>
+        }
         <SettingsContainer>
           <Settings />
         </SettingsContainer>

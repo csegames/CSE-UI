@@ -16,7 +16,6 @@ import { MatchmakingContext, MatchmakingContextState, PlayerNumberMode } from 'c
 import { Button } from 'components/fullscreen/Button';
 import { PlayerView } from './PlayerView';
 import { ReadyButton } from './ReadyButton';
-import { InviteAlerts } from 'components/fullscreen/InviteAlerts';
 import { InviteFriendModal } from './InviteFriendModal';
 
 const Container = styled.div`
@@ -110,7 +109,6 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
     const maxPartySize = matchmakingContext.selectedPlayerNumberMode === PlayerNumberMode.SixMan ? 6 : 10;
     return (
       <Container>
-        <InviteAlerts />
         {/* <RightSection>
           <InfoSection />
         </RightSection> */}

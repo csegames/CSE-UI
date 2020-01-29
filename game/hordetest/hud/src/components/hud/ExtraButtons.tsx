@@ -26,7 +26,7 @@ const ExtraButton = styled.div`
 `;
 
 export function ExtraButtons() {
-  return (
+  return !game.isPublicBuild ? (
     <ExtraButtonsContainer>
       <ExtraButton onClick={() => game.reloadUI()}>
         <span className='fas fa-sync'></span>
@@ -38,5 +38,5 @@ export function ExtraButtons() {
         <span className='fas fa-terminal'></span>
       </ExtraButton>
     </ExtraButtonsContainer>
-  );
+  ) : null;
 }
