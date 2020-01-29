@@ -37,6 +37,7 @@
     "@babel/polyfill": "^7.0.0",
     "@babel/runtime": "^7.0.0-rc.1",
     "@csegames/camelot-unchained": "^0.2.2",
+    "@sentry/browser": "^5.11.1",
     "classnames": "^2.2.6",
     "emotion": "^9.2.3",
     "lodash": "^4.17.10",

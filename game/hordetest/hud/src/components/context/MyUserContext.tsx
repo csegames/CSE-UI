@@ -5,11 +5,13 @@
  */
 
 import React from 'react';
+import * as Sentry from '@sentry/browser';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 import { User } from '@csegames/library/lib/hordetest/graphql/schema';
-import { SetDisplayName } from '../fullscreen/SetDisplayName';
+
 import { getConfig } from 'lib/gqlHelpers';
+import { SetDisplayName } from '../fullscreen/SetDisplayName';
 import { preloadQueryEvents } from '../fullscreen/Preloader';
 
 const query = gql`
@@ -75,6 +77,7 @@ export class MyUserContextProvider extends React.Component<Props, MyUserContextS
     }
 
     this.setState({ myUser: graphql.data.myUser, refetch: graphql.refetch });
+    this.initializeSentryUserData(graphql.data.myUser);
     this.onDonePreloading();
     return graphql;
   }
@@ -84,5 +87,11 @@ export class MyUserContextProvider extends React.Component<Props, MyUserContextS
       game.trigger(preloadQueryEvents.myUserContext);
       this.isInitialQuery = false;
     }
+  }
+
+  private initializeSentryUserData = (myUser: User) => {
+    Sentry.setUser({
+      userInfo: myUser,
+    });
   }
 }

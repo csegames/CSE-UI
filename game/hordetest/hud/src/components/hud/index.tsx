@@ -232,8 +232,16 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
       );
     }
 
+    const yoyo: any = () => {
+      console.log('clicked');
+      (this.state as any).yoyo.yoyo;
+    };
     return (
       <ContextProviders>
+        <button style={{ position: 'fixed', top: 200, left: 200, pointerEvents: 'all', zIndex: 9999999 }}
+        onClick={yoyo}>
+          TEst
+        </button>
         <Container>
           {/* <LowHealthFullScreenEffects /> */}
           <RuneFullScreenEffects />

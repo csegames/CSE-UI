@@ -15,11 +15,12 @@ import '@csegames/library/lib/hordetest';
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
+// import * as Sentry from '@sentry/browser';
+import initialize from './services/initialization';
 import { ErrorBoundary } from 'cseshared/components/ErrorBoundary';
 import { HUD } from 'components/HUD';
 import { SharedContextProviders } from 'context/index';
 import { LoadingScreen } from './components/fullscreen/LoadingScreen';
-import initialize from './services/initialization';
 import { MiddleModal } from 'components/fullscreen/MiddleModal';
 
 if (process.env.CUUI_LS_ENABLE_WHY_DID_YOU_UPDATE) {
@@ -36,6 +37,7 @@ function readyCheck() {
   }
 
   initialize();
+  initializeSentry();
 
   ReactDom.render(
     <ErrorBoundary outputErrorToConsole>
@@ -46,6 +48,14 @@ function readyCheck() {
       </SharedContextProviders>
     </ErrorBoundary>,
   document.getElementById('hordetest'));
+}
+
+function initializeSentry() {
+  Sentry.init({
+    dsn: 'https://1ba9a37f8d99473988d480a3e2ddf750@sentry.io/2050654',
+  });
+
+  Sentry.setUser({ characterID: game.characterID });
 }
 
 readyCheck();
