@@ -29,6 +29,8 @@ export function onMatchmakingUpdate(callback: (matchmakingUpdate: IMatchmakingUp
   return game.on('subscription-matchmakingUpdates', callback);
 }
 
+const REENTER_MATCHMAKING_ERROR: number = 1007;
+
 const subscription = gql`
   subscription MatchmakingNotificationSubscription {
     matchmakingUpdates {
@@ -111,10 +113,7 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
   }
 
   public componentWillUnmount() {
-    if (this.timeSearchingUpdateHandle) {
-      endTimer(this.timeSearchingUpdateHandle);
-      this.timeSearchingUpdateHandle = null
-    }
+    this.endSearchingTimer();
   }
 
   public render() {
@@ -141,18 +140,23 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
     });
   }
 
-  private onCancelMatchmaking = () => {
-    console.log("Matchmaking context understands we have canceled matchmaking");
-    this.setState({ isEntered: false, timeSearching: 0 });
+  private endSearchingTimer = () => {
     if (this.timeSearchingUpdateHandle) {
       endTimer(this.timeSearchingUpdateHandle);
       this.timeSearchingUpdateHandle = null
     }
   }
 
+  private onCancelMatchmaking = () => {
+    console.log("Matchmaking context understands we have canceled matchmaking");
+    this.setState({ isEntered: false, timeSearching: 0 });
+    this.endSearchingTimer();
+  }
+
   private onWaitingForServerHandled = () => {
     console.log("Matchmaking context understands we are done waiting for a server");
     this.setState({ isWaitingOnServer: false, isEntered: false });
+    this.endSearchingTimer();
   }
 
   private handleSubscription = (result: SubscriptionResult<{ matchmakingUpdates: IMatchmakingUpdate }>, data: any) => {
@@ -165,13 +169,14 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       case MatchmakingUpdateType.ServerReady: {
         const { host, port } = matchmakingUpdate as MatchmakingServerReady;
 
-        this.setState({ host, port, isEntered: false, isWaitingOnServer: false });
+        this.setState({ host, port, isEntered: false, isWaitingOnServer: false, timeSearching: 0 });
         if (!game.isConnectedOrConnectingToServer) {
           console.log(`Received matchmaking server ready. Calling connect ${host}:${port}`);
 
           //We dont clear any forced loading screens here because we will clear the force during connection
           this.tryConnect(host, port, 0);
           game.trigger('hide-fullscreen');
+          this.endSearchingTimer();
         }
         else {
           console.error(`Received matchmaking server ready for ${host}:${port}. In a game or connecting to one, ignoring it`)
@@ -181,11 +186,9 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
       case MatchmakingUpdateType.KickOff: {
         const { matchID, secondsToWait, serializedTeamMates } = matchmakingUpdate as MatchmakingKickOff;
-        this.setState({ matchID, secondsToWait, teamMates: serializedTeamMates, isWaitingOnServer: true  }, () => {
-          if (this.timeSearchingUpdateHandle) {
-            endTimer(this.timeSearchingUpdateHandle);
-            this.timeSearchingUpdateHandle = null
-          }
+        this.setState({ matchID, secondsToWait, teamMates: serializedTeamMates, isWaitingOnServer: true, timeSearching: 0  }, () => {
+          this.endSearchingTimer();
+
           if (game.isConnectedOrConnectingToServer) {
             console.error(`Received matchmaking kickoff. In a game or already connecting to one, ignoring it`)
             return;
@@ -199,15 +202,31 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
       case MatchmakingUpdateType.Error: {
         const { message, code } = (matchmakingUpdate as MatchmakingError);
-        this.setState({ error: message, isEntered: false, isWaitingOnServer: false }, () => {
+        if (code == REENTER_MATCHMAKING_ERROR) {
+          //TODO: reenter matchmaking here with as little impact as possible
+          this.setState({ error: message, isEntered: false, isWaitingOnServer: false }, () => {
+            if (game.isConnectedOrConnectingToServer) {
+              console.error(`Received matchmaking error ${code} ${message}. In a game or connecting to one, ignoring it`)
+              return;
+            }
+            console.log(`Received matchmaking error ${code} ${message}. Showing fullscreen, navigating to start and popping up error`)
+            game.trigger("reset-fullscreen");
+            game.trigger('show-middle-modal', <ErrorComponent title='Please retry matchmaking' message={message} errorCode={code} />, true);
+          });
+        }
+        else {
           if (game.isConnectedOrConnectingToServer) {
             console.error(`Received matchmaking error ${code} ${message}. In a game or connecting to one, ignoring it`)
-            return;
           }
-          console.log(`Received matchmaking error ${code} ${message}. Showing fullscreen, navigating to start and popping up error`)
-          game.trigger("reset-fullscreen");
-          game.trigger('show-middle-modal', <ErrorComponent title='Matchmaking Failure' message={message} errorCode={code} />, true);
-        });
+          else {
+            this.setState({ error: message, isEntered: false, isWaitingOnServer: false, timeSearching: 0 }, () => {
+              this.endSearchingTimer();
+              console.log(`Received matchmaking error ${code} ${message}. Showing fullscreen, navigating to start and popping up error`)
+              game.trigger("reset-fullscreen");
+              game.trigger('show-middle-modal', <ErrorComponent title='Matchmaking Failure' message={message} errorCode={code} />, true);
+            });
+          }
+        }
         break;
       }
     }

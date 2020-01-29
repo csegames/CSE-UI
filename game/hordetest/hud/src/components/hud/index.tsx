@@ -370,7 +370,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     //then assume a network failure has happened.
     //At the moment, the webapi has a 3 minute timeout on finding a server
     if (this.props.matchmakingContext.isWaitingOnServer) {
-      const fourminutes = 4 * 60 * 60 * 1000;
+      const fourminutes = 4 * 60 * 1000;
       console.log("Waiting on server. Force loading the loadingscreen");
       game.trigger("forceshow-loadingscreen", "Looking for server", fourminutes, () => {
         if (this.props.matchmakingContext.isWaitingOnServer) {

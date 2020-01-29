@@ -279,6 +279,12 @@ export function ChampionProfile(props: Props) {
 
   const offsetClass = editingMode === EditingMode.None ? 'should-offset' : 'no-offset';
   const champions = getChampions();
+
+  if (!selectedChampion)
+  {
+    setSelectedChampion(getDefaultChampion());
+  }
+  
   return champions ? (
     <Container>
       <ChampionImage className={offsetClass} src={selectedChampion.costumes[0].standingImageURL} />

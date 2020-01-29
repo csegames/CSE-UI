@@ -90,7 +90,7 @@ export class LoadingScreen extends React.Component<Props, State> {
     this.forceShowScreen = game.on('forceshow-loadingscreen', (message:string, delay:number, continuation:Function) => { 
       console.log(`Forcing loading screen to show with ${message}`);
       this.setState({forceMessage: message})
-      setTimeout(continuation, (delay));
+      setTimeout(continuation, delay);
     });
 
     this.forceHideScreen = game.on("clearforceshow-loadingscreen", () => { 

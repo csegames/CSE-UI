@@ -56,6 +56,7 @@ const GQL_CONNECTION_ACK = 'connection_ack';
 const GQL_CONNECTION_ERROR = 'connection_error';
 // NOTE: The keep alive message type does not follow the standard due to connection optimizations
 const GQL_CONNECTION_KEEP_ALIVE = 'ka';
+const GQL_HEARTBEAT = 'ha';
 const GQL_DATA = 'data';
 const GQL_ERROR = 'error';
 const GQL_COMPLETE = 'complete';
@@ -115,6 +116,7 @@ export class SubscriptionManager {
   private messageQueue: string[] = [];
   private initMessages: string[] = [];
   private idCounter: number = 0;
+  private expectHeartBeat: boolean;
 
   constructor(options: Partial<Options<any>>) {
     this.debug = options.debug || false;
@@ -128,6 +130,7 @@ export class SubscriptionManager {
     this.socket.onmessage = this.messageHandler;
     this.socket.onerror = this.errorHandler;
     this.initPayload = opts.initPayload;
+    this.expectHeartBeat = false;
   }
 
   public subscribe = <T>(
@@ -157,9 +160,7 @@ export class SubscriptionManager {
       type: GQL_START,
     };
 
-    if (this.debug) {
-      this.log(`subscribe => ${JSON.stringify(start)}`);
-    }
+    this.log(`subscribe => ${start.id}`);
 
     this.subscriptions[id] = {
       id,
@@ -173,9 +174,7 @@ export class SubscriptionManager {
   }
 
   public stop = (id: string) => {
-    if (this.debug) {
-      this.log(`stop => ${id}`);
-    }
+    this.log(`stop => ${id}`);
 
     if (this.subscriptions[id]) {
       delete this.subscriptions[id];
@@ -196,12 +195,42 @@ export class SubscriptionManager {
       type: GQL_CONNECTION_INIT,
       payload: this.initPayload,
     }));
+
+    if (this.expectHeartBeat) {
+      //then we are coming back from a reconnect
+      _.values(this.subscriptions).forEach((s) => {
+        console.log(`Adding sub ${s.id} back from reconnect to msg queue`);
+        this.messageQueue.push(JSON.stringify(s.start));
+      });
+    }
+
+    this.initMessages = []
     if (this.messageQueue.length > 0) {
       this.messageQueue.forEach((m) => {
+        console.log(`Sending message off of init`);
         this.socket.send(m);
         this.initMessages.push(m);
       });
       this.messageQueue = [];
+    }
+
+    this.expectHeartBeat = false;
+    this.heartbeat();
+  }
+
+  private heartbeat()
+  {
+    if (this.expectHeartBeat) {
+      console.info(`Heartbeat didnt get a receipt. In ${this.socket.readyState} state? Refreshing...`);
+      this.socket.refresh();
+    }
+    else
+    {
+      this.expectHeartBeat = true;
+      this.send({
+        type: GQL_HEARTBEAT
+      });
+      setTimeout(this.heartbeat.bind(this), 3000);
     }
   }
 
@@ -212,6 +241,7 @@ export class SubscriptionManager {
     }
     switch (op.type) {
       case GQL_CONNECTION_ACK: {
+        console.log("GOT ACK");
         // Use lodash for version
         _.values(this.subscriptions).forEach((s) => {
           // Check to see if the message has already been added to the messageQueue
@@ -223,6 +253,7 @@ export class SubscriptionManager {
             return getFrameIdentifier(message) === getFrameIdentifier(s.start);
           }) !== -1;
           if (!inMessageQueue && !inInitMessages) {
+            console.log(`SENDING SUB FOR ${s.id}`);
             this.send(s.start);
           }
         });
@@ -287,11 +318,15 @@ export class SubscriptionManager {
         }
         break;
       }
+      case GQL_HEARTBEAT: {
+        this.expectHeartBeat = false;
+        break;
+      }
     }
   }
 
   private errorHandler = (e: ErrorEvent) => {
-    console.error(e);
+    console.error(`Sub Err: ${JSON.stringify(e)}`);
   }
 
   private send = (op: OperationMessage) => {
@@ -308,8 +343,8 @@ export class SubscriptionManager {
     }
   }
 
-  private log = (...data: any[]) => {
-    console.log(`SubscriptionManager`, ...data);
+  private log = (msg: string) => {
+    console.log(`SubscriptionManager ${msg}`);
   }
 }
 

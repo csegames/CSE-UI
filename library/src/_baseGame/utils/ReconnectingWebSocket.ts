@@ -85,7 +85,7 @@ export class ReconnectingWebSocket {
 
     const urlString = this.url();
     if (!urlString || !isWebSocketUrl(urlString)) {
-      console.error('Trying to connect to a websocket using and invalid url: ' + this.url());
+      console.error('Trying to connect to a websocket using an invalid url: ' + this.url());
       return;
     }
 
@@ -133,27 +133,22 @@ export class ReconnectingWebSocket {
   };
 
   public close = () => {
-    if (this.debug) {
-      this.log("close");
-    }
+    this.log("WS Explicitly closed??");
     this.wantConnect = false;
     this.socket && this.socket.close();
   };
 
   public refresh = () => {
-    if (this.debug) {
-      this.log("refresh");
-    }
+    this.log("WARNING: REFRESHING WS CONN");
     this.socket.close();
+    this.socket = null;
     this.connect();
   };
 
   private connect = () => {
     this.reconnecting = false;
     this.wantConnect = true;
-    if (this.debug) {
-      this.log(`connect => url: '${this.url()}', protocols: '${this.protocols}'`);
-    }
+    this.log(`connect => url: '${this.url()}', protocols: '${this.protocols}'`);
 
     try {
       this.socket = new WebSocket(this.url(), this.protocols);
@@ -184,6 +179,7 @@ export class ReconnectingWebSocket {
     if (!this.wantConnect || this.reconnecting) return;
     this.reconnecting = true;
     console.log(`Attempting to reconnect to WS ${this.url()}`)
+
     try {
       this.socket.close();
     } catch {
