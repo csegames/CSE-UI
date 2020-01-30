@@ -165,38 +165,38 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
   }
 
   private enterMatchmaking = async () => {
-    this.enteredMatchmaking = true;
-
-    const request = {
-      mode: game.matchmakingGameMode,
-    };
-    const res = await webAPI.MatchmakingAPI.EnterMatchmaking(webAPI.defaultConfig, request as any);
-    if (!res.ok) {
-      console.error(`Failed to enter matchmaking: ${res.data}`);
+    console.log("Calling enter matchmaking");
+    const { matchmakingContext } = this.props;
+    var res = await matchmakingContext.callEnterMatchmaking();
+    if (res.ok)
+    {
+      this.enteredMatchmaking = true;
+    }
+    else
+    {
       this.enteredMatchmaking = false;
     }
     return res;
   }
 
   private cancelMatchmaking = async () => {
-    const res = await webAPI.MatchmakingAPI.CancelMatchmaking(webAPI.defaultConfig);
-
-    if (res.ok) {
+    const { matchmakingContext } = this.props;
+    var res = await matchmakingContext.callEnterMatchmaking();
+    if (res.ok)
+    {
       this.enteredMatchmaking = false;
-    }
-    else {
-      console.error(`Failed to cancel matchmaking: ${res.data}`);
     }
     return res;
   }
 
+
   private handleActiveGroupUpdate = () => {
-    const { warbandContext } = this.props;
+    const { warbandContext, matchmakingContext } = this.props;
     const notReadyMembers = Object.values(warbandContext.groupMembers).filter(m => !m.isReady);
 
     const myMemberState = warbandContext.groupMembers[game.characterID];
     if (notReadyMembers.length === 0 && myMemberState.isLeader && !this.enteredMatchmaking) {
-      this.enterMatchmaking();
+      matchmakingContext.callEnterMatchmaking();
     }
   }
 

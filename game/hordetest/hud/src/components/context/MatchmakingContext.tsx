@@ -19,6 +19,8 @@ import { Route, fullScreenNavigateTo } from 'context/FullScreenNavContext';
 import { ErrorComponent } from 'components/fullscreen/Error';
 import { query } from '@csegames/library/lib/_baseGame/graphql/query'
 import { TimerRef, startTimer, endTimer } from '@csegames/library/lib/_baseGame/utils/timerUtils';
+import { webAPI } from '@csegames/library/lib/hordetest';
+import { RequestResult } from '@csegames/library/lib/_baseGame';
 
 export enum PlayerNumberMode {
   SixMan,
@@ -30,6 +32,11 @@ export function onMatchmakingUpdate(callback: (matchmakingUpdate: IMatchmakingUp
 }
 
 const REENTER_MATCHMAKING_ERROR: number = 1007;
+const SOMEONE_DISCONNECTED_MATCHMAKING_ERROR:number = 1001;
+const SOMEONE_DISCONNECTED_WEBSOCKET_ERROR:number = 1011;
+const MATCH_FAILED_ERROR:number = 1002;
+const MATCH_CANCELED_ERROR:number = 1003;
+const NO_SERVERS_ERROR:number = 1005;
 
 const subscription = gql`
   subscription MatchmakingNotificationSubscription {
@@ -62,6 +69,8 @@ export interface MatchmakingContextState {
   onEnterMatchmaking: () => void;
   onCancelMatchmaking: () => void;
   onWaitingForServerHandled: () => void;
+  callEnterMatchmaking: () => Promise<RequestResult>,
+  callCancelMatchmaking: () => Promise<RequestResult>,
 
   // MatchmakingServerReady
   host: string;
@@ -85,6 +94,8 @@ const getDefaultMatchmakingContextState = (): MatchmakingContextState => ({
   onEnterMatchmaking: () => {},
   onCancelMatchmaking: () => {},
   onWaitingForServerHandled: () => {},
+  callEnterMatchmaking: () => null,
+  callCancelMatchmaking: () => null,
   host: null,
   port: null,
   matchID: null,
@@ -108,7 +119,9 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       ...getDefaultMatchmakingContextState(),
       onEnterMatchmaking: this.onEnterMatchmaking,
       onCancelMatchmaking: this.onCancelMatchmaking,
-      onWaitingForServerHandled: this.onWaitingForServerHandled
+      onWaitingForServerHandled: this.onWaitingForServerHandled,
+      callCancelMatchmaking: this.callCancelMatchmaking,
+      callEnterMatchmaking: this.callEnterMatchmaking
     }
   }
 
@@ -202,29 +215,61 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
       case MatchmakingUpdateType.Error: {
         const { message, code } = (matchmakingUpdate as MatchmakingError);
-        if (code == REENTER_MATCHMAKING_ERROR) {
-          //TODO: reenter matchmaking here with as little impact as possible
-          this.setState({ error: message, isEntered: false, isWaitingOnServer: false }, () => {
-            if (game.isConnectedOrConnectingToServer) {
-              console.error(`Received matchmaking error ${code} ${message}. In a game or connecting to one, ignoring it`)
-              return;
-            }
-            console.log(`Received matchmaking error ${code} ${message}. Showing fullscreen, navigating to start and popping up error`)
-            game.trigger("reset-fullscreen");
-            game.trigger('show-middle-modal', <ErrorComponent title='Please retry matchmaking' message={message} errorCode={code} />, true);
-          });
+        if (game.isConnectedOrConnectingToServer) {
+          console.error(`Received matchmaking error ${code} ${message}. In a game or connecting to one, ignoring it`)
         }
         else {
-          if (game.isConnectedOrConnectingToServer) {
-            console.error(`Received matchmaking error ${code} ${message}. In a game or connecting to one, ignoring it`)
+          var shouldFire = false;
+          switch(code)
+          {
+            case SOMEONE_DISCONNECTED_MATCHMAKING_ERROR:
+              // Matchmaking had them marked disconnected and they never returned so they were removed from the match
+              shouldFire = this.state.isEntered
+              break;
+            case SOMEONE_DISCONNECTED_WEBSOCKET_ERROR:
+              // Someone in our warband lost their websocket.
+            case MATCH_CANCELED_ERROR:
+              // Someone in your warband canceled the matchmaking.
+              //TODO: Dont show. figur eout later
+              // if (useContext(WarbandContext).groupID) {
+              //   shouldFire = true;
+              // }
+              break;
+            case MATCH_FAILED_ERROR:
+              // General failure
+              shouldFire = true;
+              break;
+            case NO_SERVERS_ERROR:
+              // We timed out on finding a server
+              shouldFire = this.state.isWaitingOnServer
+              break;
+            case REENTER_MATCHMAKING_ERROR:
+              // We actually need to just reenter matchmaking here cause the match failed to kick off
+              // console.log(`Received matchmaking error ${code} ${message}. Someone must have dropped on kick off. Attempting to reenter matchmaking`)
+              shouldFire = true;
+              //TODO: Grab warband context state and check if leader and only fire if leader
+
+              // this.callEnterMatchmaking().then((res) => {
+              //   if (res.ok) {
+              //     this.onEnterMatchmaking();
+              //   }
+              //   else {
+              //     console.error("Failed to reenter matchmaking!");
+              //   }
+              // }).catch(() => { console.error("Failed to call reenter matchmaking")});
+                //TODO: Tell the ready button
+              break;
           }
-          else {
+          if (shouldFire) {
             this.setState({ error: message, isEntered: false, isWaitingOnServer: false, timeSearching: 0 }, () => {
               this.endSearchingTimer();
               console.log(`Received matchmaking error ${code} ${message}. Showing fullscreen, navigating to start and popping up error`)
               game.trigger("reset-fullscreen");
               game.trigger('show-middle-modal', <ErrorComponent title='Matchmaking Failure' message={message} errorCode={code} />, true);
             });
+          }
+          else {
+            console.log(`Received matchmaking error ${code} ${message}. Not firing cause bad state`) 
           }
         }
         break;
@@ -291,5 +336,17 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       game.trigger('show-middle-modal', <ErrorComponent title='Failed' message={'Failed to establish connection to game server.'} errorCode={1009} />, true);
       game.trigger('reset-fullscreen');
     }
+  }
+
+  
+  private callEnterMatchmaking = async () => {
+    const request = {
+      mode: game.matchmakingGameMode,
+    };
+    return webAPI.MatchmakingAPI.EnterMatchmaking(webAPI.defaultConfig, request as any);
+  }
+
+  private callCancelMatchmaking = async () => {
+    return webAPI.MatchmakingAPI.CancelMatchmaking(webAPI.defaultConfig);
   }
 }
