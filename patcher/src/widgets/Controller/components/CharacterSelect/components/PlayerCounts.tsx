@@ -71,11 +71,11 @@ class PlayerCounts extends React.PureComponent<PlayerCountsProps, PlayerCountsSt
         <PlayerCount style={{ color: '#FF8080', marginRight: 10 }}>{this.state.playerCountA} A</PlayerCount>
         <PlayerCount style={{ color: '#92E989', marginRight: 10 }}>{this.state.playerCountT} T</PlayerCount>
         <PlayerCount style={{ color: '#6DB9D9' }}>{this.state.playerCountV} V</PlayerCount>
-        {this.props.apiServerOnline === 'Online' &&
+        {this.props.apiServerOnline === 'Online' && this.props.shard &&
           <GraphQL
             query={{
               query: query(this.props.shard),
-              // pollInterval: 30000,
+              pollInterval: 30000,
               url: this.props.host + '/graphql',
             }}
             onQueryResult={this.handleQueryResult}

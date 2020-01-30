@@ -39,7 +39,7 @@ export interface ComponentProps {
   selectedServer: PatcherServer;
   selectedCharacter: SimpleCharacter;
   onCharacterSelect: (character: SimpleCharacter) => void;
-  onChooseCharacter: (character: SimpleCharacter) => void;
+  onChooseCharacter: (character: SimpleCharacter, server: PatcherServer) => void;
   charSelectVisible: boolean;
   apiServerStatus: APIServerStatus;
 }
@@ -138,8 +138,6 @@ class CharacterSelectList extends React.Component<Props, CharacterSelectListStat
 
   private getServers = () => {
     const { servers, selectedServer } = this.props;
-    console.log('YOYOYO');
-    console.log(servers);
     const localLastPlay = JSON.parse(localStorage.getItem('cse-patcher-lastplay'));
     const sortedServers = _.sortBy(servers, [
       localLastPlay ? (server: any) => server.name === localLastPlay.serverName ? -1 : 0 : null,

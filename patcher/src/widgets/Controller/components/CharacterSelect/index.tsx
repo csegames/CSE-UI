@@ -225,10 +225,9 @@ class CharacterSelect extends React.Component<Props, CharacterSelectState> {
     }
   }
 
-  private onChooseCharacter = () => {
+  private onChooseCharacter = (character: SimpleCharacter, server: PatcherServer) => {
     this.props.onCloseClick();
-    const characterServer = _.find(this.props.servers, server => server.shardID === this.state.selectedCharacter.shardID);
-    this.props.onUpdateState({ selectedCharacter: this.state.selectedCharacter, selectedServer: characterServer });
+    this.props.onUpdateState({ selectedCharacter: character, selectedServer: server });
   }
 
   private toggleModal = () => {

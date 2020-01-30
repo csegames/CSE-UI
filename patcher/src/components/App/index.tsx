@@ -64,7 +64,6 @@ export class PatcherApp extends React.Component<PatcherAppProps, {}> {
             break;
       }
     }
-    
 
     return (
       <div className='PatcherApp'>
