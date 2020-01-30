@@ -36,6 +36,7 @@ import { MenuModal } from '../fullscreen/MenuModal';
 import { LeftModal } from '../fullscreen/LeftModal';
 import { RightModal } from '../fullscreen/RightModal';
 import { Preloader } from '../fullscreen/Preloader';
+import { CreditsScreen } from '../fullscreen/CreditsScreen';
 
 import { ErrorComponent } from '../fullscreen/Error';
 import { ActionAlert } from '../shared/ActionAlert';
@@ -194,6 +195,7 @@ interface Props {
 export interface State {
   isLoadingFinished: boolean;
   isLobbyVisible: boolean;
+  isCreditsScreenVisible: boolean;
   scenarioID: string;
 }
 
@@ -201,6 +203,8 @@ export interface State {
 class HUDWithInjectedContext extends React.Component<Props, State> {
   private showEVH: EventHandle;
   private hideEVH: EventHandle;
+  private creditsScreenShowEVH: EventHandle;
+  private creditsScreenHideEVH: EventHandle;
   private resetEVH: EventHandle;
   private scenarioEndedEVH: EventHandle;
   private networkFailureEVH: EventHandle;
@@ -213,6 +217,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
       isLoadingFinished: false,
       // Show the lobby by default if we are not connected or connecting to a game server
       isLobbyVisible: !game.isConnectedOrConnectingToServer,
+      isCreditsScreenVisible: false,
       scenarioID: '',
     }
   }
@@ -228,6 +233,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
           <LeftModal />
           <RightModal />
           <ActionAlert />
+          {this.state.isCreditsScreenVisible && <CreditsScreen />}
         </FullScreenContextProviders>
       );
     }
@@ -326,6 +332,8 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     this.showEVH = game.on('show-fullscreen', this.showLobby);
     this.hideEVH = game.on('hide-fullscreen', this.hideLobby);
     this.resetEVH = game.on('reset-fullscreen', this.resetFullscreen);
+    this.creditsScreenShowEVH = game.on('show-credits-screen', this.showCreditsScreen);
+    this.creditsScreenHideEVH = game.on('hide-credits-screen', this.hideCreditsScreen);
     this.networkFailureEVH = game.onNetworkFailure(this.handleNetworkFailure);
     this.scenarioEndedEVH = hordetest.game.onScenarioRoundEnded(this.handleScenarioRoundEnded);
 
@@ -346,6 +354,8 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     this.resetEVH.clear();
     this.scenarioEndedEVH.clear();
     this.networkFailureEVH.clear();
+    this.creditsScreenShowEVH.clear();
+    this.creditsScreenHideEVH.clear();
 
     if (this.extraLoadTimeout) {
 
@@ -363,6 +373,14 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
       fullScreenNavigateTo(Route.Start);
     });
     game.trigger('hide-middle-modal');
+  }
+
+  private showCreditsScreen = () => {
+    this.setState({ isCreditsScreenVisible: true });
+  }
+
+  private hideCreditsScreen = () => {
+    this.setState({ isCreditsScreenVisible: false });
   }
 
   private beginWaitingForAServerFromMatchmaking = () => {

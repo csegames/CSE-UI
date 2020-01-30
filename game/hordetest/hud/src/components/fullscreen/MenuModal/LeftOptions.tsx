@@ -68,6 +68,10 @@ export function LeftOptions(props: Props) {
     game.trigger('show-middle-modal', <SetDisplayName onDisplayNameSet={onDisplayNameSet} />, false, true)
   }
 
+  function showCreditsScreen() {
+    game.trigger('show-credits-screen');
+  }
+
   function onDisplayNameSet() {
     myUserContext.refetch();
   }
@@ -78,6 +82,7 @@ export function LeftOptions(props: Props) {
       {/* <Item>Battle Log</Item> */}
       <Item onClick={onSettingsClick}>Settings</Item>
       <Item onClick={showChangeDisplayName}>Change Display Name</Item>
+      <Item onClick={showCreditsScreen}>Credits</Item>
       {/* <Item>Select Game Mode</Item> */}
       {/* <Item>Support</Item> */}
       {/* <Item>Legal</Item>
