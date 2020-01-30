@@ -358,7 +358,6 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   }
 
   private hideLobby = () => {
-    return;
     console.log("Hiding lobby");
     this.setState({ isLobbyVisible: false }, () => {
       fullScreenNavigateTo(Route.Start);
@@ -367,7 +366,6 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   }
 
   private beginWaitingForAServerFromMatchmaking = () => {
-    return;
     //Show the loading screen and if we dont receive either a server ready or an error after 4 minutes
     //then assume a network failure has happened.
     //At the moment, the webapi has a 3 minute timeout on finding a server
@@ -413,7 +411,6 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   }
 
   private resetFullscreen = () => {
-    return;
     if (!game.isConnectedOrConnectingToServer || game.isDisconnectingFromAllServers) {
       console.log("Reset fullscreen to start with lobby and no loading screen");
       fullScreenNavigateTo(Route.Start);
