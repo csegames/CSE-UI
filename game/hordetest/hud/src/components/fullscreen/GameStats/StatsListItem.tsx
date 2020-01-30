@@ -163,19 +163,19 @@ export function StatsListItem(props: Props) {
         <ChampionName>{championInfo ? championInfo.name : 'Champion Name'}</ChampionName>
       </ChampionInfo>
       <Section>
-        {renderBar(props.playerStat.kills.toString(), statsCurrentPercentage.kills)}
+        {renderBar(props.playerStat.kills.printWithSeparator(','), statsCurrentPercentage.kills)}
       </Section>
       <Section>
-        {renderBar(props.playerStat.longestKillStreak.toString(), statsCurrentPercentage.killStreak)}
+        {renderBar(props.playerStat.longestKillStreak.printWithSeparator(','), statsCurrentPercentage.killStreak)}
       </Section>
       <Section>
         {renderBar(formatTime(props.playerStat.longestLife), statsCurrentPercentage.longestLife)}
       </Section>
       <Section>
-        {renderBar(props.playerStat.damageApplied.toString(), statsCurrentPercentage.totalDamage)}
+        {renderBar(props.playerStat.damageApplied.printWithSeparator(','), statsCurrentPercentage.totalDamage)}
       </Section>
       <Section>
-        {renderBar(props.playerStat.damageTaken.toString(), statsCurrentPercentage.damageTaken)}
+        {renderBar(props.playerStat.damageTaken.printWithSeparator(','), statsCurrentPercentage.damageTaken)}
       </Section>
       <ThumbsUpButtonSpacing>
         <ThumbsUpButton
