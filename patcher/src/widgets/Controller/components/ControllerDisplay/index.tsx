@@ -72,6 +72,14 @@ class ControllerDisplay extends React.PureComponent<Props, ControllerDisplayStat
     );
   }
 
+  public componentDidMount() {
+    this.checkForInitializeServerType();
+  }
+
+  public componentDidUpdate() {
+    this.checkForInitializeServerType();
+  }
+
   private toggleCharacterSelect = () => {
     this.updateApiServerStatus();
     if (this.state.charSelectVisible) {
@@ -111,6 +119,40 @@ class ControllerDisplay extends React.PureComponent<Props, ControllerDisplayStat
       });
     } else {
       this.setState({ serverType });
+    }
+  }
+
+  private checkForInitializeServerType = () => {
+    if (window.patcherState.loggedIn) {
+      switch (window.patcherState.selectedProduct) {
+        case Product.Colossus: {
+          if (this.state.serverType !== ServerType.COLOSSUS) {
+            this.setState({ serverType: ServerType.COLOSSUS });
+          }
+          return;
+        }
+
+        case Product.CamelotUnchained: {
+          if (this.state.serverType !== ServerType.CUGAME) {
+            this.setState({ serverType: ServerType.CUGAME });
+          }
+          return;
+        }
+
+        case Product.Cube: {
+          if (this.state.serverType !== ServerType.CUBE) {
+            this.setState({ serverType: ServerType.CUBE });
+          }
+          return;
+        }
+
+        case Product.Tools: {
+          if (this.state.serverType !== ServerType.CHANNEL) {
+            this.setState({ serverType: ServerType.CHANNEL });
+          }
+          return;
+        }
+      }
     }
   }
 

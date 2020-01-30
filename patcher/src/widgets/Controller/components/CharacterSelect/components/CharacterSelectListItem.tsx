@@ -9,6 +9,7 @@ import * as React from 'react';
 import { includes } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { getCharImage } from '../../../../../lib/characterImages';
+import { PatcherServer } from '../../../ControllerContext';
 import { SimpleCharacter, Race, Gender, Archetype } from 'gql/interfaces';
 
 const goldenColor = 'rgba(192, 173, 124, 0.4)';
@@ -215,10 +216,11 @@ const DeleteButton = styled.div`
 
 export interface CharacterSelectListItemProps {
   character: SimpleCharacter;
+  server: PatcherServer;
   selected: boolean;
   charSelectVisible: boolean;
   onCharacterSelect: (character: SimpleCharacter) => void;
-  onChooseCharacter: (character: SimpleCharacter) => void;
+  onChooseCharacter: (character: SimpleCharacter, server: PatcherServer) => void;
   marginTop?: string;
   marginBottom?: string;
 }
@@ -281,7 +283,7 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
   }
 
   private onClick = () => {
-    this.props.onChooseCharacter(this.props.character);
+    this.props.onChooseCharacter(this.props.character, this.props.server);
   }
 
   private toggleDeleteModal = (e?: React.MouseEvent<HTMLDivElement>) => {

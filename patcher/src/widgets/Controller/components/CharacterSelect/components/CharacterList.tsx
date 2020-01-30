@@ -17,7 +17,7 @@ import { SubscriptionResult } from '@csegames/library/lib/_baseGame/graphql/subs
 import { patcher } from '../../../../../services/patcher';
 import CharacterSelectListItem from './CharacterSelectListItem';
 import CreateCharacterItem from './CreateCharacterItem';
-import PlayerCounts from './PlayerCounts';
+// import PlayerCounts from './PlayerCounts';
 import { CollapsingList } from '../../../../../components/CollapsingList';
 import { ControllerContext, ContextState, PatcherServer } from '../../../ControllerContext';
 import { PatcherAlertFragment } from 'gql/fragments';
@@ -59,7 +59,7 @@ const ServerInfo = styled.div`
   justify-content: space-between;
   height: 20px;
   width: 407px;
-  margin-left: -33px;
+  margin-left: 40px;
   margin-top: 3px;
   font-size: 12px;
   p {
@@ -102,7 +102,7 @@ export interface ComponentProps {
   serverCharacters: SimpleCharacter[];
   selectedCharacter: SimpleCharacter;
   onCharacterSelect: (character: SimpleCharacter) => void;
-  onChooseCharacter: (character: SimpleCharacter) => void;
+  onChooseCharacter: (character: SimpleCharacter, server: PatcherServer) => void;
   toggleMenu: (e: React.MouseEvent<HTMLDivElement>, server: PatcherServer) => void;
   onToggleCollapse: (shardID: number, collapsed: boolean) => void;
   charSelectVisible: boolean;
@@ -195,11 +195,11 @@ class CharacterList extends React.PureComponent<Props, CharacterListState> {
                 </ServerOptionsButton>
               </ServerTitle>
               <ServerInfo>
-                <PlayerCounts
+                {/* <PlayerCounts
                   shard={server.shardID}
                   host={server.apiHost}
                   apiServerOnline={this.props.apiServerOnline}
-                />
+                /> */}
                 <p>Accessible to {webAPI.accessLevelString(server.accessLevel)}</p>
               </ServerInfo>
             </Server>
@@ -208,6 +208,7 @@ class CharacterList extends React.PureComponent<Props, CharacterListState> {
             <CharacterSelectListItem
               key={character.id}
               character={character}
+              server={server}
               selected={this.props.selectedCharacter.id === character.id}
               onCharacterSelect={this.props.onCharacterSelect}
               onChooseCharacter={this.props.onChooseCharacter}

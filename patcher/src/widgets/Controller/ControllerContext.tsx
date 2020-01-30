@@ -178,10 +178,33 @@ export const defaultControllerContextState: ContextState = {
 
 export const ControllerContext = React.createContext(defaultControllerContextState);
 
-const query = {
-  namedQuery: 'patcherControllerContext',
-  useNamedQueryCache: false,
-};
+const query = gql`
+  query ControllerContextQuery {
+    shardCharacters {
+      id
+      archetype
+      faction
+      gender
+      lastLogin
+      name
+      race
+      shardID
+    }
+    connectedServices {
+      servers {
+        accessLevel
+        channelID
+        shardID
+        channelPatchPermissions
+        host
+        name
+        playerMaximum
+        status
+        apiHost
+      }
+    }
+  }
+`;
 
 const subscription = gql`
   subscription ControllerContextSubscription {
@@ -282,6 +305,8 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
       this.queryRefetchInterval = window.setInterval(this.graphql.refetch, 5000);
     }
 
+    console.log('HANDLE QUERY RESULT');
+    console.log(graphql);
     if (!graphql.data) return graphql;
     // All logs go out to the console.log file, do this to help debug when characters aren't updating
     console.log('--------- Shard Characters ---------');
@@ -347,6 +372,9 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
   }
 
   private onUpdateState = (state: Partial<ContextState>) => {
+    console.log('someone updating new state');
+    console.log(state);
+    console.trace();
     this.setState((prevState) => {
       return {
         ...prevState,

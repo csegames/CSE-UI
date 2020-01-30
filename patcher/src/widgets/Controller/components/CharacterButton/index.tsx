@@ -151,7 +151,8 @@ class CharacterButton extends React.PureComponent<Props, CharacterButtonState> {
 
     if (props.serverType === ServerType.CHANNEL) {
       this.props.onUpdateState({ selectedServer: servers.find((value: any) => value.name === 'Editor') || servers[0] });
-    } else {
+    } else if (!this.props.selectedServer ||
+        (this.props.selectedServer.type !== ServerType.COLOSSUS && this.props.selectedServer.type !== ServerType.CUGAME)) {
       const lastPlayString = localStorage.getItem('cse-patcher-lastplay');
 
       let selectedServer = null;

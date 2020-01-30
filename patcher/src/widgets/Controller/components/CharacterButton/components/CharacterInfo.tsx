@@ -11,7 +11,7 @@ import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/library/lib/camelotunchained';
 import { getCharImage, shouldFlipCharImage } from '../../../../../lib/characterImages';
 import { PatcherServer } from '../../../ControllerContext';
-import PlayerCounts from './PlayerCounts';
+// import PlayerCounts from './PlayerCounts';
 import { Spinner } from '../../../../../components/Spinner';
 import { SimpleCharacter, Gender, Race, Archetype } from 'gql/interfaces';
 
@@ -332,7 +332,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
                       style={{ color: selectedServer.available ? 'green' : 'red' }}>
                     </ServerActiveIcon>
                     {selectedServer.name}
-                    <PlayerCounts shard={selectedServer.shardID} host={selectedServer.apiHost} />
+                    {/* <PlayerCounts shard={selectedServer.shardID} host={selectedServer.apiHost} /> */}
                   </ServerName>
                   <AccessLevel>
                     {selectedServer.accessLevel && `Accessible to ${webAPI.accessLevelString(selectedServer.accessLevel)}`}
@@ -369,7 +369,7 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
                         color={selectedServer.available ? 'green' : 'red'}>
                       </ServerActiveIcon>
                       {selectedServer.name}
-                      <PlayerCounts shard={selectedServer.shardID} host={selectedServer.apiHost} />
+                      {/* <PlayerCounts shard={selectedServer.shardID} host={selectedServer.apiHost} /> */}
                     </ServerName>
                     <AccessLevel>
                       {selectedServer.accessLevel && `Accessible to ${webAPI.accessLevelString(selectedServer.accessLevel)}`}
