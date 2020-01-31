@@ -143,12 +143,16 @@ class CharacterButton extends React.PureComponent<Props, CharacterButtonState> {
     const servers: PatcherServer[] = this.getServersWithPatchPermissions(props);
 
     if (servers.length === 0) {
-      this.setState({ hasAccess: false });
-      this.props.onUpdateState({ selectedServer: null });
+      if (this.state.hasAccess === true && this.props.selectedServer !== null) {
+        this.setState({ hasAccess: false });
+        this.props.onUpdateState({ selectedServer: null });
+      }
       return;
     }
 
-    this.setState({ hasAccess: true });
+    if (this.state.hasAccess === false) {
+      this.setState({ hasAccess: true });
+    }
   }
 
   private initializeSelectedCharacter = (props: Props) => {
