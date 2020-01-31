@@ -208,8 +208,6 @@ class ControllerDisplay extends React.PureComponent<Props, ControllerDisplayStat
       selectedServer = servers.find(server => server.type === ServerType.CUGAME);
     }
 
-    console.log(selectedServer);
-
     this.props.onUpdateState({ selectedServer });
   }
 
