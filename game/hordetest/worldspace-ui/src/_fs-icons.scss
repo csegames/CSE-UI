@@ -24,7 +24,66 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+.fs-icon-runes-01:before {
+  content: "\31";
+}
+.fs-icon-runes-02:before {
+  content: "\32";
+}
+.fs-icon-runes-03:before {
+  content: "\33";
+}
+.fs-icon-runes-04:before {
+  content: "\34";
+}
+.fs-icon-runes-05:before {
+  content: "\35";
+}
+.fs-icon-runes-06:before {
+  content: "\36";
+}
+.fs-icon-runes-07:before {
+  content: "\37";
+}
+.fs-icon-runes-08:before {
+  content: "\38";
+}
+.fs-icon-runes-09:before {
+  content: "\39";
+}
+.fs-icon-runes-10:before {
+  content: "\30";
+}
+.fs-icon-runes-11:before {
+  content: "\71";
+}
+.fs-icon-runes-12:before {
+  content: "\77";
+}
+.fs-icon-runes-13:before {
+  content: "\65";
+}
+.fs-icon-runes-14:before {
+  content: "\72";
+}
+.fs-icon-runes-15:before {
+  content: "\74";
+}
+.fs-icon-career-kill-streak:before {
+  content: "\e942";
+}
+.fs-icon-career-longest-life:before {
+  content: "\e943";
+}
+.fs-icon-career-total-damage:before {
+  content: "\e944";
+}
+.fs-icon-career-damage-taken:before {
+  content: "\e945";
+}
+.fs-icon-career-kills:before {
+  content: "\e946";
+}
 .fs-icon-effects-inspire:before {
   content: "\e931";
 }
