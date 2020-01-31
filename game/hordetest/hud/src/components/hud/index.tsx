@@ -9,7 +9,6 @@ import { styled } from '@csegames/linaria/react';
 
 import { ContextProviders, FullScreenContextProviders } from '../context';
 import { FullScreenNavContext, FullScreenNavContextState, fullScreenNavigateTo, Route } from 'context/FullScreenNavContext';
-// import { Chat } from 'cseshared/components/Chat';
 import { Chat } from './Chat';
 import { DevUI } from '../shared/DevUI';
 

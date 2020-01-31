@@ -127,7 +127,11 @@ function getServerTypeFromChannel(channelID: number, defaultsTo: ServerType = Se
     case 11: {
       return ServerType.HIDDEN;
     }
-    case 2000: case 2100: return ServerType.COLOSSUS;
+    case 2000:
+    case 2100:
+    case 2200: {
+      return ServerType.COLOSSUS;
+    }
     default: return defaultsTo;
   }
 }
@@ -305,8 +309,6 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
       this.queryRefetchInterval = window.setInterval(this.graphql.refetch, 5000);
     }
 
-    console.log('HANDLE QUERY RESULT');
-    console.log(graphql);
     if (!graphql.data) return graphql;
     // All logs go out to the console.log file, do this to help debug when characters aren't updating
     console.log('--------- Shard Characters ---------');
@@ -372,9 +374,6 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
   }
 
   private onUpdateState = (state: Partial<ContextState>) => {
-    console.log('someone updating new state');
-    console.log(state);
-    console.trace();
     this.setState((prevState) => {
       return {
         ...prevState,
@@ -399,6 +398,7 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
     for (const key in servers) {
       servers[key].characterCount = characterCounts[servers[key].shardID];
     }
+
     return servers;
   }
 
