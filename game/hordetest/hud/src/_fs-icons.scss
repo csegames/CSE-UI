@@ -25,6 +25,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.fs-icon-effects-sandwich:before {
+  content: "\e947";
+}
+.fs-icon-effects-apple:before {
+  content: "\e948";
+}
+.fs-icon-effects-healing-stone:before {
+  content: "\e949";
+}
 .fs-icon-runes-01:before {
   content: "\31";
 }
