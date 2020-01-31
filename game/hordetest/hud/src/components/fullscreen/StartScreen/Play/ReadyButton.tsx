@@ -130,7 +130,7 @@ class SearchingTimer extends React.Component<SearchingTimerStateProps,{}> {
 class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   private matchmakingEVH: EventHandle;
   private matchmakeRequestTime: number;
-  private minDisabledTime: 2000;
+  private minDisabledTime: number = 2000;
 
   constructor(props: Props) {
     super(props);
