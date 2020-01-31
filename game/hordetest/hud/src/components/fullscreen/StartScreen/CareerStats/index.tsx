@@ -17,7 +17,7 @@ import { formatHourTime } from 'lib/timeHelpers';
 const Container = styled.div`
   display: flex;
   width: 80%;
-  height: 80%;
+  height: 90%;
   padding: 20px 10% 0 10%;
 `;
 
@@ -26,7 +26,7 @@ const NoDataText = styled.div`
   align-items: center;
   justify-content: center;
   width: 80%;
-  height: 80%;
+  height: 90%;
   padding: 20px 10% 0 10%;
   font-size: 40px;
   font-family: Colus;
@@ -37,7 +37,6 @@ const LeftSection = styled.div`
   display: flex;
   flex-direction: column;
   flex: 2;
-  padding: 20px 40px 0 0;
 `;
 
 const StatBlockContainer = styled.div`
@@ -65,15 +64,15 @@ const StatBlockAnimation = css`
   }
 
   &.stat4 {
-    animation-delay: 0.25s;
+    animation-delay: 0.4s;
   }
 
   &.stat5 {
-    animation-delay: 0.35s;
+    animation-delay: 0.5s;
   }
 
   &.stat6 {
-    animation-delay: 0.45s;
+    animation-delay: 0.6s;
   }
 
 
@@ -84,7 +83,7 @@ const StatBlockAnimation = css`
       transform:scale(1);
     }
     70%{
-      transform:scale(1.05);
+      transform:scale(1);
       bottom: 0;
     }
     100% {
@@ -153,11 +152,15 @@ const StatBlock = styled.div`
   justify-content: space-between;
   align-items: center;
   z-index: 0;
-  outline: 2px solid rgba(255, 255, 255, 0.15);
+  outline: 1px solid rgba(255, 183, 211, 0.3);
   outline-offset: -15px;
   background-image: ${(props: { image: string } & React.HTMLProps<HTMLDivElement>) => `url(${props.image})`};
   background-size: cover;
   background-repeat: no-repeat;
+  transition: filter 0.3s ;
+  &:hover{
+    filter: brightness(1.5);
+  }
 `;
 
 const Shadow = styled.div`
@@ -166,26 +169,26 @@ const Shadow = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent, rgba(0, 0, 0, 0.7));
+  background: linear-gradient(to left, rgba(50, 30, 49, 0.9), transparent, rgba(13, 33, 50, 0.9)), linear-gradient(rgba(50, 10, 29, 0.9) 6.3%, transparent, rgba(21, 27, 50, 0.9) 90%);
   z-index: -1;
 `;
 
 const TopContainer = styled.div`
   text-align: center;
+  line-height: 32px;
 `;
 
 const TitleText = styled.div`
   font-family: Colus;
-  font-size: 24px;
-  color: #a6a6a6;
-  margin-top: 30px;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 20px;
 `;
 
 const HighlightText = styled.div`
   font-family: Colus;
-  font-size: 45px;
+  font-size: 40px;
   color: white;
-  white-space: nowrap;
   text-overflow: ellipsis;
 `;
 
@@ -198,8 +201,8 @@ const SecondaryInfo = styled.div`
 const SecondaryStatText = styled.div`
   font-family: Lato;
   font-weight: bold;
-  font-size: 18px;
-  color: #a6a6a6;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.55);
 `;
 
 export interface Props {

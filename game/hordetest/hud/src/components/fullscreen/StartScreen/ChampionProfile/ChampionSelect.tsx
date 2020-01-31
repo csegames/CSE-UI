@@ -81,10 +81,11 @@ const Image = styled.img`
 
 const StarIcon = styled.span`
   position: absolute;
-  font-size: 15px;
+  font-size: 16px;
   top: -8px;
   right: 35px;
-  color: #fffe7d;
+  color: #fff;
+  text-shadow: 0px 0px 10px rgb(56, 158, 255);
 `;
 
 export interface Props {
