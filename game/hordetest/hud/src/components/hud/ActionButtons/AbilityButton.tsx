@@ -33,6 +33,7 @@ export interface State {
 class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
   private abilityStateHandle: EventHandle;
   private playerStateHandle: EventHandle;
+  private progressUpdateTimeout: number;
   constructor(props: Props) {
     super(props);
 
@@ -92,7 +93,9 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
     if (!ability) return;
 
     if (ability.status & AbilityButtonState.Cooldown) {
-      this.startCountdown(ability.timing);
+      if (ability.timing.start !== this.state.cooldownTimer.start) {
+        this.startCountdown(ability.timing);
+      }
       return;
     }
 
@@ -131,7 +134,7 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
 
   private startCountdown = (cooldown: Timing) => {
     const cooldownClone = cloneDeep(cooldown);
-    if (cooldownClone && this.state.cooldownTimer.current === 0) {
+    if (cooldownClone) {
       const timer = Math.ceil(this.getTimingEnd(cooldownClone));
       this.setState({
         cooldownTimer: {
@@ -141,7 +144,8 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
           progress: this.getProgress(cooldownClone.start, cooldownClone.duration).progress,
         },
       });
-      window.setTimeout(this.updateProgress, 66);
+      window.clearTimeout(this.progressUpdateTimeout);
+      this.progressUpdateTimeout = window.setTimeout(this.updateProgress, 66);
     }
   }
 
@@ -161,7 +165,7 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
     });
 
     if (current === 0) return;
-    window.setTimeout(this.updateProgress, 66);
+    this.progressUpdateTimeout = window.setTimeout(this.updateProgress, 66);
   }
 
   private getProgress = (start: number, max: number) => {
