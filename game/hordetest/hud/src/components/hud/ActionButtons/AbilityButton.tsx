@@ -106,6 +106,10 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
       }
 
       const blockingStatus = findMostBlockingStatus(blockingStatuses);
+      if (blockingStatus.duration === Infinity || blockingStatus.duration === NaN) {
+        return;
+      }
+
       this.startCountdown({ start: blockingStatus.startTime, duration: blockingStatus.duration });
       return;
     }
