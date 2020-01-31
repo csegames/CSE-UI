@@ -181,7 +181,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
 
   private cancelMatchmaking = async () => {
     const { matchmakingContext } = this.props;
-    var res = await matchmakingContext.callEnterMatchmaking();
+    var res = await matchmakingContext.callCancelMatchmaking();
     if (res.ok)
     {
       this.enteredMatchmaking = false;
