@@ -208,22 +208,26 @@ class PatchButton extends React.Component<Props, PatchButtonState> {
 
     this.setState({ showEuala: false });
     let launchString = this.commands ? this.commands.toLowerCase() : '';
-    if (selectedCharacter && selectedCharacter.id !== '' && selectedServer.channelID !== 27) {
+    if (selectedServer.channelID !== 27) {
       launchString = this.addUniqueToLaunchString(
         launchString,
         ['servershardid', 'server'],
         `servershardid=${selectedServer.shardID}`,
       );
+
       launchString = this.addUniqueToLaunchString(
         launchString,
         'masterserver',
         `masterserver=${selectedServer.apiHost.replace('https://', '')}`,
       );
-      launchString = this.addUniqueToLaunchString(
-        launchString,
-        'character',
-        `character=${selectedCharacter.id}`,
-      );
+
+      if (selectedCharacter) {
+        launchString = this.addUniqueToLaunchString(
+          launchString,
+          'character',
+          `character=${selectedCharacter.id}`,
+        );
+      }
 
       const apiHost = selectedServer.apiHost || 'https://api.camelotunchained.com';
       launchString = this.addUniqueToLaunchString(
@@ -267,7 +271,7 @@ class PatchButton extends React.Component<Props, PatchButtonState> {
     }
 
     if (!doesInclude) {
-      launchString += ` ${value}`;
+      launchStringClone += ` ${value}`;
     }
 
     return launchStringClone;
