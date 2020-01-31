@@ -16,6 +16,8 @@ import EualaModal from '../EualaModal';
 import { ControllerContext, ServerType, PatcherServer } from '../../ControllerContext';
 import { SimpleCharacter } from 'gql/interfaces';
 
+declare const toastr: any;
+
 const Container = styled.div`
   display: flex;
   flex-direction: row-reverse;
@@ -198,12 +200,15 @@ class PatchButton extends React.Component<Props, PatchButtonState> {
 
   private launchClient = () => {
     const { selectedServer, selectedCharacter } = this.props;
-    if (!selectedServer) return;
+    if (!selectedServer) {
+      toastr.error('There was a problem.', 'Oh no!', 5000);
+      console.error('Could not get selectedServer for product: ' + window.patcherState.selectedProduct);
+      return;
+    }
 
     this.setState({ showEuala: false });
     let launchString = this.commands ? this.commands.toLowerCase() : '';
     if (selectedCharacter && selectedCharacter.id !== '' && selectedServer.channelID !== 27) {
-
       launchString = this.addUniqueToLaunchString(
         launchString,
         ['servershardid', 'server'],
@@ -227,10 +232,11 @@ class PatchButton extends React.Component<Props, PatchButtonState> {
         `webapihost=${apiHost}`,
       );
 
+      const autoconnect = selectedServer.type === ServerType.COLOSSUS ? '0' : '1';
       launchString = this.addUniqueToLaunchString(
         launchString,
         'autoconnect',
-        'autoconnect=1'
+        `autoconnect=${autoconnect}`
       );
     }
 

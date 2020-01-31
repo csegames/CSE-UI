@@ -6,7 +6,6 @@
  */
 
 import * as React from 'react';
-import { find } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 
 import { patcher } from '../../../../services/patcher';
@@ -149,25 +148,7 @@ class CharacterButton extends React.PureComponent<Props, CharacterButtonState> {
       return;
     }
 
-    if (props.serverType === ServerType.CHANNEL) {
-      this.props.onUpdateState({ selectedServer: servers.find((value: any) => value.name === 'Editor') || servers[0] });
-    } else if (!this.props.selectedServer ||
-        (this.props.selectedServer.type !== ServerType.COLOSSUS && this.props.selectedServer.type !== ServerType.CUGAME)) {
-      const lastPlayString = localStorage.getItem('cse-patcher-lastplay');
-
-      let selectedServer = null;
-      if (lastPlayString) {
-        const lastPlay: { channelID: string, serverName: string, characterID: string } = JSON.parse(lastPlayString);
-        selectedServer = find(servers, (s: PatcherServer) => s.name === lastPlay.serverName);
-      }
-
-      if (!selectedServer) {
-        selectedServer = servers[0];
-      }
-
-      this.setState({ hasAccess: true });
-      this.props.onUpdateState({ selectedServer });
-    }
+    this.setState({ hasAccess: true });
   }
 
   private initializeSelectedCharacter = (props: Props) => {

@@ -8,6 +8,7 @@ import * as React from 'react';
 
 import ControllerDisplayView from './ControllerDisplayView';
 import { Routes } from '../../../../services/session/routes';
+import { patcher } from '../../../../services/patcher';
 import {
   ControllerContextProvider,
   ControllerContext,
@@ -73,11 +74,11 @@ class ControllerDisplay extends React.PureComponent<Props, ControllerDisplayStat
   }
 
   public componentDidMount() {
-    this.checkForInitializeServerType();
+    this.checkForInitializeServer();
   }
 
   public componentDidUpdate() {
-    this.checkForInitializeServerType();
+    this.checkForInitializeServer();
   }
 
   private toggleCharacterSelect = () => {
@@ -111,49 +112,122 @@ class ControllerDisplay extends React.PureComponent<Props, ControllerDisplayStat
 
   private selectServerType = (serverType: ServerType) => {
     if (this.state.serverType === serverType) return;
+
     game.trigger('play-sound', 'select');
-    if (serverType === ServerType.CUBE) {
-      this.setState({ serverType });
-      this.props.onUpdateState({
-        selectedServer: this.props.servers['C.U.B.E'],
-      });
-    } else {
-      this.setState({ serverType });
-    }
+    this.checkForInitializeServer();
   }
 
-  private checkForInitializeServerType = () => {
+  private checkForInitializeServer = () => {
     if (window.patcherState.loggedIn) {
+      const isSelectedServerNull = this.props.selectedServer === null || typeof this.props.selectedServer === 'undefined';
+
       switch (window.patcherState.selectedProduct) {
         case Product.Colossus: {
+          if (isSelectedServerNull) {
+            this.initializeColossusServer();
+          }
+
           if (this.state.serverType !== ServerType.COLOSSUS) {
             this.setState({ serverType: ServerType.COLOSSUS });
+            this.initializeColossusServer();
           }
           return;
         }
 
         case Product.CamelotUnchained: {
+          if (isSelectedServerNull) {
+            this.initializeCUServer();
+          }
+
           if (this.state.serverType !== ServerType.CUGAME) {
             this.setState({ serverType: ServerType.CUGAME });
+            this.initializeCUServer();
           }
           return;
         }
 
         case Product.Cube: {
+          if (isSelectedServerNull) {
+            this.initializeCubeServer();
+          }
+
           if (this.state.serverType !== ServerType.CUBE) {
             this.setState({ serverType: ServerType.CUBE });
+            this.initializeCubeServer();
           }
           return;
         }
 
         case Product.Tools: {
+          if (isSelectedServerNull) {
+            this.initializeTools();
+          }
           if (this.state.serverType !== ServerType.CHANNEL) {
             this.setState({ serverType: ServerType.CHANNEL });
+            this.initializeTools();
           }
           return;
         }
       }
     }
+  }
+
+  private initializeCubeServer = () => {
+    const cubeServerKey = Object.keys(this.props.servers).find(key => this.props.servers[key].channelID === 27);
+    this.props.onUpdateState({ selectedServer: this.props.servers[cubeServerKey] });
+  }
+
+  private initializeColossusServer = () => {
+    const servers: PatcherServer[] = this.getServersWithPatchPermissions(ServerType.COLOSSUS);
+    if (servers.length === 0) {
+      this.props.onUpdateState({ selectedServer: null });
+      return;
+    }
+
+    // Hardcode find channel 2200 (Vigridr)
+    const colossusServer = servers.find(server => server.channelID === 2200);
+    this.props.onUpdateState({ selectedServer: colossusServer });
+  }
+
+  private initializeCUServer = () => {
+    const servers: PatcherServer[] = this.getServersWithPatchPermissions(ServerType.CUGAME);
+    if (servers.length === 0) {
+      this.props.onUpdateState({ selectedServer: null });
+      return;
+    }
+
+    const lastPlayString = localStorage.getItem('cse-patcher-lastplay');
+
+    let selectedServer = null;
+    if (lastPlayString) {
+      const lastPlay: { channelID: string, serverName: string, characterID: string } = JSON.parse(lastPlayString);
+      selectedServer = servers.find(server => server.name === lastPlay.serverName);
+    }
+
+    if (!selectedServer) {
+      selectedServer = servers.find(server => server.type === ServerType.CUGAME);
+    }
+
+    console.log(selectedServer);
+
+    this.props.onUpdateState({ selectedServer });
+  }
+
+  private initializeTools = () => {
+    const servers: PatcherServer[] = this.getServersWithPatchPermissions(ServerType.CUGAME);
+    this.props.onUpdateState({ selectedServer: servers.find((value: any) => value.name === 'Editor') || servers[0] });
+  }
+
+  private getServersWithPatchPermissions = (serverType: ServerType) => {
+    const values: PatcherServer[] = [];
+    const servers = this.props.servers;
+    Object.keys(servers).forEach((key: string) => {
+      if (servers[key].type === serverType && patcher.getPermissions() & servers[key].channelPatchPermissions) {
+        values.push(servers[key]);
+      }
+    });
+
+    return values;
   }
 
   // private selectServer = (server: PatcherServer) => {
