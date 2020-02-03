@@ -13,3 +13,4 @@ import './CharacterDef';
 import './ItemGameplayType';
 import './HealthBarKind';
 import './Status';
+import './CharacterKind';

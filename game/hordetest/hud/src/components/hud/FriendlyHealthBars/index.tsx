@@ -78,7 +78,7 @@ export class FriendlyHealthBars extends React.Component<Props, State> {
     if (currentFriendlyHealthBarsAmount === HEALTH_BAR_LIMIT) return;
 
     const playerEntities = Object.values(cloneDeep(hordetest.game.entities)).filter(e => {
-      return e.type === 'player' && e.name !== hordetest.game.selfPlayerState.name;
+      return e.type === 'player' && e.name !== hordetest.game.selfPlayerState.name && e.characterKind === CharacterKind.User;
     });
 
     const notAddedEntities: { name: string, entityID: string }[] = [];
