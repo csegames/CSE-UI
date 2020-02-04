@@ -225,6 +225,8 @@ export function ChampionSelect(props: Props) {
     if (selectedChampion) {
       updateSelectedChampion(selectedChampion.id, getChampionCostumeInfo(selectedChampion.id).id);
     }
+
+    game.playGameSound(SoundEvents.PLAY_USER_FLOW_CHAMP_SELECT);
   }, []);
 
   function getDefaultSelectedChampion() {

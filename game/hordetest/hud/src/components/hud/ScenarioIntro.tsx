@@ -161,7 +161,9 @@ export class ScenarioIntro extends React.Component<Props, State> {
   }
 
   private updateCountdown = (countdown: number) => {
-    this.setState({ shouldAnimate: true, message: Math.round(countdown).toString() });
+    const roundedCountdown = Math.round(countdown);
+    this.setState({ shouldAnimate: true, message: roundedCountdown.toString() });
+    this.playCountdownSound(roundedCountdown);
 
     this.animateTimeout = window.setTimeout(() => {
       this.setState({ shouldAnimate: false });
@@ -186,5 +188,68 @@ export class ScenarioIntro extends React.Component<Props, State> {
     window.setTimeout(() => {
       this.setState({ message: '' });
     }, 5000);
+  }
+
+  private playCountdownSound = (countdown: number) => {
+    switch (countdown) {
+      case 10: {
+        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_10);
+        break;
+      }
+
+      case 9: {
+        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_9);
+        break;
+      }
+
+      case 8: {
+        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_8);
+        break;
+      }
+
+      case 7: {
+        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_7);
+        break;
+      }
+
+      case 6: {
+        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_6);
+        break;
+      }
+
+      case 5: {
+        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_5);
+        break;
+      }
+
+      case 4: {
+        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_4);
+        break;
+      }
+
+      case 3: {
+        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_3);
+        break;
+      }
+
+      case 2: {
+        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_2);
+        break;
+      }
+
+      case 1: {
+        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_1);
+        break;
+      }
+
+      case 0: {
+        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_GO);
+        break;
+      }
+
+      default: {
+        break;
+      }
+    }
   }
 }

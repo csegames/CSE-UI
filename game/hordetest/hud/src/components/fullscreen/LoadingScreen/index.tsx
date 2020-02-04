@@ -70,7 +70,7 @@ export class LoadingScreen extends React.Component<Props, State> {
     };
   }
 
-  public render() { 
+  public render() {
     return (this.state.loadingState && this.state.loadingState.visible) || this.state.forceMessage ? (
       <Container>
         <Logo />
@@ -87,7 +87,9 @@ export class LoadingScreen extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    this.forceShowScreen = game.on('forceshow-loadingscreen', (message:string, delay:number, continuation:Function) => { 
+    game.playGameSound(SoundEvents.PLAY_USER_FLOW_LOADING_SCREEN);
+
+    this.forceShowScreen = game.on('forceshow-loadingscreen', (message:string, delay:number, continuation:Function) => {
       console.log(`Forcing loading screen to show with ${message}`);
       this.setState({forceMessage: message})
       setTimeout(continuation, delay);

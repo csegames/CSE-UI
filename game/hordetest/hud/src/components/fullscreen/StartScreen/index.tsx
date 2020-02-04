@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
 
 import { NavMenu, StartScreenRoute } from './NavMenu';
@@ -103,6 +103,10 @@ export interface Props {
 
 export function StartScreen(props: Props) {
   const [selectedRoute, setSelectedRoute] = useState(StartScreenRoute.Play);
+
+  useEffect(() => {
+    game.playGameSound(SoundEvents.PLAY_USER_FLOW_LOBBY);
+  }, []);
 
   function onSelectRoute(route: StartScreenRoute) {
     if (route !== StartScreenRoute.Play) {
