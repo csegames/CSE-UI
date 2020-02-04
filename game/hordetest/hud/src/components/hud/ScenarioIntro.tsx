@@ -183,6 +183,7 @@ export class ScenarioIntro extends React.Component<Props, State> {
   }
 
   private showGoMessage = () => {
+    game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_GO);
     this.setState({ message: 'GO' });
 
     window.setTimeout(() => {
@@ -239,11 +240,6 @@ export class ScenarioIntro extends React.Component<Props, State> {
 
       case 1: {
         game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_1);
-        break;
-      }
-
-      case 0: {
-        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_GO);
         break;
       }
 
