@@ -6,7 +6,8 @@
 
 import React from 'react';
 import gql from 'graphql-tag';
-import { GraphQL } from '@csegames/library/lib/_baseGame/graphql/react';
+import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
+import { query } from '@csegames/library/lib/_baseGame/graphql/query'
 import { SubscriptionResult } from '@csegames/library/lib/_baseGame/graphql/subscription';
 import {
   IMatchmakingUpdate,
@@ -14,13 +15,15 @@ import {
   MatchmakingServerReady,
   MatchmakingKickOff,
   MatchmakingError,
+  ActiveMatchServer,
 } from '@csegames/library/lib/hordetest/graphql/schema';
-import { Route, fullScreenNavigateTo } from 'context/FullScreenNavContext';
-import { ErrorComponent } from 'components/fullscreen/Error';
-import { query } from '@csegames/library/lib/_baseGame/graphql/query'
 import { TimerRef, startTimer, endTimer } from '@csegames/library/lib/_baseGame/utils/timerUtils';
 import { webAPI } from '@csegames/library/lib/hordetest';
 import { RequestResult } from '@csegames/library/lib/_baseGame';
+
+import { Route, fullScreenNavigateTo } from 'context/FullScreenNavContext';
+import { ErrorComponent } from 'components/fullscreen/Error';
+import { ReconnectComponent } from 'components/fullscreen/Reconnect';
 
 export enum PlayerNumberMode {
   SixMan,
@@ -37,6 +40,15 @@ const SOMEONE_DISCONNECTED_WEBSOCKET_ERROR:number = 1011;
 const MATCH_FAILED_ERROR:number = 1002;
 const MATCH_CANCELED_ERROR:number = 1003;
 const NO_SERVERS_ERROR:number = 1005;
+
+const activeMatchQuery = gql`
+  query ActiveMatchQuery {
+    activeMatchServer {
+      serverHost
+      serverPort
+    }
+  }
+`;
 
 const subscription = gql`
   subscription MatchmakingNotificationSubscription {
@@ -71,8 +83,9 @@ export interface MatchmakingContextState {
   onWaitingForServerHandled: () => void;
   callEnterMatchmaking: () => Promise<RequestResult>,
   callCancelMatchmaking: () => Promise<RequestResult>,
+  tryConnect: (host: string, port: number, tries: number, onConnect?: () => void) => void;
 
-  // MatchmakingServerReady
+  // MatchmakingServerReady || activeMatchServer gql query
   host: string;
   port: number;
   isWaitingOnServer: boolean;
@@ -96,6 +109,7 @@ const getDefaultMatchmakingContextState = (): MatchmakingContextState => ({
   onWaitingForServerHandled: () => {},
   callEnterMatchmaking: () => null,
   callCancelMatchmaking: () => null,
+  tryConnect: () => null,
   host: null,
   port: null,
   matchID: null,
@@ -117,6 +131,7 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
     this.state = {
       ...getDefaultMatchmakingContextState(),
+      tryConnect: this.tryConnect,
       onEnterMatchmaking: this.onEnterMatchmaking,
       onCancelMatchmaking: this.onCancelMatchmaking,
       onWaitingForServerHandled: this.onWaitingForServerHandled,
@@ -132,44 +147,28 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
   public render() {
     return (
       <MatchmakingContext.Provider value={this.state}>
-        <GraphQL subscription={subscription} subscriptionHandler={this.handleSubscription} />
+        <GraphQL
+          query={activeMatchQuery}
+          onQueryResult={this.handleQueryResult}
+          subscription={subscription}
+          subscriptionHandler={this.handleSubscription}
+        />
         {this.props.children}
       </MatchmakingContext.Provider>
     );
   }
 
-  private onEnterMatchmaking = () => {
-    console.log("Matchmaking context understands we have entered matchmaking");
-    this.setState({ isEntered: true, timeSearching: 0 });
+  private handleQueryResult = (graphql: GraphQLResult<{ activeMatchServer: ActiveMatchServer }>) => {
+    if (!graphql || !graphql.data || !graphql.data.activeMatchServer) return graphql;
 
-    //If someone waits in matchmaking for 30 minutes and nothing happens, then i guess the timer just stops. We probably have bigger problems
-    const thirtyMinutes = 30 * 60 * 60 * 1000;
+    const activeMatchServer = graphql.data.activeMatchServer;
+    this.setState({ host: activeMatchServer.serverHost, port: activeMatchServer.serverPort });
 
-    const interval = 60; //Choosing a non divisable number so the update will appear smoother
-    this.timeSearchingUpdateHandle = startTimer(thirtyMinutes, interval, (elapsed, remainingTime) => {
-      if (elapsed / 1000 > this.state.timeSearching) {
-        this.setState({ timeSearching: this.state.timeSearching + 1 })
-      }
-    });
-  }
-
-  private endSearchingTimer = () => {
-    if (this.timeSearchingUpdateHandle) {
-      endTimer(this.timeSearchingUpdateHandle);
-      this.timeSearchingUpdateHandle = null
+    if (true || (!game.isConnectedOrConnectingToServer && activeMatchServer.serverHost && activeMatchServer.serverPort)) {
+      // We have an active match running, but we are not connected or connecting to a server. Require users to reconnect.
+      game.trigger('show-middle-modal', <ReconnectComponent />, true);
     }
-  }
-
-  private onCancelMatchmaking = () => {
-    console.log("Matchmaking context understands we have canceled matchmaking");
-    this.setState({ isEntered: false, timeSearching: 0 });
-    this.endSearchingTimer();
-  }
-
-  private onWaitingForServerHandled = () => {
-    console.log("Matchmaking context understands we are done waiting for a server");
-    this.setState({ isWaitingOnServer: false, isEntered: false });
-    this.endSearchingTimer();
+    return graphql;
   }
 
   private handleSubscription = (result: SubscriptionResult<{ matchmakingUpdates: IMatchmakingUpdate }>, data: any) => {
@@ -277,15 +276,49 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
     }
   }
 
-  private tryConnect(host: string, port: number, tries: number) {
+  private onEnterMatchmaking = () => {
+    console.log("Matchmaking context understands we have entered matchmaking");
+    this.setState({ isEntered: true, timeSearching: 0 });
+
+    //If someone waits in matchmaking for 30 minutes and nothing happens, then i guess the timer just stops. We probably have bigger problems
+    const thirtyMinutes = 30 * 60 * 60 * 1000;
+
+    const interval = 60; //Choosing a non divisable number so the update will appear smoother
+    this.timeSearchingUpdateHandle = startTimer(thirtyMinutes, interval, (elapsed, remainingTime) => {
+      if (elapsed / 1000 > this.state.timeSearching) {
+        this.setState({ timeSearching: this.state.timeSearching + 1 })
+      }
+    });
+  }
+
+  private endSearchingTimer = () => {
+    if (this.timeSearchingUpdateHandle) {
+      endTimer(this.timeSearchingUpdateHandle);
+      this.timeSearchingUpdateHandle = null
+    }
+  }
+
+  private onCancelMatchmaking = () => {
+    console.log("Matchmaking context understands we have canceled matchmaking");
+    this.setState({ isEntered: false, timeSearching: 0 });
+    this.endSearchingTimer();
+  }
+
+  private onWaitingForServerHandled = () => {
+    console.log("Matchmaking context understands we are done waiting for a server");
+    this.setState({ isWaitingOnServer: false, isEntered: false });
+    this.endSearchingTimer();
+  }
+
+  private tryConnect = (host: string, port: number, tries: number) => {
     game.connectToServer(host, port);
     window.setTimeout(() => this.checkConnected(host, port, ++tries), 500);
   }
 
-  private async checkConnected(host: string, port: number, tries: number) {
+  private checkConnected = async (host: string, port: number, tries: number) => {
     if (game.isConnectedToServer) {
-      //Extra failsafe
-      this.setState({ isWaitingOnServer:false});
+      // We already have connected successfully
+      this.setState({ isWaitingOnServer:false });
       return;
     }
 
@@ -297,7 +330,8 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
     // give up after 15 seconds / 30 tries
     if (tries > 30) {
-      game.trigger('show-middle-modal', <ErrorComponent title='Failed' message={'Failed to establish connection to game server.'} errorCode={1010} />, true);
+      game.trigger('show-middle-modal',
+        <ErrorComponent title='Failed' message={'Failed to establish connection to game server.'} errorCode={1010} />, true);
       game.trigger('reset-fullscreen');
       return;
     }
@@ -325,7 +359,13 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
         return;
       } else {
         // fail out.
-        game.trigger('show-middle-modal', <ErrorComponent title='Failed' message={'Failed to establish connection to game server.'} errorCode={1011} />, true);
+        game.trigger('show-middle-modal',
+          <ErrorComponent
+            title='Failed'
+            message={'Failed to establish connection to game server.'}
+            errorCode={1011}
+          />,
+          true);
         // reset back to lobby
         game.trigger('reset-fullscreen');
       }
@@ -333,12 +373,17 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       // failed to check status... so just fail out
       // reset back to lobby
       console.error(err);
-      game.trigger('show-middle-modal', <ErrorComponent title='Failed' message={'Failed to establish connection to game server.'} errorCode={1009} />, true);
+      game.trigger('show-middle-modal',
+        <ErrorComponent
+          title='Failed'
+          message={'Failed to establish connection to game server.'}
+          errorCode={1009}
+        />,
+        true);
       game.trigger('reset-fullscreen');
     }
   }
 
-  
   private callEnterMatchmaking = async () => {
     const request = {
       mode: game.matchmakingGameMode,

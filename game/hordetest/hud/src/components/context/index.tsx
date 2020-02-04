@@ -24,7 +24,9 @@ export class SharedContextProviders extends React.Component<{}> {
         <ChampionInfoContextProvider>
           <MatchmakingContextProvider>
             <MyUserContextProvider>
-              {this.props.children}
+              <ColossusProfileProvider>
+                {this.props.children}
+              </ColossusProfileProvider>
             </MyUserContextProvider>
           </MatchmakingContextProvider>
         </ChampionInfoContextProvider>
@@ -54,15 +56,11 @@ export class ContextProviders extends React.Component<{}> {
 export class FullScreenContextProviders extends React.Component<{}> {
   public render() {
     return (
-      <ChampionInfoContextProvider>
-        <WarbandContextProvider>
-          <InputContextProvider disabled>
-            <ColossusProfileProvider>
-              {this.props.children}
-            </ColossusProfileProvider>
-          </InputContextProvider>
-        </WarbandContextProvider>
-      </ChampionInfoContextProvider>
+      <WarbandContextProvider>
+        <InputContextProvider disabled>
+          {this.props.children}
+        </InputContextProvider>
+      </WarbandContextProvider>
     );
   }
 }

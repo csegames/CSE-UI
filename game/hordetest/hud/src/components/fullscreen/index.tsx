@@ -156,6 +156,9 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
 export function FullScreen(props: ComponentProps) {
   const fullScreenNavContext = useContext(FullScreenNavContext);
   return (
-    <FullScreenWithInjectedContext {...props} fullScreenNavContext={fullScreenNavContext} />
+    <FullScreenWithInjectedContext
+      {...props}
+      fullScreenNavContext={fullScreenNavContext}
+    />
   );
 }

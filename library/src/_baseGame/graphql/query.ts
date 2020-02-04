@@ -96,7 +96,6 @@ function getMessage(obj: { message: string }) {
 
 
 async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
-  
   // reset batch Handle
   batchHandle = null;
   const requests = queryQueue.splice(0, queryQueue.length);
