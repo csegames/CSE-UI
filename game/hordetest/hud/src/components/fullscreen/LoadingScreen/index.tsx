@@ -87,8 +87,6 @@ export class LoadingScreen extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    game.playGameSound(SoundEvents.PLAY_USER_FLOW_LOADING_SCREEN);
-
     this.forceShowScreen = game.on('forceshow-loadingscreen', (message:string, delay:number, continuation:Function) => {
       console.log(`Forcing loading screen to show with ${message}`);
       this.setState({forceMessage: message})
