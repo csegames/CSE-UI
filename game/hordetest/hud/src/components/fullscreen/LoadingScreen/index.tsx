@@ -61,6 +61,7 @@ export class LoadingScreen extends React.Component<Props, State> {
   private loadingStateHandle: EventHandle;
   private forceShowScreen: EventHandle;
   private forceHideScreen: EventHandle;
+  private currentForcedScreenContinuationHandle: number;
 
   constructor(props: Props) {
     super(props);
@@ -86,22 +87,32 @@ export class LoadingScreen extends React.Component<Props, State> {
     ) : null;
   }
 
+  private clearForcedScreenContinuation() {
+    if (this.currentForcedScreenContinuationHandle) {
+      clearTimeout(this.currentForcedScreenContinuationHandle);
+      this.currentForcedScreenContinuationHandle = null;
+    }
+  }
+
   public componentDidMount() {
     this.forceShowScreen = game.on('forceshow-loadingscreen', (message:string, delay:number, continuation:Function) => {
       console.log(`Forcing loading screen to show with ${message}`);
       this.setState({forceMessage: message})
-      setTimeout(continuation, delay);
+      this.clearForcedScreenContinuation();
+      this.currentForcedScreenContinuationHandle = setTimeout(continuation, delay);
     });
 
     this.forceHideScreen = game.on("clearforceshow-loadingscreen", () => { 
       console.log("Removing forced loading screen msg");
       this.setState({forceMessage: null})
+      this.clearForcedScreenContinuation();
     })
 
     this.loadingStateHandle = game.loadingState.onUpdated(() => {
       this.setState({ loadingState: game.loadingState, forceMessage: null }, () => {
         console.log(`Explicit loading screen update: ${this.state.loadingState.message}`);
       });
+      this.clearForcedScreenContinuation();
     });
   }
 
@@ -114,5 +125,7 @@ export class LoadingScreen extends React.Component<Props, State> {
 
     this.loadingStateHandle.clear();
     this.loadingStateHandle = null;
+
+    this.clearForcedScreenContinuation();
   }
 }

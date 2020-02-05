@@ -206,7 +206,8 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
             return;
           }
 
-          console.log(`Received matchmaking kickoff. ${serializedTeamMates ? JSON.parse(serializedTeamMates).length : null} mates, ${secondsToWait} timeout`)
+          console.log(`Received matchmaking kickoff. ${serializedTeamMates ? JSON.parse(serializedTeamMates).length : null} mates, ${secondsToWait} timeout`);
+          console.log(serializedTeamMates);
           fullScreenNavigateTo(Route.ChampionSelect);
         });
         break;
@@ -385,6 +386,20 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
   }
 
   private callEnterMatchmaking = async () => {
+    if (game.isConnectedOrConnectingToServer) {
+      console.error("Trying to enter matchmaking while attached to a server! Ignoring");
+      return new Promise<RequestResult>(() => {
+        return {
+          ok: false,
+          status: 500,
+          statusText: "You cannot enter matchmaking while in a game",
+          data: '{"FieldCodes":[{"Message":"You cannot enter matchmaking while in a game","Code":1038}]}',
+          json: () => {},
+          headers: ""
+        }
+      });
+    }
+
     const request = {
       mode: game.matchmakingGameMode,
     };
@@ -392,6 +407,7 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
   }
 
   private callCancelMatchmaking = async () => {
+    // We allow canceling while attached to a server cause it should be idempotent
     return webAPI.MatchmakingAPI.CancelMatchmaking(webAPI.defaultConfig);
   }
 }

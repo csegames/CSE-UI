@@ -396,7 +396,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
       const fourminutes = 4 * 60 * 1000;
       console.log("Waiting on server. Force loading the loadingscreen");
       game.playGameSound(SoundEvents.PLAY_USER_FLOW_LOADING_SCREEN);
-      game.trigger("forceshow-loadingscreen", "Looking for server", fourminutes, () => {
+      game.trigger("forceshow-loadingscreen", "We're trying to create a server for you! Hang tight", fourminutes, () => {
         if (this.props.matchmakingContext.isWaitingOnServer) {
           console.log("Timeout on Waiting on server. Returning to lobby with error");
           this.handleNetworkFailure("A server could not be found. Please try again later.", 9007);
