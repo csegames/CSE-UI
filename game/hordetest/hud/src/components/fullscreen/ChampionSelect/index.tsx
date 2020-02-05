@@ -162,11 +162,11 @@ const LockedListContainer = styled.div`
   top: 100px;
 
   &.right {
-    right: -60px;
+    right: -40px;
   }
 
   &.left {
-    left: -60px;
+    left: -40px;
   }
 `;
 

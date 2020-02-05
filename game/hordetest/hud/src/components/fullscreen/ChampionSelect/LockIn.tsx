@@ -17,7 +17,7 @@ const LockInButton = css`
   font-size: 20px;
   padding: 10px 70px;
   font-family: Colus;
-  outline: 1px solid rgba(85, 235, 255, 0.48);
+  outline: 1px solid rgba(255, 255, 255, 0.2);
   outline-offset: -5px;
 `;
 

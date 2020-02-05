@@ -59,7 +59,8 @@ const ReadyButtonStyle = css`
 
   &:disabled {
     pointer-events: none;
-    filter: grayscale(100%);
+    filter: grayscale(100%) brightness(70%);
+    opacity: 1;
   }
 }
 
@@ -86,7 +87,7 @@ const ButtonIcon = styled.span`
 
 const SearchingTimerText = styled.div`
   position:absolute;
-  top:58px;
+  top: 60px;
   left:0;
   font-size: 12px;
   width:100%;
