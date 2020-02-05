@@ -62,6 +62,7 @@ export interface Props {
   id: string;
   image: string;
   isSelected: boolean;
+  isDisabled: boolean;
   onClick: (championID: string) => void;
 }
 
@@ -70,6 +71,10 @@ export function ChampionPick(props: Props) {
   const selectedClass = props.isSelected ? 'selected' : '';
 
   function onClick(id: string) {
+    if (props.isDisabled) {
+      return;
+    }
+
     props.onClick(id);
     onChampionSelect(id);
   }

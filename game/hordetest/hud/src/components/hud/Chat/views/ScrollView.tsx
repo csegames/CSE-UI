@@ -51,7 +51,6 @@ export interface Props {
 }
 
 export function ScrollView(props: Props) {
-
   const chat = useChat();
   const [opts] = useChatOptions();
   const [rooms] = useRoomsState(opts);

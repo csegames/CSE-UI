@@ -295,7 +295,7 @@ export function ChampionProfile(props: Props) {
     setSelectedChampion(getDefaultChampion());
   }
 
-  const standingImage = selectedChampion.costumes[0].standingImageURL;
+  const standingImage = selectedChampion ? selectedChampion.costumes[0].standingImageURL : '';
   return champions ? (
     <Container>
       <TransitionAnimation
@@ -304,7 +304,7 @@ export function ChampionProfile(props: Props) {
         containerStyles={`${AnimationContainerClass} ${offsetClass}`}
         animationClass={TransitionAnimationClass}
         animationDuration={500}>
-        <ChampionImage src={selectedChampion.costumes[0].standingImageURL} />
+        <ChampionImage src={standingImage} />
       </TransitionAnimation>
       <ChampionSelect
         champions={champions}

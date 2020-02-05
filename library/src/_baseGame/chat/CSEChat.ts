@@ -849,6 +849,7 @@ export class CSEChat {
     if (!this.connected) {
       this.messageQueue.push(msg);
     };
+
     this.socket.send(msg.serializeBinary());
   };
 

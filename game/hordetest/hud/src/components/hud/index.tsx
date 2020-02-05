@@ -9,7 +9,9 @@ import { styled } from '@csegames/linaria/react';
 
 import { ContextProviders, FullScreenContextProviders } from '../context';
 import { FullScreenNavContext, FullScreenNavContextState, fullScreenNavigateTo, Route } from 'context/FullScreenNavContext';
+import { MatchmakingContext, MatchmakingContextState } from 'components/context/MatchmakingContext';
 import { Chat } from './Chat';
+import { initChat, disconnectChat } from './Chat/state/chat';
 import { DevUI } from '../shared/DevUI';
 
 // import { ChannelBar } from './ChannelBar';
@@ -36,12 +38,11 @@ import { LeftModal } from '../fullscreen/LeftModal';
 import { RightModal } from '../fullscreen/RightModal';
 import { Preloader } from '../fullscreen/Preloader';
 import { CreditsScreen } from '../fullscreen/CreditsScreen';
-
 import { ErrorComponent } from '../fullscreen/Error';
 import { ActionAlert } from '../shared/ActionAlert';
 import { ExtraButtons } from './ExtraButtons';
 import { UrgentMessage } from './UrgentMessage';
-import { MatchmakingContext, MatchmakingContextState } from 'components/context/MatchmakingContext';
+
 // import { LowHealthFullScreenEffects } from './FullScreenEffects/LowHealth';
 
 
@@ -344,7 +345,8 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     }, 10000);
 
     if (game.isConnectedOrConnectingToServer) {
-      this.beginWaitingForAServerFromMatchmaking()
+      this.beginWaitingForAServerFromMatchmaking();
+      initChat((this.props.matchmakingContext && this.props.matchmakingContext.host) || game.serverHost);
     }
   }
 
@@ -365,6 +367,9 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   private showLobby = () => {
     console.log("Showing lobby");
     this.setState({ isLobbyVisible: true });
+
+    console.log('Trying to disconnect from chat');
+    disconnectChat();
   }
 
   private hideLobby = () => {
@@ -412,6 +417,9 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
       fullScreenNavigateTo(Route.EndGameStats);
       this.setState({ isLobbyVisible: true, scenarioID });
       game.playGameSound(SoundEvents.PLAY_SCENARIO_END);
+
+      console.log('Trying to disconnect from chat');
+      disconnectChat();
     }
   }
 

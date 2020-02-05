@@ -4,10 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
+import { initChat } from './state/chat';
 import { useChatPanes } from './state/panesState';
 import { Pane } from './views/Pane';
+import { MatchmakingContext } from 'context/MatchmakingContext';
 
 const Screen = styled.div`
   position: absolute;
@@ -25,10 +27,21 @@ export interface Props {
 
 export function Chat(props: Props) {
   const [panes] = useChatPanes();
+  const matchmakingContext = useContext(MatchmakingContext);
   const panesArr = Object.values(panes.panes);
-  return (
-    <Screen id='chat'>
-      {panesArr.map(pane => <Pane key={pane.id} pane={pane.id} />)}
-    </Screen>
-  );
+
+  if (game.isConnectedToServer) {
+    if (!window.chat || !window.chat.connected) {
+      console.log('initializing chat');
+      initChat((matchmakingContext && matchmakingContext.host && matchmakingContext.host) || game.serverHost);
+    }
+
+    return (
+      <Screen id='chat'>
+        {panesArr.map(pane => <Pane key={pane.id} pane={pane.id} />)}
+      </Screen>
+    );
+  } else {
+    return null;
+  }
 }

@@ -56,7 +56,6 @@ export function useRoomsState(opts: OptionsState, observedKeys: string[] = null)
   if (!sharedState.state) {
     sharedState.state = initialState(opts);
   }
-
   const chat = useChat();
   const [tabs, setTabsState] = useChatTabs();
 
@@ -86,7 +85,8 @@ export function useRoomsState(opts: OptionsState, observedKeys: string[] = null)
           ...sharedState.state.rooms,
           [msg.targetID]: {
             ...sharedState.state.rooms[msg.targetID],
-            messageCounter: sharedState.state.rooms[msg.targetID].messageCounter + 1,
+            messageCounter: sharedState.state.rooms[msg.targetID] ?
+              sharedState.state.rooms[msg.targetID].messageCounter + 1 : 1,
           }
         }
       })
@@ -144,8 +144,6 @@ export function useRoomsState(opts: OptionsState, observedKeys: string[] = null)
       sharedState.setters.push(set);
     }
   }
-
-  
 
   function setState(state: RoomsState) {
     for (let i = 0; i < sharedState.observedSetters.length; ++i) {
