@@ -314,6 +314,7 @@ export function ChampionSelect(props: Props) {
             return (
               <ChampionPick
                 key={champion.id}
+                isDisabled={isLocked}
                 isSelected={isSelected}
                 id={champion.id}
                 image={championCostumeInfo.thumbnailURL}
