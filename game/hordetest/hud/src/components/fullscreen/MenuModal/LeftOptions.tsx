@@ -87,7 +87,6 @@ export function LeftOptions(props: Props) {
       {/* <Item>Support</Item> */}
       {/* <Item>Legal</Item>
       <Item>News</Item> */}
-      <Item>Credits</Item>
       <Item className='exit' onClick={onExitClick}>Exit Game</Item>
     </Container>
   );
