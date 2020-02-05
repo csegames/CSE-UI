@@ -128,9 +128,21 @@ function onReceiveEntityStateRemoved(entityID: string) {
   delete hordetest._devGame.entities[entityID];
 }
 
+function onScenarioRoundEnd() {
+  // Scenario has ended, remove all entities from the list.
+  Object.keys(hordetest._devGame.entities).forEach((entityID) => {
+    if (typeof hordetest._devGame.entities[entityID] === 'undefined') {
+      return;
+    }
+
+    delete hordetest._devGame.entities[entityID];
+  });
+}
+
 export default function() {
   if (typeof engine !== 'undefined') {
     engine.on(EntityState_Update, onReceiveEntityStateUpdate);
     engine.on(EntityState_Removed, onReceiveEntityStateRemoved);
+    engine.on('scenarioRoundEnd', onScenarioRoundEnd);
   }
 }
