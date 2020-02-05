@@ -162,11 +162,15 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
     if (!graphql || !graphql.data || !graphql.data.activeMatchServer) return graphql;
 
     const activeMatchServer = graphql.data.activeMatchServer;
+    console.log(`Checked active match and got back ${activeMatchServer.serverHost}:${activeMatchServer.serverPort}`);
     this.setState({ host: activeMatchServer.serverHost, port: activeMatchServer.serverPort });
 
     if (!game.isConnectedOrConnectingToServer && activeMatchServer.serverHost && activeMatchServer.serverPort) {
       // We have an active match running, but we are not connected or connecting to a server. Require users to reconnect.
       game.trigger('show-middle-modal', <ReconnectComponent />, true);
+    }
+    else {
+      console.log(`Not opening reconnect modal. On server? ${game.isConnectedOrConnectingToServer}`);
     }
     return graphql;
   }
