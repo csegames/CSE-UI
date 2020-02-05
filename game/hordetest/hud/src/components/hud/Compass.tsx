@@ -126,6 +126,7 @@ const ObjectiveIndicator = styled.div`
   font-size: 16px;
   font-family: Exo;
   font-weight: bold;
+  display: none;
 `;
 
 export interface Props {

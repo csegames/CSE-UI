@@ -125,7 +125,7 @@ const FriendlyHealthBarsPosition = styled.div`
 
 const CompassPosition =  styled.div`
   position: fixed;
-  top: 80px;
+  top: 3%;
   left: 50%;
   transform: translateX(-50%);
   width: 600px;
@@ -155,13 +155,14 @@ const PlayerMessagePosition = styled.div`
 
 const AnnouncementsPosition = styled.div`
   position: fixed;
-  bottom: 130px;
-  right: 0;
+  top: 11%;
+  left: 50%;
+  transform: translateX(-50%);
   pointer-events: none;
 `;
 
 const PlayerTrackersPosition = styled.div`
-  position: fixed;w
+  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;

@@ -11,8 +11,8 @@ import { ViewBearingContext } from 'components/context/ViewBearingContext';
 import { PlayerPositionContext } from 'components/context/PlayerPositionContext';
 import { arc2path, currentMax2circleDegrees } from 'lib/circleHelpers';
 
-const CIRCLE_DIAMETER = 78;
-const INDICATOR_DIMENSIONS = 20;
+const CIRCLE_DIAMETER = 60;
+const INDICATOR_DIMENSIONS = 15;
 
 const Container = styled.div`
   display: flex;
@@ -32,7 +32,8 @@ const Circle = styled.div`
   width: ${CIRCLE_DIAMETER}px;
   height: ${CIRCLE_DIAMETER}px;
   border-radius: 50%;
-  background-color: #1A1A1A;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: -2;
 
   &.Health {
     background-color: #004B0B;
@@ -48,10 +49,10 @@ const Circle = styled.div`
 
   @keyframes pulse {
     from {
-      background-color: #fe0000;
+      background-color: rgba(240, 0, 0, 0.7);
     }
     to {
-      background-color: #1A1A1A;
+      background-color: rgba(0, 0, 0, 0.8);
     }
   }
 `;
@@ -73,8 +74,11 @@ const Icon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
-  color: white;
+  font-size: 20px;
+  color: #5fdfff;
+  &.danger {
+    color: red;
+  }
 `;
 
 const ObjectiveIndicator = styled.div`
@@ -83,7 +87,7 @@ const ObjectiveIndicator = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   color: #1A1A1A;
-  font-size: 18px;
+  font-size: 14px;
   font-family: Exo;
   font-weight: bold;
 `;
@@ -93,12 +97,12 @@ const Info = styled.div`
   flex-direction: column;
   justify-content: center;
   white-space: nowrap;
-  padding-left: 50px;
-  padding-right: 20px;
-  margin-left: -40px;
-  width: 200px;
+  padding-top: 80px;
+  text-align: center;
+  position: absolute;
+  width: 60px;
   height: 52px;
-  background: linear-gradient(to right, rgba(26, 26, 26, 0.9), rgba(26, 26, 26, 0.5));
+  text-shadow: 0px 0px 2px black, 0px 0px 2px black;
   transition: width 0.8s;
 
   &.Health {
@@ -110,11 +114,10 @@ const Info = styled.div`
   }
 
   &.minimized {
-    width: 30px;
+    width: 60px;
   }
 
   &.danger {
-    width: 200px;
   }
 `;
 
@@ -124,13 +127,14 @@ const Name = styled.div`
   text-transform: uppercase;
   color: white;
   opacity: 1;
+  display: none;
 
   &.minimized {
     display: none;
   }
 
   &.danger {
-    display: block;
+    display: none;
   }
 `;
 
@@ -144,9 +148,9 @@ const BottomInfo = styled.div`
 const DistanceText = styled.div`
   font-size: 14px;
   font-family: Exo;
-  text-transform: uppercase;
+  text-transform: lowercase;
   color: white;
-  margin-right: 5px;
+  margin: auto;
 `;
 
 interface ObjectiveProps {
@@ -193,7 +197,7 @@ class ObjectiveWithInjectedContext extends React.Component<ObjectiveProps, State
           {this.state.isMinimized &&
             <DirectionalIndicator style={this.getDirectionIndicator()} className='fas fa-caret-down' />
           }
-          <Icon className={objective.iconClass}>
+          <Icon className={`${dangerClassName} ${objective.iconClass}`}>
             <ObjectiveIndicator>{this.props.indicator}</ObjectiveIndicator>
           </Icon>
           <svg height={SVGCircleDiameter * 2} width={SVGCircleDiameter * 2} style={{ position: 'absolute' }}>
@@ -207,14 +211,32 @@ class ObjectiveWithInjectedContext extends React.Component<ObjectiveProps, State
                   360
                 )
               }
-              strokeWidth='4px'
+              strokeWidth='5px'
               stroke={this.state.isDanger ? '#fe0000' : '#ffffff'}
+              fill='transparent'
+            />
+          </svg>
+          <svg
+            height={SVGCircleDiameter * 2} width={SVGCircleDiameter * 2}
+            style={{ position: 'absolute', zIndex: -1 }}>
+            <path
+              d={
+                arc2path(
+                  SVGCircleDiameter,
+                  SVGCircleDiameter,
+                  SVGCircleDiameter / 2,
+                  0.1,
+                  360
+                )
+              }
+              strokeWidth='2px'
+              stroke={'rgba(255, 255, 255, 0.7)'}
               fill='transparent'
             />
           </svg>
         </Circle>
         <Info className={`${minimizedClassName} ${dangerClassName} ${objectiveType}`}>
-          <Name className={`${minimizedClassName} ${dangerClassName}`}>{objective.name}</Name>
+          <Name className={`${minimizedClassName} ${dangerClassName}`}></Name>
           <BottomInfo>
             <DistanceText>{distanceWithRadius}m</DistanceText>
           </BottomInfo>

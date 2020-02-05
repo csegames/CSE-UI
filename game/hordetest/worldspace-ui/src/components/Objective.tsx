@@ -27,7 +27,7 @@ const Circle = styled.div`
   width: ${CIRCLE_DIAMETER}px;
   height: ${CIRCLE_DIAMETER}px;
   border-radius: 50%;
-  background-color: #1A1A1A;
+  background-color: transparent;
 
   &.Health {
     background-color: #004B0B;
@@ -43,10 +43,10 @@ const Circle = styled.div`
 
   @keyframes pulse {
     from {
-      background-color: #fe0000;
+      background-color: rgba(255, 0, 0, 0.7);
     }
     to {
-      background-color: #1A1A1A;
+      background-color: rgba(0, 0, 0, 0.2);
     }
   }
 `;
@@ -57,7 +57,10 @@ const Icon = styled.div`
   align-items: center;
   justify-content: center;
   font-size: 26px;
-  color: white;
+  color: #5fdfff;
+  &.danger {
+    color: red;
+  }
 `;
 
 const ObjectiveIndicator = styled.div`
@@ -65,7 +68,7 @@ const ObjectiveIndicator = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #1A1A1A;
+  color: black;
   font-size: 18px;
   font-family: Exo;
   font-weight: bold;
@@ -98,7 +101,7 @@ export class Objective extends React.Component<Props, State> {
     return (
       <Container>
         <Circle className={`${dangerClassName} ${objectiveType}`}>
-          <Icon className={state.objectiveState.iconClass}>
+          <Icon className={`${dangerClassName} ${state.objectiveState.iconClass}`}>
             <ObjectiveIndicator>{state.indicator}</ObjectiveIndicator>
           </Icon>
           <svg height={SVGCircleDiameter * 2} width={SVGCircleDiameter * 2} style={{ position: 'absolute' }}>
@@ -112,8 +115,27 @@ export class Objective extends React.Component<Props, State> {
                   360
                 )
               }
-              strokeWidth='4px'
+              strokeWidth='6px'
               stroke={this.state.isDanger ? '#fe0000' : '#ffffff'}
+              fill='transparent'
+            />
+          </svg>
+
+          <svg
+            height={SVGCircleDiameter * 2} width={SVGCircleDiameter * 2}
+            style={{ position: 'absolute', zIndex: -1 }}>
+            <path
+              d={
+                arc2path(
+                  SVGCircleDiameter,
+                  SVGCircleDiameter,
+                  SVGCircleDiameter / 2,
+                  0.1,
+                  360
+                )
+              }
+              strokeWidth='2px'
+              stroke={'rgba(255, 255, 255, 0.8)'}
               fill='transparent'
             />
           </svg>
