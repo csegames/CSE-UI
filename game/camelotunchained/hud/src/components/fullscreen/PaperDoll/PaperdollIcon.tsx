@@ -85,6 +85,7 @@ class PaperdollIcon extends React.Component<Props> {
           }
 
           const { myCharacter } = graphql.data;
+          if (!myCharacter) return null;
           const standingIcon = getPaperDollIcon(myCharacter.gender, myCharacter.race as any, myCharacter.archetype as any);
           const baseIcon = getPaperDollBaseIcon(myCharacter.faction);
           return (
