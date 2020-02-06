@@ -58,8 +58,6 @@ export class GroupAlertView extends React.Component<GroupAlertProps> {
     try {
       const res = await webAPI.GroupsAPI.JoinV1(
         webAPI.defaultConfig,
-        game.shardID,
-        camelotunchained.game.selfPlayerState.characterID,
         alert.forGroup,
         alert.code);
       if (res.ok) {

@@ -1555,8 +1555,6 @@ export async function makeEquipItemRequest(item: InventoryItem.Fragment,
   };
   const res = await webAPI.ItemAPI.MoveItems(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       request as any,
     );
   if (!res.ok) {
@@ -1594,8 +1592,6 @@ export async function makeUnequipItemRequest(item: InventoryItem.Fragment,
   };
   const res = await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    game.shardID,
-    camelotunchained.game.selfPlayerState.characterID,
     request as any,
   );
   if (!res.ok) {
@@ -1629,8 +1625,6 @@ export async function makeDropItemRequest(item: InventoryItem.Fragment) {
   });
   const res = await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    game.shardID,
-    camelotunchained.game.selfPlayerState.characterID,
     request as any,
   );
   // TEMPORARY: If webAPI fails, then fall back to client command DropItem
@@ -1644,8 +1638,6 @@ export function onCommitPlacedItem(item: InventoryItem.Fragment, position: Vec3F
   const moveItemReq = JSON.stringify(createMoveItemRequestToWorldPosition(item, position, rotation));
   webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    game.shardID,
-    camelotunchained.game.selfPlayerState.characterID,
     moveItemReq as any,
   );
 }
@@ -2171,8 +2163,6 @@ export async function onMoveStackServer(args: {
   });
   const res = await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    game.shardID,
-    camelotunchained.game.selfPlayerState.characterID,
     moveReq,
   );
   if (!res.ok) {
@@ -2327,8 +2317,6 @@ export async function onCombineStackServer(args: {
   });
   const res = await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    game.shardID,
-    camelotunchained.game.selfPlayerState.characterID,
     moveReq,
   );
   if (!res.ok) {

@@ -223,8 +223,6 @@ export async function onDropOnZoneServer(props: DrawerComponentProps,
 
   const res = await webAPI.ItemAPI.BatchMoveItems(
     webAPI.defaultConfig,
-    game.shardID,
-    camelotunchained.game.selfPlayerState.characterID,
     moveRequests,
   );
   if (!res.ok) {
@@ -571,8 +569,6 @@ export async function onCombineStackServer(props: DrawerComponentProps, payload:
 
   const res = await webAPI.ItemAPI.BatchMoveItems(
     webAPI.defaultConfig,
-    game.shardID,
-    camelotunchained.game.selfPlayerState.characterID,
     moveRequests,
   );
   if (!res.ok) {

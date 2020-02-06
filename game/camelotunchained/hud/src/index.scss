@@ -40,7 +40,7 @@ body {
   @import './components/hud/BuildingOLD/index';
   // external scss
   @import './components/shared/DevUI/index.scss';
-  @import '../../../shared/components/Chat/index.scss';
+  @import './components/shared/Chat/index.scss';
   // @import '@csegames/camelot-unchained/lib/components/Chat/index.scss';
   .chat-window {
     position: relative;

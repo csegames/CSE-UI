@@ -410,8 +410,6 @@ class AbilityButton extends React.Component<AbilityButtonProps, AbilityButtonSta
   private onDeleteClick = async (abilityID: number) => {
     const res = await webAPI.AbilitiesAPI.DeleteAbility(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       abilityID,
     );
 

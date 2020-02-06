@@ -192,8 +192,6 @@ class TradeWindowView extends React.Component<TradeWindowViewProps, TradeWindowV
     try {
       const res = await webAPI.SecureTradeAPI.AbortSecureTrade(
         webAPI.defaultConfig,
-        game.shardID,
-        camelotunchained.game.selfPlayerState.characterID,
       );
       if (res.ok) {
         // Handle aborting trade

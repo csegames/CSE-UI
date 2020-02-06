@@ -8,5 +8,6 @@ export const defaultConfig: RequestConfig = () => ({
   url: game.webAPIHost + '/',
   headers: {
     Authorization: `Bearer ${game.accessToken}`,
+    CharacterID: camelotunchained.game.selfPlayerState.characterID,
   },
 });

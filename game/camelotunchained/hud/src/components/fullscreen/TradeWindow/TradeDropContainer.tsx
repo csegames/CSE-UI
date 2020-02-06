@@ -221,8 +221,6 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
         const tradeItem = { ItemID: (item as TradeStackItem).tradeStackId || item.id, UnitCount: item.stats.item.unitCount };
         const res = await webAPI.SecureTradeAPI.RemoveItem(
           webAPI.defaultConfig,
-          game.shardID,
-          camelotunchained.game.selfPlayerState.characterID,
           tradeItem.ItemID,
           tradeItem.UnitCount,
         );
@@ -324,8 +322,6 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
       const tradeItem = { ItemID: e.dataTransfer.item.id, UnitCount: e.dataTransfer.item.stats.item.unitCount };
       const res = await webAPI.SecureTradeAPI.AddItem(
         webAPI.defaultConfig,
-        game.shardID,
-        camelotunchained.game.selfPlayerState.characterID,
         tradeItem.ItemID,
         tradeItem.UnitCount,
       );

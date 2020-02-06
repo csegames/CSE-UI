@@ -20,10 +20,7 @@ export interface Props {
 
 export function Chat(props: Props) {
   const [panes] = useChatPanes();
-
   // const [minimized, setMinimized] = useState(false);
-  console.log('using chat');
-  return <p>HEY THERE!</p>;
   const panesArr = Object.values(panes.panes);
   return (
     <Screen id='chat'>

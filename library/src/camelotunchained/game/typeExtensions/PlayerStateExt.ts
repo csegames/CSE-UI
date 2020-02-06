@@ -6,6 +6,14 @@
 
 export {};
 
+function Vec3fEquals(a: Vec3f, b: Vec3f) {
+  if (Object.is(a, b)) {
+    return true;
+  }
+  return Math.equals(a.x, b.x) && Math.equals(a.y, b.y) && Math.equals(a.z, b.z);
+}
+
+
 declare global {
 
   class PlayerState {
@@ -81,7 +89,7 @@ class PlayerStateExt {
       return false;
     }
 
-    if (!Vec3fExt.equals(a.position, b.position)) {
+    if (!Vec3fEquals(a.position, b.position)) {
       return false;
     }
 
@@ -101,6 +109,7 @@ class PlayerStateExt {
     return true;
   }
 
+  
   public static compareStatus(a: { id: number; } & Timing, b: {id: number} & Timing) {
     return a.id === b.id && Math.equals(a.start, b.start) && Math.equals(a.duration, b.duration);
   }

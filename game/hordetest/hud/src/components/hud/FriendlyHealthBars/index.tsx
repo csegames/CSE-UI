@@ -59,6 +59,7 @@ export class FriendlyHealthBars extends React.Component<Props, State> {
 
   private handleScenarioRoundEnded = (scenarioID: string, roundID: string, didEnd: boolean) => {
     if (didEnd) {
+      console.log(`Resetting known friendly players to 0`);
       this.setState({ friendlyPlayers: {} });
     }
   }
@@ -68,14 +69,22 @@ export class FriendlyHealthBars extends React.Component<Props, State> {
     const nameOfPlayer = Object.keys(friendlyPlayers).find(name => friendlyPlayers[name] === entityID);
 
     if (nameOfPlayer) {
+      console.log(`Removing ${entityID} (${nameOfPlayer}) from known healthbars`);
       delete friendlyPlayers[nameOfPlayer];
       this.setState({ friendlyPlayers });
     }
   }
 
-  private updateFriendlyPlayerNames = () => {
+  private updateFriendlyPlayerNames = (entityState: EntityStateModel) => {
+    if (entityState["type"] !== "player" || entityState["characterKind"] !== CharacterKind.User ) {
+      return;
+    }
+
     const currentFriendlyHealthBarsAmount = Object.keys(this.state.friendlyPlayers).length;
-    if (currentFriendlyHealthBarsAmount === HEALTH_BAR_LIMIT) return;
+    if (currentFriendlyHealthBarsAmount === HEALTH_BAR_LIMIT) {
+      console.log(`Cannot add ${entityState.name} to healthbars. Full`);
+      return;
+    }
 
     const playerEntities = Object.values(cloneDeep(hordetest.game.entities)).filter(e => {
       return e.type === 'player' && e.name !== hordetest.game.selfPlayerState.name && e.characterKind === CharacterKind.User;
@@ -84,15 +93,19 @@ export class FriendlyHealthBars extends React.Component<Props, State> {
     const notAddedEntities: { name: string, entityID: string }[] = [];
     let friendlyPlayers = cloneDeep(this.state.friendlyPlayers);
     playerEntities.forEach((entity) => {
-      if (friendlyPlayers[entity.name]) return;
-
+      if (friendlyPlayers[entity.name]) {
+        return;
+      }
+      console.log(`Queueing ${entity.name} to be added to health bar`);
       notAddedEntities.push({ name: entity.name, entityID: entity.entityID });
     });
 
     if (currentFriendlyHealthBarsAmount < HEALTH_BAR_LIMIT && notAddedEntities.length > 0) {
       const friendsNeeded = HEALTH_BAR_LIMIT - currentFriendlyHealthBarsAmount;
+      console.log(`Attempting to add ${notAddedEntities.length} healthbars with ${friendsNeeded} slots (${currentFriendlyHealthBarsAmount}/${HEALTH_BAR_LIMIT}).`);
       notAddedEntities.slice(0, friendsNeeded);
       notAddedEntities.forEach((entity) => {
+        console.log(`Adding '${entity.name}' to healthbar`);
         friendlyPlayers[entity.name] = entity.entityID;
       });
       this.setState({ friendlyPlayers });

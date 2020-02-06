@@ -8,8 +8,14 @@ import './PlayerStateExt';
 import './StatusExt';
 import './FactionExt';
 import './TimingExt';
+import './Vec2fExt';
+import './Vec3fExt';
+import './CurrentMaxExt';
 
 export * from './PlayerStateExt';
 export * from './StatusExt';
 export * from './FactionExt';
 export * from './TimingExt';
+export * from './Vec2fExt';
+export * from './Vec3fExt';
+export * from './CurrentMaxExt';

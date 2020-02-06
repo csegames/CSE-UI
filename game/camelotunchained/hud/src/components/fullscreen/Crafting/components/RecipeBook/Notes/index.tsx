@@ -196,8 +196,6 @@ class Notes extends React.Component<Props, State> {
     const { selectedVoxNote } = this.state;
     await webAPI.CraftingAPI.SetCraftingNotes(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       selectedVoxNote ? selectedVoxNote.id : nullVal,
       notes,
     );

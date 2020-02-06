@@ -77,8 +77,6 @@ export function AbilityCreation(props: Props) {
     };
     const res = await webAPI.AbilitiesAPI.CreateAbility(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       createAbilityRequest,
     );
 
@@ -107,8 +105,6 @@ export function AbilityCreation(props: Props) {
     };
     const res = await webAPI.AbilitiesAPI.ModifyAbility(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       state.modifiedAbilityID,
       createAbilityRequest,
     );

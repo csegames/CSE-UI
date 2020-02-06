@@ -107,7 +107,6 @@ export interface Props {
 export interface State {
   isSearching: boolean;
   disabled: boolean;
-  waitingOnMatchmakeRequest: boolean;
 }
 
 interface SearchingTimerStateProps {
@@ -130,8 +129,6 @@ class SearchingTimer extends React.Component<SearchingTimerStateProps,{}> {
 
 class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   private matchmakingEVH: EventHandle;
-  private matchmakeRequestTime: number;
-  private minDisabledTime: number = 2000;
 
   constructor(props: Props) {
     super(props);
@@ -139,7 +136,6 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
     this.state = {
       isSearching: false,
       disabled: false,
-      waitingOnMatchmakeRequest: false,
     };
   }
 
@@ -268,96 +264,48 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
     }
   }
 
+  private hitButton = async (makeCall: () => Promise<RequestResult>, onSuccess: () => void, failureMessage: string) => {
+    try {
+      this.setState({disabled: true});
+      const res = await makeCall();
+      this.setState({disabled: false});
+
+      if (res.ok) {
+        onSuccess();
+      } else {
+        try {
+          const data = JSON.parse(res.data).FieldCodes[0];
+          this.showErrorModal(failureMessage, data.Message, data.Code);
+        } catch (e) {
+          this.showErrorModal(failureMessage, 'A problem ocurred. Please try again later', 19107);
+        }
+      }
+
+    } catch (err) {
+      this.showErrorModal(failureMessage, 'A problem ocurred. Please try again later', 19107);
+      this.setState({disabled: false});
+    }
+  }
+
   private readyUp = async () => {
     console.log("Readying up...");
-    const res = await webAPI.GroupsAPI.ReadyUpV1(webAPI.defaultConfig, this.props.warbandContextState.groupID);
-    if (res.ok) {
-      this.props.onReady();
-    } else {
-      // Show error modal
-      try {
-        const data = JSON.parse(res.data).FieldCodes[0];
-        this.showErrorModal('Failed To Ready', data.Message, data.Code);
-      } catch (e) {
-        this.showErrorModal('Failed To Ready', 'A problem ocurred. Please try again later', 19107);
-      }
-    }
+    await this.hitButton(async () => webAPI.GroupsAPI.ReadyUpV1(webAPI.defaultConfig, this.props.warbandContextState.groupID), this.props.onReady, 'Failed To Ready');
   }
 
   private unready = async () => {
     console.log("Unreadying...");
-    const res = await webAPI.GroupsAPI.UnReadyV1(webAPI.defaultConfig, this.props.warbandContextState.groupID);
-    if (res.ok) {
-      this.props.onUnready();
-    } else {
-      // Show error modal
-      try {
-        const data = JSON.parse(res.data).FieldCodes[0];
-        this.showErrorModal('Failed To Unready', data.Message, data.Code);
-      } catch (e) {
-        this.showErrorModal('Failed To Unready', 'A problem ocurred. Please try again later', 19107);
-      }
-    }
+    await this.hitButton(async () => webAPI.GroupsAPI.UnReadyV1(webAPI.defaultConfig, this.props.warbandContextState.groupID), this.props.onUnready, 'Failed To Unready');
   }
 
   private enterMatchmaking = async () => {
     console.log("Entering matchmaking...")
-    try {
-      this.setState(s => ({
-          ...s,
-          disabled: true,
-          waitingOnMatchmakeRequest: true,
-      }));
-      this.matchmakeRequestTime = Date.now();
-      setTimeout(() => {
-        if (this.state.waitingOnMatchmakeRequest) return;
-        this.setState(s => ({
-          ...s,
-          disabled: false,
-        }));
-      }, this.minDisabledTime);
-      const res = await this.props.enterMatchmaking();
-      this.setState(s => ({
-        ...s,
-        disabled: !(Date.now() - this.matchmakeRequestTime > this.minDisabledTime),
-        waitingOnMatchmakeRequest: false,
-      }));
-      if (res.ok) {
-        this.props.matchmakingContext.onEnterMatchmaking();
-      } else {
-        // Show error modal
-        try {
-          const data = JSON.parse(res.data).FieldCodes[0];
-          this.showErrorModal('Failed To Enter Matchmaking', data.Message, data.Code);
-        } catch (e) {
-          this.showErrorModal('Failed To Enter Matchmaking', 'A problem ocurred. Please try again later', 19107);
-        }
-      }
-    } catch (err) {
-      this.showErrorModal('Failed To Enter Matchmaking', 'A problem ocurred. Please try again later', 19107);
-      this.setState(s => ({
-        ...s,
-        disabled: !(Date.now() - this.matchmakeRequestTime > this.minDisabledTime),
-        waitingOnMatchmakeRequest: false,
-      }));
-    }
+    await this.hitButton(async () => this.props.enterMatchmaking(), this.props.matchmakingContext.onEnterMatchmaking, 'Failed To Enter Matchmaking');
   }
 
   private cancelMatchmaking = async () => {
     // If solo, just cancel matchmaking
     console.log("Canceling matchmaking...")
-    const res = await this.props.cancelMatchmaking();
-    if (res.ok) {
-      this.props.matchmakingContext.onCancelMatchmaking();
-    } else {
-      // Show error modal
-      try {
-        const data = JSON.parse(res.data).FieldCodes[0];
-        this.showErrorModal('Failed To Cancel Matchmaking', data.Message, data.Code);
-      } catch (e) {
-        this.showErrorModal('Failed To Cancel Matchmaking', 'A problem ocurred. Please try again later', 19107);
-      }
-    }
+    await this.hitButton(async () => this.props.cancelMatchmaking(), this.props.matchmakingContext.onCancelMatchmaking, 'Failed To Cancel Matchmaking');
   }
 
   private showErrorModal = (title: string, message: string, errorCode: number) => {
