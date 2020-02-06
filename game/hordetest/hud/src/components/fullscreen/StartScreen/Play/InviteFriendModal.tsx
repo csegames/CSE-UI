@@ -31,21 +31,30 @@ const InputStyles = css`
   font-family: Lato;
 
   &.error {
-    border-color: #9B0700;
+    border-color: #ff3300;
   }
 `;
 
 const ErrorMessage = styled.div`
-  font-size: 26px;
-  font-family: Lato;
-  color: #9B0700;
-  margin-top: 20px;
+  font-size: 22px;
+  margin-top: 130px;
+  text-align: center;
+  font-style: italic;
+  color: #ff3300;
   margin-bottom: 20px;
+  position: absolute;
 `;
 
 const ModalButtonStyles = css`
   padding: 15px 30px;
   font-size: 22px;
+  margin-right: 5px;
+  margin-left: 5px;
+`;
+
+const ButtonsContainer = styled.div`
+  display: flex;
+  margin-top: 20px;
 `;
 
 export interface Props {
@@ -95,8 +104,11 @@ export function InviteFriendModal(props: Props) {
         value={inviteName}
         onChange={onInviteNameChange}
       />
+      <ButtonsContainer>
+        <Button type='blue' text='Send Invite' styles={ModalButtonStyles} onClick={onSendInviteClick} />
+        <Button text='Cancel' type='gray' onClick={props.onClickOverlay} styles={ModalButtonStyles} />
+      </ButtonsContainer>
       <ErrorMessage>{errorMessage}</ErrorMessage>
-      <Button type='blue' text='Send Invite' styles={ModalButtonStyles} onClick={onSendInviteClick} />
     </MiddleModalComponent>
   );
 }

@@ -26,15 +26,16 @@ const Title = styled.div`
   font-family: Colus;
   color: white;
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
 `;
 
 const ErrorText = styled.div`
   font-size: 22px;
-  margin-top: 20px;
+  margin-top: 130px;
   text-align: center;
   font-style: italic;
   color: #ff3300;
+  position: absolute;
 `;
 
 const ButtonsContainer = styled.div`
@@ -44,14 +45,14 @@ const ButtonsContainer = styled.div`
 const ButtonStyles = css`
   width: fit-content;
   height: fit-content;
-  margin: 40px 10px 0 10px;
+  margin: 20px 5px 0 5px;
   font-size: 22px;
   padding: 15px;
 `;
 
 const Input = styled.input`
   height: 25px;
-  width: 200px;
+  width: 300px;
   background-color: black;
   margin: 2px;
   border: 0;
@@ -66,11 +67,9 @@ const Input = styled.input`
   &:focus {
     border-color: #52CFFD;
   }
-`;
-
-const Cancel = styled.a`
-  font-size: 1.1em;
-  color: #acacac;
+  &.error {
+    border-color: #ff3300;
+  }
 `;
 
 export interface Props {
@@ -125,8 +124,7 @@ export function SetDisplayName(props: Props) {
         return (
           <Container>
             <Title>Choose Your Name</Title>
-              <Input ref={inputRef} type='text' name='display-name' placeholder={name} />
-              <ErrorText>{state.lastError}</ErrorText>
+              <Input className={`${state.lastError ? 'error' : ''}`} ref={inputRef} type='text' name='display-name' placeholder={name} />
               <ButtonsContainer>
                 <Button
                   type='blue'
@@ -135,8 +133,9 @@ export function SetDisplayName(props: Props) {
                   onClick={setDisplayname}
                   styles={ButtonStyles}
                 />
+               {name && <Button text='Cancel' type='gray' onClick={() => game.trigger('hide-middle-modal')} styles={ButtonStyles} />}
               </ButtonsContainer>
-              {name && <Cancel href='#' onClick={() => game.trigger('hide-middle-modal')}>cancel</Cancel>}
+              <ErrorText>{state.lastError}</ErrorText>
           </Container>
         );
       }}

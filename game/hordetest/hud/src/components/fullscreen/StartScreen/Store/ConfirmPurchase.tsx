@@ -50,7 +50,7 @@ const ButtonStyle = css`
   display: flex;
   padding: 18px 30px;
   font-size: 24px;
-  margin-right: 15px;
+  margin-right: 10px;
 `;
 
 const ConsoleIcon = styled.span`
