@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import './types';
-import './typeExtensions';
 import './utils';
 
 import { BaseGameInterface, BaseDevGameInterface } from './BaseGameInterface';

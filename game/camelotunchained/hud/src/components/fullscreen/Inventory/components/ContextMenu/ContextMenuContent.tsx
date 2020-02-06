@@ -191,8 +191,6 @@ class ContextMenuContent extends React.Component<ContextMenuComponentProps> {
     try {
       const res = await webAPI.ItemAPI.PerformItemAction(
         webAPI.defaultConfig,
-        game.shardID,
-        camelotunchained.game.selfPlayerState.characterID,
         this.props.item.id,
         camelotunchained.game.selfPlayerState.entityID, // TODO COHERENT check if this is correct
         action.id,

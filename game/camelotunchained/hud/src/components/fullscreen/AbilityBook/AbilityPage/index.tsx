@@ -158,8 +158,6 @@ export function AbilityPage(props: Props) {
   async function onDeleteClick() {
     const res = await webAPI.AbilitiesAPI.DeleteAbility(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       selectedAbility.id,
     );
 

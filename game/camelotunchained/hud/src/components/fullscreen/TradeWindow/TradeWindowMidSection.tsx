@@ -151,8 +151,6 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
     try {
       const res = await webAPI.SecureTradeAPI.Lock(
         webAPI.defaultConfig,
-        game.shardID,
-        camelotunchained.game.selfPlayerState.characterID,
       );
       if (res.ok) {
         // Handle successful Lock
@@ -170,8 +168,6 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
     try {
       const res = await webAPI.SecureTradeAPI.Unlock(
         webAPI.defaultConfig,
-        game.shardID,
-        camelotunchained.game.selfPlayerState.characterID,
       );
       if (res.ok) {
         // Handle successful Unlock
@@ -192,8 +188,6 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
     try {
       const res = await webAPI.SecureTradeAPI.Confirm(
         webAPI.defaultConfig,
-        game.shardID,
-        camelotunchained.game.selfPlayerState.characterID,
       );
       if (res.ok) {
         // Handle successful Confirm
@@ -211,8 +205,6 @@ class TradeWindowMidSection extends React.Component<TradeWindowMidSectionProps, 
     try {
       const res = await webAPI.SecureTradeAPI.CancelTradeConfirmation(
         webAPI.defaultConfig,
-        game.shardID,
-        camelotunchained.game.selfPlayerState.characterID,
       );
       if (res.ok) {
         // Handle successful Cancel Confirmation

@@ -274,8 +274,6 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
     try {
       const res = await webAPI.ItemAPI.PerformItemAction(
         webAPI.defaultConfig,
-        game.shardID,
-        camelotunchained.game.selfPlayerState.characterID,
         itemId,
         camelotunchained.game.selfPlayerState.entityID,
         actionId,
@@ -299,8 +297,6 @@ class ItemPlacementModeManager extends React.PureComponent<Props, State> {
     try {
       const res = await webAPI.ItemAPI.MoveItems(
         webAPI.defaultConfig,
-        game.shardID,
-        camelotunchained.game.selfPlayerState.characterID,
         {
           moveItemID: itemId,
           stackHash: '00000000000000000000000000000000',

@@ -41,8 +41,6 @@ class LogNotes extends React.Component<Props> {
     const { groupLog } = this.props;
     await webAPI.CraftingAPI.SetVoxJobGroupNotes(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       groupLog.jobIdentifier,
       groupLog.jobType,
       notesValue,

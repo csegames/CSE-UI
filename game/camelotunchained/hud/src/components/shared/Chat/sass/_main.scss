@@ -1,0 +1,146 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+@import 'constants';
+
+@mixin circle($size) {
+  border-radius: 50%;
+  width: $size;
+  height: $size;
+}
+
+::-webkit-scrollbar {
+  width: 15px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: darken($color1, 70%);
+  border: 1px solid #4E4E4E;
+}
+
+h4 {
+  margin: 0;
+}
+
+.flex-right {
+  margin-left: auto;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-vcenter {
+  justify-content: center;
+}
+
+.flex-stretch {
+  flex: 1 0 auto;
+}
+
+.flex-fill {
+  flex: 1 1 auto;
+}
+
+#PatcherApp {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+input {
+  color: $color1;
+}
+
+.no-select {
+  -webkit-user-select: none;
+}
+.allow-select {
+  -webkit-user-select: all;
+}
+.allow-select-text {
+  -webkit-user-select: text;
+}
+
+.no-margin-bottom {
+  margin-bottom: 0px;
+}
+
+.no-padding {
+  padding: 0px;
+}
+
+.no-margin {
+  margin: 0px;
+}
+
+.no-select {
+  -webkit-user-select: none;
+}
+
+::selection {
+    background:  rgb(181, 181, 181);
+}
+
+.hidden {
+  display: none;
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.btn-flat {
+  color: $colorg4;
+}
+
+.btn {
+  background-color: $color1;
+  &:hover {
+    background-color: lighten($color1, 5%);
+  }
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+[type="checkbox"].filled-in:checked+label:after {
+    border: 2px solid $colorg4;
+    background-color: darken($colorg4, 30%);
+}
+
+input:not([type]).valid, input:not([type]):focus.valid, input[type=text].valid, input[type=text]:focus.valid, input[type=password].valid, input[type=password]:focus.valid, input[type=email].valid, input[type=email]:focus.valid, input[type=url].valid, input[type=url]:focus.valid, input[type=time].valid, input[type=time]:focus.valid, input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local].valid, input[type=datetime-local]:focus.valid, input[type=tel].valid, input[type=tel]:focus.valid, input[type=number].valid, input[type=number]:focus.valid, input[type=search].valid, input[type=search]:focus.valid, textarea.materialize-textarea.valid, textarea.materialize-textarea:focus.valid {
+    border-bottom: 1px solid $colorg4;
+    box-shadow: 0 1px 0 0 $colorg4;
+}
+
+input:not([type]).valid+label:after, input:not([type]):focus.valid+label:after, input[type=text].valid+label:after, input[type=text]:focus.valid+label:after, input[type=password].valid+label:after, input[type=password]:focus.valid+label:after, input[type=email].valid+label:after, input[type=email]:focus.valid+label:after, input[type=url].valid+label:after, input[type=url]:focus.valid+label:after, input[type=time].valid+label:after, input[type=time]:focus.valid+label:after, input[type=date].valid+label:after, input[type=date]:focus.valid+label:after, input[type=datetime-local].valid+label:after, input[type=datetime-local]:focus.valid+label:after, input[type=tel].valid+label:after, input[type=tel]:focus.valid+label:after, input[type=number].valid+label:after, input[type=number]:focus.valid+label:after, input[type=search].valid+label:after, input[type=search]:focus.valid+label:after, textarea.materialize-textarea.valid+label:after, textarea.materialize-textarea:focus.valid+label:after {
+    color: $colorg4;
+}
+
+input:not([type]):focus:not([readonly]), input[type=text]:focus:not([readonly]), input[type=password]:focus:not([readonly]), input[type=email]:focus:not([readonly]), input[type=url]:focus:not([readonly]), input[type=time]:focus:not([readonly]), input[type=date]:focus:not([readonly]), input[type=datetime-local]:focus:not([readonly]), input[type=tel]:focus:not([readonly]), input[type=number]:focus:not([readonly]), input[type=search]:focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly]) {
+    border-bottom: 1px solid $colorg4;
+    box-shadow: 0 1px 0 0 $colorg4;
+}
+
+input:not([type]):focus:not([readonly])+label, input[type=text]:focus:not([readonly])+label, input[type=password]:focus:not([readonly])+label, input[type=email]:focus:not([readonly])+label, input[type=url]:focus:not([readonly])+label, input[type=time]:focus:not([readonly])+label, input[type=date]:focus:not([readonly])+label, input[type=datetime-local]:focus:not([readonly])+label, input[type=tel]:focus:not([readonly])+label, input[type=number]:focus:not([readonly])+label, input[type=search]:focus:not([readonly])+label, textarea.materialize-textarea:focus:not([readonly])+label {
+    color: $colorg4;
+}
+
+
+@import 'modaldialog';
+@import 'chat';
+@import 'alerts';
+@import 'font';
+@import 'emoji';

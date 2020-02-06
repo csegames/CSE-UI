@@ -13,8 +13,6 @@ export async function inviteToTrade(targetID: string) {
   try {
     const res = await webAPI.SecureTradeAPI.Invite(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       targetID,
     );
 

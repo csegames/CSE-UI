@@ -222,8 +222,6 @@ class Progression extends React.Component<Props, State> {
     try {
       const res = await webAPI.ProgressionAPI.CollectCharacterDayProgression(
         webAPI.defaultConfig,
-        game.shardID,
-        camelotunchained.game.selfPlayerState.characterID,
         this.state.logIDs[logIDIndex],
       );
       if (!res.ok) {

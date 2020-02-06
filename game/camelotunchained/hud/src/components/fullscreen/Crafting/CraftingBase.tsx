@@ -381,8 +381,6 @@ export async function addInputItemServer(inputItems: InputItem[],
 
   const res = await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    game.shardID,
-    camelotunchained.game.selfPlayerState.characterID,
     moveItemRequest as any,
   );
   if (!res.ok) {
@@ -471,8 +469,6 @@ export async function removeInputItemServer(item: InventoryItem.Fragment,
 
   return await webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    game.shardID,
-    camelotunchained.game.selfPlayerState.characterID,
     moveItemRequest as any,
   );
 }
@@ -488,8 +484,6 @@ export async function swapSelectedRecipeServer(recipe: RecipeData, voxEntityID: 
     const jobType = recipeTypeToVoxJob(recipe.type);
     const res = await webAPI.CraftingAPI.SwapVoxJob(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       voxEntityID,
       jobType,
       recipe.def ? recipe.def.id : '',
@@ -505,8 +499,6 @@ export async function setSelectedJobTypeServer(recipe: RecipeData, voxEntityID: 
     const jobType = recipeTypeToVoxJob(recipe.type);
     const res = await webAPI.CraftingAPI.AppendVoxJob(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       voxEntityID,
       jobType,
       recipe.def ? recipe.def.id : '',
@@ -521,8 +513,6 @@ export async function setRecipeIDServer(recipeID: string, voxEntityID: string) {
   try {
     const res = await webAPI.CraftingAPI.SetRecipeID(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       voxEntityID,
       recipeID,
     );
@@ -536,8 +526,6 @@ export async function setItemCountServer(itemCount: number, voxEntityID: string)
   try {
     const res = await webAPI.CraftingAPI.SetVoxItemCount(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       voxEntityID,
       itemCount,
     );
@@ -551,8 +539,6 @@ export async function setQualityServer(quality: number, voxEntityID: string) {
   try {
     const res = await webAPI.CraftingAPI.SetQuality(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       voxEntityID,
       quality,
     );
@@ -566,8 +552,6 @@ export async function clearJobServer(voxEntityID: string, jobInstanceID: string)
   try {
     const res = await webAPI.CraftingAPI.ClearVoxJob(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       voxEntityID,
       jobInstanceID,
     );
@@ -581,8 +565,6 @@ export async function startJobServer(voxEntityID: string) {
   try {
     const res = await webAPI.CraftingAPI.StartVoxJob(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       voxEntityID,
     );
     return res;
@@ -595,8 +577,6 @@ export async function cancelJobServer(voxEntityID: string) {
   try {
     const res = await webAPI.CraftingAPI.CancelVoxJob(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       voxEntityID,
     );
     return res;
@@ -609,8 +589,6 @@ export async function collectJobServer(voxEntityID: string, jobInstanceID: strin
   try {
     const res = await webAPI.CraftingAPI.CollectFinishedVoxJob(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       voxEntityID,
       jobInstanceID,
     );
@@ -624,8 +602,6 @@ export async function setCustomNameServer(voxEntityID: string, customName: strin
   try {
     const res = await webAPI.CraftingAPI.SetCustomItemName(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       voxEntityID,
       customName,
     );
@@ -666,8 +642,6 @@ export async function moveItemToVoxInventory(dataTransfer: InventoryDataTransfer
   try {
     const res = await webAPI.ItemAPI.MoveItems(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       moveItemRequest as any,
     );
 

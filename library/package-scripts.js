@@ -64,14 +64,14 @@ module.exports = {
     },
     definitions: {
       camelotunchained: {
-        default: 'download https://hatcheryapi.camelotunchained.com/codegen/definitions.ts > ./src/camelotunchained/webAPI/definitions.ts',
-        local: 'download http://localhost:1337/codegen/definitions.ts > ./src/camelotunchained/webAPI/definitions.ts',
-        localserver: 'download http://localhost:8000/codegen/definitions.ts > ./src/camelotunchained/webAPI/definitions.ts',
+        default: `download https://hatcheryapi.camelotunchained.com/v1/codegen/definitions.ts > ./src/camelotunchained/webAPI/definitions.ts`,
+        local: 'download http://localhost:1337/v1/codegen/definitions --headers "Accept: text/html,application/xhtml+xml,application/xml;" --headers "User-Agent: Node.JS" > ./src/camelotunchained/webAPI/definitions.ts',
+        localserver: 'download http://localhost:8000/v1/codegen/definitions.ts > ./src/camelotunchained/webAPI/definitions.ts',
       },
       hordetest: {
-        default: 'download https://omeletteapi.camelotunchained.com/codegen/definitions.ts > ./src/hordetest/webAPI/definitions.ts',
-        local: 'download http://localhost:1337/codegen/definitions.ts > ./src/hordetest/webAPI/definitions.ts',
-        localserver: 'download http://localhost:8000/codegen/definitions.ts > ./src/hordetest/webAPI/definitions.ts',
+        default: 'download https://omeletteapi.camelotunchained.com/v1/codegen/definitions.ts > ./src/hordetest/webAPI/definitions.ts',
+        local: 'download http://localhost:1337/v1/codegen/definitions.ts > ./src/hordetest/webAPI/definitions.ts',
+        localserver: 'download http://localhost:8000/v1/codegen/definitions.ts > ./src/hordetest/webAPI/definitions.ts',
       },
     },
     gql: {
