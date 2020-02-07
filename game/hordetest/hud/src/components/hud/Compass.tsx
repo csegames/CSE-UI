@@ -83,7 +83,7 @@ const Cardinal = styled.div`
 
 const Objective = styled.div`
   position: absolute;
-  display: flex;
+  display: none;
   align-items: center;
   margin: 0;
   padding: 0;
