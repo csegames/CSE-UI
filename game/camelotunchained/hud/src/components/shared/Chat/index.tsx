@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { throttle } from 'lodash';
-import { parseMessageForSlashCommand } from '@csegames/library';
+import { parseMessageForSlashCommand } from '@csegames/library/lib/_baseGame';
 
 import ChatSession from './components/ChatSession';
 import ChatRoomInfo from './components/ChatRoomInfo';
