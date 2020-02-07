@@ -32,8 +32,13 @@ export function Chat(props: Props) {
 
   if (game.isConnectedToServer) {
     if (!window.chat || !window.chat.connected) {
-      console.log('initializing chat');
-      initChat((matchmakingContext && matchmakingContext.host && matchmakingContext.host) || game.serverHost);
+      var host = game.serverHost
+      if (matchmakingContext && matchmakingContext.host) {
+        console.log(`Using matchmaking host ${host} for chat`);
+        host = matchmakingContext.host
+      }
+
+      initChat(host);
     }
 
     return (

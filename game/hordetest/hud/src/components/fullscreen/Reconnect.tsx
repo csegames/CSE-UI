@@ -42,6 +42,7 @@ export function ReconnectComponent() {
 
   function onConnectClick() {
     if (matchmakingContext.host && matchmakingContext.port) {
+      console.log(`Reconnect triggered. Trying to connect to ${matchmakingContext.host}:${matchmakingContext.port}`);
       matchmakingContext.tryConnect(matchmakingContext.host, matchmakingContext.port, 0);
       onConnectSuccess();
     }
@@ -49,6 +50,7 @@ export function ReconnectComponent() {
 
   function onConnectSuccess() {
     game.trigger('hide-middle-modal');
+    game.trigger('hide-fullscreen');
   }
 
   return (
