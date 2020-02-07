@@ -37,6 +37,9 @@ export function ExtraButtons() {
       <ExtraButton onClick={() => game.trigger('navigate', 'console')}>
         <span className='fas fa-terminal'></span>
       </ExtraButton>
+      <ExtraButton onClick={() => game.trigger('navigate', 'mocks')}>
+        <span className='fas fa-tasks'></span>
+      </ExtraButton>
     </ExtraButtonsContainer>
   ) : null;
 }

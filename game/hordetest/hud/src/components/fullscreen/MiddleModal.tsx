@@ -102,7 +102,7 @@ export class MiddleModal extends React.Component<Props, State> {
 
   private onClickOverlay = () => {
     console.log(`Middle overlay clicked: Can Close? ${this.state.overlayCloseDisabled}`)
-    if (this.state.overlayCloseDisabled) return;
+    if (!this.state.overlayCloseDisabled) return;
     this.hideModal();
   }
 

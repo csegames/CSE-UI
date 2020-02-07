@@ -39,9 +39,11 @@ import { RightModal } from '../fullscreen/RightModal';
 import { Preloader } from '../fullscreen/Preloader';
 import { CreditsScreen } from '../fullscreen/CreditsScreen';
 import { ErrorComponent } from '../fullscreen/Error';
+import { AllFailComponent } from '../fullscreen/AllFail';
 import { ActionAlert } from '../shared/ActionAlert';
 import { ExtraButtons } from './ExtraButtons';
 import { UrgentMessage } from './UrgentMessage';
+import { Mocks } from './Mocks';
 
 // import { LowHealthFullScreenEffects } from './FullScreenEffects/LowHealth';
 
@@ -198,6 +200,8 @@ export interface State {
   isLobbyVisible: boolean;
   isCreditsScreenVisible: boolean;
   scenarioID: string;
+  hasTotalApiNetworkFailure: boolean;
+  hasPartialApiNetworkFailure: boolean;
 }
 
 // tslint:disable-next-line:function-name
@@ -220,6 +224,8 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
       isLobbyVisible: !game.isConnectedOrConnectingToServer,
       isCreditsScreenVisible: false,
       scenarioID: '',
+      hasTotalApiNetworkFailure: false,
+      hasPartialApiNetworkFailure: false,
     }
   }
 
@@ -227,9 +233,20 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     if (this.state.isLobbyVisible) {
       return (
         <FullScreenContextProviders>
-          <FullScreen scenarioID={this.state.scenarioID} onSelectionTimeOver={this.beginWaitingForAServerFromMatchmaking} />
+          <FullScreen
+            scenarioID={this.state.scenarioID}
+            hasTotalApiNetworkFailure={this.state.hasTotalApiNetworkFailure}
+            hasPartialApiNetworkFailure={this.state.hasPartialApiNetworkFailure}
+            onSelectionTimeOver={this.beginWaitingForAServerFromMatchmaking}
+          />
 
-          {!this.state.isLoadingFinished ? <Preloader onLoadComplete={this.handleLoadComplete} /> : null}
+          {!this.state.isLoadingFinished ?
+            <Preloader
+              onLoadComplete={this.handleLoadComplete}
+              onTotalApiNetworkFailure={this.onTotalApiNetworkFailure}
+              onPartialApiNetworkFailure={this.onPartialApiNetworkFailure}
+            />
+          : null}
           <MenuModal />
           <LeftModal />
           <RightModal />
@@ -249,6 +266,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
             <ExtraButtons />
           </ExtraButtonsPosition>
 
+          <Mocks />
           <Console />
 
           <CompassPosition>
@@ -319,7 +337,13 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
             <Settings />
           </SettingsContainer>
 
-          {!this.state.isLoadingFinished ? <Preloader onLoadComplete={this.handleLoadComplete} /> : null}
+          {!this.state.isLoadingFinished ?
+            <Preloader
+              onTotalApiNetworkFailure={this.onTotalApiNetworkFailure}
+              onPartialApiNetworkFailure={this.onPartialApiNetworkFailure}
+              onLoadComplete={this.handleLoadComplete}
+            /> :
+          null}
           <MenuModal />
           <LeftModal />
           <RightModal />
@@ -450,12 +474,26 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   }
 
   private handleLoadComplete = () => {
+    console.log('Preloading complete');
     this.extraLoadTimeout = window.setTimeout(() => {
       this.setState({ isLoadingFinished: true });
       console.log('engine triggering OnReadyForDisplay');
       engine.trigger('OnReadyForDisplay');
       window.clearTimeout(this.loadTimeout);
     }, 3000);
+  }
+
+  private onTotalApiNetworkFailure = () => {
+    // We probably want different tiers of error handling
+    console.log('There is a total network failure!');
+    this.setState({ hasTotalApiNetworkFailure: true });
+    game.trigger('show-middle-modal', <AllFailComponent />, true);
+  }
+
+  private onPartialApiNetworkFailure = () => {
+    // We probably want different tiers of error handling
+    console.log('There is a partial network failure');
+    this.setState({ hasPartialApiNetworkFailure: true });
   }
 }
 

@@ -24,6 +24,7 @@ import { RequestResult } from '@csegames/library/lib/_baseGame';
 import { Route, fullScreenNavigateTo } from 'context/FullScreenNavContext';
 import { ErrorComponent } from 'components/fullscreen/Error';
 import { ReconnectComponent } from 'components/fullscreen/Reconnect';
+import { preloadQueryEvents } from '../fullscreen/Preloader';
 
 export enum PlayerNumberMode {
   SixMan,
@@ -125,6 +126,7 @@ const getDefaultMatchmakingContextState = (): MatchmakingContextState => ({
 export const MatchmakingContext = React.createContext(getDefaultMatchmakingContextState());
 
 export class MatchmakingContextProvider extends React.Component<{}, MatchmakingContextState> {
+  private isInitialQuery: boolean = true;
   private timeSearchingUpdateHandle: TimerRef = null
   constructor(props: {}) {
     super(props);
@@ -159,7 +161,18 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
   }
 
   private handleQueryResult = (graphql: GraphQLResult<{ activeMatchServer: ActiveMatchServer }>) => {
-    if (!graphql || !graphql.data || !graphql.data.activeMatchServer) return graphql;
+    if (!graphql || !graphql.data) {
+      // Query failed but we don't want to hold up loading. In future, handle this a little better,
+      // maybe try to refetch a couple times and if not then just continue on the flow.
+
+      this.onDonePreloading(false);
+      return graphql;
+    }
+
+    if (!graphql.data.activeMatchServer) {
+      this.onDonePreloading(true);
+      return;
+    }
 
     const activeMatchServer = graphql.data.activeMatchServer;
     console.log(`Checked active match and got back ${activeMatchServer.serverHost}:${activeMatchServer.serverPort}`);
@@ -172,6 +185,8 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
     else {
       console.log(`Not opening reconnect modal. On server? ${game.isConnectedOrConnectingToServer}`);
     }
+
+    this.onDonePreloading(true);
     return graphql;
   }
 
@@ -413,5 +428,12 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
   private callCancelMatchmaking = async () => {
     // We allow canceling while attached to a server cause it should be idempotent
     return webAPI.MatchmakingAPI.CancelMatchmaking(webAPI.defaultConfig);
+  }
+
+  private onDonePreloading = (isSuccessful: boolean) => {
+    if (this.isInitialQuery) {
+      game.trigger(preloadQueryEvents.matchmakingContext, isSuccessful);
+      this.isInitialQuery = false;
+    }
   }
 }

@@ -115,7 +115,7 @@ export function PlayerTracker(props: Props) {
     let top: string | number = 'auto';
     let bottom: string | number = 'auto';
     let transition = '';
-    if (screenPos.x < 0) {
+    if (screenPos.x <= 0) {
       left = FLUSH_MARGIN;
       xFlush = true;
     }
@@ -125,7 +125,7 @@ export function PlayerTracker(props: Props) {
       xFlush = true;
     }
 
-    if (screenPos.y < 0) {
+    if (screenPos.y <= 0) {
       top = FLUSH_MARGIN;
       yFlush = true;
     }

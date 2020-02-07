@@ -60,6 +60,13 @@ export class PlayerTrackers extends React.Component<Props, State> {
   }
 
   private handlePlayerDirectionUpdate = (playerDirections: PlayerDirection[]) => {
+    if (!playerDirections) {
+      console.error(`Player directions are coming in with a falsy value from the client.
+        Default should be an empty array. VALUE: ${playerDirections}`);
+
+      this.setState({ playerDirections: [] });
+      return;
+    }
     this.setState({ playerDirections });
   }
 }

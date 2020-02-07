@@ -74,6 +74,23 @@ export function parseQuery(query: string | LegacyGraphqlDocumentNode | DocumentN
   return queryString;
 }
 
+export function getMockModeUrl(defaultUrl: string) {
+  switch (game.uiMockMode) {
+    case MockMode.TotalNetworkFailure: {
+      return `${defaultUrl}:1234`;
+    }
+
+    case MockMode.PartialNetworkFailure: {
+      const shouldUseDefault = Math.round(Math.random());
+      return shouldUseDefault ? defaultUrl : `${defaultUrl}:1234`;
+    }
+
+    default: {
+      return defaultUrl;
+    }
+  }
+}
+
 function errorResult<T>(msg: string, statusCode: number): GraphQLQueryResult<T> {
   return {
     data: <T> null,
@@ -114,7 +131,7 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
   try {
 
     const response = await httpRequest('post',
-      opts.url,
+      getMockModeUrl(opts.url),
       {},
       body,
       {
@@ -191,7 +208,7 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
   try {
 
     const response = await httpRequest('post',
-      opts.url,
+      getMockModeUrl(opts.url),
       {},
       {
         ...q,

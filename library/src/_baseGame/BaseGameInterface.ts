@@ -80,6 +80,11 @@ export interface BaseGameModel {
   isPublicBuild: boolean;
 
   /**
+   * Should the UI behave in a certain "mock" state e.g. Complete Network Failure, etc.
+   */
+  uiMockMode: MockMode;
+
+  /**
    * Forces the client to reload the entire UI
    */
   reloadUI: () => void;

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/library/lib/hordetest';
@@ -176,6 +176,13 @@ export function ChampionProfile(props: Props) {
   //   setSelectedChampion(champion);
   // }
 
+  useEffect(() => {
+    if (!selectedChampion)
+    {
+      setSelectedChampion(getDefaultChampion());
+    }
+  }, [])
+
   function onReset() {
     setEditingMode(EditingMode.None);
     setSelectedPreviewSkinInfo(null);
@@ -248,7 +255,13 @@ export function ChampionProfile(props: Props) {
   }
 
   function getChampions(): Champion[] {
-    const champions = cloneDeep(championInfoContext.champions);
+    const champions = championInfoContext && championInfoContext.champions;
+
+    if (!champions) {
+      console.error('Champion Profile tried to use ChampionInfoContext and it was null');
+      return [];
+    }
+
     return champions.map((champ) => {
       const championCostumes = championInfoContext.championCostumes.filter(costume =>
         costume.requiredChampionID === champ.id);
@@ -260,7 +273,7 @@ export function ChampionProfile(props: Props) {
   }
 
   function getDefaultChampion() {
-    const colossusProfile = colossusProfileContext.colossusProfile;
+    const colossusProfile = colossusProfileContext && colossusProfileContext.colossusProfile;
     if (colossusProfile && colossusProfile.defaultChampion && colossusProfile.defaultChampion.championID) {
       const colossusProfileChampion =
         getChampions().find(c => c.id === colossusProfileContext.colossusProfile.defaultChampion.championID);
@@ -290,13 +303,8 @@ export function ChampionProfile(props: Props) {
   const offsetClass = editingMode === EditingMode.None ? 'should-offset' : 'no-offset';
   const champions = getChampions();
 
-  if (!selectedChampion)
-  {
-    setSelectedChampion(getDefaultChampion());
-  }
-
   const standingImage = selectedChampion ? selectedChampion.costumes[0].standingImageURL : '';
-  return champions ? (
+  return champions && selectedChampion ? (
     <Container>
       <TransitionAnimation
         defaultShouldPlayAnimation

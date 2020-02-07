@@ -82,7 +82,7 @@ export class ChampionInfoContextProvider extends React.Component<{}, ChampionInf
 
       // Query failed but we don't want to hold up loading. In future, handle this a little better,
       // maybe try to refetch a couple times and if not then just continue on the flow.
-      this.onDonePreloading();
+      this.onDonePreloading(false);
       return query;
     }
 
@@ -96,13 +96,13 @@ export class ChampionInfoContextProvider extends React.Component<{}, ChampionInf
       champions: query.data.champions,
       championIDToChampion,
     });
-    this.onDonePreloading();
+    this.onDonePreloading(true);
     return query;
   }
 
-  private onDonePreloading = () => {
+  private onDonePreloading = (isSuccessful: boolean) => {
     if (this.isInitialQuery) {
-      game.trigger(preloadQueryEvents.championInfoContext);
+      game.trigger(preloadQueryEvents.championInfoContext, isSuccessful);
       this.isInitialQuery = false;
     }
   }

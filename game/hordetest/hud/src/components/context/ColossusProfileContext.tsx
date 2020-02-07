@@ -8,7 +8,7 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 import { ChampionDBModel, DefaultChampionDBModel, MatchStatsDBModel } from '@csegames/library/lib/hordetest/graphql/schema';
-import { getConfig } from 'lib/gqlHelpers';
+// import { getConfig } from 'lib/gqlHelpers';
 import { preloadQueryEvents } from '../fullscreen/Preloader';
 
 const query = gql`
@@ -87,7 +87,7 @@ export class ColossusProfileProvider extends React.Component<{}, ColossusProfile
   public render() {
     return (
       <ColossusProfileContext.Provider value={this.state}>
-        <GraphQL query={query} useConfig={getConfig} onQueryResult={this.handleQueryResult} />
+        <GraphQL query={query} onQueryResult={this.handleQueryResult} />
         {this.props.children}
       </ColossusProfileContext.Provider>
     );
@@ -97,7 +97,7 @@ export class ColossusProfileProvider extends React.Component<{}, ColossusProfile
     if (!graphql || !graphql.data || !graphql.data.colossusProfile) {
       // Query failed but we don't want to hold up loading. In future, handle this a little better,
       // maybe try to refetch a couple times and if not then just continue on the flow.
-      this.onDonePreloading();
+      this.onDonePreloading(false);
       return graphql;
     }
 
@@ -106,13 +106,13 @@ export class ColossusProfileProvider extends React.Component<{}, ColossusProfile
       colossusProfile: graphql.data.colossusProfile,
       allTimeStats: graphql.data.colossusProfile.lifetimeStats.find(stats => stats.scenarioID == null),
     });
-    this.onDonePreloading();
+    this.onDonePreloading(true);
     return graphql;
   }
 
-  private onDonePreloading = () => {
+  private onDonePreloading = (isSuccessful: boolean) => {
     if (this.isInitialQuery) {
-      game.trigger(preloadQueryEvents.colossusProfileContext);
+      game.trigger(preloadQueryEvents.colossusProfileContext, isSuccessful);
       this.isInitialQuery = false;
     }
   }

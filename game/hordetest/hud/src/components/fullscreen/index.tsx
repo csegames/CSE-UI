@@ -60,6 +60,8 @@ interface InjectedProps {
 
 export interface ComponentProps {
   scenarioID: string;
+  hasTotalApiNetworkFailure: boolean;
+  hasPartialApiNetworkFailure: boolean;
   onSelectionTimeOver: () => void;
 }
 
@@ -120,7 +122,7 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
       }
       case Route.Start: {
         return (
-          <StartScreen />
+          <StartScreen hasPartialApiNetworkFailure={this.props.hasPartialApiNetworkFailure} />
         );
       }
       case Route.ChampionSelect: {
