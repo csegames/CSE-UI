@@ -24,6 +24,12 @@ export function disconnectChat() {
 
 export function initChat(serverHost: string) {
   console.log(`Initializing chat connection with ${serverHost}`);
+
+  if (!serverHost || serverHost === 'hatchery.camelotunchained.com') {
+    console.error('Failed to initialize chat. game.serverHost is returning an invalid URL');
+    return;
+  }
+
   if (!window.chat) {
     window.chat = new CSEChat();
   }
