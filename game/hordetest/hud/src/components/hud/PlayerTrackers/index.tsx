@@ -67,6 +67,7 @@ export class PlayerTrackers extends React.Component<Props, State> {
       this.setState({ playerDirections: [] });
       return;
     }
-    this.setState({ playerDirections });
+
+    this.setState({ playerDirections: playerDirections.slice(0, 9) });
   }
 }
