@@ -404,11 +404,12 @@ interface PageState {
 
 type State = PageState & { isTopLayer: boolean };
 
-export class DevUI extends React.PureComponent<{}, State | null> {
+export class DevUI extends React.PureComponent<{}, State> {
   constructor(props: {}) {
     super(props);
-    this.state = null;
-    // this.state = { test: testDevUI };
+    this.state = {
+      isTopLayer: true,
+    } as any;
   }
 
   public render() {
@@ -445,13 +446,7 @@ export class DevUI extends React.PureComponent<{}, State | null> {
               {page.showCloseButton ?
               <CloseButtonPosition>
                 <CloseButton
-                  onClick={() => this.setState({
-                    isTopLayer: false,
-                    [k]: {
-                      ...page,
-                      visible: false,
-                    },
-                  } as Partial<State>)} />
+                  onClick={() => this.onCloseClick(k, page)} />
                 </CloseButtonPosition> : null}
                 {page.showMaximizeButton ?
                   <MaximizeButton
@@ -512,6 +507,15 @@ export class DevUI extends React.PureComponent<{}, State | null> {
     }
 
     this.setState({ [id]: page });
+  }
+
+  private onCloseClick = (id: string, page: RootPage) => {
+    this.setState({
+      [id]: {
+        ...page,
+        visible: false,
+      },
+    } as Partial<State>);
   }
 
   private onToggleUIVisibility = (name: string) => {
