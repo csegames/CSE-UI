@@ -26,6 +26,8 @@ import { ErrorComponent } from 'components/fullscreen/Error';
 import { ReconnectComponent } from 'components/fullscreen/Reconnect';
 import { preloadQueryEvents } from '../fullscreen/Preloader';
 
+const KICKOFF_TIMEOUT = 500;
+
 export enum PlayerNumberMode {
   SixMan,
   TenMan,
@@ -82,9 +84,10 @@ export interface MatchmakingContextState {
   onEnterMatchmaking: () => void;
   onCancelMatchmaking: () => void;
   onWaitingForServerHandled: () => void;
-  callEnterMatchmaking: () => Promise<RequestResult>,
-  callCancelMatchmaking: () => Promise<RequestResult>,
+  callEnterMatchmaking: () => Promise<RequestResult>;
+  callCancelMatchmaking: () => Promise<RequestResult>;
   tryConnect: (host: string, port: number, tries: number, onConnect?: () => void) => void;
+  clearMatchmakingContext: () => void;
 
   // MatchmakingServerReady || activeMatchServer gql query
   host: string;
@@ -111,6 +114,7 @@ const getDefaultMatchmakingContextState = (): MatchmakingContextState => ({
   callEnterMatchmaking: () => null,
   callCancelMatchmaking: () => null,
   tryConnect: () => null,
+  clearMatchmakingContext: () => null,
   host: null,
   port: null,
   matchID: null,
@@ -128,6 +132,7 @@ export const MatchmakingContext = React.createContext(getDefaultMatchmakingConte
 export class MatchmakingContextProvider extends React.Component<{}, MatchmakingContextState> {
   private isInitialQuery: boolean = true;
   private timeSearchingUpdateHandle: TimerRef = null
+  private kickOffTimeout: number;
   constructor(props: {}) {
     super(props);
 
@@ -138,12 +143,15 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       onCancelMatchmaking: this.onCancelMatchmaking,
       onWaitingForServerHandled: this.onWaitingForServerHandled,
       callCancelMatchmaking: this.callCancelMatchmaking,
-      callEnterMatchmaking: this.callEnterMatchmaking
+      callEnterMatchmaking: this.callEnterMatchmaking,
+      clearMatchmakingContext: this.clearMatchmakingContext,
     }
   }
 
   public componentWillUnmount() {
     this.endSearchingTimer();
+
+    window.clearTimeout(this.kickOffTimeout);
   }
 
   public render() {
@@ -227,7 +235,8 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
           console.log(`Received matchmaking kickoff. ${serializedTeamMates ? JSON.parse(serializedTeamMates).length : null} mates, ${secondsToWait} timeout`);
           console.log(serializedTeamMates);
-          fullScreenNavigateTo(Route.ChampionSelect);
+
+          this.kickOffTimeout = window.setTimeout(() => fullScreenNavigateTo(Route.ChampionSelect), KICKOFF_TIMEOUT);
         });
         break;
       }
@@ -435,5 +444,18 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       game.trigger(preloadQueryEvents.matchmakingContext, isSuccessful);
       this.isInitialQuery = false;
     }
+  }
+
+  private clearMatchmakingContext = () => {
+    console.log('Clearing matchmaking context');
+    this.setState({
+      ...getDefaultMatchmakingContextState(),
+      tryConnect: this.tryConnect,
+      onEnterMatchmaking: this.onEnterMatchmaking,
+      onCancelMatchmaking: this.onCancelMatchmaking,
+      onWaitingForServerHandled: this.onWaitingForServerHandled,
+      callCancelMatchmaking: this.callCancelMatchmaking,
+      callEnterMatchmaking: this.callEnterMatchmaking,
+    });
   }
 }

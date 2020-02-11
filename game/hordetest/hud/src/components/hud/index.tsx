@@ -444,6 +444,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
 
       console.log('Trying to disconnect from chat');
       disconnectChat();
+      this.props.matchmakingContext.clearMatchmakingContext();
     }
   }
 

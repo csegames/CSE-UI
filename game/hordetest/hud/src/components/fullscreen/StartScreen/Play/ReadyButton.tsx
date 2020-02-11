@@ -143,7 +143,25 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
     const { inputContext } = this.props;
     const searchingClass = this.state.isSearching ? 'searching' : '';
 
-    const matchmakingContext = this.props.matchmakingContext
+    if (this.props.matchmakingContext.matchID) {
+      return (
+        // We found a match!
+        <Button
+          type='primary'
+          styles={`${searchingClass} ${ReadyButtonStyle}`}
+          disabled={true}
+          text={
+            inputContext.isConsole ?
+            <ConsoleButton>
+              <ButtonIcon className='icon-xb-a'></ButtonIcon> Found!
+            </ConsoleButton> :
+            'Found!'
+          }
+          onClick={this.onClick}
+        />
+      );
+    }
+
     if (this.props.matchmakingContext.isEntered && !this.props.warbandContextState.groupID) {
       return (
         <Button
@@ -157,7 +175,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
             </ConsoleButton> :
             <span>
               Cancel
-              <SearchingTimer matchmakingContext={matchmakingContext} />
+              <SearchingTimer matchmakingContext={this.props.matchmakingContext} />
             </span>
           }
           onClick={this.onClick}
