@@ -136,10 +136,18 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
       }
       case Route.EndGameStats: {
         return (
-          <GameStats scenarioID={this.props.scenarioID} onLeaveClick={this.goToStart} />
+          <GameStats scenarioID={this.props.scenarioID} onLeaveClick={this.onLeaveClick} />
         );
       }
     }
+  }
+
+  private onLeaveClick = () => {
+    if (game.isConnectedOrConnectingToServer) {
+      game.disconnectFromAllServers();
+    }
+
+    this.goToStart();
   }
 
   private goToStart = () => {
