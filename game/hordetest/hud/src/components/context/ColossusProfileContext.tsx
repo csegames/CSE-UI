@@ -8,7 +8,6 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 import { ChampionDBModel, DefaultChampionDBModel, MatchStatsDBModel } from '@csegames/library/lib/hordetest/graphql/schema';
-// import { getConfig } from 'lib/gqlHelpers';
 import { preloadQueryEvents } from '../fullscreen/Preloader';
 
 const query = gql`
