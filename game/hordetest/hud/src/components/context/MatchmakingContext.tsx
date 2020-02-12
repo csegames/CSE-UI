@@ -133,10 +133,12 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
   private isInitialQuery: boolean = true;
   private timeSearchingUpdateHandle: TimerRef = null
   private kickOffTimeout: number;
+  private defaultState: MatchmakingContextState;
+
   constructor(props: {}) {
     super(props);
 
-    this.state = {
+    this.defaultState = {
       ...getDefaultMatchmakingContextState(),
       tryConnect: this.tryConnect,
       onEnterMatchmaking: this.onEnterMatchmaking,
@@ -145,6 +147,10 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
       callCancelMatchmaking: this.callCancelMatchmaking,
       callEnterMatchmaking: this.callEnterMatchmaking,
       clearMatchmakingContext: this.clearMatchmakingContext,
+    };
+
+    this.state = {
+      ...this.defaultState,
     }
   }
 
@@ -448,14 +454,6 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
   private clearMatchmakingContext = () => {
     console.log('Clearing matchmaking context');
-    this.setState({
-      ...getDefaultMatchmakingContextState(),
-      tryConnect: this.tryConnect,
-      onEnterMatchmaking: this.onEnterMatchmaking,
-      onCancelMatchmaking: this.onCancelMatchmaking,
-      onWaitingForServerHandled: this.onWaitingForServerHandled,
-      callCancelMatchmaking: this.callCancelMatchmaking,
-      callEnterMatchmaking: this.callEnterMatchmaking,
-    });
+    this.setState({ ...this.defaultState });
   }
 }

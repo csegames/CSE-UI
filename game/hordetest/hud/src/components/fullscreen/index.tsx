@@ -8,6 +8,7 @@ import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 
 import { FullScreenNavContext, FullScreenNavContextState, Route, fullScreenNavigateTo } from 'context/FullScreenNavContext';
+import { MatchmakingContext, MatchmakingContextState } from 'context/MatchmakingContext';
 import { StartScreen } from './StartScreen';
 import { ChampionSelect } from './ChampionSelect';
 import { Button } from './Button';
@@ -56,6 +57,7 @@ const SettingsContainer = styled.div`
 
 interface InjectedProps {
   fullScreenNavContext: FullScreenNavContextState;
+  matchmakingContext: MatchmakingContextState;
 }
 
 export interface ComponentProps {
@@ -147,6 +149,7 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
       game.disconnectFromAllServers();
     }
 
+    this.props.matchmakingContext.clearMatchmakingContext();
     this.goToStart();
   }
 
@@ -165,10 +168,12 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
 
 export function FullScreen(props: ComponentProps) {
   const fullScreenNavContext = useContext(FullScreenNavContext);
+  const matchmakingContext = useContext(MatchmakingContext);
   return (
     <FullScreenWithInjectedContext
       {...props}
       fullScreenNavContext={fullScreenNavContext}
+      matchmakingContext={matchmakingContext}
     />
   );
 }
