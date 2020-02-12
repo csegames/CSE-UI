@@ -40,5 +40,6 @@
   },
   "resolution": "typings",
   "include": [
+    "src/**/*"
   ]
 }

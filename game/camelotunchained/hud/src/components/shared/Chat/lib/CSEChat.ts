@@ -33,20 +33,20 @@ cseLoginTokenMechanism.prototype.match = function(options: any) {
   return false;
 };
 
-function debounce(func: any, wait: number, immediate: boolean) {
-  let timeout = null;
-  return function() {
-    const args = arguments;
-    const later = function() {
-      timeout = null;
-      if (!immediate) func.apply(this, args);
-    };
-    const callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) func.apply(this, args);
-  };
-}
+// function debounce(func: any, wait: number, immediate: boolean) {
+//   let timeout = null;
+//   return function() {
+//     const args = arguments;
+//     const later = function() {
+//       timeout = null;
+//       if (!immediate) func.apply(this, args);
+//     };
+//     const callNow = immediate && !timeout;
+//     clearTimeout(timeout);
+//     timeout = setTimeout(later, wait);
+//     if (callNow) func.apply(this, args);
+//   };
+// }
 
 class CSEChat  {
   public client: Client;
@@ -56,9 +56,9 @@ class CSEChat  {
   private _idCounter: number = 0;
   private _iqc: number = 0;
   private _msgs: any = {};
-  private _inFlight: number = 0;
+  // private _inFlight: number = 0;
   private _pings: any = {};
-  private _pingsInFlight: number = 0;
+  // private _pingsInFlight: number = 0;
   private _pinger: any;
   private _recvQueue: Element[] = [];
   private messageHandlerTimeout: any = null;
@@ -138,7 +138,7 @@ class CSEChat  {
       type: 'get',
     }).c('query', { xmlns: NS_DISCO_ITEMS }));
     this._msgs[id] = { id, type: 'rooms', now: Date.now() };
-    this._inFlight ++;
+    // this._inFlight ++;
   }
 
   // alias eventEmitter
@@ -223,7 +223,7 @@ class CSEChat  {
   // and if the interval time is not running, start the interval timer.
   private keepalive() {
     this._pings = {};
-    this._pingsInFlight = 0;
+    // this._pingsInFlight = 0;
     if (!this._pinger) {
       this._pinger = setInterval(() => {
         // every 10 seconds, send a ping stanza
@@ -266,7 +266,7 @@ class CSEChat  {
     // register this ping and callback, and count inflight pings
     // so we can tell if we have any outstanding
     this._pings[id] = { id, pong, now: Date.now() };
-    this._pingsInFlight ++;
+    // this._pingsInFlight ++;
   }
 
   // handle the ping response.  Lookup the ping in the ping map, if there
@@ -276,7 +276,7 @@ class CSEChat  {
     const id = stanza.attrs.id;
     const ping = this._pings[id];
     if (ping) {
-      this._pingsInFlight --;
+      // this._pingsInFlight --;
       if (ping.pong) {
         ping.pong(ping);
       } else {
@@ -319,7 +319,7 @@ class CSEChat  {
       if (stanza.attrs.type === 'result') {
         const bind = stanza.getChild('bind');
         if (bind) {
-          const jid = bind.getChild('jid');
+          // const jid = bind.getChild('jid');
           // const jidString = jid
         }
 
@@ -342,7 +342,7 @@ class CSEChat  {
     const items: Element[] = stanza.getChildren('item');
     const info: any = this._msgs[id];
     if (info) {
-      this._inFlight --;
+      // this._inFlight --;
       delete this._msgs[id];
       const rooms: Room[] = [];
       items.forEach((item: Element) => {
@@ -382,9 +382,9 @@ class CSEChat  {
   }
 
   private parsePresence(stanza: Element) {
-    const x = stanza.getChild('x');
-    const status = x.getChild('status');
-    const role = x.getChild('item').attrs.role;
+    // const x = stanza.getChild('x');
+    // const status = x.getChild('status');
+    // const role = x.getChild('item').attrs.role;
 
     const fromArr = stanza.attrs.from.split('/');
     const room = fromArr[0];

@@ -210,22 +210,12 @@ export class ScenarioButton extends React.Component<Props, State> {
   }
 
   private joinQueue = (id: string) => {
-    camelotunchained.game.webAPI.ScenarioAPI.AddToQueue(
-      camelotunchained.game.webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
-      id,
-    );
+    camelotunchained.game.webAPI.ScenarioAPI.AddToQueue(camelotunchained.game.webAPI.defaultConfig, id);
     setTimeout(pollNow, 2000);
   }
 
   private leaveQueue = (id: string) => {
-    camelotunchained.game.webAPI.ScenarioAPI.RemoveFromQueue(
-      camelotunchained.game.webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
-      id,
-    );
+    camelotunchained.game.webAPI.ScenarioAPI.RemoveFromQueue(camelotunchained.game.webAPI.defaultConfig, id);
     setTimeout(pollNow, 2000);
   }
 

@@ -22,8 +22,6 @@ async function inviteToWarband(characterID: string, characterName: string, warba
   try {
     const result = await GroupsAPI.InviteV1(
       defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       warbandID,
       characterID,
       characterName,
@@ -57,8 +55,6 @@ async function kickFromWarband(targetEntityID: string, targetCharacterID: string
   try {
     const result = await GroupsAPI.KickV1(
       defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       warbandID,
       targetEntityID,
       targetCharacterID,
@@ -93,12 +89,7 @@ export function kickFromWarbandByEntityID(entityID: string, warbandID: string) {
 
 export async function quitWarband() {
   try {
-    const result = await GroupsAPI.QuitV1(
-      defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
-      getStateObject().id,
-    );
+    const result = await GroupsAPI.QuitV1(defaultConfig, getStateObject().id);
 
     if (result.ok) {
       sendSystemMessage(`Warband quit!`);

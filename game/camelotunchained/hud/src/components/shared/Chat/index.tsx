@@ -143,16 +143,16 @@ export class Chat extends React.Component<ChatProps, ChatState> {
     return true;
   }
 
-  private close = (): void => {
-    (window)['_cse_chat_session'] = this.state.chat;
-    this.props.hideChat();
-  }
+  // private close = (): void => {
+  //   (window)['_cse_chat_session'] = this.state.chat;
+  //   this.props.hideChat();
+  // }
 
-  private disconnect = (): void => {
-    this.state.chat.simulateDisconnect();
-  }
+  // private disconnect = (): void => {
+  //   this.state.chat.simulateDisconnect();
+  // }
 
-  private getRooms = (): void => {
-    this.state.chat.getRooms();
-  }
+  // private getRooms = (): void => {
+  //   this.state.chat.getRooms();
+  // }
 }

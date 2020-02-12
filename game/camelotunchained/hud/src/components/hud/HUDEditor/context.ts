@@ -21,7 +21,7 @@ export const HUDGraphQLQueryConfig = () => ({
 });
 
 export const HUDGraphQLSubscriptionConfig = () => ({
-  url: game.webAPIHost.replace('http', 'ws') + '/graphql',
+  url: () => game.webAPIHost.replace('http', 'ws') + '/graphql',
   initPayload: {
     Authorization: `Bearer ${game.accessToken}`,
     CharacterID: camelotunchained.game.selfPlayerState.characterID,

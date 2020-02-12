@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { utils } from '@csegames/library';
+import { utils } from '@csegames/library/lib/_baseGame';
 
 enum emojis {
   ANGRY,

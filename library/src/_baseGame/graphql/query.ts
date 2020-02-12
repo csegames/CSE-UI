@@ -108,7 +108,7 @@ function getMessage(obj: { message: string }) {
  const queryQueue: {
   query: GraphQLQuery;
   resolve: (data: any) => void;
-  reject: (reason: any) => void; 
+  reject: (reason: any) => void;
  }[] = [];
 
 
@@ -131,7 +131,7 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
   try {
 
     const response = await httpRequest('post',
-      getMockModeUrl(opts.url),
+      opts.url,
       {},
       body,
       {
@@ -185,7 +185,6 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
 }
 
 export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptions>): Promise<GraphQLQueryResult<T>> {
-
   if (options.disableBatching == false) {
     // batch the query.
 
@@ -208,7 +207,7 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
   try {
 
     const response = await httpRequest('post',
-      getMockModeUrl(opts.url),
+      opts.url,
       {},
       {
         ...q,
@@ -224,6 +223,7 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
         },
       },
     );
+
     if (response.ok) {
       const result = JSON.parse(response.data);
       if (result.errors) {
@@ -273,9 +273,8 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
       );
       console.error(response.statusText);
       console.error(response.data);
-      console.error(new Error().stack)
+      console.error(new Error().stack);
     }
-    
 
     if (game.debug) {
       console.group('GraphQL Request');

@@ -108,7 +108,7 @@ class ChatSession {
     switch (args.type) {
       case messageType.SYSTEM:
         if (isArray(args.message)) {
-          const arrayOfMessages = args.message.map(msg =>
+          const arrayOfMessages = args.message.map((msg: string) =>
             new ChatMessage(chatType.SYSTEM, 'system', 'system', msg, false, new Date()));
           this.recv(arrayOfMessages);
           return;
@@ -117,7 +117,7 @@ class ChatSession {
         break;
       case messageType.COMBAT_LOG:
         if (isArray(args.message)) {
-          const arrayOfMessages = args.message.map(msg =>
+          const arrayOfMessages = args.message.map((msg: string) =>
             new ChatMessage(chatType.COMBAT, 'combat', '', msg, false, new Date()));
           this.recv(arrayOfMessages);
           return;

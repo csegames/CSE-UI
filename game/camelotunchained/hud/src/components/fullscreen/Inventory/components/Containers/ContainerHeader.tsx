@@ -271,8 +271,6 @@ class ContainerHeader extends React.Component<ContainerHeaderProps, ContainerHea
     const { containerItem } = this.props;
     webAPI.ItemAPI.RenameItem(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       containerItem.id,
       nullVal,
       newName,

@@ -79,7 +79,7 @@ export function ChatLine(props: Props) {
         {
           props.message.senderName &&
           <Fragment>
-            <Author 
+            <Author
               color={fromCSE ? chatline.color.cseAuthor : chatline.color.author}
               onClick={() => console.log(`clicked ${props.message.senderName}`)}
             >

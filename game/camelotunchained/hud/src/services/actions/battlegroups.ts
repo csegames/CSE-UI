@@ -21,11 +21,7 @@ const invalidID = '0000000000000000000000';
 
 export async function createBattlegroup() {
   try {
-    const res = await GroupsAPI.CreateBattlegroupV1(
-      defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
-    );
+    const res = await GroupsAPI.CreateBattlegroupV1(defaultConfig);
     if (res.ok) {
       sendSystemMessage('Battlegroup created successfully');
       return res;
@@ -40,12 +36,7 @@ export async function createBattlegroup() {
 
 export async function disbandBattlegroup(groupID: string) {
   try {
-    const res = await GroupsAPI.DisbandV1(
-      defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
-      groupID,
-    );
+    const res = await GroupsAPI.DisbandV1(defaultConfig, groupID);
     if (res.ok) {
       sendSystemMessage('Battlegroup disbanded successfully');
       return res;
@@ -62,8 +53,6 @@ async function inviteToBattlegroup(characterID: string, characterName: string, b
   try {
     const result = await GroupsAPI.InviteV1(
       defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       battlegroupID || invalidID,
       characterID || invalidID,
       characterName,
@@ -97,8 +86,6 @@ async function kickFromBattlegroup(targetEntityID: string, targetCharacterID: st
   try {
     const result = await GroupsAPI.KickV1(
       defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       battlegroupID,
       targetEntityID,
       targetCharacterID,
@@ -135,8 +122,6 @@ export async function quitBattlegroup() {
   try {
     const result = await GroupsAPI.QuitV1(
       defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       getStateObject().id,
     );
 

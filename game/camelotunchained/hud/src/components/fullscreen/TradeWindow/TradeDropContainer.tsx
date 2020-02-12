@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/library/lib/camelotunchained';
 
-import LockedOverlay from './LockedOverlay';
+import { LockedOverlay } from './LockedOverlay';
 import withDragAndDrop, { DragAndDropInjectedProps, DragEvent } from 'utils/DragAndDrop/DragAndDrop';
 import InventoryRow from '../Inventory/components/InventoryRow';
 import { SlotType, InventorySlotItemDef, SlotItemDefType } from 'fullscreen/lib/itemInterfaces';
@@ -275,8 +275,6 @@ class TradeContainer extends React.Component<TradeDropContainerComponentProps, T
         const tradeItem = { ItemID: _tradeItem.id, UnitCount: _tradeItem.stats.item.unitCount };
         const res = webAPI.SecureTradeAPI.AddItem(
           webAPI.defaultConfig,
-          game.shardID,
-          camelotunchained.game.selfPlayerState.characterID,
           tradeItem.ItemID,
           tradeItem.UnitCount,
         );

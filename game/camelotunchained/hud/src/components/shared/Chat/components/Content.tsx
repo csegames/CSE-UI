@@ -15,7 +15,7 @@ export interface ContentState {
 export interface ContentProps {
   room: ChatRoomInfo;                   // current room
   send: (roomId: RoomId, text: string) => void;
-  slashCommand: (command: string) => void;
+  slashCommand: (command: string) => boolean;
 }
 
 class Content extends React.Component<ContentProps, ContentState> {

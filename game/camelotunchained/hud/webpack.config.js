@@ -296,7 +296,7 @@ module.exports = function (baseConfig, argv = { cacheRoot, isProduction }) {
       ...(!IS_CI ? [
         new ForkTsCheckerWebpackPlugin({
           checkSyntacticErrors: true,
-          tslint: path.resolve(__dirname, 'tslint.json'), // can turn this off if required
+          // tslint: path.resolve(__dirname, 'tslint.json'), // can turn this off if required
           tsconfig: path.resolve(__dirname, 'tsconfig.json'),
           formatter: 'codeframe',
           async: false,
