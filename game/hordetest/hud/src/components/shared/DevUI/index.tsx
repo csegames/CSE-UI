@@ -442,12 +442,24 @@ export class DevUI extends React.PureComponent<{}, State> {
           }
           return (
             <div id={'DevUI' + k} {...pageProps}>
-            <div style={{ position: 'relative' }}>
-              {page.showCloseButton ?
-              <CloseButtonPosition>
-                <CloseButton
-                  onClick={() => this.onCloseClick(k, page)} />
-                </CloseButtonPosition> : null}
+              <div
+                key={k}
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  overflow: 'auto',
+                }}>
+                <div style={{ flex: 1, position: 'relative' }}>
+                  <DevUIPage {...page} />
+                </div>
+              </div>
+              <div className='relative'>
+                {page.showCloseButton ?
+                  <CloseButtonPosition>
+                    <CloseButton onClick={() => this.onCloseClick(k, page)} />
+                  </CloseButtonPosition> : null}
                 {page.showMaximizeButton ?
                   <MaximizeButton
                     href={'#'}
@@ -462,22 +474,10 @@ export class DevUI extends React.PureComponent<{}, State> {
                         maximized: isMaximized ? false : true,
                       },
                     })}>{isMaximized ? 'Minimize' : 'Maximize'}</MaximizeButton> : null
-                  }
+                }
                 <LayerButtonPosition onClick={this.onLayerClick}>
                   {this.state.isTopLayer ? 'Bot Layer' : 'Top Layer'}
                 </LayerButtonPosition>
-              </div>
-              <div
-                key={k}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  display: 'flex',
-                  overflow: 'auto',
-                }}>
-                <div style={{ flex: 1 }}>
-                  <DevUIPage {...page} />
-                </div>
               </div>
             </div>
           );
