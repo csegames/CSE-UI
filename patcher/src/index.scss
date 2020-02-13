@@ -15,6 +15,12 @@
 @import './sass/animations';
 
 @import './_cu_icons';
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../font/Lato/Lato-Regular.ttf') format('truetype'),
+}
 
 html,body, #Patcher {
   height: 100%;
@@ -25,7 +31,7 @@ html,body, #Patcher {
   background: url(../images/bg.png) repeat-x top center fixed;
   background-color: $color2;
   color: $color4;
-  font-family: 'Titillium Web', sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 
 .introjs-overlay {

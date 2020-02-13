@@ -11,6 +11,8 @@ import { FactionInfo } from '../../services/session/factions';
 import RaceVisualEffects from './RaceVisualEffects';
 import Animate from '../../../../lib/Animate';
 
+
+
 // tslint:disable
 const raceText: any = {
   HumanMaleA: 'Through luck, or perhaps something more, a few Humans managed to escape Veilstorm influence entirely. They did not change into something else, and were untouched by the Veil’s wrath, as though chosen for a special purpose. They may lack the strange powers that some other races possess, but they are also spared the curses that sometimes accompany these powers. Through sheer determination, Humans survive. They refuse to disappear, and prosper even in the most difficult of times, following the noble path of righteous strength that King Arthur lays before them.',

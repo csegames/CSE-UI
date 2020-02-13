@@ -166,9 +166,8 @@
   }
 
   .active {
-    border: none;
-    box-shadow: inset 0px -10px 40px 0px rgba(255, 225, 78, 0.58);
-    outline: 1px solid rgba(255,225,78,0.50);
+    box-shadow: inset 0px -5px 20px 0px rgba(239,196,102,0.50);
+    outline: 1px solid rgba(239,196,102,0.50);
     outline-offset: -3px;
     -webkit-filter: brightness(1.4);
     filter: brightness(1.4);

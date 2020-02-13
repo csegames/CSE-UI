@@ -13,7 +13,8 @@
   font-weight: 700;
   text-align: center;
   background: $gradient2;
-  border: solid $colorg2 1px;
+  border: solid $colorg2;
+  border-width: 1px 3px;
   color: $color1;
   transition: all .2s ease-in-out;
   &:hover {
@@ -29,9 +30,12 @@
 }
 
 .selected {
-  background: $gradient4;
-  border: solid $colorg4 1px;
-  color: $colorg4;
+  background: $gradient5;
+  border: solid $color7 ;
+  border-width: 1px 3px;
+  outline: 1px $color7 solid;
+  outline-offset: -3px;
+  color: $color7;
   &:hover {
     filter: brightness(1.2);
     -webkit-filter: brightness(1.2);
@@ -142,6 +146,7 @@
 
 .race-selection-container {
   display: flex;
+  margin-bottom:10px;
 }
 
 .gender-selection-container {
@@ -321,7 +326,7 @@
       background-image: url(../images/visualfx/tdd/tdd-base_edit02.png);
     }
   }
-  
+
   .veil {
     top: -10px !important;
     left: -30px !important;
@@ -352,7 +357,7 @@
     width: 110%;
     height: 110%;
   }
-  
+
   .layer3 {
     top: -10px !important;
     left: -30px !important;
@@ -411,7 +416,7 @@
         height:50%;
         animation:move-clouds-back-art 15s linear infinite;
         background-size: 800px;
-        z-index:1;    
+        z-index:1;
         -webkit-filter: opacity(.5);
         filter: opacity(.5);
       }
@@ -439,10 +444,10 @@
     }
   }
 
-  .lightning {    
+  .lightning {
     background-image: url(../images/visualfx/vik/vik-cloud.png);
     background-position: right center;
-    background-size:cover;   
+    background-size:cover;
     transform: scale(1.1);
     animation: blink 5s ease infinite;
   }

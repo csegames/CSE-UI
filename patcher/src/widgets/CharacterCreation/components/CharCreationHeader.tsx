@@ -16,6 +16,7 @@ const Header = styled.div`
   padding: 2px;
   background-color: #0D0D0D;
   position: absolute;
+  color: grey;
   top: 0;
   right: 0;
   left: 0;
@@ -42,7 +43,7 @@ const CloseButton = styled.div`
   height: auto;
   padding: 1px 6px;
   text-align: center;
-  font-family:"caudex";
+  font-family: 'Caudex';
   border-image: linear-gradient(180deg,#e2e2e2,#888888) stretch;
   border-style: solid;
   border-width: 1px 3px;
