@@ -195,10 +195,15 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
   }
 
   private handleWarbandQueryResult = (query: GraphQLResult<{ myActiveWarband: GraphQLActiveWarband }>) => {
-    if (!query || !query.data || !query.data.myActiveWarband || !query.data.myActiveWarband.info) {
+    if (!query || !query.data) {
       // Query failed but we don't want to hold up loading. In future, handle this a little better,
       // maybe try to refetch a couple times and if not then just continue on the flow.
-      this.onDonePreloading();
+      this.onDonePreloading(false);
+      return query;
+    }
+
+    if (!query.data.myActiveWarband || !query.data.myActiveWarband.info) {
+      this.onDonePreloading(true);
       return query;
     }
 
@@ -210,13 +215,13 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
     });
 
     this.setState({ groupID: warband.info.id, groupMembers });
-    this.onDonePreloading();
+    this.onDonePreloading(true);
     return query;
   }
 
-  private onDonePreloading = () => {
+  private onDonePreloading = (isSuccessful: boolean) => {
     if (this.isInitialQuery) {
-      game.trigger(preloadQueryEvents.warbandContext);
+      game.trigger(preloadQueryEvents.warbandContext, isSuccessful);
       this.isInitialQuery = false;
     }
   }

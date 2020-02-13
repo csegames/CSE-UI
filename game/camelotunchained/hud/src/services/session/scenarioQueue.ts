@@ -10,7 +10,7 @@ import { RequestOptions } from '@csegames/library/lib/_baseGame/utils/request';
 export function gqlQuery(q: GraphQLQuery, options: RequestOptions = {}) {
   const requestOptions: RequestOptions = {
     headers: Object.assign({
-      'api-version': `${game.apiVersion}`,
+      // 'api-version': `${game.apiVersion}`,
       'Content-Type': 'application/json',
       Authorization: `Bearer ${game.accessToken}`,
       CharacterId: camelotunchained.game.selfPlayerState.characterID,
@@ -41,28 +41,29 @@ export interface ScenarioMatch {
 }
 
 const scenarioQuery: GraphQLQuery = {
-  query: `{
-    myScenarioQueue {
-      availableMatches {
-        id
-        name
-        icon
-        isQueued
-        isInScenario
-        gamesInProgress
-        charactersNeededToStartNextGameByFaction {
-          tdd
-          viking
-          arthurian
-        }
-        totalBackfillsNeededByFaction {
-          tdd
-          viking
-          arthurian
+  query: `
+    query ScenarioQueueQuery {
+      myScenarioQueue {
+        availableMatches {
+          id
+          name
+          icon
+          isQueued
+          isInScenario
+          gamesInProgress
+          charactersNeededToStartNextGameByFaction {
+            tdd
+            viking
+            arthurian
+          }
+          totalBackfillsNeededByFaction {
+            tdd
+            viking
+            arthurian
+          }
         }
       }
-    }
-  }`,
+    }`,
 };
 
 export let scenarios: ScenarioMatch[];

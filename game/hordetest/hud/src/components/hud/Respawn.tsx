@@ -4,9 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { InputContext } from 'components/context/InputContext';
+import { MatchmakingContext } from 'context/MatchmakingContext';
 
 const Container = styled.div`
   position: fixed;
@@ -143,6 +144,7 @@ const LivesText = styled.div`
 
 export interface Props {
   isConsole: boolean;
+  clearMatchmakingContext: () => void;
   onLeaveMatch: () => void;
 }
 
@@ -259,6 +261,7 @@ class RespawnWithInjectedContext extends React.Component<Props, State> {
 
   private onLeaveMatch = () => {
     game.disconnectFromAllServers();
+    this.props.clearMatchmakingContext();
     this.props.onLeaveMatch();
   }
 
@@ -268,11 +271,13 @@ class RespawnWithInjectedContext extends React.Component<Props, State> {
 }
 
 export function Respawn(props: { onLeaveMatch: () => void }) {
+  const inputContext = useContext(InputContext);
+  const matchmakingContext = useContext(MatchmakingContext);
   return (
-    <InputContext.Consumer>
-      {({ isConsole }) => (
-        <RespawnWithInjectedContext isConsole={isConsole} onLeaveMatch={props.onLeaveMatch} />
-      )}
-    </InputContext.Consumer>
+    <RespawnWithInjectedContext
+      isConsole={inputContext.isConsole}
+      clearMatchmakingContext={matchmakingContext.clearMatchmakingContext}
+      onLeaveMatch={props.onLeaveMatch}
+    />
   );
 }

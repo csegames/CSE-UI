@@ -63,18 +63,18 @@ export class StatusContextProvider extends React.Component<{}, StatusContextStat
     if (!graphql || !graphql.data || !graphql.data.status || !graphql.data.status.statuses) {
       // Query failed but we don't want to hold up loading. In future, handle this a little better,
       // maybe try to refetch a couple times and if not then just continue on the flow.
-      this.onDonePreloading();
+      this.onDonePreloading(false);
       return graphql;
     }
 
     this.setState({ statusDefs: graphql.data.status.statuses });
-    this.onDonePreloading();
+    this.onDonePreloading(true);
     return graphql;
   }
 
-  private onDonePreloading = () => {
+  private onDonePreloading = (isSuccessful: boolean) => {
     if (this.isInitialQuery) {
-      game.trigger(preloadQueryEvents.statusContext);
+      game.trigger(preloadQueryEvents.statusContext, isSuccessful);
       this.isInitialQuery = false;
     }
   }

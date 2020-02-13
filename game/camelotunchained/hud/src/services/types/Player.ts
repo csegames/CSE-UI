@@ -26,21 +26,21 @@ declare global {
 function isPlayer(
   state: Entity,
 ): state is Player {
-  return state.type === 'player';
+  return (state as PlayerStateModel).type === 'player';
 }
 window.isPlayer = isPlayer;
 
 function isSiege(
   state: Entity,
 ): state is ImmutableSiegeState {
-  return state.type === 'siege';
+  return (state as SiegeStateModel).type === 'siege';
 }
 window.isSiege = isSiege;
 
 function isKinematic(
   state: Entity,
 ): state is ImmutableKinematicState {
-  return state.type === 'kinematic';
+  return (state as KinematicStateModel).type === 'kinematic';
 }
 window.isKinematic = isKinematic;
 

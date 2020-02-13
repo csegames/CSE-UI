@@ -33,7 +33,7 @@ export class ErrorBoundary extends React.PureComponent<ErrorBoundaryProps, Error
     if (this.props.outputErrorToConsole) {
       console.error(error);
       console.error(info);
-      console.error(error.stack)
+      console.error(error.stack);
     }
     if (this.props.onError) {
       this.props.onError(error, info);

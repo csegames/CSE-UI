@@ -65,7 +65,7 @@ export interface State {
   slotsPerRow: number;
 }
 
-class VoxInventoryView extends React.Component<Props, State> {
+export class VoxInventoryView extends React.Component<Props, State> {
   private ref: HTMLDivElement;
   private clientWidth: number;
 
@@ -131,5 +131,3 @@ class VoxInventoryView extends React.Component<Props, State> {
     this.setState({ rowCount, slotsPerRow });
   }
 }
-
-export default VoxInventoryView;

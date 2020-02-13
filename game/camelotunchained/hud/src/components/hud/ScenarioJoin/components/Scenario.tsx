@@ -122,8 +122,6 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
     this.setState({ joinMessage: 'Joining ...' });
     camelotunchained.game.webAPI.ScenarioAPI.AddToQueue(
       camelotunchained.game.webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       this.props.scenario.id,
     );
     setTimeout(pollNow,2000);
@@ -133,8 +131,6 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
     this.setState({ joinMessage: 'Leaving ...' });
     camelotunchained.game.webAPI.ScenarioAPI.RemoveFromQueue(
       camelotunchained.game.webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       this.props.scenario.id,
     );
     setTimeout(pollNow,2000);

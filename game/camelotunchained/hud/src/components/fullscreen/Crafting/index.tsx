@@ -168,8 +168,6 @@ class Crafting extends React.Component<Props, CraftingContextState> {
 
     webAPI.CraftingAPI.SetVoxJobGroupFavorite(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       jobIdentifier,
       jobType,
       newFavorite,

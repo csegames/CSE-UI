@@ -220,7 +220,7 @@ export interface AbilityButtonViewState {
 
 }
 
-class AbilityButtonView extends React.Component<AbilityButtonViewProps, AbilityButtonViewState> {
+export class AbilityButtonView extends React.Component<AbilityButtonViewProps, AbilityButtonViewState> {
   public render() {
     // output button
     const { ability } = this.props;
@@ -291,5 +291,3 @@ class AbilityButtonView extends React.Component<AbilityButtonViewProps, AbilityB
     return icon;
   }
 }
-
-export default AbilityButtonView;

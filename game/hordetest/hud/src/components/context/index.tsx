@@ -25,7 +25,9 @@ export class SharedContextProviders extends React.Component<{}> {
           <MatchmakingContextProvider>
             <MyUserContextProvider>
               <ColossusProfileProvider>
-                {this.props.children}
+                <StatusContextProvider>
+                  {this.props.children}
+                </StatusContextProvider>
               </ColossusProfileProvider>
             </MyUserContextProvider>
           </MatchmakingContextProvider>
@@ -42,9 +44,7 @@ export class ContextProviders extends React.Component<{}> {
         <ViewBearingContextProvider>
           <ObjectivesContextProvider>
             <PlayerPositionContextProvider>
-              <StatusContextProvider>
-                {this.props.children}
-              </StatusContextProvider>
+              {this.props.children}
             </PlayerPositionContextProvider>
           </ObjectivesContextProvider>
         </ViewBearingContextProvider>

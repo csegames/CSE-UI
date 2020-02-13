@@ -13,6 +13,7 @@ export const preloadQueryEvents = {
   myUserContext: 'preload-gql-myUserContext',
   statusContext: 'preload-gql-statusContext',
   warbandContext: 'preload-gql-warbandContext',
+  matchmakingContext: 'preload-gql-matchmakingContext',
 }
 
 const Container = styled.div`
@@ -24,6 +25,8 @@ const Container = styled.div`
 `;
 
 export interface Props {
+  onTotalApiNetworkFailure: () => void;
+  onPartialApiNetworkFailure: () => void;
   onLoadComplete: () => void;
 }
 
@@ -38,7 +41,9 @@ export class Preloader extends React.Component<Props, State> {
     [preloadQueryEvents.myUserContext]: false,
     [preloadQueryEvents.statusContext]: false,
     [preloadQueryEvents.warbandContext]: false,
+    [preloadQueryEvents.matchmakingContext]: false,
   };
+  private successfulGQLQueries: { [queryID: string]: boolean } = {};
 
   public render() {
     return (
@@ -60,23 +65,41 @@ export class Preloader extends React.Component<Props, State> {
 
   private initializeEventHandlers = () => {
     Object.values(preloadQueryEvents).forEach((eventName) => {
-      this.evhList.push(game.on(eventName, () => this.handlePreloadEvent(eventName)));
+      this.evhList.push(game.on(eventName, (isSuccessful) => this.handlePreloadEvent(eventName, isSuccessful)));
     });
   }
 
-  private handlePreloadEvent = (eventName: string) => {
+  private handlePreloadEvent = (eventName: string, isSuccessful: boolean) => {
+    // Regardless of if successful or not, we say that it's loaded so we can move on to
+    // another screen where we can decide what to do with unsuccessful gql queries.
+
+    if (isSuccessful) {
+      this.successfulGQLQueries[eventName] = true;
+    }
+
     this.gqlDataLoaded[eventName] = true;
     this.checkForLoadCompletion();
   }
 
   private checkForLoadCompletion = () => {
-    let isAllGQLDataLoaded = false
-    if (!Object.values(this.gqlDataLoaded).find(isLoaded => !isLoaded)) {
+    let isAllGQLDataLoaded = false;
+    if (!Object.values(this.gqlDataLoaded).includes(false)) {
       isAllGQLDataLoaded = true;
     }
 
-    if (isAllGQLDataLoaded) {
-      this.props.onLoadComplete();
+    if (!isAllGQLDataLoaded) return;
+
+    this.props.onLoadComplete();
+
+    const successfulGQLQueryList = Object.keys(this.successfulGQLQueries);
+    if (successfulGQLQueryList.length === 0) {
+      this.props.onTotalApiNetworkFailure();
+      return;
+    }
+
+    const gqlDataLoadedList = Object.keys(this.gqlDataLoaded);
+    if (successfulGQLQueryList.length < gqlDataLoadedList.length) {
+      this.props.onPartialApiNetworkFailure();
     }
   }
 }

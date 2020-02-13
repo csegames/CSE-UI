@@ -8,6 +8,7 @@ import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 
 import { FullScreenNavContext, FullScreenNavContextState, Route, fullScreenNavigateTo } from 'context/FullScreenNavContext';
+import { MatchmakingContext, MatchmakingContextState } from 'context/MatchmakingContext';
 import { StartScreen } from './StartScreen';
 import { ChampionSelect } from './ChampionSelect';
 import { Button } from './Button';
@@ -56,10 +57,13 @@ const SettingsContainer = styled.div`
 
 interface InjectedProps {
   fullScreenNavContext: FullScreenNavContextState;
+  matchmakingContext: MatchmakingContextState;
 }
 
 export interface ComponentProps {
   scenarioID: string;
+  hasTotalApiNetworkFailure: boolean;
+  hasPartialApiNetworkFailure: boolean;
   onSelectionTimeOver: () => void;
 }
 
@@ -120,7 +124,7 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
       }
       case Route.Start: {
         return (
-          <StartScreen />
+          <StartScreen hasPartialApiNetworkFailure={this.props.hasPartialApiNetworkFailure} />
         );
       }
       case Route.ChampionSelect: {
@@ -134,10 +138,19 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
       }
       case Route.EndGameStats: {
         return (
-          <GameStats scenarioID={this.props.scenarioID} onLeaveClick={this.goToStart} />
+          <GameStats scenarioID={this.props.scenarioID} onLeaveClick={this.onLeaveClick} />
         );
       }
     }
+  }
+
+  private onLeaveClick = () => {
+    if (game.isConnectedOrConnectingToServer) {
+      game.disconnectFromAllServers();
+    }
+
+    this.props.matchmakingContext.clearMatchmakingContext();
+    this.goToStart();
   }
 
   private goToStart = () => {
@@ -155,10 +168,12 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
 
 export function FullScreen(props: ComponentProps) {
   const fullScreenNavContext = useContext(FullScreenNavContext);
+  const matchmakingContext = useContext(MatchmakingContext);
   return (
     <FullScreenWithInjectedContext
       {...props}
       fullScreenNavContext={fullScreenNavContext}
+      matchmakingContext={matchmakingContext}
     />
   );
 }

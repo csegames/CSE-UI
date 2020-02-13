@@ -46,6 +46,7 @@ export interface State {
   newBind: Binding;
   searchValue: string;
   index: number;
+  conflicts: Keybind[];
 }
 
 function checkForConflicts(checkID: number, checkBind: Binding): Keybind[] {
@@ -74,6 +75,7 @@ export class KeybindMenu extends React.Component<Props, State> {
       newBind: null,
       searchValue: '',
       index: -1,
+      conflicts: [],
     };
   }
 
@@ -131,7 +133,7 @@ export class KeybindMenu extends React.Component<Props, State> {
     const conflicts = checkForConflicts(this.state.keybindListening.id, newBind);
     if (conflicts.length >= 1) {
       // There are conflicts, bring up confirm modal
-      this.setState({ newBind, keybindMode: KeybindMode.ConfirmBind });
+      this.setState({ newBind, keybindMode: KeybindMode.ConfirmBind, conflicts });
     } else {
       this.setBind(newBind);
     }
@@ -139,16 +141,34 @@ export class KeybindMenu extends React.Component<Props, State> {
 
   private setBind = (newBind: Binding) => {
     // If there are no conflicts, just set the keybind
-    const { success } = game.setKeybind(this.state.keybindListening.id, this.state.index, newBind.value);
+    game.setKeybind(this.state.keybindListening.id, this.state.index, newBind.value);
 
-    if (success) {
-      const newState = {
-        ...cloneDeep(this.state),
-        keybindMode: KeybindMode.Idle,
-      };
-      newState.keybindListening.binds[this.state.index] = cloneDeep(newBind);
-      this.setState({ ...newState });
-    }
+    const newState = {
+      ...cloneDeep(this.state),
+      keybindMode: KeybindMode.Idle,
+    };
+    newState.keybindListening.binds[this.state.index] = cloneDeep(newBind);
+    this.setState({ ...newState });
+  }
+
+  private onYesConfirmBind = () => {
+    const newState = {
+      ...cloneDeep(this.state),
+      keybindMode: KeybindMode.Idle,
+    };
+
+    this.state.conflicts.forEach((conflict) => {
+      const conflictingBindIndex = conflict.binds.findIndex(b => b.name === this.state.newBind.name);
+      if (conflictingBindIndex !== -1) {
+        game.clearKeybind(conflict.id, conflictingBindIndex);
+      }
+    });
+
+    game.setKeybind(this.state.keybindListening.id, this.state.index, this.state.newBind.value);
+    newState.keybindListening.binds[this.state.index] = cloneDeep(this.state.newBind);
+
+    this.setState({ ...newState, conflicts: [] });
+    window.setTimeout(() => this.forceUpdate());
   }
 
   private onNoConfirmBind = () => {
@@ -201,7 +221,7 @@ export class KeybindMenu extends React.Component<Props, State> {
             newBind={this.state.newBind}
             conflicts={conflicts}
             onClose={this.cancelKeybindListen}
-            onYesClick={() => {}}
+            onYesClick={this.onYesConfirmBind}
             onNoClick={this.onNoConfirmBind}
           />
         );

@@ -4,10 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { InputContext, InputContextState } from 'context/InputContext';
+import { MatchmakingContext, MatchmakingContextState } from 'context/MatchmakingContext';
 import { LoadingButton } from '../LoadingButton';
 
 const Container = styled.div`
@@ -49,10 +50,15 @@ const ConsoleIcon = styled.span`
   color: white;
 `;
 
-export interface Props {
+export interface ComponentProps {
   isLocked: boolean;
   onLockIn: () => void;
   onSelectionTimeOver: () => void;
+}
+
+interface Props extends ComponentProps {
+  matchmakingContext: MatchmakingContextState;
+  inputContext: InputContextState;
 }
 
 export interface State {
@@ -60,7 +66,7 @@ export interface State {
   currentPercentage: number;
 }
 
-export class LockIn extends React.Component<Props, State> {
+class LockInWithInjectedContext extends React.Component<Props, State> {
   private percentageInterval: number;
   private lastCurrentTime: number;
   private timeElapsed: number;
@@ -68,53 +74,49 @@ export class LockIn extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      timer: 30,
+      timer: props.matchmakingContext.secondsToWait,
       currentPercentage: 100,
     };
   }
 
   public render() {
     return (
-      <InputContext.Consumer>
-        {(inputContext: InputContextState) => (
-          <Container>
-            {!inputContext.isConsole ?
-              <LoadingButton
-                disabled={this.props.isLocked}
-                current={this.state.currentPercentage}
-                max={100}
-                styles={LockInButton}
-                onClick={this.props.onLockIn}
-                text={
-                  <ConsoleButton>
-                    <LockInText>Lock In</LockInText>
-                    <TextContainer>
-                      0:{this.state.timer.toString().length === 1 ? `0${this.state.timer}` : this.state.timer}
-                    </TextContainer>
-                  </ConsoleButton>
-                }
-              /> :
-              <LoadingButton
-                disabled={this.props.isLocked}
-                current={this.state.currentPercentage}
-                max={100}
-                styles={LockInButton}
-                onClick={this.props.onLockIn}
-                text={
-                  <ConsoleButton>
-                    <LockInText>
-                      <ConsoleIcon className='icon-xb-a' /> Lock In
-                    </LockInText>
-                    <TextContainer>
-                      0:{this.state.timer.toString().length === 1 ? `0${this.state.timer}` : this.state.timer}
-                    </TextContainer>
-                  </ConsoleButton>
-                }
-              />
+      <Container>
+        {!this.props.inputContext.isConsole ?
+          <LoadingButton
+            disabled={this.props.isLocked}
+            current={this.state.currentPercentage}
+            max={100}
+            styles={LockInButton}
+            onClick={this.props.onLockIn}
+            text={
+              <ConsoleButton>
+                <LockInText>Lock In</LockInText>
+                <TextContainer>
+                  0:{this.state.timer.toString().length === 1 ? `0${this.state.timer}` : this.state.timer}
+                </TextContainer>
+              </ConsoleButton>
             }
-          </Container>
-        )}
-      </InputContext.Consumer>
+          /> :
+          <LoadingButton
+            disabled={this.props.isLocked}
+            current={this.state.currentPercentage}
+            max={100}
+            styles={LockInButton}
+            onClick={this.props.onLockIn}
+            text={
+              <ConsoleButton>
+                <LockInText>
+                  <ConsoleIcon className='icon-xb-a' /> Lock In
+                </LockInText>
+                <TextContainer>
+                  0:{this.state.timer.toString().length === 1 ? `0${this.state.timer}` : this.state.timer}
+                </TextContainer>
+              </ConsoleButton>
+            }
+          />
+        }
+      </Container>
     );
   }
 
@@ -147,7 +149,9 @@ export class LockIn extends React.Component<Props, State> {
     this.timeElapsed += lastUpdateTimeElapsed;
     this.lastCurrentTime = currentTime;
 
-    if (this.timeElapsed >= 30000) {
+    const msToWait = this.props.matchmakingContext.secondsToWait * 1000;
+
+    if (this.timeElapsed >= msToWait) {
       this.stopBarTimer();
       this.props.onSelectionTimeOver();
       this.setState({ timer: 0, currentPercentage: 0 });
@@ -155,8 +159,21 @@ export class LockIn extends React.Component<Props, State> {
     }
 
     this.setState({
-      timer: 30 - Math.round(this.timeElapsed / 1000),
-      currentPercentage: 100 - (this.timeElapsed / 30000) * 100,
+      timer: this.props.matchmakingContext.secondsToWait - Math.round(this.timeElapsed / 1000),
+      currentPercentage: 100 - (this.timeElapsed / msToWait) * 100,
     });
   }
+}
+
+export function LockIn(props: ComponentProps) {
+  const matchmakingContext = useContext(MatchmakingContext);
+  const inputContext = useContext(InputContext);
+
+  return (
+    <LockInWithInjectedContext
+      {...props}
+      matchmakingContext={matchmakingContext}
+      inputContext={inputContext}
+    />
+  );
 }

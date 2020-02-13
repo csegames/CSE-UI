@@ -7,12 +7,12 @@
 /**
  * Game Data Store holds mostly static game data that is initially fetched from the API server on UI load.
  */
-import { useState } from 'react';
+
 import { query } from '../../../_baseGame/graphql/query';
 import { CUQuery, Ability, StatusDef } from '../../graphql/schema';
 
 const queryString = `
-{
+query GameStore {
   myCharacter {
     abilities {
       id
@@ -119,7 +119,13 @@ async function fetchData(this: InternalGameDataStore) {
   try {
     const result = await query<QueryResult>({
       query: queryString,
+      // operationName: null,
+      // namedQuery: null,
+      // useNamedQueryCache: true,
+      // variables: null,
     }, {
+      // disableBatching: undefined,
+      // stringifyVariables: undefined,
       url: game.webAPIHost + '/graphql',
       requestOptions: {
         headers: {

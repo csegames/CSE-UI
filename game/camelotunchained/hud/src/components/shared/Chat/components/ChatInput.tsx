@@ -30,7 +30,7 @@ export interface ChatInputState {
 export interface ChatInputProps {
   label: string;
   send: (text: string) => void;
-  slashCommand: (command: string) => void;
+  slashCommand: (command: string) => boolean;
   scroll: (extra?: number) => void;
 }
 

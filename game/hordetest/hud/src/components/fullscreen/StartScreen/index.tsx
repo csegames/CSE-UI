@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { styled } from '@csegames/linaria/react';
 
 import { NavMenu, StartScreenRoute } from './NavMenu';
@@ -59,6 +59,27 @@ const Hamburger = styled.div`
   }
 `;
 
+const WarningIcon = styled.span`
+  position: absolute;
+  top: 25px;
+  left: 100px;
+  height: 30px;
+  width: 30px;
+  font-size: 30px;
+  color: #ffb83d;
+`;
+
+const WarningBox = styled.div`
+  position: absolute;
+  top: 65px;
+  left: 100px;
+  max-width: 300px;
+  padding: 10px;
+  color: white;
+  border: 2px solid rgba(255, 184, 61, 0.8);
+  background-color: rgba(255, 184, 61, 0.6);
+`;
+
 const PlayContainer = styled.div`
   position: absolute;
   top: 0;
@@ -99,31 +120,61 @@ const StoreBGImage = styled.div`
 `;
 
 export interface Props {
+  hasPartialApiNetworkFailure: boolean;
 }
 
-export function StartScreen(props: Props) {
-  const [selectedRoute, setSelectedRoute] = useState(StartScreenRoute.Play);
+export interface State {
+  selectedRoute: StartScreenRoute;
+}
 
-  useEffect(() => {
+export class StartScreen extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      selectedRoute: StartScreenRoute.Play,
+    }
+  }
+
+  public render() {
+    return (
+      <Container>
+        {this.renderRoute()}
+        <TopSection>
+          <Hamburger onClick={this.onHamburgerClick} />
+          {this.props.hasPartialApiNetworkFailure &&
+            <>
+              <WarningIcon className='far fa-exclamation-circle'></WarningIcon>
+              <WarningBox>
+                We are experiencing technical difficulties. Some things may not work properly, please be patient with us.
+              </WarningBox>
+            </>
+          }
+          <NavMenu selectedRoute={this.state.selectedRoute} onSelectRoute={this.onSelectRoute} />
+        </TopSection>
+      </Container>
+    );
+  }
+
+  public componentDidMount() {
     game.playGameSound(SoundEvents.PLAY_USER_FLOW_LOBBY);
-  }, []);
+  }
 
-  function onSelectRoute(route: StartScreenRoute) {
+  private onSelectRoute = (route: StartScreenRoute) => {
     if (route !== StartScreenRoute.Play) {
       game.trigger('hide-fullscreen-chat');
     } else {
       game.trigger('show-fullscreen-chat');
     }
 
-    setSelectedRoute(route);
+    this.setState({ selectedRoute: route });
   }
 
-  function onHamburgerClick() {
+  private onHamburgerClick = () => {
     game.trigger('show-menu-modal');
   }
 
-  function renderRoute() {
-    switch (selectedRoute) {
+  private renderRoute = () => {
+    switch (this.state.selectedRoute) {
       case StartScreenRoute.Play: {
         return (
           <PlayContainer>
@@ -177,14 +228,4 @@ export function StartScreen(props: Props) {
       default: return null;
     }
   }
-
-  return (
-    <Container>
-      {renderRoute()}
-      <TopSection>
-        <Hamburger onClick={onHamburgerClick} />
-        <NavMenu selectedRoute={selectedRoute} onSelectRoute={onSelectRoute} />
-      </TopSection>
-    </Container>
-  );
 }

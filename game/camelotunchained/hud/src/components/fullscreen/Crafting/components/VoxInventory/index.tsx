@@ -11,7 +11,7 @@ import { webAPI } from '@csegames/library/lib/camelotunchained';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 import { InventoryItemFragment } from 'gql/fragments/InventoryItemFragment';
 import { VoxInventoryQuery, InventoryItem } from 'gql/interfaces';
-import VoxInventoryView from './VoxInventoryView';
+import { VoxInventoryView } from './VoxInventoryView';
 import { InventoryContext } from 'fullscreen/ItemShared/InventoryContext';
 import { VoxInventoryContext, ContextState, defaultVoxContextState } from './VoxInventoryContext';
 import { DrawerSlotNumberToItem, ContainerIdToDrawerInfo } from 'fullscreen/ItemShared/InventoryBase';
@@ -121,12 +121,7 @@ class VoxInventory extends React.Component<Props, ContextState> {
             voxSlot: 'Invalid',
           },
         };
-        webAPI.ItemAPI.MoveItems(
-          webAPI.defaultConfig,
-          game.shardID,
-          camelotunchained.game.selfPlayerState.characterID,
-          moveReq as any,
-        );
+        webAPI.ItemAPI.MoveItems(webAPI.defaultConfig, moveReq as any);
         return;
       } else {
         slotNumberToItem[currentPosition] = {

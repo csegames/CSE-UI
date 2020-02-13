@@ -805,8 +805,6 @@ export function distributeItemsNoFilter(args: {
   if (moveRequests.length > 0) {
     webAPI.ItemAPI.BatchMoveItems(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       moveRequests,
     );
   }
@@ -1781,8 +1779,6 @@ export function moveInventoryItemToEmptySlot(args: {
   });
   webAPI.ItemAPI.MoveItems(
     webAPI.defaultConfig,
-    game.shardID,
-    camelotunchained.game.selfPlayerState.characterID,
     moveItemReq as any,
   ).then(() => dragItemData.voxEntityID && game.trigger('refetch-vox-job'));
 
@@ -1842,9 +1838,6 @@ export function moveInventoryItemToEmptySlot(args: {
 
         webAPI.ItemAPI.BatchMoveItems(
           webAPI.defaultConfig,
-
-          game.shardID,
-          camelotunchained.game.selfPlayerState.characterID,
           moveRequests,
         ).then(() => dragItemData.voxEntityID && game.trigger('refetch-vox-job'));
       } else {
@@ -2089,8 +2082,6 @@ export function swapInventoryItems(args: {
   if (!_.isEmpty(moveItemRequests)) {
     webAPI.ItemAPI.BatchMoveItems(
       webAPI.defaultConfig,
-      game.shardID,
-      camelotunchained.game.selfPlayerState.characterID,
       moveItemRequests,
     );
   } else {

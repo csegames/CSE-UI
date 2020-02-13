@@ -74,6 +74,23 @@ export function parseQuery(query: string | LegacyGraphqlDocumentNode | DocumentN
   return queryString;
 }
 
+export function getMockModeUrl(defaultUrl: string) {
+  switch (game.uiMockMode) {
+    case MockMode.TotalNetworkFailure: {
+      return `${defaultUrl}:1234`;
+    }
+
+    case MockMode.PartialNetworkFailure: {
+      const shouldUseDefault = Math.round(Math.random());
+      return shouldUseDefault ? defaultUrl : `${defaultUrl}:1234`;
+    }
+
+    default: {
+      return defaultUrl;
+    }
+  }
+}
+
 function errorResult<T>(msg: string, statusCode: number): GraphQLQueryResult<T> {
   return {
     data: <T> null,
@@ -91,7 +108,7 @@ function getMessage(obj: { message: string }) {
  const queryQueue: {
   query: GraphQLQuery;
   resolve: (data: any) => void;
-  reject: (reason: any) => void; 
+  reject: (reason: any) => void;
  }[] = [];
 
 
@@ -168,7 +185,6 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
 }
 
 export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptions>): Promise<GraphQLQueryResult<T>> {
-
   if (options.disableBatching == false) {
     // batch the query.
 
@@ -207,6 +223,7 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
         },
       },
     );
+
     if (response.ok) {
       const result = JSON.parse(response.data);
       if (result.errors) {
@@ -256,9 +273,8 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
       );
       console.error(response.statusText);
       console.error(response.data);
-      console.error(new Error().stack)
+      console.error(new Error().stack);
     }
-    
 
     if (game.debug) {
       console.group('GraphQL Request');

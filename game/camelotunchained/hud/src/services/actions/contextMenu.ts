@@ -133,7 +133,7 @@ export function getSelfMenuItems(
 export function getFriendlyTargetMenuItems(
   state: Entity,
 ) {
-  if (state.type !== 'player') {
+  if ((state as PlayerStateModel).type !== 'player') {
     return [];
   }
 

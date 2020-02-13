@@ -205,14 +205,14 @@ class ChatClient {
     this.chat.on('rooms', (rooms: Room[]) => this._fire('rooms', rooms));
   }
 
-  private _disconnect(): void {
-    if (this.chat) {
-      this.chat.removeListener(this.errorListener);
-      this.chat.disconnect();
-      this.chat = null;
-    }
-    this.connected = false;
-  }
+  // private _disconnect(): void {
+  //   if (this.chat) {
+  //     this.chat.removeListener(this.errorListener);
+  //     this.chat.disconnect();
+  //     this.chat = null;
+  //   }
+  //   this.connected = false;
+  // }
 
   private _fire(topic: string, data?: any): void {
     this.emitter.emit(topic, data);

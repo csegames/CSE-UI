@@ -156,7 +156,7 @@ export interface LockedOverlayProps {
   state: SecureTradeState;
 }
 
-class LockedOverlay extends React.Component<LockedOverlayProps> {
+export class LockedOverlay extends React.Component<LockedOverlayProps> {
   public render() {
     return (
       <Container className={this.props.state === 'Locked' ? 'locked' : ''}>
@@ -175,5 +175,3 @@ class LockedOverlay extends React.Component<LockedOverlayProps> {
     );
   }
 }
-
-export default LockedOverlay;
