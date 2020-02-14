@@ -172,10 +172,10 @@ export function StatsListItem(props: Props) {
         {renderBar(formatTime(props.playerStat.longestLife), statsCurrentPercentage.longestLife)}
       </Section>
       <Section>
-        {renderBar(props.playerStat.damageApplied.printWithSeparator(','), statsCurrentPercentage.totalDamage)}
+        {renderBar(Math.round(props.playerStat.damageApplied).printWithSeparator(','), statsCurrentPercentage.totalDamage)}
       </Section>
       <Section>
-        {renderBar(props.playerStat.damageTaken.printWithSeparator(','), statsCurrentPercentage.damageTaken)}
+        {renderBar(Math.round(props.playerStat.damageTaken).printWithSeparator(','), statsCurrentPercentage.damageTaken)}
       </Section>
       <ThumbsUpButtonSpacing>
         <ThumbsUpButton

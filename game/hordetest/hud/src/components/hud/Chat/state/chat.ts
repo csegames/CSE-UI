@@ -34,7 +34,7 @@ export function initChat(serverHost: string) {
     window.chat = new CSEChat();
   }
   window.chat.initialize({
-    url: () => `wss://${serverHost}:4543/chat`,
+    url: () => `ws://${serverHost}:4543/chat`,
     characterID: () => game.characterID,
     onerror: err => console.error(`Chat | ${err.message}`),
     protocols: 'chat-ws',
