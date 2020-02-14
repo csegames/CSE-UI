@@ -309,7 +309,9 @@ export function Highlights(props: Props) {
           <ChampionName>{championInfo ? championInfo.name : ''}</ChampionName>
         </PlayerInfoContainer>
         <StatContainer>
-          <StatNumber>{p.statName === 'longest life' ? formatTime(p.statNumber) : p.statNumber}</StatNumber>
+          <StatNumber>
+            {p.statName === 'longest life' ? formatTime(p.statNumber) : Math.round(p.statNumber).printWithSeparator(',')}
+          </StatNumber>
           <StatName>{p.statName}</StatName>
         </StatContainer>
       </HighlightContainer>
