@@ -60,9 +60,10 @@
   display: block;
   background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.5), transparent);
   padding-bottom: 10px;
+  margin-bottom: 1px;
   letter-spacing: 0.3px;
   &.important {
-    background: linear-gradient(to bottom right, #110D07, #1B160E);
+    background: linear-gradient(to right, rgb(46, 38, 25), #1B160E);
     color: #ffe1c2;
   }
   &:hover {
@@ -74,7 +75,7 @@
 .selection-box {
   color: #727272;
   .attribute-row {
-    padding: 5px;
+    padding: 5px 10px;
   }
 }
 .right {
@@ -86,9 +87,11 @@
 }
 
 span.points {
-  font-size: .8em;
-  font-family: 'TitilliumWeb';
-  color: rgb(206, 181, 59);
+  font-size: .6em;
+  font-family: 'Lato';
+  color: rgb(209, 190, 95);
+  text-align: right;
+  position: relative;
 }
 
 .attributes-view {

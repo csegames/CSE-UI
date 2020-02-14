@@ -269,6 +269,20 @@ input {
   background:  rgb(181, 181, 181);
 }
 
+.toast {
+  background: #681d19;
+  color: white ;
+  text-align: center;
+  padding: 15px 30px;
+  list-style: none;
+  box-shadow: none;
+  max-width: 300px;
+  border-radius: 0px;
+  box-shadow: 0 0 12px #000;
+  outline-offset: -5px;
+  outline: 1px solid rgba(255, 95, 95, 0.521);
+  word-break: normal;
+}
 
 @import './sass/modaldialog';
 

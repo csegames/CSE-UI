@@ -38,7 +38,7 @@ class StatsSelect extends React.Component<Props> {
       <div className='page'>
         <video src={`videos/paper-bg.webm`} poster={`videos/paper-bg.jpg`} autoPlay loop></video>
         <div className='selection-box'>
-          <h6>Distribute attribute points  <span className='points'>(Remaining {this.props.remainingPoints})</span></h6>
+          <h6>Distribute attribute points <span className='points'>(Remaining {this.props.remainingPoints})</span></h6>
           {this.props.distributableStats.map((statDef: StatDefinitionGQL) =>
             <StatRow
               key={statDef.id}

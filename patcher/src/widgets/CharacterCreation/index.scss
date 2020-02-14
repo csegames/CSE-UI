@@ -54,6 +54,8 @@
   ::-webkit-scrollbar {
     width: 10px;
     height: 12px;
+    outline: 1px solid rgba(255, 255, 255, 0.5);
+    outline-offset: -3px;
   }
 
   ::-webkit-scrollbar-track {
@@ -173,21 +175,5 @@
     filter: brightness(1.4);
   }
 
-  .toast {
-    background: $gradient-alert1, radial-gradient(at center, rgb(0, 0, 0), transparent 250%);
-    text-shadow: 2px 2px black;
-    color: $color1 ;
-    text-align: center;
-    padding: 15px 30px;
-    list-style: none;
-    box-shadow: none;
-    -webkit-filter: grayscale(1) brightness(1.5);
-    filter: grayscale(1) brightness(1.5);
-    max-width: 300px;
-    border: 1px rgba(255, 255, 255, 0.19) solid;
-    outline-offset: 1px;
-    outline: 5px solid rgba(0, 0, 0, 0.5);
-    word-break: normal;
-  }
 }
 
