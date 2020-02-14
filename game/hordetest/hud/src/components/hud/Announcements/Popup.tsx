@@ -48,7 +48,8 @@ export interface State {
 
 export class PopupAnnouncement extends React.Component<Props, State> {
   private eventHandles: EventHandle[] = [];
-  private timeouts: NodeJS.Timer[] = [];
+  private overrideMessageTimeout: number;
+  private clearMessageTimeout: number;
 
   constructor(props: Props) {
     super(props);
@@ -69,7 +70,7 @@ export class PopupAnnouncement extends React.Component<Props, State> {
 
     return (
       <CSSTransitionGroup transitionName='announcement' transitionEnterTimeout={500}
-        transitionLeaveTimeout={300}>
+        transitionLeaveTimeout={100}>
         {announcement}
       </CSSTransitionGroup>
     );
@@ -81,7 +82,8 @@ export class PopupAnnouncement extends React.Component<Props, State> {
 
   public componentWillUnmount() {
     this.eventHandles.forEach(eventHandle => eventHandle.clear());
-    this.timeouts.forEach(timeout => clearTimeout(timeout));
+    window.clearTimeout(this.overrideMessageTimeout);
+    window.clearTimeout(this.clearMessageTimeout);
   }
 
   private handleAnnouncement = (type: AnnouncementType, message: string) => {
@@ -89,10 +91,17 @@ export class PopupAnnouncement extends React.Component<Props, State> {
       return;
     }
 
-    this.setState({ message });
+    window.clearTimeout(this.clearMessageTimeout);
+    window.clearTimeout(this.overrideMessageTimeout);
 
-    this.timeouts.push(setTimeout(() => {
+    this.setState({ message: '' });
+
+    this.overrideMessageTimeout = window.setTimeout(() => {
+      this.setState({ message })
+    }, 100);
+
+    this.clearMessageTimeout = window.setTimeout(() => {
       this.setState({ message: '' });
-    }, 7000));
+    }, 7000);
   }
 }

@@ -13,7 +13,11 @@ export const mockPopup: Mock = {
     the text \"This is a mock popup announcement\"`,
   function: () => {
     console.log('-- Mock expected popup announcement');
-    engine.trigger(EE_OnAnnouncement, AnnouncementType.PopUp, 'This is a mock popup announcement');
+    engine.trigger(
+      EE_OnAnnouncement,
+      AnnouncementType.PopUp,
+      'This is a mock popup announcement ' + Math.random().toFixed(3),
+    );
   },
 }
 

@@ -194,7 +194,7 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
     if (!game.isConnectedOrConnectingToServer && activeMatchServer.serverHost && activeMatchServer.serverPort) {
       // We have an active match running, but we are not connected or connecting to a server. Require users to reconnect.
-      game.trigger('show-middle-modal', <ReconnectComponent />, true);
+      game.trigger('show-middle-modal', <ReconnectComponent />, false, true);
     }
     else {
       console.log(`Not opening reconnect modal. On server? ${game.isConnectedOrConnectingToServer}`);
