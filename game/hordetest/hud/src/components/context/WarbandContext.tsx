@@ -88,7 +88,7 @@ export interface WarbandContextState {
   groupMembers: { [characterID: string]: PartialGroupMemberState };
 }
 
-const getDefaultWarbandContextState = (): WarbandContextState => ({
+export const getDefaultWarbandContextState = (): WarbandContextState => ({
   groupID: '',
   groupMembers: {},
 });

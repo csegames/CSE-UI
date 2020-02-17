@@ -16,6 +16,7 @@ import '@csegames/library/lib/hordetest';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import * as Sentry from '@sentry/browser';
+
 import initialize from './services/initialization';
 import { ErrorBoundary } from 'cseshared/components/ErrorBoundary';
 import { HUD } from 'components/HUD';
@@ -51,6 +52,7 @@ function readyCheck() {
 }
 
 function initializeSentry() {
+  // Error reporting service
   if (game.isPublicBuild) {
     Sentry.init({
       dsn: 'https://2f9671b9d7bd4d81b623974447ac7a6f@sentry.io/2068594',

@@ -71,8 +71,8 @@ function onReceiveUsingGamepadStateUpdate(usingGamepad: boolean) {
 }
 
 export default function() {
+  init();
   if (typeof engine !== 'undefined') {
-    init();
     engine.on(UsingGamepad_Update, onReceiveUsingGamepadStateUpdate);
   }
 }

@@ -16,7 +16,7 @@ import { MatchmakingContext, MatchmakingContextState, onMatchmakingUpdate } from
 import { WarbandContext, WarbandContextState } from 'context/WarbandContext';
 import { Button } from '../../Button';
 import { ErrorComponent } from '../../Error';
-import { formatTime } from 'lib/timeHelpers';
+import { formatTime } from '../../../../lib/timeHelpers';
 
 const ReadyButtonStyle = css`
   position: relative;

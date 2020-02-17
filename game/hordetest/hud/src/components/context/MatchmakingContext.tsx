@@ -21,9 +21,8 @@ import { TimerRef, startTimer, endTimer } from '@csegames/library/lib/_baseGame/
 import { webAPI } from '@csegames/library/lib/hordetest';
 import { RequestResult } from '@csegames/library/lib/_baseGame';
 
-import { Route, fullScreenNavigateTo } from 'context/FullScreenNavContext';
-import { ErrorComponent } from 'components/fullscreen/Error';
-import { ReconnectComponent } from 'components/fullscreen/Reconnect';
+import { Route, fullScreenNavigateTo } from './FullScreenNavContext';
+import { ErrorComponent } from '../fullscreen/Error';
 import { preloadQueryEvents } from '../fullscreen/Preloader';
 
 const KICKOFF_TIMEOUT = 500;
@@ -38,11 +37,11 @@ export function onMatchmakingUpdate(callback: (matchmakingUpdate: IMatchmakingUp
 }
 
 const REENTER_MATCHMAKING_ERROR: number = 1007;
-const SOMEONE_DISCONNECTED_MATCHMAKING_ERROR:number = 1001;
-const SOMEONE_DISCONNECTED_WEBSOCKET_ERROR:number = 1011;
-const MATCH_FAILED_ERROR:number = 1002;
-const MATCH_CANCELED_ERROR:number = 1003;
-const NO_SERVERS_ERROR:number = 1005;
+const SOMEONE_DISCONNECTED_MATCHMAKING_ERROR: number = 1001;
+const SOMEONE_DISCONNECTED_WEBSOCKET_ERROR: number = 1011;
+const MATCH_FAILED_ERROR: number = 1002;
+const MATCH_CANCELED_ERROR: number = 1003;
+const NO_SERVERS_ERROR: number = 1005;
 
 const activeMatchQuery = gql`
   query ActiveMatchQuery {
@@ -77,17 +76,10 @@ const subscription = gql`
   }
 `;
 
-export interface MatchmakingContextState {
+interface ContextState {
   // MatchmakingEnter
   isEntered: boolean;
   timeSearching: number;
-  onEnterMatchmaking: () => void;
-  onCancelMatchmaking: () => void;
-  onWaitingForServerHandled: () => void;
-  callEnterMatchmaking: () => Promise<RequestResult>;
-  callCancelMatchmaking: () => Promise<RequestResult>;
-  tryConnect: (host: string, port: number, tries: number, onConnect?: () => void) => void;
-  clearMatchmakingContext: () => void;
 
   // MatchmakingServerReady || activeMatchServer gql query
   host: string;
@@ -106,19 +98,24 @@ export interface MatchmakingContextState {
   selectedPlayerNumberMode: PlayerNumberMode;
 }
 
-const getDefaultMatchmakingContextState = (): MatchmakingContextState => ({
+export interface ContextFunctions {
+  onEnterMatchmaking: () => void;
+  onCancelMatchmaking: () => void;
+  onWaitingForServerHandled: () => void;
+  callEnterMatchmaking: () => Promise<RequestResult>;
+  callCancelMatchmaking: () => Promise<RequestResult>;
+  tryConnect: (host: string, port: number, tries: number) => void;
+  clearMatchmakingContext: () => void;
+}
+
+export type MatchmakingContextState = ContextState & ContextFunctions;
+
+export const getDefaultMatchmakingContextState = (): ContextState => ({
   isEntered: false,
-  onEnterMatchmaking: () => {},
-  onCancelMatchmaking: () => {},
-  onWaitingForServerHandled: () => {},
-  callEnterMatchmaking: () => null,
-  callCancelMatchmaking: () => null,
-  tryConnect: () => null,
-  clearMatchmakingContext: () => null,
-  host: null,
-  port: null,
+  host: '',
+  port: 0,
   matchID: null,
-  secondsToWait: null,
+  secondsToWait: 0,
   teamMates: null,
   error: null,
   errorCode: 0,
@@ -127,30 +124,27 @@ const getDefaultMatchmakingContextState = (): MatchmakingContextState => ({
   selectedPlayerNumberMode: PlayerNumberMode.TenMan,
 });
 
-export const MatchmakingContext = React.createContext(getDefaultMatchmakingContextState());
+export const MatchmakingContext = React.createContext({
+  ...getDefaultMatchmakingContextState(),
+  onEnterMatchmaking: () => {},
+  onCancelMatchmaking: () => {},
+  onWaitingForServerHandled: () => {},
+  callEnterMatchmaking: () => null,
+  callCancelMatchmaking: () => null,
+  tryConnect: () => null,
+  clearMatchmakingContext: () => null,
+} as MatchmakingContextState);
 
-export class MatchmakingContextProvider extends React.Component<{}, MatchmakingContextState> {
+export class MatchmakingContextProvider extends React.Component<{}, ContextState> {
   private isInitialQuery: boolean = true;
   private timeSearchingUpdateHandle: TimerRef = null
   private kickOffTimeout: number;
-  private defaultState: MatchmakingContextState;
 
   constructor(props: {}) {
     super(props);
 
-    this.defaultState = {
-      ...getDefaultMatchmakingContextState(),
-      tryConnect: this.tryConnect,
-      onEnterMatchmaking: this.onEnterMatchmaking,
-      onCancelMatchmaking: this.onCancelMatchmaking,
-      onWaitingForServerHandled: this.onWaitingForServerHandled,
-      callCancelMatchmaking: this.callCancelMatchmaking,
-      callEnterMatchmaking: this.callEnterMatchmaking,
-      clearMatchmakingContext: this.clearMatchmakingContext,
-    };
-
     this.state = {
-      ...this.defaultState,
+      ...getDefaultMatchmakingContextState(),
     }
   }
 
@@ -162,7 +156,17 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
   public render() {
     return (
-      <MatchmakingContext.Provider value={this.state}>
+      <MatchmakingContext.Provider
+        value={{
+          ...this.state,
+          tryConnect: this.tryConnect,
+          onEnterMatchmaking: this.onEnterMatchmaking,
+          onCancelMatchmaking: this.onCancelMatchmaking,
+          onWaitingForServerHandled: this.onWaitingForServerHandled,
+          callCancelMatchmaking: this.callCancelMatchmaking,
+          callEnterMatchmaking: this.callEnterMatchmaking,
+          clearMatchmakingContext: this.clearMatchmakingContext,
+        }}>
         <GraphQL
           query={activeMatchQuery}
           onQueryResult={this.handleQueryResult}
@@ -191,15 +195,6 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
     const activeMatchServer = graphql.data.activeMatchServer;
     console.log(`Checked active match and got back ${activeMatchServer.serverHost}:${activeMatchServer.serverPort}`);
     this.setState({ host: activeMatchServer.serverHost, port: activeMatchServer.serverPort });
-
-    if (!game.isConnectedOrConnectingToServer && activeMatchServer.serverHost && activeMatchServer.serverPort) {
-      // We have an active match running, but we are not connected or connecting to a server. Require users to reconnect.
-      game.trigger('show-middle-modal', <ReconnectComponent />, false, true);
-    }
-    else {
-      console.log(`Not opening reconnect modal. On server? ${game.isConnectedOrConnectingToServer}`);
-    }
-
     this.onDonePreloading(true);
     return graphql;
   }
@@ -454,6 +449,6 @@ export class MatchmakingContextProvider extends React.Component<{}, MatchmakingC
 
   private clearMatchmakingContext = () => {
     console.log('Clearing matchmaking context');
-    this.setState({ ...this.defaultState });
+    this.setState({ ...getDefaultMatchmakingContextState() });
   }
 }

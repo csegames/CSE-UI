@@ -11,7 +11,7 @@ declare global {
     entityID: string;
     name: string;
     isAlive: boolean;
-    position: Vec3f;
+    position: Vec3F;
     statuses: ArrayMap<Status>;
   }
 

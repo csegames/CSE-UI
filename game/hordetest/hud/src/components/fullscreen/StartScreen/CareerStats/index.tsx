@@ -12,7 +12,7 @@ import { ChampionInfo } from '@csegames/library/lib/hordetest/graphql/schema';
 import { Title } from '../../Title';
 import { ColossusProfileContext } from 'context/ColossusProfileContext';
 import { ChampionInfoContext } from 'context/ChampionInfoContext';
-import { formatHourTime } from 'lib/timeHelpers';
+import { formatHourTime } from '../../../../lib/timeHelpers';
 
 const Container = styled.div`
   display: flex;
@@ -219,7 +219,7 @@ export function CareerStats(props: Props) {
   }, []);
 
   function getData() {
-    if (!colossusProfile.champions) return;
+    if (!colossusProfile || !colossusProfile.champions) return;
 
     let mostTotalTimePlayed = 0;
     let mostPlayedChampion: ChampionInfo = null;

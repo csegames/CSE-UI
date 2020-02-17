@@ -42,7 +42,7 @@ export interface ChampionInfoContextState {
   championIDToChampion: { [championID: string]: ChampionInfo };
 }
 
-const getDefaultChampionInfoContextState = (): ChampionInfoContextState => ({
+export const getDefaultChampionInfoContextState = (): ChampionInfoContextState => ({
   championCostumes: [],
   champions: [],
   championIDToChampion: {},

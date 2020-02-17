@@ -8,7 +8,7 @@
 import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { ChampionInfoContext } from 'context/ChampionInfoContext';
-import { ChampionSelectContext, ChampionSelectPlayer } from './context/ChampionSelectContext';
+import { ChampionSelectContext, ChampionSelectPlayer } from 'context/ChampionSelectContext';
 
 
 const Container = styled.div`

@@ -26,17 +26,10 @@ const query = gql`
 `;
 
 export interface StatusContextState {
-  statusDefs: {
-    id: string;
-    numericID: number;
-    name: string;
-    statusTags: string[];
-    iconClass: string;
-    blocksAbilities: boolean;
-  }[];
+  statusDefs: StatusDef[];
 }
 
-const getDefaultStatusContextState = (): StatusContextState => ({
+export const getDefaultStatusContextState = (): StatusContextState => ({
   statusDefs: [],
 });
 

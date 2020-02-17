@@ -54,33 +54,41 @@ export interface Props {
   matchID: string;
 }
 
-export interface ChampionSelectContextState {
+interface ContextState {
   playerStates: { [characterID: string]: ChampionSelectPlayer };
+}
 
+interface ContextFunctions {
   onChampionSelect: (championID: string) => void;
 }
 
-const getDefaultChampionSelectContextState = (): ChampionSelectContextState => ({
-  playerStates: {},
+export type ChampionSelectContextState = ContextState & ContextFunctions;
 
-  onChampionSelect: () => {},
+export const getDefaultChampionSelectContextState = (): ContextState => ({
+  playerStates: {},
 });
 
-export const ChampionSelectContext = React.createContext(getDefaultChampionSelectContextState());
+export const ChampionSelectContext = React.createContext({
+  ...getDefaultChampionSelectContextState(),
+  onChampionSelect: (championID: string) => {},
+});
 
-export class ChampionSelectContextProvider extends React.Component<Props, ChampionSelectContextState> {
+export class ChampionSelectContextProvider extends React.Component<Props, ContextState> {
   constructor(props: Props) {
     super(props);
 
     this.state = {
       ...getDefaultChampionSelectContextState(),
-      onChampionSelect: this.onChampionSelect,
     };
   }
 
   public render() {
     return (
-      <ChampionSelectContext.Provider value={this.state}>
+      <ChampionSelectContext.Provider
+        value={{
+          ...this.state,
+          onChampionSelect: this.onChampionSelect,
+        }}>
         {this.props.matchID &&
           <GraphQL
             query={query}
