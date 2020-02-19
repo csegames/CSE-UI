@@ -8,6 +8,7 @@
   position: absolute;
   z-index: 10 !important;
   background: $bg;
+  background-blend-mode: multiply;
   border-width: 1px;
   border-image: $gradient-border;
   border-image-slice: 1;
@@ -21,6 +22,7 @@
     width: 100%;
     height: 1em;
     font-family: 'Caudex';
+    font-weight: normal;
     border-style: solid;
     border-width: 0 0 1px 0;
     border-image: linear-gradient(to right, #3e3e3e 70%, transparent );
@@ -36,6 +38,9 @@
     top: 3px;
     left: -10px;
     background: linear-gradient(to right, #646464 , transparent );
+    opacity: 0;
+    animation: slideRightToLeft 1.5s forwards ;
+    animation-delay: 0.5s;
   }
   &:after {
     content: '';
@@ -45,8 +50,13 @@
     top: -10px;
     left: -5px;
     background: linear-gradient(to bottom, #646464 , transparent );
+    opacity: 0;
+    animation: slideBotToTop 1.5s forwards ;
+    animation-delay: 0.2s;
   }
   color: $colorg2;
+  animation: slideLeftToRight 1.5s forwards ;
+
 }
 
 .selection-box {
@@ -78,7 +88,7 @@
     top: 0;
     left: 0;
     z-index: 1;
-    background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.8) );
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 10%, rgba(0, 0, 0, 0.8) 90%);
   }
 }
 
@@ -91,7 +101,7 @@
   display: flex;
   flex-direction: row;
   z-index: 1;
-  margin-left: 320px;
+  margin-left: 340px;
   transition: all .2s ease-in-out;
   .animate {
     flex-grow: 1;
@@ -122,6 +132,7 @@
   border-image: linear-gradient(to right, transparent, #fff , transparent );
   margin-bottom: 5px;
   border-image-slice: 1;
+  animation: slideRightToLeft 1.5s forwards ;
 }
 
 .selection-description {
@@ -137,5 +148,58 @@
   padding: 5px;
   &.player-class-s-d {
     height: 275px;
+  }
+}
+
+@keyframes slideLeftToRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20%) ;
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) ;
+  }
+}
+
+@keyframes slideRightToLeft {
+  from {
+    opacity: 0;
+    transform: translateX(20%) ;
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) ;
+  }
+}
+
+@keyframes slideTopToBot {
+  from {
+    opacity: 0;
+    transform: translateY(-20%) ;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) ;
+  }
+}
+
+@keyframes slideBotToTop {
+  from {
+    opacity: 0;
+    transform: translateY(20%) ;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) ;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

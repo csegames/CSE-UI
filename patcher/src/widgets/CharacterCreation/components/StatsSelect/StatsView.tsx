@@ -25,43 +25,52 @@ const StatsListItem = styled.div`
   display: flex;
   position: relative;
   cursor: default;
-  padding: 0 0 0 5px;
+  padding: 5px 10px;
   height: 25px;
-  background-color: rgba(55, 47, 45, 0.5);
-  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
-  opacity: 0.8;
-  border-right: 1px solid #645551;
-  border-bottom: 1px solid #645551;
+  background-color: rgba(33, 29, 28, 0.7);
+  outline: 1px solid rgba(100, 85, 81, 0.43);
+  outline-offset: -3px;
+  margin-bottom: 1px;
   &:hover {
-    background-color: #645551;
+    filter: brightness(150%);
   }
 `;
 
 const LightListItem = css`
-  background-color: ${colors.filterBackgroundColor};
+  background-color: rgba(33, 29, 28, 0.9);
 `;
 
 const StatText = styled.span`
   flex: 1;
   display: inline-block;
   font-size: 16px;
-  padding: 0;
-  color: #a3928e;
+  padding: 3px;
+  color: #CEBBB7;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
 const StatValue = css`
-  padding-left: 5px;
-  background-color: rgba(0, 0, 0, 0.7);
+  padding: 3px;
+  background: linear-gradient(to right,rgba(0,0,0,0.7), transparent);
+  max-width: 100px;
   color: #D2D2D2;
 `;
 
 const SectionTitleContainer = styled.span`
   font-size: 18px;
-  font-weight: bold;
-  color: #CCC;
+  font-family: 'Caudex';
+  color: #ECC5A7;
+  width: 100%;
+  height: 1.1em;
+  display: block;
+  border-style: solid;
+  border-width: 0 0 1px 0;
+  border-image: linear-gradient(to right, #84634A 70%, transparent );
+  margin-bottom: 5px;
+  border-image-slice: 1;
+  padding: 0 5px;
 `;
 
 const TooltipContent = styled.div`
@@ -112,7 +121,7 @@ export class StatsView extends React.Component<Props, State> {
           searchValue={''}
           shouldRenderEmptyListItems={true}
           styles={{
-            listItemContainer: { display: 'flex' },
+            listItemContainer: { display: 'flex', marginRight:'20px' },
           }}
           renderListItem={(statInfo: StatObjectInfo, i: number) => {
             const isOdd = i % 2 !== 0;

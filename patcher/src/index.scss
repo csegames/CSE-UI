@@ -59,6 +59,8 @@ html,body, #Patcher {
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(to bottom, #56473C, #9A846F, #5D4C40);
   border: 1px solid rgba(255, 216, 180, 0.12);
+  outline: 1px solid grey;
+  outline-offset: -3px;
 }
 
 ::-webkit-input-placeholder {

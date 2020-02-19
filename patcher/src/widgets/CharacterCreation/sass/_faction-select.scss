@@ -8,6 +8,7 @@
   height: 100%;
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 
 .cu-character-creation__faction-select h4{
@@ -20,6 +21,7 @@
   font-weight: normal;
   z-index: 6;
   position: relative;
+  animation: slideBotToTop 1s forwards;
 }
 
 @mixin faction-select-realm($bg_url) {
@@ -39,7 +41,7 @@
     height: auto;
   }
   overflow: hidden;
-  transition: all .3s ease-in-out;
+  transition: all 1s ease-in-out;
   flex-grow: 1;
   outline: 0px solid rgba(255, 255, 255, 0.0);
   outline-offset: -10px;
@@ -49,6 +51,7 @@
   padding-top: 15%;
   cursor: pointer !important;
   z-index: 1;
+  width: 20%;
 }
 
 
@@ -62,6 +65,7 @@
   width: 200px;
   cursor: pointer !important;
   margin: auto;
+  animation: slideTopToBot 1.5s forwards;
 }
 
 @mixin faction-select__description() {
@@ -72,7 +76,6 @@
     color: #e2e2e2;
     -webkit-user-select: none;
     cursor: pointer !important;
-    box-shadow: 0px 0px 50px 40px rgba(0,0,0,0.43);
     background: rgba(0,0,0,0.43);
     z-index: 5;
     position: relative;
@@ -87,8 +90,12 @@
   .cu-character-creation__faction-select__TDD__description {
     @include faction-select__description();
   }
+  transition: all 0.3s ease-in-out;
   &:hover {
-    flex-grow: 3;
+    box-shadow: inset 0px -220px 210px -10px $trans-tdd;
+    outline: 1px solid rgba(158, 181, 85, 0.6);
+    outline-offset: -10px;
+    filter: brightness(130%);
     .cu-character-creation__faction-select__TDD__description {
       opacity: 1;
       width: 400px;
@@ -106,8 +113,12 @@
   .cu-character-creation__faction-select__Arthurian__description {
     @include faction-select__description();
   }
+  transition: all 0.3s ease-in-out;
   &:hover {
-    flex-grow: 3;
+    box-shadow: inset 0px -220px 210px -10px $trans-art;
+    outline: 1px solid rgba(199, 73, 68, 0.6);
+    outline-offset: -10px;
+    filter: brightness(130%);
     .cu-character-creation__faction-select__Arthurian__description {
       opacity: 1;
       width: 400px;
@@ -125,8 +136,12 @@
   .cu-character-creation__faction-select__Viking__description {
     @include faction-select__description();
   }
+  transition: all 0.3s ease-in-out;
   &:hover {
-    flex-grow: 3;
+    box-shadow: inset 0px -220px 210px -10px $trans-vik;
+    outline: 1px solid rgba(72, 166, 193, 0.6);
+    outline-offset: -10px;
+    filter: brightness(130%);
     .cu-character-creation__faction-select__Viking__description {
       opacity: 1;
       width: 400px;
