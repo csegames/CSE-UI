@@ -5,6 +5,8 @@
  */
 
 import React from 'react';
+
+// Context
 import { InputContextProvider } from './InputContext';
 import { ViewBearingContextProvider } from './ViewBearingContext';
 import { ObjectivesContextProvider } from './ObjectivesContext';
@@ -17,6 +19,9 @@ import { ColossusProfileProvider } from './ColossusProfileContext';
 import { FullScreenNavContextProvider } from './FullScreenNavContext';
 import { MyUserContextProvider } from './MyUserContext';
 
+// Action Handlers
+import { ActionHandlers } from './actionhandler';
+
 export class SharedContextProviders extends React.Component<{}> {
   public render() {
     return (
@@ -26,7 +31,10 @@ export class SharedContextProviders extends React.Component<{}> {
             <MyUserContextProvider>
               <ColossusProfileProvider>
                 <StatusContextProvider>
+
+                  <ActionHandlers />
                   {this.props.children}
+
                 </StatusContextProvider>
               </ColossusProfileProvider>
             </MyUserContextProvider>

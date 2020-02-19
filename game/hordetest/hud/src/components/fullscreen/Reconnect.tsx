@@ -8,6 +8,7 @@ import React, { useContext } from 'react';import { css } from '@csegames/linaria
 import { styled } from '@csegames/linaria/react';
 
 import { MatchmakingContext } from 'context/MatchmakingContext';
+import { tryConnect } from 'context/actionhandler/MatchmakingActionHandler';
 import { Button } from './Button';
 
 const Container = styled.div`
@@ -43,7 +44,7 @@ export function ReconnectComponent() {
   function onConnectClick() {
     if (matchmakingContext.host && matchmakingContext.port) {
       console.log(`Reconnect triggered. Trying to connect to ${matchmakingContext.host}:${matchmakingContext.port}`);
-      matchmakingContext.tryConnect(matchmakingContext.host, matchmakingContext.port, 0);
+      tryConnect(matchmakingContext.host, matchmakingContext.port, 0, matchmakingContext.matchID);
       onConnectSuccess();
     }
   }

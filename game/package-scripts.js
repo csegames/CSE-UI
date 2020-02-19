@@ -266,7 +266,8 @@ module.exports = {
         script: 'jest',
       },
       hordetest: {
-        script: 'jest --config ./hordetest/hud/jest.config.js',
+        script: 'jest --config ./hordetest/hud/jest.config.js --silent',
+        loud: 'jest --config ./hordetest/hud/jest.config.js',
         description: 'Run jest tests for hordetest'
       },
     },

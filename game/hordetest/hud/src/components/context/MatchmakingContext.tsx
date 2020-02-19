@@ -7,7 +7,6 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
-import { query } from '@csegames/library/lib/_baseGame/graphql/query'
 import { SubscriptionResult } from '@csegames/library/lib/_baseGame/graphql/subscription';
 import {
   IMatchmakingUpdate,
@@ -18,14 +17,7 @@ import {
   ActiveMatchServer,
 } from '@csegames/library/lib/hordetest/graphql/schema';
 import { TimerRef, startTimer, endTimer } from '@csegames/library/lib/_baseGame/utils/timerUtils';
-import { webAPI } from '@csegames/library/lib/hordetest';
-import { RequestResult } from '@csegames/library/lib/_baseGame';
-
-import { Route, fullScreenNavigateTo } from './FullScreenNavContext';
-import { ErrorComponent } from '../fullscreen/Error';
 import { preloadQueryEvents } from '../fullscreen/Preloader';
-
-const KICKOFF_TIMEOUT = 500;
 
 export enum PlayerNumberMode {
   SixMan,
@@ -36,12 +28,12 @@ export function onMatchmakingUpdate(callback: (matchmakingUpdate: IMatchmakingUp
   return game.on('subscription-matchmakingUpdates', callback);
 }
 
-const REENTER_MATCHMAKING_ERROR: number = 1007;
-const SOMEONE_DISCONNECTED_MATCHMAKING_ERROR: number = 1001;
-const SOMEONE_DISCONNECTED_WEBSOCKET_ERROR: number = 1011;
-const MATCH_FAILED_ERROR: number = 1002;
-const MATCH_CANCELED_ERROR: number = 1003;
-const NO_SERVERS_ERROR: number = 1005;
+export const REENTER_MATCHMAKING_ERROR: number = 1007;
+export const SOMEONE_DISCONNECTED_MATCHMAKING_ERROR: number = 1001;
+export const SOMEONE_DISCONNECTED_WEBSOCKET_ERROR: number = 1011;
+export const MATCH_FAILED_ERROR: number = 1002;
+export const MATCH_CANCELED_ERROR: number = 1003;
+export const NO_SERVERS_ERROR: number = 1005;
 
 const activeMatchQuery = gql`
   query ActiveMatchQuery {
@@ -102,9 +94,6 @@ export interface ContextFunctions {
   onEnterMatchmaking: () => void;
   onCancelMatchmaking: () => void;
   onWaitingForServerHandled: () => void;
-  callEnterMatchmaking: () => Promise<RequestResult>;
-  callCancelMatchmaking: () => Promise<RequestResult>;
-  tryConnect: (host: string, port: number, tries: number) => void;
   clearMatchmakingContext: () => void;
 }
 
@@ -129,9 +118,6 @@ export const MatchmakingContext = React.createContext({
   onEnterMatchmaking: () => {},
   onCancelMatchmaking: () => {},
   onWaitingForServerHandled: () => {},
-  callEnterMatchmaking: () => null,
-  callCancelMatchmaking: () => null,
-  tryConnect: () => null,
   clearMatchmakingContext: () => null,
 } as MatchmakingContextState);
 
@@ -159,12 +145,9 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
       <MatchmakingContext.Provider
         value={{
           ...this.state,
-          tryConnect: this.tryConnect,
           onEnterMatchmaking: this.onEnterMatchmaking,
           onCancelMatchmaking: this.onCancelMatchmaking,
           onWaitingForServerHandled: this.onWaitingForServerHandled,
-          callCancelMatchmaking: this.callCancelMatchmaking,
-          callEnterMatchmaking: this.callEnterMatchmaking,
           clearMatchmakingContext: this.clearMatchmakingContext,
         }}>
         <GraphQL
@@ -200,108 +183,101 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
   }
 
   private handleSubscription = (result: SubscriptionResult<{ matchmakingUpdates: IMatchmakingUpdate }>, data: any) => {
-    if (!result.data || !result.data.matchmakingUpdates) return data;
+    if (!result || !result.data || !result.data.matchmakingUpdates) return data;
 
     const matchmakingUpdate = result.data.matchmakingUpdates;
-    game.trigger('subscription-matchmakingUpdates', matchmakingUpdate);
-
     switch (matchmakingUpdate.type) {
       case MatchmakingUpdateType.ServerReady: {
-        const { host, port } = matchmakingUpdate as MatchmakingServerReady;
-
-        this.setState({ host, port, isEntered: false, isWaitingOnServer: false, timeSearching: 0 });
-        if (!game.isConnectedOrConnectingToServer) {
-          console.log(`Received matchmaking server ready. Calling connect ${host}:${port}`);
-
-          //We dont clear any forced loading screens here because we will clear the force during connection
-          this.tryConnect(host, port, 0);
-          game.trigger('hide-fullscreen');
-          this.endSearchingTimer();
-        }
-        else {
-          console.error(`Received matchmaking server ready for ${host}:${port}. In a game or connecting to one, ignoring it`)
-        }
+        this.handleMatchmakingServerReady(matchmakingUpdate as MatchmakingServerReady);
         break;
       }
 
       case MatchmakingUpdateType.KickOff: {
-        const { matchID, secondsToWait, serializedTeamMates } = matchmakingUpdate as MatchmakingKickOff;
-        this.setState({ matchID, secondsToWait, teamMates: serializedTeamMates, isWaitingOnServer: true, timeSearching: 0  }, () => {
-          this.endSearchingTimer();
-
-          if (game.isConnectedOrConnectingToServer) {
-            console.error(`Received matchmaking kickoff. In a game or already connecting to one, ignoring it`)
-            return;
-          }
-
-          console.log(`Received matchmaking kickoff. ${serializedTeamMates ? JSON.parse(serializedTeamMates).length : null} mates, ${secondsToWait} timeout`);
-          console.log(serializedTeamMates);
-
-          this.kickOffTimeout = window.setTimeout(() => fullScreenNavigateTo(Route.ChampionSelect), KICKOFF_TIMEOUT);
-        });
+        this.handleMatchmakingKickOff(matchmakingUpdate as MatchmakingKickOff);
         break;
       }
 
       case MatchmakingUpdateType.Error: {
-        const { message, code } = (matchmakingUpdate as MatchmakingError);
-        if (game.isConnectedOrConnectingToServer) {
-          console.error(`Received matchmaking error ${code} ${message}. In a game or connecting to one, ignoring it`)
-        }
-        else {
-          var shouldFire = false;
-          switch(code)
-          {
-            case SOMEONE_DISCONNECTED_MATCHMAKING_ERROR:
-              // Matchmaking had them marked disconnected and they never returned so they were removed from the match
-              shouldFire = this.state.isEntered
-              break;
-            case SOMEONE_DISCONNECTED_WEBSOCKET_ERROR:
-              // Someone in our warband lost their websocket.
-            case MATCH_CANCELED_ERROR:
-              // Someone in your warband canceled the matchmaking.
-              //TODO: Dont show. figur eout later
-              // if (useContext(WarbandContext).groupID) {
-              //   shouldFire = true;
-              // }
-              break;
-            case MATCH_FAILED_ERROR:
-              // General failure
-              shouldFire = true;
-              break;
-            case NO_SERVERS_ERROR:
-              // We timed out on finding a server
-              shouldFire = this.state.isWaitingOnServer
-              break;
-            case REENTER_MATCHMAKING_ERROR:
-              // We actually need to just reenter matchmaking here cause the match failed to kick off
-              // console.log(`Received matchmaking error ${code} ${message}. Someone must have dropped on kick off. Attempting to reenter matchmaking`)
-              shouldFire = true;
-              //TODO: Grab warband context state and check if leader and only fire if leader
-
-              // this.callEnterMatchmaking().then((res) => {
-              //   if (res.ok) {
-              //     this.onEnterMatchmaking();
-              //   }
-              //   else {
-              //     console.error("Failed to reenter matchmaking!");
-              //   }
-              // }).catch(() => { console.error("Failed to call reenter matchmaking")});
-                //TODO: Tell the ready button
-              break;
-          }
-          if (shouldFire) {
-            this.setState({ error: message, isEntered: false, isWaitingOnServer: false, timeSearching: 0 }, () => {
-              this.endSearchingTimer();
-              console.log(`Received matchmaking error ${code} ${message}. Showing fullscreen, navigating to start and popping up error`)
-              game.trigger("reset-fullscreen");
-              game.trigger('show-middle-modal', <ErrorComponent title='Matchmaking Failure' message={message} errorCode={code} />, true);
-            });
-          }
-          else {
-            console.log(`Received matchmaking error ${code} ${message}. Not firing cause bad state`) 
-          }
-        }
+        this.handleMatchmakingError(matchmakingUpdate as MatchmakingError);
         break;
+      }
+    }
+  }
+
+  private handleMatchmakingServerReady = (matchmakingUpdate: MatchmakingServerReady) => {
+    if (!matchmakingUpdate) {
+      console.error('Tried to call handleMatchmakingServerReady with an invalid matchmakingUpdate');
+      return;
+    }
+
+    const { host, port } = matchmakingUpdate;
+    this.setState({ host, port, isEntered: false, isWaitingOnServer: false, timeSearching: 0 }, () => {
+      this.triggerMatchmakingUpdate(matchmakingUpdate);
+    });
+  }
+
+  private handleMatchmakingKickOff = (matchmakingUpdate: MatchmakingKickOff) => {
+    if (!matchmakingUpdate) {
+      console.error('Tried to call handleMatchmakingKickOff with an invalid matchmakingUpdate');
+      return;
+    }
+
+    const { matchID, secondsToWait, serializedTeamMates } = matchmakingUpdate as MatchmakingKickOff;
+    this.setState({
+      matchID,
+      secondsToWait,
+      teamMates: serializedTeamMates,
+      isWaitingOnServer: true,
+      timeSearching: 0,
+    }, () => {
+      this.triggerMatchmakingUpdate(matchmakingUpdate);
+      this.endSearchingTimer();
+    });
+  }
+
+  private handleMatchmakingError = (matchmakingUpdate: MatchmakingError) => {
+    if (!matchmakingUpdate) {
+      console.error('Tried to call handleMatchmakingError with an invalid matchmaking update');
+      return;
+    }
+
+    const { message, code } = (matchmakingUpdate as MatchmakingError);
+    if (game.isConnectedOrConnectingToServer) {
+      console.error(`Received matchmaking error ${code} ${message}. In a game or connecting to one, ignoring it`);
+    } else {
+      var shouldFire = false;
+      switch(code)
+      {
+        case SOMEONE_DISCONNECTED_MATCHMAKING_ERROR:
+          // Matchmaking had them marked disconnected and they never returned so they were removed from the match
+          shouldFire = this.state.isEntered
+          break;
+        case SOMEONE_DISCONNECTED_WEBSOCKET_ERROR:
+          // Someone in our warband lost their websocket.
+        case MATCH_CANCELED_ERROR:
+          // Someone in your warband canceled the matchmaking.
+          break;
+        case MATCH_FAILED_ERROR:
+          // General failure
+          shouldFire = true;
+          break;
+        case NO_SERVERS_ERROR:
+          // We timed out on finding a server
+          shouldFire = this.state.isWaitingOnServer
+          break;
+        case REENTER_MATCHMAKING_ERROR:
+          // We actually need to just reenter matchmaking here cause the match failed to kick off
+          shouldFire = true;
+          break;
+      }
+      if (shouldFire) {
+        this.setState({ error: message, isEntered: false, isWaitingOnServer: false, timeSearching: 0 }, () => {
+          this.triggerMatchmakingUpdate(matchmakingUpdate);
+          this.endSearchingTimer();
+        });
+      }
+      else {
+        console.log(`Received matchmaking error ${code} ${message}. Not firing cause bad state`) 
       }
     }
   }
@@ -340,104 +316,8 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
     this.endSearchingTimer();
   }
 
-  private tryConnect = (host: string, port: number, tries: number) => {
-    game.connectToServer(host, port);
-    window.setTimeout(() => this.checkConnected(host, port, ++tries), 500);
-  }
-
-  private checkConnected = async (host: string, port: number, tries: number) => {
-    if (game.isConnectedToServer) {
-      // We already have connected successfully
-      this.setState({ isWaitingOnServer:false });
-      return;
-    }
-
-    if (game.isConnectedOrConnectingToServer) {
-      // check again in another timeout
-      window.setTimeout(() => this.checkConnected(host, port, tries), 500);
-      return;
-    }
-
-    // give up after 15 seconds / 30 tries
-    if (tries > 30) {
-      game.trigger('show-middle-modal',
-        <ErrorComponent title='Failed' message={'Failed to establish connection to game server.'} errorCode={1010} />, true);
-      game.trigger('reset-fullscreen');
-      return;
-    }
-
-    try {
-      const response = await query<any>(gql`
-        {
-          serverState(server:"${host}:${port}", match: "${this.state.matchID}") {
-            status
-          }
-        }`,   {
-        url: game.webAPIHost + '/graphql',
-        requestOptions: {
-          headers: {
-            Authorization: `Bearer ${game.accessToken}`,
-            CharacterID: `${game.characterID},`
-          },
-        },
-      });
-
-      const status = response.data.serverState.status;
-      if (status === 'Running' || status === 'Reserved') {
-        // try again.
-        this.tryConnect(host, port, tries);
-        return;
-      } else {
-        // fail out.
-        game.trigger('show-middle-modal',
-          <ErrorComponent
-            title='Failed'
-            message={'Failed to establish connection to game server.'}
-            errorCode={1011}
-          />,
-          true);
-        // reset back to lobby
-        game.trigger('reset-fullscreen');
-      }
-    } catch (err) {
-      // failed to check status... so just fail out
-      // reset back to lobby
-      console.error(err);
-      game.trigger('show-middle-modal',
-        <ErrorComponent
-          title='Failed'
-          message={'Failed to establish connection to game server.'}
-          errorCode={1009}
-        />,
-        true);
-      game.trigger('reset-fullscreen');
-    }
-  }
-
-  private callEnterMatchmaking = async () => {
-    if (game.isConnectedOrConnectingToServer) {
-      console.error("Trying to enter matchmaking while attached to a server! Ignoring");
-      return new Promise<RequestResult>(() => {
-        return {
-          ok: false,
-          status: 500,
-          statusText: "You cannot enter matchmaking while in a game",
-          data: '{"FieldCodes":[{"Message":"You cannot enter matchmaking while in a game","Code":1038}]}',
-          json: () => {},
-          headers: ""
-        }
-      });
-    }
-
-    const request = {
-      mode: game.matchmakingGameMode,
-    };
-    return webAPI.MatchmakingAPI.EnterMatchmaking(webAPI.defaultConfig, request as any);
-  }
-
-  private callCancelMatchmaking = async () => {
-    // We allow canceling while attached to a server cause it should be idempotent
-    return webAPI.MatchmakingAPI.CancelMatchmaking(webAPI.defaultConfig);
+  private triggerMatchmakingUpdate = (matchmakingUpdate: IMatchmakingUpdate) => {
+    game.trigger('subscription-matchmakingUpdates', matchmakingUpdate);
   }
 
   private onDonePreloading = (isSuccessful: boolean) => {

@@ -9,10 +9,9 @@ import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { RequestResult } from '@csegames/library/lib/_baseGame';
 import { webAPI } from '@csegames/library/lib/hordetest';
-import { IMatchmakingUpdate, MatchmakingUpdateType } from '@csegames/library/lib/hordetest/graphql/schema';
 
 import { InputContext, InputContextState } from 'context/InputContext';
-import { MatchmakingContext, MatchmakingContextState, onMatchmakingUpdate } from 'context/MatchmakingContext';
+import { MatchmakingContext, MatchmakingContextState } from 'context/MatchmakingContext';
 import { WarbandContext, WarbandContextState } from 'context/WarbandContext';
 import { Button } from '../../Button';
 import { ErrorComponent } from '../../Error';
@@ -39,11 +38,6 @@ const ReadyButtonStyle = css`
   font-family: Colus;
   outline: 1px solid rgba(255, 216, 65, 1);
   outline-offset: -4px;
-
-  &.searching {
-    pointer-events: none;
-    filter: grayscale(100%);
-  }
 
   div, span {
     cursor: pointer;
@@ -105,7 +99,6 @@ export interface Props {
 }
 
 export interface State {
-  isSearching: boolean;
   disabled: boolean;
 }
 
@@ -128,27 +121,23 @@ class SearchingTimer extends React.Component<SearchingTimerStateProps,{}> {
 }
 
 class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
-  private matchmakingEVH: EventHandle;
-
   constructor(props: Props) {
     super(props);
 
     this.state = {
-      isSearching: false,
       disabled: false,
     };
   }
 
   public render() {
-    const { inputContext } = this.props;
-    const searchingClass = this.state.isSearching ? 'searching' : '';
+    const { inputContext, matchmakingContext, warbandContextState } = this.props;
 
-    if (this.props.matchmakingContext.matchID) {
+    if (matchmakingContext.matchID) {
       return (
         // We found a match!
         <Button
           type='primary'
-          styles={`${searchingClass} ${ReadyButtonStyle}`}
+          styles={`${ReadyButtonStyle}`}
           disabled={true}
           text={
             inputContext.isConsole ?
@@ -162,11 +151,11 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
       );
     }
 
-    if (this.props.matchmakingContext.isEntered && !this.props.warbandContextState.groupID) {
+    if (matchmakingContext.isEntered && !warbandContextState.groupID) {
       return (
         <Button
           type='primary'
-          styles={`${searchingClass} ${ReadyButtonStyle}`}
+          styles={`${ReadyButtonStyle}`}
           disabled={this.state.disabled}
           text={
             inputContext.isConsole ?
@@ -175,7 +164,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
             </ConsoleButton> :
             <span>
               Cancel
-              <SearchingTimer matchmakingContext={this.props.matchmakingContext} />
+              <SearchingTimer matchmakingContext={matchmakingContext} />
             </span>
           }
           onClick={this.onClick}
@@ -183,12 +172,12 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
       );
     }
 
-    const myMemberState = this.props.warbandContextState.groupMembers[game.characterID];
+    const myMemberState = warbandContextState.groupMembers[game.characterID];
     if (myMemberState && myMemberState.isReady) {
       return (
         <Button
           type='primary'
-          styles={`${searchingClass} ${ReadyButtonStyle}`}
+          styles={`${ReadyButtonStyle}`}
           disabled={this.state.disabled}
           text={
             inputContext.isConsole ?
@@ -206,7 +195,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
       return (
         <Button
           type='primary'
-          styles={`${searchingClass} ${ReadyButtonStyle}`}
+          styles={`${ReadyButtonStyle}`}
           disabled={this.state.disabled}
           text={
             inputContext.isConsole ?
@@ -223,7 +212,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
     return (
       <Button
         type='primary'
-        styles={`${searchingClass} ${ReadyButtonStyle}`}
+        styles={`${ReadyButtonStyle}`}
         disabled={this.state.disabled}
         text={
           inputContext.isConsole ?
@@ -238,24 +227,9 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    this.matchmakingEVH = onMatchmakingUpdate(this.handleMatchmakingUpdate);
-
     const myMemberState = this.props.warbandContextState.groupMembers[game.characterID];
     if (myMemberState && myMemberState.isReady) {
       this.props.matchmakingContext.onEnterMatchmaking();
-    }
-  }
-
-  public componentWillUnmout() {
-    this.matchmakingEVH.clear();
-  }
-
-  private handleMatchmakingUpdate = (matchmakingUpdate: IMatchmakingUpdate) => {
-    switch (matchmakingUpdate.type) {
-      case MatchmakingUpdateType.Entered: {
-        this.setState({ isSearching: true });
-        break;
-      }
     }
   }
 
