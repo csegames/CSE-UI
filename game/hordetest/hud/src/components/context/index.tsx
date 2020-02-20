@@ -31,10 +31,12 @@ export class SharedContextProviders extends React.Component<{}> {
             <MyUserContextProvider>
               <ColossusProfileProvider>
                 <StatusContextProvider>
+                  <WarbandContextProvider>
 
                   <ActionHandlers />
                   {this.props.children}
 
+                  </WarbandContextProvider>
                 </StatusContextProvider>
               </ColossusProfileProvider>
             </MyUserContextProvider>
@@ -64,11 +66,9 @@ export class ContextProviders extends React.Component<{}> {
 export class FullScreenContextProviders extends React.Component<{}> {
   public render() {
     return (
-      <WarbandContextProvider>
-        <InputContextProvider disabled>
-          {this.props.children}
-        </InputContextProvider>
-      </WarbandContextProvider>
+      <InputContextProvider disabled>
+        {this.props.children}
+      </InputContextProvider>
     );
   }
 }
