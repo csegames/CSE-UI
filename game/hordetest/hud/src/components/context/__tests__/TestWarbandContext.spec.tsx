@@ -9,6 +9,7 @@ import { shallow } from 'enzyme';
 import { GroupMemberRemovedUpdate } from '../../../../../../../library/tmp/_baseGame/graphql/schema';
 import {
   WarbandContextProvider,
+  WarbandContextState,
   getDefaultWarbandContextState,
 } from '../WarbandContext';
 import {
@@ -20,7 +21,7 @@ import {
   GroupTypes,
 } from '@csegames/library/lib/_baseGame/graphql/schema';
 
-const defaultContextState = getDefaultWarbandContextState();
+const defaultContextState: Readonly<WarbandContextState> = getDefaultWarbandContextState();
 
 beforeEach(() => {
   jest.resetModules();

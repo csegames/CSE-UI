@@ -8,11 +8,12 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import {
   StatusContextProvider,
+  StatusContextState,
   getDefaultStatusContextState,
 } from '../StatusContext';
 import { StatusDef } from '@csegames/library/lib/hordetest/graphql/schema';
 
-const defaultContextState = getDefaultStatusContextState();
+const defaultContextState: Readonly<StatusContextState> = getDefaultStatusContextState();
 
 beforeEach(() => {
   jest.resetModules();

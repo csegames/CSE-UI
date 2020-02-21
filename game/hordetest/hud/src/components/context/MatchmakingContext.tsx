@@ -68,7 +68,7 @@ const subscription = gql`
   }
 `;
 
-interface ContextState {
+export interface ContextState {
   // MatchmakingEnter
   isEntered: boolean;
   timeSearching: number;

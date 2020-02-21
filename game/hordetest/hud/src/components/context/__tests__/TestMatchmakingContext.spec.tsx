@@ -16,11 +16,12 @@ import {
 } from '@csegames/library/lib/hordetest/graphql/schema';
 import {
   MatchmakingContextProvider,
+  ContextState,
   getDefaultMatchmakingContextState,
   MATCH_FAILED_ERROR,
 } from '../MatchmakingContext';
 
-const defaultContextState = getDefaultMatchmakingContextState();
+const defaultContextState: Readonly<ContextState> = getDefaultMatchmakingContextState();
 
 beforeEach(() => {
   jest.resetModules();

@@ -9,10 +9,11 @@ import { shallow } from 'enzyme';
 import {
   ColossusProfileProvider,
   ColossusProfileModel,
+  ColossusProfileState,
   getDefaultColossusProfileState,
 } from '../ColossusProfileContext';
 
-const defaultContextState = getDefaultColossusProfileState();
+const defaultContextState: Readonly<ColossusProfileState> = getDefaultColossusProfileState();
 
 beforeEach(() => {
   jest.resetModules();

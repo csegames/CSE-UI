@@ -54,7 +54,7 @@ export interface Props {
   matchID: string;
 }
 
-interface ContextState {
+export interface ContextState {
   playerStates: { [characterID: string]: ChampionSelectPlayer };
 }
 

@@ -9,10 +9,11 @@ import { shallow } from 'enzyme';
 import { ChampionCostumeInfo, ChampionInfo } from '@csegames/library/lib/hordetest/graphql/schema';
 import {
   ChampionSelectContextProvider,
+  ContextState,
   getDefaultChampionSelectContextState,
 } from '../ChampionSelectContext';
 
-const defaultContextState = getDefaultChampionSelectContextState();
+const defaultContextState: Readonly<ContextState> = getDefaultChampionSelectContextState();
 
 beforeEach(() => {
   jest.resetModules();

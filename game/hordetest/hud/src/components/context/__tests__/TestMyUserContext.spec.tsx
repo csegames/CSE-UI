@@ -9,10 +9,11 @@ import { shallow } from 'enzyme';
 import { User } from '@csegames/library/lib/hordetest/graphql/schema';
 import {
   MyUserContextProvider,
+  MyUserContextState,
   getDefaultMyUserContextState,
 } from '../MyUserContext';
 
-const defaultContextState = getDefaultMyUserContextState();
+const defaultContextState: Readonly<MyUserContextState> = getDefaultMyUserContextState();
 const stringifiedDefaultContextState = JSON.stringify(defaultContextState);
 
 beforeEach(() => {
