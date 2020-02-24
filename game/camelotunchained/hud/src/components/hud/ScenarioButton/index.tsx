@@ -161,12 +161,12 @@ export class ScenarioButton extends React.Component<Props, State> {
 
   public render() {
     const cls = ['icon-scenario'];
-    const { visible, open, on, hover } = this.state;
+    const { visible, open, hover } = this.state;
     const scenarios = this.scenarios;
     if (!visible) return null;
 
     const activeScenario = scenarios && scenarios.find(s => s.isInScenario);
-    cls.push(on ? 'lit' : 'unlit');
+    // cls.push(on ? 'lit' : 'unlit');
     return (
       <Container>
         { hover != null && (
