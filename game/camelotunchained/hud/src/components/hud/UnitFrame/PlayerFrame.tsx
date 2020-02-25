@@ -180,7 +180,8 @@ export class PlayerFrame extends React.Component<Props, State> {
     const realmPrefix = this.realmPrefix(player.faction);
     const archetypePrefix = this.archetypePrefix(player.classID);
     const theme = uiContext.currentTheme();
-    const panic = player.entitySpecificResources[EntityResourceType[EntityResourceType.Panic]];
+    const panic = player.entitySpecificResources &&
+      player.entitySpecificResources[EntityResourceType[EntityResourceType.Panic]];
 
     return (
       <PlayerFrameContainer data-input-group='block'>
@@ -250,10 +251,9 @@ export class PlayerFrame extends React.Component<Props, State> {
                   width: CurrentMax.cssPercent(player.stamina),
                   backgroundColor: theme.unitFrames.color.stamina,
                 }} />
-                {player.entitySpecificResources[EntityResourceType[EntityResourceType.Panic]] &&
+                {panic &&
                   <Panic style={{
-                    width: CurrentMax.cssPercent(
-                      player.entitySpecificResources[EntityResourceType[EntityResourceType.Panic]]),
+                    width: CurrentMax.cssPercent(panic),
                     backgroundColor: theme.unitFrames.color.panic,
                   }} />
                 }
