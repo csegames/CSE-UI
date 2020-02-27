@@ -236,6 +236,11 @@ describe('MatchmakingProvider handleMatchmakingKickOff', () => {
           break;
         }
 
+        case 'shouldShowButtonFound': {
+          expect(state).toHaveProperty(stateKey, true);
+          break;
+        }
+
         default: {
           expect(state).toHaveProperty(stateKey, defaultContextState[stateKey]);
           break;

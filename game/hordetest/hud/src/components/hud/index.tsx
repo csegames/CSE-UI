@@ -458,6 +458,8 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
       return;
     }
 
+    this.props.matchmakingContext.clearMatchmakingContext();
+
     if (!game.isConnectedToServer) {
       console.log(`Handling network failure:(${errorCode}) ${errorMsg}...`);
       this.resetFullscreen();

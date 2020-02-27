@@ -92,7 +92,9 @@ class MatchmakingActionHandlerWithContext extends React.Component<Props> {
           console.error(e);
         }
 
-        this.kickOffTimeout = window.setTimeout(() => fullScreenNavigateTo(Route.ChampionSelect), KICKOFF_TIMEOUT);
+        this.kickOffTimeout = window.setTimeout(() => {
+          fullScreenNavigateTo(Route.ChampionSelect);
+        }, KICKOFF_TIMEOUT);
         break;
       }
 

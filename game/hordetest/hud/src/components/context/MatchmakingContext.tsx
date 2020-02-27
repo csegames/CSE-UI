@@ -88,6 +88,7 @@ export interface ContextState {
   errorCode: number
 
   selectedPlayerNumberMode: PlayerNumberMode;
+  shouldShowButtonFound: boolean;
 }
 
 export interface ContextFunctions {
@@ -95,6 +96,7 @@ export interface ContextFunctions {
   onCancelMatchmaking: () => void;
   onWaitingForServerHandled: () => void;
   clearMatchmakingContext: () => void;
+  setShouldShowButtonFound: (shouldShow: boolean) => void;
 }
 
 export type MatchmakingContextState = ContextState & ContextFunctions;
@@ -111,6 +113,7 @@ export const getDefaultMatchmakingContextState = (): ContextState => ({
   isWaitingOnServer: false,
   timeSearching: 0,
   selectedPlayerNumberMode: PlayerNumberMode.TenMan,
+  shouldShowButtonFound: false,
 });
 
 export const MatchmakingContext = React.createContext({
@@ -119,6 +122,7 @@ export const MatchmakingContext = React.createContext({
   onCancelMatchmaking: () => {},
   onWaitingForServerHandled: () => {},
   clearMatchmakingContext: () => null,
+  setShouldShowButtonFound: () => null,
 } as MatchmakingContextState);
 
 export class MatchmakingContextProvider extends React.Component<{}, ContextState> {
@@ -149,6 +153,7 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
           onCancelMatchmaking: this.onCancelMatchmaking,
           onWaitingForServerHandled: this.onWaitingForServerHandled,
           clearMatchmakingContext: this.clearMatchmakingContext,
+          setShouldShowButtonFound: this.setShouldShowButtonFound,
         }}>
         <GraphQL
           query={activeMatchQuery}
@@ -229,6 +234,7 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
       teamMates: serializedTeamMates,
       isWaitingOnServer: true,
       timeSearching: 0,
+      shouldShowButtonFound: true,
     }, () => {
       this.triggerMatchmakingUpdate(matchmakingUpdate);
       this.endSearchingTimer();
@@ -330,5 +336,10 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
   private clearMatchmakingContext = () => {
     console.log('Clearing matchmaking context');
     this.setState({ ...getDefaultMatchmakingContextState() });
+  }
+
+  private setShouldShowButtonFound = (shouldShowButtonFound: boolean) => {
+    console.log('Setting shouldShowButtonFound to: ' + shouldShowButtonFound);
+    this.setState({ shouldShowButtonFound });
   }
 }

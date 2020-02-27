@@ -132,7 +132,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
   public render() {
     const { inputContext, matchmakingContext, warbandContextState } = this.props;
 
-    if (matchmakingContext.matchID) {
+    if (matchmakingContext.shouldShowButtonFound) {
       return (
         // We found a match!
         <Button
