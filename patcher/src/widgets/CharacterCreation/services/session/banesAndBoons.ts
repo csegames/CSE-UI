@@ -74,7 +74,7 @@ async function getTraits(dispatch: (action: any) => any, payload: FetchTraitInte
       Authorization: `Bearer ${patcher.getAccessToken()}`,
     },
   });
-  const res = await webAPI.TraitsAPI.GetTraitsV1(config, payload.shard || game.shardID);
+  const res = await webAPI.TraitsAPI.GetTraitsV1(config);
   if (res.ok) {
     const data = JSON.parse(res.data);
     dispatch(onInitializeTraits({
@@ -115,7 +115,7 @@ export const resetBaneOrBoon = (payload: FetchTraitInterface) => {
         Authorization: `Bearer ${patcher.getAccessToken()}`,
       },
     });
-    return webAPI.TraitsAPI.GetTraitsV1(config, payload.shard || game.shardID)
+    return webAPI.TraitsAPI.GetTraitsV1(config)
       .then((result) => {
         const data = JSON.parse(result.data);
         if (result.ok) {
