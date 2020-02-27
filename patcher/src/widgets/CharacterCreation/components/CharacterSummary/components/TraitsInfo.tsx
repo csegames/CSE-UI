@@ -16,6 +16,7 @@ import { colors } from '../../../styleConstants';
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 10px;
 `;
 
 const BoonsContainer = styled.div`
@@ -30,7 +31,8 @@ const BanesContainer = styled.div`
 `;
 
 const BoonsHeader = styled.header`
-  font-size: 22px;
+  font-family: 'Caudex';
+  font-size: 1.1em;
   font-weight: bold;
   color: ${colors.boonPrimary};
   border-bottom: 1px solid ${colors.boonPrimary};
@@ -38,7 +40,8 @@ const BoonsHeader = styled.header`
 `;
 
 const BanesHeader = styled.header`
-  font-size: 22px;
+  font-family: 'Caudex';
+  font-size: 1.1em;
   font-weight: bold;
   color: ${colors.banePrimary};
   border-bottom: 1px solid ${colors.banePrimary};
@@ -49,11 +52,17 @@ const BanesHeader = styled.header`
 const Boons = styled.div`
   display: flex;
   flex-wrap: wrap;
+  & div{
+    opacity:1;
+  }
 `;
 
 const Banes = styled.div`
   display: flex;
   flex-wrap: wrap;
+  & div{
+    opacity:1;
+  }
 `;
 
 export interface TraitsSummaryProps {
@@ -76,7 +85,7 @@ export class TraitsSummary extends React.Component<TraitsSummaryProps, TraitsSum
     return (
       <Container>
         <BoonsContainer>
-          <BoonsHeader>BOONS</BoonsHeader>
+          <BoonsHeader>Boons</BoonsHeader>
           <Boons>
             {Object.keys(addedBoons).map((id) => {
               return (
@@ -92,7 +101,7 @@ export class TraitsSummary extends React.Component<TraitsSummaryProps, TraitsSum
           </Boons>
         </BoonsContainer>
         <BanesContainer>
-          <BanesHeader>BANES</BanesHeader>
+          <BanesHeader>Banes</BanesHeader>
           <Banes>
             {Object.keys(addedBanes).map((id) => {
               return (

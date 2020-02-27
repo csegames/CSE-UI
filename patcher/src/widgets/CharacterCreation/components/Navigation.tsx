@@ -62,17 +62,21 @@ const NavProgressSection = styled.div`
 
 const NavButton = styled.button`
   font-size: 14px;
-  font-weight: bold;
-  letter-spacing: 0.1px;
+  font-family: 'Caudex';
   cursor: pointer;
   color: #D6B597;
-  background-color: transparent;
+  background-color: #2D2B27;
   border: 0px;
-  outline: none;
-  padding: 20px;
-  width: 100px;
+  padding: 10px 20px;
+  margin: 0px 10px;
+  width: 120px;
+  outline: 1px solid #4C4036;
+  outline-offset: -5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
   &:hover {
     color: #e0c7b1;
+    filter: brightness(150%);
   }
 `;
 
@@ -92,13 +96,22 @@ const NavArrow = styled.span`
 `;
 
 const CreateButton = css`
-  color: #F2F2C6;
+  color: #ECC867;
+  outline: 0;
+  padding: 8px 20px;
+  border-image: linear-gradient(180deg,#e2cb8e,#8e6d27) stretch;
+  border-style: solid;
+  border-width: 3px 1px;
+  background-color: rgba(17,17,17,0.8);
+  border-image-slice: 1;
 `;
 
 const Disabled = css`
   color: #454545;
+  opacity: 0.2;
   &:hover {
     color: #454545;
+    filter: brightness(100%);
   }
 `;
 

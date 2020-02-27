@@ -17,22 +17,31 @@ const TraitView = styled.div`
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  width: 50px;
-  height: 50px;
+  width: 65px;
+  height: 65px;
   background-color: #4D4D4D;
   cursor: pointer;
-  margin-bottom: 10px;
-  margin-right: 0;
-  margin-left: 0;
+  margin-bottom: 15px;
+  margin-right: 8px;
+  margin-left: 8px;
   user-select: none;
+  outline-offset: 0px;
+  border: 2px solid rgba(0, 0, 0, 0);
+  opacity: 0.5;
+  &:hover {
+    filter: brightness(130%);
+    opacity: 1;
+  }
 `;
 
 const SelectedTrait = css`
-  border: 3px solid #FFDFA5;
+  border: 2px solid #ffdfa5;
+  opacity: 1;
 `;
 
 const DisabledTrait = css`
   cursor: not-allowed;
+  opacity: 1;
 `;
 
 const Shadow = css`
@@ -46,12 +55,12 @@ const Shadow = css`
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
   }
   &:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+    filter: brightness(130%);
   }
 `;
 
 const SelectedShadow = css`
-  box-shadow: inset 0 0 30px #F4C066;
+  box-shadow: inset 0 -20px 30px rgba(244, 192, 102, .3);
 `;
 
 const DisabledShadow = css`
@@ -61,9 +70,7 @@ const DisabledShadow = css`
   top: 0;
   left: 0;
   transition: background-color 0.3s;
-  background-color: rgba(55, 55, 55, 0.7);
   &:hover {
-    background-color: rgba(55, 55, 55, 0.7);
   }
 `;
 
@@ -139,11 +146,11 @@ const Divider = styled.div`
 `;
 
 const LeftSpacing = css`
-  margin-left: 10px;
+  margin-left: 8px;
 `;
 
 const RightSpacing = css`
-  margin-right: 10px;
+  margin-right: 8px;
 `;
 
 export interface TraitProps {
@@ -265,7 +272,7 @@ class Trait extends React.Component<TraitProps, {}> {
           style={{
             background: `url(${trait.icon}) no-repeat`,
             backgroundSize: 'cover',
-            border: `3px solid ${traitColor}`,
+            outline: `1px solid ${traitColor}`,
           }}>
             <PointsCircle>
               {type === 'Bane' ? trait.points * -1 : trait.points}

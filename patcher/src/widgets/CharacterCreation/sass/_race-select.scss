@@ -36,6 +36,7 @@
   outline: 1px $color7 solid;
   outline-offset: -3px;
   color: $color7;
+  opacity: 1;
   &:hover {
     filter: brightness(1.2);
     -webkit-filter: brightness(1.2);
@@ -142,6 +143,10 @@
 
 .race-btn {
   cursor: pointer;
+  opacity: 0.5;
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .race-selection-container {

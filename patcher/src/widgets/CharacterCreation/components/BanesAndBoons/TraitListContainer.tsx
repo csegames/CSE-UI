@@ -20,6 +20,34 @@ const Container = styled.div`
   background-color: colors.transparentBg;
   border: 1px solid ${colors.lightGray};
   overflow: visible;
+  &.bane{
+    animation: slideRightToLeft 1.5s forwards
+  }
+  &.boon{
+    animation: slideLeftToRight 1.5s forwards
+  }
+  @keyframes slideLeftToRight {
+    from {
+      opacity: 0;
+      transform: translateX(-20%) ;
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) ;
+    }
+  }
+
+  @keyframes slideRightToLeft {
+    from {
+      opacity: 0;
+      transform: translateX(20%) ;
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) ;
+    }
+  }
+
 `;
 
 const HeaderContainer = styled.div`
@@ -31,14 +59,22 @@ const HeaderContainer = styled.div`
 `;
 
 const Title = styled.div`
+  font-family: 'Caudex';
   font-size: 1.7em;
+  color: #d3a36f;
   margin-top: 10px;
   margin-bottom: 10px;
+  &.bane{
+    color: rgb(233, 65, 65);
+  }
+  &.boon{
+    color: rgb(65, 172, 233);
+  }
 `;
 
 const RangePointsText = styled.div`
   margin: 0;
-  font-size: 1em;
+  font-size: 0.8em;
   color: #EEE;
 `;
 
@@ -52,8 +88,6 @@ const InnerWrapper = styled.div`
   padding-top: 20px;
   padding-left: 15px;
   padding-right: 15px;
-  border-bottom: 1px solid #454545;
-  border-top: 1px solid #454545;
   &::-webkit-scrollbar {
     width: 8px;
     border-radius: 2px;
@@ -65,6 +99,7 @@ const TraitsContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: center;
 `;
 
 export interface TraitListContainerProps {
@@ -94,9 +129,9 @@ class TraitListContainer extends React.Component<TraitListContainerProps> {
   public render() {
     const { type } = this.props;
     return (
-      <Container>
+      <Container className={`${this.props.type}`}>
         <HeaderContainer>
-          <Title style={{ color: colors.boonPrimary }}>{type === 'boon' ? 'Boons' : 'Banes'}</Title>
+          <Title className={`${this.props.type}`}>{type === 'boon' ? 'Boons' : 'Banes'}</Title>
           <div>
             <RangePointsText id={`${this.props.type}-minPoints`}>
               Minimum Total Points Needed: {this.props.minPoints / 2}

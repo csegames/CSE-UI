@@ -25,8 +25,7 @@ const StatsListItem = styled.div`
   display: flex;
   position: relative;
   cursor: default;
-  padding: 5px 10px;
-  height: 25px;
+  padding: 1px 3px;
   background-color: rgba(33, 29, 28, 0.7);
   outline: 1px solid rgba(100, 85, 81, 0.43);
   outline-offset: -3px;
@@ -67,7 +66,7 @@ const SectionTitleContainer = styled.span`
   display: block;
   border-style: solid;
   border-width: 0 0 1px 0;
-  border-image: linear-gradient(to right, #84634A 70%, transparent );
+  border-image: linear-gradient(to right, rgba(236, 197, 167, 0.2) 70%, transparent );
   margin-bottom: 5px;
   border-image-slice: 1;
   padding: 0 5px;

@@ -286,6 +286,10 @@ input {
   word-break: normal;
 }
 
+#toast-container>div {
+  box-shadow: 0 0 12px #000;
+}
+
 @import './sass/modaldialog';
 
 // components

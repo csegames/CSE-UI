@@ -31,7 +31,7 @@
   left: 0;
   margin: 0;
   z-index: 20;
-  opacity: .7;
+  opacity: 1;
   transition: opacity .2s ease-in-out;
   &:focus, &:hover{
     opacity: 1;
@@ -52,10 +52,23 @@
     box-shadow: inset 0px 0px 3px 0px rgba(200,200,200, 0);
     cursor: pointer;
 
+    &#create-character-name-input {
+    width: auto;
+    background: linear-gradient(to right, transparent, black, transparent);
+    font-family: 'Caudex';
+    font-size: 2.2em;
+    border-style: solid;
+    border-width: 0 0 1px 0;
+    border-image: linear-gradient(to right, transparent, #fff , transparent );
+    margin-bottom: 5px;
+    border-image-slice: 1;
+    }
     &:focus {
       outline: 0;
-      border: 1px solid #665546;
-      box-shadow: 0 0px 2px #d7bb4d !important;
+      border-style: solid;
+      border-width: 0 0 1px 0;
+      border-image: linear-gradient(to right, transparent, #d7bb4d , transparent );
+      border-image-slice: 1;
       outline: none;
     }
 

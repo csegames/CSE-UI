@@ -43,6 +43,18 @@ const CharacterNameInputContainer = styled.div`
   position: relative;
   width: auto;
   bottom: 55px;
+  opacity: 0;
+  animation: slideRightToLeft 1.5s forwards;
+  @keyframes slideRightToLeft {
+    from {
+      opacity: 0;
+      transform: translateX(20%) ;
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) ;
+    }
+  }
 `;
 
 const VideoBG = styled.video`

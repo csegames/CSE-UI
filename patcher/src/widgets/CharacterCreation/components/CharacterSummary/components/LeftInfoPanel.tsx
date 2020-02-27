@@ -20,8 +20,21 @@ export const colors = {
 const Container = styled.div`
   flex: 2;
   overflow-y: auto;
-  background: linear-gradient(top left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.8));
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.76));
   padding: 10px;
+  opacity: 0;
+  .row {
+    margin-top: 10px;
+  }
+  animation: slideLeftToRight 1.5s forwards
+  @keyframes slideLeftToRight {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 export interface ComponentProps {

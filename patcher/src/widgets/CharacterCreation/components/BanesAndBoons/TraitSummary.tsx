@@ -26,6 +26,16 @@ const AddedSummaryContainer = styled.div`
   margin-top: 15px;
   margin-bottom: 15px;
   background-color: rgba(49, 49, 49, 0.7);
+  &.Bane{
+    background: rgba(105, 28, 30, 0.5);;
+    outline: 1px solid #562222;
+    outline-offset: -5px;
+  }
+  &.Boon{
+    background: rgba(22, 59, 88, 0.5);
+    outline: 1px solid #183135;
+    outline-offset: -5px;
+  }
 `;
 
 const Name = styled.div`
@@ -66,6 +76,7 @@ const Icon = styled.img`
 const AdditionalInfoContainer = styled.div`
   display: flex;
   align-items: center;
+  font-size: 0.8em;
 `;
 
 const Divider = styled.div`
@@ -85,6 +96,7 @@ const RemoveButton = styled.div`
   height: 20px;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.9);
+  font-size: 0.8em;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -102,7 +114,7 @@ class TraitSummary extends React.Component<TraitSummaryProps, {}> {
       colors.raceTrait : trait.category === 'Faction' ? colors.factionTrait : '#636262';
 
     return (
-      <AddedSummaryContainer id={trait.required ? 'required-trait' : ''}>
+      <AddedSummaryContainer id={trait.required ? 'required-trait' : ''}  className={`${this.props.type}`}>
         {!trait.required &&
         <RemoveButton onClick={this.onCancelClick}>
           X

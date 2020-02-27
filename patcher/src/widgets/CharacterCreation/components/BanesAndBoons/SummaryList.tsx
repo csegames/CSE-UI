@@ -18,6 +18,16 @@ const Container = styled.div`
   height: 100%;
   width: 48vw;
   padding: 0 15px;
+  opacity: 0;
+  animation: slideBotToTop 1.5s forwards;
+  @keyframes slideBotToTop {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 const InnerSummaryWrapper = styled.div`

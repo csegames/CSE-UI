@@ -15,7 +15,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  background: url(/ui/images/bg.jpg) repeat-x top center fixed;
+  background: url(/ui/images/banes-boons-bg.jpg) top center ;
+  background-size: cover;
   background-color: rgba(49, 49, 49, 0.3);
   position: absolute;
   top: 0;

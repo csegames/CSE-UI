@@ -31,6 +31,7 @@ const TotalPointsText = styled.div`
 const TooManyTraitsText = styled.div`
   font-size: 24px;
   text-align: center;
+  font-family: 'Caudex';
   margin: 0;
 `;
 
@@ -54,9 +55,11 @@ const ResetButtonsContainer = styled.div`
 
 const ResetButton = styled.div`
   cursor: pointer;
-  font-size: 1em;
+  font-size: 0.8em;
   transition: color 0.3s;
   text-align: center;
+  border: 1px solid rbga(255, 255, 255, 0.3);
+  padding: 5px 10px;
   color: ${(props: any) => props.color};
   margin: 0;
   &:hover: {
@@ -143,17 +146,19 @@ class SummaryListHeader extends React.Component<SummaryListHeaderProps, SummaryL
         </PointsBarContainer>
         <PointsMeter>
           <BalanceBar
+            className = 'BoonBar'
             style={{
               flex: this.props.flexOfBoonBar,
-              backgroundColor: totalPoints !== 0 || banePoints + boonPoints < minPoints ||
-                banePoints + boonPoints > maxPoints ? colors.boonPrimary : colors.success,
+              background: totalPoints !== 0 || banePoints + boonPoints < minPoints ||
+                banePoints + boonPoints > maxPoints ? colors.boonBarPrimary : colors.success,
             }}
           />
           <BalanceBar
+            className = 'BaneBar'
             style={{
               flex: this.props.flexOfBaneBar,
-              backgroundColor: totalPoints !== 0 || banePoints + boonPoints < minPoints ||
-                banePoints + boonPoints > maxPoints ? colors.banePrimary : colors.success,
+              background: totalPoints !== 0 || banePoints + boonPoints < minPoints ||
+                banePoints + boonPoints > maxPoints ? colors.baneBarPrimary : colors.success,
             }}
           />
         </PointsMeter>
