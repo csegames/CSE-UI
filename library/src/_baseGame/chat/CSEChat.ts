@@ -84,6 +84,7 @@ export class CSEChat {
   }
 
   public connect() {
+    console.log('Attempting to connect to chat');
     if (!this.initialized) {
       console.error('Attempted to connect to chat when not initialized.');
       return;
@@ -115,6 +116,7 @@ export class CSEChat {
     if (!this.socket) {
       return;
     }
+
     this.socket.close();
     this.socket = null;
   }
@@ -129,6 +131,10 @@ export class CSEChat {
   };
 
   private sendPing = () => {
+    if (!this.socket) {
+      return;
+    }
+
     const pong = new chat.PingPongMessage();
     pong.setPing(false);
     const reply = new chat.ChatServerUnionMessage();
@@ -849,6 +855,19 @@ export class CSEChat {
     if (!this.connected) {
       this.messageQueue.push(msg);
     };
+
+    if (!this.socket) {
+      let message = null;
+
+      try {
+        message = JSON.stringify(msg);
+      } catch (e) {
+        console.error('Failed to stringify msg passed to sendProtoMessage', msg);
+      }
+
+      console.error('Tried to sendProtoMessage when we didnt have a socket? Message: ', message);
+      return;
+    }
 
     this.socket.send(msg.serializeBinary());
   };

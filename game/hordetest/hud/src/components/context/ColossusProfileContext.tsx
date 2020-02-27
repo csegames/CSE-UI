@@ -63,12 +63,8 @@ export interface ColossusProfileState {
   graphql: GraphQLResult<{ colossusProfile: ColossusProfileModel }>;
 }
 
-const getDefaultColossusProfileState = (): ColossusProfileState => ({
-  colossusProfile: {
-    defaultChampion: null,
-    champions: null,
-    lifetimeStats: null,
-  },
+export const getDefaultColossusProfileState = (): ColossusProfileState => ({
+  colossusProfile: null,
   allTimeStats: null,
   graphql: null,
 });
@@ -93,8 +89,13 @@ export class ColossusProfileProvider extends React.Component<{}, ColossusProfile
   }
 
   private handleQueryResult = (graphql: GraphQLResult<{ colossusProfile: ColossusProfileModel }>) => {
-    if (!graphql || !graphql.data || !graphql.data.colossusProfile) {
-      // Query failed but we don't want to hold up loading. In future, handle this a little better,
+    if (!graphql ||
+        !graphql.data ||
+        !graphql.data.colossusProfile ||
+        !Array.isArray(graphql.data.colossusProfile.champions) ||
+        !Array.isArray(graphql.data.colossusProfile.lifetimeStats)) {
+      console.error("Missing data, colossusProfile, colossusProfile champions, colossusProfile lifetimeStats query");
+      // Query failed or we got some bad data but we don't want to hold up loading. In future, handle this a little better,
       // maybe try to refetch a couple times and if not then just continue on the flow.
       this.onDonePreloading(false);
       return graphql;

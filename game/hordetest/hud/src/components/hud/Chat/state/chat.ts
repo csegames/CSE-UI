@@ -18,7 +18,7 @@ export function disconnectChat() {
     return;
   }
 
-  console.log('disconnecting from chat...')
+  console.log('disconnecting from chat...');
   window.chat.disconnect();
 }
 
@@ -34,7 +34,7 @@ export function initChat(serverHost: string) {
     window.chat = new CSEChat();
   }
   window.chat.initialize({
-    url: () => `ws://${serverHost}:4543/chat`,
+    url: () => `wss://${serverHost}:4543/chat`,
     characterID: () => game.characterID,
     onerror: err => console.error(`Chat | ${err.message}`),
     protocols: 'chat-ws',

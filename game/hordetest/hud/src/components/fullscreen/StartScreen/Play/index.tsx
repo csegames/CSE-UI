@@ -12,6 +12,7 @@ import { webAPI } from '@csegames/library/lib/hordetest';
 import { WarbandContext, onActiveGroupUpdate, WarbandContextState } from 'context/WarbandContext';
 import { InputContext, InputContextState } from 'context/InputContext';
 import { MatchmakingContext, MatchmakingContextState, PlayerNumberMode } from 'context/MatchmakingContext';
+import { callEnterMatchmaking, callCancelMatchmaking } from 'context/actionhandler/MatchmakingActionHandler';
 // import { InfoSection } from './InfoSection';
 import { Button } from 'components/fullscreen/Button';
 import { PlayerView } from './PlayerView';
@@ -166,8 +167,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
 
   private enterMatchmaking = async () => {
     console.log("Calling enter matchmaking");
-    const { matchmakingContext } = this.props;
-    var res = await matchmakingContext.callEnterMatchmaking();
+    var res = await callEnterMatchmaking();
     if (res.ok)
     {
       this.enteredMatchmaking = true;
@@ -180,8 +180,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
   }
 
   private cancelMatchmaking = async () => {
-    const { matchmakingContext } = this.props;
-    var res = await matchmakingContext.callCancelMatchmaking();
+    var res = await callCancelMatchmaking();
     if (res.ok)
     {
       this.enteredMatchmaking = false;
@@ -191,12 +190,12 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
 
 
   private handleActiveGroupUpdate = () => {
-    const { warbandContext, matchmakingContext } = this.props;
+    const { warbandContext } = this.props;
     const notReadyMembers = Object.values(warbandContext.groupMembers).filter(m => !m.isReady);
 
     const myMemberState = warbandContext.groupMembers[game.characterID];
     if (notReadyMembers.length === 0 && myMemberState.isLeader && !this.enteredMatchmaking) {
-      matchmakingContext.callEnterMatchmaking();
+      callEnterMatchmaking();
     }
   }
 

@@ -103,7 +103,7 @@ export class WarbandDisplay extends React.Component<Props, State> {
         {() => (
           <Container>
             {
-              !this.state.battlegroupID && this.state.activeMembers &&
+              this.state.activeMembers &&
                 this.state.activeMembers.map(m => <WarbandMemberDisplay key={m.entityID} member={m as any} />)
             }
           </Container>
@@ -174,12 +174,12 @@ export class WarbandDisplay extends React.Component<Props, State> {
   private handleBattleGroupNotification = (notification: BattleGroupNotificationSubscription.MyGroupNotifications) => {
     switch (notification.type) {
       case GroupNotificationType.Joined: {
-        this.setState({ battlegroupID: notification.groupID });
+        // this.setState({ battlegroupID: notification.groupID });
         break;
       }
 
       case GroupNotificationType.Removed: {
-        this.setState({ battlegroupID: '' });
+        // this.setState({ battlegroupID: '' });
         break;
       }
     }
@@ -193,7 +193,7 @@ export class WarbandDisplay extends React.Component<Props, State> {
 
     const myBattlegroup = graphql.data.myBattlegroup;
     if (myBattlegroup && myBattlegroup.battlegroup) {
-      this.setState({ battlegroupID: myBattlegroup.battlegroup.id });
+      // this.setState({ battlegroupID: myBattlegroup.battlegroup.id });
     }
 
     const warband = graphql.data.myActiveWarband;

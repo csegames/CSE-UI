@@ -22,7 +22,7 @@ import { StatsList } from './StatsList';
 import { Highlights } from './Highlights';
 import { Button } from '../Button';
 import { InputContext } from 'components/context/InputContext';
-import { formatTime } from 'lib/timeHelpers';
+import { formatTime } from '../../../lib/timeHelpers';
 
 const query = gql`
   query GameStatsQuery($scenarioID: String!, $shardID: Int!) {

@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { ChampionInfo } from '@csegames/library/lib/hordetest/graphql/schema';
+import { ChampionInfo as SelectedChampionInfo } from '@csegames/library/lib/hordetest/graphql/schema';
 
 const Container = styled.div`
   &:hover .abilities {
@@ -97,7 +97,7 @@ const KeyBindIcon = styled.span`
 `;
 
 export interface Props {
-  selectedChampion: ChampionInfo;
+  selectedChampion: SelectedChampionInfo;
 }
 
 export function ChampionInfo(props: Props) {

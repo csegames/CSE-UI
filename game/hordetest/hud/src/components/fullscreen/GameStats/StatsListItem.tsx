@@ -10,7 +10,7 @@ import { styled } from '@csegames/linaria/react';
 import { OvermindCharacterSummary } from '@csegames/library/lib/hordetest/graphql/schema';
 
 import { ChampionInfoContext } from 'context/ChampionInfoContext';
-import { formatTime } from 'lib/timeHelpers';
+import { formatTime } from '../../../lib/timeHelpers';
 import { ResourceBar } from '../../shared/ResourceBar';
 import { ThumbsUpButton } from './ThumbsUpButton';
 

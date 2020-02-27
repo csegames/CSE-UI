@@ -124,7 +124,13 @@ export function SetDisplayName(props: Props) {
         return (
           <Container>
             <Title>Choose Your Name</Title>
-              <Input className={`${state.lastError ? 'error' : ''}`} ref={inputRef} type='text' name='display-name' placeholder={name} />
+              <Input
+                className={`${state.lastError ? 'error' : ''}`}
+                ref={inputRef}
+                type='text'
+                name='display-name'
+                placeholder={name}
+              />
               <ButtonsContainer>
                 <Button
                   type='blue'
@@ -133,7 +139,14 @@ export function SetDisplayName(props: Props) {
                   onClick={setDisplayname}
                   styles={ButtonStyles}
                 />
-               {name && <Button text='Cancel' type='gray' onClick={() => game.trigger('hide-middle-modal')} styles={ButtonStyles} />}
+                {name &&
+                  <Button
+                    text='Cancel'
+                    type='gray'
+                    onClick={() => game.trigger('hide-middle-modal')}
+                    styles={ButtonStyles}
+                  />
+                }
               </ButtonsContainer>
               <ErrorText>{state.lastError}</ErrorText>
           </Container>

@@ -5,7 +5,7 @@
  *
  */
 
-export function distanceVec2(positionOne: Vec2f, positionTwo: Vec2f) {
+export function distanceVec2(positionOne: Vec2F, positionTwo: Vec2F) {
   if (!positionOne || !positionTwo) return;
   const xDiff = positionTwo.x - positionOne.x;
   const yDiff = positionTwo.y - positionOne.y;
@@ -13,7 +13,7 @@ export function distanceVec2(positionOne: Vec2f, positionTwo: Vec2f) {
   return Math.sqrt(sumOfDiff);
 }
 
-export function distanceVec3(positionOne: Vec3f, positionTwo: Vec3f) {
+export function distanceVec3(positionOne: Vec3F, positionTwo: Vec3F) {
   if (!positionOne || !positionTwo) return;
 
   const xDiff = positionTwo.x - positionOne.x;

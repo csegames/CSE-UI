@@ -9,7 +9,7 @@ import { styled } from '@csegames/linaria/react';
 import { OvermindSummaryDBModel, OvermindCharacterSummary } from '@csegames/library/lib/hordetest/graphql/schema';
 
 import { ChampionInfoContext } from 'context/ChampionInfoContext';
-import { formatTime } from 'lib/timeHelpers';
+import { formatTime } from '../../../lib/timeHelpers';
 
 const Container = styled.div`
   display: flex;

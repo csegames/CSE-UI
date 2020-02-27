@@ -88,7 +88,7 @@ export interface WarbandContextState {
   groupMembers: { [characterID: string]: PartialGroupMemberState };
 }
 
-const getDefaultWarbandContextState = (): WarbandContextState => ({
+export const getDefaultWarbandContextState = (): WarbandContextState => ({
   groupID: '',
   groupMembers: {},
 });
@@ -116,7 +116,7 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
       <WarbandContext.Provider value={this.state}>
         <GraphQL
           query={warbandQuery}
-          onQueryResult={this.handleWarbandQueryResult}
+          onQueryResult={this.handleQueryResult}
           subscription={{
             query: warbandNotificationSubscription,
             initPayload: {
@@ -129,7 +129,7 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
         {this.state.groupID &&
           <GraphQL
             query={warbandQuery}
-            onQueryResult={this.handleWarbandQueryResult}
+            onQueryResult={this.handleQueryResult}
             subscription={{
               query: warbandUpdatesSubscription,
               variables: {
@@ -150,7 +150,7 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
   }
 
   private handleNotificationSubscription = (result: SubscriptionResult<NotificationSubscriptionResult>, data: any) => {
-    if (!result.data && !result.data.myGroupNotifications) return data;
+    if (!result || !result.data || !result.data.myGroupNotifications) return data;
 
     // We should only get updates about warbands
     const notification = result.data.myGroupNotifications;
@@ -159,18 +159,18 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
 
     switch (notification.type) {
       case GroupNotificationType.Joined: {
-        this.setState({ groupID: notification.groupID });
+        this.handleNotificationJoined(notification);
         break;
       }
       case GroupNotificationType.Removed: {
-        this.setState(getDefaultWarbandContextState());
+        this.handleNotificationRemoved(notification);
         break;
       }
     }
   }
 
   private handleUpdateSubscription = (result: SubscriptionResult<UpdateSubscriptionResult>, data: any) => {
-    if (!result.data && !result.data.activeGroupUpdates) return data;
+    if (!result || !result.data || !result.data.activeGroupUpdates) return data;
 
     const update = result.data.activeGroupUpdates;
     game.trigger('subscription-activeGroupUpdates', update);
@@ -178,23 +178,18 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
     switch (update.updateType) {
       case GroupUpdateType.MemberJoined:
       case GroupUpdateType.MemberUpdate: {
-        const memberState: PartialGroupMemberState = JSON.parse((update as GroupMemberUpdate).memberState);
-        const groupMembers = { ...this.state.groupMembers };
-        groupMembers[memberState.characterID] = memberState;
-        this.setState({ groupMembers });
+        this.handleUpdateMemberUpdate(update as GroupMemberUpdate);
         break;
       }
 
       case GroupUpdateType.MemberRemoved: {
-        const groupMembers = { ...this.state.groupMembers };
-        delete groupMembers[(update as GroupMemberRemovedUpdate).characterID];
-        this.setState({ groupMembers });
+        this.handleUpdateMemberRemoved(update as GroupMemberRemovedUpdate);
         break;
       }
     }
   }
 
-  private handleWarbandQueryResult = (query: GraphQLResult<{ myActiveWarband: GraphQLActiveWarband }>) => {
+  private handleQueryResult = (query: GraphQLResult<{ myActiveWarband: GraphQLActiveWarband }>) => {
     if (!query || !query.data) {
       // Query failed but we don't want to hold up loading. In future, handle this a little better,
       // maybe try to refetch a couple times and if not then just continue on the flow.
@@ -202,7 +197,7 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
       return query;
     }
 
-    if (!query.data.myActiveWarband || !query.data.myActiveWarband.info) {
+    if (!query.data.myActiveWarband || !query.data.myActiveWarband.info || !query.data.myActiveWarband.members) {
       this.onDonePreloading(true);
       return query;
     }
@@ -217,6 +212,56 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
     this.setState({ groupID: warband.info.id, groupMembers });
     this.onDonePreloading(true);
     return query;
+  }
+
+  private handleNotificationJoined = (notification: GroupNotification) => {
+    if (!notification ||
+        notification.type !== GroupNotificationType.Joined ||
+        notification.groupType !== GroupTypes.Warband) {
+      console.error('Tried to call handleNotificationJoined with an invalid notification');
+      return;
+    }
+
+    this.setState({ groupID: notification.groupID });
+  }
+
+  private handleNotificationRemoved = (notification: GroupNotification) => {
+    if (!notification ||
+        notification.type !== GroupNotificationType.Removed ||
+        notification.groupType !== GroupTypes.Warband) {
+      console.error('Tried to call handleNotificationRemoved with an invalid notification');
+      return;
+    }
+
+    this.setState(getDefaultWarbandContextState());
+  }
+
+  private handleUpdateMemberUpdate = (update: GroupMemberUpdate) => {
+    if (!update ||
+        (update.updateType !== GroupUpdateType.MemberJoined && update.updateType !== GroupUpdateType.MemberUpdate)) {
+      console.error('Tried to call handleUpdateMemberUpdate with an invalid update');
+      return;
+    }
+
+    try {
+      const memberState = JSON.parse((update as GroupMemberUpdate).memberState);
+      const groupMembers = { ...this.state.groupMembers };
+      groupMembers[memberState.characterID] = memberState;
+      this.setState({ groupMembers });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  private handleUpdateMemberRemoved = (update: GroupMemberRemovedUpdate) => {
+    if (!update || update.updateType !== GroupUpdateType.MemberRemoved) {
+      console.error('Tried to call handleUpdateMemberRemoved with an invalid update');
+      return;
+    }
+
+    const groupMembers = { ...this.state.groupMembers };
+    delete groupMembers[(update as GroupMemberRemovedUpdate).characterID];
+    this.setState({ groupMembers });
   }
 
   private onDonePreloading = (isSuccessful: boolean) => {

@@ -87,6 +87,9 @@ export class Preloader extends React.Component<Props, State> {
       isAllGQLDataLoaded = true;
     }
 
+    console.log('------------- checkForLoadCompletion --------------');
+    console.log(JSON.stringify(this.gqlDataLoaded));
+
     if (!isAllGQLDataLoaded) return;
 
     this.props.onLoadComplete();

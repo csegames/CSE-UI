@@ -133,7 +133,7 @@ export class GameMap extends React.Component<Props, State> {
   private staticVectorSource: ol.source.Vector;
   private dynamicVectorSource: ol.source.Vector;
   private initialized = false;
-  private zoneID: string;
+  private zoneID: string = camelotunchained.game.selfPlayerState.zoneID;
   private metadata: MapMetadata;
 
   constructor(props: Props) {
@@ -177,8 +177,8 @@ export class GameMap extends React.Component<Props, State> {
 
   public componentDidMount() {
     this.initialized = true;
-    this.zoneID = window['zoneID'];
     this.fetchMetaData();
+
     this.eventHandles.push(camelotunchained.game.selfPlayerState.onUpdated(() => {
       if (camelotunchained.game.selfPlayerState.zoneID !== this.zoneID) {
         this.zoneID = camelotunchained.game.selfPlayerState.zoneID;

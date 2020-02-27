@@ -44,7 +44,7 @@ module.exports = {
       },
       hordetest: {
         default: {
-          script: "nps report.start && nps build.webpack.hordetest && nps report.success",
+          script: "nps report.start && nps test.hordetest && nps build.webpack.hordetest && nps report.success",
           description: "Builds the HordeTest HUD UI",
         },
         dev: {
@@ -258,6 +258,18 @@ module.exports = {
         description: 'Fix TS-Lint errors',
         hiddenFromHelp: true,
       }
+    },
+
+    // Testing
+    test: {
+      default: {
+        script: 'jest',
+      },
+      hordetest: {
+        script: 'jest --config ./hordetest/hud/jest.config.js --silent',
+        loud: 'jest --config ./hordetest/hud/jest.config.js',
+        description: 'Run jest tests for hordetest'
+      },
     },
 
     // Reporting

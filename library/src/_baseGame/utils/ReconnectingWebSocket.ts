@@ -134,8 +134,14 @@ export class ReconnectingWebSocket {
 
   public close = () => {
     this.log("WS Explicitly closed??");
+    if (!this.socket) {
+      console.error('Tried to close a ReconnectingWebSocket that didnt have a socket to close');
+      return;
+    }
+
     this.wantConnect = false;
-    this.socket && this.socket.close();
+    this.socket.close();
+    this.socket = null;
   };
 
   public refresh = () => {
@@ -219,7 +225,7 @@ export class ReconnectingWebSocket {
   };
 
   private closed = (e: CloseEvent) => {
-    console.warn(`Lost WS connection to ${this.url()}`)
+    console.log(`WS connection closed at ${this.url()}`)
     this.reconnect();
     this._onclose(e);
   };

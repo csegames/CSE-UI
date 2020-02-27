@@ -20,7 +20,7 @@ import { ChampionInfoContext } from 'context/ChampionInfoContext';
 import { MatchmakingContext } from 'context/MatchmakingContext';
 import { InputContext } from 'context/InputContext';
 import { ColossusProfileContext } from 'context/ColossusProfileContext';
-import { ChampionSelectContextProvider } from './context/ChampionSelectContext';
+import { ChampionSelectContextProvider } from 'context/ChampionSelectContext';
 
 const Container = styled.div`
   position: relative;
@@ -334,7 +334,7 @@ export function ChampionSelect(props: Props) {
         </TransitionAnimation>
 
         <ChampionInfoContainer>
-          <ChampionInfo selectedChampion={selectedChampion} />
+          {selectedChampion && <ChampionInfo selectedChampion={selectedChampion} />}
         </ChampionInfoContainer>
 
         <LockedListContainer className='right'>
