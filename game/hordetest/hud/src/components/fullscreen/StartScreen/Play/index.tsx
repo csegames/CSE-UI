@@ -72,6 +72,8 @@ const SocialButtonStyles = css`
   margin-right: 14px;
   padding-top: 6px;
   padding-bottom: 6px;
+  pointer-events: none;
+  filter: grayscale(100%);
 `;
 
 const ConsoleButton = styled.div`
