@@ -7,9 +7,9 @@
 import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { initChat } from './state/chat';
-import { useChatPanes } from './state/panesState';
+import { useChatPanes, ChatPane } from './state/panesState';
 import { Pane } from './views/Pane';
-import { MatchmakingContext } from 'context/MatchmakingContext';
+import { MatchmakingContext, MatchmakingContextState } from 'context/MatchmakingContext';
 
 const Screen = styled.div`
   position: absolute;
@@ -22,31 +22,58 @@ const Screen = styled.div`
   pointer-events: none !important;
 `;
 
-export interface Props {
+interface Props {
+  panesArr: ChatPane[];
+  matchmakingContext: MatchmakingContextState;
 }
 
-export function Chat(props: Props) {
+class ChatWithInjectedProps extends React.Component<Props> {
+  private chatInitTimeout: number;
+  public render() {
+    return (
+      <Screen id='chat'>
+        {this.props.panesArr.map(pane => <Pane key={pane.id} pane={pane.id} />)}
+      </Screen>
+    );
+  }
+
+  public componentDidMount() {
+    this.tryInitChat();
+  }
+
+  public componentWillUnmount() {
+    if (this.chatInitTimeout) {
+      window.clearTimeout(this.chatInitTimeout);
+      this.chatInitTimeout = null;
+    }
+  }
+
+  private tryInitChat = () => {
+    let inittedChat = false;
+    if (game.isConnectedToServer) {
+      if (!window.chat || !window.chat.connected) {
+        var host = game.serverHost
+        if (this.props.matchmakingContext && this.props.matchmakingContext.host) {
+          host = this.props.matchmakingContext.host
+        }
+
+        inittedChat = initChat(host);
+      }
+    }
+
+    if (!inittedChat) {
+      // Retry to init chat every second
+      this.chatInitTimeout = window.setTimeout(this.tryInitChat, 1000);
+    }
+  }
+}
+
+export function Chat() {
   const [panes] = useChatPanes();
   const matchmakingContext = useContext(MatchmakingContext);
   const panesArr = Object.values(panes.panes);
 
-  if (game.isConnectedToServer) {
-    if (!window.chat || !window.chat.connected) {
-      var host = game.serverHost
-      if (matchmakingContext && matchmakingContext.host) {
-        console.log(`Using matchmaking host ${host} for chat`);
-        host = matchmakingContext.host
-      }
-
-      initChat(host);
-    }
-
-    return (
-      <Screen id='chat'>
-        {panesArr.map(pane => <Pane key={pane.id} pane={pane.id} />)}
-      </Screen>
-    );
-  } else {
-    return null;
-  }
+  return (
+    <ChatWithInjectedProps matchmakingContext={matchmakingContext} panesArr={panesArr} />
+  );
 }

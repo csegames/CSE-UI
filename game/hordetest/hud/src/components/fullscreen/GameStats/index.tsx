@@ -254,6 +254,10 @@ export class GameStats extends React.Component<Props, State> {
     );
   }
 
+  public componentDidMount() {
+    game.releaseMouseCapture();
+  }
+
   public componentWillUnmount() {
     game.playGameSound(SoundEvents.PLAY_SCENARIO_RESET);
   }

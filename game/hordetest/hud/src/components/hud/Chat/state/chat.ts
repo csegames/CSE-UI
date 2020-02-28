@@ -27,7 +27,7 @@ export function initChat(serverHost: string) {
 
   if (!serverHost || serverHost === 'hatchery.camelotunchained.com') {
     console.error('Failed to initialize chat. game.serverHost is returning an invalid URL');
-    return;
+    return false;
   }
 
   if (!window.chat) {
@@ -42,6 +42,7 @@ export function initChat(serverHost: string) {
     debug: false,
   });
   window.chat.connect();
+  return true;
 }
 
 export function useChat() {
