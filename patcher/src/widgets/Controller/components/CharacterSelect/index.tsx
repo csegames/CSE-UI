@@ -154,8 +154,8 @@ class CharacterSelect extends React.Component<Props, CharacterSelectState> {
       const server = this.props.servers[serverKey];
 
       // If you want Colossus servers to show up in character select, enable this
-      // if (server.type === ServerType.CUGAME || server.type === ServerType.COLOSSUS) {
-      if (server.type === ServerType.CUGAME) {
+      if (server.type === ServerType.CUGAME || server.type === ServerType.COLOSSUS) {
+      // if (server.type === ServerType.CUGAME) {
         servers[serverKey] = server;
       }
     });
