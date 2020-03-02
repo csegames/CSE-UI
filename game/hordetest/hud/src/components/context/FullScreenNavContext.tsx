@@ -19,9 +19,15 @@ export enum Route {
   EndGameStats,
 }
 
-export interface FullScreenNavContextState {
+interface ContextState {
   currentRoute: Route;
 }
+
+interface ContextFunctions {
+  navigateTo: (route: Route) => void;
+}
+
+export type FullScreenNavContextState = ContextState & ContextFunctions;
 
 export interface Props {
 
@@ -29,11 +35,12 @@ export interface Props {
 
 const getDefaultFullScreenNavContextState = (): FullScreenNavContextState => ({
   currentRoute: Route.Start,
+  navigateTo: () => {},
 });
 
 export const FullScreenNavContext = React.createContext(getDefaultFullScreenNavContextState());
 
-export class FullScreenNavContextProvider extends React.Component<Props, FullScreenNavContextState> {
+export class FullScreenNavContextProvider extends React.Component<Props, ContextState> {
   private navigateEVH: EventHandle;
   constructor(props: Props) {
     super(props);
@@ -45,7 +52,11 @@ export class FullScreenNavContextProvider extends React.Component<Props, FullScr
 
   public render() {
     return (
-      <FullScreenNavContext.Provider value={this.state}>
+      <FullScreenNavContext.Provider
+        value={{
+          ...this.state,
+          navigateTo: this.navigateTo,
+        }}>
         {this.props.children}
       </FullScreenNavContext.Provider>
     );
@@ -60,7 +71,6 @@ export class FullScreenNavContextProvider extends React.Component<Props, FullScr
   }
 
   private navigateTo = (route: Route) => {
-    console.log(`Navigating fullscreen to ${Route[route]}`);
     this.setState({ currentRoute: route });
   }
 
@@ -73,6 +83,9 @@ export class FullScreenNavContextProvider extends React.Component<Props, FullScr
   }
 
   private shouldPlayIntroVideo = () => {
+    // Temporarily disable intro video for now since we can't play videos atm.
+    // return false;
+
     // First check local storage and then check settings to see if we want to play it
     const hasPlayedIntro = localStorage.getItem(HAS_PLAYED_INTRO);
     if (!hasPlayedIntro) {

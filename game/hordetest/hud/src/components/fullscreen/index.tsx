@@ -119,7 +119,7 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
     switch (this.props.fullScreenNavContext.currentRoute) {
       case Route.IntroVideo: {
         return (
-          <IntroVideo onIntroVideoEnd={this.goToStart} />
+          <IntroVideo onIntroVideoEnd={this.onIntroVideoEnd} />
         );
       }
       case Route.Start: {
@@ -142,6 +142,10 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
         );
       }
     }
+  }
+
+  private onIntroVideoEnd = () => {
+    this.props.fullScreenNavContext.navigateTo(Route.Start);
   }
 
   private onLeaveClick = () => {
