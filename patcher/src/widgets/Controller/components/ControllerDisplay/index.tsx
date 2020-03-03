@@ -8,7 +8,6 @@ import * as React from 'react';
 
 import ControllerDisplayView from './ControllerDisplayView';
 import { Routes } from '../../../../services/session/routes';
-import { patcher } from '../../../../services/patcher';
 import {
   ControllerContextProvider,
   ControllerContext,
@@ -220,7 +219,7 @@ class ControllerDisplay extends React.PureComponent<Props, ControllerDisplayStat
     const values: PatcherServer[] = [];
     const servers = this.props.servers;
     Object.keys(servers).forEach((key: string) => {
-      if (servers[key].type === serverType && patcher.getPermissions() & servers[key].channelPatchPermissions) {
+      if (servers[key].type === serverType) {
         values.push(servers[key]);
       }
     });

@@ -8,7 +8,6 @@
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 
-import { patcher } from '../../../../services/patcher';
 import { ControllerContext, ContextState, PatcherServer, ServerType } from '../../ControllerContext';
 import GameSelect from './components/GameSelect';
 import CharacterInfo from './components/CharacterInfo';
@@ -131,7 +130,7 @@ class CharacterButton extends React.PureComponent<Props, CharacterButtonState> {
     const values: PatcherServer[] = [];
     const servers = props.servers;
     Object.keys(servers).forEach((key: string) => {
-      if (servers[key].type === props.serverType && patcher.getPermissions() & servers[key].channelPatchPermissions) {
+      if (servers[key].type === props.serverType) {
         values.push(servers[key]);
       }
     });
