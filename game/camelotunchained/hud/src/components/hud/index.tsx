@@ -52,12 +52,13 @@ import { uiContextFromGame } from 'services/session/UIContext';
 import { DevUI } from '../shared/DevUI';
 import HUDZOrder from 'services/session/HUDZOrder';
 
-// import { ActionBars } from '../ActionBar/BarsView';
+import { ActionBars } from './ActionBar/BarsView';
 import { DragAndDropV2Renderer } from 'utils/DragAndDropV2';
 import { WarbandNotificationProvider } from 'hud/WarbandDisplay/WarbandNotificationProvider';
 import { BattleGroupNotificationProvider } from 'hud/BattleGroups/BattleGroupNotificationProvider';
 
 import { DynamicModal } from 'utils/DynamicModal';
+import { AbilityBarToggleContext } from 'components/context/AbilityBarToggleContext';
 
 const HUDNavContainer = styled.div`
   position: fixed;
@@ -151,71 +152,79 @@ class HUDViewInternal extends React.Component<HUDProps, HUDState> {
                       this.draggable(w.name, w.widget, w.widget.component, w.widget.dragOptions, w.widget.props));
     return (
       <UIContext.Provider value={this.state.uiContext}>
-        <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
-          <SVGBlurHack />
-          {renderWidgets}
-          <ImagePreloader />
-          <ZoneNameContainer>
-            <ZoneName />
-          </ZoneNameContainer>
-          <Console />
+        <AbilityBarToggleContext.Consumer>
+          {({ showNewAbilityBar }) => (
+            <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+              <SVGBlurHack />
+              {renderWidgets}
+              <ImagePreloader />
+              <ZoneNameContainer>
+                <ZoneName />
+              </ZoneNameContainer>
+              <Console />
 
-          <HUDNavContainer id='hudnav'>
-            <HUDNav.component {...HUDNav.props} />
-          </HUDNavContainer>
+              <HUDNavContainer id='hudnav'>
+                <HUDNav.component {...HUDNav.props} />
+              </HUDNavContainer>
 
-          <DevUI />
-          <InteractiveAlertView />
-          <ScenarioPopup />
+              <DevUI />
+              <InteractiveAlertView />
+              <ScenarioPopup />
 
-          <ScenarioResults />
+              <ScenarioResults />
 
-          <HUDFullScreen />
-          <AbilityBarContainer id='abilitybar-old'>
-            <AbilityBar />
-          </AbilityBarContainer>
-          <ContextMenuView />
+              <HUDFullScreen />
 
-          <MiniScenarioScoreboardContainer id='miniscenarioscoreboard'>
-            <MiniScenarioScoreboard />
-          </MiniScenarioScoreboardContainer>
-          <FullScenarioScoreboardContainer id='scenarioscoreboard'>
-            <FullScenarioScoreboard />
-          </FullScenarioScoreboardContainer>
+              {showNewAbilityBar ?
+                <ActionBars /> :
 
-          <PopupView />
-          <TooltipView />
-          <ActionAlert />
-          <PassiveAlert />
-          { locked ? null :
-            <HUDEditor
-              widgets={widgets}
-              selectedWidget={ this.state.selectedWidget ? this.state.selectedWidget : null }
-              dispatch={this.props.dispatch}
-              setSelectedWidget={this.setSelectedWidget}
-            />
-          }
+                <AbilityBarContainer id='abilitybar-old'>
+                  <AbilityBar />
+                </AbilityBarContainer>
+              }
 
-          {/* <ActionBars /> */}
+              <ContextMenuView />
 
-          <Settings />
+              <MiniScenarioScoreboardContainer id='miniscenarioscoreboard'>
+                <MiniScenarioScoreboard />
+              </MiniScenarioScoreboardContainer>
+              <FullScenarioScoreboardContainer id='scenarioscoreboard'>
+                <FullScenarioScoreboard />
+              </FullScenarioScoreboardContainer>
 
-          <DynamicModal />
+              <PopupView />
+              <TooltipView />
+              <ActionAlert />
+              <PassiveAlert />
+              { locked ? null :
+                <HUDEditor
+                  widgets={widgets}
+                  selectedWidget={ this.state.selectedWidget ? this.state.selectedWidget : null }
+                  dispatch={this.props.dispatch}
+                  setSelectedWidget={this.setSelectedWidget}
+                />
+              }
 
-          {/* END HUD */}
+              <Settings />
 
-          <Watermark />
-          <OfflineZoneSelect />
+              <DynamicModal />
 
-          <LoadingScreen />
-          <DragStore />
-          <DragAndDropV2Renderer />
+              {/* END HUD */}
 
-          {/* GraphQL Subscription providers */}
-          <WarbandNotificationProvider />
-          <BattleGroupNotificationProvider />
+              <Watermark />
+              <OfflineZoneSelect />
 
-        </div>
+              <LoadingScreen />
+              <DragStore />
+              <DragAndDropV2Renderer />
+
+              {/* GraphQL Subscription providers */}
+              <WarbandNotificationProvider />
+              <BattleGroupNotificationProvider />
+
+            </div>
+          )}
+        </AbilityBarToggleContext.Consumer>
       </UIContext.Provider>
     );
   }

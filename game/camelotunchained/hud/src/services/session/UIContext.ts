@@ -21,7 +21,6 @@ declare global {
     uiScale: number; // default 1, (0 - 1)
     forceUHD: boolean; // default false
 
-
     themes: ObjectMap<Theme>;
     currentTheme(): Theme;
     currentThemeKey: string;

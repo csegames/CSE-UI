@@ -32,6 +32,7 @@ import { HUDView } from 'hud/index';
 import { store } from './services/session/reducer';
 
 import './services/session/UIContext';
+import { GlobalProviders } from './components/context';
 
 if (process.env.CUUI_HUD_ENABLE_WHY_DID_YOU_UPDATE) {
   // tslint:disable
@@ -53,7 +54,9 @@ function readyCheck() {
   ReactDom.render(
   <Provider store={store}>
     <ErrorBoundary outputErrorToConsole>
-      <HUDView />
+      <GlobalProviders>
+        <HUDView />
+      </GlobalProviders>
     </ErrorBoundary>
   </Provider>,
   document.getElementById('hud'));

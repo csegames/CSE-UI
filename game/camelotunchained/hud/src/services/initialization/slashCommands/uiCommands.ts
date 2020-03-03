@@ -19,4 +19,11 @@ export default () => {
   registerSlashCommand('debugui', 'Toggle UI debug logging', () => {
     _devGame.debug = !_devGame.debug;
   });
+
+  /**
+   * Toggles whether to show old ability bar and new ability bar
+  */
+  registerSlashCommand('toggleAbilityBar', 'Toggle using old ability bar or new ability bar', () => {
+    game.trigger('toggleAbilityBar');
+  });
 };

@@ -8,6 +8,8 @@ import { createSharedStateWithReducer } from 'cseshared/lib/sharedState';
 const maxGroupCount = 6;
 const maxChildSlotCount = 4;
 
+const ABILITY_BAR_KEY = 'cu/game/abilities/bar';
+
 export enum EditMode {
   Disabled,
   ActionEdit,
@@ -46,100 +48,43 @@ export interface ActionSlot {
   children: string[];
 }
 
-function initialState(): ActionViewState {
+function initializeState(): ActionViewState {
+  let abilityBarString = localStorage.getItem(ABILITY_BAR_KEY);
+
+  let abilityBar: ActionViewState = null;
+  if (abilityBarString) {
+    try {
+      abilityBar = JSON.parse(abilityBarString);
+    } catch(e) {
+      console.error('Failed to parse localStorage ability bar');
+    }
+  }
+
+  if (!abilityBar) {
+    abilityBar = generateDefaultAbilityBar();
+  }
+
+  return abilityBar;
+}
+
+function generateDefaultAbilityBar(): ActionViewState {
   const anchorID = genID();
   const group1 = genID();
-  const group2 = genID();
-  const group3 = genID();
-  const slot1 = genID();
-  const slot2 = genID();
-  const slot3 = genID();
-  const slot4 = genID();
   return {
     anchors: {
       [anchorID]: {
         id: anchorID,
         position: { x: 300, y: 300 },
         activeGroupIndex: 0,
-        groups: [group1, group2, group3],
-        children: [slot1],
+        groups: [group1],
+        children: [] as string[],
       },
     },
-    actions: {
-      one: [
-        {
-          group: group1,
-          slot: slot1,
-        },
-        {
-          group: group1,
-          slot: slot3,
-        },
-        {
-          group: group2,
-          slot: slot2,
-        },
-        {
-          group: group3,
-          slot: slot3,
-        },
-        {
-          group: group3,
-          slot: slot4,
-        },
-        {
-          group: group1,
-          slot: slot4,
-        },
-      ],
-      two: [
-        {
-          group: group1,
-          slot: slot2,
-        },
-        {
-          group: group2,
-          slot: slot4,
-        },
-      ],
-    },
-    slots: {
-      [slot1]: {
-        id: slot1,
-        angle: 0,
-        clientSlotID: 1,
-        parent: anchorID,
-        children: [slot2],
-      },
-      [slot2]: {
-        id: slot2,
-        angle: 0,
-        clientSlotID: 2,
-        parent: slot1,
-        children: [slot3],
-      },
-      [slot3]: {
-        id: slot3,
-        angle: 0,
-        clientSlotID: 3,
-        parent: slot2,
-        children: [slot4],
-      },
-      [slot4]: {
-        id: slot4,
-        angle: 0,
-        clientSlotID: 4,
-        parent: slot3,
-        children: [],
-      },
-    },
-    clientSlotIDMap: {
-      1: slot1,
-      2: slot2,
-      3: slot3,
-    },
+    actions: {},
+    slots: {},
+    clientSlotIDMap: {},
     editMode: EditMode.Disabled,
-  };
+  }
 }
 
 let lastClientSlotID = -1;
@@ -151,8 +96,7 @@ function getNextAvailableClientSlotID(state: ActionViewState) {
   return ++lastClientSlotID;
 }
 
-export const useActionStateReducer
-  = createSharedStateWithReducer('action-view-state', initialState(), actionStateReducer);
+export const useActionStateReducer = createSharedStateWithReducer('action-view-state', initializeState(), actionStateReducer);
 
 // Action View State Actions
 
@@ -664,7 +608,7 @@ export type Actions =
 
 function actionStateReducer(state: ActionViewState, action: Actions) {
   if (!state) {
-    return cloneDeep(initialState());
+    return cloneDeep(initializeState());
   }
 
   switch (action.type) {

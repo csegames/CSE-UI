@@ -51,6 +51,9 @@ const Icon = styled.div`
 export function ActionBars() {
 
   const [state, dispatch] = useActionStateReducer();
+  console.log('action bar state');
+  console.log(state);
+
   const editMode = state.editMode !== EditMode.Disabled;
 
   useEffect(() => {
