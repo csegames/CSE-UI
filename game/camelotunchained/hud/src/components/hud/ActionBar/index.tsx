@@ -4,17 +4,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { VelocityTransitionGroup } from 'velocity-react';
-
-import { useActionStateReducer, EditMode } from 'services/session/ActionViewState';
+import { KeyCodes } from '@csegames/library/lib/camelotunchained/utils';
 
 import { ActionBarAnchor } from './ActionBarAnchor';
-import { KeyCodes } from '@csegames/library/lib/camelotunchained/utils';
+import { ActionViewContext, EditMode } from '../../context/ActionViewContext';
+
 
 const Container = styled.div`
   position: fixed;
+  pointer-events: none;
   top: 0;
   left: 0;
   right: 0;
@@ -47,19 +48,19 @@ const Icon = styled.div`
   height: 100%;
 `;
 
+const ActionBarAnchorContainer = styled.div`
+  pointer-events: all;
+`;
+
 // tslint:disable-next-line:function-name
 export function ActionBars() {
-
-  const [state, dispatch] = useActionStateReducer();
-  console.log('action bar state');
-  console.log(state);
-
-  const editMode = state.editMode !== EditMode.Disabled;
+  const actionViewContext = useContext(ActionViewContext);
+  const editMode = actionViewContext.editMode !== EditMode.Disabled;
 
   useEffect(() => {
     function disableEditMode(e: KeyboardEvent) {
-      if (e.which === KeyCodes.KEY_Escape && state.editMode) {
-        dispatch({ type: 'disable-edit-mode' });
+      if (e.which === KeyCodes.KEY_Escape && actionViewContext.editMode) {
+        actionViewContext.disableEditMode();
       }
     }
     if (editMode) {
@@ -68,7 +69,7 @@ export function ActionBars() {
     } else {
       window.removeEventListener('keydown', disableEditMode);
     }
-  }, [state.editMode]);
+  }, [actionViewContext.editMode]);
 
   return (
     <Container id='actionbar-view'>
@@ -76,12 +77,14 @@ export function ActionBars() {
         {editMode && <Lock><Icon><i className='far fa-lock-open'></i></Icon></Lock>}
       </VelocityTransitionGroup>
       {
-        Object.values(state.anchors)
+        Object.values(actionViewContext.anchors)
           .map(anchor => (
-            <ActionBarAnchor
-              key={anchor.id}
-              {...anchor}
-            />
+            <ActionBarAnchorContainer>
+              <ActionBarAnchor
+                key={anchor.id}
+                {...anchor}
+              />
+            </ActionBarAnchorContainer>
           ))
       }
     </Container>

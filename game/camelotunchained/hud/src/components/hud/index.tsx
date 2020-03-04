@@ -52,7 +52,7 @@ import { uiContextFromGame } from 'services/session/UIContext';
 import { DevUI } from '../shared/DevUI';
 import HUDZOrder from 'services/session/HUDZOrder';
 
-import { ActionBars } from './ActionBar/BarsView';
+import { ActionBars } from './ActionBar';
 import { DragAndDropV2Renderer } from 'utils/DragAndDropV2';
 import { WarbandNotificationProvider } from 'hud/WarbandDisplay/WarbandNotificationProvider';
 import { BattleGroupNotificationProvider } from 'hud/BattleGroups/BattleGroupNotificationProvider';

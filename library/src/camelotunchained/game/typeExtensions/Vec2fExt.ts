@@ -13,7 +13,7 @@ declare global {
     public static distanceSquared(a: Vec2f, b: Vec2f): number;
   }
   interface Window {
-    Vec2f: typeof Vec2fExt;
+    Vec2fExt: typeof Vec2fExt;
   }
 }
 
@@ -34,4 +34,4 @@ class Vec2fExt {
     return Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2);
   }
 }
-window.Vec2f = Vec2fExt;
+window.Vec2fExt = Vec2fExt;

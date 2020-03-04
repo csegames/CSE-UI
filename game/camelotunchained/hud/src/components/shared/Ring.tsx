@@ -150,62 +150,73 @@ export function Ring(props: RingProps) {
 
   const blurID = 'blur-' + genID();
   return (
-    <RingSVG width={props.centerOffset * 2} height={props.centerOffset * 2}>
-      <defs>
-        <filter id={blurID}>
-          <feGaussianBlur in='SourceGraphic' stdDeviation={props.strokeWidth / 2} />
-        </filter>
-      </defs>
+    <>
+      <RingSVG width={props.centerOffset * 2} height={props.centerOffset * 2} style={{ zIndex: 0 }}>
+        <defs>
+          <filter id={blurID}>
+            <feGaussianBlur in='SourceGraphic' stdDeviation={props.strokeWidth / 2} />
+          </filter>
+        </defs>
 
-      {
-        opts.showBGGlow &&
-          <VelocityComponent {...opts.bgAnim}>
-            <RingCircleGlow
-              d={opts.bgPath}
-              stroke={props.background.color}
-              strokeWidth={props.strokeWidth}
-              fill='none'
-              blurID={blurID}
-            />
-          </VelocityComponent>
-      }
+        {
+          opts.showBGGlow &&
+            <VelocityComponent {...opts.bgAnim}>
+              <RingCircleGlow
+                d={opts.bgPath}
+                stroke={props.background.color}
+                strokeWidth={props.strokeWidth}
+                fill='none'
+                blurID={blurID}
+              />
+            </VelocityComponent>
+        }
 
-      {
-        opts.showBG &&
-          <VelocityComponent {...opts.bgAnim}>
-            <RingCircle
-              d={opts.bgPath}
-              stroke={props.background.color}
-              strokeWidth={props.strokeWidth}
-              fill='none'
-            />
-          </VelocityComponent>
-      }
+        {
+          opts.showBG &&
+            <VelocityComponent {...opts.bgAnim}>
+              <RingCircle
+                d={opts.bgPath}
+                stroke={props.background.color}
+                strokeWidth={props.strokeWidth}
+                fill='none'
+                style={{ zIndex: -1 }}
+              />
+            </VelocityComponent>
+        }
+      </RingSVG>
+      <RingSVG width={props.centerOffset * 2} height={props.centerOffset * 2} style={{ zIndex: 1 }}>
+        <defs>
+          <filter id={blurID}>
+            <feGaussianBlur in='SourceGraphic' stdDeviation={props.strokeWidth / 2} />
+          </filter>
+        </defs>
 
-      {
-        opts.showFGGlow &&
-          <VelocityComponent {...opts.fgAnim}>
-            <RingCircleGlow
-              d={opts.fgPath}
-              stroke={props.foreground.color}
-              strokeWidth={props.strokeWidth}
-              fill='none'
-              blurID={blurID}
-            />
-          </VelocityComponent>
-      }
+        {
+          opts.showFGGlow &&
+            <VelocityComponent {...opts.fgAnim}>
+              <RingCircleGlow
+                d={opts.fgPath}
+                stroke={props.foreground.color}
+                strokeWidth={props.strokeWidth}
+                fill='none'
+                blurID={blurID}
+              />
+            </VelocityComponent>
+        }
 
-      {
-        opts.showFG &&
-          <VelocityComponent {...opts.fgAnim}>
-            <RingCircle
-              d={opts.fgPath}
-              stroke={props.foreground.color}
-              strokeWidth={props.strokeWidth}
-              fill='none'
-            />
-          </VelocityComponent>
-      }
-    </RingSVG>
+        {
+          opts.showFG &&
+            <VelocityComponent {...opts.fgAnim}>
+              <RingCircle
+                d={opts.fgPath}
+                stroke={props.foreground.color}
+                strokeWidth={props.strokeWidth}
+                fill='none'
+                style={{ zIndex: 1 }}
+              />
+            </VelocityComponent>
+        }
+      </RingSVG>
+    </>
   );
 }

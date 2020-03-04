@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 
-import { useActionStateReducer, EditMode } from 'services/session/ActionViewState';
+import { ActionViewContext, EditMode } from '../../context/ActionViewContext';
 import { DragMove } from 'utils/DragMove';
 
 const Container = styled.div`
@@ -61,7 +61,7 @@ interface EditControllerState {
 const localStateKey = 'ability-view-edit-controller-state';
 // tslint:disable-next-line:function-name
 export function EditController() {
-  const [actionState, dispatch] = useActionStateReducer();
+  const actionViewContext = useContext(ActionViewContext);
 
   const storedState = tryParseJSON<EditControllerState>(localStorage.getItem(localStateKey), false);
   const [state, _setState] = useState(storedState || {
@@ -82,7 +82,7 @@ export function EditController() {
     localStorage.setItem(localStateKey, JSON.stringify(state));
   }
 
-  if (!actionState.editMode) return null;
+  if (!actionViewContext.editMode) return null;
 
   return (
     <Container style={{ top: `${state.position.y}px`, left: `${state.position.x}px` }}>
@@ -100,14 +100,14 @@ export function EditController() {
       </DragMove>
       <Options>
         <Option
-          selected={actionState.editMode === EditMode.SlotEdit}
-          onMouseDown={() => dispatch({ type: 'enable-slot-edit-mode' })}
+          selected={actionViewContext.editMode === EditMode.SlotEdit}
+          onMouseDown={actionViewContext.enableSlotEditMode}
         >
           [S] Edit Slots
         </Option>
         <Option
-          selected={actionState.editMode === EditMode.ActionEdit}
-          onMouseDown={() => dispatch({ type: 'enable-action-edit-mode' })}
+          selected={actionViewContext.editMode === EditMode.ActionEdit}
+          onMouseDown={actionViewContext.enableActionEditMode}
         >
           [A] Edit Actions
         </Option>

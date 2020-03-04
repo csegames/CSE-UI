@@ -42,7 +42,7 @@ export default function(): Theme {
         channelling: '#C5FFC5',
 
         bgOuterRing: '#111',
-        bgInnerRing: 'transparent',
+        bgInnerRing: '#000',
       },
       display: {
         hd: {

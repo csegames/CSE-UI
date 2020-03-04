@@ -61,6 +61,7 @@ function initializeState(): ActionViewState {
   }
 
   if (!abilityBar) {
+    console.log('generateDefaultAbilityBar');
     abilityBar = generateDefaultAbilityBar();
   }
 
@@ -70,6 +71,30 @@ function initializeState(): ActionViewState {
 function generateDefaultAbilityBar(): ActionViewState {
   const anchorID = genID();
   const group1 = genID();
+
+  const slots: Dictionary<ActionSlot> = {};
+  const clientSlotIDMap: { [clientSlotID: number]: string; } = {};
+
+  let prevSlotId: string = null;
+  let nextSlotId: string = null;
+  Object.values(camelotunchained.game.abilityBarState.abilities).forEach((ability, i) => {
+    const currentSlotId = nextSlotId ? nextSlotId : genID();
+    nextSlotId = genID();
+
+    slots[currentSlotId] = {
+      id: currentSlotId,
+      angle: 0,
+      clientSlotID: ability.id,
+      parent: prevSlotId === null ? anchorID : prevSlotId,
+      children: []
+    };
+
+    clientSlotIDMap[ability.id] = currentSlotId;
+
+    prevSlotId = currentSlotId;
+  });
+
+  const firstSlot = slots[0];
   return {
     anchors: {
       [anchorID]: {
@@ -77,12 +102,17 @@ function generateDefaultAbilityBar(): ActionViewState {
         position: { x: 300, y: 300 },
         activeGroupIndex: 0,
         groups: [group1],
-        children: [] as string[],
+        children: firstSlot ? [firstSlot.id] : [],
       },
     },
-    actions: {},
-    slots: {},
-    clientSlotIDMap: {},
+    actions: {
+      one: Object.values(slots).map((slot) => ({
+        group: group1,
+        slot: slot.id,
+      })),
+    },
+    slots,
+    clientSlotIDMap,
     editMode: EditMode.Disabled,
   }
 }
@@ -96,7 +126,11 @@ function getNextAvailableClientSlotID(state: ActionViewState) {
   return ++lastClientSlotID;
 }
 
-export const useActionStateReducer = createSharedStateWithReducer('action-view-state', initializeState(), actionStateReducer);
+export const useActionStateReducer = createSharedStateWithReducer(
+  'action-view-state',
+  initializeState(),
+  actionStateReducer,
+);
 
 // Action View State Actions
 

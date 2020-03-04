@@ -7,7 +7,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
 
-import { ActionViewAnchor, useActionStateReducer, EditMode } from 'services/session/ActionViewState';
+import { ActionViewContext, ActionViewAnchor, EditMode } from '../../context/ActionViewContext';
 import { ActionBarSlot } from './ActionBarSlot';
 import { ContextMenu } from 'shared/ContextMenu';
 import { Drag } from 'utils/Drag';
@@ -104,8 +104,7 @@ export interface ActionBarAnchorProps extends ActionViewAnchor {
 
 // tslint:disable-next-line:function-name
 export function ActionBarAnchor(props: ActionBarAnchorProps) {
-
-  const [state, dispatch] = useActionStateReducer();
+  const actionViewContext = useContext(ActionViewContext);
   const [ref, setRef] = useState(null);
   const [bounds, setBounds] = useState({
     width: 0,
@@ -120,12 +119,12 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
   const faction = FactionExt.abbreviation(camelotunchained.game.selfPlayerState.faction);
   const definition = ui.isUHD() ? 'uhd' : 'hd';
 
-  const inEditMode = state.editMode !== EditMode.Disabled;
+  const inEditMode = actionViewContext.editMode !== EditMode.Disabled;
   useEffect(() => {
     if (ref) {
       setBounds(getBoundsWithChildren(ref));
     }
-  }, [state, ref, inEditMode]);
+  }, [actionViewContext.editMode, ref, inEditMode]);
 
   function handleMouseDown(e: React.MouseEvent) {
 
@@ -133,66 +132,49 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
 
     // if ctrl+click, go to previous
     if (e.ctrlKey) {
-      dispatch({
-        type: 'activate-prev-group',
-        anchor: props.id,
-      });
+      actionViewContext.activatePrevGroup(props.id);
       return;
     }
-    dispatch({
-      type: 'activate-next-group',
-      anchor: props.id,
-    });
+
+    actionViewContext.activateNextGroup(props.id);
   }
 
   function handleWheel(e: React.WheelEvent) {
     if (e.deltaY < 0) {
-      dispatch({
-        type: 'activate-prev-group',
-        anchor: props.id,
-      });
+      actionViewContext.activatePrevGroup(props.id);
       return;
     }
-    dispatch({
-      type: 'activate-next-group',
-      anchor: props.id,
-    });
+
+    actionViewContext.activateNextGroup(props.id);
   }
 
   function contextMenuItems() {
     const items = [];
 
-    if (state.editMode > 0) {
+    if (actionViewContext.editMode > 0) {
 
       if (props.groups.length < 6) {
         items.push({
           title: `Add New Group (${props.groups.length + 1})`,
-          onSelected: () => dispatch({
-            type: 'add-group',
-            anchor: props.id,
-          }),
+          onSelected: () => actionViewContext.addGroup(props.id),
         });
       }
 
       if (props.groups.length > 1) {
         items.push({
           title: `Remove Group ${props.activeGroupIndex + 1}`,
-          onSelected: () => dispatch({
-            type: 'remove-group',
-            anchor: props.id,
-            group: props.groups[props.activeGroupIndex],
-          }),
+          onSelected: () => actionViewContext.removeGroup(props.id, props.groups[props.activeGroupIndex]),
         });
       }
 
       items.push({
         title: 'Exit Bar Editor',
-        onSelected: () => dispatch({ type: 'disable-edit-mode' }),
+        onSelected: () => actionViewContext.disableEditMode(),
       });
     } else {
       items.push({
         title: 'Edit Action Bar',
-        onSelected: () => dispatch({ type: 'enable-action-edit-mode' }),
+        onSelected: () => actionViewContext.enableActionEditMode(),
       });
     }
 
@@ -224,16 +206,12 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
 
             if (Vec2fExt.equals(props.position, newPos)) return;
 
-            dispatch({
-              type: 'set-anchor-position',
-              anchor: props.id,
-              position: newPos,
-            });
+            actionViewContext.setAnchorPosition(props.id, newPos);
           }}
         >
           <BoundingRect
-            top={bounds.top}
-            left={bounds.left}
+            top={props.position.y}
+            left={props.position.x}
             width={bounds.width}
             height={bounds.height}/>
         </Drag>)
@@ -249,7 +227,7 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
               key={slotID}
               sumAngle={0}
               activeGroup={props.groups[props.activeGroupIndex]}
-              {...state.slots[slotID]}
+              {...actionViewContext.slots[slotID]}
             />
           ))
         }
