@@ -76,7 +76,9 @@ export class FriendlyHealthBars extends React.Component<Props, State> {
   }
 
   private updateFriendlyPlayerNames = (entityState: EntityStateModel) => {
-    if (entityState["type"] !== "player" || entityState["characterKind"] !== CharacterKind.User ) {
+    if (entityState["type"] !== "player" ||
+        entityState["characterKind"] !== CharacterKind.User ||
+        this.state.friendlyPlayers[entityState.name]) {
       return;
     }
 
