@@ -159,13 +159,17 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     this.evh = camelotunchained.game.abilityBarState.onUpdated(() => {
       if (!this.clientAbilitiesCache ||
           !isEqual(this.clientAbilitiesCache, camelotunchained.game.abilityBarState.abilities)) {
-        this.initializeActionView();
+        // TODO: New ability bar came in e.g. building - gnna handle this case later
       }
     });
   }
 
   public componentWillUnmount() {
     this.evh.clear();
+  }
+
+  private updateLocalStorage = (state: ContextState) => {
+    localStorage.setItem(ABILITY_BAR_KEY, JSON.stringify(state));
   }
 
   private initializeActionView = () => {
@@ -183,10 +187,10 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
 
     if (!actionView) {
       actionView = this.getInitialCharacterActionView();
-      // localStorage.setItem(ABILITY_BAR_KEY, JSON.stringify(actionView));
+      this.updateLocalStorage(actionView);
     }
 
-    this.setState({ ...actionView });
+    this.setState({ ...actionView, editMode: EditMode.Disabled });
   }
 
   private getInitialCharacterActionView = () => {
@@ -268,9 +272,10 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     }
 
     const newGroupId = genID();
-    this.setState((state) => ({
+    const updatedState: ContextState = {
+      ...this.state,
       anchors: {
-        ...state.anchors,
+        ...this.state.anchors,
         [anchor.id]: {
           ...anchor,
           groups: [
@@ -279,7 +284,10 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
           ],
         },
       },
-    }));
+    };
+
+    this.updateLocalStorage(updatedState);
+    this.setState(updatedState);
   }
 
   private removeGroup = (anchorId: string, groupId: string) => {
@@ -292,13 +300,16 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       anchor.activeGroupIndex = anchor.groups.length - 1;
     }
 
-    this.setState((state) => ({
-      ...state,
+    const updatedState: ContextState = {
+      ...this.state,
       anchors: {
-        ...state.anchors,
+        ...this.state.anchors,
         [anchor.id]: anchor,
       },
-    }));
+    };
+
+    this.updateLocalStorage(updatedState);
+    this.setState(updatedState);
   }
 
   private activateGroup = (anchorId: string, groupIndex: number) => {
@@ -313,16 +324,19 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       return;
     }
 
-    this.setState((state) => ({
-      ...state,
+    const updatedState: ContextState = {
+      ...this.state,
       anchors: {
-        ...state.anchors,
+        ...this.state.anchors,
         [anchorId]: {
           ...anchor,
           activeGroupIndex: groupIndex,
         },
       },
-    }));
+    };
+
+    this.updateLocalStorage(updatedState);
+    this.setState(updatedState);
   }
 
   private activateNextGroup = (anchorId: string) => {
@@ -337,16 +351,19 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       index = 0;
     }
 
-    this.setState((state) => ({
-      ...state,
+    const updatedState: ContextState = {
+      ...this.state,
       anchors: {
-        ...state.anchors,
+        ...this.state.anchors,
         [anchorId]: {
           ...anchor,
           activeGroupIndex: index,
         },
       },
-    }));
+    };
+
+    this.updateLocalStorage(updatedState);
+    this.setState(updatedState);
   }
 
   private activatePrevGroup = (anchorId: string) => {
@@ -361,16 +378,19 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       index = anchor.groups.length - 1;
     }
 
-    this.setState((state) => ({
-      ...state,
+    const updatedState: ContextState = {
+      ...this.state,
       anchors: {
-        ...state.anchors,
+        ...this.state.anchors,
         [anchorId]: {
           ...anchor,
           activeGroupIndex: index,
         },
       },
-    }));
+    };
+
+    this.updateLocalStorage(updatedState);
+    this.setState(updatedState);
   }
 
   private addSlot = (parentId: string) => {
@@ -392,10 +412,10 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         return;
       }
 
-      this.setState((state) => ({
-        ...state,
+      const updatedState: ContextState = {
+        ...this.state,
         anchors: {
-          ...state.anchors,
+          ...this.state.anchors,
           [anchor.id]: {
             ...anchor,
             children: [
@@ -405,10 +425,13 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
           },
         },
         slots: {
-          ...state.slots,
+          ...this.state.slots,
           [newSlot.id]: newSlot,
         },
-      }));
+      }
+
+      this.updateLocalStorage(updatedState);
+      this.setState(updatedState);
     } else {
       const parent = this.state.slots[parentId];
 
@@ -417,10 +440,10 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         return;
       }
 
-      this.setState((state) => ({
-        ...state,
+      const updatedState: ContextState = {
+        ...this.state,
         slots: {
-          ...state.slots,
+          ...this.state.slots,
           [parent.id]: {
             ...parent,
             children: [
@@ -430,7 +453,9 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
           },
           [newSlot.id]: newSlot,
         },
-      }));
+      }
+      this.updateLocalStorage(updatedState);
+      this.setState(updatedState);
     }
   }
 
@@ -459,14 +484,17 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         if (slots[child]) slots[child].parent = anchor.id;
       });
 
-      this.setState(() => ({
+      const updatedState: ContextState = {
         ...this.state,
         anchors: {
           ...this.state.anchors,
           [anchor.id]: anchor,
         },
         slots,
-      }));
+      };
+
+      this.updateLocalStorage(updatedState);
+      this.setState(updatedState);
     }
 
     const parent = cloneDeep(this.state.slots[slot.parent]);
@@ -485,7 +513,12 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     });
     slots[parent.id] = parent;
 
-    this.setState({ slots });
+    const updatedState: ContextState = {
+      ...this.state,
+      slots,
+    };
+    this.updateLocalStorage(updatedState);
+    this.setState(updatedState);
   }
 
   private setSlotAngle = (slotId: string, angle: number) => {
@@ -495,16 +528,18 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       return;
     }
 
-    this.setState((state) => ({
-      ...state,
+    const updatedState: ContextState = {
+      ...this.state,
       slots: {
-        ...state.slots,
+        ...this.state.slots,
         [slot.id]: {
           ...slot,
           angle,
         },
       },
-    }));
+    };
+    this.updateLocalStorage(updatedState);
+    this.setState(updatedState);
   }
 
   private addAction = (actionId: string, groupId: string, slotId: string) => {
@@ -514,13 +549,15 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       slot: slotId,
     });
 
-    this.setState((state) => ({
-      ...state,
+    const updatedState: ContextState = {
+      ...this.state,
       actions: {
-        ...state.actions,
+        ...this.state.actions,
         [actionId]: positions,
       },
-    }));
+    };
+    this.updateLocalStorage(updatedState);
+    this.setState(updatedState);
   }
 
   private addAndRemoveAction = (
@@ -541,25 +578,30 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       slot: target.slotId,
     });
 
-    this.setState((state) => ({
-      ...state,
+    const updatedState: ContextState = {
+      ...this.state,
       actions: {
-        ...state.actions,
+        ...this.state.actions,
         [actionId]: positions,
       },
-    }));
+    };
+    this.updateLocalStorage(updatedState);
+    this.setState(updatedState);
   }
 
   private removeAction = (actionId: string, groupId: string, slotId: string) => {
     const positions = (this.state.actions[actionId] || []).slice()
       .filter(a => !(a.group === groupId && a.slot === slotId));
-    this.setState((state) => ({
-      ...state,
+
+    const updatedState: ContextState = {
+      ...this.state,
       actions: {
-        ...state.actions,
+        ...this.state.actions,
         [actionId]: positions,
       },
-    }));
+    };
+    this.updateLocalStorage(updatedState);
+    this.setState(updatedState);
   }
 
   private replaceOrSwapAction = (
@@ -596,14 +638,16 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         slot: target.slotId,
       });
 
-      this.setState((state) => ({
-        ...state,
+      const updatedState: ContextState = {
+        ...this.state,
         actions: {
-          ...state.actions,
+          ...this.state.actions,
           [target.actionId]: targetPositions,
           [from.actionId]: fromPositions,
         },
-      }));
+      };
+      this.updateLocalStorage(updatedState);
+      this.setState(updatedState);
     } else {
       // swapping
       const targetPositions = (this.state.actions[target.actionId] || []).slice()
@@ -620,14 +664,16 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         slot: target.slotId,
       });
 
-      this.setState((state) => ({
-        ...state,
+      const updatedState: ContextState = {
+        ...this.state,
         actions: {
-          ...state.actions,
+          ...this.state.actions,
           [target.actionId]: targetPositions,
           [from.actionId]: fromPositions,
         },
-      }));
+      };
+      this.updateLocalStorage(updatedState);
+      this.setState(updatedState);
     }
   }
 
@@ -636,15 +682,18 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       return;
     }
 
-    this.setState((state) => ({
-      ...state,
+    const updatedState = {
+      ...this.state,
       anchors: {
-        ...state.anchors,
+        ...this.state.anchors,
         [anchorId]: {
-          ...state.anchors[anchorId],
+          ...this.state.anchors[anchorId],
           position,
         },
       },
-    }));
+    }
+
+    this.updateLocalStorage(updatedState);
+    this.setState(updatedState);
   }
 }

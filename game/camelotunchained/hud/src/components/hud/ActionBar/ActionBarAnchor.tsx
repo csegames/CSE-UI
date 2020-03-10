@@ -124,7 +124,7 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
     if (ref) {
       setBounds(getBoundsWithChildren(ref));
     }
-  }, [actionViewContext.editMode, ref, inEditMode]);
+  }, [ref]);
 
   function handleMouseDown(e: React.MouseEvent) {
 
