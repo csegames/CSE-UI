@@ -157,6 +157,7 @@ export class StartScreen extends React.Component<Props, State> {
 
   public componentDidMount() {
     game.playGameSound(SoundEvents.PLAY_USER_FLOW_LOBBY);
+    game.playGameSound(SoundEvents.PLAY_MUSIC_IN_GAME);
   }
 
   private onSelectRoute = (route: StartScreenRoute) => {
