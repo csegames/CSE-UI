@@ -209,6 +209,7 @@ export interface State {
 
 // tslint:disable-next-line:function-name
 class HUDWithInjectedContext extends React.Component<Props, State> {
+  private shouldPlayLoadingScreenSound: boolean = true;
   private showEVH: EventHandle;
   private hideEVH: EventHandle;
   private creditsScreenShowEVH: EventHandle;
@@ -394,6 +395,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   private showLobby = () => {
     console.log("Showing lobby");
     this.setState({ isLobbyVisible: true });
+    this.shouldPlayLoadingScreenSound = true;
 
     console.log('Trying to disconnect from chat');
     disconnectChat();
@@ -422,7 +424,10 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
     if (this.props.matchmakingContext.isWaitingOnServer) {
       const fourminutes = 4 * 60 * 1000;
       console.log("Waiting on server. Force loading the loadingscreen");
-      game.playGameSound(SoundEvents.PLAY_USER_FLOW_LOADING_SCREEN);
+      if (this.shouldPlayLoadingScreenSound) {
+        game.playGameSound(SoundEvents.PLAY_USER_FLOW_LOADING_SCREEN);
+        this.shouldPlayLoadingScreenSound = false;
+      }
       game.trigger("forceshow-loadingscreen", "We're trying to create a server for you! Hang tight", fourminutes, () => {
         if (this.props.matchmakingContext.isWaitingOnServer) {
           console.log("Timeout on Waiting on server. Returning to lobby with error");
@@ -444,6 +449,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
       fullScreenNavigateTo(Route.EndGameStats);
       this.setState({ isLobbyVisible: true, scenarioID });
       game.playGameSound(SoundEvents.PLAY_SCENARIO_END);
+      this.shouldPlayLoadingScreenSound = true;
 
       console.log('Trying to disconnect from chat');
       disconnectChat();

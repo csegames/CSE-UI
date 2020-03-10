@@ -75,6 +75,7 @@ export interface State {
 }
 
 export class ScenarioIntro extends React.Component<Props, State> {
+  private shouldPlayInGameMusic: boolean = true;
   private evh: EventHandle;
   private countdownTimeout: number;
   private animateTimeout: number;
@@ -192,6 +193,11 @@ export class ScenarioIntro extends React.Component<Props, State> {
   }
 
   private playCountdownSound = (countdown: number) => {
+    if (this.shouldPlayInGameMusic) {
+      game.playGameSound(SoundEvents.PLAY_MUSIC_IN_GAME);
+      this.shouldPlayInGameMusic = false;
+    }
+
     switch (countdown) {
       case 10: {
         game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_10);
