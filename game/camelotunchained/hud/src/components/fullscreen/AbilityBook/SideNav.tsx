@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { Routes } from 'services/session/AbilityBookState';
+import { Routes } from '../../context/AbilityBookContext';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 // #region Container constants

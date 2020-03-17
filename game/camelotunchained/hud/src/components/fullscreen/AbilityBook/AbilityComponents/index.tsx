@@ -7,7 +7,7 @@
 import React, { useContext, useState } from 'react';
 import Fuse, { FuseOptions } from 'fuse.js';
 import { styled } from '@csegames/linaria/react';
-import { AbilityBookContext } from '../index';
+import { AbilityBookContext } from '../../../context/AbilityBookContext';
 import { ComponentItem } from './ComponentItem';
 import { FilterHeader } from './FilterHeader';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';

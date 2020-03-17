@@ -24,9 +24,10 @@ interface ContextState {
   slots: Dictionary<ActionSlot>;
 
   // ClientSlotID handling. A ClientSlotID is an id used for keybinding a slot on the client
-  clientSlotIDMap: { [clientSlotID: number]: string; }; // client slot id to ui slot id map
+  clientSlotIDMap: { [clientSlotID: number]: string[]; }; // client slot id to ui slot id map
 
   editMode: EditMode;
+  queuedAbilityId: number;
 }
 
 interface ContextFunctions {
@@ -60,6 +61,7 @@ interface ContextFunctions {
       slotId: string,
   }) => void;
   setAnchorPosition: (anchorId: string, position: Vec2f) => void;
+  queueAddAction: (abilityId: number) => void;
 }
 
 export type ActionViewContextState = ContextState & ContextFunctions;
@@ -81,6 +83,7 @@ export interface ActionSlot {
   id: string;
   angle: number;
   clientSlotID: number;
+  actionId: string;
   parent: string;
   children: string[];
 }
@@ -93,6 +96,7 @@ export function getDefaultActionViewContextState(): ContextState {
     slots: {},
     clientSlotIDMap: {},
     editMode: EditMode.Disabled,
+    queuedAbilityId: null,
   }
 }
 
@@ -114,11 +118,13 @@ export const ActionViewContext = React.createContext<ActionViewContextState>({
   removeAction: noOp,
   replaceOrSwapAction: noOp,
   setAnchorPosition: noOp,
+  queueAddAction: noOp,
 });
 
 export class ActionViewContextProvider extends React.Component<{}, ContextState> {
   private evh: EventHandle;
   private clientAbilitiesCache: ArrayMap<AbilityBarItem>;
+  private isInitial: boolean = true;
 
   constructor(props: {}) {
     super(props);
@@ -145,6 +151,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         removeAction: this.removeAction,
         replaceOrSwapAction: this.replaceOrSwapAction,
         setAnchorPosition: this.setAnchorPosition,
+        queueAddAction: this.queueAddAction,
       }}>
         {this.props.children}
       </ActionViewContext.Provider>
@@ -157,6 +164,9 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     }
 
     this.evh = camelotunchained.game.abilityBarState.onUpdated(() => {
+      if (this.isInitial) {
+        this.initializeActionView();
+      }
       if (!this.clientAbilitiesCache ||
           !isEqual(this.clientAbilitiesCache, camelotunchained.game.abilityBarState.abilities)) {
         // TODO: New ability bar came in e.g. building - gnna handle this case later
@@ -173,6 +183,10 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
   }
 
   private initializeActionView = () => {
+    if (Object.keys(camelotunchained.game.abilityBarState.abilities).length === 0) {
+      return;
+    }
+
     this.clientAbilitiesCache = camelotunchained.game.abilityBarState.abilities;
     let actionViewString = localStorage.getItem(ABILITY_BAR_KEY);
 
@@ -190,6 +204,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       this.updateLocalStorage(actionView);
     }
 
+    this.isInitial = false;
     this.setState({ ...actionView, editMode: EditMode.Disabled });
   }
 
@@ -198,7 +213,8 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     const groupId = genID();
 
     const slots: Dictionary<ActionSlot> = {};
-    const clientSlotIDMap: { [clientSlotID: number]: string; } = {};
+    const clientSlotIDMap: { [clientSlotID: number]: string[]; } = {};
+    const actions: { [actionId: string]: ActionPosition[] } = {};
 
     let firstSlotId: string = null;
     let prevSlotId: string = null;
@@ -213,15 +229,22 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         nextSlotId = genID();
       }
 
+      const actionId = ability.id.toString();
       slots[currentSlotId] = {
         id: currentSlotId,
         angle: 0,
         clientSlotID: ability.id,
+        actionId,
         parent: prevSlotId === null ? anchorId : prevSlotId,
         children: nextSlotId ? [nextSlotId] : [],
       };
 
-      clientSlotIDMap[ability.id] = currentSlotId;
+      actions[actionId] = [{
+        group: groupId,
+        slot: currentSlotId,
+      }]
+
+      clientSlotIDMap[ability.id] = [currentSlotId];
 
       prevSlotId = currentSlotId;
 
@@ -240,28 +263,27 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
           children: [firstSlotId],
         },
       },
-      actions: {
-        one: Object.values(slots).map((slot) => ({
-          group: groupId,
-          slot: slot.id,
-        })),
-      },
+      actions,
       slots,
       clientSlotIDMap,
       editMode: EditMode.Disabled,
-    }
+      queuedAbilityId: null,
+    } as ContextState;
   }
 
   private enableActionEditMode = () => {
     this.setState({ editMode: EditMode.ActionEdit });
+    camelotunchained.game._cse_dev_enterActionBarEditMode();
   }
 
   private enableSlotEditMode = () => {
     this.setState({ editMode: EditMode.SlotEdit });
+    camelotunchained.game._cse_dev_enterActionBarEditMode();
   }
 
   private disableEditMode = () => {
     this.setState({ editMode: EditMode.Disabled });
+    camelotunchained.game._cse_dev_exitActionBarEditMode();
   }
 
   private addGroup = (anchorId: string) => {
@@ -398,6 +420,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     const newSlot: ActionSlot = {
       id: genID(),
       angle: 0,
+      actionId: '',
       clientSlotID: Number(clientSlotIdKeys[clientSlotIdKeys.length - 1]) + 1,
       parent: parentId,
       children: [],
@@ -551,13 +574,26 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       slot: slotId,
     });
 
+    const clientSlotIdMapClone = cloneDeep(this.state.clientSlotIDMap);
+    clientSlotIdMapClone[actionId].push(slotId);
+
     const updatedState: ContextState = {
       ...this.state,
       actions: {
         ...this.state.actions,
         [actionId]: positions,
       },
+      clientSlotIDMap: clientSlotIdMapClone,
+      slots: {
+        ...this.state.slots,
+        [slotId]: {
+          ...this.state.slots[slotId],
+          actionId,
+        },
+      },
+      queuedAbilityId: null,
     };
+
     this.updateLocalStorage(updatedState);
     this.setState(updatedState);
   }
@@ -619,7 +655,6 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     }
   ) => {
     if (!target || !from) {
-      console.warn(`Attempted to swap actions with invalid locations.`);
       return;
     }
 
@@ -647,13 +682,22 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
           [target.actionId]: targetPositions,
           [from.actionId]: fromPositions,
         },
+        slots: {
+          ...this.state.slots,
+          [target.slotId]: {
+            ...this.state.slots[target.slotId],
+            actionId: from.actionId,
+          }
+        },
+        queuedAbilityId: null,
       };
+
       this.updateLocalStorage(updatedState);
       this.setState(updatedState);
     } else {
       // swapping
       const targetPositions = (this.state.actions[target.actionId] || []).slice()
-      .filter(a => !(a.group === target.groupId && a.slot === target.slotId));
+        .filter(a => !(a.group === target.groupId && a.slot === target.slotId));
       targetPositions.push({
         group: from.groupId,
         slot: from.slotId,
@@ -673,7 +717,20 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
           [target.actionId]: targetPositions,
           [from.actionId]: fromPositions,
         },
+        slots: {
+          ...this.state.slots,
+          [from.slotId]: {
+            ...this.state.slots[from.slotId],
+            actionId: target.actionId,
+          },
+          [target.slotId]: {
+            ...this.state.slots[target.slotId],
+            actionId: from.actionId,
+          }
+        },
+        queuedAbilityId: null,
       };
+
       this.updateLocalStorage(updatedState);
       this.setState(updatedState);
     }
@@ -697,5 +754,10 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
 
     this.updateLocalStorage(updatedState);
     this.setState(updatedState);
+  }
+
+  private queueAddAction = (abilityId: number) => {
+    this.setState({ queuedAbilityId: abilityId });
+    this.enableActionEditMode();
   }
 }

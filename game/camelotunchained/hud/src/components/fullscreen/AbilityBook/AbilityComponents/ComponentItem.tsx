@@ -7,7 +7,7 @@
 import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { AbilityBookQuery } from 'gql/interfaces';
-import { AbilityBookContext } from '..';
+import { AbilityBookContext } from '../../../context/AbilityBookContext';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 import { Tooltip } from 'shared/Tooltip';
 import { TooltipContent } from 'fullscreen/AbilityBuilder/AbilityCreation/TooltipContent';

@@ -53,6 +53,7 @@ import { DevUI } from '../shared/DevUI';
 import HUDZOrder from 'services/session/HUDZOrder';
 
 import { ActionBars } from './ActionBar';
+import { AddActionBtn } from './ActionButton/AddActionBtn';
 import { DragAndDropV2Renderer } from 'utils/DragAndDropV2';
 import { WarbandNotificationProvider } from 'hud/WarbandDisplay/WarbandNotificationProvider';
 import { BattleGroupNotificationProvider } from 'hud/BattleGroups/BattleGroupNotificationProvider';
@@ -174,6 +175,8 @@ class HUDViewInternal extends React.Component<HUDProps, HUDState> {
               <ScenarioResults />
 
               <HUDFullScreen />
+
+              <AddActionBtn />
 
               {showNewAbilityBar ?
                 <ActionBars /> :

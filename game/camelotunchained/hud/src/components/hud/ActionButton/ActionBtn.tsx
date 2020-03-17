@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
 
 import { Ability } from 'gql/interfaces';
@@ -12,7 +12,7 @@ import { InnerRing } from './InnerRing';
 import { OuterRing } from './OuterRing';
 
 type ContainerProps = { radius: number; acceptInput: boolean; } & React.HTMLProps<HTMLDivElement>;
-const Container = styled.div`
+export const Container = styled.div`
   pointer-events: ${(props: ContainerProps) => props.acceptInput ? 'all' : 'none'};
   position: absolute;
   border-radius: 50%;
@@ -110,6 +110,22 @@ const QueuedStateTick = styled.div`
   background-size: 90%;
 `;
 
+export function AbilityIcon(props: { icon: string }) {
+  const [icon, setIcon] = useState(props.icon);
+
+  useEffect(() => {
+    setIcon(props.icon);
+  }, [props.icon]);
+
+  function onError() {
+    setIcon('images/unknown-item.jpg');
+  }
+
+  return (
+    <Icon src={icon} onError={onError} />
+  );
+}
+
 export interface ActionBtnProps extends Ability {
   keybind: string;
   additionalStyles?: React.CSSProperties;
@@ -124,23 +140,13 @@ export interface State {
   abilityState: ImmutableAbilityState;
 }
 
-function AbilityIcon(props: { icon: string }) {
-  const [icon, setIcon] = useState(props.icon);
-
-  function onError() {
-    setIcon('images/unknown-item.jpg');
-  }
-
-  return (
-    <Icon src={icon} onError={onError} />
-  );
-}
+export type Props = ActionBtnProps & InjectedProps;
 
 // tslint:disable-next-line:function-name
-class ActionBtnWithInjectedProps extends React.Component<ActionBtnProps & InjectedProps, State> {
+class ActionBtnWithInjectedProps extends React.Component<Props, State> {
   private evh: EventHandle;
   private interval: number;
-  constructor(props: ActionBtnProps & InjectedProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       abilityState: cloneDeep(camelotunchained.game.abilityStates[props.id]),
@@ -175,11 +181,20 @@ class ActionBtnWithInjectedProps extends React.Component<ActionBtnProps & Inject
   }
 
   public componentDidMount() {
-    if (!this.props.id) {
+    if (typeof this.props.id !== 'number') {
       return;
     }
 
     this.evh = camelotunchained.game.abilityStates[this.props.id].onUpdated(this.handleAbilityStateUpdate);
+  }
+
+  public componentDidUpdate(prevProps: Props) {
+    if (prevProps.id !== this.props.id) {
+      this.evh.clear();
+      this.evh = camelotunchained.game.abilityStates[this.props.id].onUpdated(this.handleAbilityStateUpdate);
+
+      this.setState({ abilityState: cloneDeep(camelotunchained.game.abilityStates[this.props.id]) });
+    }
   }
 
   public componentWillUnmount() {

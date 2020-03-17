@@ -4,10 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { AbilityBookQuery } from 'gql/interfaces';
+
+import { ActionViewContext } from '../../../context/ActionViewContext';
 import { AbilityComponent } from './AbilityComponent';
 import { useAbilityBuilderReducer } from 'services/session/AbilityBuilderState';
 import { Tooltip } from 'shared/Tooltip';
@@ -221,6 +223,7 @@ export interface Props {
 // tslint:disable-next-line:function-name
 export function AbilityItem(props: Props) {
   const { ability } = props;
+  const actionViewContext = useContext(ActionViewContext);
 
   // @ts-ignore:no-unused-var
   const [_, dispatch] = useAbilityBuilderReducer();
@@ -232,6 +235,13 @@ export function AbilityItem(props: Props) {
         <div dangerouslySetInnerHTML={{ __html: ability.description }} />
       </TooltipContentContainer>
     );
+  }
+
+  function onAddToActionBarClick() {
+    actionViewContext.queueAddAction(props.ability.id);
+
+    // close ability-book
+    game.trigger('navigate', 'ability-book');
   }
 
   const tooltipContent = getTooltipContent();
@@ -251,9 +261,7 @@ export function AbilityItem(props: Props) {
           ))}
         </ComponentContainer>
       </InfoContainer>
-      <Tooltip content='Not yet implemented'>
-        <AddToBarButton>+ ADD TO ACTION BAR</AddToBarButton>
-      </Tooltip>
+      <AddToBarButton onClick={onAddToActionBarClick}>+ ADD TO ACTION BAR</AddToBarButton>
     </ListItem>
   );
 }

@@ -76,7 +76,7 @@ class CSEChat  {
       loginToken: true,
       access_token: this.config.getPassword(),
     });
-    this.client.registerSaslMechanism(cseLoginTokenMechanism);
+    (this.client as any).registerSaslMechanism(cseLoginTokenMechanism);
     this.initializeEvents();
     return this.client;
   }

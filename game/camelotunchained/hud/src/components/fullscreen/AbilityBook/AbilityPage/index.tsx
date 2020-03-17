@@ -10,11 +10,10 @@ import Fuse, { FuseOptions } from 'fuse.js';
 import { webAPI } from '@csegames/library/lib/camelotunchained';
 import { styled } from '@csegames/linaria/react';
 
-import { AbilityBookContext } from '../index';
+import { AbilityBookContext, Routes } from '../../../context/AbilityBookContext';
 import { AbilityItem } from './AbilityItem';
 import { FilterHeader } from './FilterHeader';
 import { Modal } from './Modal';
-import { useAbilityBookReducer, Routes } from 'services/session/AbilityBookState';
 import { AbilityType, useAbilityBuilderReducer } from 'services/session/AbilityBuilderState';
 import { AbilityBookQuery } from 'gql/interfaces';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
@@ -115,9 +114,8 @@ export const fuseSearchOptions: FuseOptions<any> = {
 // tslint:disable-next-line:function-name
 export function AbilityPage(props: Props) {
   const [abilityBuilderState, abilityBuilderDispatch] = useAbilityBuilderReducer();
-  const [state] = useAbilityBookReducer();
   const { visibleComponentLeft, visibleComponentRight } = useContext(FullScreenContext);
-  const { refetch, abilityNetworkToAbilities } = useContext(AbilityBookContext);
+  const abilityBookContext = useContext(AbilityBookContext);
   const [searchValue, setSearchValue] = useState('');
   const [componentFilters, setComponentFilter] = useState([]);
   const [selectedAbility, setSelectedAbility] = useState<AbilityBookQuery.Abilities>(null);
@@ -163,7 +161,7 @@ export function AbilityPage(props: Props) {
 
     if (res.ok) {
       onCloseModal();
-      refetch();
+      abilityBookContext.refetch();
 
       if (abilityBuilderState.modifiedAbilityID === selectedAbility.id) {
         abilityBuilderDispatch({ type: 'reset' });
@@ -197,14 +195,14 @@ export function AbilityPage(props: Props) {
     setComponentFilter(componentFilterClone);
   }
 
-  if (!abilityNetworkToAbilities[Routes[state.activeRoute]]) {
+  if (!abilityBookContext.abilityNetworkToAbilities[Routes[abilityBookContext.activeRoute]]) {
     return null;
   }
 
   let abilities: AbilityBookQuery.Abilities[] = [];
   const abilityRows = [];
-  if (!isEmpty(abilityNetworkToAbilities)) {
-    abilities = [...abilityNetworkToAbilities[Routes[state.activeRoute]]];
+  if (!isEmpty(abilityBookContext.abilityNetworkToAbilities)) {
+    abilities = [...abilityBookContext.abilityNetworkToAbilities[Routes[abilityBookContext.activeRoute]]];
 
     // Handle component category filtering
     if (!isEmpty(componentFilters)) {

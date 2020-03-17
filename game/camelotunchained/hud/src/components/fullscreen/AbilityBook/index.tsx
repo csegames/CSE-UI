@@ -4,62 +4,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState, useEffect } from 'react';
-import gql from 'graphql-tag';
+import React, { useContext, useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
-import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
+
+import { AbilityBookContext, Routes } from '../../context/AbilityBookContext';
 import { SideNav } from './SideNav';
-import { AbilityBookQuery } from 'gql/interfaces';
 import { AbilityPage } from './AbilityPage';
 import { AbilityComponents } from './AbilityComponents';
 import { Header } from './Header';
-import { useAbilityBookReducer, Routes } from 'services/session/AbilityBookState';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
-import { AbilityComponentFragment } from 'gql/fragments/AbilityComponentFragment';
-
-const query = gql`
-  query AbilityBookQuery($class: String!) {
-    game {
-      abilityComponents(class: $class) {
-        ...AbilityComponent
-      }
-    }
-    myCharacter {
-      progression {
-        abilityComponents {
-          abilityComponentID
-          level
-          progressionPoints
-        }
-      }
-
-      abilities {
-        id
-        name
-        description
-        icon
-        readOnly
-        abilityComponents {
-          ...AbilityComponent
-        }
-
-        abilityNetwork {
-          id
-          componentCategories {
-            id
-            displayInfo {
-              name
-            }
-          }
-          display {
-            name
-          }
-        }
-      }
-    }
-  }
-  ${AbilityComponentFragment}
-`;
 
 const Container = styled.div`
   display: flex;
@@ -122,178 +75,22 @@ const PageContainer = styled.div`
   }
 `;
 
-export interface AbilityNetworks {
-  [name: string]: AbilityBookQuery.AbilityNetwork;
-}
-
-export interface AbilityNetworkToAbilities {
-  [name: string]: AbilityBookQuery.Abilities[];
-}
-
-export interface AbilityComponents {
-  [id: string]: AbilityBookQuery.AbilityComponents;
-}
-
-export interface AbilityComponentIDToProgression {
-  [id: string]: AbilityBookQuery._AbilityComponents;
-}
-
-export interface ComponentCategoryToComponenentIDs {
-  [categoryName: string]: string[];
-}
-
-export interface State {
-  loading: boolean;
-  refetch: () => void;
-  abilityNetworks: AbilityNetworks;
-  abilityNetworkToAbilities: AbilityNetworkToAbilities;
-  abilityComponents: AbilityComponents;
-  abilityComponentIDToProgression: AbilityComponentIDToProgression;
-  componentCategoryToComponentIDs: ComponentCategoryToComponenentIDs;
-}
-
-export interface Props {
-}
-
-const defaultContextState: State = {
-  loading: true,
-  refetch: () => {},
-  abilityNetworks: {},
-  abilityNetworkToAbilities: {},
-  abilityComponents: {},
-  abilityComponentIDToProgression: {},
-  componentCategoryToComponentIDs: {},
-};
-
-export const AbilityBookContext = React.createContext(defaultContextState);
-
 // tslint:disable-next-line:function-name
-export function AbilityBook(props: Props) {
-  let gql: GraphQLResult<AbilityBookQuery.Query>;
-  const [state, dispatch] = useAbilityBookReducer();
-  const [loading, setLoading] = useState(true);
-  const [abilityNetworks, setAbilityNetworks] = useState(defaultContextState.abilityNetworks);
-  const [abilityNetworkToAbilities, setAbilityNetworkToAbilities] = useState(defaultContextState.abilityNetworkToAbilities);
-  const [abilityComponents, setAbilityComponents] = useState(defaultContextState.abilityComponents);
-  const [abilityComponentIDToProgression, setAbilityComponentIDToProgression] =
-    useState(defaultContextState.abilityComponentIDToProgression);
-  const [componentCategoryToComponentIDs, setComponentCategoryToComponentIDs] =
-    useState(defaultContextState.componentCategoryToComponentIDs);
+export function AbilityBook() {
+  const abilityBookContext = useContext(AbilityBookContext);
 
   useEffect(() => {
-    const listener = game.on('refetch-ability-book', refetch);
     return function() {
-      dispatch({ type: 'reset' });
-      listener.clear();
+      abilityBookContext.resetState();
     };
   }, []);
 
-  useEffect(() => {},
-    [state, abilityNetworks, abilityNetworkToAbilities, abilityComponents, abilityComponentIDToProgression]);
-
   function onRouteClick(route: Routes) {
-    dispatch({ type: 'set-active-route', activeRoute: route });
-  }
-
-  function refetch() {
-    if (gql) {
-      gql.refetch();
-    }
-  }
-
-  function handleQueryResult(graphql: GraphQLResult<AbilityBookQuery.Query>) {
-    gql = graphql;
-    if (graphql.loading || !graphql.data) return graphql;
-
-    const myCharacter = graphql.data.myCharacter;
-    const initialState = getInitialState(
-      myCharacter.abilities,
-      myCharacter.progression ? myCharacter.progression.abilityComponents : [],
-      graphql.data.game.abilityComponents,
-    );
-
-    setAbilityNetworks(initialState.abilityNetworks);
-    setAbilityNetworkToAbilities(initialState.abilityNetworkToAbilities);
-    setAbilityComponents(initialState.abilityComponents);
-    setAbilityComponentIDToProgression(initialState.abilityComponentIDToProgression);
-    setComponentCategoryToComponentIDs(initialState.componentCategoryToComponentIDs);
-    setLoading(false);
-
-    const abilityNetworksArray = Object.keys(initialState.abilityNetworks);
-    if (abilityNetworksArray.length > 0) {
-      dispatch({
-        type: 'set-active-route', activeRoute: Routes[abilityNetworksArray.sort((a, b) => a.localeCompare(b))[0]],
-      });
-    }
-  }
-
-  function getInitialState(abilities: AbilityBookQuery.Abilities[],
-                            abilityComponentProgression: AbilityBookQuery._AbilityComponents[],
-                            allAbilityComponents: AbilityBookQuery.AbilityComponents[]) {
-    const abilityNetworks: AbilityNetworks = {};
-    const abilityNetworkToAbilities: AbilityNetworkToAbilities = {};
-    const abilityComponents: AbilityComponents = {};
-    const abilityComponentIDToProgression: AbilityComponentIDToProgression = {};
-    const componentCategoryToComponentIDs: ComponentCategoryToComponenentIDs = {};
-    abilities.forEach((ability) => {
-      const name = ability.abilityNetwork.display.name;
-
-      // Miscellaneous abilities
-      if (name !== 'Magic' &&
-          name !== 'Melee' &&
-          name !== 'Archery' &&
-          name !== 'Throwing' &&
-          name !== 'Shout' &&
-          name !== 'Song') {
-        if (!abilityNetworkToAbilities['Misc']) {
-          abilityNetworkToAbilities['Misc'] = [ability];
-          abilityNetworks['Misc'] = ability.abilityNetwork;
-        } else {
-          abilityNetworkToAbilities['Misc'].push(ability);
-        }
-        return;
-      }
-
-
-      if (!abilityNetworkToAbilities[name]) {
-        abilityNetworkToAbilities[name] = [ability];
-        abilityNetworks[name] = ability.abilityNetwork;
-      } else {
-        abilityNetworkToAbilities[name].push(ability);
-      }
-    });
-
-    allAbilityComponents.forEach((abilityComponent) => {
-      abilityComponents[abilityComponent.id] = abilityComponent;
-
-      const categoryName = abilityComponent.abilityComponentCategory.displayInfo.name;
-      if (componentCategoryToComponentIDs[categoryName]) {
-        if (componentCategoryToComponentIDs[categoryName].includes(abilityComponent.id)) {
-          // Already contains component id, no need to add duplicate
-          return;
-        }
-
-        componentCategoryToComponentIDs[categoryName].push(abilityComponent.id);
-      } else {
-        componentCategoryToComponentIDs[categoryName] = [abilityComponent.id];
-      }
-    });
-
-    abilityComponentProgression.forEach((progression) => {
-      abilityComponentIDToProgression[progression.abilityComponentID] = progression;
-    });
-
-    return {
-      abilityNetworks,
-      abilityNetworkToAbilities,
-      abilityComponents,
-      abilityComponentIDToProgression,
-      componentCategoryToComponentIDs,
-    };
+    abilityBookContext.setActiveRoute(route);
   }
 
   function getHeaderTitle() {
-    switch (state.activeRoute) {
+    switch (abilityBookContext.activeRoute) {
       case Routes.Components: {
         return 'Abilities | Components';
       }
@@ -325,7 +122,7 @@ export function AbilityBook(props: Props) {
   }
 
   function renderSelectedPage() {
-    switch (state.activeRoute) {
+    switch (abilityBookContext.activeRoute) {
       case Routes.Main: {
         return null;
       }
@@ -339,42 +136,18 @@ export function AbilityBook(props: Props) {
   }
 
   return (
-    <GraphQL
-      query={{
-        query,
-        variables: {
-          class: Archetype[camelotunchained.game.selfPlayerState.classID],
-        },
-      }}
-      onQueryResult={handleQueryResult}>
-      {(graphql: GraphQLResult<AbilityBookQuery.Query>) => {
-        return (
-          <AbilityBookContext.Provider
-            value={{
-              loading,
-              refetch: graphql.refetch,
-              abilityNetworks,
-              abilityNetworkToAbilities,
-              abilityComponents,
-              abilityComponentIDToProgression,
-              componentCategoryToComponentIDs,
-            }}>
-            <Container>
-              <Header title={getHeaderTitle()} />
-              <Content>
-                <SideNav
-                  activeRoute={state.activeRoute}
-                  onRouteClick={onRouteClick}
-                  abilityNetworkNames={Object.keys(abilityNetworks)}
-                />
-                <PageContainer>
-                  {!loading && renderSelectedPage()}
-                </PageContainer>
-              </Content>
-            </Container>
-          </AbilityBookContext.Provider>
-        );
-      }}
-    </GraphQL>
+    <Container>
+      <Header title={getHeaderTitle()} />
+      <Content>
+        <SideNav
+          activeRoute={abilityBookContext.activeRoute}
+          onRouteClick={onRouteClick}
+          abilityNetworkNames={Object.keys(abilityBookContext.abilityNetworks)}
+        />
+        <PageContainer>
+          {!abilityBookContext.loading && renderSelectedPage()}
+        </PageContainer>
+      </Content>
+    </Container>
   );
 }

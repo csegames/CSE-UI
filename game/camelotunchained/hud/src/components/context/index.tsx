@@ -6,15 +6,18 @@
 
 import React from 'react';
 import { AbilityBarToggleContextProvider } from './AbilityBarToggleContext';
+import { AbilityBookContextProvider } from './AbilityBookContext';
 import { ActionViewContextProvider } from './ActionViewContext';
 
 export class GlobalProviders extends React.Component<{}> {
   public render() {
     return (
       <AbilityBarToggleContextProvider>
-        <ActionViewContextProvider>
-          {this.props.children};
-        </ActionViewContextProvider>
+        <AbilityBookContextProvider>
+          <ActionViewContextProvider>
+            {this.props.children};
+          </ActionViewContextProvider>
+        </AbilityBookContextProvider>
       </AbilityBarToggleContextProvider>
     );
   }

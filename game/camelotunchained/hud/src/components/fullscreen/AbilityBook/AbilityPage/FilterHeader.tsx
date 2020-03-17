@@ -9,8 +9,8 @@ import { styled } from '@csegames/linaria/react';
 import { FilterDropdown, Section } from '../FilterDropdown';
 import { SearchInput } from '../SearchInput';
 import { FilterCheck } from '../FilterCheck';
-import { AbilityBookContext } from '..';
-import { Routes, useAbilityBookReducer } from 'services/session/AbilityBookState';
+import { AbilityBookContext } from '../../../context/AbilityBookContext';
+import { Routes } from '../../../context/AbilityBookContext';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 
 const Container = styled.div`
@@ -75,17 +75,17 @@ export interface Props {
 
 // tslint:disable-next-line:function-name
 export function FilterHeader(props: Props) {
-  const { abilityNetworks, componentCategoryToComponentIDs, abilityComponents } = useContext(AbilityBookContext);
-  const [state] = useAbilityBookReducer();
+  const abilityBookContext = useContext(AbilityBookContext);
 
-  const networks = abilityNetworks[Routes[state.activeRoute]];
+  const networks = abilityBookContext.abilityNetworks[Routes[abilityBookContext.activeRoute]];
   const componentCategories: Section[] = networks ? networks.componentCategories
-    .filter(componentCategory => componentCategoryToComponentIDs[componentCategory.displayInfo.name])
+    .filter(componentCategory => abilityBookContext.componentCategoryToComponentIDs[componentCategory.displayInfo.name])
     .map((componentCategory) => {
       return {
         title: componentCategory.displayInfo.name,
         selected: true,
-        items: componentCategoryToComponentIDs[componentCategory.displayInfo.name].map(id => abilityComponents[id]),
+        items: abilityBookContext.componentCategoryToComponentIDs[componentCategory.displayInfo.name]
+          .map(id => abilityBookContext.abilityComponents[id]),
       };
     }) : [];
 

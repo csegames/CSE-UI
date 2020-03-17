@@ -16,7 +16,7 @@ enum MouseButtons {
   M5 = 1 << 4,
 }
 
-interface DragEvent {
+export interface DragEvent {
   dataTransfer: any;
   dataKey: string;
   dropTargetID: string;
@@ -140,6 +140,8 @@ export interface DragProps {
   dragRender: () => React.ReactNode;
   dragRenderOffset: Vec2f;
 
+  defaultIsDragging?: boolean;
+
   // Fired when an element is being dragged.
   onDrag?: (e: DragEvent) => any;
 
@@ -200,10 +202,23 @@ export function DragAndDrop(props: DNDProps) {
   const [state, setState] = useDNDState();
 
   const [internalState, setInternalState] = useState({
-    isDragging: false,
+    isDragging: props.type === 'drag' && props.defaultIsDragging ? true : false,
     isDragOver: false,
     id: genID(),
   });
+
+  useEffect(() => {
+    if (props.type === 'drag' && props.defaultIsDragging) {
+      setState({
+        ...state,
+        isDragging: true,
+        dragRender: props.dragRender,
+        dragRenderOffset: props.dragRenderOffset,
+        dataKey: props.dataKey,
+        dataTransfer: props.dataTransfer,
+      });
+    }
+  }, [])
 
   useEffect(() => {
     if (internalState.isDragOver) {

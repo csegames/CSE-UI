@@ -10,7 +10,7 @@ import { AbilityBookQuery } from 'gql/interfaces';
 import { Ring } from 'shared/Ring';
 import { Tooltip } from 'shared/Tooltip';
 import { ComponentTooltip } from './ComponentTooltip';
-import { AbilityBookContext } from '../index';
+import { AbilityBookContext } from '../../../context/AbilityBookContext';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 import { getScaledValue } from 'lib/scale';
 

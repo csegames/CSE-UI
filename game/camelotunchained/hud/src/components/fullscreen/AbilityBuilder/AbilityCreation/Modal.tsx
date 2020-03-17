@@ -4,12 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 import { Button } from './CreateAbilityButton';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 import { AbilityType } from 'services/session/AbilityBuilderState';
-import { useAbilityBookReducer, Routes } from 'services/session/AbilityBookState';
+import { AbilityBookContext, Routes } from '../../../context/AbilityBookContext';
 
 // #region Container constants
 const CONTAINER_PADDING_TOP = 60;
@@ -297,10 +297,8 @@ export interface Props {
 
 // tslint:disable-next-line:function-name
 export function Modal(props: Props) {
+  const abilityBookContext = useContext(AbilityBookContext);
   const { type, name, icon, isModifying, errorMessage, abilityType } = props;
-
-  // @ts-ignore:no-unused-var
-  const [_, abilityBookDispatch] = useAbilityBookReducer();
 
   function closeAbilityBuilder() {
     // For now just close the UI
@@ -308,7 +306,7 @@ export function Modal(props: Props) {
   }
 
   function viewInAbilityBook() {
-    abilityBookDispatch({ type: 'set-active-route', activeRoute: Routes[abilityType.name] });
+    abilityBookContext.setActiveRoute(Routes[abilityType.name]);
     game.trigger('navigate', 'ability-book-left');
   }
 

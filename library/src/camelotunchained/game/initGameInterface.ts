@@ -71,6 +71,11 @@ export function initOutOfContextGame(): Partial<GameInterface> {
   const model: GameModel = {
     _cse_dev_beginTriggerKeyActionLoop: noOp,
     _cse_dev_endTriggerKeyActionLoop: noOp,
+    _cse_dev_enterActionBarEditMode: noOp,
+    _cse_dev_exitActionBarEditMode: noOp,
+    configureSlottedAction: noOp,
+    setActiveAnchorGroup: noOp,
+    activateSlottedAction: noOp,
   };
 
   return withOverrides({
