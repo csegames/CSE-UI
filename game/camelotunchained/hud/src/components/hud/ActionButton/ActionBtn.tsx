@@ -175,11 +175,17 @@ class ActionBtnWithInjectedProps extends React.Component<ActionBtnProps & Inject
   }
 
   public componentDidMount() {
+    if (!this.props.id) {
+      return;
+    }
+
     this.evh = camelotunchained.game.abilityStates[this.props.id].onUpdated(this.handleAbilityStateUpdate);
   }
 
   public componentWillUnmount() {
-    this.evh.clear();
+    if (this.evh) {
+      this.evh.clear();
+    }
   }
 
   private getErrorClassName = () => {

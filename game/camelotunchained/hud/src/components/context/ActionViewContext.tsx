@@ -342,7 +342,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
   private activateNextGroup = (anchorId: string) => {
     const anchor = this.state.anchors[anchorId];
     if (!anchor) {
-      console.warn(`And anchor with id '${anchorId}' was not found.`);
+      console.warn(`Could not activateNextGroup. An anchor with id '${anchorId}' was not found.`);
       return;
     }
 
@@ -369,7 +369,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
   private activatePrevGroup = (anchorId: string) => {
     const anchor = this.state.anchors[anchorId];
     if (!anchor) {
-      console.warn(`And anchor with id '${anchorId}' was not found.`);
+      console.warn(`Could not activatePrevGroup. An anchor with id '${anchorId}' was not found.`);
       return;
     }
 
@@ -481,7 +481,9 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       delete slots[slot.id];
 
       anchor.children.forEach((child) => {
-        if (slots[child]) slots[child].parent = anchor.id;
+        if (slots[child]) {
+          slots[child].parent = anchor.id;
+        }
       });
 
       const updatedState: ContextState = {
