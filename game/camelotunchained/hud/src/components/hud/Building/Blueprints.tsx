@@ -138,7 +138,7 @@ export class Blueprints extends React.Component<BlueprintsProps, BlueprintsState
           {
             game.building.mode === BuildingMode.BlocksSelected ?
             <CreateBtn onClick={() =>
-              game.trigger(camelotunchained.game.engineEvents.EE_OnWantCreateBlueprintFromSelection)}>
+              engine.trigger(camelotunchained.game.engineEvents.EE_OnWantCreateBlueprintFromSelection)}>
               Create Blueprint from selection.
             </CreateBtn> :
             <CreateBtnDisabled>
