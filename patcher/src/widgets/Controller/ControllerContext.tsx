@@ -42,6 +42,8 @@ export enum ServerType {
   HIDDEN,
 }
 
+export const VIGRIDR_CHANNEL = 2200;
+
 // Server interface which the Controller will use for rendering
 export interface PatcherServer {
   name: string;

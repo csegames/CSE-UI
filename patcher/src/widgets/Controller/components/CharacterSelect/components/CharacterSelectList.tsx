@@ -9,7 +9,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 
-import { ControllerContext, PatcherServer } from '../../../ControllerContext';
+import { ControllerContext, PatcherServer, VIGRIDR_CHANNEL } from '../../../ControllerContext';
 import { patcher, ChannelStatus, PatchChannelMode } from '../../../../../services/patcher';
 import CharacterList from './CharacterList';
 import ServerOptionsMenu from './ServerOptionsMenu';
@@ -72,7 +72,7 @@ class CharacterSelectList extends React.Component<Props, CharacterSelectListStat
 
   public render() {
     // Put selected server at top
-    const sortedServers = this.getServers();
+    const sortedServers = this.getServers().filter(s => s.channelID !== VIGRIDR_CHANNEL);
     return (
       <div>
         <MinimizeAll
