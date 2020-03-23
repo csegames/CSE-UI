@@ -11,7 +11,6 @@ export const preloadQueryEvents = {
   championInfoContext: 'preload-gql-championInfoContext',
   colossusProfileContext: 'preload-gql-colossusProfileContext',
   myUserContext: 'preload-gql-myUserContext',
-  statusContext: 'preload-gql-statusContext',
   warbandContext: 'preload-gql-warbandContext',
   matchmakingContext: 'preload-gql-matchmakingContext',
 }
@@ -39,7 +38,6 @@ export class Preloader extends React.Component<Props, State> {
     [preloadQueryEvents.championInfoContext]: false,
     [preloadQueryEvents.colossusProfileContext]: false,
     [preloadQueryEvents.myUserContext]: false,
-    [preloadQueryEvents.statusContext]: false,
     [preloadQueryEvents.warbandContext]: false,
     [preloadQueryEvents.matchmakingContext]: false,
   };

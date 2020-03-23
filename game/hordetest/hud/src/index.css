@@ -4,13 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-// font
-@import './_cu-icons.scss';
-@import './_fs-icons.scss';
+@import './_cu-icons.css';
+@import './_fs-icons.css';
 
 
-@import './_fonts.scss';
-@import './components/shared/DevUI/index.scss';
+@import './_fonts.css';
+@import './components/shared/DevUI/index.css';
 
 html,
 body {

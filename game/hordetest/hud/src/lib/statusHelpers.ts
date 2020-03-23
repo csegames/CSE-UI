@@ -8,8 +8,8 @@ import { StatusContextState } from 'context/StatusContext';
 
 export function findBlockingStatuses(statuses: ArrayMap<Status>, statusContext: StatusContextState) {
   return Object.values(statuses).filter((s) => {
-    const statusDef = statusContext.statusDefs.find(def => def.numericID === s.id);
-    if (!statusDef || !statusDef.blocksAbilities) {
+    const statusDef = statusContext.statusDefs.find(def => def.id === s.id);
+    if (!statusDef || !(statusDef as any).blocksAbilities) {
       return false;
     }
 

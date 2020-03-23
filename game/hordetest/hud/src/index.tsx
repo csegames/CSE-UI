@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import './index.scss';
+import './index.css';
 import './third-party/coherent/coherent.mock.style.css';
 
 import 'core-js/es6/map';

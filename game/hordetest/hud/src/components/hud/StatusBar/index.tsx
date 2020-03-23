@@ -7,7 +7,6 @@
 import React, { useContext } from 'react';
 import { throttle } from 'lodash';
 import { styled } from '@csegames/linaria/react';
-import { StatusDef } from '@csegames/library/lib/hordetest/graphql/schema';
 
 import { StatusContext, StatusContextState } from 'context/StatusContext';
 import { getStatusRemainingDuration } from 'lib/statusHelpers';
@@ -73,7 +72,7 @@ class StatusBarWithInjectedContext extends React.Component<Props, State> {
     let newFriendlyStatuses: StatusWithDef[] = [];
     let newHostileStatuses: StatusWithDef[] = [];
     Object.values(playerStateClone.statuses).forEach((status) => {
-      const statusDef = this.props.statusContext.statusDefs.find(def => def.numericID === status.id);
+      const statusDef = this.props.statusContext.statusDefs.find(def => def.id === status.id);
       if (!statusDef) {
         console.error('Client provided a status that did not have a status def. NumericID: ' + status.id);
         return;

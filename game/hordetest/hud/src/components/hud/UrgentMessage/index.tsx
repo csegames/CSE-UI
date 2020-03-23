@@ -231,7 +231,7 @@ class UrgentMessageWithInjectedContext extends React.Component<Props, State> {
     // Find which status is blocking
     const blockingStatuses = findBlockingStatuses(playerStateClone.statuses, this.props.statusContext);
     const blockingStatus = findMostBlockingStatus(blockingStatuses);
-    const blockingStatusDef = this.props.statusContext.statusDefs.find(def => blockingStatus.id === def.numericID);
+    const blockingStatusDef = this.props.statusContext.statusDefs.find(def => blockingStatus.id === def.id);
     const messageDuration = blockingStatus.duration - (game.worldTime - blockingStatus.startTime);
     if (!blockingStatusDef) {
       // We should always have the statusDef for a blocking status, if we don't default to a basic message
@@ -248,7 +248,7 @@ class UrgentMessageWithInjectedContext extends React.Component<Props, State> {
 
     this.setState({
       isVisible: true,
-      message: blockingStatusDef.name,
+      message: blockingStatusDef.displayInfoName,
       messageType: MessageType.BlockedByStatus,
       blockingStatus,
     });

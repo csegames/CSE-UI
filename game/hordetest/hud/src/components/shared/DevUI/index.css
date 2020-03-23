@@ -5,12 +5,14 @@
   padding: 5px 15px;
   margin: 5px;
   text-align: center;
-  &:hover {
-    background-color: '#777',
-  };
-  &:active {
-    background-color: '#999',
-  };
+}
+
+.dev-ui-button:hover {
+  background-color: #777;
+}
+
+.dev-ui-button:active {
+  background-color: #999;
 }
 
 .dev-ui-content {
@@ -82,7 +84,8 @@
   right: 50px;
   top: 0px;
   color: #cccccc !important;
-  &:hover {
-    color: white !important;
-  }
+}
+
+.dev-ui-maximizeButton:hover {
+  color: white !important;
 }

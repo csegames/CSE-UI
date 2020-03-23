@@ -60,7 +60,7 @@
   font-style: normal;
 }
 
-// KIRSTY
+/* KIRSTY */
 @font-face {
   font-family: 'Kirsty';
   font-style: normal;
@@ -75,7 +75,7 @@
   src: url('../font/Kirsty/KirstyBold.ttf') format('truetype');
 }
 
-// Roboto
+/* Roboto */
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
@@ -104,7 +104,7 @@
   src: url('../font/Roboto/Roboto-BoldItalic.ttf') format('truetype');
 }
 
-// RobotoCondensed
+/* RobotoCondensed */
 @font-face {
   font-family: 'RobotoCondensed';
   font-style: normal;
@@ -133,7 +133,7 @@
   src: url('../font/RobotoCondensed/RobotoCondensed-Bold.ttf') format('truetype');
 }
 
-// Colus
+/* Colus */
 @font-face {
   font-family: 'Colus';
   font-style: normal;
@@ -141,7 +141,7 @@
   src: url('../font/Colus/Colus-Regular.ttf') format('truetype');
 }
 
-// Lato
+/* Lato */
 @font-face {
   font-family: 'Lato';
   font-style: normal;
@@ -170,7 +170,7 @@
   src: url('../font/Lato/Lato-BoldItalic.ttf') format('truetype');
 }
 
-// Exo
+/* Exo */
 @font-face {
   font-family: 'Exo';
   font-style: normal;

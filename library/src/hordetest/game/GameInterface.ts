@@ -125,6 +125,11 @@ export interface GameInterface extends GameModel {
    * Current state of the consumable items
    */
   consumableItemsState: ConsumableItemsState;
+
+  /**
+   * Status definition information
+   */
+  statuses: StatusDef[];
 }
 
 export type DevGameInterface = InternalGameInterfaceExt;

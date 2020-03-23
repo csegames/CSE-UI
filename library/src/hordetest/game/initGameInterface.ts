@@ -33,6 +33,7 @@ export default function(isAttached: boolean) {
 
   hordetest._devGame.classes = (_devGame as any).classes;
   hordetest._devGame.races = (_devGame as any).races;
+  hordetest._devGame.statuses = (_devGame as any).statuses;
 
   // READY!
   _devGame.ready = true;

@@ -77,7 +77,7 @@ export class StatusItem extends React.Component<Props, State> {
     return (
       <Container className={this.props.type}>
         <TimerOverlay className={this.props.type} style={{ height: `${this.state.currentDurationPercent}%` }} />
-        <Icon className={this.props.status.def.iconClass} />
+        <Icon className={this.props.status.def.displayInfoIconClass} />
       </Container>
     );
   }
