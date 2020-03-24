@@ -281,15 +281,18 @@ export function ActionBarSlot(props: ActionBarSlotProps): JSX.Element {
     }
 
     const from = {
-      groupId: (e.dataTransfer as any).group,
-      slotId: (e.dataTransfer as any).slot,
+      groupId: e.dataTransfer.groupId,
+      slotId: e.dataTransfer.slotId,
     };
     const target = {
       groupId: props.activeGroup,
       slotId: props.id,
     };
+
+    console.log(e.dataTransfer);
+
     actionViewContext.addAndRemoveAction(
-      (e.dataTransfer as any).action,
+      e.dataTransfer.actionId,
       from,
       target,
     );

@@ -7,7 +7,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
 
-import { ActionViewContext, ActionViewAnchor, EditMode } from '../../context/ActionViewContext';
+import { ActionViewContext, ActionViewAnchor, EditMode, MAX_GROUP_COUNT } from '../../context/ActionViewContext';
 import { ActionBarSlot } from './ActionBarSlot';
 import { ContextMenu } from 'shared/ContextMenu';
 import { Drag } from 'utils/Drag';
@@ -150,7 +150,7 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
 
     if (actionViewContext.editMode > 0) {
 
-      if (props.groups.length < 6) {
+      if (props.groups.length < MAX_GROUP_COUNT) {
         items.push({
           title: `Add New Group (${props.groups.length + 1})`,
           onSelected: () => actionViewContext.addGroup(props.id),
@@ -161,6 +161,18 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
         items.push({
           title: `Remove Group ${props.activeGroupIndex + 1}`,
           onSelected: () => actionViewContext.removeGroup(props.id, props.groups[props.activeGroupIndex]),
+        });
+      }
+
+      items.push({
+        title: 'Add anchor',
+        onSelected: () => actionViewContext.addAnchor(),
+      });
+
+      if (Object.keys(actionViewContext.anchors).length > 1) {
+        items.push({
+          title: 'Delete anchor',
+          onSelected: () => actionViewContext.removeAnchor(props.id),
         });
       }
 
