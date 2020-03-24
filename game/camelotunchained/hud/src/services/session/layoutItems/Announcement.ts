@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { LayoutMode } from 'utils/HUDDrag';
+import { LayoutMode, Edge } from 'utils/HUDDrag';
 import Announcement from 'hud/Announcement';
 import HUDZOrder from '../HUDZOrder';
 
@@ -15,8 +15,8 @@ export default {
       offset: -293,
     },
     y: {
-      anchor: 5,
-      offset: -97,
+      anchor: Edge.TOP,
+      offset: 120,
     },
     size: {
       width: 293,

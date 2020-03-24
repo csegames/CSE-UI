@@ -4,33 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-@font-face {
-  font-family: 'Cinzel';
-  font-style: normal;
-  font-weight: 400;
-  src: url('../../../interface-lib/@csegames/library/styles/typography/fonts/Cinzel-normal-400.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Cinzel';
-  font-style: normal;
-  font-weight: 700;
-  src: url('../../../interface-lib/@csegames/library/styles/typography/fonts/Cinzel-normal-700.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Cinzel';
-  font-style: normal;
-  font-weight: 900;
-  src: url('../../../interface-lib/@csegames/library/styles/typography/fonts/Cinzel-normal-900.woff') format('woff');
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
 .announcement {
   display: table;
   width: 293px;
@@ -47,7 +20,7 @@ html, body {
   vertical-align: middle;
   line-height: 27px;
   font-size: 24px;
-  font-family: "Cinzel", serif;
+  font-family: "Caudex";
   color: rgb(225, 225, 225);
 }
 
