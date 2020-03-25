@@ -14,6 +14,7 @@ import {
   MatchmakingServerReady,
   MatchmakingKickOff,
   MatchmakingError,
+  MatchmakingEntered,
 } from '@csegames/library/lib/hordetest/graphql/schema';
 import { query } from '@csegames/library/lib/_baseGame/graphql/query'
 import {
@@ -61,6 +62,11 @@ class MatchmakingActionHandlerWithContext extends React.Component<Props> {
 
   private handleMatchmakingUpdate = (matchmakingUpdate: IMatchmakingUpdate) => {
     switch (matchmakingUpdate.type) {
+      case MatchmakingUpdateType.Entered: {
+        //Nothing to do. Context will take care of knowing what gameMode we entered
+        break;
+      }
+      
       case MatchmakingUpdateType.ServerReady: {
         const { host, port } = matchmakingUpdate as MatchmakingServerReady;
 
@@ -143,14 +149,19 @@ class MatchmakingActionHandlerWithContext extends React.Component<Props> {
               }
 
               if (!myGroupMember || myGroupMember.isLeader) {
-                callEnterMatchmaking().then((res) => {
-                  if (res.ok) {
-                    this.props.matchmakingContext.onEnterMatchmaking();
-                  }
-                  else {
-                    console.error("Failed to reenter matchmaking!");
-                  }
-                }).catch(() => { console.error("Failed to call reenter matchmaking")});
+                if (!this.props.matchmakingContext.enteredGameMode) {
+                  console.error("No longer know what game mode we entered matchmaking under previously. We're in a bad state! Can't auto reenter matchmaking");
+                }
+                else {
+                  callEnterMatchmaking(this.props.matchmakingContext.enteredGameMode).then((res) => {
+                    if (res.ok) {
+                      this.props.matchmakingContext.onEnterMatchmaking(this.props.matchmakingContext.enteredGameMode);
+                    }
+                    else {
+                      console.error("Failed to reenter matchmaking!");
+                    }
+                  }).catch(() => { console.error("Failed to call reenter matchmaking")});
+                }
               }
               break;
           }
@@ -253,7 +264,7 @@ export async function checkConnected(host: string, port: number, tries: number, 
   }
 }
 
-export async function callEnterMatchmaking() {
+export async function callEnterMatchmaking(gameMode: string) {
   if (game.isConnectedOrConnectingToServer) {
     console.error("Trying to enter matchmaking while attached to a server! Ignoring");
     return new Promise<RequestResult>(() => {
@@ -269,7 +280,7 @@ export async function callEnterMatchmaking() {
   }
 
   const request = {
-    mode: game.matchmakingGameMode,
+    mode: gameMode,
   };
   return webAPI.MatchmakingAPI.EnterMatchmaking(webAPI.defaultConfig, request as any);
 }

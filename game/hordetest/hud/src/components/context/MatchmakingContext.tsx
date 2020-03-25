@@ -6,7 +6,7 @@
 
 import React from 'react';
 import gql from 'graphql-tag';
-import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
+import { GraphQL, GraphQLResult, GraphQLClient, GraphQLOptions } from '@csegames/library/lib/_baseGame/graphql/react';
 import { SubscriptionResult } from '@csegames/library/lib/_baseGame/graphql/subscription';
 import {
   IMatchmakingUpdate,
@@ -15,9 +15,12 @@ import {
   MatchmakingKickOff,
   MatchmakingError,
   ActiveMatchServer,
+  MatchmakingEntered,
+  MatchmakingQueueCount,
 } from '@csegames/library/lib/hordetest/graphql/schema';
 import { TimerRef, startTimer, endTimer } from '@csegames/library/lib/_baseGame/utils/timerUtils';
 import { preloadQueryEvents } from '../fullscreen/Preloader';
+import { query as SendGQLQuery, defaultQuery } from '@csegames/library/lib/_baseGame/graphql/query';
 
 export enum PlayerNumberMode {
   SixMan,
@@ -35,6 +38,16 @@ export const MATCH_FAILED_ERROR: number = 1002;
 export const MATCH_CANCELED_ERROR: number = 1003;
 export const NO_SERVERS_ERROR: number = 1005;
 
+const INVALID_QUEUE_COUNT: number = -1
+
+const queueCountQuery = gql`
+  query QueueCountQuery($mode: String!) {
+    matchmakingQueueCount(mode: $mode) {
+      count
+    }
+  }
+`;
+
 const activeMatchQuery = gql`
   query ActiveMatchQuery {
     activeMatchServer {
@@ -48,6 +61,10 @@ const subscription = gql`
   subscription MatchmakingNotificationSubscription {
     matchmakingUpdates {
       type
+
+      ... on MatchmakingEntered {
+        gameMode
+      }
 
       ... on MatchmakingServerReady {
         host
@@ -73,6 +90,9 @@ export interface ContextState {
   isEntered: boolean;
   timeSearching: number;
 
+  enteredGameMode: string;
+  currentQueueCount: number;
+
   // MatchmakingServerReady || activeMatchServer gql query
   host: string;
   port: number;
@@ -92,7 +112,7 @@ export interface ContextState {
 }
 
 export interface ContextFunctions {
-  onEnterMatchmaking: () => void;
+  onEnterMatchmaking: (gameMode: string) => void;
   onCancelMatchmaking: () => void;
   onWaitingForServerHandled: () => void;
   clearMatchmakingContext: () => void;
@@ -112,13 +132,15 @@ export const getDefaultMatchmakingContextState = (): ContextState => ({
   errorCode: 0,
   isWaitingOnServer: false,
   timeSearching: 0,
+  currentQueueCount: 0,
+  enteredGameMode: null,
   selectedPlayerNumberMode: PlayerNumberMode.TenMan,
   shouldShowButtonFound: false,
 });
 
 export const MatchmakingContext = React.createContext({
   ...getDefaultMatchmakingContextState(),
-  onEnterMatchmaking: () => {},
+  onEnterMatchmaking: (gameMode: string) => {},
   onCancelMatchmaking: () => {},
   onWaitingForServerHandled: () => {},
   clearMatchmakingContext: () => null,
@@ -128,6 +150,7 @@ export const MatchmakingContext = React.createContext({
 export class MatchmakingContextProvider extends React.Component<{}, ContextState> {
   private isInitialQuery: boolean = true;
   private timeSearchingUpdateHandle: TimerRef = null
+  private queueCountGrabHandle: TimerRef = null
   private kickOffTimeout: number;
 
   constructor(props: {}) {
@@ -140,6 +163,7 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
 
   public componentWillUnmount() {
     this.endSearchingTimer();
+    this.endQueueGrabTimer();
 
     window.clearTimeout(this.kickOffTimeout);
   }
@@ -192,6 +216,11 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
 
     const matchmakingUpdate = result.data.matchmakingUpdates;
     switch (matchmakingUpdate.type) {
+      case MatchmakingUpdateType.Entered: {
+        this.handleMatchmakingEntered(matchmakingUpdate as MatchmakingEntered);
+        break;
+      }
+
       case MatchmakingUpdateType.ServerReady: {
         this.handleMatchmakingServerReady(matchmakingUpdate as MatchmakingServerReady);
         break;
@@ -209,6 +238,18 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
     }
   }
 
+  private handleMatchmakingEntered = (matchmakingUpdate: MatchmakingEntered) => {
+    if (!matchmakingUpdate) {
+      console.error('Tried to call handleMatchmakingEntered with an invalid matchmakingUpdate');
+      return;
+    }
+
+    // We're in a group and the leader has put us into matchmaking
+    this.setState({enteredGameMode: matchmakingUpdate.gameMode}, () => {
+      this.onEnterMatchmaking(this.state.enteredGameMode)
+    });
+  }
+
   private handleMatchmakingServerReady = (matchmakingUpdate: MatchmakingServerReady) => {
     if (!matchmakingUpdate) {
       console.error('Tried to call handleMatchmakingServerReady with an invalid matchmakingUpdate');
@@ -216,7 +257,7 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
     }
 
     const { host, port } = matchmakingUpdate;
-    this.setState({ host, port, isEntered: false, isWaitingOnServer: false, timeSearching: 0 }, () => {
+    this.setState({ host, port, isEntered: false, isWaitingOnServer: false, timeSearching: 0, currentQueueCount: 0 }, () => {
       this.triggerMatchmakingUpdate(matchmakingUpdate);
     });
   }
@@ -234,10 +275,12 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
       teamMates: serializedTeamMates,
       isWaitingOnServer: true,
       timeSearching: 0,
+      currentQueueCount: 0,
       shouldShowButtonFound: true,
     }, () => {
       this.triggerMatchmakingUpdate(matchmakingUpdate);
       this.endSearchingTimer();
+      this.endQueueGrabTimer();
     });
   }
 
@@ -262,6 +305,7 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
           // Someone in our warband lost their websocket.
         case MATCH_CANCELED_ERROR:
           // Someone in your warband canceled the matchmaking.
+          this.onCancelMatchmaking();
           break;
         case MATCH_FAILED_ERROR:
           // General failure
@@ -277,9 +321,10 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
           break;
       }
       if (shouldFire) {
-        this.setState({ error: message, isEntered: false, isWaitingOnServer: false, timeSearching: 0 }, () => {
+        this.setState({ error: message, isEntered: false, isWaitingOnServer: false, timeSearching: 0, currentQueueCount: 0 }, () => {
           this.triggerMatchmakingUpdate(matchmakingUpdate);
           this.endSearchingTimer();
+          this.endQueueGrabTimer();
         });
       }
       else {
@@ -288,19 +333,45 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
     }
   }
 
-  private onEnterMatchmaking = () => {
+  private onEnterMatchmaking = (gameMode: string) => {
     console.log("Matchmaking context understands we have entered matchmaking");
-    this.setState({ isEntered: true, timeSearching: 0 });
+    this.setState({ isEntered: true, timeSearching: 0, currentQueueCount: 0, enteredGameMode: gameMode });
 
     //If someone waits in matchmaking for 30 minutes and nothing happens, then i guess the timer just stops. We probably have bigger problems
     const thirtyMinutes = 30 * 60 * 60 * 1000;
-
     const interval = 60; //Choosing a non divisable number so the update will appear smoother
+
     this.timeSearchingUpdateHandle = startTimer(thirtyMinutes, interval, (elapsed, remainingTime) => {
       if (elapsed / 1000 > this.state.timeSearching) {
         this.setState({ timeSearching: this.state.timeSearching + 1 })
       }
     });
+
+    const threeSeconds = 3000;
+    
+    this.queueCountGrabHandle = startTimer(thirtyMinutes, threeSeconds, (elapsed, remainingTime) => {
+        this.updateQueueCount(gameMode)
+    });
+  }
+
+  private updateQueueCount = async (gameMode: string) => {
+    let partialQuery = { 
+      query: queueCountQuery,
+      variables: {
+        gameMode
+      } 
+    };
+    let query = withDefaults(partialQuery, defaultQuery);
+    SendGQLQuery(query).then((result) => {
+      if (result.ok) {
+        const {count} = result.data as MatchmakingQueueCount;
+        
+        this.setState({currentQueueCount: count ?? INVALID_QUEUE_COUNT})
+      }
+      else {
+        console.error(`Failed to get matchmaking queue count for mode ${gameMode}`);
+      }
+    })
   }
 
   private endSearchingTimer = () => {
@@ -310,16 +381,25 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
     }
   }
 
+  private endQueueGrabTimer = () => {
+    if (this.queueCountGrabHandle) {
+      endTimer(this.queueCountGrabHandle);
+      this.queueCountGrabHandle = null
+    }
+  }
+
   private onCancelMatchmaking = () => {
     console.log("Matchmaking context understands we have canceled matchmaking");
-    this.setState({ isEntered: false, timeSearching: 0 });
+    this.setState({ isEntered: false, timeSearching: 0, currentQueueCount: 0 });
     this.endSearchingTimer();
+    this.endQueueGrabTimer();
   }
 
   private onWaitingForServerHandled = () => {
     console.log("Matchmaking context understands we are done waiting for a server");
-    this.setState({ isWaitingOnServer: false, isEntered: false });
+    this.setState({ isWaitingOnServer: false, isEntered: false, timeSearching: 0, currentQueueCount: 0 });
     this.endSearchingTimer();
+    this.endQueueGrabTimer();
   }
 
   private triggerMatchmakingUpdate = (matchmakingUpdate: IMatchmakingUpdate) => {

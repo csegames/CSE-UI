@@ -60,19 +60,10 @@ const ReadyButtonStyle = css`
 
 `;
 
-// const QueueTimerText = styled.div`
-//   font-size: 20px;
-// `;
-
 const ConsoleButton = styled.div`
   display: flex;
   align-items: center;
 `;
-
-// const QueuedButton = styled.div`
-//   display: flex;
-//   flex-direction: column;
-// `;
 
 const ButtonIcon = styled.span`
   font-size: 24px;
@@ -87,6 +78,14 @@ const SearchingTimerText = styled.div`
   width:100%;
 `;
 
+const QueueCounterText = styled.div`
+  position:absolute;
+  top: 20px;
+  left:0;
+  font-size: 12px;
+  width:100%;
+`;
+
 export interface Props {
   warbandContextState: WarbandContextState;
   inputContext: InputContextState;
@@ -94,12 +93,30 @@ export interface Props {
 
   onReady: () => void;
   onUnready: () => void;
-  enterMatchmaking: () => Promise<RequestResult>;
+  enterMatchmaking: (gameMode: string) => Promise<RequestResult>;
   cancelMatchmaking:  () => Promise<RequestResult>;
 }
 
 export interface State {
   disabled: boolean;
+}
+
+interface QueueCounterStateProps {
+  matchmakingContext: MatchmakingContextState;
+}
+
+class QueueCounter extends React.Component<QueueCounterStateProps,{}> {
+  constructor(props: QueueCounterStateProps) {
+    super(props);
+  }
+
+  public render() {
+    return (
+      <QueueCounterText>
+        {formatTime(this.props.matchmakingContext.timeSearching)} In Queue...
+      </QueueCounterText>
+    )
+  }
 }
 
 interface SearchingTimerStateProps {
@@ -163,6 +180,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
               <ButtonIcon className='icon-xb-a'></ButtonIcon> Cancel
             </ConsoleButton> :
             <span>
+              <QueueCounter matchmakingContext={matchmakingContext} />
               Cancel
               <SearchingTimer matchmakingContext={matchmakingContext} />
             </span>
@@ -228,8 +246,11 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
 
   public componentDidMount() {
     const myMemberState = this.props.warbandContextState.groupMembers[game.characterID];
-    if (myMemberState && myMemberState.isReady) {
-      this.props.matchmakingContext.onEnterMatchmaking();
+    // If were in a group and ready and we know what gameMode we are in, then we know that 
+    // the leader of the group, possibly us, put us into matchmaking so we can get the context
+    // back into understanding were in matchmaking
+    if (myMemberState && myMemberState.isReady && this.props.matchmakingContext.enteredGameMode) {
+      this.props.matchmakingContext.onEnterMatchmaking(this.props.matchmakingContext.enteredGameMode);
     }
   }
 
@@ -251,7 +272,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
       if (matchmakingContext.isEntered) {
         this.cancelMatchmaking();
       } else {
-        this.enterMatchmaking();
+        this.enterMatchmaking(game.matchmakingGameMode);
       }
     }
   }
@@ -289,9 +310,9 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
     await this.hitButton(async () => webAPI.GroupsAPI.UnReadyV1(webAPI.defaultConfig, this.props.warbandContextState.groupID), this.props.onUnready, 'Failed To Unready');
   }
 
-  private enterMatchmaking = async () => {
+  private enterMatchmaking = async (gameMode: string) => {
     console.log("Entering matchmaking...")
-    await this.hitButton(async () => this.props.enterMatchmaking(), this.props.matchmakingContext.onEnterMatchmaking, 'Failed To Enter Matchmaking');
+    await this.hitButton(async () => this.props.enterMatchmaking(gameMode), () => this.props.matchmakingContext.onEnterMatchmaking(gameMode), 'Failed To Enter Matchmaking');
   }
 
   private cancelMatchmaking = async () => {
@@ -310,7 +331,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
 export function ReadyButton(props: {
   onReady: () => void,
   onUnready: () => void,
-  enterMatchmaking: () => Promise<RequestResult>,
+  enterMatchmaking: (gameMode: string) => Promise<RequestResult>,
   cancelMatchmaking:  () => Promise<RequestResult>,
 }) {
   const inputContextState = useContext(InputContext);
