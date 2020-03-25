@@ -216,6 +216,8 @@ export interface BaseGameModel {
   };
 
   map: MapState;
+
+  actions: ActionBarAPI;
 }
 
 // Map API
@@ -223,6 +225,22 @@ interface MapState {
   backgroundImageURL: string;
   scale: number;
   positionOffset: Vec2f;
+}
+
+// Action Bar API
+interface ActionBarAPI {
+  enterActionBarEditModeAsync: () => CancellablePromise<Success | Failure>;
+  exitActionBarEditModeAsync: () => CancellablePromise<Success | Failure>;
+  assignSlottedAction: (slotId: number, anchorId: number, groupId: number, actionId: number) => void;
+  assignKeybind: (slotId: number, boundKeyValue: number) => void;
+
+  setActiveAnchorGroup: (anchorId: number, groupId: number) => void;
+  activateSlottedAction: (slotId: number) => void;
+  clearSlottedAction: (slotId: number) => void;
+  removeAnchor: (anchorId: number) => void;
+
+  _cse_dev_enterActionBarEditMode: () => TaskHandle;
+  _cse_dev_exitActionBarEditMode: () => TaskHandle;
 }
 
 // Item Placement API
@@ -426,6 +444,11 @@ export interface BaseGameInterface extends BaseGameModel {
    * Subscript to network failure events
    */
   onNetworkFailure: (callback: (errorMsg: string, errorCode: number) => any) => EventHandle;
+
+  /**
+   *  Anchor visibility changes ex.) When entering building mode
+   */
+  onAnchorVisibilityChanged: (callback: (anchorId: number, visible: boolean) => any) => EventHandle;
 
   /* -------------------------------------------------- */
   /* TASKS                                              */

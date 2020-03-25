@@ -7,7 +7,13 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
 
-import { ActionViewContext, ActionViewAnchor, EditMode, MAX_GROUP_COUNT } from '../../context/ActionViewContext';
+import {
+  ActionViewContext,
+  ActionViewAnchor,
+  EditMode,
+  MAX_GROUP_COUNT,
+  isSystemAnchorId,
+} from '../../context/ActionViewContext';
 import { ActionBarSlot } from './ActionBarSlot';
 import { ContextMenu } from 'shared/ContextMenu';
 import { Drag } from 'utils/Drag';
@@ -102,6 +108,7 @@ export interface ActionBarAnchorProps extends ActionViewAnchor {
 // tslint:disable-next-line:function-name
 export function ActionBarAnchor(props: ActionBarAnchorProps) {
   const actionViewContext = useContext(ActionViewContext);
+  const [isVisible, setIsVisible] = useState(isSystemAnchorId(props.id) ? false : true);
   const [ref, setRef] = useState(null);
   const [bounds, setBounds] = useState({
     width: 0,
@@ -122,6 +129,18 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
       setBounds(getBoundsWithChildren(ref));
     }
   }, [ref, inEditMode]);
+
+  useEffect(() => {
+    const handle = game.onAnchorVisibilityChanged((anchorId: number, visible: boolean) => {
+      if (anchorId === props.id) {
+        setIsVisible(visible);
+      }
+    });
+
+    return () => {
+      handle.clear();
+    }
+  });
 
   function handleMouseDown(e: React.MouseEvent) {
 
@@ -190,7 +209,7 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
     return items;
   }
 
-  return (
+  return isVisible ? (
     <>
       {inEditMode && (
         <Drag
@@ -257,5 +276,5 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
         </ContextMenu>
       </Container>
     </>
-  );
+  ) : null;
 }

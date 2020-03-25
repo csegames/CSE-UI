@@ -238,6 +238,10 @@ export class InnerRing extends React.Component<RingProps, InnerRingState> {
     );
   }
 
+  public componentDidMount() {
+    this.updateRingState(this.getCurrentTimer());
+  }
+
   public componentDidUpdate(prevProps: RingProps) {
     if (prevProps.abilityState.status !== this.props.abilityState.status) {
       this.updateRingState(this.getCurrentTimer());
@@ -351,12 +355,6 @@ export class InnerRing extends React.Component<RingProps, InnerRingState> {
       }
     }
 
-    if (BitFlag.hasBits(abilityState.status, AbilityButtonState.Unusable)) {
-      foreground = unavailable_opts(theme);
-      color = theme.actionButtons.color.unavailable;
-      overlayColor = theme.actionButtons.color.unavailable;
-    }
-
     if (BitFlag.hasBits(abilityState.status, AbilityButtonState.Queued)) {
       foreground = queued_opts(theme);
       color = theme.actionButtons.color.queued;
@@ -371,6 +369,12 @@ export class InnerRing extends React.Component<RingProps, InnerRingState> {
         color: theme.actionButtons.color.modalOn,
         percent: 1,
       };
+    }
+
+    if (BitFlag.hasBits(abilityState.status, AbilityButtonState.Unusable)) {
+      foreground = unavailable_opts(theme);
+      color = theme.actionButtons.color.unavailable;
+      overlayColor = theme.actionButtons.color.unavailable;
     }
 
     this.setState({ showRing, foreground, background, color, overlayColor, overlayAnim, currentTimer });
