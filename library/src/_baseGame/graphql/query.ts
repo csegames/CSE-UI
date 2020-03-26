@@ -177,6 +177,10 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
       console.error(response.statusText);
       console.error(response.data);
       console.error(new Error().stack)
+      for (let i = 0; i < requests.length; ++i) {
+        var requestItem = requests[i];
+        requestItem.reject(errorMessage)
+      }
     }
 
   } catch (err) {
@@ -185,11 +189,13 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
 }
 
 export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptions>): Promise<GraphQLQueryResult<T>> {
-  if (options.disableBatching == false) {
+  const opts = withDefaults(options, game.graphQL.defaultOptions());
+
+  if (opts.disableBatching == false) {
     // batch the query.
 
     if (batchHandle === null) {
-      batchHandle = window.setTimeout(() => batchedQuery(options), Batching_Interval);
+      batchHandle = window.setTimeout(() => batchedQuery(opts), Batching_Interval);
     }
 
     return new Promise<GraphQLQueryResult<T>>((resolve, reject) => {
@@ -202,8 +208,6 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
   }
 
   const q = withDefaults(query, defaultQuery);
-  const opts = withDefaults(options, game.graphQL.defaultOptions());
-
   try {
 
     const response = await httpRequest('post',

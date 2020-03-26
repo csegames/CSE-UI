@@ -80,7 +80,7 @@ const SearchingTimerText = styled.div`
 
 const QueueCounterText = styled.div`
   position:absolute;
-  top: 20px;
+  top: 10px;
   left:0;
   font-size: 12px;
   width:100%;
@@ -113,7 +113,7 @@ class QueueCounter extends React.Component<QueueCounterStateProps,{}> {
   public render() {
     return (
       <QueueCounterText>
-        {formatTime(this.props.matchmakingContext.timeSearching)} In Queue...
+        {this.props.matchmakingContext.currentQueueCount} In Queue
       </QueueCounterText>
     )
   }
@@ -272,7 +272,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
       if (matchmakingContext.isEntered) {
         this.cancelMatchmaking();
       } else {
-        this.enterMatchmaking(game.matchmakingGameMode);
+        this.enterMatchmaking(this.props.matchmakingContext.selectedGameMode.mode);
       }
     }
   }

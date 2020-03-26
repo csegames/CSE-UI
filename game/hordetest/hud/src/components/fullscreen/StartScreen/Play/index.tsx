@@ -165,9 +165,9 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
     this.evh.clear();
   }
 
-  private enterMatchmaking = async () => {
+  private enterMatchmaking = async (gameMode: string) => {
     console.log("Calling enter matchmaking");
-    var res = await callEnterMatchmaking();
+    var res = await callEnterMatchmaking(gameMode);
     if (res.ok)
     {
       this.enteredMatchmaking = true;
@@ -190,12 +190,12 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
 
 
   private handleActiveGroupUpdate = () => {
-    const { warbandContext } = this.props;
+    const { warbandContext, matchmakingContext } = this.props;
     const notReadyMembers = Object.values(warbandContext.groupMembers).filter(m => !m.isReady);
 
     const myMemberState = warbandContext.groupMembers[game.characterID];
     if (notReadyMembers.length === 0 && myMemberState.isLeader && !this.enteredMatchmaking) {
-      callEnterMatchmaking();
+      callEnterMatchmaking(matchmakingContext.selectedGameMode.mode);
     }
   }
 

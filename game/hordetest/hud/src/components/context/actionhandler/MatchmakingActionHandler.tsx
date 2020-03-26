@@ -14,7 +14,6 @@ import {
   MatchmakingServerReady,
   MatchmakingKickOff,
   MatchmakingError,
-  MatchmakingEntered,
 } from '@csegames/library/lib/hordetest/graphql/schema';
 import { query } from '@csegames/library/lib/_baseGame/graphql/query'
 import {
@@ -66,7 +65,7 @@ class MatchmakingActionHandlerWithContext extends React.Component<Props> {
         //Nothing to do. Context will take care of knowing what gameMode we entered
         break;
       }
-      
+
       case MatchmakingUpdateType.ServerReady: {
         const { host, port } = matchmakingUpdate as MatchmakingServerReady;
 

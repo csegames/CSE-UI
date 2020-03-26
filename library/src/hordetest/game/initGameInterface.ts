@@ -77,6 +77,7 @@ function withOverrides(model: Partial<GameInterface>) {
 function defaultGraphQLOptions(): Partial<QueryOptions> {
   return {
     url: game.graphQL.host(),
+    disableBatching: false,
     requestOptions: {
       headers: {
         Authorization: 'Bearer ' + game.accessToken,
