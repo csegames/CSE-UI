@@ -424,6 +424,7 @@ function SixManView(props: { groupMembers: PartialGroupMemberState[] }) {
   return (
     <Container>
       {props.groupMembers.map((player, i) => {
+        if (!player) return null;
         return (
           <>
             <PlayerPosition className={getClassName(i)}>
@@ -455,6 +456,7 @@ function TenManView(props: { groupMembers: PartialGroupMemberState[] }) {
     <Container>
       <TenManGroupContainer className='topLevel'>
         {firstHalf.map((player, i) => {
+          if (!player) return null;
           return (
             <Player
               index={i}
@@ -467,6 +469,7 @@ function TenManView(props: { groupMembers: PartialGroupMemberState[] }) {
       </TenManGroupContainer>
       <TenManGroupContainer className='bottomLevel'>
         {secondHalf.map((player, i) => {
+          if (!player) return null;
           return (
             <Player
               index={i}

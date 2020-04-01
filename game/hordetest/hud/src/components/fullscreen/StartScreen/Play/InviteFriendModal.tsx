@@ -78,6 +78,7 @@ export function InviteFriendModal(props: Props) {
 
     if (res.ok) {
       game.trigger('hide-middle-modal');
+      props.onClickOverlay();
     } else {
       // failed
       try {

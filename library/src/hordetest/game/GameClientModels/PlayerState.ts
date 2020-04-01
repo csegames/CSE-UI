@@ -58,6 +58,8 @@ function initDefault(): SelfPlayerState {
   };
 }
 
+let lastCharacterID = '-';
+
 /**
  * Initialize this model with the game engine.
  */
@@ -121,6 +123,14 @@ export default function() {
     SelfPlayer_Update,
     () => ({} as any),
     () => hordetest._devGame._cse_dev_selfPlayerState,
-    (model: SelfPlayerStateModel) => hordetest._devGame._cse_dev_selfPlayerState = model as SelfPlayerState);
+    (model: SelfPlayerStateModel) => {
+
+      if (model && model.characterID && lastCharacterID != model.characterID && model.characterID.length > 1 && lastCharacterID === '') {
+        game.reloadUI();
+      }
+
+      lastCharacterID = model.characterID;
+      hordetest._devGame._cse_dev_selfPlayerState = model as SelfPlayerState
+    });
 
 }

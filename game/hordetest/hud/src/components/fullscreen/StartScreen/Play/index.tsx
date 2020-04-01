@@ -72,8 +72,6 @@ const SocialButtonStyles = css`
   margin-right: 14px;
   padding-top: 6px;
   padding-bottom: 6px;
-  pointer-events: none;
-  filter: grayscale(100%);
 `;
 
 const ConsoleButton = styled.div`
@@ -202,6 +200,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
   }
 
   private handleInviteFriend = () => {
+    console.log('clicked invite friend');
     this.setState({ isModalVisible: true });
   }
 
@@ -211,16 +210,16 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
 
   private onLeaveClick = () => {
     const { groupID } = this.props.warbandContext;
-    if (this.isLeader()) {
-      webAPI.GroupsAPI.DisbandV1(webAPI.defaultConfig, groupID);
-    } else {
+    // if (this.isLeader() && Object.keys(groupMembers).length == 1) {
+    //   webAPI.GroupsAPI.DisbandV1(webAPI.defaultConfig, groupID);
+    // } else {
       webAPI.GroupsAPI.QuitV1(webAPI.defaultConfig, groupID);
-    }
+    // }
   }
 
-  private isLeader = () => {
-    return this.props.warbandContext.groupMembers[game.characterID].isLeader;
-  }
+  // private isLeader = () => {
+  //   return this.props.warbandContext.groupMembers[game.characterID].isLeader;
+  // }
 
   private onReady = () => {
     this.setState({ isReady: true });

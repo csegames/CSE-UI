@@ -129,6 +129,7 @@ export function InviteAlerts(props: Props) {
   }
 
   function handleSubscription(result: SubscriptionResult<{ interactiveAlerts: IInteractiveAlert }>, data: any) {
+    alert(JSON.stringify(data));
     if (!result.data && !result.data.interactiveAlerts) return data;
     if (result.data.interactiveAlerts.category !== AlertCategory.Group) return data;
 

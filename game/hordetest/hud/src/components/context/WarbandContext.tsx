@@ -105,13 +105,18 @@ interface UpdateSubscriptionResult {
 
 export class WarbandContextProvider extends React.Component<{}, WarbandContextState> {
   private isInitialQuery: boolean = true;
+  private refetchHandle: number;
+  private lastCharacterID: string;
   constructor(props: {}) {
     super(props);
 
     this.state = getDefaultWarbandContextState();
   }
 
+
   public render() {
+    console.log(`re-render warband context provider`);
+    this.lastCharacterID = game.characterID;
     return (
       <WarbandContext.Provider value={this.state}>
         <GraphQL
@@ -120,7 +125,7 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
           subscription={{
             query: warbandNotificationSubscription,
             initPayload: {
-              characterID: hordetest.game.selfPlayerState.characterID,
+              characterID: this.lastCharacterID,
               token: game.accessToken,
             },
           }}
@@ -136,7 +141,7 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
                 groupID: this.state.groupID,
               },
               initPayload: {
-                characterID: hordetest.game.selfPlayerState.characterID,
+                characterID: this.lastCharacterID,
                 token: game.accessToken,
               },
             }}
@@ -147,6 +152,12 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
         {this.props.children}
       </WarbandContext.Provider>
     );
+  }
+
+  public componentWillUnmount() {
+    if (this.refetchHandle) {
+      window.clearTimeout(this.refetchHandle);
+    }
   }
 
   private handleNotificationSubscription = (result: SubscriptionResult<NotificationSubscriptionResult>, data: any) => {
@@ -190,6 +201,7 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
   }
 
   private handleQueryResult = (query: GraphQLResult<{ myActiveWarband: GraphQLActiveWarband }>) => {
+
     if (!query || !query.data) {
       // Query failed but we don't want to hold up loading. In future, handle this a little better,
       // maybe try to refetch a couple times and if not then just continue on the flow.
@@ -197,10 +209,18 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
       return query;
     }
 
+    
     if (!query.data.myActiveWarband || !query.data.myActiveWarband.info || !query.data.myActiveWarband.members) {
       this.onDonePreloading(true);
       return query;
     }
+
+    if (this.lastCharacterID === "") 
+    {
+      console.log('forcing update');
+      this.refetchHandle = window.setTimeout(() => this.forceUpdate(), 2000);
+    }
+
 
     const warband = query.data.myActiveWarband;
     const groupMembers = {};

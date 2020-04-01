@@ -6,7 +6,6 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import { GroupMemberRemovedUpdate } from '../../../../../../../library/tmp/_baseGame/graphql/schema';
 import {
   WarbandContextProvider,
   WarbandContextState,
@@ -19,7 +18,8 @@ import {
   GroupMemberUpdate,
   GroupUpdateType,
   GroupTypes,
-} from '@csegames/library/lib/_baseGame/graphql/schema';
+  GroupMemberRemovedUpdate,
+} from '@csegames/library/lib/hordetest/graphql/schema';
 
 const defaultContextState: Readonly<WarbandContextState> = getDefaultWarbandContextState();
 

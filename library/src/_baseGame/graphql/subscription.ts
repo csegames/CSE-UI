@@ -235,7 +235,10 @@ export class SubscriptionManager {
   }
 
   private messageHandler = (e: MessageEvent) => {
-    const op = JSON.parse(e.data) as OperationMessage;
+    const op = tryParseJSON(e.data, true) as OperationMessage;
+    if (!op) {
+      console.log(`Failed to parse operation message!`);
+    }
     if (this.debug) {
       this.log(`messageHandler => op message: ${JSON.stringify(op)}`);
     }
