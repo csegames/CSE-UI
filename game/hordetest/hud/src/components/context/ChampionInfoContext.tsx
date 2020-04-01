@@ -51,10 +51,10 @@ export const getDefaultChampionInfoContextState = (): ChampionInfoContextState =
 export const ChampionInfoContext = React.createContext(getDefaultChampionInfoContextState());
 
 export enum Champions {
-  Berserker = 25,
-  Amazon = 26,
-  Celt = 27,
-  Knight = 28,
+  Berserker = 28,
+  Amazon = 29,
+  Celt = 30,
+  Knight = 31,
 }
 
 export class ChampionInfoContextProvider extends React.Component<{}, ChampionInfoContextState> {

@@ -35,6 +35,10 @@ const Button = styled.div`
   &.activeAnim {
   }
 
+  &.cooldownFinishedAnim {
+    animation: cooldownFinished 1s;
+  }
+
   &.knight {
     background-color: rgba(228, 180, 47, 0.85);
   }
@@ -62,6 +66,18 @@ const Button = styled.div`
 
   &.BlockedByStatus {
     background-color: rgba(255, 0, 0, 0.5);
+  }
+
+  @keyframes cooldownFinished {
+    0% {
+      filter: brightness(100%);
+    }
+    50% {
+      filter: brightness(300%);
+    }
+    100% {
+      filter: brightness(100%);
+    }
   }
 `;
 
@@ -154,16 +170,69 @@ export interface Props {
   abilityDisabledReason?: AbilityButtonErrorFlag;
 }
 
-export function ActionButton(props: Props) {
-  function getMyChampion() {
+export interface State {
+  shouldPlayCooldownFinishAnimation: boolean;
+}
+
+export class ActionButton extends React.Component<Props, State> {
+  private cooldownFinishedAnimationTimeout: number;
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      shouldPlayCooldownFinishAnimation: false,
+    };
+  }
+
+  public render() {
+    const { cooldownTimer } = this.props;
+    const isOnCooldown = typeof this.props.cooldownTimer !== 'undefined' && this.props.cooldownTimer.current !== 0;
+    const cooldownClass = isOnCooldown ? 'cooldown' : '';
+    const disabledClass = this.props.disabled ? 'disabled' : '';
+    const activeAnimClass = this.props.showActiveAnim && !this.props.disabled ? 'activeAnim' : '';
+    const cooldownAnimClass = this.state.shouldPlayCooldownFinishAnimation ? 'cooldownFinishedAnim' : '';
+    const disabledReasonClass = this.getDisabledReasonClass();
+    return (
+      <ActionButtonContainer className={this.props.className}>
+        <Button
+          className={`${disabledClass} ${activeAnimClass} ${this.getChampionClass()} ${cooldownClass} ${disabledReasonClass} ${cooldownAnimClass}`}>
+          <ActionIcon className={`${this.props.actionIconClass} ${disabledClass} ${cooldownClass}`} />
+          {isOnCooldown && <CooldownOverlay className={disabledReasonClass} style={{ height: `${cooldownTimer.progress}%`}} />}
+          {this.props.disabled && <DisabledSlash src={this.getDisabledSlashIcon()} />}
+          {isOnCooldown && <CooldownText>{cooldownTimer.current}</CooldownText>}
+        </Button>
+        <KeybindBox>
+          {this.props.keybindIconClass ?
+            <KeybindText className={this.props.keybindIconClass}></KeybindText> :
+            <KeybindText>{this.props.keybindText}</KeybindText>
+          }
+        </KeybindBox>
+      </ActionButtonContainer>
+    );
+  }
+
+  public componentDidUpdate(prevProps: Props) {
+    const currentOnCooldown = typeof this.props.cooldownTimer !== 'undefined' && this.props.cooldownTimer.current !== 0;
+    const prevOnCooldown = typeof prevProps.cooldownTimer !== 'undefined' && prevProps.cooldownTimer.current !== 0;
+    if (prevOnCooldown && !currentOnCooldown) {
+      this.playCooldownFinishedAnimation();
+    }
+  }
+
+  public componentWillUnmount() {
+    if (this.cooldownFinishedAnimationTimeout) {
+      window.clearTimeout(this.cooldownFinishedAnimationTimeout);
+    }
+  }
+
+  private getMyChampion = () => {
     const myChampion = hordetest.game.classes.find(c => c.id === cloneDeep(hordetest.game.selfPlayerState).classID);
     if (!myChampion) return null;
 
     return myChampion as CharacterClassDef;
   }
 
-  function getChampionClass() {
-    const myChampion = getMyChampion();
+  private getChampionClass = () => {
+    const myChampion = this.getMyChampion();
     if (!myChampion) return '';
 
     switch (myChampion.id) {
@@ -183,49 +252,38 @@ export function ActionButton(props: Props) {
     }
   }
 
-  function getDisabledReasonClass() {
-    if (typeof props.abilityDisabledReason === 'undefined') return '';
+  private getDisabledReasonClass = () => {
+    if (typeof this.props.abilityDisabledReason === 'undefined') return '';
 
-    if (props.abilityDisabledReason & AbilityButtonErrorFlag.NotEnoughResource) {
+    if (this.props.abilityDisabledReason & AbilityButtonErrorFlag.NotEnoughResource) {
       return 'NotEnoughResource';
     }
 
-    if (props.abilityDisabledReason & AbilityButtonErrorFlag.BlockedByStatus) {
+    if (this.props.abilityDisabledReason & AbilityButtonErrorFlag.BlockedByStatus) {
       return 'BlockedByStatus';
     }
 
     return '';
   }
 
-  function getDisabledSlashIcon() {
-    if (props.abilityDisabledReason & AbilityButtonErrorFlag.NotEnoughResource) {
+  private getDisabledSlashIcon = () => {
+    if (this.props.abilityDisabledReason & AbilityButtonErrorFlag.NotEnoughResource) {
       return 'images/hud/actionbutton/disabled-resource.svg';
     }
 
     return 'images/hud/actionbutton/disabled.svg';
   }
 
-  const { cooldownTimer } = props;
-  const isOnCooldown = typeof props.cooldownTimer !== 'undefined' && props.cooldownTimer.current !== 0;
-  const cooldownClass = isOnCooldown ? 'cooldown' : '';
-  const disabledClass = props.disabled ? 'disabled' : '';
-  const activeAnimClass = props.showActiveAnim && !props.disabled ? 'activeAnim' : '';
-  const disabledReasonClass = getDisabledReasonClass();
-  return (
-    <ActionButtonContainer className={props.className}>
-      <Button
-        className={`${disabledClass} ${activeAnimClass} ${getChampionClass()} ${cooldownClass} ${disabledReasonClass}`}>
-        <ActionIcon className={`${props.actionIconClass} ${disabledClass} ${cooldownClass}`} />
-        {isOnCooldown && <CooldownOverlay className={disabledReasonClass} style={{ height: `${cooldownTimer.progress}%`}} />}
-        {props.disabled && <DisabledSlash src={getDisabledSlashIcon()} />}
-        {isOnCooldown && <CooldownText>{cooldownTimer.current}</CooldownText>}
-      </Button>
-      <KeybindBox>
-        {props.keybindIconClass ?
-          <KeybindText className={props.keybindIconClass}></KeybindText> :
-          <KeybindText>{props.keybindText}</KeybindText>
-        }
-      </KeybindBox>
-    </ActionButtonContainer>
-  );
+  private playCooldownFinishedAnimation = () => {
+    if (this.cooldownFinishedAnimationTimeout) {
+      window.clearTimeout(this.cooldownFinishedAnimationTimeout);
+    }
+
+    this.setState({ shouldPlayCooldownFinishAnimation: true });
+
+    this.cooldownFinishedAnimationTimeout = window.setTimeout(() => {
+      this.setState({ shouldPlayCooldownFinishAnimation: false });
+      this.cooldownFinishedAnimationTimeout = null;
+    }, 1000);
+  }
 }
