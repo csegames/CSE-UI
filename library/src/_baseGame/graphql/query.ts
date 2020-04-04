@@ -117,8 +117,6 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
   batchHandle = null;
   const requests = queryQueue.splice(0, queryQueue.length);
 
-  console.log(`executing batched graphql with ${requests.length} batched requests.`);
-
   const opts = withDefaults(options, game.graphQL.defaultOptions());
   const body = requests
     .map(r => withDefaults(r.query, defaultQuery))
@@ -127,6 +125,8 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
       query: parseQuery(q.query),
       variables: opts.stringifyVariables ? JSON.stringify(q.variables) : q.variables,
     }));
+
+  console.log(`executing batched graphql with ${requests.length} batched requests to ${opts.url}.`);
 
   try {
 
@@ -146,22 +146,33 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
     if (response.ok) {
 
       const results = response.json<any[]>();
+      console.error(`GraphQL Batch request response ok. Got back ${results.length} out of expected ${requests.length} results...`);
 
+      // NOTE: We assume same order of responses to requests
       for (let i = 0; i < requests.length; ++i) {
 
-        if (results.length < i) {
+        if (i >= results.length) {
           break;
         }
 
         const result = results[i];
         var requestItem = requests[i];
 
-        requestItem.resolve({
-          data: result.data,
-          ok: result.data !== undefined && result.errors === undefined,
-          statusText: result.errors ? result.errors.map(getMessage).join(' ') : 'OK',
-          statusCode: result.status,
-        });
+        try {
+          var requestShortDescription = parseQuery(requestItem.query.query).slice(0, 30).replace("\n", "\\n");
+
+          console.error(`Sent request ${requestShortDescription} and got back response ${result.data}`);
+
+          requestItem.resolve({
+            data: result.data,
+            ok: result.data !== undefined && result.errors === undefined,
+            statusText: result.errors ? result.errors.map(getMessage).join(' ') : 'OK',
+            statusCode: result.status,
+          });
+        } catch (ex) {
+          Raven.captureException(ex);
+          console.error(`Failed to process response to request ${requestShortDescription}`);
+        }
       }
     }
 
@@ -169,13 +180,14 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
     const errorMessage = response.statusText || response.data;
     if (response.statusText != "OK") {
       console.error(
-        'GraphQL Request Error:',
+        `Batch GraphQL Request Error on ${requests.length} requests:`,
         {
           errors: errorMessage,
         },
       );
       console.error(response.statusText);
-      console.error(response.data);
+      console.error(response.data.slice(0, 500));
+      console.error(response.data.slice(-500));
       console.error(new Error().stack)
       for (let i = 0; i < requests.length; ++i) {
         var requestItem = requests[i];
@@ -185,6 +197,7 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
 
   } catch (err) {
     Raven.captureException(err);
+    console.error(err)
   }
 }
 

@@ -102,6 +102,7 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
   }
 
   public render() {
+    console.error(`FIRING UP THE INVENTORY. SHOULD BE MAKING GQL QUERY`);
     return (
       <GraphQL query={query} onQueryResult={this.handleQueryResult}>
         {(graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>) => {
@@ -141,8 +142,12 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
 
   private handleQueryResult = (graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>) => {
     this.graphql = graphql;
-    if (!graphql || graphql.loading || graphql.lastError !== 'OK') return graphql;
-
+    console.error(`GOT THE INVENTORY BACK`);
+    if (!graphql || graphql.loading || graphql.lastError !== 'OK') {
+      console.error(`DIDNT GET BACK GOOD THINGS: ${graphql ? graphql : "--"}`);
+      console.error(`DIDNT GET BACK GOOD THINGS: ${graphql ? graphql.lastError : "??"}`);
+      return graphql;
+    }
     this.initializeInventory(graphql.data.myInventory.items);
     return graphql;
   }
