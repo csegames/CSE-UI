@@ -47,18 +47,49 @@ const Bar = styled.div`
   z-index: 0;
 `;
 
+const Backfill = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  transition: width 0.3s;
+  z-index: 0;
+`;
+
 export interface Props {
   state: HealthBarState;
 }
 
-export function EnemyHealthBar(props: Props) {
-  const { state } = props;
-  return state.current > 0 ? (
-    <Container>
-      <NameOfPlayer>{state.name}</NameOfPlayer>
-      <BarContainer>
-        <Bar style={{ width: `${(state.current / state.max) * 100}%` }} />
-      </BarContainer>
-    </Container>
-  ) : null;
+export interface State {
+  backFillPercentage: number;
+}
+
+export class EnemyHealthBar extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      backFillPercentage: (props.state.current / props.state.max) * 100,
+    }
+  }
+
+  public render() {
+    const { state } = this.props;
+    return state.current > 0 ? (
+      <Container>
+        <NameOfPlayer>{state.name}</NameOfPlayer>
+        <BarContainer>
+          <Backfill style={{ width: `${this.state.backFillPercentage}%` }} />
+          <Bar style={{ width: `${(state.current / state.max) * 100}%` }} />
+        </BarContainer>
+      </Container>
+    ) : null;
+  }
+
+  public componentDidUpdate(prevProps: Props) {
+    if (prevProps.state.current !== this.props.state.current || prevProps.state.max !== this.props.state.max) {
+      this.setState({ backFillPercentage: (this.props.state.current / this.props.state.max) * 100 });
+    }
+  }
 }
