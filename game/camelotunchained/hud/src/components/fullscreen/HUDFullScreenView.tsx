@@ -5,21 +5,21 @@
  *
  */
 
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { TabPanel, ContentItem } from 'cseshared/components/TabPanel';
 
 import { CloseButton } from 'cseshared/components/CloseButton';
 import Tab from '../shared/Tabs/Tab';
-import Map from 'fullscreen/Map';
+import { Map } from 'fullscreen/Map';
 import Inventory from 'fullscreen/Inventory';
 import PaperDoll from 'fullscreen/PaperDoll';
 import CharacterInfo from 'fullscreen/CharacterInfo';
 import TradeWindow from 'fullscreen/TradeWindow';
 import Crafting from 'fullscreen/Crafting';
 import AbilityBuilder from 'fullscreen/AbilityBuilder';
-import { HUDFullScreenTabData, FullScreenContext } from 'fullscreen/lib/utils';
+import { HUDFullScreenTabData, FullScreenContext, FullScreenNavState } from 'fullscreen/lib/utils';
 import {
   InventoryItem,
   GearSlotDefRef,
@@ -32,6 +32,7 @@ import { MID_SCALE, HD_SCALE } from './lib/constants';
 
 export interface HUDFullScreenStyle {
   hudFullScreen: string;
+  hudFullSingleScreen: string;
   navigationContainer: string;
   rightNavigationContainer: string;
   contentContainer: string;
@@ -209,6 +210,10 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
     width: 50%;
     height: 100%;
   `,
+  hudFullSingleScreen: css`
+    width: 100%;
+    height: 100%;
+  `,
   navigationContainer: css`
     position: relative;
     display: flex;
@@ -282,6 +287,10 @@ const defaultHUDFullScreenStyle: HUDFullScreenStyle = {
   `,
 };
 
+interface InjectedProps {
+  fullScreenContext: FullScreenNavState;
+}
+
 export interface Props {
   shouldSmallScreen: boolean;
   rightActiveTabIndex: number;
@@ -299,12 +308,9 @@ export interface Props {
   onChangeInvBodyDimensions: (invBodyDimensions: { width: number; height: number; }) => void;
 }
 
-export interface State {
-}
-
-class HUDFullScreenView extends React.Component<Props, State> {
+class HUDFullScreenViewWithInjectedProps extends React.Component<Props & InjectedProps> {
   private content: ContentItem[];
-  constructor(props: Props) {
+  constructor(props: Props & InjectedProps) {
     super(props);
     this.content = [
       { name: 'Equipped Gear', content: { render: this.renderEquipped } },
@@ -319,55 +325,52 @@ class HUDFullScreenView extends React.Component<Props, State> {
   }
 
   public render() {
+    const { visibleComponentLeft, visibleComponentRight, tabsLeft, tabsRight } = this.props.fullScreenContext;
+    const shouldShow = visibleComponentLeft !== '' || visibleComponentRight !== '';
+    const shouldShowSingleScreen = this.props.shouldSmallScreen ||
+      visibleComponentLeft === 'map-left';
     return (
-      <FullScreenContext.Consumer>
-        {(context) => {
-          const { visibleComponentLeft, visibleComponentRight, tabsLeft, tabsRight } = context;
-          const shouldShow = visibleComponentLeft !== '' || visibleComponentRight !== '';
-          return (
-            <Container style={{ visibility: shouldShow ? 'visible' : 'hidden' }}>
-              <TabPanel
-                activeTabIndex={this.props.leftActiveTabIndex}
-                tabs={tabsLeft}
-                renderTab={this.renderTab}
-                content={this.content}
-                defaultTabIndex={0}
-                styles={{
-                  tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
-                  tabs: defaultHUDFullScreenStyle.navigationContainer,
-                  tab: defaultHUDFullScreenStyle.navTab,
-                  activeTab: defaultHUDFullScreenStyle.activeNavTab,
-                  content: defaultHUDFullScreenStyle.contentContainer,
-                }}
-                onActiveTabChanged={this.props.onActiveTabChanged}
-              />
-              {!this.props.shouldSmallScreen &&
-                <Divider>
-                  <DividerMidSection />
-                </Divider>
-              }
-              {!this.props.shouldSmallScreen &&
-                <TabPanel
-                  activeTabIndex={this.props.rightActiveTabIndex}
-                  tabs={tabsRight}
-                  renderTab={this.renderTab}
-                  content={this.content}
-                  defaultTabIndex={1}
-                  styles={{
-                    tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
-                    tabs: defaultHUDFullScreenStyle.rightNavigationContainer,
-                    tab: defaultHUDFullScreenStyle.navTab,
-                    activeTab: defaultHUDFullScreenStyle.activeNavTab,
-                    content: defaultHUDFullScreenStyle.contentContainer,
-                  }}
-                  onActiveTabChanged={this.props.onActiveTabChanged}
-                />
-              }
-              <CloseButton className={CloseButtonClass} onClick={this.props.onCloseFullScreen} />
-            </Container>
-          );
-        }}
-      </FullScreenContext.Consumer>
+      <Container style={{ visibility: shouldShow ? 'visible' : 'hidden' }}>
+        <TabPanel
+          activeTabIndex={this.props.leftActiveTabIndex}
+          tabs={tabsLeft}
+          renderTab={this.renderTab}
+          content={this.content}
+          defaultTabIndex={0}
+          styles={{
+            tabPanel: shouldShowSingleScreen ?
+              defaultHUDFullScreenStyle.hudFullSingleScreen : defaultHUDFullScreenStyle.hudFullScreen,
+            tabs: defaultHUDFullScreenStyle.navigationContainer,
+            tab: defaultHUDFullScreenStyle.navTab,
+            activeTab: defaultHUDFullScreenStyle.activeNavTab,
+            content: defaultHUDFullScreenStyle.contentContainer,
+          }}
+          onActiveTabChanged={this.props.onActiveTabChanged}
+        />
+        {!shouldShowSingleScreen &&
+          <Divider>
+            <DividerMidSection />
+          </Divider>
+        }
+        {!shouldShowSingleScreen &&
+          <TabPanel
+            activeTabIndex={this.props.rightActiveTabIndex}
+            tabs={tabsRight}
+            renderTab={this.renderTab}
+            content={this.content}
+            defaultTabIndex={1}
+            styles={{
+              tabPanel: defaultHUDFullScreenStyle.hudFullScreen,
+              tabs: defaultHUDFullScreenStyle.rightNavigationContainer,
+              tab: defaultHUDFullScreenStyle.navTab,
+              activeTab: defaultHUDFullScreenStyle.activeNavTab,
+              content: defaultHUDFullScreenStyle.contentContainer,
+            }}
+            onActiveTabChanged={this.props.onActiveTabChanged}
+          />
+        }
+        <CloseButton className={CloseButtonClass} onClick={this.props.onCloseFullScreen} />
+      </Container>
     );
   }
 
@@ -442,4 +445,10 @@ class HUDFullScreenView extends React.Component<Props, State> {
   }
 }
 
-export default HUDFullScreenView;
+export function HUDFullScreenView(props: Props) {
+  const fullScreenContext = useContext(FullScreenContext);
+
+  return (
+    <HUDFullScreenViewWithInjectedProps {...props} fullScreenContext={fullScreenContext} />
+  );
+}

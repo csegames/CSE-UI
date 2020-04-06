@@ -214,6 +214,15 @@ export interface BaseGameModel {
     removeLast: () => void;
     clearAll: () => void;
   };
+
+  map: MapState;
+}
+
+// Map API
+interface MapState {
+  backgroundImageURL: string;
+  scale: number;
+  positionOffset: Vec2f;
 }
 
 // Item Placement API

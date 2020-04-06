@@ -15,7 +15,7 @@ import {
   withCompassPOIPartialDefaults,
   CompassContext,
 } from 'hud/Compass/CompassPOIManager';
-import { WarbandNotificationProvider } from '../../WarbandDisplay/WarbandNotificationProvider';
+import { WarbandContextProvider } from '../../../context/WarbandContext';
 import { CompassTooltipData } from 'hud/CompassTooltip';
 import { showCompassTooltip, hideCompassTooltip, updateCompassTooltip } from 'actions/compassTooltip';
 import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
@@ -251,8 +251,8 @@ export default class WarbandMembersPoiProvider extends React.Component<
 
   public componentDidMount() {
     this.eventHandles.push(camelotunchained.game.friendlyTargetState.onUpdated(this.onFriendlyTargetStateUpdated));
-    this.eventHandles.push(game.on(WarbandNotificationProvider.notificationEventName, this.handleNotification));
-    this.eventHandles.push(game.on(WarbandNotificationProvider.updateEventName, this.handleSubscription));
+    this.eventHandles.push(game.on(WarbandContextProvider.notificationEventName, this.handleNotification));
+    this.eventHandles.push(game.on(WarbandContextProvider.updateEventName, this.handleSubscription));
   }
 
   public componentWillUnmount() {

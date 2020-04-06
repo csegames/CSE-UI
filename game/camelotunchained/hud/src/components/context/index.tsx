@@ -8,6 +8,7 @@ import React from 'react';
 import { AbilityBarToggleContextProvider } from './AbilityBarToggleContext';
 import { AbilityBookContextProvider } from './AbilityBookContext';
 import { ActionViewContextProvider } from './ActionViewContext';
+import { WarbandContextProvider } from './WarbandContext';
 
 export class GlobalProviders extends React.Component<{}> {
   public render() {
@@ -15,7 +16,9 @@ export class GlobalProviders extends React.Component<{}> {
       <AbilityBarToggleContextProvider>
         <AbilityBookContextProvider>
           <ActionViewContextProvider>
-            {this.props.children};
+            <WarbandContextProvider>
+              {this.props.children}
+            </WarbandContextProvider>
           </ActionViewContextProvider>
         </AbilityBookContextProvider>
       </AbilityBarToggleContextProvider>

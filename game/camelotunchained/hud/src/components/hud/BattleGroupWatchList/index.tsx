@@ -14,7 +14,7 @@ import { CollapsingList } from 'cseshared/components/CollapsingList';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 
 import { BattleGroupNotificationProvider } from '../BattleGroups/BattleGroupNotificationProvider';
-import { WarbandNotificationProvider } from '../WarbandDisplay/WarbandNotificationProvider';
+import { WarbandContextProvider } from '../../context/WarbandContext';
 import WatchListItem from './WatchListItem';
 import { WarbandDisplay } from '../WarbandDisplay';
 import { removeWhere } from 'lib/reduxUtils';
@@ -233,8 +233,8 @@ class BattleGroupWatchList extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    this.evh.push(game.on(WarbandNotificationProvider.notificationEventName, this.handleWarbandNotification));
-    this.evh.push(game.on(WarbandNotificationProvider.updateEventName, this.handleWarbandUpdate));
+    this.evh.push(game.on(WarbandContextProvider.notificationEventName, this.handleWarbandNotification));
+    this.evh.push(game.on(WarbandContextProvider.updateEventName, this.handleWarbandUpdate));
     this.evh.push(game.on(BattleGroupNotificationProvider.notificationEventName, this.handleBattlegroupNotification));
   }
 

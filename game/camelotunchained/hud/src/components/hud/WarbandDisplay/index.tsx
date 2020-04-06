@@ -30,7 +30,7 @@ import {
   onWarbandMemberRemoved,
 } from 'actions/warband';
 import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
-import { WarbandNotificationProvider } from './WarbandNotificationProvider';
+import { WarbandContextProvider } from '../../context/WarbandContext';
 import { BattleGroupNotificationProvider } from '../BattleGroups/BattleGroupNotificationProvider';
 
 const Container = styled.div`
@@ -113,13 +113,12 @@ export class WarbandDisplay extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    this.evh.push(game.on(WarbandNotificationProvider.notificationEventName, this.handleWarbandNotification));
-    this.evh.push(game.on(WarbandNotificationProvider.updateEventName, this.handleWarbandUpdate));
+    this.evh.push(game.on(WarbandContextProvider.notificationEventName, this.handleWarbandNotification));
+    this.evh.push(game.on(WarbandContextProvider.updateEventName, this.handleWarbandUpdate));
     this.evh.push(game.on(BattleGroupNotificationProvider.notificationEventName, this.handleBattleGroupNotification));
   }
 
   public shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>) {
-
     if (this.props.isMini !== nextProps.isMini) {
       return true;
     }

@@ -9,6 +9,7 @@ import {
   Updatable,
   executeUpdateCallbacks,
 } from '../../../_baseGame/GameClientModels/_Updatable';
+import { CoherentEventHandle } from '../../../_baseGame/index';
 
 declare global {
   interface EntityStateModel {
@@ -60,6 +61,14 @@ declare global {
     health: ArrayMap<Health>;
   }
 
+  interface BuildingPlotStateModel extends EntityStateModel {
+    type: 'plot';
+    mapSettings: BuildingPlotMapUISettings;
+    attackingFactions: AttackingFactions;
+    keepLordEntityID: string;
+    captureProgress: number;
+  }
+
   type AnyEntityStateModel = PlayerStateModel | SiegeStateModel | KinematicStateModel | ResourceNodeStateModel;
   type AnyEntityState = Readonly<AnyEntityStateModel> & Updatable;
 
@@ -71,6 +80,9 @@ declare global {
 
   type ResourceNodeStateUpdateble = Readonly<ResourceNodeStateModel> & Updatable;
   interface ResourceNodeState extends ResourceNodeStateUpdateble {}
+
+  type BuildingPlotStateUpdatable = Readonly<BuildingPlotStateModel> & Updatable;
+  interface BuildingPlotState extends BuildingPlotStateUpdatable {}
 
   type ImmutableSiegeState = DeepImmutableObject<SiegeState>;
   type ImmutableKinematicState = DeepImmutableObject<KinematicStateModel & Updatable>;
@@ -136,6 +148,17 @@ export function defaultSiegeStateModel(): SiegeStateModel {
   };
 }
 
+export function defaultBuildingPlotStateModel(): BuildingPlotStateModel {
+  return {
+    ...defaultEntityStateModel(),
+    type: 'plot',
+    mapSettings: BuildingPlotMapUISettings.None,
+    attackingFactions: AttackingFactions.None,
+    keepLordEntityID: '',
+    captureProgress: 0,
+  }
+}
+
 export const EntityState_Update = 'entityState.update';
 
 function onReceiveEntityStateUpdate(state: AnyEntityState) {
@@ -161,6 +184,10 @@ function onReceiveEntityStateUpdate(state: AnyEntityState) {
     executeUpdateCallbacks(camelotunchained.game.selfPlayerState);
   }
 
+  if ((state.type as any) === 'plot') {
+    game.trigger('plotUpdate', cloneDeep(state));
+  }
+
   if (camelotunchained.game.friendlyTargetState && state.entityID === camelotunchained.game.friendlyTargetState.entityID) {
     game.trigger('friendlyTargetPlayerState.update', camelotunchained.game.friendlyTargetState);
   }
@@ -172,8 +199,13 @@ function onReceiveEntityStateUpdate(state: AnyEntityState) {
   executeUpdateCallbacks(camelotunchained._devGame.entities[state.entityID]);
 }
 
+let handle: CoherentEventHandle | null = null;
 export default function() {
   if (typeof engine !== 'undefined') {
-    engine.on(EntityState_Update, onReceiveEntityStateUpdate);
+    if (handle) {
+      handle.clear();
+    }
+
+    handle = engine.on(EntityState_Update, onReceiveEntityStateUpdate);
   }
 }

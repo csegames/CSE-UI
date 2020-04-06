@@ -56,7 +56,6 @@ import HUDZOrder from 'services/session/HUDZOrder';
 import { ActionBars } from './ActionBar';
 import { AddActionBtn } from './ActionButton/AddActionBtn';
 import { DragAndDropV2Renderer } from 'utils/DragAndDropV2';
-import { WarbandNotificationProvider } from 'hud/WarbandDisplay/WarbandNotificationProvider';
 import { BattleGroupNotificationProvider } from 'hud/BattleGroups/BattleGroupNotificationProvider';
 
 import { DynamicModal } from 'utils/DynamicModal';
@@ -225,7 +224,6 @@ class HUDViewInternal extends React.Component<HUDProps, HUDState> {
               <DragAndDropV2Renderer />
 
               {/* GraphQL Subscription providers */}
-              <WarbandNotificationProvider />
               <BattleGroupNotificationProvider />
 
             </div>

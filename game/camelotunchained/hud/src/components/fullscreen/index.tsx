@@ -11,7 +11,7 @@ import { showTooltip, hideTooltip } from 'actions/tooltips';
 import { hideContextMenu } from 'actions/contextMenu';
 import { TabItem } from 'cseshared/components/TabPanel';
 
-import HudFullScreenView from './HUDFullScreenView';
+import { HUDFullScreenView } from './HUDFullScreenView';
 import InventoryContextProvider from 'fullscreen/ItemShared/InventoryContext';
 import {
   InventoryItem,
@@ -109,11 +109,11 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
               style={visibleComponentLeft === '' && visibleComponentRight === '' ? { visibility: 'hidden' } : {}}>
               <BackgroundImage className={'left'} />
               <BackgroundImage className={'right'} />
-              <HudFullScreenView
+              <HUDFullScreenView
                 shouldSmallScreen={this.props.shouldSmallScreen}
                 leftActiveTabIndex={leftActiveTabIndex}
                 rightActiveTabIndex={rightActiveTabIndex}
-                onActiveTabChanged={(i, name) => this.handleTabChange(name)}
+                onActiveTabChanged={(i: number, name: string) => this.handleTabChange(name)}
                 onRightOrLeftItemAction={this.onRightOrLeftItemAction}
                 showItemTooltip={this.showItemTooltip}
                 hideItemTooltip={this.hideItemTooltip}
@@ -176,7 +176,7 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
           if (this.props.shouldSmallScreen) {
             this.setActiveTabs('map-left');
           } else {
-            this.setActiveTabs('map-left', 'inventory-right');
+            this.setActiveTabs('map-left', 'map-right');
           }
         }
         break;

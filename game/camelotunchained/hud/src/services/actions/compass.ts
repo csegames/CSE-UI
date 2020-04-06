@@ -43,14 +43,14 @@ export function getCompassData() {
   }
 }
 
-export function getCompassFacingData() {
+export function getCompassFacingData(face?: number) {
   if (camelotunchained.game.selfPlayerState.isReady) {
-    let facing: number = camelotunchained.game.selfPlayerState.cameraFacing.yaw % 360;
+    let facing: number = face || camelotunchained.game.selfPlayerState.cameraFacing.yaw % 360;
     if (facing < 0) {
       facing = 360 - Math.abs(facing);
     }
     facing = Math.round(facing);
-    const facingNorth = Math.round((360 - (facing - 90)) % 360);
+    const facingNorth = Math.round((360 - (facing + 90)) % 360);
     return {
       facing,
       facingNorth,

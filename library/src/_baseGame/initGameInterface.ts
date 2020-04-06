@@ -179,6 +179,12 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
       clearAll: noOp,
     },
 
+    map: {
+      backgroundImageURL: '',
+      scale: 1,
+      positionOffset: { x: 0, y: 0 },
+    },
+
     connectToServer: noOp,
     disconnectFromAllServers: noOp,
     isConnectedOrConnectingToServer: false,

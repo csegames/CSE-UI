@@ -8,3 +8,4 @@ import './Ability';
 import './SoundEvent';
 import './StatusAction';
 import './ItemActions';
+import './BuildingPlot';
