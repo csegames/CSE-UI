@@ -22,6 +22,17 @@ const ResourceBarContainer = styled.div`
   }
 `;
 
+const BackFill = styled.div`
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 0;
+  background-color: rgba(255, 255, 255, 1);
+  transition: width 0.3s;
+`;
+
 const FillContainer = styled.div`
   position: absolute;
   top: 0px;
@@ -155,22 +166,44 @@ export interface Props {
   isSquare?: boolean;
   unsquareText?: boolean;
   textStyles?: string;
+  shouldPlayBackfill?: boolean;
 }
 
-export function ResourceBar(props: Props) {
-  const squareClass = props.isSquare ? 'square' : '';
-  const textSquareClass = !props.unsquareText && props.isSquare ? 'square' : '';
-  return (
-    <ResourceBarContainer className={`${squareClass} ${props.containerStyles || ''}`}>
-      <FillContainer className={props.type} style={{ width: `${(props.current / props.max) * 100}%` }}>
-        <Fill className={props.type} />
-      </FillContainer>
-      {!props.hideText && !props.text &&
-        <Text className={`${textSquareClass} ${props.textStyles ? props.textStyles : ''}`}>
-          {Math.round(props.current).toFixed(0)} / {Math.round(props.max).toFixed(0)}
-        </Text>
-      }
-      {props.text && <Text className={squareClass}>{props.text}</Text>}
-    </ResourceBarContainer>
-  );
+export interface State {
+  backFillPercentage: number;
+}
+
+export class ResourceBar extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      backFillPercentage: (this.props.current / this.props.max) * 100,
+    };
+  }
+
+  public render() {
+    const squareClass = this.props.isSquare ? 'square' : '';
+    const textSquareClass = !this.props.unsquareText && this.props.isSquare ? 'square' : '';
+    const barPercentage = (this.props.current / this.props.max) * 100;
+    return (
+      <ResourceBarContainer className={`${squareClass} ${this.props.containerStyles || ''}`}>
+        {this.props.shouldPlayBackfill && <BackFill style={{ width: `${this.state.backFillPercentage}%` }} />}
+        <FillContainer className={this.props.type} style={{ width: `${barPercentage}%` }}>
+          <Fill className={this.props.type} />
+        </FillContainer>
+        {!this.props.hideText && !this.props.text &&
+          <Text className={`${textSquareClass} ${this.props.textStyles ? this.props.textStyles : ''}`}>
+            {Math.round(this.props.current).toFixed(0)} / {Math.round(this.props.max).toFixed(0)}
+          </Text>
+        }
+        {this.props.text && <Text className={squareClass}>{this.props.text}</Text>}
+      </ResourceBarContainer>
+    );
+  }
+
+  public componentDidUpdate(prevProps: Props) {
+    if (this.props.shouldPlayBackfill && (prevProps.current !== this.props.current || prevProps.max !== this.props.max)) {
+      this.setState({ backFillPercentage: (this.props.current / this.props.max) * 100 });
+    }
+  }
 }

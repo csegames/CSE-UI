@@ -90,6 +90,7 @@ export function HealthBar(props: Props) {
           <ResourceBar
             isSquare
             unsquareText
+            shouldPlayBackfill
             type='blue'
             containerStyles={BarrierStyles}
             current={props.divineBarrier.current}
@@ -102,6 +103,7 @@ export function HealthBar(props: Props) {
           <ResourceBar
             isSquare
             unsquareText
+            shouldPlayBackfill
             type={(props.health.current / props.health.max * 100) <= LOW_HEALTH_PERCENT ? 'red' : 'green'}
             containerStyles={MainResourceStyles}
             current={props.health.current === 0 ? 100 : props.health.current}
