@@ -38,16 +38,31 @@ class ScenarioResults extends React.Component<ScenarioResultsProps, ScenarioResu
   }
 
   public render() {
-    const scenarioQuery = query(this.state.scenarioID);
-    return (
-      <GraphQL query={scenarioQuery}>
-        {
-          (graphql: GraphQLResult<{ scenariosummary: ScenarioSummaryDBModel }>) => {
-            return <ScenarioResultsContainer scenarioID={this.state.scenarioID} graphql={graphql} />;
+    if (this.state.scenarioID) {
+      const scenarioQuery = query(this.state.scenarioID);
+      return (
+        <GraphQL query={scenarioQuery}>
+          {
+            (graphql: GraphQLResult<{ scenariosummary: ScenarioSummaryDBModel }>) => {
+              return <ScenarioResultsContainer scenarioID={this.state.scenarioID} graphql={graphql} />;
+            }
           }
-        }
-      </GraphQL>
-    );
+        </GraphQL>
+      );
+
+    } else {
+      let graphql : GraphQLResult<{ scenariosummary: ScenarioSummaryDBModel }> = {
+        data: {
+          scenariosummary: null
+        },
+        loading: false,
+        ok: false,
+        lastError: "No scenario summary to retrieve!",
+        refetch: (disableLoading) => null,
+        client: null
+      }  
+      return <ScenarioResultsContainer scenarioID={this.state.scenarioID} graphql={graphql} />;
+    }
   }
 
   public componentDidMount() {
