@@ -51,6 +51,7 @@ class ScenarioResults extends React.Component<ScenarioResultsProps, ScenarioResu
       );
 
     } else {
+      console.log("Not retrieving scenario summary. ScenarioID is falsey");
       let graphql : GraphQLResult<{ scenariosummary: ScenarioSummaryDBModel }> = {
         data: {
           scenariosummary: null
