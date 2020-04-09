@@ -6,6 +6,8 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
+import { useContext } from 'react';
+import { AudioContext, AudioContextState } from 'components/context/AudioContext';
 
 const Container = styled.div`
   text-transform: uppercase;
@@ -75,12 +77,13 @@ export interface State {
 }
 
 export class ScenarioIntro extends React.Component<Props, State> {
-  private shouldPlayInGameMusic: boolean = true;
   private evh: EventHandle;
   private countdownTimeout: number;
   private animateTimeout: number;
+  private audioContext: AudioContextState;
   constructor(props: Props) {
     super(props);
+    this.audioContext = useContext(AudioContext)
     this.state = {
       scenarioState: hordetest.game.selfPlayerState.scenarioRoundState,
       scenarioStateEndTime: hordetest.game.selfPlayerState.scenarioRoundStateEndTime,
@@ -193,9 +196,9 @@ export class ScenarioIntro extends React.Component<Props, State> {
   }
 
   private playCountdownSound = (countdown: number) => {
-    if (this.shouldPlayInGameMusic) {
+    if (!this.audioContext.hasPlayedInGameMusicAtScenarioStartEver) {
       game.playGameSound(SoundEvents.PLAY_MUSIC_IN_GAME);
-      this.shouldPlayInGameMusic = false;
+      this.audioContext.markHasAPlayedInGameMusicAtScenarioStart();
     }
 
     switch (countdown) {

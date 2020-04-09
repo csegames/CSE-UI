@@ -21,6 +21,7 @@ import { MyUserContextProvider } from './MyUserContext';
 
 // Action Handlers
 import { ActionHandlers } from './actionhandler';
+import { AudioContextProvider } from './AudioContext';
 
 export class SharedContextProviders extends React.Component<{}> {
   public render() {
@@ -54,7 +55,9 @@ export class ContextProviders extends React.Component<{}> {
         <ViewBearingContextProvider>
           <ObjectivesContextProvider>
             <PlayerPositionContextProvider>
-              {this.props.children}
+              <AudioContextProvider>
+                {this.props.children}
+              </AudioContextProvider>
             </PlayerPositionContextProvider>
           </ObjectivesContextProvider>
         </ViewBearingContextProvider>
