@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import gql from 'graphql-tag';
-import { styled } from '@csegames/linaria/react';
 import { isEqual } from 'lodash';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 import {
@@ -22,7 +21,7 @@ import {
 } from 'gql/interfaces';
 
 import { addOrUpdate, removeWhere } from 'lib/reduxUtils';
-import WarbandMemberDisplay from './WarbandMemberDisplay';
+import { WarbandDisplayView } from './WarbandDisplayView';
 import {
   setActiveWarbandID,
   getActiveWarbandID,
@@ -32,11 +31,6 @@ import {
 import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
 import { WarbandContextProvider } from '../../context/WarbandContext';
 import { BattleGroupNotificationProvider } from '../BattleGroups/BattleGroupNotificationProvider';
-
-const Container = styled.div`
-  user-select: none;
-  pointer-events: none;
-`;
 
 const characterImages = {
   humanM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-m.png',
@@ -100,14 +94,7 @@ export class WarbandDisplay extends React.Component<Props, State> {
   public render() {
     return (
       <GraphQL query={query} onQueryResult={this.handleQuery}>
-        {() => (
-          <Container>
-            {
-              this.state.activeMembers &&
-                this.state.activeMembers.map(m => <WarbandMemberDisplay key={m.entityID} member={m as any} />)
-            }
-          </Container>
-        )}
+        {() => <WarbandDisplayView activeMembers={this.state.activeMembers} />}
       </GraphQL>
     );
   }

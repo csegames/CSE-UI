@@ -34,7 +34,7 @@ module.exports = {
       },
       cuhud: {
         default: {
-          script: "nps report.start && nps build.webpack.cuhud && nps report.success",
+          script: "nps report.start && nps test.cuhud && nps build.webpack.cuhud && nps report.success",
           description: 'Builds the Camelot Unchained HUD UI',
         },
         dev: {
@@ -269,6 +269,11 @@ module.exports = {
         script: 'jest --config ./hordetest/hud/jest.config.js --silent',
         loud: 'jest --config ./hordetest/hud/jest.config.js',
         description: 'Run jest tests for hordetest'
+      },
+      cuhud: {
+        script: 'jest --config ./camelotunchained/hud/jest.config.js --silent',
+        loud: 'jest --config ./camelotunchained/hud/jest.config.js',
+        description: 'Run jest tests for camelotunchained'
       },
     },
 
