@@ -7,7 +7,7 @@
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { useContext } from 'react';
-import { AudioContext, AudioContextState } from 'components/context/AudioContext';
+import { PlayOnceOnlyAudioContext, PlayOnceOnlyAudioContextState } from 'components/context/AudioContext';
 
 const Container = styled.div`
   text-transform: uppercase;
@@ -66,6 +66,7 @@ const GoText = styled.div`
 `;
 
 export interface Props {
+  audioContext: PlayOnceOnlyAudioContextState;
 }
 
 export interface State {
@@ -76,14 +77,20 @@ export interface State {
   shouldAnimate: boolean;
 }
 
-export class ScenarioIntro extends React.Component<Props, State> {
+export function ScenarioIntro() {
+  const audioContext = useContext(PlayOnceOnlyAudioContext);
+  return (
+    <ScenarioIntroWithInjectedContext audioContext={audioContext} />
+  );
+}
+
+export class ScenarioIntroWithInjectedContext extends React.Component<Props, State> {
   private evh: EventHandle;
   private countdownTimeout: number;
   private animateTimeout: number;
-  private audioContext: AudioContextState;
   constructor(props: Props) {
     super(props);
-    this.audioContext = useContext(AudioContext)
+    
     this.state = {
       scenarioState: hordetest.game.selfPlayerState.scenarioRoundState,
       scenarioStateEndTime: hordetest.game.selfPlayerState.scenarioRoundStateEndTime,
@@ -196,14 +203,14 @@ export class ScenarioIntro extends React.Component<Props, State> {
   }
 
   private playCountdownSound = (countdown: number) => {
-    if (!this.audioContext.hasPlayedInGameMusicAtScenarioStartEver) {
-      game.playGameSound(SoundEvents.PLAY_MUSIC_IN_GAME);
-      this.audioContext.markHasAPlayedInGameMusicAtScenarioStart();
-    }
-
     switch (countdown) {
       case 10: {
         game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_10);
+        if (!this.props.audioContext.hasPlayedInGameMusicAtScenarioStartEver) {
+          console.log("Playing music_in_game at scenario countdown for first and only time");
+          game.playGameSound(SoundEvents.PLAY_MUSIC_IN_GAME);
+          this.props.audioContext.markHasAPlayedInGameMusicAtScenarioStart();
+        }
         break;
       }
 

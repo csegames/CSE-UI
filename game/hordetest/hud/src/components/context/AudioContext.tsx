@@ -6,19 +6,19 @@
 
 import React from 'react';
 
-export interface AudioContextState {
+export type PlayOnceOnlyAudioContextState = {
   hasPlayedInGameMusicAtScenarioStartEver: boolean;
   markHasAPlayedInGameMusicAtScenarioStart: () => void;
 }
 
-const getDefaultState = (): AudioContextState => ({
+const getDefaultState = (): PlayOnceOnlyAudioContextState => ({
   hasPlayedInGameMusicAtScenarioStartEver: false,
   markHasAPlayedInGameMusicAtScenarioStart: () => {}
 });
 
-export const AudioContext = React.createContext(getDefaultState());
+export const PlayOnceOnlyAudioContext = React.createContext(getDefaultState());
 
-export class AudioContextProvider extends React.Component<{}, AudioContextState> {
+export class PlayOnceOnlyAudioContextProvider extends React.Component<{}, PlayOnceOnlyAudioContextState> {
   constructor(props: {}) {
     super(props);
     this.state = getDefaultState();
@@ -26,14 +26,12 @@ export class AudioContextProvider extends React.Component<{}, AudioContextState>
 
   public render() {
     return (
-      <AudioContext.Provider 
-      value={{
+      <PlayOnceOnlyAudioContext.Provider value={{
         ...this.state,
         markHasAPlayedInGameMusicAtScenarioStart: this.markHasAPlayedInGameMusicAtScenarioStart
-      }}
-      >
+      }}>
         {this.props.children}
-      </AudioContext.Provider>
+      </PlayOnceOnlyAudioContext.Provider>
     );
   }
 

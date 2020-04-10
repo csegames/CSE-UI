@@ -21,7 +21,7 @@ import { MyUserContextProvider } from './MyUserContext';
 
 // Action Handlers
 import { ActionHandlers } from './actionhandler';
-import { AudioContextProvider } from './AudioContext';
+import { PlayOnceOnlyAudioContextProvider } from './AudioContext';
 
 export class SharedContextProviders extends React.Component<{}> {
   public render() {
@@ -33,10 +33,12 @@ export class SharedContextProviders extends React.Component<{}> {
               <ColossusProfileProvider>
                 <StatusContextProvider>
                   <WarbandContextProvider>
+                    <PlayOnceOnlyAudioContextProvider>
 
-                  <ActionHandlers />
-                  {this.props.children}
+                    <ActionHandlers />
+                    {this.props.children}
 
+                    </PlayOnceOnlyAudioContextProvider>
                   </WarbandContextProvider>
                 </StatusContextProvider>
               </ColossusProfileProvider>
@@ -55,9 +57,7 @@ export class ContextProviders extends React.Component<{}> {
         <ViewBearingContextProvider>
           <ObjectivesContextProvider>
             <PlayerPositionContextProvider>
-              <AudioContextProvider>
-                {this.props.children}
-              </AudioContextProvider>
+              {this.props.children}
             </PlayerPositionContextProvider>
           </ObjectivesContextProvider>
         </ViewBearingContextProvider>

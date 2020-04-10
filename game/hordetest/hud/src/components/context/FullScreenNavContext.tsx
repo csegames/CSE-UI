@@ -82,7 +82,7 @@ export class FullScreenNavContextProvider extends React.Component<Props, Context
     console.log(`Has Played Music? ${this.state.hasPlayedInGameMusic}`);
     if (this.state.currentRoute == Route.Start && !this.state.hasPlayedInGameMusic)
     {
-      console.log("Playing in game music");
+      console.log("Playing music_in_game for first and only time");
       game.playGameSound(SoundEvents.PLAY_MUSIC_IN_GAME);
       this.setState({hasPlayedInGameMusic: true})
     }
