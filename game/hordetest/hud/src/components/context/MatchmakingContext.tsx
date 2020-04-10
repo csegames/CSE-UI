@@ -66,9 +66,24 @@ export function getMatchmakingGameModes() {
     {
       ...defaultMode,
       "mode": "hordetest8",
-      "name": "Normal",
+      "name": "Normal HT8",
       "isDev": false,
       "isDefault": true
+    },
+    {
+      ...defaultMode,
+      "mode": "hordetest9",
+      "name": "Normal HT9",
+    },
+    {
+      ...defaultMode,
+      "mode": "hordetest10",
+      "name": "Normal HT10",
+    },
+    {
+      ...defaultMode,
+      "mode": "hordetest11",
+      "name": "Normal HT11",
     }
   ]
 }
