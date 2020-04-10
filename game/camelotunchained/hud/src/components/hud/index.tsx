@@ -28,6 +28,7 @@ import HUDFullScreen from '../fullscreen';
 import AbilityBar from 'hud/AbilityBar';
 import ScenarioPopup from 'hud/ScenarioPopup';
 import ScenarioResults from 'hud/ScenarioResults';
+import { ItemActions } from './ItemActions';
 import { Settings } from 'cseshared/components/Settings';
 import HUDEditor from 'hud/HUDEditor';
 
@@ -185,6 +186,8 @@ class HUDViewInternal extends React.Component<HUDProps, HUDState> {
                   <AbilityBar />
                 </AbilityBarContainer>
               }
+
+              <ItemActions />
 
               <ContextMenuView />
 

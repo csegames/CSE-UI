@@ -158,6 +158,8 @@ export interface GameInterface extends GameModel {
 
   getKeybindSafe: (id: number) => Keybind;
 
+  onShowItemActions: (callback: (message: ItemActionsMessage, entityState: EntityStateModel) => void) => EventHandle;
+
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */
   /* -------------------------------------------------- */

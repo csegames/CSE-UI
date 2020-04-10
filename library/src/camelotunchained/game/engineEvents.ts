@@ -140,6 +140,12 @@ export const EE_OnWantReplaceMaterial = 'wantReplaceMaterial';
 regMap[EE_OnWantReplaceMaterial] = 'onWantReplaceMaterial';
 
 /**
+ * Called when we want to show the item actions for a specific item.
+ */
+export const EE_OnShowItemActions = 'showItemActions';
+regMap[EE_OnShowItemActions] = 'onShowItemActions';
+
+/**
  * Initialize engine event forwarding
  */
 export function initEventForwarding() {
