@@ -56,7 +56,8 @@ export interface Props {
 
 export interface State {
   currentItemActionMessage: ItemActionsMessage;
-  currentEntity: EntityStateModel;
+  name: string;
+  entityId: string;
 }
 
 export class ItemActions extends React.Component<Props, State> {
@@ -71,7 +72,8 @@ export class ItemActions extends React.Component<Props, State> {
 
     this.state = {
       currentItemActionMessage: null,
-      currentEntity: null,
+      name: '',
+      entityId: '',
     };
   }
 
@@ -81,7 +83,7 @@ export class ItemActions extends React.Component<Props, State> {
       <>
         <Overlay onClick={this.close} />
         <Container style={{ top: this.mouseY, left: this.mouseX }}>
-          <Title>{this.state.currentEntity.name}</Title>
+          <Title>{this.state.name}</Title>
           {currentItemActionMessage.actions.map((itemAction) => {
             return (
               <ItemAction onClick={() => this.handleItemActionClick(itemAction)}>
@@ -115,7 +117,7 @@ export class ItemActions extends React.Component<Props, State> {
       return;
     }
 
-    this.setState({ currentItemActionMessage: message, currentEntity: entity });
+    this.setState({ currentItemActionMessage: message, name: `${entity.name}`, entityId: `${entity.entityID}` });
   }
 
   private handleItemActionClick = (itemAction: ItemAction) => {
@@ -134,7 +136,7 @@ export class ItemActions extends React.Component<Props, State> {
       const res = await camelotunchained.game.webAPI.ItemAPI.PerformItemAction(
         camelotunchained.game.webAPI.defaultConfig,
         this.state.currentItemActionMessage.itemInstanceID,
-        this.state.currentEntity.entityID,
+        this.state.entityId,
         itemAction.id,
         {
           BoneAlias: this.state.currentItemActionMessage.boneAlias,
