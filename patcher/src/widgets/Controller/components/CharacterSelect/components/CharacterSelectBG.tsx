@@ -261,7 +261,10 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
       archetype === 'darkfool' ||
       archetype === 'druid' ||
       archetype === 'skald' ||
-      archetype === 'waveweaver') {
+      archetype === 'waveweaver' ||
+      archetype === 'abbot' ||
+      archetype === 'blessedcrow' ||
+      archetype === 'helhound') {
       return true;
     }
 

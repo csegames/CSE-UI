@@ -46,6 +46,10 @@ export const importantAttributes = {
   [Archetype.DarkFool]: ['Resonance', 'Agility', 'Endurance', 'Vitality'],
   [Archetype.Minstrel]: ['Resonance', 'Agility', 'Endurance', 'Vitality'],
   [Archetype.Skald]: ['Resonance', 'Agility', 'Endurance', 'Vitality'],
+
+  [Archetype.Abbot]: ['Faith', 'Vitality', 'Will', 'Agility'],
+  [Archetype.Helbound]: ['Faith', 'Vitality', 'Will', 'Agility'],
+  [Archetype.BlessedCrow]: ['Faith', 'Vitality', 'Will', 'Agility'],
 };
 
 export class StatRow extends React.Component<Props, State> {

@@ -69,6 +69,18 @@
     @include selection-thumbnail('../images/classes/profile/profile-icon-any-skald.png');
 }
 
+.thumb__Human_Male_Abbot {
+    @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
+}
+
+.thumb__Human_Male_BlessedCrow {
+    @include selection-thumbnail('../images/classes/profile/profile-icon-any-blessedcrow.png');
+}
+
+.thumb__Human_Male_Helbound {
+    @include selection-thumbnail('../images/classes/profile/profile-icon-any-helbound.png');
+}
+
 // ----------------- Female Human Classes ----------------
 .thumb__Human_Female_BlackKnight{
     @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-blackknight.png');
@@ -130,6 +142,18 @@
     @include selection-thumbnail('../images/classes/profile/profile-icon-any-skald.png');
 }
 
+.thumb__Human_Female_Abbot {
+    @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
+}
+
+.thumb__Human_Female_BlessedCrow {
+    @include selection-thumbnail('../images/classes/profile/profile-icon-any-blessedcrow.png');
+}
+
+.thumb__Human_Female_Helbound {
+    @include selection-thumbnail('../images/classes/profile/profile-icon-any-helbound.png');
+}
+
 // Male Luchorpan Classes
 .thumb__Luchorpan_Male_Fianna{
     @include selection-thumbnail('../images/classes/profile/profile-icon-luchorpan-m-fianna.png');
@@ -149,6 +173,10 @@
 
 .thumb__Luchorpan_Male_DarkFool {
     @include selection-thumbnail('../images/classes/profile/profile-icon-any-darkfool.png');
+}
+
+.thumb__Luchorpan_Male_BlessedCrow {
+    @include selection-thumbnail('../images/classes/profile/profile-icon-any-blessedcrow.png');
 }
 
 // Female Luchorpan Classes
@@ -172,6 +200,10 @@
     @include selection-thumbnail('../images/classes/profile/profile-icon-any-darkfool.png');
 }
 
+.thumb__Luchorpan_Female_BlessedCrow {
+    @include selection-thumbnail('../images/classes/profile/profile-icon-any-blessedcrow.png');
+}
+
 // Male Pict Classes
 .thumb__Pict_Male_BlackKnight{
     @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-blackknight.png');
@@ -193,6 +225,10 @@
     @include selection-thumbnail('../images/classes/profile/profile-icon-any-minstrel.png');
 }
 
+.thumb__Pict_Male_Abbot {
+    @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
+}
+
 // Female Pict Classes
 .thumb__Pict_Female_BlackKnight{
     @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-blackknight.png');
@@ -212,6 +248,10 @@
 
 .thumb__Pict_Female_Minstrel{
     @include selection-thumbnail('../images/classes/profile/profile-icon-any-minstrel.png');
+}
+
+.thumb__Pict_Female_Abbot {
+    @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
 }
 
 
@@ -236,6 +276,10 @@
     @include selection-thumbnail('../images/classes/profile/profile-icon-any-skald.png');
 }
 
+.thumb__Valkyrie_Male_Helbound {
+    @include selection-thumbnail('../images/classes/profile/profile-icon-any-helbound.png');
+}
+
 // Female Valkyrie Classes
 .thumb__Valkyrie_Female_Mjolnir{
     @include selection-thumbnail('../images/classes/profile/profile-icon-valk-f-mjolnir.png');
@@ -255,6 +299,10 @@
 
 .thumb__Valkyrie_Female_Skald{
     @include selection-thumbnail('../images/classes/profile/profile-icon-any-skald.png');
+}
+
+.thumb__Valkyrie_Female_Helbound {
+    @include selection-thumbnail('../images/classes/profile/profile-icon-any-helbound.png');
 }
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -332,6 +380,21 @@
     @include winters-shadow-height();
 }
 
+.standing__Human_Male_Abbot {
+    @include view-standing('../images/classes/any-abbot.png');
+    @include winters-shadow-height();
+}
+
+.standing__Human_Male_BlessedCrow {
+    @include view-standing('../images/classes/any-blessedcrow.png');
+    @include winters-shadow-height();
+}
+
+.standing__Human_Male_Helbound {
+    @include view-standing('../images/classes/any-helbound.png');
+    @include winters-shadow-height();
+}
+
 // ----------------- Female Human Classes ----------------
 .standing__Human_Female_Empath {
     @include view-standing('../images/classes/human-f-mystic.png');
@@ -400,6 +463,21 @@
     @include winters-shadow-height();
 }
 
+.standing__Human_Female_Abbot {
+    @include view-standing('../images/classes/any-abbot.png');
+    @include winters-shadow-height();
+}
+
+.standing__Human_Female_BlessedCrow {
+    @include view-standing('../images/classes/any-blessedcrow.png');
+    @include winters-shadow-height();
+}
+
+.standing__Human_Female_Helbound {
+    @include view-standing('../images/classes/any-helbound.png');
+    @include winters-shadow-height();
+}
+
 // ----------------- Male Luchorpan Classes ------------
 .standing__Luchorpan_Male_Empath {
     @include view-standing('../images/classes/luchorpan-m-mystic.png');
@@ -421,6 +499,10 @@
     @include view-standing('../images/classes/any-darkfool.png');
 }
 
+.standing__Luchorpan_Male_BlessedCrow {
+    @include view-standing('../images/classes/any-blessedcrow.png');
+}
+
 // ---------------- Female Luchorpan Classes --------------
 .standing__Luchorpan_Female_Empath {
     @include view-standing('../images/classes/luchorpan-f-mystic.png');
@@ -440,6 +522,10 @@
 
 .standing__Luchorpan_Female_DarkFool {
     @include view-standing('../images/classes/any-darkfool.png');
+}
+
+.standing__Luchorpan_Female_BlessedCrow {
+    @include view-standing('../images/classes/any-blessedcrow.png');
 }
 
 // ----------------- Male Pict Classes ---------------
@@ -506,6 +592,10 @@
     @include view-standing('../images/classes/any-skald.png');
 }
 
+.standing__Valkyrie_Male_Helbound {
+    @include view-standing('../images/classes/any-helbound.png');
+}
+
 // ---------------- Female Valkyrie Classes -----------
 .standing__Valkyrie_Female_Mjolnir {
     @include view-standing('../images/classes/valk-f-mjolnir.png');
@@ -528,9 +618,14 @@
     @include view-standing('../images/classes/any-skald.png');
 }
 
+.standing__Valkyrie_Female_Helbound {
+    @include view-standing('../images/classes/any-helbound.png');
+}
+
 // Misc
 .class-selection-container {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .class-btn {

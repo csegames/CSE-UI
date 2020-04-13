@@ -18,7 +18,10 @@ export function isSpecialClass(a: Archetype) {
       a === Archetype.DarkFool ||
       a === Archetype.Druid ||
       a === Archetype.Skald ||
-      a === Archetype.WaveWeaver) {
+      a === Archetype.WaveWeaver ||
+      a === Archetype.Abbot ||
+      a === Archetype.Helbound ||
+      a === Archetype.BlessedCrow) {
     return true;
   }
 

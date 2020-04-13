@@ -43,6 +43,12 @@ const classText: any = {
   DarkFool: 'Dark Fools use the power of their reed pipes to confuse, mislead, and attack their enemies. They are true tricksters, using a combination of sound and magic to create illusions, deceptions, and inspiring melodies to encourage members of their Realm. Their pranks and practical jokes have a very dark side, and their mind-affecting powers make the Dark Fools feared across the world.',
 
   Skald: 'Though they are musicians, Skalds do not use musical instruments to power their abilities. Instead, they rely simply upon their words, amplified with certain magical accoutrements. With their Viking training, they are also the most adept at using weapons of any of the bard-like classes in the Realms. They also grow more powerful as the battle rages, trying to keep their emotions under control…most of the time.',
+
+  Abbot: 'In a world without Veilstorms, Abbots would spend lives removed from the world, looking after their religious charges. In our world, they spend decades in cloisters, studying and honing their magical and physical abilities, as well as their personal recipe for nature’s greatest gift: beer. Once they reach the pinnacle of raw power within their respective religious orders, they become worthy to enter the world to fight for their Realm. Abbots have a fondness for intoxicating beverages, especially those from their own order, and most importantly, for beer.',
+
+  BlessedCrow: 'The Blessed Crows were created by Brân the Blessed. He was one of the first of the “old ones” to discover that they were immortal, under most circumstances. Unfortunately, he also found out what some of the other circumstances were, and passed away. After his death, the cauldron he created to heal people was reproduced. Each Blessed Crow uses their own cauldron in much the same way magic-using classes use a spellbook. By doing so, they carry on his legacy as both healers and fighters.',
+
+  Helbound: 'Those who swear fealty to Hel, the Mother of the Nine Worlds, become infused with the dual forces of life and death. The bodies of the HelBound bear the marks of their service, etched with the forces of Hel’s magic, which dwells within them. Often at the forefront of battle, a HelBound may find controlling their power a great challenge, for they can both heal and destroy. They can cure the mortal wounds of allies and wield fear as a weapon, frightening enemies to death. As for their own death, those who take Hel as their patron tend to recover quickly. Unless Hel has chosen something special for her fallen devotee.',
 };
 /* tslint:enable */
 
@@ -87,15 +93,21 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
         case Archetype.BlackKnight: videoTitle = 'heavy'; break;
         case Archetype.Fianna: videoTitle = 'heavy'; break;
         case Archetype.Mjolnir: videoTitle = 'heavy'; break;
-        case Archetype.Physician: videoTitle = 'healers'; break;
-        case Archetype.Empath: videoTitle = 'healers'; break;
-        case Archetype.Stonehealer: videoTitle = 'healers'; break;
-        case Archetype.FlameWarden: videoTitle = 'healers'; break;
-        case Archetype.Druid: videoTitle = 'healers'; break;
-        case Archetype.WaveWeaver: videoTitle = 'healers'; break;
-        case Archetype.Minstrel: videoTitle = 'healers'; break;
-        case Archetype.DarkFool: videoTitle = 'healers'; break;
-        case Archetype.Skald: videoTitle = 'healers'; break;
+        case Archetype.Physician:
+        case Archetype.Empath:
+        case Archetype.Stonehealer:
+        case Archetype.FlameWarden:
+        case Archetype.Druid:
+        case Archetype.WaveWeaver:
+        case Archetype.Minstrel:
+        case Archetype.DarkFool:
+        case Archetype.Skald:
+        case Archetype.Abbot:
+        case Archetype.Helbound:
+        case Archetype.BlessedCrow: {
+          videoTitle = 'healers';
+          break;
+        }
       }
     }
     const displayedClasses = this.props.classes

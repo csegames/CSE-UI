@@ -361,6 +361,27 @@ class CharacterSelectListItem extends React.Component<CharacterSelectListItemPro
         return <SkaldClass style={{ backgroundImage: `url(${classImg})` }} />;
       }
 
+      case 'HumanMaleAbott':
+      case 'HumanFemaleAbott':
+      case 'PictMaleAbott':
+      case 'PictFemaleAbott': {
+        return <Class style={{ backgroundImage: `url(${classImg})`, transform: 'scale(-1, 1)' }} />;
+      }
+
+      case 'HumanMaleHelbound':
+      case 'HumanFemaleHelbound':
+      case 'ValkyrieMaleHelbound':
+      case 'ValkyrieFemaleHelbound': {
+        return <Class style={{ backgroundImage: `url(${classImg})`, transform: 'scale(-1, 1)' }} />;
+      }
+
+      case 'HumanMaleBlessedCrow':
+      case 'HumanFemaleBlessedCrow':
+      case 'LuchorpanMaleBlessedCrow':
+      case 'LuchorpanFemaleBlessedCrow': {
+        return <Class style={{ backgroundImage: `url(${classImg})`, transform: 'scale(-1, 1)' }} />;
+      }
+
       case 'HumanMaleEmpath':
       case 'HumanFemaleEmpath':
       case 'HumanMalePhysician':
