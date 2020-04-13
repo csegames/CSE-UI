@@ -36,7 +36,8 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
       <Container
         key={this.props.member.entityID}
         onClick={this.onClickContainer}
-        onMouseDown={this.handleContextMenu}>
+        onMouseDown={this.handleContextMenu}
+        className='warbandMemberDisplay_Container'>
         <UnitFrame entityState={this.props.member as any} warband />
       </Container>
     );

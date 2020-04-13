@@ -16,7 +16,7 @@ import { checkNetworkRequirements } from '../utils';
 import { AbilityBuilderQuery } from 'gql/interfaces';
 import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
 import { AbilityType } from 'services/session/AbilityBuilderState';
-import { getScaledValue } from 'lib/scale';
+import { getScaledValue } from 'hudlib/scale';
 
 // #region Item Dimension Constants
 const ITEM_DIMENSIONS_UHD = 128;

@@ -17,7 +17,7 @@ import {
 import { ActionBarSlot } from './ActionBarSlot';
 import { ContextMenu } from 'shared/ContextMenu';
 import { Drag } from 'utils/Drag';
-import { getViewportSize } from 'lib/viewport';
+import { getViewportSize } from 'hudlib/viewport';
 
 type IMGProps = { radius: number, src: string } & React.HTMLProps<HTMLImageElement>;
 const IMG = styled.img`

@@ -5,7 +5,7 @@
  */
 
 import { styled } from '@csegames/linaria/react';
-import * as CSS from 'lib/css-helper';
+import * as CSS from 'hudlib/css-helper';
 import * as CONFIG from 'cseshared/components/config';
 
 export const Button = styled.div`

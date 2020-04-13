@@ -9,7 +9,7 @@ import * as React from 'react';
 import { isEqual } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { css } from '@csegames/linaria';
-import { FactionColors } from 'lib/factionColors';
+import { FactionColors } from 'hudlib/factionColors';
 import { TeamInterface } from './ScenarioResultsContainer';
 import {
   getFilteredWinningTeams,

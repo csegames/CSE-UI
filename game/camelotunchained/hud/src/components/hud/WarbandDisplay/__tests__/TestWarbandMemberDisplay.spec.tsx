@@ -6,7 +6,13 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
-import { WarbandDisplayView } from '../WarbandDisplayView';
+import WarbandMemberDisplay from '../WarbandMemberDisplay';
+import { uiContextFromGame } from 'services/session/UIContext';
+import {
+  GroupMemberState,
+  Archetype,
+  Race,
+} from 'gql/interfaces';
 
 jest.mock('@csegames/linaria');
 
@@ -14,8 +20,9 @@ beforeEach(() => {
   jest.resetModules();
 });
 
-function testWarbandMembers(): GroupMemberState[] {
-  return [{
+function testWarbandMember(): GroupMemberState {
+  return {
+    type: 'player',
     entityID: '1',
     characterID: '1',
     faction: Faction.Arthurian,
@@ -46,44 +53,29 @@ function testWarbandMembers(): GroupMemberState[] {
     canKick: true,
     rankLevel: 100,
     isReady: false,
-  },{
-    entityID: '2',
-    characterID: '2',
-    faction: Faction.Arthurian,
-    classID: Archetype.BlackKnight,
-    name: 'Player Two',
-    isAlive: true,
-    position: { x: 0, y: 0, z: 0 },
-    statuses: [],
-    race: Race.HumanMaleA,
-    gender: Gender.Female,
-    health: [{
-      current: 9000,
-      max: 10000,
-      wounds: 0
-    }],
-    stamina: {
-      current: 90,
-      max: 100,
-    },
-    blood: {
-      current: 75,
-      max: 100,
-    },
-    displayOrder: 1,
-    warbandID: '1',
-    isLeader: false,
-    canInvite: true,
-    canKick: false,
-    rankLevel: 100,
-    isReady: false,
-  }];
+  };
 }
 
-describe('Renders elements', () => {
+describe('Renders element', () => {
   it('renders container', () => {
-    const members = testWarbandMembers();
-    const mounted = mount(<WarbandDisplayView activeMembers={members} />);
-    expect(mounted.find('.warbandDisplayView_Container')).toBeTruthy();
+    const member = testWarbandMember();
+    const mounted = mount(
+      <UIContext.Provider value={uiContextFromGame()}>
+        <WarbandMemberDisplay key={member.entityID} member={member as any} />
+      </UIContext.Provider>
+    
+    );
+    expect(mounted.find('.warbandMemberDisplay_Container')).toBeTruthy();
+  });
+
+  it('renders a unit frame', () => {
+    const member = testWarbandMember();
+    const mounted = mount(
+      <UIContext.Provider value={uiContextFromGame()}>
+        <WarbandMemberDisplay key={member.entityID} member={member as any} />
+      </UIContext.Provider>
+    
+    );
+    expect(mounted.find('.unitFrame_Container')).toBeTruthy();
   });
 });

@@ -184,7 +184,7 @@ export class PlayerFrame extends React.Component<Props, State> {
       player.entitySpecificResources[EntityResourceType[EntityResourceType.Panic]];
 
     return (
-      <PlayerFrameContainer data-input-group='block'>
+      <PlayerFrameContainer data-input-group='block' className='playerFrame_Container'>
         <Tooltip
           updateValues={[
             player.health && player.health[0],
@@ -274,7 +274,7 @@ export class PlayerFrame extends React.Component<Props, State> {
               <Image src={imgDir + realmPrefix + archetypePrefix + 'frame.png'} />
             </ArchetypeFrameContainer>
 
-            <Name>{player.name}{!player.isAlive ? ' (Corpse)' : ''}</Name>
+            <Name className='playerFrame_Name'>{player.name}{!player.isAlive ? ' (Corpse)' : ''}</Name>
           </MainGrid>
         </Tooltip>
 

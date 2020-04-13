@@ -9,7 +9,7 @@ import { styled } from '@csegames/linaria/react';
 import { TabbedDialog, DialogTab } from 'cseshared/components/TabbedDialog';
 import { ScenarioMatch, startPollingScenarioQueue, stopPollingScenarioQueue } from 'services/session/scenarioQueue';
 import { Scenario } from './components/Scenario';
-import * as CSS from 'lib/css-helper';
+import * as CSS from 'hudlib/css-helper';
 
 const SCENARIO_JOIN_DIALOG_WIDTH = 850;
 const SCENARIO_JOIN_DIALOG_HEIGHT = 410;

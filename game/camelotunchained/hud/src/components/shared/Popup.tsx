@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { showPopup, ShowPopupPayload, onShowPopup, onHidePopup } from 'actions/popup';
-import { getViewportSize } from 'lib/viewport';
+import { getViewportSize } from 'hudlib/viewport';
 
 const Container = styled.div`
 `;

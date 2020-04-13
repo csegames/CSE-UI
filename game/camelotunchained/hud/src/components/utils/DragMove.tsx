@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { getViewportSize } from 'lib/viewport';
+import { getViewportSize } from 'hudlib/viewport';
 
 export interface DragMoveEvent {
   position: Vec2f;

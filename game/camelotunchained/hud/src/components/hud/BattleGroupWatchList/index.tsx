@@ -17,7 +17,7 @@ import { BattleGroupNotificationProvider } from '../BattleGroups/BattleGroupNoti
 import { WarbandContextProvider } from '../../context/WarbandContext';
 import WatchListItem from './WatchListItem';
 import { WarbandDisplay } from '../WarbandDisplay';
-import { removeWhere } from 'lib/reduxUtils';
+import { removeWhere } from 'hudlib/reduxUtils';
 import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
 import {
   setActiveWarbandID,

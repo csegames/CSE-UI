@@ -9,7 +9,7 @@ import { styled } from '@csegames/linaria/react';
 import { isEmpty } from 'lodash';
 
 import * as actions from 'actions/contextMenu';
-import { getViewportSize } from 'lib/viewport';
+import { getViewportSize } from 'hudlib/viewport';
 
 const Container = styled.div`
   background: rgba(0, 0, 0, 0.01);

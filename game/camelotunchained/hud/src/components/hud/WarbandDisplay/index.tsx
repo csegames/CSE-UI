@@ -20,7 +20,7 @@ import {
   WarbandUpdateSubscription,
 } from 'gql/interfaces';
 
-import { addOrUpdate, removeWhere } from 'lib/reduxUtils';
+import { addOrUpdate, removeWhere } from 'hudlib/reduxUtils';
 import { WarbandDisplayView } from './WarbandDisplayView';
 import {
   setActiveWarbandID,

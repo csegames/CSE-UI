@@ -24,7 +24,7 @@
       "gql/*": [ "gql/*" ],
       "components/*": [ "components/*" ],
       "actions/*": [ "services/actions/*" ],
-      "lib/*": [ "lib/*" ],
+      "hudlib/*": [ "lib/*" ],
       "services/*": [ "services/*" ],
       "cseshared/*": ["../../../shared/*"],
       "*": [

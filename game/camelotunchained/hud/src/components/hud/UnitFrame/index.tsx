@@ -34,7 +34,7 @@ export class UnitFrame extends React.Component<UnitFrameProps> {
   public render() {
     const { target } = this.props;
     return (
-      <Container data-input-group='block'>
+      <Container data-input-group='block' className='unitFrame_Container'>
         {this.renderFrame()}
         {target && <DistanceText targetType={target} />}
       </Container>

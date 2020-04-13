@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { FactionColors } from 'lib/factionColors';
+import { FactionColors } from 'hudlib/factionColors';
 import { TeamPlayer } from './ScenarioResultsContainer';
 
 const HOVER_EFFECT_TIME = 0.4;

@@ -62,7 +62,7 @@ import {
   SlotItemDefType,
   InventoryFilterButton,
 } from 'fullscreen/lib/itemInterfaces';
-import { getScaledValue } from 'lib/scale';
+import { getScaledValue } from 'hudlib/scale';
 import { uiContextFromGame } from 'services/session/UIContext';
 
 declare const toastr: any;

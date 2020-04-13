@@ -23,7 +23,7 @@ import {
 } from 'fullscreen/lib/utils';
 import { InventoryItem, CUQuery, SecureTradeState } from 'gql/interfaces';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
-import { getScaledValue } from 'lib/scale';
+import { getScaledValue } from 'hudlib/scale';
 
 export interface InventoryBodyStyles {
   inventoryBody: React.CSSProperties;

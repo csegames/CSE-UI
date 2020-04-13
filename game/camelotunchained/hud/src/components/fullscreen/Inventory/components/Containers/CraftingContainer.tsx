@@ -20,7 +20,7 @@ import { InventoryDataTransfer } from 'fullscreen/lib/itemEvents';
 import { InventorySlotItemDef } from 'fullscreen/lib/itemInterfaces';
 import { InventoryItem, ContainerDefStat_Single } from 'gql/interfaces';
 import { SLOT_DIMENSIONS } from '../InventorySlot';
-import { getScaledValue } from 'lib/scale';
+import { getScaledValue } from 'hudlib/scale';
 import { CloseButton } from 'cseshared/components/CloseButton';
 
 // #region HeaderContent constants

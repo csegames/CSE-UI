@@ -19,7 +19,7 @@ import {
   onUpdateTooltip,
   updateTooltip,
 } from 'actions/tooltips';
-import { getViewportSize } from 'lib/viewport';
+import { getViewportSize } from 'hudlib/viewport';
 import { defaultItemTooltipStyle } from './ItemTooltip';
 
 const Container = styled.div`

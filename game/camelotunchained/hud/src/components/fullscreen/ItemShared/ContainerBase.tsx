@@ -22,7 +22,7 @@ import {
   isMovingStack,
 } from 'fullscreen/lib/utils';
 import { uiContextFromGame } from 'services/session/UIContext';
-import { getScaledValue } from 'lib/scale';
+import { getScaledValue } from 'hudlib/scale';
 
 declare const toastr: any;
 

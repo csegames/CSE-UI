@@ -8,7 +8,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { styled }  from '@csegames/linaria/react';
-import * as CSS from 'lib/css-helper';
+import * as CSS from 'hudlib/css-helper';
 import {
   ScenarioMatch,
   startPollingScenarioQueue,

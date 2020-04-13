@@ -25,7 +25,7 @@ const ALIAS = {
   gql: path.resolve(__dirname, 'src/gql'),
   components: path.resolve(__dirname, 'src/components'),
   actions: path.resolve(__dirname, 'src/services/actions'),
-  lib: path.resolve(__dirname, 'src/lib'),
+  hudlib: path.resolve(__dirname, 'src/lib'),
   services: path.resolve(__dirname, 'src/services'),
   images: path.resolve(__dirname, 'src/images'),
   cseshared: path.resolve(__dirname, '../../shared'),

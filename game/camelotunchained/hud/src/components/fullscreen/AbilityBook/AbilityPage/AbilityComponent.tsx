@@ -12,7 +12,7 @@ import { Tooltip } from 'shared/Tooltip';
 import { ComponentTooltip } from './ComponentTooltip';
 import { AbilityBookContext } from '../../../context/AbilityBookContext';
 import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
-import { getScaledValue } from 'lib/scale';
+import { getScaledValue } from 'hudlib/scale';
 
 // #region Component constants
 const COMPONENT_DIMENSIONS = 72;

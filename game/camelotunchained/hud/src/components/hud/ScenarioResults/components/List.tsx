@@ -11,7 +11,7 @@ import { styled } from '@csegames/linaria/react';
 import Infinite from 'react-infinite';
 import { doesSearchInclude } from '@csegames/library/lib/camelotunchained/utils';
 
-import { FactionColors } from 'lib/factionColors';
+import { FactionColors } from 'hudlib/factionColors';
 import { SortBy } from './ListHeaderItem';
 import ListHeader from './ListHeader';
 import ListItem from './ListItem';

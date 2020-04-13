@@ -19,7 +19,7 @@ import FilterInput from '../Inventory/components/FilterInput';
 import { displaySlotNames, GearSlots, MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
 import { getItemDefinitionName } from 'fullscreen/lib/utils';
 import { InventoryItem } from 'gql/interfaces';
-import { getScaledValue } from 'lib/scale';
+import { getScaledValue } from 'hudlib/scale';
 
 // #region MiniInventoryBox constants
 const MINI_INVENTORY_BOX_WIDTH = 620;
