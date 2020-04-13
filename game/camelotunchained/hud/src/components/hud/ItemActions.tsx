@@ -105,6 +105,16 @@ export class ItemActions extends React.Component<Props, State> {
   }
 
   private handleShowItemActions = (message: ItemActionsMessage, entity: EntityStateModel) => {
+    if (!message) {
+      console.error('Tried to open ItemActions menu but got a bad ItemActionsMessage: ' + message);
+      return;
+    }
+
+    if (!entity) {
+      console.error('Tried to open ItemActions menu but got a bad entity: ' + entity);
+      return;
+    }
+
     this.setState({ currentItemActionMessage: message, currentEntity: entity });
   }
 
