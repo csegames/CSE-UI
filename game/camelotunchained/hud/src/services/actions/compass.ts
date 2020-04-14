@@ -50,7 +50,7 @@ export function getCompassFacingData(face?: number) {
       facing = 360 - Math.abs(facing);
     }
     facing = Math.round(facing);
-    const facingNorth = Math.round((360 - (facing + 90)) % 360);
+    const facingNorth = Math.round((360 - (facing - 90)) % 360);
     return {
       facing,
       facingNorth,

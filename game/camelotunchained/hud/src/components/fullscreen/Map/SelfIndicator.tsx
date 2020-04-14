@@ -13,14 +13,13 @@ const Container = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
 `;
 
 const Indicator = styled.div`
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 0 10px 30px 10px;
+  border-width: 0 5px 15px 5px;
   border-color: transparent transparent #ffffff transparent;
 `;
 
@@ -67,7 +66,7 @@ export class SelfIndicator extends React.Component<Props, State> {
   private getPosition = () => {
     const scale = game.map.scale || 0.1;
     return {
-      marginTop: this.state.playerState.position.y * scale + game.map.positionOffset.y,
+      marginTop: -1 * this.state.playerState.position.y * scale + game.map.positionOffset.y,
       marginLeft: this.state.playerState.position.x * scale + game.map.positionOffset.x,
     }
   }

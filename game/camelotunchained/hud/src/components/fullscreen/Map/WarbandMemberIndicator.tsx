@@ -12,7 +12,6 @@ const Container = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
 `;
 
 const Circle = styled.div`
@@ -50,7 +49,7 @@ export class WarbandMemberIndicator extends React.Component<Props> {
   private getPosition = () => {
     const scale = game.map.scale || 0.1;
     return {
-      marginTop: this.props.memberState.position.y * scale + game.map.positionOffset.y,
+      marginTop: -1 * this.props.memberState.position.y * scale + game.map.positionOffset.y,
       marginLeft: this.props.memberState.position.x * scale + game.map.positionOffset.x,
     }
   }

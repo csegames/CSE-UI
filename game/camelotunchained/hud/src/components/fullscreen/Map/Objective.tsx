@@ -21,8 +21,8 @@ const ObjectiveContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 55px;
-  width: 45px;
+  height: 40px;
+  width: 30px;
   font-size: 24px;
   font-weight: bold;
   color: white;
@@ -54,7 +54,7 @@ const ObjectiveContainer = styled.div`
 const BarContainer = styled.div`
   position: relative;
   height: 8px;
-  width: 45px;
+  width: 30px;
   background-color: rgba(0, 0, 0, 0.8);
 `;
 
@@ -71,7 +71,7 @@ const AttackingFaction = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 25px;
+  height: 15px;
   flex: 1;
   font-size: 14px;
   font-weight: bold;
@@ -199,7 +199,7 @@ export class Objective extends React.Component<Props, State> {
   private getPosition = () => {
     const scale = game.map.scale || 0.1;
     return {
-      marginTop: this.state.entityState.position.y * scale + game.map.positionOffset.y,
+      marginTop: -1 * this.state.entityState.position.y * scale + game.map.positionOffset.y,
       marginLeft: this.state.entityState.position.x * scale + game.map.positionOffset.x,
     }
   }
