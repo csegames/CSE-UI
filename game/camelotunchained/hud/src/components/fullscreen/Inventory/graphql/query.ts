@@ -8,7 +8,7 @@
 import gql from 'graphql-tag';
 import { InventoryItemFragment } from 'gql/fragments/InventoryItemFragment';
 
-export const query = gql`
+export const inventoryGQLQuery = gql`
   query InventoryBaseGQL {
     myInventory(allowOfflineItems: false) {
       items {

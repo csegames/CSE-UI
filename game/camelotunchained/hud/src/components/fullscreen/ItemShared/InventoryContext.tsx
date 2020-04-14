@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 
-import { query } from '../Inventory/graphql/query';
+import { inventoryGQLQuery } from '../Inventory/graphql/query';
 import { InventoryItem, CUQuery } from 'gql/interfaces';
 import { SlotType } from 'fullscreen/lib/itemInterfaces';
 import eventNames, {
@@ -84,6 +84,11 @@ export interface MoveInventoryItemPayload {
   dropZoneData: InventoryDataTransfer;
 }
 
+const inventoryQuery = {
+  disableBatching: true,
+  query: inventoryGQLQuery
+}
+
 class InventoryContextProvider extends React.Component<InventoryContextProps, InventoryContextState> {
   private graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>;
   private updateInventoryItemsHandler: EventHandle;
@@ -103,7 +108,7 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
 
   public render() {
     return (
-      <GraphQL query={query} onQueryResult={this.handleQueryResult}>
+      <GraphQL query={inventoryQuery} onQueryResult={this.handleQueryResult}>
         {(graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>) => {
           const contextValue: InventoryContextState = {
             ...this.state,
