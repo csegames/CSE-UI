@@ -170,7 +170,7 @@ class PaperDoll extends React.Component<PaperDollProps, PaperDollState> {
   }
   public render() {
     return (
-      <GraphQL query={{ query: paperDollContainerQuery }} onQueryResult={this.handleQueryResult}>
+      <GraphQL query={{ query: paperDollContainerQuery, disableBatching: true }} onQueryResult={this.handleQueryResult}>
         {(graphql: GraphQLResult<PaperDollContainerGQL.Query>) => {
           this.graphql = graphql;
           return (
