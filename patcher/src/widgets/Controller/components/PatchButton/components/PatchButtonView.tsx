@@ -69,14 +69,14 @@ class Button extends React.Component<ButtonProps, ButtonState> {
         }
 
         const permissions = patcher.getPermissions();
+        const userHasAccess = hasAccess(webAPI.accessLevelToPatchPermission(selectedServer.accessLevel), permissions);
         if (selectedServer.type === ServerType.CUGAME) {
           // if (!selectedServer.available && (permissions & (PatchPermissions.Devs | PatchPermissions.IT)) === 0) {
           //   return (
           //     <DisabledButton text='Server Offline' />
           //   );
           // } else
-          if (!selectedServer.available ||
-            hasAccess(webAPI.accessLevelToPatchPermission(selectedServer.accessLevel), permissions)) {
+          if (!selectedServer.available && userHasAccess) {
             return (
               <DisabledButton text='Play Offline' onClick={this.props.onPlayOfflineClick} />
             );
