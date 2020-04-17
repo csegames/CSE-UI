@@ -393,20 +393,11 @@ export class KeybindSettings extends React.PureComponent<Props, State> {
   }
 
   private getSavableKeybinds = () => {
-    const keybinds: ArrayMap<Keybind> = cloneDeep(game.keybinds) as ArrayMap<Keybind>;
-
-    const keybindMap: ArrayMap<Keybind> = {};
+    const keybinds: ArrayMap<Keybind> =  cloneDeep(game.keybinds) as ArrayMap<Keybind>;
     Object.keys(keybinds).forEach((kbKey) => {
-      if (keybinds[kbKey].category === 'actionslots') {
-        return;
-      }
-
       const binds = keybinds[kbKey].binds;
-      keybindMap[kbKey] = {
-        ...keybinds[kbKey],
-        binds: [binds['0'], binds['1'], binds['2']],
-      };
+      keybinds[kbKey].binds = [binds['0'], binds['1'], binds['2']];
     });
-    return keybindMap;
+    return keybinds;
   }
 }

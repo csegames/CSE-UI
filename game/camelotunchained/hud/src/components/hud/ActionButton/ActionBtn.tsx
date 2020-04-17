@@ -5,13 +5,11 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 
+import { Ability } from 'gql/interfaces';
 import { InnerRing } from './InnerRing';
 import { OuterRing } from './OuterRing';
-import { Tooltip } from 'shared/Tooltip';
-import { showContextMenu } from 'actions/contextMenu';
 
 type ContainerProps = { radius: number; acceptInput: boolean; } & React.HTMLProps<HTMLDivElement>;
 export const Container = styled.div`
@@ -24,23 +22,6 @@ export const Container = styled.div`
   left: 0;
   top: 0;
   cursor: pointer;
-
-  &.Unusable {
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background-color: rgba(0, 0, 0, 0.5);
-      filter: hue-rotate(-40deg);
-      z-index: 10;
-    }
-  }
 
   &.NoWeapon {
     &:before {
@@ -129,24 +110,6 @@ const QueuedStateTick = styled.div`
   background-size: 90%;
 `;
 
-const TooltipHeader = styled.div`
-  font-size: 22px;
-  font-weight: 700;
-`;
-
-const TooltipContentContainer = styled.div`
-  color: white;
-`;
-
-const DefaultTooltipStyles = {
-  tooltip: css`
-    padding: 2px 5px 5px 5px;
-    min-width: 200px;
-    max-width: 300px;
-    max-height: 750px;
-  `,
-};
-
 export function AbilityIcon(props: { icon: string }) {
   const [icon, setIcon] = useState(props.icon);
 
@@ -163,12 +126,8 @@ export function AbilityIcon(props: { icon: string }) {
   );
 }
 
-export interface ActionBtnProps {
-  actionId: number;
-  slotId: number;
-  keybindName?: string;
-  keybindId?: number;
-  getContextMenuItems?: () => any[];
+export interface ActionBtnProps extends Ability {
+  keybind: string;
   additionalStyles?: React.CSSProperties;
   disableInteractions?: boolean;
 }
@@ -190,7 +149,7 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      abilityState: cloneDeep(camelotunchained.game.abilityStates[props.actionId]),
+      abilityState: cloneDeep(camelotunchained.game.abilityStates[props.id]),
     };
   }
 
@@ -199,59 +158,42 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
     const display = this.props.uiContext.isUHD() ? theme.actionButtons.display.uhd : theme.actionButtons.display.hd;
     const { abilityState } = this.state;
     const queued = (abilityState.status & AbilityButtonState.Queued) !== 0;
-    const apiAbilityInfo = camelotunchained.game.store.getAbilityInfo(this.props.actionId);
 
-    let tooltipContent = null;
-    if (apiAbilityInfo && apiAbilityInfo.icon) {
-      tooltipContent = <TooltipContentContainer>
-        <TooltipHeader>{apiAbilityInfo ? apiAbilityInfo.name : ''}</TooltipHeader>
-        <div dangerouslySetInnerHTML={{ __html: apiAbilityInfo ? apiAbilityInfo.description : '' }} />
-      </TooltipContentContainer>;
-    } else {
-      tooltipContent = <TooltipContentContainer>
-        <TooltipHeader>Failed to retrieve data from API server</TooltipHeader>
-      </TooltipContentContainer>;
-    }
-
-    const abilityIcon = apiAbilityInfo ? apiAbilityInfo.icon :
-      this.state.abilityState.icon ? this.state.abilityState.icon : null;
-
-    return (  
-      <Tooltip
-        styles={DefaultTooltipStyles}
-        content={tooltipContent}>
-        <Container
-          {...display}
-          acceptInput={!this.props.disableInteractions}
-          onMouseDown={this.onClick}
-          style={this.props.additionalStyles}
-          className={this.getErrorClassName()}
-        >
-          <AbilityIcon icon={abilityIcon} />
-          <OverlayShadow />
-          <KeybindInfo>{this.props.keybindName}</KeybindInfo>
-          <InnerRing {...this.props} abilityState={abilityState} />
-          <OuterRing {...this.props} abilityState={abilityState} />
-          {queued && <QueuedStateTick />}
-        </Container>
-      </Tooltip>
+    return (
+      <Container
+        {...display}
+        acceptInput={!this.props.disableInteractions}
+        onMouseDown={() => {
+          if (this.props.disableInteractions) return;
+          game.triggerKeyAction(abilityState.keyActionID);
+        }}
+        style={this.props.additionalStyles}
+        className={this.getErrorClassName()}
+      >
+        <AbilityIcon icon={this.props.icon} />
+        <OverlayShadow />
+        <KeybindInfo>{abilityState.boundKeyName}</KeybindInfo>
+        <InnerRing {...this.props} abilityState={abilityState} />
+        <OuterRing {...this.props} abilityState={abilityState} />
+        {queued && <QueuedStateTick />}
+      </Container>
     );
   }
 
   public componentDidMount() {
-    if (typeof this.props.actionId !== 'number' && this.props.actionId === 0) {
+    if (typeof this.props.id !== 'number') {
       return;
     }
 
-    this.evh = camelotunchained.game.abilityStates[this.props.actionId].onUpdated(this.handleAbilityStateUpdate);
+    this.evh = camelotunchained.game.abilityStates[this.props.id].onUpdated(this.handleAbilityStateUpdate);
   }
 
   public componentDidUpdate(prevProps: Props) {
-    if (prevProps.actionId !== this.props.actionId) {
+    if (prevProps.id !== this.props.id) {
       this.evh.clear();
-      this.evh = camelotunchained.game.abilityStates[this.props.actionId].onUpdated(this.handleAbilityStateUpdate);
+      this.evh = camelotunchained.game.abilityStates[this.props.id].onUpdated(this.handleAbilityStateUpdate);
 
-      this.setState({ abilityState: cloneDeep(camelotunchained.game.abilityStates[this.props.actionId]) });
+      this.setState({ abilityState: cloneDeep(camelotunchained.game.abilityStates[this.props.id]) });
     }
   }
 
@@ -270,15 +212,11 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
       return 'NoAmmo';
     }
 
-    if (BitFlag.hasBits(this.state.abilityState.status, AbilityButtonState.Unusable)) {
-      return 'Unusable';
-    }
-
     return '';
   }
 
   private handleAbilityStateUpdate = () => {
-    const abilityState = cloneDeep(camelotunchained.game.abilityStates[this.props.actionId]);
+    const abilityState = cloneDeep(camelotunchained.game.abilityStates[this.props.id]);
     if (BitFlag.hasBits(abilityState.status, AbilityButtonState.Preparation)) {
       window.clearInterval(this.interval);
       this.interval = window.setInterval(() => this.forceUpdate(), 66);
@@ -287,17 +225,6 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
     }
 
     this.setState({ abilityState });
-  }
-
-  private onClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.button === 0) {
-      if (this.props.disableInteractions) return;
-      game.actions.activateSlottedAction(this.state.abilityState.systemSlotID || this.props.slotId); 
-    }
-
-    if (e.button === 2) {
-      showContextMenu(this.props.getContextMenuItems(), e);
-    }
   }
 }
 

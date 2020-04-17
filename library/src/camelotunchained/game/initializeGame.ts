@@ -9,7 +9,7 @@ import initGameInterface, { initOutOfContextGame } from './initGameInterface';
 
 import { runMocks } from './mock';
 import { GameInterface, GameModel, DevGameInterface } from './GameInterface';
-import initClientTasks from '../../_baseGame/clientTasks';
+import initClientTasks from './clientTasks';
 import initCoherentRecording from '../../_baseGame/coherent';
 import { initEventForwarding } from './engineEvents';
 

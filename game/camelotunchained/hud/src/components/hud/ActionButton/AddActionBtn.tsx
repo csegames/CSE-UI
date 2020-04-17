@@ -37,8 +37,7 @@ export function AddActionBtn() {
             <AbilityIcon icon={abilityInfo.icon} />
           </Container>
         );
-      }}
-      onDragEnd={actionViewContext.clearQueueAddAction}>
+    }}>
       <div />
     </DragAndDrop>
   );

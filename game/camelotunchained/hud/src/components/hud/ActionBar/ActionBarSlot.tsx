@@ -11,7 +11,6 @@ import { ActionBtn } from 'hud/ActionButton/ActionBtn';
 import { DragAndDrop, DragEvent } from 'utils/DragAndDropV2';
 import { ContextMenu } from 'shared/ContextMenu';
 import { showModal } from 'utils/DynamicModal';
-import { KeybindModal } from './KeybindModal';
 
 type SCProps = { radius: number; } & React.HTMLProps<HTMLDivElement>;
 const SlotContainer = styled.div`
@@ -86,9 +85,43 @@ const BtnWrapper = styled.span`
   pointer-events: all;
 `;
 
+function getAbility(clientAbility: AbilityState) {
+  if (!clientAbility) {
+    return null;
+  }
+
+  let abilityInfo = {
+    ...cloneDeep(clientAbility),
+    name: '',
+    icon: '',
+    description: '',
+    tracks: [] as any,
+  };
+
+  const apiAbilityInfo = camelotunchained.game.store.getAbilityInfo(clientAbility.id);
+  if (apiAbilityInfo) {
+    abilityInfo = {
+      ...clientAbility,
+      ...apiAbilityInfo,
+    };
+  }
+
+  if (apiAbilityInfo) {
+    Object.keys(apiAbilityInfo).forEach((key) => {
+      // If client has same key, check if it's a truthy value. If so, override API data. Otherwise, don't.
+      if (clientAbility[key]) {
+        // Value is truthy, override.
+        abilityInfo[key] = clientAbility[key];
+      }
+    });
+  }
+
+  return abilityInfo;
+}
+
 export interface ActionBarSlotProps extends ActionSlot {
   sumAngle: number; // used to orient the action in a slot correctly
-  activeGroup: number; // used to identify which abilities are active in this slot
+  activeGroup: string; // used to identify which abilities are active in this slot
 }
 
 // tslint:disable-next-line:function-name
@@ -101,39 +134,34 @@ export function ActionBarSlot(props: ActionBarSlotProps): JSX.Element {
     snapStep: 15,
   });
 
-  const defaultKeybind = getDefaultKeybindId();
-  const [keybindId] = useState(defaultKeybind ? defaultKeybind.id : -1);
-  const [boundKeyName, setBoundKeyName] = useState(defaultKeybind ? defaultKeybind.binds[0].name : '');
-
   const ui = useContext(UIContext);
   const theme = ui.currentTheme();
   const display = ui.isUHD() ? theme.actionButtons.display.uhd : theme.actionButtons.display.hd;
   const definition = ui.isUHD() ? 'uhd' : 'hd';
   const factionAbbr = FactionExt.abbreviation(camelotunchained.game.selfPlayerState.faction);
 
-  let slottedActionID: number | null = null;
+  let slottedActionID: string = '';
   for (const actionId in actionViewContext.actions) {
     if (actionViewContext.actions[actionId].findIndex(p => p.slot === props.id && p.group === props.activeGroup) >= 0) {
-      slottedActionID = Number(actionId);
+      slottedActionID = actionId;
       break;
     }
   }
 
   // get ability info from game, for now use temp
+  const abilityState = slottedActionID ? getAbility(camelotunchained.game.abilityStates[slottedActionID]) : null;
+  const slottedAction = abilityState ? {
+    name: abilityState.name,
+    icon: abilityState.icon,
+    description: abilityState.description,
+    id: abilityState.id,
+    tracks: abilityState.tracks,
+    current: abilityState,
+    keybind: abilityState.boundKeyName,
+  } : null;
 
   const inEditMode = actionViewContext.editMode !== EditMode.Disabled;
-  const showEmptySlot = inEditMode && slottedActionID === null;
-
-  function onConfirmBind(newBind: Binding) {
-    game.actions.assignKeybind(props.id, newBind.value);
-    setBoundKeyName(newBind.name);
-  }
-
-  function getDefaultKeybindId() {
-    const keybindsClone = cloneDeep(game.keybinds);
-    const keybind = Object.values(keybindsClone).find(keybind => keybind.description === "Action Slot " + (props.id - 1));
-    return keybind;
-  }
+  const showEmptySlot = inEditMode && !slottedAction;
 
   function createContextMenuItems() {
     return [
@@ -142,7 +170,10 @@ export function ActionBarSlot(props: ActionBarSlotProps): JSX.Element {
         onSelected: () => {
           showModal({
             render: props => (
-              <KeybindModal keybindId={keybindId} onConfirmBind={onConfirmBind} onClose={props.onClose} />
+              <div>
+                Hello World!
+                <button onMouseDown={() => props.onClose({ name: 'success', value: 1 })}>close</button>
+              </div>
             ),
             onClose: (key: Binding) => console.log(key.name),
           });
@@ -152,7 +183,7 @@ export function ActionBarSlot(props: ActionBarSlotProps): JSX.Element {
   }
 
   const renderAbility = () => {
-    if (slottedActionID === null) return null;
+    if (!slottedAction) return null;
 
     function onDrop(e: DragEvent) {
       const target = {
@@ -186,10 +217,9 @@ export function ActionBarSlot(props: ActionBarSlotProps): JSX.Element {
             acceptKeys={['action-button']}
             dragRender={() => (
               <ActionBtn
+                {...slottedAction as any}
                 disableInteractions
                 additionalStyles={{ filter: 'brightness(75%)' }}
-                actionId={slottedActionID}
-                slotId={props.id}
               />
             )}
             dragRenderOffset={{ x: -display.radius, y: -display.radius }}
@@ -211,36 +241,29 @@ export function ActionBarSlot(props: ActionBarSlotProps): JSX.Element {
             }}
             onDrop={onDrop}
           >
-            <BtnWrapper>
-              <ActionBtn
-                actionId={slottedActionID}
-                disableInteractions={true}
-                slotId={props.id}
-                keybindName={boundKeyName}
-                keybindId={keybindId}
-                getContextMenuItems={createContextMenuItems}
-                additionalStyles={{
-                  [internalState.isDragging && 'filter']: 'brightness(75%)',
-                }}
-              />
-            </BtnWrapper>
+            <ContextMenu
+              type='items'
+              getItems={createContextMenuItems}
+            >
+              <BtnWrapper>
+                <ActionBtn
+                  {...slottedAction as any}
+                  disableInteractions={true}
+                  additionalStyles={{
+                    [internalState.isDragging && 'filter']: 'brightness(75%)',
+                  }}
+                />
+              </BtnWrapper>
+            </ContextMenu>
           </DragAndDrop>
-        ) :
-          <ActionBtn
-            actionId={slottedActionID}
-            slotId={props.id}
-            keybindName={boundKeyName}
-            keybindId={keybindId}
-            getContextMenuItems={createContextMenuItems}
-          />
-        }
+        ) : <ActionBtn {...slottedAction as any} />}
       </ActionWrapper>
     );
   };
 
   function onAddSlotClick(e: React.MouseEvent) {
     if (e.button === 0) {
-      actionViewContext.addSlot(false, props.id);
+      actionViewContext.addSlot(props.id);
     }
   }
 
@@ -266,15 +289,13 @@ export function ActionBarSlot(props: ActionBarSlotProps): JSX.Element {
       slotId: props.id,
     };
 
+    console.log(e.dataTransfer);
+
     actionViewContext.addAndRemoveAction(
       e.dataTransfer.actionId,
       from,
       target,
     );
-  }
-
-  function navigateToAbilityBook() {
-    game.trigger('navigate', 'ability-book');
   }
 
   return (
@@ -314,13 +335,12 @@ export function ActionBarSlot(props: ActionBarSlotProps): JSX.Element {
                     }
                   }}
                 />
-                {!actionViewContext.queuedAbilityId &&
-                  <Icon className='fas fa-plus' onMouseDown={navigateToAbilityBook}></Icon>}
+                {/* <Icon className='fas fa-plus' onMouseDown={onAddSlotClick}></Icon> */}
               </SlotWrapper>
             </ContextMenu>
           </DragAndDrop>
         )}
-        {slottedActionID !== -1 && renderAbility()}
+        {slottedAction && renderAbility()}
       </SlotContainer>
       {props.children && props.children.map(id => (
         <ActionBarSlot

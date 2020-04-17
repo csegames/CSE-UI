@@ -8,7 +8,7 @@ import React from 'react';
 
 export function getDefaultAbilityBarToggleContextState(): State {
   return {
-    showNewAbilityBar: true,
+    showNewAbilityBar: false,
   }
 }
 
@@ -45,6 +45,7 @@ export class AbilityBarToggleContextProvider extends React.Component<{}, State> 
   }
 
   private handleToggleAbilityBar = () => {
+    console.log('TOGGLE ABILITY BAR');
     this.setState({ showNewAbilityBar: !this.state.showNewAbilityBar });
   }
 }

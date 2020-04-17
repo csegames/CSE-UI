@@ -4,29 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { BaseDevGameInterface } from "./BaseGameInterface";
-
-declare global {
-  interface CancellablePromise<T> extends Promise<T> {
-    /**
-     * Cancels the execution on the client related to this promise.
-     * The promise's reject handler will be called with a user cancellation
-     * message.
-     */
-    cancel: () => void;
-  }
-}
-
-export interface TaskHandle {
-  id: number;
-  cancel: () => void;
-}
-
-export interface Resolvable<T> extends TaskHandle {
-  resolve: (value: T | PromiseLike<T>) => void;
-  reject: (reason: any) => void;
-  cancelled: boolean;
-}
+import { DevGameInterface } from './GameInterface';
+import { TaskHandle, Resolvable } from '../../_baseGame/clientTasks';
 
 enum TaskStatus {
   Pending,
@@ -48,9 +27,9 @@ interface TaskResult {
   reason: string;
 }
 
-export function makeClientPromise<T>(callFn: (game: BaseDevGameInterface, ...args: any[]) => TaskHandle) {
+export function makeClientPromise<T>(callFn: (game: DevGameInterface, ...args: any[]) => TaskHandle) {
   return function(...args: any[]) {
-    const handle = callFn(game as BaseDevGameInterface, ...args);
+    const handle = callFn(camelotunchained.game as DevGameInterface, ...args);
     if (game.debug) {
       console.log(`GAME TASK: NEW ACTIVE TASK ${handle.id} cancel=${typeof handle.cancel}`);
     }

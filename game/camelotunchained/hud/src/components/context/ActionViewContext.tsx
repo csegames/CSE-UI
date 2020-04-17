@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { debounce } from 'lodash';
+import { isEqual } from 'lodash';
 
 export const MAX_GROUP_COUNT = 6;
 export const MAX_CHILD_SLOT_COUNT = 4;
@@ -14,10 +14,6 @@ const ABILITY_BAR_VERSION = '0';
 const ABILITY_BAR_VERSION_KEY = 'cu/game/abilities/barVersion';
 const ABILITY_BAR_KEY = 'cu/game/abilities/bar';
 
-function idIsInvalid(id: number) {
-  return typeof id !== 'number' || id === 0;
-}
-
 export enum EditMode {
   Disabled,
   ActionEdit,
@@ -25,9 +21,12 @@ export enum EditMode {
 }
 
 interface ContextState {
-  anchors: { [anchorId: number]: ActionViewAnchor };
-  actions: { [actionId: number]: ActionPosition[] }; // action id => position map
-  slots: { [slotId: number]: ActionSlot };
+  anchors: Dictionary<ActionViewAnchor>;
+  actions: Dictionary<ActionPosition[]>; // action id => position map
+  slots: Dictionary<ActionSlot>;
+
+  // ClientSlotID handling. A ClientSlotID is an id used for keybinding a slot on the client
+  clientSlotIDMap: { [clientSlotID: number]: string[]; }; // client slot id to ui slot id map
 
   editMode: EditMode;
   queuedAbilityId: number;
@@ -37,66 +36,61 @@ interface ContextFunctions {
   enableActionEditMode: () => void;
   enableSlotEditMode: () => void;
   disableEditMode: () => void;
-  addGroup: (anchorId: number) => void;
-  removeGroup: (anchorId: number, groupId: number) => void;
-  activateGroup: (anchorId: number, groupIndex: number) => void;
-  activateNextGroup: (anchorId: number) => void;
-  activatePrevGroup: (anchorId: number) => void;
-  addSlot: (addingToAnchor: boolean, parentId: number) => void;
-  removeSlot: (slotId: number) => void;
-  setSlotAngle: (slotId: number, angle: number) => void;
-  addAction: (actionId: number, groupId: number, slotId: number) => void;
+  addGroup: (anchorId: string) => void;
+  removeGroup: (anchorId: string, groupId: string) => void;
+  activateGroup: (anchorId: string, groupIndex: number) => void;
+  activateNextGroup: (anchorId: string) => void;
+  activatePrevGroup: (anchorId: string) => void;
+  addSlot: (parentId: string) => void;
+  removeSlot: (slotId: string) => void;
+  setSlotAngle: (slotId: string, angle: number) => void;
+  addAction: (actionId: string, groupId: string, slotId: string) => void;
   addAndRemoveAction: (
-    actionId: number,
-    from: { groupId: number, slotId: number },
-    target: { groupId: number, slotId: number }
+    actionId: string,
+    from: { groupId: string, slotId: string },
+    target: { groupId: string, slotId: string }
   ) => void;
-  removeAction: (actionId: number, groupId: number, slotId: number) => void;
+  removeAction: (actionId: string, groupId: string, slotId: string) => void;
   replaceOrSwapAction: (
     from: {
-      actionId: number,
-      groupId?: number,
-      slotId?: number,
+      actionId: string,
+      groupId?: string,
+      slotId?: string,
     },
     target: {
-      actionId: number,
-      groupId: number,
-      slotId: number,
+      actionId: string,
+      groupId: string,
+      slotId: string,
   }) => void;
-  setAnchorPosition: (anchorId: number, position: Vec2f) => void;
+  setAnchorPosition: (anchorId: string, position: Vec2f) => void;
   queueAddAction: (abilityId: number) => void;
-  clearQueueAddAction: () => void;
   addAnchor: () => void;
-  removeAnchor: (anchorId: number) => void;
+  removeAnchor: (anchorId: string) => void;
 }
 
 export type ActionViewContextState = ContextState & ContextFunctions;
 
 export interface ActionPosition {
-  group: number; // group id
-  slot: number; // slot id
+  group: string; // group id
+  slot: string; // slot id
 }
 
 export interface ActionViewAnchor {
-  id: number;
+  id: string;
   position: Vec2f;
   activeGroupIndex: number;
-  groups: number[]; // ids of groups on this anchor in order.
-  children: number[]; // direct child slots
-}
-
-export enum ParentType {
-  Anchor,
-  Slot
+  groups: string[]; // ids of groups on this anchor in order.
+  children: string[]; // direct child slots
 }
 
 export interface ActionSlot {
-  id: number;
+  id: string;
   angle: number;
-  anchorId: number;
-  actions: number[];
-  parent: { type: ParentType, id: number };
-  children: number[];
+  clientSlotID: number;
+  anchorId: string;
+  actionId: string;
+  parent: string;
+  children: string[];
 }
 
 function noOp() {}
@@ -105,6 +99,7 @@ export function getDefaultActionViewContextState(): ContextState {
     anchors: {},
     actions: {},
     slots: {},
+    clientSlotIDMap: {},
     editMode: EditMode.Disabled,
     queuedAbilityId: null,
   }
@@ -129,28 +124,20 @@ export const ActionViewContext = React.createContext<ActionViewContextState>({
   replaceOrSwapAction: noOp,
   setAnchorPosition: noOp,
   queueAddAction: noOp,
-  clearQueueAddAction: noOp,
   addAnchor: noOp,
   removeAnchor: noOp,
 });
 
-export function isSystemAnchorId(anchorId: number) {
-  return anchorId < 0;
-}
-
 export class ActionViewContextProvider extends React.Component<{}, ContextState> {
-  private abilityBarUpdateEVH: EventHandle;
-  private systemAnchorInitEVH: EventHandle;
-  private initializeStateTimeout: number;
+  private evh: EventHandle;
+  private clientAbilitiesCache: ArrayMap<AbilityBarItem>;
   private isInitial: boolean = true;
 
   constructor(props: {}) {
     super(props);
 
-    this.handleAbilityBarStateUpdate = debounce(this.handleAbilityBarStateUpdate, 50);
     this.state = getDefaultActionViewContextState();
   }
-
   public render() {
     return (
       <ActionViewContext.Provider value={{
@@ -172,7 +159,6 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         replaceOrSwapAction: this.replaceOrSwapAction,
         setAnchorPosition: this.setAnchorPosition,
         queueAddAction: this.queueAddAction,
-        clearQueueAddAction: this.clearQueueAddAction,
         addAnchor: this.addAnchor,
         removeAnchor: this.removeAnchor,
       }}>
@@ -182,58 +168,43 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
   }
 
   public componentDidMount() {
-    camelotunchained.game.store.refetch().then(() => {
-      this.initializeState();
-    });
+    if (camelotunchained.game.abilityBarState.isReady) {
+      this.initializeActionView();
+    }
 
-    camelotunchained.game.abilityBarState.onUpdated(this.handleAbilityBarStateUpdate);
+    this.evh = camelotunchained.game.abilityBarState.onUpdated(() => {
+      if (this.isInitial) {
+        this.initializeActionView();
+      }
+      if (!this.clientAbilitiesCache ||
+          !isEqual(this.clientAbilitiesCache, camelotunchained.game.abilityBarState.abilities)) {
+        // TODO: New ability bar came in e.g. building - gnna handle this case later
+      }
+    });
   }
 
   public componentWillUnmount() {
-    this.abilityBarUpdateEVH.clear();
-    this.systemAnchorInitEVH.clear();
-
-    if (this.initializeStateTimeout) {
-      window.clearTimeout(this.initializeStateTimeout);
-    }
-  }
-
-  private handleAbilityBarStateUpdate = () => {
-    const abilitiesArray = Object.values(camelotunchained.game.abilityBarState.abilities);
-    this.initializeActionView(abilitiesArray);
-  }
-
-  private initializeState = () => {
-    if (camelotunchained.game.abilityBarState.isReady) {
-      const abilitiesArray = Object.values(camelotunchained.game.abilityBarState.abilities);
-      if (abilitiesArray.length === 0) {
-        this.initializeStateTimeout = window.setTimeout(this.initializeState, 100);
-        return;
-      }
-
-      this.initializeActionView(abilitiesArray);
-    }
+    this.evh.clear();
   }
 
   private updateLocalStorage = (state: ContextState) => {
-    const persistedState = {
-      anchors: state.anchors,
-      actions: state.actions,
-      slots: state.slots,
-    }
-    localStorage.setItem(ABILITY_BAR_KEY + game.characterID, JSON.stringify(persistedState));
+    localStorage.setItem(ABILITY_BAR_KEY, JSON.stringify(state));
   }
 
-  private initializeActionView = (abilities: AbilityBarItem[]) => {
-    let shouldOverrideLocalStorage = false;
-    const cacheAbilityBarVersion = localStorage.getItem(ABILITY_BAR_VERSION_KEY + game.characterID);
-    if (!cacheAbilityBarVersion || cacheAbilityBarVersion !== ABILITY_BAR_VERSION) {
-      shouldOverrideLocalStorage = true;
-      localStorage.setItem(ABILITY_BAR_VERSION_KEY + game.characterID, ABILITY_BAR_VERSION);
+  private initializeActionView = () => {
+    if (Object.keys(camelotunchained.game.abilityBarState.abilities).length === 0) {
+      return;
     }
 
-    let actionViewString = shouldOverrideLocalStorage === false ?
-      localStorage.getItem(ABILITY_BAR_KEY + game.characterID) : null;
+    let shouldOverrideLocalStorage = false;
+    const cacheAbilityBarVersion = localStorage.getItem(ABILITY_BAR_VERSION_KEY);
+    if (!cacheAbilityBarVersion || cacheAbilityBarVersion !== ABILITY_BAR_VERSION) {
+      shouldOverrideLocalStorage = true;
+      localStorage.setItem(ABILITY_BAR_VERSION_KEY, ABILITY_BAR_VERSION);
+    }
+
+    this.clientAbilitiesCache = camelotunchained.game.abilityBarState.abilities;
+    let actionViewString = shouldOverrideLocalStorage === false ? localStorage.getItem(ABILITY_BAR_KEY) : null;
 
     let actionView: ContextState = null;
     if (actionViewString) {
@@ -244,102 +215,53 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       }
     }
 
-    // No action view in local storage. Create a default action view.
-    const systemAnchorIdToAbilities: { [systemAnchorId: number]: number[] } = {};
-    const nonSystemAnchorAbilityIds: number[] = [];
-
-    abilities.forEach((ability) => {
-      if (!ability.systemAnchorID) {
-        nonSystemAnchorAbilityIds.push(ability.id);
-        return;
-      }
-
-      if (systemAnchorIdToAbilities[ability.systemAnchorID]) {
-        systemAnchorIdToAbilities[ability.systemAnchorID].push(ability.id);
-      } else {
-        systemAnchorIdToAbilities[ability.systemAnchorID] = [ability.id];
-      }
-    });
-
-    // Get non systemanchor action view
     if (!actionView) {
-      actionView = this.getAbilityGroupActionView(nonSystemAnchorAbilityIds);
-    }
-
-    let shouldUpdateLocalStorage = !actionViewString;
-    Object.keys(systemAnchorIdToAbilities).forEach((systemAnchorId) => {
-      if (actionView.anchors[systemAnchorId]) {
-        return;
-      }
-
-      shouldUpdateLocalStorage = true;
-
-      const systemAnchorActionView = this.getAbilityGroupActionView(
-        systemAnchorIdToAbilities[systemAnchorId],
-        actionView,
-        Number(systemAnchorId),
-      );
-
-      actionView = {
-        ...actionView,
-        anchors: {
-          ...actionView.anchors,
-          ...systemAnchorActionView.anchors,
-        },
-        actions: {
-          ...actionView.actions,
-          ...systemAnchorActionView.actions,
-        },
-        slots: {
-          ...actionView.slots,
-          ...systemAnchorActionView.slots,
-        },
-      };
-    });
-
-    if (shouldUpdateLocalStorage) {
+      actionView = this.getInitialCharacterActionView();
       this.updateLocalStorage(actionView);
     }
 
-    if (this.isInitial) {
-      this.initializeClient(actionView.anchors, actionView.slots, actionView.actions);
-      this.isInitial = false;
-    }
+    this.isInitial = false;
     this.setState({ ...actionView, editMode: EditMode.Disabled });
   }
 
-  private getAbilityGroupActionView = (abilityIds: number[], actionView?: ContextState, systemAnchorId?: number) => {
-    const anchorId = systemAnchorId || this.generateAnchorId(this.state.anchors);
-    const groupId = this.generateGroupId(anchorId, this.state.anchors);
+  private getInitialCharacterActionView = () => {
+    const anchorId = genID();
+    const groupId = genID();
 
-    const slots: { [slotId: number]: ActionSlot } = actionView ? { ...actionView.slots } : {};
-    const actions: { [actionId: number]: ActionPosition[] } = actionView ? { ...actionView.actions } : {};
+    const slots: Dictionary<ActionSlot> = {};
+    const clientSlotIDMap: { [clientSlotID: number]: string[]; } = {};
+    const actions: { [actionId: string]: ActionPosition[] } = {};
 
-    let firstSlotId: number = null;
-    let prevSlotId: number = null;
-    let nextSlotId: number = null;
-    abilityIds.forEach((abilityId, i) => {
-      const currentSlotId = nextSlotId ? nextSlotId : this.generateSlotId(slots);
+    let firstSlotId: string = null;
+    let prevSlotId: string = null;
+    let nextSlotId: string = null;
+    const abilityBarArray = Object.values(camelotunchained.game.abilityBarState.abilities);
+    abilityBarArray.forEach((ability, i) => {
+      const currentSlotId = nextSlotId ? nextSlotId : genID();
 
-      if (i === abilityIds.length - 1) {
+      if (i === abilityBarArray.length - 1) {
         nextSlotId = null;
       } else {
-        nextSlotId = currentSlotId + 1;
+        nextSlotId = genID();
       }
 
+      const actionId = ability.id.toString();
       slots[currentSlotId] = {
         id: currentSlotId,
         angle: 0,
         anchorId,
-        actions: [abilityId],
-        parent: prevSlotId === null ? { type: ParentType.Anchor, id: anchorId } : { type: ParentType.Slot, id: prevSlotId },
+        clientSlotID: ability.id,
+        actionId,
+        parent: prevSlotId === null ? anchorId : prevSlotId,
         children: nextSlotId ? [nextSlotId] : [],
       };
 
-      actions[abilityId] = [{
+      actions[actionId] = [{
         group: groupId,
         slot: currentSlotId,
       }]
+
+      clientSlotIDMap[ability.id] = [currentSlotId];
 
       prevSlotId = currentSlotId;
 
@@ -352,7 +274,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       anchors: {
         [anchorId]: {
           id: anchorId,
-          position: { x: 300, y: typeof systemAnchorId !== 'undefined' ? 400 : 300 },
+          position: { x: 300, y: 300 },
           activeGroupIndex: 0,
           groups: [groupId],
           children: [firstSlotId],
@@ -360,83 +282,35 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       },
       actions,
       slots,
+      clientSlotIDMap,
       editMode: EditMode.Disabled,
       queuedAbilityId: null,
     } as ContextState;
   }
 
-  private initializeClient = async (anchors: { [anchorId: number]: ActionViewAnchor },
-                                    slots: { [slotId: number]: ActionSlot },
-                                    actions: { [actionId: number]: ActionPosition[] }) => {
-    try {
-      const res = await game.actions.enterActionBarEditModeAsync();
-      if (res.success) {
-        Object.values(anchors).forEach((anchor, i) => {
-          if (!isSystemAnchorId(anchor.id)) {
-            this.clientSetActiveAnchorGroup(anchor.id, anchor.groups[anchor.activeGroupIndex]);
-          }
-        });
-
-        Object.values(slots).forEach((slot, i) => {
-          slot.actions.forEach((actionId) => {
-            const action = actions[actionId].find(a => a.slot === slot.id);
-            if (!isSystemAnchorId(slot.anchorId)) {
-              this.clientAssignSlottedAction(slot.id, slot.anchorId, action.group, actionId);
-            }
-          });
-        });
-        
-      } else {
-        console.error('Could not enter edit mode');
-      }
-
-      await game.actions.exitActionBarEditModeAsync();
-    } catch(e) {
-      console.error('Failed to initialize slots through client api.');
-    }
+  private enableActionEditMode = () => {
+    this.setState({ editMode: EditMode.ActionEdit });
+    camelotunchained.game._cse_dev_enterActionBarEditMode();
   }
 
-  private enableActionEditMode = async () => {
-    try {
-      const res = await game.actions.enterActionBarEditModeAsync();
-      if (res.success) {
-        this.setState({ editMode: EditMode.ActionEdit });
-      }
-    } catch(e) {
-      console.error('There was an error entering enableActionEditMode');
-    }
+  private enableSlotEditMode = () => {
+    this.setState({ editMode: EditMode.SlotEdit });
+    camelotunchained.game._cse_dev_enterActionBarEditMode();
   }
 
-  private enableSlotEditMode = async () => {
-    try {
-      const res = await game.actions.enterActionBarEditModeAsync();
-      if (res.success) {
-        this.setState({ editMode: EditMode.SlotEdit });
-      }
-    } catch(e) {
-      console.error('There was an error entering enableActionEditMode');
-    }
+  private disableEditMode = () => {
+    this.setState({ editMode: EditMode.Disabled });
+    camelotunchained.game._cse_dev_exitActionBarEditMode();
   }
 
-  private disableEditMode = async () => {
-    try {
-      const res = await game.actions.exitActionBarEditModeAsync();
-      if (res.success) {
-        this.setState({ editMode: EditMode.Disabled, queuedAbilityId: null });
-      }
-    } catch(e) {
-      console.error('There was an error exiting diableEditMode');
-    }
-  }
-
-  private addGroup = (anchorId: number) => {
+  private addGroup = (anchorId: string) => {
     const anchor = this.state.anchors[anchorId];
 
     if (anchor.groups.length >= MAX_GROUP_COUNT) {
       return;
     }
 
-    const newGroupId = this.generateGroupId(anchorId, this.state.anchors);
+    const newGroupId = genID();
     const updatedState: ContextState = {
       ...this.state,
       anchors: {
@@ -455,7 +329,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     this.setState(updatedState);
   }
 
-  private removeGroup = (anchorId: number, groupId: number) => {
+  private removeGroup = (anchorId: string, groupId: string) => {
     const anchor = cloneDeep(this.state.anchors[anchorId]);
 
     if (anchor.groups.length === 1) return;
@@ -463,7 +337,6 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     anchor.groups = anchor.groups.remove(groupId);
     if (anchor.activeGroupIndex >= anchor.groups.length) {
       anchor.activeGroupIndex = anchor.groups.length - 1;
-      this.clientSetActiveAnchorGroup(anchorId, anchor.groups[anchor.activeGroupIndex]);
     }
 
     const updatedState: ContextState = {
@@ -478,7 +351,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     this.setState(updatedState);
   }
 
-  private activateGroup = (anchorId: number, groupIndex: number) => {
+  private activateGroup = (anchorId: string, groupIndex: number) => {
     const anchor = this.state.anchors[anchorId];
     if (!anchor) {
       console.warn(`Anchor with id '${anchorId}' was not found.`);
@@ -489,8 +362,6 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       console.warn(`Invalid index provided to action. (index: ${groupIndex})`);
       return;
     }
-
-    this.clientSetActiveAnchorGroup(anchorId, anchor.groups[groupIndex]);
 
     const updatedState: ContextState = {
       ...this.state,
@@ -507,7 +378,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     this.setState(updatedState);
   }
 
-  private activateNextGroup = (anchorId: number) => {
+  private activateNextGroup = (anchorId: string) => {
     const anchor = this.state.anchors[anchorId];
     if (!anchor) {
       console.warn(`Could not activateNextGroup. An anchor with id '${anchorId}' was not found.`);
@@ -519,8 +390,6 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       index = 0;
     }
 
-    this.clientSetActiveAnchorGroup(anchorId, anchor.groups[index]);
-
     const updatedState: ContextState = {
       ...this.state,
       anchors: {
@@ -536,7 +405,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     this.setState(updatedState);
   }
 
-  private activatePrevGroup = (anchorId: number) => {
+  private activatePrevGroup = (anchorId: string) => {
     const anchor = this.state.anchors[anchorId];
     if (!anchor) {
       console.warn(`Could not activatePrevGroup. An anchor with id '${anchorId}' was not found.`);
@@ -548,8 +417,6 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       index = anchor.groups.length - 1;
     }
 
-    this.clientSetActiveAnchorGroup(anchorId, anchor.groups[index]);
-
     const updatedState: ContextState = {
       ...this.state,
       anchors: {
@@ -565,15 +432,15 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     this.setState(updatedState);
   }
 
-  private addSlot = (addingToAnchor: boolean, parentId: number) => {
-    const anchorId = this.state.slots[parentId] ? this.state.slots[parentId].anchorId : parentId;
-
+  private addSlot = (parentId: string) => {
+    const clientSlotIdKeys = Object.keys(this.state.clientSlotIDMap);
     const newSlot: ActionSlot = {
-      id: this.generateSlotId(this.state.slots),
+      id: genID(),
       angle: 0,
-      actions: [],
-      anchorId,
-      parent: { type: addingToAnchor ? ParentType.Anchor : ParentType.Slot, id: parentId },
+      actionId: '',
+      anchorId: this.state.slots[parentId] ? this.state.slots[parentId].anchorId : parentId,
+      clientSlotID: Number(clientSlotIdKeys[clientSlotIdKeys.length - 1]) + 1,
+      parent: parentId,
       children: [],
     };
 
@@ -633,13 +500,13 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     }
   }
 
-  private removeSlot = (slotId: number) => {
+  private removeSlot = (slotId: string) => {
     const slot = this.state.slots[slotId];
     if (!slot) {
       return;
     }
 
-    if (slot.parent.type === ParentType.Anchor && this.state.anchors[slot.parent.id]) {
+    if (this.state.anchors[slot.parent]) {
 
       // if this is the last slot, don't remove it
       if (slot.children.length === 0) {
@@ -647,7 +514,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       }
 
       // parent is an anchor
-      const anchor = cloneDeep(this.state.anchors[slot.parent.id]);
+      const anchor = cloneDeep(this.state.anchors[slot.parent]);
       anchor.children.remove(slot.id);
       anchor.children.push(...slot.children);
 
@@ -656,7 +523,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
 
       anchor.children.forEach((child) => {
         if (slots[child]) {
-          slots[child].parent.id = anchor.id;
+          slots[child].parent = anchor.id;
         }
       });
 
@@ -671,10 +538,9 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
 
       this.updateLocalStorage(updatedState);
       this.setState(updatedState);
-      return;
     }
 
-    const parent = cloneDeep(this.state.slots[slot.parent.id]);
+    const parent = cloneDeep(this.state.slots[slot.parent]);
     if (!parent) {
       console.warn(`Failed to remove slot as parent not found.`);
       return;
@@ -686,9 +552,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     const slots = cloneDeep(this.state.slots);
     delete slots[slot.id];
     parent.children.forEach((child) => {
-      if (slots[child]) {
-        slots[child].parent.id = parent.id;
-      }
+      if (slots[child]) slots[child].parent = parent.id;
     });
     slots[parent.id] = parent;
 
@@ -700,7 +564,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     this.setState(updatedState);
   }
 
-  private setSlotAngle = (slotId: number, angle: number) => {
+  private setSlotAngle = (slotId: string, angle: number) => {
     const slot = this.state.slots[slotId];
     if (!slot) {
       console.warn(`Attempted to set angle on unknown slot. (id:${slotId})`);
@@ -721,12 +585,15 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     this.setState(updatedState);
   }
 
-  private addAction = (actionId: number, groupId: number, slotId: number) => {
+  private addAction = (actionId: string, groupId: string, slotId: string) => {
     const positions = (this.state.actions[actionId] || []).slice();
     positions.push({
       group: groupId,
       slot: slotId,
     });
+
+    const clientSlotIdMapClone = cloneDeep(this.state.clientSlotIDMap);
+    clientSlotIdMapClone[actionId].push(slotId);
 
     const updatedState: ContextState = {
       ...this.state,
@@ -734,31 +601,30 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         ...this.state.actions,
         [actionId]: positions,
       },
+      clientSlotIDMap: clientSlotIdMapClone,
       slots: {
         ...this.state.slots,
         [slotId]: {
           ...this.state.slots[slotId],
-          actions: this.state.slots[slotId].actions.concat(actionId),
+          actionId,
         },
       },
       queuedAbilityId: null,
     };
-
-    this.clientAssignSlottedAction(slotId, updatedState.slots[slotId].anchorId, groupId, actionId);
 
     this.updateLocalStorage(updatedState);
     this.setState(updatedState);
   }
 
   private addAndRemoveAction = (
-    actionId: number,
+    actionId: string,
     from: {
-      groupId: number,
-      slotId: number,
+      groupId: string,
+      slotId: string,
     },
     target: {
-      groupId: number,
-      slotId: number,
+      groupId: string,
+      slotId: string,
     },
   ) => {
     const positions = (this.state.actions[actionId] || []).slice()
@@ -779,7 +645,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     this.setState(updatedState);
   }
 
-  private removeAction = (actionId: number, groupId: number, slotId: number) => {
+  private removeAction = (actionId: string, groupId: string, slotId: string) => {
     const positions = (this.state.actions[actionId] || []).slice()
       .filter(a => !(a.group === groupId && a.slot === slotId));
 
@@ -790,23 +656,20 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         [actionId]: positions,
       },
     };
-
-    game.actions.clearSlottedAction(slotId);
-
     this.updateLocalStorage(updatedState);
     this.setState(updatedState);
   }
 
   private replaceOrSwapAction = (
     from: {
-      actionId: number,
-      groupId?: number,
-      slotId?: number,
+      actionId: string,
+      groupId?: string,
+      slotId?: string,
     },
     target: {
-      actionId: number,
-      groupId: number,
-      slotId: number,
+      actionId: string,
+      groupId: string,
+      slotId: string,
     }
   ) => {
     if (!target || !from) {
@@ -818,7 +681,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       return;
     }
 
-    if (idIsInvalid(from.groupId)) {
+    if (!from.groupId) {
       // replacing
       const targetPositions = (this.state.actions[target.actionId] || []).slice()
       .filter(a => !(a.group === target.groupId && a.slot === target.slotId));
@@ -841,18 +704,11 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
           ...this.state.slots,
           [target.slotId]: {
             ...this.state.slots[target.slotId],
-            actions: this.state.slots[target.slotId].actions.concat(from.actionId),
+            actionId: from.actionId,
           }
         },
         queuedAbilityId: null,
       };
-
-      this.clientAssignSlottedAction(
-        target.slotId,
-        updatedState.slots[target.slotId].anchorId,
-        target.groupId,
-        from.actionId,
-      );
 
       this.updateLocalStorage(updatedState);
       this.setState(updatedState);
@@ -883,27 +739,22 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
           ...this.state.slots,
           [from.slotId]: {
             ...this.state.slots[from.slotId],
-            anchorId: this.state.slots[target.slotId].anchorId,
-            actions: this.state.slots[from.slotId].actions.filter(a => a !== from.actionId).concat(target.actionId),
+            actionId: target.actionId,
           },
           [target.slotId]: {
             ...this.state.slots[target.slotId],
-            anchorId: this.state.slots[from.slotId].anchorId,
-            actions: this.state.slots[target.slotId].actions.filter(a => a !== target.actionId).concat(from.actionId),
+            actionId: from.actionId,
           }
         },
         queuedAbilityId: null,
       };
-
-      this.clientAssignSlottedAction(from.slotId, this.state.slots[from.slotId].anchorId, from.groupId, target.actionId);
-      this.clientAssignSlottedAction(target.slotId, this.state.slots[target.slotId].anchorId, target.groupId, from.actionId);
 
       this.updateLocalStorage(updatedState);
       this.setState(updatedState);
     }
   }
 
-  private setAnchorPosition = (anchorId: number, position: Vec2f) => {
+  private setAnchorPosition = (anchorId: string, position: Vec2f) => {
     if (!this.state.anchors[anchorId]) {
       return;
     }
@@ -928,20 +779,17 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     this.enableActionEditMode();
   }
 
-  private clearQueueAddAction = () => {
-    this.setState({ queuedAbilityId: null });
-  }
-
   private addAnchor = () => {
-    const anchorId = this.generateAnchorId(this.state.anchors);
-    const groupId = this.generateGroupId(anchorId, this.state.anchors);
+    const anchorId = genID();
+    const groupId = genID();
 
     const newSlot: ActionSlot = {
-      id: this.generateSlotId(this.state.slots),
+      id: genID(),
       angle: 0,
-      actions: [],
+      actionId: '',
       anchorId,
-      parent: { type: ParentType.Anchor, id: anchorId },
+      clientSlotID: 0,
+      parent: anchorId,
       children: [],
     };
 
@@ -968,37 +816,43 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     this.setState(updatedState);
   }
 
-  private removeAnchor = (anchorId: number) => {
+  private removeAnchor = (anchorId: string) => {
     if (Object.keys(this.state.anchors).length <= 1) {
       return;
-    }
+    } 
     const anchorsClone = cloneDeep(this.state.anchors);
     const slotsClone = cloneDeep(this.state.slots);
     const actionsClone = cloneDeep(this.state.actions);
+    const clientSlotIdMapClone = cloneDeep(this.state.clientSlotIDMap);
 
-    const childrenToRemove = Object.values(slotsClone).filter((slot) => {
+    const childrenToRemove = Object.keys(slotsClone).filter((slotId) => {
+      const slot = slotsClone[slotId];
       return slot.anchorId === anchorId;
     });
 
     let actionSlotIndex = -1;
-    childrenToRemove.forEach((childSlot) => {
-      childSlot.actions.forEach((actionId) => {
-        if (!idIsInvalid(actionId)) {
-          // Remove slot from actions map
-          const action = actionsClone[actionId];
-          const slotIndex = action.findIndex(a => a.slot === childSlot.id);
-          if (slotIndex !== -1) {
-            actionSlotIndex = slotIndex;
-          }
-  
-          if (actionSlotIndex !== 1) {
-            actionsClone[actionId].splice(actionSlotIndex, 1);
-          }
+    childrenToRemove.forEach((childSlotId) => {
+      const childSlot = slotsClone[childSlotId];
+
+      if (childSlot.actionId) {
+        // Remove slot from actions map
+        const action = actionsClone[childSlot.actionId];
+        const slotIndex = action.findIndex(a => a.slot === childSlotId);
+        if (slotIndex !== -1) {
+          actionSlotIndex = slotIndex;
         }
-      });
+
+        if (actionSlotIndex !== 1) {
+          actionsClone[childSlot.actionId].splice(actionSlotIndex, 1);
+        }
+
+        // Remove slot from clientSlotIdMap
+        const clientSlotIndex = clientSlotIdMapClone[childSlot.actionId].indexOf(childSlot.id);
+        clientSlotIdMapClone[childSlot.actionId].splice(clientSlotIndex, 1);
+      }
 
       // Remove slot from slots map
-      delete slotsClone[childSlot.id];
+      delete slotsClone[childSlotId];
     });
 
     // Remove anchor from anchors map
@@ -1015,59 +869,11 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       actions: {
         ...actionsClone,
       },
+      clientSlotIDMap: {
+        ...clientSlotIdMapClone,
+      },
     };
 
-    game.actions.removeAnchor(anchorId);
-    this.updateLocalStorage(updatedState);
     this.setState(updatedState);
-  }
-
-  private clientAssignSlottedAction = (slotId: number,
-                                          anchorId: number,
-                                          groupId: number,
-                                          actionId: number) => {
-    game.actions.assignSlottedAction(slotId, anchorId, groupId, actionId);
-  }
-
-  private clientSetActiveAnchorGroup = (anchorId: number, groupId: number) => {
-    game.actions.setActiveAnchorGroup(anchorId, groupId);
-  }
-
-  private generateAnchorId = (anchors: { [anchorId: number]: ActionViewAnchor }): number => {
-    const sortedAnchors = Object.values(anchors).sort((a, b) => {
-      return a.id - b.id;
-    });
-
-    const lastAnchor = sortedAnchors[sortedAnchors.length - 1];
-
-    if (!lastAnchor) {
-      return 1;
-    }
-
-    return lastAnchor.id + 1;
-  }
-
-  private generateGroupId = (anchorId: number, anchors: { [anchorId: number]: ActionViewAnchor }): number => {
-    if (typeof anchors[anchorId] === 'undefined') {
-      return 1;
-    }
-
-    const sortedGroups = anchors[anchorId].groups.sort((a, b) => {
-      return a - b;
-    });
-
-    return sortedGroups[sortedGroups.length - 1] + 1;
-  }
-
-  private generateSlotId = (slots: { [slotId: number]: ActionSlot }): number => {
-    const sortedSlots = Object.values(slots).sort((a, b) => {
-      return a.id - b.id;
-    });
-
-    if (!sortedSlots[sortedSlots.length - 1]) {
-      return 1;
-    }
-
-    return sortedSlots[sortedSlots.length - 1].id + 1;
   }
 }
