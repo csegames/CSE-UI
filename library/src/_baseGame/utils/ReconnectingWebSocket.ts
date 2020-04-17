@@ -36,9 +36,9 @@ export interface WebSocketOptions {
 export const defaultWebSocketOptions: WebSocketOptions = {
   url: () => "/chat",
   protocols: "",
-  startReconnectInterval: 500,
+  startReconnectInterval: 10,
   maxReconnectInterval: 4000,
-  connectTimeout: 5000,
+  connectTimeout: 100,
   debug: getBooleanEnv('CUUI_LIB_DEBUG_WEB_SOCKET', false),
   onopen: function(event: Event) {},
   onclose: function(event: CloseEvent) {},
