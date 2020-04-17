@@ -4,11 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 import { AbilityButton } from './AbilityButton';
-import { InputContext } from 'components/context/InputContext';
 
 const ActionButtonsContainer = styled.div`
   position: relative;
@@ -24,7 +23,6 @@ export interface Props {
 }
 
 export function ActionButtons(props: Props) {
-  const inputContext = useContext(InputContext);
   const [weakAbility, setWeakAbility] = useState(cloneDeep(hordetest.game.abilityBarState.weak));
   const [strongAbility, setStrongAbility] = useState(cloneDeep(hordetest.game.abilityBarState.strong));
   const [ultimateAbility, setUltimateAbility] = useState(cloneDeep(hordetest.game.abilityBarState.ultimate));
@@ -69,13 +67,7 @@ export function ActionButtons(props: Props) {
     return ability.iconClass;
   }
 
-  function getKeybind(index: number, type: 'weak' | 'strong' | 'ultimate') {
-    return Object.values(game.keybinds).find(k => k.description === `Ability ${index} (${type})`);
-  }
-
   function renderAbilityButton(ability: AbilityBarItem, i: number, type: 'weak' | 'strong' | 'ultimate') {
-    const keybind = getKeybind(i - 1, type);
-    const bind = inputContext.isConsole ? keybind.binds[1] : keybind.binds[0];
     return (
       <AbilityButton
         type={type}
@@ -83,8 +75,8 @@ export function ActionButtons(props: Props) {
         abilityID={ability.id}
         className={ActionButtonSpacing}
         actionIconClass={getAbilityIconClass(i)}
-        keybindText={bind ? bind.name : ''}
-        keybindIconClass={bind ? bind.iconClass : ''}
+        keybindText={ability.boundKeyName}
+        keybindIconClass={ability.binding.iconClass}
       />
     );
   }
