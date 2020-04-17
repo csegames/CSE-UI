@@ -6,7 +6,13 @@
 
 import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
-import { ActionViewContext, ActionSlot, EditMode, ActionViewContextState } from '../../context/ActionViewContext';
+import {
+  ActionViewContext,
+  ActionSlot,
+  EditMode,
+  ActionViewContextState,
+  isSystemAnchorId,
+} from '../../context/ActionViewContext';
 import { ActionBtn } from 'hud/ActionButton/ActionBtn';
 import { DragAndDrop, DragEvent } from 'utils/DragAndDropV2';
 import { ContextMenu } from 'shared/ContextMenu';
@@ -104,8 +110,15 @@ export interface State {
   boundKeyName: string;
 }
 
-function getDefaultKeybindId(id: number) {
-  const keybind = Object.values(game.keybinds).find(keybind => keybind.description === "Action Slot " + (id - 1));
+function getDefaultKeybindId(slotId: number, isSystemAnchor?: boolean, actionId?: number) {
+  if (isSystemAnchor && camelotunchained.game.abilityStates[actionId]) {
+    return {
+      id: -1,
+      binds: [camelotunchained.game.abilityStates[actionId].systemKeyBinding],
+    };
+  }
+
+  const keybind = Object.values(game.keybinds).find(keybind => keybind.description === "Action Slot " + (slotId - 1));
   return keybind;
 }
 
@@ -115,7 +128,7 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
   constructor(props: ActionBarSlotProps & InjectedProps) {
     super(props);
 
-    const defaultKeybind = getDefaultKeybindId(props.id);
+    const defaultKeybind = getDefaultKeybindId(props.id, isSystemAnchorId(props.anchorId), props.actions[0]);
     this.state = {
       isDragging: false,
       wantAngle: props.angle,
@@ -213,6 +226,9 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
   }
 
   private createContextMenuItems = () => {
+    if (isSystemAnchorId(this.props.anchorId)) {
+      return [];
+    }
     return [
       {
         title: 'Bind Key',
@@ -250,10 +266,12 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
     const from = {
       groupId: e.dataTransfer.groupId,
       slotId: e.dataTransfer.slotId,
+      anchorId: e.dataTransfer.anchorId,
     };
     const target = {
       groupId: this.props.activeGroup,
       slotId: this.props.id,
+      anchorId: this.props.anchorId,
     };
 
     this.props.actionViewContext.addAndRemoveAction(
@@ -295,6 +313,7 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
           <DragAndDrop
             type='drag-and-drop'
             dataTransfer={{
+              anchorId: this.props.anchorId,
               actionId: slottedActionID,
               groupId: this.props.activeGroup,
               slotId: this.props.id,

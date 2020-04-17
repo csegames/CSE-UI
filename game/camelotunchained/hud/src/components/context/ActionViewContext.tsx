@@ -142,6 +142,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
   private abilityBarUpdateEVH: EventHandle;
   private systemAnchorInitEVH: EventHandle;
   private initializeStateTimeout: number;
+  private refetchAbilitiesTimeout: number;
   private isInitial: boolean = true;
 
   constructor(props: {}) {
@@ -182,10 +183,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
   }
 
   public componentDidMount() {
-    camelotunchained.game.store.refetch().then(() => {
-      this.initializeState();
-    });
-
+    this.fetchAPIAbilitiesAndInitialize();
     camelotunchained.game.abilityBarState.onUpdated(this.handleAbilityBarStateUpdate);
   }
 
@@ -196,6 +194,20 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     if (this.initializeStateTimeout) {
       window.clearTimeout(this.initializeStateTimeout);
     }
+  }
+
+  private fetchAPIAbilitiesAndInitialize = async () => {
+    if (!camelotunchained.game.store.myCharacter || !camelotunchained.game.store.myCharacter.abilities) {
+      const res = await camelotunchained.game.store.refetch();
+      if (!res.myCharacter || res.myCharacter.abilities) {
+        this.refetchAbilitiesTimeout = window.setTimeout(this.fetchAPIAbilitiesAndInitialize, 500);
+        return;
+      }
+    }
+
+    window.clearTimeout(this.refetchAbilitiesTimeout);
+    this.refetchAbilitiesTimeout = null;
+    this.initializeState();
   }
 
   private handleAbilityBarStateUpdate = () => {
@@ -352,7 +364,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       anchors: {
         [anchorId]: {
           id: anchorId,
-          positionPercentage: { x: 50, y: typeof systemAnchorId !== 'undefined' ? 80 : 95 },
+          positionPercentage: { x: 50, y: typeof systemAnchorId !== 'undefined' ? 70 : 95 },
           activeGroupIndex: 0,
           groups: [groupId],
           children: [firstSlotId],
@@ -761,10 +773,12 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     from: {
       groupId: number,
       slotId: number,
+      anchorId: number,
     },
     target: {
       groupId: number,
       slotId: number,
+      anchorId: number,
     },
   ) => {
     const positions = (this.state.actions[actionId] || []).slice()
@@ -776,11 +790,28 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
 
     const updatedState: ContextState = {
       ...this.state,
+      slots: {
+        ...this.state.slots,
+        [from.slotId]: {
+          ...this.state.slots[from.slotId],
+          actions: this.state.slots[from.slotId].actions.filter(aId => aId !== actionId),
+        },
+        [target.slotId]: {
+          ...this.state.slots[target.slotId],
+          actions: this.state.slots[target.slotId].actions.concat(actionId),
+        },
+      },
       actions: {
         ...this.state.actions,
         [actionId]: positions,
       },
     };
+
+    console.log('addAndRemoveAction');
+    console.log(from);
+    console.log(target);
+    game.actions.clearSlottedAction(from.slotId);
+    this.clientAssignSlottedAction(target.slotId, target.anchorId, target.groupId, actionId);
     this.updateLocalStorage(updatedState);
     this.setState(updatedState);
   }

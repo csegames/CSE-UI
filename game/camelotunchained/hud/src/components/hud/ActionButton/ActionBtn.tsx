@@ -12,6 +12,7 @@ import { InnerRing } from './InnerRing';
 import { OuterRing } from './OuterRing';
 import { Tooltip } from 'shared/Tooltip';
 import { showContextMenu } from 'actions/contextMenu';
+import { isSystemAnchorId } from '../../context/ActionViewContext';
 
 type ContainerProps = { radius: number; acceptInput: boolean; } & React.HTMLProps<HTMLDivElement>;
 export const Container = styled.div`
@@ -195,6 +196,10 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
   }
 
   public render() {
+    if (isSystemAnchorId(this.state.abilityState.systemAnchorID) && this.state.abilityState.systemSlotID === 0) {
+      return null;
+    }
+
     const theme = this.props.uiContext.currentTheme();
     const display = this.props.uiContext.isUHD() ? theme.actionButtons.display.uhd : theme.actionButtons.display.hd;
     const { abilityState } = this.state;

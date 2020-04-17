@@ -171,6 +171,10 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
   function contextMenuItems() {
     const items = [];
 
+    if (isSystemAnchorId(props.id)) {
+      return [];
+    }
+
     if (actionViewContext.editMode > 0) {
 
       if (props.groups.length < MAX_GROUP_COUNT) {
