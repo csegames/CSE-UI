@@ -148,19 +148,44 @@ export function AbilityInfo(props: Props) {
   function getKeybindInfo(ability: 'primary' | 'secondary' | 'weak' | 'strong' | 'ultimate') {
     switch (ability) {
       case 'primary': {
-        return hordetest.game.abilityBarState.primaryAttack.binding;
+        const keybind = Object.values(game.keybinds).find(k => k.description === "Primary attack");
+        if (!keybind) {
+          return null;
+        }
+
+        return keybind.binds[0];
       }
       case 'secondary': {
-        return hordetest.game.abilityBarState.secondaryAttack.binding;
+        const keybind = Object.values(game.keybinds).find(k => k.description === "Secondary attack");
+        if (!keybind) {
+          return null;
+        }
+
+        return keybind.binds[0];
       }
       case 'weak': {
-        return hordetest.game.abilityBarState.weak.binding;
+        const keybind = Object.values(game.keybinds).find(k => k.description === "Ability 1 (weak)");
+        if (!keybind) {
+          return null;
+        }
+
+        return keybind.binds[0];
       }
       case 'strong': {
-        return hordetest.game.abilityBarState.strong.binding;
+        const keybind = Object.values(game.keybinds).find(k => k.description === "Ability 2 (strong)");
+        if (!keybind) {
+          return null;
+        }
+
+        return keybind.binds[0];
       }
       case 'ultimate': {
-        return hordetest.game.abilityBarState.ultimate.binding;
+        const keybind = Object.values(game.keybinds).find(k => k.description === "Ability 3 (ultimate)");
+        if (!keybind) {
+          return null;
+        }
+
+        return keybind.binds[0];
       }
 
       default: return null;

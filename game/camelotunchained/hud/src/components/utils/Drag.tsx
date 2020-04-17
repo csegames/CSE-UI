@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 
 export interface DragEvent {
   move: Vec2f;
+  mouse: Vec2f;
 }
 
 export interface DragProps {
@@ -29,38 +30,50 @@ export function Drag(props: DragProps) {
   });
 
   const mouseMove = (e: MouseEvent) => {
+    const { clientX, clientY } = e;
+    const mouse = {
+      x: clientX,
+      y: clientY,
+    };
     const move = {
-      x: e.clientX - state.lastMousePosition.clientX,
-      y: e.clientY - state.lastMousePosition.clientY,
+      x: clientX - state.lastMousePosition.clientX,
+      y: clientY - state.lastMousePosition.clientY,
     };
 
     setState(state => ({
       isDragging: state.isDragging,
       lastMousePosition: {
-        clientX: e.clientX,
-        clientY: e.clientY,
+        clientX,
+        clientY,
       },
     }));
 
     props.onDrag && props.onDrag({
       move,
+      mouse,
     });
   };
 
   const mouseUp = (e: MouseEvent) => {
+    const { clientX, clientY } = e;
+    const mouse = {
+      x: clientX,
+      y: clientY,
+    };
     const move = {
-      x: e.clientX - state.lastMousePosition.clientX,
-      y: e.clientY - state.lastMousePosition.clientY,
+      x: clientX - state.lastMousePosition.clientX,
+      y: clientY - state.lastMousePosition.clientY,
     };
     props.onDrag && props.onDrag({
       move,
+      mouse,
     });
     props.onDragEnd && props.onDragEnd();
     setState({
       isDragging: false,
       lastMousePosition: {
-        clientX: e.clientX,
-        clientY: e.clientY,
+        clientX,
+        clientY,
       },
     });
   };

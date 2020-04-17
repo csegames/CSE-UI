@@ -10,7 +10,7 @@ import { debounce } from 'lodash';
 export const MAX_GROUP_COUNT = 6;
 export const MAX_CHILD_SLOT_COUNT = 4;
 
-const ABILITY_BAR_VERSION = '0';
+const ABILITY_BAR_VERSION = '1';
 const ABILITY_BAR_VERSION_KEY = 'cu/game/abilities/barVersion';
 const ABILITY_BAR_KEY = 'cu/game/abilities/bar';
 
@@ -79,7 +79,7 @@ export interface ActionPosition {
 
 export interface ActionViewAnchor {
   id: number;
-  position: Vec2f;
+  positionPercentage: Vec2f;
   activeGroupIndex: number;
   groups: number[]; // ids of groups on this anchor in order.
   children: number[]; // direct child slots
@@ -352,7 +352,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       anchors: {
         [anchorId]: {
           id: anchorId,
-          position: { x: 300, y: typeof systemAnchorId !== 'undefined' ? 400 : 300 },
+          positionPercentage: { x: 50, y: typeof systemAnchorId !== 'undefined' ? 80 : 95 },
           activeGroupIndex: 0,
           groups: [groupId],
           children: [firstSlotId],
@@ -381,6 +381,11 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
           slot.actions.forEach((actionId) => {
             const action = actions[actionId].find(a => a.slot === slot.id);
             if (!isSystemAnchorId(slot.anchorId)) {
+              if (!action) {
+                console.error('There was an action that was undefined');
+                return;
+              }
+
               this.clientAssignSlottedAction(slot.id, slot.anchorId, action.group, actionId);
             }
           });
@@ -393,6 +398,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       await game.actions.exitActionBarEditModeAsync();
     } catch(e) {
       console.error('Failed to initialize slots through client api.');
+      console.log(e);
     }
   }
 
@@ -903,7 +909,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     }
   }
 
-  private setAnchorPosition = (anchorId: number, position: Vec2f) => {
+  private setAnchorPosition = (anchorId: number, positionPercentage: Vec2f) => {
     if (!this.state.anchors[anchorId]) {
       return;
     }
@@ -914,7 +920,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         ...this.state.anchors,
         [anchorId]: {
           ...this.state.anchors[anchorId],
-          position,
+          positionPercentage,
         },
       },
     }
@@ -951,7 +957,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         ...this.state.anchors,
         [anchorId]: {
           id: anchorId,
-          position: { x: 300, y: 400 },
+          positionPercentage: { x: 50, y: 80 },
           activeGroupIndex: 0,
           groups: [groupId],
           children: [newSlot.id],

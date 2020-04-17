@@ -35,16 +35,18 @@ type ContainerProps = { radius: number; x: number; y: number; } & React.HTMLProp
 const Container = styled.div`
   display: flex;
   position: fixed;
-  top: ${(props: ContainerProps) => props.y}px;
-  left: ${(props: ContainerProps) => props.x}px;
+  top: ${(props: ContainerProps) => props.y}%;
+  left: ${(props: ContainerProps) => props.x}%;
+  transform: translate(-50%, -50%);
   z-index: 9999;
 `;
 
 type BoundingRectProps = {top: number; left: number; width: number; height: number;} & React.HTMLProps<HTMLDivElement>;
 const BoundingRect = styled.div`
   position: fixed;
-  top: ${(props: BoundingRectProps) => props.top}px;
-  left: ${(props: BoundingRectProps) => props.left}px;
+  transform: translate(-50%, -50%);
+  top: ${(props: BoundingRectProps) => props.top}%;
+  left: ${(props: BoundingRectProps) => props.left}%;
   width: ${(props: BoundingRectProps) => props.width}px;
   height: ${(props: BoundingRectProps) => props.height}px;
   border: 2px solid rgba(255, 215, 0, 0.6);
@@ -105,9 +107,12 @@ function getBoundsWithChildren(element: Element) {
 export interface ActionBarAnchorProps extends ActionViewAnchor {
 }
 
+const viewport = getViewportSize();
+
 // tslint:disable-next-line:function-name
 export function ActionBarAnchor(props: ActionBarAnchorProps) {
   const actionViewContext = useContext(ActionViewContext);
+  const [dragPosition, setDragPosition] = useState(props.positionPercentage);
   const [isVisible, setIsVisible] = useState(isSystemAnchorId(props.id) ? false : true);
   const [ref, setRef] = useState(null);
   const [bounds, setBounds] = useState({
@@ -140,10 +145,9 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
     return () => {
       handle.clear();
     }
-  });
+  }, [isVisible]);
 
   function handleMouseDown(e: React.MouseEvent) {
-
     if (e.button !== 0) return;
 
     // if ctrl+click, go to previous
@@ -215,38 +219,43 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
         <Drag
           onDrag={(e) => {
             const newPos = {
-              x: props.position.x + e.move.x,
-              y: props.position.y + e.move.y,
+              x: e.mouse.x,
+              y: e.mouse.y,
             };
 
-            const viewport = getViewportSize();
             if (newPos.x < 0) {
               newPos.x = 0;
-            } else if (newPos.x + bounds.width > viewport.width) {
-              newPos.x = viewport.width - bounds.width;
+            } else if (newPos.x + (bounds.width / 2) > viewport.width) {
+              newPos.x = viewport.width - (bounds.width / 2);
             }
 
             if (newPos.y < 0) {
               newPos.y = 0;
-            } else if (newPos.y + bounds.height > viewport.height) {
-              newPos.y = viewport.height - bounds.height;
+            } else if (newPos.y + (bounds.height / 2) > viewport.height) {
+              newPos.y = viewport.height - (bounds.height / 2);
             }
 
-            if (Vec2fExt.equals(props.position, newPos)) return;
+            if (Vec2fExt.equals(props.positionPercentage, newPos)) return;
 
-            actionViewContext.setAnchorPosition(props.id, newPos);
+            const x = (newPos.x / viewport.width) * 100;
+            const y = (newPos.y / viewport.height) * 100;
+            setDragPosition({ x, y });
+          }}
+
+          onDragEnd={() => {
+            actionViewContext.setAnchorPosition(props.id, dragPosition);
           }}
         >
           <BoundingRect
-            top={props.position.y}
-            left={props.position.x}
+            top={dragPosition.y}
+            left={dragPosition.x}
             width={bounds.width}
             height={bounds.height}/>
         </Drag>)
       }
       <Container
         {...display}
-        {...props.position}
+        {...dragPosition}
         ref={r => setRef(r)}
       >
         {

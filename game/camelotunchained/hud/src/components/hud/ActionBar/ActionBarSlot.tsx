@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
-import { ActionViewContext, ActionSlot, EditMode } from '../../context/ActionViewContext';
+import { ActionViewContext, ActionSlot, EditMode, ActionViewContextState } from '../../context/ActionViewContext';
 import { ActionBtn } from 'hud/ActionButton/ActionBtn';
 import { DragAndDrop, DragEvent } from 'utils/DragAndDropV2';
 import { ContextMenu } from 'shared/ContextMenu';
@@ -86,63 +86,140 @@ const BtnWrapper = styled.span`
   pointer-events: all;
 `;
 
+interface InjectedProps {
+  actionViewContext: ActionViewContextState;
+  uiContext: UIContext;
+}
+
 export interface ActionBarSlotProps extends ActionSlot {
   sumAngle: number; // used to orient the action in a slot correctly
   activeGroup: number; // used to identify which abilities are active in this slot
 }
 
+export interface State {
+  isDragging: boolean;
+  wantAngle: number;
+  snapStep: number;
+  keybindId: number;
+  boundKeyName: string;
+}
+
+function getDefaultKeybindId(id: number) {
+  const keybind = Object.values(game.keybinds).find(keybind => keybind.description === "Action Slot " + (id - 1));
+  return keybind;
+}
+
 // tslint:disable-next-line:function-name
-export function ActionBarSlot(props: ActionBarSlotProps): JSX.Element {
-  const actionViewContext = useContext(ActionViewContext);
+class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProps & InjectedProps, State> {
+  private display: any;
+  constructor(props: ActionBarSlotProps & InjectedProps) {
+    super(props);
 
-  const [internalState, setInternalState] = useState({
-    isDragging: false,
-    wantAngle: props.angle,
-    snapStep: 15,
-  });
+    const defaultKeybind = getDefaultKeybindId(props.id);
+    this.state = {
+      isDragging: false,
+      wantAngle: props.angle,
+      snapStep: 15,
+      keybindId: defaultKeybind ? defaultKeybind.id : -1,
+      boundKeyName: defaultKeybind ? defaultKeybind.binds[0].name : '',
+    };
+  }
 
-  const defaultKeybind = getDefaultKeybindId();
-  const [keybindId] = useState(defaultKeybind ? defaultKeybind.id : -1);
-  const [boundKeyName, setBoundKeyName] = useState(defaultKeybind ? defaultKeybind.binds[0].name : '');
+  public render() {
+    const { actionViewContext, uiContext } = this.props;
+    const theme = uiContext.currentTheme();
+    this.display = uiContext.isUHD() ? theme.actionButtons.display.uhd : theme.actionButtons.display.hd;
+    const definition = uiContext.isUHD() ? 'uhd' : 'hd';
+    const factionAbbr = FactionExt.abbreviation(camelotunchained.game.selfPlayerState.faction);
 
-  const ui = useContext(UIContext);
-  const theme = ui.currentTheme();
-  const display = ui.isUHD() ? theme.actionButtons.display.uhd : theme.actionButtons.display.hd;
-  const definition = ui.isUHD() ? 'uhd' : 'hd';
-  const factionAbbr = FactionExt.abbreviation(camelotunchained.game.selfPlayerState.faction);
+    const slottedActionID = this.getSlottedActionId();
+    const inEditMode = actionViewContext.editMode !== EditMode.Disabled;
+    const showEmptySlot = inEditMode && slottedActionID === null;
+    return (
+      <>
+        <SlotContainer {...this.display}>
+          <SlotActions>
+            {this.props.children && this.props.children.length === 0 &&
+              inEditMode && (
+                <AddSlotBtn onMouseDown={this.onAddSlotClick}>
+                  <i className='fas fa-plus'></i>
+                </AddSlotBtn>
+              )
+            }
+            {showEmptySlot &&
+              <Icon onMouseDown={this.onRemoveSlotClick}>
+                <i className='fas fa-minus'></i>
+              </Icon>
+            }
+          </SlotActions>
+          {showEmptySlot && (
+            <DragAndDrop
+              type='drop'
+              acceptKeys={['action-button']}
+              onDrop={this.onDrop}
+            >
+              <ContextMenu
+                type='items'
+                getItems={this.createContextMenuItems}
+              >
+                <SlotWrapper>
+                  <IMG
+                    src={`images/anchor/${definition}/${factionAbbr}-empty-slot.png`}
+                    onMouseDown={(e: React.MouseEvent) => {
+                      if (e.buttons === 2) {
+                        console.log('right clicked slot');
+                        return;
+                      }
+                    }}
+                  />
+                  {!actionViewContext.queuedAbilityId &&
+                    <Icon className='fas fa-plus' onMouseDown={this.navigateToAbilityBook}></Icon>}
+                </SlotWrapper>
+              </ContextMenu>
+            </DragAndDrop>
+          )}
+          {slottedActionID !== -1 && this.renderAbility()}
+        </SlotContainer>
+        {this.props.children && this.props.children.map(id => (
+          <ActionBarSlotWithInjectedContext
+            key={id}
+            sumAngle={this.state.wantAngle + this.props.sumAngle}
+            activeGroup={this.props.activeGroup}
+            actionViewContext={actionViewContext}
+            uiContext={uiContext}
+            {...actionViewContext.slots[id]}
+          />
+        ))}
+      </>
+    );
+  }
 
-  let slottedActionID: number | null = null;
-  for (const actionId in actionViewContext.actions) {
-    if (actionViewContext.actions[actionId].findIndex(p => p.slot === props.id && p.group === props.activeGroup) >= 0) {
-      slottedActionID = Number(actionId);
-      break;
+  private getSlottedActionId = () => {
+    let slottedActionID: number | null = null;
+    for (const actionId in this.props.actionViewContext.actions) {
+      if (this.props.actionViewContext.actions[actionId].findIndex(p =>
+          p.slot === this.props.id && p.group === this.props.activeGroup) >= 0) {
+        slottedActionID = Number(actionId);
+        break;
+      }
     }
+
+    return slottedActionID;
   }
 
-  // get ability info from game, for now use temp
-
-  const inEditMode = actionViewContext.editMode !== EditMode.Disabled;
-  const showEmptySlot = inEditMode && slottedActionID === null;
-
-  function onConfirmBind(newBind: Binding) {
-    game.actions.assignKeybind(props.id, newBind.value);
-    setBoundKeyName(newBind.name);
+  private onConfirmBind = (newBind: Binding) => {
+    game.actions.assignKeybind(this.props.id, newBind.value);
+    this.setState({ boundKeyName: newBind.name });
   }
 
-  function getDefaultKeybindId() {
-    const keybindsClone = cloneDeep(game.keybinds);
-    const keybind = Object.values(keybindsClone).find(keybind => keybind.description === "Action Slot " + (props.id - 1));
-    return keybind;
-  }
-
-  function createContextMenuItems() {
+  private createContextMenuItems = () => {
     return [
       {
         title: 'Bind Key',
         onSelected: () => {
           showModal({
             render: props => (
-              <KeybindModal keybindId={keybindId} onConfirmBind={onConfirmBind} onClose={props.onClose} />
+              <KeybindModal keybindId={this.state.keybindId} onConfirmBind={this.onConfirmBind} onClose={props.onClose} />
             ),
             onClose: (key: Binding) => console.log(key.name),
           });
@@ -151,109 +228,22 @@ export function ActionBarSlot(props: ActionBarSlotProps): JSX.Element {
     ];
   }
 
-  const renderAbility = () => {
-    if (slottedActionID === null) return null;
-
-    function onDrop(e: DragEvent) {
-      const target = {
-        actionId: slottedActionID,
-        groupId: props.activeGroup,
-        slotId: props.id,
-      };
-
-      if (typeof e.dataTransfer.queuedAbilityId === 'number') {
-        const actionId = e.dataTransfer.queuedAbilityId;
-        actionViewContext.replaceOrSwapAction({ actionId }, target);
-        return;
-      }
-
-      let from = e.dataTransfer;
-      actionViewContext.replaceOrSwapAction(from, target);
-      return;
-    }
-
-    return (
-      <ActionWrapper angle={internalState.wantAngle + props.sumAngle}>
-        {inEditMode ? (
-          <DragAndDrop
-            type='drag-and-drop'
-            dataTransfer={{
-              actionId: slottedActionID,
-              groupId: props.activeGroup,
-              slotId: props.id,
-            }}
-            dataKey='action-button'
-            acceptKeys={['action-button']}
-            dragRender={() => (
-              <ActionBtn
-                disableInteractions
-                additionalStyles={{ filter: 'brightness(75%)' }}
-                actionId={slottedActionID}
-                slotId={props.id}
-              />
-            )}
-            dragRenderOffset={{ x: -display.radius, y: -display.radius }}
-            onDragStart={(e) => {
-              setInternalState({
-                ...internalState,
-                isDragging: true,
-              });
-            }}
-            onDragEnd={(e) => {
-              setInternalState({
-                ...internalState,
-                isDragging: false,
-              });
-              if (!e.dropTargetID) {
-                // remove
-                actionViewContext.removeAction(slottedActionID, props.activeGroup, props.id);
-              }
-            }}
-            onDrop={onDrop}
-          >
-            <BtnWrapper>
-              <ActionBtn
-                actionId={slottedActionID}
-                disableInteractions={true}
-                slotId={props.id}
-                keybindName={boundKeyName}
-                keybindId={keybindId}
-                getContextMenuItems={createContextMenuItems}
-                additionalStyles={{
-                  [internalState.isDragging && 'filter']: 'brightness(75%)',
-                }}
-              />
-            </BtnWrapper>
-          </DragAndDrop>
-        ) :
-          <ActionBtn
-            actionId={slottedActionID}
-            slotId={props.id}
-            keybindName={boundKeyName}
-            keybindId={keybindId}
-            getContextMenuItems={createContextMenuItems}
-          />
-        }
-      </ActionWrapper>
-    );
-  };
-
-  function onAddSlotClick(e: React.MouseEvent) {
+  private onAddSlotClick = (e: React.MouseEvent) => {
     if (e.button === 0) {
-      actionViewContext.addSlot(false, props.id);
+      this.props.actionViewContext.addSlot(false, this.props.id);
     }
   }
 
-  function onRemoveSlotClick(e: React.MouseEvent) {
+  private onRemoveSlotClick = (e: React.MouseEvent) => {
     if (e.button === 0) {
-      actionViewContext.removeSlot(props.id);
+      this.props.actionViewContext.removeSlot(this.props.id);
     }
   }
 
-  function onDrop(e: DragEvent) {
+  private onDrop = (e: DragEvent) => {
     if (typeof e.dataTransfer.queuedAbilityId === 'number') {
       const actionId = e.dataTransfer.queuedAbilityId;
-      actionViewContext.addAction(actionId, props.activeGroup, props.id);
+      this.props.actionViewContext.addAction(actionId, this.props.activeGroup, this.props.id);
       return;
     }
 
@@ -262,74 +252,112 @@ export function ActionBarSlot(props: ActionBarSlotProps): JSX.Element {
       slotId: e.dataTransfer.slotId,
     };
     const target = {
-      groupId: props.activeGroup,
-      slotId: props.id,
+      groupId: this.props.activeGroup,
+      slotId: this.props.id,
     };
 
-    actionViewContext.addAndRemoveAction(
+    this.props.actionViewContext.addAndRemoveAction(
       e.dataTransfer.actionId,
       from,
       target,
     );
   }
 
-  function navigateToAbilityBook() {
+  private navigateToAbilityBook = () => {
     game.trigger('navigate', 'ability-book');
   }
 
-  return (
-    <>
-      <SlotContainer {...display}>
-        <SlotActions>
-          {props.children && props.children.length === 0 &&
-            inEditMode && (
-              <AddSlotBtn onMouseDown={onAddSlotClick}>
-                <i className='fas fa-plus'></i>
-              </AddSlotBtn>
-            )
-          }
-          {showEmptySlot &&
-            <Icon onMouseDown={onRemoveSlotClick}>
-              <i className='fas fa-minus'></i>
-            </Icon>
-          }
-        </SlotActions>
-        {showEmptySlot && (
+  private onDropAbility = (e: DragEvent) => {
+    const target = {
+      actionId: this.getSlottedActionId(),
+      groupId: this.props.activeGroup,
+      slotId: this.props.id,
+    };
+
+    if (typeof e.dataTransfer.queuedAbilityId === 'number') {
+      const actionId = e.dataTransfer.queuedAbilityId;
+      this.props.actionViewContext.replaceOrSwapAction({ actionId }, target);
+      return;
+    }
+
+    let from = e.dataTransfer;
+    this.props.actionViewContext.replaceOrSwapAction(from, target);
+    return;
+  }
+
+  private renderAbility = () => {
+    const slottedActionID = this.getSlottedActionId();
+    if (slottedActionID === null) return null;
+
+    return (
+      <ActionWrapper angle={this.state.wantAngle + this.props.sumAngle}>
+        {this.props.actionViewContext.editMode !== EditMode.Disabled ? (
           <DragAndDrop
-            type='drop'
+            type='drag-and-drop'
+            dataTransfer={{
+              actionId: slottedActionID,
+              groupId: this.props.activeGroup,
+              slotId: this.props.id,
+            }}
+            dataKey='action-button'
             acceptKeys={['action-button']}
-            onDrop={onDrop}
+            dragRender={() => (
+              <ActionBtn
+                disableInteractions
+                additionalStyles={{ filter: 'brightness(75%)' }}
+                actionId={slottedActionID}
+                slotId={this.props.id}
+              />
+            )}
+            dragRenderOffset={{ x: -this.display.radius, y: -this.display.radius }}
+            onDragStart={(e) => {
+              this.setState({
+                isDragging: true,
+              });
+            }}
+            onDragEnd={(e) => {
+              this.setState({
+                isDragging: false,
+              });
+              if (!e.dropTargetID) {
+                // remove
+                this.props.actionViewContext.removeAction(slottedActionID, this.props.activeGroup, this.props.id);
+              }
+            }}
+            onDrop={this.onDropAbility}
           >
-            <ContextMenu
-              type='items'
-              getItems={createContextMenuItems}
-            >
-              <SlotWrapper>
-                <IMG
-                  src={`images/anchor/${definition}/${factionAbbr}-empty-slot.png`}
-                  onMouseDown={(e: React.MouseEvent) => {
-                    if (e.buttons === 2) {
-                      console.log('right clicked slot');
-                      return;
-                    }
-                  }}
-                />
-                {!actionViewContext.queuedAbilityId &&
-                  <Icon className='fas fa-plus' onMouseDown={navigateToAbilityBook}></Icon>}
-              </SlotWrapper>
-            </ContextMenu>
+            <BtnWrapper>
+              <ActionBtn
+                actionId={slottedActionID}
+                disableInteractions={true}
+                slotId={this.props.id}
+                keybindName={this.state.boundKeyName}
+                keybindId={this.state.keybindId}
+                getContextMenuItems={this.createContextMenuItems}
+                additionalStyles={{
+                  [this.state.isDragging && 'filter']: 'brightness(75%)',
+                }}
+              />
+            </BtnWrapper>
           </DragAndDrop>
-        )}
-        {slottedActionID !== -1 && renderAbility()}
-      </SlotContainer>
-      {props.children && props.children.map(id => (
-        <ActionBarSlot
-          key={id}
-          sumAngle={internalState.wantAngle + props.sumAngle}
-          activeGroup={props.activeGroup}
-          {...actionViewContext.slots[id]}
-        />
-      ))}
-    </>
+        ) :
+          <ActionBtn
+            actionId={slottedActionID}
+            slotId={this.props.id}
+            keybindName={this.state.boundKeyName}
+            keybindId={this.state.keybindId}
+            getContextMenuItems={this.createContextMenuItems}
+          />
+        }
+      </ActionWrapper>
+    );
+  };
+}
+
+export function ActionBarSlot(props: ActionBarSlotProps) {
+  const actionViewContext = useContext(ActionViewContext);
+  const uiContext = useContext(UIContext);
+  return (
+    <ActionBarSlotWithInjectedContext {...props} actionViewContext={actionViewContext} uiContext={uiContext} />
   );
 }
