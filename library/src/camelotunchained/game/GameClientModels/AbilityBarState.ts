@@ -16,6 +16,8 @@ declare global {
     status: AbilityButtonState;
     type: AbilityButtonType;
     track: AbilityTrack;
+    systemAnchorID: number;
+    systemSlotID: number;
     error: string;
     timing: Timing;
     disruption: CurrentMax;

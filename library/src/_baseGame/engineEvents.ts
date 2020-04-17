@@ -90,6 +90,9 @@ regMap[EE_OnControllerSelect] = 'onControllerSelect';
 export const EE_OnNetworkFailure = 'networkFailure';
 regMap[EE_OnNetworkFailure] = 'onNetworkFailure';
 
+export const EE_OnAnchorVisibilityChanged = 'anchorVisibilityChanged';
+regMap[EE_OnAnchorVisibilityChanged] = 'onAnchorVisibilityChanged';
+
 /**
  * Initialize engine event forwarding
  */

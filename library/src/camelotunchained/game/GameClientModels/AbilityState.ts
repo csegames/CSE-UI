@@ -19,6 +19,10 @@ declare global {
     track: AbilityTrack;
     keyActionID: number;
     boundKeyName: string;
+    systemAnchorID: number;
+    systemSlotID: number;
+    systemKeyBinding: Binding;
+    icon: string; // Apparent only on system anchor abilities
     status: AbilityButtonState;
     error?: AbilityButtonErrorFlag;
     timing?: Timing;
@@ -47,6 +51,10 @@ const initDefaults = (eventName: string, activatedEventName: string): AbilitySta
     boundKeyName: '',
     status: AbilityButtonState.None,
     isReady: true,
+    systemAnchorID: 0,
+    systemSlotID: 0,
+    systemKeyBinding: { name: '', value: 0, iconClass: '' },
+    icon: '',
     onUpdated: createDefaultOnUpdated(eventName),
     onReady: createDefaultOnReady(eventName),
     onActivated: createDefaultOnActivated(activatedEventName),
@@ -67,12 +75,12 @@ function onReceiveAbilityStateUpdate(state: AbilityState) {
   const activatedEventName = `${AbilityState_Activate}_${state.id}`;
   if (!camelotunchained._devGame.abilityStates[state.id]) {
     camelotunchained._devGame.abilityStates[state.id] =
-      withDefaults(state, initDefaults(eventName, activatedEventName), false);
+      cloneDeep(withDefaults(state, initDefaults(eventName, activatedEventName), false));
     // init Updatable.
     initUpdatable(camelotunchained._devGame.abilityStates[state.id]);
   } else {
     camelotunchained._devGame.abilityStates[state.id] =
-      withDefaults(state, initDefaults(eventName, activatedEventName), false);
+      cloneDeep(withDefaults(state, initDefaults(eventName, activatedEventName), false));
   }
 
   executeUpdateCallbacks(camelotunchained._devGame.abilityStates[state.id]);

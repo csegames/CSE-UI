@@ -5,6 +5,7 @@
  */
 
 import { BaseDevGameInterface } from "./BaseGameInterface";
+import { CoherentEventHandle } from "./index";
 
 declare global {
   interface CancellablePromise<T> extends Promise<T> {
@@ -54,6 +55,7 @@ export function makeClientPromise<T>(callFn: (game: BaseDevGameInterface, ...arg
     if (game.debug) {
       console.log(`GAME TASK: NEW ACTIVE TASK ${handle.id} cancel=${typeof handle.cancel}`);
     }
+
     _devGame._activeTasks[handle.id] = handle as Resolvable<T>;
     const promise =  new Promise<T>((resolve, reject) => {
       if (_devGame._activeTasks[handle.id]) {
@@ -80,29 +82,38 @@ export function makeClientPromise<T>(callFn: (game: BaseDevGameInterface, ...arg
 /**
  * Initializes client task handling
  */
+
+function handleResult(result: TaskResult) {
+  console.log('TASK COMPLETE callback');
+  if (game.debug) {
+    console.log(`GAME TASK: taskComplete | ${JSON.stringify(result)}`);
+  }
+  const resolver = _devGame._activeTasks[result.id];
+  if (game.debug) {
+    console.log(`GAME TASK: RESOLVE TASK ${JSON.stringify(_devGame._activeTasks[result.id])}`);
+  }
+
+  if (resolver && !resolver.cancelled) {
+    if (result.statusCode === TaskStatus.Success) {
+      resolver.resolve && resolver.resolve({ success: true, ...result.value });
+    } else {
+      resolver.reject && resolver.reject({ statusCode: result.statusCode, errorMessage: result.reason });
+    }
+  } else {
+    console.error('CancellablePromise: resolved after being cancelled');
+    resolver.reject && resolver.reject({ cancelled: true, errorMessage: 'promise has been cancelled' });
+  }
+
+  delete _devGame._activeTasks[resolver.id];
+}
+
+var handle: CoherentEventHandle = null;
 export default function() {
   if (typeof engine !== 'undefined') {
-    engine.on('taskComplete', (result: TaskResult) => {
-      if (game.debug) {
-        console.log(`GAME TASK: taskComplete | ${JSON.stringify(result)}`);
-      }
-      const resolver = _devGame._activeTasks[result.id];
-      if (game.debug) {
-        console.log(`GAME TASK: RESOLVE TASK ${JSON.stringify(_devGame._activeTasks[result.id])}`);
-      }
+    if (handle) {
+      handle.clear();
+    }
 
-      if (!resolver.cancelled) {
-        if (result.statusCode === TaskStatus.Success) {
-          resolver.resolve && resolver.resolve(result.value);
-        } else {
-          resolver.reject && resolver.reject({ statusCode: result.statusCode, errorMessage: result.reason });
-        }
-      } else {
-        console.error('CancellablePromise: resolved after being cancelled');
-        resolver.reject && resolver.reject({ cancelled: true, errorMessage: 'promise has been cancelled' });
-      }
-
-      delete _devGame._activeTasks[resolver.id];
-    });
+    handle = engine.on('taskComplete', handleResult);
   }
 }

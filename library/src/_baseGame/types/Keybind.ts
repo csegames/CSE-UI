@@ -53,5 +53,5 @@ declare global {
     iconClass?: string;
   }
 
-  type KeybindCategory = 'abilities' | 'interface' | 'game' | 'miscellaneous';
+  type KeybindCategory = 'actionslots' | 'interface' | 'game' | 'miscellaneous';
 }

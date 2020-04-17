@@ -43,15 +43,6 @@ export interface GameModel {
    * Stops the currently active key trigger loop
    */
   _cse_dev_endTriggerKeyActionLoop: () => void;
-
-  /**
-   * Action Bar API
-   */
-  _cse_dev_enterActionBarEditMode: () => void;
-  _cse_dev_exitActionBarEditMode: () => void;
-  configureSlottedAction: (anchorId: string, slotId: string, groupId: string, actionId: string, boundKeyValue: number) => void;
-  setActiveAnchorGroup: (anchorId: string, groupId: string) => void;
-  activateSlottedAction: (anchorId: string, slotId: string, groupId: string, actionId: string) => void;
 }
 
 /**
