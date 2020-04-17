@@ -204,7 +204,8 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
 export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptions>): Promise<GraphQLQueryResult<T>> {
   const opts = withDefaults(options, game.graphQL.defaultOptions());
 
-  if (opts.disableBatching == false) {
+  // disable all batching globally for now
+  if (false && opts.disableBatching == false) {
     // batch the query.
 
     if (batchHandle === null) {
