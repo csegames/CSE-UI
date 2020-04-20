@@ -8,7 +8,7 @@ import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 
 const Watermark = styled.div`
-  position: fixed;
+  position: absolute;
   margin: auto;
   left: 50%;
   text-align: center;
@@ -20,19 +20,18 @@ const Watermark = styled.div`
   -webkit-touch-callout: none;
   user-select: none;
   cursor: default;
-  z-index: 9999;
   pointer-events: none;
-  top: 94px;
+  top: 18px;
   font-size: 26px;
   width: 680px;
-  height: 40px;
-  line-height: 40px;
+  height: 10px;
+  line-height: 20px;
 
   @media (max-width: 1920px) {
     font-size: 13px;
-    top: 47px;
+    top: 12px;
     width: 340px;
-    height: 20px;
+    height: 10px;
     line-height: 20px;
   }
 `;

@@ -289,6 +289,9 @@ export class WarbandDisplay extends React.Component<Props, State> {
   private onWarbandMemberUpdated = (member: GroupMemberState) => {
     if (!this.state.warbandID) return;
     if (!member) return;
+    // if (this.state.activeMembers.findIndex(m => m.characterID == member.characterID) < 0) {
+    //   return; // not in the group.
+    // }
     onWarbandMemberUpdate(member);
     this.receivedMemberUpdate = true;
     this.setState((state) => {
