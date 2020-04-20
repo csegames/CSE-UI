@@ -104,7 +104,7 @@ function getQueryOptions(): GraphQLOptions {
     pollInterval: 0,
     // useCache: true,
 
-    maxAttempts: 1,
+    maxAttempts: 10,
     maxRetryWaitMilliseconds: 2000,
     minRetryWaitMilliseconds: 100,
     retryWaitTimeIncreaseFactor: 2.0
@@ -209,7 +209,6 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
 
   constructor(props: GraphQLProps<QueryDataType, SubscriptionDataType>) {
     super(props);
-    this.retry = !!props.noRetry;
     this.state = {
       data: props.initialData || null,
       loading: false,
@@ -294,13 +293,6 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
     );
   }
 
-  // public shouldComponentUpdate(nextProps: GraphQLProps<QueryDataType, SubscriptionDataType>,
-  //     nextState: GraphQLState<QueryDataType>) {
-  //   // if (!_.isEqual(this.state, nextState)) return true;
-  //   // if (!_.isEqual(this.props, nextProps)) return true;
-  //   // return false;
-  // }
-
   public componentDidMount() {
     if (this.queryOptions && this.queryOptions.pollInterval && this.queryOptions.pollInterval > 0) {
       this.pollingRefetch();
@@ -320,8 +312,6 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   }
 
   public componentWillReceiveProps(nextProps: GraphQLProps<QueryDataType, SubscriptionDataType>) {
-    this.retry = !!nextProps.noRetry;
-
     if (!_.isEqual(this.props.query, nextProps.query)) {
       let q;
       if (typeof nextProps.query === 'string' || nextProps.query.hasOwnProperty('loc')) {
@@ -406,9 +396,6 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
       this.props.onQueryResult(queryResult);
 
       return queryResult;
-    }
-    if (this.retry && !result.ok) {
-      setTimeout(() => this.refetch(false), 100);
     }
   }
 

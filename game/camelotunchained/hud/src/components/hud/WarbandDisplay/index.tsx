@@ -93,7 +93,13 @@ export class WarbandDisplay extends React.Component<Props, State> {
 
   public render() {
     return (
-      <GraphQL query={query} onQueryResult={this.handleQuery}>
+      <GraphQL 
+        query={{
+          query, 
+          operationName: "warband-display"
+        }} 
+        onQueryResult={this.handleQuery}
+      >
         {() => <WarbandDisplayView activeMembers={this.state.activeMembers} />}
       </GraphQL>
     );

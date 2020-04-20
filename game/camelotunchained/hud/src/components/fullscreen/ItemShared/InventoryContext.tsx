@@ -44,8 +44,8 @@ export interface InventoryContextState {
   containerIdToDrawerInfo: ContainerIdToDrawerInfo;
   slotNumberToItem: SlotNumberToItem;
   itemIdToInfo: ItemIDToInfo;
-  stackGroupIdToItemIDs: {[id: string]: string[]};
-  itemIDToStackGroupID: {[id: string]: string};
+  stackGroupIdToItemIDs: { [id: string]: string[] };
+  itemIDToStackGroupID: { [id: string]: string };
   graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>;
 
   initializeInventory: () => void;
@@ -67,14 +67,14 @@ export const defaultInventoryContextValue: InventoryContextState = {
   itemIDToStackGroupID: {},
   graphql: null,
 
-  initializeInventory: () => {},
-  onUpdateState: () => {},
-  onMoveInventoryItem: () => {},
-  onMoveStack: () => {},
-  onCombineStack: () => {},
-  onMoveInventoryItemOutOfInventory: () => {},
-  onAddContainer: () => {},
-  onRemoveContainer: () => {},
+  initializeInventory: () => { },
+  onUpdateState: () => { },
+  onMoveInventoryItem: () => { },
+  onMoveStack: () => { },
+  onCombineStack: () => { },
+  onMoveInventoryItemOutOfInventory: () => { },
+  onAddContainer: () => { },
+  onRemoveContainer: () => { },
 };
 
 export const InventoryContext = React.createContext(defaultInventoryContextValue);
@@ -82,11 +82,6 @@ export const InventoryContext = React.createContext(defaultInventoryContextValue
 export interface MoveInventoryItemPayload {
   dragItemData: InventoryDataTransfer;
   dropZoneData: InventoryDataTransfer;
-}
-
-const inventoryQuery = {
-  disableBatching: true,
-  query: inventoryGQLQuery
 }
 
 class InventoryContextProvider extends React.Component<InventoryContextProps, InventoryContextState> {
@@ -108,7 +103,15 @@ class InventoryContextProvider extends React.Component<InventoryContextProps, In
 
   public render() {
     return (
-      <GraphQL query={inventoryQuery} onQueryResult={this.handleQueryResult}>
+      <GraphQL 
+        query={{
+          disableBatching: true,
+          query: inventoryGQLQuery,
+          maxAttempts: 2,
+          operationName: "inventory-context"
+        }} 
+        onQueryResult={this.handleQueryResult}
+      >
         {(graphql: GraphQLResult<Pick<CUQuery, 'myInventory'>>) => {
           const contextValue: InventoryContextState = {
             ...this.state,

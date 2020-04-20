@@ -271,8 +271,8 @@ module.exports = {
         description: 'Run jest tests for hordetest'
       },
       cuhud: {
-        script: '',
-        loud: '',
+        script: 'jest --config ./camelotunchained/hud/jest.config.js --silent',
+        loud: 'jest --config ./camelotunchained/hud/jest.config.js',
         description: 'Run jest tests for camelotunchained'
       },
     },
