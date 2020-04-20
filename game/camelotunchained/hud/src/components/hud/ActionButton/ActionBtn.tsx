@@ -196,7 +196,8 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
   }
 
   public render() {
-    if (isSystemAnchorId(this.state.abilityState.systemAnchorID) && this.state.abilityState.systemSlotID === 0) {
+    if (!this.state.abilityState ||
+        isSystemAnchorId(this.state.abilityState.systemAnchorID) && this.state.abilityState.systemSlotID === 0) {
       return null;
     }
 
@@ -207,10 +208,11 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
     const apiAbilityInfo = camelotunchained.game.store.getAbilityInfo(this.props.actionId);
 
     let tooltipContent = null;
-    if (apiAbilityInfo && apiAbilityInfo.icon) {
+    if ((apiAbilityInfo && apiAbilityInfo.icon) || this.state.abilityState && this.state.abilityState['description']) {
       tooltipContent = <TooltipContentContainer>
         <TooltipHeader>{apiAbilityInfo ? apiAbilityInfo.name : ''}</TooltipHeader>
-        <div dangerouslySetInnerHTML={{ __html: apiAbilityInfo ? apiAbilityInfo.description : '' }} />
+        <div dangerouslySetInnerHTML={{
+          __html: apiAbilityInfo ? apiAbilityInfo.description : this.state.abilityState['description'] }} />
       </TooltipContentContainer>;
     } else {
       tooltipContent = <TooltipContentContainer>
@@ -244,7 +246,7 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    if (typeof this.props.actionId !== 'number' && this.props.actionId === 0) {
+    if (typeof this.props.actionId !== 'number' || !camelotunchained.game.abilityStates[this.props.actionId]) {
       return;
     }
 

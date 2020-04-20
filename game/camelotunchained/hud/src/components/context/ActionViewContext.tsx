@@ -183,13 +183,19 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
   }
 
   public componentDidMount() {
+    if (!game.actions) return;
     this.fetchAPIAbilitiesAndInitialize();
     camelotunchained.game.abilityBarState.onUpdated(this.handleAbilityBarStateUpdate);
   }
 
   public componentWillUnmount() {
-    this.abilityBarUpdateEVH.clear();
-    this.systemAnchorInitEVH.clear();
+    if (this.abilityBarUpdateEVH) {
+      this.abilityBarUpdateEVH.clear();
+    }
+
+    if (this.systemAnchorInitEVH) {
+      this.systemAnchorInitEVH.clear();
+    }
 
     if (this.initializeStateTimeout) {
       window.clearTimeout(this.initializeStateTimeout);
@@ -197,7 +203,8 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
   }
 
   private fetchAPIAbilitiesAndInitialize = async () => {
-    if (!camelotunchained.game.store.myCharacter || !camelotunchained.game.store.myCharacter.abilities) {
+    if (game.webAPIHost &&
+        (!camelotunchained.game.store.myCharacter || !camelotunchained.game.store.myCharacter.abilities)) {
       const res = await camelotunchained.game.store.refetch();
       if (!res.myCharacter || res.myCharacter.abilities) {
         this.refetchAbilitiesTimeout = window.setTimeout(this.fetchAPIAbilitiesAndInitialize, 500);

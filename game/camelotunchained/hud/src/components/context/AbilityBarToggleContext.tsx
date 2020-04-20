@@ -24,7 +24,7 @@ export class AbilityBarToggleContextProvider extends React.Component<{}, State> 
     super(props);
 
     this.state = {
-      ...getDefaultAbilityBarToggleContextState()
+      showNewAbilityBar: true,
     };
   }
 

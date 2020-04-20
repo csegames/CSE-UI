@@ -128,7 +128,11 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
   constructor(props: ActionBarSlotProps & InjectedProps) {
     super(props);
 
-    const defaultKeybind = getDefaultKeybindId(props.id, isSystemAnchorId(props.anchorId), props.actions[0]);
+    const defaultKeybind = getDefaultKeybindId(
+      props.id,
+      isSystemAnchorId(props.anchorId),
+      props.actions && props.actions[0],
+    );
     this.state = {
       isDragging: false,
       wantAngle: props.angle,

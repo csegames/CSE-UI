@@ -82,6 +82,7 @@ export class ReconnectingWebSocket {
     this.startReconnectInterval = opts.startReconnectInterval;
     this.maxReconnectInterval = opts.maxReconnectInterval;
     this.debug = opts.debug;
+    this.eventEmitter = createEventEmitter();
 
     const urlString = this.url();
     if (!urlString || !isWebSocketUrl(urlString)) {
@@ -90,7 +91,6 @@ export class ReconnectingWebSocket {
     }
 
     this.connect();
-    this.eventEmitter = createEventEmitter();
   }
 
   public set onopen(callback: (event: Event) => any) {

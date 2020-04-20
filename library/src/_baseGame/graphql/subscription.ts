@@ -10,6 +10,7 @@ import { getBooleanEnv } from '../utils/env';
 import { isCompositeType } from 'graphql';
 import { generateID } from 'redux-typed-modules';
 import { print } from 'graphql/index.js';
+import { isWebSocketUrl } from '../utils/urlUtils';
 
 export interface Options<DataType> extends WebSocketOptions {
   // Data to send to the server on connection init
@@ -125,6 +126,8 @@ export class SubscriptionManager {
     }
     const defaultOpts = defaultSubscriptionOpts();
     const opts =  withDefaults(options, defaultOpts);
+
+    const urlString = opts.url();
     this.socket = new ReconnectingWebSocket(opts);
     this.socket.onopen = this.init;
     this.socket.onmessage = this.messageHandler;

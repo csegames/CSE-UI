@@ -113,7 +113,7 @@ const viewport = getViewportSize();
 export function ActionBarAnchor(props: ActionBarAnchorProps) {
   const actionViewContext = useContext(ActionViewContext);
   const [dragPosition, setDragPosition] = useState(props.positionPercentage);
-  const [isVisible, setIsVisible] = useState(isSystemAnchorId(props.id) ? false : true);
+  const [isVisible, setIsVisible] = useState(isSystemAnchorId(props.id) && game.webAPIHost ? false : true);
   const [ref, setRef] = useState(null);
   const [bounds, setBounds] = useState({
     width: 0,
