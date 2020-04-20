@@ -164,7 +164,7 @@ export class InteractiveAlertView extends React.Component<Props, State> {
           this.setState(handleNewTradeAlert(this.state.alerts, alert as TradeAlert));
           break;
         case 'Group':
-          handleNewGroupAlert(this, alert as GroupAlert);
+          this.setState(handleNewGroupAlert(this.state.alerts, alert as GroupAlert));
           break;
       }
     }

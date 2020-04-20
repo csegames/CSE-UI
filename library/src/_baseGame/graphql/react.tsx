@@ -173,6 +173,7 @@ export interface GraphQLProps<QueryDataType, SubscriptionDataType> {
   mockQueryHandlerFactory?: MockQueryHandlerFactory<QueryDataType>;
   mockSubscription?: boolean;
   mockSubscriptionHandlerFactory?: MockSubscriptionHandlerFactory<SubscriptionDataType>;
+  noRetry?: boolean;
 }
 
 export interface GraphQLState<T> extends GraphQLData<T> {
@@ -191,9 +192,11 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   private subscriptionManager: SubscriptionManager;
   private mockQueryHandler: MockQueryHandler<QueryDataType>;
   private mockSubscriptionHandler: MockSubscriptionHandler<SubscriptionDataType>;
+  private retry: boolean;
 
   constructor(props: GraphQLProps<QueryDataType, SubscriptionDataType>) {
     super(props);
+    this.retry = !!props.noRetry;
     this.state = {
       data: props.initialData || null,
       loading: false,
@@ -287,6 +290,8 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   }
 
   public componentWillReceiveProps(nextProps: GraphQLProps<QueryDataType, SubscriptionDataType>) {
+    this.retry = !!nextProps.noRetry;
+
     if (!_.isEqual(this.props.query, nextProps.query)) {
       let q;
       if (typeof nextProps.query === 'string' || nextProps.query.hasOwnProperty('loc')) {
@@ -361,6 +366,9 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
       this.props.onQueryResult(queryResult);
 
       return queryResult;
+    }
+    if (this.retry && !result.ok) {
+      setTimeout(() => this.refetch(false), 100);
     }
   }
 
