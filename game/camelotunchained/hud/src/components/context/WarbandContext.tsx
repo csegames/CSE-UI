@@ -86,7 +86,11 @@ export class WarbandContextProvider extends React.Component<Props, WarbandContex
     return (
       <WarbandContext.Provider value={this.state}>
         <GraphQL
-          query={warbandQuery}
+          query={{
+            query: warbandQuery,
+            operationName: "warband-context",
+            maxAttempts: 5
+          }}
           onQueryResult={this.handleWarbandQueryResult}
           subscription={{
             query: notificationSubscription,
@@ -98,6 +102,7 @@ export class WarbandContextProvider extends React.Component<Props, WarbandContex
           <GraphQL
             subscription={{
               query: updateSubscription,
+              operationName: "active-warband-sub",
               initPayload: defaultSubscriptionOpts().initPayload,
               variables: {
                 groupID: this.state.activeWarbandID,

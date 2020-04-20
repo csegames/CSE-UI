@@ -34,6 +34,14 @@ export interface GraphQLOptions extends QueryOptions {
   // No cache support yet
   // Should we use the GraphQL cache? (default: true)
   // useCache: boolean;
+
+  // maxAttempts defaults to 1. If set higher, we will retry with backoff starting at 
+  // minRetryMilliseconds and increasing by a factor of retryWaitTimeIncreaseFactor until
+  // reaching maxRetryWaitMilliseconds
+  maxAttempts: number;
+  maxRetryWaitMilliseconds: number;
+  minRetryWaitMilliseconds: number;
+  retryWaitTimeIncreaseFactor: number;
 }
 
 export class GraphQLClient {
@@ -86,7 +94,7 @@ export interface GraphQLConfig extends QueryOptions {
 
 let queryConf = null;
 let getQueryConf = () => null;
-function getQueryOptions() {
+function getQueryOptions(): GraphQLOptions {
   if (queryConf === null) {
     queryConf = withDefaults(null, _devGame.graphQL.defaultOptions());
   }
@@ -95,6 +103,11 @@ function getQueryOptions() {
     ..._devGame.graphQL.defaultOptions() as QueryOptions,
     pollInterval: 0,
     // useCache: true,
+
+    maxAttempts: 1,
+    maxRetryWaitMilliseconds: 2000,
+    minRetryWaitMilliseconds: 100,
+    retryWaitTimeIncreaseFactor: 2.0
   };
   return {
     ...defaultGraphQLOptions,
@@ -223,7 +236,24 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
         setQueryOptions(config.queryConf);
       }
 
-      this.queryOptions = withDefaults<GraphQLOptions>(qp, getQueryOptions());
+      const defaultQueryOptions : GraphQLOptions = getQueryOptions()
+      this.queryOptions = withDefaults<GraphQLOptions>(qp, defaultQueryOptions);
+
+      if (this.queryOptions.maxAttempts < 1) {
+        console.warn(`maxAttempts cannot be less than 1. Setting to ${defaultQueryOptions.maxAttempts}`);
+        this.queryOptions.maxAttempts = defaultQueryOptions.maxAttempts;
+      }
+  
+      if (this.queryOptions.maxRetryWaitMilliseconds < this.queryOptions.minRetryWaitMilliseconds) {
+        console.warn(`maxRetryWaitMilliseconds is less than minRetryMilliseconds. Reverting to defaults of ${defaultQueryOptions.maxRetryWaitMilliseconds} and ${defaultQueryOptions.minRetryWaitMilliseconds}`);
+        this.queryOptions.maxRetryWaitMilliseconds = defaultQueryOptions.maxRetryWaitMilliseconds;
+        this.queryOptions.minRetryWaitMilliseconds = defaultQueryOptions.minRetryWaitMilliseconds;
+      }
+  
+      if (this.queryOptions.retryWaitTimeIncreaseFactor < 0) {
+        console.warn(`retryWaitTimeIncreaseFactor cannot be 0. Setting to default ${defaultQueryOptions.retryWaitTimeIncreaseFactor}`);
+        this.queryOptions.retryWaitTimeIncreaseFactor = defaultQueryOptions.retryWaitTimeIncreaseFactor
+      }
 
       this.client = new GraphQLClient({
         url: this.queryOptions.url,
@@ -345,10 +375,20 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
       this.setState({ loading: true });
     }
     let result: GraphQLQueryResult<QueryDataType>;
+    const queryToUse = query || this.query;
     if (this.props.mockQuery && this.mockQueryHandler) {
-      result = await this.mockQueryHandler.handle(query || this.query, this.queryOptions);
+      result = await this.mockQueryHandler.handle(queryToUse, this.queryOptions);
     } else {
-      result = await this.client.query(query || this.query);
+      let delay = this.queryOptions.minRetryWaitMilliseconds;
+      for (let attempts = 1; attempts <= this.queryOptions.maxAttempts; ++attempts) {
+        result = await this.client.query(queryToUse);
+        if (!result.ok && attempts + 1 <= this.queryOptions.maxAttempts) {
+          console.error(`Query for ${queryToUse.operationName} failed with ${result.statusText}. ${attempts}/${this.queryOptions.maxAttempts} attempts. Waiting ${delay} and trying again...`);
+          console.error(result.data)
+          await new Promise((resolve) => setTimeout(resolve, delay))
+          delay = Math.min(this.queryOptions.maxRetryWaitMilliseconds, delay * this.queryOptions.retryWaitTimeIncreaseFactor)
+        }
+      }
     }
     const state = {
       data: result.data as QueryDataType,
@@ -401,6 +441,7 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
       }
     } else {
       const defaultOpts = _devGame.graphQL.defaultOptions();
+      const queryDefaultOpts = getQueryOptions()
       if (typeof this.props.query !== 'string') {
         // Update queryOptions but use props first
         this.queryOptions = {
@@ -409,6 +450,10 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
           stringifyVariables: this.props.query.stringifyVariables || defaultOpts.stringifyVariables,
           disableBatching: this.props.query.disableBatching || defaultOpts.disableBatching,
           requestOptions: this.props.query.requestOptions || defaultOpts.requestOptions,
+          maxAttempts: this.props.query.maxAttempts || queryDefaultOpts.maxAttempts,
+          maxRetryWaitMilliseconds: this.props.query.maxRetryWaitMilliseconds || queryDefaultOpts.maxRetryWaitMilliseconds,
+          minRetryWaitMilliseconds: this.props.query.minRetryWaitMilliseconds || queryDefaultOpts.minRetryWaitMilliseconds,
+          retryWaitTimeIncreaseFactor: this.props.query.retryWaitTimeIncreaseFactor || queryDefaultOpts.retryWaitTimeIncreaseFactor,
         };
       } else {
         // User never passed in any special query options, just update the options with default ones.
@@ -418,6 +463,10 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
           stringifyVariables: defaultOpts.stringifyVariables,
           requestOptions: defaultOpts.requestOptions,
           disableBatching: defaultOpts.disableBatching,
+          maxAttempts: queryDefaultOpts.maxAttempts,
+          maxRetryWaitMilliseconds: queryDefaultOpts.maxRetryWaitMilliseconds,
+          minRetryWaitMilliseconds: queryDefaultOpts.minRetryWaitMilliseconds,
+          retryWaitTimeIncreaseFactor: queryDefaultOpts.retryWaitTimeIncreaseFactor,
         };
       }
 

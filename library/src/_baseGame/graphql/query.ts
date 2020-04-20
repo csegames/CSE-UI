@@ -279,7 +279,7 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
     const errorMessage = response.statusText || response.data;
     if (response.statusText != "OK") {
       console.error(
-        'GraphQL Request Error:',
+        `GraphQL '${q.operationName}' Request Error: ${errorMessage}`,
         {
           errors: errorMessage,
           query: q.query,
