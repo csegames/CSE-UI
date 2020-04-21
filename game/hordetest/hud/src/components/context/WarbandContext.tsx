@@ -40,8 +40,8 @@ const warbandNotificationSubscription = gql`
 `;
 
 const warbandUpdatesSubscription = gql`
-  subscription WarbandUpdateSubscription($groupID: String!) {
-    activeGroupUpdates(groupID: $groupID) {
+  subscription WarbandUpdateSubscription {
+    activeGroupUpdates {
       updateType
       groupID
 
@@ -131,23 +131,18 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
           }}
           subscriptionHandler={this.handleNotificationSubscription}
         />
-        {this.state.groupID &&
-          <GraphQL
-            query={warbandQuery}
-            onQueryResult={this.handleQueryResult}
-            subscription={{
-              query: warbandUpdatesSubscription,
-              variables: {
-                groupID: this.state.groupID,
-              },
-              initPayload: {
-                characterID: this.lastCharacterID,
-                token: game.accessToken,
-              },
-            }}
-            subscriptionHandler={this.handleUpdateSubscription}
-          />
-        }
+        <GraphQL
+          query={warbandQuery}
+          onQueryResult={this.handleQueryResult}
+          subscription={{
+            query: warbandUpdatesSubscription,
+            initPayload: {
+              characterID: this.lastCharacterID,
+              token: game.accessToken,
+            },
+          }}
+          subscriptionHandler={this.handleUpdateSubscription}
+        />
 
         {this.props.children}
       </WarbandContext.Provider>
@@ -184,6 +179,8 @@ export class WarbandContextProvider extends React.Component<{}, WarbandContextSt
     if (!result || !result.data || !result.data.activeGroupUpdates) return data;
 
     const update = result.data.activeGroupUpdates;
+    if (update.groupID !== this.state.groupID) return;
+    
     game.trigger('subscription-activeGroupUpdates', update);
 
     switch (update.updateType) {

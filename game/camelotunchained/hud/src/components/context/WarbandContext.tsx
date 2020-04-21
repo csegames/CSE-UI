@@ -41,8 +41,8 @@ const notificationSubscription = gql`
 `;
 
 const updateSubscription = gql`
-  subscription WarbandUpdateSubscription($groupID: String!) {
-    activeGroupUpdates(groupID: $groupID) {
+  subscription WarbandUpdateSubscription {
+    activeGroupUpdates {
       updateType
       groupID
 
@@ -98,19 +98,14 @@ export class WarbandContextProvider extends React.Component<Props, WarbandContex
           }}
           subscriptionHandler={this.handleNotificationSubscription}
         />
-        {this.state.activeWarbandID &&
-          <GraphQL
-            subscription={{
-              query: updateSubscription,
-              operationName: "active-warband-sub",
-              initPayload: defaultSubscriptionOpts().initPayload,
-              variables: {
-                groupID: this.state.activeWarbandID,
-              },
-            }}
-            subscriptionHandler={this.handleUpdateSubscription}
-          />
-        }
+        <GraphQL
+          subscription={{
+            query: updateSubscription,
+            operationName: "active-warband-sub",
+            initPayload: defaultSubscriptionOpts().initPayload,
+          }}
+          subscriptionHandler={this.handleUpdateSubscription}
+        />
         {this.props.children}
       </WarbandContext.Provider>
     );
@@ -151,6 +146,8 @@ export class WarbandContextProvider extends React.Component<Props, WarbandContex
     if (!result.data) return data;
 
     const update = result.data.activeGroupUpdates;
+    if (update.groupID !== this.state.activeWarbandID) return;
+
     game.trigger(WarbandContextProvider.updateEventName, update);
 
     switch(update.updateType) {

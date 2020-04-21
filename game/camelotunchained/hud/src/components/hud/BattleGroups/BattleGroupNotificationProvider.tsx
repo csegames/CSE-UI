@@ -38,8 +38,8 @@ const notificationSubscription = gql`
 `;
 
 const updateSubscription = gql`
-  subscription BattleGroupUpdateSubscription($groupID: String!) {
-    activeGroupUpdates(groupID: $groupID) {
+  subscription BattleGroupUpdateSubscription {
+    activeGroupUpdates {
       updateType
       groupID
 
@@ -83,18 +83,13 @@ export class BattleGroupNotificationProvider extends React.Component<Props, Stat
           }}
           subscriptionHandler={this.handleNotificationSubscription}
         />
-        {this.state.activeBattlegroupID &&
-          <GraphQL
-            subscription={{
-              query: updateSubscription,
-              initPayload: defaultSubscriptionOpts().initPayload,
-              variables: {
-                groupID: this.state.activeBattlegroupID,
-              },
-            }}
-            subscriptionHandler={this.handleUpdateSubscription}
-          />
-        }
+        <GraphQL
+          subscription={{
+            query: updateSubscription,
+            initPayload: defaultSubscriptionOpts().initPayload,
+          }}
+          subscriptionHandler={this.handleUpdateSubscription}
+        />
       </>
     );
   }
@@ -133,8 +128,8 @@ export class BattleGroupNotificationProvider extends React.Component<Props, Stat
   private handleUpdateSubscription = (result: SubscriptionResult<BattleGroupUpdateSubscription.Subscription>,
                                       data: any) => {
     if (!result.data) return data;
-
     const update = result.data.activeGroupUpdates;
+    if (update.groupID !== this.state.activeBattlegroupID) return;
     game.trigger(BattleGroupNotificationProvider.updateEventName, update);
   }
 }
