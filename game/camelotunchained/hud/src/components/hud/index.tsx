@@ -56,7 +56,7 @@ import HUDZOrder from 'services/session/HUDZOrder';
 import { ActionBars } from './ActionBar';
 import { AddActionBtn } from './ActionButton/AddActionBtn';
 import { DragAndDropV2Renderer } from 'utils/DragAndDropV2';
-import { BattleGroupNotificationProvider } from 'hud/BattleGroups/BattleGroupNotificationProvider';
+// import { BattleGroupNotificationProvider } from 'hud/BattleGroups/BattleGroupNotificationProvider';
 
 import { DynamicModal } from 'utils/DynamicModal';
 import { AbilityBarToggleContext } from 'components/context/AbilityBarToggleContext';
@@ -224,7 +224,7 @@ class HUDViewInternal extends React.Component<HUDProps, HUDState> {
               <DragAndDropV2Renderer />
 
               {/* GraphQL Subscription providers */}
-              <BattleGroupNotificationProvider />
+              {/* <BattleGroupNotificationProvider /> */}
 
             </div>
           )}

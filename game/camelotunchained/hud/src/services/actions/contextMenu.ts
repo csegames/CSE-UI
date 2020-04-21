@@ -19,7 +19,7 @@ import { inviteToTrade } from './trade';
 import {
   hasActiveBattlegroup,
   isEntityIDInBattlegroup,
-  inviteToBattlegroupByName,
+  // inviteToBattlegroupByName,
   getActiveBattlegroupID,
   getBattlegroupMemberByCharacterID,
   kickFromBattlegroupByEntityID,
@@ -168,10 +168,12 @@ export function getFriendlyTargetMenuItems(
   }
 
   if (!hasActiveBattlegroup() || (!isEntityIDInBattlegroup(id) && myBattlegroupInfo && myBattlegroupInfo.canInvite)) {
-    items.push({
-      title: 'Invite to Battlegroup',
-      onSelected: () => inviteToBattlegroupByName(state.name, getActiveBattlegroupID()),
-    });
+    // Disabled for now
+
+    // items.push({
+    //   title: 'Invite to Battlegroup',
+    //   onSelected: () => inviteToBattlegroupByName(state.name, getActiveBattlegroupID()),
+    // });
   }
 
   if (hasActiveBattlegroup() && isEntityIDInBattlegroup(id) && myBattlegroupInfo && myBattlegroupInfo.canKick) {
