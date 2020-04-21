@@ -63,6 +63,11 @@ export class GraphQLClient {
   public query = async (query: GraphQLQuery) => {
     this.lastQuery = query as any;
     this.lastQuery.query = parseQuery(query.query);
+    let queryPartialToLog = this.lastQuery.query;
+    if (this.lastQuery.query.length > 40) {
+      queryPartialToLog = this.lastQuery.query.substr(0, 40);
+    }
+    console.log(`GQL Client Refetching ${queryPartialToLog}...`);
     return await this.refetch();
   }
 
@@ -370,10 +375,14 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
       result = await this.mockQueryHandler.handle(queryToUse, this.queryOptions);
     } else {
       let delay = this.queryOptions.minRetryWaitMilliseconds;
-      for (let attempts = 1; attempts <= this.queryOptions.maxAttempts; ++attempts) {
+      let success = false;
+      let attemptsLeft = this.queryOptions.maxAttempts;
+      while (!success && attemptsLeft--) {
         result = await this.client.query(queryToUse);
-        if (!result.ok && attempts + 1 <= this.queryOptions.maxAttempts) {
-          console.error(`Query for ${queryToUse.operationName} failed with ${result.statusText}. ${attempts}/${this.queryOptions.maxAttempts} attempts. Waiting ${delay} and trying again...`);
+        success = result.ok;
+
+        if (!success && attemptsLeft > 0) {
+          console.error(`Query for ${queryToUse.operationName} failed with ${result.statusText}. ${attemptsLeft}/${this.queryOptions.maxAttempts} attempts remaining. Waiting ${delay} and trying again...`);
           console.error(result.data)
           await new Promise((resolve) => setTimeout(resolve, delay))
           delay = Math.min(this.queryOptions.maxRetryWaitMilliseconds, delay * this.queryOptions.retryWaitTimeIncreaseFactor)

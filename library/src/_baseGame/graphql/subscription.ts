@@ -142,14 +142,18 @@ export class SubscriptionManager {
     onError?: OnError,
     options?: any) => {
     this.initPayload = options.initPayload;
-    const id = `gql-subscription-operation-${this.idCounter++}`;
+    let id = `gql-subscription-operation-${this.idCounter++}`;
 
     let payload;
     if (typeof subscription === 'string' || subscription.hasOwnProperty('loc')) {
       payload = { query: subscription };
     } else {
       payload = subscription;
+      if ("operationName" in subscription) {
+        id = `gql-subscription-${subscription["operationName"]}-${this.idCounter}`;
+      }
     }
+
     if (
       typeof payload.query === 'object' &&
       (payload.query.hasOwnProperty('loc') || payload.query.hasOwnProperty('definitions'))

@@ -247,7 +247,7 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
       if (result.errors) {
         // TODO log sentry error here?
         console.error(
-          'GraphQL Server Error:',
+          `GraphQL ${q.operationName} Server Error:`,
           {
             errors: result.errors.map(getMessage).join(' '),
             query: q.query,
@@ -305,6 +305,7 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
 
   } catch (err) {
     Raven.captureException(err);
+    console.error(err)
     return errorResult(err, 400);
   }
 }
