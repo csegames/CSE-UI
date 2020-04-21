@@ -293,6 +293,7 @@ export interface Props {
   isModifying: boolean;
   onTryAgainClick: () => void;
   onCreateNewClick: () => void;
+  onAddToHudClick: () => void;
 }
 
 // tslint:disable-next-line:function-name
@@ -301,7 +302,6 @@ export function Modal(props: Props) {
   const { type, name, icon, isModifying, errorMessage, abilityType } = props;
 
   function closeAbilityBuilder() {
-    // For now just close the UI
     game.trigger('navigate', 'ability-builder');
   }
 
@@ -329,7 +329,7 @@ export function Modal(props: Props) {
           </AbilityActionsContainer>
           <Button
             className={abilityType.name}
-            onClick={type === 'success' ? closeAbilityBuilder : props.onTryAgainClick}>
+            onClick={type === 'success' ? props.onAddToHudClick : props.onTryAgainClick}>
             {type === 'success' ? 'Add Ability To HUD' : 'Try again'}
           </Button>
         </InfoContainer>

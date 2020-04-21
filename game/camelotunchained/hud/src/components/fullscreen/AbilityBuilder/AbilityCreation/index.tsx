@@ -12,6 +12,8 @@ import { Modal } from './Modal';
 import { AbilityBuilderContext } from '..';
 import { webAPI } from '@csegames/library/lib/camelotunchained';
 import { useAbilityBuilderReducer, AbilityType } from 'services/session/AbilityBuilderState';
+import { AbilityBookContext } from 'components/context/AbilityBookContext';
+import { ActionViewContext } from 'components/context/ActionViewContext';
 
 const Container = styled.div`
   position: relative;
@@ -36,6 +38,8 @@ export interface Props {
 // tslint:disable-next-line:function-name
 export function AbilityCreation(props: Props) {
   const abilityBuilderContext = useContext(AbilityBuilderContext);
+  const abilityBookContext = useContext(AbilityBookContext);
+  const actionViewContext = useContext(ActionViewContext);
   const [state] = useAbilityBuilderReducer();
   const [errorMessage, setErrorMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -82,6 +86,8 @@ export function AbilityCreation(props: Props) {
 
     if (res.ok) {
       setShowModal(true);
+      camelotunchained.game.store.refetch();
+      abilityBookContext.refetch();
     } else if (res.data) {
       const errorMessage = JSON.parse(res.data).FieldCodes[0].AbilityResult.Details;
       setErrorMessage(errorMessage);
@@ -111,8 +117,8 @@ export function AbilityCreation(props: Props) {
 
     if (res.ok) {
       setShowModal(true);
-      game.trigger('refetch-ability-book');
       camelotunchained.game.store.refetch();
+      abilityBookContext.refetch();
     } else if (res.data) {
       const errorMessage = JSON.parse(res.data).FieldCodes[0].AbilityResult.Details;
       setErrorMessage(errorMessage);
@@ -134,6 +140,19 @@ export function AbilityCreation(props: Props) {
     props.reset();
   }
 
+  function onAddToHudClick() {
+    game.trigger('navigate', 'ability-builder');
+
+    try {
+      const abilitiesArray = Object.keys(camelotunchained.game.abilityBarState.abilities);
+      const abilityId = Number.parseInt(abilitiesArray[abilitiesArray.length - 1]);
+      actionViewContext.queueAddAction(abilityId);
+    } catch(e) {
+      console.log('Tried to queueAddAction from the ability builder but failed.');
+      console.log(e);
+    }
+  }
+
   return !isEmpty(abilityBuilderContext.abilityNetworks) ? (
     <Container>
       <AbilityNetworkTemplate
@@ -153,6 +172,7 @@ export function AbilityCreation(props: Props) {
             isModifying={state.isModifying}
             onTryAgainClick={onTryAgainClick}
             onCreateNewClick={onCreateNewClick}
+            onAddToHudClick={onAddToHudClick}
           />
         </>
       }
