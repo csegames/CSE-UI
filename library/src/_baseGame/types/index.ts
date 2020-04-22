@@ -16,3 +16,4 @@ import './BodyPart';
 import './CombatEvent';
 import './DamageType';
 import './MockMode';
+import './Objective';

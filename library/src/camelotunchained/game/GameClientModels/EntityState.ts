@@ -67,6 +67,14 @@ declare global {
     attackingFactions: AttackingFactions;
     keepLordEntityID: string;
     captureProgress: number;
+    objective: {
+      bearingDegrees: number;
+      footprintRadius: number;
+      indicator: number;
+      progress: CurrentMax;
+      state: ObjectiveState;
+      visibility: ObjectiveUIVisibility;
+    }
   }
 
   type AnyEntityStateModel = PlayerStateModel | SiegeStateModel | KinematicStateModel | ResourceNodeStateModel;
@@ -156,6 +164,14 @@ export function defaultBuildingPlotStateModel(): BuildingPlotStateModel {
     attackingFactions: AttackingFactions.None,
     keepLordEntityID: '',
     captureProgress: 0,
+    objective: {
+      bearingDegrees: 0,
+      footprintRadius: 0,
+      indicator: 0,
+      progress: { current: 0, max: 0 },
+      state: ObjectiveState.Unstarted,
+      visibility: ObjectiveUIVisibility.Hidden,
+    }
   }
 }
 
@@ -185,7 +201,7 @@ function onReceiveEntityStateUpdate(state: AnyEntityState) {
   }
 
   if ((state.type as any) === 'plot') {
-    game.trigger('plotUpdate', cloneDeep(state));
+    game.trigger('plotUpdate', state);
   }
 
   if (camelotunchained.game.friendlyTargetState && state.entityID === camelotunchained.game.friendlyTargetState.entityID) {

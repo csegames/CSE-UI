@@ -8,6 +8,7 @@
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { getCompassFacingData } from 'actions/compass';
+import { getViewportSize } from 'hudlib/viewport';
 
 const Container = styled.div`
   position: absolute;
@@ -65,9 +66,12 @@ export class SelfIndicator extends React.Component<Props, State> {
 
   private getPosition = () => {
     const scale = game.map.scale || 0.1;
+    const viewportSize = getViewportSize();
+    const heightScale = viewportSize.height / 1217;
+    const widthScale = viewportSize.width / 1367;
     return {
-      marginTop: -1 * this.state.playerState.position.y * scale + game.map.positionOffset.y,
-      marginLeft: this.state.playerState.position.x * scale + game.map.positionOffset.x,
+      marginTop: (-1 * this.state.playerState.position.y * scale + game.map.positionOffset.y) * heightScale,
+      marginLeft: (this.state.playerState.position.x * scale + game.map.positionOffset.x) * widthScale,
     }
   }
 }

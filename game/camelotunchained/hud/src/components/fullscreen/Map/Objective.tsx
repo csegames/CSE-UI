@@ -6,47 +6,72 @@
  */
 
 import React from 'react';
+import { throttle } from 'lodash';
 import { styled } from '@csegames/linaria/react';
+import { getViewportSize } from 'hudlib/viewport';
 
 const Container = styled.div`
   position: absolute;
   display: flex;
+  align-items: center;
   flex-direction: column;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  pointer-events: none;
+
+  &.isRespawning {
+    animation: pulse 0.5s infinite alternate;
+  }
+
+  @keyframes pulse {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0.6;
+    }
+  }
 `;
 
 const ObjectiveContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 40px;
+  height: 35px;
   width: 30px;
   font-size: 24px;
   font-weight: bold;
   color: white;
   background-color: blue;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 
   &.lordkeep {
-    background-color: #766458;
+    background: radial-gradient(#988575, #766458);
+    border: 1px solid #988575;
+    outline: 1px solid #c7b199;
+    outline-offset: -3px;
   }
 
   &.Arthurian {
     background-color: #e8cf72;
-    border: 1px solid #5f3a27;
+    outline: 1px solid #5f3a27;
+    outline-offset: -1px;
     color: #5f3a27;
   }
 
   &.Viking {
     background-color: #77c8cb;
-    border-color: #192e49;
+    outline: 1px solid #192e49;
+    outline-offset: -1px;
     color: #192e49;
   }
 
   &.TDD {
     background-color: #8fc25b;
-    border-color: #481f0b;
+    outline: 1px solid #481f0b;
+    outline-offset: -1px;
     color: #481f0b;
   }
 `;
@@ -72,22 +97,29 @@ const AttackingFaction = styled.div`
   align-items: center;
   justify-content: center;
   height: 15px;
-  flex: 1;
+  width: 15px;
   font-size: 14px;
   font-weight: bold;
+  font-family: Lato;
 
   &.Arthurian {
-    background-color: #e8cf72;
+    background-color: #e4cf7e;
+    outline: 1px solid #5f3a27;
+    outline-offset: -1px;
     color: #5f3a27;
   }
 
   &.Viking {
     background-color: #77c8cb;
+    outline: 1px solid #192e49;
+    outline-offset: -1px;
     color: #192e49;
   }
 
   &.TDD {
     background-color: #8fc25b;
+    outline: 1px solid #481f0b;
+    outline-offset: -1px;
     color: #481f0b;
   }
 `;
@@ -116,91 +148,168 @@ export interface Props {
 }
 
 export interface State {
-  entityState: BuildingPlotStateModel;
+  entityId: string;
+  faction: Faction;
+  attackingFactions: AttackingFactions;
+  mapSettings: BuildingPlotMapUISettings;
+  position: Vec3f;
 
   // Only for keep lords
+  keepLordEntityId: string;
   isUnderAttack: boolean;
+  isRespawning: boolean;
+  keepLordHealth: CurrentMax;
 }
 
 export class Objective extends React.Component<Props, State> {
-  private entityUpdateEvh: EventHandle;
+  private plotEntityUpdateEvh: EventHandle;
+  private keepLordEntityEvh: EventHandle;
   private isUnderAttackTimeout: number;
   constructor(props: Props) {
     super(props);
+
+    const plotEntityState = (camelotunchained.game.entities[props.entityId] as any) as BuildingPlotStateModel;
+    const keepLordEntityState = plotEntityState ?
+      camelotunchained.game.entities[plotEntityState.keepLordEntityID] as PlayerStateModel : null;
+    // console.log('Yo');
+    // console.log(plotEntityState);
+    // console.log(keepLordEntityState);
+    // console.log(camelotunchained.game.entities);
+    this.handlePlotEntityUpdate = throttle(this.handlePlotEntityUpdate, 500);
     this.state = {
-      entityState: cloneDeep(camelotunchained.game.entities[this.props.entityId]) as any,
+      entityId: plotEntityState.entityID,
+      faction: plotEntityState.faction,
+      attackingFactions: plotEntityState.attackingFactions,
+      mapSettings: plotEntityState.mapSettings,
+      position: plotEntityState.position,
+
+      keepLordEntityId: keepLordEntityState && keepLordEntityState.entityID,
       isUnderAttack: false,
+      isRespawning: false,
+      keepLordHealth: keepLordEntityState && keepLordEntityState.health[0] ?
+        keepLordEntityState.health[0] : { current: 0, max: 100 },
     };
   }
 
   public render() {
-    const { entityState } = this.state;
     const isLordKeep = this.isKeepLord();
     const lordKeepClass = isLordKeep ? 'lordkeep' : '';
-    const captureProgress = entityState.captureProgress ? entityState.captureProgress : 0;
     return (
       <Container style={this.getPosition()}>
-        <ObjectiveContainer className={`${lordKeepClass} ${Faction[entityState.faction]}`}>
-          {isLordKeep ? <span className='icon-category-building'></span> : Faction[entityState.faction][0]}
+        <ObjectiveContainer className={`${lordKeepClass} ${Faction[this.state.faction]}`}>
+          {isLordKeep && this.state.faction === Faction.Factionless ?
+            <span className='icon-category-building'></span> : Faction[this.state.faction][0]}
           {isLordKeep && this.state.isUnderAttack &&
             <UnderAttack className='icon-category-weapons' />
           }
         </ObjectiveContainer>
         {isLordKeep &&
           <BarContainer>
-            <Bar style={{ width: `${100 - (captureProgress * 100)}%` }} />
+            <Bar style={{ width: `${this.state.keepLordHealth.current / this.state.keepLordHealth.max}%` }} />
           </BarContainer>
         }
         <AttackingFactionContainer>
-          {(entityState.attackingFactions & Faction.Arthurian) ?
+          {BitFlag.hasBits(this.state.attackingFactions, AttackingFactions.Arthurian) ?
             <AttackingFaction className='Arthurian'>A</AttackingFaction> : null
           }
-          {(entityState.attackingFactions & Faction.TDD) ?
+          {BitFlag.hasBits(this.state.attackingFactions, AttackingFactions.TDD) ?
             <AttackingFaction className='TDD'>T</AttackingFaction> : null
           }
-          {(entityState.attackingFactions & Faction.Viking) ?
+          {BitFlag.hasBits(this.state.attackingFactions, AttackingFactions.Viking) ?
             <AttackingFaction className='Viking'>V</AttackingFaction> : null
           }
         </AttackingFactionContainer>
       </Container>
     );
   }
-  
+
   public componentDidMount() {
-    if (!this.props.entityId ||
-        !camelotunchained.game.entities[this.props.entityId] ||
-        !camelotunchained.game.entities[this.props.entityId].onUpdated) {
-      return;
-    }
+    this.plotEntityUpdateEvh = game.on('plotUpdate', this.handlePlotEntityUpdate);
 
-    this.entityUpdateEvh = camelotunchained.game.entities[this.props.entityId].onUpdated(this.handleEntityUpdate);
-  }
-
-  public componentDidUpdate(prevProps: Props, prevState: State) {
-    if (this.isKeepLord() && prevState.entityState.captureProgress > this.state.entityState.captureProgress) {
-      this.showIsUnderAttack();
+    if (this.state.keepLordEntityId &&
+        camelotunchained.game.entities[this.state.keepLordEntityId] &&
+        camelotunchained.game.entities[this.state.keepLordEntityId].onUpdated) {
+      this.keepLordEntityEvh =
+        camelotunchained.game.entities[this.state.keepLordEntityId].onUpdated(this.handleKeepLordUpdate);
     }
   }
 
   public componentWillUnmount() {
-    if (this.entityUpdateEvh) {
-      this.entityUpdateEvh.clear();
+    if (this.plotEntityUpdateEvh) {
+      this.plotEntityUpdateEvh.clear();
+    }
+
+    if (this.keepLordEntityEvh) {
+      this.keepLordEntityEvh.clear();
     }
   }
 
-  private isKeepLord = () => {
-    return this.state.entityState.mapSettings === BuildingPlotMapUISettings.KeepLordPlot;
+  private initializeKeepLordEvh = (keepLordEntityId: string) => {
+    if (this.keepLordEntityEvh) {
+      this.keepLordEntityEvh.clear();
+      this.keepLordEntityEvh = null;
+    }
+
+    if (!camelotunchained.game.entities[keepLordEntityId] || !camelotunchained.game.entities[keepLordEntityId].onUpdated) {
+      console.error('No update function attached for keep lord entity');
+      console.log(camelotunchained.game.entities[keepLordEntityId]);
+      return;
+    }
+
+    this.keepLordEntityEvh = camelotunchained.game.entities[keepLordEntityId].onUpdated(this.handleKeepLordUpdate);
   }
 
-  private handleEntityUpdate = () => {
-    this.setState({ entityState: cloneDeep(camelotunchained.game.entities[this.props.entityId]) as any });
+  private isKeepLord = () => {
+    return this.state.mapSettings === BuildingPlotMapUISettings.KeepLordPlot;
+  }
+
+  private handlePlotEntityUpdate = (updatedPlot: BuildingPlotStateModel) => {
+    if (updatedPlot.entityID !== this.state.entityId) {
+      return;
+    }
+
+    if (updatedPlot.keepLordEntityID !== this.state.keepLordEntityId) {
+      // Keep lord entity id changed so initialize event updates for new entity
+      this.initializeKeepLordEvh(updatedPlot.keepLordEntityID);
+    }
+
+    this.setState({
+      faction: updatedPlot.faction,
+      attackingFactions: updatedPlot.attackingFactions,
+      mapSettings: updatedPlot.mapSettings,
+      position: updatedPlot.position,
+      keepLordEntityId: updatedPlot.keepLordEntityID,
+    });
+  }
+
+  private handleKeepLordUpdate = () => {
+    const keepLordEntityState = camelotunchained.game.entities[this.state.keepLordEntityId] as PlayerStateModel;
+    if (!keepLordEntityState) {
+      console.error('Got a keep lord entity state update that did not exist');
+      return;
+    }
+
+    const entityHealth = keepLordEntityState.health && keepLordEntityState.health[0];
+
+    if (entityHealth && entityHealth.current < this.state.keepLordHealth.current) {
+      this.showIsUnderAttack();
+    }
+
+    this.setState({
+      keepLordEntityId: keepLordEntityState.entityID,
+      isRespawning: entityHealth && entityHealth.current === 0,
+      keepLordHealth: entityHealth || { current: 0, max: 100 },
+    });
   }
 
   private getPosition = () => {
     const scale = game.map.scale || 0.1;
+    const viewportSize = getViewportSize();
+    const heightScale = viewportSize.height / 1217;
+    const widthScale = viewportSize.width / 1367;
     return {
-      marginTop: -1 * this.state.entityState.position.y * scale + game.map.positionOffset.y,
-      marginLeft: this.state.entityState.position.x * scale + game.map.positionOffset.x,
+      marginTop: (-1 * this.state.position.y * scale + game.map.positionOffset.y) * heightScale,
+      marginLeft: (this.state.position.x * scale + game.map.positionOffset.x) * widthScale,
     }
   }
 

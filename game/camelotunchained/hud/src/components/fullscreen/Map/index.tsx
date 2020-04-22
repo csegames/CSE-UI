@@ -36,6 +36,15 @@ const MapImage = styled.div`
   background-position: center center;
 `;
 
+const Compass = styled.img`
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+`;
+
 interface InjectedProps {
   warbandContext: WarbandContextState;
 }
@@ -59,6 +68,7 @@ class MapWithInjectedProps extends React.Component<Props & InjectedProps, State>
     return (
       <Container>
         <MapImage style={{ backgroundImage: `url(${this.getMapImage()})` }} />
+        <Compass src='images/map/compass.png' />
         {Object.keys(this.state.entityIdMap).map((entityId) => {
           return <Objective entityId={entityId} />;
         })}
