@@ -27,7 +27,7 @@ export function defaultSubscriptionOpts(): Options<any> {
     protocols: 'graphql-ws',
     startReconnectInterval: 500,
     maxReconnectInterval: 4000,
-    connectTimeout: 5000,
+    connectTimeout: 500,
     initPayload: {
       token: game.accessToken,
       characterID: game.characterID,

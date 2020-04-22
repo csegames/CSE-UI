@@ -210,7 +210,6 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   private subscriptionManager: SubscriptionManager;
   private mockQueryHandler: MockQueryHandler<QueryDataType>;
   private mockSubscriptionHandler: MockSubscriptionHandler<SubscriptionDataType>;
-  private retry: boolean;
 
   constructor(props: GraphQLProps<QueryDataType, SubscriptionDataType>) {
     super(props);
