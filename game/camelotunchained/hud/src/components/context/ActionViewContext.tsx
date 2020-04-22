@@ -1013,7 +1013,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
   }
 
   private removeAnchor = (anchorId: number) => {
-    if (Object.keys(this.state.anchors).length <= 1) {
+    if (Object.keys(this.state.anchors).filter(anchor => !isSystemAnchorId(Number(anchor))).length <= 1) {
       return;
     }
     const anchorsClone = cloneDeep(this.state.anchors);

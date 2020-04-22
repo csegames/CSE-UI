@@ -196,7 +196,7 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
         onSelected: () => actionViewContext.addAnchor(),
       });
 
-      if (Object.keys(actionViewContext.anchors).length > 1) {
+      if (Object.keys(actionViewContext.anchors).filter(anchor => !isSystemAnchorId(Number(anchor))).length > 1) {
         items.push({
           title: 'Delete anchor',
           onSelected: () => actionViewContext.removeAnchor(props.id),
