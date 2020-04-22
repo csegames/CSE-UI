@@ -146,8 +146,6 @@ export class WarbandContextProvider extends React.Component<Props, WarbandContex
     if (!result.data) return data;
 
     const update = result.data.activeGroupUpdates;
-    if (update.groupID !== this.state.activeWarbandID) return;
-
     game.trigger(WarbandContextProvider.updateEventName, update);
 
     switch(update.updateType) {

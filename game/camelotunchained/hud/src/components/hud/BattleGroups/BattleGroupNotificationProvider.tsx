@@ -129,7 +129,6 @@ export class BattleGroupNotificationProvider extends React.Component<Props, Stat
                                       data: any) => {
     if (!result.data) return data;
     const update = result.data.activeGroupUpdates;
-    if (update.groupID !== this.state.activeBattlegroupID) return;
     game.trigger(BattleGroupNotificationProvider.updateEventName, update);
   }
 }
