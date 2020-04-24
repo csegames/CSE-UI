@@ -6,8 +6,6 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { useContext } from 'react';
-import { PlayOnceOnlyAudioContext, PlayOnceOnlyAudioContextState } from 'components/context/AudioContext';
 
 const Container = styled.div`
   text-transform: uppercase;
@@ -66,7 +64,6 @@ const GoText = styled.div`
 `;
 
 export interface Props {
-  audioContext: PlayOnceOnlyAudioContextState;
 }
 
 export interface State {
@@ -78,9 +75,8 @@ export interface State {
 }
 
 export function ScenarioIntro() {
-  const audioContext = useContext(PlayOnceOnlyAudioContext);
   return (
-    <ScenarioIntroWithInjectedContext audioContext={audioContext} />
+    <ScenarioIntroWithInjectedContext />
   );
 }
 
@@ -206,11 +202,6 @@ export class ScenarioIntroWithInjectedContext extends React.Component<Props, Sta
     switch (countdown) {
       case 10: {
         game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_10);
-        if (!this.props.audioContext.hasPlayedInGameMusicAtScenarioStartEver) {
-          console.log("Playing music_in_game at scenario countdown for first and only time");
-          game.playGameSound(SoundEvents.PLAY_MUSIC_IN_GAME);
-          this.props.audioContext.markHasAPlayedInGameMusicAtScenarioStart();
-        }
         break;
       }
 

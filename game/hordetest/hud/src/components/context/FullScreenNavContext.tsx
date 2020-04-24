@@ -21,7 +21,6 @@ export enum Route {
 
 interface ContextState {
   currentRoute: Route;
-  hasPlayedInGameMusic: boolean;
 }
 
 interface ContextFunctions {
@@ -37,7 +36,6 @@ export interface Props {
 const getDefaultFullScreenNavContextState = (): FullScreenNavContextState => ({
   currentRoute: Route.Start,
   navigateTo: () => {},
-  hasPlayedInGameMusic: false
 });
 
 export const FullScreenNavContext = React.createContext(getDefaultFullScreenNavContextState());
@@ -48,7 +46,6 @@ export class FullScreenNavContextProvider extends React.Component<Props, Context
     super(props);
 
     this.state = {
-      hasPlayedInGameMusic: false,
       currentRoute: this.getDefaultRoute(),
     };
   }
@@ -67,7 +64,6 @@ export class FullScreenNavContextProvider extends React.Component<Props, Context
 
   public componentDidMount() {
     this.navigateEVH = game.on('fullscreen-navigate', this.navigateTo);
-    this.tryPlayInGameMusic();
   }
 
   public componentWillUnmount() {
@@ -75,17 +71,7 @@ export class FullScreenNavContextProvider extends React.Component<Props, Context
   }
 
   private navigateTo = (route: Route) => {
-    this.setState({ currentRoute: route }, this.tryPlayInGameMusic);
-  }
-
-  private tryPlayInGameMusic = () => {
-    console.log(`Has Played Music? ${this.state.hasPlayedInGameMusic}`);
-    if (this.state.currentRoute == Route.Start && !this.state.hasPlayedInGameMusic)
-    {
-      console.log("Playing music_in_game for first and only time");
-      game.playGameSound(SoundEvents.PLAY_MUSIC_IN_GAME);
-      this.setState({hasPlayedInGameMusic: true})
-    }
+    this.setState({ currentRoute: route });
   }
 
   private getDefaultRoute = () => {
