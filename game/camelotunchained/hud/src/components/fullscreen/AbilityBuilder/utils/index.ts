@@ -263,21 +263,19 @@ export function checkNetworkRequirements(component: AbilityBuilderQuery.AbilityC
       }
     }
 
-    selectedComponentsList.forEach((selectedComponent) => {
-      if (networkRequirement.requireTag) {
-        if (!selectedComponent.abilityTags.includes(networkRequirement.requireTag.tag)) {
-          // Component with this tag must be selected for this component to be available.
-          meetsRequireTagReq = false;
-        }
+    if (networkRequirement.requireTag) {
+      if (!selectedComponentsList.find(c => c.abilityTags.includes(networkRequirement.requireTag.tag))) {
+        // Component with this tag must be selected for this component to be available.
+        meetsRequireTagReq = false;
       }
+    }
 
-      if (networkRequirement.excludeTag) {
-        if (selectedComponent.abilityTags.includes(networkRequirement.excludeTag.tag)) {
-          // If a component is selected that contains a tag in the exclude list, this component can not be selected.
-          meetsExcludeTagReq = false;
-        }
+    if (networkRequirement.excludeTag) {
+      if (!selectedComponentsList.find(c => c.abilityTags.includes(networkRequirement.excludeTag.tag))) {
+        // If a component is selected that contains a tag in the exclude list, this component can not be selected.
+        meetsExcludeTagReq = false;
       }
-    });
+    }
   });
 
   let isAnExcludeTag: { result: boolean, reason: string, component: AbilityBuilderQuery.AbilityComponents } = {

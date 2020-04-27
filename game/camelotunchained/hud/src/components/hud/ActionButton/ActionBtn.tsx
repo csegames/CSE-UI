@@ -4,12 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
 
 import { InnerRing } from './InnerRing';
 import { OuterRing } from './OuterRing';
+import { FallbackIcon } from '../FallbackIcon';
 import { Tooltip } from 'shared/Tooltip';
 import { showContextMenu } from 'actions/contextMenu';
 import { isSystemAnchorId } from '../../context/ActionViewContext';
@@ -74,15 +75,6 @@ export const Container = styled.div`
   }
 `;
 
-const Icon = styled.img`
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 100%;
-`;
-
 const OverlayShadow = styled.div`
   position: absolute;
   left: 0;
@@ -139,6 +131,15 @@ const TooltipContentContainer = styled.div`
   color: white;
 `;
 
+const IconStyle = css`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+`;
+
 const DefaultTooltipStyles = {
   tooltip: css`
     padding: 2px 5px 5px 5px;
@@ -147,22 +148,6 @@ const DefaultTooltipStyles = {
     max-height: 750px;
   `,
 };
-
-export function AbilityIcon(props: { icon: string }) {
-  const [icon, setIcon] = useState(props.icon);
-
-  useEffect(() => {
-    setIcon(props.icon);
-  }, [props.icon]);
-
-  function onError() {
-    setIcon('images/unknown-item.jpg');
-  }
-
-  return (
-    <Icon src={icon} onError={onError} />
-  );
-}
 
 export interface ActionBtnProps {
   actionId: number;
@@ -234,7 +219,7 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
           style={this.props.additionalStyles}
           className={this.getErrorClassName()}
         >
-          <AbilityIcon icon={abilityIcon} />
+          <FallbackIcon icon={abilityIcon} extraStyles={IconStyle} />
           <OverlayShadow />
           <KeybindInfo>{this.props.keybindName}</KeybindInfo>
           <InnerRing {...this.props} abilityState={abilityState} />

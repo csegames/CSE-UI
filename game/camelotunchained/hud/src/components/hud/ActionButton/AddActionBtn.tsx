@@ -5,10 +5,21 @@
  */
 
 import React, { useContext } from 'react';
+import { css } from '@csegames/linaria';
 import { Ability } from '@csegames/library/lib/camelotunchained/graphql/schema';
 import { DragAndDrop } from 'utils/DragAndDropV2';
 import { ActionViewContext } from '../../context/ActionViewContext';
-import { Container, AbilityIcon } from './ActionBtn';
+import { Container } from './ActionBtn';
+import { FallbackIcon } from '../FallbackIcon';
+
+const IconStyle = css`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+`;
 
 export function AddActionBtn() {
   const actionViewContext = useContext(ActionViewContext);
@@ -34,7 +45,7 @@ export function AddActionBtn() {
       dragRender={() => {
         return (
           <Container {...display} acceptInput={false}>
-            <AbilityIcon icon={abilityInfo.icon} />
+            <FallbackIcon icon={abilityInfo.icon} extraStyles={IconStyle} />
           </Container>
         );
       }}

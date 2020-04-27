@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
+import React from 'react';
 import { isArray } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { css } from '@csegames/linaria';
@@ -12,6 +12,7 @@ import { css } from '@csegames/linaria';
 import ListSelector, { ListItem } from './ListSelector';
 import { Tooltip } from 'shared/Tooltip';
 import { TooltipContent } from './TooltipContent';
+import { FallbackIcon } from 'hud/FallbackIcon';
 import { checkNetworkRequirements } from '../utils';
 import { AbilityBuilderQuery } from 'gql/interfaces';
 import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
@@ -445,7 +446,7 @@ const ItemContainer = styled.div`
   }
 `;
 
-const Item = styled.img`
+const ComponentIcon = css`
   width: 100%;
   height: 98%;
 `;
@@ -662,7 +663,7 @@ export class ComponentSelector extends React.PureComponent<Props, State> {
                             ? '' : 'single-select'} ${selectedType.name} ${isDisabled ? 'disabled' : ''}`}
                           onClick={isDisabled ? () => {} :
                             () => this.props.onSelectedItemChange(this.props.categoryID, item.id)}>
-                          <Item id={item.id} src={item.data.display.iconURL} />
+                          <FallbackIcon id={item.id} icon={item.data.display.iconURL} extraStyles={ComponentIcon} />
                         </ItemContainer>
                       </Tooltip>
                     );
