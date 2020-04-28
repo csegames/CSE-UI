@@ -27,6 +27,7 @@ export interface UnitFrameProps {
 
   // If true, then render as a warband frame
   warband?: boolean;
+  leader?: boolean;
 }
 
 export class UnitFrame extends React.Component<UnitFrameProps> {
@@ -56,7 +57,7 @@ export class UnitFrame extends React.Component<UnitFrameProps> {
   public renderFrame = () => {
     switch (this.props.entityState.type) {
       case 'player': {
-        return <PlayerFrame player={this.props.entityState as PlayerState} target={this.props.target} />;
+        return <PlayerFrame player={this.props.entityState as PlayerState} target={this.props.target} leader={this.props.leader} />;
       }
       default:
         return <NonPlayerFrame entity={this.props.entityState as any} target={this.props.target} />;

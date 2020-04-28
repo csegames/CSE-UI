@@ -9,6 +9,7 @@ import { styled } from '@csegames/linaria/react';
 import { Tooltip } from 'shared/Tooltip';
 import { Faction as GQLFaction, Archetype as GQLArchetype } from 'gql/interfaces';
 import { Statuses } from './Statuses';
+import CUIcon from 'cseshared/components/CUIcon';
 
 const PlayerFrameContainer = styled.div`
   position: relative;
@@ -143,6 +144,7 @@ const Panic = styled.div`
 export interface Props {
   player: PlayerState;
   target?: 'enemy' | 'friendly';
+  leader?: boolean;
 }
 
 export interface State {
@@ -274,7 +276,10 @@ export class PlayerFrame extends React.Component<Props, State> {
               <Image src={imgDir + realmPrefix + archetypePrefix + 'frame.png'} />
             </ArchetypeFrameContainer>
 
-            <Name className='playerFrame_Name'>{player.name}{!player.isAlive ? ' (Corpse)' : ''}</Name>
+            <Name className='playerFrame_Name'>
+              {player.name}{!player.isAlive ? ' (Corpse)' : ''}
+              {this.props.leader && <CUIcon icon={'icon-rank-10'} iconStyle={{color: 'yellow', marginLeft: '5px'}}/> }
+            </Name>
           </MainGrid>
         </Tooltip>
 

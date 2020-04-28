@@ -38,7 +38,7 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
         onClick={this.onClickContainer}
         onMouseDown={this.handleContextMenu}
         className='warbandMemberDisplay_Container'>
-        <UnitFrame entityState={this.props.member as any} warband />
+        <UnitFrame entityState={this.props.member as any} warband leader={this.props.member.isLeader}/>
       </Container>
     );
   }
