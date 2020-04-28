@@ -107,7 +107,7 @@ module.exports = function (baseConfig, argv = { cacheRoot, isProduction }) {
                 {
                   loader: require.resolve('babel-loader'),
                   options: {
-                    cacheDirectory: path.resolve(argv.cacheRoot, 'babel-loader'),
+                    cacheDirectory: path.resolve(argv.cacheRoot, 'babel-loader')
                   },
                 },
                 {

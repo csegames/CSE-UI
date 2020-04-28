@@ -97,7 +97,8 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
     }
 
     const buttonActiveClass = !isDisabled && scenario.isInScenario ? 'active' : '';
-    const buttonDisabledClass = isDisabled ? 'disabled' : '';
+    const buttonDisabledClass = isDisabled || joinMessage === 'Joining ...' || joinMessage === 'Leaving ...' ?
+      'disabled' : '';
     return (
       <ScenarioContainer
         data-id='scenario-container'

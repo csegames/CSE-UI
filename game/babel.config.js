@@ -10,6 +10,7 @@ module.exports = {
         "@babel/plugin-syntax-dynamic-import",
         "@babel/plugin-syntax-jsx",
         ["babel-plugin-emotion", { "sourceMap": true, "autoLabel": false, "hoist": true }],
+        ["@babel/plugin-transform-typescript", { "allowNamespaces": true }],
         "@babel/plugin-transform-react-jsx",
         "babel-plugin-transform-react-display-name",
         "babel-plugin-graphql-tag",
@@ -35,6 +36,7 @@ module.exports = {
         "@babel/plugin-syntax-dynamic-import",
         "@babel/plugin-syntax-jsx",
         ["babel-plugin-emotion", { "sourceMap": true, "autoLabel": true, "hoist": true }],
+        ["@babel/plugin-transform-typescript", { "allowNamespaces": true }],
         "@babel/plugin-transform-react-jsx",
         "babel-plugin-transform-react-display-name",
         "babel-plugin-graphql-tag",
@@ -59,6 +61,7 @@ module.exports = {
       "plugins": [
         "@babel/plugin-syntax-dynamic-import",
         "@babel/plugin-syntax-jsx",
+        ["@babel/plugin-transform-typescript", { "allowNamespaces": true }],
         ["babel-plugin-emotion", { "sourceMap": true, "autoLabel": false, "hoist": true }],
         "@babel/plugin-transform-react-jsx",
         "babel-plugin-transform-react-display-name",

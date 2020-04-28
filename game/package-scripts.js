@@ -34,7 +34,7 @@ module.exports = {
       },
       cuhud: {
         default: {
-          script: "nps report.start && nps build.webpack.cuhud && nps report.success",
+          script: "nps report.start && nps test.cuhud && nps build.webpack.cuhud && nps report.success",
           description: 'Builds the Camelot Unchained HUD UI',
         },
         dev: {

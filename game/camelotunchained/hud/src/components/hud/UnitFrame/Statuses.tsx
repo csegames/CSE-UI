@@ -167,7 +167,7 @@ const Image = styled.img`
 
 export interface Props {
   realmPrefix: string;
-  statuses: ({id: number } & Timing)[];
+  statuses: ({id: any } & Timing)[];
 }
 
 export interface StatusInfo extends StatusDef, Timing {
@@ -230,7 +230,7 @@ export function Statuses(props: Props) {
           description: 'unknown',
           iconURL: 'images/unit-frames/4k/' + props.realmPrefix + 'propic.png',
           warning: `Could not find API information for status with id: ${status.id}.`,
-        } as any);
+        });
         return;
       }
 

@@ -25,6 +25,7 @@
     "webpack": "^4.35.3"
   },
   "dependencies": {
+    "@babel/plugin-transform-typescript": "7.9.0",
     "@csegames/linaria": "^0.1.103"
   }
 }
