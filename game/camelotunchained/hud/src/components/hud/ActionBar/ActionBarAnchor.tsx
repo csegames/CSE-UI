@@ -128,7 +128,7 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
   const faction = FactionExt.abbreviation(camelotunchained.game.selfPlayerState.faction);
   const definition = ui.isUHD() ? 'uhd' : 'hd';
 
-  const inEditMode = actionViewContext.editMode !== EditMode.Disabled;
+  const inEditMode = actionViewContext.editMode !== EditMode.Disabled && actionViewContext.editMode !== EditMode.Changing;
   useEffect(() => {
     if (ref) {
       setBounds(getBoundsWithChildren(ref));
@@ -175,7 +175,11 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
       return [];
     }
 
-    if (actionViewContext.editMode > 0) {
+    if (actionViewContext.editMode === EditMode.Changing) {
+      return [];
+    }
+
+    if (inEditMode) {
 
       if (props.groups.length < MAX_GROUP_COUNT) {
         items.push({

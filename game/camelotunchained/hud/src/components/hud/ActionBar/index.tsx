@@ -55,7 +55,7 @@ const ActionBarAnchorContainer = styled.div`
 // tslint:disable-next-line:function-name
 export function ActionBars() {
   const actionViewContext = useContext(ActionViewContext);
-  const editMode = actionViewContext.editMode !== EditMode.Disabled;
+  const inEditMode = actionViewContext.editMode !== EditMode.Disabled && actionViewContext.editMode !== EditMode.Changing;
 
   useEffect(() => {
     function disableEditMode(e: KeyboardEvent) {
@@ -63,7 +63,7 @@ export function ActionBars() {
         actionViewContext.disableEditMode();
       }
     }
-    if (editMode) {
+    if (inEditMode) {
       window.addEventListener('keydown', disableEditMode);
       return () => window.removeEventListener('keydown', disableEditMode);
     } else {
@@ -74,7 +74,8 @@ export function ActionBars() {
   return (
     <Container id='actionbar-view'>
       <VelocityTransitionGroup enter={{ animation: 'fadeIn' }} leave={{ animation: 'fadeOut' }}>
-        {editMode && <Lock><Icon><i className='far fa-lock-open'></i></Icon></Lock>}
+        {inEditMode && <Lock><Icon><i className='far fa-lock-open'></i></Icon></Lock>}
+        {actionViewContext.editMode === EditMode.Changing && <Lock><Icon><i className='far fa-clock'></i></Icon></Lock>}
       </VelocityTransitionGroup>
       {
         Object.values(actionViewContext.anchors)

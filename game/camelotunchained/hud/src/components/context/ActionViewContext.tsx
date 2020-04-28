@@ -22,6 +22,7 @@ export enum EditMode {
   Disabled,
   ActionEdit,
   SlotEdit,
+  Changing,
 }
 
 interface ContextState {
@@ -422,6 +423,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
   }
 
   private enableActionEditMode = async () => {
+    this.setState({ editMode: EditMode.Changing });
     try {
       const res = await game.actions.enterActionBarEditModeAsync();
       if (res.success) {
@@ -429,10 +431,12 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       }
     } catch(e) {
       console.error('There was an error entering enableActionEditMode');
+      this.setState({ editMode: EditMode.Disabled });
     }
   }
 
   private enableSlotEditMode = async () => {
+    this.setState({ editMode: EditMode.Changing });
     try {
       const res = await game.actions.enterActionBarEditModeAsync();
       if (res.success) {
@@ -440,10 +444,12 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       }
     } catch(e) {
       console.error('There was an error entering enableActionEditMode');
+      this.setState({ editMode: EditMode.Disabled });
     }
   }
 
   private disableEditMode = async () => {
+    this.setState({ editMode: EditMode.Changing });
     try {
       const res = await game.actions.exitActionBarEditModeAsync();
       if (res.success) {
@@ -451,6 +457,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       }
     } catch(e) {
       console.error('There was an error exiting diableEditMode');
+      this.setState({ editMode: EditMode.Disabled });
     }
   }
 
