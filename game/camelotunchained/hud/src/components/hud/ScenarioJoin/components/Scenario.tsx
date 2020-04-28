@@ -72,12 +72,16 @@ interface ScenarioProps {
 
 interface ScenarioState {
   joinMessage: string;
+  mouseOverButton: boolean;
 }
 
 export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> {
   constructor(props: ScenarioProps) {
     super(props);
-    this.state = { joinMessage: null };
+    this.state = {
+      joinMessage: null,
+      mouseOverButton: false,
+    };
   }
   public componentWillReceiveProps(newProps: ScenarioProps) {
     if (this.state.joinMessage && this.props.scenario.isQueued !== newProps.scenario.isQueued) {
@@ -110,13 +114,57 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
         <ScenarioStatus>{status}</ScenarioStatus>
         <Button
           className={`${ScenarioButton} ${buttonActiveClass} ${buttonDisabledClass}`}
-          onClick={(isDisabled || scenario.isInScenario) ?
-            () => {} : (scenario.isQueued ? this.leaveQueue : this.joinQueue)}>
-          {joinMessage ? joinMessage : scenario.isQueued ? 'Leave Queue' :
-            scenario.isInScenario ? 'Playing...' : 'Find Match'}
+          onClick={this.onClick}
+          onMouseOver={this.onMouseOver}
+          onMouseLeave={this.onMouseLeave}>
+          {this.getButtonMessage()}
         </Button>
       </ScenarioContainer>
     );
+  }
+
+  private getButtonMessage = () => {
+    if (this.props.scenario.isInScenario) {
+      if (this.state.mouseOverButton) {
+        return 'Leave';
+      } else {
+        return 'Playing...';
+      }
+    }
+
+    if (this.state.joinMessage) {
+      return this.state.joinMessage;
+    }
+
+    if (this.props.scenario.isQueued) {
+      return 'Leave Queue';
+    }
+
+    return 'Find Match';
+  }
+
+  private onClick = () => {
+    if (this.props.isDisabled) {
+      return;
+    }
+
+    if (this.props.scenario.isInScenario) {
+      this.leaveScenario();
+    }
+
+    if (this.props.scenario.isQueued) {
+      this.leaveQueue();
+    } else {
+      this.joinQueue();
+    }
+  }
+
+  private onMouseOver = () => {
+    this.setState({ mouseOverButton: true });
+  }
+
+  private onMouseLeave = () => {
+    this.setState({ mouseOverButton: false });
   }
 
   private joinQueue = () => {
@@ -135,6 +183,14 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
       this.props.scenario.id,
     );
     setTimeout(pollNow,2000);
+  }
+
+  private leaveScenario = () => {
+    camelotunchained.game.webAPI.ScenarioAPI.RemoveFromScenario(
+      camelotunchained.game.webAPI.defaultConfig,
+      this.props.scenario.id,
+    );
+    setTimeout(pollNow, 2000);
   }
 }
 
