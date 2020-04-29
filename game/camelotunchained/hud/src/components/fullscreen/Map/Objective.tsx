@@ -168,13 +168,9 @@ export class Objective extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const plotEntityState = (camelotunchained.game.entities[props.entityId] as any) as BuildingPlotStateModel;
+    const plotEntityState = cloneDeep((camelotunchained.game.entities[props.entityId] as any) as BuildingPlotStateModel);
     const keepLordEntityState = plotEntityState ?
-      camelotunchained.game.entities[plotEntityState.keepLordEntityID] as PlayerStateModel : null;
-    // console.log('Yo');
-    // console.log(plotEntityState);
-    // console.log(keepLordEntityState);
-    // console.log(camelotunchained.game.entities);
+      cloneDeep(camelotunchained.game.entities[plotEntityState.keepLordEntityID] as PlayerStateModel) : null;
     this.handlePlotEntityUpdate = throttle(this.handlePlotEntityUpdate, 500);
     this.state = {
       entityId: plotEntityState.entityID,
@@ -186,7 +182,7 @@ export class Objective extends React.Component<Props, State> {
       keepLordEntityId: keepLordEntityState && keepLordEntityState.entityID,
       isUnderAttack: false,
       isRespawning: false,
-      keepLordHealth: keepLordEntityState && keepLordEntityState.health[0] ?
+      keepLordHealth: keepLordEntityState && keepLordEntityState.health && keepLordEntityState.health[0] ?
         keepLordEntityState.health[0] : { current: 0, max: 100 },
     };
   }
