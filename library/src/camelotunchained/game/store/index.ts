@@ -102,6 +102,7 @@ declare global {
     getStatusInfo(id: number): any;
     getAbilityInfo(id: number): Ability | null;
     onUpdated(callback: Callback): EventHandle;
+    trySetTemporaryNewAbilityInfo(id: number, ability: Ability);
   }
 
   interface GameInterface {
@@ -117,6 +118,7 @@ interface InternalGameDataStore extends GameDataStore {
 async function fetchData(this: InternalGameDataStore) {
 
   try {
+    console.log("Retrieving gamestore info...");
     const result = await query<QueryResult>({
       query: queryString,
       // operationName: null,
@@ -136,6 +138,7 @@ async function fetchData(this: InternalGameDataStore) {
     });
 
     if (result.ok) {
+      console.log("Got back gamestore info")
       merge(this, result.data);
       game.trigger(this._updatedEvent, this);
     }
@@ -165,6 +168,15 @@ function getAbilityInfo(this: InternalGameDataStore, id: number) {
   return info || null;
 }
 
+function trySetTemporaryNewAbilityInfo(this: InternalGameDataStore, id: number, ability: Ability) {
+  if (!this.myCharacter || !this.myCharacter.abilities) return false;
+  const info = this.myCharacter.abilities.find(skill => skill.id === id);
+  if (!info) {
+    this.myCharacter.abilities.push(ability)
+  }
+  return true;
+}
+
 function onUpdated(this: InternalGameDataStore, callback: Callback): EventHandle {
   return game.on(this._updatedEvent, callback);
 }
@@ -183,6 +195,7 @@ export default function(): GameDataStore {
     game: null,
     getStatusInfo,
     getAbilityInfo,
+    trySetTemporaryNewAbilityInfo,
     onUpdated,
   };
 

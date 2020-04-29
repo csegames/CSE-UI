@@ -86,6 +86,17 @@ export function AbilityCreation(props: Props) {
 
     if (res.ok) {
       setShowModal(true);
+      // Note: We arent awaiting these refetchs cause they cant be a bit slow. Because of this, its possible that
+      // the player will try to add the ability to the ability bar after its been created but before we have the ability
+      // info retrieved. This results in not knowing what icon to display for the ability. To that end, we are placing
+      // the info we have here into the ability info on the character knowing that it will be overridden when
+      // retrieved from the api
+      const abilitiesArray = Object.keys(camelotunchained.game.abilityBarState.abilities);
+      const abilityId = Number.parseInt(abilitiesArray[abilitiesArray.length - 1]) + 1;
+
+      console.log(`Setting temp ability ${abilityId} with ${icon}, ${name}`);
+
+      camelotunchained.game.store.trySetTemporaryNewAbilityInfo(abilityId, {id: abilityId, icon, name, description})
       camelotunchained.game.store.refetch();
       abilityBookContext.refetch();
     } else if (res.data) {
