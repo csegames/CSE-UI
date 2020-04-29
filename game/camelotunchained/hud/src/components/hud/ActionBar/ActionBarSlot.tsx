@@ -352,7 +352,6 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
             <BtnWrapper>
               <ActionBtn
                 actionId={slottedActionID}
-                disableInteractions={true}
                 slotId={this.props.id}
                 keybindName={this.state.boundKeyName}
                 keybindId={this.state.keybindId}
