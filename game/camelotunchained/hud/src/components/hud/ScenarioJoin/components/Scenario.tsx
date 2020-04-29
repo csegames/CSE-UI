@@ -148,11 +148,7 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
       return;
     }
 
-    if (this.props.scenario.isInScenario) {
-      this.leaveScenario();
-    }
-
-    if (this.props.scenario.isQueued) {
+    if (this.props.scenario.isQueued || this.props.scenario.isInScenario) {
       this.leaveQueue();
     } else {
       this.joinQueue();
@@ -183,14 +179,6 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
       this.props.scenario.id,
     );
     setTimeout(pollNow,2000);
-  }
-
-  private leaveScenario = () => {
-    camelotunchained.game.webAPI.ScenarioAPI.RemoveFromScenario(
-      camelotunchained.game.webAPI.defaultConfig,
-      this.props.scenario.id,
-    );
-    setTimeout(pollNow, 2000);
   }
 }
 
