@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import { css } from 'react-emotion';
 import { styled } from '@csegames/linaria/react';
 
-import * as webAPI from '@csegames/library/lib/hordetest/webAPI';
+import * as webAPI from '@csegames/library/lib/camelotunchained/webAPI';
 import { GraphQL, GraphQLData } from '@csegames/library/lib/_baseGame/graphql/react';
 import { GraphQLQuery } from '@csegames/library/lib/_baseGame/graphql/query';
 import { CloseButton } from '../../../../../../shared/components/CloseButton';
