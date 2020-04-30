@@ -10,7 +10,7 @@ import gql from 'graphql-tag';
 import { isEqual } from 'lodash';
 import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
 
-import { WarbandDisplay } from '../WarbandDisplay';
+import { WarbandDisplayComponent } from '../WarbandDisplay';
 import BattleGroupsListView from './BattleGroupListView';
 import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
 import {
@@ -195,7 +195,7 @@ class BattleGroupsList extends React.Component<Props, State> {
   private handleBattlegroupUpdate = (update: BattleGroupUpdateSubscription.ActiveGroupUpdates) => {
     switch (update.updateType) {
       case GroupUpdateType.MemberJoined: {
-        const member = WarbandDisplay.deserializeMember((update as GroupMemberUpdate).memberState);
+        const member = WarbandDisplayComponent.deserializeMember((update as GroupMemberUpdate).memberState);
         this.onMemberJoin(member);
         break;
       }
@@ -204,7 +204,7 @@ class BattleGroupsList extends React.Component<Props, State> {
         break;
       }
       case GroupUpdateType.MemberUpdate: {
-        const member = WarbandDisplay.deserializeMember((update as GroupMemberUpdate).memberState);
+        const member = WarbandDisplayComponent.deserializeMember((update as GroupMemberUpdate).memberState);
         this.onMemberUpdate(member);
         break;
       }
