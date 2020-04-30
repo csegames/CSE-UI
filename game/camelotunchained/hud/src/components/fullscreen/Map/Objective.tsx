@@ -55,21 +55,21 @@ const ObjectiveContainer = styled.div`
   }
 
   &.Arthurian {
-    background-color: #e8cf72;
+    background: radial-gradient(#fae899, #e8cf72);
     outline: 1px solid #5f3a27;
     outline-offset: -1px;
     color: #5f3a27;
   }
 
   &.Viking {
-    background-color: #77c8cb;
+    background: radial-gradient(#bbe9f0, #77c8cb);
     outline: 1px solid #192e49;
     outline-offset: -1px;
     color: #192e49;
   }
 
   &.TDD {
-    background-color: #8fc25b;
+    background: radial-gradient(#c6f0a3, #8fc25b);
     outline: 1px solid #481f0b;
     outline-offset: -1px;
     color: #481f0b;

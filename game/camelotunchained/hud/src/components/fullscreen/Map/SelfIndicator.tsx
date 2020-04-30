@@ -14,15 +14,21 @@ const Container = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const Indicator = styled.div`
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 0 5px 15px 5px;
+  border-width: 0 4px 12px 4px;
   border-color: transparent transparent #ffffff transparent;
 `;
+
+// const Indicator = styled.div`
+//   font-size: 22px;
+//   color: white;
+// `;
 
 export interface Props {
 
@@ -45,7 +51,10 @@ export class SelfIndicator extends React.Component<Props, State> {
     const compassFacingData = getCompassFacingData(this.state.playerState.facing.yaw);
     return (
       <Container style={this.getPosition()}>
-        <Indicator style={{ transform: `rotate(${compassFacingData.facingNorth}deg)` }} />
+        <Indicator
+          // className='fas fa-caret-up'
+          style={{ transform: `rotate(${compassFacingData.facingNorth}deg)` }}
+        />
       </Container>
     );
   }
