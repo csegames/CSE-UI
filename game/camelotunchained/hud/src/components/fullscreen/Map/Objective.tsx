@@ -201,7 +201,7 @@ export class Objective extends React.Component<Props, State> {
         </ObjectiveContainer>
         {isLordKeep &&
           <BarContainer>
-            <Bar style={{ width: `${this.state.keepLordHealth.current / this.state.keepLordHealth.max}%` }} />
+            <Bar style={{ width: `${(this.state.keepLordHealth.current / this.state.keepLordHealth.max) * 100}%` }} />
           </BarContainer>
         }
         <AttackingFactionContainer>
