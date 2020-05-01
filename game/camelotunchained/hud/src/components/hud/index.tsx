@@ -157,7 +157,9 @@ class HUDViewInternal extends React.Component<HUDProps, HUDState> {
           {({ showNewAbilityBar }) => (
             <div className='HUD' style={locked ? {} : { backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
               <SVGBlurHack />
+
               {renderWidgets}
+              
               <ImagePreloader />
               <ZoneNameContainer>
                 <ZoneName />

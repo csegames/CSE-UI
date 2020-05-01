@@ -13,6 +13,9 @@ import {
 const Container = styled.div`
   user-select: none;
   pointer-events: none;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
 `;
 
 export interface Props {
