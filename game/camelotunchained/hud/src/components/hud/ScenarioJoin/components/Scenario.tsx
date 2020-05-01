@@ -174,10 +174,17 @@ export class Scenario extends React.PureComponent<ScenarioProps, ScenarioState> 
 
   private leaveQueue = () => {
     this.setState({ joinMessage: 'Leaving ...' });
-    camelotunchained.game.webAPI.ScenarioAPI.RemoveFromQueue(
-      camelotunchained.game.webAPI.defaultConfig,
-      this.props.scenario.id,
-    );
+    if (this.props.scenario.isInScenario) {
+      camelotunchained.game.webAPI.ScenarioAPI.RemoveFromScenario(
+        camelotunchained.game.webAPI.defaultConfig,
+        this.props.scenario.inScenarioID,
+      );
+    } else {
+      camelotunchained.game.webAPI.ScenarioAPI.RemoveFromQueue(
+        camelotunchained.game.webAPI.defaultConfig,
+        this.props.scenario.id,
+      );
+    }
     setTimeout(pollNow,2000);
   }
 }

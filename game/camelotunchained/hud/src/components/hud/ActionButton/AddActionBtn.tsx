@@ -33,6 +33,17 @@ export function AddActionBtn() {
   const display = ui.isUHD() ? theme.actionButtons.display.uhd : theme.actionButtons.display.hd;
   const abilityInfo: Ability = camelotunchained.game.store.getAbilityInfo(actionViewContext.queuedAbilityId);
 
+  // By making abilityIcon null, we will rely on the default behavior of fallbackicon which will load a
+  // default image if we fail to load the icon (which we will since its null)
+  let abilityIcon: string = null;
+  if (abilityInfo && abilityInfo.icon) {
+    abilityIcon = abilityInfo.icon
+  } else {
+    console.error(`getAbilityInfo returned null abilityInfo using ${actionViewContext.queuedAbilityId}`)  
+  }
+
+  console.log(`Adding action btn from queued id ${actionViewContext.queuedAbilityId}: ${abilityIcon}`)
+
   return (
     <DragAndDrop
       type='drag'
@@ -45,7 +56,7 @@ export function AddActionBtn() {
       dragRender={() => {
         return (
           <Container {...display} acceptInput={false}>
-            <FallbackIcon icon={abilityInfo.icon} extraStyles={IconStyle} />
+            <FallbackIcon icon={abilityIcon} extraStyles={IconStyle} />
           </Container>
         );
       }}
