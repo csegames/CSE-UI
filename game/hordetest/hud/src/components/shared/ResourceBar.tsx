@@ -31,6 +31,17 @@ const BackFill = styled.div`
   z-index: 0;
   background-color: rgba(255, 255, 255, 1);
   transition: width 0.3s;
+  animation: pulse 0.5s infinite;
+  box-shadow: 0px 0px 60px 15px rgba(255,0,0,1);
+
+  @keyframes pulse {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: .6;
+    }
+  }
 `;
 
 const FillContainer = styled.div`
