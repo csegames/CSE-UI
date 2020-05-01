@@ -47,10 +47,14 @@ const localStorageKey = 'cse_hud_layout-state';
 // if the local storage value for the reset code doesn't match this, then force a reset
 const FORCE_RESET_CODE = '0.8.2';
 
-// if the local storage value for the reset code doesn't match this, then force a reset
+// This is considered the current version we expect the state to be in.
+// We set the state to this version when we make a new layout state.
+// If we arent forcing a reset and the version on the state is less than the minimum below, 
+// we will reset state anyway
 const CURRENT_STATE_VERSION: number = 6;
 
-// if the local storage value for the reset code doesn't match this, then force a reset
+// If we arent forcing a reset, then this is the minimum version. If the current state version is less than
+// this minimum, then we consider the state to be too old and we force a reset anyway.
 const MIN_STATE_VERSION_ANCHORED: number = 5;
 
 enum AxisAnchorRelativeTo {
