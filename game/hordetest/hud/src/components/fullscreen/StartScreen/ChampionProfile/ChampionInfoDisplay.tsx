@@ -19,13 +19,13 @@ const Container = styled.div`
 
 const ChampionName = styled.div`
   font-family: Colus;
-  font-size: 23px;
+  font-size: 30px;
   color: white;
 `;
 
 const EquipmentContainer = styled.div`
   max-width: 350px;
-  margin-top: 30px;
+  margin-top: 10px;
 `;
 
 const EquipmentItemsContainer = styled.div`
@@ -131,21 +131,19 @@ export function ChampionInfoDisplay(props: Props) {
   function renderEquipmentOverview() {
     return (
       <>
+        <EquipmentItem skin={null} />
         <EquipmentItem
           skin={selectedSkin}
           onClick={onEditSkinClick}
           onMouseEnter={() => onMouseEnter(selectedSkin)}
           onMouseLeave={onMouseLeave}
         />
-        <EquipmentItem skin={null} />
         <EquipmentItem
           skin={selectedWeapon}
           onClick={onEditWeaponClick}
           onMouseEnter={() => onMouseEnter(selectedSkin)}
           onMouseLeave={onMouseLeave}
         />
-        <EquipmentItem skin={null} />
-        <EquipmentItem skin={null} />
       </>
     );
   }
