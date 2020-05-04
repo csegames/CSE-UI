@@ -167,7 +167,7 @@ const Image = styled.img`
 
 export interface Props {
   realmPrefix: string;
-  statuses: ({id: any } & Timing)[];
+  statuses: (({id: any } & Timing) | StatusInfo)[];
 }
 
 export interface StatusInfo extends StatusDef, Timing {
@@ -222,8 +222,14 @@ export function Statuses(props: Props) {
     const friendlyStatuses: StatusInfo[] = [];
     const hostileStatuses: StatusInfo[] = [];
     props.statuses.forEach((status) => {
+      
       const statusDef: StatusDef = getStatusDef(status.id);
       if (!statusDef) {
+        if ((status as StatusInfo).iconURL) {
+          // TODO: sort these somehow properly into friendly/hostile
+          friendlyStatuses.push({...status});
+          return;
+        }
         hostileStatuses.push({
           ...status,
           name: 'unknown',
