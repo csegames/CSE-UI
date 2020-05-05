@@ -113,7 +113,6 @@ const viewport = getViewportSize();
 export function ActionBarAnchor(props: ActionBarAnchorProps) {
   const actionViewContext = useContext(ActionViewContext);
   const [dragPosition, setDragPosition] = useState(props.positionPercentage);
-  const [isVisible, setIsVisible] = useState(isSystemAnchorId(props.id) && game.webAPIHost ? false : true);
   const [ref, setRef] = useState(null);
   const [bounds, setBounds] = useState({
     width: 0,
@@ -127,6 +126,7 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
   const display = ui.isUHD() ? theme.actionButtons.display.uhd : theme.actionButtons.display.hd;
   const faction = FactionExt.abbreviation(camelotunchained.game.selfPlayerState.faction);
   const definition = ui.isUHD() ? 'uhd' : 'hd';
+  const isVisible = actionViewContext.anchorIdToVisibility[props.id];
 
   const inEditMode = actionViewContext.editMode !== EditMode.Disabled && actionViewContext.editMode !== EditMode.Changing;
   useEffect(() => {
@@ -134,18 +134,6 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
       setBounds(getBoundsWithChildren(ref));
     }
   }, [ref, inEditMode]);
-
-  useEffect(() => {
-    const handle = game.onAnchorVisibilityChanged((anchorId: number, visible: boolean) => {
-      if (anchorId === props.id) {
-        setIsVisible(visible);
-      }
-    });
-
-    return () => {
-      handle.clear();
-    }
-  }, [isVisible]);
 
   function handleMouseDown(e: React.MouseEvent) {
     if (e.button !== 0) return;
