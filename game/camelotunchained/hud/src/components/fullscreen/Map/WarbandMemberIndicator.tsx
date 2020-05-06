@@ -8,11 +8,13 @@
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { getViewportSize } from 'hudlib/viewport';
+import { Tooltip } from 'shared/Tooltip';
 
 const Container = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
+  cursor: pointer;
 `;
 
 const Circle = styled.div`
@@ -26,10 +28,9 @@ const Circle = styled.div`
 
 const DeadX = styled.div`
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   font-size: 14px;
   color: red;
 `;
@@ -41,10 +42,12 @@ export interface Props {
 export class WarbandMemberIndicator extends React.Component<Props> {
   public render() {
     return (
-      <Container style={this.getPosition()}>
-        <Circle />
-        {!this.props.memberState.isAlive && <DeadX className='icon-close' />}
-      </Container>
+      <Tooltip content={this.props.memberState.name}>
+        <Container style={this.getPosition()}>
+          <Circle />
+          {!this.props.memberState.isAlive && <DeadX className='icon-close' />}
+        </Container>
+      </Tooltip>
     );
   }
 

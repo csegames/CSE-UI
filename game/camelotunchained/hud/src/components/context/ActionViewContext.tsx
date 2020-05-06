@@ -32,6 +32,7 @@ interface ContextState {
 
   editMode: EditMode;
   queuedAbilityId: number;
+  anchorIdToVisibility: { [anchorId: number]: boolean };
 }
 
 interface ContextFunctions {
@@ -108,6 +109,7 @@ export function getDefaultActionViewContextState(): ContextState {
     slots: {},
     editMode: EditMode.Disabled,
     queuedAbilityId: null,
+    anchorIdToVisibility: {},
   }
 }
 
@@ -187,6 +189,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     if (!game.actions) return;
     this.fetchAPIAbilitiesAndInitialize();
     camelotunchained.game.abilityBarState.onUpdated(this.handleAbilityBarStateUpdate);
+    game.onAnchorVisibilityChanged(this.handleAnchorVisibilityChanged);
   }
 
   public componentWillUnmount() {
@@ -201,6 +204,12 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     if (this.initializeStateTimeout) {
       window.clearTimeout(this.initializeStateTimeout);
     }
+  }
+
+  private handleAnchorVisibilityChanged = (anchorId: number, visible: boolean) => {
+    const anchorIdToVisibility = { ...this.state.anchorIdToVisibility };
+    anchorIdToVisibility[anchorId] = visible;
+    this.setState({ anchorIdToVisibility });
   }
 
   private fetchAPIAbilitiesAndInitialize = async () => {
@@ -325,7 +334,13 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       this.initializeClient(actionView.anchors, actionView.slots, actionView.actions);
       this.isInitial = false;
     }
-    this.setState({ ...actionView, editMode: EditMode.Disabled });
+
+    const anchorIdToVisibility = { ...this.state.anchorIdToVisibility };
+    Object.keys(actionView.anchors).forEach((anchorId) => {
+      anchorIdToVisibility[anchorId] = this.state.anchorIdToVisibility[anchorId] || (isSystemAnchorId(Number(anchorId)) ? false : true);
+    });
+
+    this.setState({ ...actionView, editMode: EditMode.Disabled, anchorIdToVisibility });
   }
 
   private getAbilityGroupActionView = (abilityIds: number[], actionView?: ContextState, systemAnchorId?: number) => {
@@ -821,9 +836,6 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       },
     };
 
-    console.log('addAndRemoveAction');
-    console.log(from);
-    console.log(target);
     game.actions.clearSlottedAction(from.slotId);
     this.clientAssignSlottedAction(target.slotId, target.anchorId, target.groupId, actionId);
     this.updateLocalStorage(updatedState);

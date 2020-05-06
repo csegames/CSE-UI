@@ -9,6 +9,7 @@ import React from 'react';
 import { throttle } from 'lodash';
 import { styled } from '@csegames/linaria/react';
 import { getViewportSize } from 'hudlib/viewport';
+import { Tooltip } from 'shared/Tooltip';
 
 const Container = styled.div`
   position: absolute;
@@ -159,6 +160,7 @@ export interface Props {
 
 export interface State {
   entityId: string;
+  plotName: string;
   faction: Faction;
   attackingFactions: AttackingFactions;
   mapSettings: BuildingPlotMapUISettings;
@@ -166,6 +168,7 @@ export interface State {
 
   // Only for keep lords
   keepLordEntityId: string;
+  keepLordName: string;
   isUnderAttack: boolean;
   isRespawning: boolean;
   keepLordHealth: CurrentMax;
@@ -184,12 +187,14 @@ export class Objective extends React.Component<Props, State> {
     this.handlePlotEntityUpdate = throttle(this.handlePlotEntityUpdate, 500);
     this.state = {
       entityId: plotEntityState.entityID,
+      plotName: plotEntityState.name,
       faction: plotEntityState.faction,
       attackingFactions: plotEntityState.attackingFactions,
       mapSettings: plotEntityState.mapSettings,
       position: plotEntityState.position,
 
       keepLordEntityId: keepLordEntityState && keepLordEntityState.entityID,
+      keepLordName: keepLordEntityState && keepLordEntityState.name,
       isUnderAttack: false,
       isRespawning: false,
       keepLordHealth: keepLordEntityState && keepLordEntityState.health && keepLordEntityState.health[0] ?
@@ -201,31 +206,33 @@ export class Objective extends React.Component<Props, State> {
     const isLordKeep = this.isKeepLord();
     const lordKeepClass = isLordKeep ? 'lordkeep' : '';
     return (
-      <Container style={this.getPosition()}>
-        <ObjectiveContainer className={`${lordKeepClass} ${Faction[this.state.faction]}`}>
-          {isLordKeep && this.state.faction === Faction.Factionless ?
-            <span className='icon-enemy'></span> : Faction[this.state.faction][0]}
-          {isLordKeep && this.state.isUnderAttack &&
-            <UnderAttack className='icon-category-weapons' />
+      <Tooltip content={isLordKeep ? this.state.keepLordName : this.state.plotName}>
+        <Container style={this.getPosition()}>
+          <ObjectiveContainer className={`${lordKeepClass} ${Faction[this.state.faction]}`}>
+            {isLordKeep && this.state.faction === Faction.Factionless ?
+              <span className='icon-enemy'></span> : Faction[this.state.faction][0]}
+            {isLordKeep && this.state.isUnderAttack &&
+              <UnderAttack className='icon-category-weapons' />
+            }
+          </ObjectiveContainer>
+          {isLordKeep &&
+            <BarContainer>
+              <Bar style={{ width: `${(this.state.keepLordHealth.current / this.state.keepLordHealth.max) * 100}%` }} />
+            </BarContainer>
           }
-        </ObjectiveContainer>
-        {isLordKeep &&
-          <BarContainer>
-            <Bar style={{ width: `${(this.state.keepLordHealth.current / this.state.keepLordHealth.max) * 100}%` }} />
-          </BarContainer>
-        }
-        <AttackingFactionContainer>
-          {BitFlag.hasBits(this.state.attackingFactions, AttackingFactions.Arthurian) ?
-            <AttackingFaction className='Arthurian'>A</AttackingFaction> : null
-          }
-          {BitFlag.hasBits(this.state.attackingFactions, AttackingFactions.TDD) ?
-            <AttackingFaction className='TDD'>T</AttackingFaction> : null
-          }
-          {BitFlag.hasBits(this.state.attackingFactions, AttackingFactions.Viking) ?
-            <AttackingFaction className='Viking'>V</AttackingFaction> : null
-          }
-        </AttackingFactionContainer>
-      </Container>
+          <AttackingFactionContainer>
+            {BitFlag.hasBits(this.state.attackingFactions, AttackingFactions.Arthurian) ?
+              <AttackingFaction className='Arthurian'>A</AttackingFaction> : null
+            }
+            {BitFlag.hasBits(this.state.attackingFactions, AttackingFactions.TDD) ?
+              <AttackingFaction className='TDD'>T</AttackingFaction> : null
+            }
+            {BitFlag.hasBits(this.state.attackingFactions, AttackingFactions.Viking) ?
+              <AttackingFaction className='Viking'>V</AttackingFaction> : null
+            }
+          </AttackingFactionContainer>
+        </Container>
+      </Tooltip>
     );
   }
 
@@ -285,6 +292,7 @@ export class Objective extends React.Component<Props, State> {
       mapSettings: updatedPlot.mapSettings,
       position: updatedPlot.position,
       keepLordEntityId: updatedPlot.keepLordEntityID,
+      plotName: updatedPlot.name,
     });
   }
 
@@ -305,6 +313,7 @@ export class Objective extends React.Component<Props, State> {
       keepLordEntityId: keepLordEntityState.entityID,
       isRespawning: entityHealth && entityHealth.current === 0,
       keepLordHealth: entityHealth || { current: 0, max: 100 },
+      keepLordName: keepLordEntityState.name,
     });
   }
 

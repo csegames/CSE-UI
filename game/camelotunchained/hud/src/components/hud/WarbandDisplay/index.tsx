@@ -4,33 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
+import React, { useContext } from 'react';
 import gql from 'graphql-tag';
-import { isEqual } from 'lodash';
-import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/react';
-import {
-  WarbandDisplayQuery,
-  GroupUpdateType,
-  GroupMemberUpdate,
-  GroupMemberRemovedUpdate,
-  WarbandNotificationSubscription,
-  GroupNotificationType,
-  GroupMemberState,
-  BattleGroupNotificationSubscription,
-  WarbandUpdateSubscription,
-} from 'gql/interfaces';
 
-import { addOrUpdate, removeWhere } from 'hudlib/reduxUtils';
+import { GroupMemberState } from 'gql/interfaces';
 import { WarbandDisplayView } from './WarbandDisplayView';
-import {
-  setActiveWarbandID,
-  getActiveWarbandID,
-  onWarbandMemberUpdate,
-  onWarbandMemberRemoved,
-} from 'actions/warband';
 import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
-import { WarbandContextProvider } from '../../context/WarbandContext';
-import { BattleGroupNotificationProvider } from '../BattleGroups/BattleGroupNotificationProvider';
+import { WarbandContext, WarbandContextState } from '../../context/WarbandContext';
 
 const characterImages = {
   humanM: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_pict-m.png',
@@ -66,80 +46,36 @@ export const query = gql`
   ${GroupMemberFragment}
 `;
 
+interface InjectedProps {
+  warbandContext: WarbandContextState;
+}
+
 export interface Props {
   isMini?: boolean;
 }
 
 export interface State {
   battlegroupID?: string;
-  activeMembers?: GroupMemberState[];
-  permanentMembers?: GroupMemberState[];
-  name?: string;
-  warbandID?: string;
 }
 
-export class WarbandDisplay extends React.Component<Props, State> {
-  private myWarbandGQL: GraphQLResult<WarbandDisplayQuery.Query>;
-  private receivedMemberUpdate: boolean = false;
-  private evh: EventHandle[] = [];
-
-  constructor(props: Props) {
+export class WarbandDisplayComponent extends React.Component<Props & InjectedProps, State> {
+  constructor(props: Props & InjectedProps) {
     super(props);
     this.state = {
-      ...(WarbandDisplay.emptyWarband()),
       battlegroupID: '',
     };
   }
 
   public render() {
     return (
-      <GraphQL 
-        query={{
-          query, 
-          operationName: "warband-display"
-        }} 
-        onQueryResult={this.handleQuery}
-      >
-        {() => <WarbandDisplayView activeMembers={this.state.activeMembers} />}
-      </GraphQL>
+      <WarbandDisplayView activeMembers={Object.values(this.props.warbandContext.memberIdToMemberState)} />
     );
-  }
-
-  public componentDidMount() {
-    this.evh.push(game.on(WarbandContextProvider.notificationEventName, this.handleWarbandNotification));
-    this.evh.push(game.on(WarbandContextProvider.updateEventName, this.handleWarbandUpdate));
-    this.evh.push(game.on(BattleGroupNotificationProvider.notificationEventName, this.handleBattleGroupNotification));
-  }
-
-  public shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>) {
-    if (this.props.isMini !== nextProps.isMini) {
-      return true;
-    }
-
-    if (this.state.warbandID !== nextState.warbandID) {
-      return true;
-    }
-
-    if (this.receivedMemberUpdate) {
-      this.receivedMemberUpdate = false;
-      return true;
-    }
-
-    if (!isEqual(nextState.activeMembers, this.state.activeMembers)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  public componentWillUnmount() {
-    this.evh.forEach(ev => ev.clear());
   }
 
   public static deserializeMember(memberJSON: string): GroupMemberState {
     try {
       const member = JSON.parse(memberJSON);
-      member.avatar = WarbandDisplay.getAvatar(member.gender, member.race);
+      member.avatar = WarbandDisplayComponent.getAvatar(member.gender, member.race);
       return member;
     } catch (e) {
       if  (process.env.IS_DEVELOPMENT) {
@@ -147,83 +83,6 @@ export class WarbandDisplay extends React.Component<Props, State> {
       }
       return;
     }
-  }
-
-  private handleWarbandNotification = (notification: WarbandNotificationSubscription.MyGroupNotifications) => {
-    switch (notification.type) {
-      case GroupNotificationType.Joined: {
-        this.onWarbandJoined(notification.groupID);
-        break;
-      }
-
-      case GroupNotificationType.Removed: {
-        this.onWarbandQuit(notification.groupID);
-        break;
-      }
-    }
-  }
-
-  private handleBattleGroupNotification = (notification: BattleGroupNotificationSubscription.MyGroupNotifications) => {
-    switch (notification.type) {
-      case GroupNotificationType.Joined: {
-        // this.setState({ battlegroupID: notification.groupID });
-        break;
-      }
-
-      case GroupNotificationType.Removed: {
-        // this.setState({ battlegroupID: '' });
-        break;
-      }
-    }
-  }
-
-  private handleQuery = (graphql: GraphQLResult<WarbandDisplayQuery.Query>) => {
-    this.myWarbandGQL = graphql;
-    if (!graphql.data || !graphql.ok) {
-      return graphql;
-    }
-
-    const myBattlegroup = graphql.data.myBattlegroup;
-    if (myBattlegroup && myBattlegroup.battlegroup) {
-      // this.setState({ battlegroupID: myBattlegroup.battlegroup.id });
-    }
-
-    const warband = graphql.data.myActiveWarband;
-    if (warband && warband.info) {
-      this.onInitializeWarband(warband.info.id, warband.members as GroupMemberState[]);
-    }
-  }
-
-  private handleWarbandUpdate = (update: WarbandUpdateSubscription.ActiveGroupUpdates) => {
-    switch (update.updateType) {
-      case GroupUpdateType.MemberJoined: {
-        const member = WarbandDisplay.deserializeMember((update as GroupMemberUpdate).memberState);
-        this.onWarbandMemberJoined(member);
-        break;
-      }
-      case GroupUpdateType.MemberRemoved: {
-        this.onWarbandMemberRemoved((update as GroupMemberRemovedUpdate).characterID);
-        break;
-      }
-      case GroupUpdateType.MemberUpdate: {
-        const member = WarbandDisplay.deserializeMember((update as GroupMemberUpdate).memberState);
-        this.onWarbandMemberUpdated(member);
-        break;
-      }
-    }
-  }
-
-  private static emptyWarband() {
-    return {
-      activeMembers: [] as GroupMemberState[],
-      name: '',
-      permanentMembers: [] as GroupMemberState[],
-      warbandID: '',
-    };
-  }
-
-  private static memberCompare(a: GroupMemberState, b: GroupMemberState): boolean {
-    return a.characterID === b.characterID;
   }
 
   private static getAvatar(gender: Gender, race: Race) {
@@ -247,83 +106,11 @@ export class WarbandDisplay extends React.Component<Props, State> {
       }
     }
   }
+}
 
-  private onInitializeWarband = (id: string, members: GroupMemberState[]) => {
-    this.setState({
-      ...(WarbandDisplay.emptyWarband()),
-      warbandID: id,
-      activeMembers: members,
-    });
-    setActiveWarbandID(id);
-    members.forEach(member => onWarbandMemberUpdate(member));
-  }
-
-  private onWarbandJoined = (id: string) => {
-    this.setState({
-      ...(WarbandDisplay.emptyWarband()),
-      warbandID: id,
-    });
-    setActiveWarbandID(id);
-    this.myWarbandGQL.refetch();
-  }
-
-  private onWarbandQuit = (id: string) => {
-    if (getActiveWarbandID() === id) {
-      setActiveWarbandID(null);
-    }
-
-    this.setState((state) => {
-      if (state.warbandID !== id) return state;
-      return {
-        ...(WarbandDisplay.emptyWarband()),
-      };
-    });
-  }
-
-  private onWarbandMemberJoined = (member: GroupMemberState) => {
-    if (!member) return;
-    onWarbandMemberUpdate(member);
-    this.receivedMemberUpdate = true;
-    this.setState((state) => {
-      return {
-        ...state,
-        activeMembers: addOrUpdate(state.activeMembers, member, WarbandDisplay.memberCompare),
-      };
-    });
-  }
-
-  private onWarbandMemberUpdated = (member: GroupMemberState) => {
-    if (!this.state.warbandID) return;
-    if (!member) return;
-    // if (this.state.activeMembers.findIndex(m => m.characterID == member.characterID) < 0) {
-    //   return; // not in the group.
-    // }
-    onWarbandMemberUpdate(member);
-    this.receivedMemberUpdate = true;
-    this.setState((state) => {
-      return {
-        ...state,
-        activeMembers: addOrUpdate(state.activeMembers, member, WarbandDisplay.memberCompare),
-      };
-    });
-  }
-
-  private onWarbandMemberRemoved = (characterID: string) => {
-    if (characterID === camelotunchained.game.selfPlayerState.characterID) {
-      this.onWarbandQuit(this.state.warbandID);
-      return;
-    }
-    onWarbandMemberRemoved(characterID);
-    this.receivedMemberUpdate = true;
-    this.setState((state) => {
-      const removeResult = removeWhere(state.activeMembers, m => m.characterID === characterID);
-      if (removeResult.removed.length > 0) {
-        game.trigger('systemMessage', `${removeResult.removed[0].name} has left your warband.`);
-      }
-      return {
-        ...state,
-        activeMembers: removeResult.result,
-      };
-    });
-  }
+export function WarbandDisplay(props: Props) {
+  const warbandContext = useContext(WarbandContext);
+  return (
+    <WarbandDisplayComponent warbandContext={warbandContext} {...props} />
+  )
 }

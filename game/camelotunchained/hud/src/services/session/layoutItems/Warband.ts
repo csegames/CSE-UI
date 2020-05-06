@@ -18,8 +18,12 @@ export default {
       offset: 125,
     },
     size: {
-      width: 150,
-      height: 500,
+      width: 350,
+      height: 425,
+    },
+    sizeUHD: {
+      width: 700,
+      height: 850,
     },
     scale: 1,
     opacity: 1,

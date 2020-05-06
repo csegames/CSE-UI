@@ -16,7 +16,7 @@ import { GraphQL, GraphQLResult } from '@csegames/library/lib/_baseGame/graphql/
 import { BattleGroupNotificationProvider } from '../BattleGroups/BattleGroupNotificationProvider';
 import { WarbandContextProvider } from '../../context/WarbandContext';
 import WatchListItem from './WatchListItem';
-import { WarbandDisplay } from '../WarbandDisplay';
+import { WarbandDisplayComponent } from '../WarbandDisplay';
 import { removeWhere } from 'hudlib/reduxUtils';
 import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
 import {
@@ -319,7 +319,7 @@ class BattleGroupWatchList extends React.Component<Props, State> {
   private handleWarbandUpdate = (update: WarbandUpdateSubscription.ActiveGroupUpdates) => {
     switch (update.updateType) {
       case GroupUpdateType.MemberJoined: {
-        const member = WarbandDisplay.deserializeMember((update as GroupMemberUpdate).memberState);
+        const member = WarbandDisplayComponent.deserializeMember((update as GroupMemberUpdate).memberState);
         this.onWarbandMemberJoined(member);
         break;
       }
@@ -328,7 +328,7 @@ class BattleGroupWatchList extends React.Component<Props, State> {
         break;
       }
       case GroupUpdateType.MemberUpdate: {
-        const member = WarbandDisplay.deserializeMember((update as GroupMemberUpdate).memberState);
+        const member = WarbandDisplayComponent.deserializeMember((update as GroupMemberUpdate).memberState);
         this.onWarbandMemberUpdated(member);
         break;
       }

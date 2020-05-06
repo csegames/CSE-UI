@@ -11,8 +11,11 @@ import { UnitFrame } from '../UnitFrame';
 import { showFriendlyTargetContextMenu } from 'actions/contextMenu';
 
 const Container = styled.div`
+  position:relative;
   margin-bottom: 10px;
   pointer-events: all;
+  flex: 0 1 auto;
+  min-height:0px;
 `;
 
 export interface WarbandMemberDisplayProps {
@@ -33,13 +36,17 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
   public render() {
     if (!this.props.member) return null;
     return (
-      <Container
-        key={this.props.member.entityID}
-        onClick={this.onClickContainer}
-        onMouseDown={this.handleContextMenu}
-        className='warbandMemberDisplay_Container'>
-        <UnitFrame entityState={this.props.member as any} warband leader={this.props.member.isLeader}/>
-      </Container>
+      <UIContext.Consumer>
+        {uiContext => 
+          <Container style={{height: uiContext.isUHD() ? "101px" : "51px"}}
+            key={this.props.member.entityID}
+            onClick={this.onClickContainer}
+            onMouseDown={this.handleContextMenu}
+            className='warbandMemberDisplay_Container'>
+            <UnitFrame entityState={this.props.member as any} warband leader={this.props.member.isLeader} />
+          </Container>
+        }
+      </UIContext.Consumer>
     );
   }
 

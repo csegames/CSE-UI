@@ -13,20 +13,32 @@ import {
   WarbandNotificationSubscription,
   GroupNotificationType,
   WarbandUpdateSubscription,
-  WarbandIDQuery,
+  WarbandContextQuery,
   GroupUpdateType,
   GroupMemberUpdate,
   GroupMemberRemovedUpdate,
 } from 'gql/interfaces';
+import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
+import {
+  setActiveWarbandID,
+  onWarbandMemberUpdate,
+  onWarbandMemberRemoved,
+} from 'actions/warband';
 
 const warbandQuery = gql`
-  query WarbandIDQuery {
+  query WarbandContextQuery {
     myActiveWarband {
       info {
         id
       }
+
+      members {
+        ...GroupMember
+      }
     }
   }
+
+  ${GroupMemberFragment}
 `;
 
 const notificationSubscription = gql`
@@ -77,6 +89,7 @@ export const WarbandContext = React.createContext(getDefaultWarbandContextState(
 export class WarbandContextProvider extends React.Component<Props, WarbandContextState> {
   public static notificationEventName = 'warband-notification';
   public static updateEventName = 'warband-update';
+  private graphql: GraphQLResult<WarbandContextQuery.Query>;
   constructor(props: Props) {
     super(props);
     this.state = getDefaultWarbandContextState();
@@ -111,11 +124,19 @@ export class WarbandContextProvider extends React.Component<Props, WarbandContex
     );
   }
 
-  private handleWarbandQueryResult = (graphql: GraphQLResult<WarbandIDQuery.Query>) => {
+  private handleWarbandQueryResult = (graphql: GraphQLResult<WarbandContextQuery.Query>) => {
+    this.graphql = graphql;
     if (!graphql.data || !graphql.data.myActiveWarband || !graphql.data.myActiveWarband.info) return graphql;
 
-    this.setState({ activeWarbandID: graphql.data.myActiveWarband.info.id });
-  }
+    const memberIdToMemberState = {};
+    graphql.data.myActiveWarband.members.forEach((member) => {
+      memberIdToMemberState[member.characterID] = member;
+      onWarbandMemberUpdate(member as GroupMemberState);
+    });
+
+    setActiveWarbandID(graphql.data.myActiveWarband.info.id);
+    this.setState({ activeWarbandID: graphql.data.myActiveWarband.info.id, memberIdToMemberState });
+ }
 
   private handleNotificationSubscription = (result: SubscriptionResult<WarbandNotificationSubscription.Subscription>,
                                             data: any) => {
@@ -126,11 +147,19 @@ export class WarbandContextProvider extends React.Component<Props, WarbandContex
       switch (notification.type) {
         case GroupNotificationType.Removed: {
           game.trigger('chat-leave-room', notification.groupID);
-          this.setState({ activeWarbandID: '' });
+
+          Object.keys(this.state.memberIdToMemberState).forEach((memberId) => {
+            onWarbandMemberRemoved(memberId);
+          });
+
+          this.setState({ activeWarbandID: '', memberIdToMemberState: {} });
+          setActiveWarbandID(null);
           break;
         }
         case GroupNotificationType.Joined: {
           this.setState({ activeWarbandID: notification.groupID });
+          setActiveWarbandID(notification.groupID);
+          this.graphql.refetch();
           break;
         }
       }
@@ -149,11 +178,14 @@ export class WarbandContextProvider extends React.Component<Props, WarbandContex
     game.trigger(WarbandContextProvider.updateEventName, update);
 
     switch(update.updateType) {
-      case GroupUpdateType.MemberUpdate: {
+      case GroupUpdateType.MemberUpdate:
+      case GroupUpdateType.MemberJoined: {
         const memberIdToMemberState = { ...this.state.memberIdToMemberState };
         try {
-          const member = JSON.parse((update as GroupMemberUpdate).memberState);
-          memberIdToMemberState[member.id] = member;
+          const member: GroupMemberState = JSON.parse((update as GroupMemberUpdate).memberState);
+          memberIdToMemberState[member.characterID] = member;
+          onWarbandMemberUpdate(member);
+          setActiveWarbandID(update.groupID);
           this.setState({ memberIdToMemberState });
         } catch(e) {
           console.error('There was an error updating warband member');
@@ -163,7 +195,9 @@ export class WarbandContextProvider extends React.Component<Props, WarbandContex
 
       case GroupUpdateType.MemberRemoved: {
         const memberIdToMemberState = { ...this.state.memberIdToMemberState };
-        delete memberIdToMemberState[(update as GroupMemberRemovedUpdate).characterID];
+        const characterId = (update as GroupMemberRemovedUpdate).characterID;
+        delete memberIdToMemberState[characterId];
+        onWarbandMemberRemoved(characterId);
         this.setState({ memberIdToMemberState });
         break;
       }
