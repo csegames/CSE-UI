@@ -21,7 +21,7 @@ const Indicator = styled.div`
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 0 4px 12px 4px;
+  border-width: 0 6px 14px 6px;
   border-color: transparent transparent #ffffff transparent;
 `;
 

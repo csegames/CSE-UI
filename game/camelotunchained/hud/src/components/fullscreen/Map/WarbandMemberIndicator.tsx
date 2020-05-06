@@ -21,6 +21,7 @@ const Circle = styled.div`
   height: 10px;
   border-radius: 50%;
   background-color: white;
+  box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.5);
 `;
 
 const DeadX = styled.div`

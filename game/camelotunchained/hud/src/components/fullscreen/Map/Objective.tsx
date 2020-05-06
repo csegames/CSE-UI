@@ -40,52 +40,62 @@ const ObjectiveContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 35px;
-  width: 30px;
+  width: 35px;
   font-size: 24px;
   font-weight: bold;
   color: white;
   background-color: blue;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.8), inset 0px 0px 10px 3px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 50px;
 
   &.lordkeep {
-    background: radial-gradient(#988575, #766458);
-    border: 1px solid #988575;
-    outline: 1px solid #c7b199;
-    outline-offset: -3px;
+    background: radial-gradient(#862e3e, #231d1d);
+    border: 1px solid #862e3e;
+    outline: 2px solid rgba(0, 0, 0, 0.4);
+    outline-offset: -4px;
+    color: #d24d64;
+    height: 40px;
+    width: 30px;
+    border-radius: 0px;
   }
 
   &.Arthurian {
     background: radial-gradient(#fae899, #e8cf72);
-    outline: 1px solid #5f3a27;
-    outline-offset: -1px;
+    border: 1px solid #fae899;
+    outline-offset: -4px;
     color: #5f3a27;
   }
 
   &.Viking {
     background: radial-gradient(#bbe9f0, #77c8cb);
-    outline: 1px solid #192e49;
-    outline-offset: -1px;
+    border: 1px solid #bbe9f0;
+    outline-offset: -4px;
     color: #192e49;
   }
 
   &.TDD {
     background: radial-gradient(#c6f0a3, #8fc25b);
-    outline: 1px solid #481f0b;
-    outline-offset: -1px;
+    border: 1px solid #c6f0a3;
+    outline: 2px solid rgba(0, 0, 0, 0.4);
+    outline-offset: -4px;
     color: #481f0b;
   }
 `;
 
 const BarContainer = styled.div`
-  position: relative;
-  height: 8px;
+  position: absolute;
+  bottom: -1px;
+  height: 6px;
   width: 30px;
   background-color: rgba(0, 0, 0, 0.8);
+  padding: 2px;
 `;
 
 const Bar = styled.div`
   height: 100%;
   background: linear-gradient(to right, #c12032, #ed6e45);
+  box-shadow: inset 0px 0px 2px 1px rgba(255, 240, 0, 0.5);
 `;
 
 const AttackingFactionContainer = styled.div`
@@ -105,21 +115,21 @@ const AttackingFaction = styled.div`
   &.Arthurian {
     background-color: #e4cf7e;
     outline: 1px solid #5f3a27;
-    outline-offset: -1px;
+    outline-offset: -2px;
     color: #5f3a27;
   }
 
   &.Viking {
     background-color: #77c8cb;
     outline: 1px solid #192e49;
-    outline-offset: -1px;
+    outline-offset: -2px;
     color: #192e49;
   }
 
   &.TDD {
     background-color: #8fc25b;
     outline: 1px solid #481f0b;
-    outline-offset: -1px;
+    outline-offset: -2px;
     color: #481f0b;
   }
 `;
@@ -194,7 +204,7 @@ export class Objective extends React.Component<Props, State> {
       <Container style={this.getPosition()}>
         <ObjectiveContainer className={`${lordKeepClass} ${Faction[this.state.faction]}`}>
           {isLordKeep && this.state.faction === Faction.Factionless ?
-            <span className='icon-category-building'></span> : Faction[this.state.faction][0]}
+            <span className='icon-enemy'></span> : Faction[this.state.faction][0]}
           {isLordKeep && this.state.isUnderAttack &&
             <UnderAttack className='icon-category-weapons' />
           }

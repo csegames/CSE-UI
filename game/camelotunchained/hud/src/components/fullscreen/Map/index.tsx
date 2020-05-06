@@ -40,8 +40,8 @@ const Compass = styled.img`
   position: absolute;
   bottom: 10px;
   left: 10px;
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
   object-fit: contain;
 `;
 
