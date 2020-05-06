@@ -6,10 +6,11 @@
 
 import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
-import WarbandMemberDisplay from './WarbandMemberDisplay';
+import { WarbandMemberDisplay } from './WarbandMemberDisplay';
 import {
   GroupMemberState,
 } from 'gql/interfaces';
+
 const Container = styled.div`
   user-select: none;
   pointer-events: none;

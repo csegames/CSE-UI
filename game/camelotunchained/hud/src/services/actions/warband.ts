@@ -51,7 +51,7 @@ export function inviteToWarbandByName(characterName: string, warbandID: string) 
 }
 
 async function kickFromWarband(targetEntityID: string, targetCharacterID: string,
-  targetName: string, warbandID: string) {
+  targetName: string, warbandID: string, refetch?: () => void) {
   try {
     const result = await GroupsAPI.KickV1(
       defaultConfig,
@@ -63,6 +63,9 @@ async function kickFromWarband(targetEntityID: string, targetCharacterID: string
 
     if (result.ok) {
       sendSystemMessage(`Kicked!`);
+      if (refetch) {
+        refetch();
+      }
       return;
     }
 
@@ -83,16 +86,19 @@ export function kickFromWarbandByCharacterID(characterID: string, warbandID: str
   return kickFromWarband('', characterID, '', warbandID);
 }
 
-export function kickFromWarbandByEntityID(entityID: string, warbandID: string) {
-  return kickFromWarband(entityID, '', '', warbandID);
+export function kickFromWarbandByEntityID(entityID: string, warbandID: string, refetch: () => void) {
+  return kickFromWarband(entityID, '', '', warbandID, refetch);
 }
 
-export async function quitWarband() {
+export async function quitWarband(warbandId: string, refetch: () => void) {
   try {
-    const result = await GroupsAPI.QuitV1(defaultConfig, getStateObject().id);
+    const result = await GroupsAPI.QuitV1(defaultConfig, warbandId);
 
     if (result.ok) {
       sendSystemMessage(`Warband quit!`);
+      if (refetch) {
+        refetch();
+      }
       return;
     }
 
@@ -106,6 +112,8 @@ export async function quitWarband() {
 }
 
 
+// !!!! DEPRECATED !!!!
+// Last thing that uses this is the BattlegroupWatchList. Everything else should be using the WarbandContext now.
 // WARBAND STATE MANAGEMENT
 
 function getStateObject(): WarbandState {
@@ -128,6 +136,7 @@ export function getActiveWarbandID() {
 }
 
 export function getWarbandMemberByCharacterID(characterID: string) {
+  console.log(getStateObject());
   return getStateObject().membersMap[characterID];
 }
 
@@ -150,10 +159,7 @@ export function setActiveWarbandID(id: string) {
 }
 
 export function onWarbandMemberUpdate(member: GroupMemberState) {
-  getStateObject().membersMap[member.characterID] = member;
-  if (member.entityID) {
-    getStateObject().membersEntityIDMap[member.entityID] = member;
-  }
+  
 }
 
 export function onWarbandMemberRemoved(characterID: string) {
@@ -165,10 +171,12 @@ export function onWarbandMemberRemoved(characterID: string) {
 }
 
 export function isCharacterIDInWarband(characterID: string) {
+  console.log('isCharacterIDInWarband');
   return !!getStateObject().membersMap[characterID];
 }
 
 export function isEntityIDInWarband(entityID: string) {
   console.log(getStateObject());
+  console.log(getStateObject().membersEntityIDMap);
   return !!getStateObject().membersEntityIDMap[entityID];
 }

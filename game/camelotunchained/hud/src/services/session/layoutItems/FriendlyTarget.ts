@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import { LayoutMode } from 'utils/HUDDrag';
-import FriendlyTargetHealth from 'hud/FriendlyTargetHealth';
+import { FriendlyTargetHealth } from 'hud/FriendlyTargetHealth';
 import HUDZOrder from '../HUDZOrder';
 
 export default {

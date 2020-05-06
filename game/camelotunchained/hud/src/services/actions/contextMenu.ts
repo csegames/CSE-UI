@@ -8,12 +8,8 @@ import { getPlayerEntityID } from './player';
 
 import {
   inviteToWarbandByName,
-  hasActiveWarband,
-  isEntityIDInWarband,
-  getActiveWarbandID,
   quitWarband,
   kickFromWarbandByEntityID,
-  getWarbandMemberByCharacterID,
 } from './warband';
 import { inviteToTrade } from './trade';
 import {
@@ -25,6 +21,7 @@ import {
   kickFromBattlegroupByEntityID,
   quitBattlegroup,
 } from './battlegroups';
+import { WarbandContextState } from 'components/context/WarbandContext';
 
 // BASIC MANAGEMENT
 
@@ -80,22 +77,24 @@ export function offHideContextMenu(handle: number) {
 
 export function showFriendlyTargetContextMenu(
   state: Entity,
+  warbandContext: WarbandContextState,
   event: React.MouseEvent,
 ) {
   // is friendly target self?
   const id = (state as GroupMemberState).entityID;
   if (getPlayerEntityID() === id) {
-    showSelfContextMenu(state, event);
+    showSelfContextMenu(state, warbandContext, event);
   } else {
-    showContextMenu(getFriendlyTargetMenuItems(state), event);
+    showContextMenu(getFriendlyTargetMenuItems(state, warbandContext), event);
   }
 }
 
 export function showSelfContextMenu(
   state: Entity,
+  warbandContext: WarbandContextState,
   event: React.MouseEvent,
 ) {
-  showContextMenu(getSelfMenuItems(state), event);
+  showContextMenu(getSelfMenuItems(state, warbandContext), event);
 }
 
 export function showEnemyTargetContextMenu(
@@ -109,14 +108,16 @@ export function showEnemyTargetContextMenu(
 
 export function getSelfMenuItems(
   state: Entity,
+  warbandContext: WarbandContextState,
 ) {
   const items: MenuItem[] = [
   ];
 
-  if (hasActiveWarband()) {
+  const hasActiveWarband = warbandContext.activeWarbandID;
+  if (hasActiveWarband) {
     items.push({
       title: 'Quit Warband',
-      onSelected: quitWarband,
+      onSelected: () => quitWarband(warbandContext.activeWarbandID, warbandContext.refetch),
     });
   }
 
@@ -132,42 +133,46 @@ export function getSelfMenuItems(
 
 export function getFriendlyTargetMenuItems(
   state: Entity,
+  warbandContext: WarbandContextState,
 ) {
   if ((state as PlayerStateModel).type !== 'player') {
     return [];
   }
 
   // PLAYER actions
-  const id = (state as any).entityID;
+  const entityId = (state as PlayerStateModel).entityID;
   const items: MenuItem[] = [
-    { title: 'Invite to Trade', onSelected: () => inviteToTrade(id) },
+    { title: 'Invite to Trade', onSelected: () => inviteToTrade(entityId) },
   ];
 
-  const myWarbandInfo = getWarbandMemberByCharacterID(camelotunchained.game.selfPlayerState.characterID);
+  const myWarbandInfo = warbandContext.memberCharacterIdToMemberState[camelotunchained.game.selfPlayerState.characterID];
+  const targetCharacterId = warbandContext.memberEntityIdToCharacterId[entityId];
+  const targetWarbandInfo = targetCharacterId ? warbandContext.memberCharacterIdToMemberState[targetCharacterId] : null;
+
   const myBattlegroupInfo = getBattlegroupMemberByCharacterID(camelotunchained.game.selfPlayerState.characterID);
-  if (hasActiveWarband() && !isEntityIDInWarband(id) && myWarbandInfo && myWarbandInfo.canInvite) {
+  if (warbandContext.activeWarbandID && !targetWarbandInfo && myWarbandInfo && myWarbandInfo.canInvite) {
     items.push({
       title: 'Invite to Warband',
-      onSelected: () => inviteToWarbandByName(state.name, getActiveWarbandID()),
+      onSelected: () => inviteToWarbandByName(state.name, warbandContext.activeWarbandID),
     });
   }
 
-  if (hasActiveWarband() && isEntityIDInWarband(id) && myWarbandInfo && myWarbandInfo.canKick) {
+  if (warbandContext.activeWarbandID && targetWarbandInfo && myWarbandInfo && myWarbandInfo.canKick) {
     items.push({
       title: 'Kick from Warband',
-      onSelected: () => kickFromWarbandByEntityID(id, getActiveWarbandID()),
+      onSelected: () => kickFromWarbandByEntityID(entityId, warbandContext.activeWarbandID, warbandContext.refetch),
     });
 
   }
 
-  if (!hasActiveWarband()) {
+  if (!warbandContext.activeWarbandID) {
     items.push({
       title: 'Invite to Warband',
       onSelected: () => inviteToWarbandByName(state.name, ''),
     });
   }
 
-  if (!hasActiveBattlegroup() || (!isEntityIDInBattlegroup(id) && myBattlegroupInfo && myBattlegroupInfo.canInvite)) {
+  if (!hasActiveBattlegroup() || (!isEntityIDInBattlegroup(entityId) && myBattlegroupInfo && myBattlegroupInfo.canInvite)) {
     // Disabled for now
 
     // items.push({
@@ -176,10 +181,10 @@ export function getFriendlyTargetMenuItems(
     // });
   }
 
-  if (hasActiveBattlegroup() && isEntityIDInBattlegroup(id) && myBattlegroupInfo && myBattlegroupInfo.canKick) {
+  if (hasActiveBattlegroup() && isEntityIDInBattlegroup(entityId) && myBattlegroupInfo && myBattlegroupInfo.canKick) {
     items.push({
       title: 'Kick from Battlegroup',
-      onSelected: () => kickFromBattlegroupByEntityID(id, getActiveBattlegroupID()),
+      onSelected: () => kickFromBattlegroupByEntityID(entityId, getActiveBattlegroupID()),
     });
   }
 

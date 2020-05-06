@@ -4,9 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 
+import { WarbandContext, WarbandContextState } from 'components/context/WarbandContext';
 import { UnitFrame } from '../UnitFrame';
 import { showFriendlyTargetContextMenu } from 'actions/contextMenu';
 
@@ -18,6 +19,10 @@ const Container = styled.div`
   min-height:0px;
 `;
 
+interface InjectedProps {
+  warbandContext: WarbandContextState;
+}
+
 export interface WarbandMemberDisplayProps {
   key: string | number;
   member: GroupMemberState;
@@ -27,9 +32,8 @@ export interface WarbandMemberDisplayProps {
 export interface WarbandMemberDisplayState {
 }
 
-class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, WarbandMemberDisplayState> {
-
-  constructor(props: WarbandMemberDisplayProps) {
+class WarbandMemberDisplayWithInjectedContext extends React.Component<WarbandMemberDisplayProps & InjectedProps, WarbandMemberDisplayState> {
+  constructor(props: WarbandMemberDisplayProps & InjectedProps) {
     super(props);
   }
 
@@ -60,9 +64,15 @@ class WarbandMemberDisplay extends React.Component<WarbandMemberDisplayProps, Wa
 
   private handleContextMenu = (event: React.MouseEvent) => {
     if (event.button === 2) {
-      showFriendlyTargetContextMenu(this.props.member, event);
+      showFriendlyTargetContextMenu(this.props.member, this.props.warbandContext, event);
     }
   }
 }
 
-export default WarbandMemberDisplay;
+export function WarbandMemberDisplay(props: WarbandMemberDisplayProps) {
+  const warbandContext = useContext(WarbandContext);
+
+  return (
+    <WarbandMemberDisplayWithInjectedContext {...props} warbandContext={warbandContext} />
+  );
+}

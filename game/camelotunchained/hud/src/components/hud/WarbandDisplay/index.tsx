@@ -5,11 +5,9 @@
  */
 
 import React, { useContext } from 'react';
-import gql from 'graphql-tag';
 
 import { GroupMemberState } from 'gql/interfaces';
 import { WarbandDisplayView } from './WarbandDisplayView';
-import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
 import { WarbandContext, WarbandContextState } from '../../context/WarbandContext';
 
 const characterImages = {
@@ -26,25 +24,6 @@ const characterImages = {
   humanmaleaF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-art.png',
   humanmaletF: 'https://s3.amazonaws.com/camelot-unchained/character-creation/character/icons/icon_humans-f-tdd.png',
 };
-
-export const query = gql`
-  query WarbandDisplayQuery {
-    myBattlegroup {
-      battlegroup {
-        id
-      }
-    }
-    myActiveWarband {
-      info {
-        id
-      }
-      members {
-        ...GroupMember
-      }
-    }
-  }
-  ${GroupMemberFragment}
-`;
 
 interface InjectedProps {
   warbandContext: WarbandContextState;
@@ -68,7 +47,7 @@ export class WarbandDisplayComponent extends React.Component<Props & InjectedPro
 
   public render() {
     return (
-      <WarbandDisplayView activeMembers={Object.values(this.props.warbandContext.memberIdToMemberState)} />
+      <WarbandDisplayView activeMembers={Object.values(this.props.warbandContext.memberCharacterIdToMemberState)} />
     );
   }
 

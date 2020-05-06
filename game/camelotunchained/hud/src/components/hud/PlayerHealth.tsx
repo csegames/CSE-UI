@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
+import React, { useContext } from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 
@@ -12,12 +12,17 @@ import { isEqualPlayerState } from '../../lib/playerStateEqual';
 import { UnitFrame } from './UnitFrame';
 import { showSelfContextMenu } from 'actions/contextMenu';
 import { setPlayerState } from 'actions/player';
+import { WarbandContext, WarbandContextState } from 'components/context/WarbandContext';
 
 const PlayerHealthContainer = styled.div`
   pointer-events: auto;
   width: 100%;
   height: 100%;
 `;
+
+interface InjectedProps {
+  warbandContext: WarbandContextState;
+}
 
 export interface PlayerHealthProps {
 }
@@ -26,9 +31,9 @@ export interface PlayerHealthState {
   playerState: ImmutableSelfPlayerState;
 }
 
-class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
+class PlayerHealthWithInjectedContext extends React.Component<PlayerHealthProps & InjectedProps, PlayerHealthState> {
   private playerUpdateHandle: EventHandle;
-  constructor(props: PlayerHealthProps) {
+  constructor(props: PlayerHealthProps & InjectedProps) {
     super(props);
     this.state = {
       playerState: cloneDeep(camelotunchained.game.selfPlayerState),
@@ -70,9 +75,14 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
 
   private handleContextMenu = (event: React.MouseEvent) => {
     if (event.button === 2) {
-      showSelfContextMenu(this.state.playerState, event);
+      showSelfContextMenu(this.state.playerState, this.props.warbandContext, event);
     }
   }
 }
 
-export default PlayerHealth;
+export function PlayerHealth(props: PlayerHealthProps) {
+  const warbandContext = useContext(WarbandContext);
+  return (
+    <PlayerHealthWithInjectedContext {...props} warbandContext={warbandContext} />
+  );
+}

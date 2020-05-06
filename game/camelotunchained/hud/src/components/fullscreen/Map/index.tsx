@@ -73,7 +73,7 @@ class MapWithInjectedProps extends React.Component<Props & InjectedProps, State>
           return <Objective entityId={entityId} />;
         })}
 
-        {Object.values(this.props.warbandContext.memberIdToMemberState).map((memberState) => {
+        {Object.values(this.props.warbandContext.memberCharacterIdToMemberState).map((memberState) => {
           if (memberState.characterID === camelotunchained.game.selfPlayerState.characterID) {
             return null;
           }

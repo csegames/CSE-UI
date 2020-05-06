@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
-import WarbandMemberDisplay from '../WarbandMemberDisplay';
+import { WarbandMemberDisplay } from '../WarbandMemberDisplay';
 import { uiContextFromGame } from 'services/session/UIContext';
 import {
   GroupMemberState,

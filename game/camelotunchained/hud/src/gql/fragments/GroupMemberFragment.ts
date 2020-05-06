@@ -21,7 +21,7 @@ export const GroupMemberFragment = gql`
     classID
     statuses {
       id
-      icon
+      iconURL
       description
       name
     }

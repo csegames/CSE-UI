@@ -4,13 +4,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as React from 'react';
+import React, { useContext } from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 
 import { isEqualPlayerState } from '../../lib/playerStateEqual';
 import { UnitFrame } from './UnitFrame';
 import { showFriendlyTargetContextMenu } from 'actions/contextMenu';
+import { WarbandContext, WarbandContextState } from 'components/context/WarbandContext';
 
 const Container = styled.div`
   pointer-events: auto;
@@ -18,7 +19,12 @@ const Container = styled.div`
   height: 100%;
 `;
 
+interface InjectedProps {
+  warbandContext: WarbandContextState;
+}
+
 export interface PlayerHealthProps {
+
 }
 
 export interface PlayerHealthState {
@@ -26,9 +32,9 @@ export interface PlayerHealthState {
   showContextMenu: boolean;
 }
 
-class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState> {
+class PlayerHealthWithInjectedContext extends React.Component<PlayerHealthProps & InjectedProps, PlayerHealthState> {
   private eventHandles: EventHandle[] = [];
-  constructor(props: PlayerHealthProps) {
+  constructor(props: PlayerHealthProps & InjectedProps) {
     super(props);
     this.state = {
       playerState: null,
@@ -38,8 +44,7 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   }
 
   public render() {
-    if (!this.state.playerState ||
-      !this.state.playerState.entityID) return null;
+    if (!this.state.playerState || !this.state.playerState.entityID) return null;
 
     return (
       <Container onMouseDown={this.handleContextMenu}>
@@ -70,9 +75,14 @@ class PlayerHealth extends React.Component<PlayerHealthProps, PlayerHealthState>
   private handleContextMenu = (event: React.MouseEvent) => {
     if (event.button === 2) {
       // Right mouse
-      showFriendlyTargetContextMenu(this.state.playerState, event);
+      showFriendlyTargetContextMenu(this.state.playerState, this.props.warbandContext, event);
     }
   }
 }
 
-export default PlayerHealth;
+export function FriendlyTargetHealth(props: PlayerHealthProps) {
+  const warbandContext = useContext(WarbandContext);
+  return (
+    <PlayerHealthWithInjectedContext {...props} warbandContext={warbandContext} />
+  );
+}
