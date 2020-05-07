@@ -217,6 +217,10 @@ export function DragAndDrop(props: DNDProps) {
         dataKey: props.dataKey,
         dataTransfer: props.dataTransfer,
       });
+
+      if (props.onDragEnd) {
+        state.onDragEnd(props.onDragEnd);
+      }
     }
   }, [])
 

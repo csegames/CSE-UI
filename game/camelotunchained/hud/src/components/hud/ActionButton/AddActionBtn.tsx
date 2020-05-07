@@ -42,7 +42,7 @@ export function AddActionBtn() {
     console.error(`getAbilityInfo returned null abilityInfo using ${actionViewContext.queuedAbilityId}`)  
   }
 
-  console.log(`Adding action btn from queued id ${actionViewContext.queuedAbilityId}: ${abilityIcon}`)
+  console.log(`Adding action btn from queued id ${actionViewContext.queuedAbilityId}: ${abilityIcon}`);
 
   return (
     <DragAndDrop
