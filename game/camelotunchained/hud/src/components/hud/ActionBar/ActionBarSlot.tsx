@@ -128,10 +128,13 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
   constructor(props: ActionBarSlotProps & InjectedProps) {
     super(props);
 
+    const systemActionId = isSystemAnchorId(props.anchorId) ? Object.keys(props.actionViewContext.actions)
+      .find(actionId => props.actionViewContext.actions[actionId] && props.actionViewContext.actions[actionId as any].find(a => a.slot === props.id)) : null;
+
     const defaultKeybind = getDefaultKeybindId(
       props.id,
       isSystemAnchorId(props.anchorId),
-      props.actions && props.actions[0],
+      systemActionId && Number(systemActionId),
     );
     this.state = {
       isDragging: false,

@@ -13,7 +13,7 @@ import { OuterRing } from './OuterRing';
 import { FallbackIcon } from '../FallbackIcon';
 import { Tooltip } from 'shared/Tooltip';
 import { showContextMenu } from 'actions/contextMenu';
-import { isSystemAnchorId } from '../../context/ActionViewContext';
+import { isSystemAnchorId, ActionViewContext, ActionViewContextState, EditMode } from '../../context/ActionViewContext';
 
 type ContainerProps = { radius: number; acceptInput: boolean; } & React.HTMLProps<HTMLDivElement>;
 export const Container = styled.div`
@@ -161,6 +161,7 @@ export interface ActionBtnProps {
 
 interface InjectedProps {
   uiContext: UIContext;
+  actionViewContext: ActionViewContextState;
 }
 
 export interface State {
@@ -283,7 +284,7 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
 
   private onClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.button === 0) {
-      if (this.props.disableInteractions) return;
+      if (this.props.disableInteractions || this.props.actionViewContext.editMode !== EditMode.Disabled) return;
       game.actions.activateSlottedAction(this.state.abilityState.systemSlotID || this.props.slotId); 
     }
 
@@ -295,7 +296,8 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
 
 export function ActionBtn(props: ActionBtnProps) {
   const uiContext = React.useContext(UIContext);
+  const actionViewContext = React.useContext(ActionViewContext);
   return (
-    <ActionBtnWithInjectedProps uiContext={uiContext} {...props} />
+    <ActionBtnWithInjectedProps uiContext={uiContext} actionViewContext={actionViewContext} {...props} />
   );
 }

@@ -11,6 +11,7 @@ import { webAPI } from '@csegames/library/lib/camelotunchained';
 import { styled } from '@csegames/linaria/react';
 
 import { AbilityBookContext, Routes } from '../../../context/AbilityBookContext';
+import { ActionViewContext } from '../../../context/ActionViewContext';
 import { AbilityItem } from './AbilityItem';
 import { FilterHeader } from './FilterHeader';
 import { Modal } from './Modal';
@@ -116,6 +117,7 @@ export function AbilityPage(props: Props) {
   const [abilityBuilderState, abilityBuilderDispatch] = useAbilityBuilderReducer();
   const { visibleComponentLeft, visibleComponentRight } = useContext(FullScreenContext);
   const abilityBookContext = useContext(AbilityBookContext);
+  const actionViewContext = useContext(ActionViewContext);
   const [searchValue, setSearchValue] = useState('');
   const [componentFilters, setComponentFilter] = useState([]);
   const [selectedAbility, setSelectedAbility] = useState<AbilityBookQuery.Abilities>(null);
@@ -162,6 +164,7 @@ export function AbilityPage(props: Props) {
     if (res.ok) {
       onCloseModal();
       abilityBookContext.refetch();
+      actionViewContext.deleteAbility(selectedAbility.id);
 
       if (abilityBuilderState.modifiedAbilityID === selectedAbility.id) {
         abilityBuilderDispatch({ type: 'reset' });
