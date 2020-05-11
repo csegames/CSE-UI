@@ -74,7 +74,7 @@ class CharacterSelectList extends React.Component<Props, CharacterSelectListStat
     // Put selected server at top
     const sortedServers = this.getServers().filter(s => s.channelID !== VIGRIDR_CHANNEL);
     return (
-      <div>
+      <div style={{ position: 'relative' }}>
         <MinimizeAll
           onClick={this.state.minimized ? this.onMaximizeAllClick : this.onMinimizeAllClick}
           style={{ pointerEvents: this.props.charSelectVisible ? 'all' : 'none' }}>

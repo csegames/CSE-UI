@@ -224,7 +224,7 @@ class CharacterList extends React.PureComponent<Props, CharacterListState> {
   }
 
   public componentDidMount() {
-    this.initHeight();
+    this.initHeight(this.props.serverCharacters);
   }
 
   public componentWillReceiveProps(nextProps: Props) {
@@ -232,8 +232,7 @@ class CharacterList extends React.PureComponent<Props, CharacterListState> {
         !_.isEqual(this.props.serverCharacters, nextProps.serverCharacters)) {
       this.setState({ initialHeight: null });
       setTimeout(() => {
-        const characterList = document.getElementById(`character-list-${this.props.server.shardID}`);
-        this.setState({ initialHeight: characterList.clientHeight - 40 });
+        this.initHeight(nextProps.serverCharacters);
       }, 300);
     }
   }
@@ -249,12 +248,10 @@ class CharacterList extends React.PureComponent<Props, CharacterListState> {
     this.props.onUpdateState({ patcherAlerts });
   }
 
-  private initHeight = () => {
+  private initHeight = (serverCharacters: SimpleCharacter[]) => {
     setTimeout(() => {
-      const characterList = document.getElementById(`character-list-${this.props.server.shardID}`);
-      if (!this.state.initialHeight) {
-        this.setState({ initialHeight: characterList.clientHeight - 40 });
-      }
+      const listHeight = (serverCharacters.length * 70) + 95;
+      this.setState({ initialHeight: listHeight });
     }, 300);
   }
 

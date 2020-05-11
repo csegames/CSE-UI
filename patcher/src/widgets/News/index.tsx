@@ -347,7 +347,7 @@ class News extends React.Component<NewsProps, NewsState> {
           item: patchNote,
         };
       });
-      mergedPosts = uniqBy(mergedPosts.concat(patchNotePostItems), p => p.item.id);
+      mergedPosts = uniqBy(mergedPosts.concat(patchNotePostItems as any), p => p.item.id);
     }
     mergedPosts.sort((a, b) => {
       const aDate = this.getPostItemDate(a.item);
