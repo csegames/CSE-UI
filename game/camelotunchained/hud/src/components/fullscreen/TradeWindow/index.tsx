@@ -104,6 +104,7 @@ class TradeWindow extends React.Component<TradeWindowComponentProps, TradeWindow
         subscription={{
           query: subscriptionQuery,
           initPayload: defaultSubscriptionOpts().initPayload,
+          operationName: "trade-subscription",
         }}
         subscriptionHandler={this.handleSubscription}>
         {(graphql: GraphQLResult<TradeWindowQuery.Query>) => {

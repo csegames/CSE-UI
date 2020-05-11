@@ -306,7 +306,9 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
       };
     }
 
-    this.containerRef.focus();
+    if (this.containerRef) {
+      this.containerRef.focus();
+    }
     this.setState(tabsState as any);
   }
 
