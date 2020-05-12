@@ -328,6 +328,13 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       };
     });
 
+    Object.keys(actionView.actions).forEach((actionId) => {
+      const ability = abilities.find(ability => ability.id === Number(actionId));
+      if (!ability) {
+        delete actionView.actions[actionId];
+      }
+    });
+
     if (shouldUpdateLocalStorage) {
       this.updateLocalStorage(actionView);
     }
@@ -381,13 +388,6 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
 
       if (firstSlotId == null) {
         firstSlotId = currentSlotId;
-      }
-    });
-
-    Object.keys(actions).forEach((actionId) => {
-      const ability = abilityIds.find(id => id === Number(actionId));
-      if (!ability) {
-        delete actions[actionId];
       }
     });
 
