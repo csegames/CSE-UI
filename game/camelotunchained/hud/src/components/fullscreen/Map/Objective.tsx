@@ -85,7 +85,6 @@ const ObjectiveContainer = styled.div`
 `;
 
 const BarContainer = styled.div`
-  position: absolute;
   bottom: -1px;
   height: 6px;
   width: 30px;

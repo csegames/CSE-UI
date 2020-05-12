@@ -328,6 +328,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       };
     });
 
+    // Check to see if ability still exists. If it doesn't, remove it from the actionView
     Object.keys(actionView.actions).forEach((actionId) => {
       const ability = abilities.find(ability => ability.id === Number(actionId));
       if (!ability) {
