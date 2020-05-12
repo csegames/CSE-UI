@@ -25,6 +25,7 @@ import {
   Options,
 } from './subscription';
 import { ErrorBoundary } from './ErrorBoundary';
+import { isValidUrl } from '../utils/index';
 
 export interface GraphQLOptions extends QueryOptions {
   // if set to a number greater than 0, in ms, the component will poll the server on an interval
@@ -299,6 +300,11 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
 
   public componentDidMount() {
     if (this.queryOptions && this.queryOptions.pollInterval && this.queryOptions.pollInterval > 0) {
+      if (!isValidUrl(this.queryOptions.url)) {
+        console.log('invalid url: ' + this.queryOptions.url)
+        return;
+      }
+
       this.pollingRefetch();
     } else if (this.state.data === null) {
       this.refetch();
@@ -359,12 +365,15 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   }
 
   private refetch = async (disableLoading?: boolean) => {
-    if (!this.query) return;
+    if (!this.query || !isValidUrl(this.queryOptions.url)) return;
     const query = this.updateConfig();
     return await this.refetchQuery(query, disableLoading);
   }
 
   private refetchQuery = async (query?: GraphQLQuery | undefined, disableLoading?: boolean) => {
+    if (!isValidUrl(this.queryOptions.url)) {
+      return;
+    }
     if (!disableLoading && this.state.loading === false) {
       this.setState({ loading: true });
     }
@@ -408,6 +417,10 @@ export class GraphQL<QueryDataType, SubscriptionDataType>
   }
 
   private pollingRefetch = async () => {
+    if (!isValidUrl(this.queryOptions.url)) {
+      return;
+    }
+
     await this.refetch();
     this.pollingTimeout = window.setTimeout(this.pollingRefetch, this.queryOptions.pollInterval);
   }

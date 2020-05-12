@@ -5,6 +5,7 @@
  */
 
 import { query, GraphQLQuery, GraphQLQueryResult } from '@csegames/library/lib/_baseGame/graphql/query';
+import { isValidUrl } from '@csegames/library/lib/_baseGame/utils/urlUtils';
 import { RequestOptions } from '@csegames/library/lib/_baseGame/utils/request';
 
 export function gqlQuery(q: GraphQLQuery, options: RequestOptions = {}) {
@@ -89,6 +90,9 @@ function onerror(reason: GraphQLQueryResult<any>) {
 }
 
 export function poll() {
+  if (!isValidUrl(game.webAPIHost)) {
+    return;
+  }
   gqlQuery(scenarioQuery).then(onload, onerror);
 }
 

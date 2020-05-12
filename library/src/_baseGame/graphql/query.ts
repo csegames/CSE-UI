@@ -8,6 +8,7 @@ import { request as httpRequest, RequestOptions } from '../utils/request';
 import { DocumentNode } from 'graphql';
 import * as Raven from 'raven-js';
 import { print } from 'graphql/index.js';
+import { isValidUrl } from '../utils/index';
 
 
 const Batching_Interval = 500; // ms time for batching requests from first request.
@@ -127,6 +128,10 @@ async function batchedQuery<T>(options?: Partial<QueryOptions>): Promise<void> {
     }));
 
   console.log(`executing batched graphql with ${requests.length} batched requests to ${opts.url}.`);
+  if (!isValidUrl(opts.url)) {
+    console.log('invalid url: ' + opts.url);
+    return;
+  }
 
   try {
 
@@ -219,6 +224,12 @@ export async function query<T>(query: GraphQLQuery, options?: Partial<QueryOptio
         reject
       });
     });
+  }
+
+  if (!isValidUrl(opts.url)) {
+    console.trace();
+    console.log('invalid url: ' + opts.url);
+    return;
   }
 
   const q = withDefaults(query, defaultQuery);
