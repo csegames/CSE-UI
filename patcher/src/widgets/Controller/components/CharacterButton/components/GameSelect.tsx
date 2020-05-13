@@ -10,7 +10,7 @@ import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 import GameSelectItem from './GameSelectItem';
 import { PatcherServer, ServerType, serverTypeToIcon } from '../../../ControllerContext';
-import { patcher, permissionsString } from '../../../../../services/patcher';
+import { patcher, permissionsString, PatchPermissions } from '../../../../../services/patcher';
 
 const GameMask = styled.div`
   position: relative;
@@ -251,7 +251,9 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
     for (let i = ServerType.CUGAME; i < ServerType.UNKNOWN; ++i) {
       let anyOfType = false;
       for (const key in this.props.servers) {
-        if (this.props.servers[key].type === i) {
+        // Only show tools if user is a developer
+        const toolsCheck = (this.props.servers[key].type !== ServerType.CHANNEL || (patcher.getPermissions() & PatchPermissions.Devs) !== 0);
+        if (this.props.servers[key].type === i && toolsCheck) {
           anyOfType = true;
           break;
         }
