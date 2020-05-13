@@ -100,9 +100,14 @@ export function AbilityCreation(props: Props) {
       camelotunchained.game.store.refetch();
       abilityBookContext.refetch();
     } else if (res.data) {
-      const errorMessage = JSON.parse(res.data).FieldCodes[0].AbilityResult.Details;
-      setErrorMessage(errorMessage);
-      setShowModal(true);
+      try {
+        const errorMessage = JSON.parse(res.data).FieldCodes[0].AbilityResult.Details;
+        setErrorMessage(errorMessage);
+        setShowModal(true);
+      } catch(e) {
+        setErrorMessage('We are experiencing technical difficulties. Please try again later.');
+        setShowModal(true);
+      }
     }
   }
 
@@ -131,9 +136,14 @@ export function AbilityCreation(props: Props) {
       camelotunchained.game.store.refetch();
       abilityBookContext.refetch();
     } else if (res.data) {
-      const errorMessage = JSON.parse(res.data).FieldCodes[0].AbilityResult.Details;
-      setErrorMessage(errorMessage);
-      setShowModal(true);
+      try {
+        const errorMessage = JSON.parse(res.data).FieldCodes[0].AbilityResult.Details;
+        setErrorMessage(errorMessage);
+        setShowModal(true);
+      } catch(e) {
+        setErrorMessage('We are experiencing technical difficulties. Please try again later.');
+        setShowModal(true);
+      }
     }
   }
 
