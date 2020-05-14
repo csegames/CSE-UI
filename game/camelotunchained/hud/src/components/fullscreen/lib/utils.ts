@@ -625,8 +625,16 @@ export function hasInventoryPermissions(item: InventoryItem.Fragment) {
 }
 
 export function hasEquipmentPermissions(item: InventoryItem.Fragment) {
-  const itemMeetsRequirements = !item.equiprequirement || (item.equiprequirement &&
-    (item.equiprequirement.status === 'RequirementMet' || item.equiprequirement.status === 'NoRequirement'));
+  console.log('hasEquipmentPermissions');
+  console.log(item);
+  const itemMeetsRequirements = !item.equiprequirement ||
+  (item.equiprequirement && (
+    item.equiprequirement.status === 'RequirementMet' ||
+    item.equiprequirement.status === 'NoRequirement' ||
+    // NoCharacterContext is like unknown, so we might as well
+    // allow the user to try to equip and then let the api server handle if it can't
+    item.equiprequirement.status === 'NoCharacterContext')
+  );
   if ((!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) && itemMeetsRequirements) {
     return ItemPermissions.All;
   }
