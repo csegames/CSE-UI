@@ -7,7 +7,6 @@
 import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
 import {
-  ActionViewContext,
   ActionSlot,
   EditMode,
   ActionViewContextState,
@@ -93,13 +92,13 @@ const BtnWrapper = styled.span`
 `;
 
 interface InjectedProps {
-  actionViewContext: ActionViewContextState;
   uiContext: UIContext;
 }
 
 export interface ActionBarSlotProps extends ActionSlot {
   sumAngle: number; // used to orient the action in a slot correctly
   activeGroup: number; // used to identify which abilities are active in this slot
+  actionView: ActionViewContextState;
 }
 
 export interface State {
@@ -110,14 +109,7 @@ export interface State {
   boundKeyName: string;
 }
 
-function getDefaultKeybindId(slotId: number, isSystemAnchor?: boolean, actionId?: number) {
-  if (isSystemAnchor && camelotunchained.game.abilityStates[actionId]) {
-    return {
-      id: -1,
-      binds: [camelotunchained.game.abilityStates[actionId].systemKeyBinding],
-    };
-  }
-
+function getDefaultKeybindId(slotId: number) {
   const keybind = Object.values(game.keybinds).find(keybind => keybind.description === "Action Slot " + (slotId - 1));
   return keybind;
 }
@@ -128,14 +120,7 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
   constructor(props: ActionBarSlotProps & InjectedProps) {
     super(props);
 
-    const systemActionId = isSystemAnchorId(props.anchorId) ? Object.keys(props.actionViewContext.actions)
-      .find(actionId => props.actionViewContext.actions[actionId] && props.actionViewContext.actions[actionId as any].find(a => a.slot === props.id)) : null;
-
-    const defaultKeybind = getDefaultKeybindId(
-      props.id,
-      isSystemAnchorId(props.anchorId),
-      systemActionId && Number(systemActionId),
-    );
+    const defaultKeybind = getDefaultKeybindId(props.id);
     this.state = {
       isDragging: false,
       wantAngle: props.angle,
@@ -146,14 +131,14 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
   }
 
   public render() {
-    const { actionViewContext, uiContext } = this.props;
+    const { actionView, uiContext } = this.props;
     const theme = uiContext.currentTheme();
     this.display = uiContext.isUHD() ? theme.actionButtons.display.uhd : theme.actionButtons.display.hd;
     const definition = uiContext.isUHD() ? 'uhd' : 'hd';
     const factionAbbr = FactionExt.abbreviation(camelotunchained.game.selfPlayerState.faction);
 
     const slottedActionID = this.getSlottedActionId();
-    const inEditMode = actionViewContext.editMode !== EditMode.Disabled;
+    const inEditMode = actionView.editMode !== EditMode.Disabled;
     const showEmptySlot = inEditMode && slottedActionID === null;
     return (
       <>
@@ -192,7 +177,7 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
                       }
                     }}
                   />
-                  {!actionViewContext.queuedAbilityId &&
+                  {!actionView.queuedAbilityId &&
                     <Icon className='fas fa-plus' onMouseDown={this.navigateToAbilityBook}></Icon>}
                 </SlotWrapper>
               </ContextMenu>
@@ -205,9 +190,9 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
             key={id}
             sumAngle={this.state.wantAngle + this.props.sumAngle}
             activeGroup={this.props.activeGroup}
-            actionViewContext={actionViewContext}
+            actionView={actionView}
             uiContext={uiContext}
-            {...actionViewContext.slots[id]}
+            {...actionView.slots[id]}
           />
         ))}
       </>
@@ -216,8 +201,8 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
 
   private getSlottedActionId = () => {
     let slottedActionID: number | null = null;
-    for (const actionId in this.props.actionViewContext.actions) {
-      if (this.props.actionViewContext.actions[actionId].findIndex(p =>
+    for (const actionId in this.props.actionView.actions) {
+      if (this.props.actionView.actions[actionId].findIndex(p =>
           p.slot === this.props.id && p.group === this.props.activeGroup) >= 0) {
         slottedActionID = Number(actionId);
         break;
@@ -253,20 +238,20 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
 
   private onAddSlotClick = (e: React.MouseEvent) => {
     if (e.button === 0) {
-      this.props.actionViewContext.addSlot(false, this.props.id);
+      this.props.actionView.addSlot(false, this.props.id);
     }
   }
 
   private onRemoveSlotClick = (e: React.MouseEvent) => {
     if (e.button === 0) {
-      this.props.actionViewContext.removeSlot(this.props.id);
+      this.props.actionView.removeSlot(this.props.id);
     }
   }
 
   private onDrop = (e: DragEvent) => {
     if (typeof e.dataTransfer.queuedAbilityId === 'number') {
       const actionId = e.dataTransfer.queuedAbilityId;
-      this.props.actionViewContext.addAction(actionId, this.props.activeGroup, this.props.id);
+      this.props.actionView.addAction(actionId, this.props.activeGroup, this.props.id);
       return;
     }
 
@@ -281,7 +266,7 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
       anchorId: this.props.anchorId,
     };
 
-    this.props.actionViewContext.addAndRemoveAction(
+    this.props.actionView.addAndRemoveAction(
       e.dataTransfer.actionId,
       from,
       target,
@@ -301,22 +286,21 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
 
     if (typeof e.dataTransfer.queuedAbilityId === 'number') {
       const actionId = e.dataTransfer.queuedAbilityId;
-      this.props.actionViewContext.replaceOrSwapAction({ actionId }, target);
+      this.props.actionView.replaceOrSwapAction({ actionId }, target);
       return;
     }
 
     let from = e.dataTransfer;
-    this.props.actionViewContext.replaceOrSwapAction(from, target);
+    this.props.actionView.replaceOrSwapAction(from, target);
     return;
   }
 
   private renderAbility = () => {
     const slottedActionID = this.getSlottedActionId();
     if (slottedActionID === null) return null;
-
     return (
       <ActionWrapper angle={this.state.wantAngle + this.props.sumAngle}>
-        {this.props.actionViewContext.editMode !== EditMode.Disabled ? (
+        {this.props.actionView.editMode !== EditMode.Disabled ? (
           <DragAndDrop
             type='drag-and-drop'
             dataTransfer={{
@@ -347,7 +331,7 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
               });
               if (!e.dropTargetID) {
                 // remove
-                this.props.actionViewContext.removeAction(slottedActionID, this.props.activeGroup, this.props.id);
+                this.props.actionView.removeAction(slottedActionID, this.props.activeGroup, this.props.id);
               }
             }}
             onDrop={this.onDropAbility}
@@ -356,7 +340,7 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
               <ActionBtn
                 actionId={slottedActionID}
                 slotId={this.props.id}
-                keybindName={this.state.boundKeyName}
+                keybindName={isSystemAnchorId(this.props.anchorId) ? camelotunchained.game.abilityStates[slottedActionID].systemKeyBinding.name : this.state.boundKeyName}
                 keybindId={this.state.keybindId}
                 getContextMenuItems={this.createContextMenuItems}
                 additionalStyles={{
@@ -369,7 +353,7 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
           <ActionBtn
             actionId={slottedActionID}
             slotId={this.props.id}
-            keybindName={this.state.boundKeyName}
+            keybindName={isSystemAnchorId(this.props.anchorId) ? camelotunchained.game.abilityStates[slottedActionID].systemKeyBinding.name : this.state.boundKeyName}
             keybindId={this.state.keybindId}
             getContextMenuItems={this.createContextMenuItems}
           />
@@ -380,9 +364,8 @@ class ActionBarSlotWithInjectedContext extends React.Component<ActionBarSlotProp
 }
 
 export function ActionBarSlot(props: ActionBarSlotProps) {
-  const actionViewContext = useContext(ActionViewContext);
   const uiContext = useContext(UIContext);
   return (
-    <ActionBarSlotWithInjectedContext {...props} actionViewContext={actionViewContext} uiContext={uiContext} />
+    <ActionBarSlotWithInjectedContext {...props} uiContext={uiContext} />
   );
 }

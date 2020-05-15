@@ -208,7 +208,6 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
 
     const abilityIcon = apiAbilityInfo ? apiAbilityInfo.icon :
       this.state.abilityState.icon ? this.state.abilityState.icon : null;
-
     return (  
       <Tooltip
         styles={DefaultTooltipStyles}

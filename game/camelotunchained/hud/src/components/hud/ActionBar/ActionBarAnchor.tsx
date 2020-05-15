@@ -8,7 +8,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
 
 import {
-  ActionViewContext,
+  ActionViewContextState,
   ActionViewAnchor,
   EditMode,
   MAX_GROUP_COUNT,
@@ -105,13 +105,13 @@ function getBoundsWithChildren(element: Element) {
 }
 
 export interface ActionBarAnchorProps extends ActionViewAnchor {
+  actionView: ActionViewContextState;
 }
 
 const viewport = getViewportSize();
 
 // tslint:disable-next-line:function-name
 export function ActionBarAnchor(props: ActionBarAnchorProps) {
-  const actionViewContext = useContext(ActionViewContext);
   const [dragPosition, setDragPosition] = useState(props.positionPercentage);
   const [ref, setRef] = useState(null);
   const [bounds, setBounds] = useState({
@@ -126,9 +126,10 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
   const display = ui.isUHD() ? theme.actionButtons.display.uhd : theme.actionButtons.display.hd;
   const faction = FactionExt.abbreviation(camelotunchained.game.selfPlayerState.faction);
   const definition = ui.isUHD() ? 'uhd' : 'hd';
-  const isVisible = actionViewContext.anchorIdToVisibility[props.id];
+  const { actionView } = props;
+  const isVisible = actionView.anchorIdToVisibility[props.id] || false;
 
-  const inEditMode = actionViewContext.editMode !== EditMode.Disabled && actionViewContext.editMode !== EditMode.Changing;
+  const inEditMode = actionView.editMode !== EditMode.Disabled && actionView.editMode !== EditMode.Changing;
   useEffect(() => {
     if (ref) {
       setBounds(getBoundsWithChildren(ref));
@@ -140,20 +141,20 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
 
     // if ctrl+click, go to previous
     if (e.ctrlKey) {
-      actionViewContext.activatePrevGroup(props.id);
+      actionView.activatePrevGroup(props.id);
       return;
     }
 
-    actionViewContext.activateNextGroup(props.id);
+    actionView.activateNextGroup(props.id);
   }
 
   function handleWheel(e: React.WheelEvent) {
     if (e.deltaY < 0) {
-      actionViewContext.activatePrevGroup(props.id);
+      actionView.activatePrevGroup(props.id);
       return;
     }
 
-    actionViewContext.activateNextGroup(props.id);
+    actionView.activateNextGroup(props.id);
   }
 
   function contextMenuItems() {
@@ -163,7 +164,7 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
       return [];
     }
 
-    if (actionViewContext.editMode === EditMode.Changing) {
+    if (actionView.editMode === EditMode.Changing) {
       return [];
     }
 
@@ -172,37 +173,37 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
       if (props.groups.length < MAX_GROUP_COUNT) {
         items.push({
           title: `Add New Group (${props.groups.length + 1})`,
-          onSelected: () => actionViewContext.addGroup(props.id),
+          onSelected: () => actionView.addGroup(props.id),
         });
       }
 
       if (props.groups.length > 1) {
         items.push({
           title: `Remove Group ${props.activeGroupIndex + 1}`,
-          onSelected: () => actionViewContext.removeGroup(props.id, props.groups[props.activeGroupIndex]),
+          onSelected: () => actionView.removeGroup(props.id, props.groups[props.activeGroupIndex]),
         });
       }
 
       items.push({
         title: 'Add anchor',
-        onSelected: () => actionViewContext.addAnchor(),
+        onSelected: () => actionView.addAnchor(),
       });
 
-      if (Object.keys(actionViewContext.anchors).filter(anchor => !isSystemAnchorId(Number(anchor))).length > 1) {
+      if (Object.keys(actionView.anchors).filter(anchor => !isSystemAnchorId(Number(anchor))).length > 1) {
         items.push({
           title: 'Delete anchor',
-          onSelected: () => actionViewContext.removeAnchor(props.id),
+          onSelected: () => actionView.removeAnchor(props.id),
         });
       }
 
       items.push({
         title: 'Exit Bar Editor',
-        onSelected: () => actionViewContext.disableEditMode(),
+        onSelected: () => actionView.disableEditMode(),
       });
     } else {
       items.push({
         title: 'Edit Action Bar',
-        onSelected: () => actionViewContext.enableActionEditMode(),
+        onSelected: () => actionView.enableActionEditMode(),
       });
     }
 
@@ -239,7 +240,7 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
           }}
 
           onDragEnd={() => {
-            actionViewContext.setAnchorPosition(props.id, dragPosition);
+            actionView.setAnchorPosition(props.id, dragPosition);
           }}
         >
           <BoundingRect
@@ -260,7 +261,8 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
               key={slotID}
               sumAngle={0}
               activeGroup={props.groups[props.activeGroupIndex]}
-              {...actionViewContext.slots[slotID]}
+              actionView={actionView}
+              {...actionView.slots[slotID]}
             />
           ))
         }

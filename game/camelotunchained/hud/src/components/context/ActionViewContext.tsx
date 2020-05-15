@@ -33,9 +33,11 @@ interface ContextState {
   editMode: EditMode;
   queuedAbilityId: number;
   anchorIdToVisibility: { [anchorId: number]: boolean };
+  systemAnchorIdToAbilities: { [systemAnchorId: number]: number[] };
 }
 
 interface ContextFunctions {
+  getAbilityGroupActionView: (abilityIds: number[], systemAnchorId?: number) => ContextState;
   enableActionEditMode: () => void;
   enableSlotEditMode: () => void;
   disableEditMode: () => void;
@@ -101,7 +103,7 @@ export interface ActionSlot {
   children: number[];
 }
 
-function noOp() {}
+function noOp(): any {}
 export function getDefaultActionViewContextState(): ContextState {
   return {
     anchors: {},
@@ -110,11 +112,13 @@ export function getDefaultActionViewContextState(): ContextState {
     editMode: EditMode.Disabled,
     queuedAbilityId: null,
     anchorIdToVisibility: {},
+    systemAnchorIdToAbilities: {},
   }
 }
 
 export const ActionViewContext = React.createContext<ActionViewContextState>({
   ...getDefaultActionViewContextState(),
+  getAbilityGroupActionView: noOp,
   enableActionEditMode: noOp,
   enableSlotEditMode: noOp,
   disableEditMode: noOp,
@@ -160,6 +164,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     return (
       <ActionViewContext.Provider value={{
         ...this.state,
+        getAbilityGroupActionView: this.getAbilityGroupActionView,
         enableActionEditMode: this.enableActionEditMode,
         enableSlotEditMode: this.enableSlotEditMode,
         disableEditMode: this.disableEditMode,
@@ -302,30 +307,6 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       if (actionView.anchors[systemAnchorId]) {
         return;
       }
-
-      shouldUpdateLocalStorage = true;
-
-      const systemAnchorActionView = this.getAbilityGroupActionView(
-        systemAnchorIdToAbilities[systemAnchorId],
-        actionView,
-        Number(systemAnchorId),
-      );
-
-      actionView = {
-        ...actionView,
-        anchors: {
-          ...actionView.anchors,
-          ...systemAnchorActionView.anchors,
-        },
-        actions: {
-          ...actionView.actions,
-          ...systemAnchorActionView.actions,
-        },
-        slots: {
-          ...actionView.slots,
-          ...systemAnchorActionView.slots,
-        },
-      };
     });
 
     // Check to see if ability still exists. If it doesn't, remove it from the actionView
@@ -350,19 +331,20 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       anchorIdToVisibility[anchorId] = this.state.anchorIdToVisibility[anchorId] || (isSystemAnchorId(Number(anchorId)) ? false : true);
     });
 
-    this.setState({ ...actionView, editMode: EditMode.Disabled, anchorIdToVisibility });
+    this.setState({ ...actionView, editMode: EditMode.Disabled, anchorIdToVisibility, systemAnchorIdToAbilities });
   }
 
-  private getAbilityGroupActionView = (abilityIds: number[], actionView?: ContextState, systemAnchorId?: number) => {
+  private getAbilityGroupActionView = (abilityIds: number[], systemAnchorId?: number) => {
     const anchorId = systemAnchorId || this.generateAnchorId(this.state.anchors);
     const groupId = this.generateGroupId(anchorId, this.state.anchors);
 
-    const slots: { [slotId: string]: ActionSlot } = actionView ? { ...actionView.slots } : {};
-    const actions: { [actionId: string]: ActionPosition[] } = actionView ? { ...actionView.actions } : {};
+    const slots: { [slotId: string]: ActionSlot } = {};
+    const actions: { [actionId: string]: ActionPosition[] } = {};
 
     let firstSlotId: number = null;
     let prevSlotId: number = null;
-    let nextSlotId: number = null;
+    let nextSlotId: number = null;                                             
+
     abilityIds.forEach((abilityId, i) => {
       const currentSlotId = nextSlotId ? nextSlotId : this.generateSlotId(slots);
 
@@ -396,7 +378,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       anchors: {
         [anchorId]: {
           id: anchorId,
-          positionPercentage: { x: 50, y: typeof systemAnchorId !== 'undefined' ? 70 : 95 },
+          positionPercentage: { x: 50, y: systemAnchorId ? 80 : 95 },
           activeGroupIndex: 0,
           groups: [groupId],
           children: [firstSlotId],
@@ -405,8 +387,12 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       actions,
       slots,
       editMode: EditMode.Disabled,
-      queuedAbilityId: null,
-    } as ContextState;
+      queuedAbilityId: null as number,
+      anchorIdToVisibility: {
+        ...this.state.anchorIdToVisibility,
+        [anchorId]: this.state.anchorIdToVisibility[anchorId] || (isSystemAnchorId(Number(anchorId)) ? false : true),
+      },
+    } as any;
   }
 
   private initializeClient = async (anchors: { [anchorId: string]: ActionViewAnchor },

@@ -80,13 +80,29 @@ export function ActionBars() {
       {
         Object.values(actionViewContext.anchors)
           .map(anchor => (
-            <ActionBarAnchorContainer>
+            <ActionBarAnchorContainer key={anchor.id}>
               <ActionBarAnchor
-                key={anchor.id}
+                actionView={actionViewContext}
                 {...anchor}
               />
             </ActionBarAnchorContainer>
           ))
+      }
+      {
+        Object.keys(actionViewContext.systemAnchorIdToAbilities).map((systemAnchorId) => {
+          const systemActionView = {
+            anchorIdToVisibility: actionViewContext.anchorIdToVisibility,
+            ...actionViewContext.getAbilityGroupActionView(actionViewContext.systemAnchorIdToAbilities[systemAnchorId], Number(systemAnchorId)),
+          };
+          return (
+            <ActionBarAnchorContainer key={systemAnchorId}>
+              <ActionBarAnchor
+                actionView={systemActionView}
+                {...systemActionView.anchors[systemAnchorId]}
+              />
+            </ActionBarAnchorContainer>
+          );
+        })
       }
     </Container>
   );
