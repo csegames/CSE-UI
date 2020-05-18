@@ -10,7 +10,7 @@ import { debounce } from 'lodash';
 export const MAX_GROUP_COUNT = 6;
 export const MAX_CHILD_SLOT_COUNT = 4;
 
-const ABILITY_BAR_VERSION = '1';
+const ABILITY_BAR_VERSION = '2';
 const ABILITY_BAR_VERSION_KEY = 'cu/game/abilities/barVersion';
 const ABILITY_BAR_KEY = 'cu/game/abilities/bar';
 
