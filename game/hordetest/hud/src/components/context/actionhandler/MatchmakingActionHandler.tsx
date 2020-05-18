@@ -75,6 +75,7 @@ class MatchmakingActionHandlerWithContext extends React.Component<Props> {
           //We dont clear any forced loading screens here because we will clear the force during connection
           tryConnect(host, port, 0, this.props.matchmakingContext.matchID);
           game.trigger('hide-fullscreen');
+          game.playGameSound(SoundEvents.PLAY_USER_FLOW_LOADING_SCREEN);
         }
         else {
           console.error(`Received matchmaking server ready for ${host}:${port}.
