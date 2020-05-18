@@ -13,7 +13,7 @@ import { OuterRing } from './OuterRing';
 import { FallbackIcon } from '../FallbackIcon';
 import { Tooltip } from 'shared/Tooltip';
 import { showContextMenu } from 'actions/contextMenu';
-import { isSystemAnchorId, ActionViewContext, ActionViewContextState, EditMode } from '../../context/ActionViewContext';
+import { ActionViewContext, ActionViewContextState, EditMode } from '../../context/ActionViewContext';
 
 type ContainerProps = { radius: number; acceptInput: boolean; } & React.HTMLProps<HTMLDivElement>;
 export const Container = styled.div`
@@ -182,8 +182,7 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
   }
 
   public render() {
-    if (!this.state.abilityState ||
-        isSystemAnchorId(this.state.abilityState.systemAnchorID) && this.state.abilityState.systemSlotID === 0) {
+    if (!this.state.abilityState) {
       return null;
     }
 
