@@ -275,6 +275,8 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
         this.enterMatchmaking(this.props.matchmakingContext.selectedGameMode.mode);
       }
     }
+
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_PLAYBUTTON);
   }
 
   private hitButton = async (makeCall: () => Promise<RequestResult>, onSuccess: () => void, failureMessage: string) => {

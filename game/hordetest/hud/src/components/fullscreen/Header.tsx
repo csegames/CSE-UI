@@ -35,12 +35,13 @@ export interface Props {
   isSelected?: boolean;
   children?: any;
   onClick?: () => void;
+  onMouseEnter?: () => void;
 }
 
 export function Header(props: Props) {
   const selectedClass = props.isSelected ? 'selected' : '';
   return (
-    <Container className={`${props.className || ''} ${selectedClass}`} onClick={props.onClick}>
+    <Container className={`${props.className || ''} ${selectedClass}`} onClick={props.onClick} onMouseEnter={props.onMouseEnter}>
       {props.children}
     </Container>
   );

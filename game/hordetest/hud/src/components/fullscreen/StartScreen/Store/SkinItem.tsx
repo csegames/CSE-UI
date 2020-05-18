@@ -55,6 +55,10 @@ export interface Props {
 }
 
 export function SkinItem(props: Props) {
+  function onMouseEnter() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+  }
+
   function onSkinClick() {
     if (props.disabled) return;
 
@@ -67,6 +71,7 @@ export function SkinItem(props: Props) {
       skin={props.skin}
       className={Rarity[props.skin.rarity]}
       onClick={onSkinClick}
+      onMouseEnter={onMouseEnter}
       width={props.width || 'calc(25% - 20px)'}
       height={props.height || 'calc(50% - 20px)'}
       margin={props.margin || '10px'}>

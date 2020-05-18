@@ -76,18 +76,22 @@ export function LeftOptions(props: Props) {
     myUserContext.refetch();
   }
 
+  function onMouseEnter() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+  }
+
   return (
     <Container>
       <MenuTitle>Menu</MenuTitle>
       {/* <Item>Battle Log</Item> */}
-      <Item onClick={onSettingsClick}>Settings</Item>
-      <Item onClick={showChangeDisplayName}>Change Display Name</Item>
-      <Item onClick={showCreditsScreen}>Credits</Item>
+      <Item onClick={onSettingsClick} onMouseEnter={onMouseEnter}>Settings</Item>
+      <Item onClick={showChangeDisplayName} onMouseEnter={onMouseEnter}>Change Display Name</Item>
+      <Item onClick={showCreditsScreen} onMouseEnter={onMouseEnter}>Credits</Item>
       {/* <Item>Select Game Mode</Item> */}
       {/* <Item>Support</Item> */}
       {/* <Item>Legal</Item>
       <Item>News</Item> */}
-      <Item className='exit' onClick={onExitClick}>Exit Game</Item>
+      <Item className='exit' onClick={onExitClick} onMouseEnter={onMouseEnter}>Exit Game</Item>
     </Container>
   );
 }

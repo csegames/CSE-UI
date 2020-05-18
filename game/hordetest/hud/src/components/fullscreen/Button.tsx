@@ -98,6 +98,7 @@ export class Button extends React.Component<Props, State> {
       <button
         disabled={this.props.disabled || this.state.isLoadingAnimationPlaying}
         onClick={this.onClick}
+        onMouseEnter={this.onMouseEnter}
         className={`${this.props.type} ${this.props.styles || ''} ${this.props.disabled ? 'disabled' : ''} ${Container}`}>
         {this.state.isLoadingAnimationPlaying ?
           <LoadingAnim src='images/fullscreen/loadingscreen/loading-anim.gif' /> :
@@ -135,5 +136,9 @@ export class Button extends React.Component<Props, State> {
     }
 
     this.setState({ isLoadingAnimationPlaying: false });
+  }
+
+  private onMouseEnter = () => {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
   }
 }

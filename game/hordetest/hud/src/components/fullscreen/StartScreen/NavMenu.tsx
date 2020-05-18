@@ -39,12 +39,40 @@ export interface Props {
 }
 
 export function NavMenu(props: Props) {
+  function onRouteClick(route: StartScreenRoute) {
+    props.onSelectRoute(route);
+
+    switch(route) {
+      case StartScreenRoute.Champions: {
+        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_CHAMPION_OPEN);
+        break;
+      }
+      case StartScreenRoute.Career: {
+        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_CAREER_OPEN);
+        break;
+      }
+      case StartScreenRoute.Store: {
+        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_STORE_OPEN);
+        break;
+      }
+      default: {
+        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+        break;
+      }
+    }
+  }
+
+  function onMouseEnterRoute() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+  }
+
   function renderRouteButton(route: StartScreenRoute, extraJSX?: JSX.Element | JSX.Element[]) {
     const isSelected = props.selectedRoute === route;
     return (
       <Header
         isSelected={isSelected}
-        onClick={() => props.onSelectRoute(route)}>
+        onClick={() => onRouteClick(route)}
+        onMouseEnter={onMouseEnterRoute}>
           {StartScreenRoute[route].toTitleCase()}
           {extraJSX || ''}
       </Header>

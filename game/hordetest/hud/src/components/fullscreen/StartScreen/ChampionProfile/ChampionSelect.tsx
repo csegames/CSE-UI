@@ -97,13 +97,44 @@ export interface Props {
 export function ChampionSelect(props: Props) {
   const colossusProfileContext = useContext(ColossusProfileContext);
 
+  function onChampionClick(champion: Champion) {
+    props.onSelectChampion(champion);
+
+    switch(champion.name.toLowerCase()) {
+      case 'gwenllian': {
+        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_CHAMPION_CELT);
+        break;
+      }
+      case 'aella': {
+        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_CHAMPION_AMAZON);
+        break;
+      }
+      case 'bjorn-snur': {
+        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_CHAMPION_BERSERKER);
+        break;
+      }
+      case 'jalb al-sulh': {
+        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_CHAMPION_KNIGHT);
+        break;
+      }
+      default: {
+        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+        break;
+      }
+    }
+  }
+
+  function onMouseEnter() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+  }
+
   const defaultChampion = colossusProfileContext.colossusProfile.defaultChampion;
   return (
     <Container>
       {props.champions.map((champion) => {
         const selectedClassName = champion.id === props.selectedChampion.id ? 'selected' : '';
         return (
-          <ChampionContainer className={selectedClassName} onClick={() => props.onSelectChampion(champion)}>
+          <ChampionContainer className={selectedClassName} onClick={() => onChampionClick(champion)} onMouseEnter={onMouseEnter}>
             <Image src={champion.costumes[0].thumbnailURL} />
             {defaultChampion && defaultChampion.championID === champion.id ? <StarIcon className='fas fa-star' /> : null}
           </ChampionContainer>

@@ -102,9 +102,13 @@ export interface Props {
 }
 
 export function BundleItem(props: Props) {
+  function onMouseEnter() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+  }
+
   const comingSoonClass = props.bundle.isComingSoon ? 'isComingSoon' : '';
   return (
-    <Container className={comingSoonClass}>
+    <Container className={comingSoonClass} onMouseEnter={onMouseEnter}>
       <Image src={props.bundle.image} />
       <CostContainer>
         <Name>{props.bundle.name}</Name>

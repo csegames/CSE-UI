@@ -118,9 +118,11 @@ export class LeftModal extends React.Component<Props, State> {
 
   private show = (content: JSX.Element | JSX.Element[], hideOverlay?: boolean) => {
     this.setState({ isVisible: true, content, hideOverlay });
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_SIDEBAR_OPEN);
   }
 
   private hide = () => {
     this.setState({ isVisible: false, content: null, hideOverlay: false });
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_SIDEBAR_CLOSE);
   }
 }
