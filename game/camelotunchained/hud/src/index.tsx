@@ -17,7 +17,7 @@ import './services/types';
 import 'core-js/es6/map';
 import 'core-js/es6/weak-map';
 import 'core-js/es6/set';
-// --------------------------
+// ---------------------
 
 import '@csegames/library/lib/_baseGame';
 import '@csegames/library/lib/camelotunchained';
