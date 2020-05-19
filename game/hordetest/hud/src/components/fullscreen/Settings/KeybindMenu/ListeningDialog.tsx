@@ -67,20 +67,28 @@ export interface Props {
   onClose: () => void;
 }
 
-export class ListeningDialog extends React.Component<Props> {
-  public render() {
-    return (
-      <Container>
-        <ListeningTitle>Press any key</ListeningTitle>
-        <ListeningKey>Binding: {this.props.keybind.description.toTitleCase()}</ListeningKey>
-        <InstructionsText>
-          Press the key / key combination you wish to bind to {this.props.keybind.description}.
-        </InstructionsText>
-        <ButtonsContainer>
-          <Button text='Remove' type='gray' onClick={this.props.onRemoveBind} styles={ButtonStyles} />
-          <Button text='Cancel' type='gray' onClick={this.props.onClose} styles={ButtonStyles} />
-        </ButtonsContainer>
-      </Container>
-    );
+export function ListeningDialog(props: Props) {
+  function onRemoveBind() {
+    props.onRemoveBind();
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
   }
+
+  function onClose() {
+    props.onClose();
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
+  }
+
+  return (
+    <Container>
+      <ListeningTitle>Press any key</ListeningTitle>
+      <ListeningKey>Binding: {props.keybind.description.toTitleCase()}</ListeningKey>
+      <InstructionsText>
+        Press the key / key combination you wish to bind to {props.keybind.description}.
+      </InstructionsText>
+      <ButtonsContainer>
+        <Button text='Remove' type='gray' onClick={onRemoveBind} styles={ButtonStyles} />
+        <Button text='Cancel' type='gray' onClick={onClose} styles={ButtonStyles} />
+      </ButtonsContainer>
+    </Container>
+  );
 }

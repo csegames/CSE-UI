@@ -61,8 +61,12 @@ export function SliderRow(props: Props) {
     props.onChange(newOption);
   }
 
+  function onMouseEnter() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+  }
+
   return (
-    <ItemContainer>
+    <ItemContainer onMouseEnter={onMouseEnter}>
       <div>
         {props.option.displayName.toTitleCase()}
       </div>

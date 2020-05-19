@@ -65,7 +65,8 @@ export function LeftOptions(props: Props) {
   }
 
   function showChangeDisplayName() {
-    game.trigger('show-middle-modal', <SetDisplayName onDisplayNameSet={onDisplayNameSet} />, false, true)
+    game.trigger('show-middle-modal', <SetDisplayName onDisplayNameSet={onDisplayNameSet} />, false, true);
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP);
   }
 
   function showCreditsScreen() {

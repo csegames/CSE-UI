@@ -161,6 +161,8 @@ export function EquipmentItem(props: Props) {
     if (typeof props.onClick !== 'undefined') {
       props.onClick(props.skin);
     }
+
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
   }
 
   function onDoubleClick() {
@@ -173,6 +175,8 @@ export function EquipmentItem(props: Props) {
     if (typeof props.onMouseEnter !== 'undefined') {
       props.onMouseEnter(props.skin);
     }
+
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
   }
 
   const disabledClass = props.disabled ? 'disabled' : 'not-disabled';

@@ -144,7 +144,7 @@ export class Settings extends React.Component<Props, State> {
           {Object.keys(this.state.changes).length > 0 &&
             <ActionButton onClick={this.onApplyClick} className={ApplySpacing}>Apply</ActionButton>
           }
-          <ActionButton onClick={this.hide}>Back</ActionButton>
+          <ActionButton onClick={this.onBackClick}>Back</ActionButton>
         </ButtonPosition>
 
         {this.state.isResetDialogVisible &&
@@ -247,6 +247,7 @@ export class Settings extends React.Component<Props, State> {
 
   private showResetDialog = () => {
     this.setState({ isResetDialogVisible: true });
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP);
   }
 
   private hideResetDialog = () => {
@@ -263,5 +264,13 @@ export class Settings extends React.Component<Props, State> {
       game.setOptionsAsync(Object.values(this.state.changes));
       this.setState({ changes: {} });
     }
+
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+  }
+
+  private onBackClick = () => {
+    this.hide();
+
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
   }
 }

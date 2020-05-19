@@ -38,12 +38,22 @@ export interface Props {
 }
 
 export function NavMenu(props: Props) {
+  function onClick(route: SettingsRoute) {
+    props.onSelectRoute(route);
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+  }
+
+  function onMouseEnter() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+  }
+
   function renderRouteButton(route: SettingsRoute, extraJSX?: JSX.Element | JSX.Element[]) {
     const isSelected = props.selectedRoute === route;
     return (
       <Header
         isSelected={isSelected}
-        onClick={() => props.onSelectRoute(route)}>
+        onClick={() => onClick(route)}
+        onMouseEnter={onMouseEnter}>
           {SettingsRoute[route].toTitleCase()}
           {extraJSX || ''}
       </Header>

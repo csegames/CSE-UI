@@ -115,6 +115,13 @@ export function SetDisplayName(props: Props) {
     } catch (err) {
       console.log(err);
     }
+
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+  }
+
+  function onCancelClick() {
+    game.trigger('hide-middle-modal');
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
   }
 
   return (
@@ -143,7 +150,7 @@ export function SetDisplayName(props: Props) {
                   <Button
                     text='Cancel'
                     type='gray'
-                    onClick={() => game.trigger('hide-middle-modal')}
+                    onClick={onCancelClick}
                     styles={ButtonStyles}
                   />
                 }

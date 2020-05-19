@@ -524,6 +524,7 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
         false,
         true,
       );
+      game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP);
     }
   }
 

@@ -187,10 +187,12 @@ export function ChampionProfile(props: Props) {
     setEditingMode(EditingMode.None);
     setSelectedPreviewSkinInfo(null);
     setHideSkinButtons(true);
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
   }
 
   function onShowSkills() {
     game.trigger('show-right-modal', <SkillInfo selectedChampion={selectedChampion} />);
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
   }
 
   function onEditingModeChanged(editingMode: EditingMode) {
@@ -289,6 +291,8 @@ export function ChampionProfile(props: Props) {
   }
 
   async function onSetAsDefault() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+
     const res = await webAPI.ProfileAPI.SetDefaultChampion(
       webAPI.defaultConfig,
       selectedChampion.id as any,
@@ -298,6 +302,10 @@ export function ChampionProfile(props: Props) {
     if (res.ok) {
       colossusProfileContext.graphql.refetch();
     }
+  }
+
+  function onMouseEnter() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
   }
 
   const offsetClass = editingMode === EditingMode.None ? 'should-offset' : 'no-offset';
@@ -342,10 +350,10 @@ export function ChampionProfile(props: Props) {
       </SkinInfoPosition>
       {!inputContext.isConsole ?
         <ButtonPosition>
-            <ActionButton style={{ marginRight: 30 }} onClick={onSetAsDefault}>Set As Default</ActionButton>
+            <ActionButton style={{ marginRight: 30 }} onClick={onSetAsDefault} onMouseEnter={onMouseEnter}>Set As Default</ActionButton>
           {editingMode === EditingMode.None ?
-            <ActionButton onClick={onShowSkills}>Show skills</ActionButton> :
-            <ActionButton onClick={onReset}>Cancel</ActionButton>
+            <ActionButton onClick={onShowSkills} onMouseEnter={onMouseEnter}>Show skills</ActionButton> :
+            <ActionButton onClick={onReset} onMouseEnter={onMouseEnter}>Cancel</ActionButton>
           }
         </ButtonPosition> :
         <ButtonPosition>

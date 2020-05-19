@@ -66,12 +66,17 @@ export function StoreNavMenu(props: Props) {
     game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
   }
 
+  function onClick(route: StoreRoute) {
+    props.onSelectRoute(route);
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+  }
+
   function renderNavItem(route: StoreRoute, extraJSX?: JSX.Element | JSX.Element[]) {
     return (
       <Header
         className={HeaderStyles}
         isSelected={route === props.selectedRoute}
-        onClick={() => props.onSelectRoute(route)}
+        onClick={() => onClick(route)}
         onMouseEnter={onMouseEnter}>
           {StoreRoute[route].toTitleCase()}
           {extraJSX || ''}

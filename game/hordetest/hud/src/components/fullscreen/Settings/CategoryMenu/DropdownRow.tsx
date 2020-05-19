@@ -26,10 +26,15 @@ export function DropdownRow(props: Props) {
     };
 
     props.onChange(newOption);
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+  }
+
+  function onMouseEnter() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
   }
 
   return (
-    <ItemContainer>
+    <ItemContainer onMouseEnter={onMouseEnter}>
       <div>{props.option.displayName.toTitleCase()}</div>
 
       <DropDown

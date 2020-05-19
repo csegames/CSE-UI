@@ -60,17 +60,25 @@ export interface Props {
   onNoClick: () => void;
 }
 
-export class ResetDialog extends React.Component<Props> {
-  public render() {
-    return (
-      <Container>
-        <Title>Are you sure?</Title>
-        <Text>There's no way to go back!</Text>
-        <ButtonsContainer>
-          <Button text='Yes' type='blue' onClick={this.props.onYesClick} styles={ButtonStyles} />
-          <Button text='No' type='gray' onClick={this.props.onNoClick} styles={ButtonStyles} />
-        </ButtonsContainer>
-      </Container>
-    );
+export function ResetDialog(props: Props) {
+  function onYesClick() {
+    props.onYesClick();
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
   }
+
+  function onNoClick() {
+    props.onNoClick();
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
+  }
+
+  return (
+    <Container>
+      <Title>Are you sure?</Title>
+      <Text>There's no way to go back!</Text>
+      <ButtonsContainer>
+        <Button text='Yes' type='blue' onClick={onYesClick} styles={ButtonStyles} />
+        <Button text='No' type='gray' onClick={onNoClick} styles={ButtonStyles} />
+      </ButtonsContainer>
+    </Container>
+  );
 }

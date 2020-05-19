@@ -59,11 +59,16 @@ export function CheckboxRow(props: Props) {
     let newOption = cloneDeep(props.option);
     newOption.value = !newOption.value;
     props.onChange(newOption);
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+  }
+
+  function onMouseEnter() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
   }
 
   const checkboxClassName = props.option.value === true ? 'on' : 'off';
   return (
-    <ItemContainer className={ItemContainerStyles} onClick={onClick}>
+    <ItemContainer className={ItemContainerStyles} onClick={onClick} onMouseEnter={onMouseEnter}>
       <div>{props.option.displayName.toTitleCase()}</div>
       <Checkbox className={'checkbox ' + checkboxClassName}></Checkbox>
     </ItemContainer>

@@ -64,8 +64,13 @@ export interface Props {
 function noOp() {}
 
 export function ConfirmPurchase(props: Props) {
+  function onPurchaseClick() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+  }
+
   function onCancelClick() {
     game.trigger('hide-right-modal');
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
   }
 
   return (
@@ -82,7 +87,7 @@ export function ConfirmPurchase(props: Props) {
                 type='blue'
                 styles={ButtonStyle}
               /> :
-              <Button text='Purchase' type='blue' styles={ButtonStyle} />
+              <Button text='Purchase' type='blue' onClick={onPurchaseClick} styles={ButtonStyle} />
             }
             {isConsole ?
               <Button

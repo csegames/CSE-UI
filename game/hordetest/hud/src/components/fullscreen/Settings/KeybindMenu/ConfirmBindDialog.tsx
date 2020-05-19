@@ -112,31 +112,39 @@ export interface Props {
   onNoClick: () => void;
 }
 
-export class ConfirmBindDialog extends React.Component<Props> {
-  public render() {
-    return (
-      <Container>
-        <ConfirmBindingText>Key already bound</ConfirmBindingText>
-        {this.props.conflicts.length >= 1 ?
-          <ClashContainer>
-            <ClashContent>
-              <Key>{this.props.newBind.name}</Key> is also bound to
-              <ClashesContainer>
-                {this.props.conflicts.map((keybind, index) => (
-                  <ClashingKey key={index}>
-                    "{keybind.description.toTitleCase()}"
-                    {index !== this.props.conflicts.length - 1 ? ', ' : ''}
-                  </ClashingKey>
-                ))}
-              </ClashesContainer>
-            </ClashContent>
-            <StillWantText>Do you still want to rebind?</StillWantText>
-          </ClashContainer> : null}
-        <ButtonContainer>
-          <Button type='blue' text='Yes' onClick={this.props.onYesClick} styles={ButtonStyles} />
-          <Button type='gray' text='No' onClick={this.props.onNoClick} styles={ButtonStyles} />
-        </ButtonContainer>
-      </Container>
-    );
+export function ConfirmBindDialog(props: Props) {
+  function onYesClick() {
+    props.onYesClick();
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
   }
+
+  function onNoClick() {
+    props.onNoClick();
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
+  }
+
+  return (
+    <Container>
+      <ConfirmBindingText>Key already bound</ConfirmBindingText>
+      {props.conflicts.length >= 1 ?
+        <ClashContainer>
+          <ClashContent>
+            <Key>{props.newBind.name}</Key> is also bound to
+            <ClashesContainer>
+              {props.conflicts.map((keybind, index) => (
+                <ClashingKey key={index}>
+                  "{keybind.description.toTitleCase()}"
+                  {index !== props.conflicts.length - 1 ? ', ' : ''}
+                </ClashingKey>
+              ))}
+            </ClashesContainer>
+          </ClashContent>
+          <StillWantText>Do you still want to rebind?</StillWantText>
+        </ClashContainer> : null}
+      <ButtonContainer>
+        <Button type='blue' text='Yes' onClick={onYesClick} styles={ButtonStyles} />
+        <Button type='gray' text='No' onClick={onNoClick} styles={ButtonStyles} />
+      </ButtonContainer>
+    </Container>
+  );
 }

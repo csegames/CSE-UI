@@ -45,9 +45,13 @@ export interface Props {
 }
 
 export function KeybindRow(props: Props) {
+  function onMouseEnter() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+  }
+
   const { keybind, onStartBind } = props;
   return (
-    <ItemContainer>
+    <ItemContainer onMouseEnter={onMouseEnter}>
       <div>{keybind.description.toTitleCase()}</div>
 
       <BindsContainer>
@@ -55,12 +59,12 @@ export function KeybindRow(props: Props) {
           const className = bind && bind.value ? 'assigned' : 'unassigned';
           if (bind.iconClass) {
             return (
-              <Bind className={`${bind.iconClass} ${className}`} onClick={() => onStartBind(keybind, i)}></Bind>
+              <Bind className={`${bind.iconClass} ${className}`} onMouseEnter={onMouseEnter} onClick={() => onStartBind(keybind, i)}></Bind>
             );
           }
 
           return (
-            <Bind className={className} onClick={() => onStartBind(keybind, i)}>{bind.name}</Bind>
+            <Bind className={className} onMouseEnter={onMouseEnter} onClick={() => onStartBind(keybind, i)}>{bind.name}</Bind>
           );
         })}
       </BindsContainer>
