@@ -73,7 +73,7 @@ export function defaultPlayerStateModel(): PlayerStateModel {
     stamina: defaultCurrentMax(),
     blood: defaultCurrentMax(),
     level: 1,
-    race: Race.PerftestMultiStabber,
+    race: 25,
     classID: null,
     gender: Gender.Male,
     currentDeaths: 0,
