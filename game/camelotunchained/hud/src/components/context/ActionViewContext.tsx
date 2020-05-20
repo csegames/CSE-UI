@@ -378,7 +378,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       anchors: {
         [anchorId]: {
           id: anchorId,
-          positionPercentage: { x: 50, y: systemAnchorId ? 80 : 95 },
+          positionPercentage: { x: 50, y: systemAnchorId ? 90 : 95 },
           activeGroupIndex: 0,
           groups: [groupId],
           children: [firstSlotId],
@@ -966,7 +966,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         ...this.state.anchors,
         [anchorId]: {
           id: anchorId,
-          positionPercentage: { x: 50, y: 80 },
+          positionPercentage: { x: 50, y: 90 },
           activeGroupIndex: 0,
           groups: [groupId],
           children: [newSlot.id],

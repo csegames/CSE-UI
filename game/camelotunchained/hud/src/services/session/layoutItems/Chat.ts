@@ -15,11 +15,11 @@ export default {
     },
     y: {
       anchor: Edge.BOTTOM,
-      offset: 80,
+      offset: 120,
     },
     size: {
       width: 480,
-      height: 240,
+      height: 220,
     },
     scale: 1,
     opacity: 1,

@@ -45,7 +45,7 @@ import SelfDamageNumbers from './layoutItems/SelfDamageNumbers';
 const localStorageKey = 'cse_hud_layout-state';
 
 // if the local storage value for the reset code doesn't match this, then force a reset
-const FORCE_RESET_CODE = '0.8.2';
+const FORCE_RESET_CODE = '0.8.3';
 
 // This is considered the current version we expect the state to be in.
 // We set the state to this version when we make a new layout state.
