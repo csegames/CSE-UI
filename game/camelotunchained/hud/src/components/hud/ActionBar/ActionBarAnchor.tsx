@@ -108,11 +108,10 @@ export interface ActionBarAnchorProps extends ActionViewAnchor {
   actionView: ActionViewContextState;
 }
 
-const viewport = getViewportSize();
-
 // tslint:disable-next-line:function-name
 export function ActionBarAnchor(props: ActionBarAnchorProps) {
-  const [dragPosition, setDragPosition] = useState(props.positionPercentage);
+  const [viewport, setViewport] = useState(getViewportSize());
+  const [dragPositionPercentage, setDragPositionPercentage] = useState(props.positionPercentage);
   const [ref, setRef] = useState(null);
   const [bounds, setBounds] = useState({
     width: 0,
@@ -130,6 +129,14 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
   const isVisible = actionView.anchorIdToVisibility[props.id] || false;
 
   const inEditMode = actionView.editMode !== EditMode.Disabled && actionView.editMode !== EditMode.Changing;
+  useEffect(() => {
+    window.addEventListener('optimizedResize', handleViewportResize);
+
+    return () => {
+      window.removeEventListener('optimizedResize', handleViewportResize);
+    };
+  }, [viewport]);
+
   useEffect(() => {
     if (ref) {
       setBounds(getBoundsWithChildren(ref));
@@ -155,6 +162,28 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
     }
 
     actionView.activateNextGroup(props.id);
+  }
+
+  function handleViewportResize() {
+    setViewport(getViewportSize());
+  }
+
+  function getPositionX() {
+    if (((dragPositionPercentage.x / 100) * viewport.width) + (bounds.width / 2) > viewport.width) {
+      const clampedPos = viewport.width - (bounds.width / 2);
+      return (clampedPos / viewport.width) * 100;
+    }
+
+    return dragPositionPercentage.x;
+  }
+
+  function getPositionY() {
+    if (((dragPositionPercentage.y / 100) * viewport.height) + (bounds.height / 2) > viewport.height) {
+      const clampedPos = viewport.height - (bounds.height / 2);
+      return (clampedPos / viewport.height) * 100;
+    }
+
+    return dragPositionPercentage.y;
   }
 
   function contextMenuItems() {
@@ -236,23 +265,24 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
 
             const x = (newPos.x / viewport.width) * 100;
             const y = (newPos.y / viewport.height) * 100;
-            setDragPosition({ x, y });
+            setDragPositionPercentage({ x, y });
           }}
 
           onDragEnd={() => {
-            actionView.setAnchorPosition(props.id, dragPosition);
+            actionView.setAnchorPosition(props.id, dragPositionPercentage);
           }}
         >
           <BoundingRect
-            top={dragPosition.y}
-            left={dragPosition.x}
+            top={dragPositionPercentage.y}
+            left={dragPositionPercentage.x}
             width={bounds.width}
             height={bounds.height}/>
         </Drag>)
       }
       <Container
         {...display}
-        {...dragPosition}
+        x={getPositionX()}
+        y={getPositionY()}
         ref={r => setRef(r)}
       >
         {
