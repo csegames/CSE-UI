@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { BanesAndBoonsInfo, TraitMap, TraitIdMap } from '../../services/session/banesAndBoons';
+import { TraitMap, TraitIdMap, BanesAndBoonsInfo } from '../../services/session/banesAndBoons';
 import Trait from './Trait';
 
 const Bane = (props: {

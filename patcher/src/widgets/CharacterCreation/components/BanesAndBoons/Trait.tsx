@@ -196,7 +196,7 @@ class Trait extends React.Component<TraitProps, {}> {
 
     const addedRankTrait = trait.ranks && (addedTraits[trait.ranks[trait.rank - 1]] || addedTraits[trait.ranks[trait.rank]]);
 
-    const exclusivityGroup = allExclusives[trait.id] ? trait.exclusivityGroup : [];
+    const exclusivityGroup = allExclusives[trait.id] ? trait.exclusives.ids : [];
 
     const shouldBeDisabledBecauseExclusives = exclusivityGroup && exclusivityGroup.length > 0 &&
       exclusivityGroup.filter((exclusive: string) => addedTraits[exclusive] &&
@@ -204,7 +204,7 @@ class Trait extends React.Component<TraitProps, {}> {
 
     const shouldBeDisabled = shouldBeDisabledBecausePreReqs || shouldBeDisabledBecauseExclusives || trait.required ||
     (trait.points <= -1 && totalPoints + (trait.points * -1) > (maxPoints / 2) && !trait.selected) ||
-    (trait.points >= 1 && totalPoints + (trait.points) > (maxPoints / 2) && !trait.selected);
+    (trait.points >= 0 && totalPoints + (trait.points) > (maxPoints / 2) && !trait.selected);
 
     const traitColor = trait.category === 'Class' ? colors.classTrait : trait.category === 'Race' ?
       colors.raceTrait : trait.category === 'Faction' ? colors.factionTrait : '#636262';
@@ -255,8 +255,8 @@ class Trait extends React.Component<TraitProps, {}> {
                   </DependencyText>,
                 )}
                 </DependenciesContainer>
-                <RegularText>Minimum exclusives required: {trait.minRequired}</RegularText>
-                <RegularText>Maximum exclusives allowed: {trait.maxAllowed}</RegularText>
+                <RegularText>Minimum exclusives required: {trait.exclusives.minRequired}</RegularText>
+                <RegularText>Maximum exclusives allowed: {trait.exclusives.maxAllowed}</RegularText>
               </div>
               }
               {trait.ranks && <RegularText>Shift + Left Click to downgrade</RegularText>}

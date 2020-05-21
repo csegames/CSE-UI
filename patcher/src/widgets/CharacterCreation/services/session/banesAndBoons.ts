@@ -6,22 +6,16 @@
 
 import * as _ from 'lodash';
 import { Module } from 'redux-typed-modules';
+import { Trait, TraitCategory, TraitsInfo } from '@csegames/library/lib/camelotunchained/graphql/schema';
 import { webAPI } from '@csegames/library/lib/camelotunchained';
-import { patcher } from '../../../../services/patcher';
+import { patcher, PatchPermissions } from '../../../../services/patcher';
+import { GraphQLQuery, query, GraphQLQueryResult } from '@csegames/library/lib/_baseGame/graphql/query';
+import { RequestOptions } from '@csegames/library/lib/_baseGame';
 
-export interface BanesAndBoonsInfo {
-  id: any;
-  name: string;
-  description: string;
-  points: number;
-  icon: string;
+export interface BanesAndBoonsInfo extends Trait {
   required: boolean;
-  category: string;
   selected: boolean;
-  prerequisites: string[];
   rank: number;
-  ranks: string[];
-  exclusivityGroup: string[];
   minRequired: number;
   maxAllowed: number;
   finished: boolean;
@@ -67,16 +61,54 @@ export interface FetchTraitInterface {
   initType: 'boons' | 'banes' | 'both';
 }
 
-async function getTraits(dispatch: (action: any) => any, payload: FetchTraitInterface) {
-  const config: RequestConfig = () => ({
-    url: payload.apiHost,
-    headers: {
-      Authorization: `Bearer ${patcher.getAccessToken()}`,
-    },
+async function gqlQuery(q: GraphQLQuery, apiHost: string, options: RequestOptions = {}): Promise<GraphQLQueryResult<{ traits: TraitsInfo }>> {
+  const requestOptions: RequestOptions = {
+    headers: Object.assign({
+      // 'api-version': `${game.apiVersion}`,
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${game.accessToken}`,
+      CharacterId: '',
+      Accept: 'application/json',
+    }, options.headers),
+  };
+  return query(q, {
+    url: apiHost + 'graphql',
+    requestOptions,
   });
-  const res = await webAPI.TraitsAPI.GetTraitsV1(config);
+}
+
+const traitsQuery: GraphQLQuery = {
+  query: `
+    query TraitsQuery {
+      traits {
+        maxAllowed
+        minRequired
+        traits {
+          id
+          category
+          description
+          exclusives {
+            ids
+            maxAllowed
+            minRequired
+          }
+          icon
+          name
+          points
+          prerequisites
+          ranks
+          required
+          specifier
+        }
+      }
+    }`,
+};
+
+
+async function getTraits(dispatch: (action: any) => any, payload: FetchTraitInterface) {
+  const res = await gqlQuery(traitsQuery, payload.apiHost);
   if (res.ok) {
-    const data = JSON.parse(res.data);
+    const data = res.data.traits;
     dispatch(onInitializeTraits({
       playerClass: _.trim(payload.playerClass),
       race: payload.race,
@@ -483,20 +515,72 @@ export const onInitializeTraits = module.createAction({
     playerClass: string,
     faction: string,
     race: string,
-    banesAndBoons: any,
+    banesAndBoons: TraitsInfo,
     initType: 'boons' | 'banes' | 'both',
   }) => action,
   reducer: (state, action) => {
     const { playerClass, faction, race, banesAndBoons, initType } = action;
-    const generalTraits = banesAndBoons.general;
-    const playerClasses = banesAndBoons.classes;
-    const factions = banesAndBoons.factions;
-    const races = banesAndBoons.races;
-    const ranks = banesAndBoons.ranks;
-    const exclusives = banesAndBoons.exclusivity;
+    const generalTraits  = { required: [] as string[], optional: [] as string[] };
+    const playerClasses: { [classId: string]: { required: string[], optional: string[] }} = {};
+    const factions: { [faction: string]: { required: string[], optional: string[] }} = {};
+    const races: { [race: string]: { required: string[], optional: string[] }} = {};
+
+    banesAndBoons.traits.forEach((trait) => {
+      switch(trait.category) {
+        case TraitCategory.Class: {
+          if (!playerClasses[trait.specifier]) {
+            playerClasses[trait.specifier] = { required: [], optional: [] };
+          }
+
+          if (trait.required) {
+            playerClasses[trait.specifier].required.push(trait.id);
+          } else {
+            playerClasses[trait.specifier].optional.push(trait.id);
+          }
+
+          break;
+        }
+        case TraitCategory.Faction: {
+          if (!factions[trait.specifier]) {
+            factions[trait.specifier] = { required: [], optional: [] };
+          }
+
+          if (trait.required) {
+            factions[trait.specifier].required.push(trait.id);
+          } else {
+            factions[trait.specifier].optional.push(trait.id);
+          }
+
+          break;
+        }
+        case TraitCategory.Race: {
+          if (!races[trait.specifier]) {
+            races[trait.specifier] = { required: [], optional: [] };
+          }
+
+          if (trait.required) {
+            races[trait.specifier].required.push(trait.id);
+          } else {
+            races[trait.specifier].optional.push(trait.id);
+          }
+          break;
+        }
+        default: {
+          if (trait.required) {
+            generalTraits.required.push(trait.id);
+          } else {
+            generalTraits.optional.push(trait.id);
+          }
+          break;
+        }
+      }
+    });
+
+    const ranks = [] as any;
+    const exclusives = [] as any;
     const allTraits = banesAndBoons.traits;
-    const minPoints = banesAndBoons.minPoints;
-    const maxPoints = banesAndBoons.maxPoints;
+    const minPoints = banesAndBoons.minRequired;
+    const maxPoints = banesAndBoons.maxAllowed;
     const generalBoons: { [id: string]: string } = {};
     const generalBanes: { [id: string]: string } = {};
     const playerClassBoons: { [id: string]: string } = {};
@@ -509,6 +593,7 @@ export const onInitializeTraits = module.createAction({
     const addedBanes: { [id: string]: string } = {};
     const traits: { [id: string]: BanesAndBoonsInfo } = {};
     banesAndBoons.traits.forEach((i: BanesAndBoonsInfo) => traits[i.id] = i);
+
     // Rank traits
     const allRanks = ranks.map((rankArray: string[]) =>
       rankArray.map((rankId: string, i: number) =>
@@ -529,10 +614,11 @@ export const onInitializeTraits = module.createAction({
       rankArray.find((rank: BanesAndBoonsInfo) => rank.rank === 0));
     const firstRanks: { [id: string]: BanesAndBoonsInfo } = {};
     firstRanksArr.forEach((trait: BanesAndBoonsInfo) => firstRanks[trait.id] = trait);
-    const combinedRanksArr = allRanks.reduce((rank1: BanesAndBoonsInfo[], rank2: BanesAndBoonsInfo[]) =>
-      rank1.concat(rank2));
+
+    const combinedRanksArr = allRanks.length > 0 ? allRanks.reduce((rank1: BanesAndBoonsInfo[], rank2: BanesAndBoonsInfo[]) =>
+      rank1.concat(rank2)) : [];
     const combinedRanks: { [id: string]: BanesAndBoonsInfo } = {};
-    combinedRanksArr.forEach((trait: BanesAndBoonsInfo) => combinedRanks[trait.id] = trait.id);
+    combinedRanksArr.forEach((trait: BanesAndBoonsInfo) => combinedRanks[trait.id] = trait);
 
     // Exclusive traits
     interface ExclusiveInfo {
@@ -588,18 +674,43 @@ export const onInitializeTraits = module.createAction({
       }
     });
 
-    const playerClassTraits = _.find(allClassTraits, _playerClass => _playerClass.id === playerClass);
-    const factionTraits = _.find(allFactionTraits, _faction => _faction.id === faction);
-    const raceTraits = _.find(allRaceTraits, _race => _race.id === race);
+    // Filter traits according to selected class, faction, and race. If user is a dev, also allow the Admin specifiers.
+    const playerClassTraits = _.find(allClassTraits, _playerClass => _playerClass.id === playerClass ||
+      (_playerClass.id === 'Admin' && (patcher.getPermissions() & PatchPermissions.Devs) !== 0));
+    const factionTraits = _.find(allFactionTraits, _faction => _faction.id === faction ||
+      (_faction.id === 'Admin' && (patcher.getPermissions() & PatchPermissions.Devs) !== 0));
+    const raceTraits = _.find(allRaceTraits, _race => _race.id === race ||
+      (_race.id === 'Admin' && (patcher.getPermissions() & PatchPermissions.Devs) !== 0));
+
+    if ((patcher.getPermissions() & PatchPermissions.Devs) !== 0) {
+      const adminPlayerClassTraits = _.find(allClassTraits, _playerClass => _playerClass.id === 'Admin');
+      const adminFactionTraits = _.find(allFactionTraits, _faction => _faction.id === 'Admin');
+      const adminRaceTraits = _.find(allRaceTraits, _race => _race.id === 'Admin');
+
+      if (adminPlayerClassTraits) {
+        playerClassTraits.optional = playerClassTraits.optional.concat(adminPlayerClassTraits.optional);
+        playerClassTraits.required = playerClassTraits.required.concat(adminPlayerClassTraits.required);
+      }
+
+      if (adminFactionTraits) {
+        factionTraits.optional = factionTraits.optional.concat(adminFactionTraits.optional);
+        factionTraits.required = factionTraits.required.concat(adminFactionTraits.required);
+      }
+
+      if (adminRaceTraits) {
+        raceTraits.optional = raceTraits.optional.concat(adminRaceTraits.optional);
+        raceTraits.required = raceTraits.required.concat(adminRaceTraits.required);
+      }
+    }
 
     // Required traits
     const requiredBoons = [
       ...playerClassTraits && playerClassTraits.required ?
-        playerClassTraits.required.filter((id: string) => traits[id].points >= 1) : [],
+        playerClassTraits.required.filter((id: string) => traits[id].points >= 0) : [],
       ...factionTraits && factionTraits.required ?
-        factionTraits.required.filter((id: string) => traits[id].points >= 1) : [],
+        factionTraits.required.filter((id: string) => traits[id].points >= 0) : [],
       ...raceTraits && raceTraits.required ?
-        raceTraits.required.filter((id: string) => traits[id].points >= 1) : [],
+        raceTraits.required.filter((id: string) => traits[id].points >= 0) : [],
     ].map((id) => {
       traits[id] = { ...traits[id], required: true };
       return Object.assign({}, traits[id], { required: true });
@@ -636,75 +747,75 @@ export const onInitializeTraits = module.createAction({
       // playerClassBoons
       playerClassTraits && playerClassTraits.optional && [
         ...playerClassTraits.optional.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Class' } : traits[id];
-          return traits[id].points >= 1 && !combinedRanks[id];
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.Class } : traits[id];
+          return traits[id].points >= 0 && !combinedRanks[id];
         }) || [],
         ...playerClassTraits.required.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Class' } : { ...traits[id], selected: true };
-          return traits[id].points >= 1 && !combinedRanks[id];
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.Class } : { ...traits[id], selected: true };
+          return traits[id].points >= 0 && !combinedRanks[id];
         }) || [],
-        playerClassTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 1),
+        playerClassTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 0),
       ].filter((id: string) => id).forEach((key: string) => {
         playerClassBoons[key] = key;
-        traits[key] = { ...traits[key], category: 'Class' };
+        traits[key] = { ...traits[key], category: TraitCategory.Class };
       });
 
       // factionBoons
       factionTraits && factionTraits.optional && [
         ...factionTraits.optional.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Faction' } : traits[id];
-          return traits[id].points >= 1 && !combinedRanks[id];
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.Faction } : traits[id];
+          return traits[id].points >= 0 && !combinedRanks[id];
         }) || [],
         ...factionTraits.required.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Faction', selected: true } :
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.Faction, selected: true } :
             { ...traits[id], selected: true };
-          return traits[id].points >= 1 && !combinedRanks[id];
+          return traits[id].points >= 0 && !combinedRanks[id];
         }) || [],
-        factionTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 1),
+        factionTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 0),
       ].filter((id: string) => id).forEach((key: string) => {
         factionBoons[key] = key;
-        traits[key] = { ...traits[key], category: 'Faction' };
+        traits[key] = { ...traits[key], category: TraitCategory.Faction };
       });
 
       // raceBoons
       raceTraits && raceTraits.optional && [
         ...raceTraits.optional.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Race' } : traits[id];
-          return traits[id].points >= 1 && !combinedRanks[id];
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.Race } : traits[id];
+          return traits[id].points >= 0 && !combinedRanks[id];
         }) || [],
         ...raceTraits.required.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Race', selected: true } :
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.Race, selected: true } :
             { ...traits[id], selected: true };
-          return traits[id].points >= 1 && !combinedRanks[id];
+          return traits[id].points >= 0 && !combinedRanks[id];
         }) || [],
-        raceTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 1),
+        raceTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 0),
       ].filter((id: string) => id).forEach((key: string) => {
         raceBoons[key] = key;
-        traits[key] = { ...traits[key], category: 'Race' };
+        traits[key] = { ...traits[key], category: TraitCategory.Race };
       });
 
       // generalBoons
       if (generalTraits) {
         generalTraits.optional && [
           ...generalTraits.optional.filter((id: string) => {
-            traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General' } : traits[id];
-            return traits[id].points >= 1 && !combinedRanks[id];
+            traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.General } : traits[id];
+            return traits[id].points >= 0 && !combinedRanks[id];
           }) || [],
           ...generalTraits.required.filter((id: string) => {
-            traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General', selected: true } :
+            traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.General, selected: true } :
               { ...traits[id], selected: true };
-            return traits[id].points >= 1 && !combinedRanks[id];
+            return traits[id].points >= 0 && !combinedRanks[id];
           }) || [],
-          generalTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 1),
+          generalTraits.optional.find((id: string) => firstRanks[id] && traits[id].points >= 0),
         ].filter((id: string) => id).forEach((key: string) => {
           generalBoons[key] = key;
-          traits[key] = { ...traits[key], category: 'General' };
+          traits[key] = { ...traits[key], category: TraitCategory.General };
         });
       } else {
         Object.keys(undesirableTraits).forEach((key) => {
           if (traits[key].points > 0) {
             generalBoons[key] = key;
-            traits[key] = { ...traits[key], category: 'General' };
+            traits[key] = { ...traits[key], category: TraitCategory.General };
           }
         });
       }
@@ -719,76 +830,76 @@ export const onInitializeTraits = module.createAction({
       // playerclassBanes
       playerClassTraits && playerClassTraits.optional && [
         ...playerClassTraits.optional.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Class' } : traits[id];
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.Class } : traits[id];
           return traits[id].points <= -1 && !combinedRanks[id];
         }) || [],
         ...playerClassTraits.required.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Class', selected: true } :
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.Class, selected: true } :
             { ...traits[id], selected: true };
           return traits[id].points <= -1 && !combinedRanks[id];
         }) || [],
         playerClassTraits.optional.find((id: string) => firstRanks[id] && traits[id].points <= -1),
       ].filter((id: string) => id).forEach((key: string) => {
         playerClassBanes[key] = key;
-        traits[key] = { ...traits[key], category: 'Class' };
+        traits[key] = { ...traits[key], category: TraitCategory.Class };
       });
 
       // factionBanes
       factionTraits && factionTraits.optional && [
         ...factionTraits.optional.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Faction' } : traits[id];
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.Faction } : traits[id];
           return traits[id].points <= -1 && !combinedRanks[id];
         }) || [],
         ...factionTraits.required.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Faction', selected: true } :
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.Faction, selected: true } :
             { ...traits[id], selected: true };
           return traits[id].points <= -1 && !combinedRanks[id];
         }) || [],
         factionTraits.optional.find((id: string) => firstRanks[id] && traits[id].points <= -1),
       ].filter((id: string) => id).forEach((key: string) => {
         factionBanes[key] = key;
-        traits[key] = { ...traits[key], category: 'Faction' };
+        traits[key] = { ...traits[key], category: TraitCategory.Faction };
       });
 
       // raceBanes
       raceTraits && raceTraits.optional && [
         ...raceTraits.optional.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Race' } : traits[id];
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.Race } : traits[id];
           return traits[id].points <= -1 && !combinedRanks[id];
         }) || [],
         ...raceTraits.required.filter((id: string) => {
-          traits[id] = combinedRanks[id] ? { ...traits[id], category: 'Race', selected: true } :
+          traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.Race, selected: true } :
             { ...traits[id], selected: true };
           return traits[id].points <= -1 && !combinedRanks[id];
         }) || [],
         raceTraits.optional.find((id: string) => firstRanks[id] && traits[id].points <= -1),
       ].filter((id: string) => id).forEach((key: string) => {
         raceBanes[key] = key;
-        traits[key] = { ...traits[key], category: 'Race' };
+        traits[key] = { ...traits[key], category: TraitCategory.Race };
       });
 
       // generalBanes
       if (generalTraits) {
         generalTraits.optional && [
           ...generalTraits.optional.filter((id: string) => {
-            traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General' } : traits[id];
+            traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.General } : traits[id];
             return traits[id].points <= -1 && !combinedRanks[id];
           }) || [],
           ...generalTraits.required.filter((id: string) => {
-            traits[id] = combinedRanks[id] ? { ...traits[id], category: 'General', selected: true } :
+            traits[id] = combinedRanks[id] ? { ...traits[id], category: TraitCategory.General, selected: true } :
               { ...traits[id], selected: true };
             return traits[id].points <= -1 && !combinedRanks[id];
           }) || [],
           generalTraits.optional.find((id: string) => firstRanks[id] && traits[id].points <= -1),
         ].filter((id: string) => id).forEach((key: string) => {
           generalBanes[key] = key;
-          traits[key] = { ...traits[key], category: 'General' };
+          traits[key] = { ...traits[key], category: TraitCategory.General };
         });
       } else {
         Object.keys(undesirableTraits).forEach((key) => {
           if (traits[key].points < 0) {
             generalBanes[key] = key;
-            traits[key] = { ...traits[key], category: 'General' };
+            traits[key] = { ...traits[key], category: TraitCategory.General };
           }
         });
       }
@@ -888,13 +999,13 @@ export const onResetBoons = module.createAction({
 
     const requiredBoons = [
       ...generalTraits && generalTraits.required ?
-        generalTraits.required.filter((id: string) => traits[id].points >= 1) : [],
+        generalTraits.required.filter((id: string) => traits[id].points >= 0) : [],
       ...playerClassTraits && playerClassTraits.required ?
-        playerClassTraits.required.filter((id: string) => traits[id].points >= 1) : [],
+        playerClassTraits.required.filter((id: string) => traits[id].points >= 0) : [],
       ...factionTraits && factionTraits.required ?
-        factionTraits.required.filter((id: string) => traits[id].points >= 1) : [],
+        factionTraits.required.filter((id: string) => traits[id].points >= 0) : [],
       ...raceTraits && raceTraits.required ?
-        raceTraits.required.filter((id: string) => traits[id].points >= 1) : [],
+        raceTraits.required.filter((id: string) => traits[id].points >= 0) : [],
     ].map((id) => {
       traits[id] = { ...traits[id], selected: true, required: true };
       return Object.assign({}, traits[id], { required: true });
