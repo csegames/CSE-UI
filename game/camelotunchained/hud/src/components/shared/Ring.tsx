@@ -13,11 +13,20 @@ const circleShared = `
   left: 0;
   top: 0;
   @keyframes blinkStroke {
-    from {
+    0% {
       opacity: 1;
     }
-    to {
+    25% {
       opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    75% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
     }
   }
 
@@ -89,7 +98,7 @@ const pulseStrokeAnim = {
 };
 
 const blinkAnim = {
-  animation: { opacity: [1, 0, 1] },
+  animation: { opacity: [1, 0, 1, 0] },
   duration: 500,
   runOnMount: true,
   loop: true,

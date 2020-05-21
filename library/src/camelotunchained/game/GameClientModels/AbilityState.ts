@@ -97,9 +97,19 @@ function onReceiveAbilityActivate(id: string) {
   game.trigger(eventName);
 }
 
+let updateHandle = null;
+let activateHandle = null;
 export default function() {
+  if (updateHandle) {
+    updateHandle.clear();
+  }
+
+  if (activateHandle) {
+    activateHandle.clear();
+  }
+
   if (typeof engine !== 'undefined') {
-    engine.on(AbilityState_Update, onReceiveAbilityStateUpdate);
-    engine.on(AbilityState_Activate, onReceiveAbilityActivate);
+    updateHandle = engine.on(AbilityState_Update, onReceiveAbilityStateUpdate);
+    activateHandle = engine.on(AbilityState_Activate, onReceiveAbilityActivate);
   }
 }

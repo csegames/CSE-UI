@@ -166,6 +166,7 @@ interface InjectedProps {
 
 export interface State {
   abilityState: ImmutableAbilityState;
+  isActivating: boolean;
 }
 
 export type Props = ActionBtnProps & InjectedProps;
@@ -173,11 +174,14 @@ export type Props = ActionBtnProps & InjectedProps;
 // tslint:disable-next-line:function-name
 class ActionBtnWithInjectedProps extends React.Component<Props, State> {
   private evh: EventHandle;
+  private activatedEvh: EventHandle;
   private interval: number;
+  private isActivatedTimeout: number;
   constructor(props: Props) {
     super(props);
     this.state = {
       abilityState: cloneDeep(camelotunchained.game.abilityStates[props.actionId]),
+      isActivating: false,
     };
   }
 
@@ -222,7 +226,7 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
           <OverlayShadow />
           <KeybindInfo>{this.props.keybindName}</KeybindInfo>
           <InnerRing {...this.props} abilityState={abilityState} />
-          <OuterRing {...this.props} abilityState={abilityState} />
+          <OuterRing {...this.props} abilityState={abilityState} isActivating={this.state.isActivating} />
           {queued && <QueuedStateTick />}
         </Container>
       </Tooltip>
@@ -230,18 +234,22 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    if (typeof this.props.actionId !== 'number' || !camelotunchained.game.abilityStates[this.props.actionId]) {
-      return;
-    }
-
     this.evh = camelotunchained.game.abilityStates[this.props.actionId].onUpdated(this.handleAbilityStateUpdate);
+    this.activatedEvh = camelotunchained.game.abilityStates[this.props.actionId].onActivated(this.handleAbilityActivated);
   }
 
   public componentDidUpdate(prevProps: Props) {
     if (prevProps.actionId !== this.props.actionId) {
-      this.evh.clear();
-      this.evh = camelotunchained.game.abilityStates[this.props.actionId].onUpdated(this.handleAbilityStateUpdate);
+      if (this.evh) {
+        this.evh.clear();
+      }
 
+      if (this.activatedEvh) {
+        this.activatedEvh.clear();
+      }
+
+      this.evh = camelotunchained.game.abilityStates[this.props.actionId].onUpdated(this.handleAbilityStateUpdate);
+      this.activatedEvh = camelotunchained.game.abilityStates[this.props.actionId].onActivated(this.handleAbilityActivated);
       this.setState({ abilityState: cloneDeep(camelotunchained.game.abilityStates[this.props.actionId]) });
     }
   }
@@ -249,6 +257,10 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
   public componentWillUnmount() {
     if (this.evh) {
       this.evh.clear();
+    }
+
+    if (this.activatedEvh) {
+      this.activatedEvh.clear();
     }
   }
 
@@ -278,6 +290,17 @@ class ActionBtnWithInjectedProps extends React.Component<Props, State> {
     }
 
     this.setState({ abilityState });
+  }
+
+  private handleAbilityActivated = () => {
+    if (this.isActivatedTimeout) {
+      window.clearTimeout(this.isActivatedTimeout);
+    }
+
+    console.log('is active');
+    this.setState({ isActivating: true });
+    console.log('turning off');
+    this.isActivatedTimeout = window.setTimeout(() => this.setState({ isActivating: false }), 500);
   }
 
   private onClick = (e: React.MouseEvent<HTMLDivElement>) => {

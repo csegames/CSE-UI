@@ -37,6 +37,7 @@ const outerRingStates = (
 interface Props extends ActionBtnProps {
   abilityState: ImmutableAbilityState;
   uiContext: UIContext;
+  isActivating: boolean;
 }
 
 interface State {
@@ -68,12 +69,23 @@ export class OuterRing extends React.Component<Props, State> {
       return null;
     }
 
+    if (this.props.isActivating) {
+      console.log('IS ACTIVATING');
+    } else {
+      console.log('IS NOT ACTIVATING');
+    }
+
     return (
       <Ring
         strokeWidth={display.ringStrokeWidth}
         radius={display.radius + display.ringStrokeWidth}
         centerOffset={display.radius}
-        foreground={this.state.foreground}
+        foreground={{
+          ...this.state.foreground,
+          animation: this.props.isActivating ? 'blink' : this.state.foreground.animation,
+          percent: this.props.isActivating ? 0.99 : this.state.foreground.percent,
+          color: this.props.isActivating ? 'yellow' : this.state.foreground.color,
+        }}
         background={this.state.background}
       />
     );
