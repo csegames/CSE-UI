@@ -78,8 +78,6 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
 
   public render() {
     const { traits, addedBoons, addedBanes } = this.props;
-    console.log('YOOOOOOO');
-    console.log(traits);
     const allBoons = [
       ...Object.keys(this.props.playerClassBoons).map((id: string) => traits[id]),
       ...Object.keys(this.props.raceBoons).map((id: string) => traits[id]),
@@ -93,8 +91,6 @@ class BanesAndBoons extends React.Component<BanesAndBoonsProps, BanesAndBoonsSta
       ...Object.keys(this.props.generalBanes).map((id: string) => traits[id])
         .sort((a, b) => (a.points * -1) - (b.points * -1)),
     ];
-    console.log(allBoons);
-    console.log(allBanes);
     const boonPoints = Object.keys(addedBoons).length > 0 && Object.keys(addedBoons).map((id: string) =>
       traits[id].points).reduce((a, b) => a + b) || 0;
     const banePoints = Object.keys(addedBanes).length > 0 && Object.keys(addedBanes).map((id: string) =>
