@@ -236,7 +236,7 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
 
   private handleAbilityBarStateUpdate = () => {
     const abilitiesArray = Object.values(camelotunchained.game.abilityBarState.abilities);
-    this.initializeActionView(abilitiesArray);
+    this.setState(this.initializeActionView(abilitiesArray));
   }
 
   private initializeState = () => {
@@ -247,7 +247,12 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
         return;
       }
 
-      this.initializeActionView(abilitiesArray);
+      const initialState = this.initializeActionView(abilitiesArray);
+      const anchorIdToVisibility = { ...this.state.anchorIdToVisibility };
+      Object.keys(initialState.anchors).forEach((anchorId) => {
+        anchorIdToVisibility[anchorId] = this.state.anchorIdToVisibility[anchorId] || (isSystemAnchorId(Number(anchorId)) ? false : true);
+      });
+      this.setState({ ...initialState, anchorIdToVisibility });
     }
   }
 
@@ -326,12 +331,11 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       this.isInitial = false;
     }
 
-    const anchorIdToVisibility = { ...this.state.anchorIdToVisibility };
-    Object.keys(actionView.anchors).forEach((anchorId) => {
-      anchorIdToVisibility[anchorId] = this.state.anchorIdToVisibility[anchorId] || (isSystemAnchorId(Number(anchorId)) ? false : true);
-    });
-
-    this.setState({ ...actionView, editMode: EditMode.Disabled, anchorIdToVisibility, systemAnchorIdToAbilities });
+    return {
+      ...actionView,
+      editMode: EditMode.Disabled,
+      systemAnchorIdToAbilities
+    };
   }
 
   private getAbilityGroupActionView = (abilityIds: number[], systemAnchorId?: number) => {
@@ -388,10 +392,6 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       slots,
       editMode: EditMode.Disabled,
       queuedAbilityId: null as number,
-      anchorIdToVisibility: {
-        ...this.state.anchorIdToVisibility,
-        [anchorId]: this.state.anchorIdToVisibility[anchorId] || (isSystemAnchorId(Number(anchorId)) ? false : true),
-      },
     } as any;
   }
 
@@ -553,6 +553,10 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       return;
     }
 
+    if (!anchor.groups[anchor.activeGroupIndex + 1]) {
+      return;
+    }
+
     let index = anchor.activeGroupIndex + 1;
     if (index >= anchor.groups.length) {
       index = 0;
@@ -578,6 +582,10 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
     const anchor = this.state.anchors[anchorId];
     if (!anchor) {
       console.warn(`Could not activatePrevGroup. An anchor with id '${anchorId}' was not found.`);
+      return;
+    }
+
+    if (anchor.groups[anchor.activeGroupIndex - 1]) {
       return;
     }
 

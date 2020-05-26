@@ -110,6 +110,13 @@ export interface ActionBarAnchorProps extends ActionViewAnchor {
 
 // tslint:disable-next-line:function-name
 export function ActionBarAnchor(props: ActionBarAnchorProps) {
+  const { actionView } = props;
+  const isVisible = actionView.anchorIdToVisibility[props.id] || false;
+
+  if (!isVisible) {
+    return null;
+  }
+
   const [viewport, setViewport] = useState(getViewportSize());
   const [dragPositionPercentage, setDragPositionPercentage] = useState(props.positionPercentage);
   const [ref, setRef] = useState(null);
@@ -125,10 +132,8 @@ export function ActionBarAnchor(props: ActionBarAnchorProps) {
   const display = ui.isUHD() ? theme.actionButtons.display.uhd : theme.actionButtons.display.hd;
   const faction = FactionExt.abbreviation(camelotunchained.game.selfPlayerState.faction);
   const definition = ui.isUHD() ? 'uhd' : 'hd';
-  const { actionView } = props;
-  const isVisible = actionView.anchorIdToVisibility[props.id] || false;
-
   const inEditMode = actionView.editMode !== EditMode.Disabled && actionView.editMode !== EditMode.Changing;
+
   useEffect(() => {
     window.addEventListener('optimizedResize', handleViewportResize);
 
