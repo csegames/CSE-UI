@@ -68,6 +68,7 @@ export function InviteFriendModal(props: Props) {
   const warbandContext = useContext(WarbandContext);
 
   async function onSendInviteClick() {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
     const res = await webAPI.GroupsAPI.InviteV1(
       webAPI.defaultConfig,
       warbandContext.groupID,
@@ -81,6 +82,7 @@ export function InviteFriendModal(props: Props) {
       props.onClickOverlay();
     } else {
       // failed
+      game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES_FAILURE);
       try {
         const reason = JSON.parse(res.data);
         setErrorMessage(`Error: ${typeof reason === 'string' ?
@@ -96,6 +98,11 @@ export function InviteFriendModal(props: Props) {
     setInviteName(e.target.value);
   }
 
+  function onCancelClick() {
+    props.onClickOverlay();
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
+  }
+
   return (
     <MiddleModalComponent isVisible={props.isVisible} onClickOverlay={props.onClickOverlay}>
       <EnterNameText>Enter a username</EnterNameText>
@@ -107,7 +114,7 @@ export function InviteFriendModal(props: Props) {
       />
       <ButtonsContainer>
         <Button type='blue' text='Send Invite' styles={ModalButtonStyles} onClick={onSendInviteClick} />
-        <Button text='Cancel' type='gray' onClick={props.onClickOverlay} styles={ModalButtonStyles} />
+        <Button text='Cancel' type='gray' onClick={onCancelClick} styles={ModalButtonStyles} />
       </ButtonsContainer>
       <ErrorMessage>{errorMessage}</ErrorMessage>
     </MiddleModalComponent>

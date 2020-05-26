@@ -11,7 +11,7 @@ import { webAPI } from '@csegames/library/lib/hordetest';
 
 import { WarbandContext, onActiveGroupUpdate, WarbandContextState } from 'context/WarbandContext';
 import { InputContext, InputContextState } from 'context/InputContext';
-import { MatchmakingContext, MatchmakingContextState, PlayerNumberMode } from 'context/MatchmakingContext';
+import { MatchmakingContext, MatchmakingContextState, PlayerNumberMode, getMatchmakingGameModes } from 'context/MatchmakingContext';
 import { callEnterMatchmaking, callCancelMatchmaking } from 'context/actionhandler/MatchmakingActionHandler';
 // import { InfoSection } from './InfoSection';
 import { Button } from 'components/fullscreen/Button';
@@ -201,6 +201,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
 
   private handleInviteFriend = () => {
     console.log('clicked invite friend');
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP);
     this.setState({ isModalVisible: true });
   }
 
@@ -222,10 +223,12 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
   // }
 
   private onReady = () => {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
     this.setState({ isReady: true });
   }
 
   private onUnready = () => {
+    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
     this.setState({ isReady: false });
   }
 }
