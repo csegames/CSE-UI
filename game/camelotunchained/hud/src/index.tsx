@@ -21,6 +21,7 @@ import 'core-js/es6/set';
 
 import '@csegames/library/lib/_baseGame';
 import '@csegames/library/lib/camelotunchained';
+import { regMap } from '@csegames/library/lib/_baseGame/engineEvents';
 import initialize from './services/initialization';
 
 import * as React from 'react';
@@ -41,11 +42,33 @@ if (process.env.CUUI_HUD_ENABLE_WHY_DID_YOU_UPDATE) {
   // tslint:enable
 }
 
+// Catch any events that come through before the readyCheck is finished and fire them once we're ready and mounted.
+const engineEventQueue = {};
+Object.keys(regMap).forEach((eventName) => {
+  engine.on(eventName, (...args) => {
+    if (engineEventQueue[eventName]) {
+      engineEventQueue[eventName].push(args);
+    } else {
+      engineEventQueue[eventName] = [args];
+    }
+  });
+});
+
+function fireEventQueue() {
+  setTimeout(() => {
+    Object.keys(engineEventQueue).forEach((eventQueued) => {
+      engineEventQueue[eventQueued].forEach((args: any[]) => {
+        engine.trigger(eventQueued, ...args);
+      });
+    });
+  }, 500);
+}
+
 function readyCheck() {
   if ((!camelotunchained.game.selfPlayerState.characterID ||
         camelotunchained.game.selfPlayerState.characterID === 'unknown') &&
         game.isClientAttached) {
-    setTimeout(readyCheck, 100);
+    setTimeout(readyCheck, 20);
     return;
   }
 
@@ -59,7 +82,8 @@ function readyCheck() {
       </GlobalProviders>
     </ErrorBoundary>
   </Provider>,
-  document.getElementById('hud'));
+  document.getElementById('hud'),
+  fireEventQueue);
 }
 
 readyCheck();

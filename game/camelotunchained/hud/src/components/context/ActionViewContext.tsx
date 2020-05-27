@@ -250,7 +250,8 @@ export class ActionViewContextProvider extends React.Component<{}, ContextState>
       const initialState = this.initializeActionView(abilitiesArray);
       const anchorIdToVisibility = { ...this.state.anchorIdToVisibility };
       Object.keys(initialState.anchors).forEach((anchorId) => {
-        anchorIdToVisibility[anchorId] = this.state.anchorIdToVisibility[anchorId] || (isSystemAnchorId(Number(anchorId)) ? false : true);
+        anchorIdToVisibility[anchorId] = typeof this.state.anchorIdToVisibility[anchorId] === 'boolean' ?
+          this.state.anchorIdToVisibility[anchorId] : (isSystemAnchorId(Number(anchorId)) ? false : true);
       });
       this.setState({ ...initialState, anchorIdToVisibility });
     }

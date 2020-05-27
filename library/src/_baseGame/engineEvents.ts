@@ -10,7 +10,7 @@ import { CoherentEventHandle } from "./coherent";
  * Mapping of Engine Event name => GameInterface callback registration method name for creating
  * event forwarding methods on the GameInterface upon initialization
  */
-const regMap: {[key: string]: string} = {};
+export const regMap: {[key: string]: string} = {};
 
 /**
  * Begin chat is fired by the game client to tell the UI that the user wishes to begin sending a chat message.

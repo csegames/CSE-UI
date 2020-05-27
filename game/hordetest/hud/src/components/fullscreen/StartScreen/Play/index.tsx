@@ -11,7 +11,7 @@ import { webAPI } from '@csegames/library/lib/hordetest';
 
 import { WarbandContext, onActiveGroupUpdate, WarbandContextState } from 'context/WarbandContext';
 import { InputContext, InputContextState } from 'context/InputContext';
-import { MatchmakingContext, MatchmakingContextState, PlayerNumberMode, getMatchmakingGameModes } from 'context/MatchmakingContext';
+import { MatchmakingContext, MatchmakingContextState, PlayerNumberMode } from 'context/MatchmakingContext';
 import { callEnterMatchmaking, callCancelMatchmaking } from 'context/actionhandler/MatchmakingActionHandler';
 // import { InfoSection } from './InfoSection';
 import { Button } from 'components/fullscreen/Button';
