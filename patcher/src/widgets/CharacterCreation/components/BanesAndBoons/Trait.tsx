@@ -77,6 +77,7 @@ const DisabledShadow = css`
 const Name = styled.div`
   font-size: 1.3em;
   margin: 0 0 -4px 0;
+  white-space: nowrap;
 `;
 
 const Category = styled.div`
@@ -84,6 +85,7 @@ const Category = styled.div`
   margin-top: 0;
   margin-bottom: 0;
   margin-right: 5px;
+  white-space: nowrap;
 `;
 
 const Points = styled.div`
@@ -93,6 +95,7 @@ const Points = styled.div`
   margin-left: 5px;
   margin-top: 0;
   margin-bottom: 0;
+  white-space: nowrap;
 `;
 
 const DependenciesContainer = styled.div`

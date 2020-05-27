@@ -14,6 +14,7 @@ import { BanesAndBoonsInfo, TraitIdMap, TraitMap } from '../../services/session/
 import { colors } from '../../styleConstants';
 
 const Container = styled.div`
+  z-index: 10;
   flex: 1;
   flex-direction: column;
   padding-bottom: 15px;

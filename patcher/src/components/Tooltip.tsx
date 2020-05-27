@@ -146,6 +146,9 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
   }
 
   private initWindowDimensions = () => {
+    console.log('INIT WINDOW DIMENSIONS');
+    console.log(window.innerHeight);
+    console.log(window.innerWidth);
     this.windowDimensions = { innerHeight: window.innerHeight, innerWidth: window.innerWidth };
   }
 
