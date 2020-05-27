@@ -48,6 +48,7 @@ declare global {
     stamina: CurrentMax;
     blood: CurrentMax;
     entitySpecificResources: { [resourceType: number]: CurrentMax };
+    characterKind: CharacterKind;
 
     /**
      * EntityID of an entity this Player is controlling, if any.
@@ -145,6 +146,7 @@ export function defaultPlayerStateModel(): PlayerStateModel {
     stamina: defaultStamAndBlood(),
     blood: defaultStamAndBlood(),
     entitySpecificResources: {},
+    characterKind: CharacterKind.User,
   };
 }
 

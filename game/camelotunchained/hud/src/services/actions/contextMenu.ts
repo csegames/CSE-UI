@@ -135,7 +135,7 @@ export function getFriendlyTargetMenuItems(
   state: Entity,
   warbandContext: WarbandContextState,
 ) {
-  if ((state as PlayerStateModel).type !== 'player') {
+  if ((state as PlayerStateModel).type !== 'player' || (state as PlayerStateModel).characterKind !== CharacterKind.User) {
     return [];
   }
 

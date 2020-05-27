@@ -27,6 +27,7 @@ function testPlayer(): PlayerState {
     statuses: [] as any,
     race: Race.HumanMaleA,
     gender: Gender.Female,
+    characterKind: CharacterKind.User,
     health: [{
       current: 9000,
       max: 10000,
