@@ -516,7 +516,8 @@ class HUDWithInjectedContext extends React.Component<Props, State> {
   }
 
   private checkDisplayName = () => {
-    if (!this.props.myUserContext.myUser.displayName) {
+    const isLocalHost = game.webAPIHost.includes('localhost');
+    if (!this.props.myUserContext.myUser.displayName && !isLocalHost) {
       console.log('User doesnt have displayName set. Show modal so they are forced to input it.');
       game.trigger(
         'show-middle-modal',
