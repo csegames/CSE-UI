@@ -344,7 +344,7 @@ export function CareerStats(props: Props) {
             <Shadow />
             <TopContainer>
               <TitleText>Most Kills</TitleText>
-              <HighlightText>{Math.round(compiledData.bestKills).printWithSeparator(',')}</HighlightText>
+              <HighlightText>{Math.round(allTimeStats.mostKillsInMatch).printWithSeparator(',')}</HighlightText>
             </TopContainer>
 
             <SecondaryInfo>
@@ -393,7 +393,7 @@ export function CareerStats(props: Props) {
             <Shadow />
             <TopContainer>
               <TitleText>Most Damage Taken</TitleText>
-              <HighlightText>{Math.round(compiledData.bestDamageTaken).printWithSeparator(',')}</HighlightText>
+              <HighlightText>{Math.round(allTimeStats.mostDamageTakenInMatch).printWithSeparator(',')}</HighlightText>
             </TopContainer>
 
             <SecondaryInfo>
@@ -416,7 +416,7 @@ export function CareerStats(props: Props) {
             <SecondaryInfo>
               <SecondaryStatText>(All Champions)</SecondaryStatText>
               <SecondaryStatText>
-                Total: {Math.round(allTimeStats.damageApplied).printWithSeparator(',')}
+                Total: {Math.round(allTimeStats.mostDamageAppliedInMatch).printWithSeparator(',')}
               </SecondaryStatText>
               <SecondaryStatText>
                 Average: {Math.round(allTimeStats.damageApplied / compiledData.totalMatches).printWithSeparator(',')}

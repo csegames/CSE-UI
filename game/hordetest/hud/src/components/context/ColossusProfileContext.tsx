@@ -43,6 +43,9 @@ const query = gql`
         matchesPlayed
         thumbsUp
         totalPlayTime
+        mostDamageAppliedInMatch
+        mostDamageTakenInMatch
+        mostKillsInMatch
       }
     }
   }
