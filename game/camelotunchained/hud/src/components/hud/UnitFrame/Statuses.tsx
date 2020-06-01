@@ -6,6 +6,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { styled } from '@csegames/linaria/react';
+import { StatusUIVisiblity } from '@csegames/library/lib/camelotunchained/graphql/schema';
 import { StatusDef } from 'gql/interfaces';
 import { Tooltip } from 'shared/Tooltip';
 import { HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
@@ -222,8 +223,11 @@ export function Statuses(props: Props) {
     const friendlyStatuses: StatusInfo[] = [];
     const hostileStatuses: StatusInfo[] = [];
     props.statuses.forEach((status) => {
-      
       const statusDef: StatusDef = getStatusDef(status.id);
+      if (statusDef && statusDef.uIVisiblity === StatusUIVisiblity.Hidden) {
+        return;
+      }
+
       if (!statusDef) {
         if ((status as StatusInfo).iconURL) {
           // TODO: sort these somehow properly into friendly/hostile
