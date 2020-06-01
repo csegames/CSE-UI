@@ -264,19 +264,21 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
       }
 
       if (myMemberState && myMemberState.isReady) {
+        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
         this.unready();
       } else {
+        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_PLAYBUTTON);
         this.readyUp();
       }
     } else {
       if (matchmakingContext.isEntered) {
+        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
         this.cancelMatchmaking();
       } else {
+        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_PLAYBUTTON);
         this.enterMatchmaking(this.props.matchmakingContext.selectedGameMode.mode);
       }
     }
-
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_PLAYBUTTON);
   }
 
   private hitButton = async (makeCall: () => Promise<RequestResult>, onSuccess: () => void, failureMessage: string) => {
