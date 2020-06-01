@@ -22,6 +22,7 @@ import 'core-js/es6/set';
 import '@csegames/library/lib/_baseGame';
 import '@csegames/library/lib/camelotunchained';
 import { regMap } from '@csegames/library/lib/_baseGame/engineEvents';
+import { CoherentEventHandle } from '@csegames/library/lib/_baseGame/coherent';
 import initialize from './services/initialization';
 
 import * as React from 'react';
@@ -43,15 +44,18 @@ if (process.env.CUUI_HUD_ENABLE_WHY_DID_YOU_UPDATE) {
 }
 
 // Catch any events that come through before the readyCheck is finished and fire them once we're ready and mounted.
-const engineEventQueue = {};
+let engineEventQueue = {};
+let eventQueueHandles: { [eventName: string]: CoherentEventHandle } = {};
 Object.keys(regMap).forEach((eventName) => {
-  engine.on(eventName, (...args) => {
+  const handle = engine.on(eventName, (...args) => {
     if (engineEventQueue[eventName]) {
       engineEventQueue[eventName].push(args);
     } else {
       engineEventQueue[eventName] = [args];
     }
   });
+
+  eventQueueHandles[eventName] = handle;
 });
 
 function fireEventQueue() {
@@ -61,6 +65,13 @@ function fireEventQueue() {
         engine.trigger(eventQueued, ...args);
       });
     });
+
+    Object.keys(eventQueueHandles).forEach((eventName) => {
+      eventQueueHandles[eventName].clear();
+    });
+
+    engineEventQueue = null;
+    eventQueueHandles = null;
   }, 500);
 }
 

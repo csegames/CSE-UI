@@ -136,6 +136,7 @@ function defaultGraphQLOptions(): Partial<QueryOptions> {
  * Announcement Handling
  */
 
+let announcementRoutingHandle: EventHandle = null;
 function initAnnouncementRouting() {
   if (camelotunchained._devGame._cse_dev_announcementRouterHandle) {
     camelotunchained._devGame._cse_dev_announcementRouterHandle.clear();
@@ -144,7 +145,11 @@ function initAnnouncementRouting() {
   camelotunchained._devGame.onPassiveAlert = onPassiveAlert;
   camelotunchained._devGame.sendPassiveAlert = sendPassiveAlert;
 
-  game.on(game.engineEvents.EE_OnAnnouncement,
+  if (announcementRoutingHandle) {
+    announcementRoutingHandle.clear();
+  }
+
+  announcementRoutingHandle = game.on(game.engineEvents.EE_OnAnnouncement,
     (type: AnnouncementType, message: string) => {
     if ((type & AnnouncementType.Text) !== 0) {
       game.sendSystemMessage(message);
@@ -155,8 +160,14 @@ function initAnnouncementRouting() {
   });
 }
 
+let passiveAlertHandle: EventHandle = null;
 function onPassiveAlert(callback: (message: string) => any) {
-  return game.on('passiveAlert', callback);
+  if (passiveAlertHandle) {
+    passiveAlertHandle.clear();
+  }
+
+  passiveAlertHandle = game.on('passiveAlert', callback);
+  return passiveAlertHandle;
 }
 
 function sendPassiveAlert(message: string) {

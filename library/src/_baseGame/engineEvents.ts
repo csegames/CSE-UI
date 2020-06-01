@@ -96,21 +96,31 @@ regMap[EE_OnAnchorVisibilityChanged] = 'onAnchorVisibilityChanged';
 /**
  * Initialize engine event forwarding
  */
+const engineEventHandleMap: { [key: string]: CoherentEventHandle } = {};
 export default function() {
   for (const key in regMap) {
     createForwardingMethod(key, regMap[key]);
     if (typeof engine !== 'undefined') {
-      engine.on(key, (...args: any[]) => game.trigger(key, ...args));
+      if (engineEventHandleMap[key]) {
+        engineEventHandleMap[key].clear();
+      }
+
+      const handle = engine.on(key, (...args: any[]) => game.trigger(key, ...args));
+      engineEventHandleMap[key] = handle;
     }
   }
 }
 
+const engineEventForwardingHandle: { [key: string]: CoherentEventHandle } = {};
 function createForwardingMethod(engineEvent: string, methodName: string) {
-    _devGame[methodName] = function(callback: (...args: any[]) => any): CoherentEventHandle {
-      if (typeof engine !== 'undefined') {
-        return engine.on(engineEvent, callback);
-      } else {
-        return window._cse_dev_eventEmitter.addListener(engineEvent, false, callback);
-      }
-    };
+  _devGame[methodName] = function(callback: (...args: any[]) => any): CoherentEventHandle {
+    if (engineEventForwardingHandle[engineEvent]) {
+      engineEventForwardingHandle[engineEvent].clear();
+    }
+
+    const handle = engine.on(engineEvent, callback);
+    engineEventForwardingHandle[engineEvent] = handle;
+    return handle;
+  };
 }
+
