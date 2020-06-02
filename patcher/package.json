@@ -31,7 +31,7 @@
   },
   "scripts": {
     "start": "nps",
-    "prepare": "rimraf typings && typings install && nps gql"
+    "prepare": "rimraf typings && typings install"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",

@@ -17,6 +17,7 @@ import {
   GroupUpdateType,
   GroupMemberUpdate,
   GroupMemberRemovedUpdate,
+  GroupMemberState,
 } from 'gql/interfaces';
 import { GroupMemberFragment } from 'gql/fragments/GroupMemberFragment';
 

@@ -209,39 +209,6 @@ module.exports = function (baseConfig, argv = { cacheRoot, isProduction }) {
               ]
             },
             {
-              test: /\.scss$/,
-              exclude: /node_modules/,
-              use: [
-                (!argv.isProduction && IS_BROWSER) ? {
-                  loader: require.resolve('style-loader'),
-                  options: {
-                    sourceMap: true,
-                  }
-                } : {
-                  loader: MiniCssExtractPlugin.loader,
-                  options: {}
-                },
-                {
-                  loader: require.resolve('css-loader'),
-                  options: {
-                    sourceMap: true,
-                    // turn off url handling as we are copying all the files over to build folder
-                    // turning this on would be ideal, but will require lots of sass refactoring
-                    url: false,
-                  }
-                },
-                {
-                  loader: require.resolve('sass-loader'),
-                  options: {
-                    sourceMap: true,
-                    // override the default webpack importer to use the existing sass importer
-                    // removing this would be ideal, but will require lots of sass refactoring
-                    importer: require('sass-importer-node/sass-importer-node.js'),
-                  }
-                }
-              ]
-            },
-            {
               exclude: [/\.js$/, /\.html$/, /\.json$/, /\.tsx?$/],
               loader: require.resolve('file-loader'),
               options: {

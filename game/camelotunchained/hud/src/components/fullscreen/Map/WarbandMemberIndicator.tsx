@@ -9,6 +9,7 @@ import React from 'react';
 import { styled } from '@csegames/linaria/react';
 import { getViewportSize } from 'hudlib/viewport';
 import { Tooltip } from 'shared/Tooltip';
+import { GroupMemberState } from 'gql/interfaces';
 
 const Container = styled.div`
   position: absolute;

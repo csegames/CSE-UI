@@ -40,7 +40,11 @@ module.exports = {
         dev: {
           script: 'nps report.start && nps build.webpack.cuhud.development && nps report.success',
           description: 'Builds the Camelot Unchained HUD UI in Development mode'
-        }
+        },
+        loadingScreen: {
+          script: 'nps report.start && nps build.webpack.cuhud.loadingScreen && nps report.success',
+          description: 'Builds the Camelot Unchained Loading Screen UI',
+        },
       },
       hordetest: {
         default: {
@@ -92,7 +96,10 @@ module.exports = {
           },
           development: {
             script: "webpack --mode development --approute=camelotunchained/hud",
-          }
+          },
+          loadingScreen: {
+            script: "webpack --mode production --approute=camelotunchained/loadingScreen",
+          },
         },
         hordetest: {
           hiddenFromHelp: true,

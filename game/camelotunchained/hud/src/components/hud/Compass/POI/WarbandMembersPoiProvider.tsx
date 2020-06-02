@@ -391,7 +391,7 @@ export default class WarbandMembersPoiProvider extends React.Component<
     return withCompassPOIPartialDefaults({
       id: `warband-${state.entityID}`,
       type: 'warband',
-      position: state.position,
+      position: state.position as Vec3f,
       offset: 18,
       byAtLeast: 10,
       data: this.getWarbandMemberData(state),

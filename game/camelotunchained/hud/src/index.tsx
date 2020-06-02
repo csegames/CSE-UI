@@ -10,7 +10,7 @@ import 'velocity-animate/velocity.ui';
 import 'ol/ol.css';
 import './third-party/animate.css';
 import './third-party/toastr.min.css';
-import './index.scss';
+import './index.css';
 import './services/types';
 
 // TODO: AUDIT IF WE NEED THESE

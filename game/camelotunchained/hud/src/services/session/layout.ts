@@ -25,7 +25,6 @@ import ErrorMessages from './layoutItems/ErrorMessages';
 import Progression from './layoutItems/Progression';
 // import RefillAmmo from './layoutItems/RefillAmmo';
 import Announcement from './layoutItems/Announcement';
-import Building from './layoutItems/Building';
 import ReleaseControl from './layoutItems/ReleaseControl';
 import PlayerSiegeHealth from './layoutItems/PlayerSiegeHealth';
 // import EnemyTargetSiegeHealth from './layoutItems/EnemyTargetSiegeHealth';
@@ -190,9 +189,6 @@ function initialState(): LayoutState {
     ],
     [
       'announcement', cloneDeep(Announcement),
-    ],
-    [
-      'building', cloneDeep(Building),
     ],
     [
       'releaseControl', cloneDeep(ReleaseControl),

@@ -10,6 +10,9 @@ import { styled } from '@csegames/linaria/react';
 import { WarbandContext, WarbandContextState } from 'components/context/WarbandContext';
 import { UnitFrame } from '../UnitFrame';
 import { showFriendlyTargetContextMenu } from 'actions/contextMenu';
+import {
+  GroupMemberState as GQLGroupMemberState,
+} from 'gql/interfaces';
 
 const Container = styled.div`
   position:relative;
@@ -25,7 +28,7 @@ interface InjectedProps {
 
 export interface WarbandMemberDisplayProps {
   key: string | number;
-  member: GroupMemberState;
+  member: GQLGroupMemberState;
   isMini?: boolean;
 }
 
@@ -64,7 +67,7 @@ class WarbandMemberDisplayWithInjectedContext extends React.Component<WarbandMem
 
   private handleContextMenu = (event: React.MouseEvent) => {
     if (event.button === 2) {
-      showFriendlyTargetContextMenu(this.props.member, this.props.warbandContext, event);
+      showFriendlyTargetContextMenu(this.props.member as any, this.props.warbandContext, event);
     }
   }
 }

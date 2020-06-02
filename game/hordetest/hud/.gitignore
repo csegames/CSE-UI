@@ -1,4 +1,2 @@
-src/gql/interfaces.ts
-src/gql/schema.json
 .env.local
 .env.*.local

@@ -86,7 +86,6 @@
     "graphql-code-generator": "^0.10.7",
     "graphql-codegen-typescript-no-pascal-template": "^0.10.10",
     "jest": "^19.0.2",
-    "node-sass": "^4.9.0",
     "npm-watch": "^0.1.4",
     "nps": "^5.0.5",
     "react-test-renderer": "^16.12.0",

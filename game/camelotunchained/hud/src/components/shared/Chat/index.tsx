@@ -18,6 +18,7 @@ import { chatConfig, ChatConfig } from './components/ChatConfig';
 import Info from './components/Info';
 import Content from './components/Content';
 import { initLocalStorage } from './components/settings/chat-defaults';
+import './index.css';
 
 export interface ChatState {
   chat: ChatSession;

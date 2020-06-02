@@ -46,16 +46,9 @@ library-old/docs/
 dev.config.js
 dev.config
 **__snapshots__
-**/schema.ts
-**/schema.json
-**/definitions.ts
-game/hud/gql/
-game/hud/src/gqlDocuments\.ts
-game/hud/src/gqlInterfaces\.ts
 **/*.code-workspace
 .cache-loader
 !webpack.config.js
 yarn-error.log
-.gql
 !game/*/webpack.config.js
 .linaria-cache/
