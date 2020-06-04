@@ -3,7 +3,7 @@
 
 
 ### <ins>Prerequisites</ins>
-Ensure you have *Node* installed (https://github.com/coreybutler/nvm-windows is a good tool for installing node and dealing with different versions)
+Ensure you have *Node* installed (https://github.com/coreybutler/nvm-windows is a good tool for installing node and dealing with different versions.) Refer to InstallingNode documentation.
 
 
 ### <ins>How to build a freshly cloned Camelot Unchained UI Repo</ins>
@@ -21,6 +21,7 @@ Ensure you have *Node* installed (https://github.com/coreybutler/nvm-windows is 
 #### Step 2: Setup *library*
 1) Go into the **library/** folder in the terminal
 2) Run `yarn` (Only need to do the first time)
+  * If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
 3) Run `yarn start build`
 4) Run `yarn link` (Only need to do the first time)
 5) --- Going forward, you only need to `yarn start build` to update the library code.
@@ -30,6 +31,7 @@ Ensure you have *Node* installed (https://github.com/coreybutler/nvm-windows is 
 #### Step 3: Setup *hud*
 1) Go into the **game/camelotunchained/hud/** folder in the terminal
 2) Run `yarn`
+  * If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
 4) Go up 2 folders to **game/**
 5) Run `yarn` again
 6) Run `yarn link @csegames/library`
@@ -41,6 +43,7 @@ Ensure you have *Node* installed (https://github.com/coreybutler/nvm-windows is 
 #### Step 4: Setup *loadingScreen*
 1) Go into the **game/camelotunchained/loadingScreen/** folder in the terminal
 2) Run `yarn`
+  * If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
 4) Go up 2 folders to **game/**
 5) Run `yarn start build.cuhud.loadingScreen`
 6) --- Going forward, you only need to `yarn start build.cuhud.loadingScreen` inside of the game/ folder to update the loadingScreen code.
@@ -58,6 +61,7 @@ Ensure you have *Node* installed (https://github.com/coreybutler/nvm-windows is 
 #### Step 2: Setup *hud*
 1) Go into the **game/hordetest/hud** folder in the terminal
 2) Run `yarn`
+  * If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
 4) Go up 2 folders to **game/**
 5) Run `yarn` again
 6) Run `yarn link @csegames/library`
@@ -69,6 +73,7 @@ Ensure you have *Node* installed (https://github.com/coreybutler/nvm-windows is 
 #### Step 3: Setup *loadingScreen*
 1) Go into the **game/hordetest/loadingScreen** folder in the terminal
 2) Run `yarn`
+  * If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
 3) Run `yarn link @csegames/library`
 4) Go up 2 folders to **game/**
 5) Run `yarn start build.hordetest.loadingScreen`
@@ -79,6 +84,7 @@ Ensure you have *Node* installed (https://github.com/coreybutler/nvm-windows is 
 #### Step 4: Setup *worldspace-ui*
 1) Go into the **game/hordetest/worldspace-ui** folder in the terminal
 2) Run `yarn`
+  * If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
 3) Run `yarn link @csegames/library`
 4) Go up 2 folders to **game/**
 5) Run `yarn start build.hordetest.worldspace`
