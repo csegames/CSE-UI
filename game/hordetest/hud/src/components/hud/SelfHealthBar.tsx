@@ -68,7 +68,7 @@ const RuneItem = styled.div`
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-  whitespace: nowrap;
+  white-space: nowrap;
   font-size: 14px;
 `;
 
