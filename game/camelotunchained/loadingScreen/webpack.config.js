@@ -10,7 +10,7 @@ const WebpackServeWaitpage = require('webpack-serve-waitpage');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
-module.exports = function (e, argv = {}) {
+module.exports = function (baseConfig, argv = { cacheRoot, isProduction }) {
 
   const MODE = argv.mode || 'development';
   const NODE_ENV = process.env.NODE_ENV || MODE;
@@ -57,15 +57,14 @@ module.exports = function (e, argv = {}) {
   };
 
   const config = {
+    ...baseConfig,
     mode: MODE,
     devtool: 'source-map',
     entry: {
-      ls: ['./tmp/sentry.jsx', './tmp/index.jsx'],
-    },
-    output: {
-      path: OUTPUT_PATH,
-      filename: 'js/[name].js',
-      chunkFilename: 'js/[name].js',
+      ls: [
+        path.resolve(__dirname, 'src/sentry.tsx'),
+        path.resolve(__dirname, 'src/index.tsx')
+      ],
     },
     optimization: {
       minimize: false,
@@ -89,7 +88,7 @@ module.exports = function (e, argv = {}) {
     },
     resolve: {
       alias: ALIAS,
-      extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
+      extensions: ['.web.ts', '.ts', '.web.tsx', '.tsx', '.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     },
     module: {
       rules: [
@@ -141,13 +140,13 @@ module.exports = function (e, argv = {}) {
               ]
             },
             {
-              test: /\.jsx?$/,
+              test: /\.tsx?$/,
               exclude: /node_modules/,
               use: [
                 {
                   loader: require.resolve('cache-loader'),
                   options: {
-                    cacheDirectory: path.resolve(__dirname, 'node_modules', '.cache', 'cache-loader'),
+                    cacheDirectory: path.resolve(argv.cacheRoot, 'cache-loader'),
                   },
                 },
                 ...(!IS_CI ? [{
@@ -159,25 +158,27 @@ module.exports = function (e, argv = {}) {
                 {
                   loader: require.resolve('babel-loader'),
                   options: {
-                    cacheDirectory: true
+                    cacheDirectory: path.resolve(argv.cacheRoot, 'babel-loader'),
                   },
-                },
-                {
-                  loader: require.resolve('eslint-loader'),
-                  query: {
-                    emitError: true,
-                    emitWarning: true,
-                    failOnError: true,
-                  }
                 },
                 {
                   loader: '@csegames/linaria/loader',
                   options: {
-                    sourceMap: IS_DEVELOPMENT,
+                    sourceMap: !argv.isProduction,
                     resolve: {
                       alias: ALIAS,
                     },
                   },
+                },
+                {
+                  loader: require.resolve('ts-loader'),
+                  options: {
+                    transpileOnly: IS_CI ? false : true,
+                    happyPackMode: IS_CI ? false : true,
+                    compilerOptions: {
+                      sourceMap: true,
+                    }
+                  }
                 },
               ]
             },
@@ -262,7 +263,7 @@ module.exports = function (e, argv = {}) {
       }),
       new HtmlWebpackPlugin({
         title: 'Custom template using Handlebars',
-        template: 'src/index.hbs',
+        template: path.resolve(__dirname, 'src/index.hbs'),
         templateParameters: {
           process: {
             env: EXPOSE_ENV,
@@ -289,13 +290,14 @@ module.exports = function (e, argv = {}) {
           ] : [])
         ],
         {
-          context: 'src/',
+          context: path.resolve(__dirname, 'src/'),
         }
       ),
       ...(!IS_CI ? [
         new ForkTsCheckerWebpackPlugin({
           checkSyntacticErrors: true,
-          tslint: true, // can turn this off if required
+          // tslint: true, // can turn this off if required
+          tsconfig: path.resolve(__dirname, 'tsconfig.json'),
           formatter: 'codeframe',
           async: false,
         }),
