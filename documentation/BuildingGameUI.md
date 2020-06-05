@@ -19,34 +19,34 @@ Ensure you have *Node* installed (https://github.com/coreybutler/nvm-windows is 
 
 
 #### Step 2: Setup *library*
-1) Go into the **library/** folder in the terminal
-2) Run `yarn` (Only need to do the first time)
-  * If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
-3) Run `yarn start build`
-4) Run `yarn link` (Only need to do the first time)
-5) --- Going forward, you only need to `yarn start build` to update the library code.
+1. Go into the **library/** folder in the terminal
+2. Run `yarn` (Only need to do the first time)
+  - If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
+3. Run `yarn start build`
+4. Run `yarn link` (Only need to do the first time)
+5. --- Going forward, you only need to `yarn start build` to update the library code.
 
 
 
 #### Step 3: Setup *hud*
-1) Go into the **game/camelotunchained/hud/** folder in the terminal
-2) Run `yarn`
-  * If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
-4) Go up 2 folders to **game/**
-5) Run `yarn` again
-6) Run `yarn link @csegames/library`
-7) Run `yarn start build.cuhud`
-8) --- Going forward, you only need to `yarn start build.cuhud` inside of the game/ folder to update the hud code.
+1. Go into the **game/camelotunchained/hud/** folder in the terminal
+2. Run `yarn`
+  - If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
+4. Go up 2 folders to **game/**
+5. Run `yarn` again
+6. Run `yarn link @csegames/library`
+7. Run `yarn start build.cuhud`
+8. --- Going forward, you only need to `yarn start build.cuhud` inside of the game/ folder to update the hud code.
 
   
 
 #### Step 4: Setup *loadingScreen*
-1) Go into the **game/camelotunchained/loadingScreen/** folder in the terminal
-2) Run `yarn`
-  * If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
-4) Go up 2 folders to **game/**
-5) Run `yarn start build.cuhud.loadingScreen`
-6) --- Going forward, you only need to `yarn start build.cuhud.loadingScreen` inside of the game/ folder to update the loadingScreen code.
+1. Go into the **game/camelotunchained/loadingScreen/** folder in the terminal
+2. Run `yarn`
+  - If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
+4. Go up 2 folders to **game/**
+5. Run `yarn start build.cuhud.loadingScreen`
+6. --- Going forward, you only need to `yarn start build.cuhud.loadingScreen` inside of the game/ folder to update the loadingScreen code.
 
   
 
@@ -59,36 +59,36 @@ Ensure you have *Node* installed (https://github.com/coreybutler/nvm-windows is 
   
 
 #### Step 2: Setup *hud*
-1) Go into the **game/hordetest/hud** folder in the terminal
-2) Run `yarn`
-  * If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
-4) Go up 2 folders to **game/**
-5) Run `yarn` again
-6) Run `yarn link @csegames/library`
-7) Run `yarn start build.hordetest`
-8) --- Going forward, you only need to `yarn start build.hordetest` inside of the game/ folder to update the hud code.
+1. Go into the **game/hordetest/hud** folder in the terminal
+2. Run `yarn`
+  - If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
+4. Go up 2 folders to **game/**
+5. Run `yarn` again
+6. Run `yarn link @csegames/library`
+7. Run `yarn start build.hordetest`
+8. --- Going forward, you only need to `yarn start build.hordetest` inside of the game/ folder to update the hud code.
 
   
 
 #### Step 3: Setup *loadingScreen*
-1) Go into the **game/hordetest/loadingScreen** folder in the terminal
-2) Run `yarn`
-  * If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
-3) Run `yarn link @csegames/library`
-4) Go up 2 folders to **game/**
-5) Run `yarn start build.hordetest.loadingScreen`
-6) --- Going forward, you only need to `yarn start build.hordetest.loadingScreen` inside of the game/ folder to update the loadingScreen code.
+1. Go into the **game/hordetest/loadingScreen** folder in the terminal
+2. Run `yarn`
+  - If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
+3. Run `yarn link @csegames/library`
+4. Go up 2 folders to **game/**
+5. Run `yarn start build.hordetest.loadingScreen`
+6. --- Going forward, you only need to `yarn start build.hordetest.loadingScreen` inside of the game/ folder to update the loadingScreen code.
 
   
 
 #### Step 4: Setup *worldspace-ui*
-1) Go into the **game/hordetest/worldspace-ui** folder in the terminal
-2) Run `yarn`
-  * If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
-3) Run `yarn link @csegames/library`
-4) Go up 2 folders to **game/**
-5) Run `yarn start build.hordetest.worldspace`
-6) --- Going forward, you only need to `yarn start build.hordetest.worldspace` inside of the game/ folder to update the worldspace code.
+1. Go into the **game/hordetest/worldspace-ui** folder in the terminal
+2. Run `yarn`
+  - If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
+3. Run `yarn link @csegames/library`
+4. Go up 2 folders to **game/**
+5. Run `yarn start build.hordetest.worldspace`
+6. --- Going forward, you only need to `yarn start build.hordetest.worldspace` inside of the game/ folder to update the worldspace code.
 
   
 
@@ -109,8 +109,8 @@ Builds are outputted to folders within the **repo/game/build/** folder. All of t
 1) Open file explorer
 2) Hop on Hatchery (or any CU server... these instructions are for Hatchery which is channel 4)
 3) Go to `%localappdata%\CSE\CamelotUnchained\4\INTERFACE\` (If you don't have an INTERFACE folder, just create one).
-  * To update the **hud**, put the contents of `repo/game/build/camelotunchained/hud/` into `%localappdata%\CSE\CamelotUnchained\4\INTERFACE\hud-new`.
-  * To update the **loadingScreen**, put the contents of `repo/game/build/camelotunchained/loadingScreen/` into `%localappdata%\CSE\CamelotUnchained\4\INTERFACE\loadingscreen-new`.
+  - To update the **hud**, put the contents of `repo/game/build/camelotunchained/hud/` into `%localappdata%\CSE\CamelotUnchained\4\INTERFACE\hud-new`.
+  - To update the **loadingScreen**, put the contents of `repo/game/build/camelotunchained/loadingScreen/` into `%localappdata%\CSE\CamelotUnchained\4\INTERFACE\loadingscreen-new`.
 4) Reload your UI to see updates.
 
   
@@ -123,7 +123,7 @@ Builds are outputted to folders within the **repo/game/build/** folder. All of t
 4) Type `uiOverrideDirectory=yourOverrideDirectory overrideUI=1` An example of yourOverrideDirectory would be `C:\Users\testuser\AppData\Local\CSE\FinalStand\Ragnarok\2100`. *Ensure there are no spaces in the override directory file path, otherwise, it won't work.*
 5) Click ok and hop onto Omelette (or any FSR server)
 6) Now, go to your override directory, inside the `INTERFACE/` folder
-  * To update the **hud**, put the contents of `repo/game/build/hordetest/hud` into `yourOverrideDirectory/INTERFACE/hud-new`.
-  * To update the **worldspace-ui**, put the contents of `repo/game/build/hordetest/worldspace-ui` into `yourOverrideDirectory/INTERFACE/worldspace-new`.
-  * To update the **loadingScreen** put the contents of `repo/game/build/hordetest/loadingScreen` into `yourOverrideDirectory/INTERFACE/loadingScreen`.
+  - To update the **hud**, put the contents of `repo/game/build/hordetest/hud` into `yourOverrideDirectory/INTERFACE/hud-new`.
+  - To update the **worldspace-ui**, put the contents of `repo/game/build/hordetest/worldspace-ui` into `yourOverrideDirectory/INTERFACE/worldspace-new`.
+  - To update the **loadingScreen** put the contents of `repo/game/build/hordetest/loadingScreen` into `yourOverrideDirectory/INTERFACE/loadingScreen`.
 7) Reload your UI to see updates (Except for worldspace-ui, you must relaunch your client)
