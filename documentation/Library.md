@@ -26,9 +26,9 @@ The library is shared code between projects. It's designed to be an npm package.
 
 ### Game Interface
 
-**game** - a global object that has multiple values and functions exposed to the UI through Coherent. The interface is in `library/_baseGame/BaseGameInterface.ts` and contains some documentation about each value/function.
-**camelotunchained.game** - Specific to CU. The interface is in `library/camelotunchained/game/GameInterface.ts` and contains some documentation about each value/function.
-**hordetest.game** - Specific to FSR. The interface is in `library/hordetest/game/GameInterface.ts` and contains some documentation about each value/function.
+**game** - a global object that has multiple values and functions exposed to the UI through Coherent. The interface is in `library/src/_baseGame/BaseGameInterface.ts` and contains some documentation about each value/function.
+**camelotunchained.game** - Specific to CU. The interface is in `library/src/camelotunchained/game/GameInterface.ts` and contains some documentation about each value/function.
+**hordetest.game** - Specific to FSR. The interface is in `library/src/hordetest/game/GameInterface.ts` and contains some documentation about each value/function.
 
 ### makeClientPromise
 
