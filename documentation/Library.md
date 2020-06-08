@@ -65,3 +65,24 @@ The functions that require themselves to be wrapped by makeClientPromise have a 
 * `_cse_dev_exitActionBarEditMode`
 * `_cse_dev_listenForKeyBindingTask`
 etc.
+
+### API server typescript definitions (definitions.ts)
+If you go to an api servers `/codegen/definitions.ts` route, you will see a file with a bunch of different Typescript interfaces/types.
+
+Some examples are
+http://hatcheryapi.camelotunchained.com/codegen/definitions.ts
+https://omeletteapi.camelotunchained.com/codegen/definitions.ts'
+
+These interfaces/types are generated on the api server from classes, enums, etc. marked with the attribute `TypeScriptGen`. You can see how more on how they are generated in TypeScriptGen.cs.
+
+Also, on the api server, they are being served through the TypeGenController, which can be found in TypeGenController.cs.
+
+**To update the interface/types on the UI**
+1. Navigate to the library/
+2. Run command to update
+	- Updating CU definitions (Hatchery) `yarn start definitions.camelotunchained`
+	- Updating FSR definitions (Omelette) `yarn start definitions.hordetest`
+3. Build library again `yarn start build`
+	- There are frequently problems with the typescript generated file. You will have to take them case by case, and they are generally caused by something on the API server side. Good luck.
+
+### GraphQL schema.ts generation

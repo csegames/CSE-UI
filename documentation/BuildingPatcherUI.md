@@ -2,6 +2,7 @@
 ### <ins>Prerequisites</ins>
 - Ensure you have **Node** installed
 - Ensure you have the patcher already setup on your computer
+- Ensure the patcher is not running on your computer already
 
 ### <ins>How to build a freshly cloned Patcher UI Repo</ins>
 *Note: If you have done steps 1 and steps 2 already to build the CU or FSR UI, then skip to Step 3.*
@@ -30,3 +31,14 @@
 3. Build the patcher by using...
 	- `yarn start debug` to run the UI as a development build
 	- `yarn start debugProduction` to run the UI as a production build
+
+### <ins>Debugging</ins>
+Right click on the UI and a context menu should open up. Select *Show Dev Tools* and a debugger should pop up.
+
+### <ins>Common Issues</ins>
+
+1. Build is complaining about "operation not permitted, unlink ..."
+- This means that you have a patcher already running on your computer. Close that patcher and rebuild the patcher UI.
+
+2. Patcher is silently crashing when you open DevTools.
+- This is a longstanding bug and there is currently no known solution on the UI side for fixing this. There is a task tracked in JIRA.
