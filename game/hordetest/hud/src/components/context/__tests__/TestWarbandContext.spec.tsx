@@ -8,7 +8,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import {
   WarbandContextProvider,
-  WarbandContextState,
+  ContextState,
   getDefaultWarbandContextState,
 } from '../WarbandContext';
 import {
@@ -21,7 +21,9 @@ import {
   GroupMemberRemovedUpdate,
 } from '@csegames/library/lib/hordetest/graphql/schema';
 
-const defaultContextState: Readonly<WarbandContextState> = getDefaultWarbandContextState();
+const defaultContextState: Readonly<ContextState> = {
+  ...getDefaultWarbandContextState(),
+};
 
 beforeEach(() => {
   jest.resetModules();
@@ -150,7 +152,7 @@ describe('WarbandContextProvider handleNotificationJoined', () => {
     const wrapper = shallow(<WarbandContextProvider></WarbandContextProvider>);
     const matchmakingUpdate: any = null;
 
-    (wrapper.instance() as any).handleNotificationJoined(matchmakingUpdate);
+    (wrapper.instance() as any).handleNotificationJoined(matchmakingUpdate, () => {});
     expect(wrapper.state()).toMatchObject(defaultContextState);
   });
 
@@ -163,7 +165,7 @@ describe('WarbandContextProvider handleNotificationJoined', () => {
       type: GroupNotificationType.Joined,
     };
 
-    (wrapper.instance() as any).handleNotificationJoined(notification);
+    (wrapper.instance() as any).handleNotificationJoined(notification, () => {});
 
     const state = wrapper.state();  
     Object.keys(defaultContextState).forEach((stateKey) => {
@@ -187,7 +189,7 @@ describe('WarbandContextProvider handleNotificationRemoved', () => {
     const wrapper = shallow(<WarbandContextProvider></WarbandContextProvider>);
     const matchmakingUpdate: any = null;
 
-    (wrapper.instance() as any).handleNotificationRemoved(matchmakingUpdate);
+    (wrapper.instance() as any).handleNotificationRemoved(matchmakingUpdate, () => {});
     expect(wrapper.state()).toMatchObject(defaultContextState);
   });
 
@@ -200,7 +202,7 @@ describe('WarbandContextProvider handleNotificationRemoved', () => {
       type: GroupNotificationType.Removed,
     };
 
-    (wrapper.instance() as any).handleNotificationRemoved(notification);
+    (wrapper.instance() as any).handleNotificationRemoved(notification, () => {});
     expect(wrapper.state()).toMatchObject(defaultContextState);
   });
 });
@@ -228,7 +230,7 @@ describe('WarbandContextProvider handleUpdateMemberUpdate', () => {
     const wrapper = shallow(<WarbandContextProvider></WarbandContextProvider>);
     const matchmakingUpdate: any = null;
 
-    (wrapper.instance() as any).handleUpdateMemberUpdate(matchmakingUpdate);
+    (wrapper.instance() as any).handleUpdateMemberUpdate(matchmakingUpdate, () => {});
     expect(wrapper.state()).toMatchObject(defaultContextState);
   });
 
@@ -241,7 +243,7 @@ describe('WarbandContextProvider handleUpdateMemberUpdate', () => {
       memberState: JSON.stringify({ characterID: 'testCharacterID' }),
     };
 
-    (wrapper.instance() as any).handleUpdateMemberUpdate(update);
+    (wrapper.instance() as any).handleUpdateMemberUpdate(update, () => {});
     expect(wrapper.state()).toHaveProperty('groupMembers',
       {
         testCharacterID: {
@@ -256,7 +258,7 @@ describe('WarbandContextProvider handleUpdateMemberRemoved', () => {
     const wrapper = shallow(<WarbandContextProvider></WarbandContextProvider>);
     const update: GroupMemberRemovedUpdate = null;
 
-    (wrapper.instance() as any).handleUpdateMemberRemoved(update);
+    (wrapper.instance() as any).handleUpdateMemberRemoved(update, () => {});
   });
 
   it ('Good data', () => {
@@ -267,7 +269,7 @@ describe('WarbandContextProvider handleUpdateMemberRemoved', () => {
       updateType: GroupUpdateType.MemberRemoved,
     };
 
-    (wrapper.instance() as any).handleUpdateMemberRemoved(update);
+    (wrapper.instance() as any).handleUpdateMemberRemoved(update, () => {});
     expect(wrapper.state()).toHaveProperty('groupMembers', {});
   });
 });

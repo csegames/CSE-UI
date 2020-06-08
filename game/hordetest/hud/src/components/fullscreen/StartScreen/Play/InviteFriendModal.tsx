@@ -80,6 +80,7 @@ export function InviteFriendModal(props: Props) {
     if (res.ok) {
       game.trigger('hide-middle-modal');
       props.onClickOverlay();
+      warbandContext.refetch();
     } else {
       // failed
       game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES_FAILURE);
