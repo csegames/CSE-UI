@@ -248,34 +248,43 @@ export function checkNetworkRequirements(component: AbilityBuilderQuery.AbilityC
   let meetsRequireComponentReq = true;
   let meetsExcludeComponentReq = true;
 
-  component.networkRequirements.forEach((networkRequirement) => {
-    if (networkRequirement.requireComponent) {
-      if (!selectedComponentsList.find(c => c.id === networkRequirement.requireComponent.component.id)) {
-        // Component must be added in order for this component to be available.
-        meetsRequireComponentReq = false;
-      }
-    }
+  // check if the new component will be compatible with all the other current components (minus existing components which share the category)
+  // to do this, we make a new list of what the ability would be if "component" was used in the ability.
+  const newComponentList : AbilityBuilderQuery.AbilityComponents[] = selectedComponentsList.filter(
+    selectedComponent => selectedComponent.abilityComponentCategory.id != component.abilityComponentCategory.id);
 
-    if (networkRequirement.excludeComponent) {
-      if (selectedComponentsList.find(c => c.id === networkRequirement.excludeComponent.component.id)) {
-        // If a component is selected in the exclude list, this component can not be selected.
-        meetsExcludeComponentReq = false;
-      }
-    }
+  newComponentList.push(component);
 
-    if (networkRequirement.requireTag) {
-      if (!selectedComponentsList.find(c => c.abilityTags.includes(networkRequirement.requireTag.tag))) {
-        // Component with this tag must be selected for this component to be available.
-        meetsRequireTagReq = false;
+  newComponentList.forEach((selectedComponent) => {
+    selectedComponent.networkRequirements.forEach((networkRequirement) => {
+      if (networkRequirement.requireComponent) {
+        if (!newComponentList.find(c => c.id === networkRequirement.requireComponent.component.id)) {
+          // Component must be added in order for this component to be available.
+          meetsRequireComponentReq = false;
+        }
       }
-    }
-
-    if (networkRequirement.excludeTag) {
-      if (!selectedComponentsList.find(c => c.abilityTags.includes(networkRequirement.excludeTag.tag))) {
-        // If a component is selected that contains a tag in the exclude list, this component can not be selected.
-        meetsExcludeTagReq = false;
+  
+      if (networkRequirement.excludeComponent) {
+        if (newComponentList.find(c => c.id === networkRequirement.excludeComponent.component.id)) {
+          // If a component is selected in the exclude list, this component can not be selected.
+          meetsExcludeComponentReq = false;
+        }
       }
-    }
+  
+      if (networkRequirement.requireTag) {
+        if (!newComponentList.find(c => c.id != selectedComponent.id && c.abilityTags.includes(networkRequirement.requireTag.tag))) {
+          // Component with this tag must be selected for this component to be available.
+          meetsRequireTagReq = false;
+        }
+      }
+  
+      if (networkRequirement.excludeTag) {
+        if (!newComponentList.find(c => c.id != selectedComponent.id && c.abilityTags.includes(networkRequirement.excludeTag.tag))) {
+          // If a component is selected that contains a tag in the exclude list, this component can not be selected.
+          meetsExcludeTagReq = false;
+        }
+      }
+    });
   });
 
   let isAnExcludeTag: { result: boolean, reason: string, component: AbilityBuilderQuery.AbilityComponents } = {

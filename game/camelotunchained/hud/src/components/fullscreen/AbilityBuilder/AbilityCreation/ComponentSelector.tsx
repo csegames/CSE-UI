@@ -745,7 +745,6 @@ export class ComponentSelector extends React.PureComponent<Props, State> {
 
   private onOptionalOpen = () => {
     this.setState({ closed: false });
-    this.props.onSelectedItemChange(this.props.categoryID, this.props.listItems[0].id);
   }
 
   private onOptionalClose = () => {
