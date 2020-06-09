@@ -11,7 +11,7 @@ declare global {
   interface StatusDef {
     id: number;
     uiText: string;
-    isUIVisbilityHidden: boolean;
+    isUIVisibilityHidden: boolean;
     isUIVisibilityHud: boolean;
     isUIVisibilityPopupOnAdd: boolean;
     isUIVisibilityShowAll: boolean;

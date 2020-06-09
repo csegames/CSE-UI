@@ -76,6 +76,8 @@ class StatusBarWithInjectedContext extends React.Component<Props, State> {
       if (!statusDef) {
         console.error('Client provided a status that did not have a status def. NumericID: ' + status.id);
         return;
+      } else if (statusDef.isUIVisibilityHidden) {
+        return;
       }
 
       if (statusDef.statusTags.includes('friendly')) {
