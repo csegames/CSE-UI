@@ -122,7 +122,7 @@ export default () => {
   //   game.trigger('systemMessage', text);
   // });
 
-  game.onAnnouncement((type: AnnouncementType, text: string) => {
+  engine.on('announcement', (type: AnnouncementType, text: string) => {
     if (type === AnnouncementType.Text) {
       game.trigger('systemMessage', text);
     }
