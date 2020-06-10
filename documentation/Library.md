@@ -86,3 +86,15 @@ Also, on the api server, they are being served through the TypeGenController, wh
 	- There are frequently problems with the typescript generated file. You will have to take them case by case, and they are generally caused by something on the API server side. Good luck.
 
 ### GraphQL schema.ts generation
+GraphQL schema generation is a completely different system than our webAPI typescript system.
+
+We use a tool called `apollo-codegen` (at the time of writing this documentation, it seems to be deprecated https://www.npmjs.com/package/apollo-codegen) which generates a schema.json file based off of the schema being provided by the corresponding api server. Then, we use `gql-gen` to create a schema.ts file from the schema.json file.
+
+**To update the graphql schema types**
+1. Navigate to the library/
+2. Run command to update
+	- Update CU definitions (Hatchery) `yarn start gql.camelotunchained`
+	- Update FSR definitions (Omelette) `yarn start gql.hordetest`
+3. Build library again `yarn start build`
+
+To see how these scripts are built, go into **library/package-scripts.js**
