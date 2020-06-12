@@ -32,6 +32,7 @@ const query = gql`
       resolution
       startTime
       totalRunTime
+      scenarioWon
       characterSummaries {
         characterID
         classID
@@ -108,7 +109,21 @@ const Title = styled.div`
   font-size: 42px;
   font-family: Colus;
   color: white;
-  margin-right: 20px;
+  margin-right: 15px;
+`;
+
+const OutcomeText = styled.div`
+  font-size: 42px;
+  font-family: Colus;
+  margin-right: 15px;
+  
+  &.victory {
+    color: #00CC6E;
+  }
+
+  &.defeat {
+    color: #CC0000;
+  }
 `;
 
 const MatchTitleInfo = styled.div`
@@ -212,6 +227,9 @@ export class GameStats extends React.Component<Props, State> {
                 <TopContainer>
                   <TitleContainer>
                     <Title>GAME STATS</Title>
+                    <OutcomeText className={this.state.overmindSummary.scenarioWon ? 'victory' : 'defeat'}>
+                      {this.state.overmindSummary.scenarioWon ? 'VICTORY' : 'DEFEAT'}
+                    </OutcomeText>
                     <MatchTitleInfo>
                       <GameMode>Group Survival</GameMode>
                       <div>Match Time: {formatTime(overmindSummary.totalRunTime)}</div>
