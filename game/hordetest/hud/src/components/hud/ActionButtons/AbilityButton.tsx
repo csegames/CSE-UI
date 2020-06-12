@@ -67,6 +67,7 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
       this.checkStartCountdown();
 
       // Check on updated
+
       this.abilityStateHandle = hordetest.game.abilityStates[this.props.abilityID].onUpdated(() => {
         this.checkIsReady();
         this.checkStartCountdown();
@@ -93,7 +94,7 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
     if (!ability) return;
 
     if (ability.status & AbilityButtonState.Cooldown) {
-      if (ability.timing.start !== this.state.cooldownTimer.start) {
+      if (ability.timing.start && ability.timing.duration && ability.timing.start !== this.state.cooldownTimer.start) {
         this.startCountdown(ability.timing);
       }
       return;

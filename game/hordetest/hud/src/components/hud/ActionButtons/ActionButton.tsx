@@ -196,7 +196,12 @@ export class ActionButton extends React.Component<Props, State> {
         <Button
           className={`${disabledClass} ${activeAnimClass} ${this.getChampionClass()} ${cooldownClass} ${disabledReasonClass} ${cooldownAnimClass}`}>
           <ActionIcon className={`${this.props.actionIconClass} ${disabledClass} ${cooldownClass}`} />
-          {isOnCooldown && <CooldownOverlay className={disabledReasonClass} style={{ height: `${cooldownTimer.progress}%`}} />}
+          {isOnCooldown &&
+            <CooldownOverlay
+              className={disabledReasonClass}
+              style={{ height: `${cooldownTimer.progress <= 100 ? cooldownTimer.progress : 100}%`}}
+            />
+          }
           {this.props.disabled && <DisabledSlash src={this.getDisabledSlashIcon()} />}
           {isOnCooldown && <CooldownText>{cooldownTimer.current}</CooldownText>}
         </Button>
