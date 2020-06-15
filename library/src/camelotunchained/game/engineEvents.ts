@@ -163,15 +163,8 @@ export function initEventForwarding() {
   }
 }
 
-const engineEventForwardingHandle: { [key: string]: CoherentEventHandle } = {};
 function createForwardingMethod(engineEvent: string, methodName: string) {
   camelotunchained._devGame[methodName] = function(callback: (...args: any[]) => any): CoherentEventHandle {
-    if (engineEventForwardingHandle[engineEvent]) {
-      engineEventForwardingHandle[engineEvent].clear();
-    }
-
-    const handle = engine.on(engineEvent, callback);
-    engineEventForwardingHandle[engineEvent] = handle;
-    return handle;
+    return engine.on(engineEvent, callback);
   };
 }
