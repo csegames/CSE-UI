@@ -95,16 +95,12 @@ class PlayerClassSelect extends React.Component<PlayerClassSelectProps, PlayerCl
         case Archetype.Mjolnir: videoTitle = 'heavy'; break;
         case Archetype.Physician:
         case Archetype.Empath:
-        case Archetype.Stonehealer:
-        case Archetype.FlameWarden:
-        case Archetype.Druid:
-        case Archetype.WaveWeaver:
-        case Archetype.Minstrel:
-        case Archetype.DarkFool:
-        case Archetype.Skald:
-        case Archetype.Abbot:
-        case Archetype.Helbound:
-        case Archetype.BlessedCrow: {
+        case Archetype.Stonehealer: {
+          videoTitle = 'healers';
+          break;
+        }
+        default: {
+          // TODO: Dont use healers as default, we don't have any videos for the newer classes
           videoTitle = 'healers';
           break;
         }

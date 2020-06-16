@@ -13,6 +13,7 @@ export function shouldFlipCharImage(character: SimpleCharacter) {
 }
 
 export function isSpecialClass(a: Archetype) {
+  // These are classes that had their images taken from the website.
   if (a === Archetype.Minstrel ||
       a === Archetype.FlameWarden ||
       a === Archetype.DarkFool ||

@@ -23,6 +23,7 @@ Ensure you have *Node* installed (https://github.com/coreybutler/nvm-windows is 
 2. Run `yarn` (Only need to do the first time)
   - If you fail to run yarn and see an error talking about "unexprected end of file" for some node module, then just try to `yarn` again.  There is an issue where the yarnpkg server closes connections. [https://github.com/yarnpkg/yarn/issues/7521](https://github.com/yarnpkg/yarn/issues/7521)
 3. Run `yarn start build`
+  - If you fail to build because of some definitions, a quick workaround would be to revert git changes to the definitions.ts and try building again. The real workaround would be to fix the typescript generation on the API server.
 4. Run `yarn link` (Only need to do the first time)
 5. --- Going forward, you only need to `yarn start build` to update the library code.
 
