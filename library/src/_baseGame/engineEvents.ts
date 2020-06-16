@@ -111,7 +111,6 @@ export default function() {
   }
 }
 
-const engineEventForwardingHandle: { [key: string]: CoherentEventHandle } = {};
 function createForwardingMethod(engineEvent: string, methodName: string) {
   _devGame[methodName] = function(callback: (...args: any[]) => any): CoherentEventHandle {
     return engine.on(engineEvent, callback);

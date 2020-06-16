@@ -65,7 +65,7 @@ module.exports = {
     definitions: {
       camelotunchained: {
         default: `download https://hatcheryapi.camelotunchained.com/v1/codegen/definitions.ts > ./src/camelotunchained/webAPI/definitions.ts`,
-        local: 'download http://localhost:1337/v1/codegen/definitions --headers "Accept: text/html,application/xhtml+xml,application/xml;" --headers "User-Agent: Node.JS" > ./src/camelotunchained/webAPI/definitions.ts',
+        local: 'download http://localhost:1337/v1/codegen/definitions.ts > ./src/camelotunchained/webAPI/definitions.ts',
         localserver: 'download http://localhost:8000/v1/codegen/definitions.ts > ./src/camelotunchained/webAPI/definitions.ts',
       },
       hordetest: {

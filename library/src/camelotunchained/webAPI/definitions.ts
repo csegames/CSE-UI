@@ -21,7 +21,7 @@ declare global {
     duration: number;
     startTime: number;
     name: string;
-    icon: string;
+    iconURL: string;
     description: string;
   }
 }
@@ -157,7 +157,7 @@ declare global {
 
 declare global {
   export interface SecureTradeError {
-    SecureTradeResult: ModifySecureTradeResult;
+    SecureTradeResult: ModifySecureTradeAPIResult;
     Message: string;
     ResultCode: ModifySecureTradeResultCode;
     Code: FieldCodes;
@@ -302,12 +302,11 @@ declare global {
 }
 
 declare global {
-  export interface ModifySecureTradeResult {
+  export interface ModifySecureTradeAPIResult {
     Result: ModifySecureTradeResultCode;
     IsSuccess: boolean;
     Details: string;
     SecureTradeID: SecureTradeInstanceID;
-    ItemsInTradeJson: string;
     TradeCompleted: boolean;
     MovedItemIDs: ItemInstanceID[];
   }
@@ -534,7 +533,7 @@ declare global {
 }
 
 declare global {
-  type ItemRequirementID = string;
+  type AccountID = string;
 }
 
 declare global {
@@ -614,6 +613,20 @@ declare global {
 }
 
 declare global {
+  export interface MessageOfTheDay {
+    id: string;
+    utcDisplayStart: string;
+    utcDisplayEnd: string;
+    utcCreated: string;
+    title: string;
+    htmlContent: string;
+    jsonContent: string;
+    duration: number;
+    channels: number[];
+  }
+}
+
+declare global {
   export interface PatcherAlert {
     id: string;
     message: string;
@@ -638,6 +651,13 @@ declare global {
     connectedZoneInstanceIDs: number[];
     activeZoneInstanceID: number;
     desiredZoneInstanceID: number;
+  }
+}
+
+declare global {
+  export interface Proxy {
+    Address: string;
+    Port: number;
   }
 }
 
@@ -781,30 +801,7 @@ declare global {
 }
 
 declare global {
-  export interface IAuthActionError {
-    Code: AuthActionErrorCode;
-    Message: string;
-  }
-}
-
-declare global {
-  export interface AuthActionErrorFieldCode {
-    Action: IAuthActionError;
-    Code: FieldCodes;
-    Message: string;
-  }
-}
-
-declare global {
-  type APIClientID = string;
-}
-
-declare global {
-  type APISecret = string;
-}
-
-declare global {
-  type JWTKey = string;
+  type ItemRequirementID = string;
 }
 
 declare global {
@@ -1036,6 +1033,33 @@ declare global {
     Code: FieldCodes;
     Message: string;
   }
+}
+
+declare global {
+  export interface IAuthActionError {
+    Code: AuthActionErrorCode;
+    Message: string;
+  }
+}
+
+declare global {
+  export interface AuthActionErrorFieldCode {
+    Action: IAuthActionError;
+    Code: FieldCodes;
+    Message: string;
+  }
+}
+
+declare global {
+  type APIClientID = string;
+}
+
+declare global {
+  type APISecret = string;
+}
+
+declare global {
+  type JWTKey = string;
 }
 
 declare global {
@@ -1460,7 +1484,10 @@ declare global {
     HumanMaleT = 17,
     Pict = 18,
     Charlotte = 19,
-    Dragon = 43,
+    DragonArthurian = 45,
+    DragonTDD = 46,
+    DragonViking = 47,
+    DragonFactionless = 48,
   }
   interface Window {
     Race: typeof Race;
@@ -1474,7 +1501,10 @@ enum Race {
   HumanMaleT = 17,
   Pict = 18,
   Charlotte = 19,
-  Dragon = 43,
+  DragonArthurian = 45,
+  DragonTDD = 46,
+  DragonViking = 47,
+  DragonFactionless = 48,
 }
 window.Race = Race;
 
@@ -1577,6 +1607,10 @@ enum ProgressionResultCode {
   InvalidRequest = -1,
 }
 window.ProgressionResultCode = ProgressionResultCode;
+
+declare global {
+  type ZoneInstanceID = any;
+}
 
 declare global {
   enum ItemActionResultCode {
@@ -2380,6 +2414,23 @@ declare global {
 }
 
 declare global {
+  enum ServerStatus {
+    Offline = 0,
+    Starting = 1,
+    Online = 2,
+  }
+  interface Window {
+    ServerStatus: typeof ServerStatus;
+  }
+}
+enum ServerStatus {
+  Offline = 0,
+  Starting = 1,
+  Online = 2,
+}
+window.ServerStatus = ServerStatus;
+
+declare global {
   enum AnnouncementType {
     Text = 1,
     PopUp = 2,
@@ -2458,21 +2509,115 @@ enum ItemTemplateType {
 window.ItemTemplateType = ItemTemplateType;
 
 declare global {
-  enum ServerStatus {
-    Offline = 0,
-    Starting = 1,
-    Online = 2,
+  enum FieldCodes {
+    BasicSuccess = 0,
+    GroupActionSuccess = 1,
+    ModifyVoxJobSuccess = 2,
+    MoveItemSuccess = 3,
+    ProgressionSuccess = 4,
+    ModifySecureTradeSuccess = 5,
+    ModifyPlotSuccess = 6,
+    ModifyItemSuccess = 7,
+    LoginSuccess = 8,
+    ItemActionSuccess = 9,
+    AuthActionSuccess = 10,
+    ModifyAbilitySuccess = 11,
+    ModifyScenarioSuccess = 12,
+    UnspecifiedAuthorizationDenied = 1000,
+    AuthorizationFailed = 1001,
+    LoginTokenAuthorizationFailed = 1002,
+    RealmRestricted = 1003,
+    LoginFailed = 1004,
+    LoginThrottled = 1005,
+    UnspecifiedNotAllowed = 2000,
+    RateLimitExceeded = 2001,
+    InternalAction = 2002,
+    UnspecifiedRequestError = 3000,
+    UnspecifiedExecutionError = 4000,
+    UnhandledExecutionException = 4001,
+    DoesNotExist = 4002,
+    UserStateConflict = 4003,
+    InsufficientResource = 4004,
+    VoxJobError = 4005,
+    MoveItemError = 4006,
+    SecureTradeError = 4007,
+    ProgressionError = 4008,
+    GroupActionError = 4009,
+    TimeoutError = 4010,
+    ModifyItemError = 4011,
+    ItemActionError = 4012,
+    AuthActionError = 4013,
+    ModifyAbilityError = 4014,
+    ModifyScenarioError = 4015,
+    MatchmakingUserNotReady = 4016,
+    MatchmakingUserAlreadyInQueue = 4017,
+    MatchmakingBadGameMode = 4018,
+    MatchmakingFailedToEnterQueue = 4019,
+    DisplayNameError = 4020,
+    UnspecifiedServiceUnavailable = 5000,
+    DatabaseUnavailable = 5001,
+    GroupServiceUnavailable = 5002,
+    GameServiceUnavailable = 5003,
+    PresenceServiceUnavailable = 5004,
+    InvalidModel = 30001,
   }
   interface Window {
-    ServerStatus: typeof ServerStatus;
+    FieldCodes: typeof FieldCodes;
   }
 }
-enum ServerStatus {
-  Offline = 0,
-  Starting = 1,
-  Online = 2,
+enum FieldCodes {
+  BasicSuccess = 0,
+  GroupActionSuccess = 1,
+  ModifyVoxJobSuccess = 2,
+  MoveItemSuccess = 3,
+  ProgressionSuccess = 4,
+  ModifySecureTradeSuccess = 5,
+  ModifyPlotSuccess = 6,
+  ModifyItemSuccess = 7,
+  LoginSuccess = 8,
+  ItemActionSuccess = 9,
+  AuthActionSuccess = 10,
+  ModifyAbilitySuccess = 11,
+  ModifyScenarioSuccess = 12,
+  UnspecifiedAuthorizationDenied = 1000,
+  AuthorizationFailed = 1001,
+  LoginTokenAuthorizationFailed = 1002,
+  RealmRestricted = 1003,
+  LoginFailed = 1004,
+  LoginThrottled = 1005,
+  UnspecifiedNotAllowed = 2000,
+  RateLimitExceeded = 2001,
+  InternalAction = 2002,
+  UnspecifiedRequestError = 3000,
+  UnspecifiedExecutionError = 4000,
+  UnhandledExecutionException = 4001,
+  DoesNotExist = 4002,
+  UserStateConflict = 4003,
+  InsufficientResource = 4004,
+  VoxJobError = 4005,
+  MoveItemError = 4006,
+  SecureTradeError = 4007,
+  ProgressionError = 4008,
+  GroupActionError = 4009,
+  TimeoutError = 4010,
+  ModifyItemError = 4011,
+  ItemActionError = 4012,
+  AuthActionError = 4013,
+  ModifyAbilityError = 4014,
+  ModifyScenarioError = 4015,
+  MatchmakingUserNotReady = 4016,
+  MatchmakingUserAlreadyInQueue = 4017,
+  MatchmakingBadGameMode = 4018,
+  MatchmakingFailedToEnterQueue = 4019,
+  DisplayNameError = 4020,
+  UnspecifiedServiceUnavailable = 5000,
+  DatabaseUnavailable = 5001,
+  GroupServiceUnavailable = 5002,
+  GameServiceUnavailable = 5003,
+  PresenceServiceUnavailable = 5004,
+  InvalidModel = 30001,
 }
-window.ServerStatus = ServerStatus;
+window.FieldCodes = FieldCodes;
 
 declare global {
   enum AuthActionErrorCode {
@@ -2598,117 +2743,6 @@ enum APIPermissions {
 }
 window.APIPermissions = APIPermissions;
 
-declare global {
-  enum FieldCodes {
-    BasicSuccess = 0,
-    GroupActionSuccess = 1,
-    ModifyVoxJobSuccess = 2,
-    MoveItemSuccess = 3,
-    ProgressionSuccess = 4,
-    ModifySecureTradeSuccess = 5,
-    ModifyPlotSuccess = 6,
-    ModifyItemSuccess = 7,
-    LoginSuccess = 8,
-    ItemActionSuccess = 9,
-    AuthActionSuccess = 10,
-    ModifyAbilitySuccess = 11,
-    ModifyScenarioSuccess = 12,
-    UnspecifiedAuthorizationDenied = 1000,
-    AuthorizationFailed = 1001,
-    LoginTokenAuthorizationFailed = 1002,
-    RealmRestricted = 1003,
-    LoginFailed = 1004,
-    LoginThrottled = 1005,
-    UnspecifiedNotAllowed = 2000,
-    RateLimitExceeded = 2001,
-    InternalAction = 2002,
-    UnspecifiedRequestError = 3000,
-    UnspecifiedExecutionError = 4000,
-    UnhandledExecutionException = 4001,
-    DoesNotExist = 4002,
-    UserStateConflict = 4003,
-    InsufficientResource = 4004,
-    VoxJobError = 4005,
-    MoveItemError = 4006,
-    SecureTradeError = 4007,
-    ProgressionError = 4008,
-    GroupActionError = 4009,
-    TimeoutError = 4010,
-    ModifyItemError = 4011,
-    ItemActionError = 4012,
-    AuthActionError = 4013,
-    ModifyAbilityError = 4014,
-    ModifyScenarioError = 4015,
-    MatchmakingUserNotReady = 4016,
-    MatchmakingUserAlreadyInQueue = 4017,
-    MatchmakingBadGameMode = 4018,
-    MatchmakingFailedToEnterQueue = 4019,
-    DisplayNameError = 4020,
-    UnspecifiedServiceUnavailable = 5000,
-    DatabaseUnavailable = 5001,
-    GroupServiceUnavailable = 5002,
-    GameServiceUnavailable = 5003,
-    PresenceServiceUnavailable = 5004,
-    InvalidModel = 30001,
-  }
-  interface Window {
-    FieldCodes: typeof FieldCodes;
-  }
-}
-enum FieldCodes {
-  BasicSuccess = 0,
-  GroupActionSuccess = 1,
-  ModifyVoxJobSuccess = 2,
-  MoveItemSuccess = 3,
-  ProgressionSuccess = 4,
-  ModifySecureTradeSuccess = 5,
-  ModifyPlotSuccess = 6,
-  ModifyItemSuccess = 7,
-  LoginSuccess = 8,
-  ItemActionSuccess = 9,
-  AuthActionSuccess = 10,
-  ModifyAbilitySuccess = 11,
-  ModifyScenarioSuccess = 12,
-  UnspecifiedAuthorizationDenied = 1000,
-  AuthorizationFailed = 1001,
-  LoginTokenAuthorizationFailed = 1002,
-  RealmRestricted = 1003,
-  LoginFailed = 1004,
-  LoginThrottled = 1005,
-  UnspecifiedNotAllowed = 2000,
-  RateLimitExceeded = 2001,
-  InternalAction = 2002,
-  UnspecifiedRequestError = 3000,
-  UnspecifiedExecutionError = 4000,
-  UnhandledExecutionException = 4001,
-  DoesNotExist = 4002,
-  UserStateConflict = 4003,
-  InsufficientResource = 4004,
-  VoxJobError = 4005,
-  MoveItemError = 4006,
-  SecureTradeError = 4007,
-  ProgressionError = 4008,
-  GroupActionError = 4009,
-  TimeoutError = 4010,
-  ModifyItemError = 4011,
-  ItemActionError = 4012,
-  AuthActionError = 4013,
-  ModifyAbilityError = 4014,
-  ModifyScenarioError = 4015,
-  MatchmakingUserNotReady = 4016,
-  MatchmakingUserAlreadyInQueue = 4017,
-  MatchmakingBadGameMode = 4018,
-  MatchmakingFailedToEnterQueue = 4019,
-  DisplayNameError = 4020,
-  UnspecifiedServiceUnavailable = 5000,
-  DatabaseUnavailable = 5001,
-  GroupServiceUnavailable = 5002,
-  GameServiceUnavailable = 5003,
-  PresenceServiceUnavailable = 5004,
-  InvalidModel = 30001,
-}
-window.FieldCodes = FieldCodes;
-
 export const AbilitiesAPI = {
   CreateAbility: function(config: RequestConfig, request: Partial<CreateAbilityRequest>): Promise<RequestResult> {
     const conf = config();
@@ -2750,7 +2784,7 @@ export const CharactersAPI = {
     }, conf.headers || {}) });
   },
 
-  CSECreateCharacterV2: function(config: RequestConfig, shardID: Partial<ShardID>, accountID: Partial<string>, character: Partial<Character>): Promise<RequestResult> {
+  CSECreateCharacterV2: function(config: RequestConfig, shardID: Partial<ShardID>, accountID: Partial<AccountID>, character: Partial<Character>): Promise<RequestResult> {
     const conf = config();
     return xhrRequest('post', conf.url + 'v1/characters/csecreate', {
       shardID: shardID,
@@ -3309,6 +3343,24 @@ export const PresenceAPI = {
   GetStartingServer: function(config: RequestConfig, ): Promise<RequestResult> {
     const conf = config();
     return xhrRequest('get', conf.url + 'v1/presence/startingServer', {
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, conf.headers || {}) });
+  },
+
+  GetProxyByZone: function(config: RequestConfig, zoneInstanceID: Partial<ZoneInstanceID>): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest('get', conf.url + 'v1/presence/proxyByZone/{zoneInstanceID}', {
+      zoneInstanceID: zoneInstanceID,
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, conf.headers || {}) });
+  },
+
+  GetProxyByServerAddress: function(config: RequestConfig, serverAddress: Partial<string>): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest('get', conf.url + 'v1/presence/proxyByServerAddress/{serverAddress}', {
+      serverAddress: serverAddress,
     }, null, { headers: Object.assign({}, {
       'Accept': 'application/json',
     }, conf.headers || {}) });

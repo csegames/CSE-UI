@@ -278,6 +278,10 @@ declare global {
 }
 
 declare global {
+  type AccountID = string;
+}
+
+declare global {
   export interface ArchetypeInfo {
     description: string;
     id: Archetype;
@@ -1069,6 +1073,10 @@ enum Race {
 window.Race = Race;
 
 declare global {
+  type ZoneInstanceID = any;
+}
+
+declare global {
   enum ModifyScenaioResultCode {
     Invalid = 0,
     Success = 1,
@@ -1267,6 +1275,23 @@ declare global {
 }
 
 declare global {
+  enum ServerStatus {
+    Offline = 0,
+    Starting = 1,
+    Online = 2,
+  }
+  interface Window {
+    ServerStatus: typeof ServerStatus;
+  }
+}
+enum ServerStatus {
+  Offline = 0,
+  Starting = 1,
+  Online = 2,
+}
+window.ServerStatus = ServerStatus;
+
+declare global {
   enum AnnouncementType {
     Text = 1,
     PopUp = 2,
@@ -1330,23 +1355,6 @@ enum RuneType {
   Count = 3,
 }
 window.RuneType = RuneType;
-
-declare global {
-  enum ServerStatus {
-    Offline = 0,
-    Starting = 1,
-    Online = 2,
-  }
-  interface Window {
-    ServerStatus: typeof ServerStatus;
-  }
-}
-enum ServerStatus {
-  Offline = 0,
-  Starting = 1,
-  Online = 2,
-}
-window.ServerStatus = ServerStatus;
 
 declare global {
   enum FieldCodes {
@@ -1891,6 +1899,24 @@ export const PresenceAPI = {
   GetStartingServer: function(config: RequestConfig, ): Promise<RequestResult> {
     const conf = config();
     return xhrRequest('get', conf.url + 'v1/presence/startingServer', {
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, conf.headers || {}) });
+  },
+
+  GetProxyByZone: function(config: RequestConfig, zoneInstanceID: Partial<ZoneInstanceID>): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest('get', conf.url + 'v1/presence/proxyByZone/{zoneInstanceID}', {
+      zoneInstanceID: zoneInstanceID,
+    }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, conf.headers || {}) });
+  },
+
+  GetProxyByServerAddress: function(config: RequestConfig, serverAddress: Partial<string>): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest('get', conf.url + 'v1/presence/proxyByServerAddress/{serverAddress}', {
+      serverAddress: serverAddress,
     }, null, { headers: Object.assign({}, {
       'Accept': 'application/json',
     }, conf.headers || {}) });
