@@ -24,6 +24,7 @@
 #### Step 3: Make a junction / symlink to the root patcher directory
 1. Go into the **patcher/** folder in the terminal
 2. Run `mklink /j PatchClient "%programdata%\CSE\Camelot Unchained"` (*The default CU install is located at %programdata%\CSE\Camelot Unchained*)
+    - If you didn't use the default install location use your path to the Camelot Unchained folder, example: "D:\Folder\Camelot Unchained"
 
 #### Step 4: Setup patcher and build
 1. In the patcher directory, run `yarn`
