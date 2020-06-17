@@ -107,8 +107,7 @@ export class MatchInfo extends React.Component<Props, State> {
 
   private handlePlayerStateUpdate = () => {
     const playerStateClone = cloneDeep(hordetest.game.selfPlayerState);
-
-    if (playerStateClone && playerStateClone.totalKills && !playerStateClone.totalKills.floatEquals(this.state.totalKills)) {
+    if (playerStateClone && typeof playerStateClone.totalKills === 'number' && !playerStateClone.totalKills.floatEquals(this.state.totalKills)) {
       this.setState({ totalKills: playerStateClone.totalKills });
     }
   }
