@@ -123,7 +123,7 @@ Builds are outputted to folders within the **repo/game/build/** folder. All of t
 3) Alt+Click the Play, a dialog box should popup.
 4) Type `uiOverrideDirectory=yourOverrideDirectory overrideUI=1` An example of yourOverrideDirectory would be `C:\Users\testuser\AppData\Local\CSE\FinalStand\Ragnarok\2100`. *Ensure there are no spaces in the override directory file path, otherwise, it won't work.*
 5) Click ok and hop onto Omelette (or any FSR server)
-6) Now, go to your override directory, inside the `INTERFACE/` folder
+6) Now, go to your override directory, inside the `INTERFACE/` folder (If you don't have an INTERFACE folder, just create one).
   - To update the **hud**, put the contents of `repo/game/build/hordetest/hud` into `yourOverrideDirectory/INTERFACE/hud-new`.
   - To update the **worldspace-ui**, put the contents of `repo/game/build/hordetest/worldspace-ui` into `yourOverrideDirectory/INTERFACE/worldspace-new`.
   - To update the **loadingScreen** put the contents of `repo/game/build/hordetest/loadingScreen` into `yourOverrideDirectory/INTERFACE/loadingScreen`.
