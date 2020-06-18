@@ -26,19 +26,31 @@ export function Header(props: HeaderProps) {
     return () => handles.forEach(handle => handle.clear());
   }, [dispatch]);
 
-  let logo = <img className='cse' src='images/cse/cse-logo.png' />;
-  let logoLink = 'https://camelotunchained.com/v2/';
+  let logo: JSX.Element = null;
+  let logoUrl = '';
+
   if (state.loggedIn) {
     switch (state.selectedProduct) {
       case Product.CamelotUnchained:
+      case Product.Cube:
         logo = <img src='images/cu_logo_metal.png' />;
+        logoUrl = 'https://camelotunchained.com/';
         break;
       case Product.Colossus:
         logo = <img src='images/colossus/logo-ragnarok.png' />;
-        logoLink = 'https://citystateentertainment.com/';
+        logoUrl = ''; //TODO: Add FSR url here once it has one
         break;
-      default: break;
+      case Product.Tools:
+        logo = <img className='cse' src='images/cse/cse-logo.png' />;
+        logoUrl = 'https://citystateentertainment.com/';
+        break;
+      default:
+        break;
     }
+  } else {
+    // login screen
+    logo = <img className='cse' src='images/cse/cse-logo.png' />;
+    logoUrl = 'https://citystateentertainment.com/';
   }
 
   const externalLink = (url: string) => {
@@ -50,13 +62,18 @@ export function Header(props: HeaderProps) {
     props.changeRoute(route);
   }
 
+  var logoElement: JSX.Element = null;
+  if (logo != null) {
+    if (logoUrl.length > 0) {
+      logoElement = <a className='Header__logo cu-logo' onClick={() => externalLink(logoUrl)}>{logo}</a>;
+    } else {
+      logoElement = <span className='Header__logo cu-logo'>{logo}</span>;
+    }
+  }
+
   return (
     <div className='Header'>
-      <a
-        className='Header__logo cu-logo'
-        onClick={() => externalLink(logoLink)}>
-        {logo}
-      </a>
+      {logoElement}
       <div className='Header__menu'>
         <div
           className={`Header__menu__item ${props.activeRoute === Routes.HERO ? 'active' : ''}`}
