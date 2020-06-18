@@ -327,8 +327,7 @@ class HUDFullScreenViewWithInjectedProps extends React.Component<Props & Injecte
   public render() {
     const { visibleComponentLeft, visibleComponentRight, tabsLeft, tabsRight } = this.props.fullScreenContext;
     const shouldShow = visibleComponentLeft !== '' || visibleComponentRight !== '';
-    const shouldShowSingleScreen = this.props.shouldSmallScreen ||
-      visibleComponentLeft === 'map-left';
+    const shouldShowSingleScreen = this.props.shouldSmallScreen;
     return (
       <Container style={{ visibility: shouldShow ? 'visible' : 'hidden' }}>
         <TabPanel

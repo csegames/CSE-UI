@@ -8,7 +8,6 @@
 import React from 'react';
 import { throttle } from 'lodash';
 import { styled } from '@csegames/linaria/react';
-import { getViewportSize } from 'hudlib/viewport';
 import { Tooltip } from 'shared/Tooltip';
 
 const Container = styled.div`
@@ -317,13 +316,10 @@ export class Objective extends React.Component<Props, State> {
   }
 
   private getPosition = () => {
-    const scale = game.map.scale || 0.1;
-    const viewportSize = getViewportSize();
-    const heightScale = viewportSize.height / 1217;
-    const widthScale = viewportSize.width / 1367;
+    const scale = game.map.scale || 0.085;
     return {
-      marginTop: (-1 * this.state.position.y * scale + game.map.positionOffset.y) * heightScale,
-      marginLeft: (this.state.position.x * scale + game.map.positionOffset.x) * widthScale,
+      marginTop: (-1 * this.state.position.y * scale + game.map.positionOffset.y),
+      marginLeft: (this.state.position.x * scale + game.map.positionOffset.x),
     }
   }
 

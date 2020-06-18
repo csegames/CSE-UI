@@ -22,8 +22,8 @@ const Container = styled.div`
   background-image: url(../images/map/map-bg.jpg);
 `;
 
-const MapImage = styled.div`
-  position: absolute;
+const MapBackgroundImage = styled.div`
+  position: relative;
   top: 0;
   left: 0;
   right: 0;
@@ -34,6 +34,16 @@ const MapImage = styled.div`
   background-size: contain;
   background-image: url(images/map/map-bg.jpg);
   background-position: center center;
+`;
+
+const MapImage = styled.img`
+  position: relative;
+  object-fit: contain;
+  width: 780px;
+  height: 695px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const Compass = styled.img`
@@ -67,21 +77,23 @@ class MapWithInjectedProps extends React.Component<Props & InjectedProps, State>
   public render() {
     return (
       <Container>
-        <MapImage style={{ backgroundImage: `url(${this.getMapImage()})` }} />
+        <MapBackgroundImage id='mapImageContainer'>
+          <MapImage id='mapImage' src={this.getMapImage()} />
+          {Object.keys(this.state.entityIdMap).map((entityId) => {
+            return <Objective entityId={entityId} />;
+          })}
+
+          {Object.values(this.props.warbandContext.memberCharacterIdToMemberState).map((memberState) => {
+            if (memberState.characterID === camelotunchained.game.selfPlayerState.characterID) {
+              return null;
+            }
+
+            return <WarbandMemberIndicator memberState={memberState} />
+          })}
+
+          <SelfIndicator />
+        </MapBackgroundImage>
         <Compass src='images/map/compass.png' />
-        {Object.keys(this.state.entityIdMap).map((entityId) => {
-          return <Objective entityId={entityId} />;
-        })}
-
-        {Object.values(this.props.warbandContext.memberCharacterIdToMemberState).map((memberState) => {
-          if (memberState.characterID === camelotunchained.game.selfPlayerState.characterID) {
-            return null;
-          }
-
-          return <WarbandMemberIndicator memberState={memberState} />
-        })}
-
-        <SelfIndicator />
       </Container>
     );
   }

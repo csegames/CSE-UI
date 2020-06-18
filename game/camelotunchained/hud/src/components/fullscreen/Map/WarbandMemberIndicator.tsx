@@ -7,7 +7,6 @@
 
 import React from 'react';
 import { styled } from '@csegames/linaria/react';
-import { getViewportSize } from 'hudlib/viewport';
 import { Tooltip } from 'shared/Tooltip';
 import { GroupMemberState } from 'gql/interfaces';
 
@@ -53,13 +52,10 @@ export class WarbandMemberIndicator extends React.Component<Props> {
   }
 
   private getPosition = () => {
-    const scale = game.map.scale || 0.1;
-    const viewportSize = getViewportSize();
-    const heightScale = viewportSize.height / 1217;
-    const widthScale = viewportSize.width / 1367;
+    const scale = game.map.scale || 0.085;
     return {
-      marginTop: (-1 * this.props.memberState.position.y * scale + game.map.positionOffset.y) * heightScale,
-      marginLeft: (this.props.memberState.position.x * scale + game.map.positionOffset.x) * widthScale,
+      marginTop: (-1 * this.props.memberState.position.y * scale + game.map.positionOffset.y),
+      marginLeft: (this.props.memberState.position.x * scale + game.map.positionOffset.x),
     }
   }
 }
