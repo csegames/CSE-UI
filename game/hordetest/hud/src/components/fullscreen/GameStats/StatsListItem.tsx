@@ -36,6 +36,7 @@ const ChampionInfo = styled.div`
   flex: 1.5;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 `;
 
 const PlayerName = styled.div`
@@ -43,6 +44,8 @@ const PlayerName = styled.div`
   font-weight: bold;
   font-size: 18px;
   color: white;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 const ChampionName = styled.div`

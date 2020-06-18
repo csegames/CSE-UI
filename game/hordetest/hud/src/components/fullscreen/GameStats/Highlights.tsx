@@ -107,6 +107,8 @@ const PlayerName = styled.div`
   font-size: 23px;
   font-family: Lato;
   font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: white;
 `;
 
