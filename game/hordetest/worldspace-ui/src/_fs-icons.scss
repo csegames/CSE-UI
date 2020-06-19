@@ -1,10 +1,8 @@
 @font-face {
   font-family: 'fs-icons';
-  src:  url('../font/fs-icons/fs-icons.eot?6n9u6k');
-  src:  url('../font/fs-icons/fs-icons.eot?6n9u6k#iefix') format('embedded-opentype'),
-    url('../font/fs-icons/fs-icons.ttf?6n9u6k') format('truetype'),
-    url('../font/fs-icons/fs-icons.woff?6n9u6k') format('woff'),
-    url('../font/fs-icons/fs-icons.svg?6n9u6k#fs-icons') format('svg');
+  src: url('../font/fs-icons/fs-icons.ttf?hno8fw') format('truetype'),
+    url('../font/fs-icons/fs-icons.woff?hno8fw') format('woff'),
+    url('../font/fs-icons/fs-icons.svg?hno8fw#fs-icons') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -13,7 +11,7 @@
 [class^="fs-icon-"], [class*=" fs-icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'fs-icons' !important;
-  speak: none;
+  speak: never;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -24,13 +22,50 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.fs-icon-effects-sandwich:before {
-  content: "\e947";
+
+.fs-icon-effects-player-lockdown:before {
+  content: "\e939";
 }
-.fs-icon-effects-apple:before {
-  content: "\e948";
+.fs-icon-effects-speed-boost:before {
+  content: "\e94f";
+}
+.fs-icon-effects-weak:before {
+  content: "\e950";
+}
+.fs-icon-effects-haste-potion-buff:before {
+  content: "\e951";
+}
+.fs-icon-effects-health-pool-team-benefits:before {
+  content: "\e952";
+}
+.fs-icon-effects-mana-pool-team-benefits:before {
+  content: "\e953";
+}
+.fs-icon-effects-pause-barrier-regen:before {
+  content: "\e954";
+}
+.fs-icon-ninja-chilling-blade:before {
+  content: "\e94a";
+}
+.fs-icon-ninja-ice-dagger:before {
+  content: "\e94b";
+}
+.fs-icon-ninja-embrace-shadows:before {
+  content: "\e94c";
+}
+.fs-icon-ninja-freezing-cyclone:before {
+  content: "\e94d";
+}
+.fs-icon-ninja-death-mark:before {
+  content: "\e94e";
 }
 .fs-icon-effects-healing-stone:before {
+  content: "\e947";
+}
+.fs-icon-effects-healing-potion-heal:before {
+  content: "\e948";
+}
+.fs-icon-effects-apple:before {
   content: "\e949";
 }
 .fs-icon-runes-01:before {
@@ -113,9 +148,6 @@
 }
 .fs-icon-effects-fortify:before {
   content: "\e938";
-}
-.fs-icon-effects-haste:before {
-  content: "\e939";
 }
 .fs-icon-effects-rally:before {
   content: "\e93a";
