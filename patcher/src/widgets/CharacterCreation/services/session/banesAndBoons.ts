@@ -675,12 +675,9 @@ export const onInitializeTraits = module.createAction({
     });
 
     // Filter traits according to selected class, faction, and race. If user is a dev, also allow the Admin specifiers.
-    const playerClassTraits = _.find(allClassTraits, _playerClass => _playerClass.id === playerClass ||
-      (_playerClass.id === 'Admin' && (patcher.getPermissions() & PatchPermissions.Devs) !== 0));
-    const factionTraits = _.find(allFactionTraits, _faction => _faction.id === faction ||
-      (_faction.id === 'Admin' && (patcher.getPermissions() & PatchPermissions.Devs) !== 0));
-    const raceTraits = _.find(allRaceTraits, _race => _race.id === race ||
-      (_race.id === 'Admin' && (patcher.getPermissions() & PatchPermissions.Devs) !== 0));
+    const playerClassTraits = _.find(allClassTraits, _playerClass => _playerClass.id === playerClass);
+    const factionTraits = _.find(allFactionTraits, _faction => _faction.id === faction);
+    const raceTraits = _.find(allRaceTraits, _race => _race.id === race);
 
     if ((patcher.getPermissions() & PatchPermissions.Devs) !== 0) {
       const adminPlayerClassTraits = _.find(allClassTraits, _playerClass => _playerClass.id === 'Admin');
