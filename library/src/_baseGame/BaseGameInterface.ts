@@ -59,6 +59,11 @@ export interface BaseGameModel {
   matchmakingGameMode: string;
 
   /**
+   * Match overrides, usable by admins
+   */
+  matchOverrides: ArrayMap<NamedString>;
+
+  /**
    * Unique network Identifier (I think??)
    * TODO: Should we remove this?
    */

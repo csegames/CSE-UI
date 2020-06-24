@@ -17,3 +17,4 @@ import './CombatEvent';
 import './DamageType';
 import './MockMode';
 import './Objective';
+import './NamedValues';
