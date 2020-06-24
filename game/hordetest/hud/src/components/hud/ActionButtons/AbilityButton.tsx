@@ -117,6 +117,12 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
       this.startCountdown({ start: blockingStatus.startTime, duration: blockingStatus.duration });
       return;
     }
+
+    if (this.state.cooldownTimer.start != 0) {
+      // the UI thinks we're still in cooldown, but the server said we were not 
+      // we need to reset the cooldown settings
+      this.startCountdown(ability.timing);
+    }
   }
 
   private checkIsReady = () => {
@@ -177,12 +183,17 @@ class AbilityButtonWithInjectedContext extends React.Component<Props, State> {
     }
 
     return {
-      progress: current / max * 100,
+      progress: max == 0 ? 0 : current / max * 100,
       current,
     };
   }
 
   private getTimingEnd = (timing: DeepImmutableObject<Timing>) => {
+    if (timing.start == 0)
+    {
+      return 0;
+    }
+
     const timingEnd = ((timing.start + timing.duration) - game.worldTime);
     return timingEnd;
   }
