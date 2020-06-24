@@ -12,8 +12,10 @@ declare global {
     Hud = 1 << 0,
     Compass = 1 << 1,
     Alert = 1 << 2,
+    World = 1 << 3,
+    Map = 1 << 4,
 
-    All = (1 << 3) - 1,
+    All = (1 << 5) - 1,
   }
 
   interface Window {
@@ -39,8 +41,10 @@ enum ObjectiveUIVisibility {
   Hud = 1 << 0,
   Compass = 1 << 1,
   Alert = 1 << 2,
+  World = 1 << 3,
+  Map = 1 << 4,
 
-  All = (1 << 3) - 1,
+  All = (1 << 5) - 1,
 }
 
 window.ObjectiveUIVisibility = ObjectiveUIVisibility;
