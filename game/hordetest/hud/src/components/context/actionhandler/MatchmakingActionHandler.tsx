@@ -98,6 +98,12 @@ class MatchmakingActionHandlerWithContext extends React.Component<Props> {
           console.error(e);
         }
 
+        const matchOverrides = (Object.values(game.matchOverrides) as NamedString[]);
+        if (matchOverrides.length > 0) {
+          console.log(`Setting ${matchOverrides.length} match overrides`);
+          callSetMatchOverrides(matchOverrides);
+        }
+
         this.kickOffTimeout = window.setTimeout(() => {
           fullScreenNavigateTo(Route.ChampionSelect);
         }, KICKOFF_TIMEOUT);
@@ -288,4 +294,15 @@ export async function callEnterMatchmaking(gameMode: string) {
 export async function callCancelMatchmaking() {
   // We allow canceling while attached to a server cause it should be idempotent
   return webAPI.MatchmakingAPI.CancelMatchmaking(webAPI.defaultConfig);
+}
+
+export async function callSetMatchOverrides(overrides: NamedString[]) {
+  var request: SetMatchOverridesRequest = {
+    MatchOverrides: {}
+  };
+  overrides.forEach((namedString : NamedString) => {
+    request.MatchOverrides[namedString.name] = namedString.value;
+  });
+  
+  return webAPI.MatchmakingAPI.SetMatchOverrides(webAPI.defaultConfig, request);
 }

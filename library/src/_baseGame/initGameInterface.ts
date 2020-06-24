@@ -137,6 +137,7 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
     isPublicBuild: true,
     uiMockMode: 0,
     matchmakingGameMode: "hordetest8",
+    matchOverrides: {},
 
     reloadUI: noOp,
     quit: noOp,

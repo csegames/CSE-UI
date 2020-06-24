@@ -100,6 +100,12 @@ declare global {
 }
 
 declare global {
+  export interface SetMatchOverridesRequest {
+    MatchOverrides: { [key: string]: string; };
+  }
+}
+
+declare global {
   type EntityID = string;
 }
 
@@ -1889,6 +1895,14 @@ export const MatchmakingAPI = {
     const conf = config();
     return xhrRequest('post', conf.url + 'v1/matchmaking/cancel/', {
     }, null, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, conf.headers || {}) });
+  },
+
+  SetMatchOverrides: function(config: RequestConfig, request: Partial<SetMatchOverridesRequest>): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest('post', conf.url + 'v1/matchmaking/setmatchoverrides/', {
+    }, request, { headers: Object.assign({}, {
       'Accept': 'application/json',
     }, conf.headers || {}) });
   },
