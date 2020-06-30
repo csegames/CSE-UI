@@ -279,7 +279,7 @@ export function checkNetworkRequirements(component: AbilityBuilderQuery.AbilityC
       }
   
       if (networkRequirement.excludeTag) {
-        if (!newComponentList.find(c => c.id != selectedComponent.id && c.abilityTags.includes(networkRequirement.excludeTag.tag))) {
+        if (newComponentList.find(c => c.id != selectedComponent.id && c.abilityTags.includes(networkRequirement.excludeTag.tag))) {
           // If a component is selected that contains a tag in the exclude list, this component can not be selected.
           meetsExcludeTagReq = false;
         }
