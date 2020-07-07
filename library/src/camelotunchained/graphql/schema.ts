@@ -6153,6 +6153,7 @@ export namespace WarbandUpdateSubscription {
 
 export namespace AbilityTypeSelectQuery {
   export type Variables = {
+    raceID: string;
     classID: string;
   }
 
@@ -6164,8 +6165,14 @@ export namespace AbilityTypeSelectQuery {
   export type Game = {
     __typename?: "GameDefsGQLData";
     class?: Class | null; 
+    race?: Race | null;
   }
 
+  export type Race = {
+    __typename?: "RaceDef";
+    buildableAbilityNetworks?: (BuildableAbilityNetworks | null)[] | null; 
+  }
+  
   export type Class = {
     __typename?: "ClassDef";
     buildableAbilityNetworks?: (BuildableAbilityNetworks | null)[] | null; 

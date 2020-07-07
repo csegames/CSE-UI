@@ -12,9 +12,9 @@ import { AbilityBookQuery } from 'gql/interfaces';
 import { AbilityComponentFragment } from 'gql/fragments/AbilityComponentFragment';
 
 const query = gql`
-  query AbilityBookQuery($class: String!) {
+  query AbilityBookQuery($race: String!, $class: String!) {
     game {
-      abilityComponents(class: $class) {
+      abilityComponents(race: $race, class: $class) {
         ...AbilityComponent
       }
     }
@@ -143,7 +143,8 @@ export class AbilityBookContextProvider extends React.Component<{}, State> {
           query={{
             query,
             variables: {
-              class: Archetype[camelotunchained.game.selfPlayerState.classID],
+              race: Race[camelotunchained.game.selfPlayerState.race],
+              class: Archetype[camelotunchained.game.selfPlayerState.classID]              
             },
           }}
           onQueryResult={this.handleQueryResult}

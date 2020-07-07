@@ -13,9 +13,18 @@ import { AbilityTypeSelectQuery } from 'gql/interfaces';
 import { AbilityType } from 'services/session/AbilityBuilderState';
 
 const query = gql`
-  query AbilityTypeSelectQuery($classID: String!) {
+  query AbilityTypeSelectQuery($raceID: String!, $classID: String!) {
     game {
       class(class: $classID) {
+        buildableAbilityNetworks {
+          id
+          display {
+            name
+          }
+        }
+      }
+
+      race(race: $raceID) {
         buildableAbilityNetworks {
           id
           display {
@@ -53,10 +62,20 @@ export interface Props {
 export class AbilityTypeSelect extends React.PureComponent<Props> {
   public render() {
     return (
-      <GraphQL query={{ query, variables: { classID: Archetype[camelotunchained.game.selfPlayerState.classID] } }}>
+      <GraphQL query={{ query, variables: { raceID: Race[camelotunchained.game.selfPlayerState.race], classID: Archetype[camelotunchained.game.selfPlayerState.classID] } }}>
         {(graphql: GraphQLResult<AbilityTypeSelectQuery.Query>) => {
           if (graphql.loading || !graphql.data) return null;
-          const buildableNetworks = graphql.data.game.class.buildableAbilityNetworks;
+          let buildableNetworks = graphql.data.game.class.buildableAbilityNetworks;
+
+          // add all networks from race, but don't add duplicates
+          graphql.data.game.race.buildableAbilityNetworks.forEach(network =>
+          {
+            if (buildableNetworks.find(n => n.id == network.id) == null)
+            {
+              buildableNetworks.push(network);
+            }
+          });
+
           return (
             <Container>
               {buildableNetworks.map((network) => {

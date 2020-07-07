@@ -38,7 +38,7 @@ const HeaderLink = styled.span`
 `;
 
 const query = gql`
-  query AbilityBuilderQuery($class: String!) {
+  query AbilityBuilderQuery($race: String!, $class: String!) {
     game {
       abilityNetworks {
         id
@@ -56,7 +56,7 @@ const query = gql`
         }
       }
 
-      abilityComponents(class: $class) {
+      abilityComponents(race: $race, class: $class) {
         ...AbilityComponent
       }
 
@@ -244,6 +244,7 @@ function AbilityBuilder(props: {}) {
               query={{
                 query,
                 variables: {
+                  race: Race[camelotunchained.game.selfPlayerState.race],
                   class: Archetype[camelotunchained.game.selfPlayerState.classID],
                 },
               }}

@@ -2434,6 +2434,7 @@ export interface PossibleIngredientspossibleIngredientsArgs {
 }
 export interface AbilityComponentsabilityComponentsArgs {
   class?: string | null /** What class to filter for, optional */;
+  race?: string | null /** What race to filter for, optional */;
 }
 export interface ClassclassArgs {
   class?: string | null /** The class type to look for. (required) */;
@@ -14857,6 +14858,7 @@ export namespace WarbandUpdateSubscription {
 
 export namespace AbilityTypeSelectQuery {
   export type Variables = {
+    raceID: string;
     classID: string;
   };
 
@@ -14868,6 +14870,12 @@ export namespace AbilityTypeSelectQuery {
   export type Game = {
     __typename?: "GameDefsGQLData";
     class?: Class | null;
+    race?: Race | null;
+  };
+
+  export type Race = {
+    __typename?: "RaceDef";
+    buildableAbilityNetworks?: (BuildableAbilityNetworks | null)[] | null;
   };
 
   export type Class = {
