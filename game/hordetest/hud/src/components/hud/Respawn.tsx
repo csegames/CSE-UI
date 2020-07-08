@@ -10,15 +10,15 @@ import { InputContext } from 'components/context/InputContext';
 import { MatchmakingContext } from 'context/MatchmakingContext';
 
 const Container = styled.div`
+  display: flex;
   position: fixed;
-  top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  background: rgba(56, 7, 9, 0.4);
-  display: flex;
+  height: 10%;
+  max-height: 120px;
+  background: rgba(20, 20, 20, 0.9);
   justify-content: center;
-  pointer-events: none;
   opacity: 0;
   animation: fadeIn 0.5s forwards;
 
@@ -33,83 +33,39 @@ const Container = styled.div`
   }
 `;
 
-const Banner = styled.div`
+const DeadTextWrapper = styled.div`
+  width: 200px;
+  height: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 473px;
-  height: 1080px;
-  background-image: url(../images/hud/respawn/banner.png);
-  background-size: contain;
-  pointer-events: all;
-  animation: bounceIn 0.5s forwards;
-  animation-delay: 0.5s;
-  margin-top: -1080px;
-
-  @keyframes bounceIn {
-    0% {
-      maring-top: -1080px;
-    }
-
-    80% {
-      margin-top: 0px;
-    }
-
-    100% {
-      margin-top: -20px;
-    }
-  }
 `;
 
 const DeadText = styled.div`
-  width: 298px;
-  height: 132px;
-  background-image: url(../images/hud/respawn/dead-text.png);
-  background-repeat: no-repeat;
-  background-size: contain;
-  margin-bottom: 30px;
-`;
-
-const Button = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 13px 0;
-  min-width: 275px;
+  color: #969696;
   text-transform: uppercase;
   font-family: Colus;
-  font-size: 24px;
-  background-color: rgba(238, 168, 43, 0.5);
-  transition: background-color 0.2s;
-  border: 3px solid #f9e163;
-  color: white;
-  cursor: pointer;
+  font-size: 22px;
   letter-spacing: 2px;
-  outline: 1px solid rgb(255, 219, 145);
-  outline-offset: -8px;
+`;
 
-  &.leave {
-  }
-
-  &.highlight {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
+const HeartsParent = styled.div`
+  display: flex;
+  width: 180px;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const HeartsContainer = styled.div`
-  position: relative;
   display: flex;
-  margin-bottom: 5px;
+  position: relative;
 `;
 
 const DashLine = styled.div`
   position: absolute;
-  width: 246px;
+  width: 165px;
   height: 3px;
   background-image: url(../images/hud/respawn/dash-line.png);
   background-size: contain;
@@ -138,8 +94,72 @@ const LivesText = styled.div`
   color: #969696;
   font-size: 14px;
   font-family: Colus;
-  margin-bottom: 30px;
   text-transform: uppercase;
+  margin-top: 4px;
+`;
+
+const Button = styled.div`
+  display: flex;
+  padding: 5px;
+  min-width: 200px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 40px;
+  margin-right: 40px;
+  border: 4px solid #f9e163;
+  background-color: rgba(238, 168, 43, 0.2);
+  transition: background-color 0.2s;
+  color: #f9e163;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  font-family: Colus;
+  font-size: 22px;
+  cursor: pointer;
+  letter-spacing: 2px;
+
+  &.leave {
+  }
+
+  &.highlight {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+`;
+
+const FlexSpacer = styled.div`
+  flex: auto;
+`;
+
+const SpectateNextPlayerWrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 220px;
+  margin: 5px 0;
+  border-left: 1px solid #969696;
+`;
+
+const SpectateNextPlayerIcon = styled.div`
+  width: 30px;
+  height: 30px;
+  margin: 10px;
+  text-align: center;
+  font-size: 28px;
+  color: #969696;
+  margin: 0 8px;
+`;
+
+const SpectateHintText = styled.div`
+  color: #969696;
+  font-size: 16px;
+  text-transform: uppercase;
+  font-weight: bold;
+  width: 130px;
 `;
 
 export interface Props {
@@ -163,14 +183,25 @@ class RespawnWithInjectedContext extends React.Component<Props, State> {
     };
   }
 
+  private getSpectateKeybindIconClass() {
+    const keybind = Object.values(game.keybinds).find(k => k.description === "Primary attack");
+    if (!keybind) {
+      return null;
+    }
+
+    return keybind.binds[0].iconClass;
+  }
+
   public render() {
     const playerState = hordetest.game.selfPlayerState;
     const hearts = Array.from(Array(playerState.maxDeaths));
     const livesLeft = playerState.maxDeaths - playerState.currentDeaths;
     return this.state.visible ? (
-        <Container data-input-group='block'>
-          <Banner>
-            <DeadText />
+        <Container>
+          <DeadTextWrapper>
+            <DeadText>You Died</DeadText>
+          </DeadTextWrapper>
+          <HeartsParent>
             <HeartsContainer>
               {hearts.map((_, i) => {
                 const isLife = i + 1 <= livesLeft;
@@ -179,21 +210,27 @@ class RespawnWithInjectedContext extends React.Component<Props, State> {
                   <Heart className={`${lifeClass} fs-icon-misc-heart`} />
                 );
               })}
-
               <DashLine />
             </HeartsContainer>
             <LivesText>{livesLeft} {livesLeft !== 1 ? 'Lives' : 'Life'} Left</LivesText>
-            {playerState.currentDeaths < playerState.maxDeaths || playerState.maxDeaths === 0 ?
-              <Button className={this.props.isConsole ? 'highlight' : ''} onClick={this.onRespawn}>
-                {this.props.isConsole && <span className={game.gamepadSelectBinding.iconClass}></span>}
-                Respawn
-              </Button> :
-              <Button className='leave' onClick={this.onLeaveMatch}>
-                {this.props.isConsole && <span className={game.gamepadSelectBinding.iconClass}></span>}
-                Leave Match
-              </Button>
-            }
-          </Banner>
+          </HeartsParent>
+          {playerState.currentDeaths >= playerState.maxDeaths && playerState.maxDeaths !== 0 ? null :
+            <Button className={this.props.isConsole ? 'highlight' : ''} onClick={this.onRespawn}>
+              {this.props.isConsole && <span className={game.gamepadSelectBinding.iconClass}></span>}
+              Revive
+            </Button>
+          }
+          <FlexSpacer />
+          {playerState.currentDeaths < playerState.maxDeaths || playerState.maxDeaths === 0 ? null :
+            <Button className='leave' onClick={this.onLeaveMatch}>
+              {this.props.isConsole && <span className={game.gamepadSelectBinding.iconClass}></span>}
+              Leave Match
+            </Button>
+          }
+          <SpectateNextPlayerWrap>
+            <SpectateNextPlayerIcon className={this.getSpectateKeybindIconClass()}></SpectateNextPlayerIcon>
+            <SpectateHintText>Spectate Next Player</SpectateHintText>
+          </SpectateNextPlayerWrap>
         </Container>
     ) : null;
   }
