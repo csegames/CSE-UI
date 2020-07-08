@@ -143,7 +143,7 @@ export class Blocks extends React.Component<BlocksProps, BlocksState> {
     if (this.props.searchValue === '') return game.building.materials;
 
     const materials = game.building.materials;
-    const filteredMaterials = {};
+    const filteredMaterials : ArrayMap<Material> = {};
     Object.keys(materials).forEach((mKey) => {
       let searchIncludesMaterial = false;
       let mTagFilter = '';
@@ -170,19 +170,14 @@ export class Blocks extends React.Component<BlocksProps, BlocksState> {
 
         if (searchIncludesMaterial || searchIncludesBlock) {
           if (filteredMaterials[mKey]) {
-            filteredMaterials[mKey] = {
-              ...filteredMaterials[mKey],
-              blocks: {
-                ...filteredMaterials[mKey].blocks,
-                [bKey]: materials[mKey].blocks[bKey],
-              },
+            filteredMaterials[mKey].blocks = {
+              ...filteredMaterials[mKey].blocks,
+              [bKey]: materials[mKey].blocks[bKey],
             };
           } else {
-            filteredMaterials[mKey] = {
-              ...materials[mKey],
-              blocks: {
-                [bKey]: materials[mKey].blocks[bKey],
-              },
+            filteredMaterials[mKey] = cloneDeep(materials[mKey]);
+            filteredMaterials[mKey].blocks = {
+              [bKey]: materials[mKey].blocks[bKey],
             };
           }
         }
