@@ -301,22 +301,6 @@ export class WorldUI extends React.Component<{}, State> {
       indicator: OBJECTIVE_INDICATORS[objectiveStateCopy.objective.indicator],
     };
 
-    // CODE IS USED TO FIND A BUG. DELETE WHEN FIXED
-    const worldUIs = cloneDeep(this.state.worldUIs);
-    const foundSameCoord = Object.values(worldUIs).find(ui => ui.x === x && ui.y === y);
-    if (foundSameCoord && foundSameCoord.id !== id) {
-      this.removeWorldUI(foundSameCoord.id);
-      console.error(`Hey Matt! There was an Objective indicator with the
-        same coordinates as another but does not have the same id.`);
-    }
-
-    const isBadObjective = objectiveState.objective.progress.current === 0 && objectiveState.objective.progress.max === 0;
-    if (isBadObjective) {
-      console.error(`There was an Objective indicator that had capture progress current: 0 and max: 0. That's bad!`);
-      return;
-    }
-    // CODE IS USED TO FIND A BUG. DELETE WHEN FIXED
-
     this.createOrUpdateWorldUI(newObjectiveState);
   }
 
