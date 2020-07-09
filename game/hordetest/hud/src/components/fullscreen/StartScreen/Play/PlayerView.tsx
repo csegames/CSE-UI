@@ -12,7 +12,7 @@ import { ChampionCostumeInfo, ChampionInfo } from '@csegames/library/lib/hordete
 import { MyUserContext } from 'context/MyUserContext';
 import { WarbandContext, PartialGroupMemberState } from 'context/WarbandContext';
 import { ColossusProfileContext } from 'context/ColossusProfileContext';
-import { ChampionInfoContext, ChampionInfoContextState } from 'context/ChampionInfoContext';
+import { ChampionInfoContext } from 'context/ChampionInfoContext';
 import { MatchmakingContext, PlayerNumberMode } from 'context/MatchmakingContext';
 
 const Container = styled.div`
@@ -228,36 +228,13 @@ export interface Props {
   isReady: boolean;
 }
 
-function getChampions(championInfoContext: ChampionInfoContextState): Champion[] {
-  return championInfoContext.champions.map((champ) => {
-    const championCostumes = championInfoContext.championCostumes.filter(costume =>
-      costume.requiredChampionID === champ.id);
-    return {
-      ...champ,
-      costumes: championCostumes,
-    };
-  });
-}
-
-function getDefaultChampion(championId: string, costumeId: string, champions: Champion[]): ChampionCostumeInfo {
-  const champ = champions.find(c => c.id === championId);
-  if (champ && champ.costumes) {
-    return champ.costumes.find(c => c.id === costumeId);
-  }
-  else {
-    console.error("Default champ or champ costumes missing!");
-  }
-
-  return null;
-}
-
 export function PlayerView(props: Props) {
   const warbandContextState = useContext(WarbandContext);
   const colossusProfileContext = useContext(ColossusProfileContext);
   const championInfoContext = useContext(ChampionInfoContext);
   const myUserContext = useContext(MyUserContext);
   const matchmakingContext = useContext(MatchmakingContext);
-  const champions = getChampions(championInfoContext);
+  const champions = getChampions();
 
   function getSortedMembers() {
     const groupMembers = Object.values(warbandContextState.groupMembers);
@@ -266,6 +243,18 @@ export function PlayerView(props: Props) {
     groupMembers.splice(myIndex, 1);
     groupMembers.unshift(memberInfo);
     return groupMembers;
+  }
+
+  function getChampions(): Champion[] {
+    const champions = cloneDeep(championInfoContext.champions);
+    return champions.map((champ) => {
+      const championCostumes = championInfoContext.championCostumes.filter(costume =>
+        costume.requiredChampionID === champ.id);
+      return {
+        ...champ,
+        costumes: championCostumes,
+      };
+    });
   }
 
   function getMyDefaultChampion(): ChampionCostumeInfo {
@@ -396,9 +385,6 @@ function Player(props: {
 }
 
 function SixManView(props: { groupMembers: PartialGroupMemberState[] }) {
-  const championInfoContext = useContext(ChampionInfoContext);
-  const champions = getChampions(championInfoContext);
-
   function getClassName(index: number) {
     const modeType = 'sixman';
     switch (index) {
@@ -439,19 +425,18 @@ function SixManView(props: { groupMembers: PartialGroupMemberState[] }) {
     <Container>
       {props.groupMembers.map((player, i) => {
         if (!player) return null;
-        const championInfo = getDefaultChampion(player.championID, player.costumeID, champions)
         return (
           <>
             <PlayerPosition className={getClassName(i)}>
               <PlayerImageContainer>
                 <PlayerImage
                   className={'player-image'}
-                  image={championInfo.standingImageURL || 'images/hud/champions/berserker.png'}
+                  image={'images/hud/champions/berserker.png'}
                 />
               </PlayerImageContainer>
             </PlayerPosition>
             <PlayerInfoContainer className={getClassName(i)}>
-              <ProfileBox className={player.isLeader ? 'leader' : ''} image={championInfo.thumbnailURL || ''} />
+              <ProfileBox className={player.isLeader ? 'leader' : ''} image={''} />
               <TextContainer>
                 <Name>{player.name}</Name>
                 <Ready className={player.isReady ? '' : 'not-ready'}>{player.isReady ? 'Ready' : 'Not Ready'}</Ready>
@@ -465,22 +450,18 @@ function SixManView(props: { groupMembers: PartialGroupMemberState[] }) {
 }
 
 function TenManView(props: { groupMembers: PartialGroupMemberState[] }) {
-  const championInfoContext = useContext(ChampionInfoContext);
   const firstHalf = props.groupMembers.slice(0, 5);
   const secondHalf = props.groupMembers.slice(5, 10);
-  const champions = getChampions(championInfoContext);
-
   return (
     <Container>
       <TenManGroupContainer className='topLevel'>
         {firstHalf.map((player, i) => {
           if (!player) return null;
-          const championInfo = getDefaultChampion(player.championID, player.costumeID, champions);
           return (
             <Player
               index={i}
-              standingImage={championInfo ? championInfo.standingImageURL : 'images/hud/champions/berserker.png'}
-              thumbnailImage={championInfo ? championInfo.thumbnailURL : 'images/hud/champions/berserker-profile.png'}
+              standingImage={'images/hud/champions/berserker.png'}
+              thumbnailImage={'images/hud/champions/berserker-profile.png'}
               displayName={player.name}
             />
           );
@@ -489,12 +470,11 @@ function TenManView(props: { groupMembers: PartialGroupMemberState[] }) {
       <TenManGroupContainer className='bottomLevel'>
         {secondHalf.map((player, i) => {
           if (!player) return null;
-          const championInfo = getDefaultChampion(player.championID, player.costumeID, champions);
           return (
             <Player
               index={i}
-              standingImage={championInfo ? championInfo.standingImageURL : 'images/hud/champions/berserker.png'}
-              thumbnailImage={championInfo ? championInfo.thumbnailURL : 'images/hud/champions/berserker-profile.png'}
+              standingImage={'images/hud/champions/berserker.png'}
+              thumbnailImage={'images/hud/champions/berserker-profile.png'}
               displayName={player.name}
             />
           );

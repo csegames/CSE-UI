@@ -188,16 +188,12 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
     return res;
   }
 
+
   private handleActiveGroupUpdate = () => {
     const { warbandContext, matchmakingContext } = this.props;
     const notReadyMembers = Object.values(warbandContext.groupMembers).filter(m => !m.isReady);
 
     const myMemberState = warbandContext.groupMembers[game.characterID];
-
-    if (!myMemberState) {
-      return;
-    }
-
     if (notReadyMembers.length === 0 && myMemberState.isLeader && !this.enteredMatchmaking) {
       callEnterMatchmaking(matchmakingContext.selectedGameMode.mode);
     }
@@ -213,15 +209,12 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
     this.setState({ isModalVisible: false });
   }
 
-  private onLeaveClick = async () => {
+  private onLeaveClick = () => {
     const { groupID } = this.props.warbandContext;
     // if (this.isLeader() && Object.keys(groupMembers).length == 1) {
     //   webAPI.GroupsAPI.DisbandV1(webAPI.defaultConfig, groupID);
     // } else {
-    const res = await webAPI.GroupsAPI.QuitV1(webAPI.defaultConfig, groupID);
-    if (res.ok) {
-      this.props.warbandContext.reset();
-    }
+      webAPI.GroupsAPI.QuitV1(webAPI.defaultConfig, groupID);
     // }
   }
 

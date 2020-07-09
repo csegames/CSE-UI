@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { css } from '@csegames/linaria';
 import { styled } from '@csegames/linaria/react';
@@ -14,7 +14,6 @@ import { IInteractiveAlert, GroupAlert, AlertCategory } from '@csegames/library/
 import { Button } from './Button';
 import { webAPI } from '@csegames/library/lib/hordetest';
 import { showActionAlert } from 'components/shared/ActionAlert';
-import { WarbandContext } from 'components/context/WarbandContext';
 
 // @ts-ignore
 const query = gql`
@@ -96,7 +95,6 @@ export interface Props {
 
 export function InviteAlerts(props: Props) {
   const [interactiveAlerts, setInteractiveAlerts] = useState<IInteractiveAlert[]>([]);
-  const warbandContext = useContext(WarbandContext);
 
   function onDeclineClick(alert: IInteractiveAlert) {
     removeAlert(alert);
@@ -112,7 +110,6 @@ export function InviteAlerts(props: Props) {
 
     if (res.ok) {
       removeAlert(alert);
-      warbandContext.refetch();
     } else {
       showActionAlert('Failed to Accept Invite', { clientX: e.clientX, clientY: e.clientY });
     }
