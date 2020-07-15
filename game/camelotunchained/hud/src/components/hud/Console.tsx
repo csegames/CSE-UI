@@ -20,6 +20,7 @@ const Container = styled.div`
   right: 0;
   background-color: rgba(0, 0, 0, 0.8);
   max-height: 400px;
+  z-index: 99999;
 `;
 
 const InfoWrapper = styled.div`

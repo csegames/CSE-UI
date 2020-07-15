@@ -16,6 +16,7 @@ import { GameStats } from './GameStats';
 import { Settings } from './Settings';
 import { IntroVideo } from './IntroVideo';
 import { InviteAlerts } from './InviteAlerts';
+import { Console } from '../hud/Console';
 
 const Container = styled.div`
   position: fixed;
@@ -88,6 +89,7 @@ class FullScreenWithInjectedContext extends React.Component<Props, State> {
     return (
       <Container>
         {this.renderRoute()}
+        <Console />
         <InviteAlerts />
         {!game.isPublicBuild &&
           <HideButton onClick={() => game.trigger('hide-fullscreen')}>
