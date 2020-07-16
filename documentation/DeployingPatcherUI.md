@@ -23,6 +23,9 @@
 4. Click on `Build with Parameters`
 5. In the CLIENTTOSERVER field, select `CLIENT`
 6. In the ROOTPATH field, write the path of the extracted folder on avalon (e.g Z:\users\username\patcher-fixBug)
-7. In the CHANNEL field, select `11` (Experimental patcher UI)
+7. In the CHANNEL field, select one of the following:
+	* `12` (**Dev Patcher UI**): This channel is only used by devs. This is a good place to test changes which might be unstable or break backwards compatibility.
+	* `11` (**Experimental Patcher UI**): This channel is used by the whole studio. We use it to test the UI internally before releasing a new version.
+	* `1` (**Live Patcher UI**): This is the channel used by real customers. **Make sure your build has been thoroughly tested on experimental and that you coordinate with leads before deploying to this channel!**
 8. Deselect DRYRUN
-9. Click Build. Once the build is finished in Jenkins, just start up your experimental patcher and you will see updates.
+9. Click Build. Once the build is finished in Jenkins, just start up your patcher and you will see updates. The `uiChannel` commandline setting controls which channel the patcher will use.
