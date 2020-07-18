@@ -126,7 +126,7 @@ function logToConsole(msg?: any, ...params: any[]) {
 
 // used before logging these messages, which might contain auth information
 function sanitize(op: OperationMessage): OperationMessage {
-  if (!op.payload.hasOwnProperty('token'))  {
+  if (!op.payload || !op.payload.hasOwnProperty('token'))  {
     return op;
   }
   const clean: Dictionary<any> = {};
