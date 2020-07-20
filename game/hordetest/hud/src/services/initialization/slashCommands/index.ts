@@ -5,7 +5,9 @@
  */
 
 import uiCommands from './uiCommands';
+import apiCommands from './apiCommands';
 
 export default () => {
   uiCommands();
+  apiCommands();
 }

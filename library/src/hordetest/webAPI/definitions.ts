@@ -100,6 +100,12 @@ declare global {
 }
 
 declare global {
+  export interface ForceStartMatchRequest {
+    Mode: string;
+  }
+}
+
+declare global {
   type EntityID = string;
 }
 
@@ -1908,6 +1914,14 @@ export const MatchmakingAPI = {
   SetMatchOverrides: function(config: RequestConfig, request: Partial<SetMatchOverridesRequest>): Promise<RequestResult> {
     const conf = config();
     return xhrRequest('post', conf.url + 'v1/matchmaking/setmatchoverrides/', {
+    }, request, { headers: Object.assign({}, {
+      'Accept': 'application/json',
+    }, conf.headers || {}) });
+  },
+
+  ForceStartMatch: function(config: RequestConfig, request: Partial<ForceStartMatchRequest>): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest('post', conf.url + 'v1/matchmaking/forcestartmatch/', {
     }, request, { headers: Object.assign({}, {
       'Accept': 'application/json',
     }, conf.headers || {}) });
