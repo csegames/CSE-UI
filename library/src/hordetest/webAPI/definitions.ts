@@ -100,12 +100,6 @@ declare global {
 }
 
 declare global {
-  export interface SetMatchOverridesRequest {
-    MatchOverrides: { [key: string]: string; };
-  }
-}
-
-declare global {
   type EntityID = string;
 }
 
@@ -155,6 +149,12 @@ declare global {
   export interface SelectChampionRequest {
     ChampionID: string;
     ChampionMetaData: { [key: string]: string; };
+  }
+}
+
+declare global {
+  export interface SetMatchOverridesRequest {
+    MatchOverrides: { [key: string]: string; };
   }
 }
 
@@ -1281,28 +1281,14 @@ declare global {
 }
 
 declare global {
-  enum ServerStatus {
-    Offline = 0,
-    Starting = 1,
-    Online = 2,
-  }
-  interface Window {
-    ServerStatus: typeof ServerStatus;
-  }
-}
-enum ServerStatus {
-  Offline = 0,
-  Starting = 1,
-  Online = 2,
-}
-window.ServerStatus = ServerStatus;
-
-declare global {
   enum AnnouncementType {
     Text = 1,
     PopUp = 2,
     Worldspace = 4,
     PassiveAlert = 8,
+    Victory = 16,
+    Defeat = 32,
+    Dialog = 64,
     ALL = -1,
   }
   interface Window {
@@ -1314,6 +1300,9 @@ enum AnnouncementType {
   PopUp = 2,
   Worldspace = 4,
   PassiveAlert = 8,
+  Victory = 16,
+  Defeat = 32,
+  Dialog = 64,
   ALL = -1,
 }
 window.AnnouncementType = AnnouncementType;
@@ -1361,6 +1350,23 @@ enum RuneType {
   Count = 3,
 }
 window.RuneType = RuneType;
+
+declare global {
+  enum ServerStatus {
+    Offline = 0,
+    Starting = 1,
+    Online = 2,
+  }
+  interface Window {
+    ServerStatus: typeof ServerStatus;
+  }
+}
+enum ServerStatus {
+  Offline = 0,
+  Starting = 1,
+  Online = 2,
+}
+window.ServerStatus = ServerStatus;
 
 declare global {
   enum FieldCodes {

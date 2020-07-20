@@ -282,12 +282,17 @@ export interface MatchStatsDBModel {
   longestKillStreak: number | null;
   longestLife: number | null;
   matchesPlayed: number | null;
+  maxScore: number | null;
+  maxTeamScore: number | null;
   mostDamageAppliedInMatch: Decimal | null;
   mostDamageTakenInMatch: Decimal | null;
   mostKillsInMatch: number | null;
   scenarioID: string | null;
   thumbsUp: number | null;
   totalPlayTime: number | null;
+  totalScore: number | null;
+  totalTeamScore: number | null;
+  wins: number | null;
 }
 /** CU.Databases.Models.DefaultChampionDBModel */
 export interface DefaultChampionDBModel {
@@ -499,6 +504,7 @@ export interface OvermindSummaryDBModel {
   resolution: ScenarioResolution | null;
   scenarioID: string | null;
   scenarioWon: boolean | null;
+  score: number | null;
   shardID: ShardID | null;
   startTime: string | null;
   totalRunTime: number | null;
@@ -514,6 +520,7 @@ export interface OvermindCharacterSummary {
   longestKillStreak: number | null;
   longestLife: number | null;
   raceID: ObjectId | null;
+  score: number | null;
   thumbsUpReward: CharacterID | null /** The character that this character gave a thumbs up to. */;
   totalTimeInMatch: number | null;
   userName: string | null;
@@ -734,6 +741,14 @@ export interface ClassDef {
   archetype: Archetype | null;
   faction: Faction | null;
   id: string | null;
+}
+/** World.Cogs.RaceDef */
+export interface RaceDef {
+  description: string | null;
+  faction: Faction | null;
+  genders: Gender | null;
+  id: string | null;
+  race: Race | null;
 }
 /** World.Abilities.DisplayInfoDef */
 export interface DisplayInfoDef {
