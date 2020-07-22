@@ -56,7 +56,7 @@ export class MatchInfo extends React.Component<Props, State> {
     this.state = {
       fps: Math.round(game.fps),
       roundStartTime: playerClone.scenarioRoundState === ScenarioRoundState.Running ?
-        playerClone.scenarioRoundStateStartTime : 0,
+        playerClone.scenarioRoundStateStartTime : NaN,
       totalKills: playerClone.totalKills || 0,
     };
   }
@@ -97,18 +97,20 @@ export class MatchInfo extends React.Component<Props, State> {
   }
 
   private handleScenarioRoundUpdate = (newScenarioState: ScenarioRoundState, newScenarioStateStartTime: number) => {
-    if (newScenarioState === ScenarioRoundState.Running) {
-      this.setState(s => ({
-        ...s,
-        roundStartTime: newScenarioStateStartTime,
-      }));
-    }
+    this.setState(s => ({
+      ...s,
+      roundStartTime: newScenarioState === ScenarioRoundState.Running ? newScenarioStateStartTime : NaN,
+    }));
   }
 
   private handlePlayerStateUpdate = () => {
     const playerStateClone = cloneDeep(hordetest.game.selfPlayerState);
-    if (playerStateClone && typeof playerStateClone.totalKills === 'number' && !playerStateClone.totalKills.floatEquals(this.state.totalKills)) {
-      this.setState({ totalKills: playerStateClone.totalKills });
+    if (playerStateClone) {
+      if (typeof playerStateClone.totalKills === 'number' && !playerStateClone.totalKills.floatEquals(this.state.totalKills)) {
+        this.setState({ totalKills: playerStateClone.totalKills });
+      }
+
+      this.setState({ roundStartTime: playerStateClone.scenarioRoundState === ScenarioRoundState.Running ? playerStateClone.scenarioRoundStateStartTime : NaN });
     }
   }
 }
