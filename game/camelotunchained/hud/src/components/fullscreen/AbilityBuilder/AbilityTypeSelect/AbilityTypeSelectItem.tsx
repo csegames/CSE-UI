@@ -474,26 +474,12 @@ export class AbilityTypeSelectItem extends React.PureComponent<Props, State> {
     const { classID } = camelotunchained.game.selfPlayerState;
     const hdPrefix = uiContext.isUHD() ? 'uhd' : 'hd';
 
-    if (classID === Archetype.Skald ||
-        classID === Archetype.Minstrel ||
-        classID === Archetype.DarkFool) {
-      // Support classes that have no art right now. Going to use assets that look like singing :P.
-      return `images/abilitybuilder/${hdPrefix}/select-shout-fianna.png`.toLowerCase();
-    }
-
     return `images/abilitybuilder/${hdPrefix}/select-${type.name}-${Archetype[classID]}.png`.toLowerCase();
   }
 
   private getNameTagImage = (uiContext: UIContext) => {
     const { type } = this.props;
-    const { classID } = camelotunchained.game.selfPlayerState;
     const hdPrefix = uiContext.isUHD() ? 'uhd' : 'hd';
-
-    if (classID === Archetype.Skald ||
-        classID === Archetype.Minstrel ||
-        classID === Archetype.DarkFool) {
-      return `images/abilitybuilder/${hdPrefix}/select-name-bg-shout.png`.toLowerCase();
-    }
 
     return `images/abilitybuilder/${hdPrefix}/select-name-bg-${type.name}.png`.toLowerCase();
   }

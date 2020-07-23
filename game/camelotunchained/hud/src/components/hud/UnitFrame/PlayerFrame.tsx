@@ -342,6 +342,22 @@ export class PlayerFrame extends React.Component<Props, State> {
       case GQLArchetype.Stonehealer: {
         return 'mage-';
       }
+      case Archetype.Abbot:
+      case Archetype.Helbound:
+      case Archetype.BlessedCrow:
+      case GQLArchetype.Abbot:
+      case GQLArchetype.Helbound:
+      case GQLArchetype.BlessedCrow: {
+        return 'support-';
+      }
+      case Archetype.DarkFool:
+      case Archetype.Skald:
+      case Archetype.Minstrel:
+      case GQLArchetype.DarkFool:
+      case GQLArchetype.Skald:
+      case GQLArchetype.Minstrel: {
+        return 'devout-';
+      }
       default: return '';
     }
   }

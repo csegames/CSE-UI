@@ -192,7 +192,7 @@ function AbilityBuilder(props: {}) {
       return imagePrefix + 'classes-bg-texture.jpg';
     }
 
-    const { classID } = camelotunchained.game.selfPlayerState;
+    const { classID, faction } = camelotunchained.game.selfPlayerState;
     switch (classID) {
       case Archetype.BlackKnight: {
         return imagePrefix + 'classes-bg-black-knight.jpg';
@@ -230,10 +230,22 @@ function AbilityBuilder(props: {}) {
       case Archetype.WintersShadow: {
         return imagePrefix + 'classes-bg-wintersshadow.jpg';
       }
-      default: {
-        return imagePrefix + 'classes-bg-generic.jpg';
+    }
+  
+    switch (faction)
+    {
+      case Faction.TDD: {
+        return imagePrefix + 'realm-bg-tdd.jpg';
+      }
+      case Faction.Viking: {
+        return imagePrefix + 'realm-bg-viking.jpg';
+      }
+      case Faction.Arthurian: {
+        return imagePrefix + 'realm-bg-arthurian.jpg';
       }
     }
+
+    return imagePrefix + 'classes-bg-generic.jpg';
   }
 
   return (

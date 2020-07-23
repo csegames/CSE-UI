@@ -60,6 +60,14 @@ const Overlay = styled.div`
     filter: hue-rotate(-135deg);
   }
 
+  &.Support {
+    filter: hue-rotate(118deg);
+  }
+
+  &.Devout {
+    filter: hue-rotate(-100deg);
+  }
+
   @media (max-width: 1920px) {
     background-image: url(../images/abilitybuilder/hd/title-ability-builder-overlay.png);
   }
@@ -143,6 +151,18 @@ export class Header extends React.PureComponent<Props> {
       case Archetype.Physician:
       case Archetype.Stonehealer: {
         return 'Throwing';
+      }
+
+      case Archetype.DarkFool:
+      case Archetype.Skald:
+      case Archetype.Minstrel: {
+        return 'Support';
+      }
+
+      case Archetype.Abbot:
+      case Archetype.Helbound:
+      case Archetype.BlessedCrow: {
+        return 'Devout';
       }
       default: return '';
     }
