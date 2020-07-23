@@ -7,13 +7,14 @@
 
 import React, { useContext } from 'react';
 import { styled } from '@csegames/linaria/react';
-import { ChampionCostumeInfo, ChampionInfo } from '@csegames/library/lib/hordetest/graphql/schema';
+import { ChampionCostumeInfo, ChampionInfo, GameModeInfo } from '@csegames/library/lib/hordetest/graphql/schema';
 
 import { MyUserContext } from 'context/MyUserContext';
 import { WarbandContext, PartialGroupMemberState } from 'context/WarbandContext';
 import { ColossusProfileContext } from 'context/ColossusProfileContext';
 import { ChampionInfoContext } from 'context/ChampionInfoContext';
-import { MatchmakingContext, PlayerNumberMode } from 'context/MatchmakingContext';
+import { MatchmakingContext } from 'context/MatchmakingContext';
+import { GameModeInfoContext } from 'context/GameModeInfoContext';
 
 const Container = styled.div`
   display: flex;
@@ -235,6 +236,7 @@ export function PlayerView(props: Props) {
   const myUserContext = useContext(MyUserContext);
   const matchmakingContext = useContext(MatchmakingContext);
   const champions = getChampions();
+  const gameModeInfoContext = useContext(GameModeInfoContext);
 
   function getSortedMembers() {
     const groupMembers = Object.values(warbandContextState.groupMembers);
@@ -273,7 +275,10 @@ export function PlayerView(props: Props) {
 
   if (warbandContextState.groupID) {
     const sortedGroupMembers = getSortedMembers();
-    if (matchmakingContext.selectedPlayerNumberMode === PlayerNumberMode.SixMan) {
+
+    const gameMode = gameModeInfoContext.gameModes.find((gameMode: GameModeInfo) => gameMode.id == matchmakingContext.selectedGameMode)
+
+    if (gameMode.teamSize <= 6) {
       return <SixManView groupMembers={sortedGroupMembers} />;
     }
 

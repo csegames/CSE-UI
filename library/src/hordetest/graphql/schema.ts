@@ -158,6 +158,9 @@ export interface CUQuery {
   colossusProfile: ColossusProfileDBModel | null /** retrieve information about a player's profile */;
   connectedServices: ConnectedServices | null /** Status information for connected services */;
   game: GameDefsGQLData | null /** Information about gameplay definition data */;
+  gameModeInfo:
+    | (GameModeInfo | null)[]
+    | null /** Gets information about available game modes */;
   invite: Invite | null /** Get group invite by InviteCode. Arguments: shard (required), code (required). */;
   invites:
     | (Invite | null)[]
@@ -346,6 +349,14 @@ export interface StatDefinitionGQL {
   operation: string | null;
   showAtCharacterCreation: boolean | null;
   statType: StatType | null;
+}
+/** CU.WebApi.GraphQL.GameModeInfo */
+export interface GameModeInfo {
+  id: string | null;
+  isDefaultMode: boolean | null;
+  isDevMode: boolean | null;
+  name: string | null;
+  teamSize: number | null;
 }
 /** CU.Groups.Invite */
 export interface Invite {

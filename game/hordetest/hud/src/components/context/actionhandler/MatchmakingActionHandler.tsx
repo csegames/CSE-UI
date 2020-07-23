@@ -28,6 +28,7 @@ import {
   NO_SERVERS_ERROR,
 } from '../MatchmakingContext';
 import { WarbandContext, WarbandContextState } from '../WarbandContext';
+import { GameModeInfoContext, GameModeInfoContextState } from 'context/GameModeInfoContext';
 import { fullScreenNavigateTo, Route } from 'context/FullScreenNavContext';
 import { ErrorComponent } from 'components/fullscreen/Error';
 
@@ -36,6 +37,7 @@ const KICKOFF_TIMEOUT = 500;
 export interface Props {
   matchmakingContext: MatchmakingContextState;
   warbandContext: WarbandContextState;
+  gameModeInfoContext: GameModeInfoContextState;
 }
 
 class MatchmakingActionHandlerWithContext extends React.Component<Props> {
@@ -189,10 +191,12 @@ class MatchmakingActionHandlerWithContext extends React.Component<Props> {
 export function MatchmakingActionHandler() {
   const matchmakingContext = useContext(MatchmakingContext);
   const warbandContext = useContext(WarbandContext);
+  const gameModeInfoContext = useContext(GameModeInfoContext);
   return (
     <MatchmakingActionHandlerWithContext
       matchmakingContext={matchmakingContext}
       warbandContext={warbandContext}
+      gameModeInfoContext={gameModeInfoContext}
     />
   );
 }

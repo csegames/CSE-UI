@@ -10,14 +10,16 @@ import { styled } from '@csegames/linaria/react';
 import { webAPI } from '@csegames/library/lib/hordetest';
 
 import { WarbandContext, onActiveGroupUpdate, WarbandContextState } from 'context/WarbandContext';
+import { GameModeInfoContext, GameModeInfoContextState } from 'context/GameModeInfoContext';
 import { InputContext, InputContextState } from 'context/InputContext';
-import { MatchmakingContext, MatchmakingContextState, PlayerNumberMode } from 'context/MatchmakingContext';
+import { MatchmakingContext, MatchmakingContextState } from 'context/MatchmakingContext';
 import { callEnterMatchmaking, callCancelMatchmaking } from 'context/actionhandler/MatchmakingActionHandler';
 // import { InfoSection } from './InfoSection';
 import { Button } from 'components/fullscreen/Button';
 import { PlayerView } from './PlayerView';
 import { ReadyButton } from './ReadyButton';
 import { InviteFriendModal } from './InviteFriendModal';
+import { GameModeInfo } from '@csegames/library/lib/hordetest/graphql/schema';
 
 const Container = styled.div`
   position: relative;
@@ -87,6 +89,7 @@ export interface Props {
   warbandContext: WarbandContextState;
   inputContext: InputContextState;
   matchmakingContext: MatchmakingContextState;
+  gameModeInfoContext: GameModeInfoContextState;
 }
 
 export interface State {
@@ -106,8 +109,11 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
   }
 
   public render() {
-    const { inputContext, warbandContext, matchmakingContext } = this.props;
-    const maxPartySize = matchmakingContext.selectedPlayerNumberMode === PlayerNumberMode.SixMan ? 6 : 10;
+    const { inputContext, warbandContext, matchmakingContext, gameModeInfoContext } = this.props;
+
+    const gameMode = gameModeInfoContext.gameModes.find((gameMode: GameModeInfo) => gameMode.id == matchmakingContext.selectedGameMode)
+    const maxPartySize = (gameMode === null || gameMode === undefined) ? 6 : gameMode.teamSize;
+
     return (
       <Container>
         {/* <RightSection>
@@ -195,7 +201,7 @@ class PlayWithInjectedContext extends React.Component<Props, State> {
 
     const myMemberState = warbandContext.groupMembers[game.characterID];
     if (notReadyMembers.length === 0 && myMemberState.isLeader && !this.enteredMatchmaking) {
-      callEnterMatchmaking(matchmakingContext.selectedGameMode.mode);
+      callEnterMatchmaking(matchmakingContext.selectedGameMode);
     }
   }
 
@@ -237,11 +243,13 @@ export function Play() {
   const warbandContext = useContext(WarbandContext);
   const inputContext = useContext(InputContext);
   const matchmakingContext = useContext(MatchmakingContext);
+  const gameModeInfoContext = useContext(GameModeInfoContext);
   return (
     <PlayWithInjectedContext
       warbandContext={warbandContext}
       inputContext={inputContext}
       matchmakingContext={matchmakingContext}
+      gameModeInfoContext={gameModeInfoContext}
     />
   );
 }

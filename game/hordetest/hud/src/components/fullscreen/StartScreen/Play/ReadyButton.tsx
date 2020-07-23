@@ -276,7 +276,7 @@ class ReadyButtonWithInjectedContext extends React.Component<Props, State> {
         this.cancelMatchmaking();
       } else {
         game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_PLAYBUTTON);
-        this.enterMatchmaking(this.props.matchmakingContext.selectedGameMode.mode);
+        this.enterMatchmaking(this.props.matchmakingContext.selectedGameMode);
       }
     }
   }

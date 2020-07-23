@@ -13,6 +13,7 @@ import { ChampionInfoContextProvider } from 'context/ChampionInfoContext';
 import { MatchmakingContextProvider } from 'context/MatchmakingContext';
 import { MyUserContextProvider } from 'context/MyUserContext';
 import { WarbandContextProvider } from 'context/WarbandContext';
+import { GameModeInfoContextProvider } from 'context/GameModeInfoContext';
 
 jest.mock('@csegames/linaria');
 
@@ -29,7 +30,9 @@ describe('Play', () => {
             <MatchmakingContextProvider>
               <MyUserContextProvider>
                 <WarbandContextProvider>
-                  <Play />
+                  <GameModeInfoContextProvider >
+                    <Play />
+                  </GameModeInfoContextProvider>
                 </WarbandContextProvider>
               </MyUserContextProvider>
             </MatchmakingContextProvider>

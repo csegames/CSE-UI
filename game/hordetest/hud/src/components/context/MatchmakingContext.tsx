@@ -22,11 +22,6 @@ import { TimerRef, startTimer, endTimer } from '@csegames/library/lib/_baseGame/
 import { preloadQueryEvents } from '../fullscreen/Preloader';
 import { query as SendGQLQuery, defaultQuery } from '@csegames/library/lib/_baseGame/graphql/query';
 
-export enum PlayerNumberMode {
-  SixMan,
-  TenMan,
-}
-
 export function onMatchmakingUpdate(callback: (matchmakingUpdate: IMatchmakingUpdate) => any): EventHandle {
   return game.on('subscription-matchmakingUpdates', callback);
 }
@@ -39,54 +34,6 @@ export const MATCH_CANCELED_ERROR: number = 1003;
 export const NO_SERVERS_ERROR: number = 1005;
 
 export const INVALID_QUEUE_COUNT: string = "?"
-
-export interface GameMode {
-  mode: string,
-  name: string,
-  isDev: boolean
-}
-
-export function getMatchmakingGameModes() {
-  const defaultMode = {
-    "isDev": true,
-    "isDefault": false
-  }
-
-  return [
-    {
-      ...defaultMode,
-      "mode": "csetestone",
-      "name": "TestOne",
-    },
-    {
-      ...defaultMode,
-      "mode": "inttest",
-      "name": "TestTwo",
-    },
-    {
-      ...defaultMode,
-      "mode": "hordetest8",
-      "name": "Normal HT8",
-      "isDev": false,
-      "isDefault": true
-    },
-    {
-      ...defaultMode,
-      "mode": "hordetest9",
-      "name": "Normal HT9",
-    },
-    {
-      ...defaultMode,
-      "mode": "hordetest10",
-      "name": "Normal HT10",
-    },
-    {
-      ...defaultMode,
-      "mode": "hordetest11",
-      "name": "Normal HT11",
-    }
-  ]
-}
 
 const queueCountQuery = gql`
   query QueueCountQuery {
@@ -138,7 +85,8 @@ export interface ContextState {
   isEntered: boolean;
   timeSearching: number;
 
-  selectedGameMode: GameMode;
+  gameModeFromClient: string;
+  selectedGameMode: string;
   enteredGameMode: string;
   currentQueueCount: number | string;
   hasActiveQueueCountQuery: boolean;
@@ -157,12 +105,11 @@ export interface ContextState {
   error: string;
   errorCode: number
 
-  selectedPlayerNumberMode: PlayerNumberMode;
   shouldShowButtonFound: boolean;
 }
 
 export interface ContextFunctions {
-  selectGameMode: (gameMode: GameMode) => void;
+  selectGameMode: (gameMode: string) => void;
   onEnterMatchmaking: (gameMode: string) => void;
   onCancelMatchmaking: () => void;
   onWaitingForServerHandled: () => void;
@@ -173,11 +120,6 @@ export interface ContextFunctions {
 export type MatchmakingContextState = ContextState & ContextFunctions;
 
 export const getDefaultMatchmakingContextState = () : ContextState => {
-  const modes = getMatchmakingGameModes()
-    
-  const modeFromClient = modes.find(x => x.mode == game.matchmakingGameMode)
-  let initialMode = modeFromClient ? modeFromClient : modes.find(x => x.isDefault)
-  
   return {
     isEntered: false,
     host: '',
@@ -191,16 +133,16 @@ export const getDefaultMatchmakingContextState = () : ContextState => {
     timeSearching: 0,
     currentQueueCount: INVALID_QUEUE_COUNT,
     hasActiveQueueCountQuery: false,
+    gameModeFromClient: game.matchmakingGameMode,
     enteredGameMode: null,
-    selectedGameMode: initialMode,
-    selectedPlayerNumberMode: PlayerNumberMode.TenMan,
+    selectedGameMode: game.matchmakingGameMode,
     shouldShowButtonFound: false,
   };
 }
 
 export const MatchmakingContext = React.createContext({
   ...getDefaultMatchmakingContextState(),
-  selectGameMode: (gameMode: GameMode) => {},
+  selectGameMode: (gameMode: string) => {},
   onEnterMatchmaking: (gameMode: string) => {},
   onCancelMatchmaking: () => {},
   onWaitingForServerHandled: () => {},
@@ -252,7 +194,7 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
     );
   }
 
-  private selectGameMode = (gameMode: GameMode) => {
+  private selectGameMode = (gameMode: string) => {
     this.setState({selectedGameMode: gameMode});
   }
 
@@ -310,17 +252,9 @@ export class MatchmakingContextProvider extends React.Component<{}, ContextState
       return;
     }
 
-    // We're in a group and the leader has put us into matchmaking
-    const modes = getMatchmakingGameModes();
-    const modeToEnter = modes.find(x => x.mode == matchmakingUpdate.gameMode)
-    if (modeToEnter) {
-      this.setState({enteredGameMode: modeToEnter.mode}, () => {
-        this.onEnterMatchmaking(this.state.enteredGameMode)
-      });
-    } else {
-      const listOfModes = modes.map(mode => mode.mode)
-      console.error(`Received game mode ${matchmakingUpdate.gameMode} which is not in our list of modes ${listOfModes}`);
-    }
+    this.setState({enteredGameMode: matchmakingUpdate.gameMode}, () => {
+      this.onEnterMatchmaking(this.state.enteredGameMode)
+    });
   }
 
   private handleMatchmakingServerReady = (matchmakingUpdate: MatchmakingServerReady) => {

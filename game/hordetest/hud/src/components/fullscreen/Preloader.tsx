@@ -12,6 +12,7 @@ export const preloadQueryEvents = {
   colossusProfileContext: 'preload-gql-colossusProfileContext',
   myUserContext: 'preload-gql-myUserContext',
   warbandContext: 'preload-gql-warbandContext',
+  gameModeInfoContext: 'preload-gql-gameModeInfoContext',
   matchmakingContext: 'preload-gql-matchmakingContext',
 }
 
@@ -39,6 +40,7 @@ export class Preloader extends React.Component<Props, State> {
     [preloadQueryEvents.colossusProfileContext]: false,
     [preloadQueryEvents.myUserContext]: false,
     [preloadQueryEvents.warbandContext]: false,
+    [preloadQueryEvents.gameModeInfoContext]: false,
     [preloadQueryEvents.matchmakingContext]: false,
   };
   private successfulGQLQueries: { [queryID: string]: boolean } = {};
