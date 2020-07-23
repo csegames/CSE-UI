@@ -89,7 +89,7 @@ module.exports = {
         typings: 'gql-gen --schema src/hordetest/graphql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/hordetest/graphql/schema.ts',
         default: 'nps gql.hordetest.schema && nps gql.hordetest.typings',
         local: 'nps gql.hordetest.localschema && nps gql.hordetest.typings',
-        localschema: 'apollo-codegen introspect-schema http://localhost:13337/graphql --output src/hordetest/graphql/schema.json',
+        localschema: 'apollo-codegen introspect-schema http://localhost:1337/graphql --output src/hordetest/graphql/schema.json',
         localserverschema: 'apollo-codegen introspect-schema http://localhost:8000/graphql --output src/hordetest/graphql/schema.json',
         localserver: 'nps gql.hordetest.localserverschema && nps gql.hordetest.typings',
       }
