@@ -18,7 +18,7 @@ beforeEach(() => {
   jest.resetModules();
 });
 
-describe('Play', () => {
+describe('Champion Select', () => {
   it ('Handles Default Context Data', () => {
     mount(
       <ChampionInfoContextProvider>
