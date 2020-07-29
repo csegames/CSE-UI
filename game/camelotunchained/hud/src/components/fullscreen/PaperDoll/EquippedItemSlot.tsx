@@ -221,6 +221,9 @@ export class EquippedItemSlot extends React.PureComponent<EquippedItemSlotProps,
           isReadiedWeapon={this.props.isReadiedWeapon}
           item={this.props.providedEquippedItem.item}
           instructions='Right click to unequip'
+          myCharacterRace={camelotunchained.game.selfPlayerState.race}
+          myCharacterFaction={camelotunchained.game.selfPlayerState.faction}
+          myCharacterClass={camelotunchained.game.selfPlayerState.classID}
         />;
       showTooltip({ content, event, styles: 'item', shouldAnimate: true });
     }

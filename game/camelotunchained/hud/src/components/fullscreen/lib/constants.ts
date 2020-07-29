@@ -88,6 +88,8 @@ export const colors = {
   tooltipViking: 'rgba(35, 155, 242, 0.25)',
   tooltipArt: 'rgba(247, 33, 33, 0.25)',
   tooltipTDD: 'rgba(196, 216, 1, 0.25)',
+  tooltipWeightStatTextColorEquipped: '#555',
+  tooltipWeightStatTextColorUnequipped: '#999',
 };
 
 export const characterAvatarIcon = {
@@ -181,6 +183,35 @@ export const defaultSlotIcons = {
   OneHandedWeaponLeft: 'icon-slot-left-hand-weapon',
   TwoHandedWeapon: 'icon-slot-two-hand-weapon',
 };
+
+// alternate strings when "Not a" is not a good prefix for a race name
+export const inverseRaceRequirementDisplayString = {
+
+};
+
+export function makeInverseRaceRequirementDisplayString(race: string) {
+  return (race in inverseRaceRequirementDisplayString) ? inverseRaceRequirementDisplayString[race] : 'Not a ' + race;
+}
+
+// alternate strings when "Not a" is not a good prefix for a faction name
+export const inverseFactionRequirementDisplayString = {
+  Arthurian: 'Not Arthurian',
+};
+
+export function makeInverseFactionRequirementDisplayString(faction: string) {
+  return (faction in inverseFactionRequirementDisplayString) ? inverseFactionRequirementDisplayString[faction] : 'Not a ' + faction;
+}
+
+// alternate strings when "Not a" is not a good prefix for a class name
+export const inverseClassRequirementDisplayString = {
+  Archer: 'Not an Archer',
+  Empath: 'Not an Empath',
+  Abbot: 'Not an Abbot',
+};
+
+export function makeInverseClassRequirementDisplayString(cls: string) {
+  return (cls in inverseClassRequirementDisplayString) ? inverseClassRequirementDisplayString[cls] : 'Not a ' + cls;
+}
 
 export const footerInfoIcons = {
   gold: 'icon-ui-gold',

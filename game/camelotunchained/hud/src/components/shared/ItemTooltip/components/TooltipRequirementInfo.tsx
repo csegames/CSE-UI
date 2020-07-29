@@ -9,13 +9,30 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { styled } from '@csegames/linaria/react';
 
-import { shortenedWeaponStatWords, HD_SCALE, MID_SCALE } from 'fullscreen/lib/constants';
+import { forEachItemCharacterRequirement, passesItemCharacterRequirementCheck } from 'fullscreen/lib/utils';
+import {
+  shortenedWeaponStatWords,
+  HD_SCALE,
+  MID_SCALE,
+  makeInverseRaceRequirementDisplayString,
+  makeInverseFactionRequirementDisplayString,
+  makeInverseClassRequirementDisplayString,
+} from 'fullscreen/lib/constants';
 import { prettifyText } from 'fullscreen/lib/utils';
 import { InventoryItem } from 'gql/interfaces';
 
 // #region StatItem constants
 const STAT_ITEM_PADDING_HORIZONTAL = 10;
 // #endregion
+
+// #region StatName constants
+const STAT_NAME_FONT_SIZE = 24;
+// #endregion
+
+// #region StatValue constants
+const STAT_VALUE_FONT_SIZE = 32;
+// #endregion
+
 const StatItem = styled.div`
   display: flex;
   justify-content: space-between;
@@ -26,9 +43,38 @@ const StatItem = styled.div`
   padding: 0 ${STAT_ITEM_PADDING_HORIZONTAL}px;
 `;
 
-// #region StatName constants
-const STAT_NAME_FONT_SIZE = 24;
-// #endregion
+const RaceGenderReqs = styled.div`
+  display: flex;
+  border-image: linear-gradient(to right, rgba(177, 168, 156, 0.4), #131313, rgba(177, 168, 156, 0.4));
+  border-image-slice: 1;
+  border-width: 2px;
+  border-style: solid;
+  padding: 0 ${STAT_ITEM_PADDING_HORIZONTAL}px;
+`;
+
+const ReqName = styled.div`
+  font-size: ${STAT_VALUE_FONT_SIZE}px;
+
+  padding-right: 20px;
+
+  @media (max-width: 2560px) {
+    font-size: ${STAT_VALUE_FONT_SIZE * MID_SCALE}px;
+  }
+
+  @media (max-width: 1920px) {
+    font-size: ${STAT_VALUE_FONT_SIZE * HD_SCALE}px;
+  }
+`;
+
+const ReqPassed = {
+  color: "#eee"
+};
+
+const ReqFailed = {
+  color: "red",
+  textDecoration: "underline",
+};
+
 const StatName = styled.div`
   font-size: ${STAT_NAME_FONT_SIZE}px;
 
@@ -41,9 +87,6 @@ const StatName = styled.div`
   }
 `;
 
-// #region StatValue constants
-const STAT_VALUE_FONT_SIZE = 32;
-// #endregion
 const StatValue = styled.div`
   font-size: ${STAT_VALUE_FONT_SIZE}px;
 
@@ -58,15 +101,29 @@ const StatValue = styled.div`
 
 export interface TooltipRequirementInfoProps {
   item: InventoryItem.Fragment;
+  myCharacterRace?: Race;
+  myCharacterFaction?: Faction;
+  myCharacterClass?: Archetype;
 }
 
 class TooltipRequirementInfo extends React.PureComponent<TooltipRequirementInfoProps> {
   public render() {
     const itemStatRequirements = this.getItemStatRequirements();
+    const itemRaceGenderRequirements = this.getItemCharacterRequirements();
     return (
       !_.isEmpty(itemStatRequirements) &&
         <div>
           <StatName>Requirements</StatName>
+          <RaceGenderReqs>
+            {Object.keys(itemRaceGenderRequirements).map((itemReqName, i) => {
+              const reqClass: string = itemRaceGenderRequirements[itemReqName];
+              if (reqClass == 'fail') {
+                return (<ReqName style={ReqFailed}>{itemReqName}</ReqName>);
+              } else {
+                return (<ReqName style={ReqPassed}>{itemReqName}</ReqName>);
+              }
+            })}
+          </RaceGenderReqs>
           <StatItem>
             {Object.keys(itemStatRequirements).map((itemStatName, i) => {
               return (
@@ -92,6 +149,35 @@ class TooltipRequirementInfo extends React.PureComponent<TooltipRequirementInfoP
     });
 
     return itemStatRequirements;
+  }
+
+  private getItemCharacterRequirements = () => {
+    const { item, myCharacterRace, myCharacterFaction, myCharacterClass } = this.props;
+
+    var result = {};
+
+    forEachItemCharacterRequirement(item, (req: object) => {
+      if ("Race" in req) {
+        const requiredRace = req["Race"];
+        const op = req["Operator"];
+        let displayName: string = (op == "NotEquals") ? makeInverseRaceRequirementDisplayString(requiredRace) : requiredRace;
+        result[displayName] = passesItemCharacterRequirementCheck(op, Race[myCharacterRace], requiredRace) ? 'pass' : 'fail';
+      }
+      else if ("Faction" in req) {
+        const requiredFaction = req["Faction"];
+        const op = req["Operator"];
+        let displayName: string = (op == "NotEquals") ? makeInverseFactionRequirementDisplayString(requiredFaction) : requiredFaction;
+        result[displayName] = passesItemCharacterRequirementCheck(op, Faction[myCharacterFaction], requiredFaction) ? 'pass' : 'fail';
+      }
+      else if ("Class" in req) {
+        const requiredClass = req["Class"];
+        const op = req["Operator"];
+        let displayName: string = (op == "NotEquals") ? makeInverseClassRequirementDisplayString(requiredClass) : requiredClass;
+        result[displayName] = passesItemCharacterRequirementCheck(op, Archetype[myCharacterClass], requiredClass) ? 'pass' : 'fail';
+      }
+    });
+
+    return result;
   }
 }
 

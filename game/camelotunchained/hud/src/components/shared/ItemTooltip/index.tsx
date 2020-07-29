@@ -66,11 +66,14 @@ export interface TooltipContentProps {
   stackedItems?: InventoryItem.Fragment[];
   slotType?: SlotType;
   isReadiedWeapon?: boolean;
+  myCharacterRace?: Race;
+  myCharacterFaction?: Faction;
+  myCharacterClass?: Archetype;
 }
 
 class ItemTooltipContent extends React.Component<TooltipContentProps> {
   public render() {
-    const { item, slotType, equippedItems, stackedItems, instructions, isReadiedWeapon } = this.props;
+    const { item, slotType, equippedItems, stackedItems, instructions, isReadiedWeapon, myCharacterRace, myCharacterFaction, myCharacterClass } = this.props;
     const itemInfo = item && item.staticDefinition && item.staticDefinition;
 
     return itemInfo ? (
@@ -82,7 +85,7 @@ class ItemTooltipContent extends React.Component<TooltipContentProps> {
         {isSubstanceItem(item) && (!stackedItems || stackedItems.length === 1) && <TooltipSubstanceInfo item={item} />}
         {isAlloyItem(item) && (!stackedItems || stackedItems.length === 1) && <TooltipAlloyInfo item={item} />}
         {isBuildingBlockItem(item) && <TooltipBuildingBlockInfo item={item} />}
-        <TooltipFooter item={item} instructions={instructions} />
+        <TooltipFooter item={item} instructions={instructions} myCharacterRace={myCharacterRace} myCharacterFaction={myCharacterFaction} myCharacterClass={myCharacterClass} />
       </Container>
     ) : <div>This item does not exist anymore.</div>;
   }

@@ -16372,6 +16372,7 @@ export namespace ItemDefRef {
     numericItemDefID?: number | null;
     isStackableItem?: boolean | null;
     tags?: (string | null)[] | null;
+    equipRequirements?: string | null;
     deploySettings?: DeploySettings | null;
     gearSlotSets?: (GearSlotSets | null)[] | null;
     substanceDefinition?: SubstanceDefinition | null;

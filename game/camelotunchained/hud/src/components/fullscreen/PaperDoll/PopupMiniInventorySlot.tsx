@@ -172,7 +172,13 @@ class PopupMiniInventorySlot extends React.Component<PopupMiniInventorySlotProps
   private onMouseEnter = (event: React.MouseEvent<HTMLDivElement>) => {
     const { item } = this.props;
     game.trigger(eventNames.onHighlightSlots, this.props.gearSlots);
-    const content = <ItemTooltipContent item={item} instructions='Left click to equip' />;
+    const content = <ItemTooltipContent
+      item={item}
+      instructions='Left click to equip'
+      myCharacterRace={camelotunchained.game.selfPlayerState.race}
+      myCharacterFaction={camelotunchained.game.selfPlayerState.faction}
+      myCharacterClass={camelotunchained.game.selfPlayerState.classID}
+    />;
     showTooltip({ content, event, styles: 'item' });
   }
 

@@ -475,6 +475,9 @@ class HUDFullScreen extends React.Component<FullScreenNavProps, FullScreenNavSta
       stackedItems={item.stackedItems}
       equippedItems={this.state.equippedItems}
       instructions={instructions}
+      myCharacterRace={camelotunchained.game.selfPlayerState.race}
+      myCharacterFaction={camelotunchained.game.selfPlayerState.faction}
+      myCharacterClass={camelotunchained.game.selfPlayerState.classID}
     />;
     showTooltip({ content, event, styles: 'item', shouldAnimate: true });
   }

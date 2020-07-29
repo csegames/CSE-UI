@@ -11,7 +11,7 @@ import { styled } from '@csegames/linaria/react';
 import { SlotType } from 'fullscreen/lib/itemInterfaces';
 import { getTooltipColor, getContainerInfo } from 'fullscreen/lib/utils';
 import { InventoryItem } from 'gql/interfaces';
-import { MID_SCALE, HD_SCALE } from 'fullscreen/lib/constants';
+import { MID_SCALE, HD_SCALE, colors } from 'fullscreen/lib/constants';
 
 // #region Container constants
 const CONTAINER_PADDING = 20;
@@ -239,7 +239,7 @@ class TooltipHeader extends React.PureComponent<TooltipHeaderProps, TooltipHeade
             <Icon className={'icon-ui-weight'}></Icon>
             {Number(item.stats.item.totalMass.toFixed(3))}kg
           </ItemStatInfo>
-          <ItemStatInfo color={item.location.equipped ? 'red' : '#555'}>
+          <ItemStatInfo color={item.location.equipped ? colors.tooltipWeightStatTextColorEquipped : colors.tooltipWeightStatTextColorUnequipped}>
             <Icon flip className={'icon-ui-weight'}></Icon>
             +{item.stats.item.encumbrance.toFixed(3)}%
           </ItemStatInfo>

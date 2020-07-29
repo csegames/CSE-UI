@@ -245,11 +245,14 @@ const InstructionText = styled.div`
 export interface TooltipFooterProps {
   item: InventoryItem.Fragment;
   instructions: string;
+  myCharacterRace?: Race;
+  myCharacterFaction?: Faction;
+  myCharacterClass?: Archetype;
 }
 
 class TooltipFooter extends React.PureComponent<TooltipFooterProps> {
   public render() {
-    const { item, instructions } = this.props;
+    const { item, instructions, myCharacterRace, myCharacterFaction, myCharacterClass } = this.props;
     return (
       <Container>
         <FooterOverlay />
@@ -283,7 +286,7 @@ class TooltipFooter extends React.PureComponent<TooltipFooterProps> {
                 </EquipmentSlotsContainer>
               </StatItem>
             }
-            <TooltipRequirementInfo item={item} />
+          <TooltipRequirementInfo item={item} myCharacterRace={myCharacterRace} myCharacterFaction={myCharacterFaction} myCharacterClass={myCharacterClass} />
           </MidSectionContainer>
         }
         <InstructionText>{instructions}</InstructionText>

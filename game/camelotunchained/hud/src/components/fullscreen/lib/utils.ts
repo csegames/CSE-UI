@@ -643,6 +643,48 @@ export function hasEquipmentPermissions(item: InventoryItem.Fragment) {
       (item && item.permissibleHolder && item.permissibleHolder.userPermissions & ItemPermissions.Equipment));
 }
 
+export function forEachItemCharacterRequirement(item: InventoryItem.Fragment, callback: (req: object) => void) {
+  if (!item.staticDefinition || typeof (item.staticDefinition.equipRequirements) !== "string") {
+    return;
+  }
+
+  const reqs = JSON.parse(item.staticDefinition.equipRequirements);
+  for (let req of reqs) {
+    if ("$type" in req == false || "Operator" in req == false) {
+      continue;
+    }
+
+    callback(req);
+  }
+}
+
+export function passesItemCharacterRequirementCheck(op: string, val: string, reqVal: string) {
+  if (op === "Equals") {
+    return val === reqVal;
+  } else if (op === "NotEquals") {
+    return val !== reqVal;
+  }
+  return true;
+}
+
+export function passesItemCharacterRequirements(item: InventoryItem.Fragment, charRace: Race, charFaction: Faction, charClass: Archetype) {
+  var success: boolean = true;
+
+  forEachItemCharacterRequirement(item, (req: object) => {
+    if ("Race" in req && !passesItemCharacterRequirementCheck(req["Operation"], Race[charRace], req["Race"])) {
+      success = false;
+    }
+    else if ("Faction" in req && !passesItemCharacterRequirementCheck(req["Operation"], Faction[charFaction], req["Faction"])) {
+      success = false;
+    }
+    else if ("Class" in req && !passesItemCharacterRequirementCheck(req["Operation"], Archetype[charClass], req["Class"])) {
+      success = false;
+    }
+  });
+
+  return success;
+}
+
 export function hasContainerPermissions(item: InventoryItem.Fragment) {
   if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
     return ItemPermissions.All;

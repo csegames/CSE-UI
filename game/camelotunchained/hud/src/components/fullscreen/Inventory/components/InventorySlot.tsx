@@ -17,7 +17,7 @@ import {
   GearSlotDefRef,
   ContainerDefStat_Single,
 } from 'gql/interfaces';
-import { hasEquipmentPermissions, getInventoryDataTransfer, isRightOrLeftItem } from 'fullscreen/lib/utils';
+import { hasEquipmentPermissions, getInventoryDataTransfer, isRightOrLeftItem, passesItemCharacterRequirements } from 'fullscreen/lib/utils';
 import eventNames, { EquipItemPayload, InventoryDataTransfer, CombineStackPayload } from 'fullscreen/lib/itemEvents';
 import { SlotType, SlotItemDefType } from 'fullscreen/lib/itemInterfaces';
 import { showContextMenuContent } from 'actions/contextMenu';
@@ -262,6 +262,15 @@ export class InventorySlot extends React.Component<InventorySlotProps, Inventory
 
     // Left or Right item
     if (item && item.staticDefinition && item.staticDefinition.gearSlotSets.length > 0) {
+      // Check character requirements
+      if (camelotunchained.game.selfPlayerState &&
+        !passesItemCharacterRequirements(item,
+          camelotunchained.game.selfPlayerState.race,
+          camelotunchained.game.selfPlayerState.faction,
+          camelotunchained.game.selfPlayerState.classID)) {
+        toastr.error("You do not meet the requirements", "This item is not equippable", { timeout: 3000 });
+        return;
+      }
       // Check if has permissions
       if      (!hasEquipmentPermissions(item)) {
         // Item does not have equip permissions
