@@ -15,7 +15,7 @@ const ExtraButton = styled.div`
   pointer-events: all;
   cursor: pointer;
   color: white;
-  background-color: orange;
+  background-color: black;
   padding: 5px;
   margin: 0 2.5px;
   font-size: 16px;

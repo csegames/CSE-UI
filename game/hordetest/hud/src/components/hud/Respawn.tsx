@@ -141,7 +141,7 @@ const SpectateNextPlayerWrap = styled.div`
   justify-content: center;
   width: 220px;
   margin: 5px 0;
-  border-left: 1px solid #969696;
+  border-left: 1px solid #222222;
 `;
 
 const SpectateNextPlayerIcon = styled.div`
