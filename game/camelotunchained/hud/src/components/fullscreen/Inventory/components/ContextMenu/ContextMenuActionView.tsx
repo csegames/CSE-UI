@@ -11,15 +11,19 @@ import { styled } from '@csegames/linaria/react';
 const View = styled.div`
   display: flex;
   justify-content: space-between;
-  color: white;
-  pointer-events: all;
-  border-bottom: 1px solid #222;
-  max-width: 300px;
-  padding: 5px;
-
+  font-weight: bold;
+  border: 1px solid transparent;
+  padding: 1px 4px;
+  font-size: 14px;
+  color: #ccc;
+  cursor: pointer;
   &:hover {
-    -webkit-filter: brightness(120%);
-    filter: brightness(120%);
+    color: #ffdbac;
+    border: 1px solid;
+    border-image-source: linear-gradient(to right, #ae8b6f 20%, transparent);
+    border-image-slice: 1;
+    box-shadow: inset 0px 0px 10px 0px #000000;
+    background-color: #221d17;
   }
 
   &:active {
@@ -36,7 +40,6 @@ const ContextMenuActionView = (props: React.Props<HTMLDivElement> & {
       {...props}
       style={{
         pointerEvents: props.disabled ? 'none' : 'all',
-        color: props.disabled ? 'gray' : 'white',
         cursor: props.disabled ? 'not-allowed' : 'pointer',
         opacity: props.disabled ? 0.5 : 1,
       }}>

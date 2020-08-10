@@ -22,13 +22,19 @@ const Container = styled.div`
 `;
 
 const Item = styled.li`
-  padding: 2px 5px;
-  margin: 0;
-  color: #ececec;
-  pointer-events: all;
+  font-weight: bold;
+  border: 1px solid transparent;
+  padding: 1px 4px;
+  font-size: 12px;
+  color: #ccc;
   cursor: pointer;
   &:hover {
-    color: ${(props: any) => props.color};
+    color: #ffdbac;
+    border: 1px solid;
+    border-image-source: linear-gradient(to right, #ae8b6f 20%, transparent);
+    border-image-slice: 1;
+    box-shadow: inset 0px 0px 10px 0px #000000;
+    background-color: #221d17;
   }
 `;
 
@@ -40,20 +46,6 @@ const HeaderOverlay = styled.div`
   bottom: 0;
   left: 0;
   z-index: -1;
-  background: linear-gradient(to right, ${(props: {color: string}) => props.color}, transparent);
-  box-shadow: inset 0 0 20px 2px rgba(0,0,0,0.8);
-  height: 106px;
-  &:after {
-    content: '';
-    position: absolute;
-    height: 106px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url(../images/item-tooltips/title_viel.png);
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
 `;
 
 const Overlay = styled.ol`
@@ -65,17 +57,13 @@ const Overlay = styled.ol`
   display: flex;
   flex-direction: column;
   pointer-events: none;
-  border-width: 2px;
-  border-style: solid;
-  border-image: linear-gradient(to bottom, ${(props: any) => props.color}, transparent);
-  border-image-slice: 1;
-  background: url(../images/item-tooltips/bg.png);
-  background-size: cover;
-  -webkit-mask-image: url(../images/item-tooltips/ui-mask.png);
-  -webkit-mask-size: cover;
-  color: #ABABAB;
   width: auto;
   overflow: hidden;
+  background-image: url(../images/item-tooltips/bg.png);
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  box-shadow: inset 0px 0px 10px 0px black;
+  border: 1px solid #4e4e4e;
   &:before {
     content: '';
     position: absolute;
@@ -94,7 +82,7 @@ const Overlay = styled.ol`
     width: 35px;
     height: 35px;
   }
-  padding: 5px;
+  padding: 3px;
 `;
 
 export type MenuItem = {

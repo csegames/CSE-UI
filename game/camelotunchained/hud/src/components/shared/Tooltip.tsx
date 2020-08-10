@@ -33,8 +33,8 @@ const View = styled.div`
   z-index: 9999;
   &.should-animate {
     opacity: 0;
-    animation: fadeIn 0.15s forwards;
-    -webkit-animation: fadeIn 0.15s forwards;
+    animation: fadeIn 0.05s forwards;
+    -webkit-animation: fadeIn 0.05s forwards;
   }
 
   @keyframes fadeIn {

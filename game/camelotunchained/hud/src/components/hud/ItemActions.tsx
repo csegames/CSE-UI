@@ -24,30 +24,58 @@ const Container = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
-  padding: 2px;
-  background-color: #ccc;
+  padding: 3px;
   min-width: 100px;
+  background-image: url(../images/item-tooltips/bg.png);
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  box-shadow: inset 0px 0px 10px 0px black;
+  border: 1px solid #4e4e4e;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: url(../images/item-tooltips/ornament_left.png);
+    width: 35px;
+    height: 35px;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background: url(../images/item-tooltips/ornament_right.png);
+    width: 35px;
+    height: 35px;
+  }
 `;
 
 const Title = styled.div`
-  font-family: Lato;
-  font-weight: bold;
+  font-family: Caudex;
   font-size: 14px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #2e2e2e;
   cursor: default;
+  padding: 3px;
+  color: #ccc;
 `;
 
 const ItemAction = styled.div`
-  font-family: Lato;
   font-weight: bold;
-  padding: 2px 5px;
-  font-size: 12px;
-  color: black;
+  border: 1px solid transparent;
+  padding: 1px 4px;
+  font-size: 14px;
+  color: #ccc;
   cursor: pointer;
 
   &:hover {
-    color: white;
-    background-color: #666666;
+    color: #ffdbac;
+    border: 1px solid;
+    border-image-source: linear-gradient(to right, #ae8b6f 20%, transparent);
+    border-image-slice: 1;
+    box-shadow: inset 0px 0px 10px 0px #000000;
+    background-color: #221d17;
   }
 `;
 
