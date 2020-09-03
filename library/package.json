@@ -83,7 +83,7 @@
     "copyfiles": "^1.2.0",
     "download-cli": "^1.0.5",
     "envify": "^4.1.0",
-    "graphql-code-generator": "^0.10.7",
+    "graphql-code-generator": "^0.18.2",
     "graphql-codegen-typescript-no-pascal-template": "^0.10.10",
     "jest": "^19.0.2",
     "npm-watch": "^0.1.4",
