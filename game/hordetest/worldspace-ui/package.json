@@ -79,7 +79,7 @@
     "fork-ts-checker-webpack-plugin": "^0.4.3",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "get-graphql-schema": "^2.1.1",
-    "graphql-code-generator": "^0.10.7",
+    "graphql-code-generator": "^0.18.2",
     "graphql-codegen-typescript-no-pascal-template": "^0.10.10",
     "graphql-document-collector": "^0.2.1",
     "graphql-tag": "^2.9.2",
