@@ -39,7 +39,7 @@
     "@csegames/camelot-unchained": "^0.2.2",
     "classnames": "^2.2.6",
     "emotion": "^9.2.3",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.21",
     "raven-js": "^3.27.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
