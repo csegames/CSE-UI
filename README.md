@@ -1,30 +1,11 @@
-# Camelot-Unchained
+# CSE UI Projects
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/CUModSquad/Camelot-Unchained.svg)](https://greenkeeper.io/)
-[![CircleCI](https://circleci.com/gh/CUModSquad/Camelot-Unchained/tree/master.svg?style=svg)](https://circleci.com/gh/CUModSquad/Camelot-Unchained/tree/master)
+[Installing Node on Windows](documentation/InstallingNode.md)
 
-UI repository for [Camelot Unchained](https://camelotunchained.com/v3/).
+[Building all projects](documentation/Building.md)
 
-## Requires
+[Updating APIs](documentation/UpdatingAPIs.md)
 
-* NodeJS 7.4.x
+[Debugging](documentation/Debugging.md)
 
-## Directory Structure
-
-```sh
-game\       -- In-game UI modules
-library\    -- NPM published client library package `camelot-unchained` on npm
-patcher\    -- Client Patcher UI
-web\        -- Website projects
-tools\      -- Tools to assist with development
-widgets\    -- Standalone projects that are built to be shared and used within multiple other
-               projects or externally. These widgets are published to the CU Private Registry.
-shared\     -- Contains shared items that are used within multiple categories (ie. web & patcher & in-game)
-  | components\    -- React components that have no session state / do not use redux, can contain sub-components
-
-```
-
-## Private Registry
-
-This project requires that you install and build npm packages from a private NPM registry. The registry is found at http://registry.camelotunchained.com. .npmrc files are included alongside each npm project.json file so no setup is needed if you are just installing and building this project. If you are going to publish packages, talk to [@codecorsair](https://github.com/codecorsair) to get a user account set up on the registry.
-
+[Deploying](documentation/Deploying.md)

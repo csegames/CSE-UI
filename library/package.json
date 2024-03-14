@@ -1,10 +1,10 @@
 {
   "name": "@csegames/library",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "CSE UI Client Library",
   "license": "MPL-2.0",
-  "main": "lib/camelotunchained/index.js",
-  "typings": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "typings": "index.d.ts",
   "private": false,
   "author": "City State Entertainment, LLC <support@citystateentertainment.com>",
   "contributors": [
@@ -24,77 +24,59 @@
     "type": "git",
     "url": "https://github.com/csegames/camelot-unchained-client-library.git"
   },
-  "watch": {
-    "build": {
-      "patterns": "src",
-      "extensions": "ts,tsx,scss,html,jpg,png,webm,ogg,css,ico,js"
-    }
-  },
-  "jest": {
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/../node_modules/ts-jest/preprocessor.js"
-    },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "rootDir": "src"
-  },
   "scripts": {
-    "start": "nps",
-    "prepare": "cwd-in-node-modules || (rimraf typings && typings install && nps gql.hordetest && nps definitions.hordetest)"
+    "prepack": "npm run build",
+    "prebuild": "rimraf dist",
+    "build": "tsc",
+    "postbuild": "cd src && copyfiles _baseGame/chat/chat_proto.* ../dist",
+    "gen:chat": "cd src/_baseGame/chat && pbjs -t static-module chat.proto --wrap es6 --keep-case -o chat_proto.js && pbts -o chat_proto.d.ts chat_proto.js",
+    "gen:cu": "npm run gen:cu-gql && npm run gen:cu-rest",
+    "gen:cu-gql": "download https://hatcheryapi.camelotunchained.com/v1/api/schema > ./src/camelotunchained/graphql/schema.json && gql-gen --schema src/camelotunchained/graphql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/camelotunchained/graphql/schema.ts",
+    "gen:cu-rest": "download https://hatcheryapi.camelotunchained.com/v1/codegen/definitions.ts?useUpdatedFormat=true > ./src/camelotunchained/webAPI/definitions.ts",
+    "gen:ht": "npm run gen:ht-gql && npm run gen:ht-rest",
+    "gen:ht-gql": "download https://omeletteapi.camelotunchained.com/v1/api/schema > ./src/hordetest/graphql/schema.json && gql-gen --schema src/hordetest/graphql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/hordetest/graphql/schema.ts",
+    "gen:ht-rest": "download https://omeletteapi.camelotunchained.com/v1/codegen/definitions.ts?useUpdatedFormat=true > ./src/hordetest/webAPI/definitions.ts",
+    "gen-embed": "npm run gen-embed:cu && npm run gen-embed:ht",
+    "gen-embed:cu": "npm run gen-embed:cu-gql && npm run gen-embed:cu-rest",
+    "gen-embed:cu-gql": "download http://localhost:8000/v1/api/schema > ./src/camelotunchained/graphql/schema.json && gql-gen --schema src/camelotunchained/graphql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/camelotunchained/graphql/schema.ts",
+    "gen-embed:cu-rest": "download http://localhost:8000/v1/codegen/definitions.ts?useUpdatedFormat=true > ./src/camelotunchained/webAPI/definitions.ts",
+    "gen-embed:ht": "npm run gen-embed:ht-gql && npm run gen-embed:ht-rest",
+    "gen-embed:ht-gql": "download http://localhost:8000/v1/api/schema > ./src/hordetest/graphql/schema.json && gql-gen --schema src/hordetest/graphql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/hordetest/graphql/schema.ts",
+    "gen-embed:ht-rest": "download http://localhost:8000/v1/codegen/definitions.ts?useUpdatedFormat=true > ./src/hordetest/webAPI/definitions.ts",
+    "gen-local": "npm run gen-local:cu && npm run gen-local:ht",
+    "gen-local:cu": "npm run gen-local:cu-gql && npm run gen-local:cu-rest",
+    "gen-local:cu-gql": "download http://localhost:1337/v1/api/schema > ./src/camelotunchained/graphql/schema.json && gql-gen --schema src/camelotunchained/graphql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/camelotunchained/graphql/schema.ts",
+    "gen-local:cu-rest": "download http://localhost:1337/v1/codegen/definitions.ts?useUpdatedFormat=true > ./src/camelotunchained/webAPI/definitions.ts",
+    "gen-local:ht": "npm run gen-local:ht-gql && npm run gen-local:ht-rest",
+    "gen-local:ht-gql": "download http://localhost:1337/v1/api/schema > ./src/hordetest/graphql/schema.json && gql-gen --schema src/hordetest/graphql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/hordetest/graphql/schema.ts",
+    "gen-local:ht-rest": "download http://localhost:1337/v1/codegen/definitions.ts?useUpdatedFormat=true > ./src/hordetest/webAPI/definitions.ts"
   },
+  "//": [
+    "notes: ",
+    "change-case is a hidden requirement of graphql-codegen-typescript-no-pascal-template",
+    "handlebars is a hidden requirement of graphql-codegen-typescript-no-pascal-template",
+    "prettier must be locked to a specific version to prevent graphql-code-generator from crashing"
+  ],
   "dependencies": {
-    "cwd-in-node-modules": "^1.0.1",
-    "emotion": "^9.2.10",
-    "es6-promise": "^3.0.2",
-    "fuzzysearch": "^1.0.3",
-    "google-protobuf": "^3.11.0",
+    "@csegames/coherent": "file:../coherent",
+    "big-integer": "^1.6.52",
     "graphql": "0.13.0",
     "graphql-tag": "^1.2.4",
-    "node-xmpp-client": "2.1.0",
-    "randomstring": "^1.1.5",
-    "raven-js": "^3.27.0",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-emotion": "^9.2.10",
-    "react-transition-group": "1.x",
-    "redux-typed-modules": "^2.2.1"
+    "protobufjs": "^6.11.3",
+    "raven-js": "^3.27.2",
+    "react": "^16.12.0"
   },
   "devDependencies": {
-    "@csegames/linaria": "^0.1.101",
     "@types/graphql": "^0.13.4",
-    "@types/jest": "^19.2.2",
-    "@types/lodash": "^4.14.109",
-    "@types/randomstring": "^1.1.6",
-    "@types/react": "^16.9.20",
-    "@types/react-dom": "^16.0.11",
-    "@types/react-redux": "^4.4.46",
-    "@types/react-transition-group": "1.x",
-    "@types/redux": "^3.6.0",
-    "@types/redux-thunk": "^2.1.0",
+    "@types/react": "^16.14.29",
     "apollo-codegen": "^0.10.13",
-    "babel-cli": "^6.5.1",
-    "babel-core": "^6.5.2",
-    "babel-preset-es2015": "^6.5.0",
-    "browserify": "^13.0.0",
-    "copyfiles": "^1.2.0",
+    "copyfiles": "^2.4.1",
     "download-cli": "^1.0.5",
-    "envify": "^4.1.0",
     "graphql-code-generator": "^0.10.7",
     "graphql-codegen-typescript-no-pascal-template": "^0.10.10",
-    "jest": "^19.0.2",
-    "npm-watch": "^0.1.4",
-    "nps": "^5.0.5",
-    "react-test-renderer": "^16.12.0",
+    "handlebars": "4.0.11",
+    "prettier": "^2.7.1",
     "rimraf": "^2.6.1",
-    "ts-jest": "^19.0.14",
-    "tslint": "^5.8.0",
-    "tslint-config-airbnb": "^5.4.2",
-    "tslint-eslint-rules": "^4.0.0",
-    "typescript": "^3.5.0",
-    "typings": "^1.3.2"
+    "typescript": "^4.8.4"
   }
 }

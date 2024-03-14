@@ -1,0 +1,636 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.gender-btn {
+  width: 30%;
+  margin: 5px;
+  -webkit-user-select: none;
+  cursor: pointer !important;
+  padding: 5px 20px;
+  font-weight: 700;
+  text-align: center;
+  background: $gradient2;
+  border: solid $colorg2;
+  border-width: 1px 3px;
+  color: $color1;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    filter: brightness(1.2);
+    -webkit-filter: brightness(1.2);
+  }
+  &:active {
+    background-color: rgba(255, 200, 100, 0.15);
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.selected {
+  background: $gradient5;
+  border: solid $color7;
+  border-width: 1px 3px;
+  outline: 1px $color7 solid;
+  outline-offset: -3px;
+  color: $color7;
+  opacity: 1;
+  &:hover {
+    filter: brightness(1.2);
+    -webkit-filter: brightness(1.2);
+  }
+}
+
+.thumb__Pict--Male {
+  @include selection-thumbnail('../images/races/thumbnail/icon_pict-m.png');
+}
+.thumb__Pict--Female {
+  @include selection-thumbnail('../images/races/thumbnail/icon_pict-f.png');
+  bottom: 30px !important;
+  max-height: 85% !important;
+}
+
+.thumb__Luchorpan--Male {
+  @include selection-thumbnail('../images/races/thumbnail/icon_luchorpan-m.png');
+}
+
+.thumb__Luchorpan--Female {
+  @include selection-thumbnail('../images/races/thumbnail/icon_luchorpan-f.png');
+}
+
+.thumb__Valkyrie--Male {
+  @include selection-thumbnail('../images/races/thumbnail/icon_valkyrie-m.png');
+}
+
+.thumb__Valkyrie--Female {
+  @include selection-thumbnail('../images/races/thumbnail/icon_valkyrie-f.png');
+}
+
+.thumb__HumanMaleV--Male {
+  @include selection-thumbnail('../images/races/thumbnail/icon_humans-m-vik.png');
+}
+
+.thumb__HumanMaleA--Male {
+  @include selection-thumbnail('../images/races/thumbnail/icon_humans-m-art.png');
+}
+
+.thumb__Golem--Male {
+  @include selection-thumbnail('../images/races/thumbnail/icon_golem-m.png');
+}
+
+.thumb__Hamadryad--Male {
+  @include selection-thumbnail('../images/races/thumbnail/icon_hamadryad-m.png');
+}
+
+.thumb__Strm--Male {
+  @include selection-thumbnail('../images/races/thumbnail/icon_strm-m.png');
+}
+
+.thumb__CaitSith--Male {
+  @include selection-thumbnail('../images/races/thumbnail/icon_caitsith-m.png');
+}
+
+.thumb__Firbog--Male {
+  @include selection-thumbnail('../images/races/thumbnail/icon_firbog-m.png');
+}
+
+.thumb__Jotnar--Male {
+  @include selection-thumbnail('../images/races/thumbnail/icon_jotnar-m.png');
+}
+
+.thumb__HumanMaleT--Male {
+  @include selection-thumbnail('../images/races/thumbnail/icon_humans-m-tdd.png');
+}
+
+.thumb__HumanMaleV--Female {
+  @include selection-thumbnail('../images/races/thumbnail/icon_humans-f-vik.png');
+}
+
+.thumb__HumanMaleA--Female {
+  @include selection-thumbnail('../images/races/thumbnail/icon_humans-f-art.png');
+}
+
+.thumb__Golem--Female {
+  @include selection-thumbnail('../images/races/thumbnail/icon_golem-f.png');
+}
+
+.thumb__Hamadryad--Female {
+  @include selection-thumbnail('../images/races/thumbnail/icon_hamadryad-f.png');
+}
+
+.thumb__Strm--Female {
+  @include selection-thumbnail('../images/races/thumbnail/icon_strm-f.png');
+}
+
+.thumb__CaitSith--Female {
+  @include selection-thumbnail('../images/races/thumbnail/icon_caitsith-f.png');
+}
+
+.thumb__Jotnar--Female {
+  @include selection-thumbnail('../images/races/thumbnail/icon_jotnar-f.png');
+}
+
+.thumb__Firbog--Female {
+  @include selection-thumbnail('../images/races/thumbnail/icon_firbog-f.png');
+}
+
+.thumb__HumanMaleT--Female {
+  @include selection-thumbnail('../images/races/thumbnail/icon_humans-f-tdd.png');
+}
+
+.standing__Luchorpan--Male {
+  @include view-standing('../images/races/standing/luchorpan-m.png');
+}
+
+.standing__Luchorpan--Female {
+  @include view-standing('../images/races/standing/luchorpan-f.png');
+}
+
+.standing__Valkyrie--Male {
+  @include view-standing('../images/races/standing/valkyrie-m.png');
+}
+
+.standing__Valkyrie--Female {
+  @include view-standing('../images/races/standing/valkyrie-f.png');
+}
+
+.standing__Pict--Male {
+  @include view-standing('../images/races/standing/pict-m.png');
+}
+
+.standing__Pict--Female {
+  @include view-standing('../images/races/standing/pict-f.png');
+}
+
+.standing__HumanMaleV--Male {
+  @include view-standing('../images/races/standing/humans-m-vik.png');
+}
+
+.standing__HumanMaleA--Male {
+  @include view-standing('../images/races/standing/humans-m-art.png');
+}
+
+.standing__Golem--Male {
+  @include view-standing('../images/races/standing/golem-m.png');
+}
+
+.standing__Hamadryad--Male {
+  @include view-standing('../images/races/standing/hamadryad-m.png');
+}
+
+.standing__Strm--Male {
+  @include view-standing('../images/races/standing/strm-m.png');
+}
+
+.standing__CaitSith--Male {
+  @include view-standing('../images/races/standing/caitsith-m.png');
+}
+
+.standing__Firbog--Male {
+  @include view-standing('../images/races/standing/firbog-m.png');
+}
+
+.standing__Jotnar--Male {
+  @include view-standing('../images/races/standing/jotnar-m.png');
+}
+
+.standing__HumanMaleT--Male {
+  @include view-standing('../images/races/standing/humans-m-tdd.png');
+}
+
+.standing__HumanMaleV--Female {
+  @include view-standing('../images/races/standing/humans-f-vik.png');
+}
+
+.standing__HumanMaleA--Female {
+  @include view-standing('../images/races/standing/humans-f-art.png');
+}
+
+.standing__Golem--Female {
+  @include view-standing('../images/races/standing/golem-f.png');
+}
+
+.standing__Strm--Female {
+  @include view-standing('../images/races/standing/strm-f.png');
+}
+
+.standing__Hamadryad--Female {
+  @include view-standing('../images/races/standing/hamadryad-f.png');
+}
+
+.standing__CaitSith--Female {
+  @include view-standing('../images/races/standing/caitsith-f.png');
+}
+
+.standing__Firbog--Female {
+  @include view-standing('../images/races/standing/firbog-f.png');
+}
+
+.standing__Jotnar--Female {
+  @include view-standing('../images/races/standing/jotnar-f.png');
+}
+
+.standing__HumanMaleT--Female {
+  @include view-standing('../images/races/standing/humans-f-tdd.png');
+}
+
+.race-btn {
+  cursor: pointer;
+  opacity: 0.5;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.race-selection-container {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.gender-selection-container {
+  display: flex;
+}
+
+.videobg {
+  margin-top: -20px;
+
+  .snow,
+  .snow-close,
+  .glowOrbs,
+  .dust {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    z-index: 1;
+    top: 0;
+  }
+  .snow {
+    -webkit-filter: blur(1px);
+    filter: blur(1px);
+  }
+  .glowOrbs {
+    -webkit-filter: blur(2px);
+    filter: blur(2px);
+  }
+
+  .parallax {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+    left: 0;
+  }
+
+  .bgelement {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    background-repeat: no-repeat;
+    background-position: top center;
+    transition: opacity 0.7s linear;
+    -webkit-transition: opacity 0.7s linear;
+  }
+
+  .ray1 {
+    opacity: 0.5;
+    // animation: rays 5s ease infinite;
+    &.arthurian {
+      -webkit-filter: hue-rotate(20deg) opacity(1);
+      filter: hue-rotate(20deg) opacity(1);
+      // animation: rays 15s ease infinite;
+      &.pict {
+        -webkit-filter: saturate(0) opacity(1);
+        filter: saturate(0) opacity(1);
+      }
+    }
+    &.viking {
+      -webkit-filter: grayscale(100%) brightness(150%) opacity(0.5);
+      filter: grayscale(100%) brightness(150%) opacity(0.5);
+      // animation: rays 15s ease infinite;
+    }
+    &.tdd {
+      // animation: rays 15s ease infinite;
+      -webkit-filter: hue-rotate(40deg);
+      filter: hue-rotate(40deg);
+    }
+  }
+
+  .ray2 {
+    opacity: 0.5;
+    // animation: rays 3s ease infinite;
+    &.arthurian {
+      // animation: rays 13s ease infinite;
+      -webkit-filter: hue-rotate(20deg) opacity(0.8);
+      filter: hue-rotate(20deg) opacity(0.8);
+      &.pict {
+        -webkit-filter: saturate(0) opacity(1);
+        filter: saturatete(0) opacity(1);
+      }
+    }
+    &.viking {
+      // animation: rays 13s ease infinite;
+      -webkit-filter: saturate(0) brightness(150%) opacity(0.8);
+      filter: saturate(0) brightness(150%) opacity(0.8);
+    }
+    &.tdd {
+      // animation: rays 13s ease infinite;
+      -webkit-filter: hue-rotate(40deg);
+      filter: hue-rotate(40deg);
+    }
+  }
+
+  .ray3 {
+    opacity: 0.5;
+    // animation: rays 4s ease infinite;
+    &.arthurian {
+      // animation: rays 10s ease infinite;
+      -webkit-filter: hue-rotate(20deg) opacity(1);
+      filter: hue-rotate(20deg) opacity(1);
+      &.pict {
+        -webkit-filter: saturate(0) opacity(1);
+        filter: saturate(0) opacity(1);
+      }
+    }
+    &.viking {
+      // animation: rays 10s ease infinite;
+      -webkit-filter: saturate(0) brightness(150%) opacity(0.5);
+      filter: saturate(0) brightness(150%) opacity(0.5);
+    }
+    &.tdd {
+      // animation: rays 10s ease infinite;
+      -webkit-filter: hue-rotate(40deg);
+      filter: hue-rotate(40deg);
+    }
+  }
+
+  .particle {
+    &.arthurian {
+      -webkit-filter: opacity(0.5);
+      filter: opacity(0.5);
+    }
+    &.viking {
+      filter: invert(10%);
+    }
+    &.tdd {
+      -webkit-filter: invert(10%);
+      filter: invert(10%);
+    }
+  }
+
+  .char {
+    z-index: 2;
+    background-position: 55% bottom;
+    background-size: contain;
+    max-height: 85%;
+    top: auto !important;
+    bottom: 0px;
+    left: 0px;
+    &.char-select {
+      background-position: 35% bottom;
+    }
+    &.luchorpan {
+      max-height: 65%;
+    }
+    &.standing__WintersShadow {
+      max-height: 65%;
+    }
+    &.standing__Valkyrie--Male,
+    &.standing__Valkyrie--Female,
+    &.standing__HumanMaleV--Male,
+    &.standing__HumanMaleV--Female {
+      bottom: -50px;
+    }
+  }
+
+  .base {
+    z-index: 2;
+    background-position: 55% bottom;
+    background-size: contain;
+    max-height: 20%;
+    top: auto !important;
+    bottom: -10px !important;
+    right: 0px;
+    &.char-select {
+      background-position: 35% bottom;
+    }
+    &.arthurian {
+      background-image: url(../images/visualfx/art/art-base.png);
+    }
+    &.viking {
+      background-image: url(../images/visualfx/vik/vik-base.png);
+    }
+    &.tdd {
+      background-image: url(../images/visualfx/tdd/tdd-base_edit02.png);
+    }
+  }
+
+  .veil {
+    top: -10px !important;
+    left: -30px !important;
+    width: 110%;
+    height: 110%;
+    z-index: 2;
+  }
+
+  .veil2 {
+    transform: scale(1.2);
+    top: -10px !important;
+    left: -30px !important;
+    width: 110%;
+    height: 110%;
+    z-index: 2;
+  }
+
+  .layer1 {
+    top: -10px !important;
+    left: -30px !important;
+    width: 110%;
+    height: 110%;
+  }
+
+  .layer2 {
+    top: -10px !important;
+    left: -30px !important;
+    width: 110%;
+    height: 110%;
+  }
+
+  .layer3 {
+    top: -10px !important;
+    left: -30px !important;
+    width: 110%;
+    height: 110%;
+  }
+
+  .bg {
+    top: -10px !important;
+    left: -30px !important;
+    width: 110%;
+    height: 110%;
+    &.no-char {
+      background-image: url(../images/controller/generic-bg.jpg);
+    }
+  }
+
+  .clouds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: transparent url(../images/visualfx/smoke-close.png) repeat-x bottom center;
+    z-index: 1;
+    animation: move-clouds-close 7s linear infinite;
+    transition: opacity 0.7s linear;
+    -webkit-transition: opacity 0.7s linear;
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: transparent url(../images/visualfx/smoke.png) repeat-x bottom center;
+      background-size: 500px;
+      z-index: 3;
+      -webkit-filter: opacity(0.2);
+      filter: opacity(0.2);
+      animation: move-clouds-back 7s linear infinite;
+    }
+    &.arthurian {
+      animation: move-clouds-close-left 15s linear infinite;
+      -webkit-filter: opacity(0.8);
+      filter: opacity(0.8);
+      transform: scaleY(-1);
+      &:before {
+        bottom: 50%;
+        height: 50%;
+        animation: move-clouds-back-art 15s linear infinite;
+        background-size: 800px;
+        z-index: 1;
+        -webkit-filter: opacity(0.5);
+        filter: opacity(0.5);
+      }
+    }
+    &.viking {
+      animation: move-clouds-close 15s linear infinite;
+      -webkit-filter: brightness(0.5) opacity(0.5);
+      filter: brightness(0.5) opacity(0.5);
+      &:before {
+        z-index: 1;
+        opacity: 1;
+        animation: move-clouds-back 15s linear infinite;
+      }
+    }
+    &.tdd {
+      animation: move-clouds-close-left 15s linear infinite;
+      -webkit-filter: brightness(0.5) opacity(0.5);
+      filter: brightness(0.5) opacity(0.5);
+      &:before {
+        opacity: 1;
+        -webkit-filter: brightness(0) opacity(0.5);
+        filter: brightness(0) opacity(0.5);
+        animation: move-clouds-back-left 20s linear infinite;
+      }
+    }
+  }
+
+  .lightning {
+    background-image: url(../images/visualfx/vik/vik-cloud.png);
+    background-position: right center;
+    background-size: cover;
+    transform: scale(1.1);
+    animation: blink 5s ease infinite;
+  }
+}
+
+/*Moving clouds*/
+
+@keyframes move-clouds-back {
+  from {
+    background-position: 0 bottom;
+  }
+  to {
+    background-position: 500px bottom;
+  }
+}
+
+@keyframes move-clouds-back-art {
+  from {
+    background-position: 800px bottom;
+  }
+  to {
+    background-position: 0 bottom;
+  }
+}
+
+@keyframes move-clouds-close {
+  from {
+    background-position: 0 bottom;
+  }
+  to {
+    background-position: 1578px bottom;
+  }
+}
+
+@keyframes move-clouds-back-left {
+  from {
+    background-position: 500px bottom;
+  }
+  to {
+    background-position: 0 bottom;
+  }
+}
+
+@keyframes move-clouds-close-left {
+  from {
+    background-position: 1578px bottom;
+  }
+
+  to {
+    background-position: 0 bottom;
+  }
+}
+
+/* Move Rays */
+
+@keyframes rays {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+/* Lightning Blink */
+
+@keyframes blink {
+  0%,
+  42%,
+  45%,
+  69%,
+  100% {
+    opacity: 1;
+  }
+  44%,
+  53%,
+  70% {
+    opacity: 0.5;
+  }
+}

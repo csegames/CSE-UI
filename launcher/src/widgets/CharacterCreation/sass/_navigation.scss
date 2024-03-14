@@ -1,0 +1,99 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.cu-character-creation__navigation {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 2;
+  padding: 0px 0 20px 0;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.5));
+}
+
+.cu-character-creation__back {
+  bottom: 5px;
+  left: 20px;
+}
+
+.cu-character-creation__next {
+  bottom: 5px;
+  right: 20px;
+}
+
+.cu-character-creation__name {
+  position: absolute;
+  bottom: 75px;
+  right: 0;
+  left: 0;
+  margin: 0;
+  z-index: 20;
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+  &:focus,
+  &:hover {
+    opacity: 1;
+  }
+
+  input {
+    width: 300px;
+    display: block;
+    margin: auto;
+    padding: 11px;
+    color: #ececec;
+    background-color: #1a1a1a;
+    transition: all 0.3s;
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: 200;
+    border: 1px solid transparent;
+    box-shadow: inset 0px 0px 3px 0px rgba(200, 200, 200, 0);
+    cursor: pointer;
+
+    &#create-character-name-input {
+      width: auto;
+      background: linear-gradient(to right, transparent, black, transparent);
+      font-family: 'Caudex';
+      font-size: 2.2em;
+      border-style: solid;
+      border-width: 0 0 1px 0;
+      border-image: linear-gradient(to right, transparent, #fff, transparent);
+      margin-bottom: 5px;
+      border-image-slice: 1;
+    }
+    &:focus {
+      outline: 0;
+      border-style: solid;
+      border-width: 0 0 1px 0;
+      border-image: linear-gradient(to right, transparent, #d7bb4d, transparent);
+      border-image-slice: 1;
+      outline: none;
+    }
+
+    &.disabled {
+      cursor: not-allowed;
+      color: rgba(255, 255, 255, 0.2);
+      box-shadow: inset 0px 0px 3px 0px rgba(100, 100, 100, 0.1);
+    }
+
+    &.success {
+      color: #3fd0b0;
+      border: 1px solid #3fd0b0;
+    }
+
+    &.error {
+      color: red;
+      border: 1px solid red;
+    }
+  }
+
+  &.banes-and-boons-screen {
+    bottom: 1px;
+    right: 0;
+    left: 0;
+    margin: auto;
+  }
+}

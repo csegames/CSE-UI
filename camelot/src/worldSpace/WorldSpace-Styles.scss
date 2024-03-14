@@ -1,0 +1,228 @@
+/**
+* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+// Because the WorldUI is just used to produce a texture atlas that we later
+// wrap onto quads in 3d-space, prefer to use "px" as the unit of measurement
+// in this file.
+
+@import '../shared/cu-icons';
+@import '../shared/fonts';
+
+body {
+  color: white;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 21px;
+  line-height: 20px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-text-stroke: 2px rgba(90, 90, 90, 1);
+}
+
+.WorldSpace-WorldUIContainer {
+  position: fixed;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ProgressBar-Wrapper {
+  position: relative;
+  width: 100%;
+  height: 22px;
+}
+
+.ProgressBar-Image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.ProgressBar-Bar {
+  height: 100%;
+  background-color: #3fa7ff;
+  transform: skewX(31.6deg);
+}
+
+.ProgressBar-Mask {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  mask-image: url(../images/progressbar/mask.png);
+  -webkit-mask-image: url(../images/progressbar/mask.png);
+}
+
+//TODO: Anything below this line is used by UI that is currently generated in the Client repo.
+//      We want to move all of that into the UI repo, but it is not safe to do until after we
+//      are finished with the UI repo's "camelot" branch.
+
+.admin-icon {
+  position: relative;
+  background: url(../images/MissingAsset.png) no-repeat;
+  background-size: contain;
+  background-position-x: center;
+  height: 35px;
+}
+
+.nameplate {
+  font-size: 24px;
+  position: relative;
+  text-align: center;
+  font-weight: normal;
+  font-family: 'Kreon';
+}
+
+.guild-tag {
+  font-family: 'Titillium Web', sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  letter-spacing: 0;
+}
+
+.world-announcement {
+  position: relative;
+  left: 0;
+  top: 0;
+  font-family: 'Kreon';
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 26px;
+  padding: 2px;
+  letter-spacing: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  text-shadow: 1px 1px 1px #625300, -1px -1px 1px #625300, 1px -1px 1px #625300, -1px 1px 1px #625300,
+    1px 1px 1px #625300;
+}
+
+.world-announcement:after {
+  content: attr(data-value);
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  color: #ffffff;
+  -webkit-text-stroke: initial;
+}
+
+@keyframes grow {
+  from {
+    transform: scale(1.3);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.damage-numbers {
+  position: relative;
+  left: 0;
+  top: 0;
+  font-family: 'Kreon';
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 900;
+  padding: 2px;
+  letter-spacing: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  -webkit-text-stroke: 5px black;
+}
+
+.damage-numbers:after {
+  content: attr(data-value);
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  color: #ffffff;
+  -webkit-text-stroke: initial;
+}
+
+.damage-numbers-2 {
+  display: flex;
+  font-family: 'Kreon';
+  font-weight: bold;
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 26px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.damage-numbers-2.add-status {
+  color: #bdffb0;
+  text-shadow: 1px 1px 1px #283118, -1px -1px 1px #283118, 1px -1px 1px #283118, -1px 1px 1px #283118,
+    1px 1px 1px #283118;
+}
+
+.damage-numbers-2.remove-status {
+  color: #ff6969;
+  text-shadow: 1px 1px 1px #283118, -1px -1px 1px #283118, 1px -1px 1px #283118, -1px 1px 1px #283118,
+    1px 1px 1px #283118;
+}
+
+.damage-numbers-2.heal {
+  color: #4eb5ff;
+  text-shadow: 1px 1px 1px #462704, -1px -1px 1px #462704, 1px -1px 1px #462704, -1px 1px 1px #462704,
+    1px 1px 1px #462704;
+}
+
+.damage-numbers-2.damage {
+  width: fit-content;
+  padding: 20px;
+  color: #fff;
+  font-weight: normal;
+  text-shadow: 1px 1px 1px #625300, -1px -1px 1px #625300, 1px -1px 1px #625300, -1px 1px 1px #625300,
+    1px 1px 1px #625300;
+}
+
+.damage-numbers-2.interrupted {
+  color: #ff4800;
+  text-shadow: 1px 1px 1px #462704, -1px -1px 1px #462704, 1px -1px 1px #462704, -1px 1px 1px #462704,
+    1px 1px 1px #462704;
+}
+
+.damage-numbers-2.deflect {
+  color: magenta;
+}
+
+.damage-numbers-2.knockback {
+  color: gold;
+}
+
+.damage-numbers-2.killed {
+  color: #f64500;
+  text-shadow: 1px 1px 1px #462704, -1px -1px 1px #462704, 1px -1px 1px #462704, -1px 1px 1px #462704,
+    1px 1px 1px #462704;
+}
+
+.damage-numbers-2 .bottom {
+  position: relative;
+  left: 0;
+  top: 0;
+  -webkit-text-stroke-width: 7px;
+  -webkit-text-stroke-color: black;
+}
+
+.damage-numbers-2 .mid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-text-stroke-width: 0px;
+}

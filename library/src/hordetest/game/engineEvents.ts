@@ -4,116 +4,70 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { CoherentEventHandle } from '../../_baseGame/coherent';
+// *** DEPRECATED, DO NOT EXTEND ***
 
-/**
- * Mapping of Engine Event name => GameInterface callback registration method name for creating
- * event forwarding methods on the GameInterface upon initialization
- */
-const regMap: {[key: string]: string} = {};
+import { BaseDevGameInterface } from '../../_baseGame/BaseGameInterface';
+import { engine } from '../../_baseGame/engine';
+import { ListenerHandle } from '../../_baseGame/listenerHandle';
 
-/**
- * Notify the UI of one or more combat log events
- *
- * Expected behavior: Display combat events information in the UI combat log
- *
- * @param {CombatEvent[]} events An array of Combat events to display in the log
- */
+const regMap: { [key: string]: string } = {};
+
 export const EE_CombatEvent = 'combatEvent';
 regMap[EE_CombatEvent] = 'onCombatEvent';
 
-/**
- * Announcement message sent from the game client
- *
- * Expected behavior: Displays announcement text on screen
- *
- * @param {AnnouncementType} type Type of the announcement to display
- * @param {String} message Text contents of the announcement to display
- */
-export const EE_OnAnnouncement = 'announcement';
-regMap[EE_OnAnnouncement] = 'onAnnouncement';
+export const EE_OnCycleTeam = 'cycleTeam';
+regMap[EE_OnCycleTeam] = 'onCycleTeam';
 
-/**
- * Client requests UI navigation for a specific target.
- *
- * Expected behavior: UI toggles element requested by the navigation trigger.
- * eg. navigation request is to 'inventory.open', the UI will open the inventory if it is not open.
- *
- * @param {String} target Navigation target
- */
-export const EE_OnNavigate = 'navigate';
-regMap[EE_OnNavigate] = 'onNavigate';
+export const EE_OnSkipEpilogue = 'skipEpilogue';
+regMap[EE_OnSkipEpilogue] = 'onSkipEpilogue';
 
-/**
- * Called when an option is changed.
- *
- * @param {GameOption} option The changed option
- */
 export const EE_OnOptionChanged = 'optionChanged';
 regMap[EE_OnOptionChanged] = 'onOptionChanged';
 
-/**
- * Called when another players position changes relative to your facing.
- */
-export const EE_OnPlayerDirectionUpdate = 'playerDirections.update';
-regMap[EE_OnPlayerDirectionUpdate] = 'onPlayerDirectionUpdate';
+export const EE_OnEntityDirectionUpdate = 'entityDirections.update';
+regMap[EE_OnEntityDirectionUpdate] = 'onEntityDirectionUpdate';
 
-/**
- * Called when new obvjectives are introduced, or the players facing changes relative to the objective's position.
- */
-export const EE_OnObjectivesUpdate = 'objectives.update';
-regMap[EE_OnObjectivesUpdate] = 'onObjectivesUpdate';
-
-/**
- * Called when a scenario round that the current player is in has ended.
- */
 export const EE_OnScenarioRoundEnd = 'scenarioRoundEnd';
 regMap[EE_OnScenarioRoundEnd] = 'onScenarioRoundEnded';
 
-/**
- * Called when an entity has been updated
- */
-export const EE_OnEntityStateUpdate = 'entityState.update';
-regMap[EE_OnEntityStateUpdate] = 'onEntityStateUpdate';
+export const EE_OnEntityUpdated = 'entity.updated';
+regMap[EE_OnEntityUpdated] = 'onEntityUpdated';
 
-/**
- * Called when an entity has been removed
- */
-export const EE_OnEntityStateRemoved = 'entityState.removed';
-regMap[EE_OnEntityStateRemoved] = 'onEntityStateRemoved';
+export const EE_OnEntityRemoved = 'entity.removed';
+regMap[EE_OnEntityRemoved] = 'onEntityRemoved';
 
-/**
- * Called when there is an update to a players killstreak
- */
 export const EE_OnKillStreakUpdate = 'killStreak.update';
 regMap[EE_OnKillStreakUpdate] = 'onKillStreakUpdate';
 
-/**
- * Called when there is an update to a players runes
- */
 export const EE_OnCollectedRunesUpdate = 'collectedRunes.update';
 regMap[EE_OnCollectedRunesUpdate] = 'onCollectedRunesUpdate';
 
-/**
- * Called when there are updates to the scenario
- */
 export const EE_OnScenarioRoundUpdate = 'scenarioRound.update';
 regMap[EE_OnScenarioRoundUpdate] = 'onScenarioRoundUpdate';
 
-/**
- * Initialize engine event forwarding
- */
-export function initEventForwarding() {
+export const EE_OnObjectiveDetailsUpdate = 'objectiveDetails.update';
+regMap[EE_OnObjectiveDetailsUpdate] = 'onObjectiveDetailsUpdate';
+
+export const EE_OnMenuControllerEvent = 'menuController';
+regMap[EE_OnMenuControllerEvent] = 'onMenuControllerEvent';
+
+export const EE_OnMenuControllerAxisEvent = 'menuControllerAxis';
+regMap[EE_OnMenuControllerAxisEvent] = 'onMenuControllerAxisEvent';
+
+export function initEventForwarding(hordeGame: any, _devGame: BaseDevGameInterface) {
   for (const key in regMap) {
-    createForwardingMethod(key, regMap[key]);
-    if (typeof engine !== 'undefined') {
-      engine.on(key, (...args: any[]) => game.trigger(key, ...args));
-    }
+    createForwardingMethod(hordeGame, key, regMap[key]);
+    engine.on(key, (...args: any[]) => _devGame.trigger(key, ...args));
   }
 }
 
-function createForwardingMethod(engineEvent: string, methodName: string) {
-  hordetest._devGame[methodName] = function(callback: (...args: any[]) => any): CoherentEventHandle {
-    return engine.on(engineEvent, callback);
+function createForwardingMethod(hordeGame: any, engineEvent: string, methodName: string) {
+  hordeGame[methodName] = function (callback: (...args: any[]) => any): ListenerHandle {
+    const innerHandle = engine.on(engineEvent, callback);
+    return {
+      close() {
+        innerHandle.clear();
+      }
+    };
   };
 }

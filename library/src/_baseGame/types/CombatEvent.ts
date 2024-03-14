@@ -4,68 +4,63 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export {};
+import { ActiveEffectAction } from './ActiveEffectAction';
+import { AbilityTrackFlags } from './AbilityTypes';
 
-declare global {
-  interface CombatEvent {
-    fromName: string;
-    fromFaction: any;
+export interface CombatEvent {
+  fromName: string;
+  fromFaction: any;
 
-    toName: string;
-    toFaction: any;
+  toName: string;
+  toFaction: any;
 
-    damages?: {
-      sent: number;
-      received: number;
-      part: BodyPart;
-      type: DamageType;
-    }[];
+  damages?: {
+    sent: number;
+    received: number;
+    type: number;
+  }[];
 
-    // damage against an abilities disruption health, high enough disruption damage causes and interrupt
-    disruption?: {
-      sent: number;
-      received: number;
-      tracksInterrupted?: AbilityTrack;
-      source: string;
-    };
+  // damage against an abilities disruption health, high enough disruption damage causes and interrupt
+  disruption?: {
+    sent: number;
+    received: number;
+    tracksInterrupted?: AbilityTrackFlags;
+    source: string;
+  };
 
-    heals?: {
-      sent: number;
-      received: number;
-      part: BodyPart;
-    }[];
+  heals?: {
+    sent: number;
+    received: number;
+  }[];
 
-    // Array of statuses
-    statuses?: {
-      name: string;
-      action: any;
-      duration: number;
-    }[];
+  // Array of statuses
+  statuses?: {
+    name: string;
+    action: any;
+    duration: number;
+    statusID: number;
+  }[];
 
-    // Array of body Part ids that received a cure, ie [1, 1, 2] = 2 cures on body part 1 and 1 cure ont body part 2
-    cures?: BodyPart[];
+  // resources spent or gained
+  resources?: {
+    sent: number;
+    received: number;
+    type: any;
+  }[];
 
-    // resources spent or gained
-    resources?: {
-      sent: number;
-      received: number;
-      type: any;
-    }[];
+  // impulse = knock back or a force applied to your character
+  impulse?: {
+    sent: number;
+    received: number;
+  };
 
-    // impulse = knock back or a force applied to your character
-    impulse?: {
-      sent: number;
-      received: number;
-    };
+  activeEffects?: {
+    name: string;
+    action: ActiveEffectAction;
+    duration: string;
+  }[];
 
-    activeEffects?: {
-      name: string;
-      action: ActiveEffectAction;
-      duration: string;
-    }[];
-
-    errors?: {
-      msg: string;
-    }[];
-  }
+  errors?: {
+    msg: string;
+  }[];
 }

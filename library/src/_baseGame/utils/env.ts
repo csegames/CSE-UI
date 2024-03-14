@@ -4,27 +4,28 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export function getEnv(key: string, defaultValue: any) {
-  if (typeof process === 'object' && typeof process.env === 'object' && typeof process.env[key] !== undefined) {
-    return process.env[key];
-  }
-  return defaultValue;
+declare var process: any; // injected by Webpack into individual projects
+
+export function getEnv(key: string, defaultValue: any): any {
+  // TODO : if we don't have an attached engine, check query string
+  const value = process ? process[key] : undefined;
+  return value === undefined ? defaultValue : value;
 }
 
-export function getBooleanEnv(key: string, defaultValue: boolean) {
+export function getBooleanEnv(key: string, defaultValue: boolean): boolean {
   let env = getEnv(key, defaultValue);
   if (typeof env === 'string') {
-    const lowercaseEnv = env.toLowerCase();
-    if (lowercaseEnv === '1' || lowercaseEnv === 'true' || lowercaseEnv === 'yes' || lowercaseEnv === 'y') {
-      env = true;
-    } else {
-      env = false;
+    const value = parseInt(env, 10);
+    if (!isNaN(value)) {
+      return value !== 0;
     }
+    const lowercaseEnv = env.toLowerCase();
+    return lowercaseEnv === 'true' || lowercaseEnv === 'yes' || lowercaseEnv === 'y';
   } else if (typeof env === 'number') {
-    if (env === 1) {
-      env = true;
-    } else {
+    if (env === 0) {
       env = false;
+    } else {
+      env = true;
     }
   } else if (typeof env !== 'boolean') {
     env = defaultValue;

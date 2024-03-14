@@ -1,0 +1,506 @@
+@font-face {
+  font-family: 'fs-icons';
+  src: url('../font/fs-icons/fs-icons.ttf?hno8fw') format('truetype'),
+    url('../font/fs-icons/fs-icons.woff?hno8fw') format('woff'),
+    url('../font/fs-icons/fs-icons.svg?hno8fw#fs-icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^='fs-icon-'],
+[class*=' fs-icon-'] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'fs-icons' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fs-icon-misc-rune-mods:before {
+  content: '\e990';
+}
+.fs-icon-misc-skins:before {
+  content: '\e98c';
+}
+.fs-icon-misc-weapons:before {
+  content: '\e98d';
+}
+.fs-icon-misc-emotes:before {
+  content: '\e98e';
+}
+.fs-icon-misc-portraits:before {
+  content: '\e98f';
+}
+.fs-icon-hp-bar-shield:before {
+  content: '\e98b';
+}
+.fs-icon-misc-right-arrow:before {
+  content: '\e984';
+}
+.fs-icon-misc-gem:before {
+  content: '\e985';
+}
+.fs-icon-misc-potion:before {
+  content: '\e986';
+}
+.fs-icon-misc-season:before {
+  content: '\e987';
+}
+.fs-icon-misc-season-premium:before {
+  content: '\e988';
+}
+.fs-icon-misc-chat-mute:before {
+  content: '\e989';
+}
+.fs-icon-misc-chat:before {
+  content: '\e98a';
+}
+.fs-icon-mod-packed-tnt:before {
+  content: '\e983';
+}
+.fs-icon-misc-boss-enemy:before {
+  content: '\e982';
+}
+.fs-icon-effects-need-healer:before {
+  content: '\e97a';
+}
+.fs-icon-effects-rage-bonus:before {
+  content: '\e97b';
+}
+.fs-icon-mod-shadow-clone:before {
+  content: '\e97c';
+}
+.fs-icon-mod-slam-protect:before {
+  content: '\e97d';
+}
+.fs-icon-mod-spirit-bomb:before {
+  content: '\e97e';
+}
+.fs-icon-mod-firestorm-inferno:before {
+  content: '\e97f';
+}
+.fs-icon-mod-fortify-flame:before {
+  content: '\e980';
+}
+.fs-icon-mod-heartseeker-explosion:before {
+  content: '\e981';
+}
+.fs-icon-misc-portal:before {
+  content: '\e976';
+}
+.fs-icon-misc-chest:before {
+  content: '\e977';
+}
+.fs-icon-misc-combat:before {
+  content: '\e978';
+}
+.fs-icon-misc-go-here-arrow:before {
+  content: '\e979';
+}
+.fs-icon-misc-revive-player:before {
+  content: '\e975';
+}
+.fs-icon-misc-tasks:before {
+  content: '\e963';
+}
+.fs-icon-misc-terminal:before {
+  content: '\e964';
+}
+.fs-icon-misc-chevron-left:before {
+  content: '\e965';
+}
+.fs-icon-misc-chevron-right:before {
+  content: '\e966';
+}
+.fs-icon-misc-chevron-up:before {
+  content: '\e967';
+}
+.fs-icon-misc-cog:before {
+  content: '\e968';
+}
+.fs-icon-misc-exclamation-circle:before {
+  content: '\e969';
+}
+.fs-icon-misc-exclamation-triangle:before {
+  content: '\e96a';
+}
+.fs-icon-misc-expand:before {
+  content: '\e96b';
+}
+.fs-icon-misc-lock:before {
+  content: '\e96c';
+}
+.fs-icon-misc-bars:before {
+  content: '\e96d';
+}
+.fs-icon-misc-caret-down:before {
+  content: '\e96e';
+}
+.fs-icon-misc-caret-up:before {
+  content: '\e96f';
+}
+.fs-icon-misc-check:before {
+  content: '\e970';
+}
+.fs-icon-misc-chevron-down:before {
+  content: '\e971';
+}
+.fs-icon-misc-plus:before {
+  content: '\e972';
+}
+.fs-icon-misc-star:before {
+  content: '\e973';
+}
+.fs-icon-misc-sync:before {
+  content: '\e974';
+}
+.fs-icon-misc-speaker-mute:before {
+  content: '\e962';
+}
+.fs-icon-misc-speaker1:before {
+  content: '\e95e';
+}
+.fs-icon-misc-speaker2:before {
+  content: '\e95f';
+}
+.fs-icon-misc-speaker3:before {
+  content: '\e960';
+}
+.fs-icon-misc-speaker4:before {
+  content: '\e961';
+}
+.fs-icon-enemy-stamina-drain:before {
+  content: '\e95d';
+}
+.fs-icon-misc-fail:before {
+  content: '\e95b';
+}
+.fs-icon-misc-pass:before {
+  content: '\e95c';
+}
+.fs-icon-enemy-unholy-drain:before {
+  content: '\e95a';
+}
+.fs-icon-enemy-fog:before {
+  content: '\e959';
+}
+.fs-icon-enemy-gaseous-cloud:before {
+  content: '\e956';
+}
+.fs-icon-enemy-poison:before {
+  content: '\e957';
+}
+.fs-icon-enemy-burning:before {
+  content: '\e958';
+}
+.fs-icon-effects-player-lockdown:before {
+  content: '\e939';
+}
+.fs-icon-effects-speed-boost:before {
+  content: '\e94f';
+}
+.fs-icon-effects-weak:before {
+  content: '\e950';
+}
+.fs-icon-effects-haste-potion-buff:before {
+  content: '\e951';
+}
+.fs-icon-effects-health-pool-team-benefits:before {
+  content: '\e952';
+}
+.fs-icon-effects-mana-pool-team-benefits:before {
+  content: '\e953';
+}
+.fs-icon-effects-pause-barrier-regen:before {
+  content: '\e954';
+}
+.fs-icon-ninja-chilling-blade:before {
+  content: '\e94a';
+}
+.fs-icon-ninja-ice-dagger:before {
+  content: '\e94b';
+}
+.fs-icon-ninja-embrace-shadows:before {
+  content: '\e94c';
+}
+.fs-icon-ninja-freezing-cyclone:before {
+  content: '\e94d';
+}
+.fs-icon-ninja-death-mark:before {
+  content: '\e94e';
+}
+.fs-icon-effects-healing-stone:before {
+  content: '\e947';
+}
+.fs-icon-effects-healing-potion-heal:before {
+  content: '\e948';
+}
+.fs-icon-effects-apple:before {
+  content: '\e949';
+}
+.fs-icon-runes-01:before {
+  content: '\31';
+}
+.fs-icon-runes-02:before {
+  content: '\32';
+}
+.fs-icon-runes-03:before {
+  content: '\33';
+}
+.fs-icon-runes-04:before {
+  content: '\34';
+}
+.fs-icon-runes-05:before {
+  content: '\35';
+}
+.fs-icon-runes-06:before {
+  content: '\36';
+}
+.fs-icon-runes-07:before {
+  content: '\37';
+}
+.fs-icon-runes-08:before {
+  content: '\38';
+}
+.fs-icon-runes-09:before {
+  content: '\39';
+}
+.fs-icon-runes-10:before {
+  content: '\30';
+}
+.fs-icon-runes-11:before {
+  content: '\71';
+}
+.fs-icon-runes-12:before {
+  content: '\77';
+}
+.fs-icon-runes-13:before {
+  content: '\65';
+}
+.fs-icon-runes-14:before {
+  content: '\72';
+}
+.fs-icon-runes-15:before {
+  content: '\74';
+}
+.fs-icon-career-kill-streak:before {
+  content: '\e942';
+}
+.fs-icon-career-longest-life:before {
+  content: '\e943';
+}
+.fs-icon-career-total-damage:before {
+  content: '\e944';
+}
+.fs-icon-career-damage-taken:before {
+  content: '\e945';
+}
+.fs-icon-career-kills:before {
+  content: '\e946';
+}
+.fs-icon-effects-inspire:before {
+  content: '\e931';
+}
+.fs-icon-effects-paralyze:before {
+  content: '\e932';
+}
+.fs-icon-effects-retaliate:before {
+  content: '\e933';
+}
+.fs-icon-effects-silence:before {
+  content: '\e934';
+}
+.fs-icon-effects-slime:before {
+  content: '\e935';
+}
+.fs-icon-effects-stun:before {
+  content: '\e936';
+}
+.fs-icon-effects-fortify:before {
+  content: '\e938';
+}
+.fs-icon-effects-rally:before {
+  content: '\e93a';
+}
+.fs-icon-effects-strength:before {
+  content: '\e93b';
+}
+.fs-icon-effects-curse:before {
+  content: '\e93c';
+}
+.fs-icon-effects-enrage:before {
+  content: '\e93d';
+}
+.fs-icon-effects-fearless:before {
+  content: '\e93e';
+}
+.fs-icon-effects-fire:before {
+  content: '\e93f';
+}
+.fs-icon-effects-guard:before {
+  content: '\e940';
+}
+.fs-icon-effects-ice:before {
+  content: '\e941';
+}
+.fs-icon-misc-heart:before {
+  content: '\e937';
+}
+.fs-icon-amazon-bow-strike:before {
+  content: '\e90a';
+}
+.fs-icon-misc-time:before {
+  content: '\e92e';
+}
+.fs-icon-misc-enemy:before {
+  content: '\e92f';
+}
+.fs-icon-misc-kills:before {
+  content: '\e930';
+}
+.fs-icon-point-mana-pool-c:before {
+  content: '\e91f';
+}
+.fs-icon-point-mana-pool-d:before {
+  content: '\e920';
+}
+.fs-icon-point-mana-pool-e:before {
+  content: '\e921';
+}
+.fs-icon-point-tower-a:before {
+  content: '\e922';
+}
+.fs-icon-point-tower-b:before {
+  content: '\e923';
+}
+.fs-icon-point-tower-c:before {
+  content: '\e924';
+}
+.fs-icon-point-tower-d:before {
+  content: '\e925';
+}
+.fs-icon-point-tower-e:before {
+  content: '\e926';
+}
+.fs-icon-point-health-pool-a:before {
+  content: '\e927';
+}
+.fs-icon-point-health-pool-b:before {
+  content: '\e928';
+}
+.fs-icon-point-health-pool-c:before {
+  content: '\e929';
+}
+.fs-icon-point-health-pool-d:before {
+  content: '\e92a';
+}
+.fs-icon-point-health-pool-e:before {
+  content: '\e92b';
+}
+.fs-icon-point-mana-pool-a:before {
+  content: '\e92c';
+}
+.fs-icon-point-mana-pool-b:before {
+  content: '\e92d';
+}
+.fs-icon-rune-damage:before {
+  content: '\e91c';
+}
+.fs-icon-rune-health:before {
+  content: '\e91d';
+}
+.fs-icon-rune-barrier:before {
+  content: '\e91e';
+}
+.fs-icon-knight-long-jump:before {
+  content: '\e916';
+}
+.fs-icon-knight-retaliate-on:before {
+  content: '\e955';
+}
+.fs-icon-knight-retaliate:before {
+  content: '\e917';
+}
+.fs-icon-knight-shield-bash:before {
+  content: '\e918';
+}
+.fs-icon-knight-crusader-strike:before {
+  content: '\e919';
+}
+.fs-icon-knight-fortify:before {
+  content: '\e91a';
+}
+.fs-icon-knight-guard:before {
+  content: '\e91b';
+}
+.fs-icon-celt-inspire:before {
+  content: '\e910';
+}
+.fs-icon-celt-jump-attack:before {
+  content: '\e911';
+}
+.fs-icon-celt-rally:before {
+  content: '\e912';
+}
+.fs-icon-celt-spear-throw:before {
+  content: '\e913';
+}
+.fs-icon-celt-spear-thrust:before {
+  content: '\e914';
+}
+.fs-icon-celt-call-to-arms:before {
+  content: '\e915';
+}
+.fs-icon-point-mana-pool:before {
+  content: '\e90d';
+}
+.fs-icon-point-health-pool:before {
+  content: '\e90e';
+}
+.fs-icon-point-tower:before {
+  content: '\e90f';
+}
+.fs-icon-amazon-fire-arrow:before {
+  content: '\e907';
+}
+.fs-icon-amazon-fire-storm:before {
+  content: '\e908';
+}
+.fs-icon-amazon-heartseeker:before {
+  content: '\e909';
+}
+.fs-icon-amazon-double-jump:before {
+  content: '\e90b';
+}
+.fs-icon-amazon-fearless-scream:before {
+  content: '\e90c';
+}
+.fs-icon-berserker-enrage:before {
+  content: '\e901';
+}
+.fs-icon-berserker-frozen-wrath:before {
+  content: '\e902';
+}
+.fs-icon-berserker-ground-slam:before {
+  content: '\e903';
+}
+.fs-icon-berserker-hack:before {
+  content: '\e904';
+}
+.fs-icon-berserker-heroic-leap:before {
+  content: '\e905';
+}
+.fs-icon-berserker-slash:before {
+  content: '\e906';
+}
+.fs-icon-trap-explosive:before {
+  content: '\e900';
+}

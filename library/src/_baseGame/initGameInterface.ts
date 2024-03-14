@@ -4,124 +4,77 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { createEventEmitter, EventEmitter } from './utils/EventEmitter';
-import { makeClientPromise } from './clientTasks';
-import { BaseGameModel, BaseGameInterface } from './BaseGameInterface';
-import { query } from './graphql/query';
-import { subscribe } from './graphql/subscription';
+import { Callback, EventEmitter } from './types/EventEmitter';
+import { initClientTasks, makeClientPromise } from './clientTasks';
+import { BaseGameModel, BaseGameInterface, BaseDevGameInterface } from './BaseGameInterface';
+import { BuildingMode } from './types/Building';
 
 import initEventForwarding from './engineEvents';
-import initCUAPIShim from './cuAPIShim';
-import initLoadingState from './GameClientModels/LoadingState';
 import initUsingGamepadState from './GameClientModels/UsingGamepadState';
-// tslint:disable-next-line:no-duplicate-imports
-import * as engineEvents from './engineEvents';
+import initIsAutoRunningState from './GameClientModels/IsAutoRunningState';
+import { ListenerHandle } from './listenerHandle';
 
+let isEmitterVerbose = false;
+let globalEmitter = new EventEmitter((...params: any[]) => {
+  if (isEmitterVerbose) console.log(...params);
+});
 
-export default function (isAttached: boolean) {
-    _devGame.ready = false;
-    _devGame.isClientAttached = isAttached;
-    _devGame.graphQL = {
-      query,
-      subscribe,
-      host: graphQLHost,
-    } as any;
+export default function (game: BaseGameInterface, isAttached: boolean) {
+  // FIXME : decorating the coherent interface this way is bad. The
+  // functionality of devGame should be an actual decorator or a
+  // distinct object.
+  const _devGame: BaseDevGameInterface = game as BaseDevGameInterface;
+  _devGame.ready = false;
+  _devGame.debug = false;
+  _devGame.setDebug = (value: boolean) => {
+    _devGame.debug = value;
+    isEmitterVerbose = value;
+  };
+  _devGame.isClientAttached = isAttached;
 
-    // TASKS
-    _devGame._activeTasks = {};
-    _devGame.listenForKeyBindingAsync =
-      makeClientPromise(game => game._cse_dev_listenForKeyBindingTask());
-    _devGame.setOptionsAsync =
-      makeClientPromise((game, options) => game._cse_dev_setOptions(options));
-    _devGame.testOptionAsync =
-      makeClientPromise((game, option) => game._cse_dev_testOption(option));
-    _devGame.takeScreenshotAsync =
-      makeClientPromise(game => game._cse_dev_takeScreenshot());
-      // Building API Tasks
-    _devGame.building.setModeAsync =
-      makeClientPromise((game, mode) => game.building._cse_dev_setMode(mode));
-    _devGame.building.selectBlockAsync =
-      makeClientPromise((game, id) => game.building._cse_dev_selectBlock(id));
-    _devGame.building.selectBlueprintAsync =
-      makeClientPromise((game, id) => game.building._cse_dev_selectBlueprint(id));
-    _devGame.building.selectPotentialItemAsync =
-      makeClientPromise((game, id) => game.building._cse_dev_selectPotentialItem(id));
-    _devGame.building.deleteBlueprintAsync =
-      makeClientPromise((game, id) => game.building._cse_dev_deleteBlueprint(id));
-    _devGame.building.createBlueprintFromSelectionAsync
-      = makeClientPromise((game, name) => game.building._cse_dev_createBlueprintFromSelection(name));
-    _devGame.building.replaceMaterialsAsync
-      = makeClientPromise((game, sID, rID, inS) => game.building._cse_dev_replaceMaterials(sID, rID, inS));
-    _devGame.building.replaceShapesAsync
-      = makeClientPromise((game, sID, rID, inS) => game.building._cse_dev_replaceShapes(sID, rID, inS));
+  // TASKS
+  _devGame._activeTasks = {};
+  _devGame.listenForKeyBindingAsync = makeClientPromise((game) => game._cse_dev_listenForKeyBindingTask());
+  _devGame.setOptionsAsync = makeClientPromise((game, options) => game._cse_dev_setOptions(options));
+  _devGame.testOptionAsync = makeClientPromise((game, option) => game._cse_dev_testOption(option));
+  _devGame.takeScreenshotAsync = makeClientPromise((game) => game._cse_dev_takeScreenshot());
+  // Building API Tasks
+  _devGame.building.setModeAsync = makeClientPromise((game, mode) => game.building._cse_dev_setMode(mode));
+  _devGame.building.selectBlockAsync = makeClientPromise((game, id) => game.building._cse_dev_selectBlock(id));
+  _devGame.building.selectBlueprintAsync = makeClientPromise((game, id) => game.building._cse_dev_selectBlueprint(id));
+  _devGame.building.selectPotentialItemAsync = makeClientPromise((game, id) =>
+    game.building._cse_dev_selectPotentialItem(id)
+  );
+  _devGame.building.deleteBlueprintAsync = makeClientPromise((game, id) => game.building._cse_dev_deleteBlueprint(id));
+  _devGame.building.createBlueprintFromSelectionAsync = makeClientPromise((game, name) =>
+    game.building._cse_dev_createBlueprintFromSelection(name)
+  );
+  _devGame.building.replaceMaterialsAsync = makeClientPromise((game, sID, rID, inS) =>
+    game.building._cse_dev_replaceMaterials(sID, rID, inS)
+  );
+  _devGame.building.replaceShapesAsync = makeClientPromise((game, sID, rID, inS) =>
+    game.building._cse_dev_replaceShapes(sID, rID, inS)
+  );
 
-    if (_devGame.actions) {
-      _devGame.actions.enterActionBarEditModeAsync = makeClientPromise((game) => game.actions._cse_dev_enterActionBarEditMode());
-      _devGame.actions.exitActionBarEditModeAsync = makeClientPromise((game) => game.actions._cse_dev_exitActionBarEditMode());
-    }
+  // EVENTS
+  _devGame.onReady = (callback: () => any) => {
+    if (_devGame.ready) callback();
+    return globalEmitter.on('Ready', callback);
+  };
+  _devGame.on = globalEmitter.on.bind(globalEmitter);
+  _devGame.once = globalEmitter.listenOnce.bind(globalEmitter);
+  _devGame.trigger = globalEmitter.trigger.bind(globalEmitter);
+  _devGame.off = globalEmitter.trigger.bind(globalEmitter);
 
-    // EVENTS
-    _devGame.onSystemMessage = onSystemMessage;
-    _devGame.sendSystemMessage = sendSystemMessage;
-    _devGame.onReady = onReady;
-    _devGame.on = events_on;
-    _devGame.once = events_once;
-    _devGame.trigger = events_trigger;
-    _devGame.off = events_off;
-    _devGame.engineEvents = engineEvents;
+  initClientTasks();
+  initEventForwarding(_devGame);
+  initUsingGamepadState(_devGame);
+  initIsAutoRunningState(_devGame);
 
-    initEventForwarding();
-    initCUAPIShim();
-    initLoadingState();
-    initUsingGamepadState();
+  return _devGame;
 }
 
-function onReady(callback: () => any) {
-  if (game.ready) {
-    callback();
-  }
-
-  return events_on('ready', callback);
-}
-
-/* -------------------------------------------------- */
-/* EVENTS                                             */
-/* -------------------------------------------------- */
-
-declare global {
-  interface Window {
-    _cse_dev_eventEmitter: EventEmitter;
-  }
-}
-if (!window._cse_dev_eventEmitter) {
-  window._cse_dev_eventEmitter = createEventEmitter();
-}
-
-function events_on(name: string, callback: Callback) {
-  return window._cse_dev_eventEmitter.addListener(name, false, callback);
-}
-
-function events_once(name: string, callback: Callback) {
-  return window._cse_dev_eventEmitter.addListener(name, true, callback);
-}
-
-function events_trigger(name: string, ...args: any[]) {
-  window._cse_dev_eventEmitter.emit(name, ...args);
-}
-
-function events_off(handle: number | EventHandle) {
-  if (typeof handle === 'undefined') {
-    console.error('Tried to remove a listener with an undefined handle');
-    return;
-  }
-  if (typeof handle === 'number') {
-    window._cse_dev_eventEmitter.removeListener(handle);
-  } else {
-    window._cse_dev_eventEmitter.removeListener(handle.id);
-  }
-}
-
-export function initOutOfContextGame(): Partial<BaseGameInterface> {
+export function initOutOfContextGame(): BaseGameInterface {
   const model: BaseGameModel = {
     patchResourceChannel: 4,
     shardID: 1,
@@ -134,14 +87,22 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
     keybinds: {},
     worldTime: 0,
     fps: 0,
+    npcCount: 0,
     isPublicBuild: true,
+    buildNumber: 0,
+    showPerfHUD: true,
+    isCUBE: false,
     uiMockMode: 0,
-    matchmakingGameMode: "hordetest8",
+    matchmakingGameMode: 'hordetest8',
     matchOverrides: {},
 
     reloadUI: noOp,
     quit: noOp,
     sendSlashCommand: noOp,
+    tabComplete: noOp,
+    addOfflineCharacter: noOp,
+    removeOfflineCharacter: noOp,
+    setOfflineCharacterAnimation: noOp,
     triggerKeyAction: noOp,
     playGameSound: noOp,
 
@@ -150,11 +111,14 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
     resetKeybinds: noOp,
     resetOptions: noOp,
     releaseMouseCapture: noOp,
+    setMenuInputMode: noOp,
     setWaitingForSelect: noOp,
+    setSelectedEmoteIndex: noOp,
+
     gamepadSelectBinding: {
       name: 'Gamepad Select',
       value: -1,
-      iconClass: '',
+      iconClass: ''
     },
     building: {
       mode: BuildingMode.NotBuilding,
@@ -166,7 +130,7 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
       activePotentialItemID: 0,
       blueprints: {},
       materials: {},
-      potentialItems: {},
+      potentialItems: {}
     },
 
     itemPlacementMode: {
@@ -176,45 +140,100 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
       requestCommit: noOp,
       requestReset: noOp,
       requestCancel: noOp,
-      requestChangeTransformMode: noOp,
+      requestChangeTransformMode: noOp
     },
 
     dropLight: {
       drop: noOp,
       removeLast: noOp,
-      clearAll: noOp,
+      clearAll: noOp
     },
 
     map: {
       backgroundImageURL: '',
       scale: 1,
-      positionOffset: { x: 0, y: 0 },
+      positionOffset: { x: 0, y: 0 }
     },
 
     connectToServer: noOp,
     disconnectFromAllServers: noOp,
+    setVoiceChannel: noOp,
+    isAutoConnectEnabled: false,
     isConnectedOrConnectingToServer: false,
     isConnectedToServer: false,
     isDisconnectingFromAllServers: false,
-    
+
     actions: {
-      _cse_dev_enterActionBarEditMode: noOp,
-      _cse_dev_exitActionBarEditMode: noOp,
-      enterActionBarEditModeAsync: noOp,
-      exitActionBarEditModeAsync: noOp,
+      inEditMode: false,
+      requestedEditMode: false,
+      requestEditMode: noOp,
       assignSlottedAction: noOp,
       assignKeybind: noOp,
       setActiveAnchorGroup: noOp,
       activateSlottedAction: noOp,
       clearSlottedAction: noOp,
-      removeAnchor: noOp,
+      removeAnchor: noOp
     },
+
+    startSteamPurchase: noOp,
+    canStartSteamPurchase: false,
+    isSteamOverlayEnabled: false,
+    isSteamBuild: false
   };
 
-  return withOverrides({
+  const mockEmitter = new EventEmitter();
+  let debug = false;
+
+  return {
     ...model,
+    ready: true,
+    onBeginChat: (callback: (msg: string) => {}) => mockEmitter.on('beginChat', callback),
+    beginChat: (msg: string) => mockEmitter.trigger('beginChat', msg),
+    onPushChat: (callback: (msg: string) => {}) => mockEmitter.on('pushChat', callback),
+    pushChat: (msg: string) => mockEmitter.trigger('pushChat', msg),
+    onReady: mockOnReady,
+    debug,
+    setDebug: (value: boolean) => (debug = value),
+    onCombatEvent: noOp,
+    onConsoleText: noOp,
+    onKeybindChanged: noOp,
+    onGameOptionChanged: noOp,
+    getKeybindSafe: noOp,
+    onControllerSelect: noOp,
+    onNetworkFailure: noOp,
+    onAnchorVisibilityChanged: noOp,
+    onSteamPurchaseComplete: noOp,
+    onMenuControllerEvent: noOp,
+    resetOptions: noOp,
+    resetKeybinds: noOp,
+    listenForKeyBindingAsync: noOp,
+    setOptionsAsync: noOp,
+    on: (topic: string, callback: Callback) => mockEmitter.on(topic, callback),
+    off: (handle: any) => mockEmitter.off(handle as number | ListenerHandle),
+    testOptionAsync: noOp,
+    takeScreenshotAsync: noOp,
+    once: (topic: string, callback: Callback) => mockEmitter.listenOnce(topic, callback),
+    trigger: (name: string, ...args: any[]) => mockEmitter.trigger(name, ...args),
+    usingGamepad: false,
+    usingGamepadState: {
+      usingGamepad: false,
+      isReady: true,
+      updateEventName: '',
+      onUpdated: (game: BaseGameInterface) => noOp,
+      onReady: (game: BaseGameInterface) => mockOnReady
+    },
+    isAutoRunning: false,
+    isAutoRunningState: {
+      isAutoRunning: false,
+      isReady: true,
+      updateEventName: '',
+      onUpdated: (game: BaseGameInterface) => noOp,
+      onReady: (game: BaseGameInterface) => mockOnReady
+    },
+    selectedEmoteIndex: 0,
+    isAutoConnectEnabled: false,
+    isSteamBuild: false,
     isClientAttached: false,
-    debug: false,
     apiVersion: 1,
     building: {
       ...model.building,
@@ -225,35 +244,16 @@ export function initOutOfContextGame(): Partial<BaseGameInterface> {
       createBlueprintFromSelectionAsync: noOp,
       deleteBlueprintAsync: noOp,
       replaceMaterialsAsync: noOp,
-      replaceShapesAsync: noOp,
-    },
-  });
-}
-
-/**
- * Override default GameModel out of context values with those supplied via a dev.config.js file
- * during in-browser development.
- * @param model The default GameModel
- */
-function withOverrides(model: Partial<BaseGameInterface>) {
-  const m = model;
-  const overrides = ((window as any).cuOverrides || {}) as BaseGameModel;
-  for (const key in model) {
-    m[key] = overrides[key] || model[key];
-  }
-  return m;
+      replaceShapesAsync: noOp
+    }
+  };
 }
 
 function noOp(...args: any[]): any {}
 
-function graphQLHost() {
-  return game.webAPIHost + '/graphql';
-}
-
-function onSystemMessage(callback: (message: string) => any) {
-  return game.on('systemMessage', callback);
-}
-
-function sendSystemMessage(message: string) {
-  game.trigger('systemMessage', message);
+function mockOnReady(callback: () => any): ListenerHandle {
+  window.setTimeout(callback);
+  return {
+    close() {}
+  };
 }

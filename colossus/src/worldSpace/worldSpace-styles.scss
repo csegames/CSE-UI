@@ -1,0 +1,741 @@
+@import '../shared/components/color-code-styles.scss';
+
+body {
+  width: fit-content;
+}
+
+#worldspace-ui {
+  width: fit-content;
+}
+
+.world-announcement {
+  position: relative;
+  left: 0;
+  top: 0;
+  font-family: 'Lato', sans-serif;
+  font-size: 34px;
+  line-height: 30px;
+  font-weight: 900;
+  padding: 2px;
+  letter-spacing: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  -webkit-text-stroke: 5px black;
+}
+
+.world-announcement:after {
+  content: attr(data-value);
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  color: #ffffff;
+  -webkit-text-stroke: initial;
+}
+
+.WorldSpace-HealthBar-BossHealthBar-Container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.WorldSpace-HealthBar-BossHealthBar-CharacterName {
+  font-family: Lato;
+  font-weight: 900;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  width: 120px;
+  height: 14px;
+  margin-bottom: -2px;
+  text-shadow: -1px -1px 1px #000, 0 -1px 1px #000, 1px -1px 1px #000, 1px 0 1px #000, 1px 1px 1px #000, 0 1px 1px #000,
+    -1px 1px 1px #000, -1px 0 1px #000;
+}
+
+.WorldSpace-HealthBar-BossHealthBar-IconOuter {
+  position: relative;
+  width: 36px;
+  height: 36px;
+}
+
+.WorldSpace-HealthBar-BossHealthBar-IconBackground {
+  position: absolute;
+}
+
+.WorldSpace-HealthBar-BossHealthBar-Icon {
+  position: absolute;
+  color: $BossRed;
+  top: 7px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  line-height: 38px;
+  font-size: 23.04px;
+  text-align: center;
+}
+
+.WorldSpace-HealthBar-EnemyHealthBar-Container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.WorldSpace-HealthBar-EnemyHealthBar-NameOfPlayer {
+  font-family: Lato;
+  font-weight: 900;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 2px;
+  margin-top: 15px;
+  text-shadow: -1px -1px 1px #000, 0 -1px 1px #000, 1px -1px 1px #000, 1px 0 1px #000, 1px 1px 1px #000, 0 1px 1px #000,
+    -1px 1px 1px #000, -1px 0 1px #000;
+  justify-content: center;
+  display: flex;
+}
+
+.WorldSpace-HealthBar-EnemyHealthBar-BarContainer {
+  position: relative;
+  width: 104px;
+  height: 6px;
+  background-color: #000000;
+  z-index: -1;
+  top: 8px;
+
+  &.EliteNPC {
+    height: 4px;
+    width: 80px;
+  }
+}
+
+.WorldSpace-HealthBar-EnemyHealthBar-Bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #c2272d;
+  z-index: 0;
+
+  &.Shielded {
+    background-color: #00bbff;
+  }
+}
+
+.WorldSpace-HealthBar-EnemyHealthBar-Backfill {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  transition: width 0.3s;
+  z-index: 0;
+}
+
+.WorldSpace-HealthBar-EnemyHealthBar-Icon {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 17%;
+  top: 28%;
+  background-color: #000;
+  outline: solid 2px #f66;
+  font-family: Colus;
+  font-size: 1rem;
+  color: #f00;
+}
+
+.WorldSpace-HealthBar-EnemyHealthBar-BarrierIcon {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 74%;
+  top: 28%;
+  background-color: #00bbff;
+  outline: solid 2px #1d2c5d;
+  font-family: Colus;
+  font-size: 1rem;
+  color: white;
+}
+
+.WorldSpace-HealthBar-EnemyItemHealthBar-Container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.WorldSpace-HealthBar-EnemyItemHealthBar-NameOfItem {
+  font-family: Lato;
+  font-weight: 900;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  margin-left: 7px;
+  margin-bottom: 2px;
+  width: 200px;
+  text-shadow: -1px -1px 1px #000, 0 -1px 1px #000, 1px -1px 1px #000, 1px 0 1px #000, 1px 1px 1px #000, 0 1px 1px #000,
+    -1px 1px 1px #000, -1px 0 1px #000;
+}
+
+.WorldSpace-HealthBar-EnemyItemHealthBar-BarContainer {
+  position: relative;
+  width: 200px;
+  height: 16px;
+  margin-left: 5px;
+  border: 2px solid rgb(0, 0, 0);
+  background-color: #000000;
+  z-index: -1;
+}
+
+.WorldSpace-HealthBar-EnemyItemHealthBar-Bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #cb0000;
+  z-index: 0;
+}
+
+.WorldSpace-HealthBar-UserHealthBar-Container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.WorldSpace-HealthBar-UserHealthBar-BarOuter {
+  width: 84px;
+  height: 13px;
+  background-color: #1c1c1c;
+  border: 1px solid #000;
+  position: relative;
+}
+
+.WorldSpace-HealthBar-UserHealthBar-BarrierBar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: calc(60% - 1px);
+  width: 100%;
+  border-bottom: 1px solid #000;
+  background-image: url(../images/health-bars/barrier-bar-background.png);
+  background-size: 100% 100%;
+}
+
+.WorldSpace-HealthBar-UserHealthBar-HealthBar {
+  position: absolute;
+  left: 0;
+  top: 60%;
+  height: 50%;
+  width: 100%;
+  background-image: url(../images/health-bars/health-bar-background.png);
+  background-size: 100% 100%;
+
+  &.Enemy {
+    background-image: url(../images/health-bars/enemy-health-bar-background.png);
+  }
+}
+
+.WorldSpace-HealthBar-UserHealthBar-HealthBarFull {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: $HealthGreen;
+  background-image: url(../images/health-bars/health-bar-background.png);
+  background-size: 100% 100%;
+
+  &.Enemy {
+    background-image: url(../images/health-bars/enemy-health-bar-background.png);
+    background-color: $BossRed;
+  }
+}
+
+.WorldSpace-HealthBar-UserHealthBar-CharacterName {
+  height: 16px;
+  text-shadow: -1px -1px 1px #000, 0 -1px 1px #000, 1px -1px 1px #000, 1px 0 1px #000, 1px 1px 1px #000, 0 1px 1px #000,
+    -1px 1px 1px #000, -1px 0 1px #000;
+  font-family: 'Lato';
+  font-weight: 900;
+  font-size: 13px;
+  color: white;
+  transform-origin: top center;
+
+  &.Speaking {
+    text-shadow: 2px 2px 4px black;
+    color: $VoiceActiveGreen;
+  }
+}
+
+.WorldSpace-HealthBar-UserHealthBar-ArrowAndVoiceChatIconContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.WorldSpace-HealthBar-UserHealthBar-ArrowOuter {
+  position: relative;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  width: 32px;
+  height: 16px;
+}
+
+.WorldSpace-HealthBar-UserHealthBar-Arrow {
+  transform-origin: center;
+  width: 100%;
+  height: 100%;
+}
+
+.WorldSpace-HealthBar-UserHealthBar-ArrowPolygon {
+  fill: #adff06;
+
+  &.downed {
+    fill: #ff060a;
+  }
+
+  &.Enemy {
+    fill: #ff060a;
+  }
+}
+
+.WorldSpace-HealthBar-UserHealthBar-VoiceChatIcon {
+  position: absolute;
+  top: 0;
+  left: 32px;
+  color: $VoiceActiveGreen;
+  font-size: 14px;
+  margin-left: 2px;
+  text-shadow: -1px -1px 1px #000, 0 -1px 1px #000, 1px -1px 1px #000, 1px 0 1px #000, 1px 1px 1px #000, 0 1px 1px #000,
+    -1px 1px 1px #000, -1px 0 1px #000;
+}
+
+.WorldSpace-HealthBar-UserHealthBar-DownedContainer {
+  display: flex;
+  align-items: center;
+  font-size: 28px;
+  height: 100px;
+  width: 100px;
+}
+
+.WorldSpace-ReviveInteractionBar-Wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  padding: 2px;
+  padding-bottom: 40px;
+}
+
+.WorldSpace-ReviveInteractionBar-NameContainer {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.Worldspace-ReviveInteractionBar-ReviveName {
+  position: relative;
+  font-family: Lato;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+.Worldspace-ReviveInteractionBar-ReviveIcon {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #c00;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  font-size: 20px;
+  color: white;
+  margin-left: 10px;
+}
+
+.WorldSpace-ReviveInteractionBar-Container {
+  display: flex;
+  flex-direction: column;
+  padding: 2px;
+  width: calc(100% - 10px);
+  height: 100px;
+
+  &.Revive {
+    background: linear-gradient(180deg, rgba(0, 40, 21, 0.95) 75.63%, rgba(0, 14, 7, 0) 100%);
+    background-size: 100% 100%;
+  }
+}
+
+.WorldSpace-ReviveInteractionBar-BarContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  z-index: 0;
+  background-color: #ffffff1a;
+}
+
+.WorldSpace-ReviveInteractionBar-Bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  background-color: $ReviveGreen;
+  z-index: -1;
+}
+
+.WorldSpace-ReviveInteractionBar-BarText {
+  color: white;
+  font-family: Lato;
+  font-size: 20px;
+  z-index: 1;
+}
+
+.WorldSpace-ReviveInteractionBar-KeybindIcon {
+  font-size: 20px;
+  margin-right: 15px;
+  opacity: 1;
+  transition: opacity 0.2s;
+  border: 1px solid #fff;
+  border-radius: 3px;
+  padding-right: 3px;
+  padding-left: 2px;
+  background-color: #000;
+
+  &.pressed {
+    opacity: 0.7;
+  }
+}
+
+.WorldSpace-ReviveInteractionBar-DescriptionTitle {
+  color: $ReviveGreen;
+  font-family: Lato;
+  font-weight: bold;
+  font-size: 13px;
+  z-index: 1;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 2px;
+  text-transform: uppercase;
+}
+
+.WorldSpace-ReviveInteractionBar-Description {
+  color: white;
+  font-family: Lato;
+  font-weight: bold;
+  font-size: 12px;
+  z-index: 1;
+  padding-left: 5px;
+}
+
+.WorldSpace-HealthBar-ItemHealthBar-Container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.WorldSpace-HealthBar-ItemHealthBar-NameOfItem {
+  font-family: Lato;
+  font-weight: 900;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  margin-left: 7px;
+  margin-bottom: 2px;
+  width: 200px;
+  text-shadow: -1px -1px 1px #000, 0 -1px 1px #000, 1px -1px 1px #000, 1px 0 1px #000, 1px 1px 1px #000, 0 1px 1px #000,
+    -1px 1px 1px #000, -1px 0 1px #000;
+}
+
+.WorldSpace-HealthBar-ItemHealthBar-BarContainer {
+  position: relative;
+  width: 112px;
+  height: 8px;
+  margin-left: 5px;
+  border: 1px solid rgb(0, 0, 0);
+  background-color: #000000;
+  z-index: -1;
+}
+
+.WorldSpace-HealthBar-ItemHealthBar-Bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #29aae1;
+  z-index: 0;
+}
+
+.WorldSpace-InteractionBar-Wrapper {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  height: 100%;
+}
+
+.WorldSpace-InteractionBar-Container {
+  display: flex;
+  flex-direction: column;
+  padding: 2px;
+  padding-bottom: 40px;
+  width: calc(100% - 10px);
+  height: fit-content;
+
+  &.Deploy {
+    background: url(../images/items/interactionbar-container-deploy-bg.png);
+    background-size: 100% 100%;
+  }
+
+  &.Throw {
+    background: url(../images/items/interactionbar-container-throw-bg.png);
+    background-size: 100% 100%;
+  }
+
+  &.Consume {
+    background: url(../images/items/interactionbar-container-consume-bg.png);
+    background-size: 100% 100%;
+  }
+
+  &.Interaction {
+    background: url(../images/items/interactionbar-container-interaction-bg.png);
+    background-size: 100% 100%;
+  }
+
+  &.DisabledInteraction {
+    background: url(../images/items/interactionbar-container-disabledinteraction-bg.png);
+    background-size: 100% 100%;
+  }
+
+  &.Revive {
+    background-color: #60cc00;
+  }
+}
+
+.WorldSpace-InteractionBar-BarContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: calc(100% - 16px);
+  padding: 8px;
+  background-color: rgba(243, 243, 243, 0.2);
+  margin-bottom: 5px;
+  z-index: 0;
+}
+
+.WorldSpace-InteractionBar-Bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  background-color: rgba(20, 20, 20, 0.7);
+  z-index: -1;
+}
+
+.WorldSpace-InteractionBar-BarText {
+  color: white;
+  font-family: Lato;
+  font-weight: bold;
+  font-size: 20px;
+  z-index: 1;
+
+  &.disabled {
+    color: #a0a0a0;
+  }
+}
+
+.WorldSpace-InteractionBar-KeybindIcon {
+  font-size: 20px;
+  margin-right: 15px;
+  opacity: 1;
+  transition: opacity 0.2s;
+  border: 1px solid $MenuGrey;
+  background: rgb(23, 23, 23);
+  border-radius: 5px;
+  padding: 5px;
+
+  &.pressed {
+    opacity: 0.7;
+  }
+
+  &.disabled {
+    background: #a0a0a0;
+    border: 2px solid #2e2d2d;
+    color: #2e2d2d;
+  }
+}
+
+.WorldSpace-InteractionBar-ItemInfoContainer {
+  padding: 0 10px;
+}
+
+.WorldSpace-InteractionBar-GameTypeText {
+  font-family: Lato;
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+
+  &.Deploy {
+    color: #fff77f;
+  }
+
+  &.Throw {
+    color: #ff7ffa;
+  }
+
+  &.Consume {
+    color: #7fdcff;
+  }
+}
+
+.WorldSpace-InteractionBar-ItemName {
+  font-family: Lato;
+  font-weight: bold;
+  font-size: 20px;
+  color: #fff;
+
+  &.disabled {
+    color: #a0a0a0;
+  }
+}
+
+.WorldSpace-InteractionBar-ItemDescription {
+  font-family: Lato;
+  font-size: 16px;
+  color: #fff;
+
+  &.disabled {
+    color: #a0a0a0;
+  }
+}
+
+.WorldSpace-Objective-Container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  &.Disabled {
+    opacity: 0.85;
+  }
+}
+
+.WorldSpace-Objective-IndicatorLabel {
+  font-family: Lato;
+  font-weight: 900;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  text-shadow: -1px -1px 1px #000, 0 -1px 1px #000, 1px -1px 1px #000, 1px 0 1px #000, 1px 1px 1px #000, 0 1px 1px #000,
+    -1px 1px 1px #000, -1px 0 1px #000;
+  color: white;
+  text-transform: uppercase;
+
+  &.Disabled {
+    color: #ddd;
+  }
+}
+
+.WorldSpace-Objective-Circle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: transparent;
+
+  &.danger {
+    animation: pulse_5feoq 0.4s infinite alternate;
+  }
+
+  &.Disabled {
+    background-color: #444;
+  }
+
+  @keyframes pulse_5feoq {
+    from {
+      background-color: rgba(255, 0, 0, 0.7);
+    }
+    to {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+.WorldSpace-Objective-Icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.WorldSpace-Objective-ObjectiveIndicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  font-size: 18px;
+  font-family: Lato;
+  font-weight: bold;
+}
+
+.WorldSpace-PlayerDifferentiator-Container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.WorldSpace-PlayerDifferentiator-Diamond {
+  width: 10px;
+  height: 10px;
+  margin-top: 50px;
+  opacity: 0.85;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transform: rotate(45deg);
+}
+
+.WorldSpace-WorldUIContainer {
+  position: fixed;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.WorldSpace-WorldUIDamageText {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: Colus;
+  font-size: 10px;
+  text-shadow: -1px -1px 1px #000, 0 -1px 1px #000, 1px -1px 1px #000, 1px 0 1px #000, 1px 1px 1px #000, 0 1px 1px #000,
+    -1px 1px 1px #000, -1px 0 1px #000;
+  color: white;
+}

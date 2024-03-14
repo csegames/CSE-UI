@@ -1,0 +1,18 @@
+{
+  "name": "@types/node-xmpp-client",
+  "version": "2.1.0",
+  "description": "TypeScript descriptions for node-xmpp-client",
+  "license": "MIT",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "contributors": [
+    {
+      "name": "Tiok"
+    }
+  ],
+  "dependencies": {
+    "@types/ltx": "^2.0.1"
+  }
+}

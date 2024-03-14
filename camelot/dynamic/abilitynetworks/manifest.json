@@ -1,0 +1,65 @@
+[
+  {
+    "ID": "Archery",
+    "AbilityBuilderHueRotation": "-75deg",
+    "AbilityBuilderMaskImage": "/dynamic/abilitynetworks/assets/mask-archery.png",
+    "AbilityBuilderNameplateImage": "/dynamic/abilitynetworks/assets/select-name-bg-archery.png",
+    "AbilityBookTab": "Archery"
+  },
+  {
+    "ID": "Harvest",
+    "AbilityBuilderHueRotation": "-135deg",
+    "AbilityBuilderMaskImage": "/dynamic/abilitynetworks/assets/mask-harvest.png",
+    "AbilityBuilderNameplateImage": "/dynamic/abilitynetworks/assets/select-name-bg-harvest.png",
+    "AbilityBookTab": "Misc"
+  },
+  {
+    "ID": "Magic",
+    "AbilityBuilderHueRotation": "0deg",
+    "AbilityBuilderMaskImage": "/dynamic/abilitynetworks/assets/mask-magic.png",
+    "AbilityBuilderNameplateImage": "/dynamic/abilitynetworks/assets/select-name-bg-magic.png",
+    "AbilityBookTab": "Magic"
+  },
+  {
+    "ID": "Melee",
+    "AbilityBuilderHueRotation": "110deg",
+    "AbilityBuilderMaskImage": "/dynamic/abilitynetworks/assets/mask-melee.png",
+    "AbilityBuilderNameplateImage": "/dynamic/abilitynetworks/assets/select-name-bg-melee.png",
+    "AbilityBookTab": "Melee"
+  },
+  {
+    "ID": "Shout",
+    "AbilityBuilderHueRotation": "135deg",
+    "AbilityBuilderMaskImage": "/dynamic/abilitynetworks/assets/mask-shout.png",
+    "AbilityBuilderNameplateImage": "/dynamic/abilitynetworks/assets/select-name-bg-shout.png",
+    "AbilityBookTab": "Shout"
+  },
+  {
+    "ID": "Siege",
+    "AbilityBuilderHueRotation": "0deg",
+    "AbilityBuilderMaskImage": "/images/MissingAsset.png",
+    "AbilityBuilderNameplateImage": "/images/MissingAsset.png",
+    "AbilityBookTab": "Misc"
+  },
+  {
+    "ID": "Song",
+    "AbilityBuilderHueRotation": "135deg",
+    "AbilityBuilderMaskImage": "/dynamic/abilitynetworks/assets/mask-shout.png",
+    "AbilityBuilderNameplateImage": "/dynamic/abilitynetworks/assets/select-name-bg-song.png",
+    "AbilityBookTab": "Song"
+  },
+  {
+    "ID": "Standalone",
+    "AbilityBuilderHueRotation": "0deg",
+    "AbilityBuilderMaskImage": "/images/MissingAsset.png",
+    "AbilityBuilderNameplateImage": "/images/MissingAsset.png",
+    "AbilityBookTab": "Misc"
+  },
+  {
+    "ID": "Throwing",
+    "AbilityBuilderHueRotation": "-135deg",
+    "AbilityBuilderMaskImage": "/dynamic/abilitynetworks/assets/mask-throwing.png",
+    "AbilityBuilderNameplateImage": "/dynamic/abilitynetworks/assets/select-name-bg-throwing.png",
+    "AbilityBookTab": "Throwing"
+  }
+]

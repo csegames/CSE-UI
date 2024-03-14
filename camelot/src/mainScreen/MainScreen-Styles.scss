@@ -1,0 +1,4989 @@
+/**
+* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+@import '../shared/cu-icons';
+@import '../shared/fonts';
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  font-family: 'TitilliumWeb';
+  // This is the base font size from which `rem` is calculated.
+  font-size: 1.1vmin;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+:root {
+  // Variables
+  --modal-fade-duration: 0.25s;
+  --toaster-fade-duration: 0.25s;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.MainScreen-Root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.MainScreen-Filter {
+  filter: url(#svg-blur);
+}
+
+.MainScreen-ErrorNotices {
+  position: absolute;
+  right: 1vmin;
+  top: 1vmin;
+}
+
+.MainScreen-PopUpAnnouncements {
+  position: absolute;
+  margin: 0 auto;
+  top: 15vmin;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.MainScreen-BetaWatermark {
+  position: absolute;
+  left: 50%;
+  text-align: center;
+  transform: translateX(-50%);
+  color: white;
+  font-family: 'Merriweather Sans', sans-serif;
+  font-weight: bold;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  -webkit-touch-callout: none;
+  cursor: default;
+  pointer-events: none;
+  top: 1.5vmin;
+  font-size: 1.7rem;
+  width: 60vmin;
+  height: 0.9vmin;
+  line-height: 1.8vmin;
+}
+
+.HUD-BaseWidget-Root {
+  position: absolute;
+  pointer-events: none;
+}
+
+.HUD-BaseWidget-Container {
+  width: 100%;
+  height: 100%;
+}
+
+.HUD-BaseWidget-InitFailed {
+  width: 40vmin;
+  height: 30vmin;
+}
+
+.HUD-BaseWidget-InitFailedContainer {
+  align-items: center;
+  justify-content: center;
+  padding: 2vmin;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.HUD-BaseWidget-InitFailedLoader {
+  border: 1vmin solid #404040;
+  border-radius: 50%;
+  border-top: 1vmin solid white;
+  width: 7.5vmin;
+  height: 7.5vmin;
+  margin: 0 auto;
+  margin-bottom: 1vmin;
+  animation: initFailedLoaderFadeIn 2s linear infinite;
+}
+
+.HUD-BaseWidget-InitFailedMessage {
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.HUD-BaseWidget-Errored {
+  width: 45vmin;
+  height: 17.5vmin;
+}
+
+.HUD-BaseWidget-ErroredContainer {
+  align-items: center;
+  justify-content: center;
+  padding: 2vmin;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.HUD-BaseWidget-ErroredMessage {
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 2vmin;
+  text-align: center;
+}
+
+@keyframes initFailedLoaderFadeIn {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.HUD-BaseWidget-Overlay-Root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  cursor: move;
+  box-shadow: inset 0 0 0 2px orangered;
+}
+
+.HUD-BaseWidget-Overlay-AnchorHandle {
+  position: absolute;
+  width: 3vmin;
+  height: 3vmin;
+
+  &.TopLeft {
+    top: -1vmin;
+    left: -1vmin;
+  }
+  &.Top {
+    top: -1vmin;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  &.TopRight {
+    top: -1vmin;
+    right: -1vmin;
+  }
+  &.Left {
+    left: -1vmin;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  &.Center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  &.Right {
+    right: -1vmin;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  &.BottomLeft {
+    bottom: -1vmin;
+    left: -1vmin;
+  }
+  &.Bottom {
+    bottom: -1vmin;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  &.BottomRight {
+    bottom: -1vmin;
+    right: -1vmin;
+  }
+}
+
+.HUD-DragAndDrop-Root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.HUD-ZoneName-Root {
+  height: 3vmin;
+  flex-direction: row;
+}
+
+.HUD-ZoneName-TextContainer {
+  background: url(../images/zone/zone_background.png);
+  background-size: 100% 100%;
+  border-left: 3px solid #3b3634;
+  float: left;
+}
+
+.HUD-ZoneName-Text {
+  font-family: 'Caudex', serif;
+  color: #ccb79b;
+  font-size: 1.7rem;
+  margin: 0;
+  padding: 0;
+  line-height: 3vmin;
+  margin: 0 0.926vmin;
+  text-shadow: 1px 1px 1px #000000;
+}
+
+.HUD-ZoneName-EndCap {
+  height: 3vmin;
+  width: 6.2vmin;
+  background: url(../images/zone/zone_background_end.png);
+  background-size: 100% 100%;
+  float: left;
+}
+
+.HUD-HUDEditor-Root {
+  position: absolute;
+  top: 15vmin;
+  right: 5vmin;
+  width: 24vmin;
+}
+
+.HUD-HUDEditor-Contents {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  background: url(../images/progression/progress-bg-grey.png) no-repeat;
+  border: 2px solid #6e6c6c;
+  pointer-events: all;
+}
+
+.HUD-HUDEditor-Header {
+  width: 100%;
+  display: flex;
+  flex: none;
+  border-bottom: 2px solid #6e6c6c;
+  cursor: move;
+}
+
+.HUD-HUDEditor-HeaderText {
+  margin: 0.5vmin;
+  font-size: 1.8rem;
+}
+
+.HUD-HUDEditor-ResetAllButton {
+  position: absolute;
+  top: 0.5vmin;
+  right: 0.8vmin;
+  font-size: 1.4rem;
+  text-decoration: underline;
+  transition: all 0.2s;
+  cursor: pointer;
+  color: gray;
+  &:hover {
+    color: white;
+  }
+  &:active {
+    color: red;
+  }
+}
+
+.HUD-HUDEditor-ListContainer {
+  margin: 3%;
+  width: 94%;
+  height: 15vmin;
+  flex-direction: column;
+  flex: auto;
+  padding: 0.463vmin;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: visible;
+  background: rgba(0, 0, 0, 0.6);
+  font-family: 'Caudex', serif;
+  font-size: 1.5rem;
+}
+
+.HUD-HUDEditor-ListItem {
+  background: #191919;
+  padding-left: 0.463vmin;
+
+  &.hidden {
+    background: #15130c;
+    color: #564f40;
+  }
+  &.selected {
+    box-shadow: inset 0 0 0 1px #91743a;
+    color: #fff;
+  }
+  &:hover {
+    .HUD-HUDEditor-ListItem-Name {
+      color: #fff;
+    }
+  }
+}
+
+.HUD-HUDEditor-ActionButton {
+  background-color: #191919;
+  padding: 0vmin 0.75vmin;
+  text-align: center;
+  font-size: 1.4rem;
+  color: #a08f68;
+  border: 2px solid #91743a;
+  border-radius: 0.75vmin;
+  box-sizing: border-box;
+  transition: 0.2s linear;
+  cursor: pointer;
+
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  &:hover {
+    color: white;
+  }
+
+  &:active {
+    border-color: #d9ac57;
+  }
+}
+
+.HUD-HUDEditor-ListItem-Name {
+  color: #a08f68;
+  cursor: pointer;
+}
+
+.HUD-HUDEditor-Footer {
+  width: 100%;
+  height: 21vmin;
+  flex: none;
+  flex-direction: column;
+  border-top: 2px solid #6e6c6c;
+}
+
+.HUD-HUDEditor-AddAbilityBarsSection {
+  padding: 0.5vmin;
+  display: flex;
+  flex-direction: row;
+  border-bottom: 2px solid #6e6c6c;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.HUD-HUDEditor-AddAbilityBarsSection-Label {
+  color: white;
+  font-size: 1.4rem;
+}
+
+.HUD-HUDEditor-AbilityBarSection {
+  display: flex;
+  flex-direction: column;
+  border-top: 2px solid #6e6c6c;
+  padding-bottom: 0.5vmin;
+}
+
+.HUD-HUDEditor-AbilityBarSection-Row {
+  display: flex;
+  flex-direction: row;
+  margin: 0.5vmin 2.5vmin 0vmin 0vmin;
+}
+
+.HUD-HUDEditor-AbilityBarSection-ButtonRow {
+  @extend .HUD-HUDEditor-AbilityBarSection-Row;
+  justify-content: center;
+  margin: 0.5vmin 0 0;
+}
+
+.HUD-HUDEditor-AbilityBarSection-Label {
+  color: white;
+  font-size: 1.4rem;
+  width: 15vmin;
+  text-align: right;
+}
+
+.HUD-HUDEditor-AbilityBarSection-PlusMinusButton {
+  @extend .HUD-HUDEditor-ActionButton;
+  margin-left: 1vmin;
+  padding-bottom: 0.3vmin;
+  font-size: 2vmin;
+  line-height: 1.7vmin;
+}
+
+.HUD-HUDEditor-SelectedWidgetName {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #91743a;
+}
+
+.HUD-HUDEditor-ToolbarRow {
+  margin-top: 0.5vmin;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+}
+
+.HUD-HUDEditor-ToolbarItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.HUD-HUDEditor-ToolbarIcon {
+  width: 4vmin;
+  height: 4vmin;
+  object-fit: contain;
+
+  &.button {
+    cursor: pointer;
+  }
+}
+
+.HUD-HUDEditor-ToolbarItemControls {
+  margin-top: 0.2vmin;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.HUD-HUDEditor-ToolbarItemControls-Button {
+  width: 1.6vmin;
+  height: 1.6vmin;
+  cursor: pointer;
+}
+
+.HUD-HUDEditor-ToolbarItemControls-Text {
+  color: #aaaaaa;
+  font-size: 1.2rem;
+  width: 3.5vmin;
+  text-align: center;
+}
+
+.HUD-HUDEditor-MovementControls-Container {
+  width: 8vmin;
+  height: 8vmin;
+  position: relative;
+}
+
+.HUD-HUDEditor-MovementControls-Up {
+  position: absolute;
+  left: 28.1%;
+  top: 0;
+  width: 43.8%;
+  height: 28.1%;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.HUD-HUDEditor-MovementControls-Down {
+  position: absolute;
+  left: 28.1%;
+  bottom: 0;
+  width: 43.8%;
+  height: 28.1%;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.HUD-HUDEditor-MovementControls-Left {
+  position: absolute;
+  left: 0;
+  top: 28.1%;
+  width: 28.1%;
+  height: 43.8%;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.HUD-HUDEditor-MovementControls-Right {
+  position: absolute;
+  right: 0;
+  top: 28.1%;
+  width: 28.1%;
+  height: 43.8%;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.HUD-HUDEditor-AnchorControls-Container {
+  width: 8vmin;
+  height: 8vmin;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.HUD-HUDEditor-AnchorControls-Button {
+  width: 33%;
+  height: 33%;
+  object-fit: contain;
+  cursor: pointer;
+
+  &.corner {
+    width: 25%;
+    height: 25%;
+  }
+
+  &.top {
+    margin-bottom: 8%;
+  }
+
+  &.bottom {
+    margin-top: 8%;
+  }
+
+  &.left {
+    margin-right: 8%;
+  }
+
+  &.right {
+    margin-left: 8%;
+  }
+}
+
+.HUD-HUDEditor-ControlHeaderText {
+  width: 100%;
+  text-align: center;
+  font-size: 1.3rem;
+  color: #91743a;
+}
+
+.HUD-TooltipPane-TooltipWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  border-width: 2px;
+  border-style: solid;
+  border-image: linear-gradient(to bottom, #ababab, transparent);
+  border-image-slice: 1;
+  mask-image: url(../images/tooltips/mask.png);
+  -webkit-mask-image: url(../images/tooltips/mask.png);
+  mask-size: cover;
+  -webkit-mask-size: cover;
+  color: #ababab;
+  font-size: 1.5rem;
+  overflow: hidden;
+  padding: 0.5vmin;
+}
+
+.HUD-TooltipPane-TooltipBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(../images/tooltips/bg.jpg);
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url(../images/tooltips/ornament-left.png);
+    width: 3.52vmin;
+    height: 3.89vmin;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url(../images/tooltips/ornament-right.png);
+    width: 3.52vmin;
+    height: 3.89vmin;
+  }
+}
+
+.HUD-TooltipPane-TextWrapper {
+  position: relative;
+  padding: 0 1vmin;
+}
+
+.HUD-TooltipPane-ContentWrapper {
+  position: relative;
+}
+
+.Scroller-ThumbOnly::-webkit-scrollbar {
+  width: 0.556vmin;
+  height: 0.556vmin;
+}
+
+.Scroller-ThumbOnly::-webkit-scrollbar-track {
+  box-shadow: none;
+  background: none;
+}
+
+.Scroller-ThumbOnly::-webkit-scrollbar-thumb {
+  border: 5.56vmin solid rgb(64, 64, 64);
+  border-width: 5.56vmin 0.648vmin 5.56vmin 0.648vmin;
+  border-image: url(../images/settings/scrollbar-thumb-ends.png);
+  border-image-slice: 30 4 30 4;
+  min-height: 9.26vmin;
+  box-shadow: none;
+  background: none;
+}
+
+.HUD-NavMenu-Root {
+  pointer-events: auto;
+  width: fit-content;
+  display: flex;
+  flex-direction: row;
+  background-image: url(../images/hudnav/hudnav_background.png);
+  background-position-x: 90%;
+  background-size: 130%;
+  padding: 0 5.56vmin 0 0.556vmin !important;
+}
+
+.HUD-NavMenu-ItemContainer {
+  width: 3vmin;
+  height: 3vmin;
+  margin-left: 0.5vmin;
+  margin-top: 0.5vmin;
+  margin-bottom: 0.5vmin;
+  position: relative;
+}
+
+.HUD-NavMenu-ItemContainerClickable {
+  cursor: pointer;
+}
+
+.HUD-NavMenu-ItemIcon {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.HUD-NavMenu-ItemCount {
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: 1.75vmin;
+  height: 1.75vmin;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.HUD-SelfUnitFrame-Root {
+  pointer-events: auto;
+}
+
+.HUD-PlayerUnitFrame-Root {
+  display: flex;
+  flex-direction: row;
+  width: 41.223vmin;
+  height: 7.5vmin;
+}
+
+.HUD-PlayerUnitFrame-FrameRoot {
+  height: 5.666vmin;
+  position: relative;
+  cursor: pointer !important;
+  background-position-x: 2vmin;
+  background-repeat: no-repeat;
+  background-size: 20vmin;
+}
+
+.HUD-PlayerUnitFrame-Background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24.556vmin;
+  height: 5.666vmin;
+}
+
+.HUD-PlayerUnitFrame-ArchetypeContainer {
+  position: absolute;
+  left: 2vmin;
+  top: -13%;
+  width: 3.54vmin;
+}
+
+.HUD-PlayerUnitFrame-ArchetypeBackground {
+  width: 100%;
+  object-fit: contain;
+}
+
+.HUD-PlayerUnitFrame-ArchetypeFrame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  object-fit: contain;
+}
+
+.HUD-PlayerUnitFrame-ArchetypeProfilePicture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  object-fit: contain;
+  // The actual mask is set in code based on the player's current Archetype/ClassDef.
+  mask-size: contain;
+  -webkit-mask-size: contain;
+}
+
+.HUD-PlayerUnitFrame-NameplateText {
+  margin-left: 5.75vmin;
+  color: white;
+  font-size: 1.8rem;
+  min-width: 18vmin;
+}
+
+.HUD-PlayerUnitFrame-LeaderIcon {
+  color: yellow;
+  position: absolute;
+  font-size: 1.5rem;
+  left: calc(100% + 1vmin);
+  top: 0.75vmin;
+}
+
+.HUD-PlayerUnitFrame-BarsContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24.556vmin;
+  height: 5.666vmin;
+  mask-image: url(../images/unit-frames/main-frame-mask.png);
+  -webkit-mask-image: url(../images/unit-frames/main-frame-mask.png);
+  mask-size: contain;
+  -webkit-mask-size: contain;
+}
+
+.HUD-PlayerUnitFrame-BloodBar {
+  position: absolute;
+  left: 3%;
+  bottom: 7.5%;
+  width: 8%;
+}
+
+.HUD-PlayerUnitFrame-HealthBar {
+  position: absolute;
+  left: 11%;
+  top: 55%;
+  height: 20%;
+  transform: skewX(31.6deg);
+}
+
+.HUD-PlayerUnitFrame-WoundsBar {
+  position: absolute;
+  right: 3%;
+  top: 55%;
+  height: 20%;
+  transform: skewX(31.6deg);
+  background: url(../images/unit-frames/wounds-texture.png) repeat-x;
+}
+
+.HUD-PlayerUnitFrame-StaminaBar {
+  position: absolute;
+  left: 11%;
+  top: 75%;
+  height: 10%;
+  transform: skewX(-30deg);
+  border-radius: 0.278vmin;
+}
+
+.HUD-PlayerUnitFrame-FortitudeBar {
+  position: absolute;
+  left: 9%;
+  top: 86%;
+  height: 7%;
+  transform: skewX(-30deg);
+  border-radius: 0.278vmin;
+}
+
+.HUD-PlayerUnitFrame-PanicBar {
+  position: absolute;
+  left: 10%;
+  top: 90%;
+  height: 7%;
+  transform: skewX(-30deg);
+  border-radius: 0.278vmin;
+}
+
+.HUD-PlayerUnitFrame-Tooltip-StatText {
+  font-size: 1.8rem;
+  line-height: 1.8rem;
+}
+
+.HUD-PlayerUnitFrame-Tooltip-StatRow {
+  display: inline-block;
+  width: 9.26vmin;
+}
+
+.HUD-PlayerUnitFrame-Distance {
+  position: absolute;
+  top: 93%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 11vmin;
+  font-size: 1.5rem;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+
+.HUD-StatusEffects-Root {
+  display: flex;
+  flex-direction: column;
+  min-width: 16.667vmin;
+}
+
+.HUD-StatusEffects-StatusSection {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+  width: 16.667vmin;
+}
+
+.HUD-StatusEffects-StatusContainer {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid black;
+  border-radius: 50%;
+  width: 2.263vmin;
+  height: 2.263vmin;
+  margin-top: 0.37vmin;
+  margin-left: 0.37vmin;
+}
+
+.HUD-StatusEffects-StatusIcon {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  mask-image: url(../images/mask-circle.png);
+  -webkit-mask-image: url(../images/mask-circle.png);
+  mask-size: contain;
+  -webkit-mask-size: contain;
+}
+
+.HUD-StatusEffects-TooltipContainer {
+  min-width: 27vmin;
+  max-width: 40vmin;
+  max-height: 50vmin;
+}
+
+.HUD-StatusEffects-TooltipName {
+  font-size: 2rem;
+}
+
+.HUD-StatusEffects-TooltipText {
+  font-size: 1.6rem;
+  line-height: 1.7rem;
+  margin: 0;
+  padding: 0;
+
+  &.Positive {
+    color: #14eb6f;
+  }
+
+  &.Negative {
+    color: red;
+  }
+
+  &.Warning {
+    color: yellow;
+  }
+}
+
+.HUD-NonPlayerUnitFrame-Root {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 41.223vmin;
+  height: 7.5vmin;
+  pointer-events: all;
+}
+
+.HUD-NonPlayerUnitFrame-FrameRoot {
+  width: 24.556vmin;
+  height: 4.4vmin;
+  position: relative;
+  cursor: pointer !important;
+
+  &:hover {
+    .ShowOnHover {
+      opacity: 1;
+    }
+  }
+}
+
+.HUD-NonPlayerUnitFrame-FrameImage {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  object-fit: contain;
+}
+
+.HUD-NonPlayerUnitFrame-ArchetypeContainer {
+  position: absolute;
+  left: 0.5%;
+  top: -21%;
+  width: 15%;
+}
+
+.HUD-NonPlayerUnitFrame-ArchetypeBackground {
+  width: 100%;
+  object-fit: contain;
+}
+
+.HUD-NonPlayerUnitFrame-ArchetypeFrame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  object-fit: contain;
+}
+
+.HUD-NonPlayerUnitFrame-ArchetypeProfilePicture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  object-fit: contain;
+  // The actual mask is set in code based on the player's current Archetype/ClassDef.
+  mask-size: contain;
+  -webkit-mask-size: contain;
+}
+
+.HUD-NonPlayerUnitFrame-NameplateBackground {
+  position: absolute;
+  top: 0;
+  left: 7%;
+  width: 82%;
+}
+
+.HUD-NonPlayerUnitFrame-NameplateText {
+  position: absolute;
+  top: 0;
+  left: 17%;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 1.8rem;
+}
+
+.HUD-NonPlayerUnitFrame-BarsContainer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 24.556vmin;
+  height: 2.456vmin;
+  mask-image: url(../images/unit-frames/mini-mask.png);
+  -webkit-mask-image: url(../images/unit-frames/mini-mask.png);
+  mask-size: contain;
+  -webkit-mask-size: contain;
+}
+
+.HUD-NonPlayerUnitFrame-HealthBar {
+  position: absolute;
+  left: 6%;
+  top: 63%;
+  height: 20%;
+  transform: skewX(31.6deg);
+}
+
+.HUD-NonPlayerUnitFrame-HealthText {
+  position: absolute;
+  bottom: 95%;
+  left: 0;
+  width: 100%;
+  font-size: 1.5rem;
+  text-align: center;
+  color: white;
+  opacity: 0;
+  // Opacity is controlled by the hover style in HUD-NonPlayerUnitFrame-FrameRoot.
+}
+
+.HUD-NonPlayerUnitFrame-Distance {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 11vmin;
+  font-size: 1.5rem;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+
+.HUD-TargetUnitFrame-Root {
+  pointer-events: auto;
+}
+
+.HUD-ContextMenuPane-Root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.HUD-ContextMenuPane-MenuWrapper {
+  position: absolute;
+  min-width: 8vmin;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  overflow: hidden;
+  background-image: url(../images/item-tooltips/bg.png);
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  box-shadow: inset 0 0 0.926vmin 0 black;
+  border: 1px solid #4e4e4e;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: url(../images/item-tooltips/ornament_left.png) no-repeat;
+    width: 3.24vmin;
+    height: 3.24vmin;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background: url(../images/item-tooltips/ornament_right.png) no-repeat top right;
+    width: 3.24vmin;
+    height: 3.24vmin;
+  }
+  padding: 0.278vmin;
+
+  animation: hcmwFadeIn 0.25s forwards;
+  padding: 0.5vmin;
+
+  @keyframes hcmwFadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+.HUD-ContextMenuPane-MenuItem {
+  pointer-events: all;
+  font-weight: bold;
+  border: 1px solid transparent;
+  padding: 0.1vmin 0.4vmin;
+  font-size: 1.4rem;
+  color: #ccc;
+  cursor: pointer;
+  &:hover {
+    color: #ffdbac;
+    border: 1px solid;
+    border-image-source: linear-gradient(to right, #ae8b6f 20%, transparent);
+    border-image-slice: 1;
+    box-shadow: inset 0 0 0.926vmin 0 #000000;
+    background-color: #221d17;
+  }
+}
+
+.HUD-ContextMenuPane-MenuItemDisabled {
+  cursor: not-allowed;
+  color: rgb(119, 119, 119);
+}
+
+.HUD-ModalPane-Root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  pointer-events: none;
+
+  &.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.HUD-ModalPane-PreviousModalWrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  pointer-events: none;
+
+  animation: hmppmwFadeOut var(--modal-fade-duration) forwards;
+  @keyframes hmppmwFadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
+.HUD-ModalPane-CurrentModalWrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  animation: hmpcmwFadeIn 0.5s forwards;
+  @keyframes hmpcmwFadeIn {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+.HUD-ModalPane-TitleText {
+  font-size: 2.2rem;
+  color: white;
+  text-align: center;
+}
+
+.HUD-ModalPane-MessageText {
+  font-size: 1.8rem;
+  color: white;
+  text-align: center;
+  padding: 3vmin;
+  padding-bottom: 2vmin;
+}
+
+.HUD-ToasterPane-Root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  &.show {
+    opacity: 1;
+  }
+}
+
+.HUD-ToasterPane-PreviousToasterWrapper {
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
+  background: url(../images/backgrounds/bg-dappled-grey.png);
+  padding: 1vmin;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 32vmin;
+  border: 0.5vmin solid black;
+
+  pointer-events: none;
+
+  animation: hmpptwFadeOut var(--toaster-fade-duration) forwards;
+  @keyframes hmpptwFadeOut {
+    0% {
+      opacity: 1;
+      bottom: 10%;
+    }
+    100% {
+      opacity: 0;
+      bottom: -20%;
+    }
+  }
+}
+
+.HUD-ToasterPane-CurrentToasterWrapper {
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
+  background: url(../images/backgrounds/bg-dappled-grey.png);
+  padding: 1vmin;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 32vmin;
+  border: 0.5vmin solid black;
+
+  animation: hmpctwFadeIn 0.5s forwards;
+  @keyframes hmpctwFadeIn {
+    0% {
+      opacity: 0;
+      bottom: 0%;
+    }
+    50% {
+      opacity: 0;
+      bottom: 0%;
+    }
+    100% {
+      opacity: 1;
+      bottom: 10%;
+    }
+  }
+}
+
+.HUD-ToasterPane-TitleText {
+  font-size: 2.2rem;
+  color: white;
+  text-align: center;
+}
+
+.HUD-ToasterPane-MessageText {
+  font-size: 1.8rem;
+  color: #848484;
+  text-align: center;
+}
+
+.HUD-InputBox-Root {
+  pointer-events: auto;
+  display: block;
+  padding: 0.25vmin;
+  background-color: rgba(31, 31, 31, 1);
+}
+
+.HUD-InputBox-Border {
+  border: 1px solid rgba(53, 53, 53, 1);
+  position: relative;
+  &::before {
+    position: absolute;
+    content: '';
+    background-image: url(../images/input/input-texture.png);
+    background-size: contain;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    top: -1px;
+    left: -1px;
+  }
+}
+
+.HUD-InputBox-Inner {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  background-color: rgb(31, 31, 31);
+  color: rgb(204, 204, 204);
+  position: relative;
+  display: flex;
+}
+
+.HUD-InputBox-InnerPadded {
+  padding: 1vmin;
+}
+
+.HUD-BooleanInput-Label {
+  cursor: pointer;
+  display: block;
+}
+
+.HUD-BooleanInput-Box {
+  position: absolute;
+  right: 4vmin;
+  top: 0;
+  width: 2vmin;
+  height: 100%;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      rgba(53, 53, 53, 0.5) 0%,
+      rgba(53, 53, 53, 0.5) 36%,
+      rgba(53, 53, 53, 0.5) 71%,
+      rgba(53, 53, 53, 0.5) 100%
+    );
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    left: calc(-0.3vmin - 2px);
+    width: 0.7vmin;
+    height: 0.7vmin;
+    border: 2px inset #0f1012;
+    background-color: #0f1012;
+    transform: scale(1.5) rotate(45deg);
+  }
+}
+
+.HUD-BooleanInput-BoxOn {
+  &::after {
+    background-color: rgb(252, 211, 179);
+  }
+}
+
+.HUD-BooleanInput-Check {
+  visibility: hidden;
+  position: absolute;
+}
+
+.HUD-NumberInput-Container {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: calc(4vmin + 20%);
+  top: 0;
+  bottom: 0;
+  width: 40%;
+}
+
+.HUD-NumberInput-Box {
+  position: absolute;
+  width: 2vmin;
+  height: 100%;
+  pointer-events: none;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    left: -0.5vmin;
+    width: 0.7vmin;
+    height: 0.7vmin;
+    border: 2px inset #0f1012;
+    background-color: rgb(252, 211, 179);
+    transform: scale(1.5) rotate(45deg);
+  }
+}
+
+.HUD-NumberInput-Text {
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 6vmin;
+  position: absolute;
+  right: 2.9vmin;
+  top: 10%;
+  height: 80%;
+}
+
+.HUD-NumberInput-Range {
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  background: none;
+}
+
+.HUD-NumberInput-Range::-webkit-slider-thumb {
+  visibility: hidden;
+}
+
+.HUD-NumberInput-Range::-webkit-slider-runnable-track {
+  background-color: rgb(70, 70, 70);
+  border: none;
+  height: 3px;
+}
+
+.HUD-SelectValueInput-Values {
+  background-color: rgb(31, 31, 31);
+  position: absolute;
+  width: 16vmin;
+  right: 0.5vmin;
+  bottom: 95%;
+}
+
+.HUD-SelectValueInput-Value {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: white;
+  padding: 0.375vmin 0;
+  height: 2vmin;
+  span {
+    position: absolute;
+    left: 0.5vmin;
+  }
+}
+
+.HUD-SelectValueInput-Select {
+  background-color: black;
+  display: flex;
+  align-items: center;
+  color: white;
+  position: absolute;
+  top: 10%;
+  height: 80%;
+  width: 16vmin;
+  right: 0.5vmin;
+  cursor: pointer;
+  span {
+    position: absolute;
+    left: 0.5vmin;
+  }
+}
+
+.HUD-SelectValueInput-Caret {
+  width: 1vmin;
+  fill: white;
+  position: absolute;
+  right: 0.5vmin;
+}
+
+.HUD-KeybindInput-Container {
+  width: 100%;
+  height: 5vmin;
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-size: 1.5vmin;
+}
+
+.HUD-KeybindInput-Values {
+  position: absolute;
+  text-align: center;
+  display: flex;
+  width: 50%;
+  height: 100%;
+  span {
+    width: 30%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 0.5vmin;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.4);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+    }
+  }
+  span:not(:last-child) {
+    margin-right: 5%;
+  }
+}
+
+.HUD-KeybindInput-Description {
+  position: absolute;
+  left: 60%;
+}
+
+.HUD-KeybindInput-BindMessage {
+  font-size: 1.8rem;
+  color: white;
+  text-align: center;
+  padding: 3vmin;
+  span {
+    display: block;
+  }
+}
+
+.HUD-SearchInput-Root {
+  width: 100%;
+}
+
+.HUD-TextInput-Root {
+  color: #ccc;
+}
+
+.HUD-SearchInput-Input {
+  width: 100%;
+  background-color: black;
+  border: none;
+  height: 100%;
+  font-family: inherit;
+  color: #ccc;
+  font-size: 1rem;
+  &::placeholder {
+    color: #ccc;
+  }
+}
+
+.HUD-SearchInput-CloseButtonPosition {
+  position: absolute;
+  font-size: 125%;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  right: 0.5vmin;
+}
+
+.HUD-TextInput-Input {
+  width: 100%;
+  border: none;
+  height: 100%;
+  font-family: inherit;
+  color: #ccc;
+  font-size: 1rem;
+  background-color: transparent;
+  &::placeholder {
+    color: #ccc;
+  }
+}
+
+.HUD-Menu-Root {
+  height: 100%;
+}
+
+.HUD-Menu-Container {
+  height: 100%;
+  position: relative;
+  margin: 0 auto;
+  border: 1px solid #6e6c6c;
+}
+
+.HUD-Menu-CloseButtonPosition {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  font-size: 12px;
+}
+
+.HUD-Menu-Corner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url(../images/menu/menu-ornament-top-left.png) left 0 top 0 no-repeat,
+    url(../images/menu/menu-ornament-top-right.png) right 0 top 0 no-repeat,
+    url(../images/menu/menu-ornament-bottom-left.png) left 0 bottom 0 no-repeat,
+    url(../images/menu/menu-ornament-bottom-right.png) right 0 bottom 0 no-repeat;
+  pointer-events: none;
+}
+
+.HUD-Menu-CornerX {
+  background: url(../images/menu/menu-ornament-top-left.png) left 0 top 0 no-repeat,
+    url(../images/menu/menu-ornament-top-right-x.png) right 0 top 0 no-repeat,
+    url(../images/menu/menu-ornament-bottom-left.png) left 0 bottom 0 no-repeat,
+    url(../images/menu/menu-ornament-bottom-right.png) right 0 bottom 0 no-repeat;
+}
+
+.HUD-Menu-Content {
+  pointer-events: all;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-image: url(../images/menu/menu-bg-grey.png);
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover;
+}
+
+.HUD-Menu-TabsBorder {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgba(101, 100, 98, 0.8);
+  border-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(101, 100, 98, 1), rgba(0, 0, 0, 0)) 1;
+  margin: 0.85vmin 0;
+}
+
+.HUD-Menu-Tab {
+  position: relative;
+  cursor: pointer;
+  width: 15vmin;
+  height: 5vmin;
+  pointer-events: all;
+  text-align: center;
+  color: rgb(119, 119, 119);
+  border: 1px rgba(0, 0, 0, 0) solid;
+  background-image: url(../images/menu/menu-topnav-arrow-up.png);
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: -1px;
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-image: linear-gradient(to top, rgb(68, 64, 61) 0%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0) 80%) 0 1 1 1;
+    border-bottom-width: 0;
+  }
+  &:hover {
+    background-color: rgba(39, 39, 39, 0.6);
+  }
+  span {
+    color: rgb(119, 119, 119);
+    text-transform: uppercase;
+    display: block;
+    height: calc(100% - 1vmin);
+    padding-top: 1vmin;
+    font-size: 1.375rem;
+    letter-spacing: 1px;
+  }
+}
+
+.HUD-Menu-TabSelected {
+  background-color: black;
+  border: 1px rgb(239, 190, 152) solid;
+  border-image: linear-gradient(
+      to bottom,
+      rgba(239, 190, 152, 0.7) 0%,
+      rgba(239, 190, 152, 0.5) 50%,
+      rgba(0, 0, 0, 0) 100%
+    )
+    1 1 0 1;
+  background-image: url(../images/menu/menu-topnav-arrow-down.png);
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: -1px;
+    left: -1px;
+    border: none;
+    background-image: url(../images/menu/menu-topnav-texture.png);
+    background-repeat: no-repeat;
+  }
+  span {
+    color: rgb(255, 234, 194);
+    background: linear-gradient(to bottom, rgba(239, 190, 152, 0.2) 0%, rgba(0, 0, 0, 0) 50%);
+  }
+}
+
+.HUD-Menu-Main {
+  background-image: url(../images/ui/modal-bg.png);
+  flex: 1;
+  background-size: cover;
+  height: 0%;
+}
+
+.HUD-Menu-MainInner {
+  display: flex;
+  height: calc(100% - 1vmin);
+  margin-top: 1vmin;
+  pointer-events: all;
+}
+
+.HUD-Menu-Sidebar {
+  border-image: linear-gradient(to bottom, rgba(64, 64, 64, 0.8) 20%, rgba(0, 0, 0, 0) 80%) 0 1 1 0;
+  width: 22.5vmin;
+  height: 100%;
+  border-width: 0;
+  border-right: 1px;
+}
+
+.HUD-Menu-SectionLabel {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  width: calc(100% - 1vmin);
+  height: 3vmin;
+  color: rgb(240, 240, 240);
+  border-left: 2px solid black;
+  font-family: 'Caudex', serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-left: 1vmin;
+  background-position: right center;
+  background-repeat: no-repeat;
+  background-image: url(../images/menu/menu-leftnav-arrow-left.png);
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+    border-left: 0px;
+    border-right: 0px;
+    border-top: 1px solid rgba(32, 32, 32, 0.4);
+    background-color: rgba(32, 32, 32, 0.4);
+  }
+  &:hover {
+    &::before {
+      background-color: rgba(39, 39, 39, 0.6);
+    }
+  }
+  &:first-child {
+    &::before {
+      border-top: 1px solid rgba(128, 128, 128, 0.1);
+    }
+  }
+  span {
+    font-size: 1.25rem;
+    position: relative;
+    top: 0.15vmin;
+  }
+}
+
+.HUD-Menu-SectionLabelSelected {
+  color: rgb(255, 243, 194);
+  background-position: right center;
+  background-image: url(../images/menu/menu-leftnav-arrow-right.png);
+  width: calc(100% - 1vmin + 3px);
+  &::before {
+    width: calc(100% - 3px);
+    border-top: 1px solid rgba(239, 190, 152, 1);
+    border-bottom: 1px solid rgba(239, 190, 152, 1);
+    background: linear-gradient(to right, rgba(239, 190, 152, 0.2) 20%, rgba(0, 0, 0, 0) 40%);
+    border-image: linear-gradient(to right, rgba(239, 190, 152, 1) 20%, rgba(239, 190, 152, 0) 80%) 1 0 1 0;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.HUD-Menu-SectionLabelInner {
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.HUD-Menu-SectionLabelSelected .HUD-Menu-SectionLabelInner {
+  width: calc(100% - 3px);
+  background-size: cover;
+  background-image: url(../images/menu/menu-leftnav-texture.png);
+}
+
+.HUD-Menu-MainContent {
+  flex: 1;
+  height: calc(100% - 1px);
+  border-top: 1px solid rgba(64, 64, 64, 0.8);
+  background-color: rgba(7, 7, 7, 0.8);
+}
+
+.HUD-Menu-MainContentInner {
+  padding: 2vmin;
+  height: calc(100% - 4vmin);
+  width: calc(100% - 4vmin);
+  > *:not(:last-child) {
+    margin-bottom: 0.75vmin;
+  }
+}
+
+.HUD-Menu-MainContentInnerScrollable {
+  overflow-y: auto;
+}
+
+.HUD-Menu-ComingSoon {
+  color: white;
+  margin: 0;
+}
+
+.HUD-Menu-Footer {
+  background-image: url(../images/menu/menu-bg-grey.png);
+  background-size: cover;
+}
+
+.HUD-Menu-FooterInner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  margin: 1vmin 0;
+  border: 1px solid rgba(68, 64, 61, 0.8);
+  border-image: linear-gradient(to right, rgba(68, 64, 61, 0.2), rgba(68, 64, 61, 0.8), rgba(68, 64, 61, 0.2)) 1;
+}
+
+.HUD-Menu-FooterOrnamentBefore {
+  background-image: url(../images/menu/menu-botnav-left-ornament.png);
+  background-repeat: no-repeat;
+  margin: 0 3px;
+  width: 7.5vmin;
+  height: 5.5vmin;
+  background-size: cover;
+}
+
+.HUD-Menu-FooterOrnamentAfter {
+  background-image: url(../images/menu/menu-botnav-right-ornament.png);
+  background-repeat: no-repeat;
+  margin: 0 3px;
+  width: 7.5vmin;
+  height: 5.5vmin;
+  background-size: cover;
+}
+
+.HUD-Menu-FooterButtons {
+  display: flex;
+  justify-content: center;
+}
+
+.HUD-Menu-FooterButton {
+  cursor: pointer;
+  width: 9.5vmin;
+  height: 3vmin;
+  background-size: cover;
+  text-align: center;
+  text-transform: uppercase;
+  color: rgb(132, 132, 132);
+  font-size: 0.9vmin;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url(../images/menu/menu-button-off.png);
+  font-family: 'Caudex', serif;
+  letter-spacing: 2px;
+  position: relative;
+  margin: 0.75vmin 0;
+  &:not(:last-child) {
+    margin-right: 1vmin;
+  }
+  &:hover {
+    color: rgb(204, 204, 204);
+    background-image: url(../images/menu/menu-button-on.png);
+    &::before {
+      content: '';
+      position: absolute;
+      background-image: url(../images/menu/menu-button-glow.png);
+      width: 9.5vmin;
+      height: 3vmin;
+      left: 1px;
+      background-size: cover;
+    }
+  }
+}
+
+.HUD-Menu-Title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  pointer-events: none;
+  width: 30vmin;
+  background: url(../images/menu/menu-top-title.png) center top no-repeat;
+  text-align: center;
+  background-size: contain;
+  height: 2.5vmin;
+  left: calc(50% - 15vmin);
+  top: -1.75vmin;
+  span {
+    position: relative;
+    top: 0.2vmin;
+    color: rgb(132, 132, 132);
+    font-family: 'Caudex', serif;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+}
+
+.HUD-TopRightCloseButton {
+  position: absolute;
+  right: 0.5vmin;
+  top: 0.5vmin;
+}
+
+.HUD-Button-Root {
+  width: 20vmin;
+  height: 3vmin;
+  background: url(../images/button/button-big-off.png) no-repeat;
+  background-size: cover;
+  border: none;
+  color: rgb(132, 132, 132);
+  font-family: 'Caudex', serif;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 3vmin;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  pointer-events: all;
+  &:hover {
+    background: url(../images/button/button-big-on.png) no-repeat;
+    background-size: cover;
+    color: rgb(204, 204, 204);
+    &::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      background-image: url(../images/button/button-glow.png);
+      background-size: cover;
+    }
+  }
+}
+
+.HUD-Button-RootDisabled {
+  filter: grayscale(100%);
+  cursor: not-allowed;
+  &:hover {
+    background: url(../images/button/button-big-off.png) no-repeat;
+    background-size: cover;
+    color: rgb(132, 132, 132);
+    &::before {
+      display: none;
+    }
+  }
+}
+
+.HUD-GameMenu-Root {
+  width: 25vmin;
+  height: 15vmin;
+}
+
+.HUD-GameMenu-Container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.HUD-GameMenu-MenuButton {
+  margin-bottom: 1.5vmin;
+  &:first-child {
+    margin-top: auto;
+  }
+  &:last-child {
+    margin-bottom: auto;
+  }
+}
+.HUD-BarHeader-Root {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 0.92vmin;
+  height: 6vmin;
+  background-repeat: repeat;
+  background-size: 100% 100%;
+}
+
+.HUD-BarHeader-Overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.HUD-BarHeader-Text {
+  font-family: Caudex;
+  color: #fff6da;
+  font-size: 1.63rem;
+  letter-spacing: 0.25rem;
+  text-transform: uppercase;
+  padding-left: 1vmin;
+}
+
+.HUD-Settings-Root {
+  width: 128vmin;
+  height: 72vmin;
+  max-width: 70vw;
+  max-height: 80vh;
+}
+
+.HUD-Settings-SaveAsModalBody {
+  padding: 2vmin;
+}
+
+.HUD-Settings-LoadModalBody {
+  padding: 2vmin;
+  padding-bottom: 0.5vmin;
+  > *:not(:last-child) {
+    margin-bottom: 0.75vmin;
+  }
+}
+
+.HUD-Settings-Search {
+  width: 50%;
+  margin-left: auto;
+}
+
+.HUD-AbilityBar-Root {
+  display: flex;
+  flex-direction: row;
+}
+
+.HUD-AbilityBar-GroupIcon {
+  object-fit: contain;
+  pointer-events: all;
+}
+
+.HUD-AbilityBarSlot-Root {
+  position: relative;
+  margin-left: 1vmin;
+}
+
+.HUD-AbilityBarSlot-EmptySlot {
+  position: absolute;
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
+
+.HUD-AbilityBarSlot-GoToAbilityBookButton {
+  position: absolute;
+  left: 10%;
+  top: 5%;
+  width: 80%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 2rem;
+  pointer-events: all;
+  cursor: pointer;
+  &:hover {
+    color: yellow;
+  }
+}
+
+.HUD-AbilityBarSlot-AbilityButtonWrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.HUD-AbilityButton-Root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.HUD-AbilityButton-DraggableHandle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.HUD-AbilityButton-TooltipWrapper {
+  min-width: 18.5vmin;
+  max-width: 35vmin;
+  display: flex;
+  flex-direction: column;
+}
+
+.HUD-AbilityButton-TooltipTitle {
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.HUD-AbilityButton-TooltipDescription {
+  color: #bbbcbc;
+  font-size: 1.5rem;
+}
+
+.HUD-AbilityButton-Icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 100%;
+}
+
+.HUD-AbilityButton-OverlayShadow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  border-radius: 100%;
+  box-shadow: inset 5px 5px 1px rgba(255, 255, 255, 0.2), inset 2px 15px 5px rgba(255, 255, 255, 0.2),
+    inset -1px -1px 2px rgba(0, 0, 0, 0.5), inset -3px -15px 45px rgba(0, 0, 0, 0.2), 1px 5px 30px -4px rgba(0, 0, 0, 1);
+}
+
+.HUD-AbilityButton-KeybindInfo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  color: #ececec;
+  text-align: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0) 2.777vmin, rgba(0, 0, 0, 0) 2.777vmin);
+  border-radius: 0 0 600% 600%;
+  font-weight: 600;
+  text-shadow: -2px -2px 2px #000, 2px -2px 2px #000, -2px 2px 2px #000, 2px 2px 2px #000;
+  font-size: 0.85rem;
+  padding-bottom: 0.5rem;
+}
+
+.HUD-AbilityButton-QueuedTick {
+  position: absolute;
+  top: -0.178vmin;
+  left: -0.178vmin;
+  width: 120%;
+  height: 120%;
+  border-radius: 0;
+  box-shadow: initial;
+  background: url(../images/skills/queued-tick.png) no-repeat;
+  background-size: 90%;
+}
+
+.HUD-AbilityButton-OverlayUnusable {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  filter: hue-rotate(-40deg);
+}
+
+.HUD-AbilityButton-OverlayNoWeapon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: url(../images/skills/no-weapon.png);
+  background-size: contain;
+  filter: hue-rotate(-40deg);
+}
+
+.HUD-AbilityButton-OverlayNoAmmo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: url(../images/skills/no-arrow.png);
+  background-size: contain;
+  filter: hue-rotate(-40deg);
+}
+
+.HUD-Ring-RingSVG {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible !important;
+  pointer-events: none;
+}
+
+.HUD-Ring-RingCircle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+
+  &.pulse {
+    animation: hrrc_pulseStroke 0.75s forwards infinite;
+  }
+
+  &.blink {
+    animation: hrrc_blinkStroke 0.5s forwards infinite;
+  }
+
+  @keyframes hrrc_blinkStroke {
+    0% {
+      opacity: 1;
+    }
+    25% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    75% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes hrrc_pulseStroke {
+    0% {
+      opacity: 0.25;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.25;
+    }
+  }
+}
+
+.HUD-InnerRing-ColorOverlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+
+  &.pulse {
+    animation: hirc_pulse 0.75s forwards infinite;
+  }
+
+  @keyframes hirc_pulse {
+    0% {
+      opacity: 0.1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 0.1;
+    }
+  }
+}
+
+.HUD-InnerRing-CountdownWrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.4em;
+
+  font-size: 1.8rem;
+  text-shadow: -1px -1px 1px #000, 1px -1px 1px #000, -1px 1px 1px #000, 1px 1px 1px #000;
+  filter: brightness(120%);
+}
+
+.HUDEditorStatus-Root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background-color: rgba(10, 10, 10, 0.5);
+
+  animation: hesd_fadeIn 0.25s forwards;
+
+  @keyframes hesd_fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+.HUD-GameInfo-Root {
+  width: 128vmin;
+  height: 72vmin;
+  max-width: 70vw;
+  max-height: 80vh;
+}
+
+.HUDEditorStatus-Icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30vmin;
+  height: 30vmin;
+  object-fit: contain;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.ContextMenuSource-Root {
+  // Mouse events are only sent to non-transparent pixels, so we default to this
+  // to ensure the wrapped object gets mouse events.
+  background-color: rgba(0, 0, 0, 0.01);
+  pointer-events: all;
+}
+
+.TooltipSource-Root {
+  // Mouse events are only sent to non-transparent pixels, so we default to this
+  // to ensure the wrapped object gets mouse events.
+  background-color: rgba(0, 0, 0, 0.01);
+  pointer-events: all;
+}
+
+.DraggableHandle-Root {
+  // Mouse events are only sent to non-transparent pixels, so we default to this
+  // to ensure the wrapped object gets mouse events.
+  background-color: rgba(0, 0, 0, 0.01);
+  pointer-events: all;
+}
+
+.HUD-DropTarget-HoverColor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.7;
+}
+
+.HUD-GameInfo-Frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.HUD-Build-Root {
+  width: 72vmin;
+  height: 42vmin;
+}
+
+.HUD-Build-IconGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.HUD-Build-IconBox {
+  position: relative;
+  width: 7.5vmin;
+  height: 7.5vmin;
+  border: 1px solid #444;
+  margin: 0.25vmin;
+  &:hover {
+    border-color: white;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.HUD-Build-IconBoxSelected {
+  border-color: gold;
+  &:hover {
+    border-color: gold; // This is needed to override the hover border-color of .HUD-Build-IconBox
+  }
+}
+
+.HUD-Build-BlueprintCloseButtonPosition {
+  position: absolute;
+  right: 0.25vmin;
+  top: 0.25vmin;
+  font-size: 1.5rem;
+}
+
+.HUD-Build-Tooltip {
+  display: flex;
+  align-items: center;
+  padding: 1vmin;
+}
+
+.HUD-Build-TooltipImage {
+  width: 7.5vmin;
+  height: 7.5vmin;
+  margin-right: 1vmin;
+}
+
+.HUD-Build-TooltipText {
+  color: white;
+}
+
+.HUD-Build-SaveBlueprintModalBody {
+  padding: 2vmin;
+}
+
+.HUD-Build-HelpButton {
+  margin-bottom: 1.5vmin;
+}
+
+.HUD-Build-HelpContent {
+  display: flex;
+  justify-content: space-between;
+  > div {
+    width: 50%;
+    padding: 0 1vmin;
+    &:not(:last-child) {
+      border-right: 1px solid #444;
+      padding-left: 0;
+    }
+  }
+}
+
+.HUD-Build-KeybindContainer {
+  display: flex;
+  align-items: flex-start;
+  color: #ececec;
+  font-size: 1.5rem;
+  margin-bottom: 1vmin;
+}
+
+.HUD-Build-KeybindValue {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #444;
+  width: 25%;
+  margin-right: 1vmin;
+  span {
+    width: calc(100% - 1vmin);
+    text-align: center;
+    padding: 0.5vmin;
+    &:not(:last-child) {
+      border-bottom: 1px solid #444;
+    }
+  }
+}
+
+.HUD-Build-KeybindDescription {
+  flex: 1;
+}
+
+.HUD-OpenBuild-Root {
+  background-image: url(../images/menu/menu-bg-grey.png);
+  background-position: center;
+  background-size: cover;
+  display: flex;
+}
+
+.HUD-Placement-Root {
+  width: 28vmin;
+  height: 15vmin;
+}
+
+.HUD-Placement-Container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding-top: 2vmin;
+}
+
+.HUD-Placement-Icon {
+  cursor: pointer;
+  opacity: 0.5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  margin: 1vmin;
+}
+
+.HUD-Placement-IconActive {
+  opacity: 1;
+}
+
+.HUD-Placement-IconVector {
+  width: 2vmin;
+}
+
+.HUD-Compass-Root {
+  width: 50vmin;
+  height: 3.5vmin;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  &:before,
+  &:after {
+    left: 50%;
+    border: solid transparent;
+    content: '';
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+  &:before {
+    border-color: rgba(194, 225, 245, 0);
+    border-top-color: rgba(255, 255, 255, 0.3);
+    border-width: 0.3vmin;
+    margin-left: -0.3vmin;
+  }
+  &:after {
+    border-color: rgba(136, 183, 213, 0);
+    border-top-color: rgba(255, 255, 255, 0.3);
+    border-width: 0.4vmin;
+    margin-left: -0.4vmin;
+  }
+}
+
+.HUD-Compass-Direction,
+.HUD-Compass-Bullet {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 2px 2px 4px black;
+  font-weight: bold;
+  font-family: TitilliumBold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1px;
+  height: 100%;
+  transition: left linear 0.1s;
+}
+
+.HUD-Compass-Direction {
+  font-size: 2.75rem;
+}
+
+.HUD-Compass-Bullet {
+  font-size: 2rem;
+}
+
+.HUD-Compass-FriendlyTarget,
+.HUD-Compass-WarbandMember {
+  position: absolute;
+  transition: left linear 0.1s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.25vmin;
+  height: 2.25vmin;
+  border-radius: 50%;
+  position: absolute;
+  margin: auto 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 50%;
+  pointer-events: auto;
+  svg {
+    width: 80%;
+  }
+}
+
+.HUD-Compass-FriendlyTarget {
+  background-color: rgba(15, 82, 186, 0.8);
+  box-shadow: 0 0 1px rgba(15, 82, 186, 0.8);
+}
+
+.HUD-Compass-WarbandMember {
+  background-color: rgba(11, 102, 35, 0.8);
+  box-shadow: 0 0 1px rgba(11, 102, 35, 0.8);
+}
+
+.HUD-Compass-DirectionHidden,
+.HUD-Compass-BulletHidden,
+.HUD-Compass-FriendlyTargetHidden,
+.HUD-Compass-WarbandMemberHidden {
+  display: none;
+}
+
+.HUD-Respawn-Root {
+  position: relative;
+  pointer-events: all;
+  width: 60vmin;
+  height: 15vmin;
+  background-image: url(../images/respawn/banner.png);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.HUD-Respawn-Text {
+  font-family: 'Caudex', serif;
+  text-transform: uppercase;
+  color: #f5d699;
+  font-size: 3rem;
+  letter-spacing: 2px;
+  margin-bottom: 1vmin;
+}
+
+.HUD-AbilityBook-Root {
+  width: 80vmin;
+  max-width: 48vw;
+  height: 80vmin;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 0.5vmin 2px black;
+  pointer-events: auto;
+}
+
+.HUD-AbilityBook-Header {
+  background-image: url(../images/abilitybook/title-overlay.jpg);
+}
+
+.HUD-AbilityBook-Content {
+  flex-grow: 1;
+  background-color: black;
+  display: flex;
+  flex-direction: row;
+}
+
+.HUD-AbilityBook-SideNav {
+  width: 11vmin;
+  padding-top: 1.5vmin;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: center;
+  background: linear-gradient(to right, transparent, black), url(../images/abilitybook/nav-grey-bg.jpg);
+}
+
+.HUD-AbilityBook-RouteButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 8vmin;
+  pointer-events: auto;
+  cursor: pointer;
+
+  &:hover {
+    .not-active {
+      filter: grayscale(100%) brightness(150%);
+    }
+  }
+
+  &.active:before {
+    content: '';
+    position: absolute;
+    top: -1.3vmin;
+    bottom: -0.93vmin;
+    right: -0.93vmin;
+    width: 13.3vmin;
+    background-image: url(../images/abilitybook/icon-highlight.png);
+    background-size: 100% 100%;
+  }
+}
+
+.HUD-AbilityBook-RouteIcon {
+  font-size: 5vmin;
+  color: gray;
+  background: linear-gradient(to right, transparent, transparent), url(../images/abilitybook/icon-gold-texture.png);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  &.not-active {
+    filter: grayscale(100%);
+  }
+}
+
+.HUD-AbilityBook-RouteDivider {
+  background-image: url(../images/abilitybook/nav-divider.png);
+  background-size: 100% 100%;
+  width: 10.19vmin;
+  height: 1.85vmin;
+}
+
+.HUD-AbilityBook-AbilityPane {
+  position: relative;
+  flex-grow: 1;
+  padding: 1.5vmin 1vmin 1vmin 2vmin;
+  background-image: url(../images/abilitybook/ability-book-paper-bg.jpg);
+  mask-image: url(../images/abilitybook/paper-mask-x-repeat.png);
+  -webkit-mask-image: url(../images/abilitybook/paper-mask-x-repeat.png);
+  mask-size: cover;
+  -webkit-mask-size: cover;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 5.5vmin;
+    background-image: url(../images/abilitybook/paper-left-rip.png);
+    background-size: contain;
+    background-repeat: repeat-y;
+  }
+}
+
+.HUD-AbilityBookPage-Root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  // Reverse column so we can handle the dropdown from the filter header
+  // without using explict z-indices.
+  flex-direction: column-reverse;
+}
+
+.HUD-AbilityBookPage-ListRoot {
+  position: relative;
+  margin-top: 1.5vmin;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 0.5vmin;
+    height: 0.5vmin;
+  }
+
+  &::-webkit-scrollbar-track {
+    box-shadow: none;
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    position: relative;
+    border: 3vmin solid #404040;
+    border-width: 3vmin 0.3vmin 3vmin 0.3vmin;
+    border-image: url(../images/inventory/scrollbar-thumb-ends-brown.png);
+    border-image-slice: 30 4 30 4;
+    min-height: 7vmin;
+    box-shadow: none;
+    background: none;
+  }
+}
+
+.HUD-AbilityBookPage-AbilityCell {
+  position: relative;
+  width: 45%;
+  margin: 0vmin 0.5vmin 1vmin 0.5vmin;
+  padding: 1vmin;
+  display: flex;
+  align-items: flex-start;
+  background-image: url(../images/abilitybook/ability-border.png);
+  background-size: 100% 100%;
+  box-shadow: inset 0 0 2.5vmin 1vmin rgba(126, 95, 72, 0.2);
+}
+
+.HUD-AbilityBookPage-AbilityEditButton {
+  position: absolute;
+  top: 0.5vmin;
+  right: 0.5vmin;
+  width: 2vmin;
+  height: 2vmin;
+  opacity: 1;
+  font-size: 2rem;
+  color: black;
+  transition: opacity 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+.HUD-AbilityBookPage-AbilityCellIcon {
+  width: 6vmin;
+  height: 6vmin;
+  border-radius: 50%;
+  border: 2px solid black;
+  box-sizing: border-box;
+  cursor: move;
+
+  &.non-draggable {
+    cursor: default;
+  }
+}
+
+.HUD-AbilityBookPage-AbilityCellInfo {
+  position: relative;
+  margin-left: 1vmin;
+  margin-right: 1.5vmin;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.HUD-AbilityBookPage-AbilityCellName {
+  font-family: CaudexBold;
+  font-size: 1.8rem;
+  cursor: default;
+  word-break: break-all;
+}
+
+.HUD-AbilityBookPage-AbilityComponentsRow {
+  margin-top: 0.5vmin;
+  margin-left: -0.5vmin;
+  display: flex;
+  flex-direction: row;
+}
+
+.HUD-AbilityBookPage-AbilityComponentIcon {
+  margin-left: 0.5vmin;
+  width: 3vmin;
+  height: 3vmin;
+  border-radius: 50%;
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+.HUD-AbilityBookPage-TooltipRoot {
+  max-width: 45vmin;
+  display: flex;
+  flex-direction: column;
+}
+
+.HUD-AbilityBookPage-TooltipHeader {
+  font-size: 2rem;
+  font-family: Caudex;
+  color: white;
+}
+
+.HUD-AbilityBookPage-TooltipDescription {
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  color: #bbbcbc;
+}
+
+.HUD-AbilityFilterHeader-Root {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.HUD-AbilityFilterHeader-CheckContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.HUD-AbilityFilterHeader-CheckText {
+  font-family: CaudexBold;
+  font-size: 1.5rem;
+  margin-left: 0.5rem;
+  text-transform: uppercase;
+  color: #1f1e1b;
+}
+
+.HUD-AbilityFilterHeader-CheckBox {
+  position: relative;
+  // Using rem units to match the CheckText style above.
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  background-color: #f2ddcb;
+  border-radius: 2px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.HUD-AbilityFilterHeader-CheckImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.HUD-AbilityFilterHeader-SearchContainer {
+  position: relative;
+}
+
+.HUD-AbilityFilterHeader-SearchInput {
+  pointer-events: auto;
+  width: 13vmin;
+  height: 4vmin;
+  padding: 0 3vmin 0 1vmin;
+  font-size: 1.5rem;
+  background-image: url(../images/abilitybook/search-border.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  font-family: TitilliumWeb;
+  color: black;
+  background-color: transparent;
+  border: 0;
+
+  &::placeholder {
+    color: #333333;
+  }
+}
+
+.HUD-AbilityFilterHeader-SearchIcon {
+  position: absolute;
+  right: 0.7vmin;
+  top: 20%;
+  height: 60%;
+  object-fit: contain;
+  pointer-events: auto;
+
+  &.close {
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+}
+
+.HUD-AbilityFilterHeader-ResetFiltersButton {
+  cursor: pointer;
+  font-family: CaudexBold;
+  font-size: 1.5vmin;
+  margin-left: 2vmin;
+  text-transform: uppercase;
+  color: #1f1e1b;
+  opacity: 1;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+.HUD-AbilityFilterDropdown-Root {
+  position: relative;
+  width: 23vmin;
+}
+
+.HUD-AbilityFilterDropdown-Selected {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  background-image: url(../images/abilitybook/dropdown-bg.png);
+  background-size: 100% 100%;
+  pointer-events: auto;
+
+  &.open {
+    filter: brightness(120%);
+  }
+
+  &:hover {
+    filter: brightness(120%);
+  }
+
+  &:active {
+    filter: brightness(80%);
+  }
+}
+
+.HUD-AbilityFilterDropdown-SelectionText {
+  flex-grow: 1;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  font-family: TitilliumWeb;
+  color: #f2ddcb;
+  text-transform: initial;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.HUD-AbilityFilterDropdown-Arrow {
+  width: 1.5rem;
+  height: 1.5rem;
+  object-fit: contain;
+}
+
+.HUD-AbilityFilterDropdown-ContentWrapper {
+  position: absolute;
+  display: none;
+  width: 21.9vmin;
+  max-height: 30vmin;
+  margin-top: -0.6vmin;
+  margin-left: 0.5vmin;
+  padding-right: 0.5vmin;
+  background-color: #6b3c30;
+
+  &.open {
+    display: inline-block;
+  }
+}
+
+.HUD-AbilityFilterDropdown-SelectAllButton {
+  margin-bottom: 0.5vmin;
+  pointer-events: auto;
+  cursor: pointer;
+  height: 2vmin;
+  font-size: 1.5rem;
+  padding: 0vmin 0.5vmin;
+  text-transform: lowercase;
+  color: #f2ddcb;
+  text-align: right;
+  opacity: 1;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+.HUD-AbilityFilterDropdown-SectionList {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-height: 27.6vmin;
+  width: 100%;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  font-family: TitilliumWeb;
+  color: #f2ddcb;
+  text-transform: initial;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 1.5vmin;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #1f120e;
+    box-shadow: inset 0 0 0 1px gray;
+  }
+}
+
+.HUD-AbilityFilterDropdown-SectionTitleRow {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.5vmin;
+  cursor: pointer;
+  background-color: #44261e;
+  color: #f2ddcb;
+  font-family: TitilliumWeb;
+  font-size: 1.5rem;
+  pointer-events: auto;
+
+  &:hover {
+    filter: brightness(120%);
+  }
+
+  &:active {
+    filter: brightness(80%);
+  }
+}
+.HUD-AbilityFilterDropdown-AbilityComponentContainer {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.HUD-AbilityFilterDropdown-AbilityComponentRow {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 0.5vmin;
+  cursor: pointer;
+  pointer-events: auto;
+
+  &:hover {
+    filter: brightness(120%);
+  }
+
+  &:active {
+    filter: brightness(80%);
+  }
+}
+
+.HUD-AbilityFilterDropdown-AbilityComponentIcon {
+  position: relative;
+  width: 2vmin;
+  height: 2vmin;
+  flex-shrink: 0;
+  margin-right: 0.5vmin;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.HUD-AbilityFilterDropdown-AbilityComponentText {
+  position: relative;
+  flex-grow: 1;
+  color: #f2ddcb;
+  font-family: TitilliumWeb;
+  font-size: 1.5rem;
+}
+
+.HUD-AbilityFilterDropdown-AbilityComponentDivider {
+  position: relative;
+  width: 100%;
+  height: 0.3vmin;
+  background-image: url(../images/abilitybook/dropdown-line.png);
+  background-size: 100% 100%;
+}
+
+.HUD-SelfDamageNumbers-Log {
+  display: block;
+  color: #f7f7f7;
+  font-family: Kreon;
+  font-weight: bold;
+  margin-bottom: 0.5vmin;
+  font-size: 1.5rem;
+  text-shadow: 0.2vmin 0vmin black;
+  position: absolute;
+  opacity: 0;
+  transform: translateX(-50%);
+  transform-origin: center center;
+  white-space: nowrap;
+
+  animation: hsdnScroll 7s linear;
+  @keyframes hsdnScroll {
+    0% {
+      top: 0;
+      opacity: 1;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      top: 30vmin;
+      opacity: 0;
+    }
+  }
+}
+
+.HUD-AbilityBuilder-Root {
+  width: 80vmin;
+  max-width: 48vw;
+  height: 80vmin;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 0.5vmin 2px black;
+  pointer-events: auto;
+}
+
+.HUD-AbilityBuilder-Header {
+  background-image: url(../images/abilitybuilder/title-bg.jpg);
+}
+
+.HUD-AbilityBuilder-HeaderOverlay {
+  background-image: url(../images/abilitybuilder/title-ability-builder-overlay.png);
+}
+
+.HUD-AbilityBuilder-TitleText {
+  font-family: Caudex;
+  color: #fae9ff;
+  font-size: 1.63rem;
+  letter-spacing: 0.25rem;
+  text-transform: uppercase;
+}
+
+.HUD-AbilityBuilder-Content {
+  position: relative;
+  height: 72vmin;
+  background-color: black;
+  display: flex;
+  flex-direction: row;
+}
+
+.HUD-AbilityBuilder-Transition {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  // Yes, we do have to nest the calc() calls.  Otherwise Coherent ignores the `vmin` unit.
+  width: calc(calc(100%) - calc(1vmin));
+}
+
+.HUD-AbilityBuilder-Background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.HUD-AbilityBuilder-RestartButton {
+  position: absolute;
+  top: 2.3vmin;
+  right: 6.9vmin;
+  box-sizing: border-box;
+  border: 1px solid #fae9ff;
+  padding: 0.5vmin;
+  color: #fae9ff;
+  background-color: rgba(0, 0, 0, 0.5);
+  font-size: 1.5rem;
+  font-family: Caudex;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(50, 50, 50, 0.5);
+  }
+}
+
+.HUD-AbilityBuilderTypeSelector-Root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url(../images/abilitybuilder/select-frame-border-bg.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 97% 97%;
+}
+
+.HUD-AbilityBuilderTypeSelector-SelectableRoot {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.HUD-AbilityBuilderTypeSelector-NetworkName {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 80%;
+  height: 8vmin;
+  font-size: 2rem;
+  letter-spacing: 0.2rem;
+  background-size: 100% 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  text-align: center;
+  text-transform: uppercase;
+  color: #d3a9ff;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Caudex;
+  pointer-events: none;
+  transition: transform 0.2s, filter 0.2s;
+}
+
+.HUD-AbilityBuilderTypeSelector-BackgroundWrapper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  mask-position: center center;
+  -webkit-mask-position: center center;
+  mask-size: auto 100%;
+  -webkit-mask-size: auto 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  filter: brightness(100%);
+  transition: -webkit-mask-size 0.375s, mask-size 0.375s, filter 0.375s;
+  cursor: pointer;
+}
+
+.HUD-AbilityBuilderTypeSelector-BackgroundImage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(../images/abilitybuilder/select-rip-bg.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+  transition: left 0.1s, top 0.1s;
+}
+
+.HUD-AbilityBuilderTypeSelector-Veil {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.85;
+  background-image: url(../images/abilitybuilder/select-rip-veil.png);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  transition: left 0.1s, top 0.1s;
+}
+
+.HUD-AbilityBuilderTypeSelector-SelectImage {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  transition: left 0.1s, top 0.1s;
+}
+
+.HUD-AbilityBuilderCreate-Root {
+  @extend .Scroller-ThumbOnly;
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 0.5vmin;
+  margin-right: 0.5vmin;
+}
+
+.HUD-AbilityBuilderCreate-ListRoot {
+  width: 100%;
+  height: fit-content;
+}
+
+.HUD-AbilityBuilderComponentSelector-Root {
+  position: relative;
+  width: 100%;
+}
+
+.HUD-AbilityBuilderComponentSelector-ClosedContainer {
+  position: relative;
+  width: 100%;
+  pointer-events: none;
+}
+
+.HUD-AbilityBuilderComponentSelector-OpenContainer {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-image: url(../images/abilitybuilder/component-border-right.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 17vmin;
+    height: 23vmin;
+    pointer-events: none;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-image: url(../images/abilitybuilder/component-border-left.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 17vmin;
+    height: 23vmin;
+    pointer-events: none;
+  }
+}
+
+.HUD-AbilityBuilderComponentSelector-TitleContainer {
+  position: relative;
+  width: 100%;
+  height: 4vmin;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.HUD-AbilityBuilderComponentSelector-Title {
+  text-transform: uppercase;
+  text-align: center;
+  font-family: TradeWinds;
+  color: #cebd9d;
+  width: 70%;
+  letter-spacing: 0.2vmin;
+  font-size: 1.5vmin;
+  height: 4vmin;
+  background-image: url(../images/abilitybuilder/component-title.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: center center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+}
+
+.HUD-AbilityBuilderComponentSelector-OptionalButton {
+  position: absolute;
+  right: 0px;
+  top: 0.5vmin;
+  width: 15vmin;
+  height: 3.5vmin;
+  font-size: 1.5rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  pointer-events: all;
+  color: #cebd9d;
+  font-family: TradeWinds;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    filter: brightness(130%);
+  }
+
+  &.add {
+    background-image: url(../images/abilitybuilder/component-optional-add-btn.png);
+  }
+
+  &.remove {
+    background-image: url(../images/abilitybuilder/component-optional-remove-btn.png);
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    &:hover {
+      filter: brightness(100%);
+    }
+  }
+}
+
+.HUD-AbilityBuilderComponentSelector-ContainerBackground {
+  position: absolute;
+  top: -0.5vmin;
+  right: 0;
+  left: 0;
+  height: 100%;
+  background-image: url(../images/abilitybuilder/component-bg.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+
+.HUD-AbilityBuilderComponentSelector-DescriptionContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 70%;
+  height: fit-content;
+  padding: 4vmin 15% 5vmin 15%;
+  margin-top: -1vmin;
+  color: #f3f3f3;
+  background-image: url(../images/abilitybuilder/component-description-bg.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.HUD-AbilityBuilderComponentSelector-DescriptionTitle {
+  text-transform: uppercase;
+  font-size: 1.8rem;
+  letter-spacing: 0.4rem;
+  font-family: Caudex;
+  color: #f3f3f3;
+}
+
+.HUD-AbilityBuilderComponentSelector-DescriptionText {
+  font-size: 1.5rem;
+  font-family: TitilliumWeb;
+  color: #e7c8ff;
+}
+
+.HUD-AbilityBuilderComponentSelector-ComponentBackground {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-self: center;
+  width: fit-content;
+  max-width: 100%;
+  height: 9vmin;
+  margin: 0 0.5vmin;
+}
+
+.HUD-AbilityBuilderComponentSelector-ArrowButton {
+  width: 3.5vmin;
+  height: 7vmin;
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer;
+  pointer-events: all;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+  transition: 0.2s;
+  opacity: 1;
+
+  &:hover {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.6));
+  }
+
+  &:active {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+  }
+
+  &.disabled {
+    pointer-events: none;
+    opacity: 0;
+  }
+}
+
+.HUD-AbilityBuilderComponentSelector-LeftArrowButton {
+  @extend .HUD-AbilityBuilderComponentSelector-ArrowButton;
+  margin-right: 1vmin;
+  background-image: url(../images/abilitybuilder/left-arrow.png);
+}
+
+.HUD-AbilityBuilderComponentSelector-RightArrowButton {
+  @extend .HUD-AbilityBuilderComponentSelector-ArrowButton;
+  margin-left: 1vmin;
+  background-image: url(../images/abilitybuilder/right-arrow.png);
+}
+
+.HUD-AbilityBuilderComponentSelector-ComponentsWrapper {
+  display: flex;
+  flex-direction: row;
+  background-image: url(../images/abilitybuilder/component-select-bg.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  padding: 3vmin 2vmin;
+}
+
+.HUD-AbilityBuilderComponentSelector-ComponentButton {
+  position: relative;
+  width: 6vmin;
+  height: 6vmin;
+  margin: 0 0.5vmin;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s, filter 0.2s, box-shadow 0.2s, border 0.2s;
+  border: 2px solid transparent;
+
+  &:hover {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+  }
+
+  &.selected {
+    transform: scale(1.2);
+    border: 1px solid #ead5f2;
+    box-shadow: inset 0 0 0.5vmin 2px #704e9e, 0 0 0.5vmin 2px #6a46b3;
+  }
+
+  &.incompatible {
+    filter: brightness(80%);
+    opacity: 0.8;
+    border: 2px solid #b02a4e;
+  }
+}
+
+.HUD-AbilityBuilderComponentSelector-ComponentIcon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.HUD-AbilityBuilderComponentTooltip-Root {
+  max-width: 30vmin;
+  display: flex;
+  flex-direction: column;
+  padding: 1vmin;
+  overflow: visible;
+}
+
+.HUD-AbilityBuilderComponentTooltip-Name {
+  font-size: 2rem;
+  font-family: Caudex;
+  color: white;
+}
+
+.HUD-AbilityBuilderComponentTooltip-Description {
+  font-size: 1.5vmin;
+  line-height: 1.5vmin;
+  margin-bottom: 1vmin;
+  color: #bbbcbc;
+}
+
+.HUD-AbilityBuilderComponentTooltip-TagsContainer {
+  display: flex;
+  flex-direction: row;
+  color: #c3c3c3;
+  font-size: 1.35rem;
+  margin-bottom: 0.5vmin;
+  font-style: italic;
+}
+
+.HUD-AbilityBuilderComponentTooltip-RequirementsSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.HUD-AbilityBuilderComponentTooltip-Requirement {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: green;
+  font-size: 1.1rem;
+  line-height: 1.35rem;
+
+  &.disabled {
+    color: red;
+  }
+}
+
+.HUD-AbilityBuilderComponentTooltip-CheckIcon {
+  margin-left: 0.5vmin;
+  width: 1.5rem;
+  height: 1.5rem;
+  // Using these filters lets us effectively recolor the image.
+  filter: opacity(0.5) drop-shadow(0 0 0 green) saturate(1000%);
+  background-image: url(../images/abilitybook/check.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.HUD-AbilityBuilderComponentTooltip-CrossIcon {
+  margin-left: 0.5vmin;
+  width: 1.5rem;
+  height: 1.5rem;
+  // Using these filters lets us effectively recolor the image.
+  filter: opacity(0.5) drop-shadow(0 0 0 red) saturate(1000%);
+  background-image: url(../images/abilitybook/close.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.HUD-AbilityBuilderPreview-Root {
+  position: relative;
+  // Yes, we have to nest the calc() calls.  Otherwise Coherent ignores the `vmin` piece.
+  width: calc(calc(100%) + calc(1vmin));
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  margin-left: -0.5vmin;
+  padding: 8vmin 0 8vmin 0;
+  pointer-events: none;
+  overflow: visible;
+
+  background-image: url(../images/abilitybuilder/ability-final-preview-bg.png);
+  background-size: 100% 100%;
+}
+
+.HUD-AbilityBuilderPreview-Title {
+  margin-top: 11vmin;
+  font-size: 2rem;
+  letter-spacing: 0.2rem;
+  margin: auto;
+  text-transform: uppercase;
+  text-align: center;
+  font-family: TradeWinds;
+  color: #cebd9d;
+}
+
+.HUD-AbilityBuilderPreview-IconWrapper {
+  position: relative;
+  width: 8vmin;
+  height: 8vmin;
+  flex-shrink: 0;
+  margin-right: 1.5vmin;
+  margin-left: 3vmin;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: all;
+  border: 1px solid #ead5f2;
+  box-shadow: inset 0 0 0.5vmin 2px #704e9e, 0 0 0.5vmin 2px #6a46b3;
+
+  &:hover .icon-edit {
+    filter: brightness(150%);
+  }
+}
+
+.HUD-AbilityBuilderPreview-Icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  // This overrides the hue-rotation filter we manually add to HUD-AbilityBuilderPreview-Root
+  // so the icons don't get hue-rotated as well.
+  filter: brightness(100%);
+}
+
+.HUD-AbilityBuilderPreview-EditMiniIconWrapper {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 2.5vmin;
+  height: 2.5vmin;
+  border-radius: 50%;
+  color: #cebd9d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  border: 1px solid #ead5f2;
+  box-shadow: inset 0 0 10px 2px #704e9e, 0 0 10px 2px #6a46b3;
+}
+
+.HUD-AbilityBuilderPreview-EditMiniIcon {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.HUD-AbilityBuilderPreview-ComponentWrapper {
+  position: relative;
+  width: 5vmin;
+  height: 5vmin;
+  margin: 0 0.5vmin;
+
+  border: 1px solid #ead5f2;
+}
+
+.HUD-AbilityBuilderPreview-ComponentImage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  // This overrides the hue-rotation filter we manually add to HUD-AbilityBuilderPreview-Root
+  // so the icons don't get hue-rotated as well.
+  filter: brightness(100%);
+}
+
+.HUD-AbilityBuilderPreview-ComponentOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0 0 0.5vmin 0.1vmin #704e9e, 0 0 0.5vmin 0.1vmin #6a46b3;
+}
+
+.HUD-AbilityBuilderPreview-Inputs {
+  width: 100%;
+}
+
+.HUD-AbilityBuilderPreview-NameInputWrapper {
+  position: relative;
+}
+
+.HUD-AbilityBuilderPreview-NameInput {
+  letter-spacing: 0px;
+  padding: 0px;
+  background-color: transparent;
+  font-family: Caudex;
+  color: #d5a5ff;
+  font-size: 1.8rem;
+  min-height: 2.7rem;
+  width: 91%;
+  align-self: center;
+  border: 0px;
+  overflow: hidden;
+  resize: none;
+  word-break: break-all;
+  pointer-events: all;
+}
+
+.HUD-AbilityBuilderPreview-NameInputSizer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 91%;
+  min-height: 2.7rem;
+  font-size: 1.8rem;
+  word-break: break-all;
+  font-family: Caudex;
+  color: transparent;
+  letter-spacing: 0px;
+  padding: 0px;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.HUD-AbilityBuilderPreview-DescriptionInputWrapper {
+  position: relative;
+}
+
+.HUD-AbilityBuilderPreview-DescriptionInput {
+  padding: 0px;
+  background-color: transparent;
+  min-height: 2.7rem;
+  align-self: center;
+  border: 0px;
+  overflow: hidden;
+  resize: none;
+  word-break: break-all;
+  pointer-events: all;
+  width: 91%;
+  color: #8862ac;
+  text-transform: none;
+  font-family: TitilliumWeb;
+  font-size: 1.35rem;
+  line-height: 1.45rem;
+  margin-bottom: 2vmin;
+  letter-spacing: 0.15rem;
+}
+
+.HUD-AbilityBuilderPreview-DescriptionInputSizer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 91%;
+  min-height: 2.7rem;
+  font-size: 1.35rem;
+  word-break: break-all;
+  font-family: TitilliumWeb;
+  color: transparent;
+  letter-spacing: 0px;
+  padding: 0px;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.HUD-AbilityBuilderPreview-EditNameIcon {
+  @extend .HUD-AbilityBuilderPreview-EditMiniIcon;
+  position: absolute;
+  top: 0;
+  right: 2vmin;
+  font-size: 2rem;
+  width: 3vmin;
+  height: 3vmin;
+  pointer-events: all;
+  color: #cebd9d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  cursor: pointer;
+}
+
+.HUD-AbilityBuilderCreate-IconPickerRoot {
+  // Fixed means that the IconPicker will not move when you scroll.
+  // This also prevents it from over-scrolling and causing the main container to scroll
+  // when you're just trying to reach the end (or beginning) of the icon set.
+  position: fixed;
+  left: 8%;
+  bottom: 2vmin;
+  width: 84%;
+  height: 30vmin;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.HUD-AbilityBuilderCreate-IconPickerBorder {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+
+  border: 1px solid #ead5f2;
+  box-shadow: inset 0 0 0.5vmin 0.1vmin #704e9e, 0 0 0.5vmin 0.1vmin #6a46b3;
+  pointer-events: all;
+  overflow-x: hidden;
+  overflow-y: auto;
+  pointer-events: none;
+}
+
+.HUD-AbilityBuilderCreate-IconPickerContent {
+  @extend .Scroller-ThumbOnly;
+
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+
+  padding: 0.5vmin;
+  display: flex;
+  flex-wrap: wrap;
+  background: rgba(5, 5, 5, 1);
+  pointer-events: all;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.HUD-AbilityBuilderCreate-AbilityIcon {
+  width: 5vmin;
+  height: 5vmin;
+  margin: 0.5vmin;
+  border-radius: 50%;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(150%);
+  }
+}
+
+.HUD-AbilityBuilderCreate-UnableToSaveContainer {
+  position: relative;
+  width: 100%;
+  height: 0;
+  overflow: visible;
+}
+
+.HUD-AbilityBuilderCreate-UnableToSaveText {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: red;
+  font-size: 2.5rem;
+  font-family: Colus;
+  text-align: center;
+}
+
+.HUD-AbilityBuilderCreate-Transition {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.HUD-AbilityBuilderCreate-SaveButton {
+  position: relative;
+  width: 80%;
+  left: 10%;
+  height: 11vmin;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+}
+
+.HUD-AbilityBuilderCreate-SaveButtonBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(../images/abilitybuilder/create-btn.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.HUD-AbilityBuilderCreate-SaveButtonText {
+  position: relative;
+  letter-spacing: 0.3rem;
+  font-size: 2rem;
+  text-transform: uppercase;
+  font-family: TradeWinds;
+  color: #e7c8ff;
+}
+
+.HUD-AbilityBuilderCreate-SavingVeil {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  pointer-events: all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 3rem;
+  font-family: Caudex;
+}
+
+.HUD-AbilityBuilderCreate-CreatedRoot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.HUD-AbilityBuilderCreate-CreatedContentRoot {
+  position: relative;
+  width: 70%;
+  padding: 5vmin 3vmin 10vmin 3vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+
+  background-image: url(../images/abilitybuilder/ability-final-preview-bg.png);
+  background-size: 100% 100%;
+}
+
+.HUD-AbilityBuilderCreate-CreatedBanner {
+  position: relative;
+  margin-top: 3vmin;
+  width: 25vmin;
+  height: 6vmin;
+}
+
+.HUD-AbilityBuilderCreate-CreatedBannerBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(../images/abilitybuilder/component-description-bg.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.HUD-AbilityBuilderCreate-CreatedBannerText {
+  position: relative;
+  width: 100%;
+  margin-top: 0.4vmin;
+  text-align: center;
+  color: #e7c8ff;
+  font-size: 3rem;
+  font-family: Caudex;
+}
+
+.HUD-AbilityBuilderCreate-CreatedInstructions {
+  position: relative;
+  color: #e7c8ff;
+  font-size: 2rem;
+  font-family: Caudex;
+  text-align: center;
+}
+
+.HUD-AbilityBuilderCreate-ResetButton {
+  @extend .HUD-AbilityBuilderCreate-SaveButton;
+  left: unset;
+  margin-top: 3vmin;
+  width: 100%;
+}
+
+.HUD-AbilityBuilderCreate-ResetButtonBackground {
+  @extend .HUD-AbilityBuilderCreate-SaveButtonBackground;
+  height: 12vmin;
+}
+
+.HUD-AbilityBuilderCreate-CreatedAbilityContainer {
+  position: relative;
+  width: 15vmin;
+  height: 15vmin;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.HUD-AbilityBuilderCreate-NewAbility {
+  position: relative;
+}
+
+.HUD-AbilityBuilderCreate-NewAbilityFlareOne {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(../images/abilitybuilder/new-ability-flare.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+  animation: habcnafoSpin 3s alternate infinite ease-in-out;
+  @keyframes habcnafoSpin {
+    0% {
+      opacity: 0;
+      transform: rotate(0deg);
+    }
+    30% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 0.4;
+    }
+    100% {
+      opacity: 1;
+      transform: rotate(720deg);
+    }
+  }
+}
+
+.HUD-AbilityBuilderCreate-NewAbilityFlareTwo {
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  width: 70%;
+  height: 70%;
+  background-image: url(../images/abilitybuilder/new-ability-flare.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+  animation: habcnaftSpin 4s alternate infinite ease-in-out;
+  @keyframes habcnaftSpin {
+    0% {
+      opacity: 0.3;
+      transform: rotate(720deg);
+    }
+    60% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+      transform: rotate(0deg);
+    }
+  }
+}
+
+.HUD-ItemIcon-Root {
+  position: relative;
+  margin: 0.5%;
+}
+
+.HUD-ItemIcon-SplitStack {
+  width: 40vmin;
+  height: 7.5vmin;
+  padding: 0 1vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.HUD-ItemIcon-Slot {
+  display: block;
+  width: 100%;
+}
+
+.HUD-ItemIcon-GearSlotIcon {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  color: #cfd0cb;
+  opacity: 0.15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.HUD-ItemIcon-Icon {
+  position: absolute;
+  width: 100%;
+  top: 0;
+}
+
+.HUD-ItemIcon-IconCount {
+  position: absolute;
+  right: 0.25vmin;
+  bottom: 0.25vmin;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  color: white;
+}
+
+.HUD-ItemIcon-Overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  &:hover {
+    box-shadow: inset 0 0 1vmin rgba(255, 255, 255, 0.2);
+  }
+}
+
+.HUD-ItemTooltip-Root {
+  color: #c3c3c3;
+  width: 80vmin;
+  padding: 1vmin;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.HUD-ItemTooltip-Header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  > div:first-child {
+    width: 70%;
+  }
+  > div:last-child {
+    width: 20%;
+    text-align: right;
+  }
+}
+
+.HUD-ItemTooltip-Name {
+  font-family: Caudex;
+  font-size: 2rem;
+  color: white;
+}
+
+.HUD-ItemTooltip-Divider {
+  margin: 1vmin 0;
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  &::before {
+    content: '';
+    background-color: #292929;
+    height: 1px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+  }
+  img {
+    position: relative;
+  }
+}
+
+.HUD-ItemTooltip-DividerTopImage {
+  bottom: 1px;
+}
+
+.HUD-ItemTooltip-StatGroup {
+  width: 100%;
+  &:not(:last-child) {
+    margin-bottom: 1vmin;
+  }
+}
+
+.HUD-ItemTooltip-StatGroupList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  &:not(:last-child) {
+    margin-bottom: 1vmin;
+  }
+}
+
+.HUD-ItemTooltip-StatContainer {
+  width: calc(33% - 1vmin);
+}
+
+.HUD-ItemTooltip-DividerBottomImage {
+  top: 1px;
+}
+
+.HUD-ItemTooltip-ResourceGroup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  &:not(:last-child) {
+    margin-bottom: 1vmin;
+  }
+  &:empty {
+    display: none;
+  }
+}
+
+.HUD-ItemTooltip-ResourceContainer {
+  width: calc(33% - 1vmin);
+}
+
+.HUD-ItemTooltip-Slots {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.HUD-ItemTooltip-SlotsIcons {
+  display: flex;
+  align-items: center;
+}
+
+.HUD-ItemTooltip-SlotsIcon {
+  margin: 0 0.5vmin;
+}
+
+.HUD-ItemTooltip-BottomText {
+  width: 100%;
+  font-size: 1rem;
+  margin-top: 1vmin;
+}
+
+.HUD-ItemStat-Root {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+}
+
+.HUD-ItemStat-Name {
+  margin-right: auto;
+  font-size: 1.2rem;
+}
+
+.HUD-ItemStat-Value {
+  font-size: 1.2rem;
+}
+
+.HUD-ItemStat-Icon {
+  display: inline;
+  margin-right: 0.5vmin;
+}
+
+.HUD-ItemStat-Compare {
+  margin-left: 0.5vmin;
+  font-size: 1.2rem;
+}
+
+.HUD-ItemStat-ComparePositive {
+  color: #dfba79;
+}
+
+.HUD-ItemStat-CompareNegative {
+  color: #aa9b81;
+}
+
+.HUD-ItemResource-Root {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.HUD-ItemResource-Name {
+  margin-right: auto;
+}
+
+.HUD-Inventory-Root {
+  width: 80vmin;
+  max-width: 48vw;
+  height: 80vmin;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 0.5vmin 2px black;
+  pointer-events: auto;
+}
+
+.HUD-Inventory-Container {
+  box-shadow: inset 0px -100px 120px rgba(0, 0, 0, 0.8);
+  background: url(../images/inventory/bag-bg.png) repeat-x, black;
+  background-size: cover;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.HUD-Inventory-Header {
+  background: linear-gradient(to right, rgba(220, 141, 88, 0.6), transparent),
+    url(../images/inventory/title-bg.png) no-repeat;
+  mask-image: url(../images/inventory/title-mask.png);
+  mask-position: right;
+  mask-size: cover;
+  -webkit-mask-image: url(../images/inventory/title-mask.png);
+  -webkit-mask-position: right;
+  -webkit-mask-size: cover;
+  box-shadow: inset 0px 0px 60px rgba(0, 0, 0, 0.8);
+}
+
+.HUD-Inventory-Header:before {
+  content: '';
+  top: 0.4vmin;
+  left: 0.4vmin;
+  bottom: 0.4vmin;
+  right: 0.4vmin;
+  box-shadow: 0 0 1vmin rgba(0, 0, 0, 0.6);
+  border-image: linear-gradient(to right, rgba(255, 255, 255, 0.1), transparent) 10% 1%;
+  position: absolute;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-right-width: 0px;
+  border-style: solid;
+}
+
+.HUD-Inventory-HeaderOverlay:before {
+  content: '';
+  width: 3.5vmin;
+  height: 2.6vmin;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: url(../images/inventory/title-ornament-top.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.HUD-Inventory-HeaderOverlay:after {
+  content: '';
+  width: 3.5vmin;
+  height: 2.6vmin;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-image: url(../images/inventory/title-ornament-bottom.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.HUD-Inventory-Filter {
+  padding: 2.5vmin 1.25vmin;
+  background-color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 1vmin;
+}
+
+.HUD-Inventory-GridWrapper {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.HUD-Inventory-Grid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.HUD-InventoryFooter-Root {
+  background-image: url(../images/inventory/bag-bottom-bg.png);
+  background-size: cover;
+  height: 2vmin;
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 1vmin;
+}
+
+.HUD-InventoryFooter-Buttons {
+  display: flex;
+  margin-right: 1vmin;
+}
+
+.HUD-InventoryFooter-Node {
+  display: flex;
+  align-items: center;
+  margin-right: 1vmin;
+  color: #998675;
+}
+
+.HUD-InventoryFooter-Button {
+  cursor: pointer;
+}
+
+.HUD-InventoryFooter-Icon {
+  margin-right: 0.5vmin;
+}
+
+.HUD-InventoryFooter-Vector {
+  height: 1.125vmin;
+  display: block;
+}
+
+.HUD-JoinScenario-Root {
+  width: 90vmin;
+  height: 45vmin;
+}
+
+.HUD-JoinScenario-Container {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  height: calc(100% - 4vmin);
+  padding: 0 1vmin;
+  margin-top: auto;
+  margin-bottom: 1vmin;
+}
+
+.HUD-JoinScenarioRow-Root {
+  display: flex;
+  width: 100%;
+  border: 1px solid rgba(128, 128, 128, 0.5);
+  &:not(:last-child) {
+    margin-bottom: 1vmin;
+  }
+}
+
+.HUD-JoinScenarioRow-Icon {
+  width: 12.5vmin;
+  height: 12.5vmin;
+}
+
+.HUD-JoinScenarioRow-Content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  padding: 0 5vmin;
+  background: linear-gradient(to right, #0000, #000 225px);
+}
+
+.HUD-JoinScenarioRow-Name {
+  margin-bottom: 1vmin;
+  text-transform: uppercase;
+  font-family: Caudex;
+  font-size: 1.75rem;
+  color: #f5d797;
+  letter-spacing: 0.3rem;
+  white-space: nowrap;
+  margin-bottom: 1vmin;
+}
+
+.HUD-JoinScenarioRow-Description {
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  color: #e8e8e8;
+}
+
+.HUD-Equipped-Root {
+  width: 80vmin;
+  max-width: 48vw;
+  height: 80vmin;
+  box-shadow: 0 0 0.5vmin 2px black;
+  pointer-events: auto;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  &:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 65%;
+    background: url(../images/paperdoll/bg/bg-veil.png) no-repeat;
+    background-size: cover;
+  }
+}
+
+.HUD-Equipped-Name {
+  width: 38.1vmin;
+  height: 12.525vmin;
+  background-image: url(../images/paperdoll/name-bg-splash.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: flex;
+  align-items: center;
+  padding-left: 2vmin;
+}
+
+.HUD-Equipped-NameText {
+  color: #eeeeed;
+  font-family: Caudex;
+  font-size: 2rem;
+  letter-spacing: 0.3vmin;
+  position: absolute;
+  width: 100%;
+}
+
+.HUD-Equipped-Character {
+  position: absolute;
+  bottom: 10vmin;
+  width: 100%;
+  height: 90%;
+  overflow: hidden;
+}
+
+.HUD-Equipped-CharacterBase {
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 100%;
+  width: 100%;
+  bottom: 0;
+  position: absolute;
+  background-position: bottom;
+}
+
+.HUD-Equipped-CharacterFigure {
+  position: absolute;
+  height: 80%;
+  margin: 0 auto;
+  bottom: 2.5%;
+  left: 0;
+  right: 0;
+}
+
+.HUD-Equipped-Slots {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    opacity: 0.3;
+    width: 7.2vmin;
+    height: 6.6vmin;
+    background-size: cover;
+  }
+  &:before {
+    top: -6.6vmin;
+  }
+  &:after {
+    bottom: -6.6vmin;
+  }
+}
+
+.HUD-Equipped-OuterSlots {
+  bottom: 10vmin;
+  left: 2vmin;
+  &:before {
+    background-image: url(../images/paperdoll/ornament-slot-left-top.png);
+    left: -0.8vmin;
+  }
+  &:after {
+    background-image: url(../images/paperdoll/ornament-slot-left-bot.png);
+    left: -0.8vmin;
+  }
+}
+
+.HUD-Equipped-UnderSlots {
+  bottom: 17vmin;
+  right: 2vmin;
+  &:before {
+    background-image: url(../images/paperdoll/ornament-slot-right-top.png);
+    right: -0.8vmin;
+  }
+  &:after {
+    background-image: url(../images/paperdoll/ornament-slot-right-bot.png);
+    right: -0.8vmin;
+  }
+}
+
+.HUD-Equipped-SlotsLabel {
+  color: gray;
+  text-transform: uppercase;
+  font-size: 1.37rem;
+}
+
+.HUD-Equipped-OrnamentMid {
+  position: absolute;
+  height: 100%;
+  opacity: 0.3;
+  width: 0.8vmin;
+}
+
+.HUD-Equipped-OrnamentMidLeft {
+  left: -0.8vmin;
+  background-image: url(../images/paperdoll/ornament-slot-left-mid.png);
+}
+
+.HUD-Equipped-OrnamentMidRight {
+  right: -0.8vmin;
+  background-image: url(../images/paperdoll/ornament-slot-right-mid.png);
+}
+
+.HUD-Equipped-ItemIconFrame {
+  position: relative;
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    top: -0.4vmin;
+    left: -0.4vmin;
+    width: calc(100% + 0.8vmin);
+    height: calc(100% + 0.8vmin);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+  &:before {
+    background-image: url(../images/paperdoll/slot-gear-bg.png);
+  }
+  &:after {
+    background-image: url(../images/paperdoll/slot-gear-frame.png);
+  }
+}
+
+.HUD-Equipped-ItemIconFrameReadied {
+  &:before {
+    background-image: url(../images/paperdoll/readied-weapon-slot.png);
+    top: -1vmin;
+    left: -1vmin;
+    width: calc(100% + 2vmin);
+    height: calc(100% + 2vmin);
+  }
+  &:after {
+    background-image: none;
+  }
+}
+
+.HUD-Equipped-ItemIconFrameVertical {
+  margin-bottom: 1vmin;
+}
+
+.HUD-Equipped-ItemIconFrameHorizontal {
+  margin: 0 1vmin;
+}
+
+.HUD-Equipped-WeaponSlots {
+  position: absolute;
+  width: 100%;
+  height: 10vmin;
+  bottom: 0;
+  padding-bottom: 0.5vmin;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.HUD-Equipped-OrnamentGradient {
+  position: absolute;
+  background: linear-gradient(to right, transparent, #6a6767, transparent);
+  width: 80%;
+  height: 1px;
+  bottom: 0px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  opacity: 0.8;
+}
+
+.HUD-Equipped-OrnamentGradientTop {
+  top: 1vmin;
+}
+
+.HUD-Equipped-OrnamentGradientBottom {
+  bottom: 1vmin;
+}
+
+.HUD-Equipped-OrnamentWeapons {
+  height: 6vmin;
+}
+
+.HUD-InteractiveAlert-Root {
+  background-image: url(../images/interactive-alert/alert-bg.png);
+  background-size: cover;
+  width: 74.375vmin;
+  height: 16.625vmin;
+  position: absolute;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.HUD-InteractiveAlert-Top {
+  margin-bottom: 2vmin;
+  text-align: center;
+  color: #e9d5bd;
+  font-family: TitilliumWeb;
+  font-size: 1.5rem;
+  max-width: 75%;
+}
+
+.HUD-InteractiveAlert-Bottom {
+  display: flex;
+  justify-content: center;
+}
+
+.HUD-InteractiveAlert-BottomButton {
+  &:not(:last-child) {
+    margin-right: 1vmin;
+  }
+}
+
+.HUD-ErrorNotice-Root {
+  display: flex;
+  align-items: center;
+  background-color: #bd362f;
+  box-shadow: 0 0 1rem #999999;
+  border-radius: 0.25rem;
+  opacity: 0.8;
+  color: white;
+  padding: 2vmin;
+  width: 50vmin;
+  margin-bottom: 0.5vmin;
+  &:hover {
+    box-shadow: 0 0 1rem #000000;
+    opacity: 1;
+    cursor: pointer;
+  }
+}
+
+.HUD-ErrorNotice-Icon {
+  width: 5vmin;
+  height: 5vmin;
+  margin-right: 1vmin;
+}
+
+.HUD-ErrorNotice-Text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.HUD-PopUpAnnouncement-Root {
+  background-image: url(../images/announcement/uhd/overmind-msg-bg.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 41.25vmin;
+  height: 14.375vmin;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  font-family: Caudex;
+  color: rgb(225, 225, 225);
+  text-shadow: 0 0 20px #000, 0 0 30px #000, 0 0 40px #000, 0 0 55px #000, 0 0 75px #000, 2px 2px 2px rgba(0, 0, 0, 0);
+  font-size: 2rem;
+}
+
+.HUD-PopUpAnnouncement-Message {
+  padding: 0 5vmin;
+  margin-top: 1vmin;
+}
+
+.HUD-Chat-Root {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.75);
+  width: 50vmin;
+  height: 22.5vmin;
+  pointer-events: auto;
+}
+
+.HUD-Chat-Navigation {
+  background-color: #222222;
+  width: 25%;
+}
+
+.HUD-Chat-Room {
+  padding: 1vmin;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.HUD-Chat-CurrentRoom {
+  background-color: #111111;
+  cursor: default;
+}
+
+.HUD-Chat-RoomName {
+  color: #bdbdbd;
+  text-transform: uppercase;
+}
+
+.HUD-Chat-RoomUnreadCount {
+  background-color: red;
+  color: white;
+  border-radius: 1vmin;
+  width: 3vmin;
+  height: 1.75vmin;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+
+.HUD-Chat-Content {
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  width: 75%;
+}
+
+.HUD-Chat-Messages {
+  flex: 4;
+  overflow-y: auto;
+  padding: 0.5vmin;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.HUD-Chat-InputContainer {
+  flex: 1;
+  display: flex;
+}
+
+.HUD-Chat-Form {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.HUD-Chat-Input {
+  background-color: rgba(128, 128, 128, 0.2);
+  border: 0;
+  color: silver;
+  padding: 1vmin;
+  margin: 0;
+  width: calc(97.5% - 2vmin);
+}
+
+.HUD-ChatMessage-Root {
+  position: relative;
+  font-size: 1.375rem;
+  color: white;
+  opacity: 0.7;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  overflow: hidden;
+}
+
+.HUD-ChatMessage-Copy {
+  cursor: text;
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.HUD-ChatMessage-StanzaStaffIcon {
+  position: relative;
+  margin-right: 0.5vmin;
+  // rem is used for height to match the size of message text
+  top: 0.25rem;
+  height: 1.65rem;
+}
+
+.HUD-ChatMessage-StanzaNickWrapper {
+  display: inline-flex;
+}
+
+.HUD-ChatMessage-StanzaNick {
+  color: peachpuff;
+  margin-right: 0.5vmin;
+}
+
+.HUD-ChatMessage-StanzaNickStaff {
+  color: #ff5e44;
+}

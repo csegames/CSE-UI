@@ -4,15 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export {};
+export interface Success {
+  success: true;
+}
 
-declare global {
-  interface Success {
-    success: true;
-  }
-
-  interface Failure {
-    success: false;
-    reason: string;
-  }
+export interface Failure {
+  success: false;
+  reason: string;
 }

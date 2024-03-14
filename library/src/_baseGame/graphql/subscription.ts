@@ -4,66 +4,39 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as _ from 'lodash';
-import { ReconnectingWebSocket, WebSocketOptions } from '../utils/ReconnectingWebSocket';
+import { ReconnectingWebSocket, WebSocketOptions, WebSocketRequirements } from '../types/ReconnectingWebSocket';
 import { getBooleanEnv } from '../utils/env';
-import { print } from 'graphql/index.js';
+import { tryParseJSON } from '../utils/objectUtils';
+import { DocumentNode, print } from 'graphql/index.js';
+import { Dictionary } from '../types/ObjectMap';
+import { ListenerHandle } from '../listenerHandle';
 
-export interface Options<DataType> extends WebSocketOptions {
-  // Data to send to the server on connection init
-  initPayload: any;
-  debug: boolean;
+interface SubscriptionRequirements extends WebSocketRequirements {
+  getInitPayload: () => Dictionary<string>;
+}
+
+interface SubscriptionOptions extends WebSocketOptions {
   useKeepAlive: boolean;
-  onDataReceived: (data: DataType) => void;
-  onError: (error: Error) => void;
-  onClosed: () => void;
 }
 
-export function defaultSubscriptionOpts(): Options<any> {
-  return {
-    url: () => `${game.webAPIHost}/graphql`.replace(/(http)(s?:\/\/)/, 'ws$2'),
-    protocols: 'graphql-ws',
-    startReconnectInterval: 500,
-    maxReconnectInterval: 4000,
-    connectTimeout: 500,
-    initPayload: {
-      token: game.accessToken,
-      characterID: game.characterID,
-    },
-    debug: getBooleanEnv('CUUI_LIB_DEBUG_GRAPHQL_SUBSCRIPTION', false),
-    useKeepAlive: getBooleanEnv('CUUI_LIB_TIMEOUT_GRAPHQL_SUBSCRIPTION', true), // set false for server debugging with breakpoints
-    onDataReceived: data => console.log(data),
-    onError: e => console.error(e),
-    onClosed: () => null,
-    onopen: function(event: Event) {},
-    onclose: function(event: CloseEvent) {},
-    onmessage: function(event: MessageEvent) {},
-    onerror: function(event: ErrorEvent) {},
-  };
+export type SubscriptionSettings = SubscriptionRequirements & Partial<SubscriptionOptions>;
+
+export interface Subscriptions {
+  add<DataType>(subscription: SubscriptionRequest, onData: OnData<DataType>): ListenerHandle;
+  onDisconnect(callback: () => void): ListenerHandle;
+  onInitialize(callback: () => void): ListenerHandle;
 }
 
-// Follows Apollo GraphQL Protocol -- https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md
+export class Subscriptions {
+  public static create(settings: SubscriptionSettings): Subscriptions {
+    return new SubscriptionManager(settings);
+  }
+}
 
-// Game -> Server
-const GQL_CONNECTION_INIT = 'connection_init';
-const GQL_START = 'start';
-const GQL_STOP = 'stop';
-const GQL_CONNECTION_TERMINATE = 'connection_terminate';
-
-// Server -> Game
-const GQL_CONNECTION_ACK = 'connection_ack';
-const GQL_CONNECTION_ERROR = 'connection_error';
-const GQL_CONNECTION_KEEP_ALIVE = 'ka';
-const GQL_DATA = 'data';
-const GQL_ERROR = 'error';
-const GQL_COMPLETE = 'complete';
-
-const GQL_KEEPALIVE_TIMEOUT_MS = 15 * 1000;
-
-export interface OperationMessage {
-  type: string;
-  id?: string;
-  payload?: any;
+export interface SubscriptionRequest {
+  query: DocumentNode;
+  variables?: Dictionary<any>;
+  operationName?: string;
 }
 
 export interface SubscriptionResult<T> {
@@ -76,35 +49,35 @@ export interface OnData<T> {
   (result: SubscriptionResult<T>): void;
 }
 
-export type OnError = (e: ErrorEvent) => void;
+// Follows Apollo GraphQL Protocol -- https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md
 
-export interface SubscriptionHandle {
+const GQL_KEEPALIVE_TIMEOUT_MS = 15 * 1000;
+
+type ClientMessageType = 'connection_init' | 'start' | 'stop' | 'connection_terminate';
+interface ClientMessage {
+  type: ClientMessageType;
+  id?: string;
+  payload?: any;
+}
+
+type ServerMessageType = 'connection_ack' | 'connection_error' | 'ka' | 'data' | 'error' | 'complete';
+interface ServerMessage {
+  type: ServerMessageType;
+  id?: string;
+  payload?: any;
+}
+
+interface SubscriptionBinding {
   id: string;
-  start: OperationMessage;
-  onError: OnError;
+  start: ClientMessage;
   onData: OnData<any>;
 }
 
-export interface Subscription {
-  query: string;
-  variables?: Dictionary<any>;
-  operationName?: string;
-}
-
-export const defaultSubscription: Subscription = {
-  operationName: null,
-  query: '{}',
-  variables: null,
+const defaultSubscriptionOpts: SubscriptionOptions = {
+  protocols: ['graphql-ws'],
+  verboseLogging: getBooleanEnv('CSE_LIB_DEBUG_GRAPHQL_SUBSCRIPTION', false),
+  useKeepAlive: getBooleanEnv('CSE_LIB_TIMEOUT_GRAPHQL_SUBSCRIPTION', true) // set false for server debugging with breakpoints
 };
-
-function getFrameIdentifier(frame: OperationMessage | string) {
-  const { id, type, payload } = typeof frame === 'string' ? JSON.parse(frame) : frame;
-  const operationName = payload && payload.operationName;
-  if (operationName) {
-    return `${type}${operationName}`;
-  }
-  return `${type}${id}`;
-}
 
 function ignoreKeepAlive() {}
 
@@ -121,74 +94,89 @@ function logToConsole(msg?: any, ...params: any[]) {
       out.push(JSON.stringify(param));
     }
   }
-  console.log(out.join(" "));
+  console.log(out.join(' '));
 }
 
 // used before logging these messages, which might contain auth information
-function sanitize(op: OperationMessage): OperationMessage {
-  if (!op.payload || !op.payload.hasOwnProperty('token'))  {
+function sanitize(op: ClientMessage): ClientMessage {
+  if (!op.payload || !op.payload.hasOwnProperty('token')) {
     return op;
   }
   const clean: Dictionary<any> = {};
   for (const key of Object.keys(op.payload)) {
     clean[key] = key == 'token' ? '[REDACTED]' : op.payload[key];
   }
-  return {type: op.type, id: op.id, payload: clean};
+  return { type: op.type, id: op.id, payload: clean };
 }
 
-export class SubscriptionManager {
+class SubscriptionManager implements Subscriptions {
   private socket: ReconnectingWebSocket;
-  private initPayload: Dictionary<any>;
-  private subscriptions: Dictionary<SubscriptionHandle> = {};
-  private messageQueue: OperationMessage[] = [];
+  private getInitPayload: () => Dictionary<string>;
+  private subscriptions: Dictionary<SubscriptionBinding> = {};
+  private initCallbacks: Dictionary<() => void> = {};
+  private discCallbacks: Dictionary<() => void> = {};
+  private messageQueue: ClientMessage[] = [];
   private idCounter: number = 0;
 
   private log = logToConsole;
   private debugLog = logToDevNull;
   private onKeepAlive = ignoreKeepAlive;
   private keepAliveHandle: number = 0;
-  
-  constructor(options: Partial<Options<any>>) {
-    const opts =  this.updateOptions(options);
+
+  constructor(settings: SubscriptionSettings) {
+    const opts = this.updateOptions(settings);
     this.socket = new ReconnectingWebSocket(opts);
-    this.socket.onopen = this.init;
-    this.socket.onmessage = this.messageHandler;
-    this.socket.onerror = this.errorHandler;
-    this.initPayload = opts.initPayload;
+    this.socket.onOpen = this.init.bind(this);
+    this.socket.onMessage = this.messageHandler.bind(this);
+    this.socket.onError = this.errorHandler.bind(this);
+    this.socket.onClose = this.closeHandler.bind(this);
+    this.getInitPayload = opts.getInitPayload.bind(this);
   }
 
-  public updateOptions = (options: Partial<Options<any>>): Options<any> => {
-    const opts =  withDefaults(options, defaultSubscriptionOpts(), true);
-    this.debugLog = opts.debug ? logToConsole : logToDevNull;
+  public updateOptions = (settings: SubscriptionSettings): SubscriptionSettings => {
+    const opts = { ...defaultSubscriptionOpts, ...settings };
+    this.debugLog = opts.verboseLogging ? logToConsole : logToDevNull;
     if (opts.useKeepAlive) {
       this.onKeepAlive = this.resetOnTimeout;
     } else {
-      window.clearTimeout(this.keepAliveHandle);
+      this.clearKeepAlive();
       this.onKeepAlive = ignoreKeepAlive;
-      this.keepAliveHandle = 0;
     }
     return opts;
+  };
+
+  public onDisconnect(callback: () => void): ListenerHandle {
+    const id = this.idCounter++;
+    this.discCallbacks[id] = callback;
+    const subs = this;
+    return {
+      close() {
+        delete subs.discCallbacks[id];
+      }
+    };
   }
 
-  public subscribe = <T>(
-    subscription: Subscription,
-    onData: OnData<T>,
-    onError?: OnError): string => {
+  public onInitialize(callback: () => void): ListenerHandle {
+    const id = this.idCounter++;
+    this.initCallbacks[id] = callback;
+    const subs = this;
+    return {
+      close() {
+        delete subs.initCallbacks[id];
+      }
+    };
+  }
 
-    const id = `gql-subscription-${subscription.operationName || "operation"}-${this.idCounter++}`;
-    const payload = typeof subscription === 'string' || subscription.hasOwnProperty('loc') ? { query: subscription } : subscription;
+  public add<T>(subscription: SubscriptionRequest, onData: OnData<T>): ListenerHandle {
+    const id = `gql-subscription-${subscription.operationName || 'operation'}-${this.idCounter++}`;
 
-    if (
-      typeof payload.query === 'object' &&
-      (payload.query.hasOwnProperty('loc') || payload.query.hasOwnProperty('definitions'))
-    ) {
-      payload.query =  print(payload.query);
-    }
-
-    const start = {
-      payload,
+    const start: ClientMessage = {
+      payload: {
+        query: print(subscription.query),
+        variables: subscription.variables
+      },
       id,
-      type: GQL_START,
+      type: 'start'
     };
 
     this.log(`subscribe => ${id}`);
@@ -196,16 +184,20 @@ export class SubscriptionManager {
     this.subscriptions[id] = {
       id,
       start,
-      onData,
-      onError,
+      onData
     };
 
     this.sendOrQueue(start);
-    return id;
+    const subs = this;
+    return {
+      close() {
+        subs.remove(id);
+      }
+    };
   }
 
-  public stop = (id: string) => {
-    this.log(`stop => ${id}`);
+  private remove(id: string) {
+    this.log(`remove => ${id}`);
 
     if (this.subscriptions[id]) {
       delete this.subscriptions[id];
@@ -213,22 +205,23 @@ export class SubscriptionManager {
 
     this.sendOrQueue({
       id,
-      type: GQL_STOP,
+      type: 'stop'
     });
   }
 
-  private init = () => {
+  private init(e: Event) {
     // explicitly subscribe anything that hasn't been stopped yet
-    for (const sub of _.values(this.subscriptions)) {
+    for (const key in this.subscriptions) {
+      const sub = this.subscriptions[key];
       if (this.messageQueue.indexOf(sub.start) === -1) {
         this.messageQueue.push(sub.start);
       }
     }
 
-    this.log(`Sending ${this.messageQueue.length+1} message${this.messageQueue.length ? 's' : ''} from init`);
+    this.log(`Sending ${this.messageQueue.length + 1} message${this.messageQueue.length ? 's' : ''} from init`);
     this.send({
-      type:GQL_CONNECTION_INIT, 
-      payload:this.initPayload
+      type: 'connection_init',
+      payload: this.getInitPayload()
     });
 
     if (this.messageQueue.length > 0) {
@@ -237,91 +230,108 @@ export class SubscriptionManager {
       }
       this.messageQueue = [];
     }
+
+    for (const callback of Object.values(this.initCallbacks)) {
+      callback();
+    }
   }
 
-  private messageHandler = (e: MessageEvent) => {
-    const op = tryParseJSON(e.data, true) as OperationMessage;
+  private messageHandler(e: MessageEvent) {
+    const op = tryParseJSON(e.data, true) as ServerMessage;
     this.debugLog('recv <= ', op);
     switch (op.type) {
-      case GQL_CONNECTION_ACK: {
+      case 'connection_ack': {
         this.log('Ack');
         break;
       }
-      case GQL_DATA: {
+      case 'data': {
         const subscription = this.subscriptions[op.id];
         if (subscription && subscription.onData) {
           const result = {
             data: this.parseData(op),
             ok: op.payload.errors === null,
-            errors: op.payload.errors,
+            errors: op.payload.errors
           };
           subscription.onData(result);
         }
         break;
       }
-      case GQL_CONNECTION_KEEP_ALIVE: {
+      case 'ka': {
         this.onKeepAlive();
         break;
       }
-      case GQL_CONNECTION_ERROR: {
-        this.errorHandler(new ErrorEvent('GQL_CONNECTION_ERROR', {
-          error: new Error('GQL_CONNECTION_ERROR'),
-          message: JSON.stringify(op.payload),
-        }));
+      case 'connection_error': {
+        this.errorHandler(
+          new ErrorEvent('GQL_CONNECTION_ERROR', {
+            error: new Error('GQL_CONNECTION_ERROR'),
+            message: JSON.stringify(op.payload)
+          })
+        );
         break;
       }
-      case GQL_COMPLETE: {
+      case 'complete': {
         const subscription = this.subscriptions[op.id];
         if (subscription) {
-          if (subscription.onError) {
-            const message = `SubscriptionManager | GQL_COMPLETE received for id ${op.id} without acknowledged stop request`;
-            subscription.onError(new ErrorEvent('GQL_COMPLETE', {
-              message,
-              error: new Error(message),
-            }));
-          }
           delete this.subscriptions[op.id];
         }
         break;
       }
-      case GQL_ERROR: {
+      case 'error': {
         const subscription = this.subscriptions[op.id];
-        if (subscription && subscription[op.id].onError) {
-          subscription[op.id].onError(new ErrorEvent('GQL_ERROR', {
-            error: new Error(op.payload),
-            message: op.payload,
-          }));
+        if (subscription) {
+          const entry = Object.entries(subscription).find((entry) => {
+            return entry[0] === op.id;
+          });
+          if (entry && entry[1].onError) {
+            entry[1].onError(
+              new ErrorEvent('GQL_ERROR', {
+                error: new Error(op.payload),
+                message: op.payload
+              })
+            );
+          }
         }
         break;
       }
     }
   }
 
-  private parseData(op: OperationMessage) {
+  private parseData(op: ServerMessage) {
     if (!op.payload || !op.payload.data) {
       return null;
     }
     try {
       return JSON.parse(op.payload.data).data;
     } catch (e) {
-      this.errorHandler(new ErrorEvent('GQL_DATA', {
-        error: e,
-        message: JSON.stringify(op.payload),
-      }));
+      this.errorHandler(
+        new ErrorEvent('GQL_DATA', {
+          error: e,
+          message: JSON.stringify(op.payload)
+        })
+      );
       return null;
     }
   }
 
-  private errorHandler = (e: ErrorEvent) => {
-    console.error(`Sub Err: ${JSON.stringify(e)}`);
+  private errorHandler(e: ErrorEvent): void {
+    if (e.message) {
+      console.error(`Sub Error ${e.message}`);
+    }
   }
 
-  private send = (op: OperationMessage) => {
+  private closeHandler(e: CloseEvent): void {
+    this.clearKeepAlive();
+    for (const callback of Object.values(this.discCallbacks)) {
+      callback();
+    }
+  }
+
+  private send(op: ClientMessage): void {
     this.debugLog(`send => `, sanitize(op));
     this.socket.send(JSON.stringify(op));
   }
 
-  private sendOrQueue = (op: OperationMessage) => {
+  private sendOrQueue(op: ClientMessage): void {
     if (this.socket.isOpen) {
       this.send(op);
     } else {
@@ -330,36 +340,19 @@ export class SubscriptionManager {
     }
   }
 
-  private resetOnTimeout = () => {
-    window.clearTimeout(this.keepAliveHandle);
+  private resetOnTimeout(): void {
+    this.clearKeepAlive();
     this.keepAliveHandle = window.setTimeout(() => {
       this.log('GQL KeepAlive Timeout');
       this.socket.refresh();
     }, GQL_KEEPALIVE_TIMEOUT_MS);
   }
-}
 
-// GLOBAL SINGLE INSTANCE
-let subscriptionManager: SubscriptionManager = null;
-export function subscribe<DataType>(
-  subscription: Subscription,
-  onData: OnData<DataType>,
-  options?: Partial<Options<DataType>>,
-  onError?: OnError,
-) {
-
-  if (!(window as any).WebSocket) {
-    throw new Error('WebSockets not supported by this browser');
+  private clearKeepAlive(): void {
+    if (this.keepAliveHandle === 0) {
+      return;
+    }
+    window.clearTimeout(this.keepAliveHandle);
+    this.keepAliveHandle = 0;
   }
-
-  if (subscriptionManager === null) {
-    subscriptionManager = new SubscriptionManager(options);
-  } else if (options) {
-    subscriptionManager.updateOptions(options);
-  }
-
-  return {
-    id: subscriptionManager.subscribe(subscription, onData, onError),
-    subscriptions: subscriptionManager,
-  };
 }

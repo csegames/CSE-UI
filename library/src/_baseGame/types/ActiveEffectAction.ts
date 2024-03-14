@@ -4,21 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export {};
-
-declare global {
-  enum ActiveEffectAction {
-    Applied = 0,
-    Removed = 1,
-    Timed_Out = 2,
-  }
-  interface Window {
-    ActiveEffectAction: typeof ActiveEffectAction;
-  }
-}
-enum ActiveEffectAction {
+export enum ActiveEffectAction {
   Applied = 0,
   Removed = 1,
-  Timed_Out = 2,
+  Timed_Out = 2
 }
-window.ActiveEffectAction = ActiveEffectAction;

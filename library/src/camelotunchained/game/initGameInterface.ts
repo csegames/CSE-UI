@@ -4,174 +4,48 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as webAPI from '../webAPI';
-import initSignalR from '../signalR';
+import * as webAPI from '../webAPI/definitions';
 
-import { GameModel, GameInterface } from './GameInterface';
+import { GameInterface } from './GameInterface';
 
-// tslint:disable-next-line:no-duplicate-imports
-import * as engineEvents from './engineEvents';
-
-import initPlayerState from './GameClientModels/PlayerState';
-import initEntityState from './GameClientModels/EntityState';
-import initEnemyTargetState from './GameClientModels/EnemyTargetState';
-import initFriendlyTargetState from './GameClientModels/FriendlyTargetState';
-import initKeyActions from './GameClientModels/KeyActions';
-import initAbilityState from './GameClientModels/AbilityState';
-import initAbilityBarState from './GameClientModels/AbilityBarState';
 import initOfflineZoneSelectState from './GameClientModels/OfflineZoneSelectState';
-import { makeClientPromise } from '../../_baseGame/clientTasks';
+import { Keybind, KeybindSection } from '../../_baseGame/types/Keybind';
+import { CamelotUnchainedModel } from './CamelotUnchainedModel';
+import { BaseDevGameInterface } from '../../_baseGame/BaseGameInterface';
+import { cloneDeep } from '../../_baseGame/utils/objectUtils';
 
-import initGameDataStore from './store';
-import { QueryOptions } from '../../_baseGame/graphql/query';
+export default function (_devGame: BaseDevGameInterface): CamelotUnchainedModel {
+  // TODO : I hear constructors are nice (and safer than this)
+  const camelotGame = {} as GameInterface;
 
-export default function(isAttached: boolean) {
-  _devGame.graphQL = {
-    ..._devGame.graphQL,
-    defaultOptions: defaultGraphQLOptions,
+  const camelot = {
+    _devGame: camelotGame,
+    game: camelotGame
   };
 
-  camelotunchained._devGame.webAPI = webAPI;
-
-  camelotunchained._devGame.signalRHost = signalRHost;
-
-  camelotunchained._devGame.abilityStates = {};
-
-  camelotunchained._devGame.engineEvents = engineEvents;
-  camelotunchained._devGame.getKeybindSafe = getKeybindSafe;
-
-  // Entity state
-  camelotunchained._devGame.entities = {};
-  initEntityState();
+  camelotGame.webAPI = webAPI;
+  camelotGame.getKeybindSafe = (id: number) => getKeybindSafe(_devGame, id);
 
   // INIT MODELS
-  initPlayerState();
-  initEnemyTargetState();
-  initFriendlyTargetState();
-  initKeyActions();
-  initAbilityState();
-  initAbilityBarState();
-  initOfflineZoneSelectState();
+  initOfflineZoneSelectState(_devGame, camelot);
 
-  // INIT Services
-  camelotunchained._devGame.signalR = initSignalR();
-
-  camelotunchained._devGame.store = initGameDataStore();  
-
-  initAnnouncementRouting();
-
-  // READY!
-  _devGame.ready = true;
+  return camelot;
 }
 
-/**
- * Creates a game object for replacement use when not running in the context of the game client.
- */
-export function initOutOfContextGame(): Partial<GameInterface> {
-  const model: GameModel = {
-    _cse_dev_beginTriggerKeyActionLoop: noOp,
-    _cse_dev_endTriggerKeyActionLoop: noOp,
-  };
-
-  return withOverrides({
-    ...model,
-    entities: {},
-  });
-}
-
-/**
- * Override default GameModel out of context values with those supplied via a dev.config.js file
- * during in-browser development.
- * @param model The default GameModel
- */
-function withOverrides(model: Partial<GameInterface>) {
-  const m = model;
-  const overrides = ((window as any).cuOverrides || {}) as GameModel;
-  for (const key in model) {
-    m[key] = overrides[key] || model[key];
-  }
-  return m;
-}
-
-function noOp(...args: any[]): any {}
-
-/* -------------------------------------------------- */
-/* GAME                                               */
-/* -------------------------------------------------- */
-
-function signalRHost() {
-  return game.webAPIHost + '/signalr';
-}
-
-function getKeybindSafe(id: number): Keybind {
-  if (game.keybinds[id]) {
-    return cloneDeep(game.keybinds[id]) as Keybind;
+function getKeybindSafe(_devGame: BaseDevGameInterface, id: number): Keybind {
+  if (_devGame.keybinds[id]) {
+    return cloneDeep(_devGame.keybinds[id]) as Keybind;
   }
   return {
     id,
     description: 'unknown',
     category: 'miscellaneous',
-    binds: [{ name: '', value: 0 },{ name: '', value: 0 },{ name: '', value: 0 }],
+    section: KeybindSection.None,
+    order: 0,
+    binds: [
+      { name: '', value: 0 },
+      { name: '', value: 0 },
+      { name: '', value: 0 }
+    ]
   };
 }
-
-/* -------------------------------------------------- */
-/* GRAPHQL                                            */
-/* -------------------------------------------------- */
-
-function defaultGraphQLOptions(): Partial<QueryOptions> {
-  return {
-    url: game.graphQL.host(),
-    disableBatching: false,
-    requestOptions: {
-      headers: {
-        Authorization: 'Bearer ' + game.accessToken,
-        CharacterID: camelotunchained.game.selfPlayerState ? camelotunchained.game.selfPlayerState.characterID : '',
-      },
-    },
-  };
-}
-
-/**
- * Announcement Handling
- */
-
-let announcementRoutingHandle: EventHandle = null;
-function initAnnouncementRouting() {
-  if (camelotunchained._devGame._cse_dev_announcementRouterHandle) {
-    camelotunchained._devGame._cse_dev_announcementRouterHandle.clear();
-  }
-
-  camelotunchained._devGame.onPassiveAlert = onPassiveAlert;
-  camelotunchained._devGame.sendPassiveAlert = sendPassiveAlert;
-
-  if (announcementRoutingHandle) {
-    announcementRoutingHandle.clear();
-  }
-
-  announcementRoutingHandle = game.on(game.engineEvents.EE_OnAnnouncement,
-    (type: AnnouncementType, message: string) => {
-    if ((type & AnnouncementType.Text) !== 0) {
-      game.sendSystemMessage(message);
-    }
-    if ((type & AnnouncementType.PassiveAlert) !== 0) {
-      camelotunchained.game.sendPassiveAlert(message);
-    }
-  });
-}
-
-let passiveAlertHandle: EventHandle = null;
-function onPassiveAlert(callback: (message: string) => any) {
-  if (passiveAlertHandle) {
-    passiveAlertHandle.clear();
-  }
-
-  passiveAlertHandle = game.on('passiveAlert', callback);
-  return passiveAlertHandle;
-}
-
-function sendPassiveAlert(message: string) {
-  game.trigger('passiveAlert', message);
-}
-
-

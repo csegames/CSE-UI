@@ -1,20 +1,17 @@
-# Camelot Unchained Client Library
+# CSE UI Projects
 
-*Notice: This library is under heavy development and is not guaranteed to be in a working state as this time.  This notice will be removed when the library is stable.*
+[Installing Node on Windows](documentation/InstallingNode.md)
 
+[Building all projects](documentation/Building.md)
 
-## Installation
+[Updating APIs](documentation/UpdatingAPIs.md)
 
-```sh
-npm install camelot-unchained
-```
+[Updating Fonts](documentation/UpdatingFonts.md)
 
-## Development
+[Debugging the Game UI](documentation/DebuggingGameUI.md)
 
-```sh
-git clone https://github.com/csegames/Camelot-Unchained.git
-cd Camelot-Unchained/library
-npm i -g yarn
-yarn
-npm start build
-```
+[Deploying the Game UI](documentation/DeployingGameUI.md)
+
+[Debugging the Patcher UI](documentation/DebuggingPatcherUI.md)
+
+[Deploying the Patcher UI](documentation/DeployingPatcherUI.md)

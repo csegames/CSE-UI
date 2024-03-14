@@ -1,0 +1,12 @@
+{
+  "name": "@csegames/coherent",
+  "version": "2.9.23",
+  "description": "CSE binding for coherent.js",
+  "license": "MPL-2.0",
+  "main": "dist/coherent.js",
+  "typings": "dist/coherent.d.ts",
+  "type": "module",
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {}
+}

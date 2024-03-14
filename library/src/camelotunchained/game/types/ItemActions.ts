@@ -5,43 +5,52 @@
  *
  */
 
-export {};
-
-declare global {
-  interface ItemActionsMessage {
-    itemInstanceID: string;
-    boneAlias: number;
-    actions: ItemAction[];
-  }
-
-  interface ItemAction {
-    id: string;
-    displayName: string;
-    cooldownWorldTime: number;
-    disabledDescription: string;
-    uiReaction: UIReaction;
-  }
+// Keep in sync with the ItemStat enum in ItemStat.cs
+export enum ItemStat {
+  Quality = 1,
+  UnitMass,
+  SelfMass,
+  TotalMass,
+  Encumbrance,
+  AgilityRequirement,
+  DexterityRequirement,
+  StrengthRequirement,
+  VitalityRequirement,
+  EnduranceRequirement,
+  AttunementRequirement,
+  WillRequirement,
+  FaithRequirement,
+  ResonanceRequirement,
+  UnitCount,
+  NestedItemCount
 }
 
-declare global {
-  enum UIReaction {
-    None = 0,
-    CloseInventory = 1,
-    PlacementMode = 2,
-    OpenMiniMap = 3,
-    OpenCrafting = 4,
-  }
-
-  interface Window {
-    UIReaction: typeof UIReaction;
-  }
+export interface ItemActionsMessage {
+  itemInstanceID: string;
+  boneAlias: number;
+  numericItemDefID: number;
+  itemStatReqs: ItemStatReq[];
+  actions: ItemAction[];
 }
 
-enum UIReaction {
+export interface ItemStatReq {
+  itemStat: ItemStat;
+  value: number;
+}
+
+export interface ItemAction {
+  id: string;
+  displayName: string;
+  cooldownWorldTime: number;
+  disabled: boolean;
+  disabledDescription: string;
+  uiReaction: UIReaction;
+}
+
+export enum UIReaction {
   None = 0,
   CloseInventory = 1,
   PlacementMode = 2,
   OpenMiniMap = 3,
-  OpenCrafting = 4,
+  OpenCrafting = 4
 }
-window.UIReaction = UIReaction;

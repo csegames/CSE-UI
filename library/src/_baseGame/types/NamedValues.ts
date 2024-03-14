@@ -4,13 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export {};
-
-declare global {
-
-  interface NamedString {
-    name: string;
-    value: string;
-  }
-
+export interface NamedString {
+  name: string;
+  value: string;
 }

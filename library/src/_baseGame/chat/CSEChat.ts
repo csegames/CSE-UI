@@ -3,79 +3,67 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {
-  ReconnectingWebSocket,
-  WebSocketOptions
-} from '../utils/ReconnectingWebSocket';
-import { createEventEmitter, EventEmitter } from '../utils/EventEmitter';
-import './chatProtoTypes';
+import { withDefaults } from '../utils/withDefaults';
 import { isWebSocketUrl } from '../utils/urlUtils';
-const chat = require('./chat_pb.js');
+import { ReconnectingWebSocket, WebSocketSettings } from '../types/ReconnectingWebSocket';
+import { Callback, EventEmitter } from '../types/EventEmitter';
 
-export interface Options extends Partial<WebSocketOptions> {
-  // data to send to the server on connection init
-  characterID: () => string;
-  token: () => string;
+import { chat } from './chat_proto';
+import * as protobuf from 'protobufjs';
+import { BaseGameInterface } from '../BaseGameInterface';
+import { ListenerHandle } from '../listenerHandle';
+
+const ClientMessages = chat.ChatClientUnionMessage.MessageTypes;
+const ServerMessages = chat.ChatServerUnionMessage.MessageTypes;
+const ActionType = chat.RoomActionRequest.ActionType;
+
+export interface TimedMessage extends chat.IChatMessage {
+  when: Date;
 }
 
-export function defaultOpts(): Options {
+export interface ChatSettings {
+  getCharacterID: () => string;
+  getToken: () => string;
+}
+
+export type ChatParameters = ChatSettings & Partial<WebSocketSettings>;
+
+export type ChatSocketSettings = ChatSettings & WebSocketSettings;
+
+export function defaultSettings(): WebSocketSettings {
   return {
-    url: () => `ws://${game.serverHost}:9990/chat`,
-    protocols: 'chat-ws',
-    startReconnectInterval: 500,
-    maxReconnectInterval: 4000,
-    connectTimeout: 5000,
-    debug: false,
-
-    characterID: () => '',
-    token: () => ''
-  };
-}
-
-function debounce(func: any, wait: number, immediate: boolean) {
-  let timeout = null;
-  return function() {
-    const args = arguments;
-    const later = function() {
-      timeout = null;
-      if (!immediate) {
-        func.apply(this, args);
-      }
-    };
-    const callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) {
-      func.apply(this, args);
-    }
+    getUrl: () => `ws://${this.game.serverHost}:9990/chat`,
+    protocols: ['chat-ws']
   };
 }
 
 export class CSEChat {
   private socket: ReconnectingWebSocket;
-  private options: Partial<Options>;
+  private settings: ChatSocketSettings;
   private eventEmitter: EventEmitter;
-  private characterID: () => string;
-  private senderID: () => string;
   private initialized: boolean;
   private messageQueue: any[] = [];
 
-  public constructor() {
-    this.eventEmitter = createEventEmitter();
+  public constructor(readonly game: BaseGameInterface) {
+    this.eventEmitter = new EventEmitter((...params: any[]) => {
+      if (game.debug) console.log(...params);
+    });
   }
 
-  public initialize(options: Partial<Options>) {
-    this.options = withDefaults(options, defaultOpts());
+  public hasSender() {
+    const id = this.settings?.getCharacterID();
+    return id && id.length > 0;
+  }
 
-    const url = this.options.url();
-    if (!url || !isWebSocketUrl(url)) {
-      console.error('Attempted to initialize websocket connection with invalid URL: ' + url);
+  public initialize(params: ChatParameters) {
+    this.settings = { ...defaultSettings(), ...params };
+
+    const url = this.settings.getUrl();
+    if (!isWebSocketUrl(url)) {
+      console.error('Attempted to initialize chaR connection with invalid URL: ' + url);
       return;
     }
 
-    this.characterID = options.characterID;
-
-    this.senderID = options.characterID;
     this.initialized = true;
   }
 
@@ -92,24 +80,24 @@ export class CSEChat {
     if (this.socket) {
       return;
     }
-    this.socket = new ReconnectingWebSocket(this.options);
-    this.socket.onopen = () => {
+    this.socket = new ReconnectingWebSocket(this.settings);
+    this.socket.onOpen = () => {
       this.sendAuth();
       this.sendPing();
       this.requestDirectory();
-      this.eventEmitter.emit('connected');
+      this.eventEmitter.trigger('connected');
       setTimeout(() => {
         if (this.messageQueue && this.messageQueue.length > 0) {
           const toSend = this.messageQueue.slice();
           this.messageQueue = [];
-          toSend.forEach(m => this.sendProtoMessage(m));
+          toSend.forEach((m) => this.sendProtoMessage(m));
         }
       }, 100);
-    }
-    this.socket.onerror = (err) => {
-      this.eventEmitter.emit('error', err);
-    }
-    this.socket.onmessage = e => this.handleMessage(e);
+    };
+    this.socket.onError = (err) => {
+      this.eventEmitter.trigger('error', err);
+    };
+    this.socket.onMessage = (e) => this.handleMessage(e);
   }
 
   public disconnect() {
@@ -121,740 +109,399 @@ export class CSEChat {
     this.socket = null;
   }
 
-  private sendAuth = () => {
+  private sendAuth() {
     this.socket.send(
       JSON.stringify({
-        characterID: this.characterID(),
-        token: this.options.token()
+        characterID: this.settings.getCharacterID(),
+        token: this.settings.getToken()
       })
     );
-  };
+  }
 
-  private sendPing = () => {
+  private sendPing() {
     if (!this.socket) {
       return;
     }
 
-    const pong = new chat.PingPongMessage();
-    pong.setPing(false);
-    const reply = new chat.ChatServerUnionMessage();
-    reply.setMessagetype(2); // PINGPONG
-    reply.setPingpong(pong);
-    this.sendProtoMessage(reply);
-  };
+    this.sendProtoMessage(
+      new chat.ChatServerUnionMessage({
+        messageType: ServerMessages.PINGPONG,
+        pingPong: chat.PingPongMessage.create({ ping: false })
+      })
+    );
+  }
 
   // EVENT REGISTRATION
 
-  public onError = (callback: (error: { message: string }) => any) => {
+  public onError(callback: (error: { message: string }) => any) {
     return this.eventEmitter.on('error', callback);
-  };
+  }
 
-  public onConnected = (callback: () => any) => {
+  public onConnected(callback: () => any) {
     if (this.connected) {
       setTimeout(callback, 1);
     }
     return this.eventEmitter.on('connected', callback);
-  };
+  }
 
-  public onChatMessage = (callback: (msg: ChatMessage) => any) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.CHATMESSAGE
-      ],
-      callback
-    );
-  };
-
-  public onRoomActionResponse = (callback: (msg: RoomActionResponse) => any) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.ROOMACTION
-      ],
-      callback
-    );
-  };
-
-  public onRoomInfo = (callback: (info: RoomInfo) => any) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.ROOMINFO
-      ],
-      callback
-    );
-  };
-
-  public onRoomJoined = (callback: (info: RoomJoined) => any) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.JOINED
-      ],
-      callback
-    );
-  };
-
-  public onRoomLeft = (callback: (info: RoomLeft) => any) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.LEFT
-      ],
-      callback
-    );
-  };
-
-  public onRoomRenamed = (callback: (info: RoomRenamed) => any) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.RENAMED
-      ],
-      callback
-    );
-  };
-
-  public onRoleAdded = (callback: (info: RoomRoleAdded) => any) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.ROLEADDED
-      ],
-      callback
-    );
-  };
-
-  public onRoleUpdated = (
-    callback: (info: RoomRoleUpdated) => any
-  ) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.ROLEUPDATED
-      ],
-      callback
-    );
-  };
-
-  public onRoleRemoved = (
-    callback: (info: RoomRoleUpdated) => any
-  ) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.ROLEREMOVED
-      ],
-      callback
-    );
-  };
-
-  public onRoleAssigned = (
-    callback: (info: RoomRoleAssigned) => any
-  ) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.ROLEASSIGNED
-      ],
-      callback
-    );
-  };
-
-  public onInviteReceived = (callback: (info: RoomInfo) => any) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.ROOMINFO
-      ],
-      callback
-    );
-  };
-
-  public onRoomKicked = (
-    callback: (info: RoomKickReceived) => any
-  ) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.KICKED
-      ],
-      callback
-    );
-  };
-
-  public onRoomBanned = (
-    callback: (info: RoomBanReceived) => any
-  ) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.BANNED
-      ],
-      callback
-    );
-  };
-
-  public onRoomMuted = (
-    callback: (info: RoomMuteReceived) => any
-  ) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.MUTED
-      ],
-      callback
-    );
-  };
-
-  public onRoomOwnerChanged = (
-    callback: (info: RoomOwnerChanged) => any
-  ) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.OWNERCHANGED
-      ],
-      callback
-    );
-  };
-
-  public onDirectory = (
-    callback: (directory: RoomsDirectory) => any
-  ) => {
-    return this.eventEmitter.on(
-      ChatClientUnionMessage_MessageTypes[
-        ChatClientUnionMessage_MessageTypes.DIRECTORY
-      ],
-      callback
-    );
-  };
+  public onChatMessage(callback: (msg: TimedMessage) => any) {
+    return this.bindHandler(ClientMessages.CHATMESSAGE, callback);
+  }
+  public onRoomActionResponse(callback: (msg: chat.RoomActionResponse) => any) {
+    return this.bindHandler(ClientMessages.ROOMACTION, callback);
+  }
+  public onRoomInfo(callback: (info: chat.RoomInfo) => any) {
+    return this.bindHandler(ClientMessages.ROOMINFO, callback);
+  }
+  public onRoomJoined(callback: (info: chat.RoomJoined) => any) {
+    return this.bindHandler(ClientMessages.JOINED, callback);
+  }
+  public onRoomLeft(callback: (info: chat.RoomLeft) => any) {
+    return this.bindHandler(ClientMessages.LEFT, callback);
+  }
+  public onRoomRenamed(callback: (info: chat.RoomRenamed) => any) {
+    return this.bindHandler(ClientMessages.RENAMED, callback);
+  }
+  public onRoleAdded(callback: (info: chat.RoomRoleAdded) => any) {
+    return this.bindHandler(ClientMessages.ROLEADDED, callback);
+  }
+  public onRoleUpdated(callback: (info: chat.RoomRoleUpdated) => any) {
+    return this.bindHandler(ClientMessages.ROLEUPDATED, callback);
+  }
+  public onRoleRemoved(callback: (info: chat.RoomRoleUpdated) => any) {
+    return this.bindHandler(ClientMessages.ROLEREMOVED, callback);
+  }
+  public onRoleAssigned(callback: (info: chat.RoomRoleAssigned) => any) {
+    return this.bindHandler(ClientMessages.ROLEASSIGNED, callback);
+  }
+  public onInviteReceived(callback: (info: chat.RoomInfo) => any) {
+    return this.bindHandler(ClientMessages.INVITERECEIVED, callback);
+  }
+  public onRoomKicked(callback: (info: chat.RoomKickReceived) => any) {
+    return this.bindHandler(ClientMessages.KICKED, callback);
+  }
+  public onRoomBanned(callback: (info: chat.RoomBanReceived) => any) {
+    return this.bindHandler(ClientMessages.BANNED, callback);
+  }
+  public onRoomMuted(callback: (info: chat.RoomMuteReceived) => any) {
+    return this.bindHandler(ClientMessages.MUTED, callback);
+  }
+  public onRoomOwnerChanged(callback: (info: chat.RoomOwnerChanged) => any) {
+    return this.bindHandler(ClientMessages.OWNERCHANGED, callback);
+  }
+  public onDirectory(callback: (directory: chat.RoomDirectory) => any) {
+    return this.bindHandler(ClientMessages.DIRECTORY, callback);
+  }
 
   // MESSAGING
-  public sendMessageToRoom = (content: string, roomID: string) => {
-    const chatMessage = new chat.ChatMessage();
-    chatMessage.setType(2); // Room
-    chatMessage.setContent(content);
-    chatMessage.setSenderid(this.senderID());
-    chatMessage.setTargetid(roomID);
+  public sendMessageToRoom(content: string, roomID: string) {
+    const msg = chat.ChatMessage.create({
+      content,
+      senderID: this.settings.getCharacterID(),
+      targetID: roomID,
+      type: chat.ChatMessage.MessageTypes.Room
+    });
 
-    const union = new chat.ChatServerUnionMessage();
-    union.setMessagetype(1); // CHAT
-    union.setChat(chatMessage);
-    this.sendProtoMessage(union);
-  };
+    this.sendProtoMessage(
+      chat.ChatServerUnionMessage.create({
+        messageType: ServerMessages.CHAT,
+        chat: msg
+      })
+    );
+  }
 
-  public sendDirectMessage = (
-    content: string,
-    targetUserID: string | null,
-    targetUserName: string | null
-  ) => {
-    const chatMessage = new chat.ChatMessage();
-    chatMessage.setType(1); // Direct
-    chatMessage.setContent(content);
-    chatMessage.setSenderid(this.senderID());
-    if (targetUserID) chatMessage.setTargetid(targetUserID);
-    if (targetUserName) chatMessage.setTargetName(targetUserName);
+  public sendDirectMessage(content: string, targetUserID: string | null, targetUserName: string | null) {
+    const msg = chat.ChatMessage.create({
+      content,
+      senderID: this.settings.getCharacterID(),
+      type: chat.ChatMessage.MessageTypes.Direct
+    });
+    if (targetUserID) msg.targetID = targetUserID;
+    if (targetUserName) msg.targetName = targetUserName;
 
-    const union = new chat.ChatServerUnionMessage();
-    union.setMessagetype(1); // CHAT
-    union.setChat(chatMessage);
-    this.sendProtoMessage(union);
-  };
+    this.sendProtoMessage(
+      chat.ChatServerUnionMessage.create({
+        messageType: ServerMessages.CHAT,
+        chat: msg
+      })
+    );
+  }
 
-  public requestDirectory = () => {
-    const action = new chat.RoomActionRequest();
-    action.setAction(14);
-    this.sendRoomAction(action);
-  };
+  public requestDirectory() {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.DIRECTORY
+      })
+    );
+  }
 
-  public createRoom = (
-    name: string,
-    options: { public?: boolean; groupID?: string } = {}
-  ) => {
-    const create = new chat.RoomActionRequest.CreateRoom();
-    create.setName(name);
-    create.setIspublic(!!options.public);
-    if (options.groupID) create.setForGroupID(options.groupID);
+  public createRoom(name: string, options: { public?: boolean; groupID?: string } = {}) {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.CREATE,
+        create: chat.RoomActionRequest.CreateRoom.create({
+          ...options,
+          name
+        })
+      })
+    );
+  }
 
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(0);
-    ra.setCreate(create);
-    this.sendRoomAction(ra);
-  };
+  public deleteRoom(roomID: string) {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.DELETE,
+        delete: chat.RoomActionRequest.DeleteRoom.create({
+          roomID
+        })
+      })
+    );
+  }
 
-  public deleteRoom = (roomID: string) => {
-    const del = new chat.RoomActionRequest.DeleteRoom();
-    del.setRoomid(roomID);
+  public renameRoom(roomID: string, newName: string) {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.RENAME,
+        rename: chat.RoomActionRequest.RenameRoom.create({
+          roomID,
+          name: newName
+        })
+      })
+    );
+  }
 
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(1);
-    ra.setDelete(del);
-    this.sendRoomAction(ra);
-  };
+  public joinRoom(roomID: string) {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.JOIN,
+        join: chat.RoomActionRequest.JoinRoom.create({
+          roomID
+        })
+      })
+    );
+  }
 
-  public renameRoom = (roomID: string, newName: string) => {
-    const rn = new chat.RoomActionRequest.RenameRoom();
-    rn.setRoomid(roomID);
-    rn.setName(newName);
+  public leaveRoom(roomID: string) {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.LEAVE,
+        leave: chat.RoomActionRequest.LeaveRoom.create({
+          roomID
+        })
+      })
+    );
+  }
 
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(2);
-    ra.setRename(rn);
-    this.sendRoomAction(ra);
-  };
+  public createRoomRole(roomID: string, name: string, permissions: number) {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.CREATEROLE,
+        createRole: chat.RoomActionRequest.CreateRole.create({
+          roomID,
+          name,
+          permissions
+        })
+      })
+    );
+  }
 
-  public joinRoom = (roomID: string) => {
-    const join = new chat.RoomActionRequest.JoinRoom();
-    join.setRoomid(roomID);
-
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(3);
-    ra.setJoin(join);
-    this.sendRoomAction(ra);
-  };
-
-  public leaveRoom = (roomID: string) => {
-    const leave = new chat.RoomActionRequest.LeaveRoom();
-    leave.setRoomid(roomID);
-
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(4);
-    ra.setLeave(leave);
-    this.sendRoomAction(ra);
-  };
-
-  public createRoomRole = (
-    roomID: string,
-    name: string,
-    permissions: number
-  ) => {
-    const cr = new chat.RoomActionRequest.CreateRole();
-    cr.setRoomid(roomID);
-    cr.setName(name);
-    cr.setPermissions(permissions);
-
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(5);
-    ra.setCreaterole(cr);
-    this.sendRoomAction(ra);
-  };
-
-  public updateRoomRole = (
+  public updateRoomRole(
     roomID: string,
     roleName: string,
     permissions: number | null = null,
     newName: string | null = null
-  ) => {
-    const ur = new chat.RoomActionRequest.UpdateRole();
-    ur.setRoomid(roomID);
-    ur.setName(name);
-    if (permissions) ur.setPermissions(permissions);
-    if (newName) ur.setRename(newName);
+  ) {
+    const updateRole = chat.RoomActionRequest.UpdateRole.create({ roomID, name: roleName });
+    if (permissions) updateRole.permissions = permissions;
+    if (newName) updateRole.rename = newName;
 
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(6);
-    ra.setUpdaterole(ur);
-    this.sendRoomAction(ra);
-  };
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.UPDATEROLE,
+        updateRole
+      })
+    );
+  }
 
-  public deleteRoomRole = (roomID: string, name: string) => {
-    const cr = new chat.RoomActionRequest.DeleteRole();
-    cr.setRoomid(roomID);
-    cr.setName(name);
+  public deleteRoomRole(roomID: string, name: string) {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.DELETEROLE,
+        deleteRole: chat.RoomActionRequest.DeleteRole.create({
+          roomID,
+          name
+        })
+      })
+    );
+  }
 
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(7);
-    ra.setDeleterole(cr);
-    this.sendRoomAction(ra);
-  };
+  public assignRoomRole(roomID: string, name: string, characterID: string) {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.ASSIGNROLE,
+        assignRole: chat.RoomActionRequest.AssignRole.create({
+          roomID,
+          role: name,
+          userID: characterID
+        })
+      })
+    );
+  }
 
-  public assignRoomRole = (
-    roomID: string,
-    name: string,
-    characterID: string
-  ) => {
-    const ar = new chat.RoomActionRequest.AssignRole();
-    ar.setRoomid(roomID);
-    ar.setName(name);
-    ar.setUserid(characterID);
+  public inviteToRoom(roomID: string, characterID: string) {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.INVITEUSER,
+        inviteUser: chat.RoomActionRequest.InviteUser.create({
+          roomID,
+          userID: characterID
+        })
+      })
+    );
+  }
 
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(8);
-    ra.setAssignrole(ar);
-    this.sendRoomAction(ra);
-  };
+  public kickFromRoom(roomID: string, userID: string) {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.KICKUSER,
+        kickUser: chat.RoomActionRequest.KickUser.create({
+          roomID,
+          userID
+        })
+      })
+    );
+  }
 
-  public inviteToRoom = (roomID: string, characterID: string) => {
-    const ar = new chat.RoomActionRequest.AssignRole();
-    ar.setRoomid(roomID);
-    ar.setName(name);
-    ar.setUserid(characterID);
+  public muteInRoom(roomID: string, userID: string, durationSeconds?: number) {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.MUTEUSER,
+        muteUser: chat.RoomActionRequest.MuteUser.create({
+          roomID,
+          userID,
+          seconds: durationSeconds
+        })
+      })
+    );
+  }
 
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(9);
-    ra.setInviteuser(ar);
-    this.sendRoomAction(ra);
-  };
+  public banFromRoom(roomID: string, userID: string, durationSeconds: number) {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.BANUSER,
+        banUser: chat.RoomActionRequest.BanUser.create({
+          roomID,
+          userID,
+          seconds: durationSeconds
+        })
+      })
+    );
+  }
 
-  public kickFromRoom = (roomID: string, userID: string) => {
-    const kick = new chat.RoomActionRequest.KickUser();
-    kick.setRoomid(roomID);
-    kick.setUserid(userID);
-
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(10);
-    ra.setKickuser(kick);
-    this.sendRoomAction(ra);
-  };
-
-  public muteInRoom = (
-    roomID: string,
-    userID: string,
-    durationSeconds: number | null = null
-  ) => {
-    const mute = new chat.RoomActionRequest.MuteUser();
-    mute.setRoomid(roomID);
-    mute.setUserid(userID);
-    if (durationSeconds) mute.setSeconds(durationSeconds);
-
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(12);
-    ra.setMuteuser(mute);
-    this.sendRoomAction(ra);
-  };
-
-  public banFromRoom = (
-    roomID: string,
-    userID: string,
-    durationSeconds: number | null = null
-  ) => {
-    const ban = new chat.RoomActionRequest.BanUser();
-    ban.setRoomid(roomID);
-    ban.setUserid(userID);
-    if (durationSeconds) ban.setSeconds(durationSeconds);
-
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(11);
-    ra.setBanuser(ban);
-    this.sendRoomAction(ra);
-  };
-
-  public transferRoomOwnership = (roomID: string, newOwnerID: string) => {
-    const transfer = new chat.RoomActionRequest.TransferOwnership();
-    transfer.setRoomid(roomID);
-    transfer.setNewownerid(newOwnerID);
-
-    const ra = new chat.RoomActionRequest();
-    ra.setAction(13);
-    ra.setTransferowner(transfer);
-    this.sendRoomAction(ra);
-  };
+  public transferRoomOwnership(roomID: string, newOwnerID: string) {
+    this.sendRoomAction(
+      chat.RoomActionRequest.create({
+        action: ActionType.TRANSFEROWNERSHIP,
+        transferOwner: chat.RoomActionRequest.TransferOwnership.create({
+          roomID,
+          newOwnerID
+        })
+      })
+    );
+  }
 
   // INTERNALS
 
   private handleMessage(event: MessageEvent) {
-    const msg = chat.ChatClientUnionMessage.deserializeBinary(
-      new Uint8Array(event.data, 0, event.data.byteLength)
-    );
+    const msg = chat.ChatClientUnionMessage.decode(new Uint8Array(event.data, 0, event.data.byteLength));
 
-    switch (msg.getType()) {
-      case ChatClientUnionMessage_MessageTypes.CHATMESSAGE:
-        const chat = msg.getChat();
-        if (!chat) {
-          console.warn(`CSEChat | message null or undefined for message type CHATMESSAGE`);
-          return;
-        }
-
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.CHATMESSAGE
-          ],
-          {
-            type: chat.getType(),
-            content: chat.getContent(),
-            senderFlag: chat.getSenderflag(),
-            senderID: chat.getSenderid(),
-            senderName: chat.getSendername(),
-            targetID: chat.getTargetid(),
-            targetName: chat.getTargetname(),
-            when: new Date(),
-          }
-        );
+    switch (msg.type) {
+      case ClientMessages.CHATMESSAGE:
+        this.triggerEvent(msg.type, { ...msg.chat, when: new Date() });
         return;
-      case ChatClientUnionMessage_MessageTypes.PINGPONGMESSAGE: {
+
+      case ClientMessages.PINGPONGMESSAGE:
         setTimeout(this.sendPing, 10000);
         return;
-      }
-      case ChatClientUnionMessage_MessageTypes.ROOMACTION: {
-        const roomAction = msg.getRoomaction();
-        if (!roomAction) {
-          console.warn(`CSEChat | message null or undefined for message type ROOMACTION`);
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.ROOMACTION
-          ],
-          {
-            action: roomAction.getAction(),
-            success: roomAction.getSuccess(),
-            message: roomAction.getMessage(),
-          }
-        );
+
+      case ClientMessages.ROOMACTION:
+        this.triggerEvent(msg.type, msg.roomAction);
         return;
-      }
-      case ChatClientUnionMessage_MessageTypes.ROOMINFO:
-        const info = msg.getInfo();
-        if (!info) {
-          console.warn(`CSEChat | message null or undefined for message type ROOMINFO`);
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.ROOMINFO
-          ],
-          {
-            roomID: info.getRoomid(),
-            name: info.getName(),
-            category: info.getCategory(),
-            roles: info.getRolesList().map(role => ({
-              name: role.getName(),
-              permissions: role.getPermissions(),
-            })),
-          }
-        );
+
+      case ClientMessages.ROOMINFO:
+        this.triggerEvent(msg.type, msg.info);
         return;
-      case ChatClientUnionMessage_MessageTypes.JOINED:
-        const joined = msg.getJoined();
-        if (!joined) {
-          console.warn(`CSEChat | message null or undefined for message type JOINED`);
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.JOINED
-          ],
-          {
-            roomID: joined.getRoomid(),
-            userID: joined.getUserid(),
-            name: joined.getName(),
-            role: joined.getRole(),
-          }
-        );
+
+      case ClientMessages.JOINED:
+        this.triggerEvent(msg.type, msg.joined);
         return;
-      case ChatClientUnionMessage_MessageTypes.LEFT:
-        const left = msg.getLeft();
-        if (!left) {
-          console.warn(`CSEChat | message null or undefined for message type LEFT`);
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.LEFT
-          ],
-          {
-            roomID: left.getRoomid(),
-            userID: left.getUserid(),
-            name: left.getName(),
-          }
-        );
+
+      case ClientMessages.LEFT:
+        this.triggerEvent(msg.type, msg.left);
         return;
-      case ChatClientUnionMessage_MessageTypes.RENAMED:
-        const renamed = msg.getRenamed();
-        if (!renamed) {
-          console.warn(`CSEChat | message null or undefined for message type RENAMED`);
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.RENAMED
-          ],
-          {
-            roomID: renamed.getRoomid(),
-            name: renamed.getName(),
-          }
-        );
+
+      case ClientMessages.RENAMED:
+        this.triggerEvent(msg.type, msg.renamed);
         return;
-      case ChatClientUnionMessage_MessageTypes.ROLEADDED:
-        const roleAdded = msg.getRoleadded();
-        if (!roleAdded) {
-          console.warn(
-            `CSEChat | message null or undefined for message type ROLEADDED`
-          );
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.ROLEADDED
-          ],
-          {
-            roomID: roleAdded.getRoomid(),
-            name: roleAdded.getName(),
-            permissions: roleAdded.getPermissions(),
-          }
-        );
+
+      case ClientMessages.ROLEADDED:
+        this.triggerEvent(msg.type, msg.roleAdded);
         return;
-      case ChatClientUnionMessage_MessageTypes.ROLEUPDATED:
-        const roleUpdated = msg.getRoleupdated();
-        if (!roleUpdated) {
-          console.warn(
-            `CSEChat | message null or undefined for message type ROLEUPDATED`
-          );
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.ROLEUPDATED
-          ],
-          {
-            roomID: roleUpdated.getRoomid(),
-            name: roleUpdated.getName(),
-            permissions: roleUpdated.getPermissions(),
-          }
-        );
+
+      case ClientMessages.ROLEUPDATED:
+        this.triggerEvent(msg.type, msg.roleUpdated);
         return;
-      case ChatClientUnionMessage_MessageTypes.ROLEREMOVED:
-        const roleRemoved = msg.getRoleremoved();
-        if (!roleRemoved) {
-          console.warn(
-            `CSEChat | message null or undefined for message type ROLEREMOVED`
-          );
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.ROLEREMOVED
-          ],
-          {
-            roomID: roleRemoved.getRoomid(),
-            name: roleRemoved.getName(),
-          }
-        );
+
+      case ClientMessages.ROLEREMOVED:
+        this.triggerEvent(msg.type, msg.roleRemoved);
         return;
-      case ChatClientUnionMessage_MessageTypes.ROLEASSIGNED:
-        const roleAssigned = msg.getRoleassigned();
-        if (!roleAssigned) {
-          console.warn(
-            `CSEChat | message null or undefined for message type ROLEASSIGNED`
-          );
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.ROLEASSIGNED
-          ],
-          {
-            roomID: roleAssigned.getRoomid(),
-            roleName: roleAssigned.getRolename(),
-            userID: roleAssigned.getUserid(),
-          }
-        );
+
+      case ClientMessages.ROLEASSIGNED:
+        this.triggerEvent(msg.type, msg.roleAssigned);
         return;
-      case ChatClientUnionMessage_MessageTypes.INVITERECEIVED:
-        const invited = msg.getInvited();
-        if (!invited) {
-          console.warn(
-            `CSEChat | message null or undefined for message type INVITERECEIVED`
-          );
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.INVITERECEIVED
-          ],
-          {
-            roomID: invited.getRoomid(),
-            roomName: invited.getRoomname(),
-          }
-        );
+
+      case ClientMessages.INVITERECEIVED:
+        this.triggerEvent(msg.type, msg.invited);
         return;
-      case ChatClientUnionMessage_MessageTypes.KICKED:
-        const kicked = msg.getKicked();
-        if (!kicked) {
-          console.warn(
-            `CSEChat | message null or undefined for message type KICKED`
-          );
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.KICKED
-          ],
-          {
-            roomID: kicked.getRoomid(),
-          }
-        );
+
+      case ClientMessages.KICKED:
+        this.triggerEvent(msg.type, msg.kicked);
         return;
-      case ChatClientUnionMessage_MessageTypes.BANNED:
-        const banned = msg.getBanned();
-        if (!banned) {
-          console.warn(
-            `CSEChat | message null or undefined for message type BANNED`
-          );
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.BANNED
-          ],
-          {
-            roomID: banned.getRoomid(),
-            expiration: banned.getExpiration(),
-          }
-        );
+
+      case ClientMessages.BANNED:
+        this.triggerEvent(msg.type, msg.banned);
         return;
-      case ChatClientUnionMessage_MessageTypes.MUTED:
-        const muted = msg.getMuted();
-        if (!muted) {
-          console.warn(
-            `CSEChat | message null or undefined for message type MUTED`
-          );
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.MUTED
-          ],
-          {
-            roomID: muted.getRoomid(),
-            expiration: muted.getExpiration(),
-          }
-        );
+
+      case ClientMessages.MUTED:
+        this.triggerEvent(msg.type, msg.muted);
         return;
-      case ChatClientUnionMessage_MessageTypes.OWNERCHANGED:
-        const ownerChanged = msg.getOwnerchanged();
-        if (!ownerChanged) {
-          console.warn(
-            `CSEChat | message null or undefined for message type OWNERCHANGED`
-          );
-          return;
-        }
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.OWNERCHANGED
-          ],
-          {
-            roomID: ownerChanged.getRoomid(),
-            userID: ownerChanged.getUserid(),
-          }
-        );
+
+      case ClientMessages.OWNERCHANGED:
+        this.triggerEvent(msg.type, msg.ownerChanged);
         return;
-      case ChatClientUnionMessage_MessageTypes.DIRECTORY:
-        const directory = msg.getDirectory();
-        if (!directory) {
-          console.warn(
-            `CSEChat | message null or undefined for message type DIRECTORY`
-          );
-          return;
-        }
-        const dir = {
-          rooms: directory.getRoomsList().map(info => ({
-            roomID: info.getRoomid(),
-            name: info.getName(),
-            category: info.getCategory(),
-          })),
-        };
-        this.eventEmitter.emit(
-          ChatClientUnionMessage_MessageTypes[
-            ChatClientUnionMessage_MessageTypes.DIRECTORY
-          ],
-          dir
-        );
+
+      case ClientMessages.DIRECTORY:
+        this.triggerEvent(msg.type, msg.directory);
         return;
     }
   }
 
-  private sendProtoMessage = (msg: any) => {
+  private bindHandler(type: chat.ChatClientUnionMessage.MessageTypes, callback: Callback): ListenerHandle {
+    return this.eventEmitter.on(ClientMessages[type], callback);
+  }
+
+  private triggerEvent(type: chat.ChatClientUnionMessage.MessageTypes, msg: any) {
+    if (!msg) {
+      console.warn(`CSEChat | message null or undefined for message type ${ClientMessages[type]}`);
+      return;
+    }
+    return this.eventEmitter.trigger(ClientMessages[type], msg);
+  }
+
+  private sendProtoMessage(msg: chat.ChatServerUnionMessage) {
     if (!this.connected) {
       this.messageQueue.push(msg);
-    };
+    }
 
     if (!this.socket) {
       let message = null;
@@ -865,17 +512,21 @@ export class CSEChat {
         console.error('Failed to stringify msg passed to sendProtoMessage', msg);
       }
 
-      console.error('Tried to sendProtoMessage when we didnt have a socket? Message: ', message);
+      console.error("Tried to sendProtoMessage when we didn't have a socket? Message: ", message);
       return;
     }
 
-    this.socket.send(msg.serializeBinary());
-  };
+    const writer = new protobuf.Writer();
+    chat.ChatServerUnionMessage.encode(msg, writer);
+    this.socket.send(writer.finish());
+  }
 
-  private sendRoomAction = (roomAction: any) => {
-    const union = new chat.ChatServerUnionMessage();
-    union.setMessagetype(3); // ROOMACTION
-    union.setRoomaction(roomAction);
-    this.sendProtoMessage(union);
-  };
+  private sendRoomAction(roomAction: chat.RoomActionRequest) {
+    this.sendProtoMessage(
+      chat.ChatServerUnionMessage.create({
+        messageType: ServerMessages.ROOMACTION,
+        roomAction
+      })
+    );
+  }
 }

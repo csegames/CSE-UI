@@ -5,50 +5,41 @@
  */
 
 import { InternalGameInterfaceExt } from './InternalGameInterfaceExt';
+import { ObjectiveDetailMessageState } from '../../_baseGame/types/Objective';
+import { EntityDirection } from './types/EntityDirection';
+import {
+  BaseEntityStateModel,
+  UpdatableBaseEntityStateModel,
+  UpdatablePlayerEntityStateModel
+} from './GameClientModels/EntityState';
+import { ScenarioRoundState } from '../webAPI/definitions';
+import { UpdatableSelfPlayerStateModel } from './GameClientModels/PlayerState';
+import { ConsumableItemsState } from './GameClientModels/ConsumableItemsState';
+import { ControllerButton } from '../../_baseGame/types/Gamepad';
+import { ListenerHandle } from '../../_baseGame/listenerHandle';
 
 /**
- * GameModel interface defines the structure and functionality of the global game object as presented by the game
- * client.
- *
- * If game is not defined, then the page has not yet been initialized by the game engine or we are not running in the
- * context of the game client.
- *
- * In the case that game is not defined, replacement methods are in place to mock Coherent engine support for functions
- * provided through this global api object.
+ * GameInterface is the interface of the provided global game object from Coherent - it is deprecated and
+ * is slowly being removed as functionality is moved into the clientAPI instead.
  */
-
-export interface GameModel {
-}
-
-/**
- * GameInterface is an extension of the GameModel adding additional features to the provided global game object in order
- * to maintain a single primary interface for all interactions with the game client itself.
- */
-export interface GameInterface extends GameModel {
-
+export interface GameInterface {
   /**
-   * Subscribe to PlayerDirection updates
-   * @param {(playerDirections: PlayerDirection[]) => any} callback function to be executed with a PlayerDirection update
+   * Subscribe to EntityDirection updates
+   * @param {(entityDirections: EntityDirection[]) => any} callback function to be executed with a EntityDirection update
    */
-  onPlayerDirectionUpdate: (callback: (playerDirections: PlayerDirection[]) => any) => EventHandle;
-
-  /**
-   * Subscribe to Objective updates
-   * @param {(activeObjectives: ActiveObjectives[]) => any} callback function to be executed with an Active Objectives update
-   */
-  onObjectivesUpdate: (callback: (objectives: ObjectiveEntityState[]) => any) => EventHandle;
+  onEntityDirectionUpdate: (callback: (entityDirections: EntityDirection[]) => any) => ListenerHandle;
 
   /**
    * Subscribe to EntityState updates
-   * * @param {(entityState: AnyEntityStateModel) => any} callback function to be executed with an Entity State update
+   * * @param {(entityState: BaseEntityStateModel) => any} callback function to be executed with an Entity State update
    */
-  onEntityStateUpdate: (callback: (entityState: AnyEntityStateModel) => any) => EventHandle;
+  onEntityUpdated: (callback: (entityState: BaseEntityStateModel) => any) => ListenerHandle;
 
   /**
    * Subscribe to EntityState removes
    * * @param {(entityID: string) => any} callback function to be executed with an Entity State remove
    */
-  onEntityStateRemoved: (callback: (entityID: string) => any) => EventHandle;
+  onEntityRemoved: (callback: (entityID: string) => any) => ListenerHandle;
 
   /**
    * Subscribes a function to be executed when a scenario round ends.
@@ -62,19 +53,30 @@ export interface GameInterface extends GameModel {
       didEnd: boolean,
       didWin: boolean,
       roundResultMessage: string,
-      scenarioResultMessage: string,
-    ) => any,
-  ) => EventHandle;
+      scenarioResultMessage: string
+    ) => any
+  ) => ListenerHandle;
 
   /**
    * Subscribes a function to be executed when the state of the scenario changes
    */
-  onScenarioRoundUpdate: (callback: (state: ScenarioRoundState, stateStartTime: number, stateEndTime: number) => any) => EventHandle;
+  onScenarioRoundUpdate: (
+    callback: (state: ScenarioRoundState, stateStartTime: number, stateEndTime: number) => any
+  ) => ListenerHandle;
+
+  /**
+   * Subscribes a function to be executed when the state of the scenario changes
+   */
+  onObjectiveDetailsUpdate: (
+    callback: (objectiveDetailMessages: ObjectiveDetailMessageState[]) => any
+  ) => ListenerHandle;
 
   /**
    * Subscribe to Kill Streak updates
    */
-  onKillStreakUpdate: (callback: (newCount: number, newTimerStart: number, newTimerDuration: number) => any) => EventHandle;
+  onKillStreakUpdate: (
+    callback: (newCount: number, newTimerStart: number, newTimerDuration: number) => any
+  ) => ListenerHandle;
 
   /**
    * Subscribe to Collected Runes updates
@@ -83,53 +85,36 @@ export interface GameInterface extends GameModel {
     callback: (
       runes: { [rune: number]: number },
       runeBonuses: { [rune: number]: number },
-      maxRunesAllowed: { [rune: number]: number },
+      maxRunesAllowed: { [rune: number]: number }
     ) => any
-  ) => EventHandle;
+  ) => ListenerHandle;
+
+  onMenuControllerEvent: (callback: (button: ControllerButton) => any) => ListenerHandle;
+  onMenuControllerAxisEvent: (callback: (x: number, y: number) => any) => ListenerHandle;
 
   /* -------------------------------------------------- */
   /* GAME CLIENT MODELS                                 */
   /* -------------------------------------------------- */
 
   /**
-   * Player's current state. Includes health, name, and basic character data
+   * Player's current state. Includes name and basic character data
    */
-  selfPlayerState: SelfPlayerState;
+  selfPlayerState: UpdatableSelfPlayerStateModel;
+
+  /**
+   * Player's current state. Includes name and basic character data
+   */
+  selfPlayerEntityState: UpdatablePlayerEntityStateModel;
 
   /**
    * Map of entities that the UI knows about by EntityID
    */
-  entities: { [entityID: string]: AnyEntityState };
-
-    /**
-   * Map of ability states that the UI knows about by ability id
-   */
-  abilityStates: { [id: string]: AbilityState };
-
-  /**
-   * Current state of the abilitybar, temp - this defines the exact ability bar layout for now
-   */
-  abilityBarState: AbilityBarState;
-
-  /**
-   * List of class defs - champions
-   */
-  classes: CharacterClassDef[];
-
-  /**
-   * List of race defs - costumes
-   */
-  races: CharacterRaceDef[];
+  entities: { [entityID: string]: UpdatableBaseEntityStateModel };
 
   /**
    * Current state of the consumable items
    */
   consumableItemsState: ConsumableItemsState;
-
-  /**
-   * Status definition information
-   */
-  statuses: StatusDef[];
 }
 
 export type DevGameInterface = InternalGameInterfaceExt;

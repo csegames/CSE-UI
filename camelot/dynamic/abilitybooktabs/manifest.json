@@ -1,0 +1,44 @@
+[
+  {
+    "ID": "Archery",
+    "Name": "Archery",
+    "IconClass": "icon-bow-arrow-tab",
+    "SortOrder": 1
+  },
+  {
+    "ID": "Magic",
+    "Name": "Magic",
+    "IconClass": "icon-magic-tab",
+    "SortOrder": 2
+  },
+  {
+    "ID": "Melee",
+    "Name": "Melee",
+    "IconClass": "icon-sword-tab",
+    "SortOrder": 3
+  },
+  {
+    "ID": "Song",
+    "Name": "Song",
+    "IconClass": "icon-category-food",
+    "SortOrder": 4
+  },
+  {
+    "ID": "Throwing",
+    "Name": "Throwing",
+    "IconClass": "icon-thrown-tab",
+    "SortOrder": 5
+  },
+  {
+    "ID": "Shout",
+    "Name": "Shout",
+    "IconClass": "icon-shout-tab",
+    "SortOrder": 6
+  },
+  {
+    "ID": "Misc",
+    "Name": "Misc",
+    "IconClass": "icon-misc-tab",
+    "SortOrder": 7
+  }
+]

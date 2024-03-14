@@ -4,18 +4,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export {};
+export interface Screenshot {
+  /**
+   * Base64 encoded image data
+   */
+  image: string;
 
-declare global {
-  interface Screenshot {
-    /**
-     * Base64 encoded image data
-     */
-    image: string;
-
-    /**
-     * Path to the screenshot location saved on your pc.
-     */
-    path: string;
-  }
+  /**
+   * Path to the screenshot location saved on your pc.
+   */
+  path: string;
 }

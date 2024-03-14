@@ -264,6 +264,7 @@ message ChatMessage {
   string senderName = 5;
   string targetID = 6;
   string targetName = 7;
+  string senderAccountID = 8;
 }
 
 message PingPongMessage {

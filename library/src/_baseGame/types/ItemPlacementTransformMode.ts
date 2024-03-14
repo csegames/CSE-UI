@@ -4,21 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export {};
-
-declare global {
-  enum ItemPlacementTransformMode {
-    Translate = 0,
-    Rotate = 1,
-    Scale = 2,
-  }
-  interface Window {
-    ItemPlacementTransformMode: typeof ItemPlacementTransformMode;
-  }
-}
-enum ItemPlacementTransformMode {
+export enum ItemPlacementTransformMode {
   Translate = 0,
   Rotate = 1,
-  Scale = 2,
+  Scale = 2
 }
-window.ItemPlacementTransformMode = ItemPlacementTransformMode;

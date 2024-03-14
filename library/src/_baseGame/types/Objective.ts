@@ -4,47 +4,38 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export {};
-
-declare global {
-  enum ObjectiveUIVisibility {
-    Hidden = 0,
-    Hud = 1 << 0,
-    Compass = 1 << 1,
-    Alert = 1 << 2,
-    World = 1 << 3,
-    Map = 1 << 4,
-
-    All = (1 << 5) - 1,
-  }
-
-  interface Window {
-    ObjectiveUIVisibility: typeof ObjectiveUIVisibility;
-  }
-
-  interface ObjectiveEntityState extends EntityStateModel {
-    type: "item";
-    iconClass: string;
-    objective: {
-      indicator: number;
-      visibility: ObjectiveUIVisibility;
-      state: ObjectiveState;
-      progress: CurrentMax;
-      bearingDegrees: number;
-      footprintRadius: number;
-    }
-  }
+export interface ObjectiveDetailMessageState {
+  messageID: string;
+  title: string;
+  text: string;
+  category: ObjectiveDetailCategory;
+  state: ObjectiveDetailState;
+  maxCount: number;
+  currentCount: number;
+  totalTime: number;
+  startTime: number;
 }
 
-enum ObjectiveUIVisibility {
+export enum ObjectiveUIVisibility {
   Hidden = 0,
   Hud = 1 << 0,
   Compass = 1 << 1,
   Alert = 1 << 2,
   World = 1 << 3,
   Map = 1 << 4,
+  ScreenEdge = 1 << 5,
 
-  All = (1 << 5) - 1,
+  All = (1 << 6) - 1
 }
 
-window.ObjectiveUIVisibility = ObjectiveUIVisibility;
+export enum ObjectiveDetailCategory {
+  Primary = 0,
+  MainQuest = 1,
+  SideQuest = 2
+}
+
+export enum ObjectiveDetailState {
+  InProgress = 0,
+  CompletedSuccess = 1,
+  CompletedFailed = 2
+}

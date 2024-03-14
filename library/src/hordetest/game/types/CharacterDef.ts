@@ -4,29 +4,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+export interface CharacterClassDef {
+  id: number;
+  stringID: string;
+  name: string;
+  startAbilityDisplayIDs: number[];
+}
 
-export {};
-
-declare global {
-  interface CharacterAbilityDef {
-    name: string;
-    iconClass: string;
-    description: string;
-  }
-
-  interface CharacterClassDef {
-    id: number;
-    name: string;
-    abilities: CharacterAbilityDef[];
-  }
-
-  interface CharacterRaceDef {
-    id: number;
-    name: string;
-    description: string;
-    thumbnailURL: string;
-    standingImageURL: string;
-    championSelectImageURL: string;
-    resourceName: string;
-  }
+export interface CharacterRaceDef {
+  id: number;
+  stringID: string;
+  name: string;
+  description: string;
+  thumbnailURL: string;
+  standingImageURL: string;
+  championSelectImageURL: string;
+  resourceName: string;
 }

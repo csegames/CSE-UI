@@ -1,0 +1,116 @@
+[
+  {
+    "ID": -50,
+    "Name": "Switch to placement mode",
+    "Description": "Switches to placement mode, to place large chunks of blocks or blueprints",
+    "IconURL": "dynamic/systemabilities/assets/building-btn.jpg"
+  },
+  {
+    "ID": -49,
+    "Name": "Add",
+    "Description": "Adds currently shown blocks",
+    "IconURL": "dynamic/systemabilities/assets/add.png"
+  },
+  {
+    "ID": -48,
+    "Name": "Switch to selection mode",
+    "Description": "Switches to selection mode, to remove blocks or create blueprints",
+    "IconURL": "dynamic/systemabilities/assets/select-block.jpg"
+  },
+  {
+    "ID": -47,
+    "Name": "Remove",
+    "Description": "Removes selected blocks",
+    "IconURL": "dynamic/systemabilities/assets/remove-block.jpg"
+  },
+  {
+    "ID": -46,
+    "Name": "Undo",
+    "Description": "Undoes the last change to the building",
+    "IconURL": "dynamic/systemabilities/assets/undo.jpg"
+  },
+  {
+    "ID": -45,
+    "Name": "Redo",
+    "Description": "Redoes the last undone change to the building",
+    "IconURL": "dynamic/systemabilities/assets/redo.jpg"
+  },
+  {
+    "ID": -44,
+    "Name": "Rotate X",
+    "Description": "Rotates the current block placement/selection volume in X",
+    "IconURL": "dynamic/systemabilities/assets/x-rotate-red.jpg"
+  },
+  {
+    "ID": -43,
+    "Name": "Rotate Y",
+    "Description": "Rotates the current block placement/selection volume in Y",
+    "IconURL": "dynamic/systemabilities/assets/y-rotate-grn.jpg"
+  },
+  {
+    "ID": -42,
+    "Name": "Rotate Z",
+    "Description": "Rotates the current block placement/selection volume in Z",
+    "IconURL": "dynamic/systemabilities/assets/z-rotate-blue.jpg"
+  },
+  {
+    "ID": -41,
+    "Name": "Flip X",
+    "Description": "Flips the current block placement/selection volume in X",
+    "IconURL": "dynamic/systemabilities/assets/x-flip.jpg"
+  },
+  {
+    "ID": -40,
+    "Name": "Flip Y",
+    "Description": "Flips the current block placement/selection volume in Y",
+    "IconURL": "dynamic/systemabilities/assets/y-flip.jpg"
+  },
+  {
+    "ID": -39,
+    "Name": "Flip Z",
+    "Description": "Flips the current block placement/selection volume in Z",
+    "IconURL": "dynamic/systemabilities/assets/z-flip.jpg"
+  },
+  {
+    "ID": -38,
+    "Name": "Copy",
+    "Description": "Copies the currently selected blocks to the clipboard",
+    "IconURL": "dynamic/systemabilities/assets/copy.png"
+  },
+  {
+    "ID": -37,
+    "Name": "Paste",
+    "Description": "Prepares to paste the last copied blocks",
+    "IconURL": "dynamic/systemabilities/assets/paste.png"
+  },
+  {
+    "ID": -36,
+    "Name": "Cycle block shape",
+    "Description": "Cycles the block shape being placed",
+    "IconURL": "dynamic/systemabilities/assets/next-shape.png"
+  },
+  {
+    "ID": -35,
+    "Name": "Cycle block material",
+    "Description": "Cycles the block material being placed",
+    "IconURL": "dynamic/systemabilities/assets/next-material.png"
+  },
+  {
+    "ID": -34,
+    "Name": "Hold to select an object to move",
+    "Description": "While held, clicking on an existing placed object will remove it from the building and allow it to be placed elsewhere",
+    "IconURL": "dynamic/systemabilities/assets/chair-select.png"
+  },
+  {
+    "ID": -33,
+    "Name": "Hold to remove object(s)",
+    "Description": "While held, clicking on an existing placed object will remove it from the building",
+    "IconURL": "dynamic/systemabilities/assets/remove.png"
+  },
+  {
+    "ID": -20,
+    "Name": "Exit",
+    "Description": "Exits",
+    "IconURL": "dynamic/systemabilities/assets/exit.png"
+  }
+]

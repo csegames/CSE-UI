@@ -4,12 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export {};
+import { ItemGameplayType } from './ItemGameplayType';
 
-declare global {
-  interface ConsumableItem {
-    iconClass: string;
-    iconUrl: string;
-    name: string;
-  }
+export interface ConsumableItem {
+  iconClass: string;
+  iconUrl: string;
+  name: string;
+  description: string;
+  gameplayType: ItemGameplayType;
 }

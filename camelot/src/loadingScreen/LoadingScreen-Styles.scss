@@ -1,0 +1,644 @@
+@import '../shared/fonts';
+
+html,
+body,
+#loadingscreen {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  // Base font size from which `rem` is calculated.
+  font-size: 1.1vmin;
+}
+
+.LoadingScreen-Container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+}
+
+.LoadingScreen-LogoWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.LoadingScreen-Overlay {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.LoadingScreen-TriRealm {
+  margin: 0;
+  color: #aaa;
+  text-align: center;
+  font-family: TitilliumWeb;
+  font-size: 1.5rem;
+}
+
+.LoadingScreen-Logo {
+  width: 32.13vmin;
+  height: 11.85vmin;
+  background: url(../images/logo.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.LoadingScreen-Trademark {
+  margin-top: 4.63vmin;
+  margin-bottom: 1.85vmin;
+  color: #aaa;
+  text-align: center;
+  font-family: TitilliumWeb;
+  font-size: 1.17rem;
+}
+
+.LoadingScreen-PoweredBy {
+  position: absolute;
+  left: 1.85vmin;
+  bottom: 3.7vmin;
+  width: 24.26vmin;
+  height: 13.15vmin;
+  background: url(../images/poweredby-stacked.png) no-repeat;
+  background-size: contain;
+}
+
+.LoadingScreen-LoadingWrapper {
+  position: absolute;
+  right: 3.7vmin;
+  bottom: 3.7vmin;
+  max-width: 27.78vmin;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.LoadingScreen-LoadingMessage {
+  color: white;
+  font-family: TitilliumWeb;
+  font-size: 1.5rem;
+  margin-top: -6.48vmin;
+  text-align: center;
+}
+
+.LoadingScreen-LoadingIconSizer {
+  display: inline-block;
+  width: 13.39vmin;
+  height: 13.39vmin;
+}
+
+.LoadingScreen-LoadingIcon {
+  overflow: hidden;
+  background-repeat: no-repeat;
+  filter: brightness(0) invert(1);
+  opacity: 0.2;
+}
+
+// Parallax stuff -- todo, move to emotion
+.ParallaxBG-VideoBG {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin-top: -1.85vmin;
+
+  .ray1 {
+    background-image: url(../images/visualfx/ray-1.png);
+    background-position: 1% top;
+    background-size: 60%;
+    animation: rays 5s ease infinite;
+    &.arthurian {
+      -webkit-filter: hue-rotate(20deg) opacity(1);
+      filter: hue-rotate(20deg) opacity(1);
+      background-position: 100% top;
+      background-size: 100%;
+      animation: rays 15s ease infinite;
+      &.pict {
+        -webkit-filter: saturate(0) opacity(1);
+        filter: saturate(0) opacity(1);
+      }
+    }
+    &.viking {
+      -webkit-filter: grayscale(100%) brightness(150%) opacity(0.5);
+      filter: grayscale(100%) brightness(150%) opacity(0.5);
+      background-position: 150% top;
+      background-size: 70%;
+      animation: rays 15s ease infinite;
+    }
+    &.tdd {
+      background-position: 150% top;
+      background-size: 70%;
+      animation: rays 15s ease infinite;
+      -webkit-filter: hue-rotate(40deg);
+      filter: hue-rotate(40deg);
+    }
+  }
+
+  .ray2 {
+    background-image: url(../images/visualfx/ray-1.png);
+    background-position: 50% top;
+    background-size: 70%;
+    animation: rays 3s ease infinite;
+    &.arthurian {
+      background-position: 80% top;
+      animation: rays 13s ease infinite;
+      -webkit-filter: hue-rotate(20deg) opacity(0.8);
+      filter: hue-rotate(20deg) opacity(0.8);
+      &.pict {
+        -webkit-filter: saturate(0) opacity(1);
+        filter: saturatete(0) opacity(1);
+      }
+    }
+    &.viking {
+      background-position: 80% top;
+      animation: rays 13s ease infinite;
+      -webkit-filter: saturate(0) brightness(150%) opacity(0.8);
+      filter: saturate(0) brightness(150%) opacity(0.8);
+    }
+    &.tdd {
+      background-position: 80% top;
+      background-size: 70%;
+      animation: rays 13s ease infinite;
+      -webkit-filter: hue-rotate(40deg);
+      filter: hue-rotate(40deg);
+    }
+  }
+
+  .ray3 {
+    background-image: url(../images/visualfx/ray-3.png);
+    background-position: 100% top;
+    background-size: 80%;
+    animation: rays 4s ease infinite;
+    &.arthurian {
+      background-image: url(../images/visualfx/ray-1.png);
+      background-position: 20% top;
+      background-size: 100%;
+      animation: rays 10s ease infinite;
+      -webkit-filter: hue-rotate(20deg) opacity(1);
+      filter: hue-rotate(20deg) opacity(1);
+      &.pict {
+        -webkit-filter: saturate(0) opacity(1);
+        filter: saturate(0) opacity(1);
+      }
+    }
+    &.viking {
+      background-image: url(../images/visualfx/ray-1.png);
+      background-position: 30% top;
+      background-size: 50%;
+      animation: rays 10s ease infinite;
+      -webkit-filter: saturate(0) brightness(150%) opacity(0.5);
+      filter: saturate(0) brightness(150%) opacity(0.5);
+    }
+    &.tdd {
+      background-image: url(../images/visualfx/ray-1.png);
+      background-position: 30% top;
+      background-size: 50%;
+      animation: rays 10s ease infinite;
+      -webkit-filter: hue-rotate(40deg);
+      filter: hue-rotate(40deg);
+    }
+  }
+
+  .particle {
+    background-image: url(../images/visualfx/particle.png);
+    &.arthurian {
+      background-image: url(../images/visualfx/art/art-particle.png);
+      -webkit-filter: opacity(0.5);
+      filter: opacity(0.5);
+    }
+    &.viking {
+      background-image: url(../images/visualfx/vik/vik-particle.png);
+      filter: invert(10%);
+    }
+    &.tdd {
+      -webkit-filter: invert(10%);
+      filter: invert(10%);
+    }
+  }
+
+  .veil {
+    background-position: bottom;
+    background-size: cover;
+    top: -0.926vmin !important;
+    left: -4.63vmin !important;
+    width: 115%;
+    height: 115%;
+    &.arthurian {
+      z-index: 2;
+      background-image: url(../images/visualfx/art/art-veil.png);
+    }
+    &.viking {
+      background-image: url(../images/visualfx/vik/vik-veil.png);
+    }
+    &.tdd {
+      background-image: url(../images/visualfx/tdd/tdd-veil.png);
+    }
+    &.tdd-human {
+      background-image: url(../images/visualfx/tdd/human/tdd2-veil.png);
+    }
+    &.viking-valkyrie {
+      background-image: url(../images/visualfx/vik/valkyrie/vik2-veil.png);
+    }
+  }
+
+  .veil2 {
+    background-position: bottom;
+    background-size: cover;
+    transform: scale(1.2);
+    top: -0.926px !important;
+    left: -4.63px !important;
+    width: 115%;
+    height: 115%;
+    &.arthurian {
+      z-index: 2;
+      background-image: url(../images/visualfx/art/art-veil2.png);
+    }
+    &.viking {
+      background-image: url(../images/visualfx/vik/vik-veil2.png);
+    }
+    &.tdd {
+      background-image: url(../images/visualfx/tdd/tdd-veil2.png);
+    }
+  }
+
+  .layer1 {
+    background-image: url(../images/visualfx/tdd4.png);
+    background-position: bottom;
+    background-size: cover;
+    top: -0.926vmin !important;
+    left: -2.78vmin !important;
+    width: 110%;
+    height: 110%;
+    &.arthurian {
+      background-image: url(../images/visualfx/art/art-layer1.png);
+      background-size: cover;
+      background-position: center;
+    }
+    &.viking {
+      background-image: url(../images/visualfx/vik/vik-layer1.png);
+      background-position: right center;
+    }
+    &.tdd-human {
+      background-image: url(../images/visualfx/tdd/human/tdd2-layer1.png);
+      background-position: center;
+    }
+    &.viking-valkyrie {
+      background-image: url(../images/visualfx/vik/valkyrie/vik2-layer1.png);
+      background-position: right center;
+    }
+    &.arthurian-pict {
+      background-image: url(../images/visualfx/art/pict/art2-layer1.png);
+    }
+  }
+
+  .layer2 {
+    background-image: url(../images/visualfx/tdd3.png);
+    background-position: bottom;
+    background-size: cover;
+    top: -0.926vmin !important;
+    left: -2.78vmin !important;
+    width: 110%;
+    height: 110%;
+    &.arthurian {
+      background-image: url(../images/visualfx/art-grnd.png);
+      background-position: bottom right;
+    }
+    &.viking {
+      background-image: url(../images/visualfx/vik/vik-layer2.png);
+      background-position: right center;
+    }
+    &.tdd {
+      background-image: url(../images/visualfx/tdd/tdd-layer2.png);
+      background-position: right center;
+    }
+    &.tdd-human {
+      background-image: url(../images/visualfx/tdd/human/tdd2-layer2.png);
+      background-position: center;
+    }
+    &.viking-valkyrie {
+      background-image: url(../images/visualfx/vik/valkyrie/vik2-layer2.png);
+      background-position: right center;
+    }
+  }
+
+  .layer3 {
+    background-image: url(../images/visualfx/tdd2.png);
+    background-position: bottom;
+    background-size: cover;
+    top: -0.926vmin !important;
+    left: -2.78vmin !important;
+    width: 110%;
+    height: 110%;
+    &.arthurian {
+      background-image: url(../images/visualfx/art-castle.png);
+      background-position: bottom right;
+    }
+    &.viking {
+      background-image: url(../images/visualfx/viking-dragon.png);
+      background-position: center;
+    }
+    &.tdd {
+      background-image: url(../images/visualfx/tdd/tdd-layer3.png);
+      background-position: center;
+    }
+  }
+
+  .bg {
+    background-image: url(../images/visualfx/bg2.jpg);
+    top: -0.926vmin !important;
+    left: -2.78vmin !important;
+    width: 110%;
+    height: 110%;
+    background-position: bottom;
+    background-size: cover;
+    &.arthurian {
+      background-image: url(../images/visualfx/art/art-layer2.png);
+      background-position: center;
+    }
+    &.viking {
+      background-image: url(../images/visualfx/vik/vik-bg.png);
+    }
+    &.tdd {
+      background-image: url(../images/visualfx/tdd/tdd-bg.png);
+    }
+    &.tdd-human {
+      background-image: url(../images/visualfx/tdd/human/tdd2-bg.png);
+    }
+    &.viking-valkyrie {
+      background-image: url(../images/visualfx/vik/valkyrie/vik2-bg.png);
+    }
+    &.arthurian-pict {
+      background-image: url(../images/visualfx/art/pict/art2-bg.png);
+    }
+    &.no-char {
+      background-image: url(../images/MissingAsset.png);
+    }
+  }
+
+  .clouds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: transparent url(../images/visualfx/smoke-close.png) repeat-x bottom center;
+    z-index: 1;
+    animation: move-clouds-close 7s linear infinite;
+    transition: opacity 0.7s linear;
+    -webkit-transition: opacity 0.7s linear;
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: transparent url(../images/visualfx/smoke.png) repeat-x bottom center;
+      background-size: 46.3vmin;
+      z-index: 3;
+      -webkit-filter: opacity(0.2);
+      filter: opacity(0.2);
+      animation: move-clouds-back 7s linear infinite;
+    }
+    &.arthurian {
+      animation: move-clouds-close-left 15s linear infinite;
+      -webkit-filter: opacity(0.8);
+      filter: opacity(0.8);
+      transform: scaleY(-1);
+      &:before {
+        bottom: 50%;
+        height: 50%;
+        animation: move-clouds-back-art 15s linear infinite;
+        background-size: 74.07vmin;
+        z-index: 1;
+        -webkit-filter: opacity(0.5);
+        filter: opacity(0.5);
+      }
+    }
+    &.viking {
+      animation: move-clouds-close 15s linear infinite;
+      -webkit-filter: brightness(0.5) opacity(0.5);
+      filter: brightness(0.5) opacity(0.5);
+      &:before {
+        z-index: 1;
+        opacity: 1;
+        animation: move-clouds-back 15s linear infinite;
+      }
+    }
+    &.tdd {
+      animation: move-clouds-close-left 15s linear infinite;
+      -webkit-filter: brightness(0.5) opacity(0.5);
+      filter: brightness(0.5) opacity(0.5);
+      &:before {
+        opacity: 1;
+        -webkit-filter: brightness(0) opacity(0.5);
+        filter: brightness(0) opacity(0.5);
+        animation: move-clouds-back-left 20s linear infinite;
+      }
+    }
+  }
+}
+
+.ParallaxBG-Parallaxer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  left: 0;
+}
+
+.ParallaxBG-BGElement {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  background-repeat: no-repeat;
+  background-position: top center;
+  transition: opacity 0.7s linear;
+  -webkit-transition: opacity 0.7s linear;
+}
+
+/*Moving clouds*/
+
+@keyframes move-clouds-back {
+  from {
+    background-position: 0 bottom;
+  }
+  to {
+    background-position: 46.3vmin bottom;
+  }
+}
+
+@keyframes move-clouds-back-art {
+  from {
+    background-position: 74.07vmin bottom;
+  }
+  to {
+    background-position: 0 bottom;
+  }
+}
+
+@keyframes move-clouds-close {
+  from {
+    background-position: 0 bottom;
+  }
+  to {
+    background-position: 146.1vmin bottom;
+  }
+}
+
+@keyframes move-clouds-back-left {
+  from {
+    background-position: 46.3vmin bottom;
+  }
+  to {
+    background-position: 0 bottom;
+  }
+}
+
+@keyframes move-clouds-close-left {
+  from {
+    background-position: 146.1vmin bottom;
+  }
+
+  to {
+    background-position: 0 bottom;
+  }
+}
+
+/* Move Rays */
+
+@keyframes rays {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+/* Lightning Blink */
+
+@keyframes blink {
+  0%,
+  42%,
+  45%,
+  69%,
+  100% {
+    opacity: 1;
+  }
+  44%,
+  53%,
+  70% {
+    opacity: 0.5;
+  }
+}
+
+.ParallaxContainer-Root {
+  transition: opacity 0.7s linear;
+}
+
+.ProgressBar-BarContainer {
+  position: relative;
+  height: 1.39vmin;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  background: url(../images/progressbar/texture-overlay.png), linear-gradient(black, #272727);
+  background-repeat-y: no-repeat;
+  border: 1px solid #464646;
+  border-top: 2px solid #1b1b1b;
+  border-right: 0px solid #f0f;
+  border-bottom: 2px solid #1b1b1b;
+  border-left: 0px solid #09f;
+}
+
+.ProgressBar-ProgressText {
+  font-size: 0.75rem;
+  padding: 0.278vmin 0.926vmin;
+  color: #c3c3c3;
+  background: url(../images/progressbar/loading-percent.png);
+  display: block;
+  position: absolute;
+  top: -0.185vmin;
+  left: -0.185vmin;
+  width: 4.63vmin;
+  height: 0.83vmin;
+  z-index: 1;
+}
+
+.ProgressBar-Bar {
+  position: relative;
+  display: flex;
+  width: 100%;
+  transition: all linear 0.5s;
+  &:after {
+    content: '';
+    background: url(../images/progressbar/loading-bar-end.png) no-repeat center right;
+    width: 18.52vmin;
+    height: 0.926vmin;
+    margin-top: 0.185vmin;
+  }
+
+  &:before {
+    content: '';
+    background: url(../images/progressbar/loading-bar-repeat.png) center;
+    width: 100%;
+    height: 0.926vmin;
+    margin-top: 0.185vmin;
+  }
+}
+
+.ProgressBar-ButtonShine {
+  pointer-events: none;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.463vmin;
+  opacity: 0;
+  height: 0.926vmin;
+  width: 7.87vmin;
+  background: linear-gradient(transparent, rgba(255, 255, 255, 1));
+  clip-path: polygon(80% 0%, 100% 0%, 20% 100%, 0% 100%);
+  -webkit-clip-path: polygon(80% 0%, 100% 0%, 20% 100%, 0% 100%);
+  -webkit-animation: progressBarButtonShine_shine 3s ease forwards;
+  animation: shine 3s ease forwards;
+
+  @keyframes progressBarButtonShine_shine {
+    from {
+      left: 95%;
+      opacity: 1;
+    }
+    to {
+      left: 1.85vmin;
+      opacity: 0;
+    }
+  }
+}

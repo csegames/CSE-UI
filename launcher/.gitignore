@@ -1,0 +1,4 @@
+.linaria-cache
+dist
+node_modules
+src/api/schema.json

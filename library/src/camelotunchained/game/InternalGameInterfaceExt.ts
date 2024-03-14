@@ -14,7 +14,4 @@ import { Resolvable } from '../../_baseGame/clientTasks';
  */
 export interface InternalGameInterfaceExt extends GameInterface {
   _activeTasks: { [id: number]: Resolvable<any> };
-  _cse_dev_selfPlayerState: SelfPlayerState;
-  _cse_dev_defaultSelfPlayerState: SelfPlayerState;
-  _cse_dev_announcementRouterHandle: EventHandle;
 }

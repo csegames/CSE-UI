@@ -5,23 +5,11 @@
  *
  */
 
-export {};
-
-declare global {
-  enum HealthBarKind {
-    FriendlyPlayer = 0,
-    EnemyPlayer = 1,
-    Item = 2,
-  }
-
-  interface Window {
-    HealthBarKind: typeof HealthBarKind;
-  }
-}
-
-enum HealthBarKind {
-  FriendlyPlayer = 0,
+export enum HealthBarKind {
+  FriendlyUser = 0,
   EnemyPlayer = 1,
   Item = 2,
+  EnemyItem = 3,
+  BossPlayer = 4,
+  EnemyUser = 5,
 }
-window.HealthBarKind = HealthBarKind;

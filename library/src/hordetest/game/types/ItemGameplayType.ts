@@ -5,25 +5,11 @@
  *
  */
 
-export {};
-
-declare global {
-  enum ItemGameplayType {
-    None = 0,
-    Throw = 1,
-    Deploy = 2,
-    Consume = 3,
-  }
-
-  interface Window {
-    ItemGameplayType: typeof ItemGameplayType;
-  }
-}
-
-enum ItemGameplayType {
+export enum ItemGameplayType {
   None = 0,
   Throw = 1,
   Deploy = 2,
   Consume = 3,
+  Interaction = 4,
+  DisabledInteraction = 5
 }
-window.ItemGameplayType = ItemGameplayType;

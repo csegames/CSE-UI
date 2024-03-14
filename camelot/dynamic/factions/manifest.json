@@ -1,0 +1,62 @@
+[
+  {
+    "ID": "Arthurian",
+    "AbilityBuilderBackgroundImage": "/dynamic/factions/assets/realm-bg-arthurian.jpg",
+    "NameplateIconFrameImage": "/dynamic/factions/assets/art-default-frame.png",
+    "AbilityBarEmptySlotImage": "/dynamic/factions/assets/art-empty-slot.png",
+    "AbilityBarDockImage": "/dynamic/factions/assets/art-dock-1.png",
+    "NameplateBackgroundImage": "/dynamic/factions/assets/art-nameplate-bg.png",
+    "NameplateMainFrameImage": "/dynamic/factions/assets/art-main-frame.png",
+    "NameplateMiniFrameImage": "/dynamic/factions/assets/art-mini-frame.png",
+    "NameplateProfileImage": "/dynamic/factions/assets/art-propic.png",
+    "ScoreboardBackgroundColor": "rgba(247,33,33,0.15)",
+    "ScoreboardTextColor": "#FF9F9F",
+    "PaperdollBackgroundImage": "/dynamic/factions/assets/bg-tdd.png",
+    "PaperdollBaseImage": "/dynamic/factions/assets/art-base.png"
+  },
+  {
+    "ID": "Factionless",
+    "AbilityBuilderBackgroundImage": "/images/MissingAsset.png",
+    "NameplateIconFrameImage": "/images/unit-frames/default-frame.png",
+    "AbilityBarEmptySlotImage": "/images/MissingAsset.png",
+    "AbilityBarDockImage": "/images/MissingAsset.png",
+    "NameplateBackgroundImage": null,
+    "NameplateMainFrameImage": "/images/MissingAsset.png",
+    "NameplateMiniFrameImage": "/images/unit-frames/mini-frame.png",
+    "NameplateProfileImage": null,
+    "ScoreboardBackgroundColor": "rgba(20,20,20,0.15)",
+    "ScoreboardTextColor": "#FFFFFF",
+    "PaperdollBackgroundImage": "/images/MissingAsset.png",
+    "PaperdollBaseImage": "/images/MissingAsset.png"
+  },
+  {
+    "ID": "TDD",
+    "AbilityBuilderBackgroundImage": "/dynamic/factions/assets/realm-bg-tdd.jpg",
+    "NameplateIconFrameImage": "/dynamic/factions/assets/tdd-default-frame.png",
+    "AbilityBarEmptySlotImage": "/dynamic/factions/assets/tdd-empty-slot.png",
+    "AbilityBarDockImage": "/dynamic/factions/assets/tdd-dock-1.png",
+    "NameplateBackgroundImage": "/dynamic/factions/assets/tdd-nameplate-bg.png",
+    "NameplateMainFrameImage": "/dynamic/factions/assets/tdd-main-frame.png",
+    "NameplateMiniFrameImage": "/dynamic/factions/assets/tdd-mini-frame.png",
+    "NameplateProfileImage": "/dynamic/factions/assets/tdd-propic.png",
+    "ScoreboardBackgroundColor": "rgba(196,216,1,0.15)",
+    "ScoreboardTextColor": "#E7FF9F",
+    "PaperdollBackgroundImage": "/dynamic/factions/assets/bg-tdd.png",
+    "PaperdollBaseImage": "/dynamic/factions/assets/tdd-base.png"
+  },
+  {
+    "ID": "Viking",
+    "AbilityBuilderBackgroundImage": "/dynamic/factions/assets/realm-bg-viking.jpg",
+    "NameplateIconFrameImage": "/dynamic/factions/assets/vik-default-frame.png",
+    "AbilityBarEmptySlotImage": "/dynamic/factions/assets/vik-empty-slot.png",
+    "AbilityBarDockImage": "/dynamic/factions/assets/vik-dock-1.png",
+    "NameplateBackgroundImage": "/dynamic/factions/assets/vik-nameplate-bg.png",
+    "NameplateMainFrameImage": "/dynamic/factions/assets/vik-main-frame.png",
+    "NameplateMiniFrameImage": "/dynamic/factions/assets/vik-mini-frame.png",
+    "NameplateProfileImage": "/dynamic/factions/assets/vik-propic.png",
+    "ScoreboardBackgroundColor": "rgba(35,155,242,0.15)",
+    "ScoreboardTextColor": "#AADAFF",
+    "PaperdollBackgroundImage": "/dynamic/factions/assets/bg-tdd.png",
+    "PaperdollBaseImage": "/dynamic/factions/assets/vik-base.png"
+  }
+]

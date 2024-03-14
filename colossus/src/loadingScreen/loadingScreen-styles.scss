@@ -1,0 +1,81 @@
+@import '../shared/components/color-code-styles.scss';
+
+.LoadingScreen-Container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: black;
+  background-size: 100% 100%;
+  background-repeat: 'no-repeat';
+}
+
+.LoadingScreen-Logo {
+  position: fixed;
+  left: 5.55vmin;
+  bottom: 2.95vmin;
+  width: 23.35vmin;
+  height: 6.1vmin;
+  background-image: url('../images/fullscreen/loadingscreen/logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.LoadingScreen-LoadingTextPosition {
+  position: fixed;
+  right: 1.85vmin;
+  bottom: 0.926vmin;
+  display: flex;
+  align-items: center;
+}
+
+.LoadingScreen-Text {
+  width: fit-content;
+  text-align: right;
+  font-size: 1.35rem;
+  color: white;
+  font-family: Lato;
+  font-weight: bold;
+  margin-right: 2.778vmin;
+  max-width: 28.7vmin;
+}
+
+.LoadingScreen-HintContainer {
+  height: 9.25vmin;
+  background-image: url('../images/hud/backgrounds/BlackBackground80.png');
+  background-repeat: repeat;
+  outline-offset: -0.45vmin;
+  outline: 1px solid rgba(72, 72, 72, 1);
+  position: absolute;
+  bottom: 2.778vmin;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  width: calc(100vw - 87.95vmin);
+  max-width: 55.55vmin;
+}
+
+.LoadingScreen-HintText {
+  position: absolute;
+  font-size: 1.35rem;
+  color: white;
+  font-family: Lato;
+  width: calc(100% - 2vmin);
+  height: calc(100% - 2vmin);
+  margin-top: 1vmin;
+  margin-left: 1vmin;
+
+  /* horizontal and vertical text centering */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.LoadingScreen-Sprite {
+  display: inline-block;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  width: 9.25vmin;
+  height: 9.25vmin;
+}

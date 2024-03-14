@@ -4,11 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export {};
-
-declare global {
-  interface CurrentMax {
-    current: number;
-    max: number;
-  }
+export interface CurrentMax {
+  current: number;
+  max: number;
 }

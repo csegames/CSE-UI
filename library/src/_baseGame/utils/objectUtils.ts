@@ -3,27 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-export {};
-
-declare global {
-
-  interface Dictionary<T> {
-    [id: string]: T;
-  }
-
-  function clone<T>(source: T): T;
-  function cloneDeep<T>(source: T): T;
-  function merge<T>(source: T, ...args: any[]): T;
-  function tryParseJSON<T>(json: string, logError: boolean): T;
-  interface Window {
-    clone<T>(source: T): T;
-    cloneDeep<T>(source: T): T;
-    merge<T>(source: T, ...args: any[]): T;
-    tryParseJSON<T>(json: string, logError: boolean): T;
-  }
-}
-
-window.clone = function<T>(source: T): T {
+export function clone<T>(source: T): T {
   if (Array.isArray(source)) {
     return source.slice() as any;
   }
@@ -33,17 +13,25 @@ window.clone = function<T>(source: T): T {
   }
 
   return source;
-};
+}
 
-window.cloneDeep = function<T extends any>(source: T): T {
+interface Slicable {
+  length: number;
+  slice(): any;
+}
+
+// attempt to detect coherent arrays which aren't instanceof Array
+function isSlicable(value: any): value is Slicable {
+  return typeof value.slice == 'function' && typeof value.length == 'number';
+}
+
+export function cloneDeep<T extends any>(source: T): T {
   if (source == null || typeof source !== 'object') {
     return source; // Not a reference
   }
 
-  // extra length and slice check for coherent arrays which return false for
-  // instanceof Array
-  if (source instanceof Array || ('length' in source && 'slice' in source)) {
-    return source.slice().map(e => cloneDeep(e)) as any;
+  if (source instanceof Array || isSlicable(source)) {
+    return source.slice().map((e: any) => cloneDeep(e)) as any;
   }
 
   if (source instanceof Date) {
@@ -61,25 +49,32 @@ window.cloneDeep = function<T extends any>(source: T): T {
 
   if (source instanceof Object) {
     const copy = {} as T;
-    const keys = Object.keys(source);
-    keys.forEach((key) => {
+
+    for (let key in source) {
       copy[key] = cloneDeep(source[key]);
-    });
+    }
+
     return copy;
   }
 
   throw new Error(`Unable to clone source. Unsupported type ${source}`);
-};
+}
 
-window.merge = function<T extends {}>(source: T, ...args: any[]): T {
+export function merge<T extends {}>(source: T, ...args: any[]): T {
   return Object.assign(source, ...args);
-};
+}
 
-window.tryParseJSON = function<T>(json: string, logError: boolean = false): T {
+export function tryParseJSON<T>(json: string, logError: boolean = false): T {
   try {
     return JSON.parse(json);
   } catch (e) {
-    if (logError || game.debug) console.error(`Failed to parse json. | ${json}`);
+    if (logError) console.error(`Failed to parse json. | ${json}`);
     return null;
   }
+}
+
+export type Pick2<T, K1 extends keyof T, K2 extends keyof T[K1]> = { [P1 in K1]: { [P2 in K2]: (T[K1])[P2] } };
+
+export type Pick3<T, K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]> = {
+  [P1 in K1]: { [P2 in K2]: { [P3 in K3]: ((T[K1])[K2])[P3] } }
 };

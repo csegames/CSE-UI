@@ -5,12 +5,8 @@
  *
  */
 
-export {};
-
-declare global {
-  interface Status {
-    id: number;
-    duration: number;
-    startTime: number;
-  }
+export interface Status {
+  id: number;
+  duration: number;
+  startTime: number;
 }

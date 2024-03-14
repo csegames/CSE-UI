@@ -1,0 +1,9 @@
+node_modules
+src
+.gitignore
+.npmrc
+.npmignore
+gql-gen.json
+package-lock.json
+tsconfig.json
+*.tgz

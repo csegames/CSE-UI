@@ -4,85 +4,36 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { GameModel, GameInterface } from './GameInterface';
-import initPlayerState from './GameClientModels/PlayerState';
-import initEntityState from './GameClientModels/EntityState';
-import initAbilityState from './GameClientModels/AbilityState';
-import initAbilityBarState from './GameClientModels/AbilityBarState';
-import initConsumableItemsState from './GameClientModels/ConsumableItemsState';
-import { QueryOptions } from '../../_baseGame/graphql/query';
+import { DevGameInterface } from './GameInterface';
+import { initPlayerState } from './GameClientModels/PlayerState';
+import { initEntityState } from './GameClientModels/EntityState';
+import { initConsumableItemsState } from './GameClientModels/ConsumableItemsState';
+import { HordeTestModel } from './HordeTestModel';
+import { initEventForwarding } from './engineEvents';
+import { BaseDevGameInterface } from '../../_baseGame/BaseGameInterface';
 
-export default function(isAttached: boolean) {
-  _devGame.graphQL = {
-    ..._devGame.graphQL,
-    defaultOptions: defaultGraphQLOptions,
+export default function (_devGame: BaseDevGameInterface): HordeTestModel {
+  if (!_devGame.isClientAttached) {
+    // don't debug colossus endpoints against a camelot server
+    _devGame.webAPIHost = 'https://omeletteapi.camelotunchained.com';
+  }
+
+  // TODO : I hear constructors are nice (and safer than this)
+  const hordeGame = {} as DevGameInterface;
+
+  const hordetest = {
+    _devGame: hordeGame,
+    game: hordeGame
   };
-
-  hordetest._devGame.abilityStates = {};
+  initEventForwarding(hordeGame, _devGame);
 
   // Entity state
-  hordetest._devGame.entities = {};
-  initEntityState();
+  hordeGame.entities = {};
+  initEntityState(_devGame);
 
   // INIT MODELS
-  initPlayerState();
-  initAbilityState();
-  initAbilityBarState();
-  initConsumableItemsState();
+  initPlayerState(_devGame, hordetest);
+  initConsumableItemsState(_devGame, hordetest);
 
-
-  hordetest._devGame.classes = (_devGame as any).classes;
-  hordetest._devGame.races = (_devGame as any).races;
-  hordetest._devGame.statuses = (_devGame as any).statuses;
-
-  // READY!
-  _devGame.ready = true;
-}
-
-function noOp(...args: any[]): any {}
-
-/**
- * Creates a game object for replacement use when not running in the context of the game client.
- */
-export function initOutOfContextGame(): Partial<GameInterface> {
-  const model: GameModel = {
-    gamepadSelectBinding: { name: 'Gamepad Select', value: -1 },
-    setWaitingForSelect: noOp,
-  };
-
-  return withOverrides({
-    ...model,
-    entities: {},
-  });
-}
-
-/**
- * Override default GameModel out of context values with those supplied via a dev.config.js file
- * during in-browser development.
- * @param model The default GameModel
- */
-function withOverrides(model: Partial<GameInterface>) {
-  const m = model;
-  const overrides = ((window as any).cuOverrides || {}) as GameModel;
-  for (const key in model) {
-    m[key] = overrides[key] || model[key];
-  }
-  return m;
-}
-
-/* -------------------------------------------------- */
-/* GRAPHQL                                            */
-/* -------------------------------------------------- */
-
-function defaultGraphQLOptions(): Partial<QueryOptions> {
-  return {
-    url: game.graphQL.host(),
-    disableBatching: false,
-    requestOptions: {
-      headers: {
-        Authorization: 'Bearer ' + game.accessToken,
-        CharacterID: hordetest.game.selfPlayerState ? hordetest.game.selfPlayerState.characterID : '',
-      },
-    },
-  };
+  return hordetest;
 }

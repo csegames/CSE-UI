@@ -4,103 +4,71 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export {};
+import { ArrayMap } from './ObjectMap';
 
-declare global {
+/**
+ * GameOption defines an individual game config setting
+ */
+export interface BaseOption<T> {
   /**
-   * GameOption defines an individual game config setting
+   * Name of the option, used for both display & identification
    */
-  interface BaseOption<T> {
+  name: string;
 
-    /**
-     * Name of the option, used for both display & identification
-     */
-    name: string;
-
-    displayName: string;
-
-    /**
-     * Used for sorting displayed options into basic categories
-     */
-    category: OptionCategory;
-
-    /**
-     * Identifies the data type and any extra properties that may exist as part of the option value
-     */
-    kind: OptionKind;
-
-    value: T;
-    defaultValue: T;
-  }
-
-  type BooleanOption = BaseOption<boolean>;
+  displayName: string;
 
   /**
-   * Range option defines a value that has a min and max, typically displayed using a slider
+   * Used for sorting displayed options into basic categories
    */
-  interface RangeOption extends BaseOption<number> {
-    minValue: number;
-    maxValue: number;
-    increment: number;
-  }
+  category: OptionCategory;
 
   /**
-   * Select option defines a set of values that the user can select from, typically displayed using a list select
+   * Identifies the data type and any extra properties that may exist as part of the option value
    */
-  interface SelectOption extends BaseOption<SelectValue> {
-    selectValues: ArrayMap<SelectValue>;
-  }
+  kind: OptionKind;
 
-  interface SelectValue {
-    value: number;
-    description: string;
-  }
-
-  type IntRangeOption = RangeOption;
-  type FloatRangeOption = RangeOption;
-  type DoubleRangeOption = RangeOption;
-
-  type GameOption = BooleanOption |
-    IntRangeOption | FloatRangeOption | DoubleRangeOption |
-    SelectOption;
-
-  enum OptionKind {
-    Boolean = 0,
-    IntRangeOption = 1,
-    FloatRangeOption = 2,
-    DoubleRangeOption = 2,
-    Select = 3,
-  }
-
-  enum OptionCategory {
-    None = 0,
-    Any = 1,
-    KeyBind = 2, // deprecated
-    Rendering = 3,
-    UI = 4,
-    InternalKeyBind = 5, // deprecated
-    Input = 6,
-    ProxyClient = 7, // Not used by UI
-    Audio = 8,
-    PhysicsServer = 9, // Not used by UI
-  }
-
-  interface Window {
-    OptionKind: typeof OptionKind;
-    OptionCategory: typeof OptionCategory;
-  }
+  value: T;
+  defaultValue: T;
 }
 
-enum OptionKind {
+export type BooleanOption = BaseOption<boolean>;
+
+/**
+ * Range option defines a value that has a min and max, typically displayed using a slider
+ */
+export interface RangeOption extends BaseOption<number> {
+  minValue: number;
+  maxValue: number;
+  increment: number;
+}
+
+/**
+ * Select option defines a set of values that the user can select from, typically displayed using a list select
+ */
+export interface SelectOption extends BaseOption<SelectValue> {
+  selectValues: ArrayMap<SelectValue>;
+}
+
+export interface SelectValue {
+  value: number;
+  description: string;
+}
+
+export type IntRangeOption = RangeOption;
+export type FloatRangeOption = RangeOption;
+export type DoubleRangeOption = RangeOption;
+
+export type GameOption = BooleanOption | IntRangeOption | FloatRangeOption | DoubleRangeOption | SelectOption;
+
+export enum OptionKind {
   Boolean = 0,
   IntRangeOption = 1,
   FloatRangeOption = 2,
   DoubleRangeOption = 2,
-  Select = 3,
+  Select = 3
 }
-window.OptionKind = OptionKind;
 
-enum OptionCategory {
+export enum OptionCategory {
   None = 0,
   Any = 1,
   KeyBind = 2, // deprecated
@@ -110,6 +78,5 @@ enum OptionCategory {
   Input = 6,
   ProxyClient = 7, // Not used by UI
   Audio = 8,
-  PhysicsServer = 9, // Not used by UI
+  PhysicsServer = 9 // Not used by UI
 }
-window.OptionCategory = OptionCategory;

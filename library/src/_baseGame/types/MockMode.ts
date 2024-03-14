@@ -4,25 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export {};
-
-declare global {
-  enum MockMode {
-    None = 0,
-    TotalNetworkFailure = 1,
-    PartialNetworkFailure = 2,
-    BadServerData = 3
-  }
-
-  interface Window {
-    MockMode: typeof MockMode;
-  }
-}
-
-enum MockMode {
+export enum MockMode {
   None = 0,
   TotalNetworkFailure = 1,
   PartialNetworkFailure = 2,
   BadServerData = 3
 }
-window.MockMode = MockMode;

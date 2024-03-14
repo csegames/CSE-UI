@@ -1,9 +1,0 @@
-{
-  "generatorConfig": {
-    "avoidOptionals": true,
-    "resolvers": false,
-    "prepend": [
-      ""
-    ]
-  }
-}

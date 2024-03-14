@@ -4,53 +4,52 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { includes } from 'lodash';
-import { Updatable, initUpdatable } from './_Updatable';
+import { Updatable, initUpdatable } from './Updatable';
+import { toDefault, withDefaults } from '../utils/withDefaults';
+import { engine } from '../engine';
+import { BaseGameInterface } from '../BaseGameInterface';
 
 /**
  * Hook a model up to the game engine events & configure the Updatable.
  * @param name Name of the event called by the game engine to update this model
- * @param init Function to initialize the object with default values, called when this method is first executed
- *             any whenever the client sends an invalid reference or null object to the update method.
+ * @param defaultObject Constructor or fetch function for default values
  * @param propertyAccessor Function to access the UI reference handle to this model
  * @param propertySetter Function to set the UI reference handle to this model
- * @param onUpdated Function to handle registrations of update callbacks
  */
-export default function<TModel, TType extends TModel & Updatable>(
+export function engineInit<TModel, TType extends TModel & Updatable>(
+  game: BaseGameInterface,
   name: string,
   defaultObject: () => TType,
   propertyAccessor: () => TType | undefined,
-  propertySetter: (model: TModel) => void,
+  propertySetter: (model: TModel) => void
 ) {
   if (propertyAccessor()) {
     propertySetter(toDefault(propertyAccessor(), defaultObject()));
   } else {
     propertySetter(defaultObject());
   }
-  if (typeof engine !== 'undefined') {
-    engine.on(name, (model: TModel) => {
-      if (game.debug) {
-        console.groupCollapsed(`Client > ${name}`);
-        try {
-          console.log(JSON.stringify(model));
-        } catch {}
-        console.groupEnd();
-      }
+  engine.on(name, (model: TModel) => {
+    if (game.debug) {
+      console.groupCollapsed(`Client > ${name}`);
+      try {
+        console.log(JSON.stringify(model));
+      } catch {}
+      console.groupEnd();
+    }
 
-      if (!model) {
-        if (propertyAccessor()) {
-          propertySetter(defaultObject());
-        }
-      } else if (!propertyAccessor().isReady) {
-        propertySetter(withDefaults(model, defaultObject(), false));
-        propertyAccessor().updateEventName = name;
-        initUpdatable(propertyAccessor());
-      } else {
-        propertySetter(withDefaults(model, defaultObject(), false));
-        propertyAccessor().updateEventName = name;
+    if (!model) {
+      if (propertyAccessor()) {
+        propertySetter(defaultObject());
       }
+    } else if (!propertyAccessor().isReady) {
+      propertySetter(withDefaults<TModel>(model, defaultObject(), false));
+      propertyAccessor().updateEventName = name;
+      initUpdatable(propertyAccessor());
+    } else {
+      propertySetter(withDefaults<TModel>(model, defaultObject(), false));
+      propertyAccessor().updateEventName = name;
+    }
 
-      game.trigger(name, propertyAccessor());
-    });
-  }
+    game.trigger(name, propertyAccessor());
+  });
 }

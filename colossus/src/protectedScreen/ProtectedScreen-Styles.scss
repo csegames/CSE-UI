@@ -1,0 +1,248 @@
+/**
+* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+$color-dark: #111111;
+$color-light: #efefef;
+$border-color: lighten($color-dark, 25%);
+$hover-color: lighten($color-dark, 10%);
+
+html {
+  height: 100%;
+  /* this is the BASE font size that all rem-based sizes are a ratio of */
+  font-size: 1.1vmin;
+}
+
+body {
+  overflow: hidden;
+  cursor: default;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  font-family: sans-serif;
+  color: $color-light;
+}
+
+.perfhud {
+  height: 100%;
+}
+
+.cu-window {
+  background-color: rgba($color-dark, 0.25);
+}
+.cu-window-close {
+  font-size: 1.35rem;
+  text-shadow: 0 0 0.45vmin #000000;
+  color: #c4c4c4;
+  width: 1.1vmin;
+  text-align: center;
+  line-height: 0.75em;
+  cursor: pointer;
+  display: inline-block;
+  position: absolute;
+  right: 1.1vmin;
+}
+
+.cu-window-close:before {
+  content: '\00D7';
+  position: absolute;
+  left: 0;
+}
+
+.cu-window-close:hover {
+  color: darken($color-light, 30%);
+}
+
+.cu-window-close:hover {
+  text-shadow: 0 0 0.45vmin #6c0c00;
+}
+
+.perfhud-select {
+  position: relative;
+  line-height: 1em;
+  border-bottom: 0.2vmin solid $border-color;
+  background-color: $color-dark;
+}
+
+.perfhud-select-item {
+  padding: 0.2vmin 0.45vmin;
+  display: inline-block;
+  border-right: 0.2vmin solid $border-color;
+}
+
+.perfhud-select-item:hover {
+  background-color: $hover-color;
+}
+
+.perfhud-select-item.selected {
+  background-color: $border-color;
+}
+
+.perfhud-minimize {
+  padding: 0.2vmin 0.45vmin;
+  display: inline-block;
+  border-right: 0.2vmin solid $border-color;
+}
+
+.perfhud-minimize:hover {
+  background-color: $hover-color;
+}
+
+.perfhud-content {
+  font-size: 1rem;
+  overflow-y: auto;
+  max-height: 82vh;
+
+  &::-webkit-scrollbar {
+    width: 0.9vmin;
+    height: 0.9vmin;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #333333;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #808080;
+  }
+}
+
+.perfhud-content table td {
+  font-size: 1rem;
+}
+
+.DevUI-Root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.DevUI-Container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+}
+
+.DevUI-CloseButtonPosition {
+  position: absolute;
+  top: 0.45vmin;
+  right: 0.45vmin;
+}
+
+.DevUI-MaximizeButton {
+  position: absolute;
+  right: 4.63vmin;
+  top: 0;
+  color: #cccccc !important;
+
+  &:hover {
+    color: white !important;
+  }
+}
+
+.DevUI-Scrollable {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  align-items: flex-start;
+
+  &::-webkit-scrollbar {
+    width: 0.9vmin;
+    height: 0.9vmin;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #333333;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #808080;
+  }
+}
+
+.DevUI-DevUIPage-Root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0.926vmin;
+  justify-content: space-between;
+  color: #ececec;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.DevUI-DevUIPage-Title {
+  font-weight: 700;
+  font-size: 1.5em;
+  margin: 0.463vmin 0;
+}
+
+.DevUI-DevUIPage-Pages {
+  flex: 1;
+  display: flex;
+}
+
+.DevUI-DevUIPage-Button {
+  cursor: pointer;
+  background-color: #555;
+  display: inline-block;
+  padding: 0.463vmin 1.39vmin;
+  margin: 0.463vmin;
+  text-align: center;
+
+  &:hover {
+    background-color: #777;
+  }
+
+  &:active {
+    background-color: #999;
+  }
+}
+
+.DevUI-DevUIContent-Root {
+  flex: 1;
+}
+
+.DevUI-DevUIObjectContent-TableRoot {
+  border: 1px solid #ececec;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.DevUI-DevUIObjectContent-TableContentWrapper {
+  border: 1px solid #ececec;
+  padding: 2px;
+}
+
+.DevUI-DevUIPage-ContentContainer {
+  height: auto;
+}
+
+.DevUI-DevUIPage-Content {
+  position: relative;
+}
+
+.DevUI-DevUIPage-TabPanel {
+  flex: 1 1 auto;
+  width: initial;
+  height: initial;
+}
+
+.DevUI-DevUIPage-Tab {
+  padding: 0.2vmin 0.926vmin;
+  background: #444;
+  border-bottom: 0.15vmin solid transparent;
+}
+
+.DevUI-DevUIPage-ActiveTab {
+  background: #777;
+  border-bottom: 0.15vmin solid orange;
+}

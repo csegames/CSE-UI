@@ -1,0 +1,48 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+html {
+  /* this is the BASE font size that all rem-based sizes are a ratio of */
+  font-size: 1.1vmin;
+}
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  font-family: 'Lato';
+}
+
+div {
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#hordetest {
+  width: 100%;
+  height: 100%;
+}
+
+.announcement-enter {
+  opacity: 0.01;
+}
+
+.announcement-enter.announcement-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.announcement-leave {
+  opacity: 1;
+}
+
+.announcement-leave.announcement-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}

@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "noImplicitAny": false,
+    "downlevelIteration": true,
+    "removeComments": false,
+    "outDir": "./dist",
+    "sourceMap": true,
+    "jsx": "react",
+    "module": "commonjs",
+    "declaration": true,
+    "newLine": "LF",
+    "lib": [
+      "ES2020",
+      "dom"
+    ]
+  },
+  "include": [ "./src" ]
+}

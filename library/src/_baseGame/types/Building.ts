@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export {};
+import { ArrayMap } from './ObjectMap';
 
-interface CUBEItemBase {
+export interface CUBEItemBase {
   /**
    * On a Block the ID contains an embedded material & shape id
    */
@@ -23,45 +23,36 @@ interface CUBEItemBase {
   tags: ArrayMap<string>;
 }
 
-declare global {
-  enum BuildingMode {
-    NotBuilding = 0,
-    PlacingPhantom = 1 << 0,
-    PhantomPlaced = 1 << 1,
-    SelectingBlocks = 1 << 2,
-    BlocksSelected = 1 << 3,
-    PlacingItem = 1 << 4,
-  }
-
-  interface Block extends CUBEItemBase {
-    materialID: number;
-    shapeID: number;
-  }
-
-  interface Material extends CUBEItemBase {
-    blocks: ArrayMap<Block>;
-  }
-
-  interface PotentialItem extends CUBEItemBase {
-    name: string;
-  }
-
-  interface Blueprint extends CUBEItemBase {
-    name: string;
-  }
-
-  interface Window {
-    BuildingMode: typeof BuildingMode;
-  }
+export interface Block extends CUBEItemBase {
+  materialID: number;
+  shapeID: number;
 }
 
-enum BuildingMode {
+export interface Material extends CUBEItemBase {
+  blocks: ArrayMap<Block>;
+}
+
+export interface PotentialItem extends CUBEItemBase {
+  name: string;
+  placementType: number;
+  templateType: number;
+  equipRequirementsJSON: string;
+  controlRequirementsJSON: string;
+}
+
+export interface Blueprint extends CUBEItemBase {
+  name: string;
+}
+
+export interface Window {
+  BuildingMode: typeof BuildingMode;
+}
+
+export enum BuildingMode {
   NotBuilding = 0,
   PlacingPhantom = 1 << 0,
   PhantomPlaced = 1 << 1,
   SelectingBlocks = 1 << 2,
   BlocksSelected = 1 << 3,
-  PlacingItem = 1 << 4,
+  PlacingItem = 1 << 4
 }
-window.BuildingMode = BuildingMode;
-

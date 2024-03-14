@@ -5,25 +5,12 @@
  *
  */
 
-export {};
-
-declare global {
-  enum CharacterKind {
-    User = 0,
-    MinorNPC = 1,
-    EliteNPC = 2,
-  }
-
-  interface Window {
-    CharacterKind: typeof CharacterKind;
-  }
-}
-
-enum CharacterKind {
+export enum CharacterKind {
   User = 0,
   MinorNPC = 1,
   EliteNPC = 2,
+  StrongEliteNPC = 3,
+  UniqueNPC = 4,
+  MiniBossNPC = 5,
+  BossNPC = 6
 }
-window.CharacterKind = CharacterKind;
-
- 

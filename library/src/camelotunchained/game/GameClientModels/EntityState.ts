@@ -4,226 +4,102 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {
-  initUpdatable,
-  Updatable,
-  executeUpdateCallbacks,
-} from '../../../_baseGame/GameClientModels/_Updatable';
-import { CoherentEventHandle } from '../../../_baseGame/index';
+import { CharacterKind } from '../types/CharacterKind';
+import { CurrentMax } from '../../graphql/schema';
+import { ObjectiveUIVisibility } from '../../../_baseGame/types/Objective';
+import { ArrayMap } from '../../../_baseGame/types/ObjectMap';
+import { BuildingPlotMapUISettings, AttackingFactions } from '../types/BuildingPlot';
+import { Faction, ObjectiveState, Vec3f } from '../../webAPI/definitions';
 
-declare global {
-  interface EntityStateModel {
-    faction: Faction;
-    entityID: string;
-    name: string;
-    isAlive: boolean;
-    position: Vec3f;
-    statuses: ArrayMap<{ id: number; } & Timing>;
-  }
-
-  interface SiegeStateModel extends EntityStateModel {
-    type: 'siege';
-    /**
-     * EntityID of the entity controlling this Siege Engine
-     */
-    controllingEntityID?: string;
-
-    health: CurrentMax;
-  }
-
-  interface KinematicStateModel extends EntityStateModel {
-    type: 'kinematic';
-  }
-
-  interface ResourceNodeStateModel extends EntityStateModel {
-    type: 'resourceNode';
-    health: CurrentMax;
-  }
-
-  interface PlayerStateModel extends EntityStateModel {
-    type: 'player';
-    race: Race;
-    gender: Gender;
-    classID: Archetype;
-    stamina: CurrentMax;
-    blood: CurrentMax;
-    entitySpecificResources: { [resourceType: number]: CurrentMax };
-    characterKind: CharacterKind;
-
-    /**
-     * EntityID of an entity this Player is controlling, if any.
-     * ie. a siege engine, vehicle, creature ect...
-     */
-    controlledEntityID?: string;
-
-    // health per body part, ordered according to the bodyParts enum found
-    // in ../constants/bodyParts.ts -- TODO: use an enum from C# generated
-    // through webAPI definitions.ts file
-    health: ArrayMap<Health>;
-  }
-
-  interface BuildingPlotStateModel extends EntityStateModel {
-    type: 'plot';
-    mapSettings: BuildingPlotMapUISettings;
-    attackingFactions: AttackingFactions;
-    keepLordEntityID: string;
-    captureProgress: number;
-    objective: {
-      bearingDegrees: number;
-      footprintRadius: number;
-      indicator: number;
-      progress: CurrentMax;
-      state: ObjectiveState;
-      visibility: ObjectiveUIVisibility;
-    }
-  }
-
-  type AnyEntityStateModel = PlayerStateModel | SiegeStateModel | KinematicStateModel | ResourceNodeStateModel;
-  type AnyEntityState = Readonly<AnyEntityStateModel> & Updatable;
-
-  type PlayerStateUpdatable = Readonly<PlayerStateModel> & Updatable;
-  interface PlayerState extends PlayerStateUpdatable {}
-
-  type SiegeStateUpdateble = Readonly<SiegeStateModel> & Updatable;
-  interface SiegeState extends SiegeStateUpdateble {}
-
-  type ResourceNodeStateUpdateble = Readonly<ResourceNodeStateModel> & Updatable;
-  interface ResourceNodeState extends ResourceNodeStateUpdateble {}
-
-  type BuildingPlotStateUpdatable = Readonly<BuildingPlotStateModel> & Updatable;
-  interface BuildingPlotState extends BuildingPlotStateUpdatable {}
-
-  type ImmutableSiegeState = DeepImmutableObject<SiegeState>;
-  type ImmutableKinematicState = DeepImmutableObject<KinematicStateModel & Updatable>;
-
-  type ImmutablePlayerState = DeepImmutableObject<PlayerState>;
-  type ImmutableEntityState = DeepImmutableObject<AnyEntityStateModel & Updatable>;
-
+// This should map to UI::StatusState
+export interface StatusState {
+  id: number;
+  duration: number;
+  startTime: number;
 }
 
-function defaultEntityStateModel(): EntityStateModel {
-  return {
-    faction: Faction.Factionless,
-    entityID: '',
-    name: 'unknown',
-    isAlive: false,
-    position: { x: NaN, y: NaN, z: NaN },
-    statuses: {},
-  };
+// This should map to UI::ObjectiveSnapshot
+export interface ObjectiveStateModel {
+  visibility: ObjectiveUIVisibility;
+  state: ObjectiveState;
+  footprintRadius: number;
+  indicator: number;
+  indicatorLabel: string;
 }
 
-export function defaultHealth() {
-  return {
-    current: 1000,
-    max: 1000,
-    wounds: 0,
-  };
+// This should map to UI::EntityTracker::Snapshot
+export interface BaseEntityStateModel {
+  entityID: string;
+  type: string;
+  faction: Faction;
+  name: string;
+  isAlive: boolean;
+  position: Vec3f;
+  statuses: ArrayMap<StatusState>;
+  resources: ArrayMap<EntityResource>;
+  objective: ObjectiveStateModel | null;
 }
 
-export function defaultStamAndBlood() {
-  return {
-    current: 1000,
-    max: 1000,
-  };
+// This should map to NumericItemDefID in ItemDataEnums.h on the client side.
+export enum NumericItemDefID {
+  None = 0
 }
 
-export function defaultPlayerStateModel(): PlayerStateModel {
-  return {
-    ...defaultEntityStateModel(),
-    type: 'player',
-    race: Race.HumanMaleA,
-    gender: Gender.None,
-    classID: Archetype.Blackguard,
-    faction: Faction.Arthurian,
-    health: {
-      0: defaultHealth(),
-      1: defaultHealth(),
-      2: defaultHealth(),
-      3: defaultHealth(),
-      4: defaultHealth(),
-      5: defaultHealth(),
-    },
-    stamina: defaultStamAndBlood(),
-    blood: defaultStamAndBlood(),
-    entitySpecificResources: {},
-    characterKind: CharacterKind.User,
-  };
+// This should map to UI::EntityTracker::ItemSnapshot
+export interface ItemEntityStateModel extends BaseEntityStateModel {
+  itemDefID: NumericItemDefID;
+  iconClass: string;
 }
 
-export function defaultSiegeStateModel(): SiegeStateModel {
-  return {
-    ...defaultEntityStateModel(),
-    type: 'siege',
-    health: defaultStamAndBlood(),
-  };
+export function isItem(entity: BaseEntityStateModel): entity is PlayerEntityStateModel {
+  return entity && typeof (entity as any).itemDefID === 'number';
 }
 
-export function defaultBuildingPlotStateModel(): BuildingPlotStateModel {
-  return {
-    ...defaultEntityStateModel(),
-    type: 'plot',
-    mapSettings: BuildingPlotMapUISettings.None,
-    attackingFactions: AttackingFactions.None,
-    keepLordEntityID: '',
-    captureProgress: 0,
-    objective: {
-      bearingDegrees: 0,
-      footprintRadius: 0,
-      indicator: 0,
-      progress: { current: 0, max: 0 },
-      state: ObjectiveState.Unstarted,
-      visibility: ObjectiveUIVisibility.Hidden,
-    }
-  }
+// This should map to UI::EntityTracker::OtherSnapshot
+export interface OtherEntityStateModel extends BaseEntityStateModel {}
+
+export function isOther(entity: BaseEntityStateModel): entity is PlayerEntityStateModel {
+  return entity && !('characterKind' in entity);
 }
 
-export const EntityState_Update = 'entityState.update';
-
-function onReceiveEntityStateUpdate(state: AnyEntityState) {
-  if (game.debug) {
-    console.groupCollapsed(`Client > ${EntityState_Update}`);
-    try {
-      console.log(JSON.stringify(state));
-    } catch {}
-    console.groupEnd();
-  }
-
-  if (typeof camelotunchained._devGame.entities[state.entityID] === 'undefined') {
-    camelotunchained._devGame.entities[state.entityID] = cloneDeep(state);
-    camelotunchained._devGame.entities[state.entityID].updateEventName = EntityState_Update;
-    // init Updatable.
-    initUpdatable(camelotunchained._devGame.entities[state.entityID]);
-  } else {
-    camelotunchained._devGame.entities[state.entityID] = cloneDeep(state);
-    camelotunchained._devGame.entities[state.entityID].updateEventName = EntityState_Update;
-  }
-
-  if (state.entityID === camelotunchained.game.selfPlayerState.entityID) {
-    executeUpdateCallbacks(camelotunchained.game.selfPlayerState);
-  }
-
-  if ((state.type as any) === 'plot') {
-    game.trigger('plotUpdate', state);
-  }
-
-  if (camelotunchained.game.friendlyTargetState && state.entityID === camelotunchained.game.friendlyTargetState.entityID) {
-    game.trigger('friendlyTargetPlayerState.update', camelotunchained.game.friendlyTargetState);
-  }
-
-  if (camelotunchained.game.enemyTargetState && state.entityID === camelotunchained.game.enemyTargetState.entityID) {
-    game.trigger('enemyTargetPlayerState.update', camelotunchained.game.enemyTargetState);
-  }
-
-  executeUpdateCallbacks(camelotunchained._devGame.entities[state.entityID]);
+// This should map to UI::EntityResource
+export interface EntityResource extends CurrentMax {
+  name: string;
+  id: string;
+  lastDecreaseTime: number;
 }
 
-let handle: CoherentEventHandle | null = null;
-export default function() {
-  if (typeof engine !== 'undefined') {
-    if (handle) {
-      handle.clear();
-    }
-
-    handle = engine.on(EntityState_Update, onReceiveEntityStateUpdate);
-  }
+// This should map to UI::EntityTracker::PlayerSnapshot
+export interface PlayerEntityStateModel extends BaseEntityStateModel {
+  characterKind: CharacterKind;
+  accountID: string;
+  classID: number;
+  // EntityID of an entity this Player is controlling, if any.
+  // ie. a siege engine, vehicle, creature, etc...
+  controlledEntityID?: string;
+  gender: number;
+  wounds: number;
+  race: number;
 }
+
+export function isPlayer(entity: BaseEntityStateModel): entity is PlayerEntityStateModel {
+  return entity && typeof (entity as any).characterKind === 'number';
+}
+
+// This should map to UI::EntityTracker::BuildingSnapshot
+export interface BuildingPlotEntityStateModel extends BaseEntityStateModel {
+  mapSettings: BuildingPlotMapUISettings;
+  attackingFactions: AttackingFactions;
+  keepLordEntityID: string;
+  captureProgress: number;
+}
+
+export function isPlot(entity: BaseEntityStateModel): entity is PlayerEntityStateModel {
+  return entity && typeof (entity as any).mapSettings === 'number';
+}
+
+export type AnyEntityStateModel =
+  | BuildingPlotEntityStateModel
+  | ItemEntityStateModel
+  | PlayerEntityStateModel
+  | OtherEntityStateModel;

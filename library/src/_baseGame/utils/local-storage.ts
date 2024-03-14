@@ -6,7 +6,6 @@
 
 // Simple LocalStorage Management
 export class Store {
-
   private prefix: string;
 
   constructor(prefix: string = '') {
@@ -15,34 +14,34 @@ export class Store {
 
   public setPrefix = (prefix: string) => {
     this.prefix = prefix;
-  }
+  };
 
   public set = (key: string, value: any) => {
     localStorage.setItem(this.prefixed(key), JSON.stringify(value));
-  }
+  };
 
   public get = <T>(key: string) => {
     const data = localStorage.getItem(this.prefixed(key));
-    return data && JSON.parse(data) as T || undefined;
-  }
+    return (data && (JSON.parse(data) as T)) || undefined;
+  };
 
   public remove = (key: string) => {
     localStorage.removeItem(this.prefixed(key));
-  }
+  };
 
   public clear = () => {
     if (this.prefix) {
       Object.keys(localStorage)
-        .filter(k => k.startsWith(this.prefix))
-        .forEach(k => localStorage.removeItem(this.prefixed(k)));
+        .filter((k) => k.startsWith(this.prefix))
+        .forEach((k) => localStorage.removeItem(this.prefixed(k)));
     } else {
       localStorage.clear();
     }
-  }
+  };
 
   private prefixed = (key: string) => {
     return this.prefix + key;
-  }
+  };
 }
 
 export default Store;

@@ -6,10 +6,24 @@
 
 import { TaskHandle } from './clientTasks';
 import { BaseInternalGameInterfaceExt } from './InternalGameInterfaceExt';
-import * as engineEvents from './engineEvents';
-import { query, QueryOptions } from './graphql/query';
-import { subscribe } from './graphql/subscription';
-import { CSEChat } from './chat/CSEChat';
+import { CancellablePromise } from './clientTasks';
+import { ArrayMap } from './types/ObjectMap';
+import { Callback } from './GameClientModels/Updatable';
+import { BuildingMode } from './types/Building';
+import { CombatEvent } from './types/CombatEvent';
+import { UsingGamepadState } from './GameClientModels/UsingGamepadState';
+import { NamedString } from './types/NamedValues';
+import { Success, Failure } from './types/SuccessFailure';
+import { ItemPlacementTransformMode } from './types/ItemPlacementTransformMode';
+import { MockMode } from './types/MockMode';
+import { Binding, Keybind } from './types/Keybind';
+import { GameOption, OptionCategory } from './types/Options';
+import { Blueprint, Material, PotentialItem } from './types/Building';
+import { Screenshot } from './types/Screenshot';
+import { Vec2f } from './types/localDefinitions';
+import { IsAutoRunningState } from './GameClientModels/IsAutoRunningState';
+import { ControllerButton } from './types/Gamepad';
+import { ListenerHandle } from './listenerHandle';
 
 /**
  * GameModel interface defines the structure and functionality of the global game object as presented by the game
@@ -24,7 +38,7 @@ import { CSEChat } from './chat/CSEChat';
 export interface BaseGameModel {
   /**
    * The Patch resource channel identification number.
-  */
+   */
   patchResourceChannel: number;
 
   /**
@@ -34,18 +48,18 @@ export interface BaseGameModel {
 
   /**
    * The host address for the Web Api server the UI should make requests to.
-  */
+   */
   webAPIHost: string;
 
   /**
    * The hose address for the specific game server that this client is connected to.
    * *Note:* some API requests will be made directly to the game server itself, those use this address.
-  */
+   */
   serverHost: string;
 
   /**
    * Identifying number for the server shard this client is currently logged in to.
-  */
+   */
   shardID: number;
 
   /**
@@ -80,9 +94,29 @@ export interface BaseGameModel {
   fps: number;
 
   /**
+   * Number of NPCS in the match (PlayerEntities - real people - bots)
+   */
+  npcCount: number;
+
+  /**
    * Whether or not client is on a public build (live to players)
    */
   isPublicBuild: boolean;
+
+  /**
+   * The build number for the client
+   */
+  buildNumber: number;
+
+  /**
+   * Whether or not client is showing the perfHUD
+   */
+  showPerfHUD: boolean;
+
+  /**
+   * Whether or not this is a CUBE build
+   */
+  isCUBE: boolean;
 
   /**
    * Should the UI behave in a certain "mock" state e.g. Complete Network Failure, etc.
@@ -100,6 +134,13 @@ export interface BaseGameModel {
   quit: () => void;
 
   /**
+   * Instruct vivox to switch to the named channel type
+   * @param {string} channelType, legal values are "none" and "match" (only when a match has been found)
+   * @return {Success | Failure}
+   */
+  setVoiceChannel: (channelType: string) => void;
+
+  /**
    * Triggers a client Key action using the id of that KeyBind. Essentially, acts as if the client keybind was pressed.
    * @param {Number} id Matches id in KeyBind for any action
    * @return {Success | Failure}
@@ -111,12 +152,18 @@ export interface BaseGameModel {
    * @param {String} command the command to send, does not include a preceding slash.
    */
   sendSlashCommand: (command: string) => void;
+  tabComplete: (command: string) => string;
+
+  addOfflineCharacter: (characterIndex: number, racePerkID: string, weaponPerkID: string) => void;
+  removeOfflineCharacter: (characterIndex: number) => void;
+  setOfflineCharacterAnimation: (characterIndex: number, perkID: string) => void;
 
   /**
    * Player a sound through the game audio engine
    * @param {Number} soundID ID of the sound to play
+   * @return {Number} the duration of the played sound
    */
-  playGameSound: (soundID: number) => void;
+  playGameSound: (soundID: number) => number;
 
   /* -------------------------------------------------- */
   /* Client -> Server CONTROLLER                                 */
@@ -134,6 +181,7 @@ export interface BaseGameModel {
   /**
    * Client -> Server status information
    */
+  isAutoConnectEnabled: boolean;
   isConnectedToServer: boolean;
   isConnectedOrConnectingToServer: boolean;
   isDisconnectingFromAllServers: boolean;
@@ -189,6 +237,19 @@ export interface BaseGameModel {
   releaseMouseCapture: () => void;
 
   /**
+   * Enables or disables MenuInputMode.
+   * When in MenuInputMode, all gamepad/controller input is intercepted and given only to the UI.
+   * @param {boolean} enabled
+   */
+  setMenuInputMode: (enabled: boolean) => void;
+
+  /**
+   * Assigns the index of the emote to be played when the Emote button is pressed.
+   * @param {number} index
+   */
+  setSelectedEmoteIndex: (index: number) => void;
+
+  /**
    * All options from the client
    */
   options: ArrayMap<GameOption>;
@@ -223,6 +284,27 @@ export interface BaseGameModel {
   map: MapState;
 
   actions: ActionBarAPI;
+
+  /**
+   * Attempts to initiate a Steam purchase of the specified item.  The outcome of the purchase attempt
+   * is returned in the 'steamPurchaseComplete' event.
+   * @param {Number} itemID Unique identifier of the item to be purchased.
+   */
+  startSteamPurchase: (itemID: number) => void;
+
+  /**
+   * If true, the client should be able and ready to perform purchases via the Steam API.
+   */
+  canStartSteamPurchase: boolean;
+
+  /**
+   * If true, the client should be able and ready to perform purchases via the Steam API.
+   */
+  isSteamOverlayEnabled: boolean;
+
+  /* If true, the client is running as a steam build.
+   */
+  isSteamBuild: boolean;
 }
 
 // Map API
@@ -234,8 +316,10 @@ interface MapState {
 
 // Action Bar API
 interface ActionBarAPI {
-  enterActionBarEditModeAsync: () => CancellablePromise<Success | Failure>;
-  exitActionBarEditModeAsync: () => CancellablePromise<Success | Failure>;
+  readonly inEditMode: boolean;
+  readonly requestedEditMode: boolean;
+  requestEditMode(active: boolean);
+
   assignSlottedAction: (slotId: number, anchorId: number, groupId: number, actionId: number) => void;
   assignKeybind: (slotId: number, boundKeyValue: number) => void;
 
@@ -243,9 +327,6 @@ interface ActionBarAPI {
   activateSlottedAction: (slotId: number) => void;
   clearSlottedAction: (slotId: number) => void;
   removeAnchor: (anchorId: number) => void;
-
-  _cse_dev_enterActionBarEditMode: () => TaskHandle;
-  _cse_dev_exitActionBarEditMode: () => TaskHandle;
 }
 
 // Item Placement API
@@ -281,12 +362,20 @@ interface BuildingAPI extends BuildingAPIModel {
   selectPotentialItemAsync: (potentialItemID: number) => CancellablePromise<Success | Failure>;
 
   deleteBlueprintAsync: (blueprintID: number) => CancellablePromise<Success | Failure>;
-  createBlueprintFromSelectionAsync: (name: string) => CancellablePromise<(Success & { blueprint: Blueprint}) | Failure>;
+  createBlueprintFromSelectionAsync: (
+    name: string
+  ) => CancellablePromise<(Success & { blueprint: Blueprint }) | Failure>;
 
-  replaceMaterialsAsync: (selectedID: number, replacementID: number, inSelection: boolean) =>
-    CancellablePromise<Success | Failure>;
-  replaceShapesAsync: (selectedID: number, replacementID: number, inSelection: boolean) =>
-    CancellablePromise<Success | Failure>;
+  replaceMaterialsAsync: (
+    selectedID: number,
+    replacementID: number,
+    inSelection: boolean
+  ) => CancellablePromise<Success | Failure>;
+  replaceShapesAsync: (
+    selectedID: number,
+    replacementID: number,
+    inSelection: boolean
+  ) => CancellablePromise<Success | Failure>;
 }
 
 interface BuildingAPIModelTasks {
@@ -316,13 +405,13 @@ export interface BaseGameModelTasks {
    * @param {Number} index Index of binds to set / replace with the new binding
    * @returns {Binding} The newly bound key information
    */
-    _cse_dev_listenForKeyBindingTask: () => TaskHandle;
+  _cse_dev_listenForKeyBindingTask: () => TaskHandle;
 
   /**
-  * Batch set of all passed in options
-  * @param {GameOption[]} options The options to set
-  * @return Whether or not the options all saved correcly
-  */
+   * Batch set of all passed in options
+   * @param {GameOption[]} options The options to set
+   * @return Whether or not the options all saved correcly
+   */
   _cse_dev_setOptions: (options: GameOption[]) => TaskHandle;
 
   /**
@@ -346,10 +435,14 @@ export interface BaseGameModelTasks {
  * GameInterface is an extension of the GameModel adding additional features to the provided global game object in order
  * to maintain a single primary interface for all interactions with the game client itself.
  */
+// FIXME : decorating the coherent interface this way is bad. The
+// functionality of BaseDevGameInterface, etc. should be an actual
+// decorator or a distinct object *or* these should be mutable
+// properties that are registered from the native side.
 export interface BaseGameInterface extends BaseGameModel {
   /**
    * Indicates whether the game interface has been initialized.
-  */
+   */
   ready: boolean;
 
   /**
@@ -361,7 +454,7 @@ export interface BaseGameInterface extends BaseGameModel {
    * Subscribes a function to be executed when the game client interface has been initialized.
    * @param {() => any} callback callback function to be executed when the game client interface is initialized.
    */
-  onReady: (callback: () => any) => EventHandle;
+  onReady: (callback: () => any) => ListenerHandle;
 
   /**
    * Indicates whether to run the ui in debug mode with debug logging enabled.
@@ -369,70 +462,47 @@ export interface BaseGameInterface extends BaseGameModel {
   debug: boolean;
 
   /**
+   * Allow game code to toggle the debug value even though the interface has been marked immutable.
+   */
+  setDebug: (value: boolean) => void;
+
+  /**
    * Version of webAPI requests to use with this version of the library
    */
   apiVersion: number;
-
-  chat: CSEChat;
 
   /**
    * Subscribes a function to be executed when the game client wished to begin writing a chat message.
    * (this usually means the user pressed 'Enter' when not focusing the chate interface itself)
    * @param {(message: string) => any} callback callback function to be executed when the game client wishes to begin chat.
-  */
-  onBeginChat: (callback: (message: string) => any) => EventHandle;
+   */
+  onBeginChat: (callback: (message: string) => any) => ListenerHandle;
   beginChat: (message: string) => void;
 
   /**
    * Subscribes a function to be executed when the game client wishes to append content to the chat window.
    * @param {(content: string) => any} callback callback function to be executed when chat content is pushed.
    */
-  onPushChat: (callback: (content: string) => any) => EventHandle;
+  onPushChat: (callback: (content: string) => any) => ListenerHandle;
   pushChat: (content: string) => void;
 
   /**
-   * Subscribes a function to be executed when the game client wishes to print a system message to the system log.
-   * @param {(message: string) => any} callback callback function to be executed when the game client sends a
-   * system message to the ui.
-   */
-  onSystemMessage: (callback: (message: string) => any) => EventHandle;
-  sendSystemMessage: (message: string) => void;
-
-  /**
-   * Subscribe to Announcements
-   * @param {(message: string) => any} callback function to be executed when an announcement is received
-   */
-  onAnnouncement: (callback: (type: AnnouncementType, message: string) => any) => EventHandle;
-
-    /**
    * Subscribe to client combat event messages
    * @param {((events: CombatEvent[]) => any)} callback function to be executed when a combat event is received
    */
-  onCombatEvent: (callback: (events: CombatEvent[]) => any) => EventHandle;
+  onCombatEvent: (callback: (events: CombatEvent[]) => any) => ListenerHandle;
 
   /**
    * Subscribe to the console text messages
    * @param {(text: string) => any} callback function to be executed when a console text message is received
-  */
-  onConsoleText: (callback: (text: string) => any) => EventHandle;
-
-  /**
-   * Subscribe to DevUI updates
-   * @param {(id: string, rootPage: string) => any} callback function to be executed with a DevUI update
    */
-  onUpdateDevUI: (callback: (id: string, rootPage: string) => any) => EventHandle;
+  onConsoleText: (callback: (text: string) => any) => ListenerHandle;
 
   /**
    * Subscribe to kebind changes.
    * @param {(keybind: Keybind) => any} callback function to be executed when a keybind has been changed.
    */
-  onKeybindChanged: (callback: (keybind: Keybind) => any) => EventHandle;
-
-  /**
-   * Subscribe to PerfHUD updates
-   * @param {(json: string) => any} callback function to be executed with a PerfHUD update
-   */
-  onPerfHUDUpdate:(callback: (json: string) => any) => EventHandle;
+  onKeybindChanged: (callback: (keybind: Keybind) => any) => ListenerHandle;
 
   /**
    * TODO: Write something about this. I have no idea what this is -AJ
@@ -440,20 +510,37 @@ export interface BaseGameInterface extends BaseGameModel {
   getKeybindSafe: (id: number) => Keybind;
 
   /**
+   * Subscribe to client option changes.
+   * @param {(option: GameOption) => any} callback function to be executed when a option has been changed.
+   */
+  onGameOptionChanged: (callback: (option: GameOption) => any) => ListenerHandle;
+
+  /**
    * Subscribe to controller select events
    * @param {(() => any)} callback function to be executed when a controllerSelect event is received
    */
-  onControllerSelect: (callback: () => any) => EventHandle;
+  onControllerSelect: (callback: () => any) => ListenerHandle;
 
   /**
-   * Subscript to network failure events
+   * Subscribe to network failure events
    */
-  onNetworkFailure: (callback: (errorMsg: string, errorCode: number) => any) => EventHandle;
+  onNetworkFailure: (callback: (errorMsg: string, errorCode: number, fatal: boolean) => any) => ListenerHandle;
 
   /**
    *  Anchor visibility changes ex.) When entering building mode
    */
-  onAnchorVisibilityChanged: (callback: (anchorId: number, visible: boolean) => any) => EventHandle;
+  onAnchorVisibilityChanged: (callback: (anchorId: number, visible: boolean) => any) => ListenerHandle;
+
+  /**
+   * Subscribe to the Steam Purchase Complete event.
+   */
+  onSteamPurchaseComplete: (callback: (failed: boolean, canceled: boolean, error: string) => any) => ListenerHandle;
+
+  /**
+   * Subscribe to Controller button events (only fired in Menu Input Mode).
+   * * @param {(button: string) => any} callback function to be executed when a Controller button is pressed
+   */
+  onMenuControllerEvent: (callback: (button: ControllerButton) => any) => ListenerHandle;
 
   /* -------------------------------------------------- */
   /* TASKS                                              */
@@ -467,14 +554,14 @@ export interface BaseGameInterface extends BaseGameModel {
    */
   listenForKeyBindingAsync: () => CancellablePromise<Binding>;
 
-
   /**
    * Batch set of all passed in options
    * @param {GameOption[]} options The options to set
    * @return Whether or not the options all saved correctly
    */
-  setOptionsAsync: (options: GameOption[]) =>
-    CancellablePromise<Success | Failure & { failures: ArrayMap<{ option: GameOption, reason: string }> }>;
+  setOptionsAsync: (
+    options: GameOption[]
+  ) => CancellablePromise<Success | (Failure & { failures: ArrayMap<{ option: GameOption; reason: string }> })>;
 
   /**
    * Test a single option without saving it, this allows preview of changes without saving them immediately
@@ -498,17 +585,17 @@ export interface BaseGameInterface extends BaseGameModel {
    * Subscribes a function to be called when an event with the given name is triggered.
    * @param {String} name The event name
    * @param {Callback} callback The function to be called when the event is triggered.
-   * @return {EventHandle} Handle to unsubscribe the callback from the event.
+   * @return {ListenerHandle} Handle to unsubscribe the callback from the event.
    */
-  on: (name: string, callback: Callback) => EventHandle;
+  on: (name: string, callback: Callback) => ListenerHandle;
 
   /**
    * Subscribes a function to be called only once when an event with the given name is triggered.
    * @param {String} name The event name
    * @param {Callback} callback The function to be called once when the event is triggered.
-   * @return {EventHandle} Handle to unsubscribe the callback from the event.
+   * @return {ListenerHandle} Handle to unsubscribe the callback from the event.
    */
-  once: (name: string, callback: Callback) => EventHandle;
+  once: (name: string, callback: Callback) => ListenerHandle;
 
   /**
    * Trigger an event of the given name.
@@ -519,27 +606,28 @@ export interface BaseGameInterface extends BaseGameModel {
 
   /**
    * Unsubscribe from an event
-   * @param {number | EventHandle} handle Either the EventHandle or ID of an event to unsubscribe
+   * @param {number | ListenerHandle} handle Either the ListenerHandle or ID of an event to unsubscribe
    */
-  off: (handle: number | EventHandle) => void;
-
-  engineEvents: typeof engineEvents;
-  graphQL: {
-    query: typeof query;
-    subscribe: typeof subscribe;
-    defaultOptions(): Partial<QueryOptions>;
-    host(): string;
-  };
-
-  /**
-   * The loading state for the client.
-  */
-  loadingState: LoadingState;
+  off: (handle: number | ListenerHandle) => void;
 
   /**
    * Tells us if the player is currently using a gamepad or mouse/keyboard
    */
   usingGamepadState: UsingGamepadState;
+
+  usingGamepad: boolean;
+
+  /**
+   * Tells us if the player is currently Auto Running
+   */
+  isAutoRunningState: IsAutoRunningState;
+
+  isAutoRunning: boolean;
+
+  /**
+   * The index of the emote that will be played when the Emote button is pressed.
+   */
+  selectedEmoteIndex: number;
 
   /* -------------------------------------------------- */
   /* BUILDING API                                       */

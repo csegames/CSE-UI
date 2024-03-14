@@ -1,0 +1,1254 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!!!!!!!!!!!!!!!!!!! PROFILE !!!!!!!!!!!!!!!!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+// ------------------ Male Human Classes ------------------
+.thumb__Human_Male_BlackKnight {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-blackknight.png');
+}
+
+.thumb__Human_Male_Fianna {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-fianna.png');
+}
+
+.thumb__Human_Male_Mjolnir {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-mjolnir.png');
+}
+
+.thumb__Human_Male_Physician {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-physician.png');
+}
+
+.thumb__Human_Male_Empath {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-mystic.png');
+}
+
+.thumb__Human_Male_Stonehealer {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-stonehealer.png');
+}
+
+.thumb__Human_Male_Blackguard {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-blackguard.png');
+}
+
+.thumb__Human_Male_ForestStalker {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-foreststalker.png');
+}
+
+.thumb__Human_Male_WintersShadow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-wintersshadow.png');
+}
+
+.thumb__Human_Male_FlameWarden {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-flamewarden.png');
+}
+
+.thumb__Human_Male_Druid {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-druid.png');
+}
+
+.thumb__Human_Male_WaveWeaver {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-waveweaver.png');
+}
+
+.thumb__Human_Male_Minstrel {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-minstrel.png');
+}
+
+.thumb__Human_Male_DarkFool {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-darkfool.png');
+}
+
+.thumb__Human_Male_Skald {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-skald.png');
+}
+
+.thumb__Human_Male_Abbot {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
+}
+
+.thumb__Human_Male_BlessedCrow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-blessedcrow.png');
+}
+
+.thumb__Human_Male_Helbound {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-helbound.png');
+}
+
+// ----------------- Female Human Classes ----------------
+.thumb__Human_Female_BlackKnight {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-blackknight.png');
+}
+
+.thumb__Human_Female_Fianna {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-fianna.png');
+}
+
+.thumb__Human_Female_Mjolnir {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-mjolnir.png');
+}
+
+.thumb__Human_Female_Physician {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-physician.png');
+}
+
+.thumb__Human_Female_Empath {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-mystic.png');
+}
+
+.thumb__Human_Female_Stonehealer {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-stonehealer.png');
+}
+
+.thumb__Human_Female_Blackguard {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-blackguard.png');
+}
+
+.thumb__Human_Female_ForestStalker {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-foreststalker.png');
+}
+
+.thumb__Human_Female_WintersShadow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-wintersshadow.png');
+}
+
+.thumb__Human_Female_FlameWarden {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-flamewarden.png');
+}
+
+.thumb__Human_Female_Druid {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-druid.png');
+}
+
+.thumb__Human_Female_WaveWeaver {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-waveweaver.png');
+}
+
+.thumb__Human_Female_Minstrel {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-minstrel.png');
+}
+
+.thumb__Human_Female_DarkFool {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-darkfool.png');
+}
+
+.thumb__Human_Female_Skald {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-skald.png');
+}
+
+.thumb__Human_Female_Abbot {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
+}
+
+.thumb__Human_Female_BlessedCrow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-blessedcrow.png');
+}
+
+.thumb__Human_Female_Helbound {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-helbound.png');
+}
+
+// Male Luchorpan Classes
+.thumb__Luchorpan_Male_Fianna {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-luchorpan-m-fianna.png');
+}
+
+.thumb__Luchorpan_Male_Empath {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-luchorpan-m-mystic.png');
+}
+
+.thumb__Luchorpan_Male_ForestStalker {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-luchorpan-m-foreststalker.png');
+}
+
+.thumb__Luchorpan_Male_Druid {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-druid.png');
+}
+
+.thumb__Luchorpan_Male_DarkFool {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-darkfool.png');
+}
+
+.thumb__Luchorpan_Male_BlessedCrow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-blessedcrow.png');
+}
+
+// Female Luchorpan Classes
+.thumb__Luchorpan_Female_Fianna {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-luchorpan-f-fianna.png');
+}
+
+.thumb__Luchorpan_Female_Empath {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-luchorpan-f-mystic.png');
+}
+
+.thumb__Luchorpan_Female_ForestStalker {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-luchorpan-f-foreststalker.png');
+}
+
+.thumb__Luchorpan_Female_Druid {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-druid.png');
+}
+
+.thumb__Luchorpan_Female_DarkFool {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-darkfool.png');
+}
+
+.thumb__Luchorpan_Female_BlessedCrow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-blessedcrow.png');
+}
+
+// Male Firbog Classes
+.thumb__Firbog_Male_Fianna {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-firbog-m-fianna.png');
+}
+
+.thumb__Firbog_Male_Empath {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-firbog-m-mystic.png');
+}
+
+.thumb__Firbog_Male_ForestStalker {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-firbog-m-foreststalker.png');
+}
+
+.thumb__Firbog_Male_Druid {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-druid.png');
+}
+
+.thumb__Firbog_Male_DarkFool {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-darkfool.png');
+}
+
+.thumb__Firbog_Male_BlessedCrow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-blessedcrow.png');
+}
+
+// Female Firbog Classes
+.thumb__Firbog_Female_Fianna {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-firbog-f-fianna.png');
+}
+
+.thumb__Firbog_Female_Empath {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-firbog-f-mystic.png');
+}
+
+.thumb__Firbog_Female_ForestStalker {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-firbog-f-foreststalker.png');
+}
+
+.thumb__Firbog_Female_Druid {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-druid.png');
+}
+
+.thumb__Firbog_Female_DarkFool {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-darkfool.png');
+}
+
+.thumb__Firbog_Female_BlessedCrow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-blessedcrow.png');
+}
+
+// Male Hamadryad Classes
+.thumb__Hamadryad_Male_Fianna {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-hamadryad-m-fianna.png');
+}
+
+.thumb__Hamadryad_Male_Empath {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-hamadryad-m-mystic.png');
+}
+
+.thumb__Hamadryad_Male_ForestStalker {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-hamadryad-m-foreststalker.png');
+}
+
+.thumb__Hamadryad_Male_Druid {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-druid.png');
+}
+
+.thumb__Hamadryad_Male_DarkFool {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-darkfool.png');
+}
+
+.thumb__Hamadryad_Male_BlessedCrow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-blessedcrow.png');
+}
+
+// Female Hamadryad Classes
+.thumb__Hamadryad_Female_Fianna {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-hamadryad-f-fianna.png');
+}
+
+.thumb__Hamadryad_Female_Empath {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-hamadryad-f-mystic.png');
+}
+
+.thumb__Hamadryad_Female_ForestStalker {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-hamadryad-f-foreststalker.png');
+}
+
+.thumb__Hamadryad_Female_Druid {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-druid.png');
+}
+
+.thumb__Hamadryad_Female_DarkFool {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-darkfool.png');
+}
+
+.thumb__Hamadryad_Female_BlessedCrow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-blessedcrow.png');
+}
+
+// Male Pict Classes
+.thumb__Pict_Male_BlackKnight {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-m-blackknight.png');
+}
+
+.thumb__Pict_Male_Physician {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-pict-m-physician.png');
+}
+
+.thumb__Pict_Male_Blackguard {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-pict-m-blackguard.png');
+}
+
+.thumb__Pict_Male_FlameWarden {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-flamewarden.png');
+}
+
+.thumb__Pict_Male_Minstrel {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-minstrel.png');
+}
+
+.thumb__Pict_Male_Abbot {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
+}
+
+// Female Pict Classes
+.thumb__Pict_Female_BlackKnight {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-human-f-blackknight.png');
+}
+
+.thumb__Pict_Female_Physician {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-pict-f-physician.png');
+}
+
+.thumb__Pict_Female_Blackguard {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-pict-f-blackguard.png');
+}
+
+.thumb__Pict_Female_FlameWarden {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-flamewarden.png');
+}
+
+.thumb__Pict_Female_Minstrel {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-minstrel.png');
+}
+
+.thumb__Pict_Female_Abbot {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
+}
+
+// Male Golem Classes
+.thumb__Golem_Male_BlackKnight {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-golem-m-blackknight.png');
+}
+
+.thumb__Golem_Male_Physician {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-golem-m-physician.png');
+}
+
+.thumb__Golem_Male_Blackguard {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-golem-m-blackguard.png');
+}
+
+.thumb__Golem_Male_FlameWarden {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-flamewarden.png');
+}
+
+.thumb__Golem_Male_Minstrel {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-minstrel.png');
+}
+
+.thumb__Golem_Male_Abbot {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
+}
+
+// Female Golem Classes
+.thumb__Golem_Female_BlackKnight {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-golem-f-blackknight.png');
+}
+
+.thumb__Golem_Female_Physician {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-golem-f-physician.png');
+}
+
+.thumb__Golem_Female_Blackguard {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-golem-f-blackguard.png');
+}
+
+.thumb__Golem_Female_FlameWarden {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-flamewarden.png');
+}
+
+.thumb__Golem_Female_Minstrel {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-minstrel.png');
+}
+
+.thumb__Golem_Female_Abbot {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
+}
+
+// Male CaitSith Classes
+.thumb__CaitSith_Male_BlackKnight {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-caitsith-m-blackknight.png');
+}
+
+.thumb__CaitSith_Male_Physician {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-caitsith-m-physician.png');
+}
+
+.thumb__CaitSith_Male_Blackguard {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-caitsith-m-blackguard.png');
+}
+
+.thumb__CaitSith_Male_FlameWarden {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-flamewarden.png');
+}
+
+.thumb__CaitSith_Male_Minstrel {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-minstrel.png');
+}
+
+.thumb__CaitSith_Male_Abbot {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
+}
+
+// Female CaitSith Classes
+.thumb__CaitSith_Female_BlackKnight {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-caitsith-f-blackknight.png');
+}
+
+.thumb__CaitSith_Female_Physician {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-caitsith-f-physician.png');
+}
+
+.thumb__CaitSith_Female_Blackguard {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-caitsith-f-blackguard.png');
+}
+
+.thumb__CaitSith_Female_FlameWarden {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-flamewarden.png');
+}
+
+.thumb__CaitSith_Female_Minstrel {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-minstrel.png');
+}
+
+.thumb__CaitSith_Female_Abbot {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
+}
+
+// Male Strm Classes
+.thumb__Strm_Male_BlackKnight {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-strm-m-blackknight.png');
+}
+
+.thumb__Strm_Male_Physician {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-strm-m-physician.png');
+}
+
+.thumb__Strm_Male_Blackguard {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-strm-m-blackguard.png');
+}
+
+.thumb__Strm_Male_FlameWarden {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-flamewarden.png');
+}
+
+.thumb__Strm_Male_Minstrel {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-minstrel.png');
+}
+
+.thumb__Strm_Male_Abbot {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
+}
+
+// Female Strm Classes
+.thumb__Strm_Female_BlackKnight {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-strm-f-blackknight.png');
+}
+
+.thumb__Strm_Female_Physician {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-strm-f-physician.png');
+}
+
+.thumb__Strm_Female_Blackguard {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-strm-f-blackguard.png');
+}
+
+.thumb__Strm_Female_FlameWarden {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-flamewarden.png');
+}
+
+.thumb__Strm_Female_Minstrel {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-minstrel.png');
+}
+
+.thumb__Strm_Female_Abbot {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-abbot.png');
+}
+
+// Male Valkyrie Classes
+.thumb__Valkyrie_Male_Mjolnir {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-valk-m-mjolnir.png');
+}
+
+.thumb__Valkyrie_Male_Stonehealer {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-valk-m-stonehealer.png');
+}
+
+.thumb__Valkyrie_Male_WintersShadow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-valk-m-wintersshadow.png');
+}
+
+.thumb__Valkyrie_Male_WaveWeaver {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-waveweaver.png');
+}
+
+.thumb__Valkyrie_Male_Skald {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-skald.png');
+}
+
+.thumb__Valkyrie_Male_Helbound {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-helbound.png');
+}
+
+// Female Valkyrie Classes
+.thumb__Valkyrie_Female_Mjolnir {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-valk-f-mjolnir.png');
+}
+
+.thumb__Valkyrie_Female_Stonehealer {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-valk-f-stonehealer.png');
+}
+
+.thumb__Valkyrie_Female_WintersShadow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-valk-f-wintersshadow.png');
+}
+
+.thumb__Valkyrie_Female_WaveWeaver {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-waveweaver.png');
+}
+
+.thumb__Valkyrie_Female_Skald {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-skald.png');
+}
+
+.thumb__Valkyrie_Female_Helbound {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-helbound.png');
+}
+
+// Male Jotnar Classes
+.thumb__Jotnar_Male_Mjolnir {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-jotnar-m-mjolnir.png');
+}
+
+.thumb__Jotnar_Male_Stonehealer {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-jotnar-m-stonehealer.png');
+}
+
+.thumb__Jotnar_Male_WintersShadow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-jotnar-m-wintersshadow.png');
+}
+
+.thumb__Jotnar_Male_WaveWeaver {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-waveweaver.png');
+}
+
+.thumb__Jotnar_Male_Skald {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-skald.png');
+}
+
+.thumb__Jotnar_Male_Helbound {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-helbound.png');
+}
+
+// Female Jotnar Classes
+.thumb__Jotnar_Female_Mjolnir {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-jotnar-f-mjolnir.png');
+}
+
+.thumb__Jotnar_Female_Stonehealer {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-jotnar-f-stonehealer.png');
+}
+
+.thumb__Jotnar_Female_WintersShadow {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-jotnar-f-wintersshadow.png');
+}
+
+.thumb__Jotnar_Female_WaveWeaver {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-waveweaver.png');
+}
+
+.thumb__Jotnar_Female_Skald {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-skald.png');
+}
+
+.thumb__Jotnar_Female_Helbound {
+  @include selection-thumbnail('../images/classes/profile/profile-icon-any-helbound.png');
+}
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!!!!!!!!!!!!!!!!!!! STANDING !!!!!!!!!!!!!!!!!!!!!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+@mixin winters-shadow-height {
+  max-height: 70% !important;
+}
+
+// ------------------ Male Human Classes --------------
+.standing__Human_Male_Empath {
+  @include view-standing('../images/classes/human-m-empath.png');
+}
+
+.standing__Human_Male_BlackKnight {
+  @include view-standing('../images/classes/human-m-blackknight.png');
+}
+
+.standing__Human_Male_Fianna {
+  @include view-standing('../images/classes/human-m-fianna.png');
+}
+
+.standing__Human_Male_Mjolnir {
+  @include view-standing('../images/classes/human-m-mjolnir.png');
+}
+
+.standing__Human_Male_Physician {
+  @include view-standing('../images/classes/human-m-physician.png');
+}
+
+.standing__Human_Male_Stonehealer {
+  @include view-standing('../images/classes/human-m-stonehealer.png');
+}
+
+.standing__Human_Male_Blackguard {
+  @include view-standing('../images/classes/human-m-blackguard.png');
+}
+
+.standing__Human_Male_ForestStalker {
+  @include view-standing('../images/classes/human-m-foreststalker.png');
+}
+
+.standing__Human_Male_WintersShadow {
+  @include view-standing('../images/classes/human-m-wintersshadow.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Male_FlameWarden {
+  @include view-standing('../images/classes/human-m-flamewarden.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Male_Druid {
+  @include view-standing('../images/classes/human-m-druid.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Male_WaveWeaver {
+  @include view-standing('../images/classes/human-m-waveweaver.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Male_Minstrel {
+  @include view-standing('../images/classes/human-m-minstrel.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Male_DarkFool {
+  @include view-standing('../images/classes/human-m-darkfool.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Male_Skald {
+  @include view-standing('../images/classes/human-m-skald.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Male_Abbot {
+  @include view-standing('../images/classes/human-m-abbot.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Male_BlessedCrow {
+  @include view-standing('../images/classes/human-m-blessedcrow.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Male_Helbound {
+  @include view-standing('../images/classes/human-m-helbound.png');
+  @include winters-shadow-height();
+}
+
+// ----------------- Female Human Classes ----------------
+.standing__Human_Female_Empath {
+  @include view-standing('../images/classes/human-f-empath.png');
+}
+
+.standing__Human_Female_BlackKnight {
+  @include view-standing('../images/classes/human-f-blackknight.png');
+}
+
+.standing__Human_Female_Fianna {
+  @include view-standing('../images/classes/human-f-fianna.png');
+}
+
+.standing__Human_Female_Mjolnir {
+  @include view-standing('../images/classes/human-f-mjolnir.png');
+}
+
+.standing__Human_Female_Physician {
+  @include view-standing('../images/classes/human-f-physician.png');
+}
+
+.standing__Human_Female_Stonehealer {
+  @include view-standing('../images/classes/human-f-stonehealer.png');
+}
+
+.standing__Human_Female_Blackguard {
+  @include view-standing('../images/classes/human-f-blackguard.png');
+}
+
+.standing__Human_Female_ForestStalker {
+  @include view-standing('../images/classes/human-f-foreststalker.png');
+}
+
+.standing__Human_Female_WintersShadow {
+  @include view-standing('../images/classes/human-f-wintersshadow.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Female_FlameWarden {
+  @include view-standing('../images/classes/human-f-flamewarden.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Female_Druid {
+  @include view-standing('../images/classes/human-f-druid.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Female_WaveWeaver {
+  @include view-standing('../images/classes/human-f-waveweaver.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Female_Minstrel {
+  @include view-standing('../images/classes/human-f-minstrel.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Female_DarkFool {
+  @include view-standing('../images/classes/human-f-darkfool.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Female_Skald {
+  @include view-standing('../images/classes/human-f-skald.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Female_Abbot {
+  @include view-standing('../images/classes/human-f-abbot.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Female_BlessedCrow {
+  @include view-standing('../images/classes/human-f-blessedcrow.png');
+  @include winters-shadow-height();
+}
+
+.standing__Human_Female_Helbound {
+  @include view-standing('../images/classes/human-f-helbound.png');
+  @include winters-shadow-height();
+}
+
+// ----------------- Male Luchorpan Classes ------------
+.standing__Luchorpan_Male_Empath {
+  @include view-standing('../images/classes/luchorpan-m-empath.png');
+}
+
+.standing__Luchorpan_Male_Fianna {
+  @include view-standing('../images/classes/luchorpan-m-fianna.png');
+}
+
+.standing__Luchorpan_Male_ForestStalker {
+  @include view-standing('../images/classes/luchorpan-m-foreststalker.png');
+}
+
+.standing__Luchorpan_Male_Druid {
+  @include view-standing('../images/classes/luchorpan-m-druid.png');
+}
+
+.standing__Luchorpan_Male_DarkFool {
+  @include view-standing('../images/classes/luchorpan-m-darkfool.png');
+}
+
+.standing__Luchorpan_Male_BlessedCrow {
+  @include view-standing('../images/classes/luchorpan-m-blessedcrow.png');
+}
+
+// ---------------- Female Luchorpan Classes --------------
+.standing__Luchorpan_Female_Empath {
+  @include view-standing('../images/classes/luchorpan-f-empath.png');
+}
+
+.standing__Luchorpan_Female_Fianna {
+  @include view-standing('../images/classes/luchorpan-f-fianna.png');
+}
+
+.standing__Luchorpan_Female_ForestStalker {
+  @include view-standing('../images/classes/luchorpan-f-foreststalker.png');
+}
+
+.standing__Luchorpan_Female_Druid {
+  @include view-standing('../images/classes/luchorpan-f-druid.png');
+}
+
+.standing__Luchorpan_Female_DarkFool {
+  @include view-standing('../images/classes/luchorpan-f-darkfool.png');
+}
+
+.standing__Luchorpan_Female_BlessedCrow {
+  @include view-standing('../images/classes/luchorpan-f-blessedcrow.png');
+}
+
+// ----------------- Male Firbog Classes ------------
+.standing__Firbog_Male_Empath {
+  @include view-standing('../images/classes/firbog-m-empath.png');
+}
+
+.standing__Firbog_Male_Fianna {
+  @include view-standing('../images/classes/firbog-m-fianna.png');
+}
+
+.standing__Firbog_Male_ForestStalker {
+  @include view-standing('../images/classes/firbog-m-foreststalker.png');
+}
+
+.standing__Firbog_Male_Druid {
+  @include view-standing('../images/classes/firbog-m-druid.png');
+}
+
+.standing__Firbog_Male_DarkFool {
+  @include view-standing('../images/classes/firbog-m-darkfool.png');
+}
+
+.standing__Firbog_Male_BlessedCrow {
+  @include view-standing('../images/classes/firbog-m-blessedcrow.png');
+}
+
+// ---------------- Female Firbog Classes --------------
+.standing__Firbog_Female_Empath {
+  @include view-standing('../images/classes/firbog-f-empath.png');
+}
+
+.standing__Firbog_Female_Fianna {
+  @include view-standing('../images/classes/firbog-f-fianna.png');
+}
+
+.standing__Firbog_Female_ForestStalker {
+  @include view-standing('../images/classes/firbog-f-foreststalker.png');
+}
+
+.standing__Firbog_Female_Druid {
+  @include view-standing('../images/classes/firbog-f-druid.png');
+}
+
+.standing__Firbog_Female_DarkFool {
+  @include view-standing('../images/classes/firbog-f-darkfool.png');
+}
+
+.standing__Firbog_Female_BlessedCrow {
+  @include view-standing('../images/classes/firbog-f-blessedcrow.png');
+}
+
+// ----------------- Male Hamadryad Classes ------------
+.standing__Hamadryad_Male_Empath {
+  @include view-standing('../images/classes/hamadryad-m-empath.png');
+}
+
+.standing__Hamadryad_Male_Fianna {
+  @include view-standing('../images/classes/hamadryad-m-fianna.png');
+}
+
+.standing__Hamadryad_Male_ForestStalker {
+  @include view-standing('../images/classes/hamadryad-m-foreststalker.png');
+}
+
+.standing__Hamadryad_Male_Druid {
+  @include view-standing('../images/classes/hamadryad-m-druid.png');
+}
+
+.standing__Hamadryad_Male_DarkFool {
+  @include view-standing('../images/classes/hamadryad-m-darkfool.png');
+}
+
+.standing__Hamadryad_Male_BlessedCrow {
+  @include view-standing('../images/classes/hamadryad-m-blessedcrow.png');
+}
+
+// ---------------- Female Hamadryad Classes --------------
+.standing__Hamadryad_Female_Empath {
+  @include view-standing('../images/classes/hamadryad-f-empath.png');
+}
+
+.standing__Hamadryad_Female_Fianna {
+  @include view-standing('../images/classes/hamadryad-f-fianna.png');
+}
+
+.standing__Hamadryad_Female_ForestStalker {
+  @include view-standing('../images/classes/hamadryad-f-foreststalker.png');
+}
+
+.standing__Hamadryad_Female_Druid {
+  @include view-standing('../images/classes/hamadryad-f-druid.png');
+}
+
+.standing__Hamadryad_Female_DarkFool {
+  @include view-standing('../images/classes/hamadryad-f-darkfool.png');
+}
+
+.standing__Hamadryad_Female_BlessedCrow {
+  @include view-standing('../images/classes/hamadryad-f-blessedcrow.png');
+}
+
+// ----------------- Male Pict Classes ---------------
+.standing__Pict_Male_BlackKnight {
+  @include view-standing('../images/classes/pict-m-blackknight.png');
+}
+
+.standing__Pict_Male_Blackguard {
+  @include view-standing('../images/classes/pict-m-blackguard.png');
+}
+
+.standing__Pict_Male_Physician {
+  @include view-standing('../images/classes/pict-m-physician.png');
+}
+
+.standing__Pict_Male_FlameWarden {
+  @include view-standing('../images/classes/pict-m-flamewarden.png');
+}
+
+.standing__Pict_Male_Minstrel {
+  @include view-standing('../images/classes/pict-m-minstrel.png');
+}
+
+.standing__Pict_Male_Abbot {
+  @include view-standing('../images/classes/pict-m-abbot.png');
+  @include winters-shadow-height();
+}
+
+// ---------------- Female Pict Classes --------------
+.standing__Pict_Female_BlackKnight {
+  @include view-standing('../images/classes/pict-f-blackknight.png');
+}
+
+.standing__Pict_Female_Blackguard {
+  @include view-standing('../images/classes/pict-f-blackguard.png');
+}
+
+.standing__Pict_Female_Physician {
+  @include view-standing('../images/classes/pict-f-physician.png');
+}
+
+.standing__Pict_Female_FlameWarden {
+  @include view-standing('../images/classes/pict-f-flamewarden.png');
+}
+
+.standing__Pict_Female_Minstrel {
+  @include view-standing('../images/classes/pict-f-minstrel.png');
+}
+
+.standing__Pict_Female_Abbot {
+  @include view-standing('../images/classes/pict-f-abbot.png');
+  @include winters-shadow-height();
+}
+
+// ----------------- Male Golem Classes ---------------
+.standing__Golem_Male_BlackKnight {
+  @include view-standing('../images/classes/golem-m-blackknight.png');
+}
+
+.standing__Golem_Male_Blackguard {
+  @include view-standing('../images/classes/golem-m-blackguard.png');
+}
+
+.standing__Golem_Male_Physician {
+  @include view-standing('../images/classes/golem-m-physician.png');
+}
+
+.standing__Golem_Male_FlameWarden {
+  @include view-standing('../images/classes/golem-m-flamewarden.png');
+}
+
+.standing__Golem_Male_Minstrel {
+  @include view-standing('../images/classes/golem-m-minstrel.png');
+}
+
+.standing__Golem_Male_Abbot {
+  @include view-standing('../images/classes/golem-m-abbot.png');
+  @include winters-shadow-height();
+}
+
+// ---------------- Female Golem Classes --------------
+.standing__Golem_Female_BlackKnight {
+  @include view-standing('../images/classes/golem-f-blackknight.png');
+}
+
+.standing__Golem_Female_Blackguard {
+  @include view-standing('../images/classes/golem-f-blackguard.png');
+}
+
+.standing__Golem_Female_Physician {
+  @include view-standing('../images/classes/golem-f-physician.png');
+}
+
+.standing__Golem_Female_FlameWarden {
+  @include view-standing('../images/classes/golem-f-flamewarden.png');
+}
+
+.standing__Golem_Female_Minstrel {
+  @include view-standing('../images/classes/golem-f-minstrel.png');
+}
+
+.standing__Golem_Female_Abbot {
+  @include view-standing('../images/classes/golem-f-abbot.png');
+  @include winters-shadow-height();
+}
+
+// ----------------- Male CaitSith Classes ---------------
+.standing__CaitSith_Male_BlackKnight {
+  @include view-standing('../images/classes/caitsith-m-blackknight.png');
+}
+
+.standing__CaitSith_Male_Blackguard {
+  @include view-standing('../images/classes/caitsith-m-blackguard.png');
+}
+
+.standing__CaitSith_Male_Physician {
+  @include view-standing('../images/classes/caitsith-m-physician.png');
+}
+
+.standing__CaitSith_Male_FlameWarden {
+  @include view-standing('../images/classes/caitsith-m-flamewarden.png');
+}
+
+.standing__CaitSith_Male_Minstrel {
+  @include view-standing('../images/classes/caitsith-m-minstrel.png');
+}
+
+.standing__CaitSith_Male_Abbot {
+  @include view-standing('../images/classes/caitsith-m-abbot.png');
+  @include winters-shadow-height();
+}
+
+// ---------------- Female CaitSith Classes --------------
+.standing__CaitSith_Female_BlackKnight {
+  @include view-standing('../images/classes/caitsith-f-blackknight.png');
+}
+
+.standing__CaitSith_Female_Blackguard {
+  @include view-standing('../images/classes/caitsith-f-blackguard.png');
+}
+
+.standing__CaitSith_Female_Physician {
+  @include view-standing('../images/classes/caitsith-f-physician.png');
+}
+
+.standing__CaitSith_Female_FlameWarden {
+  @include view-standing('../images/classes/caitsith-f-flamewarden.png');
+}
+
+.standing__CaitSith_Female_Minstrel {
+  @include view-standing('../images/classes/caitsith-f-minstrel.png');
+}
+
+.standing__CaitSith_Female_Abbot {
+  @include view-standing('../images/classes/caitsith-f-abbot.png');
+  @include winters-shadow-height();
+}
+
+// ----------------- Male Strm Classes ---------------
+.standing__Strm_Male_BlackKnight {
+  @include view-standing('../images/classes/strm-m-blackknight.png');
+}
+
+.standing__Strm_Male_Blackguard {
+  @include view-standing('../images/classes/strm-m-blackguard.png');
+}
+
+.standing__Strm_Male_Physician {
+  @include view-standing('../images/classes/strm-m-physician.png');
+}
+
+.standing__Strm_Male_FlameWarden {
+  @include view-standing('../images/classes/strm-m-flamewarden.png');
+}
+
+.standing__Strm_Male_Minstrel {
+  @include view-standing('../images/classes/strm-m-minstrel.png');
+}
+
+.standing__Strm_Male_Abbot {
+  @include view-standing('../images/classes/strm-m-abbot.png');
+  @include winters-shadow-height();
+}
+
+// ---------------- Female Strm Classes --------------
+.standing__Strm_Female_BlackKnight {
+  @include view-standing('../images/classes/strm-f-blackknight.png');
+}
+
+.standing__Strm_Female_Blackguard {
+  @include view-standing('../images/classes/strm-f-blackguard.png');
+}
+
+.standing__Strm_Female_Physician {
+  @include view-standing('../images/classes/strm-f-physician.png');
+}
+
+.standing__Strm_Female_FlameWarden {
+  @include view-standing('../images/classes/strm-f-flamewarden.png');
+}
+
+.standing__Strm_Female_Minstrel {
+  @include view-standing('../images/classes/strm-f-minstrel.png');
+}
+
+.standing__Strm_Female_Abbot {
+  @include view-standing('../images/classes/strm-f-abbot.png');
+  @include winters-shadow-height();
+}
+
+// ---------------- Male Valkyrie Classes --------------
+.standing__Valkyrie_Male_Mjolnir {
+  @include view-standing('../images/classes/valkyrie-m-mjolnir.png');
+}
+
+.standing__Valkyrie_Male_WintersShadow {
+  @include view-standing('../images/classes/valkyrie-m-wintersshadow.png');
+  @include winters-shadow-height();
+}
+
+.standing__Valkyrie_Male_Stonehealer {
+  @include view-standing('../images/classes/valkyrie-m-stonehealer.png');
+}
+
+.standing__Valkyrie_Male_WaveWeaver {
+  @include view-standing('../images/classes/valkyrie-m-waveweaver.png');
+}
+
+.standing__Valkyrie_Male_Skald {
+  @include view-standing('../images/classes/valkyrie-m-skald.png');
+}
+
+.standing__Valkyrie_Male_Helbound {
+  @include view-standing('../images/classes/valkyrie-m-helbound.png');
+}
+
+// ---------------- Female Valkyrie Classes -----------
+.standing__Valkyrie_Female_Mjolnir {
+  @include view-standing('../images/classes/valkyrie-f-mjolnir.png');
+}
+
+.standing__Valkyrie_Female_WintersShadow {
+  @include view-standing('../images/classes/valkyrie-f-wintersshadow.png');
+  @include winters-shadow-height();
+}
+
+.standing__Valkyrie_Female_Stonehealer {
+  @include view-standing('../images/classes/valkyrie-f-stonehealer.png');
+}
+
+.standing__Valkyrie_Female_WaveWeaver {
+  @include view-standing('../images/classes/valkyrie-f-waveweaver.png');
+}
+
+.standing__Valkyrie_Female_Skald {
+  @include view-standing('../images/classes/valkyrie-f-skald.png');
+}
+
+.standing__Valkyrie_Female_Helbound {
+  @include view-standing('../images/classes/valkyrie-f-helbound.png');
+}
+
+// ---------------- Male Jotnar Classes --------------
+.standing__Jotnar_Male_Mjolnir {
+  @include view-standing('../images/classes/jotnar-m-mjolnir.png');
+}
+
+.standing__Jotnar_Male_WintersShadow {
+  @include view-standing('../images/classes/jotnar-m-wintersshadow.png');
+  @include winters-shadow-height();
+}
+
+.standing__Jotnar_Male_Stonehealer {
+  @include view-standing('../images/classes/jotnar-m-stonehealer.png');
+}
+
+.standing__Jotnar_Male_WaveWeaver {
+  @include view-standing('../images/classes/jotnar-m-waveweaver.png');
+}
+
+.standing__Jotnar_Male_Skald {
+  @include view-standing('../images/classes/jotnar-m-skald.png');
+}
+
+.standing__Jotnar_Male_Helbound {
+  @include view-standing('../images/classes/jotnar-m-helbound.png');
+}
+
+// ---------------- Female Jotnar Classes -----------
+.standing__Jotnar_Female_Mjolnir {
+  @include view-standing('../images/classes/jotnar-f-mjolnir.png');
+}
+
+.standing__Jotnar_Female_WintersShadow {
+  @include view-standing('../images/classes/jotnar-f-wintersshadow.png');
+  @include winters-shadow-height();
+}
+
+.standing__Jotnar_Female_Stonehealer {
+  @include view-standing('../images/classes/jotnar-f-stonehealer.png');
+}
+
+.standing__Jotnar_Female_WaveWeaver {
+  @include view-standing('../images/classes/jotnar-f-waveweaver.png');
+}
+
+.standing__Jotnar_Female_Skald {
+  @include view-standing('../images/classes/jotnar-f-skald.png');
+}
+
+.standing__Jotnar_Female_Helbound {
+  @include view-standing('../images/classes/jotnar-f-helbound.png');
+}
+
+// Misc
+.class-selection-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.class-btn {
+  cursor: pointer;
+  opacity: 0.5;
+  &:hover {
+    opacity: 1;
+  }
+}

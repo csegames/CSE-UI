@@ -1,0 +1,531 @@
+[
+  {
+    "ID": "Abbot",
+    "AbilityBuilderBackgroundImage": "/dynamic/userclasses/assets/support-bg.png",
+    "AbilityBuilderHueRotation": "-100deg",
+    "AbilityNetworkImage": {
+      "Magic": "/dynamic/userclasses/assets/select-magic-abbot.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-arthurian.png"
+    },
+    "PaperdollImage": {
+      "Caitsith": {
+        "Female": "/dynamic/userclasses/assets/caitsith-f-abbot.png",
+        "Male": "/dynamic/userclasses/assets/caitsith-m-abbot.png"
+      },
+      "Golem": {
+        "Female": "/dynamic/userclasses/assets/golem-f-abbot.png",
+        "Male": "/dynamic/userclasses/assets/golem-m-abbot.png"
+      },
+      "HumanMaleA": {
+        "Female": "/dynamic/userclasses/assets/human-f-abbot.png",
+        "Male": "/dynamic/userclasses/assets/human-m-abbot.png"
+      },
+      "Pict": {
+        "Female": "/dynamic/userclasses/assets/pict-f-abbot.png",
+        "Male": "/dynamic/userclasses/assets/pict-m-abbot.png"
+      },
+      "Strm": {
+        "Female": "/dynamic/userclasses/assets/strm-f-abbot.png",
+        "Male": "/dynamic/userclasses/assets/strm-m-abbot.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/support-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/art-support-frame.png"
+  },
+  {
+    "ID": "BlackKnight",
+    "AbilityBuilderBackgroundImage": "/dynamic/userclasses/assets/classes-bg-black-knight.jpg",
+    "AbilityBuilderHueRotation": "110deg",
+    "AbilityNetworkImage": {
+      "Shout": "/dynamic/userclasses/assets/select-shout-black-knight.png",
+      "Melee": "/dynamic/userclasses/assets/select-melee-black-knight.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-arthurian.png"
+    },
+    "PaperdollImage": {
+      "Caitsith": {
+        "Female": "/dynamic/userclasses/assets/caitsith-f-blackknight.png",
+        "Male": "/dynamic/userclasses/assets/caitsith-m-blackknight.png"
+      },
+      "Golem": {
+        "Female": "/dynamic/userclasses/assets/golem-f-blackknight.png",
+        "Male": "/dynamic/userclasses/assets/golem-m-blackknight.png"
+      },
+      "HumanMaleA": {
+        "Female": "/dynamic/userclasses/assets/human-f-blackknight.png",
+        "Male": "/dynamic/userclasses/assets/human-m-blackknight.png"
+      },
+      "Pict": {
+        "Female": "/dynamic/userclasses/assets/pict-f-blackknight.png",
+        "Male": "/dynamic/userclasses/assets/pict-m-blackknight.png"
+      },
+      "Strm": {
+        "Female": "/dynamic/userclasses/assets/strm-f-blackknight.png",
+        "Male": "/dynamic/userclasses/assets/strm-m-blackknight.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/heavy-fighter-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/art-heavy-fighter-frame.png"
+  },
+  {
+    "ID": "Blackguard",
+    "AbilityBuilderBackgroundImage": "/dynamic/userclasses/assets/classes-bg-blackguard.jpg",
+    "AbilityBuilderHueRotation": "-75deg",
+    "AbilityNetworkImage": {
+      "Archery": "/dynamic/userclasses/assets/select-archery-blackguard.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-arthurian.png"
+    },
+    "PaperdollImage": {
+      "Caitsith": {
+        "Female": "/dynamic/userclasses/assets/caitsith-f-blackguard.png",
+        "Male": "/dynamic/userclasses/assets/caitsith-m-blackguard.png"
+      },
+      "Golem": {
+        "Female": "/dynamic/userclasses/assets/golem-f-blackguard.png",
+        "Male": "/dynamic/userclasses/assets/golem-m-blackguard.png"
+      },
+      "HumanMaleA": {
+        "Female": "/dynamic/userclasses/assets/human-f-blackguard.png",
+        "Male": "/dynamic/userclasses/assets/human-m-blackguard.png"
+      },
+      "Pict": {
+        "Female": "/dynamic/userclasses/assets/pict-f-blackguard.png",
+        "Male": "/dynamic/userclasses/assets/pict-m-blackguard.png"
+      },
+      "Strm": {
+        "Female": "/dynamic/userclasses/assets/strm-f-blackguard.png",
+        "Male": "/dynamic/userclasses/assets/strm-m-blackguard.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/archer-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/art-archer-frame.png"
+  },
+  {
+    "ID": "BlessedCrow",
+    "AbilityBuilderBackgroundImage": "",
+    "AbilityBuilderHueRotation": "-100deg",
+    "AbilityNetworkImage": {
+      "Magic": "/dynamic/userclasses/assets/select-magic-blessed-crow.png",
+      "Throwing": "/dynamic/userclasses/assets/select-throwing-blessed-crow.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-tdd.png"
+    },
+    "PaperdollImage": {
+      "Firbog": {
+        "Female": "/dynamic/userclasses/assets/firbog-f-blessedcrow.png",
+        "Male": "/dynamic/userclasses/assets/firbog-m-blessedcrow.png"
+      },
+      "Hamadryad": {
+        "Female": "/dynamic/userclasses/assets/hamadryad-f-blessedcrow.png",
+        "Male": "/dynamic/userclasses/assets/hamadryad-m-blessedcrow.png"
+      },
+      "HumanMaleT": {
+        "Female": "/dynamic/userclasses/assets/human-f-blessedcrow.png",
+        "Male": "/dynamic/userclasses/assets/human-m-blessedcrow.png"
+      },
+      "Luchorpan": {
+        "Female": "/dynamic/userclasses/assets/luchorpan-f-blessedcrow.png",
+        "Male": "/dynamic/userclasses/assets/luchorpan-m-blessedcrow.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/support-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/tdd-support-frame.png"
+  },
+  {
+    "ID": "DarkFool",
+    "AbilityBuilderBackgroundImage": "",
+    "AbilityBuilderHueRotation": "118deg",
+    "AbilityNetworkImage": {
+      "Song": "/dynamic/userclasses/assets/select-song-dark-fool.png",
+      "Shout": "/dynamic/userclasses/assets/select-shout-dark-fool.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-tdd.png"
+    },
+    "PaperdollImage": {
+      "Firbog": {
+        "Female": "/dynamic/userclasses/assets/firbog-f-darkfool.png",
+        "Male": "/dynamic/userclasses/assets/firbog-m-darkfool.png"
+      },
+      "Hamadryad": {
+        "Female": "/dynamic/userclasses/assets/hamadryad-f-darkfool.png",
+        "Male": "/dynamic/userclasses/assets/hamadryad-m-darkfool.png"
+      },
+      "HumanMaleT": {
+        "Female": "/dynamic/userclasses/assets/human-f-darkfool.png",
+        "Male": "/dynamic/userclasses/assets/human-m-darkfool.png"
+      },
+      "Luchorpan": {
+        "Female": "/dynamic/userclasses/assets/luchorpan-f-darkfool.png",
+        "Male": "/dynamic/userclasses/assets/luchorpan-m-darkfool.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/devout-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/tdd-devout-frame.png"
+  },
+  {
+    "ID": "Druid",
+    "AbilityBuilderBackgroundImage": "/dynamic/userclasses/assets/classes-bg-druid.jpg",
+    "AbilityBuilderHueRotation": "0deg",
+    "AbilityNetworkImage": {
+      "Magic": "/dynamic/userclasses/assets/select-magic-druid.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-tdd.png"
+    },
+    "PaperdollImage": {
+      "Firbog": {
+        "Female": "/dynamic/userclasses/assets/firbog-f-druid.png",
+        "Male": "/dynamic/userclasses/assets/firbog-m-druid.png"
+      },
+      "Hamadryad": {
+        "Female": "/dynamic/userclasses/assets/hamadryad-f-druid.png",
+        "Male": "/dynamic/userclasses/assets/hamadryad-m-druid.png"
+      },
+      "HumanMaleT": {
+        "Female": "/dynamic/userclasses/assets/human-f-druid.png",
+        "Male": "/dynamic/userclasses/assets/human-m-druid.png"
+      },
+      "Luchorpan": {
+        "Female": "/dynamic/userclasses/assets/luchorpan-f-druid.png",
+        "Male": "/dynamic/userclasses/assets/luchorpan-m-druid.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/mage-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/tdd-mage-frame.png"
+  },
+  {
+    "ID": "Empath",
+    "AbilityBuilderBackgroundImage": "/dynamic/userclasses/assets/classes-bg-empath.jpg",
+    "AbilityBuilderHueRotation": "-135deg",
+    "AbilityNetworkImage": {
+      "Magic": "/dynamic/userclasses/assets/select-magic-empath.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-tdd.png"
+    },
+    "PaperdollImage": {
+      "Firbog": {
+        "Female": "/dynamic/userclasses/assets/firbog-f-empath.png",
+        "Male": "/dynamic/userclasses/assets/firbog-m-empath.png"
+      },
+      "Hamadryad": {
+        "Female": "/dynamic/userclasses/assets/hamadryad-f-empath.png",
+        "Male": "/dynamic/userclasses/assets/hamadryad-m-empath.png"
+      },
+      "HumanMaleT": {
+        "Female": "/dynamic/userclasses/assets/human-f-empath.png",
+        "Male": "/dynamic/userclasses/assets/human-m-empath.png"
+      },
+      "Luchorpan": {
+        "Female": "/dynamic/userclasses/assets/luchorpan-f-empath.png",
+        "Male": "/dynamic/userclasses/assets/luchorpan-m-empath.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/healer-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/tdd-healer-frame.png"
+  },
+  {
+    "ID": "Fianna",
+    "AbilityBuilderBackgroundImage": "/dynamic/userclasses/assets/classes-bg-fianna.jpg",
+    "AbilityBuilderHueRotation": "110deg",
+    "AbilityNetworkImage": {
+      "Shout": "/dynamic/userclasses/assets/select-shout-fianna.png",
+      "Melee": "/dynamic/userclasses/assets/select-melee-fianna.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-tdd.png"
+    },
+    "PaperdollImage": {
+      "Firbog": {
+        "Female": "/dynamic/userclasses/assets/firbog-f-fianna.png",
+        "Male": "/dynamic/userclasses/assets/firbog-m-fianna.png"
+      },
+      "Luchorpan": {
+        "Female": "/dynamic/userclasses/assets/luchorpan-f-fianna.png",
+        "Male": "/dynamic/userclasses/assets/luchorpan-m-fianna.png"
+      },
+      "HumanMaleT": {
+        "Female": "/dynamic/userclasses/assets/human-f-fianna.png",
+        "Male": "/dynamic/userclasses/assets/human-m-fianna.png"
+      },
+      "Hamadryad": {
+        "Female": "/dynamic/userclasses/assets/hamadryadf-fianna.png",
+        "Male": "/dynamic/userclasses/assets/hamadryad-m-fianna.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/heavy-fighter-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/tdd-heavy-fighter-frame.png"
+  },
+  {
+    "ID": "ForestStalker",
+    "AbilityBuilderBackgroundImage": "/dynamic/userclasses/assets/classes-bg-forest-stalker.jpg",
+    "AbilityBuilderHueRotation": "-75deg",
+    "AbilityNetworkImage": {
+      "Archery": "/dynamic/userclasses/assets/select-archery-forest-stalker.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-tdd.png"
+    },
+    "PaperdollImage": {
+      "Firbog": {
+        "Female": "/dynamic/userclasses/assets/firbog-f-foreststalker.png",
+        "Male": "/dynamic/userclasses/assets/firbog-m-foreststalker.png"
+      },
+      "Hamadryad": {
+        "Female": "/dynamic/userclasses/assets/hamadryad-f-foreststalker.png",
+        "Male": "/dynamic/userclasses/assets/hamadryad-m-foreststalker.png"
+      },
+      "HumanMaleT": {
+        "Female": "/dynamic/userclasses/assets/human-f-foreststalker.png",
+        "Male": "/dynamic/userclasses/assets/human-m-foreststalker.png"
+      },
+      "Luchorpan": {
+        "Female": "/dynamic/userclasses/assets/luchorpan-f-foreststalker.png",
+        "Male": "/dynamic/userclasses/assets/luchorpan-m-foreststalker.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/archer-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/tdd-archer-frame.png"
+  },
+  {
+    "ID": "FlameWarden",
+    "AbilityBuilderBackgroundImage": "/dynamic/userclasses/assets/classes-bg-flame-warden.jpg",
+    "AbilityBuilderHueRotation": "0deg",
+    "AbilityNetworkImage": {
+      "Magic": "/dynamic/userclasses/assets/select-magic-flame-warden.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-arthurian.png"
+    },
+    "PaperdollImage": {
+      "Caitsith": {
+        "Female": "/dynamic/userclasses/assets/caitsith-f-flamewarden.png",
+        "Male": "/dynamic/userclasses/assets/caitsith-m-flamewarden.png"
+      },
+      "Golem": {
+        "Female": "/dynamic/userclasses/assets/golem-f-flamewarden.png",
+        "Male": "/dynamic/userclasses/assets/golem-m-flamewarden.png"
+      },
+      "HumanMaleA": {
+        "Female": "/dynamic/userclasses/assets/human-f-flamewarden.png",
+        "Male": "/dynamic/userclasses/assets/human-m-flamewarden.png"
+      },
+      "Pict": {
+        "Female": "/dynamic/userclasses/assets/pict-f-flamewarden.png",
+        "Male": "/dynamic/userclasses/assets/pict-m-flamewarden.png"
+      },
+      "Strm": {
+        "Female": "/dynamic/userclasses/assets/strm-f-flamewarden.png",
+        "Male": "/dynamic/userclasses/assets/strm-m-flamewarden.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/mage-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/art-mage-frame.png"
+  },
+  {
+    "ID": "Helbound",
+    "AbilityBuilderBackgroundImage": "",
+    "AbilityBuilderHueRotation": "-100deg",
+    "AbilityNetworkImage": {
+      "Magic": "/dynamic/userclasses/assets/select-magic-helbound.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-viking.png"
+    },
+    "PaperdollImage": {
+      "HumanMaleV": {
+        "Female": "/dynamic/userclasses/assets/human-f-helbound.png",
+        "Male": "/dynamic/userclasses/assets/human-m-helbound.png"
+      },
+      "Jotnar": {
+        "Female": "/dynamic/userclasses/assets/jotnar-f-helbound.png",
+        "Male": "/dynamic/userclasses/assets/jotnar-m-helbound.png"
+      },
+      "Valkyrie": {
+        "Female": "/dynamic/userclasses/assets/valkyrie-f-helbound.png",
+        "Male": "/dynamic/userclasses/assets/valkyrie-m-helbound.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/support-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/vik-support-frame.png"
+  },
+  {
+    "ID": "Minstrel",
+    "AbilityBuilderBackgroundImage": "",
+    "AbilityBuilderHueRotation": "118deg",
+    "AbilityNetworkImage": {
+      "Magic": "/dynamic/userclasses/assets/select-song-minstrel.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-arthurian.png"
+    },
+    "PaperdollImage": {
+      "Caitsith": {
+        "Female": "/dynamic/userclasses/assets/caitsith-f-minstrel.png",
+        "Male": "/dynamic/userclasses/assets/caitsith-m-minstrel.png"
+      },
+      "Golem": {
+        "Female": "/dynamic/userclasses/assets/golem-f-minstrel.png",
+        "Male": "/dynamic/userclasses/assets/golem-m-minstrel.png"
+      },
+      "HumanMaleA": {
+        "Female": "/dynamic/userclasses/assets/human-f-minstrel.png",
+        "Male": "/dynamic/userclasses/assets/human-m-minstrel.png"
+      },
+      "Pict": {
+        "Female": "/dynamic/userclasses/assets/pict-f-minstrel.png",
+        "Male": "/dynamic/userclasses/assets/pict-m-minstrel.png"
+      },
+      "Strm": {
+        "Female": "/dynamic/userclasses/assets/strm-f-minstrel.png",
+        "Male": "/dynamic/userclasses/assets/strm-m-minstrel.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/devout-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/art-devout-frame.png"
+  },
+  {
+    "ID": "Mjolnir",
+    "AbilityBuilderBackgroundImage": "/dynamic/userclasses/assets/classes-bg-mjolnir.jpg",
+    "AbilityBuilderHueRotation": "110deg",
+    "AbilityNetworkImage": {
+      "Shout": "/dynamic/userclasses/assets/select-shout-mjolnir.png",
+      "Melee": "/dynamic/userclasses/assets/select-melee-mjolnir.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-viking.png"
+    },
+    "PaperdollImage": {
+      "HumanMaleV": {
+        "Female": "/dynamic/userclasses/assets/human-f-mjolnir.png",
+        "Male": "/dynamic/userclasses/assets/human-m-mjolnir.png"
+      },
+      "Jotnar": {
+        "Female": "/dynamic/userclasses/assets/jotnar-f-mjolnir.png",
+        "Male": "/dynamic/userclasses/assets/jotnar-m-mjolnir.png"
+      },
+      "Valkyrie": {
+        "Female": "/dynamic/userclasses/assets/valkyrie-f-mjolnir.png",
+        "Male": "/dynamic/userclasses/assets/valkyrie-m-mjolnir.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/heavy-fighter-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/vik-heavy-fighter-frame.png"
+  },
+  {
+    "ID": "Physician",
+    "AbilityBuilderBackgroundImage": "/dynamic/userclasses/assets/classes-bg-physician.jpg",
+    "AbilityBuilderHueRotation": "-135deg",
+    "AbilityNetworkImage": {
+      "Magic": "/dynamic/userclasses/assets/select-magic-physician.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-arthurian.png"
+    },
+    "PaperdollImage": {
+      "Caitsith": {
+        "Female": "/dynamic/userclasses/assets/caitsith-f-physician.png",
+        "Male": "/dynamic/userclasses/assets/caitsith-m-physician.png"
+      },
+      "Golem": {
+        "Female": "/dynamic/userclasses/assets/golem-f-physician.png",
+        "Male": "/dynamic/userclasses/assets/golem-m-physician.png"
+      },
+      "HumanMaleA": {
+        "Female": "/dynamic/userclasses/assets/human-f-physician.png",
+        "Male": "/dynamic/userclasses/assets/human-m-physician.png"
+      },
+      "Pict": {
+        "Female": "/dynamic/userclasses/assets/pict-f-physician.png",
+        "Male": "/dynamic/userclasses/assets/pict-m-physician.png"
+      },
+      "Strm": {
+        "Female": "/dynamic/userclasses/assets/strm-f-physician.png",
+        "Male": "/dynamic/userclasses/assets/strm-m-physician.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/healer-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/art-healer-frame.png"
+  },
+  {
+    "ID": "Skald",
+    "AbilityBuilderBackgroundImage": "",
+    "AbilityBuilderHueRotation": "118deg",
+    "AbilityNetworkImage": {
+      "Song": "/dynamic/userclasses/assets/select-song-skald.png",
+      "Melee": "/dynamic/userclasses/assets/select-melee-skald.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-viking.png"
+    },
+    "PaperdollImage": {
+      "HumanMaleV": {
+        "Female": "/dynamic/userclasses/assets/human-f-stonehealer.png",
+        "Male": "/dynamic/userclasses/assets/human-m-stonehealer.png"
+      },
+      "Jotnar": {
+        "Female": "/dynamic/userclasses/assets/jotnar-f-stonehealer.png",
+        "Male": "/dynamic/userclasses/assets/jotnar-m-stonehealer.png"
+      },
+      "Valkyrie": {
+        "Female": "/dynamic/userclasses/assets/valkyrie-f-stonehealer.png",
+        "Male": "/dynamic/userclasses/assets/valkyrie-m-stonehealer.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/devout-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/vik-devout-frame.png"
+  },
+  {
+    "ID": "Stonehealer",
+    "AbilityBuilderBackgroundImage": "/dynamic/userclasses/assets/classes-bg-stonehealer.jpg",
+    "AbilityBuilderHueRotation": "-135deg",
+    "AbilityNetworkImage": {
+      "Throwing": "/dynamic/userclasses/assets/select-throwing-stonehealer.png",
+      "Magic": "/dynamic/userclasses/assets/select-magic-stonehealer.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-viking.png"
+    },
+    "PaperdollImage": {
+      "HumanMaleV": {
+        "Female": "/dynamic/userclasses/assets/human-f-stonehealer.png",
+        "Male": "/dynamic/userclasses/assets/human-m-stonehealer.png"
+      },
+      "Jotnar": {
+        "Female": "/dynamic/userclasses/assets/jotnar-f-stonehealer.png",
+        "Male": "/dynamic/userclasses/assets/jotnar-m-stonehealer.png"
+      },
+      "Valkyrie": {
+        "Female": "/dynamic/userclasses/assets/valkyrie-f-stonehealer.png",
+        "Male": "/dynamic/userclasses/assets/valkyrie-m-stonehealer.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/healer-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/vik-healer-frame.png"
+  },
+  {
+    "ID": "WaveWeaver",
+    "AbilityBuilderBackgroundImage": "/dynamic/userclasses/assets/classes-bg-wave-weaver.jpg",
+    "AbilityBuilderHueRotation": "0deg",
+    "AbilityNetworkImage": {
+      "Magic": "/dynamic/userclasses/assets/select-magic-wave-weaver.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-viking.png"
+    },
+    "PaperdollImage": {
+      "HumanMaleV": {
+        "Female": "/dynamic/userclasses/assets/human-f-waveweaver.png",
+        "Male": "/dynamic/userclasses/assets/human-m-waveweaver.png"
+      },
+      "Jotnar": {
+        "Female": "/dynamic/userclasses/assets/jotnar-f-waveweaver.png",
+        "Male": "/dynamic/userclasses/assets/jotnar-m-waveweaver.png"
+      },
+      "Valkyrie": {
+        "Female": "/dynamic/userclasses/assets/valkyrie-f-waveweaver.png",
+        "Male": "/dynamic/userclasses/assets/valkyrie-m-waveweaver.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/mage-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/vik-mage-frame.png"
+  },
+  {
+    "ID": "WintersShadow",
+    "AbilityBuilderBackgroundImage": "/dynamic/userclasses/assets/classes-bg-winters-shadow.jpg",
+    "AbilityBuilderHueRotation": "-75deg",
+    "AbilityNetworkImage": {
+      "Archery": "/dynamic/userclasses/assets/select-archery-winters-shadow.png",
+      "Harvest": "/dynamic/userclasses/assets/select-harvest-viking.png"
+    },
+    "PaperdollImage": {
+      "HumanMaleV": {
+        "Female": "/dynamic/userclasses/assets/human-f-wintersshadow.png",
+        "Male": "/dynamic/userclasses/assets/human-m-wintersshadow.png"
+      },
+      "Jotnar": {
+        "Female": "/dynamic/userclasses/assets/jotnar-f-wintersshadow.png",
+        "Male": "/dynamic/userclasses/assets/jotnar-m-wintersshadow.png"
+      },
+      "Valkyrie": {
+        "Female": "/dynamic/userclasses/assets/valkyrie-f-wintersshadow.png",
+        "Male": "/dynamic/userclasses/assets/valkyrie-m-wintersshadow.png"
+      }
+    },
+    "NameplateIconBackgroundImage": "/dynamic/userclasses/assets/archer-bg.png",
+    "NameplateIconFrameImage": "/dynamic/userclasses/assets/vik-archer-frame.png"
+  }
+]

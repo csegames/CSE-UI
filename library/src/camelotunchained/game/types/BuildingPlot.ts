@@ -5,48 +5,17 @@
  *
  */
 
-export {};
-
-declare global {
-  enum BuildingPlotMapUISettings {
-    None = 0,
-    Plot = 1,
-    CapturePlot = 2,
-    KeepLordPlot = 3,
-  }
-
-  interface Window {
-    BuildingPlotMapUISettings: typeof BuildingPlotMapUISettings;
-  }
-}
-
-enum BuildingPlotMapUISettings {
+export enum BuildingPlotMapUISettings {
   None = 0,
   Plot = 1,
   CapturePlot = 2,
-  KeepLordPlot = 3,
-}
-window.BuildingPlotMapUISettings = BuildingPlotMapUISettings;
-
-declare global {
-  enum AttackingFactions {
-    None = 0,
-    TDD = 1,
-    Viking = 1 << 1,
-    Arthurian = 1 << 2,
-    All = TDD | Viking | Arthurian,
-  }
-
-  interface Window {
-    AttackingFactions: typeof AttackingFactions;
-  }
+  KeepLordPlot = 3
 }
 
-enum AttackingFactions {
+export enum AttackingFactions {
   None = 0,
   TDD = 1,
   Viking = 1 << 1,
   Arthurian = 1 << 2,
-  All = TDD | Viking | Arthurian,
+  All = TDD | Viking | Arthurian
 }
-window.AttackingFactions = AttackingFactions;

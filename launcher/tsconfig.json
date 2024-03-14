@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "noImplicitAny": true,
+    "removeComments": false,
+    "outDir": "./tmp",
+    "sourceMap": true,
+    "jsx": "preserve",
+    "module": "esnext",
+    "noUnusedLocals": true,
+    "alwaysStrict": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+  },
+  "include": [ "src/", ]
+}

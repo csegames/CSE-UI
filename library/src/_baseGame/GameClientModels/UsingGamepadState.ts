@@ -9,20 +9,21 @@ import {
   initUpdatable,
   executeUpdateCallbacks,
   createDefaultOnReady,
-  createDefaultOnUpdated,
-} from './_Updatable';
+  createDefaultOnUpdated
+} from './Updatable';
+import { withDefaults } from '../utils/withDefaults';
+import { _devGame } from '..';
+import { engine } from '../engine';
+import { BaseDevGameInterface, BaseGameInterface } from '../BaseGameInterface';
 
 export const UsingGamepad_Update = 'usingGamepad.update';
 
-declare global {
-  interface UsingGamepadStateModel {
-    usingGamepad: boolean;
-  }
-
-  type UsingGamepadStateUpdatable = Readonly<UsingGamepadStateModel> & Updatable;
-  interface UsingGamepadState extends UsingGamepadStateUpdatable {}
-  type ImmutableUsingGamepadState = DeepImmutableObject<UsingGamepadState>;
+interface UsingGamepadStateModel {
+  usingGamepad: boolean;
 }
+
+type UsingGamepadStateUpdatable = Readonly<UsingGamepadStateModel> & Updatable;
+export interface UsingGamepadState extends UsingGamepadStateUpdatable {}
 
 function initDefault(): UsingGamepadState {
   return {
@@ -31,8 +32,8 @@ function initDefault(): UsingGamepadState {
     // Updatable
     isReady: false,
     updateEventName: UsingGamepad_Update,
-    onUpdated: createDefaultOnUpdated(UsingGamepad_Update),
-    onReady: createDefaultOnReady(UsingGamepad_Update),
+    onUpdated: (game: BaseGameInterface) => createDefaultOnUpdated(game, UsingGamepad_Update),
+    onReady: (game: BaseGameInterface) => createDefaultOnReady(game, UsingGamepad_Update)
   };
 }
 
@@ -40,17 +41,13 @@ function initDefault(): UsingGamepadState {
  * Initialize this model with the game engine.
  */
 
-function init() {
-  _devGame.usingGamepadState = withDefaults(
-    { usingGamepad: (_devGame as any).usingGamepad },
-    initDefault(),
-    true,
-  );
+function init(_devGame: BaseDevGameInterface) {
+  _devGame.usingGamepadState = withDefaults({ usingGamepad: (_devGame as any).usingGamepad }, initDefault(), true);
   initUpdatable(_devGame.usingGamepadState);
 }
 
 function onReceiveUsingGamepadStateUpdate(usingGamepad: boolean) {
-  if (game.debug) {
+  if (_devGame.debug) {
     console.groupCollapsed(`Client > ${UsingGamepad_Update}`);
     try {
       console.log(usingGamepad);
@@ -59,20 +56,17 @@ function onReceiveUsingGamepadStateUpdate(usingGamepad: boolean) {
   }
 
   if (!_devGame.usingGamepadState) {
-    _devGame.usingGamepadState =
-      withDefaults({ usingGamepad }, initDefault(), false);
+    _devGame.usingGamepadState = withDefaults({ usingGamepad }, initDefault(), false);
     // init Updatable.
     initUpdatable(_devGame.usingGamepadState);
   } else {
     _devGame.usingGamepadState = withDefaults({ usingGamepad }, initDefault(), false);
   }
 
-  executeUpdateCallbacks(_devGame.usingGamepadState);
+  executeUpdateCallbacks(_devGame, _devGame.usingGamepadState);
 }
 
-export default function() {
-  init();
-  if (typeof engine !== 'undefined') {
-    engine.on(UsingGamepad_Update, onReceiveUsingGamepadStateUpdate);
-  }
+export default function (_devGame: BaseDevGameInterface) {
+  init(_devGame);
+  engine.on(UsingGamepad_Update, onReceiveUsingGamepadStateUpdate);
 }

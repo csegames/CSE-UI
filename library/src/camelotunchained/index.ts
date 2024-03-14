@@ -4,32 +4,27 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import initGameInterface from './game/initGameInterface';
+import { CamelotUnchainedModel } from './game/CamelotUnchainedModel';
+import { _devGame, loadGame } from '../_baseGame';
+import { engine } from '../_baseGame/engine';
 
-// Import definitions first to init a whole bunch of globals
-import './webAPI/definitions';
+/**
+ * Initializes the game client <-> UI communication layer.
+ * This method should be called before the initial React render call.
+ */
+const loadPromise = loadGame().then(() => {
+  if (camelot) {
+    throw new Error('hordetest initialization has run twice, which should no longer be possible');
+  }
+  if (!_devGame) {
+    throw new Error('out-of-order initialization between base game and hordetest detected');
+  }
+  camelot = initGameInterface(_devGame);
+  return camelot;
+});
 
-export * from './utils';
-// utils
-import * as utils from './utils';
-export {
-  utils,
-};
-
-// Creates the global game and __devGame objects that are attached to the window object when the engine is ready
-import initializeGame from './game';
-initializeGame();
-
-export * from './game';
-
-// The below exports are available on the global game object. They are exported here so they may be used standalone for
-// non game applications as well.
-
-import * as webAPI from './webAPI';
-export {
-  webAPI,
-};
-
-import * as signalr from './signalR';
-export {
-  signalr,
-};
+export var camelot: CamelotUnchainedModel;
+export function loadCamelot(): Promise<CamelotUnchainedModel> {
+  return loadPromise;
+}

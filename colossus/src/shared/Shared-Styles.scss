@@ -1,0 +1,65 @@
+@import './_cu-icons.scss';
+@import './_fs-icons.scss';
+@import './_fonts.scss';
+
+.Shared-CloseButton {
+  z-index: 99;
+  pointer-events: all;
+  font-size: 2.33rem;
+  color: #c3c3c3;
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover {
+    color: white;
+  }
+
+  &:active {
+    filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 1));
+    -webkit-filter: drop-shadow(2px 2px 2px rgba(255, 255, 255, 1));
+  }
+}
+
+.Shared-TabPanel-Container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+}
+
+.Shared-TabPanel-Tabs {
+  flex: 0 0 auto;
+  display: flex;
+}
+
+.Shared-TabPanel-Tab {
+  flex: 0 0 auto;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+
+.Shared-TabPanel-ContentContainer {
+  flex: 1;
+  position: relative;
+  height: 0;
+  overflow: hidden;
+}
+
+.Shared-TabPanel-Content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.Shared-TabPanel-ContentHidden {
+  visibility: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+}
