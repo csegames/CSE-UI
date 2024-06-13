@@ -10,6 +10,7 @@ import { addIfChanged } from '../redux/reduxUtils';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import ExternalDataSource from '../redux/externalDataSource';
+import { networkConfigurationState } from '../redux/networkConfiguration';
 
 export class SelfPlayerStateService extends ExternalDataSource {
   protected bind(): Promise<ListenerHandle[]> {
@@ -22,6 +23,7 @@ export class SelfPlayerStateService extends ExternalDataSource {
 
     // Extract all fields.
     const {
+      shardID,
       characterID,
       zoneID,
       entityID,
@@ -34,6 +36,7 @@ export class SelfPlayerStateService extends ExternalDataSource {
     } = newState;
 
     // Diff fields that need diffed.
+    addIfChanged(delta, { shardID }, [shardID], [oldState.shardID]);
     addIfChanged(delta, { characterID }, [characterID], [oldState.characterID]);
     addIfChanged(delta, { zoneID }, [zoneID], [oldState.zoneID]);
     addIfChanged(delta, { entityID }, [entityID], [oldState.entityID]);
@@ -56,6 +59,10 @@ export class SelfPlayerStateService extends ExternalDataSource {
 
     if (Object.keys(delta).length > 0) {
       this.dispatch(updatePlayerDelta(delta));
+    }
+
+    if (delta.shardID) {
+      networkConfigurationState.shardID = delta.shardID;
     }
   }
 }

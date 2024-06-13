@@ -8,20 +8,20 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../redux/store';
 import { EntityResourceIDs } from '@csegames/library/dist/camelotunchained/game/types/EntityResourceIDs';
-import { EntityResource, StatusState } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
+import {
+  EntityPositionMapModel,
+  EntityResource,
+  StatusState
+} from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
 import TooltipSource from './TooltipSource';
 import { Theme } from '../themes/themeConstants';
 import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numberUtils';
-import { Vec3f, GroupsAPI, GroupTypes } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
+import { GroupsAPI, GroupTypes } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import StatusEffects from './StatusEffects';
 import { ArrayMap, Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { FactionData } from '../redux/gameDefsSlice';
 import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { distanceVec3 } from '@csegames/library/dist/_baseGame/utils/distance';
-import { webConf } from '../dataSources/networkConfiguration';
-
-// Images are imported so that WebPack can find them (and give us errors if they are missing).
-import BackgroundURL from '../../images/unit-frames/unitframe-bg.png';
 import ContextMenuSource from './ContextMenuSource';
 import { Dispatch } from '@reduxjs/toolkit';
 import { ContextMenuItem, ContextMenuParams, hideContextMenu } from '../redux/contextMenuSlice';
@@ -32,7 +32,10 @@ import {
   UnitFrameDisplay
 } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { UserClassesData } from '@csegames/library/dist/_baseGame/clientFunctions/AssetFunctions';
+import { webConf } from '../redux/networkConfiguration';
 
+// Images are imported so that WebPack can find them (and give us errors if they are missing).
+import BackgroundURL from '../../images/unit-frames/unitframe-bg.png';
 import DefaultArchetypeFrameURL from '../../images/unit-frames/default-frame.png';
 import DefaultArchetypeBackgroundURL from '../../images/unit-frames/profile-bg.png';
 
@@ -61,7 +64,6 @@ interface ReactProps {
   entityID: string;
   isAlive: boolean;
   name: string;
-  position: Vec3f;
   resources: ArrayMap<EntityResource>;
   statuses: ArrayMap<StatusState>;
   wounds: number;
@@ -74,7 +76,6 @@ interface ReactProps {
 
 interface InjectedProps {
   localPlayerEntityID: string;
-  localPlayerPosition: Vec3f;
   currentTheme: Theme;
   classDynamicAssets: Dictionary<UserClassesData>;
   factions: Dictionary<FactionData>;
@@ -83,6 +84,7 @@ interface InjectedProps {
   warbandMembers: (GroupMemberState | null)[];
   entityResourceDefs: Dictionary<EntityResourceDefinitionGQL>;
   requestFriendlyTarget: (entityID: string) => void;
+  positions: EntityPositionMapModel;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -158,7 +160,12 @@ class PlayerUnitFrame extends React.Component<Props> {
 
             {this.props.showDistance && (
               <div className={Distance}>
-                {distanceVec3(this.props.localPlayerPosition, this.props.position).toFixed(2)}
+                {this.props.positions[this.props.localPlayerEntityID] && this.props.positions[this.props.entityID]
+                  ? distanceVec3(
+                      this.props.positions[this.props.localPlayerEntityID],
+                      this.props.positions[this.props.entityID]
+                    ).toFixed(2)
+                  : 0.0}
               </div>
             )}
           </ContextMenuSource>
@@ -297,7 +304,7 @@ class PlayerUnitFrame extends React.Component<Props> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { currentTheme } = state.themes;
-  const { factions, classDynamicAssets, entityResources } = state.gameDefs;
+  const { factions, classDynamicAssets, entityResourcesByStringID } = state.gameDefs;
 
   return {
     ...ownProps,
@@ -305,12 +312,12 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     classDynamicAssets,
     factions,
     localPlayerEntityID: state.player.entityID,
-    localPlayerPosition: state.player.position,
     friendlyTargetType: state.entities.friendlyTarget?.type ?? null,
     warbandID: state.warband.id,
     warbandMembers: state.warband.members,
     requestFriendlyTarget: state.player.requestFriendlyTarget,
-    entityResourceDefs: entityResources
+    entityResourceDefs: entityResourcesByStringID,
+    positions: state.entities.positions
   };
 }
 

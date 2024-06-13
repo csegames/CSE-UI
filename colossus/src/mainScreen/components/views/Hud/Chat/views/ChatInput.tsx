@@ -7,13 +7,11 @@
 import * as React from 'react';
 import { game } from '@csegames/library/dist/_baseGame';
 
-import { logChatMessageSent, TabState } from '../../../../../redux/chatSlice';
-import { useChat } from '../state/chat';
+import { TabState, parseChatRequest } from '../../../../../redux/chatSlice';
 import { RootState } from '../../../../../redux/store';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { CircularArray } from '@csegames/library/dist/_baseGame/types/CircularArray';
-import { SlashCommandRegistry } from '@csegames/library/dist/_baseGame/slashCommandRegistry';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { getStringTableValue } from '../../../../../helpers/stringTableHelpers';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
@@ -23,21 +21,13 @@ const Input = 'Chat-Views-ChatInput-Input';
 
 const StringIDChatDefaultText = 'ChatDefaultText';
 
-interface MessageData {
-  targetIsPlayer: boolean;
-  text: string;
-  targetID: string;
-}
-
 interface ReactProps {
   tab: TabState;
-  slashCommands: SlashCommandRegistry<RootState>;
 }
 
 interface InjectedProps {
   color: string;
   fontFamily: string;
-  shortcuts: { [shortcut: string]: string };
   sentMessages: CircularArray<string>;
   dmSenderNames: string[];
   stringTable: Dictionary<StringTableEntryDef>;
@@ -65,7 +55,7 @@ class AChatInput extends React.Component<Props, State> {
   }
 
   private updateHeightDelayed() {
-    setTimeout(() => {
+    window.setTimeout(() => {
       if (this.inputRef?.current) {
         this.updateHeight(this.inputRef.current);
       }
@@ -106,43 +96,6 @@ class AChatInput extends React.Component<Props, State> {
     }
   }
 
-  private parseRawMessage(text: string): MessageData {
-    if (!text.startsWith('/')) {
-      return {
-        targetIsPlayer: false,
-        text,
-        targetID: this.props.tab.activeFilter
-      };
-    }
-
-    var split = text.split(' ');
-    var shortcut = split[0];
-    if (shortcut === '/dm' || shortcut === '/pm' || shortcut === '/r') {
-      if (split.length > 1) {
-        const name = split[1].trim();
-        const text = split.slice(2).join(' ');
-        return {
-          targetIsPlayer: true,
-          text,
-          targetID: name
-        };
-      } else {
-        return {
-          targetIsPlayer: true,
-          text,
-          targetID: undefined
-        };
-      }
-    }
-
-    const roomID = this.props.shortcuts[shortcut.replace('/', '').trim()];
-    return {
-      targetIsPlayer: false,
-      text: split.slice(1).join(' '),
-      targetID: roomID
-    };
-  }
-
   onChange(e: React.FormEvent<HTMLTextAreaElement>) {
     this.setState({
       value: e.currentTarget.value
@@ -151,8 +104,6 @@ class AChatInput extends React.Component<Props, State> {
   }
 
   onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    const chat = useChat(game);
-
     // treat a single slash character as empty (because entering '/' opens the chat box for slash commands)
     const inputIsEmpty: boolean = e.currentTarget.value.length == 0 || e.currentTarget.value === '/';
 
@@ -203,37 +154,12 @@ class AChatInput extends React.Component<Props, State> {
     } else if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
 
-      // send message or command
-      try {
-        const val = e.currentTarget.value;
-        const { targetIsPlayer, text, targetID } = this.parseRawMessage(val);
-        if (text.length > 0 && targetID) {
-          if (targetIsPlayer) {
-            chat.sendDirectMessage(text, null, targetID);
-          } else {
-            chat.sendMessageToRoom(text, targetID);
-          }
-          this.props.dispatch(logChatMessageSent(val));
-        } else if (val.startsWith('/') && !targetID) {
-          const cmd = val.replace('/', '');
-          //checking for UI slash command
-          if (this.props.slashCommands.parse(cmd)) {
-            this.props.dispatch(logChatMessageSent(val));
-          }
-          //Not a UI command, sending it to the game client
-          else {
-            game.sendSlashCommand(cmd);
-            this.props.dispatch(logChatMessageSent(val));
-          }
-        }
-      } catch (err) {
-        console.error(err);
-      }
+      this.props.dispatch(
+        parseChatRequest({ fromFilter: this.props.tab.activeFilter, content: e.currentTarget.value })
+      );
 
       // clear input
-      this.setState({
-        value: ''
-      });
+      this.setState({ value: '' });
       this.updateHeightDelayed();
       this.sentHistoryIndex = -1;
 
@@ -249,7 +175,7 @@ class AChatInput extends React.Component<Props, State> {
   handleBeginChat(message: string) {
     let newValue: string = '';
     if (this.inputRef?.current) {
-      setTimeout(() => {
+      window.setTimeout(() => {
         this.inputRef.current.focus();
         this.inputRef.current.setSelectionRange(this.inputRef.current.value.length, this.inputRef.current.value.length);
         this.updateHeight(this.inputRef.current);
@@ -290,7 +216,7 @@ class AChatInput extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { shortcuts, theme, sentMessages, dmSenderNames } = state.chat;
+  const { theme, sentMessages, dmSenderNames } = state.chat;
   const { input } = theme;
   const { color, fontFamily } = input;
   const { stringTable } = state.stringTable;
@@ -299,7 +225,6 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     ...ownProps,
     color,
     fontFamily,
-    shortcuts,
     sentMessages,
     dmSenderNames,
     stringTable

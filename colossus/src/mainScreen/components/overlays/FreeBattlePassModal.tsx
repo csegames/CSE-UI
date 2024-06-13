@@ -17,10 +17,10 @@ import { PurchaseDefGQL, StringTableEntryDef } from '@csegames/library/dist/hord
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue } from '../../helpers/stringTableHelpers';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { webConf } from '../../dataSources/networkConfiguration';
 import { startProfileRefresh } from '../../redux/profileSlice';
 import { QuestsByType } from '../../redux/questSlice';
 import { getCurrentBattlePassPremiumPurchaseDef } from '../views/Lobby/BattlePass/BattlePassUtils';
+import { webConf } from '../../dataSources/networkConfiguration';
 
 const Container = 'FreeBattlePassModal-Container';
 const Title = 'FreeBattlePassModal-Title';

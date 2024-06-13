@@ -11,7 +11,7 @@ import {
   CharacterStatField,
   FactionDef,
   GameSettingsDef,
-  GearSlotDefRef,
+  GearSlot,
   ItemDefRef,
   EntityResourceDefinitionGQL,
   ItemStatDefinitionGQL,
@@ -94,9 +94,10 @@ interface GameDefsState {
   classesByNumericID: Dictionary<ClassDefGQL>;
   classDynamicAssets: Dictionary<UserClassesData>;
   damageTypes: Dictionary<DamageTypeDefGQL>;
-  entityResources: Dictionary<EntityResourceDefinitionGQL>;
+  entityResourcesByStringID: Dictionary<EntityResourceDefinitionGQL>;
+  entityResourcesByNumericID: Dictionary<EntityResourceDefinitionGQL>;
   factions: Dictionary<FactionData>;
-  gearSlots: Dictionary<GearSlotDefRef>;
+  gearSlots: Dictionary<GearSlot>;
   itemStats: Dictionary<ItemStatDefinitionGQL>;
   itemTooltipCategories: Dictionary<ItemTooltipCategoryDef>;
   items: Dictionary<ItemDefRefData>;
@@ -123,7 +124,8 @@ function buildDefaultGameDefsState() {
     classesByNumericID: {},
     classDynamicAssets: {},
     damageTypes: {},
-    entityResources: {},
+    entityResourcesByStringID: {},
+    entityResourcesByNumericID: {},
     factions: {},
     gearSlots: {},
     itemStats: {},
@@ -151,7 +153,10 @@ export const gameDefsSlice = createSlice({
     updateAbilityBookTabs: (state: GameDefsState, action: PayloadAction<AbilityBookTabsData[]>) => {
       state.abilityBookTabs = action.payload ?? [];
     },
-    updateClasses: (state: GameDefsState, action: PayloadAction<[Dictionary<ClassDefGQL>, Dictionary<ClassDefGQL>]>) => {
+    updateClasses: (
+      state: GameDefsState,
+      action: PayloadAction<[Dictionary<ClassDefGQL>, Dictionary<ClassDefGQL>]>
+    ) => {
       const [byString, byNumber] = action.payload;
       state.classesByStringID = byString ?? {};
       state.classesByNumericID = byNumber ?? {};
@@ -164,18 +169,26 @@ export const gameDefsSlice = createSlice({
       state.racesByStringID = byString ?? {};
       state.racesByNumericID = byNumber ?? {};
     },
-    updateGenders: (state: GameDefsState, action: PayloadAction<[Dictionary<GenderDefGQL>, Dictionary<GenderDefGQL>]>) => {
+    updateGenders: (
+      state: GameDefsState,
+      action: PayloadAction<[Dictionary<GenderDefGQL>, Dictionary<GenderDefGQL>]>
+    ) => {
       const [byString, byNumber] = action.payload;
       state.gendersByStringID = byString ?? {};
       state.gendersByNumericID = byNumber ?? {};
     },
-    updateEntityResources: (state: GameDefsState, action: PayloadAction<Dictionary<EntityResourceDefinitionGQL>>) => {
-      state.entityResources = action.payload ?? {};
+    updateEntityResources: (
+      state: GameDefsState,
+      action: PayloadAction<[Dictionary<EntityResourceDefinitionGQL>, Dictionary<EntityResourceDefinitionGQL>]>
+    ) => {
+      const [byString, byNumber] = action.payload;
+      state.entityResourcesByStringID = byString ?? {};
+      state.entityResourcesByNumericID = byNumber ?? {};
     },
     updateFactions: (state: GameDefsState, action: PayloadAction<Dictionary<FactionData>>) => {
       state.factions = action.payload ?? {};
     },
-    updateGearSlots: (state: GameDefsState, action: PayloadAction<Dictionary<GearSlotDefRef>>) => {
+    updateGearSlots: (state: GameDefsState, action: PayloadAction<Dictionary<GearSlot>>) => {
       state.gearSlots = action.payload ?? {};
     },
     updateItems: (state: GameDefsState, action: PayloadAction<Dictionary<ItemDefRefData>>) => {

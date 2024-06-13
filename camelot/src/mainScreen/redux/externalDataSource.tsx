@@ -9,7 +9,6 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { GraphQLQueryRequest, query } from '@csegames/library/dist/_baseGame/graphql/query';
-import { queryConf, subsConf, webConf } from '../dataSources/networkConfiguration';
 import { RetryTracker } from '@csegames/library/dist/_baseGame/utils/retryTracker';
 import {
   Subscriptions,
@@ -18,6 +17,7 @@ import {
 } from '@csegames/library/dist/_baseGame/graphql/subscription';
 import { InitTopic, setInitialized } from './initializationSlice';
 import { RequestConfig, RequestResult } from '@csegames/library/dist/_baseGame/types/Request';
+import { queryConf, subsConf, webConf } from './networkConfiguration';
 
 const START_DELAY = 250;
 const MAX_DELAY = 10000;

@@ -53,7 +53,7 @@ import {
 } from '@csegames/library/dist/_baseGame/clientFunctions/AssetFunctions';
 import {
   CharacterStatField,
-  GearSlotDefRef,
+  GearSlot,
   EntityResourceDefinitionGQL,
   ItemStatDefinitionGQL,
   ItemTooltipCategoryDef,
@@ -251,7 +251,7 @@ class AGameDefsService extends ExternalDataSource<Props> {
     this.dispatch(updateFactions(factions));
 
     // Gear slots
-    const gearSlots: Dictionary<GearSlotDefRef> = {};
+    const gearSlots: Dictionary<GearSlot> = {};
     for (const gearSlot of result.game.gearSlots) {
       if (gearSlot) {
         gearSlots[gearSlot.id] = gearSlot;
@@ -303,13 +303,15 @@ class AGameDefsService extends ExternalDataSource<Props> {
     this.dispatch(updateStats(stats));
 
     // Entity resources
-    const entityResources: Dictionary<EntityResourceDefinitionGQL> = {};
+    const entityResourcesByStringID: Dictionary<EntityResourceDefinitionGQL> = {};
+    const entityResourcesByNumericID: Dictionary<EntityResourceDefinitionGQL> = {};
     for (const entityResource of result.game.entityResources) {
       if (entityResource) {
-        entityResources[entityResource.id] = entityResource;
+        entityResourcesByStringID[entityResource.id] = entityResource;
+        entityResourcesByNumericID[entityResource.numericID] = entityResource;
       }
     }
-    this.dispatch(updateEntityResources(entityResources));
+    this.dispatch(updateEntityResources([entityResourcesByStringID, entityResourcesByNumericID]));
 
     // Item tooltip categories
     const itemTooltipCategories: Dictionary<ItemTooltipCategoryDef> = {};

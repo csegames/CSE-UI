@@ -10,7 +10,7 @@ export interface ChatTheme {
       timestamp: string;
       author: string;
       content: string;
-      cseAuthor: string; // color CSE names differently
+      cseAuthor: string; // color UCE names differently
       dm: string; // color Direct Messages differently
     };
     fontFamily: string;

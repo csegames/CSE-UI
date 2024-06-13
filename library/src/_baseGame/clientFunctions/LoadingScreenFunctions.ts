@@ -76,7 +76,7 @@ abstract class LoadingScreenFunctionsBase implements LoadingScreenFunctions {
     const handle = this.nextHandle.toString();
     ++this.nextHandle;
     this.listeners[handle] = onUpdate;
-    setTimeout(() => {
+    window.setTimeout(() => {
       // show existing loading screens once binding has completed
       for (const entry of Object.values(this.entries)) {
         if (entry.state.visible) {
@@ -135,7 +135,7 @@ class CoherentLoadingScreenFunctions extends LoadingScreenFunctionsBase {
 class BrowserLoadingScreenFunctions extends LoadingScreenFunctionsBase {
   constructor() {
     super();
-    setTimeout(
+    window.setTimeout(
       () =>
         this.setLoadingScreenManually(LoadingScreenReason.Initialization, 'Initializing', 3000, () =>
           this.clearManualLoadingScreen(LoadingScreenReason.Initialization)

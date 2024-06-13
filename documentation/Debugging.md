@@ -10,7 +10,7 @@ You need to follow these steps on every channel you are trying to use the debugg
 
 - When running the client from VisualStudio instead of the Patcher, the directory will be `<repo>\cmake\out\build\VCProj\ClientMain\<build target>`
 
-2. In a separate file explorer, go into the `UI/CoherentDebugging` folder in Avalon (if you are part of ModSquad, ask a CSE employee to help you with this process)
+2. In a separate file explorer, go into the `UI/CoherentDebugging` folder in Avalon (if you are part of ModSquad, ask a UCE employee to help you with this process)
 3. Under the `ResourcesNeeded/` folder, you will find 3 things. `CoherentDebugger.zip`, `CoherentUIGTDevelopment.dll`, and `inspector.zip`
    - Copy, paste, and extract the CoherentDebugger.zip to a place on your PC (e.g. Desktop).
    - Copy, paste, and extract the inspector.zip to where the game is installed (in the same directory as the Client.exe)

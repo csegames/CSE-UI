@@ -11,8 +11,12 @@ import { StoreRoute, updateStoreCurrentRoute, updateStoreNewPurchases } from '..
 import { Dispatch } from 'redux';
 import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
-import { StoreChampionFilterDropdown } from './StoreChampionFilterDropdown';
-import { PerkDefGQL, PerkType, PurchaseDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import {
+  PerkDefGQL,
+  PerkType,
+  PurchaseDefGQL,
+  RMTPurchaseDefGQL
+} from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { isFreeReward, isPurchaseable } from '../../../../helpers/storeHelpers';
 import { Header } from '../../../shared/Header';
@@ -20,22 +24,30 @@ import { Button } from '../../../shared/Button';
 import { storeLocalStore } from '../../../../localStorage/storeLocalStorage';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
+import { Overlay, showOverlay } from '../../../../redux/navigationSlice';
 
 const Container = 'StartScreen-Store-StoreNavMenu-Container';
 const HeaderStyles = 'StartScreen-Store-StoreNavMenu-HeaderStyles';
 const BadgeStyle = 'StartScreen-Store-StoreNavMenu-Badge';
-const ChampionDropdown = 'StartScreen-Store-StoreNavMenu-ChampionDropdown';
+const BorderStyle = 'StartScreen-Store-StoreNavMenu-Border';
+const TabsStyle = 'StartScreen-Store-StoreNavMenu-TabsContainer';
+const NavRow = 'StartScreen-Store-StoreNavMenu-NavRow';
+const SideButtonContainer = 'StartScreen-Store-StoreNavMenu-SideButtonContainer';
+const BuyGemsButton = 'StartScreen-Store-StoreNavMenu-BuyGemsButton';
+const BuyGemsButtonContent = 'StartScreen-Store-StoreNavMenu-BuyGemsButtonContent';
+const BuyGemsButtonLabel = 'StartScreen-Store-StoreNavMenu-BuyGemsButtonLabel';
+const BuyGemsButtonIcon = 'StartScreen-Store-StoreNavMenu-BuyGemsButtonIcon';
 
 const StringIDChampionInfoDisplayMarkAllSeenTitle = 'ChampionInfoDisplayMarkAllSeenTitle';
 const StringIDStoreTabRewards = 'StoreTabRewards';
-const StringIDStoreTabFeatured = 'StoreTabFeatured';
+const StringIDStoreTabBundles = 'StoreTabBundles';
 const StringIDStoreTabWeapons = 'StoreTabWeapons';
 const StringIDStoreTabSkins = 'StoreTabSkins';
 const StringIDStoreTabEmotes = 'StoreTabEmotes';
 const StringIDStoreTabPortraits = 'StoreTabPortraits';
 const StringIDStoreTabSprintFX = 'StoreTabSprintFX';
-const StringIDStoreTabCurrency = 'StoreTabCurrency';
 const StringIDStoreTabQuestXP = 'StoreTabQuestXP';
+const StringIDStoreBuyGems = 'StoreBuyGems';
 
 interface ReactProps {
   dispatch?: Dispatch;
@@ -44,6 +56,7 @@ interface ReactProps {
 interface InjectedProps {
   currentRoute: StoreRoute;
   purchases: PurchaseDefGQL[];
+  rmtPurchases: RMTPurchaseDefGQL[];
   newPurchases: Dictionary<boolean>;
   perks: PerkDefGQL[];
   ownedPerks: Dictionary<number>;
@@ -55,26 +68,52 @@ type Props = ReactProps & InjectedProps;
 
 class AStoreNavMenu extends React.Component<Props> {
   render(): JSX.Element {
+    const isRMTAvailable = (this.props.rmtPurchases?.length ?? 0) > 0;
+
     return (
       <div className={Container}>
-        {Object.keys(this.props.newPurchases).length > 0 ? (
-          <Button
-            type={'double-border'}
-            text={getStringTableValue(StringIDChampionInfoDisplayMarkAllSeenTitle, this.props.stringTable)}
-            onClick={this.markAllSeen.bind(this)}
-            disabled={false}
-          />
-        ) : null}
-        {this.hasUnclaimedRewards() ? this.renderNavItem(StoreRoute.Rewards) : null}
-        {this.renderNavItem(StoreRoute.Featured)}
-        {this.renderNavItem(StoreRoute.Weapons)}
-        {this.renderNavItem(StoreRoute.Skins)}
-        {this.renderNavItem(StoreRoute.Emotes)}
-        {this.renderNavItem(StoreRoute.Portraits)}
-        {this.renderNavItem(StoreRoute.SprintFX)}
-        {this.renderNavItem(StoreRoute.QuestXP)}
-        {this.renderNavItem(StoreRoute.Currency)}
-        <StoreChampionFilterDropdown styles={ChampionDropdown} />
+        <div className={SideButtonContainer}>
+          {Object.keys(this.props.newPurchases).length > 0 ? (
+            <Button
+              type={'double-border'}
+              text={getStringTableValue(StringIDChampionInfoDisplayMarkAllSeenTitle, this.props.stringTable)}
+              onClick={this.markAllSeen.bind(this)}
+              disabled={false}
+            />
+          ) : null}
+        </div>
+        <div className={NavRow}>
+          <div className={BorderStyle} />
+          <div className={`${BorderStyle} bottom`} />
+          <div className={TabsStyle}>
+            {this.hasUnclaimedRewards() ? this.renderNavItem(StoreRoute.Rewards) : null}
+            {this.renderNavItem(StoreRoute.Bundles)}
+            {this.renderNavItem(StoreRoute.Skins)}
+            {this.renderNavItem(StoreRoute.Weapons)}
+            {this.renderNavItem(StoreRoute.SprintFX)}
+            {this.renderNavItem(StoreRoute.Emotes)}
+            {this.renderNavItem(StoreRoute.Portraits)}
+            {this.renderNavItem(StoreRoute.QuestXP)}
+          </div>
+        </div>
+        <div className={SideButtonContainer}>
+          {isRMTAvailable && (
+            <Button
+              type={'primary'}
+              styles={BuyGemsButton}
+              text={
+                <div className={BuyGemsButtonContent}>
+                  <div className={BuyGemsButtonLabel}>
+                    {getStringTableValue(StringIDStoreBuyGems, this.props.stringTable)}
+                  </div>
+                  <div className={`${BuyGemsButtonIcon} fs-icon-misc-gem`} />
+                </div>
+              }
+              onClick={this.onBuyGemsClicked.bind(this)}
+              disabled={false}
+            />
+          )}
+        </div>
       </div>
     );
   }
@@ -82,7 +121,7 @@ class AStoreNavMenu extends React.Component<Props> {
   componentDidMount(): void {
     // Pick the initial route once per launch.
     if (this.props.currentRoute === StoreRoute.None) {
-      const route = this.hasUnclaimedRewards() ? StoreRoute.Rewards : StoreRoute.Featured;
+      const route = this.hasUnclaimedRewards() ? StoreRoute.Rewards : StoreRoute.Bundles;
       this.props.dispatch(updateStoreCurrentRoute(route));
     }
   }
@@ -90,8 +129,12 @@ class AStoreNavMenu extends React.Component<Props> {
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<{}>, snapshot?: any): void {
     // Make sure we get off of the empty Rewards page after the user claims their last reward.
     if (this.props.currentRoute === StoreRoute.Rewards && !this.hasUnclaimedRewards()) {
-      this.props.dispatch(updateStoreCurrentRoute(StoreRoute.Featured));
+      this.props.dispatch(updateStoreCurrentRoute(StoreRoute.Bundles));
     }
+  }
+
+  private onBuyGemsClicked(): void {
+    this.props.dispatch?.(showOverlay(Overlay.PurchaseGems));
   }
 
   private onMouseEnter() {
@@ -133,8 +176,8 @@ class AStoreNavMenu extends React.Component<Props> {
       case StoreRoute.Rewards: {
         return getStringTableValue(StringIDStoreTabRewards, this.props.stringTable).toUpperCase();
       }
-      case StoreRoute.Featured: {
-        return getStringTableValue(StringIDStoreTabFeatured, this.props.stringTable).toUpperCase();
+      case StoreRoute.Bundles: {
+        return getStringTableValue(StringIDStoreTabBundles, this.props.stringTable).toUpperCase();
       }
       case StoreRoute.Weapons: {
         return getStringTableValue(StringIDStoreTabWeapons, this.props.stringTable).toUpperCase();
@@ -151,9 +194,6 @@ class AStoreNavMenu extends React.Component<Props> {
       case StoreRoute.SprintFX: {
         return getStringTableValue(StringIDStoreTabSprintFX, this.props.stringTable).toUpperCase();
       }
-      case StoreRoute.Currency: {
-        return getStringTableValue(StringIDStoreTabCurrency, this.props.stringTable).toUpperCase();
-      }
       case StoreRoute.QuestXP: {
         return getStringTableValue(StringIDStoreTabQuestXP, this.props.stringTable).toUpperCase();
       }
@@ -165,14 +205,13 @@ class AStoreNavMenu extends React.Component<Props> {
       case StoreRoute.Rewards: {
         return true;
       }
-      case StoreRoute.Currency:
       case StoreRoute.QuestXP: {
         return false;
       }
       case StoreRoute.Emotes: {
         return this.hasNewPurchaseOfType(PerkType.Emote);
       }
-      case StoreRoute.Featured: {
+      case StoreRoute.Bundles: {
         return this.hasNewBundles();
       }
       case StoreRoute.Skins: {
@@ -257,7 +296,7 @@ class AStoreNavMenu extends React.Component<Props> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { currentRoute, purchases, newPurchases, perks, perksByID } = state.store;
+  const { currentRoute, purchases, rmtPurchases, newPurchases, perks, perksByID } = state.store;
   const { ownedPerks } = state.profile;
   const { stringTable } = state.stringTable;
 
@@ -265,6 +304,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     ...ownProps,
     currentRoute,
     purchases,
+    rmtPurchases,
     newPurchases,
     perks,
     ownedPerks,

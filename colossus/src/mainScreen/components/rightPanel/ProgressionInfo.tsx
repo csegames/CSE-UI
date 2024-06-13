@@ -8,7 +8,13 @@ import * as React from 'react';
 import { Button } from '../shared/Button';
 import { RootState } from '../../redux/store';
 import { connect } from 'react-redux';
-import { ChampionInfo, PerkDefGQL, QuestGQL, QuestLinkDefGQL, QuestDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import {
+  ChampionInfo,
+  PerkDefGQL,
+  QuestGQL,
+  QuestLinkDefGQL,
+  QuestDefGQL
+} from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dispatch } from 'redux';
 import { hideRightPanel } from '../../redux/navigationSlice';
 import { ResourceBar } from '../shared/ResourceBar';

@@ -39,7 +39,7 @@ const animateFillBarStyle = {
 };
 export class ExperienceBar extends React.Component<Props, State> {
   private pendingAnimations: (() => void)[];
-  private animTimeout: NodeJS.Timeout = null;
+  private animTimeout: number = null;
 
   constructor(props: Props) {
     super(props);
@@ -63,7 +63,10 @@ export class ExperienceBar extends React.Component<Props, State> {
     let barPercentage = (xp / maxXP) * 100;
 
     // After maxed, with all animations complete, the bar changes color.
-    const maxStyle = !this.props.suppressMaxStyle && level === maxLevel && !this.animTimeout && this.pendingAnimations.length === 0 ? 'max' : '';
+    const maxStyle =
+      !this.props.suppressMaxStyle && level === maxLevel && !this.animTimeout && this.pendingAnimations.length === 0
+        ? 'max'
+        : '';
 
     return (
       <div className={`${ResourceBarContainer} ${className}`} {...otherProps}>
@@ -203,7 +206,7 @@ export class ExperienceBar extends React.Component<Props, State> {
   }
 
   private runNextAnimationAfterMS(delay: number): void {
-    this.animTimeout = setTimeout(() => {
+    this.animTimeout = window.setTimeout(() => {
       if (this.pendingAnimations.length > 0) {
         const [nextAnim, ...pendingAnimations] = this.pendingAnimations;
         this.pendingAnimations = pendingAnimations;

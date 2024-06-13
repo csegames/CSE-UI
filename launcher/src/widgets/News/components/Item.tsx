@@ -115,12 +115,12 @@ class Item extends React.Component<ItemProps> {
   public render() {
     return (
       <TextureWrapper onClick={this.onClick} onMouseEnter={this.onMouseEnter}>
-        <Container style={{ borderImage: `linear-gradient(to right, ${this.props.indicatorColor}, transparent) 10% 1%` }}>
+        <Container
+          style={{ borderImage: `linear-gradient(to right, ${this.props.indicatorColor}, transparent) 10% 1%` }}
+        >
           <Image src={this.props.imgSrc} />
           <Overlay />
-          <ChildrenContainer className='children-container'>
-            {this.props.children}
-          </ChildrenContainer>
+          <ChildrenContainer className='children-container'>{this.props.children}</ChildrenContainer>
           <ReadMore className='read-more' style={{ color: this.props.indicatorColor }}>
             Read More
             <Arrow className='fa fa-angle-right'></Arrow>
@@ -133,11 +133,11 @@ class Item extends React.Component<ItemProps> {
   private onClick = () => {
     playSound(Sound.Select);
     this.props.onClick();
-  }
+  };
 
   private onMouseEnter = () => {
     playSound(Sound.SelectChange);
-  }
+  };
 }
 
 export default Item;

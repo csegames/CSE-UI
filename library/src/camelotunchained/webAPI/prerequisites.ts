@@ -8,17 +8,4 @@ import * as graphql from '../graphql/schema';
 import { RequestConfig, RequestResult } from '../../_baseGame/types/Request';
 import { legacyRequest as xhrRequest } from '../../_baseGame/utils/request';
 
-type CurrentMax = graphql.CurrentMax;
-
-interface CurrentMaxValue {
-  current: number;
-  maximum: number;
-}
-
-interface Temperature {
-  current: number;
-  freezingThreshold: number;
-  burndingThreshold: number;
-}
-
-export { CurrentMax, CurrentMaxValue, graphql, RequestConfig, RequestResult, Temperature, xhrRequest };
+export { graphql, RequestConfig, RequestResult, xhrRequest };

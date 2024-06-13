@@ -9,7 +9,6 @@ import * as React from 'react';
 import { styled } from '@csegames/linaria/react';
 
 import Login from '../Login';
-import { ServerStatusMessage } from '../ServerStatusMessage';
 import PatchButton from '../PatchButton';
 import CharacterSelect from '../CharacterSelect';
 import ProgressBar from '../ProgressBar';
@@ -101,7 +100,6 @@ export class ControllerDisplayView extends React.Component<Props, ControllerDisp
 
     return (
       <Container>
-        <ServerStatusMessage selectedServer={selectedServer} visible={!this.props.charSelectVisible} />
         {!this.state.initialCharSelectOpen && (
           <div style={{ display: this.props.charSelectVisible ? 'block' : 'none' }}>
             <CharacterSelect

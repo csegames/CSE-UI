@@ -17,8 +17,8 @@ import {
 } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { Button } from './Button';
 import { GroupsAPI } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
-import { webConf } from '../dataSources/networkConfiguration';
 import { game } from '@csegames/library/dist/_baseGame';
+import { webConf } from '../redux/networkConfiguration';
 
 const Root = 'HUD-InteractiveAlert-Root';
 const Top = 'HUD-InteractiveAlert-Top';
@@ -159,7 +159,7 @@ class AInteractiveAlert extends React.Component<Props> {
 
   viewProgression(): void {
     this.closeSelf();
-    game.sendSlashCommand("progressiondevui show --page DaySummary");
+    game.sendSlashCommand('progressiondevui show --page DaySummary');
   }
 
   dismissProgression(): void {

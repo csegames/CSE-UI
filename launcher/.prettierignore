@@ -1,0 +1,7 @@
+*
+!*.ts
+!*.tsx
+!*.scss
+*.d.ts
+!*/
+src/api/webapi.ts

@@ -102,7 +102,7 @@ export class ProgressCircle extends React.Component<ProgressCircleProps, {}> {
     const circleRadiusPx = (circleRadius / this.props.size) * 100;
 
     return (
-      <svg viewBox="0 0 100 100" style={style}>
+      <svg viewBox='0 0 100 100' style={style}>
         <path
           d={arc2path(50, 50, circleRadiusPx, 360 - degrees, 360)}
           strokeWidth={strokeWidthValue}

@@ -14,9 +14,10 @@ import * as React from 'react';
 import { TeamJoinAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { convertServerTimeToLocalTime } from '@csegames/library/dist/_baseGame/utils/timeUtils';
 import { createSlice, Dictionary, PayloadAction } from '@reduxjs/toolkit';
-import { webConf } from '../dataSources/networkConfiguration';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue } from '../helpers/stringTableHelpers';
+import { lobbyLocalStore } from '../localStorage/lobbyLocalStorage';
+import { webConf } from '../dataSources/networkConfiguration';
 
 const StringIDGroupsNotificationAccept = 'GroupsNotificationAccept';
 const StringIDGroupsNotificationDecline = 'GroupsNotificationDecline';
@@ -31,6 +32,7 @@ interface TeamJoinState {
   groupOffers: OfferSummary;
   selectedGroupMemberIndex: number;
   notifications: NotificationData[];
+  hasClickedInvite: boolean;
 }
 
 // Notification text could be a string or JSX element to make formatting easy
@@ -138,6 +140,7 @@ function generateDefaultTeamJoinState() {
         id: null
       }
     },
+    hasClickedInvite: lobbyLocalStore.getHasClickedInvite(),
     selectedGroupMemberIndex: -1,
     notifications: []
   };
@@ -218,6 +221,9 @@ export const teamJoinSlice = createSlice({
     },
     updateSelectedGroupMember: (state: TeamJoinState, action: PayloadAction<number>) => {
       state.selectedGroupMemberIndex = action.payload;
+    },
+    setHasClickedInvite: (state: TeamJoinState) => {
+      state.hasClickedInvite = true;
     }
   }
 });
@@ -229,6 +235,7 @@ export const {
   updateTeamJoinPermissions,
   addOrUpdateInvitation,
   removeInvitation,
+  setHasClickedInvite,
   updateGroupState,
   updateDoNotDisturb,
   updateSelectedGroupMember

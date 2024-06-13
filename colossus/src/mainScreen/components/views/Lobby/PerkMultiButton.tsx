@@ -7,7 +7,7 @@ import { getChampionPerkUnlockQuestIndex } from '../../../helpers/characterHelpe
 import { Button } from '../../shared/Button';
 import { ChampionInfo } from '@csegames/library/dist/hordetest/graphql/schema';
 import { QuestsByType } from '../../../redux/questSlice';
-import { isFreeReward } from '../../../helpers/storeHelpers';
+import { isFreeReward, isPurchaseable } from '../../../helpers/storeHelpers';
 import { showRightPanel } from '../../../redux/navigationSlice';
 import { ConfirmPurchase } from '../../rightPanel/ConfirmPurchase';
 import { Dispatch } from 'redux';
@@ -25,6 +25,7 @@ const ButtonStyle = 'ChampionProfile-MultiButton-ButtonStyle';
 const UnlockLevel = 'ChampionProfile-MultiButton-UnlockLevel';
 
 interface ReactProps {
+  additionalClassNames?: string;
   perk: PerkDefGQL;
   isSaving: boolean;
   onEquip: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -36,6 +37,7 @@ interface InjectedProps extends FeatureFlags.Source {
   quests: QuestsByType;
   purchases: PurchaseDefGQL[];
   stringTable: Dictionary<StringTableEntryDef>;
+  perksByID: Dictionary<PerkDefGQL>;
   dispatch?: Dispatch;
 }
 
@@ -52,7 +54,7 @@ class APerkMultiButton extends React.Component<Props> {
         <Button
           type={'blue'}
           text={getStringTableValue(StringIDGeneralEquip, this.props.stringTable)}
-          styles={ButtonStyle}
+          styles={`${ButtonStyle} ${this.props.additionalClassNames}`}
           onClick={this.props.onEquip.bind(this)}
           disabled={this.props.isSaving}
         />
@@ -67,7 +69,7 @@ class APerkMultiButton extends React.Component<Props> {
     if (unlockIndex >= 0) {
       const tokens = { LEVEL: (unlockIndex + 1).toString() };
       return (
-        <span className={UnlockLevel}>
+        <span className={`${UnlockLevel} ${this.props.additionalClassNames}`}>
           {getTokenizedStringTableValue(StringIDGeneralUnlockedAt, this.props.stringTable, tokens)}
         </span>
       );
@@ -75,15 +77,15 @@ class APerkMultiButton extends React.Component<Props> {
 
     if (FeatureFlags.Store.isEnabled(this.props)) {
       const purchaseDef = this.getPurchaseDef();
-      if (purchaseDef) {
+      if (purchaseDef && isPurchaseable(purchaseDef, this.props.perksByID, this.props.ownedPerks)) {
         const buttonText = isFreeReward(purchaseDef)
           ? getStringTableValue(StringIDGeneralClaim, this.props.stringTable)
           : getStringTableValue(StringIDGeneralPurchase, this.props.stringTable);
         return (
           <Button
-            type={'blue'}
+            type={'primary'}
             text={buttonText}
-            styles={ButtonStyle}
+            styles={`${ButtonStyle} ${this.props.additionalClassNames}`}
             onClick={this.openStorePanel.bind(this)}
             disabled={false}
           />
@@ -117,7 +119,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { selectedChampion } = state.championInfo;
   const { ownedPerks } = state.profile;
   const { quests } = state.quests;
-  const { purchases } = state.store;
+  const { purchases, perksByID } = state.store;
   const { stringTable } = state.stringTable;
   const featureFlags = state.featureFlags;
 
@@ -128,7 +130,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     quests,
     purchases,
     stringTable,
-    featureFlags
+    featureFlags,
+    perksByID
   };
 }
 

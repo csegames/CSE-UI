@@ -8,9 +8,10 @@ import {
   AnyEntityStateModel,
   BaseEntityStateModel,
   EntityResource,
-  PlayerEntityStateModel
+  PlayerEntityStateModel,
+  EntityPositionMapModel
 } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
-import { addOrUpdateEntity, removeEntity, setEntityContext } from '../redux/entitiesSlice';
+import { addOrUpdateEntity, removeEntity, setEntityContext, updatePositions } from '../redux/entitiesSlice';
 import { updatePlayerDelta } from '../redux/playerSlice';
 import { addIfChanged, isDictionaryChanged } from '../redux/reduxUtils';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
@@ -29,7 +30,8 @@ export class EntityStateService extends ExternalDataSource {
       clientAPI.bindEntityUpdatedListener(this.handleEntityUpdated.bind(this)),
       clientAPI.bindEntityRemovedListener(this.handleEntityRemoved.bind(this)),
       clientAPI.bindEntityContextListener(this.handleEntityContext.bind(this)),
-      clientAPI.bindEntityShowItemActionsListener(this.handleEntityShowItemActions.bind(this))
+      clientAPI.bindEntityShowItemActionsListener(this.handleEntityShowItemActions.bind(this)),
+      clientAPI.bindEntityPositionMapUpdatedListener(this.handleEntityPositionMapUpdated.bind(this))
     ]);
   }
 
@@ -70,12 +72,9 @@ export class EntityStateService extends ExternalDataSource {
               action.id,
               action.uiReaction,
               entityState.entityID,
-              {
-                BoneAlias: message.boneAlias,
-                WorldPosition: { x: 0, y: 0, z: 0},
-                Rotation: null,
-                SelectedItemID: null
-              },
+              { x: 0, y: 0, z: 0 },
+              null,
+              message.boneAlias,
               this.dispatch
             );
           };
@@ -90,6 +89,10 @@ export class EntityStateService extends ExternalDataSource {
     );
   }
 
+  private handleEntityPositionMapUpdated(newState: EntityPositionMapModel): void {
+    this.dispatch(updatePositions(newState));
+  }
+
   private diffAndDispatchLocalPlayer(newState: PlayerEntityStateModel) {
     const oldState = this.reduxState.player;
     const delta: Partial<PlayerEntityStateModel> = {};
@@ -101,7 +104,6 @@ export class EntityStateService extends ExternalDataSource {
       // entityID inherently depends on being correct before we get into this function, so no need to diff.
       name,
       isAlive,
-      position,
       statuses,
       objective,
       wounds,
@@ -120,12 +122,6 @@ export class EntityStateService extends ExternalDataSource {
     addIfChanged(delta, { faction }, [faction], [oldState.faction]);
     addIfChanged(delta, { name }, [name], [oldState.name]);
     addIfChanged(delta, { isAlive }, [isAlive], [oldState.isAlive]);
-    addIfChanged(
-      delta,
-      { position },
-      [position.x, position.y, position.z],
-      [oldState.position.x, oldState.position.y, oldState.position.z]
-    );
     this.addStatusesIfChanged(delta, statuses, oldState.statuses);
     addIfChanged(
       delta,

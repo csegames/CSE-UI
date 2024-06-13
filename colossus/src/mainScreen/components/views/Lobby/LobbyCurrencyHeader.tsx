@@ -8,10 +8,15 @@ import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { PerkDefGQL, PerkType, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import {
+  PerkDefGQL,
+  PerkType,
+  RMTPurchaseDefGQL,
+  StringTableEntryDef
+} from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { PerkGQL, QuestType } from '@csegames/library/dist/hordetest/graphql/schema';
-import { navigateTo, LobbyView } from '../../../redux/navigationSlice';
+import { navigateTo, LobbyView, showOverlay, Overlay } from '../../../redux/navigationSlice';
 import { updateStoreCurrentRoute, StoreRoute } from '../../../redux/storeSlice';
 import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
@@ -40,6 +45,7 @@ interface ReactProps {}
 
 interface InjectedProps {
   perksByID: Dictionary<PerkDefGQL>;
+  rmtPurchases: RMTPurchaseDefGQL[];
   stringTable: Dictionary<StringTableEntryDef>;
   ownedPerks: PerkGQL[];
   dispatch?: Dispatch;
@@ -87,9 +93,11 @@ class ALobbyCurrencyHeader extends React.Component<Props> {
   }
 
   private onHardCurrencyClick(): void {
-    this.props.dispatch(updateStoreCurrentRoute(StoreRoute.Currency));
-    this.props.dispatch(navigateTo(LobbyView.Store));
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_STORE_OPEN);
+    // Only open the PurchaseGems overlay if there are actually gems available to purchase!
+    if ((this.props.rmtPurchases?.length ?? 0) > 0) {
+      this.props.dispatch(showOverlay(Overlay.PurchaseGems));
+      game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_STORE_OPEN);
+    }
   }
 
   private onQuestXPClick(): void {
@@ -156,13 +164,14 @@ class ALobbyCurrencyHeader extends React.Component<Props> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { perksByID } = state.store;
+  const { perksByID, rmtPurchases } = state.store;
   const ownedPerks = state.profile?.perks ?? [];
   const { stringTable } = state.stringTable;
 
   return {
     ...ownProps,
     ownedPerks,
+    rmtPurchases,
     perksByID,
     stringTable
   };

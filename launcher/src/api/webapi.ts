@@ -6,7 +6,7 @@
 
 // Camelot Unchained REST interface
 
-import { CurrentMax, CurrentMaxValue, RequestConfig, RequestResult, Temperature, xhrRequest } from './prerequisites'
+import { RequestConfig, RequestResult, xhrRequest } from './prerequisites'
 
 export type AbilityInstanceID = number;
 export type AccountID = string;
@@ -445,19 +445,6 @@ export enum ModifyPlotResultCode {
   MaxPlotsOwned = 16,
 }
 
-export enum ModifyScenaioResultCode {
-  Invalid = 0,
-  Success = 1,
-  InvalidScenarioID = 2,
-  NotSupported = 3,
-  InvalidParameter = 4,
-  DBError = 5,
-  InvalidShard = 6,
-  InvalidScenarioState = 7,
-  CallerNotFound = 8,
-  CharacterNotFound = 9,
-}
-
 export enum ModifySecureTradeResultCode {
   Success = 0,
   NoTrade = 1,
@@ -605,6 +592,7 @@ export enum PermissibleSetKeyType {
   Faction = 1,
   ScenarioTeam = 2,
   ScenarioRole = 3,
+  Scenario = 4,
 }
 
 export enum PermissibleTargetType {
@@ -720,22 +708,6 @@ export const AbilitiesAPI = {
   },
 }
 
-export interface Alert {
-  Destination: string;
-  Type: string;
-  Template: string;
-  Vars: { [key: string]: string; };
-  ID: string;
-  UtcDisplayStart: string;
-  UtcDisplayEnd: string;
-  UtcCreated: string;
-}
-
-export interface AlertVar {
-  Key: string;
-  Value: string;
-}
-
 export interface ApiErrorResponse {
   Code: number;
   Message: string;
@@ -831,45 +803,12 @@ export const CharactersAPI = {
 }
 
 export const ContentAPI = {
-  MessageOfTheDayV1: function(config: RequestConfig, channel: number): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/messageoftheday',
-      { channel },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
   PatcherHeroContentV1: function(config: RequestConfig): Promise<RequestResult> {
     const conf = config();
     return xhrRequest(
       'get',
       conf.url + 'v1/patcherherocontent',
       {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  PatcherAlertsV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/patcheralerts',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  AlertV1: function(config: RequestConfig, destination: string): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/alerts',
-      { destination },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
@@ -1202,29 +1141,6 @@ export interface GroupActionError {
   Message: string;
 }
 
-export interface GroupMemberState {
-  entityID: string;
-  characterID: string;
-  faction: Faction;
-  classID: string;
-  name: string;
-  isAlive: boolean;
-  position: Vec3f;
-  statuses: StatusEffect[];
-  race: string;
-  gender: string;
-  health: Health;
-  stamina: CurrentMax;
-  blood: CurrentMax;
-  displayOrder: number;
-  warbandID: string;
-  isLeader: boolean;
-  canInvite: boolean;
-  canKick: boolean;
-  rankLevel: number;
-  isReady: boolean;
-}
-
 export const GroupsAPI = {
   KickV1: function(config: RequestConfig, groupID: GroupID, targetEntityID?: EntityID | null, targetCharacterID?: CharacterID | null, targetName?: string): Promise<RequestResult> {
     const conf = config();
@@ -1440,17 +1356,6 @@ export const GroupsAPI = {
   },
 }
 
-export interface GroupServiceUnavailable {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface Health {
-  current: number;
-  max: number;
-  wounds: number;
-}
-
 export interface IActionError {
   Code: ActionErrorCode;
   Message: string;
@@ -1484,19 +1389,7 @@ export interface IItemRequirementContext {
   VoxJobID: string;
 }
 
-export interface InsufficientResource {
-  Resources: ResourceRequirement[];
-  Code: FieldCodes;
-  Message: string;
-}
-
 export interface InternalAction {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface InvalidModel {
-  ModelErrors: ModelError[];
   Code: FieldCodes;
   Message: string;
 }
@@ -1603,55 +1496,17 @@ export interface LoginThrottled {
   Message: string;
 }
 
-export interface LoginTokenAuthorizationFailed {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface MatchmakingBadGameMode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface MatchmakingFailedToEnterQueue {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface MatchmakingUserNotReady {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface MessageOfTheDay {
-  Title: string;
-  HTMLContent: string;
-  JSONContent: string;
-  Duration: number;
-  Channels: ChannelID[];
-  ChannelsAsLongs: number[];
-  ID: string;
-  UtcDisplayStart: string;
-  UtcDisplayEnd: string;
-  UtcCreated: string;
-}
-
-export interface MessageOfTheDay {
-  id: string;
-  utcDisplayStart: string;
-  utcDisplayEnd: string;
-  utcCreated: string;
-  title: string;
-  htmlContent: string;
-  jsonContent: string;
-  duration: number;
-  channels: number[];
-}
-
-export interface ModelError {
-  Message: string;
-  ParamName: string;
-  TypeName: string;
+export const ModerationAPI = {
+  AppealWord: function(config: RequestConfig, word: string): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'post',
+      conf.url + 'v1/appeal/word',
+      { word },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 }
 
 export interface ModifyAbilityError {
@@ -1691,20 +1546,6 @@ export interface ModifyPlotResult {
   Code: ModifyPlotResultCode;
   Message: string;
   QueueStatus: QueueStatusMessage;
-}
-
-export interface ModifyScenarioError {
-  ModifyScenario: ModifyScenarioResult;
-  Message: string;
-  ErrorCode: ModifyScenaioResultCode;
-  CharacterID: CharacterID;
-  Code: FieldCodes;
-}
-
-export interface ModifyScenarioResult {
-  Code: ModifyScenaioResultCode;
-  CharacterID: CharacterID;
-  ErrorMessage: string;
 }
 
 export interface ModifySecureTradeAPIResult {
@@ -1772,24 +1613,6 @@ export interface MoveItemResult {
 export interface NotAllowedFieldCode {
   Code: FieldCodes;
   Message: string;
-}
-
-export const OrdersAPI = {
-}
-
-export interface PatcherAlert {
-  Message: string;
-  ID: string;
-  UtcDisplayStart: string;
-  UtcDisplayEnd: string;
-  UtcCreated: string;
-}
-
-export interface PatcherAlert {
-  id: string;
-  message: string;
-  utcDateEnd: string;
-  utcDateStart: string;
 }
 
 export interface PatcherHero {
@@ -2033,19 +1856,8 @@ export interface RateLimitExceeded {
   Message: string;
 }
 
-export interface RealmRestricted {
-  Code: FieldCodes;
-  Message: string;
-}
-
 export interface ReportCrashResult {
   ID: string;
-}
-
-export interface ResourceRequirement {
-  Name: string;
-  Required: Object;
-  Available: Object;
 }
 
 export const ScenarioAPI = {
@@ -2297,15 +2109,6 @@ export interface StartingServer {
   ZoneInstanceID: number;
 }
 
-export interface StatusEffect {
-  id: string;
-  duration: number;
-  startTime: number;
-  name: string;
-  iconURL: string;
-  description: string;
-}
-
 export interface TimeoutError {
   Code: FieldCodes;
   Message: string;
@@ -2355,16 +2158,6 @@ export interface UnspecifiedRequestError {
   Message: string;
 }
 
-export interface UnspecifiedServiceUnavailable {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface UserStateConflict {
-  Code: FieldCodes;
-  Message: string;
-}
-
 export interface Vec2f {
   x: number;
   y: number;
@@ -2374,25 +2167,6 @@ export interface Vec3f {
   x: number;
   y: number;
   z: number;
-}
-
-export interface WarbandMember {
-  additionalPermissions: string[];
-  archetype: string;
-  avatar: string;
-  blood: CurrentMaxValue;
-  characterID: string;
-  gender: string;
-  health: CurrentMaxValue;
-  joined: string;
-  name: string;
-  panic: CurrentMaxValue;
-  parted: string;
-  race: string;
-  rank: string;
-  stamina: CurrentMaxValue;
-  temperature: Temperature;
-  wounds: number;
 }
 
 export interface ZoneInfo {

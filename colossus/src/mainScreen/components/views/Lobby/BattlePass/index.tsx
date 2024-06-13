@@ -28,20 +28,22 @@ import { CSETransition } from '../../../../../shared/components/CSETransition';
 import {
   LobbyView,
   Overlay,
-  OverlayFieldType,
+  OverlayInstance,
   navigateTo,
+  setCosmeticTab,
   showError,
   showOverlay,
   showRightPanel
 } from '../../../../redux/navigationSlice';
 import { updateSelectedChampion } from '../../../../redux/championInfoSlice';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { webConf } from '../../../../dataSources/networkConfiguration';
 import { startProfileRefresh } from '../../../../redux/profileSlice';
 import { game } from '@csegames/library/dist/_baseGame';
 import {
   getCurrentBattlePassPremiumPurchaseDef,
   getRewardTypeText,
+  getTierOfFirstClaimableBattlePassReward,
+  getTierOfLastClaimableBattlePassReward,
   hasPremiumForBattlePass,
   hasUncollectedDailyQuest,
   shouldShowBattlePassSplashScreen,
@@ -65,6 +67,8 @@ import { QuestXPButton } from '../QuestXPButton';
 import { ConfirmPurchase } from '../../../rightPanel/ConfirmPurchase';
 import TooltipSource from '../../../../../shared/components/TooltipSource';
 import { createAlertsForCollectedQuestProgress } from '../../../../helpers/perkUtils';
+import { RequestResult } from '@csegames/library/dist/_baseGame/types/Request';
+import { webConf } from '../../../../dataSources/networkConfiguration';
 
 const BattlePassBGImage = 'StartScreen-BattlePassBGImage';
 const Container = 'BattlePass-Container';
@@ -83,6 +87,7 @@ const HeaderBattlePassIcon = 'BattlePass-Header-BattlePassIcon';
 const HeaderBattlePassName = 'BattlePass-Header-BattlePassName';
 const HeaderBattlePassExpiry = 'BattlePass-Header-BattlePassExpiry';
 const HeaderButtonsContainer = 'BattlePass-Header-ButtonsContainer';
+const HeaderProgressBar = 'BattlePass-Header-ProgressBar';
 const BuyButton = 'BattlePass-BuyButton';
 const QuestsButton = 'BattlePass-QuestsButton';
 const TiersContainer = 'BattlePass-TiersContainer';
@@ -111,7 +116,7 @@ const PreviewText = 'BattlePass-Selection-PreviewText';
 const PreviewInfo = 'BattlePass-Selection-PreviewInfo';
 const PreviewName = 'BattlePass-Selection-PreviewName';
 const PreviewTierContainer = 'BattlePass-Selection-PreviewTier-Container';
-const PreviewCrownIcon = 'BattlePass-Selection-PreviewTier-CrownIcon';
+const PreviewPremiumIcon = 'BattlePass-Selection-PreviewTier-PremiumIcon';
 const PreviewNormalText = 'BattlePass-Selection-PreviewTier-NormalText';
 const PreviewPremiumText = 'BattlePass-Selection-PreviewTier-PremiumText';
 const PreviewTypeText = 'BattlePass-Selection-PreviewTier-TypeText';
@@ -123,10 +128,12 @@ const PreviewLockIcon = 'BattlePass-Selection-PreviewLockIcon';
 const ActionButtonContainer = 'BattlePass-ActionButtonContainer';
 const ActionButton = 'BattlePass-ActionButton';
 const PremiumLabel = 'BattlePass-PremiumLabel';
-const PrizeBadge = 'BattlePass-Tier-PrizeBadge';
 const BattlePassQuestXPButton = 'BattlePass-BattlePassQuestXPButton';
 const ComingSoonLabel = 'BattlePass-ComingSoonLabel';
 const ComingSoonSeasonTitle = 'BattlePass-ComingSoonSeasonTitle';
+const TierCollectButtonContainer = 'BattlePass-Tier-CollectButtonContainer';
+const TierCollectButton = 'BattlePass-Tier-CollectButton';
+const TierCollectButtonBadge = 'BattlePass-Tier-CollectButtonBadge';
 
 // Localization Tokens
 const StringIDEndsOn = 'BattlePassEndsOn';
@@ -136,11 +143,8 @@ const StringIDBuyButton = 'BattlePassBuyButton';
 const StringIDDailyQuestsButton = 'BattlePassDailyQuestsButton';
 const StringIDNormalPreviewLabel = 'BattlePassNormalPreviewLabel';
 const StringIDPremiumPreviewLabel = 'BattlePassPremiumPreviewLabel';
-const StringIDClaimingButton = 'BattlePassClaimingButton';
-const StringIDClaimRewardsButton = 'BattlePassClaimRewardsButton';
 const StringIDPurchasePremiumButton = 'BattlePassPurchasePremiumButton';
 const StringIDViewInventoryButton = 'BattlePassViewInventoryButton';
-const StringIDNeedMoreXPButton = 'BattlePassNeedMoreXPButton';
 const StringIDCantFindKeyError = 'BattlePassCantFindKeyError';
 const StringIDRewardsClaimedTitle = 'BattlePassRewardsClaimedTitle';
 const StringIDRewardsClaimedDescription = 'BattlePassRewardsClaimedDescription';
@@ -152,6 +156,8 @@ const StringIDPreviewPremiumRequirement = 'BattlePassPreviewPremiumRequirement';
 const StringIDPreviewXPRequirement = 'BattlePassPreviewXPRequirement';
 const StringIDExpiryTooltipTitle = 'BattlePassExpiryTooltipTitle';
 const StringIDExpiryTooltipText = 'BattlePassExpiryTooltipText';
+const StringIDCollect = 'BattlePassCollect';
+const StringIDCollectAll = 'BattlePassCollectAll';
 
 /** How wide the gap between tiers should be. */
 const tierGapVmin = 0.5;
@@ -175,7 +181,7 @@ interface InjectedProps {
   nextBattlePass: QuestDefGQL;
   previousBattlePass: QuestDefGQL;
   minuteTicker: number;
-  overlay: OverlayFieldType;
+  overlays: OverlayInstance[];
   initializationTopics: Dictionary<boolean>;
   battlePassQuests: QuestDefGQL[];
   serverTimeDeltaMS: number;
@@ -241,6 +247,12 @@ class ABattlePass extends React.Component<Props, State> {
     const battlePassIconClass = this.state.hasPremiumForDisplayedBattlePass
       ? 'fs-icon-misc-season-premium'
       : 'fs-icon-misc-season';
+
+    const currentLink = this.state.displayedBattlePass.links[this.state.displayedProgress?.currentQuestIndex ?? 0];
+    const barWidth = `${
+      ((this.state.displayedProgress?.currentQuestProgress ?? 0) / (currentLink?.progress ?? 1)) * 100
+    }%`;
+
     return (
       <>
         <div className={BattlePassBGImage} style={{ backgroundImage: `url(${this.getBackgroundImage()})` }} />
@@ -248,7 +260,8 @@ class ABattlePass extends React.Component<Props, State> {
           <div className={ContentContainer}>
             <div className={LeftContentContainer} style={{ width: `${leftContainerWidthPx}px` }}>
               <div className={HeaderContainer}>
-                <div className={HeaderBattlePassTier}>
+                <div className={HeaderBattlePassTier} onClick={this.onHeaderTierClicked.bind(this)}>
+                  <div className={`${HeaderProgressBar} current`} style={{ width: barWidth }} />
                   <div className={HeaderBattlePassTierValue}>
                     {(this.state.displayedProgress?.currentQuestIndex ?? 0) + 1}
                   </div>
@@ -410,23 +423,23 @@ class ABattlePass extends React.Component<Props, State> {
     if (displayedBattlePass && displayedBattlePass !== this.state.displayedBattlePass) {
       // When the battlepass changes (first visit or rollover), start on the most meaningful page.
       // If the character has rewards pending, make sure they can see something badged so they can collect it.
-      // If no pending rewards, then both 'nextCollection' values will be the same as the tier currently in progress.
-      const nextCollection: number = displayedProgress?.nextCollection ?? 0;
-      const nextCollectionPremium: number = displayedProgress?.nextCollectionPremium ?? 0;
-      const mostImportantTier = Math.min(
-        hasPremiumForDisplayedBattlePass ? Math.min(nextCollection, nextCollectionPremium) : nextCollection,
-        // If all tiers are unlocked, we just go with the last reward.
-        displayedBattlePass.links.length - 1
+      // Otherwise, show the current tier (or last if maxed).
+      let mostImportantTier = getTierOfLastClaimableBattlePassReward(
+        displayedBattlePass,
+        this.props.quests,
+        this.props.perks
       );
+      if (mostImportantTier === -1) {
+        mostImportantTier = displayedProgress.currentQuestIndex;
+      }
       currentPage = Math.floor(mostImportantTier / maxVisibleTiers);
 
       // Start with the most important item selected so we never have an empty preview.
-      // Since rewards can't be claimed individually, the mostImportantTier of the player's state (normal/premium) will
-      // always be the correct one.
       this.setState({
         selectedLink: displayedBattlePass.links[mostImportantTier],
         selectedIndex: mostImportantTier,
-        isSelectionPremium: hasPremiumForDisplayedBattlePass
+        isSelectionPremium:
+          hasPremiumForDisplayedBattlePass && displayedBattlePass.links[mostImportantTier].premiumRewards?.[0]
       });
     }
 
@@ -442,7 +455,7 @@ class ABattlePass extends React.Component<Props, State> {
 
   private checkForPrestitial(): void {
     // If an overlay is already open, wait to replace it until the user is finished interacting with it.
-    if (this.props.overlay) {
+    if (this.props.overlays.length > 0) {
       return;
     }
 
@@ -573,7 +586,9 @@ class ABattlePass extends React.Component<Props, State> {
                 <div className={PreviewTypeText}>{this.getRewardDescription()}</div>
               </div>
               <div className={PreviewTierContainer}>
-                {this.state.isSelectionPremium && <div className={PreviewCrownIcon} />}
+                {this.state.isSelectionPremium && (
+                  <div className={`${PreviewPremiumIcon} fs-icon-misc-season-premium`} />
+                )}
                 <div className={this.state.isSelectionPremium ? PreviewPremiumText : PreviewNormalText}>{tierText}</div>
               </div>
             </div>
@@ -620,22 +635,6 @@ class ABattlePass extends React.Component<Props, State> {
         this.state.isSelectionPremium &&
         nextCollectionPremium > this.state.selectedIndex) ||
         (!this.state.isSelectionPremium && nextCollection > this.state.selectedIndex))
-    );
-  }
-
-  private isShowingUnclaimedReward(): boolean {
-    const hasSelection = !!this.state.selectedLink;
-    const nextCollection = this.state.displayedProgress?.nextCollection ?? 0;
-    const nextCollectionPremium = this.state.displayedProgress?.nextCollectionPremium ?? 0;
-
-    return (
-      hasSelection &&
-      !!this.getSelectedPreviewItem() &&
-      !this.isShowingUnearnedPrize() &&
-      ((this.state.hasPremiumForDisplayedBattlePass &&
-        this.state.isSelectionPremium &&
-        nextCollectionPremium <= this.state.selectedIndex) ||
-        (!this.state.isSelectionPremium && nextCollection <= this.state.selectedIndex))
     );
   }
 
@@ -691,26 +690,10 @@ class ABattlePass extends React.Component<Props, State> {
 
   private renderActionButton(): React.ReactNode {
     const previewReward = this.getSelectedPreviewItem();
-    const isShowingUnearnedPrize = this.isShowingUnearnedPrize();
     const isShowingClaimedReward = this.isShowingClaimedReward();
-    const isShowingUnclaimedReward = this.isShowingUnclaimedReward();
     const perk = this.props.perksByID[previewReward?.perkID];
 
-    if (isShowingUnclaimedReward) {
-      // If we are looking at an earned, unclaimed award, show a claim button.
-      return (
-        <Button
-          type='blue'
-          text={getStringTableValue(
-            this.state.isClaimingRewards ? StringIDClaimingButton : StringIDClaimRewardsButton,
-            this.props.stringTable
-          )}
-          disabled={this.state.isClaimingRewards}
-          styles={ActionButton}
-          onClick={this.onClaimRewardsClicked.bind(this)}
-        />
-      );
-    } else if (
+    if (
       // If we are looking at a premium reward, but we don't own premium, show an upgrade button.
       this.isPreviewRewardLockedBehindPremium() &&
       !this.state.isReview
@@ -751,16 +734,6 @@ class ABattlePass extends React.Component<Props, State> {
           onClick={this.onViewInventoryClicked.bind(this, previewReward)}
         />
       );
-    } else if (isShowingUnearnedPrize && !this.state.isReview) {
-      // If this is an unearned prize, and nothing else applies, show a "not earned" gray button.
-      return (
-        <Button
-          type='blue'
-          disabled={true}
-          text={getStringTableValue(StringIDNeedMoreXPButton, this.props.stringTable)}
-          styles={ActionButton}
-        />
-      );
     }
 
     return null;
@@ -795,33 +768,6 @@ class ABattlePass extends React.Component<Props, State> {
     }
   }
 
-  private async onClaimRewardsClicked(): Promise<void> {
-    this.setState({ isClaimingRewards: true });
-    this.state.questsToClaim.forEach(async (questId) => {
-      const res = await ProfileAPI.CollectQuestReward(webConf, questId);
-      if (res.ok) {
-        const quest: QuestDefGQL = this.props.questsById[questId];
-        const questProgress: QuestGQL = this.props.quests.find((q) => q.id == questId);
-        createAlertsForCollectedQuestProgress(quest, questProgress, this.props.perksByID, this.props.dispatch);
-
-        // A summation toaster, rather than one for each item.
-        game.trigger(
-          'show-bottom-toaster',
-          <GenericToaster
-            title={getStringTableValue(StringIDRewardsClaimedTitle, this.props.stringTable)}
-            description={getStringTableValue(StringIDRewardsClaimedDescription, this.props.stringTable)}
-          />
-        );
-
-        // Get the new data.
-        this.props.dispatch(startProfileRefresh());
-      } else {
-        this.props.dispatch(showError(res));
-      }
-    });
-    this.setState({ isClaimingRewards: false });
-  }
-
   private onViewInventoryClicked(reward: PerkRewardDefGQL): void {
     const perk = this.props.perksByID[reward.perkID];
     // If available, directly select the champion this reward is associated with.
@@ -835,24 +781,32 @@ class ABattlePass extends React.Component<Props, State> {
     }
     switch (perk.perkType) {
       case PerkType.Costume: {
-        this.props.dispatch(navigateTo(LobbyView.SelectSkin));
+        this.props.dispatch?.(setCosmeticTab(PerkType.Costume));
+        this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
         break;
       }
       case PerkType.Emote: {
-        this.props.dispatch(navigateTo(LobbyView.SelectEmote));
+        this.props.dispatch?.(setCosmeticTab(PerkType.Emote));
+        this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
         break;
       }
       case PerkType.Weapon: {
-        this.props.dispatch(navigateTo(LobbyView.SelectWeapon));
+        this.props.dispatch?.(setCosmeticTab(PerkType.Weapon));
+        this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
         break;
       }
       case PerkType.RuneMod: {
         this.props.dispatch(showOverlay(Overlay.RuneMods));
         break;
       }
-      case PerkType.Portrait:
+      case PerkType.Portrait: {
+        this.props.dispatch?.(setCosmeticTab(PerkType.Portrait));
+        this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
+        break;
+      }
       case PerkType.SprintFX: {
-        this.props.dispatch(navigateTo(LobbyView.SelectAppearance));
+        this.props.dispatch?.(setCosmeticTab(PerkType.SprintFX));
+        this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
         break;
       }
       default: {
@@ -895,18 +849,33 @@ class ABattlePass extends React.Component<Props, State> {
     const currentQuestIndex: number = this.state.displayedProgress?.currentQuestIndex ?? 0;
     const nextCollection: number = this.state.displayedProgress?.nextCollection ?? 0;
     const nextCollectionPremium: number = this.state.displayedProgress?.nextCollectionPremium ?? 0;
+
     const isNormalUnclaimed = !!link.rewards[0] && currentQuestIndex > index && index >= nextCollection;
     const isPremiumUnclaimed =
       this.state.hasPremiumForDisplayedBattlePass &&
       !!link.premiumRewards[0] &&
       currentQuestIndex > index &&
       index >= nextCollectionPremium;
+
+    // If there is something to claim, this points at the first claimable index.
+    const firstCollectionIndex = getTierOfFirstClaimableBattlePassReward(
+      this.state.displayedBattlePass,
+      this.props.quests,
+      this.props.perks
+    );
+    const lastCollectionIndex = getTierOfLastClaimableBattlePassReward(
+      this.state.displayedBattlePass,
+      this.props.quests,
+      this.props.perks
+    );
+
     const barWidth =
       index === currentLinkIndex
         ? `${((this.state.displayedProgress?.currentQuestProgress ?? 0) / (link?.progress ?? 1)) * 100}%`
         : index > currentLinkIndex
         ? '0'
         : '100%';
+
     return (
       <div
         className={TierContainer}
@@ -936,7 +905,6 @@ class ABattlePass extends React.Component<Props, State> {
             src={freeRewardURL}
           />
           {nextCollection > index && <div className={`${TierCheckIcon} fs-icon-misc-check`} />}
-          {isNormalUnclaimed && <StarBadge className={PrizeBadge} />}
           {this.state.isReview && index >= currentQuestIndex && (
             <TooltipSource tooltipParams={{ id: `premium${index}`, content: this.renderExpiredTooltip.bind(this) }}>
               <div className={`${TierClockIcon} fs-icon-effects-player-lockdown`} />
@@ -971,7 +939,23 @@ class ABattlePass extends React.Component<Props, State> {
           {hasPremiumReward && (
             <div className={PremiumLabel}>{getStringTableValue(StringIDPremiumLabel, this.props.stringTable)}</div>
           )}
-          {this.state.hasPremiumForDisplayedBattlePass && isPremiumUnclaimed && <StarBadge className={PrizeBadge} />}
+        </div>
+        <div className={TierCollectButtonContainer}>
+          {(isNormalUnclaimed || (this.state.hasPremiumForDisplayedBattlePass && isPremiumUnclaimed)) && // Is there something to claim?
+            (index === firstCollectionIndex || index === lastCollectionIndex) && ( // Is it the first or last claimable?
+              <Button
+                styles={TierCollectButton}
+                type='blue'
+                text={getStringTableValue(
+                  // This means that if there is only ONE thing to collect, we just show Collect instead of Collect All.
+                  index === firstCollectionIndex ? StringIDCollect : StringIDCollectAll,
+                  this.props.stringTable
+                )}
+                onClick={this.onCollectRewardTierClicked.bind(this, index)}
+              >
+                <StarBadge className={TierCollectButtonBadge} />
+              </Button>
+            )}
         </div>
       </div>
     );
@@ -1002,7 +986,7 @@ class ABattlePass extends React.Component<Props, State> {
     return (
       <div
         className={PageControls}
-        style={{ marginTop: `${tierWidthPx * 2 + tierGapPx * 2 + 6 * this.props.vminPx}px` }}
+        style={{ marginTop: `${tierWidthPx * 2 + tierGapPx * 2 + 8 * this.props.vminPx}px` }}
       >
         <div
           className={`${PageArrow} ${firstPage} fs-icon-misc-chevron-left`}
@@ -1030,7 +1014,7 @@ class ABattlePass extends React.Component<Props, State> {
   private moveToPage(page: number): void {
     const firstTierOfPage = page * maxVisibleTiers;
     const selectedLink = this.state.displayedBattlePass.links[firstTierOfPage];
-    const isSelectionPremium = this.state.hasPremiumForDisplayedBattlePass;
+    const isSelectionPremium = this.state.hasPremiumForDisplayedBattlePass && !!selectedLink.premiumRewards?.[0];
     this.setState({ currentPage: page, selectedLink, selectedIndex: firstTierOfPage, isSelectionPremium });
   }
 
@@ -1065,6 +1049,63 @@ class ABattlePass extends React.Component<Props, State> {
     // automatically. :(
     return dateFormat(expiryDate, 'hTT mmmm d, yyyy');
   }
+
+  private onHeaderTierClicked(): void {
+    // Scroll to current tier.
+    const currentIndex = this.state.displayedProgress?.currentQuestIndex ?? 0;
+    const currentPage = Math.floor(currentIndex / maxVisibleTiers);
+    this.setState({ currentPage });
+  }
+
+  private onCollectRewardTierClicked(index: number): void {
+    this.setState({ isClaimingRewards: true });
+
+    const lastCollectionIndex = getTierOfLastClaimableBattlePassReward(
+      this.state.displayedBattlePass,
+      this.props.quests,
+      this.props.perks
+    );
+
+    this.state.questsToClaim.forEach(async (questId) => {
+      const progress = this.props.quests.find((quest) => {
+        return quest.id === questId;
+      });
+      // Should never happen, but just in case.
+      if (!progress) {
+        return;
+      }
+
+      let res: RequestResult = null;
+      if (index === lastCollectionIndex) {
+        // The most recently completed tier, so collect everything.
+        res = await ProfileAPI.CollectQuestReward(webConf, questId);
+      } else {
+        // The least recently completed tier, so just collect that tier.
+        res = await ProfileAPI.CollectQuestRewards(webConf, questId, index);
+      }
+
+      if (res.ok) {
+        const quest: QuestDefGQL = this.props.questsById[questId];
+        const questProgress: QuestGQL = this.props.quests.find((q) => q.id == questId);
+        createAlertsForCollectedQuestProgress(quest, questProgress, this.props.perksByID, this.props.dispatch);
+
+        // A summation toaster, rather than one for each item.
+        game.trigger(
+          'show-bottom-toaster',
+          <GenericToaster
+            title={getStringTableValue(StringIDRewardsClaimedTitle, this.props.stringTable)}
+            description={getStringTableValue(StringIDRewardsClaimedDescription, this.props.stringTable)}
+          />
+        );
+
+        // Get the new data.
+        this.props.dispatch(startProfileRefresh());
+      } else {
+        this.props.dispatch(showError(res));
+      }
+    });
+    this.setState({ isClaimingRewards: false });
+  }
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
@@ -1078,7 +1119,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { purchases, perksByID } = state.store;
   const { stringTable } = state.stringTable;
   const { minuteTicker, serverTimeDeltaMS } = state.clock;
-  const { overlay } = state.navigation;
+  const { overlays } = state.navigation;
   const initializationTopics = state.initialization.componentStatus;
   const battlePassQuests = state.quests.quests?.BattlePass;
 
@@ -1099,7 +1140,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     nextBattlePass,
     previousBattlePass,
     minuteTicker,
-    overlay,
+    overlays,
     initializationTopics,
     battlePassQuests,
     serverTimeDeltaMS

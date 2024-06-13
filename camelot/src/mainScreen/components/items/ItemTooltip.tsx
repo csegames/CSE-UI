@@ -18,7 +18,7 @@ import {
   ItemStatDefinitionGQL,
   ItemTooltipCategoryDef,
   StatGQL,
-  GearSlotDefRef
+  GearSlot
 } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { ItemResourceID, ItemStatID } from './itemData';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
@@ -53,7 +53,7 @@ interface InjectedProps {
   itemStats: Dictionary<ItemStatDefinitionGQL>;
   entityResources: Dictionary<EntityResourceDefinitionGQL>;
   itemTooltipCategories: Dictionary<ItemTooltipCategoryDef>;
-  gearSlots: Dictionary<GearSlotDefRef>;
+  gearSlots: Dictionary<GearSlot>;
   dispatch?: Dispatch;
 }
 
@@ -66,8 +66,8 @@ class AItemTooltip extends React.Component<Props> {
     const itemType = this.props.items[0].staticDefinition.itemType;
     const slotIcons: string[] = [];
     this.props.items[0].staticDefinition.gearSlotSets.forEach((gearSlotSet) => {
-      gearSlotSet.gearSlots.forEach((gearSlot) => {
-        const gearSlotDef = this.props.gearSlots[gearSlot.id];
+      gearSlotSet.gearSlots.forEach((gearSlotID) => {
+        const gearSlotDef = this.props.gearSlots[gearSlotID];
         if (gearSlotDef) {
           slotIcons.push(gearSlotDef.iconClass);
         }
@@ -211,7 +211,7 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
     itemLowQualityThreshold: state.gameDefs.settings.itemLowQualityThreshold,
     equippedItems: state.equippedItems.items ?? [],
     itemStats: state.gameDefs.itemStats,
-    entityResources: state.gameDefs.entityResources,
+    entityResources: state.gameDefs.entityResourcesByStringID,
     itemTooltipCategories: state.gameDefs.itemTooltipCategories,
     gearSlots: state.gameDefs.gearSlots
   };

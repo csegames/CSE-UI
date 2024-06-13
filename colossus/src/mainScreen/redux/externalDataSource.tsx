@@ -9,7 +9,6 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { GraphQLQueryRequest, query } from '@csegames/library/dist/_baseGame/graphql/query';
-import { queryConf, subsConf } from '../dataSources/networkConfiguration';
 import { RetryTracker } from '@csegames/library/dist/_baseGame/utils/retryTracker';
 import {
   Subscriptions,
@@ -17,6 +16,7 @@ import {
   SubscriptionResult
 } from '@csegames/library/dist/_baseGame/graphql/subscription';
 import { InitTopic, setInitialized } from './initializationSlice';
+import { queryConf, subsConf } from '../dataSources/networkConfiguration';
 
 const START_DELAY = 250;
 const MAX_DELAY = 10000;
@@ -95,7 +95,9 @@ export default abstract class ExternalDataSource<P = {}, S = {}, SS = any> exten
     this.isBound = false;
   }
 
-  protected canBind(): boolean { return true; }
+  protected canBind(): boolean {
+    return true;
+  }
   protected abstract bind(): Promise<ListenerHandle[]>;
 
   protected async subscribe<T>(request: SubscriptionRequest, handler: (update: T) => void): Promise<ListenerHandle> {

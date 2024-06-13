@@ -14,15 +14,15 @@ export interface VersionFunctions {
 const getBuildNumberCallbackName = 'GetBuildNumber';
 
 class CoherentVersionFunctions implements VersionFunctions {
-    getBuildNumber(): Promise<number> {
-        return engine.call(getBuildNumberCallbackName);
-    }
+  getBuildNumber(): Promise<number> {
+    return engine.call(getBuildNumberCallbackName);
+  }
 }
 
 class BrowserVersionFunctions implements VersionFunctions {
-    getBuildNumber(): Promise<number> {
-        return Promise.resolve(0);
-    }
+  getBuildNumber(): Promise<number> {
+    return Promise.resolve(0);
+  }
 }
 
 export const impl: VersionFunctions = engine.isAttached

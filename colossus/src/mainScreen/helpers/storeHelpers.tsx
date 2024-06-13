@@ -34,20 +34,61 @@ export function arePurchaseLocksMatched(locks: ProfileLockDefGQL[], ownedPerks: 
   return isAfterStartDate && isBeforeEndDate && matchesPerkLocks;
 }
 
+export enum OwnershipStatus {
+  Unowned,
+  PartiallyOwned,
+  FullyOwned
+}
+
+export interface PurchaseOwnershipData {
+  status: OwnershipStatus;
+  allUniquePerkIDs: string[];
+  ownedUniquePerkIDs: string[];
+}
+
+export function getPurchaseOwnershipData(
+  purchase: PurchaseDefGQL,
+  perksByID: Dictionary<PerkDefGQL>,
+  ownedPerks: Dictionary<number>
+): PurchaseOwnershipData {
+  // Ownership status is based only on the "unique" items offered by a purchase.
+  const allUniquePerkIds = purchase.perks
+    .filter((perkReward) => {
+      const perk = perksByID[perkReward.perkID];
+      return perk?.isUnique;
+    })
+    .map((r) => r.perkID);
+
+  const ownedUniquePerkIds = allUniquePerkIds.filter((perkId) => {
+    return (ownedPerks[perkId] ?? 0) > 0;
+  });
+
+  let status: OwnershipStatus = OwnershipStatus.Unowned;
+  if (ownedUniquePerkIds.length === 0) {
+    status = OwnershipStatus.Unowned;
+  } else if (ownedUniquePerkIds.length < allUniquePerkIds.length) {
+    status = OwnershipStatus.PartiallyOwned;
+  } else {
+    status = OwnershipStatus.FullyOwned;
+  }
+
+  const data: PurchaseOwnershipData = {
+    status,
+    allUniquePerkIDs: allUniquePerkIds,
+    ownedUniquePerkIDs: ownedUniquePerkIds
+  };
+  return data;
+}
+
 /** Checks if a particular purchase can be shown in the Store right now, */
 export function isPurchaseable(
   purchase: PurchaseDefGQL,
   perksByID: Dictionary<PerkDefGQL>,
   ownedPerks: Dictionary<number>
 ): boolean {
-  // If any perk in the purchase is Unique and already owned, then the user cannot repurchase.
-  const partiallyOwned =
-    purchase.perks.find((perkReward) => {
-      const perk = perksByID[perkReward.perkID];
-      return perk.isUnique && ownedPerks[perk.id] && ownedPerks[perk.id] > 0;
-    }) !== undefined;
-
-  if (partiallyOwned) {
+  // If all Unique perks in the purchase are already owned (skins, emotes, etc.), then the user cannot repurchase.
+  const data = getPurchaseOwnershipData(purchase, perksByID, ownedPerks);
+  if (data.status === OwnershipStatus.FullyOwned) {
     return false;
   }
 

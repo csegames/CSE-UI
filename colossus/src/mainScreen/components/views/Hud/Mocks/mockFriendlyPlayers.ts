@@ -10,7 +10,6 @@ import {
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { mockEvents } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { ScenarioRoundState } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { Vec3f } from '@csegames/library/dist/_baseGame/types/localDefinitions';
 import { clamp, mapValueRange } from '@csegames/library/dist/_baseGame/utils/numberUtils';
 import { Mock } from './data';
 import { EntityResourceIDs } from '@csegames/library/dist/hordetest/game/types/EntityResourceIDs';
@@ -49,14 +48,6 @@ function popLastRandomPlayerEntityID(): string {
 
 function randomValueInRange(minVal: number, maxVal: number): number {
   return mapValueRange(Math.random(), 0.0, 1.0, minVal, maxVal);
-}
-
-function makeRandomPosition(): Vec3f {
-  return {
-    x: randomValueInRange(-300.0, 300.0),
-    y: randomValueInRange(-300.0, 300.0),
-    z: randomValueInRange(0.0, 75.0)
-  };
 }
 
 function randomChoice<T>(values: T[]): T {
@@ -116,7 +107,6 @@ function makeMockPlayerEntity(name: string, entityID: string, scenarioID: string
 
   const model: PlayerEntityStateModel = {
     ...defaultPlayerEntityStateModel(),
-    position: makeRandomPosition(),
     wounds: 2,
     resources: resources,
     currentDeaths: randomChoice<number>([0, 1, 2]),
@@ -209,7 +199,7 @@ function randomizePlayerName(baseName: string): string {
 
   let prefix = '';
   if (Math.random() > 0.85) {
-    prefix = 'CSE_';
+    prefix = 'UCE_';
   }
 
   let suffix = '';

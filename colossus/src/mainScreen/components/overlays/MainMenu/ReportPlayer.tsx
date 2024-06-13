@@ -12,12 +12,12 @@ import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/sc
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
 import { Button } from '../../shared/Button';
 import { ReportAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { webConf } from '../../../dataSources/networkConfiguration';
 import { Overlay, hideOverlay } from '../../../redux/navigationSlice';
-import { clearPlayerToReport } from '../../../redux/voiceChatSlice';
+import { VoiceChatReport, clearPlayerToReport, updateReport } from '../../../redux/voiceChatSlice';
 import { PlayerEntityStateModel } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { IDLookupTable } from '../../../redux/gameSlice';
 import { CharacterClassDef, CharacterRaceDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
+import { webConf } from '../../../dataSources/networkConfiguration';
 
 const Container = 'MenuModal-RightOptions-ReportPlayer-Container';
 const CloseButton = 'MenuModal-RightOptions-ReportPlayer-CloseButton';
@@ -54,31 +54,25 @@ interface InjectedProps {
   playerToReport: PlayerEntityStateModel;
   raceDefs: IDLookupTable<CharacterRaceDef>;
   classDefs: IDLookupTable<CharacterClassDef>;
+  report: VoiceChatReport;
   dispatch?: Dispatch;
 }
 
 type Props = ReactProps & InjectedProps;
 
 interface State {
-  isMessageEmpty: boolean;
   isRealReasonSelected: boolean;
   isDropdownOpen: boolean;
-  selectedReason: string;
 }
 
 class AReportPlayer extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      isMessageEmpty: true,
       isRealReasonSelected: false,
-      isDropdownOpen: false,
-      selectedReason: getStringTableValue(StringIDMainMenuReportPlayerDefaultReason, this.props.stringTable)
+      isDropdownOpen: false
     };
   }
-
-  private messageInputRef = React.createRef<HTMLTextAreaElement>();
-  private emailInputRef = React.createRef<HTMLTextAreaElement>();
 
   render(): JSX.Element {
     const isOpen = this.state.isDropdownOpen ? 'Open' : '';
@@ -88,6 +82,8 @@ class AReportPlayer extends React.Component<Props, State> {
     const portraitURL =
       this.props.playerToReport.portraitURL?.length > 0 ? this.props.playerToReport.portraitURL : backupThumbnail;
     const champName = this.props.classDefs[this.props.playerToReport.classID]?.name ?? '';
+
+    const report = this.getReport();
 
     return (
       <div className={Container}>
@@ -105,7 +101,7 @@ class AReportPlayer extends React.Component<Props, State> {
           </div>
           <div className={DropdownContainer}>
             <div className={DropdownSelectedContainer} onClick={this.toggleDropdown.bind(this)}>
-              <span className={DropdownSelected}>{this.state.selectedReason}</span>
+              <span className={DropdownSelected}>{report.reason}</span>
               <span className={`${DropdownSelectedIcon} ${this.getSelectedIcon()}`} />
             </div>
             <div className={`${DropdownList} ${isOpen}`}>
@@ -122,28 +118,28 @@ class AReportPlayer extends React.Component<Props, State> {
             {getStringTableValue(StringIDMainMenuReportPlayerRequiredText, this.props.stringTable)}
           </span>
           <textarea
-            ref={this.messageInputRef}
             rows={7}
-            onChange={this.isMessageBoxEmpty.bind(this)}
-            onKeyDown={this.isMessageBoxEmpty.bind(this)}
+            onChange={this.onMessageChange.bind(this)}
             className={MessageBody}
             placeholder={getStringTableValue(StringIDMainMenuReportPlayerDefaultMessageText, this.props.stringTable)}
             maxLength={2000}
+            value={report.message}
           />
           <span className={RequiredText}>
             {getStringTableValue(StringIDMainMenuReportPlayerRequiredText, this.props.stringTable)}
           </span>
           <textarea
-            ref={this.emailInputRef}
             rows={1}
+            onChange={this.onEmailChange.bind(this)}
             className={EmailMessage}
             placeholder={getStringTableValue(StringIDMainMenuReportPlayerDefaultEmailString, this.props.stringTable)}
             maxLength={320}
+            value={report.email}
           />
           <Button
             styles={SendReport}
             type={'blue'}
-            disabled={this.state.isMessageEmpty || !this.state.isRealReasonSelected}
+            disabled={report.message.length === 0 || !this.state.isRealReasonSelected}
             text={getStringTableValue(StringIDMainMenuReportPlayerReportPlayer, this.props.stringTable)}
             onClick={this.onReportClick.bind(this)}
           ></Button>
@@ -155,35 +151,62 @@ class AReportPlayer extends React.Component<Props, State> {
   private onCloseClicked() {
     this.props.dispatch(clearPlayerToReport());
     this.props.dispatch(hideOverlay(Overlay.ReportPlayer));
-    this.setState({ isDropdownOpen: false, isMessageEmpty: true, isRealReasonSelected: false });
+    this.setState({ isDropdownOpen: false, isRealReasonSelected: false });
   }
 
   private onReportClick() {
-    const email: string = this.emailInputRef.current?.value ?? null;
-    const message: string = this.messageInputRef.current?.value ?? '';
-    if (email) {
-      ReportAPI.Report(webConf, this.state.selectedReason, this.props.playerToReport.accountID, message, email);
+    const report = this.getReport();
+    if (report.email) {
+      ReportAPI.Report(webConf, report.reason, this.props.playerToReport.accountID, report.message, report.email);
     } else {
-      ReportAPI.Report(webConf, this.state.selectedReason, this.props.playerToReport.accountID, message);
+      ReportAPI.Report(webConf, report.reason, this.props.playerToReport.accountID, report.message);
     }
     this.props.dispatch(clearPlayerToReport());
     this.props.dispatch(hideOverlay(Overlay.ReportPlayer));
   }
 
   private onDropdownItemClicked(reason: string) {
-    this.setState({ selectedReason: reason, isRealReasonSelected: true, isDropdownOpen: false });
+    this.setState({ isRealReasonSelected: true, isDropdownOpen: false });
+    this.updateReport({ reason });
+  }
+
+  private onMessageChange(e: React.ChangeEvent<HTMLTextAreaElement>): void {
+    this.updateReport({ message: e.target.value });
+  }
+  private onEmailChange(e: React.ChangeEvent<HTMLTextAreaElement>): void {
+    this.updateReport({ email: e.target.value });
   }
 
   private toggleDropdown() {
     this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
   }
 
-  private isMessageBoxEmpty() {
-    if (this.messageInputRef.current?.value.length > 0) {
-      this.setState({ isMessageEmpty: false });
-    } else {
-      this.setState({ isMessageEmpty: true });
+  private updateReport(report: Partial<VoiceChatReport>) {
+    const { accountID } = this.props.playerToReport;
+    this.props.dispatch(
+      updateReport({
+        accountID,
+        report: {
+          ...this.getReport(),
+          ...report
+        }
+      })
+    );
+  }
+
+  private getReport(): VoiceChatReport {
+    const report = {
+      reason: getStringTableValue(StringIDMainMenuReportPlayerDefaultReason, this.props.stringTable),
+      message: '',
+      email: ''
+    };
+    if (this.props.report) {
+      return {
+        ...report,
+        ...this.props.report
+      };
     }
+    return report;
   }
 
   private getReasons(): string[] {
@@ -199,12 +222,15 @@ class AReportPlayer extends React.Component<Props, State> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { characterClassDefs, characterRaceDefs } = state.game;
+  const { playerToReport } = state.voiceChat;
+  const report = state.voiceChat.reports[playerToReport?.accountID];
   return {
     ...ownProps,
     stringTable: state.stringTable.stringTable,
-    playerToReport: state.voiceChat.playerToReport,
+    playerToReport,
     raceDefs: characterRaceDefs,
-    classDefs: characterClassDefs
+    classDefs: characterClassDefs,
+    report
   };
 }
 

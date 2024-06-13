@@ -228,7 +228,6 @@ export interface ContextState {
   servers: { [serverName: string]: PatcherServer };
   selectedCharacter: SimpleCharacter;
   selectedServer: PatcherServer;
-  patcherAlerts: primary.PatcherAlert[];
 
   onUpdateState: (phase: ContentPhase, state: Partial<ContextState>) => void;
   updateChannels: () => void;
@@ -239,7 +238,6 @@ function noOp() {}
 export const defaultControllerContextState: ContextState = {
   characters: {},
   servers: {},
-  patcherAlerts: [],
   selectedCharacter: null,
   selectedServer: null,
 
@@ -456,13 +454,15 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
       const server = state.selectedServer;
       if (phase != ContentPhase.Camelot) {
         state.selectedCharacter = null;
-      } else if (prevState?.selectedServer != server) { // only record last server in CU mode
+      } else if (prevState?.selectedServer != server) {
+        // only record last server in CU mode
         localStorage.setItem(LastSelectedServerName, server.name);
         if (server) {
           if (state.selectedCharacter) {
             localStorage.setItem(`${server.name}-${LastSelectedCharacterId}`, state.selectedCharacter.id);
           } else {
-            state.selectedCharacter = this.state.characters[localStorage.getItem(`${server.name}-${LastSelectedCharacterId}`)];
+            state.selectedCharacter =
+              this.state.characters[localStorage.getItem(`${server.name}-${LastSelectedCharacterId}`)];
           }
         }
       } else if (server && prevState?.selectedCharacter != state.selectedCharacter) {

@@ -12,12 +12,15 @@ import { GameOption, OptionCategory, SelectValue } from '@csegames/library/dist/
 import { game } from '@csegames/library/dist/_baseGame';
 import { GameOptionInput } from './GameOptionInput';
 import Fuse from 'fuse.js/dist/fuse';
+import { updateAdvanceGameOption } from '../../redux/gameSettingsSlice';
+import { cloneDeep } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 
 interface ReactProps {
   category: OptionCategory;
   getValue: (option: GameOption) => number | boolean | SelectValue;
   setValue: (option: GameOption, value: number | boolean | SelectValue) => void;
   searchValue: string;
+  isAdvance?: boolean;
 }
 
 interface InjectedProps {
@@ -36,6 +39,18 @@ class AGameOptionInputsList extends React.Component<Props> {
       <>
         {this.getOptions().map((option) => {
           const setValue = (value: number | boolean | SelectValue) => {
+            if (this.props.isAdvance) {
+              // Advance options should be applied immediately.
+              const advanceOption = cloneDeep(option);
+              advanceOption.value = value;
+              const originalOption = cloneDeep(option);
+              this.props.dispatch(updateAdvanceGameOption([advanceOption, originalOption]));
+              game.setOptionsAsync([advanceOption]).then((result) => {
+                if (!result.success) {
+                  console.warn('SetOptionsAsync failed to apply all requested changes.', result);
+                }
+              });
+            }
             this.props.setValue(option, value);
           };
           return (

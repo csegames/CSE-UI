@@ -24,7 +24,7 @@ const Role = 'CreditsScreen-Role';
 const HideButtonPosition = 'CreditsScreen-HideButtonPosition';
 const Thanker = 'CreditsScreen-Thanker';
 const SingleLineItem = 'CreditsScreen-SingleLineItem';
-const CreditsTextDelayed = 'CreditsScreen-CreditsTextDelayed';
+const Spacer = 'CreditsScreen-Spacer';
 
 const Rune = 'CreditsScreen-Rune';
 
@@ -51,7 +51,6 @@ interface CreditPerson {
 
 const people: CreditPerson[] = [
   { name: 'Alex Arnot', role: 'Co-Lead Designer' },
-  { name: 'Andrew Beck', role: 'Internal Systems Administrator' },
   { name: 'Andrew Davies', role: 'QA Tester' },
   { name: 'Anna Luu', role: 'Director of HR' },
   { name: 'Anthony Sermania', role: 'Engineer' },
@@ -64,7 +63,7 @@ const people: CreditPerson[] = [
   { name: 'Colin Sipherd', role: 'Senior Networking Engineer' },
   { name: 'David Szilagyi', role: 'Concept Artist' },
   { name: 'Derek Glissman-Thomas', role: 'Level Designer' },
-  { name: 'Drew Beck', role: 'IT Engineer' },
+  { name: 'Drew Beck', role: 'Internal Systems Administrator' },
   { name: 'Eben Schumacher', role: 'Concept Artist' },
   { name: 'Elizabeth Lowry', role: 'Tools Engineer' },
   { name: 'Evan Norton', role: 'Junior UI Engineer' },
@@ -227,14 +226,11 @@ const markThanks: string[] = [
   'And, last but certainly not least, an enormous thank you to all of our amazing people (and those that',
   'supported them) who, because of their hard work, dedication, and effort, made Unchained',
   'Entertainment possible.  Whether they are still with Unchained or not, I thank them all for their',
-  'contributions and I wish them nothing but the best now and in the future!!!',
+  'contributions and I wish them nothing but the best now and in the future!!!'
 ];
 
 class ACreditsScreen extends React.Component<Props> {
   public render() {
-    // credits are split into a delayed and non-delayed block
-    // this is because putting them in one giant list causes display issues at high resolutions where
-    // some of the elements stretch vertically
     return (
       <div className={Container}>
         <div className={HideButtonPosition}>
@@ -254,13 +250,13 @@ class ACreditsScreen extends React.Component<Props> {
           <div className={CreditsText}>
             <div className={SubTitle}>{getStringTableValue(StringIDCreditsTeamTitle, this.props.stringTable)}</div>
             {this.getTeamMembers()}
+            <div className={Spacer} />
             <div className={SubTitle}>{getStringTableValue(StringIDCreditsLeftTitle, this.props.stringTable)}</div>
-            {this.getLeftMembers()}            
-          </div>
-
-          <div className={CreditsTextDelayed}>
+            {this.getLeftMembers()}
+            <div className={Spacer} />
             <div className={SubTitle}>{getStringTableValue(StringIDCreditsTestersTitle, this.props.stringTable)}</div>
             {this.getTesters()}
+            <div className={Spacer} />
             <div className={SubTitle}>
               {getStringTableValue(StringIDCreditsSpecialThanksTitle, this.props.stringTable)}
             </div>
@@ -327,10 +323,10 @@ class ACreditsScreen extends React.Component<Props> {
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((peopleLeft) => {
         return (
-          <div className={Item}>
+          <span className={Item}>
             {peopleLeft.name}
-            <div className={Role}>{peopleLeft.role}</div>
-          </div>
+            <span className={Role}>{peopleLeft.role}</span>
+          </span>
         );
       });
   }
@@ -340,10 +336,10 @@ class ACreditsScreen extends React.Component<Props> {
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((person) => {
         return (
-          <div className={Item}>
+          <span className={Item}>
             {person.name}
-            <div className={Role}>{person.role}</div>
-          </div>
+            <span className={Role}>{person.role}</span>
+          </span>
         );
       });
   }

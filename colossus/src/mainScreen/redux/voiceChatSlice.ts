@@ -75,9 +75,22 @@ export function getVoiceChatStyle(
 // but we want to leave the door open to having voice chat participants that do not have
 // entities associated with this.  This means that this name might not match up with an entity long term.
 // or maybe we'll come up with a different thing to identify these players
+export interface VoiceChatReport {
+  reason: string;
+  message: string;
+  email: string;
+}
+
+interface VoiceChatReportUpdate {
+  accountID: string;
+  report: VoiceChatReport;
+}
+
 export interface VoiceChatState {
   members: Dictionary<VoiceChatMemberSettings>;
   playerToReport: PlayerEntityStateModel;
+  reports: Dictionary<VoiceChatReport>;
+  mutedAll: boolean;
 }
 
 interface VoiceChatMemberUpdate {
@@ -87,7 +100,9 @@ interface VoiceChatMemberUpdate {
 
 const defaultVoiceChatState: VoiceChatState = {
   members: {},
-  playerToReport: null
+  playerToReport: null,
+  reports: {},
+  mutedAll: false
 };
 
 export const voiceChatSlice = createSlice({
@@ -109,6 +124,12 @@ export const voiceChatSlice = createSlice({
     },
     clearPlayerToReport: (state: VoiceChatState) => {
       state.playerToReport = null;
+    },
+    updateReport(state: VoiceChatState, action: PayloadAction<VoiceChatReportUpdate>) {
+      state.reports[action.payload.accountID] = action.payload.report;
+    },
+    updateMutedAll: (state: VoiceChatState, action: PayloadAction<boolean>) => {
+      state.mutedAll = action.payload;
     }
   }
 });
@@ -118,5 +139,7 @@ export const {
   removeVoiceChatMember,
   clearVoiceChatMembers,
   updatePlayerToReport,
-  clearPlayerToReport
+  clearPlayerToReport,
+  updateReport,
+  updateMutedAll
 } = voiceChatSlice.actions;

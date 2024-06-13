@@ -224,23 +224,23 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
       playSound(Sound.SelectChange);
     }
     this.setState({ isOpen: true });
-  };
+  }
 
   private close(instant?: boolean) {
     if (this.state.isOpen) {
       if (instant === true) {
         this.setState({ isOpen: false, instant: true });
-        setTimeout(() => this.setState({ instant: false }), 50);
+        window.setTimeout(() => this.setState({ instant: false }), 50);
       } else {
-        this.closeTimeout = setTimeout(() => this.setState({ isOpen: false }), 50);
+        this.closeTimeout = window.setTimeout(() => this.setState({ isOpen: false }), 50);
       }
     }
-  };
+  }
 
   private onSelectServerType(serverType: ServerType) {
     this.props.onSelectServerType(serverType);
     this.close(true);
-  };
+  }
 
   private getServerTypes() {
     const serverTypes: ServerType[] = [];
@@ -258,7 +258,7 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
     }
 
     return serverTypes;
-  };
+  }
 
   private updateAnimation() {
     this.setState(
@@ -271,12 +271,12 @@ class GameSelect extends React.Component<GameSelectProps, GameSelectState> {
         });
       }
     );
-  };
+  }
 
   private handleMouseOver() {
     this.open();
     this.updateAnimation();
-  };
+  }
 }
 
 export default GameSelect;

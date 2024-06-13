@@ -1,12 +1,12 @@
 {
   "name": "@csegames/library",
   "version": "0.2.7",
-  "description": "CSE UI Client Library",
+  "description": "UCE UI Client Library",
   "license": "MPL-2.0",
   "main": "dist/index.js",
   "typings": "index.d.ts",
   "private": false,
-  "author": "City State Entertainment, LLC <support@citystateentertainment.com>",
+  "author": "Unchained Entertainment, LLC <support@unchained-entertainment.com>",
   "contributors": [
     "JB (codecorsair) <jb@codecorsair.com>",
     "Mehuge <mehuge@sorcerer.co.uk>",
@@ -29,6 +29,7 @@
     "prebuild": "rimraf dist",
     "build": "tsc",
     "postbuild": "cd src && copyfiles _baseGame/chat/chat_proto.* ../dist",
+    "prettier": "prettier . --write",
     "gen:chat": "cd src/_baseGame/chat && pbjs -t static-module chat.proto --wrap es6 --keep-case -o chat_proto.js && pbts -o chat_proto.d.ts chat_proto.js",
     "gen:cu": "npm run gen:cu-gql && npm run gen:cu-rest",
     "gen:cu-gql": "download https://hatcheryapi.camelotunchained.com/v1/api/schema > ./src/camelotunchained/graphql/schema.json && gql-gen --schema src/camelotunchained/graphql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/camelotunchained/graphql/schema.ts",
@@ -75,7 +76,7 @@
     "graphql-code-generator": "^0.10.7",
     "graphql-codegen-typescript-no-pascal-template": "^0.10.10",
     "handlebars": "4.0.11",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.8",
     "rimraf": "^2.6.1",
     "typescript": "^4.8.4"
   }

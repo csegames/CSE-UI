@@ -6,8 +6,7 @@
  */
 
 export enum LifeState {
-    Alive = 0,
-    Downed = 1,
-    Dead = 2,
+  Alive = 0,
+  Downed = 1,
+  Dead = 2
 }
-  

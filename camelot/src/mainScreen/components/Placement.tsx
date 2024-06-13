@@ -8,12 +8,7 @@ import { game } from '@csegames/library/dist/_baseGame';
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {
-  HUDHorizontalAnchor,
-  HUDLayer,
-  HUDVerticalAnchor,
-  HUDWidgetRegistration
-} from '../redux/hudSlice';
+import { HUDHorizontalAnchor, HUDLayer, HUDVerticalAnchor, HUDWidgetRegistration } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
 import { Menu } from './menu/Menu';
 import { FooterButtonData } from './menu/menuData';

@@ -67,6 +67,7 @@ export const gameDefsQuery = gql`
         iconClass
         id
         name
+        numericID
       }
 
       items {
@@ -91,10 +92,7 @@ export const gameDefsQuery = gql`
         description
         equipRequirements
         gearSlotSets {
-          gearSlots {
-            gearSlotType
-            id
-          }
+          gearSlots
         }
         iconUrl
         id
@@ -146,6 +144,7 @@ export const gameDefsQuery = gql`
         startingAttributePoints
         traitsMaxPoints
         traitsMinPoints
+        woundStatusTag
       }
 
       stats {

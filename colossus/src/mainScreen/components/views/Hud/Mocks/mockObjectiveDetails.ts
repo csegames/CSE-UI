@@ -314,9 +314,7 @@ function makeObjectiveDetailMock(
 
   return {
     name: `Multiple Objective Details${nameSuffix}`,
-    expectedOutcomeDescription: `Shows multiple ${
-      ObjectiveDetailState[state]
-    } objective details of all types${descSuffix}`,
+    expectedOutcomeDescription: `Shows multiple ${ObjectiveDetailState[state]} objective details of all types${descSuffix}`,
     function: () => {
       const allObjectives = objectives;
       for (let i = 0; i < allObjectives.length; i++) {

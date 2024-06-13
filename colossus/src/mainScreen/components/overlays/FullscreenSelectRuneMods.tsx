@@ -30,16 +30,17 @@ import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEv
 import { game } from '@csegames/library/dist/_baseGame';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { startProfileRefresh } from '../../redux/profileSlice';
-import { webConf } from '../../dataSources/networkConfiguration';
 import { QuestsByType } from '../../redux/questSlice';
 import {
   StringIDGeneralBack,
+  StringIDGeneralXPProgress,
   getStringTableValue,
   getTokenizedStringTableValue
 } from '../../helpers/stringTableHelpers';
 import TooltipSource from '../../../shared/components/TooltipSource';
 import { ResourceBar } from '../shared/ResourceBar';
 import { StarBadge } from '../../../shared/components/StarBadge';
+import { webConf } from '../../dataSources/networkConfiguration';
 
 const RuneModsBGImage = 'StartScreen-RuneModsBGImage';
 const FullscreenContainer = 'ChampionProfile-SelectRuneMods-Container';
@@ -51,6 +52,7 @@ const PageTitle = 'ChampionProfile-SelectRuneMods-PageTitle';
 const ChampionLevelContainer = 'ChampionProfile-SelectRuneMods-ChampionLevelContainer';
 const ChampionLevelBackground = 'ChampionProfile-SelectRuneMods-ChampionLevelBackground';
 const ProgressionLevel = 'ChampionProfile-SelectRuneMods-ProgressionLevel';
+const ProgressBarTooltip = 'ChampionProfile-SelectRuneMods-ProgressBarTooltip';
 const ProgressBar = 'ChampionProfile-SelectRuneMods-ProgressBar';
 
 const RuneModsRow = 'ChampionProfile-SelectRuneMods-Row';
@@ -256,13 +258,24 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
     }
 
     return (
-      <ResourceBar
-        type={'blue'}
-        current={questProgress.currentQuestProgress}
-        max={questDef.links[questProgress.currentQuestIndex].progress}
-        containerClasses={ProgressBar}
-        hideText={true}
-      />
+      <TooltipSource
+        className={ProgressBarTooltip}
+        tooltipParams={{
+          id: 'FullscreenSelectRuneModsResourceBar',
+          content: getTokenizedStringTableValue(StringIDGeneralXPProgress, this.props.stringTable, {
+            CURRENT_XP: String(questProgress.currentQuestProgress),
+            MAX_XP: String(questDef.links[questProgress.currentQuestIndex].progress)
+          })
+        }}
+      >
+        <ResourceBar
+          type={'blue'}
+          current={questProgress.currentQuestProgress}
+          max={questDef.links[questProgress.currentQuestIndex].progress}
+          containerClasses={ProgressBar}
+          hideText={true}
+        />
+      </TooltipSource>
     );
   }
 
@@ -334,6 +347,7 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
           id: `${runeMod.id}`,
           content: runeMod ? this.renderRuneModTooltip.bind(this, runeMod, unlockLevel, locked) : null
         }}
+        onMouseEnter={this.onMouseEnterRune.bind(this)}
       >
         <div
           className={`${RuneModsButton} ${locked}`}
@@ -375,6 +389,10 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
     );
   }
 
+  private onMouseEnterRune(): void {
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
+  }
+
   private compareRuneMods(a: PerkDefGQL, b: PerkDefGQL) {
     const aLevel = this.getRuneModUnlockLevel(a.id);
     const bLevel = this.getRuneModUnlockLevel(b.id);
@@ -389,7 +407,7 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
   }
 
   private async onRuneModClick(champion: string, runeMod: PerkDefGQL) {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+    game.playGameSound(SoundEvents.PLAY_UI_RUNEMENU_RUNESELECTION_CLICK);
 
     // Make a copy of the current state so that it is mutable.
     let newSelectedRuneMods: PerkDefGQL[] = [];
@@ -414,6 +432,8 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
   }
 
   private onBackClick(): void {
+    game.playGameSound(SoundEvents.PLAY_UI_RUNEMENUPAGE_BACK_CLICK);
+
     for (let k in this.props.perksByID) {
       const perk = this.props.perksByID[k];
       if (

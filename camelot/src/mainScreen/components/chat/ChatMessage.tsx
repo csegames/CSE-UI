@@ -13,11 +13,12 @@ import { AbilityTrackFlags } from '@csegames/library/dist/_baseGame/types/Abilit
 import { ActiveEffectAction } from '@csegames/library/dist/_baseGame/types/ActiveEffectAction';
 import { ChatMessageData } from '../../redux/chatSlice';
 import { Stanza } from 'node-xmpp-client';
-import { DamageTypeDefGQL } from '@csegames/library/dist/camelotunchained/graphql/schema';
+import { DamageTypeDefGQL, EntityResourceDefinitionGQL } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { showToaster } from '../../redux/toastersSlice';
 
 // Images are imported so that WebPack can find them (and give us errors if they are missing).
-import StaffIconURL from '../../../images/chat/chat-icon-cse.png';
+import StaffIconURL from '../../../images/chat/chat-icon-uce.png';
+import { EntityResourceIDs } from '@csegames/library/dist/camelotunchained/game/types/EntityResourceIDs';
 
 const Root = 'HUD-ChatMessage-Root';
 const Copy = 'HUD-ChatMessage-Copy';
@@ -32,6 +33,7 @@ interface ReactProps {
 
 interface InjectedProps {
   damageTypes: Dictionary<DamageTypeDefGQL>;
+  entityResourcesByNumericID: Dictionary<EntityResourceDefinitionGQL>;
   dispatch?: Dispatch;
 }
 
@@ -102,9 +104,7 @@ class AChat extends React.Component<Props> {
     return (
       <span>
         {this.renderCombatEventHeader()}
-        {this.props.message.combatEvent.damages && this.renderCombatEventDamages()}
         {this.props.message.combatEvent.disruption && this.renderCombatEventDisruption()}
-        {this.props.message.combatEvent.heals && this.renderCombatEventHeals()}
         {this.props.message.combatEvent.resources && this.renderCombatEventResources()}
         {this.props.message.combatEvent.impulse && this.renderCombatEventImpulse()}
         {this.props.message.combatEvent.activeEffects && this.renderCombatActiveEffects()}
@@ -125,19 +125,6 @@ class AChat extends React.Component<Props> {
     );
   }
 
-  renderCombatEventDamages(): JSX.Element {
-    return (
-      <span>
-        {this.props.message.combatEvent.damages.map((damage): string => {
-          return `${damage.received.toFixed(0)}(${Math.abs(damage.sent - damage.received).toFixed(0)}) ${
-            this.props.damageTypes[damage.type]?.name ?? ''
-          } `;
-        })}
-        {'| '}
-      </span>
-    );
-  }
-
   renderCombatEventDisruption(): JSX.Element {
     return (
       <span>
@@ -151,25 +138,25 @@ class AChat extends React.Component<Props> {
     );
   }
 
-  renderCombatEventHeals(): JSX.Element {
-    return (
-      <span>
-        {this.props.message.combatEvent.heals.map(
-          (heal): string => `HEALED ${heal.received.toFixed(0)}(${Math.abs(heal.sent - heal.received).toFixed(0)}) | `
-        )}
-      </span>
-    );
-  }
-
   renderCombatEventResources(): JSX.Element {
     return (
       <span>
-        {this.props.message.combatEvent.resources.map(
-          (resource): string =>
-            `${resource.received.toFixed(0)}(${Math.abs(resource.sent - resource.received).toFixed(0)}) ${
-              resource.type
-            } | `
-        )}
+        {this.props.message.combatEvent.resources.map((resource): string => {
+          const resourceDef = this.props.entityResourcesByNumericID[resource.resourceNumericID];
+          if (resourceDef) {
+            if (resourceDef.id == EntityResourceIDs.Health) {
+              if (resource.amount > 0) {
+                return `HEALED ${resource.amount.toFixed(0)} | `;
+              } else {
+                return `${resource.amount.toFixed(0)} ${
+                  this.props.damageTypes[resource.damageTypeNumericID]?.name ?? ''
+                } `;
+              }
+            } else {
+              return `${resource.amount.toFixed(0)} ${resourceDef.name} | `;
+            }
+          }
+        })}
       </span>
     );
   }
@@ -249,6 +236,7 @@ class AChat extends React.Component<Props> {
 const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
   return {
     damageTypes: state.gameDefs.damageTypes,
+    entityResourcesByNumericID: state.gameDefs.entityResourcesByNumericID,
     ...ownProps
   };
 };

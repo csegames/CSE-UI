@@ -149,7 +149,7 @@ export class APlayButton extends React.Component<Props> {
       return;
     }
 
-    this.props.dispatch(enterQueue({ queueID: this.props.queueID, userTag: this.props.buttonID}));
+    this.props.dispatch(enterQueue({ queueID: this.props.queueID, userTag: this.props.buttonID }));
   }
 }
 

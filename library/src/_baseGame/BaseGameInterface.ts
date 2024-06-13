@@ -42,7 +42,7 @@ export interface BaseGameModel {
   patchResourceChannel: number;
 
   /**
-   * The current access token used to identify the user in requests to CSE services.
+   * The current access token used to identify the user in requests to UCE services.
    */
   accessToken: string;
 
@@ -58,25 +58,10 @@ export interface BaseGameModel {
   serverHost: string;
 
   /**
-   * Identifying number for the server shard this client is currently logged in to.
-   */
-  shardID: number;
-
-  /**
    * Character ID for whatever player you are logged in as
    */
   characterID: string;
-
-  /**
-   * Matchmaking game mode. 1:1 with scenario def atm
-   */
-  matchmakingGameMode: string;
-
-  /**
-   * Match overrides, usable by admins
-   */
-  matchOverrides: ArrayMap<NamedString>;
-
+  
   /**
    * Unique network Identifier (I think??)
    * TODO: Should we remove this?
@@ -132,13 +117,6 @@ export interface BaseGameModel {
    * Quit the game!
    */
   quit: () => void;
-
-  /**
-   * Instruct vivox to switch to the named channel type
-   * @param {string} channelType, legal values are "none" and "match" (only when a match has been found)
-   * @return {Success | Failure}
-   */
-  setVoiceChannel: (channelType: string) => void;
 
   /**
    * Triggers a client Key action using the id of that KeyBind. Essentially, acts as if the client keybind was pressed.

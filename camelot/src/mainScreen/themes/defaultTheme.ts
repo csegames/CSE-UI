@@ -8,8 +8,8 @@ import { Theme } from './themeConstants';
 
 export const defaultTheme: Theme = {
   name: 'default',
-  description: 'The default CSE theme.',
-  author: 'City State Entertainment',
+  description: 'The default UCE theme.',
+  author: 'Unchained Entertainment, LLC',
 
   chat: {
     chatline: {

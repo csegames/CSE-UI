@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { StoreNavMenu } from './StoreNavMenu';
 import { ConfirmPurchase } from '../../../rightPanel/ConfirmPurchase';
-import { SkinItem } from './SkinItem';
+import { StoreItemSingle } from './StoreItemSingle';
 import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
 import { StoreRoute, updateStoreNewPurchases } from '../../../../redux/storeSlice';
@@ -19,9 +19,7 @@ import {
   RMTPurchaseDefGQL,
   StringTableEntryDef
 } from '@csegames/library/dist/hordetest/graphql/schema';
-import { RealMoneyItem } from './RealMoneyItem';
-import { ConfirmRealMoneyPurchase } from '../../../rightPanel/ConfirmRealMoneyPurchase';
-import { BundleItem } from './BundleItem';
+import { StoreItemBundle } from './StoreItemBundle';
 import { arePurchaseLocksMatched, isFreeReward, isPurchaseable } from '../../../../helpers/storeHelpers';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { Dispatch } from 'redux';
@@ -44,7 +42,7 @@ const EmptyPageMessage = 'StartScreen-Store-EmptyPageMessage ';
 const ConsoleSelectSpacing = 'StartScreen-Store-ConsoleSelectSpacing';
 
 const StringIDStoreTabRewards = 'StoreTabRewards';
-const StringIDStoreTabFeatured = 'StoreTabFeatured';
+const StringIDStoreTabBundles = 'StoreTabBundles';
 const StringIDStoreTabWeapons = 'StoreTabWeapons';
 const StringIDStoreTabSkins = 'StoreTabSkins';
 const StringIDStoreTabEmotes = 'StoreTabEmotes';
@@ -111,7 +109,10 @@ class AStore extends React.Component<Props> {
   }
 
   private onSkinClick(purchase: PurchaseDefGQL) {
-    this.props.dispatch(showRightPanel(<ConfirmPurchase purchase={purchase} />));
+    // We show owned purchases, so don't let them re-purchase stuff!
+    if (isPurchaseable(purchase, this.props.perksByID, this.props.ownedPerks)) {
+      this.props.dispatch(showRightPanel(<ConfirmPurchase purchase={purchase} />));
+    }
 
     // When we click into an item, we can mark it as 'seen', which clears any badging.
     const newNewPurchases = { ...this.props.newPurchases };
@@ -123,10 +124,6 @@ class AStore extends React.Component<Props> {
     storeLocalStore.setSeenPurchases(seenPurchases);
   }
 
-  private onRealMoneyClick(purchase: RMTPurchaseDefGQL) {
-    this.props.dispatch(showRightPanel(<ConfirmRealMoneyPurchase purchase={purchase} />));
-  }
-
   private renderRoute() {
     switch (this.props.currentRoute) {
       case StoreRoute.Rewards: {
@@ -136,58 +133,54 @@ class AStore extends React.Component<Props> {
           getStringTableValue(StringIDStoreTabRewards, this.props.stringTable)
         );
       }
-      case StoreRoute.Featured: {
-        // For now, "featured" will just mean Bundles.
+      case StoreRoute.Bundles: {
         return this.renderList(
           this.props.currentRoute,
-          this.getPurchaseableBundles(),
-          getStringTableValue(StringIDStoreTabFeatured, this.props.stringTable)
+          this.getDisplayableBundles(),
+          getStringTableValue(StringIDStoreTabBundles, this.props.stringTable)
         );
       }
       case StoreRoute.Weapons: {
         return this.renderList(
           this.props.currentRoute,
-          this.getPurchaseableItemsOfType(PerkType.Weapon),
+          this.getDisplayableItemsOfType(PerkType.Weapon),
           getStringTableValue(StringIDStoreTabWeapons, this.props.stringTable)
         );
       }
       case StoreRoute.Skins: {
         return this.renderList(
           this.props.currentRoute,
-          this.getPurchaseableItemsOfType(PerkType.Costume),
+          this.getDisplayableItemsOfType(PerkType.Costume),
           getStringTableValue(StringIDStoreTabSkins, this.props.stringTable)
         );
       }
       case StoreRoute.Emotes: {
         return this.renderList(
           this.props.currentRoute,
-          this.getPurchaseableItemsOfType(PerkType.Emote),
+          this.getDisplayableItemsOfType(PerkType.Emote),
           getStringTableValue(StringIDStoreTabEmotes, this.props.stringTable)
         );
       }
       case StoreRoute.Portraits: {
         return this.renderList(
           this.props.currentRoute,
-          this.getPurchaseableItemsOfType(PerkType.Portrait),
+          this.getDisplayableItemsOfType(PerkType.Portrait),
           getStringTableValue(StringIDStoreTabPortraits, this.props.stringTable)
         );
       }
       case StoreRoute.SprintFX: {
         return this.renderList(
           this.props.currentRoute,
-          this.getPurchaseableItemsOfType(PerkType.SprintFX),
+          this.getDisplayableItemsOfType(PerkType.SprintFX),
           getStringTableValue(StringIDStoreTabSprintFX, this.props.stringTable)
         );
       }
       case StoreRoute.QuestXP: {
         return this.renderList(
           this.props.currentRoute,
-          this.getPurchaseableItemsOfType(PerkType.QuestXP),
+          this.getDisplayableItemsOfType(PerkType.QuestXP),
           getStringTableValue(StringIDStoreTabQuestXP, this.props.stringTable)
         );
-      }
-      case StoreRoute.Currency: {
-        return this.renderRealMoneyList();
       }
     }
   }
@@ -200,28 +193,25 @@ class AStore extends React.Component<Props> {
     return perk.champion.id === this.props.championIDFilter;
   }
 
-  private getPurchaseableItemsOfType(type: PerkType): PurchaseDefGQL[] {
-    let items = this.props.purchases.filter((p) => {
-      // Rewards only go in the Rewards tab.
-      if (isFreeReward(p)) {
-        return false;
-      }
+  private getDisplayableItemsOfType(type: PerkType): PurchaseDefGQL[] {
+    let items =
+      this.props.purchases.filter((p) => {
+        // Is it a single item? Exclude bundles.
+        if (p.perks.length !== 1) {
+          return false;
+        }
 
-      // Is it a single item? Exclude bundles.
-      if (p.perks.length !== 1) {
-        return false;
-      }
+        // If the user CAN'T make this purchase, don't bother showing it to them.
+        if (!arePurchaseLocksMatched(p.locks, this.props.ownedPerks)) {
+          return false;
+        }
 
-      const perk = this.props.perksByID[p.perks[0].perkID];
-      return (
-        // Is it the right perkType?
-        perk.perkType === type && this.perkMatchesChampionFilter(perk)
-      );
-    });
-    // Do this second filter separately because it can be very costly.
-    items = items.filter((p) => {
-      return isPurchaseable(p, this.props.perksByID, this.props.ownedPerks);
-    });
+        const perk = this.props.perksByID[p.perks[0].perkID];
+        return (
+          // Is it the right perkType?
+          perk.perkType === type && this.perkMatchesChampionFilter(perk)
+        );
+      }) ?? [];
 
     items.sort((a, b) => {
       if (a.sortOrder != b.sortOrder) {
@@ -264,57 +254,31 @@ class AStore extends React.Component<Props> {
     return items || [];
   }
 
-  private getPurchaseableBundles(): PurchaseDefGQL[] {
-    let items = this.props.purchases.filter((p) => {
-      // Rewards only go in the Rewards tab.
-      if (isFreeReward(p)) {
-        return false;
-      }
+  private getDisplayableBundles(): PurchaseDefGQL[] {
+    let items =
+      this.props.purchases.filter((p) => {
+        // If the user CAN'T make this purchase, don't bother showing it to them.
+        if (!arePurchaseLocksMatched(p.locks, this.props.ownedPerks)) {
+          return false;
+        }
 
-      const matchesChampionFilter = p.perks.reduce<boolean>((isMatch, perk) => {
-        return isMatch || this.perkMatchesChampionFilter(this.props.perksByID[perk.perkID]);
-      }, false);
+        const matchesChampionFilter = p.perks.reduce<boolean>((isMatch, perk) => {
+          return isMatch || this.perkMatchesChampionFilter(this.props.perksByID[perk.perkID]);
+        }, false);
 
-      return (
-        // Any purchase that grants more than one item is a Bundle.
-        p.perks.length > 1 &&
-        // If any perk in the bundle matches the filter, we can show the bundle.
-        matchesChampionFilter
-      );
+        return (
+          // Any purchase that grants more than one item is a Bundle.
+          p.perks.length > 1 &&
+          // If any perk in the bundle matches the filter, we can show the bundle.
+          matchesChampionFilter
+        );
+      }) ?? [];
+
+    items.sort((a, b) => {
+      return a.id.localeCompare(b.id);
     });
-    // Do this second filter separately because it can be very costly.
-    items = items.filter((p) => {
-      return isPurchaseable(p, this.props.perksByID, this.props.ownedPerks);
-    });
 
-    items &&
-      items.sort((a, b) => {
-        return a.id.localeCompare(b.id);
-      });
-
-    return items || [];
-  }
-
-  private renderRealMoneyList(): JSX.Element {
-    // Find all valid purchases that cost RealMoney.
-    const rmt = this.props.rmtPurchases
-      .filter((purchase: RMTPurchaseDefGQL) => {
-        return arePurchaseLocksMatched(purchase.locks, this.props.ownedPerks);
-      })
-      .sort((a: RMTPurchaseDefGQL, b: RMTPurchaseDefGQL) => {
-        // Sorted from lowest Bux to highest Bux.
-        return a.perks[0].qty - b.perks[0].qty;
-      });
-
-    return (
-      <div className={ItemsAnimationContainer}>
-        <div className={ItemsContainer} key={StoreRoute.Currency.toString()}>
-          {rmt.map((storeItem) => {
-            return <RealMoneyItem purchase={storeItem} onClick={this.onRealMoneyClick.bind(this, storeItem)} />;
-          })}
-        </div>
-      </div>
-    );
+    return items;
   }
 
   private renderList(route: StoreRoute, purchases: PurchaseDefGQL[], tabName: string) {
@@ -334,9 +298,9 @@ class AStore extends React.Component<Props> {
         <div className={ItemsContainer} key={route.toString()}>
           {purchases.map((purchase) => {
             if (purchase.perks.length > 1) {
-              return <BundleItem purchase={purchase} onClick={this.onSkinClick.bind(this)} />;
+              return <StoreItemBundle purchase={purchase} onClick={this.onSkinClick.bind(this)} />;
             } else {
-              return <SkinItem purchase={purchase} onClick={this.onSkinClick.bind(this)} />;
+              return <StoreItemSingle purchase={purchase} onClick={this.onSkinClick.bind(this)} />;
             }
           })}
         </div>

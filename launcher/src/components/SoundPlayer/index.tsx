@@ -70,7 +70,7 @@ export class SoundPlayer extends React.Component<SoundProps, SoundState> {
   }
 
   private setStateAsync = (sparseState: any) => {
-    setTimeout(() => {
+    window.setTimeout(() => {
       this.setState(sparseState);
     }, 0);
   };
@@ -120,7 +120,7 @@ export class SoundPlayer extends React.Component<SoundProps, SoundState> {
     const fade = (from: number, to: number, increment: number, done?: () => void) => {
       if (increment > 0 ? from < to : from > to) {
         this.bgRef.volume = from;
-        setTimeout(() => fade(from + increment, to, increment, done), 100);
+        window.setTimeout(() => fade(from + increment, to, increment, done), 100);
       } else {
         this.bgRef.volume = to;
         if (done) {

@@ -11,7 +11,7 @@
   2.  run <code>dir /x</code> to print the legacy (no-space) name of the path
   3.  paste the friendly path into your <code>settings.txt</code> file
 - Open up a terminal and enter the following commands to grab and select the NPM version this repo uses:
-  - <code>npm install</code> **&lt;current version&gt;**
-  - <code> npm use</code> **&lt;current version&gt;**
+  - <code>nvm install</code> **&lt;current version&gt;**
+  - <code>nvm use</code> **&lt;current version&gt;**
 
 You can read more about the issue with NVM here. https://github.com/coreybutler/nvm-windows/issues/405.

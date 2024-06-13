@@ -12,20 +12,19 @@ import { Dispatch } from 'redux';
 import {
   ChampionCostumeInfo,
   ChampionInfo,
-  OvermindCharacterSummaryGQL,
+  OvermindCharacter,
   OvermindSummaryGQL,
   PerkDefGQL,
   PerkType,
   QuestDefGQL,
   QuestGQL,
-  QuestProgressGQL,
+  QuestProgress,
   QuestStatus,
   QuestType
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { QuestsByType } from '../../../redux/questSlice';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { showError } from '../../../redux/navigationSlice';
-import { webConf } from '../../../dataSources/networkConfiguration';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { findChampionQuestProgress, findChampionQuest } from '../../../helpers/characterHelpers';
 import {
@@ -42,6 +41,7 @@ import { addQuestAsClaimed } from '../../../redux/gameStatsSlice';
 import { createAlertsForCollectedQuestProgress } from '../../../helpers/perkUtils';
 import { AnimatedQuestBar } from './AnimatedQuestBar';
 import TooltipSource from '../../../../shared/components/TooltipSource';
+import { webConf } from '../../../dataSources/networkConfiguration';
 
 const Tab = 'GameStats-PlayerProgression-Tab';
 const Container = 'GameStats-PlayerProgression-Container';
@@ -126,7 +126,7 @@ class APlayerProgression extends React.Component<Props> {
     );
   }
 
-  private getChampion(characterSummary: OvermindCharacterSummaryGQL, champion: ChampionInfo): JSX.Element {
+  private getChampion(characterSummary: OvermindCharacter, champion: ChampionInfo): JSX.Element {
     if (characterSummary == null || champion == null) {
       return null;
     }
@@ -153,7 +153,7 @@ class APlayerProgression extends React.Component<Props> {
     );
   }
 
-  private getChampionProgressionBar(quest: QuestDefGQL, questProg: QuestProgressGQL, questGQL: QuestGQL): JSX.Element {
+  private getChampionProgressionBar(quest: QuestDefGQL, questProg: QuestProgress, questGQL: QuestGQL): JSX.Element {
     if (!quest || !questGQL) {
       return null;
     }
@@ -183,7 +183,7 @@ class APlayerProgression extends React.Component<Props> {
     );
   }
 
-  private getChampionExperienceList(quest: QuestDefGQL, questProg: QuestProgressGQL): JSX.Element {
+  private getChampionExperienceList(quest: QuestDefGQL, questProg: QuestProgress): JSX.Element {
     const progresses: JSX.Element[] = [];
     if (questProg) {
       let index = 0;
@@ -236,7 +236,7 @@ class APlayerProgression extends React.Component<Props> {
     );
   }
 
-  private getBPInfo(characterSummary: OvermindCharacterSummaryGQL): JSX.Element {
+  private getBPInfo(characterSummary: OvermindCharacter): JSX.Element {
     const bpMatchProg = characterSummary?.questProgress.find(
       (questprog) => this.props.questsByID[questprog.id].questType === QuestType.BattlePass
     );
@@ -261,7 +261,7 @@ class APlayerProgression extends React.Component<Props> {
     );
   }
 
-  private getCompletedQuestsLines(bpMatchProg: QuestProgressGQL): JSX.Element {
+  private getCompletedQuestsLines(bpMatchProg: QuestProgress): JSX.Element {
     const quests: JSX.Element[] = [];
     let totalXP: number = 0;
     let index: number = 0;
@@ -282,12 +282,16 @@ class APlayerProgression extends React.Component<Props> {
             {getStringTableValue(StringIDBattlePassMatchPoints, this.props.stringTable)}
           </span>
           <span className={`${ExperienceGainedAmount} BattlePass`}>
-            {getTokenizedStringTableValue(StringIDPlayerProgressionBattlePassProgressAmount, this.props.stringTable, tokens)}
+            {getTokenizedStringTableValue(
+              StringIDPlayerProgressionBattlePassProgressAmount,
+              this.props.stringTable,
+              tokens
+            )}
           </span>
         </div>
       );
     }
-    
+
     this.props.questsProgress.forEach((questprog) => {
       // If it is a daily quest, completed, and has rewards to claim.
       if (
@@ -336,16 +340,17 @@ class APlayerProgression extends React.Component<Props> {
           {getTokenizedStringTableValue(StringIDBattlePassQuestTitle, this.props.stringTable, tokens)}
         </span>
         <span className={`${ExperienceGainedAmount} BattlePass`}>
-          {getTokenizedStringTableValue(StringIDPlayerProgressionBattlePassProgressAmount, this.props.stringTable, tokens)}
+          {getTokenizedStringTableValue(
+            StringIDPlayerProgressionBattlePassProgressAmount,
+            this.props.stringTable,
+            tokens
+          )}
         </span>
       </div>
     );
   }
 
-  private getCompletedQuestPointTotal(
-    bpMatchProg: QuestProgressGQL,
-    characterSummary: OvermindCharacterSummaryGQL
-  ): number {
+  private getCompletedQuestPointTotal(bpMatchProg: QuestProgress, characterSummary: OvermindCharacter): number {
     // add in the BP progress from the match itself
     let total: number = bpMatchProg?.progressAdded ?? 0;
 
@@ -381,8 +386,8 @@ class APlayerProgression extends React.Component<Props> {
 
   private getBPLevelAndXP(
     bp: QuestDefGQL,
-    bpMatchProg: QuestProgressGQL,
-    characterSummary: OvermindCharacterSummaryGQL
+    bpMatchProg: QuestProgress,
+    characterSummary: OvermindCharacter
   ): [number, number] {
     let i = bpMatchProg.previousIndex;
     let curEXP = this.getCompletedQuestPointTotal(bpMatchProg, characterSummary) + bpMatchProg.previousProgress;
@@ -393,7 +398,7 @@ class APlayerProgression extends React.Component<Props> {
     return [Math.min(bp.links.length, i + 1), curEXP];
   }
 
-  private getRewards(quest: QuestDefGQL, questProg: QuestProgressGQL, questGQL: QuestGQL): JSX.Element {
+  private getRewards(quest: QuestDefGQL, questProg: QuestProgress, questGQL: QuestGQL): JSX.Element {
     if (!questProg || !questGQL || !quest) {
       return null;
     }

@@ -17,6 +17,8 @@ import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { cloneDeep } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+export const AUTOCONNECT_MATCH_PLACEHOLDER = 'autoconnect-match-placeholder';
+
 // HACK : the client is currently authoritative over this data -- once the
 // game server can update the status of the match it'll be possible to
 // move this to server control
@@ -75,8 +77,8 @@ export function mergeRequests(prev: MatchRequests | null, requested: MatchReques
 }
 
 function clearEnqueue(current?: QueueRequest, toClear?: QueueRequest): boolean {
-// only need 1 factor to match for it to be considered the same request
-return !current || (toClear && (current.queueID == toClear.queueID || current.userTag == toClear.userTag));
+  // only need 1 factor to match for it to be considered the same request
+  return !current || (toClear && (current.queueID == toClear.queueID || current.userTag == toClear.userTag));
 }
 
 function clearSelect(current?: SelectionRequest, toClear?: SelectionRequest): boolean {
@@ -207,8 +209,14 @@ export const matchSlice = createSlice({
       state.modes = action.payload;
     },
     setMatches: (state: MatchState, action: PayloadAction<[Match[], Match]>) => {
-      state.matches = action.payload[0];
-      state.currentRound = action.payload[1] ?? state.currentRound; // stomp debug session with match if necessary
+      const [matches, currentRound] = action.payload;
+      const roundID = currentRound?.roundID;
+      if (roundID !== state.currentRound?.roundID) {
+        if (roundID) console.log(`Entered match ${roundID}`);
+        else console.log('Exited match');
+      }
+      state.matches = matches;
+      state.currentRound = currentRound ?? state.currentRound; // stomp debug session with match if necessary
     },
     setMatchAccess: (state: MatchState, action: PayloadAction<MatchAccess>) => {
       state.access = action.payload;
@@ -216,7 +224,12 @@ export const matchSlice = createSlice({
     setMatchEnd: (state: MatchState, action: PayloadAction<MatchEndRequest>) => {
       if (!action.payload.matchID) return;
       var prev = state.matchEnds[action.payload.matchID];
-      if (prev === undefined || prev < action.payload.sequence) { // never go backward
+      if (
+        prev === undefined ||
+        prev < action.payload.sequence ||
+        action.payload.matchID == AUTOCONNECT_MATCH_PLACEHOLDER
+      ) {
+        // never go backward if the matchmaker is enabled
         state.matchEnds[action.payload.matchID] = action.payload.sequence;
       }
       if (action.payload.refresh) {

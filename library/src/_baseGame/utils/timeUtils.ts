@@ -13,11 +13,11 @@ export function getServerDate(serverTimeDeltaMS: number): Date {
 }
 
 export function convertServerTimeToLocalTime(serverTimeMS: number, serverTimeDeltaMS: number): number {
-  return serverTimeMS + serverTimeDeltaMS;
+  return serverTimeMS - serverTimeDeltaMS;
 }
 
 export function convertLocalTimeToServerTime(localTimeMS: number, serverTimeDeltaMS: number): number {
-  return localTimeMS - serverTimeDeltaMS;
+  return localTimeMS + serverTimeDeltaMS;
 }
 
 const zeroPad = (num: number, places: number) => String(num).padStart(places, '0');

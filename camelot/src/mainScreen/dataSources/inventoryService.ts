@@ -55,6 +55,7 @@ export class InventoryService extends ExternalDataSource {
         this.reduxState.inventory.items,
         this.reduxState.equippedItems.items,
         this.reduxState.gameDefs.myStats,
+        this.reduxState.gameDefs.gearSlots,
         this.reduxState.inventory.stackSplit,
         this.reduxState.inventory.inventoryPendingRefreshes,
         this.reduxState.equippedItems.equippedItemsPendingRefreshes,

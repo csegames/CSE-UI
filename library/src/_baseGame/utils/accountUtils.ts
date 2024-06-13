@@ -160,7 +160,7 @@ export function encodeID128(raw: Uint8Array): string | null {
 function readUint64(raw: Uint8Array, offset: number): BigInt.BigInteger {
   const data = new DataView(raw.buffer);
   const low = data.getUint32(offset, true);
-  const high = data.getUint32(offset+4, true);
+  const high = data.getUint32(offset + 4, true);
   return BigInt(low).add(BigInt(high).multiply(2 ** 32));
 }
 

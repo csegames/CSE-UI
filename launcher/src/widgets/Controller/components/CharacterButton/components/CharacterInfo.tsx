@@ -413,10 +413,10 @@ class CharacterInfo extends React.Component<CharacterInfoProps, CharacterInfoSta
   }
 
   public componentDidMount() {
-    this.initialTimeout = setTimeout(() => this.setState({ initial: false }), 1000);
+    this.initialTimeout = window.setTimeout(() => this.setState({ initial: false }), 1000);
 
     let loadingIntervalCount = 0;
-    this.loadingInterval = setInterval(() => {
+    this.loadingInterval = window.setInterval(() => {
       if (this.props.character) {
         this.setState({ isLoading: false });
         clearInterval(this.loadingInterval);

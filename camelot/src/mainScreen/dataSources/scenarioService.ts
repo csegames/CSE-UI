@@ -17,7 +17,7 @@ export class ScenarioService extends ExternalDataSource {
 
   protected async bind(): Promise<ListenerHandle[]> {
     // TODO: Convert the GraphQL query to a subscription in order to eliminate this setInterval
-    setInterval(() => {
+    window.setInterval(() => {
       this.dispatch(setShouldScenarioRefresh(true));
     }, 2000);
     return [];

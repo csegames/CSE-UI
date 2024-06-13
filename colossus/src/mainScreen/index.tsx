@@ -21,6 +21,7 @@ import { game } from '@csegames/library/dist/_baseGame';
 import LifecycleViews from './components/LifecycleViews';
 import TooltipPane from '../shared/components/TooltipPane';
 import { VoiceChatOverlay } from './components/loading/VoiceChatOverlay';
+import { WarningIcons } from './WarningIcons';
 
 initializeSentry();
 
@@ -29,9 +30,10 @@ ReactDom.render(
     <ReduxProvider store={store}>
       <SharedContextProviders store={store}>
         <LifecycleViews />
-        <LoadingScreen showLogo={true} backgroundImageURL={'images/fullscreen/loadingscreen/bg-battle.jpg'} >
+        <LoadingScreen showLogo={true} backgroundImageURL={'images/fullscreen/loadingscreen/bg-battle.jpg'}>
           <VoiceChatOverlay />
         </LoadingScreen>
+        <WarningIcons />
         <TooltipPane />
       </SharedContextProviders>
     </ReduxProvider>

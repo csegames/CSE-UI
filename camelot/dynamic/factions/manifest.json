@@ -21,7 +21,7 @@
     "AbilityBarEmptySlotImage": "/images/MissingAsset.png",
     "AbilityBarDockImage": "/images/MissingAsset.png",
     "NameplateBackgroundImage": null,
-    "NameplateMainFrameImage": "/images/MissingAsset.png",
+    "NameplateMainFrameImage": "/dynamic/factions/assets/default-main-frame.png",
     "NameplateMiniFrameImage": "/images/unit-frames/mini-frame.png",
     "NameplateProfileImage": null,
     "ScoreboardBackgroundColor": "rgba(20,20,20,0.15)",

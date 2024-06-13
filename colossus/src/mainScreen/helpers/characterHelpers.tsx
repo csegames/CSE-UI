@@ -52,6 +52,20 @@ export function getThumbnailURLForChampion(
   return 'images/MissingAsset.png';
 }
 
+export function getEquippedEmotesForChampion(
+  championID: string,
+  champions: ChampionGQL[],
+  perksByID: Dictionary<PerkDefGQL>,
+  maxEmoteCount: number
+): PerkDefGQL[] {
+  const champ = champions.find((c) => c.championID == championID);
+  const equippedEmotes = champ?.emotePerkIDs?.map((epid) => perksByID[epid] ?? null) ?? [];
+  while (equippedEmotes.length < maxEmoteCount) {
+    equippedEmotes.push(null);
+  }
+  return equippedEmotes;
+}
+
 export function getWornCostumeForChampion(
   championCostumes: ChampionCostumeInfo[],
   champions: ChampionGQL[],
@@ -73,6 +87,25 @@ export function getWornCostumeForChampion(
   }
 
   return championCostumes.find((costume) => costume.id === costumePerk.costume.id);
+}
+
+export function getRaceIDFromCostumeForChampion(
+  champions: ChampionGQL[],
+  perksByID: Dictionary<PerkDefGQL>,
+  championID: string
+): number {
+  if (!championID) {
+    return 0;
+  }
+
+  const playerChampion = champions.find((championGQL) => championGQL.championID === championID);
+  if (!playerChampion) {
+    return 0;
+  }
+
+  const costumePerk = perksByID[playerChampion.costumePerkID];
+
+  return costumePerk?.costume?.numericID ?? 0;
 }
 
 export function findChampionQuestProgress(champion: ChampionInfo, quests: QuestGQL[]): QuestGQL {
@@ -135,7 +168,7 @@ export function hasUnseenPerkForChampion(
       return false;
     }
     // Does the champion match?
-    if (champion.id !== matchingPerk.champion.id) {
+    if (matchingPerk.champion && champion.id !== matchingPerk.champion.id) {
       return false;
     }
     // If the user doesn't have the item, it doesn't count as new (maybe they sold it before looking at it).

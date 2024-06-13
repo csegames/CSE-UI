@@ -41,6 +41,7 @@ function isSource(value: any): value is FeatureFlags.Source {
 // and the correct value will be extracted.
 export namespace FeatureFlags {
   export const Store: Flag = new Flag('ColossusPerkStore');
+  export const FFA: Flag = new Flag('FreeForAll');
 
   export interface Source {
     featureFlags: FeatureFlagsState;

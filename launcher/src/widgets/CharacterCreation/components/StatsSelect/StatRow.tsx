@@ -63,8 +63,8 @@ export class StatRow extends React.Component<Props, State> {
   private increaseAttribute = () => {
     this.props.onAllocatePoint(this.props.statDef.id, 1);
 
-    this.mouseDownTimeout = setTimeout(() => {
-      this.mouseDownInterval = setInterval(() => {
+    this.mouseDownTimeout = window.setTimeout(() => {
+      this.mouseDownInterval = window.setInterval(() => {
         this.props.onAllocatePoint(this.props.statDef.id, 1);
       }, 30);
     }, 500);
@@ -73,8 +73,8 @@ export class StatRow extends React.Component<Props, State> {
   private decreaseAttribute = () => {
     this.props.onAllocatePoint(this.props.statDef.id, -1);
 
-    this.mouseDownTimeout = setTimeout(() => {
-      this.mouseDownInterval = setInterval(() => {
+    this.mouseDownTimeout = window.setTimeout(() => {
+      this.mouseDownInterval = window.setInterval(() => {
         this.props.onAllocatePoint(this.props.statDef.id, -1);
       }, 30);
     }, 500);

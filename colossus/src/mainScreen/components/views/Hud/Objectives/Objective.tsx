@@ -184,6 +184,10 @@ class AObjective extends React.Component<Props, State> {
     }
 
     const styles = this.getDirectionIndicatorStyle();
+    if (!styles) {
+      return;
+    }
+
     styles.width = `${INDICATOR_SIZE_VMIN}vmin`;
     styles.height = `${INDICATOR_SIZE_VMIN}vmin`;
     styles.fontSize = `${INDICATOR_SIZE_VMIN + 0.926}vmin`;
@@ -300,6 +304,10 @@ class AObjective extends React.Component<Props, State> {
   }
 
   private getDirectionIndicatorStyle(): React.CSSProperties {
+    if (!this.props.objectivePosition) {
+      return null;
+    }
+
     const bearingDegrees = getBearingDegreesForWorldLocation(this.props.objectivePosition, this.props.viewOrigin);
     const bearingRadians = ((360 - bearingDegrees) * Math.PI) / 180;
 
@@ -334,7 +342,9 @@ class AObjective extends React.Component<Props, State> {
 
 function mapStateToProps(rootState: RootState, ownProps: ComponentProps): Props {
   const entity: BaseEntityStateModel = rootState.entities.objectives[ownProps.objectiveID];
-  const { viewBearing, viewOrigin, position } = rootState.player;
+  const position: Vec3f = rootState.entities.positions[ownProps.objectiveID];
+  const { viewBearing, viewOrigin } = rootState.player;
+  const playerPosition = rootState.entities.positions[rootState.player.entityID];
   const { footprintRadius, indicator, indicatorLabel, state } = entity.objective;
   return {
     footprintRadius,
@@ -342,9 +352,9 @@ function mapStateToProps(rootState: RootState, ownProps: ComponentProps): Props 
     iconClassColor: isItem(entity) ? entity.iconClassColor : 0xffffff,
     indicator,
     indicatorLabel,
-    objectivePosition: entity.position,
+    objectivePosition: position,
     objectiveState: state,
-    playerPosition: position,
+    playerPosition: playerPosition,
     resources: entity.resources,
     viewBearing,
     viewOrigin,

@@ -7,10 +7,10 @@ import {
 import { AssetFunctions, impl as af } from '../_baseGame/clientFunctions/AssetFunctions';
 import { BuildModeFunctions, BuildModeMocks, impl as bmf } from '../_baseGame/clientFunctions/BuildModeFunctions';
 import {
-  ClientPerformanceFunctions,
-  ClientPerformanceMocks,
+  WarningIconsFunctions,
+  WarningIconsMocks,
   impl as cf
-} from '../_baseGame/clientFunctions/PerformanceFunctions';
+} from '../_baseGame/clientFunctions/WarningIconsFunctions';
 import { DefFunctions, DefMocks, impl as df } from '../_baseGame/clientFunctions/DefFunctions';
 import { HUDFunctions, impl as hf } from './clientFunctions/HUDFunctions';
 import { LoadingScreenFunctions, impl as lf } from '../_baseGame/clientFunctions/LoadingScreenFunctions';
@@ -18,7 +18,8 @@ import { EntityFunctions, create } from '../_baseGame/clientFunctions/EntityFunc
 import { SelfPlayerFunctions, impl as spf } from '../_baseGame/clientFunctions/SelfPlayerFunctions';
 import { ViewFunctions, ViewEventMocks, impl as vf } from '../_baseGame/clientFunctions/ViewFunctions';
 import { AnyEntityStateModel } from './game/GameClientModels/EntityState';
-import { AudioFunctions, AudioMocks, impl as au } from '../_baseGame/clientFunctions/AudioFunctions';
+import { AudioFunctions, AudioMocks, impl as audf } from '../_baseGame/clientFunctions/AudioFunctions';
+import { SystemFunctions, SystemMocks, impl as sysf } from '../_baseGame/clientFunctions/SystemFunctions';
 
 /**
  * ClientAPI is intended to serve as an abstraction layer such that only the Library has to know
@@ -32,25 +33,28 @@ import { AudioFunctions, AudioMocks, impl as au } from '../_baseGame/clientFunct
 const ef = create<AnyEntityStateModel>();
 
 export type MainScreenClientAPI = AbilityFunctions &
+  AudioFunctions &
   AnnouncementFunctions &
   AssetFunctions &
   AudioFunctions &
   BuildModeFunctions &
-  ClientPerformanceFunctions &
   DefFunctions &
   EntityFunctions<AnyEntityStateModel> &
   HUDFunctions &
   LoadingScreenFunctions &
   SelfPlayerFunctions &
-  ViewFunctions;
+  SystemFunctions &
+  ViewFunctions &
+  WarningIconsFunctions;
 
 export type MainScreenClientMocks = AbilityMocks &
   AudioMocks &
   AnnouncementMocks &
   BuildModeMocks &
-  ClientPerformanceMocks &
   DefMocks &
-  ViewEventMocks;
+  SystemMocks &
+  ViewEventMocks &
+  WarningIconsMocks;
 
 // exposure of implementation
 export const clientAPI: MainScreenClientAPI = {
@@ -78,6 +82,10 @@ export const clientAPI: MainScreenClientAPI = {
   executeAbility: abf.executeAbility.bind(abf),
   moveAbility: abf.moveAbility.bind(abf),
   setAbility: abf.setAbility.bind(abf),
+  // Audio
+  playGameSound: audf.playGameSound.bind(audf),
+  playVolumeFeedback: audf.playVolumeFeedback.bind(audf),
+  setUIRaceState: audf.setUIRaceState.bind(audf),
   // Announcement
   bindAnnouncementListener: anf.bindAnnouncementListener.bind(anf),
   // Asset
@@ -86,15 +94,10 @@ export const clientAPI: MainScreenClientAPI = {
   getFactionsData: af.getFactionsData.bind(af),
   getSystemAbilityData: af.getSystemAbilityData.bind(af),
   getUserClassesData: af.getUserClassesData.bind(af),
-  // Audio
-  playGameSound: au.playGameSound.bind(au),
-  playVolumeFeedback: au.playVolumeFeedback.bind(au),
   // BuildMode
   bindBuildingModeChangedListener: bmf.bindBuildingModeChangedListener.bind(bmf),
   bindItemPlacementModeChangedListener: bmf.bindItemPlacementModeChangedListener.bind(bmf),
   bindItemPlacementCommitListener: bmf.bindItemPlacementCommitListener.bind(bmf),
-  // ClientPerformance
-  bindClientPerformanceListener: cf.bindClientPerformanceListener.bind(cf),
   // Defs
   bindAbilityDisplayDefsListener: df.bindAbilityDisplayDefsListener.bind(df),
   bindCharacterClassDefsListener: df.bindCharacterClassDefsListener.bind(df),
@@ -104,20 +107,27 @@ export const clientAPI: MainScreenClientAPI = {
   bindEntityContextListener: ef.bindEntityContextListener.bind(ef),
   bindEntityRemovedListener: ef.bindEntityRemovedListener.bind(ef),
   bindEntityUpdatedListener: ef.bindEntityUpdatedListener.bind(ef),
+  bindEntityPositionMapUpdatedListener: ef.bindEntityPositionMapUpdatedListener.bind(ef),
   bindEntityShowItemActionsListener: ef.bindEntityShowItemActionsListener.bind(ef),
   // HUD
   bindAnchorVisibilityChangedListener: hf.bindAnchorVisibilityChangedListener.bind(hf),
   bindKeyActionsUpdateListener: hf.bindKeyActionsUpdateListener.bind(hf),
   bindToggleHUDEditorListener: hf.bindToggleHUDEditorListener.bind(hf),
+  performItemAction: hf.performItemAction.bind(hf),
+  moveItem: hf.moveItem.bind(hf),
   // LoadingScreenFunctions
   bindLoadingScreenListener: lf.bindLoadingScreenListener.bind(lf),
   clearManualLoadingScreen: lf.clearManualLoadingScreen.bind(lf),
   setLoadingScreenManually: lf.setLoadingScreenManually.bind(lf),
   // SelfPlayer
   bindSelfPlayerStateListener: spf.bindSelfPlayerStateListener.bind(spf),
+  // System
+  openBrowser: sysf.openBrowser.bind(sysf),
   // View
   setInitializationComplete: vf.setInitializationComplete.bind(vf),
-  bindNavigateListener: vf.bindNavigateListener.bind(vf)
+  bindNavigateListener: vf.bindNavigateListener.bind(vf),
+  // WarningIcons
+  bindWarningIconsListener: cf.bindWarningIconsListener.bind(cf)
 };
 
 export const mockEvents: MainScreenClientMocks = {
@@ -133,13 +143,13 @@ export const mockEvents: MainScreenClientMocks = {
   triggerBuildingModeChanged: bmf.triggerBuildingModeChanged.bind(bmf),
   triggerItemPlacementModeChanged: bmf.triggerItemPlacementModeChanged.bind(bmf),
   triggerItemPlacementCommit: bmf.triggerItemPlacementCommit.bind(bmf),
-  // ClientPerformance
-  triggerClientPerformanceStats: cf.triggerClientPerformanceStats.bind(cf),
   // Defs
   triggerAbilityDisplayDefsLoaded: df.triggerAbilityDisplayDefsLoaded.bind(df),
   triggerCharacterClassDefsLoaded: df.triggerCharacterClassDefsLoaded.bind(df),
   triggerCharacterRaceDefsLoaded: df.triggerCharacterRaceDefsLoaded.bind(df),
   triggerStatusDefsLoaded: df.triggerStatusDefsLoaded.bind(df),
   // View
-  triggerNavigate: vf.triggerNavigate.bind(vf)
+  triggerNavigate: vf.triggerNavigate.bind(vf),
+  // WarningIcons
+  triggerWarningIcons: cf.triggerWarningIcons.bind(cf)
 };

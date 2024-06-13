@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { AbilityComponentDefRefData, AbilityNetworkRequirementsGQLData } from '../../redux/gameDefsSlice';
 import { NetworkRequirementResult } from './abilityBuilderUtils';
-import { toTitleCase } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 
 const Root = 'HUD-AbilityBuilderComponentTooltip-Root';
@@ -40,13 +39,7 @@ class AAbilityBuilderComponentTooltip extends React.Component<Props> {
     return (
       <div className={Root}>
         <div className={Name}>{component.display.name}</div>
-        <div className={TagsContainer}>
-          {component.abilityTags
-            .map((tag) => {
-              return toTitleCase(tag);
-            })
-            .join(', ')}
-        </div>
+        <div className={TagsContainer}>{component.abilityTags.join(', ')}</div>
         <div className={Description}>{component.display.description}</div>
         {component.networkRequirements.map((req) => {
           return (
@@ -56,7 +49,7 @@ class AAbilityBuilderComponentTooltip extends React.Component<Props> {
         {reqs.isAnExcludeTag.result && (
           <div className={`${Requirement} disabled`}>
             The component {reqs.isAnExcludeTag.component.display.name} excludes &nbsp;
-            {toTitleCase(reqs.isAnExcludeTag.reason)} components when selected.
+            {reqs.isAnExcludeTag.reason} components when selected.
           </div>
         )}
         {reqs.isAnExcludeComponent.result && (
@@ -80,7 +73,7 @@ class AAbilityBuilderComponentTooltip extends React.Component<Props> {
         const value = req[key];
         return (
           <div className={`${Requirement} ${!this.props.reqs.meetsRequireTagReq ? 'disabled' : ''}`}>
-            {'Requires Tag: ' + toTitleCase(value.tag)}
+            {'Requires Tag: ' + value.tag}
             <div className={this.props.reqs.meetsRequireTagReq ? CheckIcon : CrossIcon} />
           </div>
         );
@@ -89,7 +82,7 @@ class AAbilityBuilderComponentTooltip extends React.Component<Props> {
         const value = req[key];
         return (
           <div className={`${Requirement} ${!this.props.reqs.meetsExcludeTagReq ? 'disabled' : ''}`}>
-            {'Exclude Tag: ' + toTitleCase(value.tag)}
+            {'Exclude Tag: ' + value.tag}
             <div className={this.props.reqs.meetsExcludeTagReq ? CheckIcon : CrossIcon} />
           </div>
         );

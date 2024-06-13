@@ -9,13 +9,11 @@ import { ChatView } from './ChatView';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../../redux/store';
 import { ChatPaneState } from '../../../../../redux/chatSlice';
-import { SlashCommandRegistry } from '@csegames/library/dist/_baseGame/slashCommandRegistry';
 
 const Container = 'Chat-Views-Pane-Container';
 
 interface ReactProps {
   paneID: string;
-  slashCommands: SlashCommandRegistry<RootState>;
 }
 
 interface InjectedProps {
@@ -35,7 +33,7 @@ class APane extends React.Component<Props> {
 
     return (
       <div className={Container} id={'chat-pane-' + this.props.paneID} style={containerStyle}>
-        <ChatView slashCommands={this.props.slashCommands} viewId={this.props.paneState.activeTab} />
+        <ChatView viewId={this.props.paneState.activeTab} />
       </div>
     );
   }

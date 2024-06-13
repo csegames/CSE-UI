@@ -50,10 +50,5 @@ export const baseGameSlice = createSlice({
   }
 });
 
-export const {
-  updateWorldTime,
-  updateUIFPS,
-  updateUsingGamepad,
-  updateNPCCount,
-  updateIsAutoRunning
-} = baseGameSlice.actions;
+export const { updateWorldTime, updateUIFPS, updateUsingGamepad, updateNPCCount, updateIsAutoRunning } =
+  baseGameSlice.actions;

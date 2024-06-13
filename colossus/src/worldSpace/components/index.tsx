@@ -16,7 +16,9 @@ import { Binding } from '@csegames/library/dist/_baseGame/types/Keybind';
 import {
   BaseEntityStateModel,
   EntityResource,
-  findEntityResource
+  findEntityResource,
+  WorldUIPositionMapModel,
+  WorldUIPositionModel
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { CharacterKind } from '@csegames/library/dist/hordetest/game/types/CharacterKind';
 import { clientAPI } from '@csegames/library/dist/hordetest/WorldSpaceClientAPI';
@@ -67,8 +69,6 @@ export interface HealthBarState extends WorldUIState {
   type: WorldUIWidgetType.HealthBar;
   name: string;
   kind: HealthBarKind;
-  worldSpaceDistanceToPlayer: number;
-  relativeScreenSpaceDistanceToCrosshair: number;
   voiceChatStatus: VoiceChatMemberStatus;
   voiceChatVolume: number;
   barColor: number;
@@ -124,6 +124,7 @@ export type WorldUIType =
 
 export interface State {
   worldUIs: { [id: number]: WorldUIType };
+  worldUIPositionMap: WorldUIPositionMapModel;
 }
 
 export class WorldUI extends React.Component<{}, State> {
@@ -131,11 +132,20 @@ export class WorldUI extends React.Component<{}, State> {
 
   constructor(props: {}) {
     super(props);
-    this.state = { worldUIs: {} };
+    this.state = { worldUIs: {}, worldUIPositionMap: {} };
   }
 
   public render() {
-    return <>{Object.values(this.state.worldUIs).map(this.renderWorldUI)}</>;
+    return (
+      <>
+        {Object.keys(this.state.worldUIs).map((cellID) =>
+          this.renderWorldUI(
+            this.state.worldUIs[cellID as unknown as number],
+            this.state.worldUIPositionMap[cellID as unknown as number]
+          )
+        )}
+      </>
+    );
   }
 
   public componentDidMount() {
@@ -146,7 +156,8 @@ export class WorldUI extends React.Component<{}, State> {
       clientAPI.bindObjectiveListener(this.handleUpdateObjective),
       clientAPI.bindProgressBarListener(this.handleUpdateProgressBar),
       clientAPI.bindWorldUIRemovedListener(this.handleRemoveWorldUI),
-      clientAPI.bindWorldUIUpdatedListener(this.handleUpdateWorldUI)
+      clientAPI.bindWorldUIUpdatedListener(this.handleUpdateWorldUI),
+      clientAPI.bindWorldUIPositionMapUpdatedListener(this.handleUpdateWorldUIPositionMap)
     ];
   }
 
@@ -155,7 +166,11 @@ export class WorldUI extends React.Component<{}, State> {
     this.handles = [];
   }
 
-  private renderWorldUI = (worldUI: WorldUIType, index: number) => {
+  private renderWorldUI = (worldUI: WorldUIType, position: WorldUIPositionModel) => {
+    if (position === null) {
+      return null;
+    }
+
     switch (worldUI.type) {
       case WorldUIWidgetType.ProgressBar: {
         return null;
@@ -164,7 +179,7 @@ export class WorldUI extends React.Component<{}, State> {
       case WorldUIWidgetType.HealthBar: {
         return (
           <div className={WorldUIContainer} style={makeWorldUIContainerStyles(worldUI)} key={worldUI.id}>
-            <HealthBar state={worldUI as HealthBarState} />
+            <HealthBar state={worldUI as HealthBarState} position={position} />
           </div>
         );
       }
@@ -225,6 +240,10 @@ export class WorldUI extends React.Component<{}, State> {
     this.removeWorldUI(id);
   };
 
+  private handleUpdateWorldUIPositionMap = (newState: WorldUIPositionMapModel) => {
+    this.updateWorldUIPositionMap(newState);
+  };
+
   private handleUpdateProgressBar = (
     id: number,
     x: number,
@@ -243,8 +262,6 @@ export class WorldUI extends React.Component<{}, State> {
     width: number,
     height: number,
     name: string,
-    worldSpaceDistanceToPlayer: number,
-    relativeScreenSpaceDistanceToCrosshair: number,
     kind: HealthBarKind,
     voiceChatStatus: VoiceChatMemberStatus,
     voiceChatVolume: number,
@@ -270,8 +287,6 @@ export class WorldUI extends React.Component<{}, State> {
       width,
       height,
       name,
-      worldSpaceDistanceToPlayer,
-      relativeScreenSpaceDistanceToCrosshair,
       kind,
       voiceChatStatus,
       voiceChatVolume,
@@ -385,12 +400,16 @@ export class WorldUI extends React.Component<{}, State> {
   private createOrUpdateWorldUI = (newWorldUI: WorldUIType) => {
     const worldUIs = cloneDeep(this.state.worldUIs);
     worldUIs[newWorldUI.id] = newWorldUI;
-    this.setState({ worldUIs });
+    this.setState({ worldUIs, worldUIPositionMap: this.state.worldUIPositionMap });
   };
 
   private removeWorldUI = (id: number) => {
     const worldUIs = cloneDeep(this.state.worldUIs);
     delete worldUIs[id];
-    this.setState({ worldUIs });
+    this.setState({ worldUIs, worldUIPositionMap: this.state.worldUIPositionMap });
+  };
+
+  private updateWorldUIPositionMap = (newMap: WorldUIPositionMapModel) => {
+    this.setState({ worldUIs: this.state.worldUIs, worldUIPositionMap: newMap });
   };
 }

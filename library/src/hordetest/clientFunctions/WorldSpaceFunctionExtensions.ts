@@ -9,7 +9,7 @@ import { ListenerHandle } from '../../_baseGame/listenerHandle';
 import { Binding } from '../../_baseGame/types/Keybind';
 import { ArrayMap } from '../../_baseGame/types/ObjectMap';
 import { VoiceChatMemberStatus } from '../../_baseGame/types/VoiceChatMemberSettings';
-import { BaseEntityStateModel, EntityResource } from '../game/GameClientModels/EntityState';
+import { BaseEntityStateModel, EntityResource, WorldUIPositionMapModel } from '../game/GameClientModels/EntityState';
 import { CharacterKind } from '../game/types/CharacterKind';
 import { HealthBarKind } from '../game/types/HealthBarKind';
 import { ItemGameplayType } from '../game/types/ItemGameplayType';
@@ -31,8 +31,6 @@ export type HealthBarListener = (
   width: number,
   height: number,
   name: string,
-  worldSpaceDistanceToPlayer: number,
-  relativeScreenSpaceDistanceToCrosshair: number,
   kind: HealthBarKind,
   voiceChatStatus: VoiceChatMemberStatus,
   voiceChatVolume: number,
@@ -86,12 +84,15 @@ export type ObjectiveListener = (
   entityState: BaseEntityStateModel
 ) => void;
 
+export type WorldUIPositionMapUpdatedListener = (newMap: WorldUIPositionMapModel) => void;
+
 export interface WorldSpaceFunctionExtensions {
   bindDamageTextListener(onUpdateDamageText: DamageTextListener): ListenerHandle;
   bindHealthBarListener(onHealthBarUpdate: HealthBarListener): ListenerHandle;
   bindInteractableListener(onUpdateInteractable: InteractableListener): ListenerHandle;
   bindInteractionBarListener(onInteractionBarUpdate: InteractionBarListener): ListenerHandle;
   bindObjectiveListener(onObjectiveUpdate: ObjectiveListener): ListenerHandle;
+  bindWorldUIPositionMapUpdatedListener(onWorldUIPositionMapUpdate: WorldUIPositionMapUpdatedListener): ListenerHandle;
 }
 
 class CoherentWorldSpaceFunctions implements WorldSpaceFunctionExtensions {
@@ -135,6 +136,14 @@ class CoherentWorldSpaceFunctions implements WorldSpaceFunctionExtensions {
       }
     };
   }
+  bindWorldUIPositionMapUpdatedListener(onWorldUIPositionMapUpdate: WorldUIPositionMapUpdatedListener): ListenerHandle {
+    const innerHandle = engine.on('updateWorldUIPositionMap', onWorldUIPositionMapUpdate);
+    return {
+      close() {
+        innerHandle.clear();
+      }
+    };
+  }
 }
 
 class BrowserWorldSpaceFunctions implements WorldSpaceFunctionExtensions {
@@ -151,6 +160,9 @@ class BrowserWorldSpaceFunctions implements WorldSpaceFunctionExtensions {
     return { close() {} };
   }
   bindObjectiveListener(onObjectiveUpdate: ObjectiveListener): ListenerHandle {
+    return { close() {} };
+  }
+  bindWorldUIPositionMapUpdatedListener(onWorldUIPositionMapUpdate: WorldUIPositionMapUpdatedListener): ListenerHandle {
     return { close() {} };
   }
 }

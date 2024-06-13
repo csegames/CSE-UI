@@ -41,7 +41,7 @@ export function ToolsHero(props: {}) {
   return (
     <Hero>
       <Content>
-        <Logo src='images/cse_wallpaper01.jpg' />
+        <Logo src='images/uce/login-uce.jpg' />
       </Content>
     </Hero>
   );

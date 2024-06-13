@@ -9,7 +9,7 @@
 // during any rework of character creation.
 
 import { primary } from '../api/graphql';
-import { PatchPermissions, AccessType } from './webapi';
+import { AccessType } from './webapi';
 
 /** CU.Archetype */
 export enum Archetype {
@@ -201,27 +201,6 @@ export function archetypeString(archetype: Archetype): string {
   }
 
   return Archetype[archetype];
-}
-
-export function accessLevelToPatchPermission(access: AccessType) {
-  switch (access) {
-    case AccessType.Public:
-      return PatchPermissions.Public;
-    case AccessType.Live:
-      return PatchPermissions.Live;
-    case AccessType.Beta3:
-      return PatchPermissions.Beta3;
-    case AccessType.Beta2:
-      return PatchPermissions.Beta2;
-    case AccessType.Beta1:
-      return PatchPermissions.Beta1;
-    case AccessType.Alpha:
-      return PatchPermissions.Alpha;
-    case AccessType.InternalTest:
-      return PatchPermissions.InternalTest;
-    case AccessType.Employees:
-      return PatchPermissions.Development;
-  }
 }
 
 export function accessLevelString(access: AccessType) {

@@ -59,6 +59,10 @@ class ACompass extends React.Component<Props> {
   }
 
   render(): JSX.Element {
+    if (!this.props.playerPosition) {
+      return null;
+    }
+
     const friendlyTargetInfo = this.getFriendlyTargetInfo();
     const warbandMembers = this.props.warbandMembers.filter(
       (member) => member && member.characterID !== this.props.playerCharacterID && member.isAlive
@@ -219,10 +223,10 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
     ...ownProps,
     cameraFacing: state.player.cameraFacing,
     playerCharacterID: state.player.characterID,
-    playerPosition: state.player.position,
+    playerPosition: state.entities.positions[state.player.entityID],
     playerEntityID: state.player.entityID,
     friendlyTargetName: state.entities.friendlyTarget?.name ?? null,
-    friendlyTargetPosition: state.entities.friendlyTarget?.position ?? null,
+    friendlyTargetPosition: state.entities.positions[state.entities.friendlyTarget?.entityID ?? null],
     friendlyTargetID: state.entities.friendlyTargetID,
     warbandMembers: state.warband.members
   };

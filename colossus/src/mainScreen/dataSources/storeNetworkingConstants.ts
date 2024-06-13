@@ -26,6 +26,7 @@ export const storeStaticDataQuery = gql`
         id
         name
         description
+        bonusDescription
         iconURL
         sortOrder
         costs {
@@ -40,12 +41,15 @@ export const storeStaticDataQuery = gql`
         perks {
           perkID
           qty
+          bundleDiscountPerkID
+          bundleDiscountPerkQty
         }
       }
       rMTPurchases {
         id
         name
         description
+        bonusDescription
         iconURL
         centCost
         locks {
@@ -66,6 +70,7 @@ export const storeStaticDataQuery = gql`
         costume {
           description
           id
+          numericID
           name
         }
         description

@@ -12,7 +12,7 @@ import {
   CharacterStatField,
   ClassDefGQL,
   EquippedItem,
-  GearSlotDefRef,
+  GearSlot,
   Item,
   RaceDefGQL
 } from '@csegames/library/dist/camelotunchained/graphql/schema';
@@ -21,23 +21,16 @@ import {
   attemptItemMoves,
   canItemsStack,
   findItem,
-  getGearSlotIDLocation,
-  getGroundLocation,
-  getInventoryIndexLocation,
   getItemGearSlotID,
-  getItemLocation,
   getItemUnitCount,
   getMoveErrors,
   isItemDroppable,
   performItemAction,
-  refreshItems
+  refreshItems,
+  MoveItemRequest
 } from './itemUtils';
 import { ContextMenuItem, ContextMenuParams, hideContextMenu } from '../../redux/contextMenuSlice';
-import {
-  Faction,
-  MoveItemRequest,
-  MoveItemRequestLocation
-} from '@csegames/library/dist/camelotunchained/webAPI/definitions';
+import { Faction, MoveItemRequestLocationType } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import TooltipSource from '../TooltipSource';
 import { ModalModel, hideModal, showModal, updateModalContent } from '../../redux/modalsSlice';
 import { NumberInput } from '../input/NumberInput';
@@ -85,7 +78,7 @@ interface InjectedProps {
   stackSplit: InventoryStackSplit | null;
   inventoryItems: Item[];
   equippedItems: EquippedItem[];
-  gearSlots: Dictionary<GearSlotDefRef>;
+  gearSlots: Dictionary<GearSlot>;
   faction: Faction;
   race: number;
   classID: number;
@@ -270,7 +263,7 @@ class AItemIcon extends React.Component<Props> {
           (inventoryItem): boolean => inventoryItem.location.inventory.position === inventoryIndex
         )
       : this.props.equippedItems.find((equippedItem) =>
-          equippedItem.item.location.equipped.gearSlots.some((gearSlot) => gearSlot.id === gearSlotID)
+          equippedItem.item.location.equipped.gearSlots.includes(gearSlotID)
         )?.item;
   }
 
@@ -315,12 +308,12 @@ class AItemIcon extends React.Component<Props> {
     }
     // Equip
     this.props.items[0].staticDefinition.gearSlotSets.forEach((gearSlotSet) => {
-      gearSlotSet.gearSlots.forEach((gearSlot) => {
+      gearSlotSet.gearSlots.forEach((gearSlotID) => {
         const onClick = () => {
-          this.equipItem(gearSlot.id);
+          this.equipItem(gearSlotID);
         };
         content.push({
-          title: `Equip to ${gearSlot.id}`,
+          title: `Equip to ${gearSlotID}`,
           onClick: onClick.bind(this)
         });
       });
@@ -336,6 +329,8 @@ class AItemIcon extends React.Component<Props> {
             action.uIReaction,
             this.props.entityID,
             null,
+            null,
+            0,
             this.props.dispatch
           );
         };
@@ -421,6 +416,7 @@ class AItemIcon extends React.Component<Props> {
       this.props.classesByNumericID[this.props.classID],
       this.props.raceTags,
       this.props.myStats,
+      this.props.gearSlots,
       this.props.inventoryPendingRefreshes,
       this.props.equippedItemsPendingRefreshes,
       this.props.stackSplit,
@@ -432,27 +428,52 @@ class AItemIcon extends React.Component<Props> {
     const { inventoryIndex, gearSlotID } = data;
     const targetItem = this.getDropDataItem(data);
     const moves: MoveItemRequest[] = [];
-    const startLocation: MoveItemRequestLocation = getItemLocation(item);
-    const targetLocation: MoveItemRequestLocation =
-      gearSlotID !== null
-        ? getGearSlotIDLocation(gearSlotID, this.props.characterID)
-        : getInventoryIndexLocation(inventoryIndex, this.props.characterID);
+    const characterID = item.location.inventory?.characterID ?? item.location.equipped?.characterID;
+
     moves.push({
       MoveItemID: item.id,
-      StackHash: item.stackHash,
       UnitCount: this.props.stackSplit?.amount ?? -1,
-      From: startLocation,
-      To: targetLocation
+      EntityIDFrom: null,
+      CharacterIDFrom: characterID,
+      BoneAliasFrom: 0,
+      LocationTo: gearSlotID !== null ? MoveItemRequestLocationType.Equipment : MoveItemRequestLocationType.Inventory,
+      EntityIDTo: null,
+      CharacterIDTo: characterID,
+      PositionTo: gearSlotID !== null ? -1 : inventoryIndex,
+      ContainerIDTo: null,
+      DrawerIDTo: null,
+      GearSlotIDTo: gearSlotID,
+      VoxSlotTo: null,
+      BuildingIDTo: null,
+      WorldPositionTo: null,
+      RotationTo: null,
+      BoneAliasTo: 0
     });
+
     if (targetItem && targetItem.staticDefinition.id !== item.staticDefinition.id) {
       moves.push({
         MoveItemID: targetItem.id,
-        StackHash: targetItem.stackHash,
         UnitCount: -1,
-        From: targetLocation,
-        To: startLocation
+        EntityIDFrom: null,
+        CharacterIDFrom: characterID,
+        BoneAliasFrom: 0,
+        LocationTo: item.location.equipped
+          ? MoveItemRequestLocationType.Equipment
+          : MoveItemRequestLocationType.Inventory,
+        EntityIDTo: null,
+        PositionTo: item.location.inventory ? item.location.inventory.position : -1,
+        ContainerIDTo: null,
+        CharacterIDTo: characterID,
+        DrawerIDTo: null,
+        GearSlotIDTo: item.location.equipped ? item.location.equipped.gearSlots[0] : null,
+        VoxSlotTo: null,
+        BuildingIDTo: null,
+        WorldPositionTo: null,
+        RotationTo: null,
+        BoneAliasTo: 0
       });
     }
+
     return moves;
   }
 
@@ -460,27 +481,54 @@ class AItemIcon extends React.Component<Props> {
     this.props.dispatch(hideContextMenu());
     const targetItem =
       this.props.equippedItems.find((equippedItem) =>
-        equippedItem.item.location.equipped.gearSlots.some((gearSlot) => gearSlot.id === gearSlotID)
+        equippedItem.item.location.equipped.gearSlots.includes(gearSlotID)
       ) ?? null;
     const moves: MoveItemRequest[] = [];
-    const startLocation: MoveItemRequestLocation = getItemLocation(this.props.items[0]);
-    const targetLocation: MoveItemRequestLocation = getGearSlotIDLocation(gearSlotID, this.props.characterID);
+
+    const item = this.props.items[0];
+    const characterID = item.location.inventory?.characterID ?? item.location.equipped?.characterID;
     moves.push({
-      MoveItemID: this.props.items[0].id,
-      StackHash: this.props.items[0].stackHash,
-      UnitCount: -1,
-      From: startLocation,
-      To: targetLocation
+      MoveItemID: item.id,
+      UnitCount: this.props.stackSplit?.amount ?? -1,
+      EntityIDFrom: null,
+      CharacterIDFrom: characterID,
+      BoneAliasFrom: 0,
+      LocationTo: gearSlotID !== null ? MoveItemRequestLocationType.Equipment : MoveItemRequestLocationType.Inventory,
+      EntityIDTo: null,
+      CharacterIDTo: characterID,
+      PositionTo: -1,
+      ContainerIDTo: null,
+      DrawerIDTo: null,
+      GearSlotIDTo: gearSlotID,
+      VoxSlotTo: null,
+      BuildingIDTo: null,
+      WorldPositionTo: null,
+      RotationTo: null,
+      BoneAliasTo: 0
     });
+
     if (targetItem) {
       moves.push({
         MoveItemID: targetItem.item.id,
-        StackHash: targetItem.item.stackHash,
         UnitCount: -1,
-        From: targetLocation,
-        To: startLocation
+        EntityIDFrom: null,
+        CharacterIDFrom: characterID,
+        BoneAliasFrom: 0,
+        LocationTo: MoveItemRequestLocationType.Inventory,
+        EntityIDTo: null,
+        PositionTo: item.location.inventory?.position ?? -1,
+        ContainerIDTo: null,
+        CharacterIDTo: characterID,
+        DrawerIDTo: null,
+        GearSlotIDTo: null,
+        VoxSlotTo: null,
+        BuildingIDTo: null,
+        WorldPositionTo: null,
+        RotationTo: null,
+        BoneAliasTo: 0
       });
     }
+
     attemptItemMoves(
       moves,
       this.props.inventoryItems,
@@ -490,6 +538,7 @@ class AItemIcon extends React.Component<Props> {
       this.props.classesByNumericID[this.props.classID],
       this.props.raceTags,
       this.props.myStats,
+      this.props.gearSlots,
       this.props.inventoryPendingRefreshes,
       this.props.equippedItemsPendingRefreshes,
       this.props.stackSplit,
@@ -498,18 +547,28 @@ class AItemIcon extends React.Component<Props> {
   }
 
   unequipItem(): void {
-    const startLocation: MoveItemRequestLocation = getItemLocation(this.props.items[0]);
-    const targetLocation: MoveItemRequestLocation = getInventoryIndexLocation(
-      this.getFirstOpenInventoryIndex(),
-      this.props.characterID
-    );
+    const item = this.props.items[0];
+    const characterID = item.location.inventory?.characterID ?? item.location.equipped?.characterID;
     const move: MoveItemRequest = {
-      MoveItemID: this.props.items[0].id,
-      StackHash: this.props.items[0].stackHash,
+      MoveItemID: item.id,
       UnitCount: -1,
-      From: startLocation,
-      To: targetLocation
+      EntityIDFrom: null,
+      CharacterIDFrom: characterID,
+      BoneAliasFrom: 0,
+      LocationTo: MoveItemRequestLocationType.Inventory,
+      EntityIDTo: null,
+      CharacterIDTo: characterID,
+      PositionTo: this.getFirstOpenInventoryIndex(),
+      ContainerIDTo: null,
+      DrawerIDTo: null,
+      GearSlotIDTo: null,
+      VoxSlotTo: null,
+      BuildingIDTo: null,
+      WorldPositionTo: null,
+      RotationTo: null,
+      BoneAliasTo: 0
     };
+
     attemptItemMoves(
       [move],
       this.props.inventoryItems,
@@ -519,6 +578,7 @@ class AItemIcon extends React.Component<Props> {
       this.props.classesByNumericID[this.props.classID],
       this.props.raceTags,
       this.props.myStats,
+      this.props.gearSlots,
       this.props.inventoryPendingRefreshes,
       this.props.equippedItemsPendingRefreshes,
       this.props.stackSplit,
@@ -539,13 +599,29 @@ class AItemIcon extends React.Component<Props> {
 
   dropItem(): void {
     this.props.dispatch(hideContextMenu());
+
+    const item = this.props.items[0];
+    const characterID = item.location.inventory?.characterID ?? item.location.equipped?.characterID;
     const move: MoveItemRequest = {
-      MoveItemID: this.props.items[0].id,
-      StackHash: this.props.items[0].stackHash,
+      MoveItemID: item.id,
       UnitCount: -1,
-      To: getGroundLocation(),
-      From: getItemLocation(this.props.items[0])
+      EntityIDFrom: null,
+      CharacterIDFrom: characterID,
+      BoneAliasFrom: 0,
+      LocationTo: MoveItemRequestLocationType.Ground,
+      EntityIDTo: null,
+      CharacterIDTo: null,
+      PositionTo: -1,
+      ContainerIDTo: null,
+      DrawerIDTo: null,
+      GearSlotIDTo: null,
+      VoxSlotTo: null,
+      BuildingIDTo: null,
+      WorldPositionTo: null,
+      RotationTo: null,
+      BoneAliasTo: 0
     };
+
     attemptItemMoves(
       [move],
       this.props.inventoryItems,
@@ -555,6 +631,7 @@ class AItemIcon extends React.Component<Props> {
       this.props.classesByNumericID[this.props.classID],
       this.props.raceTags,
       this.props.myStats,
+      this.props.gearSlots,
       this.props.inventoryPendingRefreshes,
       this.props.equippedItemsPendingRefreshes,
       this.props.stackSplit,
@@ -565,7 +642,6 @@ class AItemIcon extends React.Component<Props> {
 
 const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
   const raceDef = state.gameDefs.racesByNumericID[state.player.race];
-
   return {
     ...ownProps,
     characterID: state.player.characterID,

@@ -8,6 +8,8 @@ import { RequestResult } from '@csegames/library/dist/_baseGame/types/Request';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { ErrorData, convertRequestResult, isErrorData } from '../helpers/errorConversionHelpers';
+import { PerkType } from '@csegames/library/dist/hordetest/graphql/schema';
+import { genID } from '@csegames/library/dist/_baseGame/utils/idGen';
 
 // BEGIN INTERFACES AND STATES
 
@@ -21,29 +23,29 @@ export enum LifecyclePhase {
 
 // chosen by user navigation
 export enum LobbyView {
-  Play,
-  Champions,
-  BattlePass,
-  Store,
-  CareerStats,
-  Leaderboards,
-  SelectWeapon,
-  SelectSkin,
-  SelectEmote,
-  SelectAppearance
+  Play = 'Play',
+  Champions = 'Champions',
+  BattlePass = 'BattlePass',
+  Store = 'Store',
+  CareerStats = 'CareerStats',
+  Leaderboards = 'Leaderboards'
 }
 
 // chosen by user navigation when in the lobby, display lobby view underneath
 export enum Overlay {
   ChampionDetails,
+  ChampionSelectCosmetics,
   ClaimBattlePassModal,
   Credits,
   Debug,
   EmoteMenu,
   EndedBattlePassModal,
+  EventAdvertisementModal,
   FreeBattlePassModal,
   MainMenu,
+  MOTDModal,
   NewBattlePassModal,
+  PurchaseGems,
   PurchaseProcessing,
   ReportPlayer,
   RewardCollection,
@@ -66,26 +68,30 @@ export function isVideoParams(data: any): data is VideoParams {
 export type OverlayFieldType = Overlay | ErrorData | VideoParams;
 
 function hideNonErrorOverlays(state: NavigationState) {
-  // don't clear error on transition, allow user to close it manually after reading
-  if (!isErrorData(state.overlay)) {
-    state.overlay = null;
-  }
+  state.overlays = state.overlays.filter((overlay) => !isErrorData(overlay.data));
+}
+
+export interface OverlayInstance {
+  id: string;
+  data: OverlayFieldType;
 }
 
 interface NavigationState {
   lifecyclePhase: LifecyclePhase;
   phaseOverride: LifecyclePhase | null;
   lobbyView: LobbyView;
-  overlay: OverlayFieldType;
+  overlays: OverlayInstance[];
   rightPanelContent: React.ReactNode; // TODO : hold data to populate the panel instead of the actual content
+  cosmeticTab: PerkType;
 }
 
 const defaultNavigationState: NavigationState = {
   lifecyclePhase: LifecyclePhase.Lobby,
   phaseOverride: null,
   lobbyView: LobbyView.Play,
-  overlay: null,
-  rightPanelContent: null
+  overlays: [],
+  rightPanelContent: null,
+  cosmeticTab: PerkType.Costume
 };
 
 export const navigationSlice = createSlice({
@@ -109,13 +115,11 @@ export const navigationSlice = createSlice({
       state.lobbyView = LobbyView.Play;
       hideNonErrorOverlays(state);
     },
-    hideOverlay: (state: NavigationState, action: PayloadAction<Overlay>) => {
-      if (action.payload === state.overlay) {
-        state.overlay = null;
-      }
+    hideOverlay: (state: NavigationState, action: PayloadAction<OverlayFieldType>) => {
+      state.overlays = state.overlays.filter((overlay) => overlay.data !== action.payload);
     },
     hideAllOverlays: (state: NavigationState) => {
-      state.overlay = null;
+      state.overlays = [];
     },
     hideRightPanel: (state: NavigationState) => {
       state.rightPanelContent = null;
@@ -130,19 +134,32 @@ export const navigationSlice = createSlice({
     },
     showError: (state: NavigationState, action: PayloadAction<ErrorData | RequestResult>) => {
       console.error('Error', action.payload);
-      state.overlay = isErrorData(action.payload) ? action.payload : convertRequestResult(action.payload);
+      const data = isErrorData(action.payload) ? action.payload : convertRequestResult(action.payload);
+      state.overlays.push({
+        id: genID(),
+        data
+      });
     },
     showOverlay: (state: NavigationState, action: PayloadAction<Overlay>) => {
-      state.overlay = action.payload;
+      state.overlays.push({
+        id: genID(),
+        data: action.payload
+      });
     },
     showVideoPlayer: (state: NavigationState, action: PayloadAction<VideoParams>) => {
-      state.overlay = action.payload;
+      state.overlays.push({
+        id: genID(),
+        data: action.payload
+      });
     },
     showRightPanel: (state: NavigationState, action: PayloadAction<React.ReactNode>) => {
       if (state.lifecyclePhase !== LifecyclePhase.Lobby) {
         return;
       }
       state.rightPanelContent = action.payload;
+    },
+    setCosmeticTab: (state: NavigationState, action: PayloadAction<PerkType>) => {
+      state.cosmeticTab = action.payload;
     }
   }
 });
@@ -157,5 +174,6 @@ export const {
   showOverlay,
   showRightPanel,
   showVideoPlayer,
-  updateLifecycle
+  updateLifecycle,
+  setCosmeticTab
 } = navigationSlice.actions;

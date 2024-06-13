@@ -52,12 +52,6 @@ export interface IInteractiveAlert {
   targetID: CharacterID | null;
   when: number | null;
 }
-/** ServerLib.GraphQL.Models.IScenarioAlert */
-export interface IScenarioAlert {
-  category: ScenarioAlertCategory | null;
-  targetID: ScenarioInstanceID | null;
-  when: number | null;
-}
 /** CU.WebApi.Models.Debugging.IDebuggingUpdate */
 export interface IDebuggingUpdate {
   type: string | null;
@@ -91,17 +85,13 @@ export interface CUQuery {
   groupOffers: OfferSummary | null /** Information about an account's current FSR lobby group offers */;
   matchmaking: MatchStatus | null /** Match Status */;
   matchmakingAdmin: ActivitiesAdminData | null /** Admin only match data */;
-  matchmakingStatus: MatchmakingStatus | null /** Matchmaking Status */;
   myCharacter: CUCharacter | null /** Get the character of the currently logged in user. */;
   myInteractiveAlerts: (IInteractiveAlert | null)[] | null /** Alerts */;
   myPassiveAlerts:
     | (PassiveAlert | null)[]
     | null /** Alerts that notify players something happened but do not need to be reacted to. */;
-  myScenarioAlerts:
-    | (IScenarioAlert | null)[]
-    | null /** Alerts that notify players something changed about a scenario. */;
   myUser: User | null /** Retrieve information about your user account. */;
-  overmindsummary: OvermindSummaryGQL | null /** retrieve information about a scenario */;
+  overmindSummary: OvermindSummaryGQL | null /** retrieve information about a scenario */;
   patcherHero: (PatcherHero | null)[] | null /** Gets Patcher Hero content */;
   patchNote: PatchNote | null /** Gets a single patch note */;
   patchNotes: (PatchNote | null)[] | null /** Gets patch notes */;
@@ -338,13 +328,14 @@ export interface RaceDefRef {
 }
 /** ServerLib.GraphQL.Models.PurchaseDefGQL */
 export interface PurchaseDefGQL {
+  bonusDescription: string | null;
   costs: (CostDefGQL | null)[] | null;
   description: string | null;
   iconURL: string | null;
   id: string | null;
   locks: (ProfileLockDefGQL | null)[] | null;
   name: string | null;
-  perks: (PerkRewardDefGQL | null)[] | null;
+  perks: (PurchaseRewardDefGQL | null)[] | null;
   sortOrder: number | null;
 }
 /** ServerLib.GraphQL.Models.CostDefGQL */
@@ -358,8 +349,10 @@ export interface ProfileLockDefGQL {
   perkID: string | null;
   startTime: string | null;
 }
-/** ServerLib.GraphQL.Models.PerkRewardDefGQL */
-export interface PerkRewardDefGQL {
+/** ServerLib.GraphQL.Models.PurchaseRewardDefGQL */
+export interface PurchaseRewardDefGQL {
+  bundleDiscountPerkID: string | null;
+  bundleDiscountPerkQty: number | null;
   perkID: string | null;
   qty: number | null;
 }
@@ -394,6 +387,11 @@ export interface QuestLinkDefGQL {
   rewardNameOverride: string | null;
   rewards: (PerkRewardDefGQL | null)[] | null;
 }
+/** ServerLib.GraphQL.Models.PerkRewardDefGQL */
+export interface PerkRewardDefGQL {
+  perkID: string | null;
+  qty: number | null;
+}
 /** ServerLib.Game.RaceStatBonuses */
 export interface RaceStatBonuses {
   race: number | null;
@@ -401,6 +399,7 @@ export interface RaceStatBonuses {
 }
 /** ServerLib.GraphQL.Models.RMTPurchaseDefGQL */
 export interface RMTPurchaseDefGQL {
+  bonusDescription: string | null;
   centCost: number | null;
   description: string | null;
   iconURL: string | null;
@@ -433,8 +432,14 @@ export interface GameSettingsDef {
   minCharacterNameLength: number | null;
   normalDailyQuestCount: number | null;
   startingAttributePoints: number | null;
+  storeTabConfigs: (StoreTabConfig | null)[] | null;
   traitsMaxPoints: number | null;
   traitsMinPoints: number | null;
+}
+/** CSE.GameplayDefs.GameSettingsDef+StoreTabConfig */
+export interface StoreTabConfig {
+  layout: number | null;
+  tab: StoreTab | null;
 }
 /** ServerLib.Game.StatDefinitionGQL */
 export interface StatDefinitionGQL {
@@ -586,8 +591,8 @@ export interface SelectionPlayer {
 /** CU.WebApi.Models.Matchmaking.GameMode */
 export interface GameMode {
   activityID: string | null;
+  hash: number | null;
   playCriteria: (Criterion | null)[] | null;
-  revision: number | null;
   scenarios: (ScenarioOption | null)[] | null;
   teams: (Team | null)[] | null;
   viewCriteria: (Criterion | null)[] | null;
@@ -624,11 +629,11 @@ export interface Role {
 }
 /** CU.WebApi.Models.Matchmaking.Queue */
 export interface Queue {
+  hash: number | null;
   maxEntrySize: number | null;
   maxWaitBySize: (MaxWaitBySize | null)[] | null;
   minEntrySize: number | null;
   queueID: string | null;
-  revision: number | null;
   strategy: string | null;
   targets: (Target | null)[] | null;
 }
@@ -676,12 +681,6 @@ export interface QueuePage {
   entries: (Queue | null)[] | null;
   nextPageToken: string | null;
 }
-/** ServerLib.GraphQL.MatchmakingStatus */
-export interface MatchmakingStatus {
-  availability: MatchmakingAvailability | null;
-  channelID: ChannelID | null;
-  shardID: number | null;
-}
 /** CU.WebApi.GraphQL.PassiveAlert */
 export interface PassiveAlert {
   message: string | null;
@@ -695,22 +694,23 @@ export interface User {
   id: AccountID | null;
   lastLogin: string | null;
 }
-/** ServerLib.GraphQL.Types.OvermindSummaryGQL */
+/** CU.WebApi.Models.OvermindSummary.OvermindSummaryGQL */
 export interface OvermindSummaryGQL {
-  characterSummaries: (OvermindCharacterSummaryGQL | null)[] | null;
+  characterSummaries: (OvermindCharacter | null)[] | null;
   id: ScenarioInstanceID | null;
-  mVPs: (MVPGQL | null)[] | null;
+  matchID: string | null;
+  mVPs: (MVP | null)[] | null;
   resolution: ScenarioResolution | null;
   scenarioID: string | null;
   scenarioScore: number | null;
-  scorePanels: (ScorePanelGQL | null)[] | null;
+  scorePanels: (ScorePanel | null)[] | null;
   shardID: ShardID | null;
   startTime: string | null;
   totalRunTime: number | null;
   winningTeamIDs: (string | null)[] | null;
 }
-/** ServerLib.GraphQL.Types.OvermindCharacterSummaryGQL */
-export interface OvermindCharacterSummaryGQL {
+/** CU.WebApi.Models.OvermindSummary.OvermindCharacter */
+export interface OvermindCharacter {
   accountID: AccountID | null;
   classID: string | null;
   combosPerformed: number | null;
@@ -724,39 +724,39 @@ export interface OvermindCharacterSummaryGQL {
   longestKillStreak: number | null;
   longestLife: number | null;
   portraitPerkID: string | null;
-  questProgress: (QuestProgressGQL | null)[] | null;
+  questProgress: (QuestProgress | null)[] | null;
   raceID: string | null;
   reviveAssistCount: number | null;
   revivedCount: number | null;
   score: number | null;
   teamID: string | null;
-  thumbsUpReward: AccountID | null /** The character that this character gave a thumbs up to. */;
+  thumbsUpReward: string | null /** The character that this character gave a thumbs up to. */;
   totalTimeInMatch: number | null;
   userName: string | null;
 }
-/** ServerLib.GraphQL.Types.QuestProgressGQL */
-export interface QuestProgressGQL {
+/** CU.WebApi.Models.OvermindSummary.QuestProgress */
+export interface QuestProgress {
   id: string | null;
   previousIndex: number | null;
   previousProgress: number | null;
   progressAdded: number | null;
-  progressDetails: (QuestDetailsGQL | null)[] | null;
+  progressDetails: (QuestDetails | null)[] | null;
 }
-/** ServerLib.GraphQL.Types.QuestDetailsGQL */
-export interface QuestDetailsGQL {
+/** CU.WebApi.Models.OvermindSummary.QuestDetails */
+export interface QuestDetails {
   amount: number | null;
   name: string | null;
 }
-/** ServerLib.GraphQL.Types.MVPGQL */
-export interface MVPGQL {
+/** CU.WebApi.Models.OvermindSummary.MVP */
+export interface MVP {
   accountID: AccountID | null;
   mVPDescription: string | null;
   mVPName: string | null;
 }
-/** ServerLib.GraphQL.Types.ScorePanelGQL */
-export interface ScorePanelGQL {
+/** CU.WebApi.Models.OvermindSummary.ScorePanel */
+export interface ScorePanel {
   def: ScenarioScorePanelDef | null;
-  instance: ScorePanelInstanceGQL | null;
+  instance: ScorePanelInstance | null;
 }
 /** CSE.GameplayDefs.ScenarioScorePanelDef */
 export interface ScenarioScorePanelDef {
@@ -771,8 +771,8 @@ export interface ScenarioScorePanelDef {
 export interface Rank {
   description: string | null;
 }
-/** ServerLib.GraphQL.Types.ScorePanelInstanceGQL */
-export interface ScorePanelInstanceGQL {
+/** CU.WebApi.Models.OvermindSummary.ScorePanelInstance */
+export interface ScorePanelInstance {
   id: string | null;
   rank: number | null;
   score: number | null;
@@ -828,8 +828,9 @@ export interface CUSubscription {
   groupOffers: OfferEvent | null /** State updates for an account's current FSR group offers */;
   interactiveAlerts: IInteractiveAlert | null /** Alerts */;
   matchmaking: IMatchUpdate | null /** State updates for matchmaking, game modes, and queues */;
+  notifications: Notification | null /** Status or event broadcasts identified by purpose */;
+  overmindSummaries: OvermindSummaryGQL | null /** State updates for overmind summaries */;
   passiveAlerts: PassiveAlert | null /** Alerts that notify players something happened but do not need to be reacted to. */;
-  scenarioAlerts: IScenarioAlert | null /** Alerts that notify players something changed about a scenario. */;
   serverUpdates: IServerUpdate | null /** Subscription for updates to servers */;
   shardCharacterUpdates: IPatcherCharacterUpdate | null /** Subscription for simple updates to characters on a shard */;
 }
@@ -844,9 +845,18 @@ export interface OfferEvent {
   status: string | null;
   to: Player | null;
 }
-/** ServerLib.GraphQL.OvermindSummaryQuery */
-export interface OvermindSummaryQuery {
-  name: string | null;
+/** CU.WebApi.Models.Notifications.Notification */
+export interface Notification {
+  broadcastDuration: string | null;
+  content: string | null;
+  counter: number | null;
+  displayDuration: string | null;
+  displayHints: ContentFlags | null;
+  displayTime: string | null;
+  mimeType: string | null;
+  purpose: string | null;
+  sequenceID: string | null;
+  tags: (string | null)[] | null;
 }
 /** ServerLib.GraphQL.ProfileQuery */
 export interface ProfileQuery {
@@ -920,8 +930,8 @@ export interface SessionUpdated extends IDebuggingUpdate {
   session: DebugSession | null;
   type: string | null;
 }
-/** CU.WebApi.GraphQL.StatusEffect */
-export interface StatusEffect {
+/** CU.WebApi.GraphQL.GroupMemberStatus */
+export interface GroupMemberStatus {
   description: string | null;
   duration: Decimal | null;
   iconURL: string | null;
@@ -929,16 +939,15 @@ export interface StatusEffect {
   name: string | null;
   startTime: Decimal | null;
 }
-/** CU.WebApi.GraphQL.Health */
-export interface Health {
+/** CU.WebApi.GraphQL.GroupMemberResource */
+export interface GroupMemberResource {
   current: Decimal | null;
+  id: string | null;
   max: Decimal | null;
-  wounds: number | null;
 }
-/** CU.WebApi.GraphQL.CurrentMax */
-export interface CurrentMax {
-  current: Decimal | null;
-  max: Decimal | null;
+/** CU.WebApi.GraphQL.OvermindSummaryQuery */
+export interface OvermindSummaryQuery {
+  name: string | null;
 }
 /** CU.WebApi.GraphQL.UnusedStructure */
 export interface UnusedStructure {
@@ -986,13 +995,6 @@ export interface ServerUpdatedAll extends IServerUpdate {
 /** ServerLib.GraphQL.ServerUnavailableAllUpdate */
 export interface ServerUnavailableAllUpdate extends IServerUpdate {
   type: ServerUpdateType | null;
-}
-/** ServerLib.GraphQL.Models.OvermindSummaryAlert */
-export interface OvermindSummaryAlert extends IScenarioAlert {
-  category: ScenarioAlertCategory | null;
-  summary: OvermindSummaryGQL | null;
-  targetID: ScenarioInstanceID | null;
-  when: number | null;
 }
 /** ServerLib.ApiModels.SimpleCharacter */
 export interface SimpleCharacter {
@@ -1054,9 +1056,9 @@ export interface GroupOffersgroupOffersArgs {
     | string
     | null /** AccountID to look up for current group offers (optional, defaults to logged in account) */;
 }
-export interface OvermindsummaryovermindsummaryArgs {
-  id: string | null /** Scenario Instance ID. (required) */;
-  shard: number | null /** The id of the shard to request data from. */;
+export interface OvermindSummaryovermindSummaryArgs {
+  id: string | null /** Scenario Instance ID. (optional) */;
+  matchid: string | null /** Lookup by Match ID. (optional) */;
 }
 export interface PatcherHeropatcherHeroArgs {
   from: Date | null /** Optional: Oldest date (non-inclusive) from which to return patch notes. */;
@@ -1102,8 +1104,11 @@ export interface GroupOffersgroupOffersArgs {
 export interface MatchmakingmatchmakingArgs {
   forAccount: string | null /** AccountID to look up for activity changes (optional, defaults to logged in account) */;
 }
-export interface ScenarioAlertsscenarioAlertsArgs {
-  scenarioID: string | null;
+export interface NotificationsnotificationsArgs {
+  tags: (string | null)[] | null /** Strings to match for this subscription */;
+}
+export interface OvermindSummariesovermindSummariesArgs {
+  forAccount: string | null /** AccountID to look up for activity changes (optional, defaults to logged in account) */;
 }
 export interface ShardCharacterUpdatesshardCharacterUpdatesArgs {
   onShard: number | null /** Shard ID of the server you'd like to subscribe to for character updates */;
@@ -1161,6 +1166,17 @@ export enum PerkRarity {
   Rare = 'Rare',
   Unique = 'Unique'
 }
+/** CSE.GameplayDefs.StoreTab */
+export enum StoreTab {
+  Invalid = 'Invalid',
+  Bundle = 'Bundle',
+  Costume = 'Costume',
+  Weapon = 'Weapon',
+  SprintFX = 'SprintFX',
+  Emote = 'Emote',
+  Portrait = 'Portrait',
+  QuestXP = 'QuestXP'
+}
 /** CSE.GameplayDefs.StatType */
 export enum StatType {
   None = 'None',
@@ -1175,23 +1191,9 @@ export enum MatchAccess {
   Offline = 'Offline',
   Online = 'Online'
 }
-/** ServerLib.GraphQL.MatchmakingAvailability */
-export enum MatchmakingAvailability {
-  Offline = 'Offline',
-  NoAccess = 'NoAccess',
-  Online = 'Online'
-}
-/** CSEUtilsNET.ChannelID */
-export enum ChannelID {
-  None = 'None'
-}
 /** ServerLib.GraphQL.Models.AlertCategory */
 export enum AlertCategory {
   Group = 'Group'
-}
-/** ServerLib.GraphQL.Models.ScenarioAlertCategory */
-export enum ScenarioAlertCategory {
-  Summary = 'Summary'
 }
 /** CSE.Models.BackerLevel */
 export enum BackerLevel {
@@ -1232,6 +1234,14 @@ export enum StatusUIVisibility {
   ShowInactive = 'ShowInactive',
   ShowAllActive = 'ShowAllActive',
   ShowAll = 'ShowAll'
+}
+/** CSE.Notifications.ContentFlags */
+export enum ContentFlags {
+  None = 'None',
+  Revoke = 'Revoke',
+  Template = 'Template',
+  Localized = 'Localized',
+  Markup = 'Markup'
 }
 /** ServerLib.GraphQL.ServerUpdateType */
 export enum ServerUpdateType {

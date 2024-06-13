@@ -6,11 +6,10 @@
  */
 
 export enum EntityResourceIDs {
-    Stamina = "Stamina",
-    Blood = "Blood",
-    Barrier = "Barrier",
-    Fortitude = "Fortitude",
-    Panic = "Panic",
-    Health = "Health"
+  Stamina = 'Stamina',
+  Blood = 'Blood',
+  Barrier = 'Barrier',
+  Fortitude = 'Fortitude',
+  Panic = 'Panic',
+  Health = 'Health'
 }
-  

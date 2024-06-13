@@ -21,6 +21,10 @@ import { ProgressionInfo } from '../../../rightPanel/ProgressionInfo';
 import { findChampionQuestProgress, findChampionQuest } from '../../../../helpers/characterHelpers';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
+import TooltipSource from '../../../../../shared/components/TooltipSource';
+import { StringIDGeneralXPProgress, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
+import { game } from '@csegames/library/dist/_baseGame';
+import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 
 const ProgressionContainer = 'ChampionProfile-ChampionProgressionLevel-ProgressionContainer';
 const ProgressionLevel = 'ChampionProfile-ChampionProgressionLevel-ProgressionLevel';
@@ -65,8 +69,14 @@ class AChampionProgressionLevel extends React.Component<Props> {
     const questLink = notMaxLevel && quest ? quest.links[currentQuestIndex] : null;
     const gameStats = this.props.gameStats ? 'Gamestats' : '';
     const maxLevel = notMaxLevel ? '' : 'MaxLevel';
+    const current = this.getCurrentBarProgress(questGQL, questLink);
+    const max = this.getMaxBarProgress(questLink);
     return (
-      <div className={ProgressionContainer} onClick={this.onProgressionClick.bind(this)}>
+      <div
+        className={ProgressionContainer}
+        onClick={this.onProgressionClick.bind(this)}
+        onMouseEnter={this.onMouseEnter.bind(this)}
+      >
         <span className={`${ProgressionLevel} ${gameStats} ${maxLevel}`}>{`${this.getLevel(
           questGQL,
           notMaxLevel
@@ -75,18 +85,34 @@ class AChampionProgressionLevel extends React.Component<Props> {
           <div className={ProgressionLevelContainer}>
             <div className={ProgressionBadge} />
           </div>
-          <ResourceBar
-            isSquare
-            type={'blue'}
-            current={this.getCurrentBarProgress(questGQL, questLink)}
-            max={this.getMaxBarProgress(questLink)}
-            hideText={true}
-            containerClasses={`${ProgressionExperienceBar} ${gameStats}`}
-            fillClasses={ProgressionExperienceBarFill}
-          />
+          <TooltipSource
+            tooltipParams={{
+              id: 'ChampionProgressionLevelResourceBar',
+              content: notMaxLevel
+                ? getTokenizedStringTableValue(StringIDGeneralXPProgress, this.props.stringTable, {
+                    CURRENT_XP: String(current),
+                    MAX_XP: String(max)
+                  })
+                : null
+            }}
+          >
+            <ResourceBar
+              isSquare
+              type={'blue'}
+              current={current}
+              max={max}
+              hideText={true}
+              containerClasses={`${ProgressionExperienceBar} ${gameStats}`}
+              fillClasses={ProgressionExperienceBarFill}
+            />
+          </TooltipSource>
         </div>
       </div>
     );
+  }
+
+  private onMouseEnter(): void {
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
   }
 
   private getLevel(questGQL: QuestGQL, notMaxLevel: boolean): string {

@@ -619,6 +619,11 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  animation-name: credits_o41aq-fade-out;
+  animation-duration: 4s;
+  animation-delay: 225s; // should change with timing of CreditsScreen-CreditsTextDelayed
+  animation-fill-mode: forwards;
+
   &:before {
     content: '';
     position: absolute;
@@ -628,7 +633,7 @@
     background-size: cover;
     animation-fill-mode: forwards;
     animation-name: background_o41aq-zoom-in;
-    animation-duration: 200s;
+    animation-duration: 350s;
   }
 
   @keyframes background_o41aq-zoom-in {
@@ -639,6 +644,15 @@
     to {
       opacity: 1;
       transform: scale(1.5) translate(3%, 2%);
+    }
+  }
+
+  @keyframes credits_o41aq-fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
     }
   }
 }
@@ -652,7 +666,7 @@
     width: 50%;
     height: 100%;
     transform: translate(350%, -50%) rotate(35deg);
-    background: url(../images/hud/fullscreen/credits-ray1.png);
+    background: url(../images/fullscreen/credits-ray1.png);
     background-size: 100% 100%;
     animation-duration: 8s;
   }
@@ -662,7 +676,7 @@
     height: 100%;
     transform: translate(10%, -40%);
     filter: hue-rotate(25deg);
-    background: url(../images/hud/fullscreen/credits-ray2.png);
+    background: url(../images/fullscreen/credits-ray2.png);
     background-size: 100% 100%;
     animation-duration: 5s;
   }
@@ -672,7 +686,7 @@
     height: 100%;
     transform: translate(0%, -30%);
     filter: hue-rotate(-30deg);
-    background: url(../images/hud/fullscreen/credits-ray3.png);
+    background: url(../images/fullscreen/credits-ray3.png);
     background-size: 100% 100%;
     animation-duration: 6s;
   }
@@ -682,7 +696,7 @@
     height: 100%;
     transform: translate(45%, -20%);
     filter: hue-rotate(-35deg);
-    background: url(../images/hud/fullscreen/credits-ray4.png);
+    background: url(../images/fullscreen/credits-ray4.png);
     background-size: 100% 100%;
     animation-duration: 7s;
   }
@@ -700,49 +714,26 @@
   }
 }
 
-.CreditsScreen-CreditsTextDelayed {
-  font-family: Colus;
-  color: white;
-  font-size: 2rem;
-  width: 100%;
-  text-align: center;
-  
-  transform: translate(0%, -235%);
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-  animation-name: scroll_45385-text;
-  animation-duration: 80s;
-  animation-delay: 145s;
-
-  @keyframes scroll_45385-text {
-    0% {
-      transform: translate(0%, -235%);
-    }
-    100% {
-      transform: translate(0%, -390%);
-    }
-  }
-}
-
 .CreditsScreen-CreditsText {
   font-family: Colus;
   color: white;
   font-size: 2rem;
   width: 100%;
   text-align: center;
-  
-  transform: translate(0%, 15%);
+  position: relative;
+
+  top: 100%;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
   animation-name: scroll_xzw9i-text;
-  animation-duration: 220s;
+  animation-duration: 300s;
 
   @keyframes scroll_xzw9i-text {
     0% {
-      transform: translate(0%, 15%);
+      top: 100%;
     }
     100% {
-      transform: translate(0%, -138%);
+      top: -1700%;
     }
   }
 }
@@ -758,6 +749,9 @@
 
 .CreditsScreen-Item {
   margin-top: 2.6vmin;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .CreditsScreen-SingleLineItem {
@@ -766,6 +760,10 @@
   font-size: 2rem;
   color: #00d3c2;
   min-height: 2vmin;
+}
+
+.CreditsScreen-Spacer {
+  height: 100vh;
 }
 
 .CreditsScreen-Thanker {
@@ -1203,6 +1201,146 @@
   &.downed {
     font-family: Colus;
   }
+}
+
+.Shared-EventAdvertisementPanel-Container {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 22.5vmin;
+  margin-top: 1vmin;
+  &.hidden {
+    visibility: hidden;
+  }
+}
+
+.Shared-EventAdvertisementPanel-Slide {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  display: none;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+  &.active {
+    display: flex;
+  }
+  &.clickable {
+    cursor: pointer;
+  }
+}
+
+.Shared-EventAdvertisementPanel-Shadow {
+  pointer-events: none;
+  width: calc(100% - 4vmin);
+  padding: 2vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.747) 100%);
+}
+
+.Shared-EventAdvertisementPanel-Text {
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #dddddd;
+  line-height: 1.35;
+  margin-bottom: 0.25vmin;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.Shared-EventAdvertisementPanel-SecondaryText {
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #a9a9a9;
+  line-height: 1.35;
+}
+
+.Shared-EventAdvertisementPanel-Time {
+  text-transform: uppercase;
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #a9a9a9;
+  line-height: 1.35;
+}
+
+.Shared-EventAdvertisementPanel-Dots {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: absolute;
+  right: -3.5vmin;
+  align-self: center;
+}
+
+.Shared-EventAdvertisementPanel-Dot {
+  cursor: pointer;
+  background-color: #85d2ff;
+  border: 2px solid #4444a2;
+  width: 2vmin;
+  height: 2vmin;
+  opacity: 0.2;
+  margin: 0.5vmin 0;
+  &.active {
+    opacity: 1;
+  }
+}
+
+.Shared-Notifications-Container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Shared-Notifications-Messages {
+  position: absolute;
+  width: 40vmin;
+  background-color: #0e1124;
+  top: 100%;
+  left: 0;
+}
+
+.Shared-Notifications-Message {
+  border: 1px solid;
+  padding: 1.5vmin;
+}
+
+.Shared-Notifications-Title {
+  font-family: Colus;
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 0.25vmin;
+}
+
+.Shared-Notifications-Body {
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #dddddd;
+  line-height: 1.35;
+  margin-bottom: 0.25vmin;
+}
+
+.Shared-Notifications-Time {
+  text-transform: uppercase;
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #a9a9a9;
+  line-height: 1.35;
+}
+
+.Shared-Notifications-Icon {
+  height: 6vmin;
 }
 
 .GameStats-Highlights-Container {
@@ -2001,11 +2139,8 @@
   color: white;
   font-size: 2.1rem;
   padding-top: 1vmin;
-
-  &.Primary {
-    padding-top: 1vmin;
-    font-size: 2.5rem;
-  }
+  padding-left: 0.5vmin;
+  padding-right: 0.5vmin;
 }
 
 .GameStats-SummaryMVP-MVPName {
@@ -2071,13 +2206,8 @@
 
 .GameStats-SummaryMVP-MVPTitleContainer {
   text-align: center;
-  height: 7vmin;
   background-image: url(../images/fullscreen/gamestats/mvp-background.png);
   background-size: 100% 100%;
-
-  &.Primary {
-    height: 9.5vmin;
-  }
 }
 
 .GameStats-SummaryMVP-MVPPlayerContainer {
@@ -2445,7 +2575,7 @@
 }
 
 .StartScreen-Store-StoreNavMenu-Badge {
-  top: 90%;
+  top: 100%;
 }
 
 .Fullscreen-Input {
@@ -3207,18 +3337,15 @@
 }
 
 .MiddleModal-Container {
-  position: relative;
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 50vmin;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  top: 50%;
   left: 0;
-  margin: auto;
   background-color: #0e1125;
   border-top: 0.3vmin solid #303173;
   border-bottom: 0.3vmin solid #303173;
@@ -3226,6 +3353,7 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s;
+  transform: translateY(-50%);
 
   &.visible {
     opacity: 1;
@@ -3668,7 +3796,7 @@
   min-height: 2.4vmin;
   margin-top: 1.85vmin;
   margin-right: 0.45vmin;
-  line-height: 1.65rem;
+  line-height: 2.5rem;
   font-size: 1.65rem;
   color: #4c4c4c;
 
@@ -4007,12 +4135,12 @@
   align-self: center;
   max-width: 95%;
   height: 76vmin;
-  margin-top: 6.5vmin;
+  margin-top: 11vmin;
 }
 
 .BattlePass-LeftContentContainer {
   position: relative;
-  margin-right: 1vmin;
+  margin-right: 5vmin;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -4068,6 +4196,7 @@
 }
 
 .BattlePass-Header-Tier {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -4077,17 +4206,20 @@
   margin-right: 2vmin;
   height: 8vmin;
   width: 6vmin;
+  cursor: pointer;
 }
 
 .BattlePass-Header-TierValue {
   font-size: 3.5rem;
   font-family: Colus;
   line-height: 0.9;
+  cursor: pointer;
 }
 
 .BattlePass-Header-TierLabel {
   font-size: 1.25rem;
   color: #a9a9a9;
+  cursor: pointer;
 }
 
 .BattlePass-Header-NameContainer {
@@ -4209,6 +4341,15 @@
   }
 }
 
+.BattlePass-Header-ProgressBar {
+  position: absolute;
+  height: 8%;
+  top: 0;
+  left: 0;
+  background: linear-gradient(to right, #ff8a00 0%, #fbe201 100%);
+  cursor: pointer;
+}
+
 .BattlePass-Tier-NumberTextValue {
   position: absolute;
   left: 0;
@@ -4256,7 +4397,7 @@
     right: 0;
     left: 0;
     box-sizing: border-box;
-    border: 2px solid #4b80a8;
+    border: 2px solid $HighlightBlue;
     background: linear-gradient(to top, rgba(133, 210, 255, 0.7) 0%, rgba(133, 210, 255, 0) 60%);
   }
 
@@ -4269,7 +4410,7 @@
     right: 0;
     left: 0;
     box-sizing: border-box;
-    border: 4px solid #4b80a8;
+    border: 4px solid $HighlightBlue;
   }
 
   &.unclaimed {
@@ -4281,7 +4422,7 @@
   position: relative;
   width: 100%;
   box-sizing: border-box;
-  background-color: rgba(255, 138, 0, 0.25);
+  background-color: rgba(255, 138, 0, 0.5);
   cursor: pointer;
 
   &:not(.clicked):not(:hover):not(.empty)::before {
@@ -4413,12 +4554,6 @@
   cursor: pointer;
 }
 
-.BattlePass-Tier-PrizeBadge {
-  position: absolute;
-  top: 1.5vmin;
-  left: 1.5vmin;
-}
-
 .BattlePass-Tier-TooltipRoot {
   @extend .Column;
   position: relative;
@@ -4435,6 +4570,27 @@
   position: relative;
   color: white;
   font-size: 1.3rem;
+}
+
+.BattlePass-Tier-CollectButtonContainer {
+  position: relative;
+  margin-top: 0.5vmin;
+  width: 100%;
+  height: 4vmin;
+}
+
+.BattlePass-Tier-CollectButton {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-size: 1.4rem;
+  padding: 0.8vmin;
+}
+
+.BattlePass-Tier-CollectButtonBadge {
+  position: absolute;
+  left: 1.2vmin;
+  top: 50%;
 }
 
 .BattlePass-PremiumLabel {
@@ -4486,7 +4642,7 @@
 .BattlePass-PageArrow {
   position: relative;
   margin: 0vmin 1.5vmin;
-  font-size: 2.25rem;
+  font-size: 3rem;
   color: white;
   cursor: pointer;
 
@@ -4532,7 +4688,8 @@
 .BattlePass-Selection-PreviewOverlay {
   position: absolute;
   bottom: 0;
-  width: 100%;
+  width: 90%;
+  margin: 0 5%;
 }
 
 .BattlePass-Selection-PreviewText {
@@ -4555,19 +4712,20 @@
 
 .BattlePass-Selection-PreviewTier-Container {
   @extend .Row;
-  height: 2.4vmin;
+  height: auto;
   &:not(:last-child) {
     margin-bottom: 0.5vmin;
   }
 }
 
-.BattlePass-Selection-PreviewTier-CrownIcon {
+.BattlePass-Selection-PreviewTier-PremiumIcon {
   position: relative;
   width: 2.5rem;
   height: 2.5rem;
   margin-right: 1vmin;
-  background-size: contain;
-  background-image: url(../images/battlepass/crown_icon.png);
+  margin-top: -0.3vmin;
+  font-size: 2.5rem;
+  color: #ffb000;
 }
 
 .BattlePass-Selection-PreviewTier-NormalText {
@@ -5824,520 +5982,6 @@
   }
 }
 
-.ChampionProfile-SelectPanel-Panel {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  height: 90%;
-  width: 30%;
-  margin-left: 15%;
-  margin-right: -5%;
-}
-
-.ChampionProfile-SelectPanel-Title {
-  font-size: 3rem;
-  font-weight: bold;
-  font-family: Colus;
-  text-transform: uppercase;
-  color: white;
-  margin-bottom: 1%;
-}
-
-.ChampionProfile-SelectPanel-ItemContainer {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-content: start;
-  overflow: auto;
-  height: 80%;
-  padding-bottom: 2%;
-  background: rgba(15, 17, 29, 0.74);
-
-  &::-webkit-scrollbar {
-    width: 1vmin;
-    height: 0.55vmin;
-  }
-
-  &::-webkit-scrollbar-track {
-    box-shadow: none;
-    background: none;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: $StoreLightBlue;
-    border: 0.15vmin solid #6967df;
-  }
-}
-
-.ChampionProfile-SelectPanel-ButtonContainer {
-  height: 5vmin;
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 2%;
-
-  animation: slideIn_cpsasdf 0.6s forwards;
-  @keyframes slideIn_cpsasdf {
-    from {
-      opacity: 0;
-      transform: translateY(10vmin);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  &.right {
-    justify-content: flex-end;
-  }
-}
-
-.ChampionProfile-SelectPanel-BackButton {
-  font-size: 1.65rem;
-  width: 13vmin;
-}
-
-.ChampionProfile-SelectPanel-UnderMaintenaceContainer {
-  background-color: #e69119;
-  border: solid 0.25vmin black;
-  position: absolute;
-  top: 35%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-20deg);
-}
-
-.ChampionProfile-SelectPanel-UnderMaintenaceMessage {
-  color: black;
-  font-size: 6rem;
-  position: relative;
-  white-space: nowrap;
-}
-
-.ChampionProfile-SelectPanel-UnderMaintenaceNails {
-  color: grey;
-  font-size: 9rem;
-}
-
-.ChampionProfile-SelectPanelItem-Container {
-  display: flex;
-  flex-direction: column;
-  background-color: #081421;
-  border: solid 0.15vmin #474497;
-  height: max-content;
-  width: 30%;
-  margin-left: 2%;
-  margin-top: 2%;
-  position: relative;
-  padding-bottom: 4vmin;
-
-  &.portrait {
-    width: 95%;
-    padding-bottom: 2.5vmin;
-  }
-
-  &.selected,
-  &:hover {
-    border: solid 0.15vmin #7ecffc;
-  }
-
-  &.equipped {
-    background-image: linear-gradient(0deg, #0dcccc, rgba(0, 0, 0, 0));
-  }
-}
-
-.ChampionProfile-SelectPanelItem-ImageContainer {
-  display: flex;
-  flex-direction: column;
-}
-
-.ChampionProfile-SelectPanelItem-Image {
-  width: 100%;
-
-  &.unowned {
-    filter: grayscale(90%);
-  }
-}
-
-.ChampionProfile-SelectPanelItem-ToolTipContainer {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  height: 5vmin;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  bottom: 0;
-
-  &.portrait {
-    flex-direction: row;
-    align-items: center;
-    height: 2.5vmin;
-  }
-}
-
-.ChampionProfile-SelectPanelItem-ToolTipTitle {
-  font-size: 1rem;
-  font-family: colus;
-  text-transform: uppercase;
-  margin-top: 0.75vmin;
-  margin-left: 0.75vmin;
-  color: white;
-
-  &.portrait {
-    margin-right: 0.5vmin;
-    margin-top: 0;
-  }
-}
-
-.ChampionProfile-SelectPanelItem-ToolTipDescription {
-  font-size: 0.7rem;
-  font-family: lato;
-  overflow: auto;
-  margin-top: 0.25vmin;
-  margin-left: 0.75vmin;
-  margin-right: 0.75vmin;
-  color: white;
-
-  &.portrait {
-    margin-top: 0;
-  }
-}
-
-.ChampionProfile-SelectPanelItem-Badge {
-  position: absolute;
-  top: 1vmin;
-  left: 1vmin;
-  transition: all 0.2s linear;
-}
-
-.ChampionProfile-SelectAppearance-Container {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-
-  transform: translateX(-10vmin);
-  opacity: 0;
-  animation: slideIn_cpswtlp2 0.6s forwards;
-  @keyframes slideIn_cpswtlp2 {
-    from {
-      opacity: 0;
-      transform: translateX(-10vmin);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-}
-
-.ChampionProfile-SelectWeapon-Container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.ChampionProfile-SelectWeapon-Container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.ChampionProfile-SelectWeapon-Centerer {
-  position: relative;
-  margin-left: 15%;
-  width: 70%;
-  height: 100%;
-  justify-content: center;
-  display: flex;
-  flex-direction: column;
-}
-
-.ChampionProfile-SelectWeapon-TopContainer {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-}
-
-.ChampionProfile-SelectWeapon-TopLeftPanel {
-  position: relative;
-  width: 44vmin;
-  display: flex;
-  flex-direction: column;
-
-  transform: translateX(-10vmin);
-  opacity: 0;
-  animation: slideIn_cpswtlp0 0.6s forwards;
-  @keyframes slideIn_cpswtlp0 {
-    from {
-      opacity: 0;
-      transform: translateX(-10vmin);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-}
-
-.ChampionProfile-SelectWeapon-TopRightPanel {
-  position: relative;
-  height: 73vmin;
-  margin-left: 4vmin;
-  flex-grow: 1;
-
-  transform: translateX(10vmin);
-  opacity: 0;
-  animation: slideIn_cpswtrp0 0.6s forwards;
-  @keyframes slideIn_cpswtrp0 {
-    from {
-      opacity: 0;
-      transform: translateX(10vmin);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-}
-
-.ChampionProfile-SelectWeapon-ButtonContainer {
-  position: relative;
-  margin-top: 2vmin;
-  display: flex;
-  flex-direction: row;
-
-  transform: translateY(10vmin);
-  opacity: 0;
-  animation: slideIn_cpswbc0 0.6s forwards;
-  @keyframes slideIn_cpswbc0 {
-    from {
-      opacity: 0;
-      transform: translateY(10vmin);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
-
-.ChampionProfile-SelectWeapon-SlotName {
-  color: white;
-  font-family: Colus;
-  font-size: 2.5rem;
-}
-
-.ChampionProfile-SelectWeapon-BackButton,
-.ChampionProfile-SelectSkin-BackButton,
-.ChampionProfile-SelectEmote-BackButton {
-  font-size: 1.65rem;
-  width: 13vmin;
-}
-
-.ChampionProfile-SelectWeapon-EquipButton {
-  margin-left: 2vmin;
-  font-size: 1.65rem;
-  width: 21vmin;
-}
-
-.ChampionProfile-SelectWeapon-WeaponsContainer,
-.ChampionProfile-SelectSkin-SkinsContainer {
-  position: relative;
-  width: 100%;
-  height: 70vmin;
-  overflow-y: auto;
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  background: rgba(15, 17, 29, 0.94);
-
-  &::-webkit-scrollbar {
-    width: 1vmin;
-    height: 0.55vmin;
-  }
-
-  &::-webkit-scrollbar-track {
-    box-shadow: none;
-    background: none;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: $StoreNavy;
-    border: 0.15vmin solid #6967df;
-  }
-}
-
-.ChampionProfile-SelectWeapon-CellIcon {
-  position: relative;
-  width: 95%;
-  height: 95%;
-  margin-left: 2.5%;
-  margin-top: 2.5%;
-  object-fit: contain;
-}
-
-.ChampionProfile-SelectWeapon-PreviewIcon {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: all 0.2s linear;
-  opacity: 0;
-  z-index: 0;
-
-  &.Visible {
-    opacity: 1;
-    z-index: 1;
-  }
-}
-
-.ChampionProfile-SelectWeapon-PreviewInfoContainer,
-.ChampionProfile-SelectSkin-PreviewInfoContainer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  max-width: 60%;
-  padding: 2vmin;
-  border: 0.15vmin solid $StoreNavy;
-  background: rgba(29, 29, 68, 0.85);
-  display: flex;
-  flex-direction: column;
-  z-index: 2;
-
-  transition: all 0.2s linear;
-}
-
-.ChampionProfile-SelectWeapon-PreviewInfoTitle,
-.ChampionProfile-SelectSkin-PreviewInfoTitle {
-  color: white;
-  font-family: Lato;
-  font-weight: bold;
-  font-size: 1.65vmin;
-  text-align: left;
-}
-
-.ChampionProfile-SelectWeapon-PreviewInfoDescription,
-.ChampionProfile-SelectSkin-PreviewInfoDescription {
-  margin-top: 1vmin;
-  color: #dddddd;
-  font-family: Lato;
-  font-size: 1.35vmin;
-  text-align: left;
-}
-
-.ChampionProfile-SelectWeapon-Badge {
-  position: absolute;
-  top: 1vmin;
-  left: 1vmin;
-  transition: all 0.2s linear;
-}
-
-.ChampionProfile-SelectSkin-Container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.ChampionProfile-SelectSkin-Centerer {
-  position: relative;
-  margin-left: 15%;
-  width: 70%;
-  height: 100%;
-  justify-content: center;
-  display: flex;
-  flex-direction: column;
-}
-
-.ChampionProfile-SelectSkin-TopContainer {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-}
-
-.ChampionProfile-SelectSkin-TopLeftPanel {
-  position: relative;
-  width: 44vmin;
-  display: flex;
-  flex-direction: column;
-
-  transform: translateX(-10vmin);
-  opacity: 0;
-  animation: slideIn_cpswtlp1 0.6s forwards;
-  @keyframes slideIn_cpswtlp1 {
-    from {
-      opacity: 0;
-      transform: translateX(-10vmin);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-}
-
-.ChampionProfile-SelectSkin-TopRightPanel {
-  position: relative;
-  height: 73vmin;
-  margin-left: 4vmin;
-  flex-grow: 1;
-
-  transform: translateX(10vmin);
-  opacity: 0;
-  animation: slideIn_cpswtrp1 0.6s forwards;
-  @keyframes slideIn_cpswtrp1 {
-    from {
-      opacity: 0;
-      transform: translateX(10vmin);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-}
-
-.ChampionProfile-SelectSkin-ButtonContainer {
-  position: relative;
-  margin-top: 2vmin;
-  display: flex;
-  flex-direction: row;
-
-  transform: translateY(10vmin);
-  opacity: 0;
-  animation: slideIn_cpswbc1 0.6s forwards;
-  @keyframes slideIn_cpswbc1 {
-    from {
-      opacity: 0;
-      transform: translateY(10vmin);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
-
-.ChampionProfile-SelectSkin-SlotName {
-  color: white;
-  font-family: Colus;
-  font-size: 2.5rem;
-}
-
-.ChampionProfile-SelectSkin-EquipButton {
-  margin-left: 2vmin;
-  font-size: 1.65rem;
-  width: 21vmin;
-}
-
 .ChampionProfile-MultiButton-ButtonStyle {
   margin-left: 2vmin;
   font-size: 1.65rem;
@@ -6350,68 +5994,6 @@
   font-family: Colus;
   margin-left: 2vmin;
   padding-top: 1.2vmin;
-}
-
-.ChampionProfile-SelectSkin-Cell,
-.ChampionProfile-SelectWeapon-Cell {
-  position: relative;
-  width: 7vmin;
-  height: 9.5vmin;
-  margin-top: 1vmin;
-  margin-left: 1vmin;
-  border: 0.15vmin solid $StoreNavy;
-  transition: all 0.2s linear;
-
-  &.Unowned {
-    opacity: 0.5;
-  }
-
-  &.Equipped {
-    box-shadow: inset 0 0 0 0.5vmin #7ecffc !important;
-  }
-
-  &.Selected {
-    box-shadow: inset 0 0 3vmin 0.2vmin #7ecffc;
-    opacity: 1;
-  }
-
-  &:hover {
-    opacity: 1;
-    border: solid 0.15vmin #7ecffc;
-  }
-}
-
-.ChampionProfile-SelectSkin-CellIcon {
-  position: relative;
-  width: 95%;
-  height: 95%;
-  margin-left: 2.5%;
-  margin-top: 2.5%;
-  object-fit: contain;
-}
-
-.ChampionProfile-SelectSkin-PreviewIcon {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: all 0.2s linear;
-  opacity: 0;
-  z-index: 0;
-
-  &.Visible {
-    opacity: 1;
-    z-index: 1;
-  }
-}
-
-.ChampionProfile-SelectSkin-Badge {
-  position: absolute;
-  top: 1vmin;
-  left: 1vmin;
-  transition: all 0.2s linear;
 }
 
 .ChampionProfile-SelectRuneMods-Container {
@@ -6443,7 +6025,7 @@
   top: 4%;
   position: absolute;
   font-family: Lato;
-  color: #B5B5B5;
+  color: #b5b5b5;
   font-size: 1.4rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -6473,12 +6055,18 @@
   z-index: -1;
 }
 
-.ChampionProfile-SelectRuneMods-ProgressBar {
+.ChampionProfile-SelectRuneMods-ProgressBarTooltip {
+  position: relative;
   width: 10%;
   height: 1.5%;
-  border: solid 0.3vmin #4442a2;
   left: 9.9%;
   top: 60%;
+}
+
+.ChampionProfile-SelectRuneMods-ProgressBar {
+  border: solid 0.3vmin #4442a2;
+  width: 100%;
+  height: 100%;
 }
 
 .ChampionProfile-SelectRuneMods-ProgressionLevel {
@@ -6642,7 +6230,7 @@
   width: 94%;
   height: 80%;
   border: solid 0.3vmin #4442a2;
-  background-color: #1D1D44;
+  background-color: #1d1d44;
 }
 
 .ChampionProfile-SelectRuneMods-SelectedRuneRuneCountContainer {
@@ -6686,7 +6274,7 @@
 }
 
 .ChampionProfile-SelectRuneMods-SelectedRuneDescription {
-  color: #A9A9A9;
+  color: #a9a9a9;
   font-size: 1.4rem;
 }
 
@@ -6752,273 +6340,6 @@
       transform: translateY(0);
     }
   }
-}
-
-.ChampionProfile-SelectEmote-Container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.ChampionProfile-SelectEmote-Container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.ChampionProfile-SelectEmote-Centerer {
-  position: relative;
-  margin-left: 15%;
-  width: 70%;
-  height: 100%;
-  justify-content: center;
-  display: flex;
-  flex-direction: column;
-}
-
-.ChampionProfile-SelectEmote-TopContainer {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-}
-
-.ChampionProfile-SelectEmote-TopLeftPanel {
-  position: relative;
-  width: 44vmin;
-  display: flex;
-  flex-direction: column;
-
-  transform: translateX(-10vmin);
-  opacity: 0;
-  animation: slideIn_cpswtlp2 0.6s forwards;
-  @keyframes slideIn_cpswtlp2 {
-    from {
-      opacity: 0;
-      transform: translateX(-10vmin);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-}
-
-.ChampionProfile-SelectEmote-TopRightPanel {
-  position: relative;
-  height: 73vmin;
-  margin-left: 4vmin;
-  flex-grow: 1;
-
-  transform: translateX(10vmin);
-  opacity: 0;
-  animation: slideIn_cpswtrp2 0.6s forwards;
-  @keyframes slideIn_cpswtrp2 {
-    from {
-      opacity: 0;
-      transform: translateX(10vmin);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-}
-
-.ChampionProfile-SelectEmote-ButtonContainer {
-  position: relative;
-  margin-top: 2vmin;
-  display: flex;
-  flex-direction: row;
-
-  transform: translateY(10vmin);
-  opacity: 0;
-  animation: slideIn_cpswbc2 0.6s forwards;
-  @keyframes slideIn_cpswbc2 {
-    from {
-      opacity: 0;
-      transform: translateY(10vmin);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
-
-.ChampionProfile-SelectEmote-SlotName {
-  color: white;
-  font-family: Colus;
-  font-size: 2.5rem;
-}
-
-.ChampionProfile-SelectEmote-EquippedEmotesContainer {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-}
-.ChampionProfile-SelecteEmote-EquippedEmoteCell {
-  position: relative;
-  width: 7vmin;
-  height: 9.5vmin;
-  margin-left: 0.5vmin;
-  border: solid 0.15vmin $StoreNavy;
-  background: $StoreBackgroundDarkNavy;
-
-  transition-duration: 0.3s;
-
-  &.Selected {
-    box-shadow: inset 0 0 0 0.5vmin #7ecffc;
-  }
-
-  &:hover {
-    border: solid 0.15vmin #7ecffc;
-  }
-}
-
-.ChampionProfile-SelectEmote-EquipButton {
-  margin-left: 2vmin;
-  font-size: 1.65rem;
-  width: 21vmin;
-}
-
-.ChampionProfile-SelectEmote-EmotesContainer {
-  position: relative;
-  width: 100%;
-  height: 60vmin;
-  margin-top: 1vmin;
-  overflow-y: auto;
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  background: rgba(15, 17, 29, 0.94);
-
-  &::-webkit-scrollbar {
-    width: 1.55vmin;
-    height: 0.55vmin;
-  }
-
-  &::-webkit-scrollbar-track {
-    box-shadow: none;
-    background: none;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: $StoreNavy;
-    border: 0.15vmin solid #6967df;
-  }
-}
-
-.ChampionProfile-SelectEmote-Cell {
-  position: relative;
-  width: 7vmin;
-  height: 9.5vmin;
-  margin-top: 1vmin;
-  margin-left: 1vmin;
-  border: 0.15vmin solid $StoreNavy;
-  transition: all 0.2s linear;
-
-  &.Unowned {
-    opacity: 0.5;
-  }
-
-  &.Equipped {
-    box-shadow: inset 0 0 0 0.5vmin #7ecffc !important;
-  }
-
-  &.Selected {
-    box-shadow: inset 0 0 3vmin 0.5vmin #7ecffc;
-    opacity: 1;
-  }
-
-  &:hover {
-    opacity: 1;
-    border: solid 0.15vmin #7ecffc;
-  }
-}
-
-.ChampionProfile-SelectEmote-CellIcon {
-  position: relative;
-  width: 95%;
-  height: 95%;
-  margin-left: 2.5%;
-  margin-top: 2.5%;
-  object-fit: contain;
-}
-
-.ChampionProfile-SelectEmote-PreviewIcon {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: all 0.2s linear;
-  opacity: 0;
-  z-index: 0;
-
-  &.Visible {
-    opacity: 1;
-    z-index: 1;
-  }
-}
-
-.ChampionProfile-SelectEmote-PreviewVideoContainer {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  transition: all 0.2s linear;
-  opacity: 0;
-  z-index: 0;
-  pointer-events: none;
-
-  &.Visible {
-    opacity: 1;
-    z-index: 1;
-    pointer-events: all;
-  }
-}
-
-.ChampionProfile-SelectEmote-PreviewVideo {
-  position: relative;
-}
-
-.ChampionProfile-SelectEmote-PreviewInfoContainer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  max-width: 60%;
-  padding: 3vmin;
-  border: 0.15vmin solid $StoreNavy;
-  background: rgba(15, 17, 36, 0.6);
-  display: flex;
-  flex-direction: column;
-  z-index: 2;
-
-  transition: all 0.2s linear;
-}
-
-.ChampionProfile-SelectEmote-PreviewInfoTitle {
-  color: white;
-  font-family: Lato;
-  font-weight: bold;
-  font-size: 3vmin;
-  text-align: left;
-}
-
-.ChampionProfile-SelectEmote-PreviewInfoDescription {
-  margin-top: 1vmin;
-  color: #dddddd;
-  font-family: Lato;
-  font-size: 2vmin;
-  text-align: left;
-}
-
-.ChampionProfile-SelectEmote-Badge {
-  position: absolute;
-  top: 1vmin;
-  left: 1vmin;
-  transition: all 0.2s linear;
 }
 
 .ChampionProfile-ChampionDetails-Container {
@@ -7103,10 +6424,11 @@
 }
 
 .ChampionProfile-ChampionDetails-AbilityKeybindText {
-  color: white;
   font-family: Lato;
-  font-weight: 900;
-  font-size: 1.5rem;
+  color: #b5b5b5;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .ChampionProfile-ChampionDetails-AbilityTextContainer {
@@ -7263,6 +6585,13 @@
   color: white;
 }
 
+.ChampionProfile-SelectRuneMods-SelectedRuneIcon {
+  width: 94%;
+  height: 80%;
+  border: solid 0.3vmin #4442a2;
+  background-color: #1d1d44;
+}
+
 .Leaderboards-ListItem-Container {
   display: flex;
   align-items: center;
@@ -7375,7 +6704,7 @@
 }
 
 .StartScreen-NavMenu-TabSubtitle {
-  color: $LeaderAndPrimaryYellow;
+  color: #f9cd05;
   font-size: 1.1rem;
   font-family: Lato;
   text-transform: none;
@@ -7463,96 +6792,6 @@
   &.no {
     background-color: rgba(255, 255, 255, 0.2);
     border-color: transparent;
-  }
-}
-
-.StartScreen-Play-GroupInviteList-GroupInviteListOuter {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-}
-
-.StartScreen-Play-GroupInviteList-GroupInviteListContainer {
-  width: 100%;
-  height: 100%;
-  overflow-y: scroll;
-  position: relative;
-
-  &::-webkit-scrollbar {
-    width: 0.55vmin;
-    height: 0.55vmin;
-  }
-
-  &::-webkit-scrollbar-track {
-    box-shadow: none;
-    background: none;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: $MenuScrollBarThumbGrey;
-  }
-}
-
-.StartScreen-Play-GroupInviteList {
-  position: absolute;
-  width: 50%;
-  left: 50%;
-
-  display: flex;
-  flex-direction: column;
-}
-
-.StartScreen-Play-GroupInviteList-GroupInviteHeader {
-  flex-shrink: 0;
-  font-weight: bold;
-  font-size: 1.65rem;
-  letter-spacing: 0.2vmin;
-  height: 2.778vmin;
-  color: rgba(255, 255, 255, 0.8);
-  font-family: Colus;
-  padding-left: 0.37vmin;
-  margin-top: 0.45vmin;
-  margin-bottom: 0.55vmin;
-  margin-left: calc(50% + 0.3704vmin);
-  margin-right: 0.37vmin;
-}
-
-.StartScreen-Play-GroupInviteList-GroupInviteContextMenuClickHandler {
-  position: absolute;
-  z-index: 9; /* value should be > 0 and < GroupInviteContextMenu */
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
-
-.StartScreen-Play-GroupInviteList-GroupInviteScrollArea {
-  flex-grow: 1;
-  padding: 0.45vmin;
-  background: rgba(0, 40, 200, 0.4);
-}
-
-.StartScreen-Play-GroupInviteList-GroupInviteContextMenu {
-  position: absolute;
-  right: 4.63vmin;
-  width: 100%;
-  z-index: 10;
-
-  &.aligned-top {
-    top: 0;
-  }
-
-  &.aligned-top > svg {
-    top: 0.75vmin;
-  }
-
-  &.aligned-bottom {
-    bottom: 50%;
-  }
-
-  &.aligned-bottom > svg {
-    bottom: 0.85vmin;
   }
 }
 
@@ -7717,95 +6956,10 @@
   flex-direction: row;
 }
 
-.StartScreen-Play-PlayerEntry-PlayerEntryContainer {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  height: 6.5vmin;
-  font-family: Lato;
-  padding-left: 1.4vmin;
-  background-color: rgba(29, 60, 110, 0.8);
-  border: 0.15vmin solid $EightyPercentOpacityBlack;
-
-  &.selected {
-    background-color: rgba(32, 62, 110, 0.2);
-    border: 0.15vmin solid #84d1fe;
-  }
-}
-
-.StartScreen-Play-PlayerEntry-PlayerEntryBackground {
-  opacity: 0.5;
-  position: absolute;
-  display: block;
-  height: 100%;
-  width: 100%;
-  margin-left: -1.4vmin;
-  object-fit: cover;
-  z-index: -1;
-}
-
-.StartScreen-Play-PlayerEntry-PlayerNameContainer {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  margin-left: 0.45vmin;
-
-  /* The menu button is absolutely positioned on the right.
-    This prevents the player name from clipping into it */
-  max-width: calc(100% - 6.5vmin);
-}
-
-.StartScreen-Play-PlayerEntry-PlayerName {
-  font-size: 1.35rem;
-  color: white;
-  text-overflow: ellipsis;
-  overflow-x: hidden;
-  white-space: nowrap;
-}
-
-.StartScreen-Play-PlayerEntry-PlayerIcon {
-  flex-shrink: 0;
-  width: 2.95vmin;
-  height: 2.95vmin;
-}
-
-.StartScreen-Play-PlayerEntry-PlayerRole {
-  font-size: 1rem;
-  color: yellow;
-}
-
-.StartScreen-Play-PlayerEntry-PlayerRoleInvited {
-  font-size: 1rem;
-  color: SkyBlue;
-}
-
-.StartScreen-Play-PlayerEntry-PlayerRoleOffline {
-  font-size: 1rem;
-  color: #c8c8c8;
-}
-
-.StartScreen-Play-PlayerEntry-EntryContextMenuButton {
-  position: absolute;
-  top: 0.75vmin;
-  right: 0.75vmin;
-  width: 1.5vmin;
-  height: 1.5vmin;
-  background-color: transparent;
-  background-image: url(../images/fullscreen/startscreen/hamburger-menu.png);
-  background-size: 100% 100%;
-  border-width: 0;
-  cursor: pointer;
-
-  &:hover {
-    background-color: rgb(65, 108, 208);
-  }
-}
-
 .StartScreen-Play-PlayerView-Container {
   position: relative;
-  margin-left: 54vmin;
-  margin-right: 12vmin;
+  margin-left: 58vmin;
+  margin-right: 16vmin;
   display: flex;
   align-items: center;
   height: calc(100% - 8.8vmin);
@@ -7833,6 +6987,13 @@
       top: -4.6296vmin;
     }
   }
+}
+
+.StartScreen-NavMenu-TabSubtitle {
+  color: $LeaderAndPrimaryYellow;
+  font-size: 1.1rem;
+  font-family: Lato;
+  text-transform: none;
 }
 
 .StartScreen-Play-PlayerView-PlayerImageContainer {
@@ -7887,7 +7048,7 @@
     right: -0.45vmin;
     width: 0.926vmin;
     height: 0.926vmin;
-    background-color: $LeaderAndPrimaryYellow;
+    background-color: #ffd805;
   }
 
   &.leader:after {
@@ -7897,7 +7058,7 @@
     right: -0.27vmin;
     width: 3.88vmin;
     height: 3.88vmin;
-    border: 0.15vmin solid $LeaderAndPrimaryYellow;
+    border: 0.15vmin solid #ffd805;
   }
 }
 
@@ -8071,7 +7232,6 @@
 
 .StartScreen-Play-LeftPanel {
   position: absolute;
-  top: 12vmin;
   bottom: 12vmin;
   width: 54vmin;
   display: flex;
@@ -8126,7 +7286,7 @@
   transform: translateX(-50%);
 }
 
-.StartScreen-Play-QuestAndInviteSection {
+.StartScreen-Play-QuestSection {
   position: relative;
   margin-top: 1vmin;
   display: flex;
@@ -8138,95 +7298,6 @@
   &:nth-child(2) {
     margin-left: 2vmin;
   }
-}
-
-.StartScreen-Store-StoreChampionFilterDropdown-ChampionDropdownContainer {
-  display: inline-block;
-  border: solid 0.15vmin $StoreNavy;
-}
-
-.StartScreen-Store-StoreChampionFilterDropdown-ChampionDropdownSelectionContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 0.8vmin 1vmin;
-  width: 20vmin;
-}
-
-.StartScreen-Store-StoreChampionFilterDropdown-ChampionSelectionLabel {
-  color: $LabelPaleBlue;
-  font-family: Colus;
-  font-size: 1.65rem;
-}
-
-.StartScreen-Store-StoreChampionFilterDropdown-ChampionOptionLabel {
-  color: $StoreNavy;
-  font-family: Colus;
-  font-size: 1.65rem;
-  padding: 1vmin;
-
-  &:hover {
-    color: #ffffff;
-    background-color: $StoreNavy;
-  }
-}
-
-.StartScreen-Store-StoreChampionFilterDropdown-ChampionDropdownContentContainer {
-  position: absolute;
-  background-color: $StoreBackgroundDarkNavy;
-  width: 21.8vmin;
-  border: solid 0.15vmin $StoreNavy;
-  z-index: 1;
-  opacity: 0;
-  display: none;
-  transition: display 0s, opacity 0.2s linear;
-
-  &.Open {
-    opacity: 1;
-    display: block;
-  }
-}
-
-.StartScreen-Store-StoreChampionFilterDropdown-DropdownArrow {
-  pointer-events: none;
-  width: 0;
-  height: 0;
-  transform: translate(0.5vmin, 0.6vmin);
-  border-left: 1vmin solid transparent;
-  border-right: 1vmin solid transparent;
-  border-top: 1vmin solid $StoreNavy;
-}
-
-.StartScreen-Store-BuxWallet-BuxWalletContainer {
-  display: flex;
-  flex-direction: row;
-  position: absolute;
-  top: 3vmin;
-  right: 2.5vmin;
-  outline: 0.15vmin solid #ffffff;
-  padding: 0.46vmin 0.93vmin;
-  z-index: 1000;
-}
-
-.StartScreen-Store-BuxWallet-BuxWalletIcon {
-  align-self: center;
-  margin-right: 0.4vmin;
-  width: 1.65rem; // Deliberately using rem because this icon is inline with text.
-  height: 1.65rem;
-  object-fit: contain;
-}
-
-.StartScreen-Store-BuxWallet-BuxWalletCount {
-  color: $StoreLightBlue;
-  font-family: Colus;
-  font-size: 1.65rem;
-}
-
-.StartScreen-Store-BuxWallet-BuxWalletLabel {
-  color: $StorePowderBlue;
-  font-family: Colus;
-  font-size: 1.65rem;
-  margin-left: 0.5vmin;
 }
 
 .StartScreen-Store-BundleItem-Container {
@@ -8274,67 +7345,6 @@
   transition: transform 0.2s ease;
 }
 
-.StartScreen-Store-BundleItem-CostContainer {
-  display: flex;
-  align-items: center;
-}
-
-.StartScreen-Store-BundleItem-CostIcon {
-  margin-right: 0.5rem;
-  width: 1.5rem; // Deliberately using rem because this icon is inline with text.
-  height: 1.5rem;
-  object-fit: contain;
-}
-
-.StartScreen-Store-BundleItem-Name {
-  font-size: 1.65rem;
-  font-family: Colus;
-  color: white;
-}
-
-.StartScreen-Store-BundleItem-InfoContainer {
-  position: absolute;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 1vmin 1.5vmin;
-  min-height: 20%;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: $EightyPercentOpacityBlack;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-}
-
-.StartScreen-Store-BundleItem-CostContentLeft {
-  align-self: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.StartScreen-Store-BundleItem-CostAmount {
-  color: $StoreLightBlue;
-  font-family: Colus;
-  font-size: 1.35rem;
-}
-
-.StartScreen-Store-BundleItem-CostLabel {
-  color: $StorePowderBlue;
-  font-family: Colus;
-  font-size: 1.65rem;
-  margin-left: 0.5rem;
-}
-
-.StartScreen-Store-BundleItem-ChampionPortrait {
-  height: 6.7vmin;
-  margin-left: 1vmin;
-  align-self: flex-end;
-  border: 0.15vmin solid $StoreNavy;
-  object-fit: contain;
-}
-
 .StartScreen-Store-BundleItem-NewIcon {
   position: absolute;
   top: 1vmin;
@@ -8369,8 +7379,43 @@
   margin-top: 15vmin;
 }
 
+.StartScreen-Play-PlayerView-ProfileBox {
+  position: relative;
+  width: 3.7vmin;
+  height: 3.7vmin;
+  background-color: #7e7e7e;
+  border: 0.15vmin solid $StoreNavy;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+
+  &.selected {
+    box-shadow: 0 0 2.6vmin rgba(121, 132, 255, 1);
+    border: 0.15vmin solid #84d1fe;
+  }
+
+  &.leader:before {
+    content: '';
+    position: absolute;
+    top: -0.45vmin;
+    right: -0.45vmin;
+    width: 0.926vmin;
+    height: 0.926vmin;
+    background-color: $LeaderAndPrimaryYellow;
+  }
+
+  &.leader:after {
+    content: '';
+    position: absolute;
+    top: -0.27vmin;
+    right: -0.27vmin;
+    width: 3.88vmin;
+    height: 3.88vmin;
+    border: 0.15vmin solid $LeaderAndPrimaryYellow;
+  }
+}
+
 .StartScreen-Store-ConfirmPurchase-Title,
-.StartScreen-Store-ConfirmRealMoneyPurchase-Title,
 .StartScreen-Store-ConfirmPurchase-DividerLine {
   align-self: left;
   color: white;
@@ -8387,8 +7432,7 @@
   margin-top: 1.5vmin;
 }
 
-.StartScreen-Store-ConfirmPurchase-Name,
-.StartScreen-Store-ConfirmRealMoneyPurchase-Name {
+.StartScreen-Store-ConfirmPurchase-Name {
   color: white;
   font-family: Colus;
   font-size: 1.6rem;
@@ -8448,13 +7492,6 @@
   color: #9c9c9c;
 }
 
-.StartScreen-Store-ConfirmRealMoneyPurchase-Description {
-  font-family: Lato;
-  font-size: 1.35rem;
-  color: #9c9c9c;
-  margin-bottom: 2vmin; /* I usually advise against using margin-bottom, but this allows us to avoid adding an empty div for spacing. */
-}
-
 .StartScreen-Store-ConfirmPurchase-RewardsContainer {
   margin-top: 2.5vmin;
   max-width: 100%;
@@ -8494,12 +7531,6 @@
   margin-left: 0.5vmin;
   margin-bottom: -0.5vmin;
   align-self: center;
-}
-
-.StartScreen-Store-ConfirmRealMoneyPurchase-PriceLabel {
-  color: $StoreNavy;
-  font-family: Colus;
-  font-size: 1.65rem;
 }
 
 .StartScreen-Store-ConfirmPurchase-CostAmount {
@@ -8584,67 +7615,6 @@
   margin-left: 3vmin;
 }
 
-.StartScreen-Store-ConfirmRealMoneyPurchase-Container {
-  width: 100%;
-  height: 100%;
-  background-color: $StoreBackgroundDarkNavy;
-  border-left: 0.15vmin solid $StoreNavy;
-  display: flex;
-  align-self: center;
-  flex-direction: column;
-  justify-content: start;
-  align-self: center;
-}
-
-.StartScreen-Store-ConfirmRealMoneyPurchase-ContentCenterer {
-  width: 70%;
-  display: flex;
-  align-self: center;
-  flex-direction: column;
-  justify-content: center;
-  align-self: center;
-  margin-top: 15vmin;
-}
-
-.StartScreen-Store-ConfirmRealMoneyPurchase-PackageIcon {
-  width: 18vmin;
-  height: 18vmin;
-  border: 0.15vmin solid $StoreNavy;
-  object-fit: cover;
-}
-
-.StartScreen-Store-ConfirmRealMoneyPurchase-PriceContainer {
-  margin-top: 7vmin;
-  border-top: 0.15vmin solid $StoreNavy;
-  width: 100%;
-  padding-top: 1vmin;
-  display: flex;
-  flex-direction: row;
-}
-
-.StartScreen-Store-ConfirmRealMoneyPurchase-PriceTag {
-  font-family: Colus;
-  font-size: 1.65rem;
-  color: #fed504;
-  margin-left: 0.5vmin;
-}
-
-.StartScreen-Store-ConfirmRealMoneyPurchase-ButtonsContainer {
-  display: flex;
-  margin-top: 4vmin;
-}
-
-.StartScreen-Store-ConfirmRealMoneyPurchase-Button {
-  display: flex;
-  padding: 1.5vmin 2.8vmin;
-  font-size: 2rem;
-  margin-right: 1vmin;
-}
-
-.StartScreen-Store-ConfirmRealMoneyPurchase-ConsoleIcon {
-  margin-right: 0.45vmin;
-}
-
 .StartScreen-Store-RealMoneyItem-Container {
   position: relative;
   display: flex;
@@ -8709,77 +7679,50 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   padding: 0 0.93vmin;
-  height: 20%;
   left: 2px;
   right: 2px;
   bottom: 2px;
-  background-color: rgba(0, 0, 0, 0.6);
   pointer-events: none;
 }
 
+.StartScreen-Store-RealMoneyItem-BonusDescription {
+  position: relative;
+  margin-bottom: 0.25vmin;
+  font-size: 1.2rem;
+  color: #c2f2f7;
+  filter: drop-shadow(0px 0px 1vmin #001aff);
+}
+
+.StartScreen-Store-RealMoneyItem-BuxRow {
+  position: relative;
+  margin-bottom: 0.25vmin;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.StartScreen-Store-RealMoneyItem-BuxIcon {
+  position: relative;
+  margin-right: 0.5vmin;
+  font-size: 2rem;
+  font-family: Colus;
+  color: $BuxBlue;
+}
+
 .StartScreen-Store-RealMoneyItem-BuxAmount {
-  font-size: 1.65rem;
+  position: relative;
+  font-size: 1.35rem;
   font-family: Colus;
   color: white;
 }
 
-.StartScreen-Store-RealMoneyItem-Cost {
-  display: flex;
-  align-items: center;
+.StartScreen-Store-RealMoneyItem-CostButton {
+  position: relative;
+  margin-bottom: 1vmin;
   font-size: 1.35rem;
-  font-family: Colus;
-  color: #ffd147;
-}
-
-.StartScreen-Store-SkinItem-InfoContainer {
-  position: absolute;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 1vmin 1.5vmin;
-  min-height: 20%;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: $EightyPercentOpacityBlack;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-}
-
-.StartScreen-Store-SkinItem-CostContentLeft {
-  align-self: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.StartScreen-Store-SkinItem-ChampionPortrait {
-  height: 6.7vmin;
-  margin-left: 1vmin;
-  align-self: flex-end;
-  border: 0.15vmin solid $StoreNavy;
-  object-fit: contain;
-}
-
-.StartScreen-Store-SkinItem-CostAmount {
-  color: $StoreLightBlue;
-  font-family: Colus;
-  font-size: 1.35rem;
-}
-
-.StartScreen-Store-SkinItem-CostIcon {
-  margin-right: 0.5rem;
-  width: 1.5rem; // Deliberately using rem because this icon is inline with text.
-  height: 1.5rem;
-  object-fit: contain;
-}
-
-.StartScreen-Store-SkinItem-CostLabel {
-  color: $StorePowderBlue;
-  font-family: Colus;
-  font-size: 1.35rem;
-  margin-left: 0.5rem;
 }
 
 .StartScreen-Store-SkinItem-ItemStyleOverride {
@@ -8796,49 +7739,21 @@
   margin-top: 0.93vmin;
 }
 
-.StartScreen-Store-SkinItem-CostContainer {
-  display: flex;
-  align-items: center;
-}
-
-.StartScreen-Store-SkinItem-Name {
-  font-size: 1.65rem;
-  font-family: Colus;
-  color: white;
-}
-
 .StartScreen-Store-SkinItem-NewIcon {
   position: absolute;
   top: 1vmin;
   left: 1vmin;
 }
 
-.StartScreen-Store-RewardBannerContainer {
-  position: absolute;
-  top: -125%;
-  left: 50%;
-  width: 60%;
-  font-size: 3rem;
-  font-family: Colus;
-  text-align: center;
-  color: white;
-  background-color: $EightyPercentOpacityBlack;
-  border: 0.4vmin solid magenta;
-  border-radius: 1vmin;
-  transform: translate(-50%, -50%);
-}
-
 .StartScreen-Store-StoreNavMenu-Container {
   position: relative;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
   align-self: center;
-  background-color: rgba(0, 0, 0, 0.6);
-  width: 80%;
+  width: 140vmin;
   font-family: Colus;
-  z-index: 1;
 
   opacity: 0;
   margin-top: -5%;
@@ -8856,29 +7771,87 @@
   }
 }
 
+.StartScreen-Store-StoreNavMenu-Border {
+  position: absolute;
+  bottom: 100%;
+  left: -10%;
+  width: 120%;
+  height: 0.25vmin;
+  background-image: url(../images/fullscreen/gamestats/tab-separator.png);
+  background-size: 100% 100%;
+
+  &.bottom {
+    position: absolute;
+    bottom: -0.25vmin;
+  }
+}
+
+.StartScreen-Store-StoreNavMenu-SideButtonContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 22vmin;
+  height: 5vmin;
+}
+
+.StartScreen-Store-StoreNavMenu-BuyGemsButton {
+  align-self: flex-end;
+}
+
+.StartScreen-Store-StoreNavMenu-BuyGemsButtonContent {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+
+.StartScreen-Store-StoreNavMenu-BuyGemsButtonLabel {
+  position: relative;
+  font-size: 1.35rem;
+  color: white;
+}
+
+.StartScreen-Store-StoreNavMenu-BuyGemsButtonIcon {
+  position: relative;
+  margin-top: -0.5vmin;
+  margin-left: 0.5vmin;
+  font-size: 2rem;
+  color: white;
+}
+
+.StartScreen-Store-StoreNavMenu-TabsContainer {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+}
+
+.StartScreen-Store-StoreNavMenu-NavRow {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+}
+
 .StartScreen-Store-StoreNavMenu-HeaderStyles {
-  margin-top: 0.46vmin;
-  margin-bottom: 0.46vmin;
+  font-size: 1.35rem;
   margin-right: 0.15vmin;
-  padding: 1vmin 1.78vmin;
-  color: $LabelPaleBlue;
+  padding: 1.3vmin 1.78vmin;
+  color: white;
+  height: unset;
 
   &:hover {
-    color: #ffffff;
-    background-color: $StoreNavy;
+    color: white;
+    background-image: url(../images/fullscreen/header-bg-reversed.png);
     background-size: 100% 100%;
   }
 
   &.selected {
-    color: #ffffff;
-    background-color: $StoreNavy;
+    color: $HighlightBlue;
+    background: linear-gradient(to bottom, #223050 58%, #23355f 100%);
     background-size: 100% 100%;
   }
-}
-
-.StartScreen-Store-StoreNavMenu-ChampionDropdown {
-  top: 0.46vmin;
-  right: 0.46vmin;
 }
 
 .StartScreen-Store-Container {
@@ -8987,6 +7960,13 @@
       margin-top: 0;
     }
   }
+}
+
+.StartScreen-NotificationsContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+  left: 1.125vmin;
 }
 
 .StartScreen-Hamburger {
@@ -9604,20 +8584,48 @@
   width: 80%;
 }
 
-.Announcements-Popup-Container {
+.Announcements-Popups {
   position: fixed;
   top: 25%;
   left: 20%;
   right: 20%;
+}
 
+.Announcements-ClientPopups-Container {
   display: flex;
   flex-direction: column;
   align-content: center;
   justify-content: center;
   flex-wrap: nowrap;
+  position: relative;
+  margin-bottom: 1vmin;
+
+  &:not(.empty) {
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 0.15vmin;
+      width: 100%;
+      background: url(../images/hud/backgrounds/popup-border.png);
+      background-size: 100% 100%;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 0.15vmin;
+      width: 100%;
+      background: url(../images/hud/backgrounds/popup-border.png);
+      background-size: 100% 100%;
+    }
+  }
 }
 
-.Announcements-Popup-PopupMessage {
+.Announcements-ClientPopups-PopupMessage {
   margin: 0.75vmin 0;
   font-size: 1.65rem;
   padding: 0.926vmin;
@@ -9629,31 +8637,9 @@
     0.15vmin 0 1.3vmin rgba(0, 0, 0, 0.76);
   background: url(../images/hud/backgrounds/popup-bg.png);
   background-size: 100% 100%;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 0.15vmin;
-    width: 100%;
-    background: url(../images/hud/backgrounds/popup-border.png);
-    background-size: 100% 100%;
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 0.15vmin;
-    width: 100%;
-    background: url(../images/hud/backgrounds/popup-border.png);
-    background-size: 100% 100%;
-  }
 }
 
-.Announcements-Popup-ObjectiveSuccessMessage {
+.Announcements-ClientPopups-ObjectiveSuccessMessage {
   margin: 0.75vmin 0;
   font-size: 2.5rem;
   padding: 0.926vmin;
@@ -9665,31 +8651,9 @@
     0.15vmin 0 1.3vmin rgba(58, 117, 57, 0.76);
   background: url(../images/hud/backgrounds/objective-success-bg.png);
   background-size: 100% 100%;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 0.15vmin;
-    width: 100%;
-    background: url(../images/hud/backgrounds/popup-border.png);
-    background-size: 100% 100%;
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 0.15vmin;
-    width: 100%;
-    background: url(../images/hud/backgrounds/popup-border.png);
-    background-size: 100% 100%;
-  }
 }
 
-.Announcements-Popup-ObjectiveFailedMessage {
+.Announcements-ClientPopups-ObjectiveFailedMessage {
   margin: 0.75vmin 0;
   font-size: 2.5rem;
   padding: 0.926vmin;
@@ -9701,28 +8665,57 @@
     0.15vmin 0 1.3vmin rgba(112, 43, 43, 0.76);
   background: url(../images/hud/backgrounds/objective-failed-bg.png);
   background-size: 100% 100%;
+}
 
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 0.15vmin;
-    width: 100%;
-    background: url(../images/hud/backgrounds/popup-border.png);
-    background-size: 100% 100%;
-  }
+.Announcements-RuneModPopups-Container {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  position: relative;
 
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 0.15vmin;
-    width: 100%;
-    background: url(../images/hud/backgrounds/popup-border.png);
-    background-size: 100% 100%;
+  &:not(.empty) {
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 0.15vmin;
+      width: 100%;
+      background: url(../images/hud/backgrounds/popup-border.png);
+      background-size: 100% 100%;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 0.15vmin;
+      width: 100%;
+      background: url(../images/hud/backgrounds/popup-border.png);
+      background-size: 100% 100%;
+    }
   }
+}
+
+.Announcements-RuneModPopups-Message {
+  margin: 0.75vmin 0;
+  padding: 0.926vmin;
+  color: white;
+  text-align: center;
+  background: linear-gradient(to right, rgba(29, 93, 93, 0) 10%, rgba(22, 138, 138, 1) 50%, rgba(28, 90, 90, 0) 90%);
+}
+
+.Announcements-RuneModPopups-MessageTop {
+  font-family: Colus;
+  font-size: 1.65rem;
+}
+
+.Announcements-RuneModPopups-MessageBottom {
+  font-family: Colus;
+  font-size: 1.125rem;
 }
 
 .Announcements-Utils-KeybindIcon {
@@ -9737,8 +8730,15 @@
 }
 
 .Announcements-Utils-KeybindText {
-  font-size: 110%;
-  font-weight: bold;
+  color: #000000;
+  padding-left: 0.5vmin;
+  padding-right: 0.5vmin;
+  border-radius: 0.4vmin;
+  background: white;
+  margin: 0.37vmin;
+  text-shadow: none;
+  line-height: 150%;
+  font-weight: 900;
 }
 
 .Announcements-VictoryDefeat-Container {
@@ -11221,7 +10221,7 @@
   position: relative;
   border: 0.2vmin solid $BossRed;
   margin: 0.2vmin;
-  background-image: url(../images/BlackBackground80.png);
+  background-image: url(../images/hud/backgrounds/BlackBackground80.png);
   background-repeat: repeat;
   height: 1.85vmin;
   width: calc(100% - 0.55vmin);
@@ -12382,7 +11382,7 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
   }
 }
 
-.ClientPerfInfo-Root {
+.WarningIcons-Root {
   position: absolute;
   top: 10vmin;
   right: 3.25vmin;
@@ -12390,176 +11390,23 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
   pointer-events: none;
 }
 
-.ClientPerfInfo-StatContainer {
-  position: relative;
-  width: 20vmin;
-  margin: 2px;
-  padding: 2px;
-  border: 1px solid black;
-
-  display: flex;
-  flex-direction: column;
-  align-items: right;
-  justify-content: right;
-}
-
-.ClientPerfInfo-Stat {
-  position: relative;
-  font-size: 1.1rem;
-
-  width: 100%;
-  margin: 0.15vmin;
-  border: 1px solid green;
-  background-color: #e69119;
-  padding: 0.15vmin;
-
-  display: flex;
-  flex-direction: column;
-}
-
-.ClientPerfInfo-NameValuePair {
-  display: flex;
-  flex-direction: row;
-  justify-content: left;
-}
-
-.ClientPerfInfo-StatName {
-  flex: 2;
-  margin-right: 0.2vmin;
-}
-
-.ClientPerfInfo-StatValue {
-  flex: 1;
-  font-weight: bold;
-}
-
-.ClientPerfInfo-HelpMessage {
-  font-size: 0.9rem;
-  font-style: italic;
-}
-
-.ClientPerfInfo-IconContainer {
+.WarningIcons-IconContainer {
   display: flex;
   flex-direction: row;
   align-items: right;
   justify-content: right;
 }
 
-.ClientPerfInfo-Icon {
+.WarningIcons-Icon {
   position: relative;
 
   width: 6vmin;
   height: 6vmin;
   margin: 0.5vmin;
-  border: 1px solid black;
 
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-image: none;
-
-  &.low-fps {
-    background-image: url(../images/network/lowFPS_final.png);
-  }
-  &.high-latency {
-    background-image: url(../images/network/highlatency_final.png);
-  }
-  &.world-desync {
-    background-image: url(../images/network/serverdesync_final.png);
-  }
-  &.player-desync {
-    background-image: url(../images/network/playerdesync_final.png);
-  }
-  &.zero-net-traffic {
-    background-image: url(../images/network/disconnect_final.png);
-  }
-}
-
-.ClientPerfInfo-RootContainer {
-  position: absolute;
-  top: 10vmin;
-  right: 3.25vmin;
-  pointer-events: none;
-}
-
-.ClientPerfInfo-StatContainer {
-  width: 20vmin;
-  margin: 2px;
-  padding: 2px;
-  border: 1px solid black;
-
-  display: flex;
-  flex-direction: column;
-  align-items: right;
-  justify-content: right;
-}
-
-.ClientPerfInfo-Stat {
-  position: relative;
-
-  width: 100%;
-  margin: 0.15vmin;
-  border: 1px solid green;
-  padding: 0.15vmin;
-
-  display: flex;
-  flex-direction: column;
-}
-
-.ClientPerfInfo-NameValuePair {
-  display: flex;
-  flex-direction: row;
-  justify-content: left;
-}
-
-.ClientPerfInfo-StatName {
-  flex: 2;
-  margin-right: 0.2vmin;
-}
-
-.ClientPerfInfo-StatValue {
-  flex: 1;
-  font-weight: bold;
-}
-
-.ClientPerfInfo-HelpMessage {
-  font-size: 0.9rem;
-  font-style: italic;
-}
-
-.ClientPerfInfo-IconContainer {
-  display: flex;
-  flex-direction: row;
-  align-items: right;
-  justify-content: right;
-}
-
-.ClientPerfInfo-Icon {
-  position: relative;
-
-  width: 6vmin;
-  height: 6vmin;
-  margin: 0.5vmin;
-  border: none;
-
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-image: none;
-
-  &.low-fps {
-    background-image: url(../images/network/lowFPS_final.png);
-  }
-  &.high-latency {
-    background-image: url(../images/network/highlatency_final.png);
-  }
-  &.world-desync {
-    background-image: url(../images/network/serverdesync_final.png);
-  }
-  &.player-desync {
-    background-image: url(../images/network/playerdesync_final.png);
-  }
-  &.zero-net-traffic {
-    background-image: url(../images/network/disconnect_final.png);
-  }
 }
 
 .ScenarioIntro-Container {
@@ -12635,24 +11482,13 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
 .SelfHealthBar-ColumnContainer {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
 }
 
 .SelfHealthBar-GeneralInfoContainer {
   display: flex;
   justify-content: start;
-  align-items: center;
   width: 13.5vmin;
   height: 8.5vmin;
-  background-color: $EightyPercentOpacityBlack;
-  outline: 0.15vmin solid rgb(136, 132, 138);
-  outline-offset: -0.45vmin;
-  transition: box-shadow 2s ease-in-out;
-  box-shadow: 0 0 0 rgba(252, 222, 218, 0);
-
-  &.glow {
-    box-shadow: 0 0 2.778vmin rgba(255, 172, 65, 0.95);
-  }
 }
 
 .SelfHealthBar-ExtrasContainer {
@@ -12660,8 +11496,17 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
 }
 
 .SelfHealthBar-HeartsContainer {
-  min-width: 0.926vmin;
-  margin-left: 1.5rem;
+  background-color: rgba(0, 0, 0, 0.8);
+  outline: 0.15vmin solid #88848a;
+  outline-offset: -0.45vmin;
+  transition: box-shadow 2s ease-in-out;
+  box-shadow: 0 0 0 rgba(252, 222, 218, 0);
+  width: 27.5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  margin-right: 0.46vmin;
 }
 
 .SelfHealthBar-Heart {
@@ -12671,10 +11516,27 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
   line-height: 1.8vmin;
 }
 
+.SelfHealthBar-HeartLabel {
+  color: white;
+  font-size: 1.375rem;
+}
+
 .SelfHealthBar-RunesContainer {
-  width: auto;
-  margin-left: 1.2vmin;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  background-color: $EightyPercentOpacityBlack;
+  outline: 0.15vmin solid rgb(136, 132, 138);
+  outline-offset: -0.45vmin;
+  transition: box-shadow 2s ease-in-out;
+  box-shadow: 0 0 0 rgba(252, 222, 218, 0);
+
+  &.glow {
+    box-shadow: 0 0 2.778vmin rgba(255, 172, 65, 0.95);
+  }
 }
 
 .SelfHealthBar-RuneItem {
@@ -12738,7 +11600,6 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
   justify-content: center;
   align-items: center;
 }
-
 .MovementTrackers-AutoRunTracker-Icon {
   width: 11vmin;
   height: 7.7vmin;
@@ -12980,7 +11841,6 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
   right: 0;
   bottom: 0;
   pointer-events: none;
-  z-index: 1000;
 }
 
 .MainScreen-CompassContainer {
@@ -13015,71 +11875,10 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
   }
 }
 
-.Shared-Box-Outer {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 0.45vmin;
-  padding: 0.278vmin;
-  background-color: rgba(31, 31, 31, 1);
-  pointer-events: all;
-  cursor: pointer;
-}
-
-.Shared-Box-Border {
-  flex: 1 0 0%;
-  display: flex;
-  flex-direction: row;
-  border: 0.15vmin solid rgba(53, 53, 53, 1);
-  position: relative;
-
-  &::before {
-    position: absolute;
-    content: '';
-    background-image: url(../images/settings/settings-permissions-texture.png);
-    background-size: contain;
-    width: calc(100% + 0.2vmin);
-    height: calc(100% + 0.2vmin);
-    top: -0.15vmin;
-    left: -0.15vmin;
-    pointer-events: none;
-  }
-
-  &::after {
-    position: absolute;
-    content: '';
-    width: calc(100% + 0.55vmin);
-    height: calc(100% + 0.55vmin);
-    top: -0.2778vmin;
-    left: -0.2778vmin;
-    box-shadow: inset 0 0 1.4vmin $FiftyPercentBlack;
-    pointer-events: none;
-  }
-}
-
-.Shared-Box-Inner {
-  flex: 1 1 auto;
-  flex-wrap: wrap;
-  display: flex;
-  flex-direction: row;
-  background-color: rgba(31, 31, 31, 1);
-  color: rgb(204, 204, 204);
-  font-size: 1.25rem;
-  padding: 0.45vmin;
-  position: relative;
-
-  &.no-pad {
-    padding: 0;
-  }
-
-  &.uppercase {
-    text-transform: uppercase;
-  }
-}
-
 .Shared-Input-InputWrapper {
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
 }
 
 .Shared-Input-InputView {
@@ -13212,57 +12011,6 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
 
   &:hover {
     background-color: rgba(51, 51, 51, 1);
-  }
-}
-
-.MainScreen-Field {
-  position: relative;
-
-  &.right-align {
-    text-align: right;
-  }
-
-  &.half-width {
-    width: 50%;
-  }
-
-  &.quarter-width {
-    width: 25%;
-  }
-
-  &.expand {
-    flex: 1 0 0%;
-  }
-
-  &.ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &.fixed-height {
-    height: 3.05vmin;
-    min-height: 3.05vmin;
-    max-height: 3.05vmin;
-    line-height: 3.05vmin;
-  }
-
-  &.is-row {
-    display: flex;
-    flex-direction: row;
-  }
-
-  &.is-column {
-    display: flex;
-    flex-direction: column;
-  }
-
-  &.at-end {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    padding-right: 1.85vmin;
-    box-sizing: border-box !important;
   }
 }
 
@@ -14089,8 +12837,15 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
   }
 }
 
+.Lobby-PartyHeader-InviteFriendsButton {
+  height: 4vmin;
+  font-size: 1.25rem;
+  margin-left: 0.5vmin;
+}
+
 .QuestXPButton-Container {
   display: flex;
+  align-items: center;
   position: absolute;
   transform: translate(0, -50%);
   cursor: pointer;
@@ -14109,7 +12864,8 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
   display: flex;
   align-items: center;
   min-width: 5vmin;
-  position: relative;
+  position: absolute;
+  margin-left: 4.5vmin;
   cursor: pointer;
 }
 
@@ -14131,11 +12887,9 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
 }
 
 .QuestXPButton-Arrow {
-  height: 66%;
-  top: 20%;
+  height: 2.75vmin;
   display: flex;
-  position: absolute;
-  left: 3vmin;
+  margin-left: -1.5vmin;
 }
 
 .TeamJoinPanel-Container {
@@ -14512,7 +13266,7 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
 .LobbyBattlePassStatus-Root {
   @extend .Column;
   position: relative;
-  margin-top: 1vmin;
+  margin-bottom: 1vmin;
   height: 18vmin;
   flex-shrink: 0;
   color: white;
@@ -14694,525 +13448,6 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
   }
 }
 
-.ChampionSelectLegacy-ChampionInfo-Container {
-  &:hover .abilities {
-    margin-top: 0;
-    opacity: 1;
-  }
-}
-
-.ChampionSelectLegacy-ChampionInfo-ChampionName {
-  font-family: Colus;
-  color: white;
-  text-transform: uppercase;
-  font-size: 2.5rem;
-}
-
-.ChampionSelectLegacy-ChampionInfo-AbilitiesContainer {
-  width: 37.05vmin;
-  opacity: 0;
-  margin-top: -4.62vmin;
-  padding: 1.85vmin;
-  background-size: 100% 100%;
-  background-image: url(../images/fullscreen/champion-info-abilities-container-bg.png);
-  transition: 0.4s all ease;
-}
-
-.ChampionSelectLegacy-ChampionInfo-AbilityContainer {
-  display: flex;
-  margin-bottom: 1.4vmin;
-}
-
-.ChampionSelectLegacy-ChampionInfo-AbilityIcon {
-  font-size: 3.35rem;
-  color: white;
-  margin-right: 1.2vmin;
-  border: 0.15vmin solid rgba(255, 255, 255, 0.33);
-  width: 3.7vmin;
-  height: 3.7vmin;
-  padding: 0.75vmin;
-}
-
-.ChampionSelectLegacy-ChampionInfo-AbilityName {
-  font-family: Colus;
-  font-size: 1.35rem;
-  color: white;
-}
-
-.ChampionSelectLegacy-ChampionInfo-AbilityDescriptionButton {
-  display: block;
-  border: 0.15vmin solid white;
-  background: $FiftyPercentBlack;
-  font-family: Lato;
-  font-size: 1rem;
-  color: white;
-  width: 5.55vmin;
-  padding: 0.45vmin;
-  text-align: center;
-  opacity: 0.5;
-  margin-bottom: 2.3vmin;
-}
-
-.ChampionSelectLegacy-ChampionInfo-AbilityDescription {
-  font-family: Lato;
-  font-size: 1rem;
-  color: rgb(185, 185, 185);
-  width: 29.63vmin;
-}
-
-.ChampionSelectLegacy-ChampionInfo-KeyBindIcon {
-  font-family: Lato;
-  font-size: 1.35rem;
-  color: rgba(255, 255, 255, 1);
-  position: absolute;
-  margin: 4.63vmin 0 0 -0.45vmin;
-  background: rgba(27, 27, 27, 1);
-  display: block;
-  padding: 0.2vmin 0.45vmin;
-}
-
-.ChampionSelectLegacy-ChampionPick-Container {
-  position: relative;
-  border: 0.2vmin solid #494949;
-  outline: 0.15vmin solid rgba(196, 253, 255, 0.6);
-  outline-offset: -0.37vmin;
-  width: 8.35vmin;
-  height: 8.35vmin;
-  cursor: pointer;
-  margin: 0 0.65vmin;
-  background-color: rgba(0, 0, 0, 0.9);
-  transition: all 0.1s ease-out;
-
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-size: 100% 100%;
-    background-image: url(../images/fullscreen/champion-pick-bg.png);
-    transition: opacity 0.2s, visibility 0.2s;
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  &:hover {
-    transform: scale(1.1);
-    filter: brightness(120%);
-
-    &:after {
-      opacity: 1;
-      visibility: visible;
-    }
-  }
-
-  &.selected {
-    border-color: #7fcfff;
-    transform: scale(1.1);
-
-    &:after {
-      opacity: 1;
-      visibility: visible;
-    }
-  }
-}
-
-.ChampionSelectLegacy-ChampionPick-Image {
-  width: 100%;
-  height: 100%;
-}
-
-.ChampionSelectLegacy-LockIn-LockInButton {
-  font-size: 1.65rem;
-  padding: 0.926vmin 6.5vmin;
-  font-family: Colus;
-  outline: 0.15vmin solid rgba(255, 255, 255, 0.3);
-  outline-offset: -0.45vmin;
-  width: 15vmin;
-}
-
-.ChampionSelectLegacy-LockIn-LockInText {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ChampionSelectLegacy-LockIn-TextContainer {
-  margin-top: 0;
-  font-size: 1.65rem;
-  line-height: 1.65rem;
-  font-family: Colus;
-  color: white;
-  text-align: center;
-}
-
-.ChampionSelectLegacy-LockIn-ConsoleButton {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.ChampionSelectLegacy-LockIn-ConsoleIcon {
-  font-size: 2rem;
-  margin-right: 0.45vmin;
-  color: white;
-}
-
-.ChampionSelectLegacy-LockedList-Container {
-  opacity: 0;
-  display: grid;
-  margin-left: -20%;
-  animation: slideIn_6mp2a 1s forwards;
-  grid-gap: 0 0.926vmin;
-  height: 52.3vmin;
-  width: 57.4vmin;
-
-  &::-webkit-scrollbar {
-    width: 0.55vmin;
-    height: 0.55vmin;
-  }
-
-  &::-webkit-scrollbar-track {
-    box-shadow: none;
-    background: none;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: $MenuScrollBarThumbGrey;
-  }
-
-  &.small {
-    grid-template-columns: repeat(4, 12.95vmin);
-    overflow: auto;
-  }
-
-  &.large {
-    grid-template-columns: repeat(2, 26.3vmin);
-    grid-template-rows: repeat(5, 10.2vmin);
-  }
-
-  &.dense {
-    grid-auto-flow: dense;
-  }
-
-  &.column {
-    grid-auto-flow: column;
-  }
-
-  @keyframes slideIn_6mp2a {
-    from {
-      opacity: 0;
-      margin-left: -20%;
-    }
-    to {
-      opacity: 1;
-      margin-left: 0;
-    }
-  }
-}
-
-.ChampionSelectLegacy-LockedList-ListItem {
-  position: relative;
-  height: 9.25vmin;
-  border: 0.2vmin solid #373434;
-  margin-bottom: 0.65vmin;
-  margin-left: 0;
-  background-color: rgba(0, 0, 0, 0.9);
-  background-size: cover;
-  filter: grayscale(100%) brightness(0.4);
-
-  &.small {
-    width: 12.05vmin;
-  }
-
-  &.large {
-    width: 25.37vmin;
-  }
-
-  &.self {
-    filter: grayscale(90%);
-  }
-
-  &.locked {
-    filter: grayscale(0%) brightness(1.3);
-    border: 0.2vmin rgb(102, 216, 255) solid;
-    outline: 0.15vmin solid rgba(88, 238, 255, 0.35);
-    outline-offset: -0.55vmin;
-    transition: 0.2s all ease;
-
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-    }
-  }
-
-  &.left div {
-    left: auto;
-    right: 0.926vmin;
-  }
-}
-
-.ChampionSelectLegacy-LockedList-BGImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.ChampionSelectLegacy-LockedList-NameOfPlayer {
-  position: absolute;
-  font-family: Lato;
-  font-weight: bold;
-  font-size: 1.35rem;
-  color: white;
-  left: 0.926vmin;
-  right: 0.926vmin;
-  bottom: 0.65vmin;
-  overflow: hidden;
-  height: 1.65vmin;
-  white-space: nowrap;
-  text-shadow: 0.2vmin 0.2vmin 0.2vmin black;
-}
-
-.ChampionSelectLegacy-LockedList-NameOfPlayerBackground {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2.4vmin;
-  background-color: $FiftyPercentBlack;
-  background-size: cover;
-
-  &.large {
-    opacity: 0;
-  }
-}
-
-.ChampionSelectLegacy-PlayerSelect-Container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background-color: black;
-  z-index: 0;
-}
-
-.ChampionSelectLegacy-PlayerSelect-HeaderContainer {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  background-size: 100% 100%;
-
-  opacity: 0;
-  animation: slideIn_vw3ep 0.5s forwards;
-  @keyframes slideIn_vw3ep {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  &.locked {
-    display: none;
-  }
-}
-
-.ChampionSelectLegacy-PlayerSelect-HeaderItemContainer {
-  display: flex;
-  flex: 1;
-
-  &.align-center {
-    justify-content: center;
-  }
-}
-
-.ChampionSelectLegacy-PlayerSelect-GameModeContainer {
-  margin-top: 2.778vmin;
-  margin-left: 2.778vmin;
-}
-
-.ChampionSelectLegacy-PlayerSelect-GameModeText {
-  font-size: 2.5rem;
-  line-height: 2.5rem;
-  font-family: Colus;
-  text-transform: uppercase;
-  color: white;
-}
-
-.ChampionSelectLegacy-PlayerSelect-GameModeDifficulty {
-  font-size: 1.35rem;
-  line-height: 1.35rem;
-  font-family: Colus;
-  text-transform: uppercase;
-  color: #707070;
-}
-
-.ChampionSelectLegacy-PlayerSelect-PlayerSelectionContainerDiv {
-  position: fixed;
-  top: 9.25vmin;
-  bottom: 0;
-  right: 0;
-
-  &.small {
-    left: 54.63vmin;
-  }
-
-  &.large {
-    left: 0;
-  }
-  opacity: 1;
-  transition: opacity 0.2s;
-
-  &.locked {
-    opacity: 0;
-  }
-}
-
-.ChampionSelectLegacy-PlayerSelect-ChampionPickContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  position: absolute;
-  z-index: 1;
-  bottom: 13.9vmin;
-  opacity: 0;
-  margin-bottom: -5%;
-  animation: slideIn_1ofz9 0.5s forwards;
-
-  @keyframes slideIn_1ofz9 {
-    from {
-      opacity: 0;
-      margin-bottom: -5%;
-    }
-    to {
-      opacity: 1;
-      margin-bottom: 0;
-    }
-  }
-}
-
-.ChampionSelectLegacy-PlayerSelect-CharacterArtBackgroundFar {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -1;
-}
-
-.ChampionSelectLegacy-PlayerSelect-CharacterArtBackgroundHighlight {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-
-  transition: opacity 0.2s, filter 0.6s ease-in-out, transform 0.3s ease-in-out;
-  opacity: 0.01;
-  filter: brightness(170%);
-  transform: scale(1.33, 1.33);
-
-  &.locked {
-    opacity: 1;
-    transform: scale(1, 1);
-    filter: brightness(100%);
-  }
-}
-
-.ChampionSelectLegacy-PlayerSelect-SelectedChampionContainer {
-  position: relative;
-  width: 80%;
-  height: 140%;
-  pointer-events: none;
-  top: 0;
-  bottom: 0;
-  left: auto;
-  mask-image: url(../images/fullscreen/selected-champion-container-mask.png);
-  -webkit-mask-image: url(../images/fullscreen/selected-champion-container-mask.png);
-  mask-size: 100% 100%;
-  -webkit-mask-size: 100% 100%;
-}
-
-.ChampionSelectLegacy-PlayerSelect-SelectedChampionTransitionAnimation {
-  animation: slideIn_k0uhu 0.5s forwards;
-  opacity: 0;
-  margin-left: -10%;
-
-  @keyframes slideIn_k0uhu {
-    from {
-      opacity: 0;
-      margin-left: -10%;
-    }
-    to {
-      opacity: 1;
-      margin-left: 0;
-    }
-  }
-}
-
-.ChampionSelectLegacy-PlayerSelect-SelectedChampionImage {
-  position: absolute;
-  width: 80%;
-  height: 80%;
-  object-fit: contain;
-  right: -5%;
-}
-
-.ChampionSelectLegacy-PlayerSelect-ChampionInfoContainer {
-  position: absolute;
-  left: 45%;
-  top: 0.926vmin;
-  transform: translateX(-50%);
-}
-
-.ChampionSelectLegacy-PlayerSelect-LockedListContainer {
-  position: absolute;
-  top: 9.25vmin;
-  left: 2.778vmin;
-}
-
-.ChampionSelectLegacy-PlayerSelect-LockInPosition {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 5.55vmin;
-}
-
-.ChampionSelectLegacy-PlayerSelect-ConsoleNavIcon {
-  color: white;
-  font-size: 2.5rem;
-  color: white;
-  margin: 0 0.926vmin;
-}
-
-.ChampionSelectLegacy-PlayerSelect-BackgroundAnimation {
-  opacity: 0;
-  animation: fadeIn_xfomz 0.5s forwards;
-
-  @keyframes fadeIn_xfomz {
-    from {
-      opacity: 0;
-    }
-
-    to {
-      opacity: 1;
-    }
-  }
-}
-
 .FreeBattlePassModal-Container {
   position: relative;
   width: 50vmin;
@@ -15373,6 +13608,102 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
   }
 }
 
+.EventAdvertisementModal-Container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.EventAdvertisementModal-Background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  object-fit: cover;
+}
+
+.EventAdvertisementModal-Title {
+  position: relative;
+  font-size: 6rem;
+  color: white;
+  font-family: Colus;
+  text-align: center;
+}
+
+.EventAdvertisementModal-Body {
+  position: relative;
+  font-size: 2rem;
+  color: white;
+  font-family: Lato;
+  text-align: center;
+}
+
+.EventAdvertisementModal-ButtonRow {
+  @extend .Row;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  padding: 2vmin 0;
+}
+
+.EventAdvertisementModal-CloseButton {
+  position: relative;
+  font-size: 1.65rem;
+  padding: 1.4vmin 2.3vmin;
+}
+
+.MOTDModal-Container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.MOTDModal-Background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  object-fit: cover;
+}
+
+.MOTDModal-Title {
+  position: relative;
+  font-size: 6rem;
+  color: white;
+  font-family: Colus;
+  text-align: center;
+}
+
+.MOTDModal-Body {
+  position: relative;
+  font-size: 2rem;
+  color: white;
+  font-family: Lato;
+  text-align: center;
+}
+
+.MOTDModal-ButtonRow {
+  @extend .Row;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  padding: 2vmin 0;
+}
+
+.MOTDModal-CloseButton {
+  position: relative;
+  font-size: 1.65rem;
+  padding: 1.4vmin 2.3vmin;
+}
+
 .NewBattlePassModal-Container {
   position: relative;
   width: 50vmin;
@@ -15504,16 +13835,6 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
 
 .DebugMenu-Button {
   margin-top: 1vmin;
-}
-
-.VoiceChatIcon {
-  font-size: 2rem;
-  padding-left: 1.1vmin;
-  cursor: pointer;
-
-  &:hover {
-    color: $HighlightBlue;
-  }
 }
 
 .ClaimBattlePassModal-Container {
@@ -15675,4 +13996,684 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
 .ItemGrid-TooltipRoot {
   @extend .BattlePass-Tier-TooltipRoot;
   max-width: 35vmin;
+}
+
+.VoiceChatIcon {
+  font-size: 2rem;
+  padding-left: 1.1vmin;
+  cursor: pointer;
+
+  &:hover {
+    color: $HighlightBlue;
+  }
+}
+
+.ChampionSelectCosmetics-Root {
+  @extend .Row;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10vmin;
+}
+
+.ChampionSelectCosmetics-BackgroundBlurEdges {
+  position: absolute;
+  // These match the size of the blur in ChampionSelectCosmetics-BackgroundImage.
+  top: -60px;
+  left: -60px;
+  right: -60px;
+  bottom: -60px;
+  padding: 60px;
+  background-color: black;
+}
+
+.ChampionSelectCosmetics-BackgroundImage {
+  position: absolute;
+  top: 60px;
+  left: 60px;
+  right: 60px;
+  bottom: 60px;
+  background-image: url(../images/fullscreen/fullscreen-scene-bg.jpg);
+  background-size: cover;
+  filter: blur(60px) brightness(50%);
+
+  opacity: 1;
+  animation: fadeIn_cscbi001 0.75s forwards;
+  @keyframes fadeIn_cscbi001 {
+    from {
+      filter: blur(0px) brightness(100%);
+    }
+    to {
+      filter: blur(60px) brightness(50%);
+    }
+  }
+}
+
+.ChampionSelectCosmetics-LeftPanel {
+  @extend .Column;
+  position: relative;
+  opacity: 1;
+  animation: fadeIn_csclp001 1s forwards;
+  transform: translateY(0vmin);
+  overflow-x: visible;
+  @keyframes fadeIn_csclp001 {
+    from {
+      opacity: 0;
+      transform: translateY(40vmin);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0vmin);
+    }
+  }
+}
+
+.ChampionSelectCosmetics-BackButton {
+  position: relative;
+  align-self: flex-start;
+  margin-top: 1vmin;
+  display: flex;
+  justify-content: center;
+  font-size: 2rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.ChampionSelectCosmetics-ChampionName {
+  position: relative;
+  color: white;
+  font-size: 1.6rem;
+  font-family: Colus;
+}
+
+.ChampionSelectCosmetics-CosmeticType {
+  position: relative;
+  color: white;
+  font-size: 4rem;
+  font-family: Colus;
+}
+
+.ChampionSelectCosmetics-NavBarContainer {
+  @extend .Row;
+  position: relative;
+  margin-left: 1.5vmin;
+  overflow: visible;
+}
+
+.ChampionSelectCosmetics-NavBarUnderline {
+  position: absolute;
+  bottom: -2px;
+  left: -7vmin;
+  background: linear-gradient(
+    to right,
+    rgba(68, 68, 162, 0) 0%,
+    rgba(68, 68, 162, 1) 20%,
+    rgba(68, 68, 162, 1) 80%,
+    rgba(68, 68, 162, 0) 100%
+  );
+  height: 2px;
+  width: 55vmin;
+}
+
+.ChampionSelectCosmetics-NavBarTab {
+  position: relative;
+  margin-left: 0.5vmin;
+  width: 8vmin;
+  height: 8vmin;
+  color: white;
+  font-size: 4rem;
+  text-align: center;
+  line-height: 8vmin;
+  cursor: pointer;
+
+  &:hover {
+    background: linear-gradient(to bottom, rgba(34, 48, 80, 0) 0%, rgba(46, 78, 155, 1) 100%);
+  }
+
+  &.selected {
+    color: #85d2ff;
+    background: linear-gradient(to bottom, rgba(34, 48, 80, 0.58) 0%, rgba(35, 53, 85, 1) 100%);
+  }
+}
+
+.ChampionSelectCosmetics-NavBadge {
+  position: absolute;
+  bottom: -1.15vmin;
+  left: 50%;
+}
+
+.ChampionSelectCosmetics-ItemsContainerWrapper {
+  position: relative;
+  margin-top: 1vmin;
+  height: 57.7vmin;
+}
+
+.ChampionSelectCosmetics-ItemsContainer {
+  @extend .Row;
+  flex-wrap: wrap;
+  position: relative;
+  margin-left: -1vmin;
+  align-self: center;
+  box-sizing: border-box;
+  padding: 0vmin 2vmin 1vmin 0vmin;
+  max-height: 57.7vmin;
+  width: 49vmin;
+  overflow-y: scroll;
+  overflow-x: visible;
+  justify-content: flex-start;
+
+  &::-webkit-scrollbar {
+    width: 1vmin;
+    height: 1vmin;
+  }
+
+  &::-webkit-scrollbar-track {
+    box-shadow: none;
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #4444a2;
+  }
+}
+
+.ChampionSelectCosmetics-ItemContainer {
+  position: relative;
+  margin-left: 1vmin;
+  margin-top: 1vmin;
+  background-color: #0e1124;
+  width: 14vmin;
+  height: 14vmin;
+  cursor: default;
+  border: 0.15vmin solid $StoreNavy;
+  transition: all 0.2s linear;
+  box-sizing: border-box;
+
+  &.unowned {
+    opacity: 0.5;
+  }
+
+  &.selected {
+    box-shadow: inset 0 0 0 0.5vmin #7ecffc;
+    opacity: 1;
+  }
+
+  &:hover {
+    opacity: 1;
+    border: solid 0.15vmin #7ecffc;
+  }
+}
+
+.ChampionSelectCosmetics-ItemBadge {
+  position: absolute;
+  top: 0.8vmin;
+  right: -0.3vmin;
+}
+
+.ChampionSelectCosmetics-EquippedIcon {
+  position: absolute;
+  top: 0.5vmin;
+  right: 0.6vmin;
+  color: #00ff75;
+  font-size: 2.2rem;
+}
+
+.ChampionSelectCosmetics-LockedIcon {
+  position: absolute;
+  top: 0.5vmin;
+  right: 0.5vmin;
+  color: #dddddd;
+  font-size: 2.2rem;
+}
+
+.ChampionSelectCosmetics-ItemIcon {
+  position: relative;
+  box-sizing: border-box;
+  width: 95%;
+  height: 95%;
+  margin-left: 2.5%;
+  margin-top: 2.5%;
+  object-fit: contain;
+
+  &.Portrait {
+    width: 80%;
+    height: 80%;
+    margin-top: 10%;
+    margin-left: 10%;
+    border: 0.15vmin solid $StoreNavy;
+  }
+}
+
+.ChampionSelectCosmetics-RightPanel {
+  position: relative;
+  flex-grow: 1;
+  min-width: 1vmin;
+  min-height: 1vmin;
+
+  opacity: 1;
+  animation: fadeIn_cscrp001 1s forwards;
+  transform: translateX(0vmin);
+  @keyframes fadeIn_cscrp001 {
+    from {
+      opacity: 0;
+      transform: translateX(10vmin);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0vmin);
+    }
+  }
+}
+
+.ChampionSelectCosmetics-SkinPreview {
+  position: absolute;
+  top: 0vmin;
+  left: 40%;
+  height: 40vmin;
+  width: 32vmin;
+  object-fit: contain;
+  transition: all 0.5s;
+  filter: blur(2.5px);
+  opacity: 0.5;
+
+  &.selected {
+    top: 0vmin;
+    left: 0%;
+    height: 80vmin;
+    width: 64vmin;
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
+
+.ChampionSelectCosmetics-PerkPreview {
+  @extend .Column;
+  position: absolute;
+  top: 0vmin;
+  left: 0%;
+  height: 80vmin;
+  width: 64vmin;
+  justify-content: center;
+  transition: all 0.5s;
+  filter: blur(2.5px);
+  opacity: 0;
+  transform: scale(0);
+
+  &.selected {
+    filter: blur(0px);
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.ChampionSelectCosmetics-PerkPreviewImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.ChampionSelectCosmetics-ActionButton {
+  position: absolute;
+  bottom: 0vmin;
+  left: 32vmin;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 2rem;
+  font-family: Colus;
+}
+
+.ChampionSelectCosmetics-ActionLabel {
+  position: absolute;
+  bottom: 0vmin;
+  left: 32vmin;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 2.2rem;
+  font-family: Colus;
+}
+
+.ChampionSelectCosmetics-PreviewInfoContainer {
+  @extend .Column;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 27vmin;
+  transform: translateY(-50%);
+
+  transition: all 0.2s linear;
+}
+
+.ChampionSelectCosmetics-PreviewInfoTopSection {
+  @extend .Column;
+  position: relative;
+  padding: 2vmin;
+  background: #1d1d44;
+  border: 0.15vmin solid $StoreNavy;
+}
+
+.ChampionSelectCosmetics-PreviewInfoBottomSection {
+  @extend .Column;
+  position: relative;
+  padding: 2vmin;
+  background: #161734;
+  border: 0.15vmin solid $StoreNavy;
+  border-top: 0vmin;
+}
+
+.ChampionSelectCosmetics-PreviewInfoTitle {
+  position: relative;
+  color: white;
+  font-family: Colus;
+  font-weight: bold;
+  font-size: 1.65vmin;
+  text-align: left;
+}
+
+.ChampionSelectCosmetics-PreviewInfoDescription {
+  @extend .Row;
+  position: relative;
+  margin-top: 0.5vmin;
+  color: #dddddd;
+  font-family: Lato;
+  font-size: 1.5vmin;
+  text-align: left;
+}
+
+.ChampionSelectCosmetics-InlineChampionPortrait {
+  height: 2rem;
+  width: 2rem;
+  border: 0.15vmin solid $StoreNavy;
+  object-fit: contain;
+  margin-top: -0.4vmin;
+  margin-bottom: -0.6vmin;
+  align-self: center;
+}
+
+.ChampionSelectCosmetics-InlineIcon {
+  position: relative;
+  margin-top: 0.25vmin;
+  font-size: 1.5rem;
+  width: 1.5rem; // Deliberately using rem because this icon is inline with text.
+  height: 1.5rem;
+  object-fit: contain;
+}
+
+.ChampionSelectCosmetics-WidePortraitPreview {
+  position: relative;
+  align-self: center;
+  box-sizing: border-box;
+  width: 70%;
+}
+
+.ChampionSelectCosmetics-SquarePortraitPreviewContainer {
+  @extend .Row;
+  position: relative;
+  margin-top: 2vmin;
+  align-self: center;
+  width: 70%;
+}
+
+.ChampionSelectCosmetics-SquarePortraitPreview {
+  position: relative;
+  box-sizing: border-box;
+  width: 8vmin;
+  height: 8vmin;
+  border: 2px solid $StoreNavy;
+}
+
+.ChampionSelectCosmetics-PortraitPreviewTextContainer {
+  @extend .Column;
+  flex-grow: 1;
+  padding: 1.5vmin;
+  border: 2px solid $StoreNavy;
+  border-left: 0px;
+  background-color: #1d1d44;
+}
+
+.ChampionSelectCosmetics-PortraitPreviewPlayerName {
+  position: relative;
+  font-size: 1.8rem;
+  font-family: Lato;
+  color: white;
+}
+
+.ChampionSelectCosmetics-PortraitPreviewChampionName {
+  position: relative;
+  font-size: 1.8rem;
+  font-family: Lato;
+  color: gray;
+}
+
+.ChampionSelectCosmetics-EmoteWheel {
+  position: relative;
+  width: 64vmin;
+  height: 64vmin;
+}
+
+.ChampionSelectCosmetics-EmoteButtonIcon {
+  width: 12.5vmin;
+  height: 12.5vmin;
+  object-fit: contain;
+}
+
+.ChampionSelectCosmetics-EmoteToBePlaced {
+  @extend .ChampionSelectCosmetics-EmoteButtonIcon;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ChampionSelectCosmetics-EmoteInstructionsContainer {
+  @extend .Column;
+  position: relative;
+  margin-top: 1.5vmin;
+}
+
+.ChampionSelectCosmetics-EmoteInstructionsRow {
+  @extend .Row;
+  position: relative;
+  margin-top: 0.5vmin;
+  align-items: center;
+}
+
+.ChampionSelectCosmetics-EmoteInstructionsText {
+  position: relative;
+  color: white;
+  font-family: Lato;
+  font-size: 1.1rem;
+}
+
+.ChampionSelectCosmetics-EmoteKeybindBox {
+  position: relative;
+  margin-left: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 2.4vmin;
+  height: 2.4vmin;
+  background-color: #3f82d4;
+  border-radius: 0.5vmin;
+}
+
+.ChampionSelectCosmetics-EmoteKeybindText {
+  position: relative;
+  color: white;
+  font-family: Lato;
+  font-weight: 900;
+  font-size: 1.5rem;
+}
+
+.RadialMenu-Root {
+  background-color: transparent;
+}
+
+.RadialMenu-ButtonContainer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.RadialMenu-ButtonNumber {
+  position: absolute;
+  font-family: Colus;
+  font-size: 2rem;
+  color: white;
+  transform: translate(-50%, -50%);
+
+  &.disabled {
+    color: #888888;
+  }
+}
+
+.RadialMenu-ButtonContents {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.PurchaseGemsModal-Container {
+  @extend .Column;
+  position: relative;
+  margin: auto;
+  padding-top: 3vmin;
+  padding-bottom: 3vmin;
+}
+
+.PurchaseGemsModal-Title {
+  position: relative;
+  font-family: Colus;
+  font-size: 3.2rem;
+  color: white;
+  text-align: center;
+}
+
+.PurchaseGemsModal-Message {
+  position: relative;
+  font-family: Lato;
+  font-size: 1.35rem;
+  color: #ccc;
+  text-align: center;
+}
+
+.PurchaseGemsModal-BundlesContainer {
+  position: relative;
+  margin-top: 3vmin;
+  display: flex;
+  flex-direction: row;
+}
+
+.PurchaseGemsModal-BundleContainer {
+  position: relative;
+  margin: 1vmin;
+  width: 27vmin;
+  height: 33.87vmin;
+}
+
+.PurchaseGemsModal-CancelButton {
+  position: relative;
+  align-self: center;
+  margin-top: 3vmin;
+}
+
+.StartScreen-Store-StoreItemInfo-Root {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 3vmin 1.25vmin 1.25vmin 1.25vmin;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+}
+
+.StartScreen-Store-StoreItemInfo-Name {
+  position: relative;
+  color: white;
+  font-size: 1.5rem;
+  font-family: Lato;
+}
+
+.StartScreen-Store-StoreItemInfo-BundleCount {
+  position: relative;
+  color: #a9a9a9;
+  font-family: Lato;
+  font-size: 1.5rem;
+}
+
+.StartScreen-Store-StoreItemInfo-BonusText {
+  position: relative;
+  color: #6bff25;
+  font-size: 1.5rem;
+  font-family: Lato;
+  filter: drop-shadow(0px 0px 1vmin #001aff);
+}
+
+.StartScreen-Store-StoreItemInfo-StatusFree {
+  position: relative;
+  color: $MainOrange;
+  font-size: 1.5rem;
+  font-family: Colus;
+}
+
+.StartScreen-Store-StoreItemInfo-StatusOwned {
+  position: relative;
+  color: #a9a9a9;
+  font-size: 1.5rem;
+  font-family: Colus;
+}
+
+.StartScreen-Store-StoreItemInfo-CostRow {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.StartScreen-Store-StoreItemInfo-CostIconImage {
+  position: relative;
+  margin-top: -0.25vmin;
+  margin-right: 0.5vmin;
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.StartScreen-Store-StoreItemInfo-CostIconText {
+  position: relative;
+  margin-top: -0.25vmin;
+  margin-right: 0.5vmin;
+  font-size: 2rem;
+}
+
+.StartScreen-Store-StoreItemInfo-CostFinal {
+  position: relative;
+  font-size: 1.5rem;
+  font-family: colus;
+  color: white;
+}
+
+.StartScreen-Store-StoreItemInfo-CostOriginal {
+  position: relative;
+  margin-left: 1vmin;
+  font-size: 1.5rem;
+  font-family: colus;
+  text-decoration: line-through;
+  color: $ErrorRed;
+}
+
+.StartScreen-Store-StoreItemInfo-CostName {
+  position: relative;
+  margin-left: 0.5vmin;
+  font-size: 1.5rem;
+  font-family: colus;
+  color: white;
 }

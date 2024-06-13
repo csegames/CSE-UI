@@ -51,13 +51,13 @@ import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { Dispatch } from 'redux';
 import { RootState } from '../redux/store';
 import { ActivitiesAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { webConf } from './networkConfiguration';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { LoadingScreenReason } from '@csegames/library/dist/_baseGame/clientFunctions/LoadingScreenFunctions';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { getServerTimeMS } from '@csegames/library/dist/_baseGame/utils/timeUtils';
-import { clearChatHistory } from '../redux/chatSlice';
 import { updateServerTimeDelta } from '../redux/clockSlice';
+import { setStatsMatch } from '../redux/gameStatsSlice';
+import { webConf } from './networkConfiguration';
 
 const placeholderStringFindingServer = 'Finding server';
 
@@ -108,10 +108,10 @@ export class MatchService extends ExternalDataSource {
 
   protected onReduxUpdate(reduxState: RootState, dispatch: Dispatch): void {
     super.onReduxUpdate(reduxState, dispatch);
-    if (this.reduxState.match.requests.queued === null || this.reduxState.match.requests.active !== null) {
+    const toProcess = this.reduxState.match.requests.queued;
+    if (toProcess === null || this.reduxState.match.requests.active !== null) {
       return;
     }
-    const toProcess = this.reduxState.match.requests.queued;
     this.dispatch(acceptMatchRequests(toProcess));
     window.setTimeout(this.handleRequests.bind(this, toProcess), 0);
   }
@@ -207,6 +207,7 @@ export class MatchService extends ExternalDataSource {
     this.dispatch(setMatches([matches, bestMatch]));
     this.dispatch(setQueueEntries([entries, currentEntry]));
     this.dispatch(setSelections([selections, currentSelection]));
+    this.dispatch(setStatsMatch(bestMatch?.roundID));
     const matchEnds = this.updateMatchEnds(matches, bestMatch, this.reduxState.match.matchEnds);
 
     this.updateLifecycle({
@@ -259,9 +260,9 @@ export class MatchService extends ExternalDataSource {
         const matches = this.remove(this.reduxState.match.matches, (match) => match.roundID === val.roundID);
         const currentRound = this.bestFitMatch(matches, this.reduxState.match.matchEnds);
         this.dispatch(setMatches([matches, currentRound]));
+        this.dispatch(setStatsMatch(currentRound?.roundID));
+
         this.updateLifecycle({ ...this.reduxState.match, currentRound });
-        // When we leave a match, clear the chat history.
-        this.dispatch(clearChatHistory());
         break;
       }
       case 'MatchUpdated': {
@@ -276,11 +277,17 @@ export class MatchService extends ExternalDataSource {
 
         const bestMatch = this.bestFitMatch(matches, this.reduxState.match.matchEnds);
         this.dispatch(setMatches([matches, bestMatch]));
+        this.dispatch(setStatsMatch(bestMatch?.roundID));
 
         const selection = this.dispatchRemovedSelection(val.match.roundID); // round clobbers selection
         const matchEnds = this.updateMatchEnds(matches, bestMatch, this.reduxState.match.matchEnds);
 
-        this.updateLifecycle({ ...this.reduxState.match, currentRound: bestMatch, currentSelection: selection[1], matchEnds });
+        this.updateLifecycle({
+          ...this.reduxState.match,
+          currentRound: bestMatch,
+          currentSelection: selection[1],
+          matchEnds
+        });
         if (isServiceError(val.match.error) && val.match.roundID === bestMatch?.roundID) {
           this.dispatch(showError(convertError(val.match.error)));
         }
@@ -390,7 +397,8 @@ export class MatchService extends ExternalDataSource {
     const result = { ...matchEnds };
     for (const match of matches) {
       const sequence = this.calcEndSequence(match, bestMatch);
-      if (sequence === undefined || result[match.roundID] !== undefined && result[match.roundID] <= sequence) continue;
+      if (sequence === undefined || (result[match.roundID] !== undefined && result[match.roundID] <= sequence))
+        continue;
       result[match.roundID] = sequence;
       this.dispatch(setMatchEnd({ matchID: match.roundID, sequence, refresh: false }));
     }
@@ -495,8 +503,6 @@ export class MatchService extends ExternalDataSource {
       ? this.calcSessionLifecycle(state.currentRound, state.matchEnds)
       : this.calcMatchLifecycle(state, shouldBeConnected);
 
-    console.info('updateLifecycle', state, LifecyclePhase[phase], shouldBeConnected);
-
     const prev = this.reduxState.navigation.lifecyclePhase;
     const hasOverride = this.reduxState.navigation.phaseOverride != null;
     if (hasOverride || this.handleTransition(prev, phase)) {
@@ -532,7 +538,7 @@ export class MatchService extends ExternalDataSource {
     return (
       currentRound &&
       currentRound.serverName &&
-      currentRound.serverPort &&
+      currentRound.serverPort != null &&
       this.isRoundActive(currentRound, endSequences)
     );
   }
@@ -545,7 +551,7 @@ export class MatchService extends ExternalDataSource {
     if (shouldBeConnected) {
       this.dispatch(setConnectionError(null));
       game.connectToServer(currentRound.serverName, currentRound.serverPort);
-      game.setVoiceChannel('match');
+      clientAPI.setVoiceChannel('match', currentRound.roundID ?? '');
       // TODO : connect chat
       return;
     }
@@ -553,7 +559,7 @@ export class MatchService extends ExternalDataSource {
     if (game.isConnectedOrConnectingToServer) {
       game.disconnectFromAllServers();
     }
-    game.setVoiceChannel('none');
+    clientAPI.setVoiceChannel('none', '');
     // TODO : disconnect chat
   }
 

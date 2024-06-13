@@ -14,7 +14,7 @@ import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numbe
 import {
   ChampionCostumeInfo,
   ChampionInfo as ChampionInfoData,
-  OvermindCharacterSummaryGQL,
+  OvermindCharacter,
   OvermindSummaryGQL,
   PerkDefGQL,
   StringTableEntryDef
@@ -49,7 +49,7 @@ interface StatPercentages {
 }
 
 interface ReactProps {
-  playerStat: OvermindCharacterSummaryGQL;
+  playerStat: OvermindCharacter;
 }
 
 interface InjectedProps {
@@ -77,7 +77,8 @@ class AStatsListItem extends React.Component<Props> {
     const championName = championInfo
       ? championInfo.name
       : getStringTableValue(StringIDGameStatsChampionName, this.props.stringTable);
-    const maxChampionLevel = this.props.quests.Champion.find((q) => q.id == this.props.playerStat.classID).links.length;
+    const championQuest = this.props.quests.Champion.find((q) => q.id == this.props.playerStat.classID);
+    const maxChampionLevel = championQuest?.links.length ?? 1;
     const maxLevel = this.props.playerStat.level < maxChampionLevel ? '' : 'MaxLevel';
     const playerLevel = Math.min(maxChampionLevel, this.props.playerStat.level);
 
@@ -135,7 +136,7 @@ class AStatsListItem extends React.Component<Props> {
     );
   }
 
-  private onSameTeam(playerSummary: OvermindCharacterSummaryGQL): boolean {
+  private onSameTeam(playerSummary: OvermindCharacter): boolean {
     const selfTeamID = this.props.overmindSummary.characterSummaries.find(
       (c) => c.accountID == this.props.accountID
     )?.teamID;
@@ -151,7 +152,9 @@ class AStatsListItem extends React.Component<Props> {
     }
 
     const championInfo = this.getChampionInfo();
-    return championInfo && championInfo.costume ? championInfo.costume.thumbnailURL : '';
+    return championInfo && championInfo.costume
+      ? championInfo.costume.thumbnailURL
+      : 'images/hud/champions/berserker-profile.png';
   }
 
   private getStatsCurrentPercentage(): StatPercentages {

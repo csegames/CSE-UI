@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 
-
 const Container = 'ImagePreloader-Container';
 
 const imagesToPreload = [

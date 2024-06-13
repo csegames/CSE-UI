@@ -18,19 +18,20 @@ import { LifecyclePhase, LobbyView, Overlay, setLifecycleOverride, showOverlay }
 import { RootState } from '../../../redux/store';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { RightModal } from './RightModal';
-import { FullscreenSelectEmote } from './FullscreenSelectEmote';
-import { FullscreenSelectSkin } from './FullscreenSelectSkin';
-import { FullscreenSelectWeapon } from './FullscreenSelectWeapon';
 import { Button } from '../../shared/Button';
-import { FullScreenSelectAppearance } from './FullScreenSelectAppearance';
 import { FeatureFlags } from '../../../redux/featureFlagsSlice';
 import { LobbyPartyHeader } from './LobbyPartyHeader';
+import { Notifications } from '../../shared/eventMessaging/Notifications';
+import { getRaceIDFromCostumeForChampion } from '../../../helpers/characterHelpers';
+import { ChampionGQL, PerkDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'Fullscreen-Container'; // TODO : reorganize names
 const HideButton = 'Fullscreen-HideButton';
 const TopSection = 'StartScreen-TopSection';
 const Hamburger = 'StartScreen-Hamburger';
+const NotificationsContainer = 'StartScreen-NotificationsContainer';
 const PlayContainer = 'StartScreen-PlayContainer';
 const GenericScreenContainer = 'StartScreen-GenericScreenContainer';
 const CareerStatsBGImage = 'StartScreen-CareerStatsBGImage';
@@ -42,6 +43,9 @@ interface ReactProps {}
 interface InjectedProps extends FeatureFlags.Source {
   lobbyView: LobbyView;
   dispatch?: Dispatch;
+  defaultChampionID: string;
+  champions: (ChampionGQL | null)[];
+  perksByID: Dictionary<PerkDefGQL>;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -58,17 +62,27 @@ class ALobby extends React.Component<Props> {
   public render() {
     const innerContainerClass = this.props.lobbyView == LobbyView.Play ? PlayContainer : GenericScreenContainer;
 
+    // Update default champion audio state
+    const raceID = getRaceIDFromCostumeForChampion(
+      this.props.champions,
+      this.props.perksByID,
+      this.props.defaultChampionID
+    );
+    clientAPI.setUIRaceState(raceID);
+
     return (
       <>
         <div className={Container}>
           <div className={innerContainerClass}>{this.renderRoute()}</div>
           <div className={TopSection}>
             <div className={Hamburger} onClick={this.onHamburgerClick.bind(this)} />
+            <div className={NotificationsContainer}>
+              <Notifications />
+            </div>
             <NavMenu />
             <LobbyPartyHeader />
           </div>
         </div>
-        <RightModal />
         {!game.isPublicBuild && (
           <div className={HideButton} onClick={() => this.props.dispatch(setLifecycleOverride(LifecyclePhase.Playing))}>
             <Button type='blue' text='Hide Full Screen UI' />
@@ -90,9 +104,7 @@ class ALobby extends React.Component<Props> {
   private renderRoute() {
     switch (this.props.lobbyView) {
       case LobbyView.BattlePass:
-        return (
-          <BattlePass />
-        );
+        return <BattlePass />;
       case LobbyView.CareerStats:
         return (
           <>
@@ -106,14 +118,6 @@ class ALobby extends React.Component<Props> {
         return <Leaderboards />;
       case LobbyView.Play:
         return <Play />;
-      case LobbyView.SelectEmote:
-        return <FullscreenSelectEmote />;
-      case LobbyView.SelectSkin:
-        return <FullscreenSelectSkin />;
-      case LobbyView.SelectWeapon:
-        return <FullscreenSelectWeapon />;
-      case LobbyView.SelectAppearance:
-        return <FullScreenSelectAppearance />;
       case LobbyView.Store:
         return (
           <>
@@ -130,10 +134,16 @@ class ALobby extends React.Component<Props> {
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { lobbyView } = state.navigation;
 
+  const { defaultChampionID, champions } = state.profile;
+  const { perksByID } = state.store;
+
   return {
     ...ownProps,
     lobbyView,
-    featureFlags: state.featureFlags
+    featureFlags: state.featureFlags,
+    defaultChampionID,
+    champions,
+    perksByID
   };
 }
 

@@ -11,7 +11,6 @@ import { ChatScrollView } from './ChatScrollView';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../../redux/store';
 import { TabState } from '../../../../../redux/chatSlice';
-import { SlashCommandRegistry } from '@csegames/library/dist/_baseGame/slashCommandRegistry';
 
 const Container = 'Chat-Views-ChatView-Container';
 
@@ -19,7 +18,6 @@ const InputContainer = 'Chat-Views-ChatView-InputContainer';
 
 interface ReactProps {
   viewId: string;
-  slashCommands: SlashCommandRegistry<RootState>;
 }
 
 interface InjectedProps {
@@ -36,7 +34,7 @@ class AChatView extends React.Component<Props> {
       <div className={Container}>
         <ChatScrollView minLineHeight={21} tab={tab} />
         <div className={InputContainer}>
-          <ChatInput slashCommands={this.props.slashCommands} tab={tab} />
+          <ChatInput tab={tab} />
         </div>
       </div>
     );

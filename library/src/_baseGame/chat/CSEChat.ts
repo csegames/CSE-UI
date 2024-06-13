@@ -3,14 +3,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { withDefaults } from '../utils/withDefaults';
 import { isWebSocketUrl } from '../utils/urlUtils';
 import { ReconnectingWebSocket, WebSocketSettings } from '../types/ReconnectingWebSocket';
 import { Callback, EventEmitter } from '../types/EventEmitter';
 
 import { chat } from './chat_proto';
 import * as protobuf from 'protobufjs';
-import { BaseGameInterface } from '../BaseGameInterface';
 import { ListenerHandle } from '../listenerHandle';
 
 const ClientMessages = chat.ChatClientUnionMessage.MessageTypes;
@@ -26,27 +24,17 @@ export interface ChatSettings {
   getToken: () => string;
 }
 
-export type ChatParameters = ChatSettings & Partial<WebSocketSettings>;
-
 export type ChatSocketSettings = ChatSettings & WebSocketSettings;
-
-export function defaultSettings(): WebSocketSettings {
-  return {
-    getUrl: () => `ws://${this.game.serverHost}:9990/chat`,
-    protocols: ['chat-ws']
-  };
-}
 
 export class CSEChat {
   private socket: ReconnectingWebSocket;
   private settings: ChatSocketSettings;
   private eventEmitter: EventEmitter;
-  private initialized: boolean;
   private messageQueue: any[] = [];
 
-  public constructor(readonly game: BaseGameInterface) {
+  public constructor() {
     this.eventEmitter = new EventEmitter((...params: any[]) => {
-      if (game.debug) console.log(...params);
+      if (this.settings?.verboseLogging) console.log(...params);
     });
   }
 
@@ -55,30 +43,26 @@ export class CSEChat {
     return id && id.length > 0;
   }
 
-  public initialize(params: ChatParameters) {
-    this.settings = { ...defaultSettings(), ...params };
-
-    const url = this.settings.getUrl();
-    if (!isWebSocketUrl(url)) {
-      console.error('Attempted to initialize chaR connection with invalid URL: ' + url);
-      return;
-    }
-
-    this.initialized = true;
-  }
-
   public get connected() {
     return this.socket && this.socket.isOpen;
   }
 
-  public connect() {
-    console.log('Attempting to connect to chat');
-    if (!this.initialized) {
-      console.error('Attempted to connect to chat when not initialized.');
+  public connect(settings: ChatSocketSettings) {
+    const url = settings.getUrl();
+    if (!isWebSocketUrl(url)) {
+      console.error('Attempted to connect chat to invalid URL: ' + url);
       return;
     }
-    if (this.socket) {
-      return;
+
+    const prevSettings = this.settings;
+    this.settings = settings;
+    this.settings.protocols = ['chat-ws'];
+
+    if (this.connected) {
+      if (prevSettings.getUrl() === url) {
+        return;
+      }
+      this.socket.close();
     }
     this.socket = new ReconnectingWebSocket(this.settings);
     this.socket.onOpen = () => {
@@ -86,7 +70,7 @@ export class CSEChat {
       this.sendPing();
       this.requestDirectory();
       this.eventEmitter.trigger('connected');
-      setTimeout(() => {
+      window.setTimeout(() => {
         if (this.messageQueue && this.messageQueue.length > 0) {
           const toSend = this.messageQueue.slice();
           this.messageQueue = [];
@@ -139,7 +123,7 @@ export class CSEChat {
 
   public onConnected(callback: () => any) {
     if (this.connected) {
-      setTimeout(callback, 1);
+      window.setTimeout(callback, 1);
     }
     return this.eventEmitter.on('connected', callback);
   }
@@ -421,7 +405,7 @@ export class CSEChat {
         return;
 
       case ClientMessages.PINGPONGMESSAGE:
-        setTimeout(this.sendPing, 10000);
+        window.setTimeout(this.sendPing, 10000);
         return;
 
       case ClientMessages.ROOMACTION:

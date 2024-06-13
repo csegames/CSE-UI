@@ -8,13 +8,7 @@ import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle'
 import ExternalDataSource from '../redux/externalDataSource';
 import { game } from '@csegames/library/dist/_baseGame';
 import { Client, Element } from 'node-xmpp-client';
-import {
-  clearRoomSends,
-  joinRoom,
-  receiveCombatEvent,
-  receiveConsoleText,
-  receiveStanza
-} from '../redux/chatSlice';
+import { clearRoomSends, joinRoom, receiveCombatEvent, receiveConsoleText, receiveStanza } from '../redux/chatSlice';
 import { RootState } from '../redux/store';
 import { Dispatch } from '@reduxjs/toolkit';
 import { genID } from '@csegames/library/dist/_baseGame/utils/idGen';

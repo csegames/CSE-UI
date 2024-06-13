@@ -18,16 +18,16 @@ export type AbilityInstanceID = any;
 /** CSE.GameplayDefs.EntityID */
 export type EntityID = any;
 
-/** CSE.GameplayDefs.CharacterID */
+/** CSE.CharacterID */
 export type CharacterID = any;
-
-export type Decimal = any;
 
 /** CSEUtilsNET.NormalizedString */
 export type NormalizedString = any;
 
 /** CSE.GameplayDefs.GroupID */
 export type GroupID = any;
+
+export type Decimal = any;
 
 /** VoxJobInstanceID */
 export type VoxJobInstanceID = any;
@@ -159,10 +159,6 @@ export interface IGroupNotification {
   groupType: GroupTypes | null;
   type: GroupNotificationType | null;
 }
-/** ServerLib.ApiModels.IPatcherAlertUpdate */
-export interface IPatcherAlertUpdate {
-  alert: PatcherAlert | null;
-}
 /** ServerLib.GraphQL.Models.ISecureTradeUpdate */
 export interface ISecureTradeUpdate {
   category: SecureTradeUpdateCategory | null;
@@ -180,7 +176,6 @@ export interface IPatcherCharacterUpdate {
 }
 /** The root query object. */
 export interface CUQuery {
-  alerts: (Alert | null)[] | null /** Gets a list of alerts */;
   channels: (Channel | null)[] | null /** List all channels. */;
   character: CUCharacter | null /** Get a character by id and shard. */;
   connectedServices: ConnectedServices | null /** Status information for connected services */;
@@ -193,7 +188,6 @@ export interface CUQuery {
     | (Invite | null)[]
     | null /** Get group invites. Arguments: shard (required), forGroup (optional), toGroup | toCharacter (optional and exclusive, if both are provided, toGroup will be used). */;
   item: Item | null /** retrieve information about an item */;
-  motd: (MessageOfTheDay | null)[] | null /** Gets a list of Message of the Days */;
   myActiveScenarioScoreboard: MyScenarioScoreboard | null /** Gets information about the active scenario score a user is in. */;
   myActiveWarband: GraphQLActiveWarband | null /** A users active warband */;
   myBattlegroup: GraphQLBattlegroup | null /** A users battleground */;
@@ -207,7 +201,6 @@ export interface CUQuery {
     | null /** Alerts that notify players something happened but do not need to be reacted to. */;
   myprogression: CharacterProgressionData | null /** Information about progression data for the character. */;
   myScenarioQueue: MyScenarioQueue | null /** Gets information about available scenarios and their queue status */;
-  patcherAlerts: (PatcherAlert | null)[] | null /** Gets patcher alerts */;
   patcherHero: (PatcherHero | null)[] | null /** Gets Patcher Hero content */;
   patchNote: PatchNote | null /** Gets a single patch note */;
   patchNotes: (PatchNote | null)[] | null /** Gets patch notes */;
@@ -223,22 +216,6 @@ export interface CUQuery {
   traits: TraitsInfo | null /** Get all possible traits. */;
   voxJob: VoxJobStatusGQL | null /** retrieve information about a vox job */;
   world: WorldData | null /** Information about the current game world */;
-}
-/** CU.Databases.Models.Content.Alert */
-export interface Alert {
-  destination: string | null /** Where the alert should be displayed */;
-  id: string | null;
-  template: string | null /** Template for the alert */;
-  type: string | null /** The type of alert */;
-  utcCreated: string | null;
-  utcDisplayEnd: string | null;
-  utcDisplayStart: string | null;
-  vars: (AlertVar | null)[] | null /** Variables to substitute into the template */;
-}
-/** CU.Databases.Models.Content.AlertVar */
-export interface AlertVar {
-  key: string | null /** The token this variable replaces */;
-  value: string | null /** The content to use for replacement */;
 }
 /** ServerLib.ApiModels.Channel */
 export interface Channel {
@@ -256,10 +233,6 @@ export interface CUCharacter {
   faction: Faction | null;
   gender: string | null;
   id: CharacterID | null;
-  maxBlood: Decimal | null;
-  maxHealth: Decimal | null;
-  maxPanic: Decimal | null;
-  maxStamina: Decimal | null;
   name: NormalizedString | null;
   order: GroupID | null;
   progression: ProgressionComponentDBModel | null;
@@ -880,6 +853,7 @@ export interface GameSettingsDef {
   traitsMaxPoints: number | null;
   traitsMinPoints: number | null;
   voxIngredientHardLimit: number | null;
+  woundStatusTag: GameplayTag | null;
 }
 /** ServerLib.Game.StatDefinitionGQL */
 export interface StatDefinitionGQL {
@@ -911,17 +885,6 @@ export interface Invite {
   status: InviteStatus | null;
   targetsID128: TargetID | null;
   uses: number | null;
-}
-/** CU.Databases.Models.Content.MessageOfTheDay */
-export interface MessageOfTheDay {
-  channels: (number | null)[] | null /** Which channels will this patch note be presented on. */;
-  htmlContent: string | null /** HTML Content for the message of the day. */;
-  id: string | null;
-  jSONContent: string | null /** JSON data about the HTML Content for the message of the day */;
-  title: string | null;
-  utcCreated: string | null;
-  utcDisplayEnd: string | null;
-  utcDisplayStart: string | null;
 }
 /** CU.WebApi.GraphQL.Legacy.MyScenarioScoreboard */
 export interface MyScenarioScoreboard {
@@ -983,7 +946,6 @@ export interface ActiveWarband extends IGroup, IWarband {
 }
 /** CU.WebApi.GraphQL.GroupMemberState */
 export interface GroupMemberState {
-  blood: CurrentMax | null;
   canInvite: boolean | null;
   canKick: boolean | null;
   characterID: string | null;
@@ -992,7 +954,6 @@ export interface GroupMemberState {
   entityID: string | null;
   faction: Faction | null;
   gender: string | null;
-  health: Health | null;
   isAlive: boolean | null;
   isLeader: boolean | null;
   isReady: boolean | null;
@@ -1000,21 +961,10 @@ export interface GroupMemberState {
   position: Vec3f | null;
   race: string | null;
   rankLevel: number | null;
-  stamina: CurrentMax | null;
-  statuses: (StatusEffect | null)[] | null;
+  resources: (GroupMemberResource | null)[] | null;
+  statuses: (GroupMemberStatus | null)[] | null;
   type: string | null;
   warbandID: string | null;
-}
-/** CU.WebApi.GraphQL.CurrentMax */
-export interface CurrentMax {
-  current: Decimal | null;
-  max: Decimal | null;
-}
-/** CU.WebApi.GraphQL.Health */
-export interface Health {
-  current: Decimal | null;
-  max: Decimal | null;
-  wounds: number | null;
 }
 /** Vec3f */
 export interface Vec3f {
@@ -1022,8 +972,14 @@ export interface Vec3f {
   y: Decimal | null;
   z: Decimal | null;
 }
-/** CU.WebApi.GraphQL.StatusEffect */
-export interface StatusEffect {
+/** CU.WebApi.GraphQL.GroupMemberResource */
+export interface GroupMemberResource {
+  current: Decimal | null;
+  id: string | null;
+  max: Decimal | null;
+}
+/** CU.WebApi.GraphQL.GroupMemberStatus */
+export interface GroupMemberStatus {
   description: string | null;
   duration: Decimal | null;
   iconURL: string | null;
@@ -1306,14 +1262,6 @@ export interface Faction_Int32 {
   factionless: number | null /** Factionless */;
   tdd: number | null /** TDD */;
   viking: number | null /** Viking */;
-}
-/** CU.Databases.Models.Content.PatcherAlert */
-export interface PatcherAlert {
-  id: string | null;
-  message: string | null /** HTML Content for the patcher alert. */;
-  utcCreated: string | null;
-  utcDisplayEnd: string | null;
-  utcDisplayStart: string | null;
 }
 /** CU.Databases.Models.Content.PatcherHero */
 export interface PatcherHero {
@@ -1602,10 +1550,22 @@ export interface CUSubscription {
   myGroupNotifications: IGroupNotification | null /** Group related notifications for your specific character. Tells you when you joined a group, etc. */;
   myInventoryItems: Item | null /** Real-time updates for inventory items */;
   passiveAlerts: PassiveAlert | null /** Alerts that notify players something happened but do not need to be reacted to. */;
-  patcherAlerts: IPatcherAlertUpdate | null /** Gets updates for patcher alerts */;
   secureTradeUpdates: ISecureTradeUpdate | null /** Updates to a secure trade */;
   serverUpdates: IServerUpdate | null /** Subscription for updates to servers */;
   shardCharacterUpdates: IPatcherCharacterUpdate | null /** Subscription for simple updates to characters on a shard */;
+}
+/** CU.WebApi.Models.Notifications.Notification */
+export interface Notification {
+  broadcastDuration: string | null;
+  content: string | null;
+  counter: number | null;
+  displayDuration: string | null;
+  displayHints: ContentFlags | null;
+  displayTime: string | null;
+  mimeType: string | null;
+  purpose: string | null;
+  sequenceID: string | null;
+  tags: (string | null)[] | null;
 }
 /** CU.WebApi.GraphQL.GroupMemberUpdate */
 export interface GroupMemberUpdate extends IGroupUpdate {
@@ -1823,10 +1783,6 @@ export interface CharacterRemovedUpdate extends IPatcherCharacterUpdate {
   shard: ShardID | null;
   type: PatcherCharacterUpdateType | null;
 }
-/** ServerLib.ApiModels.PatcherAlertUpdate */
-export interface PatcherAlertUpdate extends IPatcherAlertUpdate {
-  alert: PatcherAlert | null;
-}
 /** CSE.GameplayDefs.AlchemyResultDef */
 export interface AlchemyResultDef {
   id: string | null;
@@ -1916,9 +1872,6 @@ export interface ClassTrait {
   required: boolean | null /** Whether or not this is a required trait. */;
   specifier: string | null /** Specifies the defining type based on category */;
 }
-export interface AlertsalertsArgs {
-  destination: string | null /** Required: Where the alert will show up. */;
-}
 export interface CharactercharacterArgs {
   id: string | null;
   shard: number | null;
@@ -1941,9 +1894,6 @@ export interface ItemitemArgs {
   shard: number | null /** Shard ID. (required) */;
   id: string | null /** Item ID. (required) */;
 }
-export interface MotdmotdArgs {
-  channel: number | null /** Required: Channel ID from which to return message of the day */;
-}
 export interface MyEquippedItemsmyEquippedItemsArgs {
   allowOfflineItems:
     | boolean
@@ -1953,10 +1903,6 @@ export interface MyInventorymyInventoryArgs {
   allowOfflineItems:
     | boolean
     | null /** If true and the character is not found in the worldstate, look for items in the DB.  If false and the character is not found an error is returned */;
-}
-export interface PatcherAlertspatcherAlertsArgs {
-  from: Date | null /** Optional: Oldest date (non-inclusive) from which to return. */;
-  to: Date | null /** Optional: Newest date (non-inclusive) from which to return. */;
 }
 export interface PatcherHeropatcherHeroArgs {
   from: Date | null /** Optional: Oldest date (non-inclusive) from which to return patch notes. */;
@@ -2363,7 +2309,8 @@ export enum PermissibleSetKeyType {
   Invalid = 'Invalid',
   Faction = 'Faction',
   ScenarioTeam = 'ScenarioTeam',
-  ScenarioRole = 'ScenarioRole'
+  ScenarioRole = 'ScenarioRole',
+  Scenario = 'Scenario'
 }
 /** CU.Databases.Models.Items.VoxJobState */
 export enum VoxJobState {
@@ -2530,6 +2477,14 @@ export enum PatcherCharacterUpdateType {
   None = 'None',
   Updated = 'Updated',
   Removed = 'Removed'
+}
+/** CSE.Notifications.ContentFlags */
+export enum ContentFlags {
+  None = 'None',
+  Revoke = 'Revoke',
+  Template = 'Template',
+  Localized = 'Localized',
+  Markup = 'Markup'
 }
 /** World.BuildingPlotResult+PlotContestedState */
 export enum PlotContestedState {

@@ -13,6 +13,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface GameSettingsState extends GameSettingsDef {
   pendingSettingsChanges: Dictionary<GameOption>;
+  // List of changed settings which were immediately saved to the client
+  advanceSettingsChanges: Dictionary<GameOption>;
+  // List of original values for settings which were immediately saved to the client, used for reverting
+  advanceSettingsOriginalValues: Dictionary<GameOption>;
 }
 
 function generateDefaultGameSettingsState() {
@@ -28,8 +32,11 @@ function generateDefaultGameSettingsState() {
     startingAttributePoints: 1,
     traitsMaxPoints: 1,
     traitsMinPoints: 1,
+    storeTabConfigs: [],
     // UI state additions.
-    pendingSettingsChanges: {}
+    pendingSettingsChanges: {},
+    advanceSettingsChanges: {},
+    advanceSettingsOriginalValues: {}
   };
   return defaultGameSettingsState;
 }
@@ -41,17 +48,37 @@ export const gameSettingsSlice = createSlice({
     updateGameSettings: (state: GameSettingsState, action: PayloadAction<GameSettingsDef>) => {
       Object.assign(state, action.payload);
     },
-    enqueueGameOptionChange: (state: GameSettingsState, action: PayloadAction<GameOption>) => {
+    enqueuePendingGameOptionChange: (state: GameSettingsState, action: PayloadAction<GameOption>) => {
       state.pendingSettingsChanges[action.payload.name] = action.payload;
     },
-    dequeueGameOptionChange: (state: GameSettingsState, action: PayloadAction<GameOption>) => {
+    dequeuePendingGameOptionChange: (state: GameSettingsState, action: PayloadAction<GameOption>) => {
       delete state.pendingSettingsChanges[action.payload.name];
     },
-    clearPendingOptionChanges: (state: GameSettingsState) => {
+    updateAdvanceGameOption: (state: GameSettingsState, action: PayloadAction<[GameOption, GameOption]>) => {
+      const [newChange, originalChange] = action.payload;
+      const storedOriginalChange = state.advanceSettingsOriginalValues[originalChange.name];
+      if (!storedOriginalChange) {
+        state.advanceSettingsOriginalValues[originalChange.name] = originalChange;
+      }
+      if (newChange.value !== state.advanceSettingsOriginalValues[originalChange.name].value) {
+        state.advanceSettingsChanges[newChange.name] = newChange;
+      } else {
+        delete state.advanceSettingsChanges[newChange.name];
+        delete state.advanceSettingsOriginalValues[originalChange.name];
+      }
+    },
+    clearOptionChanges: (state: GameSettingsState) => {
       state.pendingSettingsChanges = {};
+      state.advanceSettingsChanges = {};
+      state.advanceSettingsOriginalValues = {};
     }
   }
 });
 
-export const { updateGameSettings, enqueueGameOptionChange, dequeueGameOptionChange, clearPendingOptionChanges } =
-  gameSettingsSlice.actions;
+export const {
+  updateGameSettings,
+  enqueuePendingGameOptionChange,
+  dequeuePendingGameOptionChange,
+  updateAdvanceGameOption,
+  clearOptionChanges
+} = gameSettingsSlice.actions;

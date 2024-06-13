@@ -6,13 +6,14 @@
 
 import { PlayerEntityStateModel } from './game/GameClientModels/EntityState';
 import { CharacterKind } from './game/types/CharacterKind';
-import { Faction } from './webAPI/definitions';
+import { Faction, Vec3f } from './webAPI/definitions';
 
 interface CamelotMockDataGenerators {
   // By passing in a Partial object, we can override any fields we want, get defaults for the rest,
   // and not need a long list of individual params in the function signature.  Plus, applying the
   // overrides is a one-line Object.assign() call that works even if the underlying model changes!
   createPlayerEntityState: (overrides?: Partial<PlayerEntityStateModel>) => PlayerEntityStateModel;
+  createPlayerEntityPosition: () => Vec3f;
 }
 
 export const camelotMocks: CamelotMockDataGenerators = {
@@ -29,7 +30,6 @@ export const camelotMocks: CamelotMockDataGenerators = {
       entityID: 'MOCK',
       name: 'Plei Solder',
       isAlive: true,
-      position: { x: 0, y: 0, z: 0 },
       statuses: {},
       objective: null,
       accountID: ''
@@ -40,5 +40,8 @@ export const camelotMocks: CamelotMockDataGenerators = {
     }
 
     return mockData;
+  },
+  createPlayerEntityPosition: () => {
+    return { x: 0, y: 0, z: 0 };
   }
 };

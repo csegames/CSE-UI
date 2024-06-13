@@ -6,9 +6,6 @@
  */
 
 import * as React from 'react';
-import { Box } from './Box';
-import { SelectValue } from '@csegames/library/dist/_baseGame/types/Options';
-import { toTitleCase } from '@csegames/library/dist/_baseGame/utils/textUtils';
 
 export interface DropDownItem {
   id: string;
@@ -20,7 +17,6 @@ const ListBox = 'MainScreen-DropDownField-ListBox';
 const Caret = 'MainScreen-DropDownField-Caret';
 const ListItems = 'MainScreen-DropDownField-ListItems';
 const ListItem = 'MainScreen-DropDownField-ListItem';
-const Field = 'MainScreen-Field';
 
 interface DropDownProps<TValue> {
   items: TValue[];
@@ -35,15 +31,23 @@ interface DropDownState {
 }
 
 export class DropDown<TValue> extends React.PureComponent<DropDownProps<TValue>, DropDownState> {
+  private ref: HTMLDivElement | null = null;
+
   constructor(props: DropDownProps<TValue>) {
     super(props);
     this.state = { open: false };
   }
+
   public render() {
     const { open } = this.state;
     const { selected, items } = this.props;
     return (
-      <div className={ListBoxContainer}>
+      <div
+        ref={(ref) => {
+          this.ref = ref;
+        }}
+        className={ListBoxContainer}
+      >
         <div className={`${ListBox} ${this.props.listBoxStyles}`} onClick={this.toggleOpen}>
           {this.props.renderItem ? this.props.renderItem(selected) : selected + ''}
           <div className={`${Caret} ${open ? 'fs-icon-misc-caret-down' : 'fs-icon-misc-caret-up'}`} />
@@ -60,40 +64,39 @@ export class DropDown<TValue> extends React.PureComponent<DropDownProps<TValue>,
       </div>
     );
   }
+
+  public componentDidMount(): void {
+    addEventListener('mousedown', this.onWindowMousedown.bind(this));
+  }
+
+  public componentWillUnmount(): void {
+    removeEventListener('mousedown', this.onWindowMousedown.bind(this));
+  }
+
+  private onWindowMousedown(e: MouseEvent): void {
+    if (this.state.open && e.target instanceof HTMLElement && !this.isElementDescendant(e.target)) {
+      this.setState({ open: false });
+    }
+  }
+
+  private isElementDescendant(child: HTMLElement) {
+    var node = child.parentNode;
+    while (node != null) {
+      if (node === this.ref) {
+        return true;
+      }
+      node = node.parentNode;
+    }
+    return false;
+  }
+
   private toggleOpen = (e: React.MouseEvent) => {
     this.setState({ open: !this.state.open });
   };
+
   private selectItem = (e: React.MouseEvent, item: TValue) => {
     const { onSelect } = this.props;
     this.setState({ open: false });
     if (onSelect) onSelect(item);
   };
-}
-
-export interface DropDownFieldProps {
-  label: string;
-  selectedItem: SelectValue;
-  items: SelectValue[];
-  onSelectItem: (value: SelectValue) => void;
-}
-
-export interface DropDownFieldState {}
-
-export class DropDownField extends React.Component<DropDownFieldProps, DropDownFieldState> {
-  public render() {
-    const { label, items, selectedItem, onSelectItem } = this.props;
-    return (
-      <Box>
-        <div className={Field} style={{ width: '85%' }}>{toTitleCase(label)}</div>
-        <div className={Field} style={{ width: '15%' }}>
-          <DropDown
-            selected={selectedItem}
-            items={items}
-            onSelect={(value) => onSelectItem(value)}
-            renderItem={(item) => <div>{item.description}</div>}
-          />
-        </div>
-      </Box>
-    );
-  }
 }

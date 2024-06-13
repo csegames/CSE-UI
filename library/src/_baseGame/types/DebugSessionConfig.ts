@@ -5,8 +5,8 @@
  */
 
 export interface DebugSessionConfig {
-    scenario: string;
-    sheet: string;
-    tab: string;
-    zone: string;
+  scenario: string;
+  sheet: string;
+  tab: string;
+  zone: string;
 }

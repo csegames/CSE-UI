@@ -27,7 +27,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { RootState } from '../redux/store';
 
 export class QuestNetworkingService extends ExternalDataSource {
-  private battlePassTimeout: NodeJS.Timeout;
+  private battlePassTimeout: number;
   private battlePassTimeoutInitialized: boolean = false;
 
   protected async bind(): Promise<ListenerHandle[]> {
@@ -129,7 +129,7 @@ export class QuestNetworkingService extends ExternalDataSource {
           getBattlePassEndTimeMS(currentBattlePass) - getServerTimeMS(this.reduxState.clock.serverTimeDeltaMS)
         )
       );
-      this.battlePassTimeout = setTimeout(this.handleBattlePassUpdate.bind(this), endTimeout);
+      this.battlePassTimeout = window.setTimeout(this.handleBattlePassUpdate.bind(this), endTimeout);
     } else if (nextBattlePass) {
       // Else if there is a nextBP, then we care about either when it hits Preview or when it Starts.
       const serverTime = getServerTimeMS(this.reduxState.clock.serverTimeDeltaMS);
@@ -140,11 +140,11 @@ export class QuestNetworkingService extends ExternalDataSource {
       if (serverTime < previewTime) {
         // Not yet in Preview, so next important update is when Preview begins.
         const previewTimeout = Math.min(oneHourMS, Math.max(1, previewTime - serverTime));
-        this.battlePassTimeout = setTimeout(this.handleBattlePassUpdate.bind(this), previewTimeout);
+        this.battlePassTimeout = window.setTimeout(this.handleBattlePassUpdate.bind(this), previewTimeout);
       } else {
         // In Preview, so next important update is when the battlepass starts.
         const startTimeout = Math.min(oneHourMS, Math.max(1, startTime - serverTime));
-        this.battlePassTimeout = setTimeout(this.handleBattlePassUpdate.bind(this), startTimeout);
+        this.battlePassTimeout = window.setTimeout(this.handleBattlePassUpdate.bind(this), startTimeout);
       }
     }
   }

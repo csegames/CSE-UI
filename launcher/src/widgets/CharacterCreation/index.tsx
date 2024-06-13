@@ -588,7 +588,7 @@ class CharacterCreation extends React.Component<CharacterCreationProps, Characte
         }
         this.pushPagesCompleted(CharacterCreationPage.Stats);
         playSound(Sound.Select);
-        setTimeout(() => this.setState({ page: CharacterCreationPage.BanesAndBoons, helpEnabled: false }), 10);
+        window.setTimeout(() => this.setState({ page: CharacterCreationPage.BanesAndBoons, helpEnabled: false }), 10);
         break;
       }
       case CharacterCreationPage.Summary: {

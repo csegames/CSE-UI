@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { OvermindCharacterSummaryGQL, OvermindSummaryGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { OvermindCharacter, OvermindSummaryGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 
 import { StatsListItem } from './StatsListItem';
 import { StatsListHeader } from './StatsListHeader';
@@ -81,7 +81,7 @@ class AStatsList extends React.Component<Props, State> {
     this.setState({ sortBy: nextSortBy, leastToGreatest: false });
   }
 
-  private getSortedPlayers(): OvermindCharacterSummaryGQL[] {
+  private getSortedPlayers(): OvermindCharacter[] {
     const { sortBy, leastToGreatest } = this.state;
 
     const playerStatsClone = [...this.props.overmindSummary.characterSummaries];

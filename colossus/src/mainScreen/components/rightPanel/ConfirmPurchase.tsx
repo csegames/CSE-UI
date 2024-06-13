@@ -21,12 +21,12 @@ import {
   PerkType
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dispatch } from 'redux';
-import { StoreRoute, setPurchaseIdToProcess, updateStoreCurrentRoute } from '../../redux/storeSlice';
+import { setPurchaseIdToProcess } from '../../redux/storeSlice';
 import { getThumbnailURLForChampion } from '../../helpers/characterHelpers';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { BUX_PERK_ID, isFreeReward } from '../../helpers/storeHelpers';
-import { LobbyView, Overlay, hideRightPanel, navigateTo, showOverlay } from '../../redux/navigationSlice';
+import { Overlay, hideRightPanel, showOverlay } from '../../redux/navigationSlice';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../helpers/stringTableHelpers';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 
@@ -483,12 +483,10 @@ class AConfirmPurchase extends React.Component<Props, State> {
 
   private async onGoToRMTClick() {
     game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
-    // Send user to RMT tab in the store.
-    this.props.dispatch(hideRightPanel());
-    setTimeout(() => {
-      this.props.dispatch(updateStoreCurrentRoute(StoreRoute.Currency));
-      this.props.dispatch(navigateTo(LobbyView.Store));
-    }, 200);
+    // Overlays appear UNDER the right panel, so we have to dismiss it first.
+    this.props.dispatch?.(hideRightPanel());
+    // Summon RMT purchase overlay.
+    this.props.dispatch?.(showOverlay(Overlay.PurchaseGems));
   }
 
   private async onConfirmPressed() {

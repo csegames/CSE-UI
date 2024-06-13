@@ -24,6 +24,10 @@ export const gameSettingsQuery = gql`
         startingAttributePoints
         traitsMaxPoints
         traitsMinPoints
+        storeTabConfigs {
+          tab
+          layout
+        }
       }
     }
   }

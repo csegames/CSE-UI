@@ -4,6 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/**
+ * These names and numbers should be pulled directly from `Wwise_IDs.h` in the client repo.
+ * Do not take the WHOLE file, just the ones that we need to trigger from the UI.
+ */
+
 export enum SoundEvents {
   LOCAL_PLAY_ABBOT_BURST_ACTIVATE = 1058081399,
   LOCAL_PLAY_ABBOT_BURST_PREPARE = 3183013973,

@@ -23,7 +23,6 @@ import {
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { webConf } from '../../../../dataSources/networkConfiguration';
 import { startProfileRefresh } from '../../../../redux/profileSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import TooltipSource from '../../../../../shared/components/TooltipSource';
@@ -35,6 +34,7 @@ import {
   getTokenizedStringTableValue
 } from '../../../../helpers/stringTableHelpers';
 import { createAlertsForCollectedQuestProgress } from '../../../../helpers/perkUtils';
+import { webConf } from '../../../../dataSources/networkConfiguration';
 
 const Container = 'BattlePass-DailyQuestPanel-Container';
 const ContentCenterer = 'BattlePass-DailyQuestPanel-ContentCenterer';

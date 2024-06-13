@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { CurrentMax } from '../../graphql/schema';
 import { BaseEntityStateModel } from './EntityState';
 
 export interface ItemEntityStateModel extends BaseEntityStateModel {

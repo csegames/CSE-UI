@@ -5,7 +5,7 @@
  */
 
 import { CharacterKind } from '../types/CharacterKind';
-import { CurrentMax } from '../../graphql/schema';
+import { GroupMemberResource } from '../../graphql/schema';
 import { ObjectiveUIVisibility } from '../../../_baseGame/types/Objective';
 import { ArrayMap } from '../../../_baseGame/types/ObjectMap';
 import { BuildingPlotMapUISettings, AttackingFactions } from '../types/BuildingPlot';
@@ -34,7 +34,6 @@ export interface BaseEntityStateModel {
   faction: Faction;
   name: string;
   isAlive: boolean;
-  position: Vec3f;
   statuses: ArrayMap<StatusState>;
   resources: ArrayMap<EntityResource>;
   objective: ObjectiveStateModel | null;
@@ -51,6 +50,10 @@ export interface ItemEntityStateModel extends BaseEntityStateModel {
   iconClass: string;
 }
 
+export interface EntityPositionMapModel {
+  [entityID: string]: Vec3f;
+}
+
 export function isItem(entity: BaseEntityStateModel): entity is PlayerEntityStateModel {
   return entity && typeof (entity as any).itemDefID === 'number';
 }
@@ -63,9 +66,8 @@ export function isOther(entity: BaseEntityStateModel): entity is PlayerEntitySta
 }
 
 // This should map to UI::EntityResource
-export interface EntityResource extends CurrentMax {
+export interface EntityResource extends GroupMemberResource {
   name: string;
-  id: string;
   lastDecreaseTime: number;
 }
 

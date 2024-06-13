@@ -35,7 +35,11 @@ class ForceScaler extends React.Component<Props> {
     return (
       <div
         className={ForceScalerClass}
-        style={{ width: `${originalWidth}px`, height: `${originalHeight}px`, transform: `scale(${widget.state.scale})` }}
+        style={{
+          width: `${originalWidth}px`,
+          height: `${originalHeight}px`,
+          transform: `scale(${widget.state.scale})`
+        }}
       >
         {this.props.children}
       </div>

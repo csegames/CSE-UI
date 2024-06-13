@@ -8,15 +8,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   Decimal,
   EquippedItem,
-  GearSlotDefRef,
   Item,
   MyEquippedItems,
   StatGQL
 } from '@csegames/library/dist/camelotunchained/graphql/schema';
-import {
-  MoveItemRequest,
-  MoveItemRequestLocationType
-} from '@csegames/library/dist/camelotunchained/webAPI/definitions';
+import { MoveItemRequestLocationType } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
+import { MoveItemRequest } from '../components/items/itemUtils';
 
 interface EquippedItemsState {
   shouldEquippedItemsRefresh: boolean;
@@ -24,7 +21,7 @@ interface EquippedItemsState {
   armorClass: Decimal | null;
   itemCount: number | null;
   items: (EquippedItem | null)[] | null;
-  readiedGearSlots: (GearSlotDefRef | null)[] | null;
+  readiedGearSlots: (string | null)[] | null;
   resistances: (StatGQL | null)[] | null;
   totalMass: Decimal | null;
 }
@@ -66,55 +63,48 @@ export const equippedItemsSlice = createSlice({
         return;
       }
       action.payload.forEach(([move, item]) => {
-        const gearSlots: GearSlotDefRef[] = move.To.GearSlotIDs.map(
-          (gearSlotID): GearSlotDefRef => ({
-            id: gearSlotID,
-            gearSlotType: null,
-            iconClass: null,
-            name: null
-          })
-        );
-        switch (move.From.Location) {
-          case MoveItemRequestLocationType.Inventory:
-            state.items.push({
+        const gearSlots: string[] = !move.GearSlotIDTo ? null : [move.GearSlotIDTo];
+
+        if (move.LocationTo == MoveItemRequestLocationType.Equipment && item.location.equipped) {
+          // item is currently equipped, but moving to a different equip spot
+          const itemIndex = state.items.findIndex((equippedItem) => equippedItem.item.id == item.id);
+          if (itemIndex !== -1) {
+            state.items[itemIndex] = {
               gearSlots,
               item: {
                 ...item,
                 location: {
                   ...item.location,
-                  inventory: null,
                   equipped: {
-                    characterID: item.location.inventory.characterID,
+                    ...item.location.equipped,
                     gearSlots
                   }
                 }
               }
-            });
-            break;
-          case MoveItemRequestLocationType.Equipment:
-            const itemIndex = state.items.findIndex((equippedItem) =>
-              equippedItem.item.location.equipped.gearSlots.some((gearSlot) =>
-                move.From.GearSlotIDs.includes(gearSlot.id)
-              )
-            );
-            if (move.To.Position !== -1) {
-              state.items.splice(itemIndex, 1);
-            } else {
-              state.items[itemIndex] = {
-                gearSlots,
-                item: {
-                  ...item,
-                  location: {
-                    ...item.location,
-                    equipped: {
-                      ...item.location.equipped,
-                      gearSlots
-                    }
-                  }
+            };
+          }
+        } else if (move.LocationTo == MoveItemRequestLocationType.Equipment) {
+          // item isn't currently equipped, but is being equipped
+          state.items.push({
+            gearSlots,
+            item: {
+              ...item,
+              location: {
+                ...item.location,
+                inventory: null,
+                equipped: {
+                  characterID: item.location.inventory.characterID,
+                  gearSlots
                 }
-              };
+              }
             }
-            break;
+          });
+        } else if (item.location.equipped) {
+          // item is being unequipped
+          const itemIndex = state.items.findIndex((equippedItem) => equippedItem.item.id == item.id);
+          if (itemIndex !== -1) {
+            state.items.splice(itemIndex, 1);
+          }
         }
       });
     }

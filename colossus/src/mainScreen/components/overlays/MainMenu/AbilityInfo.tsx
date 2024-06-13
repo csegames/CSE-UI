@@ -166,6 +166,7 @@ class AAbilityInfo extends React.Component<Props> {
       case ScenarioRoundState.Countdown:
       case ScenarioRoundState.Running:
       case ScenarioRoundState.Epilogue:
+      case ScenarioRoundState.WaitingForConnections:
         return [
           this.props.abilities[basicAttack1ID].displayDefID,
           this.props.abilities[basicAttack2ID].displayDefID,

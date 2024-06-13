@@ -46,7 +46,7 @@ export enum view {
   CHAT,
   PATCHNOTES,
   CHARACTERSELECT,
-  COLOSSUSCREATION,
+  COLOSSUSCREATION
 }
 
 class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
@@ -60,14 +60,13 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
       currentProps: null,
       previousProps: null,
       inTransition: false,
-      selectedServer: null,
+      selectedServer: null
     };
   }
 
   public render() {
     return (
-      <div
-        className={`OverlayView ${this.getOverlaySubclass()}`}>
+      <div className={`OverlayView ${this.getOverlaySubclass()}`}>
         {this.renderNews(this.props.phase, false)}
         {this.renderNews(this.props.phase, true)}
         {this.props.phase !== ContentPhase.Login ? this.renderCharacterContainer() : null}
@@ -81,7 +80,7 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
         return this.state.previousView === view.NONE ? 'OverlayView--hidden' : '';
       case view.CHARACTERCREATION:
       case view.COLOSSUSCREATION:
-      case view.CHARACTERSELECT:    
+      case view.CHARACTERSELECT:
         return 'OverlayView--wholescreen';
     }
     return '';
@@ -104,13 +103,17 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
         previousProps: this.state.currentProps,
         currentView: v,
         currentProps: props,
-        inTransition: true,
+        inTransition: true
       });
-      setTimeout(() => this.setState({
-        previousView: view.NONE,
-        previousProps: null,
-        inTransition: false,
-      } as any), 333);
+      window.setTimeout(
+        () =>
+          this.setState({
+            previousView: view.NONE,
+            previousProps: null,
+            inTransition: false
+          } as any),
+        333
+      );
     });
   }
 
@@ -131,23 +134,27 @@ class OverlayView extends React.Component<OverlayViewProps, OverlayViewState> {
     const v = current ? this.state.currentView : this.state.previousView;
     if (v != view.NEWS) return null;
     const props = current ? this.state.currentProps : this.state.previousProps;
-    const className = current ? this.state.inTransition ? '' : 'View--show' : '';
-    return <NewsContainer className={`View ${className} cse-ui-scroller-grey`}>
+    const className = current ? (this.state.inTransition ? '' : 'View--show') : '';
+    return (
+      <NewsContainer className={`View ${className} cse-ui-scroller-grey`}>
         <News {...props} />
-      </NewsContainer>;
+      </NewsContainer>
+    );
   }
 
   private renderCharacterContainer(): JSX.Element {
-    return  <div className={`View ${this.hasCreationView() ? 'View--show' : 'View--hide'}`}>
-              {this.renderCharacterCreator()}
-            </div>;
+    return (
+      <div className={`View ${this.hasCreationView() ? 'View--show' : 'View--hide'}`}>
+        {this.renderCharacterCreator()}
+      </div>
+    );
   }
 
   private renderCharacterCreator(): JSX.Element {
     if (this.state.currentView == view.COLOSSUSCREATION) {
-      return <ColossusCharacterCreation {...this.state.currentProps} />
+      return <ColossusCharacterCreation {...this.state.currentProps} />;
     }
-    return <CamelotCharacterCreation {...this.state.currentProps} />
+    return <CamelotCharacterCreation {...this.state.currentProps} />;
   }
 
   private hasCreationView(): boolean {

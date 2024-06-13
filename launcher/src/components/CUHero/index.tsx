@@ -94,7 +94,7 @@ class Hero extends React.Component<HeroProps, HeroState> {
   private timeNext = (index: number) => {
     let next = this.state.currentItem + 1;
     if (next >= this.props.items.length) next = 0;
-    this.timeout = setTimeout(() => this.selectIndex(next), 30000);
+    this.timeout = window.setTimeout(() => this.selectIndex(next), 30000);
   };
 
   private pause = () => {

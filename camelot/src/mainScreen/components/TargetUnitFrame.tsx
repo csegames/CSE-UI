@@ -9,7 +9,8 @@ import { connect } from 'react-redux';
 import {
   AnyEntityStateModel,
   isPlayer,
-  PlayerEntityStateModel
+  PlayerEntityStateModel,
+  EntityPositionMapModel
 } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
 import { HUDHorizontalAnchor, HUDLayer, HUDVerticalAnchor, HUDWidgetRegistration } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
@@ -28,6 +29,7 @@ interface ReactProps {
 
 interface InjectedProps {
   target: AnyEntityStateModel;
+  positions: EntityPositionMapModel;
   selectedWidgetID: string;
   classesByNumericID: Dictionary<ClassDefGQL>;
 }
@@ -52,7 +54,6 @@ class ATargetUnitFrame extends React.Component<Props> {
             entityID={target.entityID}
             isAlive={target.isAlive}
             name={target.name}
-            position={target.position}
             resources={target.resources}
             statuses={target.statuses}
             showDistance={true}
@@ -73,6 +74,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   return {
     ...ownProps,
     target: ownProps.isFriendly ? state.entities.friendlyTarget : state.entities.enemyTarget,
+    positions: state.entities.positions,
     selectedWidgetID,
     classesByNumericID: state.gameDefs.classesByNumericID
   };

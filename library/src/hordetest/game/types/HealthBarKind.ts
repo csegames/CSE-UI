@@ -11,5 +11,5 @@ export enum HealthBarKind {
   Item = 2,
   EnemyItem = 3,
   BossPlayer = 4,
-  EnemyUser = 5,
+  EnemyUser = 5
 }

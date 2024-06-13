@@ -21,7 +21,6 @@ import { ItemIcon } from '../items/ItemIcon';
 import {
   ClassDefGQL,
   EquippedItem,
-  GearSlotDefRef,
   GenderDefGQL,
   Item,
   RaceDefGQL
@@ -66,7 +65,7 @@ interface InjectedProps {
   faction: Faction;
   classID: number;
   equippedItems: EquippedItem[];
-  readiedGearSlots: GearSlotDefRef[];
+  readiedGearSlots: string[];
   classDynamicAssets: Dictionary<UserClassesData>;
   classesByNumericID: Dictionary<ClassDefGQL>;
   racesByNumericID: Dictionary<RaceDefGQL>;
@@ -154,14 +153,14 @@ class AEquipped extends React.Component<Props> {
   }
 
   renderGearSlot(gearSlotID: string, className: string): JSX.Element {
-    const isReadied: boolean = this.props.readiedGearSlots.some((readiedGearSlot) => readiedGearSlot.id === gearSlotID);
+    const isReadied: boolean = this.props.readiedGearSlots.includes(gearSlotID);
     const classNames = [ItemIconFrame, className];
     if (isReadied) {
       classNames.push(ItemIconFrameReadied);
     }
     const items: Item[] = [];
     const item = this.props.equippedItems.find((equippedItem) =>
-      equippedItem.item.location.equipped.gearSlots.some((gearSlot) => gearSlot.id === gearSlotID)
+      equippedItem.item.location.equipped.gearSlots.includes(gearSlotID)
     )?.item;
     if (item) {
       items.push(item);

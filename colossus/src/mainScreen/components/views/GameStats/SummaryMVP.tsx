@@ -10,9 +10,9 @@ import { connect } from 'react-redux';
 import {
   ChampionCostumeInfo,
   ChampionInfo,
-  OvermindCharacterSummaryGQL,
+  OvermindCharacter,
   OvermindSummaryGQL,
-  MVPGQL,
+  MVP,
   StringTableEntryDef,
   PerkDefGQL
 } from '@csegames/library/dist/hordetest/graphql/schema';
@@ -85,12 +85,12 @@ class ASummaryMVP extends React.Component<Props> {
   }
 
   private renderMVP(index: number) {
-    const mvp: MVPGQL = this.props.overmindSummary?.mVPs[index];
+    const mvp: MVP = this.props.overmindSummary?.mVPs[index];
     if (!mvp) {
       return null;
     }
 
-    const mvpCharacter: OvermindCharacterSummaryGQL = this.props.overmindSummary.characterSummaries.find(
+    const mvpCharacter: OvermindCharacter = this.props.overmindSummary.characterSummaries.find(
       (c) => c.accountID == mvp.accountID
     );
 
@@ -114,8 +114,8 @@ class ASummaryMVP extends React.Component<Props> {
       <div className={`${Container} ${indexStyle} ${showAnimations}`}>
         <img className={`${ChampionImage} ${primary} ${showAnimations}`} src={costume.standingImageURL} />
         <div className={`${MVPStatsContainer} ${showAnimations} ${indexStyle}`}>
-          <div className={`${MVPTitleContainer} ${primary}`}>
-            <div className={`${MVPTitle} ${primary}`}>{mvp.mVPName}</div>
+          <div className={MVPTitleContainer}>
+            <div className={MVPTitle}>{mvp.mVPName}</div>
             <div className={MVPDescription}>{mvp.mVPDescription}</div>
           </div>
           <div className={MVPPlayerContainer}>

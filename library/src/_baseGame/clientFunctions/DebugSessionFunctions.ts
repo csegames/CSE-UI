@@ -50,4 +50,6 @@ class CoherentDebugSessionFunctions extends DebugSessionFunctionsBase {
 
 class BrowserDebugSessionFunctions extends DebugSessionFunctionsBase {}
 
-export const impl: DebugSessionFunctions & DebugSessionMocks = engine.isAttached ? new CoherentDebugSessionFunctions() : new BrowserDebugSessionFunctions();
+export const impl: DebugSessionFunctions & DebugSessionMocks = engine.isAttached
+  ? new CoherentDebugSessionFunctions()
+  : new BrowserDebugSessionFunctions();

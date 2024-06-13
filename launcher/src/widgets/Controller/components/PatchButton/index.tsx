@@ -230,11 +230,19 @@ class PatchButton extends React.Component<Props, PatchButtonState> {
     let launchString = this.commands ? this.commands : '';
     if (selectedServer.channelID !== CHANNEL_CUBE) {
       if (selectedServer.shardID) {
-        launchString = this.addUniqueToLaunchString(launchString, ['servershardid', 'server'], `servershardid=${selectedServer.shardID}`);
+        launchString = this.addUniqueToLaunchString(
+          launchString,
+          ['servershardid', 'server'],
+          `servershardid=${selectedServer.shardID}`
+        );
       }
 
       const apiHost = selectedServer.apiHost || patcher.getApiHost();
-      launchString = this.addUniqueToLaunchString(launchString, 'masterserver', `masterserver=${apiHost.replace('https://', '')}`);
+      launchString = this.addUniqueToLaunchString(
+        launchString,
+        'masterserver',
+        `masterserver=${apiHost.replace('https://', '')}`
+      );
 
       if (selectedCharacter) {
         launchString = this.addUniqueToLaunchString(launchString, 'character', `character=${selectedCharacter.id}`);

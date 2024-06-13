@@ -115,7 +115,7 @@ export function createAlertsForCollectedQuestProgress(
   }
 
   for (let i = questProgress.nextCollectionPremium; i < questProgress.currentQuestIndex; ++i) {
-    questDef.links[i].rewards.forEach((r) => {
+    questDef.links[i].premiumRewards.forEach((r) => {
       const perkDef = perksByID[r.perkID];
       if (perkDef && isChampionEquipmentPerk(perkDef.perkType)) {
         dispatch(updateStoreAddUnseenEquipment(perkDef.id));

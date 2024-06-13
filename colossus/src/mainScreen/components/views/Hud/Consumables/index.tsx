@@ -205,7 +205,7 @@ class AConsumables extends React.Component<Props, State> {
   }
 
   private setDescriptionTimeout() {
-    this.timeoutHandle = setTimeout(() => {
+    this.timeoutHandle = window.setTimeout(() => {
       this.setState({ descriptionVisible: false });
       this.timeoutHandle = null;
     }, DESCRIPTION_VISIBILITY_TIME_SECONDS * 1000);

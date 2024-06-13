@@ -24,6 +24,8 @@ export class FeatureFlagsService extends ExternalDataSource {
 
   private async handleFeatureFlags(result: FeatureFlagQueryResult): Promise<void> {
     var clientBuild = await clientAPI.getBuildNumber();
-    this.dispatch(updateFeatureFlags({ clientBuild, serverBuild: result.serverBuildNumber, flags : result.featureFlags }));
+    this.dispatch(
+      updateFeatureFlags({ clientBuild, serverBuild: result.serverBuildNumber, flags: result.featureFlags })
+    );
   }
 }

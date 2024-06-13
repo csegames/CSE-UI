@@ -28,9 +28,7 @@ export interface Props {}
 
 export function List() {
   const [filterType, setFilterType] = React.useState<FilterType>(FilterType.Solo);
-  const p = cloneDeep(players)
-    .concat(players)
-    .concat(players);
+  const p = cloneDeep(players).concat(players).concat(players);
   const sortedFilteredTopPlayers = p.sort((a, b) => b.statNumber - a.statNumber);
 
   function onClickSolo() {

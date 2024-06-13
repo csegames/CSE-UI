@@ -84,7 +84,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
 
   public render() {
     return this.state.show ? (
-      <div className={Container} data-input-group="block">
+      <div className={Container} data-input-group='block'>
         <div className={ToggleConsolePosition} onClick={() => mockEvents.triggerNavigate('console')}>
           Close Console
         </div>
@@ -92,7 +92,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
           <div className={Messages}>{this.renderTextLines()}</div>
           <div className={InputWrapper}>
             <Input
-              type="text"
+              type='text'
               styles={{
                 input: {
                   border: '1px solid rgba(255, 255, 255, 0.8)',

@@ -21,10 +21,10 @@ const Button = styled.a`
   border-image: linear-gradient(180deg, #e2cb8e, #8e6d27) stretch;
   border-style: solid;
   border-width: 3px 1px;
-  transition: background-color .3s;
+  transition: background-color 0.3s;
   background-color: rgba(17, 17, 17, 0.8);
   border-image-slice: 1;
-  color: #B89969;
+  color: #b89969;
   cursor: pointer;
   font-size: 14px;
   letter-spacing: 2px;
@@ -32,7 +32,7 @@ const Button = styled.a`
   -webkit-mask-image: url(/ui/images/controller/button-mask.png);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: cover;
-  transition: all ease .2s;
+  transition: all ease 0.2s;
   text-decoration: none;
   &:hover {
     background-color: rgba(36, 28, 28, 0.8);
@@ -43,7 +43,7 @@ const Button = styled.a`
   &.disabled:hover {
     background-color: rgba(17, 17, 17, 0.8);
     border-image-slice: 1;
-    color: #B89969;
+    color: #b89969;
   }
 `;
 
@@ -65,8 +65,9 @@ class GenericButton extends React.Component<GenericButtonProps> {
         href={this.props.href}
         target='_blank'
         style={{
-          opacity: this.props.disabled ? 0.5 : 1,
-        }}>
+          opacity: this.props.disabled ? 0.5 : 1
+        }}
+      >
         {this.props.text}
         {this.props.children}
       </Button>

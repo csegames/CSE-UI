@@ -11,23 +11,25 @@ import ClientStateCommunicationContextProvider from './ClientStateCommunicationC
 
 // Action Handlers
 import { connect, useStore } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { FeatureFlags } from '../../redux/featureFlagsSlice';
 import { ChampionInfoService } from '../../dataSources/championInfoNetworking';
+import { ClockDataSource } from '../../dataSources/clockDataSource';
+import { DebugSessionService } from '../../dataSources/debugSessionNetworking';
+import { FeatureFlagsService } from '../../dataSources/featureFlagsNetworking';
+import { GameSettingsNetworkingService } from '../../dataSources/gameSettingsNetworking';
+import { GameStatsNetworkingService } from '../../dataSources/gameStatsNetworking';
+import { LocalStorageSource } from '../../dataSources/localStorageDataSource';
+import { MatchService } from '../../dataSources/matchNetworking';
+import { NotificationsService } from '../../dataSources/notificationsNetworking';
 import { ProfileService } from '../../dataSources/profileNetworking';
+import { QuestNetworkingService } from '../../dataSources/questNetworking';
+import { ScenariosNetworkingService } from '../../dataSources/scenariosNetworking';
+import { StoreNetworkingService } from '../../dataSources/storeNetworking';
+import { StringTableNetworkingService } from '../../dataSources/stringTableNetworking';
 import { TeamJoinNetworkingService } from '../../dataSources/teamJoinNetworking';
 import { UserNetworkingService } from '../../dataSources/userNetworking';
-import { FeatureFlagsService } from '../../dataSources/featureFlagsNetworking';
-import { QuestNetworkingService } from '../../dataSources/questNetworking';
-import { StoreNetworkingService } from '../../dataSources/storeNetworking';
-import { GameSettingsNetworkingService } from '../../dataSources/gameSettingsNetworking';
-import { FeatureFlags } from '../../redux/featureFlagsSlice';
-import { RootState } from '../../redux/store';
-import { ClientPerformanceDataService } from '../../dataSources/clientPerformanceDataService';
-import { MatchService } from '../../dataSources/matchNetworking';
-import { StringTableNetworkingService } from '../../dataSources/stringTableNetworking';
-import { ScenariosNetworkingService } from '../../dataSources/scenariosNetworking';
-import { DebugSessionService } from '../../dataSources/debugSessionNetworking';
-import { ClockDataSource } from '../../dataSources/clockDataSource';
-import { LocalStorageSource } from '../../dataSources/localStorageDataSource';
+import { WarningIconsDataService } from '../../dataSources/warningIconsDataService';
 
 const SharedContextProvidersContainer = 'Context-SharedContextProvidersContainer';
 
@@ -46,22 +48,24 @@ class ASharedContextProviders extends React.Component<Props> {
   public render() {
     return (
       <div className={SharedContextProvidersContainer}>
-        <MatchService />
+        <ChampionInfoService />
+        <ClockDataSource />
+        <ContextProviders />
         <DebugSessionService />
+        <FeatureFlagsService />
+        <GameSettingsNetworkingService />
+        <GameStatsNetworkingService />
+        <LocalStorageSource />
+        <MatchService />
+        <NotificationsService />
+        <ProfileService />
+        <QuestNetworkingService />
+        <ScenariosNetworkingService />
+        <StoreNetworkingService />
+        <StringTableNetworkingService />
         <TeamJoinNetworkingService />
         <UserNetworkingService />
-        <ProfileService />
-        <FeatureFlagsService />
-        <QuestNetworkingService />
-        <StoreNetworkingService />
-        <GameSettingsNetworkingService />
-        <StringTableNetworkingService />
-        <ChampionInfoService />
-        <ClientPerformanceDataService />
-        <ScenariosNetworkingService />
-        <ContextProviders />
-        <ClockDataSource />
-        <LocalStorageSource />
+        <WarningIconsDataService />
         {this.props.children}
       </div>
     );

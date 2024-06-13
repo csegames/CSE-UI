@@ -15,4 +15,3 @@ export enum ItemStatID {
 export enum ItemResourceID {
   Doses = 'Doses'
 }
-

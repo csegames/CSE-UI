@@ -88,11 +88,11 @@ class ToasterPane extends React.Component<Props, State> {
           this.setState({ shouldShow: true });
         }
         // Queue up the exit for the top toaster.
-        setTimeout(() => {
+        window.setTimeout(() => {
           this.props.dispatch(hideToaster());
         }, this.props.toasters[0].duration ?? DEFAULT_TOAST_DURATION_MILLIS);
       } else {
-        setTimeout(() => {
+        window.setTimeout(() => {
           this.setState({ shouldShow: false, prevToaster: null });
         }, this.getFadeDurationMillis());
       }

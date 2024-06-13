@@ -12,9 +12,11 @@ import { ItemHealthBar } from './ItemHealthBar';
 import { EnemyItemHealthBar } from './EnemyItemHealthBar';
 import { HealthBarKind } from '@csegames/library/dist/hordetest/game/types/HealthBarKind';
 import { BossHealthBar } from './BossHealthBar';
+import { WorldUIPositionModel } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 
 export interface Props {
   state: HealthBarState;
+  position: WorldUIPositionModel;
 }
 
 export function HealthBar(props: Props) {
@@ -25,7 +27,7 @@ export function HealthBar(props: Props) {
 
     case HealthBarKind.FriendlyUser:
     case HealthBarKind.EnemyUser: {
-      return <UserHealthBar state={props.state} />;
+      return <UserHealthBar state={props.state} position={props.position} />;
     }
 
     case HealthBarKind.Item: {

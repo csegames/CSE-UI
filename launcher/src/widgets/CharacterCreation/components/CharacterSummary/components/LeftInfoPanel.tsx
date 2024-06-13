@@ -28,7 +28,7 @@ const Container = styled.div`
   .row {
     margin-top: 10px;
   }
-  animation: slideLeftToRight 1.5s forwards 
+  animation: slideLeftToRight 1.5s forwards;
   @keyframes slideLeftToRight {
     from {
       opacity: 0;

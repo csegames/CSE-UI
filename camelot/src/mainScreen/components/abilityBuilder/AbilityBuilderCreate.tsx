@@ -20,10 +20,10 @@ import { AbilityComponentCategoryDefRef } from '@csegames/library/dist/camelotun
 import { AbilityBuilderComponentSelector } from './AbilityBuilderComponentSelector';
 import { AbilityBuilderPreview } from './AbilityBuilderPreview';
 import { checkNetworkRequirements, selectRandomAdjective } from './abilityBuilderUtils';
-import { webConf } from '../../dataSources/networkConfiguration';
 import { showModal } from '../../redux/modalsSlice';
 import { AbilityEditStatus, AbilityGroup } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
 import { setNowEditingAbilityId } from '../../redux/abilitiesSlice';
+import { webConf } from '../../redux/networkConfiguration';
 
 const Root = 'HUD-AbilityBuilderCreate-Root';
 const ListRoot = 'HUD-AbilityBuilderCreate-ListRoot';

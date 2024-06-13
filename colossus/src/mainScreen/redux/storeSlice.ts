@@ -19,13 +19,12 @@ import { StoreStaticDataQueryResult } from '../dataSources/storeNetworkingConsta
 export enum StoreRoute {
   None,
   Rewards,
-  Featured,
+  Bundles,
   Weapons,
   Skins,
   Emotes,
   Portraits,
   SprintFX,
-  Currency,
   QuestXP
 }
 

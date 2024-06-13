@@ -160,7 +160,7 @@ class AActionButton extends React.Component<Partial<Props>, State> {
   private getCountDiv(): JSX.Element {
     const displayID = this.props.ability?.displayDefID;
     const entityResourceID = this.props.abilityDisplayDefs[displayID]?.entityResourceID ?? 0;
-    let displayCount: number = null;
+    let displayCount: string = null;
 
     if (entityResourceID > 0) {
       const resource = findEntityResourceByNumericID(this.props.resources, entityResourceID);
@@ -171,7 +171,7 @@ class AActionButton extends React.Component<Partial<Props>, State> {
       const summonCount: number = this.props.ability.summonCount || 0;
 
       if (summonCount > 0) {
-        displayCount = summonCount;
+        displayCount = summonCount.toFixed(0);
       }
     }
 

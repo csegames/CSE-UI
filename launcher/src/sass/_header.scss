@@ -26,33 +26,31 @@ nav {
   ul {
     li {
       a {
-        color: darken($color1,20%);
+        color: darken($color1, 20%);
         transition: 0.3s linear;
         &:hover {
-            color: lighten($color1,20%);
-            background: $gradient-nav;
+          color: lighten($color1, 20%);
+          background: $gradient-nav;
         }
         .tiny {
-            font-size: 1rem!important;
-            float:right;
-            display: block;
-            width: 12px;
-            margin-left: 5px;
-            overflow: hidden;
-            background: url("../images/linkout.jpg") no-repeat center center;
-            background-size: contain;
-            color: transparent;
+          font-size: 1rem !important;
+          float: right;
+          display: block;
+          width: 12px;
+          margin-left: 5px;
+          overflow: hidden;
+          background: url('../images/linkout.jpg') no-repeat center center;
+          background-size: contain;
+          color: transparent;
         }
       }
       .active {
-        color: lighten($color1,20%);
+        color: lighten($color1, 20%);
         background: $gradient-nav;
       }
-
     }
   }
 }
-
 
 #cse-patcher-windowheader {
   position: fixed;
@@ -74,10 +72,10 @@ nav {
   }
 }
 
-@media only screen and (max-width: 992px){
-    nav .brand-logo {
-        left: auto;
-        -webkit-transform: none;
-        transform: none;
-    }
+@media only screen and (max-width: 992px) {
+  nav .brand-logo {
+    left: auto;
+    -webkit-transform: none;
+    transform: none;
+  }
 }

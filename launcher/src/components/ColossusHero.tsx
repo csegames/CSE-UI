@@ -52,7 +52,7 @@ export function ColossusHero(props: {}) {
         {isInitialVideo ? (
           <Video
             src='videos/fsr-intro-4k-10q.webm'
-            poster='images/cse/login-cse.jpg'
+            poster='images/uce/login-uce.jpg'
             onEnded={onVideoEnded}
             autoPlay={false}
           ></Video>

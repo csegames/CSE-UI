@@ -23,7 +23,7 @@ export interface State {
 
 export class LocalVideoPlayer extends React.Component<Props, State> {
   private videoRef = React.createRef<HTMLVideoElement>();
-  private progressTimer: NodeJS.Timer;
+  private progressTimer: number;
 
   constructor(props: Props) {
     super(props);
@@ -51,7 +51,7 @@ export class LocalVideoPlayer extends React.Component<Props, State> {
           onEnded={this.onVideoEnded.bind(this)}
           onClick={this.togglePlaying.bind(this)}
         >
-          <source src={this.props.src} type="video/webm" />
+          <source src={this.props.src} type='video/webm' />
         </video>
         <div className={`${PlayButton} ${playingClass}`} />
         <div className={`${ProgressBarBackground} ${startedClass}`}>
@@ -117,7 +117,7 @@ export class LocalVideoPlayer extends React.Component<Props, State> {
     } else {
       if (this.videoRef && this.videoRef.current) {
         this.videoRef.current.play();
-        this.progressTimer = setInterval(this.onVideoTimeUpdate.bind(this), 33);
+        this.progressTimer = window.setInterval(this.onVideoTimeUpdate.bind(this), 33);
       }
     }
     this.setState({ isPlaying: !this.state.isPlaying });

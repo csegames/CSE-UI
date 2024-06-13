@@ -25,6 +25,7 @@ const GeneralInfoContainer = 'SelfHealthBar-GeneralInfoContainer';
 const ExtrasContainer = 'SelfHealthBar-ExtrasContainer';
 const HeartsContainer = 'SelfHealthBar-HeartsContainer';
 const Heart = 'SelfHealthBar-Heart';
+const HeartLabel = 'SelfHealthBar-HeartLabel';
 const RunesContainer = 'SelfHealthBar-RunesContainer';
 const RuneItem = 'SelfHealthBar-RuneItem';
 const RuneColor = 'SelfHealthBar-RuneColor';
@@ -81,7 +82,7 @@ class ASelfHealthBar extends React.Component<Props, {}> {
   }
 
   public render() {
-    const hearts = Array.from(Array(Math.max(0, this.props.maxDeaths - this.props.currentDeaths)));
+    const hearts = this.props.maxDeaths > 0 ? this.props.maxDeaths - this.props.currentDeaths : null;
     const maxRunesAllowed = this.props.maxRunesAllowed;
     const collectedRunes = this.props.collectedRunes;
 
@@ -104,8 +105,6 @@ class ASelfHealthBar extends React.Component<Props, {}> {
         </div>
       );
     }
-
-    const generalInfoClasses: string = `${GeneralInfoContainer} ${this.runesGlowing ? 'glow' : ''}`;
 
     return (
       <div id='SelfHealthBarContainer' className={Container}>
@@ -132,14 +131,14 @@ class ASelfHealthBar extends React.Component<Props, {}> {
           />
 
           <div id='ExtrasContainer' className={ExtrasContainer}>
-            <div id='GeneralInfoContainer' className={generalInfoClasses}>
-              <div id='HeartsContainer' className={HeartsContainer}>
-                {hearts.map((_, i) => {
-                  return <span className={`${Heart} fs-icon-misc-heart`} key={i} />;
-                })}
-              </div>
-
-              <div id='RunesContainer' className={RunesContainer}>
+            <div className={GeneralInfoContainer}>
+              {hearts !== null && (
+                <div id='HeartsContainer' className={HeartsContainer}>
+                  <span className={`${Heart} fs-icon-misc-heart`} />
+                  <span className={HeartLabel}>{hearts}</span>
+                </div>
+              )}
+              <div id='RunesContainer' className={`${RunesContainer} ${this.runesGlowing ? 'glow' : ''}`}>
                 {runes}
               </div>
             </div>

@@ -6,12 +6,8 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Decimal, Item, MyInventory } from '@csegames/library/dist/camelotunchained/graphql/schema';
-import {
-  MoveItemRequest,
-  MoveItemRequestLocationType
-} from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { ItemStatID } from '../components/items/itemData';
-import { getItemStatValue } from '../components/items/itemUtils';
+import { getItemStatValue, MoveItemRequest } from '../components/items/itemUtils';
 
 export interface InventoryStackSplit {
   itemID: string;
@@ -68,60 +64,58 @@ export const inventorySlice = createSlice({
         return;
       }
       action.payload.forEach(([move, item]) => {
-        const endPosition = move.To.Position;
+        const endPosition = move.PositionTo;
         const itemIndex = state.items.findIndex((inventoryItem) => inventoryItem.id === move.MoveItemID);
-        switch (move.From.Location) {
-          case MoveItemRequestLocationType.Inventory:
-            if (endPosition === -1) {
-              state.items.splice(itemIndex, 1);
-            } else {
-              const unitCount = item.statList.find((stat) => stat.statID === ItemStatID.UnitCount).value ?? 1;
-              const moveCount = state.stackSplit?.amount ?? unitCount;
-              state.items.push({
-                ...item,
-                location: {
-                  ...item.location,
-                  inventory: {
-                    ...item.location.inventory,
-                    position: endPosition
-                  }
-                },
-                statList: [
-                  ...item.statList.filter((stat) => stat.statID !== ItemStatID.UnitCount),
-                  {
-                    statID: ItemStatID.UnitCount,
-                    value: moveCount
-                  }
-                ]
-              });
-              if (unitCount - moveCount === 0) {
-                state.items.splice(itemIndex, 1);
-              } else {
-                state.items[itemIndex].statList = [
-                  ...item.statList.filter((stat) => stat.statID !== ItemStatID.UnitCount),
-                  {
-                    statID: ItemStatID.UnitCount,
-                    value: unitCount - moveCount
-                  }
-                ];
-              }
-            }
-            break;
-          case MoveItemRequestLocationType.Equipment:
+        if (item.location.inventory) {
+          if (endPosition === -1) {
+            state.items.splice(itemIndex, 1);
+          } else {
+            const unitCount = item.statList.find((stat) => stat.statID === ItemStatID.UnitCount).value ?? 1;
+            const moveCount = state.stackSplit?.amount ?? unitCount;
             state.items.push({
               ...item,
               location: {
                 ...item.location,
-                equipped: null,
                 inventory: {
                   ...item.location.inventory,
                   position: endPosition
                 }
-              }
+              },
+              statList: [
+                ...item.statList.filter((stat) => stat.statID !== ItemStatID.UnitCount),
+                {
+                  statID: ItemStatID.UnitCount,
+                  value: moveCount
+                }
+              ]
             });
-            break;
+            if (unitCount - moveCount === 0) {
+              state.items.splice(itemIndex, 1);
+            } else {
+              state.items[itemIndex].statList = [
+                ...item.statList.filter((stat) => stat.statID !== ItemStatID.UnitCount),
+                {
+                  statID: ItemStatID.UnitCount,
+                  value: unitCount - moveCount
+                }
+              ];
+            }
+          }
+        } else if (item.location.equipped) {
+          state.items.push({
+            ...item,
+            location: {
+              ...item.location,
+              equipped: null,
+              inventory: {
+                ...item.location.inventory,
+                position: endPosition
+              }
+            }
+          });
         }
       });
+
       state.itemCount = state.items.length;
       let totalMass = 0;
       state.items.forEach((item) => {

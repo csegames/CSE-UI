@@ -10,7 +10,7 @@ import { MiddleModalDisplay } from '../shared/MiddleModalDisplay';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { hideAllOverlays, hideRightPanel, showError } from '../../redux/navigationSlice';
+import { Overlay, hideAllOverlays, hideOverlay, hideRightPanel, showError } from '../../redux/navigationSlice';
 import {
   PerkDefGQL,
   PerkGQL,
@@ -28,12 +28,12 @@ import {
   getTokenizedStringTableValue
 } from '../../helpers/stringTableHelpers';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { webConf } from '../../dataSources/networkConfiguration';
 import { startProfileRefresh } from '../../redux/profileSlice';
 import { isChampionEquipmentPerk } from '../../helpers/perkUtils';
 import { updateStoreAddUnseenEquipment } from '../../redux/storeSlice';
 import { storeLocalStore } from '../../localStorage/storeLocalStorage';
 import { ItemGrid } from '../shared/ItemGrid';
+import { webConf } from '../../dataSources/networkConfiguration';
 
 const Container = 'PurchaseProcessingModal-Container';
 const Title = 'PurchaseProcessingModal-Title';
@@ -67,11 +67,11 @@ interface InjectedProps {
 type Props = ReactProps & InjectedProps;
 
 class APurchaseProcessingModal extends React.Component<Props, State> {
-  private delayTimeout: NodeJS.Timeout;
+  private delayTimeout: number;
   constructor(props: Props) {
     super(props);
 
-    this.delayTimeout = setTimeout(() => {
+    this.delayTimeout = window.setTimeout(() => {
       this.setState({ isDelaying: false });
       this.delayTimeout = null;
     }, 2000);
@@ -183,7 +183,7 @@ class APurchaseProcessingModal extends React.Component<Props, State> {
   }
 
   private async onClose(): Promise<void> {
-    this.props.dispatch(hideAllOverlays());
+    this.props.dispatch(hideOverlay(Overlay.PurchaseProcessing));
   }
 }
 

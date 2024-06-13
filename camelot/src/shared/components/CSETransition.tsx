@@ -51,7 +51,7 @@ type Props = ReactProps & InjectedProps;
 class ACSETransition extends React.Component<Props, State> {
   private entryKeyframeId: string;
   private exitKeyframeId: string;
-  private animationTimeout: NodeJS.Timeout;
+  private animationTimeout: number;
   private animationInterval: any;
 
   private rootRef: HTMLDivElement;
@@ -254,10 +254,10 @@ class ACSETransition extends React.Component<Props, State> {
     // Any bookkeeping for the new state.
     switch (newState) {
       case TransitionState.Entering: {
-        this.animationInterval = setInterval(() => {
+        this.animationInterval = window.setInterval(() => {
           this.setState({ animationToggle: !this.state.animationToggle });
         }, 16);
-        this.animationTimeout = setTimeout(() => {
+        this.animationTimeout = window.setTimeout(() => {
           // When the animation concludes, move to the Shown state!
           this.animationTimeout = null;
           clearInterval(this.animationInterval);
@@ -268,10 +268,10 @@ class ACSETransition extends React.Component<Props, State> {
         break;
       }
       case TransitionState.Exiting: {
-        this.animationInterval = setInterval(() => {
+        this.animationInterval = window.setInterval(() => {
           this.setState({ animationToggle: !this.state.animationToggle });
         }, 16);
-        this.animationTimeout = setTimeout(() => {
+        this.animationTimeout = window.setTimeout(() => {
           // When the animation concludes, move to the Shown state!
           this.animationTimeout = null;
           clearInterval(this.animationInterval);

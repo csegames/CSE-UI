@@ -125,9 +125,9 @@ export function mapValueRangeClamped(
   outputRangeB: number
 ) {
   const result = mapValueRange(value, inputRangeA, inputRangeB, outputRangeA, outputRangeB);
-  return (outputRangeA < outputRangeB)
-      ? clamp(result, outputRangeA, outputRangeB)
-      : clamp(result, outputRangeB, outputRangeA);
+  return outputRangeA < outputRangeB
+    ? clamp(result, outputRangeA, outputRangeB)
+    : clamp(result, outputRangeB, outputRangeA);
 }
 
 // a single blendstop in a linear gradient

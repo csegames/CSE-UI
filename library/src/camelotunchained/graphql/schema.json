@@ -1252,7 +1252,7 @@
         {
           "kind": "SCALAR",
           "name": "CharacterID",
-          "description": "CSE.GameplayDefs.CharacterID",
+          "description": "CSE.CharacterID",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -3164,54 +3164,6 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "CharacterID",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "maxBlood",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Decimal",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "maxHealth",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Decimal",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "maxPanic",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Decimal",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "maxStamina",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Decimal",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -6527,8 +6479,8 @@
                 "kind": "LIST",
                 "name": null,
                 "ofType": {
-                  "kind": "OBJECT",
-                  "name": "GearSlotDefRef",
+                  "kind": "SCALAR",
+                  "name": "String",
                   "ofType": null
                 }
               },
@@ -6539,94 +6491,6 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "GearSlotDefRef",
-          "description": "CSE.GameplayDefs.GearSlotDefRef",
-          "fields": [
-            {
-              "name": "gearSlotType",
-              "description": "Which type of slot this is",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "GearSlotType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "iconClass",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "Unique gear slot identifier",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "GearSlotType",
-          "description": "CSE.GameplayDefs.GearSlotType",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "Unknown",
-              "description": "Unknown",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Weapon",
-              "description": "Weapon",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Armor",
-              "description": "Armor",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
           "possibleTypes": null
         },
         {
@@ -8782,8 +8646,8 @@
                 "kind": "LIST",
                 "name": null,
                 "ofType": {
-                  "kind": "OBJECT",
-                  "name": "GearSlotDefRef",
+                  "kind": "SCALAR",
+                  "name": "String",
                   "ofType": null
                 }
               },
@@ -9575,6 +9439,12 @@
             {
               "name": "ScenarioRole",
               "description": "ScenarioRole",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Scenario",
+              "description": "Scenario",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -11834,334 +11704,6 @@
         },
         {
           "kind": "OBJECT",
-          "name": "AlertVar",
-          "description": "CU.Databases.Models.Content.AlertVar",
-          "fields": [
-            {
-              "name": "key",
-              "description": "The token this variable replaces",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "value",
-              "description": "The content to use for replacement",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "Alert",
-          "description": "CU.Databases.Models.Content.Alert",
-          "fields": [
-            {
-              "name": "destination",
-              "description": "Where the alert should be displayed",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "template",
-              "description": "Template for the alert",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "type",
-              "description": "The type of alert",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "utcCreated",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "utcDisplayEnd",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "utcDisplayStart",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "vars",
-              "description": "Variables to substitute into the template",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "AlertVar",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "MessageOfTheDay",
-          "description": "CU.Databases.Models.Content.MessageOfTheDay",
-          "fields": [
-            {
-              "name": "channels",
-              "description": "Which channels will this patch note be presented on.",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "htmlContent",
-              "description": "HTML Content for the message of the day.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "jSONContent",
-              "description": "JSON data about the HTML Content for the message of the day",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "title",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "utcCreated",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "utcDisplayEnd",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "utcDisplayStart",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "PatcherAlert",
-          "description": "CU.Databases.Models.Content.PatcherAlert",
-          "fields": [
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "message",
-              "description": "HTML Content for the patcher alert.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "utcCreated",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "utcDisplayEnd",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "utcDisplayStart",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
           "name": "PatcherHero",
           "description": "CU.Databases.Models.Content.PatcherHero",
           "fields": [
@@ -12895,6 +12437,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "woundStatusTag",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "GameplayTag",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -13285,9 +12839,185 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "ContentFlags",
+          "description": "CSE.Notifications.ContentFlags",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "None",
+              "description": "None",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Revoke",
+              "description": "Revoke",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Template",
+              "description": "Template",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Localized",
+              "description": "Localized",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Markup",
+              "description": "Markup",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
-          "name": "StatusEffect",
-          "description": "CU.WebApi.GraphQL.StatusEffect",
+          "name": "Notification",
+          "description": "CU.WebApi.Models.Notifications.Notification",
+          "fields": [
+            {
+              "name": "broadcastDuration",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "content",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "counter",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "displayDuration",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "displayHints",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ContentFlags",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "displayTime",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mimeType",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "purpose",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sequenceID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "tags",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "GroupMemberStatus",
+          "description": "CU.WebApi.GraphQL.GroupMemberStatus",
           "fields": [
             {
               "name": "description",
@@ -13369,8 +13099,8 @@
         },
         {
           "kind": "OBJECT",
-          "name": "Health",
-          "description": "CU.WebApi.GraphQL.Health",
+          "name": "GroupMemberResource",
+          "description": "CU.WebApi.GraphQL.GroupMemberResource",
           "fields": [
             {
               "name": "current",
@@ -13385,47 +13115,12 @@
               "deprecationReason": null
             },
             {
-              "name": "max",
+              "name": "id",
               "description": "",
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Decimal",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "wounds",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CurrentMax",
-          "description": "CU.WebApi.GraphQL.CurrentMax",
-          "fields": [
-            {
-              "name": "current",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Decimal",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -13454,18 +13149,6 @@
           "name": "GroupMemberState",
           "description": "CU.WebApi.GraphQL.GroupMemberState",
           "fields": [
-            {
-              "name": "blood",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "CurrentMax",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
             {
               "name": "canInvite",
               "description": "",
@@ -13563,18 +13246,6 @@
               "deprecationReason": null
             },
             {
-              "name": "health",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Health",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "isAlive",
               "description": "",
               "args": [],
@@ -13659,13 +13330,17 @@
               "deprecationReason": null
             },
             {
-              "name": "stamina",
+              "name": "resources",
               "description": "",
               "args": [],
               "type": {
-                "kind": "OBJECT",
-                "name": "CurrentMax",
-                "ofType": null
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "GroupMemberResource",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -13679,7 +13354,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "StatusEffect",
+                  "name": "GroupMemberStatus",
                   "ofType": null
                 }
               },
@@ -14227,303 +13902,6 @@
           ],
           "inputFields": null,
           "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "MatchmakingUpdateType",
-          "description": "CU.WebApi.GraphQL.Legacy.MatchmakingUpdateType",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "None",
-              "description": "None",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Entered",
-              "description": "Entered",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Error",
-              "description": "Error",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "KickOff",
-              "description": "KickOff",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ServerReady",
-              "description": "ServerReady",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "INTERFACE",
-          "name": "IMatchmakingUpdate",
-          "description": "CU.WebApi.GraphQL.Legacy.IMatchmakingUpdate",
-          "fields": [
-            {
-              "name": "type",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "MatchmakingUpdateType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": [
-            {
-              "kind": "OBJECT",
-              "name": "MatchmakingEntered",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "MatchmakingError",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "MatchmakingServerReady",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "MatchmakingKickOff",
-              "ofType": null
-            }
-          ]
-        },
-        {
-          "kind": "OBJECT",
-          "name": "MatchmakingEntered",
-          "description": "CU.WebApi.GraphQL.Legacy.MatchmakingEntered",
-          "fields": [
-            {
-              "name": "gameMode",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "type",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "MatchmakingUpdateType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "IMatchmakingUpdate",
-              "ofType": null
-            }
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "MatchmakingError",
-          "description": "CU.WebApi.GraphQL.Legacy.MatchmakingError",
-          "fields": [
-            {
-              "name": "code",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "message",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "type",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "MatchmakingUpdateType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "IMatchmakingUpdate",
-              "ofType": null
-            }
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "MatchmakingServerReady",
-          "description": "CU.WebApi.GraphQL.Legacy.MatchmakingServerReady",
-          "fields": [
-            {
-              "name": "host",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "port",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "type",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "MatchmakingUpdateType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "IMatchmakingUpdate",
-              "ofType": null
-            }
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "MatchmakingKickOff",
-          "description": "CU.WebApi.GraphQL.Legacy.MatchmakingKickOff",
-          "fields": [
-            {
-              "name": "matchID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "secondsToWait",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Decimal",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "serializedTeamMates",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "type",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "MatchmakingUpdateType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "IMatchmakingUpdate",
-              "ofType": null
-            }
-          ],
           "enumValues": null,
           "possibleTypes": null
         },
@@ -15363,8 +14741,8 @@
                 "kind": "LIST",
                 "name": null,
                 "ofType": {
-                  "kind": "OBJECT",
-                  "name": "GearSlotDefRef",
+                  "kind": "SCALAR",
+                  "name": "String",
                   "ofType": null
                 }
               },
@@ -16415,8 +15793,8 @@
                 "kind": "LIST",
                 "name": null,
                 "ofType": {
-                  "kind": "OBJECT",
-                  "name": "GearSlotDefRef",
+                  "kind": "SCALAR",
+                  "name": "String",
                   "ofType": null
                 }
               },
@@ -17068,6 +16446,106 @@
             {
               "name": "numericID",
               "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "GearSlotType",
+          "description": "CSE.GameplayDefs.GearSlotType",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "Unknown",
+              "description": "Unknown",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Weapon",
+              "description": "Weapon",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Armor",
+              "description": "Armor",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "GearSlot",
+          "description": "ServerLib.GraphQL.Types.GearSlotGQL",
+          "fields": [
+            {
+              "name": "gearSlotType",
+              "description": "Which type of slot this is",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "GearSlotType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "iconClass",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "Unique gear slot identifier",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "numericID",
+              "description": "Numeric id",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -19235,7 +18713,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "GearSlotDefRef",
+                  "name": "GearSlot",
                   "ofType": null
                 }
               },
@@ -20111,64 +19589,6 @@
           "possibleTypes": null
         },
         {
-          "kind": "INTERFACE",
-          "name": "IPatcherAlertUpdate",
-          "description": "ServerLib.ApiModels.IPatcherAlertUpdate",
-          "fields": [
-            {
-              "name": "alert",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "PatcherAlert",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": [
-            {
-              "kind": "OBJECT",
-              "name": "PatcherAlertUpdate",
-              "ofType": null
-            }
-          ]
-        },
-        {
-          "kind": "OBJECT",
-          "name": "PatcherAlertUpdate",
-          "description": "ServerLib.ApiModels.PatcherAlertUpdate",
-          "fields": [
-            {
-              "name": "alert",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "PatcherAlert",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "IPatcherAlertUpdate",
-              "ofType": null
-            }
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
           "kind": "OBJECT",
           "name": "TraitsInfo",
           "description": "CSE.GameplayDefs.Store.Cache.TraitsInfo",
@@ -20714,33 +20134,6 @@
           "description": "The root query object.",
           "fields": [
             {
-              "name": "alerts",
-              "description": "Gets a list of alerts",
-              "args": [
-                {
-                  "name": "destination",
-                  "description": "Required: Where the alert will show up.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": "null"
-                }
-              ],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Alert",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "channels",
               "description": "List all channels.",
               "args": [],
@@ -20998,33 +20391,6 @@
               "deprecationReason": null
             },
             {
-              "name": "motd",
-              "description": "Gets a list of Message of the Days",
-              "args": [
-                {
-                  "name": "channel",
-                  "description": "Required: Channel ID from which to return message of the day",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": "null"
-                }
-              ],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "MessageOfTheDay",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "myActiveScenarioScoreboard",
               "description": "Gets information about the active scenario score a user is in.",
               "args": [],
@@ -21187,43 +20553,6 @@
               "deprecationReason": null
             },
             {
-              "name": "patcherAlerts",
-              "description": "Gets patcher alerts",
-              "args": [
-                {
-                  "name": "from",
-                  "description": "Optional: Oldest date (non-inclusive) from which to return.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Date",
-                    "ofType": null
-                  },
-                  "defaultValue": "null"
-                },
-                {
-                  "name": "to",
-                  "description": "Optional: Newest date (non-inclusive) from which to return.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Date",
-                    "ofType": null
-                  },
-                  "defaultValue": "null"
-                }
-              ],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PatcherAlert",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "patcherHero",
               "description": "Gets Patcher Hero content",
               "args": [
@@ -21370,6 +20699,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "SecureTradeStatus",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "serverBuildNumber",
+              "description": "Build number for the actively running server",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -21582,24 +20923,39 @@
               "deprecationReason": null
             },
             {
-              "name": "passiveAlerts",
-              "description": "Alerts that notify players something happened but do not need to be reacted to.",
-              "args": [],
+              "name": "notifications",
+              "description": "Status or event broadcasts identified by purpose",
+              "args": [
+                {
+                  "name": "tags",
+                  "description": "Strings to match for this subscription",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": "null"
+                }
+              ],
               "type": {
                 "kind": "OBJECT",
-                "name": "PassiveAlert",
+                "name": "Notification",
                 "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "patcherAlerts",
-              "description": "Gets updates for patcher alerts",
+              "name": "passiveAlerts",
+              "description": "Alerts that notify players something happened but do not need to be reacted to.",
               "args": [],
               "type": {
-                "kind": "INTERFACE",
-                "name": "IPatcherAlertUpdate",
+                "kind": "OBJECT",
+                "name": "PassiveAlert",
                 "ofType": null
               },
               "isDeprecated": false,

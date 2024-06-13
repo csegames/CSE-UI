@@ -16,10 +16,10 @@ interface HeaderLink {
   logo: string;
 }
 
-const CSELink: HeaderLink = {
-  label: 'City State Entertainment',
-  url: 'https://citystateentertainment.com/',
-  logo: 'images/cse/cse-logo.png'
+const UCELink: HeaderLink = {
+  label: 'Unchained Entertainment',
+  url: 'https://www.unchained-entertainment.com/',
+  logo: 'images/uce/uce-logo.png'
 };
 
 const CULink: HeaderLink = {
@@ -79,8 +79,8 @@ export function Header(props: HeaderProps) {
       break;
     case ContentPhase.Login:
     case ContentPhase.Tools:
-      logo = <img className='cse' src={CSELink.logo} />;
-      productLink = CSELink;
+      logo = <img className='cse' src={UCELink.logo} />;
+      productLink = UCELink;
       break;
   }
 

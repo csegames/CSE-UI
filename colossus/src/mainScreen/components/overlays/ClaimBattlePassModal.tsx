@@ -27,11 +27,11 @@ import {
   getBattlePassesWithUnclaimedRewards
 } from '../views/Lobby/BattlePass/BattlePassUtils';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { webConf } from '../../dataSources/networkConfiguration';
 import { GenericToaster } from '../GenericToaster';
 import { startProfileRefresh } from '../../redux/profileSlice';
 import { createAlertsForCollectedQuestProgress } from '../../helpers/perkUtils';
 import { ItemGrid } from '../shared/ItemGrid';
+import { webConf } from '../../dataSources/networkConfiguration';
 
 const Container = 'ClaimBattlePassModal-Container';
 const Title = 'ClaimBattlePassModal-Title';

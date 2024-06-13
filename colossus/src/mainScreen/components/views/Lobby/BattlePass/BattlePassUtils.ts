@@ -20,9 +20,9 @@ import { QuestsByType } from '../../../../redux/questSlice';
 import { battlePassLocalStore } from '../../../../localStorage/battlePassLocalStorage';
 import { Dispatch } from '@reduxjs/toolkit';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { webConf } from '../../../../dataSources/networkConfiguration';
 import { startProfileRefresh } from '../../../../redux/profileSlice';
 import { InitTopic } from '../../../../redux/initializationSlice';
+import { webConf } from '../../../../dataSources/networkConfiguration';
 
 export interface PerkRewardDisplayData extends PerkRewardDefGQL {
   isPremium: boolean;
@@ -444,5 +444,146 @@ export async function ensureBattlePassIsInitialized(
     } else {
       console.error(`Failed to initialize BattlePass (${battlepass.id})`);
     }
+  }
+}
+
+/** If no claimable reward, returns the currently-in-progress tier (or last if max level).  Returns zero for no progress or invalid data. */
+export function getTierOfLastClaimableBattlePassReward(
+  battlepass: QuestDefGQL,
+  quests: QuestGQL[],
+  ownedPerks: PerkGQL[]
+): number {
+  const bpProgress = quests.find((p) => {
+    return p.id === battlepass?.id;
+  });
+
+  // Can't find data to check.  Either there's an error or the user has no battlepass progress yet, so we start at the first tier.
+  if (!battlepass || !bpProgress) {
+    return 0;
+  }
+
+  const hasPremium = hasPremiumForBattlePass(battlepass, ownedPerks);
+
+  // If the user has already claimed everything, just return the last tier.  Note that this assumes there is always a reward in the
+  // final tier of both tracks.
+  if (
+    // Already claimed to end of free track?
+    bpProgress.nextCollection >= battlepass.links.length &&
+    // Has premium and has already claimed to end of premium track?
+    (!hasPremium || bpProgress.nextCollectionPremium >= battlepass.links.length)
+  ) {
+    return battlepass.links.length - 1;
+  }
+
+  // Not all tiers are guaranteed to have a reward in them, so we need to iterate back from the current tier until we find a reward.
+  let claimableFreeTier = -1;
+  let claimablePremiumTier = -1;
+  const lowestClaimableTier = Math.min(bpProgress.nextCollection, bpProgress.nextCollectionPremium);
+
+  for (
+    let i = bpProgress.currentQuestIndex - 1;
+    i >= 0 && i >= lowestClaimableTier && claimableFreeTier === -1 && claimablePremiumTier === -1;
+    --i
+  ) {
+    const link = battlepass.links[i];
+    if (claimableFreeTier === -1 && i >= bpProgress.nextCollection && link.rewards?.length > 0) {
+      claimableFreeTier = i;
+    }
+    if (
+      hasPremium &&
+      claimablePremiumTier === -1 &&
+      i >= bpProgress.nextCollectionPremium &&
+      link.premiumRewards?.length > 0
+    ) {
+      claimablePremiumTier = i;
+    }
+  }
+
+  // If we get out here, then either we have found the index of the last claimable items on both the free and premium track, or else
+  // there was nothing to claim.
+
+  // If there was nothing to claim, then the tier we're currently on will be the next thing to claim.
+  if (claimableFreeTier === -1 && claimablePremiumTier === -1) {
+    return bpProgress.currentQuestIndex;
+  }
+
+  // Found something, so returning its index.
+  if (!hasPremium) {
+    return claimableFreeTier;
+  } else {
+    return Math.max(claimableFreeTier, claimablePremiumTier);
+  }
+}
+
+/** If no claimable reward, returns the currently-in-progress tier (or last if max level).  Returns zero for no progress or invalid data. */
+export function getTierOfFirstClaimableBattlePassReward(
+  battlepass: QuestDefGQL,
+  quests: QuestGQL[],
+  ownedPerks: PerkGQL[]
+): number {
+  const bpProgress = quests.find((p) => {
+    return p.id === battlepass?.id;
+  });
+
+  // Can't find data to check.  Either there's an error or the user has no battlepass progress yet, so we start at the first tier.
+  if (!battlepass || !bpProgress) {
+    return 0;
+  }
+
+  const hasPremium = hasPremiumForBattlePass(battlepass, ownedPerks);
+
+  // If the user has already claimed everything, just return the last tier.  Note that this assumes there is always a reward in the
+  // final tier of both tracks.
+  if (
+    // Already claimed to end of free track?
+    bpProgress.nextCollection >= battlepass.links.length &&
+    // Has premium and has already claimed to end of premium track?
+    (!hasPremium || bpProgress.nextCollectionPremium >= battlepass.links.length)
+  ) {
+    return battlepass.links.length - 1;
+  }
+
+  // Not all tiers are guaranteed to have a reward in them, so we need to iterate forward from the lowest claimable tier until we find a reward.
+  let claimableFreeTier: number = -1;
+  let claimablePremiumTier: number = -1;
+  const lowestClaimableTier = Math.min(bpProgress.nextCollection, bpProgress.nextCollectionPremium);
+
+  for (
+    let i = lowestClaimableTier;
+    i < battlepass.links.length &&
+    i < bpProgress.currentQuestIndex &&
+    claimableFreeTier === -1 &&
+    claimablePremiumTier === -1;
+    ++i
+  ) {
+    const link = battlepass.links[i];
+    if (claimableFreeTier === -1 && i >= bpProgress.nextCollection && link.rewards?.length > 0) {
+      claimableFreeTier = i;
+    }
+    if (
+      hasPremium &&
+      claimablePremiumTier === -1 &&
+      i >= bpProgress.nextCollectionPremium &&
+      link.premiumRewards?.length > 0
+    ) {
+      claimablePremiumTier = i;
+    }
+  }
+
+  // If we get out here, then either we have found the index of the first claimable items on both the free and premium track, or else
+  // there was nothing to claim.
+
+  if (claimableFreeTier === -1 && claimablePremiumTier === -1) {
+    // If there was nothing to claim, then the tier we're currently on will be the next thing to claim.
+    return bpProgress.currentQuestIndex;
+  } else if (claimableFreeTier !== -1) {
+    // If there was only a Free tier claimable, return that.
+    return claimableFreeTier;
+  } else if (claimablePremiumTier !== -1) {
+    // If there was only a Premium tier claimable, return that.
+    return claimablePremiumTier;
+  } else {
+    // If there were both, return the lower of the two.
+    return Math.min(claimableFreeTier, claimablePremiumTier);
   }
 }

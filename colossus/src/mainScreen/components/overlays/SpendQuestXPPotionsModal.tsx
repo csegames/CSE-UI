@@ -34,11 +34,11 @@ import { Button } from '../shared/Button';
 import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { webConf } from '../../dataSources/networkConfiguration';
 import { startProfileRefresh } from '../../redux/profileSlice';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { getWornCostumeForChampion } from '../../helpers/characterHelpers';
 import { ResourceBar } from '../shared/ResourceBar';
+import { webConf } from '../../dataSources/networkConfiguration';
 
 const Title = 'SpendQuestXPPotionsModal-Title';
 const Description = 'SpendQuestXPPotionsModal-Description';
@@ -411,8 +411,8 @@ class ASpendQuestXPPotionsModal extends React.Component<Props, State> {
     }
 
     if (!this.mouseDownTimeout) {
-      this.mouseDownTimeout = setTimeout(() => {
-        this.mouseDownInterval = setInterval(() => {
+      this.mouseDownTimeout = window.setTimeout(() => {
+        this.mouseDownInterval = window.setInterval(() => {
           this.onRemovePotion(this.arrowTriggerCount < ModifyFastCount ? 1 : ModifyFastMultiplier);
         }, ModifyQuestXPRepeatTime);
       }, ModifyQuestXPDelayTime);
@@ -427,8 +427,8 @@ class ASpendQuestXPPotionsModal extends React.Component<Props, State> {
     }
 
     if (!this.mouseDownTimeout) {
-      this.mouseDownTimeout = setTimeout(() => {
-        this.mouseDownInterval = setInterval(() => {
+      this.mouseDownTimeout = window.setTimeout(() => {
+        this.mouseDownInterval = window.setInterval(() => {
           this.onAddPotion(this.arrowTriggerCount < ModifyFastCount ? 1 : ModifyFastMultiplier);
         }, ModifyQuestXPRepeatTime);
       }, ModifyQuestXPDelayTime);

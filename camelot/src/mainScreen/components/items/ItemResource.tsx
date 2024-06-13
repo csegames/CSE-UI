@@ -52,7 +52,7 @@ class AItemResource extends React.Component<Props> {
 
 const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
   return {
-    entityResources: state.gameDefs.entityResources,
+    entityResources: state.gameDefs.entityResourcesByStringID,
     ...ownProps
   };
 };

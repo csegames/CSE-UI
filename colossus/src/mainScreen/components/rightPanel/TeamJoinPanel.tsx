@@ -22,7 +22,6 @@ import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEv
 import { game } from '@csegames/library/dist/_baseGame';
 import { Button } from '../shared/Button';
 import { TeamJoinAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { webConf } from '../../dataSources/networkConfiguration';
 import { TeamJoinAPIError } from '../../dataSources/teamJoinNetworkingConstants';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { getAccountID } from '@csegames/library/dist/_baseGame/utils/accountUtils';
@@ -35,6 +34,7 @@ import {
   getStringTableValue,
   getTokenizedStringTableValue
 } from '../../helpers/stringTableHelpers';
+import { webConf } from '../../dataSources/networkConfiguration';
 
 const Container = 'TeamJoinPanel-Container';
 const Title = 'TeamJoinPanel-Title';
@@ -115,7 +115,7 @@ interface InjectedProps {
 type Props = ReactProps & InjectedProps;
 
 class ATeamJoinPanel extends React.Component<Props, State> {
-  private invitationClock: NodeJS.Timer;
+  private invitationClock: number;
 
   constructor(props: Props) {
     super(props);
@@ -433,7 +433,7 @@ class ATeamJoinPanel extends React.Component<Props, State> {
 
     // If there are active invitations, we want to run a timer that ticks to update the countdown to expiration.
     if (hasInvitations && !this.invitationClock) {
-      this.invitationClock = setInterval(this.onInvitationClockTick.bind(this), 1000);
+      this.invitationClock = window.setInterval(this.onInvitationClockTick.bind(this), 1000);
     } else if (!hasInvitations && this.invitationClock) {
       clearInterval(this.invitationClock);
       this.invitationClock = null;

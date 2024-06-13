@@ -35,7 +35,7 @@ export class RuneFullScreenEffects extends React.Component<{}, State> {
 
   public render() {
     return this.state.isVisible ? (
-      <div id="RuneFullScreeEffects" className={`${Container} ${RuneType[this.state.runeType]}`} />
+      <div id='RuneFullScreeEffects' className={`${Container} ${RuneType[this.state.runeType]}`} />
     ) : null;
   }
 

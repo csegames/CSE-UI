@@ -9,7 +9,7 @@ import { ListenerHandle } from '../listenerHandle';
 import { EventEmitter } from '../types/EventEmitter';
 import { EntityContext } from '../types/EntityContext';
 import { EntityID } from '../types/localDefinitions';
-import { BaseEntityStateModel } from '../../camelotunchained/game/GameClientModels/EntityState';
+import { BaseEntityStateModel, EntityPositionMapModel } from '../../camelotunchained/game/GameClientModels/EntityState';
 import { ItemActionsMessage } from '../../camelotunchained/game/types/ItemActions';
 
 // This type must be specialized based on the game specific entity model definition, so it
@@ -18,12 +18,14 @@ import { ItemActionsMessage } from '../../camelotunchained/game/types/ItemAction
 export type EntityContextListener = (entityID: EntityID, context: EntityContext) => void;
 export type EntityRemovedListener = (entityID: EntityID) => void;
 export type EntityUpdatedListener<Model> = (newState: Model) => void;
+export type EntityPositionMapUpdatedListener = (newState: EntityPositionMapModel) => void;
 export type EntityShowItemActionsListener = (message: ItemActionsMessage, entityState: BaseEntityStateModel) => void;
 
 export interface EntityFunctions<Model> {
   bindEntityContextListener(listener: EntityContextListener): ListenerHandle;
   bindEntityRemovedListener(listener: EntityRemovedListener): ListenerHandle;
   bindEntityUpdatedListener(listener: EntityUpdatedListener<Model>): ListenerHandle;
+  bindEntityPositionMapUpdatedListener(listener: EntityPositionMapUpdatedListener): ListenerHandle;
   bindEntityShowItemActionsListener(listener: EntityShowItemActionsListener): ListenerHandle;
 }
 
@@ -31,11 +33,13 @@ export interface EntityMocks<Model> {
   triggerEntityContext(entityID: EntityID, context: EntityContext): void;
   triggerEntityRemoved(entityID: EntityID): void;
   triggerEntityUpdated(newState: Model): void;
+  triggerEntityPositionMapUpdated(newState: EntityPositionMapModel): void;
 }
 
 const contextEventName = 'entity.context';
 const updatedEventName = 'entity.updated';
 const removedEventName = 'entity.removed';
+const positionMapUpdatedEventName = 'entity.positionMapUpdated';
 const showItemActionsEventName = 'showItemActions';
 
 class EntityFunctionsBase<Model> implements EntityFunctions<Model>, EntityMocks<Model> {
@@ -50,6 +54,9 @@ class EntityFunctionsBase<Model> implements EntityFunctions<Model>, EntityMocks<
   public bindEntityUpdatedListener(listener: EntityUpdatedListener<Model>): ListenerHandle {
     return this.events.on(updatedEventName, listener);
   }
+  public bindEntityPositionMapUpdatedListener(listener: EntityPositionMapUpdatedListener): ListenerHandle {
+    return this.events.on(positionMapUpdatedEventName, listener);
+  }
   public bindEntityShowItemActionsListener(listener: EntityShowItemActionsListener): ListenerHandle {
     return this.events.on(showItemActionsEventName, listener);
   }
@@ -61,6 +68,9 @@ class EntityFunctionsBase<Model> implements EntityFunctions<Model>, EntityMocks<
   }
   triggerEntityUpdated(newState: Model): void {
     this.events.trigger(contextEventName, newState);
+  }
+  triggerEntityPositionMapUpdated(newState: EntityPositionMapModel): void {
+    this.events.trigger(positionMapUpdatedEventName, newState);
   }
   triggerEntityShowItemActions(message: ItemActionsMessage, entityState: BaseEntityStateModel): void {
     this.events.trigger(showItemActionsEventName, message, entityState);
@@ -93,6 +103,17 @@ class CoherentEntityFunctions<Model> extends EntityFunctionsBase<Model> {
   public override bindEntityUpdatedListener(listener: EntityUpdatedListener<Model>): ListenerHandle {
     const mockHandle = super.bindEntityUpdatedListener(listener);
     const engineHandle = engine.on(updatedEventName, listener);
+    return {
+      close() {
+        mockHandle.close();
+        engineHandle.clear();
+      }
+    };
+  }
+
+  public override bindEntityPositionMapUpdatedListener(listener: EntityPositionMapUpdatedListener): ListenerHandle {
+    const mockHandle = super.bindEntityPositionMapUpdatedListener(listener);
+    const engineHandle = engine.on(positionMapUpdatedEventName, listener);
     return {
       close() {
         mockHandle.close();

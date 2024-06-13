@@ -14,7 +14,6 @@ import { RootState } from '../../redux/store';
 import { Dispatch } from 'redux';
 import { MiddleModalDisplay } from '../shared/MiddleModalDisplay';
 import { hideOverlay, Overlay, showError } from '../../redux/navigationSlice';
-import { webConf } from '../../dataSources/networkConfiguration';
 import {
   ChampionInfo,
   QuestDefGQL,
@@ -30,7 +29,8 @@ import { findChampionQuestProgress, findChampionQuest } from '../../helpers/char
 import { getStringTableValue, getTokenizedStringTableValue } from '../../helpers/stringTableHelpers';
 import { Dictionary } from '@reduxjs/toolkit';
 import { createAlertsForCollectedQuestProgress } from '../../helpers/perkUtils';
-import { PerkDefGQL } from '@csegames/library/src/hordetest/graphql/schema';
+import { PerkDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { webConf } from '../../dataSources/networkConfiguration';
 
 const Container = 'RewardCollection-Container';
 const LevelUpTitle = 'RewardCollection-LevelUpTitle';

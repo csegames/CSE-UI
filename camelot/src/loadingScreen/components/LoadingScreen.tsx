@@ -70,7 +70,7 @@ export class LoadingScreen extends React.PureComponent<Props, State> {
             <div className={Logo} />
             <h3 className={TriRealm}>A TriRealm™ MMORPG</h3>
             <div className={Trademark}>
-              Camelot Unchained and TriRealm are trademarks of City State Entertainment, LLC.
+              Camelot Unchained and TriRealm are trademarks of Unchained Entertainment, LLC.
             </div>
           </div>
           <div className={PoweredBy} />

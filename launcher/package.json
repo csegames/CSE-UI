@@ -5,7 +5,7 @@
   "description": "Camelot Unchained Patcher UI",
   "license": "MPL-2.0",
   "main": "src/index.tsx",
-  "author": "City State Entertainment, LLC <support@citystateentertainment.com>",
+  "author": "Unchained Entertainment, LLC <support@unchained-entertainment.com>",
   "contributors": [
     {
       "name": "Contributors",
@@ -34,10 +34,14 @@
     "build": "webpack --mode production",
     "prebuild:dev": "rimraf dist",
     "build:dev": "webpack --mode development",
+    "prettier": "prettier . --write",
     "gen": "npm run gen:api-gql && npm run gen:shard-gql && npm run gen:rest",
     "gen:api-gql": "download https://api.camelotunchained.com/v1/api/schema > ./src/api/schema.json && gql-gen --schema src/api/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/api/primary-graphql.ts",
     "gen:shard-gql": "download https://hatcheryapi.camelotunchained.com/v1/api/schema > ./src/api/schema.json && gql-gen --schema src/api/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/api/shard-graphql.ts",
-    "gen:rest": "download https://hatcheryapi.camelotunchained.com/v1/codegen/definitions.ts?useUpdatedFormat=true > ./src/api/webapi.ts"
+    "gen:rest": "download https://hatcheryapi.camelotunchained.com/v1/codegen/definitions.ts?useUpdatedFormat=true > ./src/api/webapi.ts",
+    "gen-local:api-gql": "download http://localhost:3337/v1/api/schema > ./src/api/schema.json && gql-gen --schema src/api/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/api/primary-graphql.ts",
+    "gen-local:shard-gql": "download http://localhost:1337/v1/api/schema > ./src/api/schema.json && gql-gen --schema src/api/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/api/shard-graphql.ts",
+    "gen-local:rest": "download http://localhost:1337/v1/codegen/definitions.ts?useUpdatedFormat=true > ./src/api/webapi.ts"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",

@@ -51,7 +51,7 @@ export class BackOffRetryTracker implements RetryTracker {
     return new Promise((resolve) => {
       if (this.remainingRetries == 0) return;
       --this.remainingRetries;
-      setTimeout(resolve, jitter(this.delay));
+      window.setTimeout(resolve, jitter(this.delay));
       this.delay = Math.min(this.delay * 2, this.maxDelay);
     });
   }

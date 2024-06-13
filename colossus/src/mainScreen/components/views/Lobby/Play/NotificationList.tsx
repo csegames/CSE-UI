@@ -141,7 +141,7 @@ interface State {
 type Props = ReactProps & InjectedProps;
 
 class ANotificationList extends React.Component<Props, State> {
-  private tickInterval: NodeJS.Timeout;
+  private tickInterval: number;
 
   constructor(props: Props) {
     super(props);
@@ -214,7 +214,7 @@ class ANotificationList extends React.Component<Props, State> {
       this.tickInterval = null;
     } else if (this.props.currentNotifications.length > 0 && this.tickInterval === null) {
       // Start the tick.
-      this.tickInterval = setInterval(() => {
+      this.tickInterval = window.setInterval(() => {
         this.setState({ tickCounter: this.state.tickCounter + 1 });
       }, 1000);
     }

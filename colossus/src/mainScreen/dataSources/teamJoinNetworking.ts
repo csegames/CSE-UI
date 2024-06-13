@@ -56,7 +56,7 @@ const StringIDTeamJoinPanelExpiredInvite = 'TeamJoinPanelExpiredInvite';
 
 export class TeamJoinNetworkingService extends ExternalDataSource {
   // To track expiry of invitations sent by the local user.
-  private invitationClock: NodeJS.Timeout;
+  private invitationClock: number;
   // The id of the recipient of the next expiring invitation.
   private nextExpiringInvitationTargetID: string;
 
@@ -332,7 +332,7 @@ export class TeamJoinNetworkingService extends ExternalDataSource {
           1,
           new Date(nextInvitation.expires).getTime() - getServerTimeMS(this.reduxState.clock.serverTimeDeltaMS)
         );
-        this.invitationClock = setTimeout(this.onInvitationTimeout.bind(this), expiryDeltaMS);
+        this.invitationClock = window.setTimeout(this.onInvitationTimeout.bind(this), expiryDeltaMS);
         this.nextExpiringInvitationTargetID = nextInvitation.to.id;
       }
     } else if (this.invitationClock) {

@@ -10,7 +10,10 @@ import { HealthBarState } from '..';
 import { LifeState } from '@csegames/library/dist/hordetest/game/types/LifeState';
 import { ReviveInteractionBar } from './ReviveInteractionBar';
 import { EntityResourceIDs } from '@csegames/library/dist/hordetest/game/types/EntityResourceIDs';
-import { findEntityResource } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
+import {
+  findEntityResource,
+  WorldUIPositionModel
+} from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { HealthBarKind } from '@csegames/library/dist/hordetest/game/types/HealthBarKind';
 import { VoiceChatMemberStatus } from '@csegames/library/dist/_baseGame/types/VoiceChatMemberSettings';
 
@@ -103,6 +106,7 @@ const ReviveIcon = 'Worldspace-ReviveInteractionBar-ReviveIcon';
 
 export interface Props {
   state: HealthBarState;
+  position: WorldUIPositionModel;
 }
 
 export class UserHealthBar extends React.Component<Props, {}> {
@@ -117,11 +121,11 @@ export class UserHealthBar extends React.Component<Props, {}> {
     }
 
     // baseline relative physical distance - 0.0 means close up and 1.0 means far away
-    const physicalDistanceAlpha = clamp(this.props.state.worldSpaceDistanceToPlayer / FAR_DISTANCE, 0.0, 1.0);
+    const physicalDistanceAlpha = clamp(this.props.position.worldSpaceDistanceToPlayer / FAR_DISTANCE, 0.0, 1.0);
 
     // baseline screen-space distance - 1.0 means in the center of the screen and 0.0 means its on the side of the screen
     const screenDistanceAlpha = clamp(
-      Math.pow(1.0 - this.props.state.relativeScreenSpaceDistanceToCrosshair, 7),
+      Math.pow(1.0 - this.props.position.relativeScreenSpaceDistanceToCrosshair, 7),
       0.0,
       1.0
     );
@@ -163,7 +167,7 @@ export class UserHealthBar extends React.Component<Props, {}> {
 
     // if a player is downed show either a red arrow to direct players to them or the revive bar
     if (this.props.state.lifeState === LifeState.Downed) {
-      if (this.props.state.worldSpaceDistanceToPlayer > this.props.state.reviveRange) {
+      if (this.props.position.worldSpaceDistanceToPlayer > this.props.state.reviveRange) {
         return (
           <div className={Container}>
             {this.getCharacterName(CHARACTER_NAME_HEIGHT_PX, 1)}

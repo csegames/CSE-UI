@@ -21,7 +21,8 @@ import { ObjectiveState, Vec3f } from '@csegames/library/dist/hordetest/webAPI/d
 import { BossHealthBars } from './Objectives/BossHealthBars';
 import {
   BaseEntityStateModel,
-  PlayerEntityStateModel
+  PlayerEntityStateModel,
+  EntityPositionMapModel
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { getBearingDegreesForWorldLocation } from '../../../redux/playerSlice';
 import { CharacterKind } from '@csegames/library/dist/hordetest/game/types/CharacterKind';
@@ -60,6 +61,7 @@ interface ComponentProps {}
 interface InjectedProps {
   objectives: ObjectivesList;
   primaryObjectiveDetails: ObjectiveDetailsList;
+  positions: EntityPositionMapModel;
   lastUpdatedTime: number;
   scenarioRoundStartTime: number;
   viewBearing: number;
@@ -177,6 +179,10 @@ class ACompass extends React.Component<Props, {}> {
     const compassObjectives: JSX.Element[] = [];
     for (let entityId in this.props.objectives) {
       const obj: BaseEntityStateModel = this.props.objectives[entityId];
+      const position: Vec3f = this.props.positions[entityId];
+      if (!position) {
+        continue;
+      }
       if ((obj.objective.visibility & ObjectiveUIVisibility.Compass) !== 0) {
         if (!isItem(obj)) {
           console.error(
@@ -188,7 +194,7 @@ class ACompass extends React.Component<Props, {}> {
         const stateClassName = ObjectiveState[obj.objective.state];
         const positionPercent: number = this.positionPercent(
           this.props.viewBearing,
-          getBearingDegreesForWorldLocation(obj.position, this.props.viewOrigin),
+          getBearingDegreesForWorldLocation(position, this.props.viewOrigin),
           true
         );
         const objectiveStyle: React.CSSProperties = {};
@@ -263,7 +269,12 @@ class ACompass extends React.Component<Props, {}> {
         continue;
       }
 
-      const bearingDegrees = getBearingDegreesForWorldLocation(boss.position, this.props.viewOrigin);
+      const position: Vec3f = this.props.positions[entityID];
+      if (!position) {
+        continue;
+      }
+
+      const bearingDegrees = getBearingDegreesForWorldLocation(position, this.props.viewOrigin);
       const bossStyle = boss.characterKind == CharacterKind.BossNPC ? 'Boss' : '';
 
       indicators.push(
@@ -338,7 +349,8 @@ function mapStateToProps(state: RootState, ownProps: ComponentProps) {
     scenarioRoundStartTime: state.player.scenarioRoundStateStartTime,
     objectives: state.entities.objectives,
     bosses: state.entities.bosses,
-    stringTable: state.stringTable.stringTable
+    stringTable: state.stringTable.stringTable,
+    positions: state.entities.positions
   };
 }
 

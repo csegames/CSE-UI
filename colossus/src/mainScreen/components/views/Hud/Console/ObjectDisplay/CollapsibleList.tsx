@@ -62,7 +62,7 @@ class CollapsibleList extends React.Component<Props, { collapsed: boolean }> {
           {toTitleCase(this.props.keyName)}
           {warnings ? (
             <span className={Warn}>
-              <i className="fs-icon-misc-exclamation-triangle" />
+              <i className='fs-icon-misc-exclamation-triangle' />
             </span>
           ) : null}
           <span className={Count}>{this.props.data.length}</span>

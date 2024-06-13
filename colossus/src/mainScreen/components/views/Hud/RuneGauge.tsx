@@ -70,6 +70,10 @@ class ARuneGauge extends React.Component<Props> {
       this.props.classNumericID
     );
     const selectedRuneMods = selectedChampion ? this.props.selectedRuneMods[selectedChampion] : [];
+    if (!selectedRuneMods) {
+      return null;
+    }
+
     return this.props.runeModLevels.map((level, levelIndex) => {
       const runeMod = selectedRuneMods[levelIndex];
       const earned = runeMod ? this.getLevelEarned() >= runeMod.runeModLevel : false;

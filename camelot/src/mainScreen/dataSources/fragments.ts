@@ -18,16 +18,8 @@ export const groupMemberFragment = gql`
       description
       name
     }
-    health {
-      current
-      max
-      wounds
-    }
-    stamina {
-      current
-      max
-    }
-    blood {
+    resources {
+      id
       current
       max
     }
@@ -65,9 +57,7 @@ const itemLocationFragment = gql`
     }
     equipped {
       characterID
-      gearSlots {
-        id
-      }
+      gearSlots
     }
     inVox {
       voxInstanceID
@@ -85,12 +75,6 @@ const itemActionsFragment = gql`
     lastTimePerformed
     uIReaction
     showWhenDisabled
-  }
-`;
-
-const gearSlotDefRefFragment = gql`
-  fragment GearSlotDefRef on GearSlotDefRef {
-    id
   }
 `;
 
@@ -116,9 +100,7 @@ const itemDefRefFragment = gql`
       rotateRoll
     }
     gearSlotSets {
-      gearSlots {
-        ...GearSlotDefRef
-      }
+      gearSlots
     }
     substanceDefinition {
       id
@@ -126,7 +108,6 @@ const itemDefRefFragment = gql`
       maxQuality
     }
   }
-  ${gearSlotDefRefFragment}
 `;
 
 const requirementsFragment = gql`

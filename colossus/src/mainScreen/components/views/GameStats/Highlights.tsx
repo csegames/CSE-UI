@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import {
   ChampionCostumeInfo,
   ChampionInfo,
-  OvermindCharacterSummaryGQL,
+  OvermindCharacter,
   OvermindSummaryGQL,
   StringTableEntryDef
 } from '@csegames/library/dist/hordetest/graphql/schema';
@@ -59,7 +59,7 @@ export interface HighlightStat {
 }
 
 interface PlayerDifference {
-  player: OvermindCharacterSummaryGQL;
+  player: OvermindCharacter;
   statNumber: number;
   statStringID: string;
   difference: number;
@@ -88,22 +88,22 @@ class AHighlights extends React.Component<Props> {
     let totalDamageTaken = 0;
 
     let bestKills = 0;
-    let bestKillsPlayer: OvermindCharacterSummaryGQL = null;
+    let bestKillsPlayer: OvermindCharacter = null;
 
     let bestKillStreak = 0;
-    let bestKillStreakPlayer: OvermindCharacterSummaryGQL = null;
+    let bestKillStreakPlayer: OvermindCharacter = null;
 
     let bestLongestLife = 0;
-    let bestLongestLifePlayer: OvermindCharacterSummaryGQL = null;
+    let bestLongestLifePlayer: OvermindCharacter = null;
 
     let bestAllyRevives = 0;
-    let bestAllyRevivesPlayer: OvermindCharacterSummaryGQL = null;
+    let bestAllyRevivesPlayer: OvermindCharacter = null;
 
     let bestDamage = 0;
-    let bestDamagePlayer: OvermindCharacterSummaryGQL = null;
+    let bestDamagePlayer: OvermindCharacter = null;
 
     let bestDamageTaken = 0;
-    let bestDamageTakenPlayer: OvermindCharacterSummaryGQL = null;
+    let bestDamageTakenPlayer: OvermindCharacter = null;
 
     let secondBestKills = 0;
     let secondBestDamage = 0;

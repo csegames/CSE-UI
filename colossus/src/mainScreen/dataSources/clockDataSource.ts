@@ -8,9 +8,9 @@ import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle'
 import { updateClockMinuteTicker } from '../redux/clockSlice';
 
 export class ClockDataSource extends ExternalDataSource {
-  private minuteTimer: NodeJS.Timer;
+  private minuteTimer: number;
   protected async bind(): Promise<ListenerHandle[]> {
-    this.minuteTimer = setInterval(() => {
+    this.minuteTimer = window.setInterval(() => {
       this.dispatch(updateClockMinuteTicker());
     }, 60000);
     return [

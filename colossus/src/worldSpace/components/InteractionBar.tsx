@@ -38,7 +38,7 @@ export class InteractionBar extends React.Component<Props, State> {
 
   public render() {
     const { state } = this.props;
-    const disabledClassName = state.gameplayType == ItemGameplayType.DisabledInteraction ? "disabled" : '';
+    const disabledClassName = state.gameplayType == ItemGameplayType.DisabledInteraction ? 'disabled' : '';
     const pressedClassName = this.state.isPressed ? 'pressed' : '';
 
     return state.keybind ? (
@@ -49,9 +49,13 @@ export class InteractionBar extends React.Component<Props, State> {
             <div className={`${BarText} ${disabledClassName}`}>
               {state.keybind ? (
                 state.keybind.iconClass ? (
-                  <span className={`${KeybindIcon} ${pressedClassName} ${state.keybind.iconClass} ${disabledClassName}`} />
+                  <span
+                    className={`${KeybindIcon} ${pressedClassName} ${state.keybind.iconClass} ${disabledClassName}`}
+                  />
                 ) : (
-                  <span className={`${KeybindIcon} ${pressedClassName} ${disabledClassName}`}>{state.keybind.name}</span>
+                  <span className={`${KeybindIcon} ${pressedClassName} ${disabledClassName}`}>
+                    {state.keybind.name}
+                  </span>
                 )
               ) : null}
               {state.title}
@@ -69,15 +73,18 @@ export class InteractionBar extends React.Component<Props, State> {
 
   private getGameplayTypeDisplayText(): JSX.Element {
     const { state } = this.props;
-    if (state.gameplayType == ItemGameplayType.Interaction ||
-    state.gameplayType == ItemGameplayType.DisabledInteraction) {
+    if (
+      state.gameplayType == ItemGameplayType.Interaction ||
+      state.gameplayType == ItemGameplayType.DisabledInteraction
+    ) {
       return null;
     }
 
     return (
       <div className={`${GameTypeText} ${ItemGameplayType[state.gameplayType]}`}>
         {ItemGameplayType[state.gameplayType]}
-      </div>);
+      </div>
+    );
   }
 
   public componentDidUpdate(prevProps: Props) {

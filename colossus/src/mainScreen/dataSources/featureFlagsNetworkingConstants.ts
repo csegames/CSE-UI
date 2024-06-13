@@ -12,7 +12,7 @@ export type FeatureFlagQueryResult = Pick<CUQuery, 'featureFlags' | 'serverBuild
 
 export const featureFlagQuery = gql`
   query featureFlagQuery {
-    serverBuildNumber,
+    serverBuildNumber
     featureFlags
   }
 `;

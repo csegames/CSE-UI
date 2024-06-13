@@ -20,11 +20,11 @@ import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { updateDoNotDisturb } from '../../../redux/teamJoinSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { clearPendingOptionChanges, dequeueGameOptionChange } from '../../../redux/gameSettingsSlice';
+import { clearOptionChanges, dequeuePendingGameOptionChange } from '../../../redux/gameSettingsSlice';
 import { hideOverlay, Overlay } from '../../../redux/navigationSlice';
-import { webConf } from '../../../dataSources/networkConfiguration';
 import { StringIDGeneralApply, StringIDGeneralBack, getStringTableValue } from '../../../helpers/stringTableHelpers';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { webConf } from '../../../dataSources/networkConfiguration';
 
 const Container = 'Settings-Container';
 const MenuBG = 'Settings-MenuBG';
@@ -41,6 +41,8 @@ interface ReactProps {
 
 interface InjectedProps {
   pendingSettingsChanges: Dictionary<GameOption>;
+  advanceSettingsChanges: Dictionary<GameOption>;
+  advanceSettingsOriginalValues: Dictionary<GameOption>;
   stringTable: Dictionary<StringTableEntryDef>;
 }
 
@@ -72,7 +74,8 @@ class ASettings extends React.Component<Props, State> {
             text={getStringTableValue(StringIDGeneralBack, this.props.stringTable)}
             onClick={this.onBackClick.bind(this)}
           />
-          {Object.keys(this.props.pendingSettingsChanges).length > 0 && (
+          {(Object.keys(this.props.pendingSettingsChanges).length > 0 ||
+            Object.keys(this.props.advanceSettingsChanges).length > 0) && (
             <Button
               type={'blue'}
               text={getStringTableValue(StringIDGeneralApply, this.props.stringTable)}
@@ -98,7 +101,15 @@ class ASettings extends React.Component<Props, State> {
   public componentDidMount() {}
 
   public componentWillUnmount() {
-    this.props.dispatch(clearPendingOptionChanges());
+    this.props.dispatch(clearOptionChanges());
+    const options = Object.values(this.props.advanceSettingsOriginalValues);
+    if (options.length > 0) {
+      game.setOptionsAsync(options).then((result) => {
+        if (!result.success) {
+          console.warn('SetOptionsAsync failed to apply all requested changes.', result);
+        }
+      });
+    }
   }
 
   private setCurrentRoute(route: SettingsRoute): void {
@@ -180,7 +191,7 @@ class ASettings extends React.Component<Props, State> {
       newOption.value = newOption.defaultValue;
       updates.push(newOption);
       // If this option had a change pending, cancel it.
-      this.props.dispatch(dequeueGameOptionChange(option));
+      this.props.dispatch(dequeuePendingGameOptionChange(option));
     });
 
     if (updates.length) {
@@ -209,12 +220,16 @@ class ASettings extends React.Component<Props, State> {
       }
       this.props.dispatch(updateDoNotDisturb(dndOpt.value as boolean));
     }
-    const result = await game.setOptionsAsync(Object.values(this.props.pendingSettingsChanges));
-    if (!result.success) {
-      console.warn('SetOptionsAsync failed to apply all requested changes.', result);
+
+    const changes = Object.values(this.props.pendingSettingsChanges);
+    if (changes.length > 0) {
+      const result = await game.setOptionsAsync(changes);
+      if (!result.success) {
+        console.warn('SetOptionsAsync failed to apply all requested changes.', result);
+      }
     }
 
-    this.props.dispatch(clearPendingOptionChanges());
+    this.props.dispatch(clearOptionChanges());
   }
 
   private onBackClick(): void {
@@ -224,11 +239,13 @@ class ASettings extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { pendingSettingsChanges } = state.gameSettings;
+  const { pendingSettingsChanges, advanceSettingsChanges, advanceSettingsOriginalValues } = state.gameSettings;
   const { stringTable } = state.stringTable;
   return {
     ...ownProps,
     pendingSettingsChanges,
+    advanceSettingsChanges,
+    advanceSettingsOriginalValues,
     stringTable
   };
 }

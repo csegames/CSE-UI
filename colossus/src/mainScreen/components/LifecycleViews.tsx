@@ -11,51 +11,78 @@ import { Dispatch } from 'redux';
 import { GameStats } from './views/GameStats';
 import { InitializationState } from '../redux/initializationSlice';
 import {
-  hideAllOverlays,
+  hideOverlay,
   hideRightPanel,
   isVideoParams,
   LifecyclePhase,
   Overlay,
-  OverlayFieldType,
+  OverlayInstance,
   showOverlay
 } from '../redux/navigationSlice';
 import { RootState, store } from '../redux/store';
-import { CreditsScreen } from './overlays/CreditsScreen';
-import { MainMenuModal } from './overlays/MainMenu';
-import { SetDisplayName } from './overlays/SetDisplayName';
-import { Settings } from './overlays/Settings';
-import { EmoteMenu } from './overlays/EmoteMenu';
 import Hud from './views/Hud';
 import { Lobby } from './views/Lobby';
 import { BottomToaster } from './BottomToaster';
-import { BuildMismatchModal } from './overlays/BuildMismatchModal';
-import { ErrorModal } from './overlays/ErrorModal';
 import { isErrorData } from '../helpers/errorConversionHelpers';
-import { VideoPlayerModal } from './overlays/VideoPlayerModal';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { initializeConsole } from '../services/initialization/console';
 import { SlashCommandRegistry } from '@csegames/library/dist/_baseGame/slashCommandRegistry';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { ChampionSelect } from './views/ChampionSelect';
-import { RewardCollection } from './overlays/RewardCollection';
 import { updateHUDSize } from '../redux/hudSlice';
-import { FreeBattlePassModal } from './overlays/FreeBattlePassModal';
-import { SpendQuestXPPotionsModal } from './overlays/SpendQuestXPPotionsModal';
-import { NewBattlePassModal } from './overlays/NewBattlePassModal';
-import { DebugMenu } from './overlays/DebugMenu';
-import { EndedBattlePassModal } from './overlays/EndedBattlePassModal';
+import { RightModal } from './views/Lobby/RightModal';
+import { BuildMismatchModal } from './overlays/BuildMismatchModal';
+import { ChampionSelectCosmetics } from './overlays/ChampionSelectCosmetics';
 import { ClaimBattlePassModal } from './overlays/ClaimBattlePassModal';
-import { FullscreenSelectRuneMods } from './overlays/FullscreenSelectRuneMods';
+import { CreditsScreen } from './overlays/CreditsScreen';
+import { DebugMenu } from './overlays/DebugMenu';
+import { EmoteMenu } from './overlays/EmoteMenu';
+import { EndedBattlePassModal } from './overlays/EndedBattlePassModal';
+import { ErrorModal } from './overlays/ErrorModal';
+import { EventAdvertisementModal } from './overlays/EventAdvertisementModal';
+import { FreeBattlePassModal } from './overlays/FreeBattlePassModal';
 import { FullScreenChampionDetails } from './overlays/FullScreenChampionDetails';
+import { FullscreenSelectRuneMods } from './overlays/FullscreenSelectRuneMods';
+import { MainMenuModal } from './overlays/MainMenu';
+import { MOTDModal } from './overlays/MOTDModal';
+import { NewBattlePassModal } from './overlays/NewBattlePassModal';
+import { PurchaseGemsModal } from './overlays/PurchaseGemsModal';
 import { PurchaseProcessingModal } from './overlays/PurchaseProcessingModal';
 import { ReportPlayer } from './overlays/MainMenu/ReportPlayer';
+import { RewardCollection } from './overlays/RewardCollection';
+import { SetDisplayName } from './overlays/SetDisplayName';
+import { Settings } from './overlays/Settings';
+import { SpendQuestXPPotionsModal } from './overlays/SpendQuestXPPotionsModal';
+import { VideoPlayerModal } from './overlays/VideoPlayerModal';
+
+const overlayElements: Map<Overlay, JSX.Element> = new Map();
+overlayElements.set(Overlay.ChampionDetails, <FullScreenChampionDetails />);
+overlayElements.set(Overlay.ChampionSelectCosmetics, <ChampionSelectCosmetics />);
+overlayElements.set(Overlay.ClaimBattlePassModal, <ClaimBattlePassModal />);
+overlayElements.set(Overlay.Credits, <CreditsScreen />);
+overlayElements.set(Overlay.Debug, <DebugMenu />);
+overlayElements.set(Overlay.EmoteMenu, <EmoteMenu isVisible={true} />);
+overlayElements.set(Overlay.EndedBattlePassModal, <EndedBattlePassModal />);
+overlayElements.set(Overlay.EventAdvertisementModal, <EventAdvertisementModal />);
+overlayElements.set(Overlay.FreeBattlePassModal, <FreeBattlePassModal />);
+overlayElements.set(Overlay.MainMenu, <MainMenuModal />);
+overlayElements.set(Overlay.MOTDModal, <MOTDModal />);
+overlayElements.set(Overlay.NewBattlePassModal, <NewBattlePassModal />);
+overlayElements.set(Overlay.PurchaseGems, <PurchaseGemsModal />);
+overlayElements.set(Overlay.PurchaseProcessing, <PurchaseProcessingModal />);
+overlayElements.set(Overlay.ReportPlayer, <ReportPlayer />);
+overlayElements.set(Overlay.RewardCollection, <RewardCollection />);
+overlayElements.set(Overlay.RuneMods, <FullscreenSelectRuneMods />);
+overlayElements.set(Overlay.SetDisplayName, <SetDisplayName />);
+overlayElements.set(Overlay.Settings, <Settings />);
+overlayElements.set(Overlay.SpendQuestXPPotions, <SpendQuestXPPotionsModal />);
 
 interface ReactProps {}
 
 interface InjectedProps {
   initialization: InitializationState;
   lifecyclePhase: LifecyclePhase;
-  overlay: OverlayFieldType;
+  overlays: OverlayInstance[];
   rightPanelContent: React.ReactNode;
   clientBuild: number;
   serverBuild: number | null;
@@ -96,7 +123,8 @@ class LifecycleViews extends React.Component<Props> {
     return (
       <>
         {this.renderLifecycle()}
-        {this.renderOverlay()}
+        {this.props.overlays.map(this.renderOverlay.bind(this))}
+        <RightModal />
         <BottomToaster />
       </>
     );
@@ -117,49 +145,16 @@ class LifecycleViews extends React.Component<Props> {
     }
   }
 
-  private renderOverlay(): React.ReactNode {
-    if (isErrorData(this.props.overlay)) {
-      return <ErrorModal error={this.props.overlay} />;
+  private renderOverlay(overlay: OverlayInstance): React.ReactNode {
+    let element: JSX.Element;
+    if (isErrorData(overlay.data)) {
+      element = <ErrorModal error={overlay.data} />;
+    } else if (isVideoParams(overlay.data)) {
+      element = <VideoPlayerModal params={overlay.data} />;
+    } else {
+      element = overlayElements.get(overlay.data) ?? null;
     }
-    if (isVideoParams(this.props.overlay)) {
-      return <VideoPlayerModal params={this.props.overlay} />;
-    }
-    switch (this.props.overlay) {
-      case Overlay.ChampionDetails:
-        return <FullScreenChampionDetails />;
-      case Overlay.ClaimBattlePassModal:
-        return <ClaimBattlePassModal />;
-      case Overlay.Credits:
-        return <CreditsScreen />;
-      case Overlay.Debug:
-        return <DebugMenu />;
-      case Overlay.EmoteMenu:
-        return <EmoteMenu isVisible={true} />;
-      case Overlay.EndedBattlePassModal:
-        return <EndedBattlePassModal />;
-      case Overlay.FreeBattlePassModal:
-        return <FreeBattlePassModal />;
-      case Overlay.MainMenu:
-        return <MainMenuModal />;
-      case Overlay.NewBattlePassModal:
-        return <NewBattlePassModal />;
-      case Overlay.PurchaseProcessing:
-        return <PurchaseProcessingModal />;
-      case Overlay.ReportPlayer:
-        return <ReportPlayer />;
-      case Overlay.RewardCollection:
-        return <RewardCollection />;
-      case Overlay.SetDisplayName:
-        return <SetDisplayName />;
-      case Overlay.SpendQuestXPPotions:
-        return <SpendQuestXPPotionsModal />;
-      case Overlay.Settings:
-        return <Settings />;
-      case Overlay.RuneMods:
-        return <FullscreenSelectRuneMods />;
-      default:
-        return null;
-    }
+    return <React.Fragment key={overlay.id}>{element}</React.Fragment>;
   }
 
   // translate from a native code signal to a dispatched overlay request
@@ -170,8 +165,8 @@ class LifecycleViews extends React.Component<Props> {
         break;
       case 'gamemenu':
         // close menu system if open
-        if (this.props.overlay !== null) {
-          this.props.dispatch(hideAllOverlays());
+        if (this.props.overlays.length > 0) {
+          this.props.dispatch(hideOverlay(this.props.overlays[this.props.overlays.length - 1].data));
           break;
         }
         if (this.props.rightPanelContent !== null) {
@@ -182,7 +177,11 @@ class LifecycleViews extends React.Component<Props> {
         this.props.dispatch(showOverlay(Overlay.MainMenu));
         break;
       case 'emotemenu':
-        this.props.dispatch(showOverlay(Overlay.EmoteMenu));
+        if (this.props.overlays.some((overlay) => overlay.data === Overlay.EmoteMenu)) {
+          this.props.dispatch(hideOverlay(Overlay.EmoteMenu));
+        } else {
+          this.props.dispatch(showOverlay(Overlay.EmoteMenu));
+        }
         break;
     }
   }
@@ -202,7 +201,7 @@ class LifecycleViews extends React.Component<Props> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const initialization = state.initialization;
-  const { lifecyclePhase, overlay, rightPanelContent } = state.navigation;
+  const { lifecyclePhase, overlays, rightPanelContent } = state.navigation;
   const { clientBuild, serverBuild } = state.featureFlags;
   return {
     ...ownProps,
@@ -210,7 +209,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     serverBuild,
     initialization,
     lifecyclePhase,
-    overlay,
+    overlays,
     rightPanelContent
   };
 }

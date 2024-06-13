@@ -30,8 +30,8 @@
     line-height: 30px;
     font-weight: 700;
     text-align: center;
-    &[disabled]{
-      opacity: .5;
+    &[disabled] {
+      opacity: 0.5;
     }
     &:hover {
       filter: brightness(1.2);

@@ -20,8 +20,8 @@ export enum InitTopic {
   User = 'user',
   Store = 'store',
   GameSettings = 'gameSettings',
-  Scenarios = "scenarios",
-  StringTable = "stringTable"
+  Scenarios = 'scenarios',
+  StringTable = 'stringTable'
 }
 
 export interface InitializationState {
@@ -80,7 +80,7 @@ export const initializationSlice = createSlice({
           // note : we set and clear to erase the hardcoded initial value
           clientAPI.setLoadingScreenManually(LoadingScreenReason.Initialization, '');
           clientAPI.clearManualLoadingScreen(LoadingScreenReason.Initialization);
-          clientAPI.setInitializationComplete()
+          clientAPI.setInitializationComplete();
         }, 10);
       }
       state.completed = completed;

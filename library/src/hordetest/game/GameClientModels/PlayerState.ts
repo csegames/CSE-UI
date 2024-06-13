@@ -16,6 +16,7 @@ const SelfPlayer_Update = 'selfPlayerState.update';
 
 function initDefault(): UpdatableSelfPlayerStateModel {
   return {
+    shardID: 0,
     characterID: '',
     accountID: '',
     zoneID: '',

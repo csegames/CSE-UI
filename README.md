@@ -1,4 +1,4 @@
-# CSE UI Projects
+# UCE UI Projects
 
 [Installing Node on Windows](documentation/InstallingNode.md)
 

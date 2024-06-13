@@ -11,6 +11,7 @@ import { VoiceChatMemberSettings } from '../types/VoiceChatMemberSettings';
 
 export type VoiceChatUpdateListener = (accountID: string, settings: VoiceChatMemberSettings) => void;
 export type VoiceChatRemoveListener = (accountID: string) => void;
+export type ChannelType = "match" | "none";
 
 // client -> UI (see UIEvents.h)
 const VoiceChatMemberUpdatedEventName = 'voiceChat.memberUpdated';
@@ -18,11 +19,13 @@ const VoiceChatMemberRemovedEventName = 'voiceChat.memberRemoved';
 
 // UI -> client (see UIViewListener.cpp)
 const SetVoiceChatMemberMutedFuncName = 'voiceChat.SetMemberMuted';
+const SetVoiceChannelFuncName = 'voiceChat.SetVoiceChannel';
 
 export interface VoiceChatFunctions {
   bindVoiceChatMemberUpdatedListener(listener: VoiceChatUpdateListener): ListenerHandle;
   bindVoiceChatMemberRemovedListener(listener: VoiceChatRemoveListener): ListenerHandle;
   setVoiceChatMemberMuted(accountID: string, isMuted: boolean): void;
+  setVoiceChannel(type: ChannelType, roomID: string): void;
 }
 
 export interface VoiceChatMocks {
@@ -50,6 +53,7 @@ abstract class VoiceChatFunctionsBase implements VoiceChatFunctions, VoiceChatMo
   }
 
   abstract setVoiceChatMemberMuted(accountID: string, isMuted: boolean): void;
+  abstract setVoiceChannel(type: ChannelType, roomID: string): void;
 }
 
 class CoherentVoiceChatFunctions extends VoiceChatFunctionsBase {
@@ -78,11 +82,19 @@ class CoherentVoiceChatFunctions extends VoiceChatFunctionsBase {
   setVoiceChatMemberMuted(accountID: string, isMuted: boolean): void {
     engine.trigger(SetVoiceChatMemberMutedFuncName, accountID, isMuted);
   }
+
+  setVoiceChannel(type: ChannelType, roomID: string): void {
+    engine.trigger(SetVoiceChannelFuncName, type, roomID);
+  }
 }
 
 class BrowserVoiceChatFunctions extends VoiceChatFunctionsBase {
   setVoiceChatMemberMuted(accountID: string, isMuted: boolean): void {
     console.log(`Set ${accountID} muted = ${isMuted}`);
+  }
+
+  setVoiceChannel(type: ChannelType, roomID: string): void {
+    console.log(`Set voice channel to ${type} ${roomID}`);
   }
 }
 

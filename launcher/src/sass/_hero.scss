@@ -40,7 +40,7 @@
     height: 30px;
     width: 40px;
     float: right;
-    transition: all .2s ease-in;
+    transition: all 0.2s ease-in;
     &:hover {
       opacity: 0.75;
       padding: 5px 35px 0px 9px;
@@ -57,4 +57,3 @@
 .hidden {
   display: none;
 }
-

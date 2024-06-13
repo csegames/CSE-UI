@@ -1,0 +1,10 @@
+*
+!*.ts
+!*.tsx
+!*.scss
+*.d.ts
+!*/
+src/camelotunchained/graphql/schema.ts
+src/camelotunchained/webAPI/definitions.ts
+src/hordetest/graphql/schema.ts
+src/hordetest/webAPI/definitions.ts

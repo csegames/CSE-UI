@@ -40,7 +40,7 @@ export function SliderRow(props: Props) {
       <div className={SliderContainer}>
         <input
           className={Slider}
-          type="range"
+          type='range'
           value={props.option.value}
           min={props.option.minValue}
           max={props.option.maxValue}

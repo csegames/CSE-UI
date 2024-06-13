@@ -7,14 +7,17 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../redux/store';
-import { AnyEntityStateModel } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
+import {
+  AnyEntityStateModel,
+  EntityPositionMapModel
+} from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
 import { getEntityResource } from '@csegames/library/dist/camelotunchained/clientFunctions/EntityFunctions';
 import { Theme } from '../themes/themeConstants';
 import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numberUtils';
 import StatusEffects from './StatusEffects';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { FactionData } from '../redux/gameDefsSlice';
-import { Faction, Vec3f } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
+import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { distanceVec3 } from '@csegames/library/dist/_baseGame/utils/distance';
 
 // Images are imported so that WebPack can find them (and give us errors if they are missing).
@@ -47,7 +50,8 @@ interface ReactProps {
 interface InjectedProps {
   currentTheme: Theme;
   factions: Dictionary<FactionData>;
-  localPlayerPosition: Vec3f;
+  localEntityID: string;
+  positions: EntityPositionMapModel;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -105,7 +109,12 @@ class NonPlayerUnitFrame extends React.Component<Props> {
             <img className={ArchetypeFrame} src={faction?.defaultArchetypeFrameURL ?? DefaultArchetypeFrameURL} />
           </div>
           <div className={Distance}>
-            {distanceVec3(this.props.localPlayerPosition, this.props.entity.position).toFixed(2)}
+            {this.props.positions[this.props.localEntityID] && this.props.positions[this.props.entity.entityID]
+              ? distanceVec3(
+                  this.props.positions[this.props.localEntityID],
+                  this.props.positions[this.props.entity.entityID]
+                ).toFixed(2)
+              : 0.0}
           </div>
         </div>
         <StatusEffects statuses={this.props.entity.statuses} />
@@ -121,7 +130,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     ...ownProps,
     currentTheme,
     factions,
-    localPlayerPosition: state.player.position
+    localEntityID: state.player.entityID,
+    positions: state.entities.positions
   };
 }
 

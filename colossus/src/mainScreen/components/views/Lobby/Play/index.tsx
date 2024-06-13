@@ -10,7 +10,6 @@ import { PlayerView } from './PlayerView';
 import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 
-import { InviteFriendsButton } from './InviteFriendsButton';
 import { NotificationList } from './NotificationList';
 import { Button } from '../../../shared/Button';
 import { RootState } from '../../../../redux/store';
@@ -28,12 +27,9 @@ import {
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { TutorialQueueID, updateGroupState } from '../../../../redux/teamJoinSlice';
 import { TeamJoinAPIError } from '../../../../dataSources/teamJoinNetworkingConstants';
-import { getAccountID } from '@csegames/library/dist/_baseGame/utils/accountUtils';
 import { TeamJoinAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { Overlay, OverlayFieldType, showOverlay, showRightPanel } from '../../../../redux/navigationSlice';
-import { webConf } from '../../../../dataSources/networkConfiguration';
+import { Overlay, OverlayInstance, showOverlay, showRightPanel } from '../../../../redux/navigationSlice';
 import { PlayButton } from './PlayButton';
-import { TeamJoinPanel } from '../../../rightPanel/TeamJoinPanel';
 import { LobbyChampionStatus } from './LobbyChampionStatus';
 import { DailyQuestPanel } from '../BattlePass/DailyQuestPanel';
 import {
@@ -48,13 +44,16 @@ import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
 import { shouldShowBattlePassSplashScreen } from '../BattlePass/BattlePassUtils';
 import { battlePassLocalStore } from '../../../../localStorage/battlePassLocalStorage';
 import { InitTopic } from '../../../../redux/initializationSlice';
+import { EventAdvertisementPanel } from '../../../shared/eventMessaging/EventAdvertisementPanel';
+import { MOTDMessageData, setMOTDModalMessage } from '../../../../redux/notificationsSlice';
+import { webConf } from '../../../../dataSources/networkConfiguration';
 
 const Container = 'StartScreen-Play-Container';
 const LeftPanel = 'StartScreen-Play-LeftPanel';
 const CharacterContainer = 'StartScreen-Play-CharacterContainer';
 const NotificationsListContainer = 'StartScreen-Play-NotificationsListContainer';
 const LeaveGroupButtonClass = 'StartScreen-Play-LeaveGroupButton';
-const QuestAndInviteSection = 'StartScreen-Play-QuestAndInviteSection';
+const QuestSection = 'StartScreen-Play-QuestSection';
 const ActionButtonClass = 'StartScreen-Play-ActionButton';
 const TutorialContainer = 'StartScreen-Play-TutorialContainer';
 const TutorialText = 'StartScreen-Play-TutorialText';
@@ -83,13 +82,14 @@ interface InjectedProps {
   previousBattlePass: QuestDefGQL;
   nextBattlePass: QuestDefGQL;
   questsProgress: QuestGQL[];
-  overlay: OverlayFieldType;
+  overlays: OverlayInstance[];
   initializationTopics: Dictionary<boolean>;
   quests: QuestGQL[];
   perks: PerkGQL[];
   battlePassQuests: QuestDefGQL[];
   queues: Queue[];
   serverTimeDeltaMS: number;
+  motdMessagesData: MOTDMessageData[];
   dispatch?: Dispatch;
 }
 
@@ -110,25 +110,30 @@ class APlay extends React.Component<Props> {
             <NotificationList />
           </div>
           <div className={CharacterContainer}>
+            <LobbyBattlePassStatus />
             {this.getPlayButton()}
             <LobbyChampionStatus />
             {this.getTutorialButton()}
-            <div className={QuestAndInviteSection}>
-              {this.getQuestsButton()}
-              {this.getInviteFriendsButton()}
-            </div>
-            <LobbyBattlePassStatus />
+            <div className={QuestSection}>{this.getQuestsButton()}</div>
+            <EventAdvertisementPanel />
           </div>
         </div>
-        {this.getLeaveGroupButton()}
         <PlayerView />
+        {this.getLeaveGroupButton()}
       </div>
     );
   }
 
   private checkForPrestitial(): void {
     // If an overlay is already open, wait to replace it until the user is finished interacting with it.
-    if (this.props.overlay) {
+    if (this.props.overlays.length > 0) {
+      return;
+    }
+
+    const motdMessageData = this.props.motdMessagesData[0];
+    if (motdMessageData) {
+      this.props.dispatch(setMOTDModalMessage(motdMessageData));
+      this.props.dispatch(showOverlay(Overlay.MOTDModal));
       return;
     }
 
@@ -186,14 +191,6 @@ class APlay extends React.Component<Props> {
     }
   }
 
-  private getInviteFriendsButton(): React.ReactNode {
-    if (!this.props.group || this.props.group.leader.id === getAccountID(game.accessToken)) {
-      return <InviteFriendsButton onClick={this.onClickInviteFriends.bind(this)} />;
-    } else {
-      return null;
-    }
-  }
-
   private getQuestsButton(): React.ReactNode {
     // For now, the only quests we care about are the BattlePass quests.  So if you have no BattlePass, you don't get the quests button!
     if (!!this.props.currentBattlePass) {
@@ -213,10 +210,6 @@ class APlay extends React.Component<Props> {
 
   private onQuestsClick(): void {
     this.props.dispatch(showRightPanel(<DailyQuestPanel />));
-  }
-
-  private onClickInviteFriends() {
-    this.props.dispatch(showRightPanel(<TeamJoinPanel />));
   }
 
   private async onLeaveGroup() {
@@ -301,11 +294,12 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { defaultQueueID, access, queues } = state.match;
   const lifetimeStats = state.profile.lifetimeStats;
   const { stringTable } = state.stringTable;
-  const { overlay } = state.navigation;
+  const { overlays } = state.navigation;
   const initializationTopics = state.initialization.componentStatus;
   const { perks, quests } = state.profile;
   const battlePassQuests = state.quests.quests?.BattlePass;
   const { serverTimeDeltaMS } = state.clock;
+  const { motdMessagesData } = state.notifications;
 
   return {
     ...ownProps,
@@ -322,10 +316,11 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     nextBattlePass,
     questsProgress,
     stringTable,
-    overlay,
+    overlays,
     battlePassQuests,
     queues,
-    serverTimeDeltaMS
+    serverTimeDeltaMS,
+    motdMessagesData
   };
 }
 

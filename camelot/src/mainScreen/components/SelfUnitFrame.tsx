@@ -35,7 +35,6 @@ class ASelfUnitFrame extends React.Component<Props> {
           entityID={player.entityID}
           isAlive={player.isAlive}
           name={player.name}
-          position={player.position}
           resources={player.resources}
           statuses={player.statuses}
           wounds={player.wounds}
@@ -59,7 +58,7 @@ const SelfUnitFrame = connect(mapStateToProps)(ASelfUnitFrame);
 
 const mockData: PlayerEntityStateModel = camelotMocks.createPlayerEntityState();
 
-const WIDGET_NAME = 'Self Unit Frame';
+const WIDGET_NAME = 'Your Health Bar';
 export const selfUnitFrameRegistry: HUDWidgetRegistration = {
   name: WIDGET_NAME,
   defaults: {

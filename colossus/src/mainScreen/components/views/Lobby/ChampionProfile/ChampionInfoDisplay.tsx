@@ -16,8 +16,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { storeLocalStore } from '../../../../localStorage/storeLocalStorage';
-import { updateSelectedEmoteIndex } from '../../../../redux/championInfoSlice';
-import { LobbyView, Overlay, hideOverlay, navigateTo, showError, showOverlay } from '../../../../redux/navigationSlice';
+import { setCosmeticTab, Overlay, hideOverlay, showError, showOverlay } from '../../../../redux/navigationSlice';
 import { RootState } from '../../../../redux/store';
 import { updateStoreRemoveUnseenEquipment } from '../../../../redux/storeSlice';
 import { Button } from '../../../shared/Button';
@@ -25,7 +24,6 @@ import { QuestsByType } from '../../../../redux/questSlice';
 import TooltipSource from '../../../../../shared/components/TooltipSource';
 import { ChampionProgressionLevel } from './ChampionProgressionLevel';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { webConf } from '../../../../dataSources/networkConfiguration';
 import {
   findChampionQuestProgress,
   findChampionQuest,
@@ -39,6 +37,7 @@ import { createAlertsForCollectedQuestProgress } from '../../../../helpers/perkU
 import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { startProfileRefresh } from '../../../../redux/profileSlice';
+import { webConf } from '../../../../dataSources/networkConfiguration';
 
 const Container = 'ChampionProfile-ChampionInfoDisplay-Container';
 const ChampionName = 'ChampionProfile-ChampionInfoDisplay-ChampionName';
@@ -131,7 +130,11 @@ class AChampionInfoDisplay extends React.Component<Props> {
         />
         <div className={RuneModContainer}>
           <span className={SectionHeading}>{getStringTableValue(StringIDRuneMods, this.props.stringTable)}</span>
-          <div className={RuneModsContainer} onClick={this.onRuneModClick.bind(this)}>
+          <div
+            className={RuneModsContainer}
+            onClick={this.onRuneModClick.bind(this)}
+            onMouseEnter={this.onMouseEnterRuneMods.bind(this)}
+          >
             {this.renderRuneModOrnament()}
             <div className={RuneModsContainerInner}>{this.renderRuneMods()}</div>
           </div>
@@ -306,6 +309,7 @@ class AChampionInfoDisplay extends React.Component<Props> {
             content: name
           }}
           onClick={onClick.bind(this)}
+          onMouseEnter={this.onMouseEnterCosmeticButton.bind(this)}
         >
           <div className={CustomizationButton}>
             <div className={`${CustomizationButtonIcon} ${iconClass}`} />
@@ -366,29 +370,47 @@ class AChampionInfoDisplay extends React.Component<Props> {
     );
   }
 
+  private onMouseEnterCosmeticButton(): void {
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
+  }
+
+  private onMouseEnterRuneMods(): void {
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
+  }
+
   private onWeaponSlotClick(): void {
-    this.props.dispatch(navigateTo(LobbyView.SelectWeapon));
+    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_WEAPONS_CLICK);
+    this.props.dispatch?.(setCosmeticTab(PerkType.Weapon));
+    this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
   }
 
   private onSkinSlotClick(): void {
-    this.props.dispatch(navigateTo(LobbyView.SelectSkin));
+    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_SKINS_CLICK);
+    this.props.dispatch?.(setCosmeticTab(PerkType.Costume));
+    this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
   }
 
   private onEmoteSlotClick(): void {
-    this.props.dispatch(updateSelectedEmoteIndex(0));
-    this.props.dispatch(navigateTo(LobbyView.SelectEmote));
+    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_EMOTE_CLICK);
+    this.props.dispatch?.(setCosmeticTab(PerkType.Emote));
+    this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
   }
 
   private onRuneModClick(): void {
+    game.playGameSound(SoundEvents.PLAY_UI_RUNEMENU_CLICK);
     this.props.dispatch(showOverlay(Overlay.RuneMods));
   }
 
   private onSprintClick(): void {
-    this.props.dispatch(navigateTo(LobbyView.SelectAppearance));
+    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_SPRINT_CLICK);
+    this.props.dispatch?.(setCosmeticTab(PerkType.SprintFX));
+    this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
   }
 
   private onPortraitClick(): void {
-    this.props.dispatch(navigateTo(LobbyView.SelectAppearance));
+    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_PORTRAIT_CLICK);
+    this.props.dispatch?.(setCosmeticTab(PerkType.Portrait));
+    this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
   }
 
   private markAllSeen(): void {
@@ -442,7 +464,7 @@ class AChampionInfoDisplay extends React.Component<Props> {
   }
 
   private async onSetAsDefault() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_SELECTDEFAULT_CLICK);
 
     const res = await ProfileAPI.SetDefaultChampion(webConf, this.props.selectedChampion.id as any);
 

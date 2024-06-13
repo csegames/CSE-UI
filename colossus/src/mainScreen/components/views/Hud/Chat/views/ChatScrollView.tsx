@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 import { ChatLine } from './ChatLine';
-import { useChat } from '../state/chat';
 import { chat } from '@csegames/library/dist/_baseGame/chat/chat_proto';
 import { RoomState, TabState } from '../../../../../redux/chatSlice';
 import { TimedMessage } from '@csegames/library/dist/_baseGame/chat/CSEChat';
@@ -32,6 +31,7 @@ interface ReactProps {
 interface InjectedProps {
   rooms: Dictionary<RoomState>;
   systemMessages: TimedMessage[];
+  receivedMessageCounter: number;
   gameOptions: Dictionary<GameOption>;
   blockedList: Dictionary<number>;
 }
@@ -76,13 +76,17 @@ class AChatScrollView extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    const chat = useChat(game);
     // When the user starts typing into Chat, we need to show this widget.
     this.eventHandles.push(game.onBeginChat(this.updateTimeout.bind(this, true)));
     // When a system message arrives, we need to show this widget.
     this.eventHandles.push(clientAPI.bindAnnouncementListener(this.onAnnouncement.bind(this)));
+  }
+
+  componentDidUpdate(prevProps: Readonly<Props>): void {
     // When a chat message arrives, we need to show this widget.
-    this.eventHandles.push(chat.onChatMessage(this.updateTimeout.bind(this, true)));
+    if (prevProps.receivedMessageCounter < this.props.receivedMessageCounter) {
+      this.updateTimeout(true);
+    }
   }
 
   componentWillUnmount() {
@@ -183,11 +187,12 @@ class AChatScrollView extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  // mapStateToProps is called basically every frame, so avoid heavy calculations.
+  const { rooms, systemMessages, receivedMessageCounter } = state.chat;
   return {
     ...ownProps,
-    rooms: state.chat.rooms,
-    systemMessages: state.chat.systemMessages,
+    rooms,
+    systemMessages,
+    receivedMessageCounter,
     gameOptions: state.gameOptions.gameOptions,
     blockedList: state.localStorage.blockedList
   };

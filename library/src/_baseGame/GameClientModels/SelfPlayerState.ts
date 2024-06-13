@@ -16,6 +16,7 @@ export type Facing2fDegrees = {
 };
 
 export interface SelfPlayerStateModel {
+  shardID: number;
   accountID: string;
   characterID: string;
   zoneID: string;

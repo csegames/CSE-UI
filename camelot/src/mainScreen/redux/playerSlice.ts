@@ -15,6 +15,7 @@ import { DefaultBaseEntityState } from './entitiesSlice';
 type FullPlayerState = SelfPlayerStateModel & PlayerEntityStateModel;
 
 const DefaultSelfPlayerState: SelfPlayerStateModel = {
+  shardID: 0,
   characterID: '',
   accountID: '',
   entityID: '',

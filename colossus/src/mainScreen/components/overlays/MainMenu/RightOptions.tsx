@@ -7,10 +7,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { getVoiceChatStyle, updatePlayerToReport } from '../../../redux/voiceChatSlice';
+import { getVoiceChatStyle, updateMutedAll, updatePlayerToReport } from '../../../redux/voiceChatSlice';
 import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { ChampionInfo, Group, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionInfo, Group, PerkDefGQL, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary, Dispatch } from '@reduxjs/toolkit';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
 import {
@@ -24,6 +24,8 @@ import { Overlay, showOverlay } from '../../../redux/navigationSlice';
 import { CharacterRaceDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
 import { IDLookupTable } from '../../../redux/gameSlice';
 import { updateAccountIDsToMute } from '../../../redux/localStorageSlice';
+import { UserState } from '../../../redux/userSlice';
+import { ProfileModel } from '../../../redux/profileSlice';
 
 const Container = 'MenuModal-RightOptions-Container';
 const ScrollableArea = 'MenuModal-RightOptions-ScrollableArea';
@@ -56,11 +58,17 @@ const StringIDMainMenuRightReportPlayer = 'MainMenuRightReportPlayer';
 interface InjectedProps {
   friends: FriendsList;
   voiceChatMembers: Dictionary<VoiceChatMemberSettings>;
+  mutedAll: boolean;
   stringTable: Dictionary<StringTableEntryDef>;
   group: Group;
   champions: ChampionInfo[];
+  profile: ProfileModel;
+  perksByID: Dictionary<PerkDefGQL>;
   raceDefs: IDLookupTable<CharacterRaceDef>;
   blockedList: Dictionary<number>;
+  user: UserState;
+  userPortraitURL: string;
+  userRace: number;
   dispatch?: Dispatch;
 }
 
@@ -70,7 +78,6 @@ type Props = InjectedProps & ComponentProps;
 
 interface State {
   selectedPlayer: number;
-  mutedAll: boolean;
   hoveredPlayer: number;
 }
 
@@ -79,8 +86,7 @@ class ARightOptions extends React.Component<Props, State> {
     super(props);
     this.state = {
       selectedPlayer: -1,
-      hoveredPlayer: -1,
-      mutedAll: false
+      hoveredPlayer: -1
     };
   }
 
@@ -121,20 +127,18 @@ class ARightOptions extends React.Component<Props, State> {
 
   private toggleMuteAll() {
     const accountIDs: string[] = [];
-    const toBeMuted = !this.state.mutedAll;
+    const toBeMuted = !this.props.mutedAll;
     for (const [accountID] of Object.entries(this.props.voiceChatMembers)) {
       clientAPI.setVoiceChatMemberMuted(accountID, toBeMuted);
       accountIDs.push(accountID);
     }
     // if you have mutedAll, unmute them.
     this.props.dispatch(updateAccountIDsToMute({ accountIDs, toBeMuted }));
-    this.setState({
-      mutedAll: !this.state.mutedAll
-    });
+    this.props.dispatch(updateMutedAll(toBeMuted));
   }
 
   private getIsAllMutedText(): string {
-    if (this.state.mutedAll) {
+    if (this.props.mutedAll) {
       return getStringTableValue(StringIDMainMenuRightUnMuteAll, this.props.stringTable);
     }
     return getStringTableValue(StringIDMainMenuRightMuteAll, this.props.stringTable);
@@ -215,6 +219,54 @@ class ARightOptions extends React.Component<Props, State> {
     );
   }
 
+  private renderOwnPlayerItem(): JSX.Element {
+    let settings: VoiceChatMemberSettings = this.props.voiceChatMembers[this.props.user.id];
+    if (!settings) {
+      settings = { status: VoiceChatMemberStatus.Disabled, volume: 0 };
+    }
+
+    // First we check for the active champion, then put in the default.
+    let defaultPortrait = this.props.raceDefs[this.props.userRace]?.thumbnailURL;
+    if (!defaultPortrait || defaultPortrait?.length <= 0) {
+      const defaultPortraitID = this.props.profile.champions.find(
+        (c) => c.championID == this.props.profile.defaultChampionID
+      ).portraitPerkID;
+      defaultPortrait = this.props.perksByID[defaultPortraitID]?.portraitThumbnailURL;
+      if (!defaultPortrait || defaultPortrait.length <= 0) {
+        defaultPortrait = 'images/hud/champions/berserker-profile.png';
+      }
+    }
+    const portraitURL =
+      this.props.userPortraitURL && this.props.userPortraitURL.length > 0
+        ? this.props.userPortraitURL
+        : defaultPortrait;
+
+    const isTalking: boolean = settings.status == VoiceChatMemberStatus.Speaking;
+    const isVoiceChatMuted: boolean = settings.status == VoiceChatMemberStatus.Muted;
+    const isVoiceChatDisabled: boolean = settings.status == VoiceChatMemberStatus.Disabled;
+    const isVoiceChatNotHidden = isTalking || isVoiceChatMuted || isVoiceChatDisabled;
+    const [icon, iconStyle] = getVoiceChatStyle(settings, isVoiceChatNotHidden);
+
+    const isLeader = this.props?.group?.leader.id == this.props.user.id;
+
+    return (
+      <div className={ItemContainer}>
+        <div className={Item}>
+          <img className={ProfileIcon} src={portraitURL}></img>
+          <div className={NameContainer}>
+            <span className={PlayerName}>{this.props.user.displayName}</span>
+            {isLeader && (
+              <span className={Leader}>{getStringTableValue(StringIDMainMenuLeader, this.props.stringTable)}</span>
+            )}
+          </div>
+          <div className={ButtonContainer}>
+            <span className={icon} style={iconStyle} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   public render() {
     if (!this.props.voiceChatMembers) {
       console.error("The voiceChatMembers property isn't set. Can't render.");
@@ -230,7 +282,7 @@ class ARightOptions extends React.Component<Props, State> {
     // Sort members by alphabetical order.
     membersToDisplay.sort((a, b) => a.name.localeCompare(b.name));
 
-    const mutedAllStyle = this.state.mutedAll ? MuteAllButtonMuted : MuteAllButton;
+    const mutedAllStyle = this.props.mutedAll ? MuteAllButtonMuted : MuteAllButton;
 
     return (
       <div className={Container}>
@@ -246,6 +298,7 @@ class ARightOptions extends React.Component<Props, State> {
           </span>
         </div>
         <div className={ScrollableArea}>
+          {this.renderOwnPlayerItem()}
           {membersToDisplay.map((member, index) => this.renderInGamePlayerItem(member, index))}
         </div>
       </div>
@@ -257,11 +310,17 @@ function mapStateToProps(state: RootState, ownProps: ComponentProps): Props {
   return {
     friends: state.entities.friends,
     voiceChatMembers: state.voiceChat.members,
+    mutedAll: state.voiceChat.mutedAll,
     stringTable: state.stringTable.stringTable,
     group: state.teamJoin.group,
     champions: state.championInfo.champions,
+    profile: state.profile,
+    perksByID: state.store.perksByID,
     raceDefs: state.game.characterRaceDefs,
     blockedList: state.localStorage.blockedList,
+    user: state.user,
+    userPortraitURL: state.player.portraitURL,
+    userRace: state.player.race,
     ...ownProps
   };
 }

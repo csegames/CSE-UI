@@ -10,7 +10,7 @@ import { RootState } from '../../../redux/store';
 import { Dispatch } from 'redux';
 import { QuestDefGQL, QuestType } from '@csegames/library/dist/hordetest/graphql/schema';
 import { StringIDGeneralBP, StringIDGeneralXP, getStringTableValue } from '../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/src/hordetest/graphql/schema';
+import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { ExperienceBar } from '../../shared/ExperienceBar';
 
@@ -57,8 +57,8 @@ interface InjectedProps {
 type Props = ReactProps & InjectedProps;
 
 class AAnimatedQuestBar extends React.Component<Props, State> {
-  private animTimeout: NodeJS.Timeout = null;
-  private xpAnimTimer: NodeJS.Timer = null;
+  private animTimeout: number = null;
+  private xpAnimTimer: number = null;
   private isAnimationHandled: boolean = false;
 
   constructor(props: Props) {
@@ -99,7 +99,7 @@ class AAnimatedQuestBar extends React.Component<Props, State> {
               const xpStep = Math.ceil((xpTo - xpFrom) / numSteps);
               const tickDuration = Math.floor(durationMS / numSteps);
               this.setState({ emblemXP: xpFrom, emblemMaxXP: xpMax });
-              this.xpAnimTimer = setInterval(() => {
+              this.xpAnimTimer = window.setInterval(() => {
                 if (this.state.emblemXP < xpTo) {
                   this.setState({ emblemXP: Math.min(this.state.emblemXP + xpStep, xpTo) });
                 } else {
@@ -202,7 +202,7 @@ class AAnimatedQuestBar extends React.Component<Props, State> {
     if (this.animTimeout) {
       clearTimeout(this.animTimeout);
     }
-    this.animTimeout = setTimeout(() => {
+    this.animTimeout = window.setTimeout(() => {
       this.isAnimationHandled = true;
       this.setState(this.getNewState());
       this.animTimeout = null;

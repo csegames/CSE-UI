@@ -246,17 +246,17 @@ class CharacterSelectBG extends React.PureComponent<CharacterSelectBGProps, Char
       clearTimeout(this.charTimeout);
       this.charTimeout = null;
     }
-    this.vfxCharTimeout = setTimeout(() => {
+    this.vfxCharTimeout = window.setTimeout(() => {
       this.setState({ visualFXTransition: true });
-      this.charTimeout = setTimeout(() => this.setState({ visualFXChar: nextChar }), 700);
-      this.backgroundTimeout = setTimeout(() => this.setState({ visualFXTransition: false }), 720);
+      this.charTimeout = window.setTimeout(() => this.setState({ visualFXChar: nextChar }), 700);
+      this.backgroundTimeout = window.setTimeout(() => this.setState({ visualFXTransition: false }), 720);
     }, 299);
   };
 
   private playTransitionAnimation = () => {
     clearTimeout(this.transitionTimeout);
     this.setState({ shouldTransition: false });
-    this.transitionTimeout = setTimeout(() => this.setState({ shouldTransition: true }), 1);
+    this.transitionTimeout = window.setTimeout(() => this.setState({ shouldTransition: true }), 1);
   };
 
   private isWebsiteImage = () => {

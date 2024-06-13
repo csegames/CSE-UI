@@ -30,4 +30,4 @@ You must have the main repository cloned onto your computer.
 
 The built launcher UI is located at `uirepo\launcher\dist` (there may be log files in there that should not be copied).
 
-For CSE employees, see the instructions at https://docs.google.com/document/d/1dshPdkqrfcLXt85DevTi13sTU24B865GPEnNusLUpuM/edit?usp=sharing for how to distribute updates.
+For UCE employees, see the instructions at https://docs.google.com/document/d/1dshPdkqrfcLXt85DevTi13sTU24B865GPEnNusLUpuM/edit?usp=sharing for how to distribute updates.

@@ -13,7 +13,6 @@ import { game } from '@csegames/library/dist/_baseGame';
 import { toTitleCase } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { cloneDeep } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 
-
 const ListBoxStyles = 'Settings-CategoryMenu-DropdownRow-ListBoxStyles';
 
 export interface Props {

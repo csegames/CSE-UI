@@ -4,19 +4,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { CUQuery, CUSubscription } from '@csegames/library/dist/hordetest/graphql/schema';
+import { CUSubscription } from '@csegames/library/dist/hordetest/graphql/schema';
 import gql from 'graphql-tag';
 
-// Specify the subset of keys from CUQuery that we are interested in.
-export type StatsQueryResult = Pick<CUQuery, 'overmindsummary'>;
-export type StatsSubscriptionResult = Pick<CUSubscription, 'scenarioAlerts'>;
+export type StatsSubscriptionResult = Pick<CUSubscription, 'overmindSummaries'>;
 
-export const statsQuery = gql`
-  query GameStatsQuery($scenarioID: String!, $shardID: Int!) {
-    overmindsummary(id: $scenarioID, shard: $shardID) {
+export const statsSubscription = gql`
+  subscription GameStatsSubscription {
+    overmindSummaries {
       id
-      shardID
       scenarioID
+      matchID
       resolution
       startTime
       totalRunTime
@@ -69,25 +67,6 @@ export const statsQuery = gql`
         accountID
         mVPName
         mVPDescription
-      }
-    }
-  }
-`;
-
-export const statsSubscription = gql`
-  subscription GameStatsSubscription($scenarioID: String!) {
-    scenarioAlerts(scenarioID: $scenarioID) {
-      targetID
-      category
-      when
-
-      ... on OvermindSummaryAlert {
-        summary {
-          characterSummaries {
-            accountID
-            thumbsUpReward
-          }
-        }
       }
     }
   }

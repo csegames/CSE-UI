@@ -31,21 +31,21 @@
 }
 
 .sign-in {
-    background: $gradient4;
-    border: solid $colorg4 1px;
-    color: $color1;
-    position: relative;
-    right: -22px;
-    top: 9px;
-    width: 270px;
-    margin: 5px;
-    height: 60px;
-    line-height: 60px;
-    font-weight: 700;
-    text-align: center;
-    &:hover {
-      filter: brightness(1.2);
-      -webkit-filter: brightness(1.2);
+  background: $gradient4;
+  border: solid $colorg4 1px;
+  color: $color1;
+  position: relative;
+  right: -22px;
+  top: 9px;
+  width: 270px;
+  margin: 5px;
+  height: 60px;
+  line-height: 60px;
+  font-weight: 700;
+  text-align: center;
+  &:hover {
+    filter: brightness(1.2);
+    -webkit-filter: brightness(1.2);
   }
 }
 
@@ -70,7 +70,7 @@
   top: -7px;
   font-size: 14px;
   .btn-flat {
-    color: #9B9B9B;
+    color: #9b9b9b;
   }
 }
 
@@ -166,8 +166,8 @@
     line-height: 30px;
     font-weight: 700;
     text-align: center;
-    &[disabled]{
-      opacity: .5;
+    &[disabled] {
+      opacity: 0.5;
     }
     &:hover {
       filter: brightness(1.2);
@@ -177,5 +177,5 @@
 }
 
 .modal-dialog.character-delete {
-  height: 165px;  /* overrides modal-dialog in modaldialog.scss */
+  height: 165px; /* overrides modal-dialog in modaldialog.scss */
 }

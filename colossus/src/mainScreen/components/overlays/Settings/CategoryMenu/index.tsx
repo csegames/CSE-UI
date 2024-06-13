@@ -22,7 +22,12 @@ import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { dequeueGameOptionChange, enqueueGameOptionChange } from '../../../../redux/gameSettingsSlice';
+import {
+  dequeuePendingGameOptionChange,
+  enqueuePendingGameOptionChange,
+  updateAdvanceGameOption
+} from '../../../../redux/gameSettingsSlice';
+import { cloneDeep } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 
 const Container = 'Settings-CategoryMenu-Container';
 
@@ -33,6 +38,7 @@ interface ReactProps {
 
 interface InjectedProps {
   pendingSettingsChanges: Dictionary<GameOption>;
+  advanceSettingsChanges: Dictionary<GameOption>;
   dispatch?: Dispatch;
 }
 
@@ -57,6 +63,9 @@ class ACategoryMenu extends React.Component<Props> {
       if (this.props.pendingSettingsChanges[option.name]) {
         // The stuff in pendingSettingsChanges is cloned copies.
         options[index] = this.props.pendingSettingsChanges[option.name];
+      } else if (this.props.advanceSettingsChanges[option.name]) {
+        // The stuff in advanceSettingsChanges is cloned copies.
+        options[index] = this.props.advanceSettingsChanges[option.name];
       }
     });
 
@@ -76,14 +85,25 @@ class ACategoryMenu extends React.Component<Props> {
       this.props.onOptionChange(option);
     }
 
-    // Send the change to Redux.
-    const savedOption = game.options[option.name];
-    if (savedOption.value === option.value) {
-      // They changed the setting back to its original value, so it no longer counts as a pending change.
-      this.props.dispatch(dequeueGameOptionChange(option));
+    if (option.category === OptionCategory.Audio) {
+      // Audio options should be applied immediately.
+      const savedOption = game.options[option.name];
+      this.props.dispatch(updateAdvanceGameOption([option, cloneDeep(savedOption)]));
+      game.setOptionsAsync([option]).then((result) => {
+        if (!result.success) {
+          console.warn('SetOptionsAsync failed to apply all requested changes.', result);
+        }
+      });
     } else {
-      // They changed the setting to a new value, so queue up the change for saving later.
-      this.props.dispatch(enqueueGameOptionChange(option));
+      // Send the change to Redux.
+      const savedOption = game.options[option.name];
+      if (savedOption.value === option.value) {
+        // They changed the setting back to its original value, so it no longer counts as a pending change.
+        this.props.dispatch(dequeuePendingGameOptionChange(option));
+      } else {
+        // They changed the setting to a new value, so queue up the change for saving later.
+        this.props.dispatch(enqueuePendingGameOptionChange(option));
+      }
     }
   };
 
@@ -106,11 +126,12 @@ class ACategoryMenu extends React.Component<Props> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { pendingSettingsChanges } = state.gameSettings;
+  const { pendingSettingsChanges, advanceSettingsChanges } = state.gameSettings;
 
   return {
     ...ownProps,
-    pendingSettingsChanges
+    pendingSettingsChanges,
+    advanceSettingsChanges
   };
 }
 

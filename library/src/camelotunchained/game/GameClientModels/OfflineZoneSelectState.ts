@@ -37,13 +37,12 @@ function initDefault(): OfflineZoneSelectState {
   };
 }
 
-export default function(game: BaseDevGameInterface, camelot: CamelotUnchainedModel) {
+export default function (game: BaseDevGameInterface, camelot: CamelotUnchainedModel) {
   engineInit(
     game,
     OfflineZoneSelectState_Update,
     initDefault,
     () => camelot.game.offlineZoneSelectState,
-    (model: OfflineZoneSelectStateModel) =>
-      (camelot._devGame.offlineZoneSelectState = model as OfflineZoneSelectState)
+    (model: OfflineZoneSelectStateModel) => (camelot._devGame.offlineZoneSelectState = model as OfflineZoneSelectState)
   );
 }

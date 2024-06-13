@@ -16,7 +16,6 @@ import { Dispatch } from 'redux';
 import { MiddleModalDisplay } from '../shared/MiddleModalDisplay';
 import { hideOverlay, Overlay } from '../../redux/navigationSlice';
 import { setUserShouldRefresh } from '../../redux/userSlice';
-import { webConf } from '../../dataSources/networkConfiguration';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import {
@@ -25,6 +24,7 @@ import {
   StringIDGeneralContinue,
   StringIDGeneralUnknownError
 } from '../../helpers/stringTableHelpers';
+import { webConf } from '../../dataSources/networkConfiguration';
 
 const Form = 'SetDisplayName-Form';
 const Title = 'SetDisplayName-Title';

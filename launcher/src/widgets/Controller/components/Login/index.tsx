@@ -48,7 +48,7 @@ class Login extends React.Component<LoginProps, LoginState> {
     };
 
     // because patcherAPI is not ready immediately... hacky, but works enough I think
-    setTimeout(() => {
+    window.setTimeout(() => {
       this.state = {
         email: patcher.getUserEmail(),
         password: '',
@@ -128,14 +128,14 @@ class Login extends React.Component<LoginProps, LoginState> {
       rememberMe: this.rememberRef.checked
     });
 
-    setTimeout(() => this.checkLoginStatus(500), 500);
+    window.setTimeout(() => this.checkLoginStatus(500), 500);
   }
 
   private checkLoginStatus(waitTime: number) {
     if (patcher.isLoggedIn) {
       // success! notify, then trigger switch
       this.setState({ status: LoginStatus.SUCCESS } as any);
-      setTimeout(() => globalEvents.trigger('logged-in'), 500);
+      window.setTimeout(() => globalEvents.trigger('logged-in'), 500);
       return;
     } else if (waitTime > 10000 || patcher.hasLoginError()) {
       switch (patcher.getLoginError()) {
@@ -145,7 +145,7 @@ class Login extends React.Component<LoginProps, LoginState> {
         }
         default: {
           this.setState({ status: LoginStatus.FAILED } as any);
-          setTimeout(
+          window.setTimeout(
             () =>
               this.setState({
                 status:
@@ -160,7 +160,7 @@ class Login extends React.Component<LoginProps, LoginState> {
       }
       return;
     }
-    setTimeout(() => this.checkLoginStatus(waitTime + 500), 500);
+    window.setTimeout(() => this.checkLoginStatus(waitTime + 500), 500);
   }
 
   private onKeyDown = (event: any) => {

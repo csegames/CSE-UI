@@ -123,7 +123,7 @@ class ModalPane extends React.Component<Props, State> {
           this.setState({ shouldShow: true });
         }
       } else {
-        setTimeout(() => {
+        window.setTimeout(() => {
           this.setState({ shouldShow: false, prevModal: null });
         }, this.getFadeDurationMillis());
       }

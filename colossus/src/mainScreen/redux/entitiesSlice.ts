@@ -6,7 +6,8 @@
 
 import {
   BaseEntityStateModel,
-  PlayerEntityStateModel
+  PlayerEntityStateModel,
+  EntityPositionMapModel
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -43,6 +44,7 @@ interface EntitiesState {
   friendsPerPage: number;
   bosses: EntityList;
   objectives: ObjectivesList;
+  positions: EntityPositionMapModel;
 }
 
 const DefaultEntitiesState: EntitiesState = {
@@ -50,7 +52,8 @@ const DefaultEntitiesState: EntitiesState = {
   friendsPage: 1,
   friendsPerPage: 12, //this should effectively be a const.
   bosses: {},
-  objectives: {}
+  objectives: {},
+  positions: {}
 };
 
 export const entitiesSlice = createSlice({
@@ -101,6 +104,9 @@ export const entitiesSlice = createSlice({
     },
     removeObjective: (state: EntitiesState, action: PayloadAction<string>) => {
       delete state.objectives[action.payload];
+    },
+    updatePositions: (state: EntitiesState, action: PayloadAction<EntityPositionMapModel>) => {
+      state.positions = action.payload;
     }
   }
 });
@@ -117,5 +123,6 @@ export const {
   clearBosses,
   addObjective,
   updateObjective,
-  removeObjective
+  removeObjective,
+  updatePositions
 } = entitiesSlice.actions;

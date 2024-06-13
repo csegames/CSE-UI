@@ -9,10 +9,12 @@ import { engine } from '../../_baseGame/engine';
 // UI -> client (see UIViewListener.cpp)
 const playGameSoundCallbackName = 'audio.PlayGameSound';
 const playVolumeFeedbackCallbackName = 'audio.PlayVolumeFeedback';
+const setUIRaceStateCallbackName = 'audio.SetUIRaceState';
 
 export interface AudioFunctions {
   playGameSound(soundID: number): void;
   playVolumeFeedback(soundID: number, volume: number): void;
+  setUIRaceState(raceID: number): void;
 }
 
 export interface AudioMocks {}
@@ -20,6 +22,7 @@ export interface AudioMocks {}
 abstract class AudioFunctionsBase implements AudioFunctions, AudioMocks {
   abstract playGameSound(soundID: number): void;
   abstract playVolumeFeedback(soundID: number, volume: number): void;
+  abstract setUIRaceState(raceID: number);
 }
 
 class CoherentAudioFunctions extends AudioFunctionsBase {
@@ -29,11 +32,15 @@ class CoherentAudioFunctions extends AudioFunctionsBase {
   playVolumeFeedback(soundID: number, volume: number): void {
     engine.trigger(playVolumeFeedbackCallbackName, soundID, volume);
   }
+  setUIRaceState(raceID: number): void {
+    engine.trigger(setUIRaceStateCallbackName, raceID);
+  }
 }
 
 class BrowserAudioFunctions extends AudioFunctionsBase {
   playGameSound(soundID: number): void {}
   playVolumeFeedback(soundID: number, volume: number): void {}
+  setUIRaceState(raceID: number): void {}
 }
 
 export const impl: AudioFunctions & AudioMocks = engine.isAttached

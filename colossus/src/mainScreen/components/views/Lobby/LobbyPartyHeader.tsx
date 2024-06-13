@@ -24,6 +24,9 @@ import { showRightPanel } from '../../../redux/navigationSlice';
 import { TeamJoinPanel } from '../../rightPanel/TeamJoinPanel';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../helpers/stringTableHelpers';
 import { LobbyCurrencyHeader } from './LobbyCurrencyHeader';
+import { InviteFriendsButton } from './Play/InviteFriendsButton';
+import { setHasClickedInvite } from '../../../redux/teamJoinSlice';
+import { lobbyLocalStore } from '../../../localStorage/lobbyLocalStorage';
 
 const Container = 'Lobby-PartyHeader-Container';
 const PlayerPortraitContainer = 'Lobby-PartyHeader-PlayerPortraitContainer';
@@ -47,6 +50,7 @@ interface InjectedProps {
   defaultGroupCapacity: number;
   myCharacterId: string;
   stringTable: Dictionary<StringTableEntryDef>;
+  hasClickedInvite: boolean;
   dispatch?: Dispatch;
 }
 
@@ -70,9 +74,16 @@ class ALobbyPartyHeader extends React.Component<Props> {
     const displayName = this.props.displayName
       ? this.props.displayName
       : getStringTableValue(StringIDPlayDefaultDisplayName, this.props.stringTable);
+    // We already put our own portrait somewhere else, so we exclude ourselves from the member list.
+    const partyMembers: Member[] =
+      this.props.group?.members?.filter((member) => {
+        return member.id !== this.props.myCharacterId;
+      }) ?? [];
+    const includeInviteButton: boolean = !this.props.hasClickedInvite && partyMembers.length === 0;
     return (
       <div className={Container}>
-        {this.renderPartyPortraits()}
+        {this.renderPartyPortraits(partyMembers, includeInviteButton)}
+        {includeInviteButton && <InviteFriendsButton onClick={this.onInviteClicked.bind(this)} />}
         <TooltipSource className={PlayerPortraitContainer} tooltipParams={{ id: 'SelfPortrait', content: displayName }}>
           <img className={PlayerPortrait} src={thumbnailImage} />
         </TooltipSource>
@@ -81,19 +92,15 @@ class ALobbyPartyHeader extends React.Component<Props> {
     );
   }
 
-  private renderPartyPortraits(): React.ReactNode {
+  private renderPartyPortraits(partyMembers: Member[], includeInviteButton: boolean): React.ReactNode {
     const portraits: React.ReactNode[] = [];
-
-    // We already put our own portrait somewhere else, so we exclude ourselves from the member list.
-    const partyMembers: Member[] =
-      this.props.group?.members?.filter((member) => {
-        return member.id !== this.props.myCharacterId;
-      }) ?? [];
 
     const maxCapacity = this.props.group?.capacity ?? this.props.defaultGroupCapacity;
     const lastInvitationIndex = partyMembers.length + (this.props.group?.invitations?.length ?? 0);
 
-    for (let i = 1; i < maxCapacity; ++i) {
+    const maxShown = includeInviteButton ? 2 : maxCapacity;
+
+    for (let i = 1; i < maxShown; ++i) {
       let portraitURL: string = '';
       let displayName: string = '';
       if (!!this.props.group && i <= partyMembers.length) {
@@ -128,6 +135,8 @@ class ALobbyPartyHeader extends React.Component<Props> {
 
   private onInviteClicked(): void {
     this.props.dispatch(showRightPanel(<TeamJoinPanel />));
+    this.props.dispatch(setHasClickedInvite());
+    lobbyLocalStore.setHasClickedInvite();
   }
 
   private getCostume(costumeId: string) {
@@ -155,7 +164,7 @@ class ALobbyPartyHeader extends React.Component<Props> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { champions, championCostumes } = state.championInfo;
-  const { group } = state.teamJoin;
+  const { group, hasClickedInvite } = state.teamJoin;
   const { displayName } = state.user;
   const { perksByID } = state.store;
   const { defaultGroupCapacity } = state.teamJoin;
@@ -167,6 +176,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     champions,
     championCostumes,
     group,
+    hasClickedInvite,
     displayName,
     perksByID,
     profile: state.profile,

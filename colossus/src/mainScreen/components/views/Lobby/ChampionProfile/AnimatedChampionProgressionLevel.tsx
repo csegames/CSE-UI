@@ -63,8 +63,8 @@ interface InjectedProps {
 type Props = ReactProps & InjectedProps;
 
 class AAnimatedChampionProgressionLevel extends React.Component<Props, State> {
-  private animTimeout: NodeJS.Timeout = null;
-  private xpAnimTimer: NodeJS.Timer = null;
+  private animTimeout: number = null;
+  private xpAnimTimer: number = null;
   private isAnimationHandled: boolean = false;
 
   constructor(props: Props) {
@@ -117,7 +117,7 @@ class AAnimatedChampionProgressionLevel extends React.Component<Props, State> {
               const xpStep = Math.ceil((xpTo - xpFrom) / numSteps);
               const tickDuration = Math.floor(durationMS / numSteps);
               this.setState({ emblemXP: xpFrom, emblemMaxXP: xpMax });
-              this.xpAnimTimer = setInterval(() => {
+              this.xpAnimTimer = window.setInterval(() => {
                 if (this.state.emblemXP < xpTo) {
                   this.setState({ emblemXP: Math.min(this.state.emblemXP + xpStep, xpTo) });
                 } else {
@@ -178,7 +178,7 @@ class AAnimatedChampionProgressionLevel extends React.Component<Props, State> {
     if (this.animTimeout) {
       clearTimeout(this.animTimeout);
     }
-    this.animTimeout = setTimeout(() => {
+    this.animTimeout = window.setTimeout(() => {
       this.isAnimationHandled = true;
       this.setState(this.getNewState());
       this.animTimeout = null;

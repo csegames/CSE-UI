@@ -65,7 +65,7 @@ interface InjectedProps {
 type Props = ReactProps & InjectedProps;
 
 class ALobbyChampionStatus extends React.Component<Props, State> {
-  private animTimeout: NodeJS.Timeout = null;
+  private animTimeout: number = null;
   private isAnimating: boolean = false;
 
   constructor(props: Props) {
@@ -267,7 +267,7 @@ class ALobbyChampionStatus extends React.Component<Props, State> {
             clearTimeout(this.animTimeout);
           }
           this.isAnimating = true;
-          this.animTimeout = setTimeout(() => {
+          this.animTimeout = window.setTimeout(() => {
             this.setState(newState);
             this.animTimeout = null;
           }, 1000);

@@ -29,6 +29,7 @@ import { toastersSlice } from './toastersSlice';
 import { tooltipSlice } from './tooltipSlice';
 import { warbandSlice } from './warbandSlice';
 import { zonesSlice } from './zonesSlice';
+import { gameSettingsSlice } from './gameSettingsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -42,6 +43,7 @@ export const store = configureStore({
     equippedItems: equippedItemsSlice.reducer,
     errorNotices: errorNoticesSlice.reducer,
     gameDefs: gameDefsSlice.reducer,
+    gameSettings: gameSettingsSlice.reducer,
     hud: hudSlice.reducer,
     initialization: initializationSlice.reducer,
     inventory: inventorySlice.reducer,

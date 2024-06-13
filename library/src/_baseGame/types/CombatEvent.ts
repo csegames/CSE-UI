@@ -13,13 +13,6 @@ export interface CombatEvent {
 
   toName: string;
   toFaction: any;
-
-  damages?: {
-    sent: number;
-    received: number;
-    type: number;
-  }[];
-
   // damage against an abilities disruption health, high enough disruption damage causes and interrupt
   disruption?: {
     sent: number;
@@ -27,11 +20,6 @@ export interface CombatEvent {
     tracksInterrupted?: AbilityTrackFlags;
     source: string;
   };
-
-  heals?: {
-    sent: number;
-    received: number;
-  }[];
 
   // Array of statuses
   statuses?: {
@@ -43,9 +31,9 @@ export interface CombatEvent {
 
   // resources spent or gained
   resources?: {
-    sent: number;
-    received: number;
-    type: any;
+    amount: number;
+    resourceNumericID: number;
+    damageTypeNumericID: number;
   }[];
 
   // impulse = knock back or a force applied to your character

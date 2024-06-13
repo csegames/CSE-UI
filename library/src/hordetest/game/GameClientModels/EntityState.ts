@@ -6,7 +6,6 @@
 
 import { initUpdatable, Updatable, executeUpdateCallbacks } from '../../../_baseGame/GameClientModels/Updatable';
 import { ArrayMap } from '../../../_baseGame/types/ObjectMap';
-import { CurrentMax } from '../../graphql/schema';
 import { ScenarioRoundState, Vec3f } from '../../webAPI/definitions';
 import { cloneDeep } from '../../../_baseGame/utils/objectUtils';
 import { CharacterKind } from '../types/CharacterKind';
@@ -19,6 +18,7 @@ import { ObjectiveUIVisibility } from '../../../_baseGame/types/Objective';
 import { GameInterface } from '../GameInterface';
 import { LifeState } from '../types/LifeState';
 import { EntityResourceIDs } from '../types/EntityResourceIDs';
+import { CurrentMax } from '../../../_baseGame/types/CurrentMax';
 
 // This should map to UI::ObjectiveSnapshot
 export interface ObjectiveStateModel {
@@ -36,7 +36,6 @@ export interface BaseEntityStateModel {
   faction: number;
   name: string;
   isAlive: boolean;
-  position: Vec3f;
   statuses: ArrayMap<Status>;
   resources: ArrayMap<EntityResource>;
   objective: ObjectiveStateModel | null;
@@ -85,6 +84,19 @@ export interface PlayerEntityStateModel extends BaseEntityStateModel {
 
 export type UpdatablePlayerEntityStateModel = PlayerEntityStateModel & Updatable;
 
+export interface EntityPositionMapModel {
+  [entityID: string]: Vec3f;
+}
+
+export interface WorldUIPositionModel {
+  worldSpaceDistanceToPlayer: number;
+  relativeScreenSpaceDistanceToCrosshair: number;
+}
+
+export interface WorldUIPositionMapModel {
+  [id: number]: WorldUIPositionModel;
+}
+
 function defaultBaseEntityStateModel(): BaseEntityStateModel {
   return {
     faction: 0,
@@ -92,7 +104,6 @@ function defaultBaseEntityStateModel(): BaseEntityStateModel {
     entityID: '',
     name: 'unknown',
     isAlive: false,
-    position: { x: NaN, y: NaN, z: NaN },
     statuses: {},
     resources: {},
     objective: null

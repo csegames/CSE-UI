@@ -13,6 +13,7 @@ import { game } from '@csegames/library/dist/_baseGame';
 import { ChatRoomData, readRoom, sendToRoom } from '../../redux/chatSlice';
 import { chatGlobalRoomID } from '../../dataSources/chatService';
 import { ChatMessage } from './ChatMessage';
+import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 
 const Root = 'HUD-Chat-Root';
 const Navigation = 'HUD-Chat-Navigation';
@@ -44,8 +45,9 @@ interface State {
 }
 
 class AChat extends React.Component<Props, State> {
-  messagesRef: React.RefObject<HTMLDivElement> = React.createRef();
-  inputRef: React.RefObject<HTMLInputElement> = React.createRef();
+  private messagesRef: React.RefObject<HTMLDivElement> = React.createRef();
+  private inputRef: React.RefObject<HTMLInputElement> = React.createRef();
+  private chatHandle: ListenerHandle;
 
   constructor(props: Props) {
     super(props);
@@ -104,7 +106,13 @@ class AChat extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
-    game.onBeginChat(this.focusInput.bind(this));
+    this.chatHandle = game.onBeginChat(this.focusInput.bind(this));
+  }
+
+  componentWillUnmount(): void {
+    if (this.chatHandle) {
+      this.chatHandle.close();
+    }
   }
 
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>): void {

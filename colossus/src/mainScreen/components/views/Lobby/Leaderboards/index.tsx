@@ -22,7 +22,7 @@ export function Leaderboards(props: Props) {
         <List />
       </div>
       <div className={ImageContainer}>
-        <img className={Image} src="images/hud/champions/amazon.png" />
+        <img className={Image} src='images/hud/champions/amazon.png' />
       </div>
     </div>
   );

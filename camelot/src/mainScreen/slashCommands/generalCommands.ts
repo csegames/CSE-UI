@@ -24,10 +24,6 @@ export function registerGeneralSlashCommands(registry: SlashCommandRegistry<Root
     registry.add('togglecamera', 'toggles the camera mode', (state: RootState, argv: string[]) => {
       // COHERENT TODO should this be something else?
       game.triggerKeyAction(state.keyActions.PlayerCameraFreeToggle);
-    }),
-
-    registry.add('loc', 'tells you your current location', (state: RootState, argv: string[]) => {
-      consolePrint(`${state.player.position.x}, ${state.player.position.y}, ${state.player.position.z}`);
     })
   ];
 }

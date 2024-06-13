@@ -8,28 +8,26 @@ import {
   CharacterStatField,
   ClassDefGQL,
   EquippedItem,
+  Euler3f,
+  GearSlot,
   Item,
   ItemActionUIReaction,
   ItemResourceGQL,
   ItemType,
   RaceDefGQL,
-  StatGQL
+  StatGQL,
+  Vec3f
 } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import {
-  ItemAPI,
   ItemPermissions,
-  MoveItemRequest,
-  MoveItemRequestLocation,
   MoveItemRequestLocationType,
-  Faction,
-  ItemActionParameters
+  Faction
 } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { ItemResourceID, ItemStatID } from './itemData';
 import { InventoryStackSplit, moveInventoryItems, setShouldInventoryRefresh } from '../../redux/inventorySlice';
 import { moveEquippedItems, setShouldEquippedItemsRefresh } from '../../redux/equippedItemsSlice';
 import { Dispatch } from '@reduxjs/toolkit';
 import { addErrorNotice } from '../../redux/errorNoticesSlice';
-import { webConf } from '../../dataSources/networkConfiguration';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { RequestResult } from '@csegames/library/dist/_baseGame/types/Request';
 import { hideContextMenu } from '../../redux/contextMenuSlice';
@@ -37,10 +35,31 @@ import { addMenuWidgetExiting } from '../../redux/hudSlice';
 import { WIDGET_NAME_INVENTORY } from '../inventory/Inventory';
 import { game } from '@csegames/library/dist/_baseGame';
 import { UIReaction } from '@csegames/library/dist/camelotunchained/game/types/ItemActions';
+import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 
 enum EquipmentRequirementOperator {
   Equals = 'Equals',
   NotEquals = 'NotEquals'
+}
+
+export interface MoveItemRequest {
+  MoveItemID: string;
+  UnitCount: number;
+  EntityIDFrom: string;
+  CharacterIDFrom: string;
+  BoneAliasFrom: number;
+  LocationTo: MoveItemRequestLocationType;
+  EntityIDTo: string;
+  CharacterIDTo: string;
+  PositionTo: number;
+  ContainerIDTo: string;
+  DrawerIDTo: string;
+  GearSlotIDTo: string;
+  VoxSlotTo: string;
+  BuildingIDTo: string;
+  WorldPositionTo: Vec3f;
+  RotationTo: Euler3f;
+  BoneAliasTo: number;
 }
 
 interface EquipRequirement {
@@ -93,7 +112,7 @@ export const getItemStatCompareValue = (
     const gearSlotID = getItemGearSlotID(item);
     if (gearSlotID) {
       const equippedItem = equippedItems.find((equippedItem) =>
-        equippedItem.item.location.equipped.gearSlots.find((gearSlot) => gearSlot.id === gearSlotID)
+        equippedItem.item.location.equipped.gearSlots.includes(gearSlotID)
       );
       const statValue = equippedItem?.item?.statList?.find(({ statID }) => statID === itemStatID)?.value ?? 0;
       return getItemStatValue(item, itemStatID) - statValue;
@@ -113,7 +132,7 @@ export const getItemGearSlotID = (item: Item): string | null => {
     if (gearSlotSet && gearSlotSet.gearSlots) {
       for (const gearSlot of gearSlotSet.gearSlots) {
         if (gearSlot) {
-          return gearSlot.id;
+          return gearSlot;
         }
       }
     }
@@ -131,72 +150,6 @@ export const isItemDroppable = (item: Item): number => {
 export const getItemUnitCount = (item: Item): number => {
   return getItemStatValue(item, ItemStatID.UnitCount) || 1;
 };
-
-export const getItemLocation = (item: Item): MoveItemRequestLocation => {
-  return {
-    BoneAlias: undefined,
-    BuildingID: undefined,
-    CharacterID: item.location.inventory?.characterID ?? item.location.equipped?.characterID,
-    ContainerID: '0000000000000000000000',
-    DrawerID: undefined,
-    EntityID: '0000000000000000000000',
-    GearSlotIDs: item.location.equipped?.gearSlots?.map((gearSlot) => gearSlot.id) ?? [],
-    Location: item.location.equipped ? MoveItemRequestLocationType.Equipment : MoveItemRequestLocationType.Inventory,
-    Position: item.location.inventory?.position ?? -1,
-    Rotation: undefined,
-    VoxSlot: 'Invalid',
-    WorldPosition: undefined
-  };
-};
-
-export const getInventoryIndexLocation = (inventoryIndex: number, characterID: string): MoveItemRequestLocation => {
-  return {
-    BoneAlias: undefined,
-    BuildingID: undefined,
-    CharacterID: characterID,
-    ContainerID: '0000000000000000000000',
-    DrawerID: undefined,
-    EntityID: '0000000000000000000000',
-    GearSlotIDs: [],
-    Location: MoveItemRequestLocationType.Inventory,
-    Position: inventoryIndex,
-    Rotation: undefined,
-    VoxSlot: 'Invalid',
-    WorldPosition: undefined
-  };
-};
-
-export const getGearSlotIDLocation = (gearSlotID: string, characterID: string): MoveItemRequestLocation => {
-  return {
-    BoneAlias: undefined,
-    BuildingID: undefined,
-    CharacterID: characterID,
-    ContainerID: '0000000000000000000000',
-    DrawerID: undefined,
-    EntityID: '0000000000000000000000',
-    GearSlotIDs: [gearSlotID],
-    Location: MoveItemRequestLocationType.Equipment,
-    Position: -1,
-    Rotation: undefined,
-    VoxSlot: 'Invalid',
-    WorldPosition: undefined
-  };
-};
-
-export const getGroundLocation = (): MoveItemRequestLocation => ({
-  BoneAlias: undefined,
-  BuildingID: undefined,
-  CharacterID: undefined,
-  ContainerID: '0000000000000000000000',
-  DrawerID: undefined,
-  EntityID: '0000000000000000000000',
-  GearSlotIDs: [],
-  Location: MoveItemRequestLocationType.Ground,
-  Position: -1,
-  Rotation: undefined,
-  VoxSlot: 'Invalid',
-  WorldPosition: undefined
-});
 
 export const canItemsStack = (itemA: Item, itemB: Item): boolean => {
   if (itemA.staticDefinition.id !== itemB.staticDefinition.id) {
@@ -258,15 +211,15 @@ export const getMoveErrors = (
   for (const move of moves) {
     const item = findItem(move.MoveItemID, inventoryItems, equippedItems);
 
+    // find the item we'd be combining this moved item with (if any)
     let targetItem: Item | null = null;
-    if (move.To.Location === MoveItemRequestLocationType.Inventory) {
+    if (move.LocationTo === MoveItemRequestLocationType.Inventory) {
       targetItem = inventoryItems.find(
-        (inventoryItem) => inventoryItem.location.inventory.position === move.To.Position
+        (inventoryItem) => inventoryItem.location.inventory.position === move.PositionTo
       );
-    }
-    if (move.To.Location === MoveItemRequestLocationType.Equipment) {
+    } else if (move.LocationTo === MoveItemRequestLocationType.Equipment) {
       targetItem = equippedItems.find((equippedItem) =>
-        equippedItem.item.location.equipped.gearSlots.some((gearSlot) => move.To.GearSlotIDs.includes(gearSlot.id))
+        equippedItem.item.location.equipped.gearSlots.includes(move.GearSlotIDTo)
       )?.item;
     }
 
@@ -283,14 +236,14 @@ export const getMoveErrors = (
       errors.push(`Differing ${item.staticDefinition.name} stacks cannot be combined.`);
     }
 
-    if (move.To.Location === MoveItemRequestLocationType.Equipment) {
+    if (move.LocationTo === MoveItemRequestLocationType.Equipment) {
       // Equipping to wrong equip slot
       if (
         item.staticDefinition.gearSlotSets.every((gearSlotSet) =>
-          gearSlotSet.gearSlots.every((gearSlot) => gearSlot.id !== move.To.GearSlotIDs[0])
+          gearSlotSet.gearSlots.every((gearSlot) => gearSlot !== move.GearSlotIDTo)
         )
       ) {
-        errors.push(`${item.staticDefinition.name} cannot be equipped to ${move.To.GearSlotIDs[0]}.`);
+        errors.push(`${item.staticDefinition.name} cannot be equipped to ${move.GearSlotIDTo}.`);
       }
       // Equipping with incompatible faction, race, class or race tags
       const requirements: EquipRequirement[] = JSON.parse(item.staticDefinition.equipRequirements);
@@ -353,6 +306,7 @@ export const attemptItemMoves = (
   classGQL: ClassDefGQL,
   raceTags: string[],
   myStats: Dictionary<CharacterStatField>,
+  gearSlots: Dictionary<GearSlot>,
   inventoryPendingRefreshes: number,
   equippedItemsPendingRefreshes: number,
   stackSplit: InventoryStackSplit | null,
@@ -362,15 +316,9 @@ export const attemptItemMoves = (
   if (movePromise || inventoryPendingRefreshes > 0 || equippedItemsPendingRefreshes > 0) {
     return;
   }
-  // Filter out same-location moves
-  const filteredMoves = moves.filter(
-    (move) => move.From.Location !== move.To.Location || move.From.Position !== move.To.Position
-  );
-  if (filteredMoves.length === 0) {
-    return;
-  }
+
   const movesErrors = getMoveErrors(
-    filteredMoves,
+    moves,
     inventoryItems,
     equippedItems,
     factionID,
@@ -380,36 +328,46 @@ export const attemptItemMoves = (
     myStats,
     stackSplit
   );
+
   if (movesErrors.length > 0) {
     for (const movesError of movesErrors) {
       dispatch(addErrorNotice(movesError));
     }
   } else {
-    const payload = filteredMoves.map((move): [MoveItemRequest, Item] => {
-      switch (move.From.Location) {
-        case MoveItemRequestLocationType.Inventory:
-          return [move, inventoryItems.find((item) => item.id === move.MoveItemID)];
-        case MoveItemRequestLocationType.Equipment:
-          return [
-            move,
-            equippedItems.find((equippedItem) =>
-              equippedItem.item.location.equipped.gearSlots.some((gearSlot) =>
-                move.From.GearSlotIDs.includes(gearSlot.id)
-              )
-            ).item
-          ];
-      }
+    const payload = moves.map((move): [MoveItemRequest, Item] => {
+      const item =
+        inventoryItems.find((item) => item.id === move.MoveItemID) ??
+        equippedItems.find((item) => item.item.id == move.MoveItemID)?.item;
+      return [move, item];
     });
+
     dispatch(moveInventoryItems(payload));
     dispatch(moveEquippedItems(payload));
-    movePromise =
-      filteredMoves.length === 1
-        ? ItemAPI.MoveItems(webConf, filteredMoves[0])
-        : ItemAPI.BatchMoveItems(webConf, filteredMoves);
-    movePromise.finally((): void => {
-      movePromise = null;
-      refreshItems(dispatch);
-    });
+
+    for (var i = 0; i < moves.length; ++i) {
+      const move = moves[i];
+      clientAPI.moveItem(
+        move.MoveItemID,
+        move.UnitCount,
+        move.EntityIDFrom,
+        move.CharacterIDFrom,
+        move.BoneAliasFrom,
+        move.LocationTo,
+        move.EntityIDTo,
+        move.CharacterIDTo,
+        move.PositionTo,
+        move.ContainerIDTo,
+        move.DrawerIDTo,
+        gearSlots[move.GearSlotIDTo]?.numericID ?? 0,
+        move.VoxSlotTo,
+        move.BuildingIDTo,
+        move.WorldPositionTo,
+        move.RotationTo,
+        move.BoneAliasTo
+      );
+    }
+
+    refreshItems(dispatch);
   }
 };
 
@@ -419,7 +377,9 @@ export const performItemAction = (
   actionID: string,
   uiReaction: ItemActionUIReaction | UIReaction,
   entityID: string,
-  actionParameters: ItemActionParameters | null,
+  worldPosition: Vec3f,
+  rotation: Euler3f,
+  boneAlias: number,
   dispatch: Dispatch
 ): void => {
   dispatch(hideContextMenu());
@@ -437,24 +397,7 @@ export const performItemAction = (
       }
     };
     if (actionID) {
-      ItemAPI.PerformItemAction(webConf, itemID, entityID, actionID, actionParameters)
-        .then((res): void => {
-          if (!res.ok) {
-            const data = JSON.parse(res.data);
-            if (data.FieldCodes && data.FieldCodes.length > 0) {
-              dispatch(addErrorNotice(data.FieldCodes[0].Message));
-            } else {
-              dispatch(addErrorNotice('An error occured.'));
-            }
-          }
-          handleUIReaction();
-        })
-        .catch((): void => {
-          dispatch(addErrorNotice('An error occured.'));
-        })
-        .finally((): void => {
-          refreshItems(dispatch);
-        });
+      clientAPI.performItemAction(itemID, entityID, actionID, worldPosition, rotation, boneAlias);
     } else {
       handleUIReaction();
     }
@@ -471,6 +414,7 @@ export const moveHiddenItems = (
   inventoryItems: Item[],
   equippedItems: EquippedItem[],
   myStats: Dictionary<CharacterStatField>,
+  gearSlots: Dictionary<GearSlot>,
   stackSplit: InventoryStackSplit,
   inventoryPendingRefreshes: number,
   equippedItemsPendingRefreshes: number,
@@ -485,17 +429,34 @@ export const moveHiddenItems = (
     }
   }
 
+  if (hiddenItems.length === 0) {
+    return;
+  }
+
   for (let i: number = 0; hiddenItems.length > 0; i++) {
     if (items.every((item) => item.location.inventory.position !== i)) {
-      const startLocation: MoveItemRequestLocation = getItemLocation(hiddenItems[0]);
-      const targetLocation: MoveItemRequestLocation = getInventoryIndexLocation(i, startLocation.CharacterID);
+      const item = hiddenItems[0];
+      const characterID = item.location.inventory.characterID;
       moves.push({
-        MoveItemID: hiddenItems[0].id,
-        StackHash: hiddenItems[0].stackHash,
+        MoveItemID: item.id,
         UnitCount: -1,
-        From: startLocation,
-        To: targetLocation
+        EntityIDFrom: '0000000000000000000000',
+        CharacterIDFrom: characterID,
+        BoneAliasFrom: 0,
+        LocationTo: MoveItemRequestLocationType.Inventory,
+        EntityIDTo: '0000000000000000000000',
+        CharacterIDTo: characterID,
+        PositionTo: i,
+        ContainerIDTo: '0000000000000000000000',
+        DrawerIDTo: null,
+        GearSlotIDTo: null,
+        VoxSlotTo: null,
+        BuildingIDTo: '0000000000000000000000',
+        WorldPositionTo: null,
+        RotationTo: null,
+        BoneAliasTo: 0
       });
+
       hiddenItems.shift();
     }
   }
@@ -512,6 +473,7 @@ export const moveHiddenItems = (
     classDef,
     raceDef?.raceTags ?? [],
     myStats,
+    gearSlots,
     inventoryPendingRefreshes,
     equippedItemsPendingRefreshes,
     stackSplit,

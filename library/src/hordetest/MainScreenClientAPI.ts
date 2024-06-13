@@ -32,14 +32,16 @@ import {
 import { ViewFunctions, ViewEventMocks, impl as vf } from '../_baseGame/clientFunctions/ViewFunctions';
 import { BaseEntityStateModel } from './game/GameClientModels/EntityState';
 import {
-  ClientPerformanceFunctions,
-  ClientPerformanceMocks,
+  WarningIconsFunctions,
+  WarningIconsMocks,
   impl as cf
-} from '../_baseGame/clientFunctions/PerformanceFunctions';
+} from '../_baseGame/clientFunctions/WarningIconsFunctions';
 import { MatchFunctions, MatchMocks, impl as mf } from './clientFunctions/MatchFunctions';
 import { VersionFunctions, impl as ver } from '../_baseGame/clientFunctions/VersionFunctions';
 import { VoiceChatFunctions, VoiceChatMocks, impl as vc } from '../_baseGame/clientFunctions/VoiceChatFunctions';
 import { NetworkFunctions, NetworkEventMocks, impl as nf } from '../_baseGame/clientFunctions/NetworkFunctions';
+import { AudioFunctions, AudioMocks, impl as audf } from '../_baseGame/clientFunctions/AudioFunctions';
+import { SystemFunctions, SystemMocks, impl as sysf } from '../_baseGame/clientFunctions/SystemFunctions';
 
 const abilityUnsupported = () => console.warn('Ability requests are not currently supported in Final Stand: Ragnarok');
 const createUnsupported = () => {
@@ -50,8 +52,8 @@ const createUnsupported = () => {
 const ef = create<BaseEntityStateModel>();
 
 export type MainScreenClientAPI = AbilityFunctions &
+  AudioFunctions &
   AnnouncementFunctions &
-  ClientPerformanceFunctions &
   DebugSessionFunctions &
   DefFunctions &
   EntityFunctions<BaseEntityStateModel> &
@@ -61,13 +63,15 @@ export type MainScreenClientAPI = AbilityFunctions &
   NetworkFunctions &
   ObjectiveDetailFunctions &
   SelfPlayerFunctions &
+  SystemFunctions &
   VersionFunctions &
   ViewFunctions &
-  VoiceChatFunctions;
+  VoiceChatFunctions &
+  WarningIconsFunctions;
 
 export type MainScreenClientMocks = AbilityMocks &
+  AudioMocks &
   AnnouncementMocks &
-  ClientPerformanceMocks &
   DebugSessionMocks &
   DefMocks &
   EntityMocks<BaseEntityStateModel> &
@@ -75,8 +79,10 @@ export type MainScreenClientMocks = AbilityMocks &
   MatchMocks &
   NetworkEventMocks &
   ObjectiveDetailMocks &
+  SystemMocks &
   ViewEventMocks &
-  VoiceChatMocks;
+  VoiceChatMocks &
+  WarningIconsMocks;
 
 export const clientAPI: MainScreenClientAPI = {
   // Ability
@@ -103,10 +109,12 @@ export const clientAPI: MainScreenClientAPI = {
   executeAbility: abf.executeAbility.bind(abf),
   moveAbility: abilityUnsupported,
   setAbility: abilityUnsupported,
+  // Audio
+  playGameSound: audf.playGameSound.bind(audf),
+  playVolumeFeedback: audf.playVolumeFeedback.bind(audf),
+  setUIRaceState: audf.setUIRaceState.bind(audf),
   // Announcement
   bindAnnouncementListener: af.bindAnnouncementListener.bind(af),
-  // ClientPerformance
-  bindClientPerformanceListener: cf.bindClientPerformanceListener.bind(cf),
   // DebugSession
   bindDebugSessionConfigListener: dsf.bindDebugSessionConfigListener.bind(dsf),
   // Defs
@@ -118,6 +126,7 @@ export const clientAPI: MainScreenClientAPI = {
   bindEntityContextListener: ef.bindEntityContextListener.bind(ef),
   bindEntityRemovedListener: ef.bindEntityRemovedListener.bind(ef),
   bindEntityUpdatedListener: ef.bindEntityUpdatedListener.bind(ef),
+  bindEntityPositionMapUpdatedListener: ef.bindEntityPositionMapUpdatedListener.bind(ef),
   bindEntityShowItemActionsListener: ef.bindEntityShowItemActionsListener.bind(ef),
   // EntityDirection
   bindEntityDirectionListener: pdf.bindEntityDirectionListener.bind(pdf),
@@ -133,6 +142,8 @@ export const clientAPI: MainScreenClientAPI = {
   bindObjectiveDetailListener: odf.bindObjectiveDetailListener.bind(odf),
   // SelfPlayer
   bindSelfPlayerStateListener: spf.bindSelfPlayerStateListener.bind(spf),
+  // System
+  openBrowser: sysf.openBrowser.bind(sysf),
   // Version
   getBuildNumber: ver.getBuildNumber.bind(ver),
   // View
@@ -141,7 +152,10 @@ export const clientAPI: MainScreenClientAPI = {
   // VoiceChat
   bindVoiceChatMemberUpdatedListener: vc.bindVoiceChatMemberUpdatedListener.bind(vc),
   bindVoiceChatMemberRemovedListener: vc.bindVoiceChatMemberRemovedListener.bind(vc),
-  setVoiceChatMemberMuted: vc.setVoiceChatMemberMuted.bind(vc)
+  setVoiceChatMemberMuted: vc.setVoiceChatMemberMuted.bind(vc),
+  setVoiceChannel: vc.setVoiceChannel.bind(vc),
+  // WarningIcons
+  bindWarningIconsListener: cf.bindWarningIconsListener.bind(cf)
 };
 
 export const mockEvents: MainScreenClientMocks = {
@@ -153,8 +167,6 @@ export const mockEvents: MainScreenClientMocks = {
   triggerButtonLayoutUpdated: abf.triggerButtonLayoutUpdated.bind(abf),
   // Announcement
   triggerAnnouncement: af.triggerAnnouncement.bind(af),
-  // ClientPerformance
-  triggerClientPerformanceStats: cf.triggerClientPerformanceStats.bind(cf),
   // DebugSession
   triggerDebugSessionConfigUpdated: dsf.triggerDebugSessionConfigUpdated.bind(dsf),
   // Defs
@@ -166,6 +178,7 @@ export const mockEvents: MainScreenClientMocks = {
   triggerEntityContext: ef.triggerEntityContext.bind(ef),
   triggerEntityRemoved: ef.triggerEntityRemoved.bind(ef),
   triggerEntityUpdated: ef.triggerEntityUpdated.bind(ef),
+  triggerEntityPositionMapUpdated: ef.triggerEntityPositionMapUpdated.bind(ef),
   // EntityDirection
   triggerEntityDirections: pdf.triggerEntityDirections.bind(pdf),
   // MatchDetails
@@ -178,5 +191,7 @@ export const mockEvents: MainScreenClientMocks = {
   triggerNavigate: vf.triggerNavigate.bind(vf),
   // VoiceChat
   triggerVoiceChatMemberUpdated: vc.triggerVoiceChatMemberUpdated.bind(vc),
-  triggerVoiceChatMemberRemoved: vc.triggerVoiceChatMemberRemoved.bind(vc)
+  triggerVoiceChatMemberRemoved: vc.triggerVoiceChatMemberRemoved.bind(vc),
+  // WarningIcons
+  triggerWarningIcons: cf.triggerWarningIcons.bind(cf)
 };

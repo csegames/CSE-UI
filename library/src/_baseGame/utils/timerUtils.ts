@@ -39,5 +39,5 @@ function timerTick(
   }
 
   // Set state to how much time is left (we can math round here or something so that it's not an ugly number)
-  setTimeout(() => timerTick(timerRef, startTime, intervalInMs, timerDurationInMs, onUpdate), intervalInMs);
+  window.setTimeout(() => timerTick(timerRef, startTime, intervalInMs, timerDurationInMs, onUpdate), intervalInMs);
 }

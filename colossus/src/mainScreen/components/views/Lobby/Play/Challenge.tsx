@@ -25,7 +25,7 @@ export function Challenge(props: Props) {
     <div className={`${Container} ${props.styles || ''}`}>
       <div className={Text}>{props.challengeText}</div>
       <div className={ResourceBarContainer}>
-        <ResourceBar type="blue" hideText current={props.progress.current} max={props.progress.max} />
+        <ResourceBar type='blue' hideText current={props.progress.current} max={props.progress.max} />
       </div>
       <div className={Text}>
         <span className={SpecialText}>{props.progress.current}</span> / {props.progress.max}

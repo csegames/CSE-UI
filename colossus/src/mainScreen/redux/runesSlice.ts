@@ -95,5 +95,4 @@ export const runesSlice = createSlice({
   }
 });
 
-export const { updateRuneModDisplay, updateRunes, updateRuneModLevels, hideRuneAlert } =
-  runesSlice.actions;
+export const { updateRuneModDisplay, updateRunes, updateRuneModLevels, hideRuneAlert } = runesSlice.actions;

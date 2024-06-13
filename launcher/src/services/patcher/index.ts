@@ -17,7 +17,7 @@ export enum PatchChannelMode {
 }
 
 export function permissionsString(p: PatchPermissions) {
-  // Check CSE first
+  // Check UCE first
   if ((p & PatchPermissions.Development) !== 0) return 'Developer';
 
   // Then check pre-release access
@@ -163,15 +163,15 @@ export class PatcherAPI {
       case ServerType.CHANNEL:
       case ServerType.CUBE:
       case ServerType.CUGAME:
-        return this._api.permissions['CamelotUnchained'];
+        return this._api.permissions['CamelotUnchained'] ?? PatchPermissions.Public;
 
       case ServerType.COLOSSUS:
-        return this._api.permissions['Colossus'];
+        return this._api.permissions['Colossus'] ?? PatchPermissions.Public;
 
       case ServerType.UNKNOWN:
       case ServerType.HIDDEN:
       default:
-        return 0;
+        return PatchPermissions.Public;
     }
   }
   public hasPermissions(): boolean {

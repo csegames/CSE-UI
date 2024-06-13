@@ -12,6 +12,7 @@ import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 
+const InviteFriendsButtonClass = 'Lobby-PartyHeader-InviteFriendsButton';
 const ActionButtonClass = 'StartScreen-Play-ActionButton';
 
 const StringIDGroupsDoNotDisturb = 'GroupsDoNotDisturb';
@@ -46,7 +47,7 @@ class AnInviteFriendsButton extends React.Component<Props, State> {
     return (
       <Button
         type='blue'
-        styles={ActionButtonClass}
+        styles={`${InviteFriendsButtonClass} ${ActionButtonClass}`}
         disabled={this.props.doNotDisturb || this.props.isGroupFull}
         text={this.getLabelText()}
         onClick={this.onClick.bind(this)}

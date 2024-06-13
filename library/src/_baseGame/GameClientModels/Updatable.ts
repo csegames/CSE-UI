@@ -59,7 +59,7 @@ export function initUpdatable(context: Updatable) {
   };
   context.onReady = (game: BaseGameInterface) => (cb: Callback) => {
     // is already ready, call this callback on the next frame
-    setTimeout(cb(context), 0);
+    window.setTimeout(cb(context), 0);
     return {
       topic: context.updateEventName,
       id: -1,

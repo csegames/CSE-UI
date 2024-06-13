@@ -33,6 +33,7 @@ import { BooleanInput } from './input/BooleanInput';
 import { keybindsLocalStore } from '../localStorage/KeybindsLocalStorage';
 import { refetchKeybinds } from '../dataSources/keybindsService';
 import { genID } from '@csegames/library/dist/_baseGame/utils/idGen';
+import { clearOptionChanges } from '../redux/gameSettingsSlice';
 
 const Root = 'HUD-Settings-Root';
 const Search = 'HUD-Settings-Search';
@@ -43,6 +44,7 @@ interface ReactProps {}
 
 interface InjectedProps {
   keybinds: Dictionary<Keybind>;
+  advanceSettingsOriginalValues: Dictionary<GameOption>;
   dispatch?: Dispatch;
 }
 
@@ -138,6 +140,7 @@ class ASettings extends React.Component<Props, State> {
               category={OptionCategory.Audio}
               getValue={this.getOptionValue.bind(this)}
               setValue={this.setOptionValue.bind(this)}
+              isAdvance
             />
           </>
         ),
@@ -249,6 +252,18 @@ class ASettings extends React.Component<Props, State> {
     );
   }
 
+  componentWillUnmount(): void {
+    const options = Object.values(this.props.advanceSettingsOriginalValues);
+    if (options.length > 0) {
+      game.setOptionsAsync(options).then((result) => {
+        if (!result.success) {
+          console.warn('SetOptionsAsync failed to apply all requested changes.', result);
+        }
+      });
+    }
+    this.props.dispatch(clearOptionChanges());
+  }
+
   closeSelf(): void {
     this.setState({ optionValues: new Map() });
     this.props.dispatch(addMenuWidgetExiting(WIDGET_NAME_SETTINGS));
@@ -315,6 +330,7 @@ class ASettings extends React.Component<Props, State> {
     setOptionsPromise.finally(() => {
       this.setState({ setOptionsPromise: null });
     });
+    this.props.dispatch(clearOptionChanges());
   }
 
   saveAs(): void {
@@ -468,8 +484,10 @@ class ASettings extends React.Component<Props, State> {
 }
 
 const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
+  const { advanceSettingsOriginalValues } = state.gameSettings;
   return {
     ...ownProps,
+    advanceSettingsOriginalValues,
     keybinds: state.keybinds
   };
 };

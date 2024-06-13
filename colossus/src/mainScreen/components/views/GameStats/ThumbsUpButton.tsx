@@ -10,11 +10,8 @@ import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { cloneDeep } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 import { Dispatch } from '@reduxjs/toolkit';
-import { setThumbsUp } from '../../../redux/gameStatsSlice';
-import { ScenarioAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { webConf } from '../../../dataSources/networkConfiguration';
+import { GameStatsRequestState, ThumbsUp, revokeThumbsUp, setThumbsUp } from '../../../redux/gameStatsSlice';
 import { OvermindSummaryGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 
 const ANIMATION_DURATION = 0.2;
@@ -32,8 +29,9 @@ interface ReactProps {
 
 interface InjectedProps {
   selfAccountID: string;
-  thumbsUp: { [accountID: string]: string[] };
+  thumbsUp: ThumbsUp;
   overmindSummary: OvermindSummaryGQL;
+  requests: GameStatsRequestState;
   dispatch?: Dispatch;
 }
 
@@ -54,24 +52,21 @@ export class AThumbsUpButton extends React.Component<Props, State> {
   }
 
   public render() {
-    const { thumbsUp, accountID } = this.props;
-    const isSelf = this.props.accountID == this.props.selfAccountID;
-    const thisThumbsUp = thumbsUp?.[accountID] || [];
-    const selfHasVoted = this.selfHasVoted();
-    const selfHasVotedFor = thisThumbsUp.includes(this.props.selfAccountID);
-    const thumbsUpAmount = thisThumbsUp.length;
+    const { accountID, onSameTeam, selfAccountID } = this.props;
+    const isSelf = accountID === selfAccountID;
+    const { numVotes, hasSelfVoted, hasSelfVotedForThis } = this.calcThumbsData();
     const animationClass = this.state.shouldPlayAnimation ? 'animation' : '';
 
-    if (selfHasVotedFor) {
+    if (hasSelfVotedForThis) {
       return (
         <div
           className={VotedFor}
           onClick={this.onRevokeClick.bind(this)}
-          onMouseEnter={this.onMouseOverSelfVote}
-          onMouseLeave={this.onMouseLeaveSelfVote}
+          onMouseEnter={this.onMouseOverSelfVote.bind(this)}
+          onMouseLeave={this.onMouseLeaveSelfVote.bind(this)}
         >
           <div className={`${ButtonContent} ${animationClass}`}>
-            <span>{thumbsUpAmount}</span>
+            <span>{numVotes}</span>
             {this.state.mouseOverSelfVote ? (
               <span className={`${Icon} icon-close`} />
             ) : (
@@ -83,15 +78,16 @@ export class AThumbsUpButton extends React.Component<Props, State> {
     }
 
     if (!isSelf) {
+      const disable = hasSelfVoted || !onSameTeam;
       return (
         <Button
-          type={selfHasVoted || !this.props.onSameTeam ? 'blue-outline' : 'blue'}
-          disabled={selfHasVoted || !this.props.onSameTeam}
-          styles={`${ThumbsupButton} ${isSelf ? 'self' : ''}`}
+          type={disable ? 'blue-outline' : 'blue'}
+          disabled={disable}
+          styles={ThumbsupButton}
           onClick={this.onThumbsUpClick.bind(this)}
           text={
             <div className={`${ButtonContent} ${animationClass}`}>
-              <span>{thumbsUpAmount}</span>
+              <span>{numVotes}</span>
               <span className={`${Icon} icon-thumbsup`} />
             </div>
           }
@@ -102,7 +98,7 @@ export class AThumbsUpButton extends React.Component<Props, State> {
     return (
       <div className={ThumbsupSelf}>
         <div className={`${ButtonContent} ${animationClass}`}>
-          <span>{thumbsUpAmount}</span>
+          <span>{numVotes}</span>
           <span className={`${Icon} icon-thumbsup`} />
         </div>
       </div>
@@ -118,74 +114,84 @@ export class AThumbsUpButton extends React.Component<Props, State> {
     }
   }
 
-  private playAnimation = () => {
+  private playAnimation() {
     this.setState({ shouldPlayAnimation: true });
 
     window.setTimeout(() => {
       this.setState({ shouldPlayAnimation: false });
     }, ANIMATION_DURATION * 1000);
-  };
+  }
 
-  private selfHasVoted = () => {
-    let selfHasVoted = false;
-    Object.values(this.props.thumbsUp ?? []).forEach((charIDList) => {
-      if (charIDList.includes(this.props.selfAccountID)) {
-        selfHasVoted = true;
+  private calcThumbsData(): { numVotes: number; hasSelfVoted: boolean; hasSelfVotedForThis: boolean } {
+    const { accountID, selfAccountID, thumbsUp, requests } = this.props;
+    const thumbsForThis = thumbsUp?.[accountID];
+    const requested = requests.queued?.setThumbsUp ?? requests.active?.setThumbsUp;
+    const requestForThis = requested === accountID;
+    // case #1 - we have no votes to check
+    if (!thumbsForThis) {
+      return { numVotes: 0, hasSelfVoted: !!requested, hasSelfVotedForThis: requestForThis };
+    }
+
+    // case #2 - we voted for this option, but may have revoked it
+    let found = thumbsForThis.indexOf(selfAccountID) >= 0;
+    let count = thumbsForThis.length;
+    if (found) {
+      if (requested && !requestForThis) {
+        count -= 1;
+        found = false;
       }
-    });
+      return { numVotes: count, hasSelfVoted: true, hasSelfVotedForThis: found };
+    }
 
-    return selfHasVoted;
-  };
+    // case #3 - we voted for this option but the server hasn't acknowledged it yet
+    if (requestForThis) {
+      return { numVotes: count + (found ? 0 : 1), hasSelfVoted: true, hasSelfVotedForThis: true };
+    }
 
-  private onMouseOverSelfVote = () => {
+    // case #4 - we have a vote in flight for something else (possibly a revoke)
+    if (requested) {
+      return { numVotes: count + (found ? -1 : 0), hasSelfVoted: true, hasSelfVotedForThis: false };
+    }
+
+    // case #5 - no request in flight, check if we've voted for something else
+    let hasSelfVoted = false;
+    for (const acct in thumbsUp) {
+      const votes = thumbsUp[acct];
+      if (votes.includes(selfAccountID)) {
+        hasSelfVoted = true;
+        break;
+      }
+    }
+
+    return { numVotes: count, hasSelfVoted, hasSelfVotedForThis: false };
+  }
+
+  private onMouseOverSelfVote() {
     this.setState({ mouseOverSelfVote: true });
-  };
+  }
 
-  private onMouseLeaveSelfVote = () => {
+  private onMouseLeaveSelfVote() {
     this.setState({ mouseOverSelfVote: false });
-  };
+  }
 
   private async onThumbsUpClick() {
-    const { accountID } = this.props;
     game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
-
-    // TODO : track this click explicitly until it is applied by the server, do not allow other clicks until this one is complete
-    const thumbsUp = cloneDeep(this.props.thumbsUp);
-    if (thumbsUp) {
-      if (thumbsUp[accountID]) {
-        if (!thumbsUp[accountID].includes(this.props.accountID)) {
-          thumbsUp[accountID].push(this.props.accountID);
-        }
-      } else {
-        thumbsUp[accountID] = [this.props.accountID];
-      }
-      this.props.dispatch(setThumbsUp(thumbsUp));
-      await ScenarioAPI.RewardThumbsUp(webConf, this.props.overmindSummary.id, accountID);
-    } else {
-      await ScenarioAPI.RewardThumbsUp(webConf, this.props.overmindSummary.id, accountID);
-      return;
-    }
+    this.props.dispatch(setThumbsUp(this.props.accountID));
   }
 
   private async onRevokeClick() {
-    const { accountID } = this.props;
     game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
-
-    // TODO : track this revoke explicitly until it is applied by the server, do not allow other clicks until this one is complete
-    const thumbsUp = cloneDeep(this.props.thumbsUp);
-    thumbsUp[accountID] = thumbsUp[accountID].filter((id: any) => id !== this.props.accountID);
-
-    this.props.dispatch(setThumbsUp(thumbsUp));
-    await ScenarioAPI.RevokeThumbsUp(webConf, this.props.overmindSummary.id);
+    this.props.dispatch(revokeThumbsUp());
   }
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { overmindSummary, thumbsUp } = state.gameStats;
+  const { overmindSummary, thumbsUp, requests } = state.gameStats;
   return {
     ...ownProps,
     selfAccountID: state.user.id,
     thumbsUp,
+    requests,
     overmindSummary
   };
 }

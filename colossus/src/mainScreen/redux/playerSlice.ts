@@ -25,6 +25,7 @@ import { ArrayMap } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 export type FullPlayerState = SelfPlayerStateModel & PlayerEntityStateModel;
 
 const DefaultPlayerState: FullPlayerState = {
+  shardID: 0,
   facing: {
     yaw: NaN,
     pitch: NaN
@@ -39,11 +40,6 @@ const DefaultPlayerState: FullPlayerState = {
   totalKills: 0,
   teamKills: 0,
   isAlive: true,
-  position: {
-    x: NaN,
-    y: NaN,
-    z: NaN
-  },
   resources: {},
   statuses: {},
   classID: 0,
@@ -127,9 +123,6 @@ export const playerSlice = createSlice({
     updatePlayerViewOrigin: (state: FullPlayerState, action: PayloadAction<Vec3f>) => {
       state.viewOrigin = action.payload;
     },
-    updatePlayerPosition: (state: FullPlayerState, action: PayloadAction<Vec3f>) => {
-      state.position = action.payload;
-    },
     updatePlayerStatuses: (state: FullPlayerState, action: PayloadAction<ArrayMap<Status>>) => {
       state.statuses = action.payload;
     },
@@ -170,7 +163,6 @@ export const {
   updatePlayerFacing,
   updatePlayerViewBearing,
   updatePlayerViewOrigin,
-  updatePlayerPosition,
   updatePlayerStatuses,
   updatePlayerClassID,
   updateScenarioRoundState,

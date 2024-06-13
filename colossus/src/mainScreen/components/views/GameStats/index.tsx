@@ -5,7 +5,11 @@
  */
 
 import * as React from 'react';
-import { OvermindSummaryGQL, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import {
+  OvermindSummaryGQL,
+  ScenarioResolution,
+  StringTableEntryDef
+} from '@csegames/library/dist/hordetest/graphql/schema';
 
 import { StatsList } from './StatsList';
 import { SummaryMVP } from './SummaryMVP';
@@ -17,13 +21,13 @@ import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEv
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { Dispatch } from 'redux';
-import { GameStatsNetworkingService } from '../../../dataSources/gameStatsNetworking';
 import { MatchEndSequence, setMatchEnd } from '../../../redux/matchSlice';
 import { PlayerProgression } from './PlayerProgression';
 import { startProfileRefresh } from '../../../redux/profileSlice';
 import { AccountID, ScenarioDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../helpers/stringTableHelpers';
+import { updateMutedAll } from '../../../redux/voiceChatSlice';
 
 const Container = 'GameStats-Container';
 const TopContainer = 'GameStats-TopContainer';
@@ -81,6 +85,7 @@ interface State {
   currentTab: CurrentTab;
   closedMVPPage: boolean;
   fetchedProfile: boolean;
+  timeoutHandle: number;
 }
 
 class AGameStats extends React.Component<Props, State> {
@@ -91,26 +96,26 @@ class AGameStats extends React.Component<Props, State> {
     this.state = {
       currentTab: CurrentTab.MVP,
       closedMVPPage: false,
-      fetchedProfile: false
+      fetchedProfile: false,
+      timeoutHandle: window.setTimeout(this.onTimeout.bind(this), 5000) // do not freeze on this page
     };
   }
 
   public render() {
     this.tryFetchProfile();
-    const backgroundImage = this.props.scenarioDef ? this.props.scenarioDef.summaryBackgroundImage : null;
+    const backgroundImage =
+      this.props.scenarioDef?.summaryBackgroundImage ?? 'images/fullscreen/gamestats/end-match-bg.jpg';
     return (
-      <>
-        <GameStatsNetworkingService />
-        <div className={Container} style={{ backgroundImage: `url("${backgroundImage}")` }}>
-          {this.tryRenderStats()}
-        </div>
-      </>
+      <div className={Container} style={{ backgroundImage: `url("${backgroundImage}")` }}>
+        {this.tryRenderStats()}
+      </div>
     );
   }
 
   private tryRenderStats(): JSX.Element {
     const { overmindSummary } = this.props;
-    if (!overmindSummary) {
+    if (overmindSummary?.resolution != ScenarioResolution.Finished) {
+      // TODO : display loading screen / spinner
       return null;
     }
     const winLoseClass = this.scenarioWon() ? 'victory' : 'defeat';
@@ -151,13 +156,21 @@ class AGameStats extends React.Component<Props, State> {
   private tryFetchProfile(): void {
     // in order for the summary page to show the correct amount of xp gain, we must have
     // an up to date version of the  profile with the new overmind summary applied.
-    // To ensure this happens, we're doing a one time fetch of the summary when we open this page, 
-    // after we've pulled down the overmind summary.  This is really a hack, which will become unnecessary 
+    // To ensure this happens, we're doing a one time fetch of the summary when we open this page,
+    // after we've pulled down the overmind summary.  This is really a hack, which will become unnecessary
     // once we have subscriptions for profile updates.
     if (!this.state.fetchedProfile && this.props.overmindSummary != null) {
       this.props.dispatch(startProfileRefresh());
-      this.setState({fetchedProfile: true});
+      this.setState({ fetchedProfile: true });
     }
+  }
+
+  private onTimeout(): void {
+    // safety net: if we can't load data in timely fashion, move to the lobby
+    if (this.props.overmindSummary != null) return;
+    this.props.dispatch(
+      setMatchEnd({ matchID: this.props.matchID, sequence: MatchEndSequence.GotoLobby, refresh: true })
+    );
   }
 
   private renderTabButtons(): JSX.Element {
@@ -169,10 +182,16 @@ class AGameStats extends React.Component<Props, State> {
       <div className={TabsContainer}>
         {this.renderTab(CurrentTab.MVP, StringIDGameStatsMVP)}
         {this.allowPlayerProgressTab() && this.renderTab(CurrentTab.Progression, StringIDGameStatsPlayerStats)}
-        {this.renderTab(CurrentTab.MatchOverview, StringIDGameStatsMatchOverview)}
+        {this.renderMatchOverview()}
         {this.renderTab(CurrentTab.Leaderboard, StringIDGameStatsLeaderboard)}
       </div>
     );
+  }
+
+  private renderMatchOverview(): JSX.Element {
+    if (this.allowMatchOverviewTab()) {
+      return this.renderTab(CurrentTab.MatchOverview, StringIDGameStatsMatchOverview);
+    }
   }
 
   private renderTab(tab: CurrentTab, stringID: string): JSX.Element {
@@ -214,7 +233,13 @@ class AGameStats extends React.Component<Props, State> {
   }
 
   private onCloseMVPPage(): void {
-    const newTab = this.allowPlayerProgressTab() ? CurrentTab.Progression : CurrentTab.MatchOverview;
+    var newTab: CurrentTab = CurrentTab.Leaderboard;
+    if (this.allowPlayerProgressTab()) {
+      newTab = CurrentTab.Progression;
+    } else if (this.allowMatchOverviewTab()) {
+      newTab = CurrentTab.MatchOverview;
+    }
+
     this.setState({ closedMVPPage: true, currentTab: newTab });
   }
 
@@ -260,6 +285,14 @@ class AGameStats extends React.Component<Props, State> {
     return this.props.scenarioDef != null && this.props.scenarioDef.showPlayerProgressionTab;
   }
 
+  private allowMatchOverviewTab(): boolean {
+    return (
+      this.props.overmindSummary != null &&
+      this.props.overmindSummary.scorePanels != null &&
+      this.props.overmindSummary.scorePanels.length > 0
+    );
+  }
+
   private getTotalScore(overmindSummary: OvermindSummaryGQL): number {
     if (!overmindSummary || !overmindSummary.scorePanels) {
       return totalScore;
@@ -301,10 +334,12 @@ class AGameStats extends React.Component<Props, State> {
 
   public componentWillUnmount() {
     game.playGameSound(SoundEvents.PLAY_SCENARIO_RESET);
+    window.clearTimeout(this.state.timeoutHandle);
   }
 
   private onLeaveClick(): void {
     this.props.dispatch(startProfileRefresh());
+    this.props.dispatch(updateMutedAll(false));
     this.props.dispatch(
       setMatchEnd({ matchID: this.props.matchID, sequence: MatchEndSequence.GotoLobby, refresh: true })
     );

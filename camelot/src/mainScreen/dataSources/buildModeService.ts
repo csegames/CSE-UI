@@ -10,12 +10,9 @@ import ExternalDataSource from '../redux/externalDataSource';
 import {
   Vec3f,
   Euler3f,
-  ItemAPI,
-  MoveItemRequest,
   MoveItemRequestLocationType
 } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
-import { webConf } from './networkConfiguration';
-import { attemptItemMoves } from '../components/items/itemUtils';
+import { MoveItemRequest, attemptItemMoves } from '../components/items/itemUtils';
 import { BuildingMode } from '@csegames/library/dist/_baseGame/types/Building';
 import { addMenuWidgetExiting, toggleMenuWidget } from '../redux/hudSlice';
 import { WIDGET_NAME_BUILD } from '../components/Build';
@@ -59,45 +56,26 @@ export class BuildModeService extends ExternalDataSource {
     actionID: string | null
   ): void {
     if (actionID) {
-      ItemAPI.PerformItemAction(webConf, itemInstanceID, this.reduxState.player.entityID, actionID, {
-        BoneAlias: undefined,
-        Rotation: rotation,
-        SelectedItemID: undefined,
-        WorldPosition: position
-      });
+      clientAPI.performItemAction(itemInstanceID, this.reduxState.player.entityID, actionID, position, rotation, 0);
     } else {
       const move: MoveItemRequest = {
         MoveItemID: itemInstanceID,
-        StackHash: '00000000000000000000000000000000',
         UnitCount: -1,
-        From: {
-          BoneAlias: undefined,
-          BuildingID: undefined,
-          CharacterID: this.reduxState.player.characterID,
-          ContainerID: '0000000000000000000000',
-          DrawerID: undefined,
-          EntityID: '0000000000000000000000',
-          GearSlotIDs: [],
-          Location: MoveItemRequestLocationType.Inventory,
-          Position: -1,
-          Rotation: undefined,
-          VoxSlot: 'Invalid',
-          WorldPosition: undefined
-        },
-        To: {
-          BoneAlias: undefined,
-          BuildingID: undefined,
-          CharacterID: '0000000000000000000000',
-          ContainerID: '0000000000000000000000',
-          DrawerID: undefined,
-          EntityID: '0000000000000000000000',
-          GearSlotIDs: [],
-          Location: MoveItemRequestLocationType.Ground,
-          Position: -1,
-          Rotation: rotation,
-          VoxSlot: 'Invalid',
-          WorldPosition: position
-        }
+        EntityIDFrom: null,
+        CharacterIDFrom: this.reduxState.player.characterID,
+        BoneAliasFrom: 0,
+        LocationTo: MoveItemRequestLocationType.Ground,
+        EntityIDTo: null,
+        CharacterIDTo: null,
+        PositionTo: -1,
+        ContainerIDTo: null,
+        DrawerIDTo: null,
+        GearSlotIDTo: null,
+        VoxSlotTo: null,
+        BuildingIDTo: null,
+        WorldPositionTo: position,
+        RotationTo: rotation,
+        BoneAliasTo: 0
       };
 
       const raceId = this.reduxState.player.race;
@@ -112,6 +90,7 @@ export class BuildModeService extends ExternalDataSource {
         this.reduxState.gameDefs.classesByNumericID[this.reduxState.player.classID],
         raceDef?.raceTags ?? [],
         this.reduxState.gameDefs.myStats,
+        this.reduxState.gameDefs.gearSlots,
         this.reduxState.inventory.inventoryPendingRefreshes,
         this.reduxState.equippedItems.equippedItemsPendingRefreshes,
         this.reduxState.inventory.stackSplit,

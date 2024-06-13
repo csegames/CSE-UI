@@ -38,7 +38,8 @@ import {
   removeObjective,
   updateFriend,
   updateBoss,
-  updateObjective
+  updateObjective,
+  updatePositions
 } from '../../redux/entitiesSlice';
 import { updateRunes, RunesState, hideRuneAlert } from '../../redux/runesSlice';
 import {
@@ -71,6 +72,7 @@ import { StatusDef } from '@csegames/library/dist/_baseGame/types/StatusDef';
 import { CharacterClassDef, CharacterRaceDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
 import {
   BaseEntityStateModel,
+  EntityPositionMapModel,
   isPlayer,
   PlayerEntityStateModel
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
@@ -90,17 +92,7 @@ import { ConsumableItemsStateModel } from '@csegames/library/dist/hordetest/game
 import { cloneDeep } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 import { updateVoiceChatMember, removeVoiceChatMember } from '../../redux/voiceChatSlice';
 import { EntityDirection } from '@csegames/library/dist/hordetest/game/types/EntityDirection';
-import { useChat } from '../views/Hud/Chat/state/chat';
-import * as chat_proto from '@csegames/library/dist/_baseGame/chat/chat_proto';
-import {
-  addDMSenderName,
-  updateChatDirectory,
-  updateChatReceived,
-  updateJoinedRooms,
-  updateSystemMessageReceived
-} from '../../redux/chatSlice';
-import { TimedMessage } from '@csegames/library/dist/_baseGame/chat/CSEChat';
-import { distanceVec3 } from '@csegames/library/dist/_baseGame/utils/distance';
+import { updateSystemMessageReceived } from '../../redux/chatSlice';
 import { ItemEntityStateModel, isItem } from '@csegames/library/dist/hordetest/game/GameClientModels/ItemEntityState';
 import { LifeState } from '@csegames/library/dist/hordetest/game/types/LifeState';
 import {
@@ -115,6 +107,7 @@ import { ActionCreatorWithOptionalPayload } from '@reduxjs/toolkit';
 import { GameOptionIDs, updateGameOption } from '../../redux/gameOptionsSlice';
 import { GameOption } from '@csegames/library/dist/_baseGame/types/Options';
 import { VoiceChatMemberSettings } from '@csegames/library/dist/_baseGame/types/VoiceChatMemberSettings';
+import { networkConfigurationState } from '../../dataSources/networkConfiguration';
 
 ///////////////////////////////////////////////////////////////////
 
@@ -130,9 +123,6 @@ interface PendingDialogueMessage {
   speakerIcon: string;
   soundID: number;
 }
-
-type RoomDirectory = chat_proto.chat.RoomDirectory;
-type RoomJoined = chat_proto.chat.RoomJoined;
 
 interface Props {
   dispatch: Dispatch;
@@ -176,8 +166,6 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
       this.stateMirror = this.store.getState();
     });
 
-    const chat = useChat(game);
-
     this.eventHandles = {
       abilityActivated: clientAPI.bindAbilityActivatedListener(this.handleAbilityActivated.bind(this)),
       abilityDisplayDefs: clientAPI.bindAbilityDisplayDefsListener(this.handleDisplayDefsLoaded.bind(this)),
@@ -187,6 +175,9 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
       characterRaceDefs: clientAPI.bindCharacterRaceDefsListener(this.handleRaceDefsLoaded.bind(this)),
       consumableState: hordetest.game.consumableItemsState.onUpdated(game)(this.handleConsumableItemsUpdate.bind(this)),
       entityUpdated: hordetest.game.onEntityUpdated(this.handleEntityUpdated.bind(this)),
+      entityPositionMapUpdated: clientAPI.bindEntityPositionMapUpdatedListener(
+        this.handleEntityPositionMapUpdated.bind(this)
+      ),
       entityRemoved: hordetest.game.onEntityRemoved(this.handleEntityRemoved.bind(this)),
       gamepad: game.usingGamepadState.onUpdated(game)(this.handleUsingGamepadStateUpdate.bind(this)),
       isAutoRunning: game.isAutoRunningState.onUpdated(game)(this.handleIsAutoRunning.bind(this)),
@@ -204,16 +195,13 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
       onVoiceChatMemberRemoved: clientAPI.bindVoiceChatMemberRemovedListener(
         this.handleVoiceChatMemberRemoved.bind(this)
       ),
-      entityDirection: hordetest.game.onEntityDirectionUpdate(this.handleEntityDirectionUpdate.bind(this)),
-      chatOnDirectory: chat.onDirectory(this.handleChatDirectoryUpdate.bind(this)),
-      chatOnRoomJoined: chat.onRoomJoined(this.handleChatRoomJoined.bind(this)),
-      chatOnChatMessage: chat.onChatMessage(this.handleChatReceived.bind(this))
+      entityDirection: hordetest.game.onEntityDirectionUpdate(this.handleEntityDirectionUpdate.bind(this))
     };
 
     this.intervals = [
-      setInterval(this.handleWorldTimeUpdate.bind(this), 66),
-      setInterval(this.handleUIFPSUpdate.bind(this), 200),
-      setInterval(this.handleNPCCountUpdate.bind(this, 200))
+      window.setInterval(this.handleWorldTimeUpdate.bind(this), 66),
+      window.setInterval(this.handleUIFPSUpdate.bind(this), 200),
+      window.setInterval(this.handleNPCCountUpdate.bind(this, 200))
     ];
   }
 
@@ -296,25 +284,6 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
     this.props.dispatch(updateStatusDefs(statusDefs));
   }
 
-  private handleChatDirectoryUpdate(directory: RoomDirectory) {
-    this.props.dispatch(updateChatDirectory(directory));
-  }
-
-  private handleChatRoomJoined(result: RoomJoined) {
-    this.props.dispatch(updateJoinedRooms(result));
-  }
-
-  private handleChatReceived(message: TimedMessage) {
-    this.props.dispatch(updateChatReceived(message));
-    // For DMs, also keep track of senders so we can /r at them.
-    if (message.type === chat_proto.chat.ChatMessage.MessageTypes.Direct) {
-      // But don't add yourself to the sender list.
-      if (this.stateMirror.player.name !== message.senderName) {
-        this.props.dispatch(addDMSenderName(message.senderName));
-      }
-    }
-  }
-
   private handleSystemMessageReceived(message: string) {
     this.props.dispatch(updateSystemMessageReceived(message));
   }
@@ -332,6 +301,7 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
 
     const playerDelta: Partial<SelfPlayerStateModel> = {};
 
+    this.checkPlayerShardIDUpdated(newPlayerState.shardID, playerDelta);
     this.checkPlayerEntityIDUpdated(newPlayerState.entityID, playerDelta);
     this.checkFacingUpdated(newPlayerState.facing, playerDelta);
     this.checkViewBearingUpdated(newPlayerState.viewBearing, playerDelta);
@@ -339,6 +309,10 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
     this.checkPlayerAccountIDUpdated(newPlayerState.accountID, playerDelta);
 
     this.props.dispatch(updatePlayerDelta(playerDelta));
+
+    if (playerDelta.shardID) {
+      networkConfigurationState.shardID = playerDelta.shardID;
+    }
   }
 
   private handleEntityUpdated(newEntityState: BaseEntityStateModel): void {
@@ -351,6 +325,10 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
     } else if (!isItem(newEntityState)) {
       console.error('handleEntityUpdated() - received unhandled entity type.', newEntityState.type);
     }
+  }
+
+  private handleEntityPositionMapUpdated(newState: EntityPositionMapModel): void {
+    this.props.dispatch(updatePositions(newState));
   }
 
   private handlePlayerEntityUpdated(newEntityState: PlayerEntityStateModel) {
@@ -369,7 +347,6 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
 
       this.checkPlayerClassIDUpdated(newEntityState.classID, playerDelta);
       this.checkPlayerAccountIDUpdated(newEntityState.accountID, playerDelta);
-      this.checkPositionUpdated(newEntityState.position, playerDelta);
       this.checkStatusesUpdated(newEntityState.statuses, playerDelta);
       this.checkScenarioIDUpdated(newEntityState.scenarioID, playerDelta);
       this.checkScenarioRoundStateUpdated(newEntityState.scenarioRoundState, playerDelta);
@@ -421,6 +398,16 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
   }
 
   // Player State Update Checking Functions
+
+  private checkPlayerShardIDUpdated(shardID: number, playerDelta: Partial<SelfPlayerStateModel>): void {
+    if (!shardID) {
+      return;
+    }
+
+    if (shardID != this.stateMirror.player.shardID) {
+      playerDelta.shardID = shardID;
+    }
+  }
 
   private checkPlayerEntityIDUpdated(entityID: string, playerDelta: Partial<SelfPlayerStateModel>): void {
     if (!entityID) {
@@ -477,19 +464,6 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
       this.stateMirror.player.viewOrigin.z != newViewOrigin.z
     ) {
       playerDelta.viewOrigin = newViewOrigin;
-    }
-  }
-
-  private checkPositionUpdated(newPosition: Vec3f, playerDelta: Partial<PlayerEntityStateModel>): void {
-    if (!newPosition) {
-      return;
-    }
-    if (
-      this.stateMirror.player.position.x != newPosition.x ||
-      this.stateMirror.player.position.y != newPosition.y ||
-      this.stateMirror.player.position.z != newPosition.z
-    ) {
-      playerDelta.position = newPosition;
     }
   }
 
@@ -775,18 +749,6 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
         if (existingFriendData[fieldName] != newPlayerState[fieldName] && newPlayerState[fieldName] != 0) {
           friendStateDelta[fieldName] = newPlayerState[fieldName];
         }
-      } else if (fieldName == 'position') {
-        const xMatch: boolean = existingFriendData[fieldName].x == newPlayerState[fieldName].x;
-        const yMatch: boolean = existingFriendData[fieldName].y == newPlayerState[fieldName].y;
-        const zMatch: boolean = existingFriendData[fieldName].z == newPlayerState[fieldName].z;
-
-        if (!xMatch || !yMatch || !zMatch) {
-          friendStateDelta[fieldName] = {
-            x: newPlayerState[fieldName].x,
-            y: newPlayerState[fieldName].y,
-            z: newPlayerState[fieldName].z
-          };
-        }
       }
     }
 
@@ -836,21 +798,6 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
     }
 
     this.checkEntityResourcesUpdated(newBossState.resources, existingBossData.resources, bossStateDelta);
-
-    const vec3IsValid = (vec: Vec3f): boolean => {
-      return vec.x !== null && vec.y !== null && vec.z !== null && !isNaN(+vec.x) && !isNaN(+vec.y) && !isNaN(+vec.z);
-    };
-
-    if (
-      (!vec3IsValid(existingBossData.position) && vec3IsValid(newBossState.position)) ||
-      distanceVec3(existingBossData.position, newBossState.position) > 0.0001
-    ) {
-      bossStateDelta.position = {
-        x: newBossState.position.x,
-        y: newBossState.position.y,
-        z: newBossState.position.z
-      };
-    }
 
     return bossStateDelta;
   }
@@ -925,18 +872,6 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
       if (newEntityState.itemDefID != existingObjectiveData.itemDefID) {
         entityStateDelta.itemDefID = newEntityState.itemDefID;
       }
-    }
-
-    const xMatch: boolean = existingObjectiveData.position.x == newEntityState.position.x;
-    const yMatch: boolean = existingObjectiveData.position.y == newEntityState.position.y;
-    const zMatch: boolean = existingObjectiveData.position.z == newEntityState.position.z;
-
-    if (!xMatch || !yMatch || !zMatch) {
-      entityStateDelta.position = {
-        x: newEntityState.position.x,
-        y: newEntityState.position.y,
-        z: newEntityState.position.z
-      };
     }
 
     type ObjectiveData = typeof existingObjectiveData.objective;
@@ -1015,7 +950,7 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
             ? prevState.alertBoxes[key].newBonus + runeBonusDelta
             : runeBonusDelta;
 
-          const visibleTimeout = setTimeout(() => {
+          const visibleTimeout = window.setTimeout(() => {
             this.props.dispatch(hideRuneAlert(key));
           }, RuneAlertDisplayTimeSeconds * 1000);
 
@@ -1329,7 +1264,7 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
         type: AnnouncementType.Dialogue
       })
     );
-    this.currentDialogueSoundTimeout = setTimeout(() => {
+    this.currentDialogueSoundTimeout = window.setTimeout(() => {
       this.currentDialogueSoundTimeout = null;
       this.onDialogueMessageFinishedPlaying(message.id, messageSoundDurationMS);
     }, messageSoundDurationMS);
@@ -1349,7 +1284,7 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
     if (timeUntilRemoveMessageMS < 50) {
       removeDialogueMessage();
     } else {
-      setTimeout(removeDialogueMessage, timeUntilRemoveMessageMS);
+      window.setTimeout(removeDialogueMessage, timeUntilRemoveMessageMS);
 
       // The sound is finished playing, so we can try to trigger the next message if we have one,
       // even if the old message sticks around a bit longer.

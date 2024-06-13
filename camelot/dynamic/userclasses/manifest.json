@@ -339,7 +339,7 @@
     "AbilityBuilderBackgroundImage": "",
     "AbilityBuilderHueRotation": "118deg",
     "AbilityNetworkImage": {
-      "Magic": "/dynamic/userclasses/assets/select-song-minstrel.png",
+      "Song": "/dynamic/userclasses/assets/select-song-minstrel.png",
       "Harvest": "/dynamic/userclasses/assets/select-harvest-arthurian.png"
     },
     "PaperdollImage": {

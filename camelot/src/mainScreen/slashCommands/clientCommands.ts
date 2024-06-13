@@ -91,7 +91,7 @@ export function registerClientSlashCommands(registry: SlashCommandRegistry<RootS
       (state: RootState, argv: string[]) => {
         // TODO COHERENT BlockTypes is missing, potentially use materials property
         // client.BlockTypes();
-        // setTimeout(() => consolePrint(`${client.blockTypes}`), 1000);
+        // window.setTimeout(() => consolePrint(`${client.blockTypes}`), 1000);
       }
     ),
 

@@ -57,16 +57,9 @@ interface InjectedProps {
 
 type Props = ReactProps & InjectedProps;
 
-interface State {
-  svgWidth: number;
-}
-
-class AQuestXPButton extends React.Component<Props, State> {
+class AQuestXPButton extends React.Component<Props> {
   constructor(props: Props) {
     super(props);
-    this.state = {
-      svgWidth: 0
-    };
   }
 
   render(): React.ReactNode {
@@ -96,8 +89,6 @@ class AQuestXPButton extends React.Component<Props, State> {
     }
 
     const digits = String(count).length;
-    const scaleFactor: number = (digits - 1) * 0.25;
-    const marginRight = `${scaleFactor * this.state.svgWidth}px`;
 
     return (
       <TooltipSource
@@ -108,55 +99,43 @@ class AQuestXPButton extends React.Component<Props, State> {
         key={count}
       >
         <div
-          style={{ marginRight }}
           className={`${this.props.styles || ''} ${Container} ${this.props.questType.toString()}`}
           onClick={this.onClick.bind(this)}
         >
-          {this.getArrow(scaleFactor)}
           <img className={Icon} src={perkDef.iconURL} />
           <div className={Count}>{addCommasToNumber(count)}</div>
+          {this.getArrow(digits)}
         </div>
       </TooltipSource>
     );
   }
 
-  private getArrow(scaleFactor: number): JSX.Element {
+  private getArrow(digits: number): JSX.Element {
     const stroke: string = this.props.questType == QuestType.BattlePass ? 'var(--Main-Orange, #FFB000)' : '#00B88C';
     const stopColor: string = this.props.questType == QuestType.BattlePass ? '#FBE201' : '#01FBEC';
     const stopColorOffset: string = this.props.questType == QuestType.BattlePass ? '#FF8A00' : '#005445';
 
-    const transform = `scaleX(${scaleFactor + 1})`;
-    const marginLeft = `${(scaleFactor * this.state.svgWidth) / 2}px`;
+    const width = 50 + (digits - 1) * 17;
 
     return (
-      <svg
-        style={{ transform, marginLeft }}
-        className={Arrow}
-        viewBox='0 0 71 35'
-        fill='none'
-        ref={(ref) => {
-          if (ref && this.state.svgWidth !== ref.clientWidth) {
-            this.setState({ svgWidth: ref.clientWidth });
-          }
-        }}
-      >
+      <svg className={Arrow} viewBox={`0 0 ${width + 20} 40`} fill='none'>
         <path
-          d='M60.6371 24.8186L52.2537 33H2V2H52.2537L68.1364 17.5L60.6371 24.8186Z'
+          d={`
+            M 4, 4
+            L 4, 36
+            H ${width}
+            L ${width + 16}, 20
+            L ${width}, 4
+            Z
+          `}
           fill='url(#paint0_linear_1576_10727)'
           stroke={stroke}
           stroke-width='4'
         />
         <defs>
-          <linearGradient
-            id='paint0_linear_1576_10727'
-            x1='75.0588'
-            y1='35'
-            x2='22.8324'
-            y2='35'
-            gradientUnits='userSpaceOnUse'
-          >
-            <stop stop-color={stopColor} />
-            <stop offset='1' stop-color={stopColorOffset} />
+          <linearGradient id='paint0_linear_1576_10727' gradientUnits='userSpaceOnUse'>
+            <stop offset='35%' stop-color={stopColorOffset} />
+            <stop offset='100%' stop-color={stopColor} />
           </linearGradient>
         </defs>
       </svg>

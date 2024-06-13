@@ -49,11 +49,15 @@ class ABuildMismatchModal extends React.Component<Props> {
   }
 
   public render() {
-    const messageStringID = this.props.serverIsNewer ? StringIDBuildMismatchServerNewer : StringIDBuildMismatchClientNewer;
+    const messageStringID = this.props.serverIsNewer
+      ? StringIDBuildMismatchServerNewer
+      : StringIDBuildMismatchClientNewer;
     return (
       <MiddleModalDisplay isVisible={true} onClickOverlay={this.onClickOverlay.bind(this)}>
         <div className={Container}>
-          <div className={BuildMismatchTitle}>{getStringTableValue(StringIDBuildMismatchTitle, this.props.stringTable)}</div>
+          <div className={BuildMismatchTitle}>
+            {getStringTableValue(StringIDBuildMismatchTitle, this.props.stringTable)}
+          </div>
           <div className={Message}>{getStringTableValue(messageStringID, this.props.stringTable)}</div>
           <Button
             type='blue-outline'

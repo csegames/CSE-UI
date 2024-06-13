@@ -176,19 +176,19 @@ class SummaryList extends React.Component<SummaryListProps, SummaryListState> {
     this.props.onHideAllAlertDialog();
     switch (initType) {
       case 'banes': {
-        setTimeout(() => {
+        window.setTimeout(() => {
           this.props.onReset('banes');
         }, 100);
         break;
       }
       case 'boons': {
-        setTimeout(() => {
+        window.setTimeout(() => {
           this.props.onReset('boons');
         }, 100);
         break;
       }
       case 'both': {
-        setTimeout(() => {
+        window.setTimeout(() => {
           this.props.onReset('both');
         }, 100);
         break;

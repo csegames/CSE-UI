@@ -5,7 +5,7 @@
  */
 import ExternalDataSource from '../redux/externalDataSource';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import { setDebugSessions, setMatchAccess } from '../redux/matchSlice';
+import { AUTOCONNECT_MATCH_PLACEHOLDER, setDebugSessions, setMatchAccess } from '../redux/matchSlice';
 import {
   DebugSession,
   MatchAccess,
@@ -16,7 +16,7 @@ import { showError } from '../redux/navigationSlice';
 import { game } from '@csegames/library/dist/_baseGame';
 import { convertError, isServiceError } from '../helpers/errorConversionHelpers';
 import { ActivitiesAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { webConf } from './networkConfiguration';
+
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { DebugSessionConfig } from '@csegames/library/dist/_baseGame/types/DebugSessionConfig';
 import {
@@ -28,6 +28,7 @@ import {
 import { RootState } from '../redux/store';
 import { Dispatch } from 'redux';
 import { InitTopic, setInitialized } from '../redux/initializationSlice';
+import { webConf } from './networkConfiguration';
 
 const autoconnectSession: DebugSession = {
   allocated: null,
@@ -39,7 +40,7 @@ const autoconnectSession: DebugSession = {
   overrideSheetID: null,
   overrideTabID: null,
   revision: null,
-  roundID: 'autoconnect-match-placeholder',
+  roundID: AUTOCONNECT_MATCH_PLACEHOLDER,
   scenarioID: null,
   serverName: 'localhost',
   serverPort: 6000,
@@ -106,7 +107,6 @@ export class DebugSessionService extends ExternalDataSource {
   }
 
   private handleStatus(result: DebugSessionQueryResult): void {
-    console.warn('session query update', result);
     const data = result.debugSession;
 
     if (!data) {

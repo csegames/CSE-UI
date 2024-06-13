@@ -41,7 +41,9 @@ export enum KeybindIDs {
   WeakAbility = 'WeakAbility',
   StrongAbility = 'StrongAbility',
   UltimateAbility = 'UltimateAbility',
-  SkipEpilogue = 'SkipEpilogue'
+  SkipEpilogue = 'SkipEpilogue',
+  EmoteMenu = 'UIEmoteMenu',
+  Emote = 'Emote'
 }
 
 interface KeybindUpdate {
@@ -65,7 +67,9 @@ const defaultKeybindsState: KeybindsState = {
   [KeybindIDs.WeakAbility]: getKeybind('Ability 1 (weak)'),
   [KeybindIDs.StrongAbility]: getKeybind('Ability 2 (strong)'),
   [KeybindIDs.UltimateAbility]: getKeybind('Ability 3 (ultimate)'),
-  [KeybindIDs.SkipEpilogue]: getKeybind('Skip Epilogue')
+  [KeybindIDs.SkipEpilogue]: getKeybind('Skip Epilogue'),
+  [KeybindIDs.EmoteMenu]: getKeybind('Emote Menu'),
+  [KeybindIDs.Emote]: getKeybind('Emote')
 };
 
 export const keybindsSlice = createSlice({

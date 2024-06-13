@@ -121,7 +121,7 @@ interface State {
 }
 
 class HUDEditor extends React.Component<Props, State> {
-  private buttonHeldHandle: NodeJS.Timer;
+  private buttonHeldHandle: number;
   private isApplyingChanges = false;
 
   constructor(props: Props) {
@@ -152,7 +152,7 @@ class HUDEditor extends React.Component<Props, State> {
     // The -2 is to account for Siege and BuildMode (system bars).
     const numBars =
       Object.keys(this.props.widgets).filter((widgetName) => {
-        return widgetName.startsWith('Bar:');
+        return this.props.widgets[widgetName].registration && widgetName.startsWith('Bar:');
       }).length - 2;
 
     const addLayoutDisabledClass = this.props.editStatus.canAddButtons ? '' : 'disabled';
@@ -178,6 +178,7 @@ class HUDEditor extends React.Component<Props, State> {
         </div>
         <div className={`${ListContainer} ${Scroller}`}>
           {Object.keys(this.props.widgets)
+            .filter((widgetID) => this.props.widgets[widgetID].registration)
             .sort() // Alphabetical order
             .map((widgetID) => {
               const selectedClass = widgetID === this.props.selectedWidgetID ? 'selected' : '';
@@ -665,10 +666,10 @@ class HUDEditor extends React.Component<Props, State> {
 
     // Then delay a bit before starting to rapid-fire the event, so the user can still
     // get single-click events as expected.
-    this.buttonHeldHandle = setInterval(() => {
+    this.buttonHeldHandle = window.setInterval(() => {
       clearInterval(this.buttonHeldHandle);
       // And if the button is still held after the initial delay, start rapid-firing.
-      this.buttonHeldHandle = setInterval(() => {
+      this.buttonHeldHandle = window.setInterval(() => {
         action();
       }, ButtonRepeatTimeoutMS);
     }, FirstButtonRepeatTimeoutMS);

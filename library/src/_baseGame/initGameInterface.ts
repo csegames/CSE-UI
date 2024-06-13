@@ -77,7 +77,6 @@ export default function (game: BaseGameInterface, isAttached: boolean) {
 export function initOutOfContextGame(): BaseGameInterface {
   const model: BaseGameModel = {
     patchResourceChannel: 4,
-    shardID: 1,
     characterID: 'test-characterID',
     pktHash: '',
     accessToken: 'developer',
@@ -93,8 +92,6 @@ export function initOutOfContextGame(): BaseGameInterface {
     showPerfHUD: true,
     isCUBE: false,
     uiMockMode: 0,
-    matchmakingGameMode: 'hordetest8',
-    matchOverrides: {},
 
     reloadUI: noOp,
     quit: noOp,
@@ -157,7 +154,6 @@ export function initOutOfContextGame(): BaseGameInterface {
 
     connectToServer: noOp,
     disconnectFromAllServers: noOp,
-    setVoiceChannel: noOp,
     isAutoConnectEnabled: false,
     isConnectedOrConnectingToServer: false,
     isConnectedToServer: false,

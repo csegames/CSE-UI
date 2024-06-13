@@ -17,18 +17,12 @@ export const equippedItemsQuery = gql`
       armorClass
       itemCount
       items {
-        gearSlots {
-          gearSlotType
-          id
-        }
+        gearSlots
         item {
           ...InventoryItem
         }
       }
-      readiedGearSlots {
-        gearSlotType
-        id
-      }
+      readiedGearSlots
       resistances {
         statID
         value

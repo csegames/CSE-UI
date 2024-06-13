@@ -9,11 +9,19 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { HUDHorizontalAnchor, HUDLayer, HUDVerticalAnchor, HUDWidgetRegistration } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
-import { ClassDefGQL, GroupMemberState, StatusDef } from '@csegames/library/dist/camelotunchained/graphql/schema';
+import {
+  ClassDefGQL,
+  EntityResourceDefinitionGQL,
+  GroupMemberState,
+  StatusDef
+} from '@csegames/library/dist/camelotunchained/graphql/schema';
 import PlayerUnitFrame from './PlayerUnitFrame';
 import { ArrayMap, Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { EntityResource, StatusState } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
-import { EntityResourceIDs } from '@csegames/library/dist/camelotunchained/game/types/EntityResourceIDs';
+import {
+  EntityResource,
+  StatusState,
+  EntityPositionMapModel
+} from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
 import { InitTopic } from '../redux/initializationSlice';
 
 const Root = 'HUD-WarbandMembers-Root';
@@ -22,8 +30,11 @@ interface ReactProps {}
 
 interface InjectedProps {
   warbandMembers: (GroupMemberState | null)[];
+  positions: EntityPositionMapModel;
   statusesByStringID: Dictionary<StatusDef>;
   classesByStringID: Dictionary<ClassDefGQL>;
+  entityResourcesByStringID: Dictionary<EntityResourceDefinitionGQL>;
+  woundStatusTag: string;
   dispatch?: Dispatch;
 }
 
@@ -41,34 +52,25 @@ class AWarbandMembers extends React.Component<Props> {
           .filter((warbandMember) => warbandMember)
           .sort((a, b) => b.displayOrder - a.displayOrder)
           .map((warbandMember) => {
-            const resources: ArrayMap<EntityResource> = {};
-            resources[EntityResourceIDs.Blood] = {
-              ...warbandMember.blood,
-              id: EntityResourceIDs.Blood,
-              name: 'Blood',
-              lastDecreaseTime: 0
-            };
-            resources[EntityResourceIDs.Health] = {
-              ...warbandMember.health,
-              id: EntityResourceIDs.Health,
-              name: 'Health',
-              lastDecreaseTime: 0
-            };
-            resources[EntityResourceIDs.Stamina] = {
-              ...warbandMember.stamina,
-              id: EntityResourceIDs.Stamina,
-              name: 'Stamina',
-              lastDecreaseTime: 0
-            };
+            const resources: ArrayMap<EntityResource> = this.getMemberResources(warbandMember);
             const statuses: ArrayMap<StatusState> = {};
+            let wounds = 0;
             for (const status of warbandMember.statuses ?? []) {
               if (status) {
-                statuses[status.id] = {
-                  ...status,
-                  id: this.props.statusesByStringID[status.id]?.numericID
-                };
+                const statusDef: StatusDef = this.props.statusesByStringID[status.id];
+                if (statusDef) {
+                  if (statusDef.statusTags.indexOf(this.props.woundStatusTag) != -1) {
+                    wounds++;
+                  }
+
+                  statuses[status.id] = {
+                    ...status,
+                    id: statusDef.numericID
+                  };
+                }
               }
             }
+
             return (
               <div key={warbandMember.entityID}>
                 <PlayerUnitFrame
@@ -76,11 +78,10 @@ class AWarbandMembers extends React.Component<Props> {
                   entityID={warbandMember.entityID}
                   isAlive={warbandMember.isAlive}
                   name={warbandMember.name}
-                  position={warbandMember.position}
                   resources={resources}
                   statuses={statuses}
                   isLeader={warbandMember.isLeader}
-                  wounds={warbandMember.health.wounds}
+                  wounds={wounds}
                   key={warbandMember.characterID}
                   faction={warbandMember.faction}
                   class={this.props.classesByStringID[warbandMember.classID]}
@@ -91,14 +92,36 @@ class AWarbandMembers extends React.Component<Props> {
       </div>
     );
   }
+
+  private getMemberResources(warbandMember: GroupMemberState): ArrayMap<EntityResource> {
+    const resources: ArrayMap<EntityResource> = {};
+    if (warbandMember.resources) {
+      warbandMember.resources.forEach((resource) => {
+        const resourceDef = this.props.entityResourcesByStringID[resource.id];
+        if (resourceDef) {
+          resources[resource.id] = {
+            id: resource.id,
+            name: resourceDef.name,
+            lastDecreaseTime: 0,
+            current: resource.current,
+            max: resource.max
+          };
+        }
+      });
+    }
+    return resources;
+  }
 }
 
 const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
   return {
     ...ownProps,
     warbandMembers: state.warband.members,
+    positions: state.entities.positions,
     statusesByStringID: state.gameDefs.statusesByStringID,
-    classesByStringID: state.gameDefs.classesByStringID
+    classesByStringID: state.gameDefs.classesByStringID,
+    entityResourcesByStringID: state.gameDefs.entityResourcesByStringID,
+    woundStatusTag: state.gameDefs.settings.woundStatusTag
   };
 };
 

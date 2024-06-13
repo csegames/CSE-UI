@@ -7,7 +7,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   AnyEntityStateModel,
-  BaseEntityStateModel
+  BaseEntityStateModel,
+  EntityPositionMapModel
 } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
 import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
@@ -24,11 +25,6 @@ export const DefaultBaseEntityState: BaseEntityStateModel = {
   entityID: '',
   name: '',
   isAlive: true,
-  position: {
-    x: NaN,
-    y: NaN,
-    z: NaN
-  },
   statuses: {},
   resources: {},
   type: '',
@@ -41,6 +37,7 @@ interface EntitiesState {
   enemyTargetID: EntityID;
   friendlyTarget: AnyEntityStateModel;
   friendlyTargetID: EntityID;
+  positions: EntityPositionMapModel;
 }
 
 const DefaultEntitiesState: EntitiesState = {
@@ -48,7 +45,8 @@ const DefaultEntitiesState: EntitiesState = {
   enemyTarget: null,
   enemyTargetID: null,
   friendlyTarget: null,
-  friendlyTargetID: null
+  friendlyTargetID: null,
+  positions: {}
 };
 
 export const entitiesSlice = createSlice({
@@ -92,8 +90,11 @@ export const entitiesSlice = createSlice({
           state.friendlyTarget = entityID ? state.entities[entityID] : null;
           break;
       }
+    },
+    updatePositions: (state: EntitiesState, action: PayloadAction<EntityPositionMapModel>) => {
+      state.positions = action.payload;
     }
   }
 });
 
-export const { addOrUpdateEntity, removeEntity, setEntityContext } = entitiesSlice.actions;
+export const { addOrUpdateEntity, removeEntity, setEntityContext, updatePositions } = entitiesSlice.actions;

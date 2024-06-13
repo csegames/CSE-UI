@@ -5,13 +5,11 @@
  */
 import * as React from 'react';
 import { ChatOptionsState } from '../../../../../redux/chatSlice';
-import { parseEmbeds } from './embeds';
-import { parseMarkdown } from './markdown';
 import { parseNewline } from './newline';
 
 export type Parser = (text: string, opts: ChatOptionsState, next: Parser) => [string, JSX.Element];
 
-const parsers: Parser[] = [parseNewline, parseMarkdown, parseEmbeds];
+const parsers: Parser[] = [parseNewline];
 
 function parse(text: string, opts: ChatOptionsState, next: Parser): [string, JSX.Element] {
   let before = text;

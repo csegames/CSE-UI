@@ -5,37 +5,11 @@
  *
  */
 
-// Keep in sync with the ItemStat enum in ItemStat.cs
-export enum ItemStat {
-  Quality = 1,
-  UnitMass,
-  SelfMass,
-  TotalMass,
-  Encumbrance,
-  AgilityRequirement,
-  DexterityRequirement,
-  StrengthRequirement,
-  VitalityRequirement,
-  EnduranceRequirement,
-  AttunementRequirement,
-  WillRequirement,
-  FaithRequirement,
-  ResonanceRequirement,
-  UnitCount,
-  NestedItemCount
-}
-
 export interface ItemActionsMessage {
   itemInstanceID: string;
   boneAlias: number;
   numericItemDefID: number;
-  itemStatReqs: ItemStatReq[];
   actions: ItemAction[];
-}
-
-export interface ItemStatReq {
-  itemStat: ItemStat;
-  value: number;
 }
 
 export interface ItemAction {

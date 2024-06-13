@@ -11,22 +11,22 @@ import { PerkDefGQL, RMTPurchaseDefGQL } from '@csegames/library/dist/hordetest/
 import { Dictionary } from '@reduxjs/toolkit';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
+import { Button } from '../../../shared/Button';
 
 const Container = 'StartScreen-Store-RealMoneyItem-Container';
 const PackageIcon = 'StartScreen-Store-RealMoneyItem-PackageIcon';
 const CostContainer = 'StartScreen-Store-RealMoneyItem-CostContainer';
+const BonusDescription = 'StartScreen-Store-RealMoneyItem-BonusDescription';
+const BuxRow = 'StartScreen-Store-RealMoneyItem-BuxRow';
+const BuxIcon = 'StartScreen-Store-RealMoneyItem-BuxIcon';
 const BuxAmount = 'StartScreen-Store-RealMoneyItem-BuxAmount';
 
-const Cost = 'StartScreen-Store-RealMoneyItem-Cost';
+const CostButton = 'StartScreen-Store-RealMoneyItem-CostButton';
 
-interface ReactProps {
+interface ReactProps extends React.HTMLAttributes<HTMLDivElement> {
   purchase: RMTPurchaseDefGQL;
-  onClick: (purchase: RMTPurchaseDefGQL) => void;
-
+  onPurchaseClick: (purchase: RMTPurchaseDefGQL) => void;
   disabled?: boolean;
-  width?: string;
-  height?: string;
-  margin?: string;
 }
 
 interface InjectedProps {
@@ -37,39 +37,47 @@ type Props = ReactProps & InjectedProps;
 
 export class ARealMoneyItem extends React.Component<Props> {
   render(): JSX.Element {
+    const { className, purchase, onPurchaseClick, disabled, ...otherProps } = this.props;
+
     const disabledClass = this.props.disabled ? 'disabled' : 'not-disabled';
     // TODO: Once we build out a system for ComingSoon, we can hook this into it.
     const isComingSoonClass = false ? 'isComingSoon' : '';
 
     return (
       <div
-        className={`${Container} ${disabledClass} ${isComingSoonClass}`}
-        style={{
-          width: 'calc(25% - 0.93vmin)',
-          height: 'calc(50% - 0.93vmin)',
-          marginLeft: '0.93vmin',
-          marginTop: '0.93vmin'
-        }}
+        className={`${Container} ${disabledClass} ${isComingSoonClass} ${className}`}
         onClick={this.onClick.bind(this)}
         onMouseEnter={this.onMouseEnter.bind(this)}
+        {...otherProps}
       >
         <img className={PackageIcon} src={this.getPackageImageURL()} />
         <div className={CostContainer}>
-          <div className={BuxAmount}>{this.getPackageTitle()}</div>
-          <div className={Cost}>${(this.props.purchase.centCost / 100).toFixed(2)}</div>
+          <div className={BonusDescription}>{this.props.purchase?.bonusDescription ?? ''}</div>
+          <div className={BuxRow}>
+            <div className={`${BuxIcon} fs-icon-misc-gem`} />
+            <div className={BuxAmount}>{this.getPackageTitle()}</div>
+          </div>
+          <Button
+            type={'primary'}
+            styles={CostButton}
+            text={`$${(this.props.purchase.centCost / 100).toFixed(2)}`}
+            onClick={this.onClick.bind(this)}
+          ></Button>
         </div>
       </div>
     );
   }
 
-  private onMouseEnter() {
+  private onMouseEnter(e: React.MouseEvent<HTMLDivElement>) {
+    this.props.onMouseEnter?.(e);
     game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
   }
 
-  private onClick() {
+  private onClick(e: React.MouseEvent<HTMLDivElement>) {
     if (this.props.disabled) return;
 
-    this.props.onClick(this.props.purchase);
+    this.props.onClick?.(e);
+    this.props.onPurchaseClick(this.props.purchase);
   }
 
   private getPackageTitle(): string {

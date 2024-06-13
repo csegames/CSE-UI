@@ -6,14 +6,13 @@
  */
 
 import * as React from 'react';
-import { patcher, ChannelStatus } from '../../../../../services/patcher';
+import { ChannelStatus } from '../../../../../services/patcher';
 import { ServerType, PatcherServer } from '../../../ControllerContext';
 import PlayNowButton from './PlayNowButton';
 import DisabledButton from './DisabledButton';
 import DownloadingButton from './DownloadingButton';
 import ErrorButton from './ErrorButton';
-import { SimpleCharacter, accessLevelToPatchPermission } from '../../../../../api/helpers';
-import { PatchPermissions } from '../../../../../api/webapi';
+import { SimpleCharacter } from '../../../../../api/helpers';
 
 export interface ButtonProps {
   selectedServer: PatcherServer;
@@ -52,16 +51,20 @@ class Button extends React.Component<ButtonProps, ButtonState> {
           videoElements[vid].play();
         }
 
-        const permissions = patcher.getPermissions(selectedServer.type);
-        const userHasAccess = hasAccess(accessLevelToPatchPermission(selectedServer.accessLevel), permissions);
-        if (selectedServer.type === ServerType.CUGAME) {
-          if (!selectedServer.available && userHasAccess) {
-            return <DisabledButton text='Play Offline' onClick={this.props.onPlayOfflineClick} />;
-          } else if (!selectedServer.characterCount || !this.props.selectedCharacter) {
-            return <DisabledButton text='No Character Selected' fontSize={'1.1em'} />;
-          } else {
-            return <PlayNowButton text='Play Now' onClick={this.props.onPlayClick} />;
-          }
+        switch (selectedServer.type) {
+          case ServerType.COLOSSUS:
+            if (!selectedServer.available) {
+              return <DisabledButton text='Offline' />;
+            }
+            break;
+          case ServerType.CUGAME:
+            if (!selectedServer.available) {
+              return <DisabledButton text='Offline' />;
+            }
+            if (!selectedServer.characterCount || !this.props.selectedCharacter) {
+              return <DisabledButton text='No Character Selected' fontSize={'1.1em'} />;
+            }
+            break;
         }
 
         return <PlayNowButton text='Play Now' onClick={this.props.onPlayClick} />;
@@ -82,27 +85,6 @@ class Button extends React.Component<ButtonProps, ButtonState> {
       case ChannelStatus.UpdateFailed:
         return <ErrorButton text='Update Failed' onClick={this.props.onInstallClick} />;
     }
-  }
-}
-
-function hasAccess(required: PatchPermissions, have: number) {
-  switch (have) {
-    case PatchPermissions.Public:
-      return true;
-    case PatchPermissions.AllBackers:
-      return required >= PatchPermissions.AllBackers;
-    case PatchPermissions.Alpha:
-      return required >= PatchPermissions.Alpha;
-    case PatchPermissions.Beta1:
-      return required >= PatchPermissions.Beta1;
-    case PatchPermissions.Beta2:
-      return required >= PatchPermissions.Beta2;
-    case PatchPermissions.Beta3:
-      return required >= PatchPermissions.Beta3;
-    case PatchPermissions.InternalTest:
-      return (required & PatchPermissions.InternalTest) !== 0 || required >= PatchPermissions.Alpha;
-    case PatchPermissions.Development:
-      return true;
   }
 }
 

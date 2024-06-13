@@ -11,7 +11,11 @@ import { HUDHorizontalAnchor, HUDLayer, HUDVerticalAnchor, HUDWidgetRegistration
 import { RootState } from '../redux/store';
 import { CombatEvent } from '@csegames/library/dist/_baseGame/types/CombatEvent';
 import { EntityResourceIDs } from '@csegames/library/dist/camelotunchained/game/types/EntityResourceIDs';
-import { StatusDef, StatusUIVisibility } from '@csegames/library/dist/camelotunchained/graphql/schema';
+import {
+  EntityResourceDefinitionGQL,
+  StatusDef,
+  StatusUIVisibility
+} from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { InitTopic } from '../redux/initializationSlice';
 
 const Root = 'HUD-SelfDamageNumbers-Root';
@@ -38,6 +42,7 @@ interface InjectedProps {
   events: CombatEvent[];
   name: string;
   statusesByNumericID: Dictionary<StatusDef>;
+  entityResourcesByNumericID: Dictionary<EntityResourceDefinitionGQL>;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -102,25 +107,23 @@ class ASelfDamageNumbers extends React.Component<Props, State> {
     const logs: LogData[] = [];
     const events = this.state.events.filter((event) => event.data.toName === this.props.name);
     events.forEach((event) => {
-      event.data.damages?.forEach((damage) => {
-        logs.unshift({ event, text: `-${damage.sent.toFixed(2)}`, horizontalOffset: -15 });
-      });
-      event.data.heals?.forEach((heal) => {
-        logs.unshift({
-          event,
-          text: `+${heal.sent.toFixed(2)}`,
-          color: '#4eb5ff',
-          horizontalOffset: 15
-        });
-      });
       event.data.resources?.forEach((resource) => {
+        const resourceDef = this.props.entityResourcesByNumericID[resource.resourceNumericID];
+        if (!resourceDef) {
+          return;
+        }
+
         let color: string;
-        switch (resource.type) {
+        switch (resourceDef.id) {
           case EntityResourceIDs.Blood:
             color = '#ff4718';
             break;
           case EntityResourceIDs.Health:
-            color = '#4eb5ff';
+            if (resource.amount < 0) {
+              color = '#ff0000';
+            } else {
+              color = '#4eb5ff';
+            }
             break;
           case EntityResourceIDs.Stamina:
             color = '#8cff2d';
@@ -128,9 +131,9 @@ class ASelfDamageNumbers extends React.Component<Props, State> {
         }
         logs.unshift({
           event,
-          text: String(resource.sent.toFixed(2)),
+          text: `${resource.amount > 0 ? '+' : ''}${resource.amount.toFixed(2)}`,
           color,
-          horizontalOffset: resource.sent < 0 ? -15 : 15
+          horizontalOffset: resource.amount < 0 ? -15 : 15
         });
       });
       event.data.statuses?.forEach((status) => {
@@ -167,7 +170,8 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
     ...ownProps,
     events: state.combat.events,
     name: state.player.name,
-    statusesByNumericID
+    statusesByNumericID,
+    entityResourcesByNumericID: state.gameDefs.entityResourcesByNumericID
   };
 };
 

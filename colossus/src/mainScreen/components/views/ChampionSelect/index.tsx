@@ -30,6 +30,8 @@ import { MatchRequestState, selectChampion, SelectionRequest } from '../../../re
 import { Dispatch } from 'redux';
 import { ProfileModel } from '../../../redux/profileSlice';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { getRaceIDFromCostumeForChampion } from '../../../helpers/characterHelpers';
 
 const Container = 'ChampionSelect-PlayerSelect-Container';
 const HeaderContainer = 'ChampionSelect-PlayerSelect-HeaderContainer';
@@ -87,6 +89,10 @@ class AChampionSelect extends React.Component<Props> {
     if (!costume) return;
 
     const scenarioName = this.props.scenarioDefs[this.props.currentSelection.scenarioID]?.name ?? '';
+
+    // Update default champion audio state
+    const raceID = getRaceIDFromCostumeForChampion(this.props.profile.champions, this.props.perksByID, champion.id);
+    clientAPI.setUIRaceState(raceID);
 
     return (
       <div className={Container}>

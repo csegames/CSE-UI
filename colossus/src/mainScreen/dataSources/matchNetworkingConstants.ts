@@ -31,7 +31,6 @@ export const matchSubscription = gql`
               type
             }
           }
-          revision
           scenarios {
             id
             weight
@@ -173,7 +172,6 @@ export const matchSubscription = gql`
           }
           minEntrySize
           queueID
-          revision
           strategy
           targets {
             activityID
@@ -232,7 +230,6 @@ export const matchQuery = gql`
             type
           }
         }
-        revision
         scenarios {
           id
           weight
@@ -369,7 +366,6 @@ export const matchQuery = gql`
         }
         minEntrySize
         queueID
-        revision
         strategy
         targets {
           activityID

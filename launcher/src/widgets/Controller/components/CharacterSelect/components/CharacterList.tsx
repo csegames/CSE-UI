@@ -15,11 +15,8 @@ import CreateCharacterItem from './CreateCharacterItem';
 import { CollapsingList } from '../../../../../components/CollapsingList';
 import { ControllerContext, ContextState, PatcherServer } from '../../../ControllerContext';
 import { Sound, playSound } from '../../../../../lib/Sound';
-import { primary } from '../../../../../api/graphql';
 import { SimpleCharacter, accessLevelString } from '../../../../../api/helpers';
 import { ContentPhase } from '../../../../../services/ContentPhase';
-
-type PatcherAlert = primary.PatcherAlert;
 
 const Server = styled.div`
   display: block;
@@ -110,7 +107,6 @@ export interface ComponentProps {
 export interface InjectedProps {
   servers: { [id: string]: PatcherServer };
   characters: { [id: string]: SimpleCharacter };
-  patcherAlerts: PatcherAlert[];
   onUpdateState: (phase: ContentPhase, stats: Partial<ContextState>) => void;
 }
 
@@ -207,14 +203,14 @@ class CharacterList extends React.PureComponent<Props, CharacterListState> {
       !_.isEqual(this.props.serverCharacters, nextProps.serverCharacters)
     ) {
       this.setState({ initialHeight: null });
-      setTimeout(() => {
+      window.setTimeout(() => {
         this.initHeight(nextProps.serverCharacters);
       }, 300);
     }
   }
 
   private initHeight = (serverCharacters: SimpleCharacter[]) => {
-    setTimeout(() => {
+    window.setTimeout(() => {
       const listHeight = serverCharacters.length * 70 + 95;
       this.setState({ initialHeight: listHeight });
     }, 300);
@@ -257,12 +253,11 @@ class CharacterListWithInjectedContext extends React.Component<ComponentProps> {
   public render() {
     return (
       <ControllerContext.Consumer>
-        {({ servers, characters, patcherAlerts, onUpdateState }) => (
+        {({ servers, characters, onUpdateState }) => (
           <CharacterList
             {...this.props}
             servers={servers}
             characters={characters}
-            patcherAlerts={patcherAlerts}
             onUpdateState={onUpdateState}
           />
         )}

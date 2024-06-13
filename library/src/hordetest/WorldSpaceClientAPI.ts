@@ -21,5 +21,6 @@ export const clientAPI: WorldSpaceClientAPI = {
   bindHealthBarListener: wsfe.bindHealthBarListener.bind(wsfe),
   bindInteractableListener: wsfe.bindInteractableListener.bind(wsfe),
   bindInteractionBarListener: wsfe.bindInteractionBarListener.bind(wsfe),
-  bindObjectiveListener: wsfe.bindObjectiveListener.bind(wsfe)
+  bindObjectiveListener: wsfe.bindObjectiveListener.bind(wsfe),
+  bindWorldUIPositionMapUpdatedListener: wsfe.bindWorldUIPositionMapUpdatedListener.bind(wsfe)
 };

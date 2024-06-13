@@ -121,7 +121,7 @@ export class PatcherApp extends React.Component<Props, State> {
   public componentDidMount() {
     // fetch initial hero content and then every 30 minutes validate & fetch hero content.
     if (!this.props.heroContentState.isFetching) this.props.dispatch(fetchHeroContent());
-    this.heroContentInterval = setInterval(() => {
+    this.heroContentInterval = window.setInterval(() => {
       this.props.dispatch(validateHeroContent());
       if (!this.props.heroContentState.isFetching) this.props.dispatch(fetchHeroContent());
     }, 60000 * 30);

@@ -47,17 +47,20 @@ class TooltipSource extends React.Component<Props> {
     }
   }
 
-  private onMouseEnter(e: React.MouseEvent) {
+  private onMouseEnter(e: React.MouseEvent<HTMLDivElement>) {
+    this.props.onMouseEnter?.(e);
     const newParams: TooltipParams = { ...this.props.tooltipParams, mouseX: e.clientX, mouseY: e.clientY };
     this.props.dispatch(showTooltip(newParams));
   }
 
-  private onMouseMove(e: React.MouseEvent) {
+  private onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    this.props.onMouseMove?.(e);
     const newParams: Partial<TooltipParams> = { ...this.props.tooltipParams, mouseX: e.clientX, mouseY: e.clientY };
     this.props.dispatch(updateTooltip(newParams));
   }
 
-  private onMouseLeave() {
+  private onMouseLeave(e: React.MouseEvent<HTMLDivElement>) {
+    this.props.onMouseLeave?.(e);
     this.props.dispatch(hideTooltip());
   }
 

@@ -8,7 +8,9 @@
 @import 'mixins';
 @import 'shapes';
 
-html,body, #app {
+html,
+body,
+#app {
   height: 100%;
   margin: 0;
   overflow: hidden;
@@ -80,7 +82,8 @@ input {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: local('Material Icons'), local('MaterialIcons-Regular'), url(../font/material-design-icons/icons.woff2) format('woff2');
+  src: local('Material Icons'), local('MaterialIcons-Regular'),
+    url(../font/material-design-icons/icons.woff2) format('woff2');
 }
 
 .material-icons {
@@ -134,21 +137,21 @@ input {
   width: 100%;
   -webkit-user-select: none !important;
   cursor: pointer !important;
-  -webkit-box-shadow: 0px 17px 17px -4px rgba(0,0,0,0.70);
-  -moz-box-shadow: 0px 17px 17px -4px rgba(0,0,0,0.70);
-  box-shadow: 0px 17px 17px -4px rgba(0,0,0,0.70);
+  -webkit-box-shadow: 0px 17px 17px -4px rgba(0, 0, 0, 0.7);
+  -moz-box-shadow: 0px 17px 17px -4px rgba(0, 0, 0, 0.7);
+  box-shadow: 0px 17px 17px -4px rgba(0, 0, 0, 0.7);
 }
 
 .quickselect-auto-width {
   width: 100%;
 }
 
-img{
-    zoom: 65%;
+img {
+  zoom: 65%;
 }
 
 ::selection {
-    background:  rgb(181, 181, 181);
+  background: rgb(181, 181, 181);
 }
 
 @import 'modaldialog';

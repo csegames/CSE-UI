@@ -21,32 +21,32 @@
 
 @-webkit-keyframes waveText {
   0% {
-    opacity: .3;
+    opacity: 0.3;
     color: #ececec;
   }
   80% {
     opacity: 1;
-    color: #847B72;
+    color: #847b72;
   }
   100% {
     opacity: 1;
-    color: #847B72;
+    color: #847b72;
     font-size: 1.1em;
   }
 }
 
 @keyframes waveText {
   0% {
-    opacity: .3;
+    opacity: 0.3;
     color: #ececec;
   }
   80% {
     opacity: 1;
-    color: #847B72;
+    color: #847b72;
   }
   100% {
     opacity: 1;
-    color: #847B72;
+    color: #847b72;
     font-size: 1.1em;
   }
 }

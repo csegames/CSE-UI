@@ -34,7 +34,7 @@ export function createSharedState<TState>(
     reducer: null
   };
 
-  return function() {
+  return function () {
     const def = sharedStates[key] as StateDef<TState>;
     if (!def) {
       throw `Failed to find shared state with key ${key} when using created State method.`;
@@ -86,7 +86,7 @@ export function createSharedStateWithReducer<TState, TActions extends { type: st
     reducer
   };
 
-  return function() {
+  return function () {
     const def = sharedStates[key] as StateDef<TState>;
     if (!def) {
       throw `Failed to find shared state with key ${key} when using created State method.`;

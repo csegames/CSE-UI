@@ -7,9 +7,8 @@
 import * as React from 'react';
 
 import Chat from './Chat';
-import { disconnectChat } from './Chat/state/chat';
+import { ChatService } from '../../../dataSources/chatNetworking';
 
-// import { ChannelBar } from './ChannelBar';
 import { MatchInfo } from './MatchInfo';
 import { Crosshair } from './Crosshair';
 import { SprintBar } from './MovementTrackers/SprintBar';
@@ -17,11 +16,9 @@ import { KillStreakCounter } from './KillStreakCounter';
 import { ObjectiveDetails } from './Objectives/ObjectiveDetails';
 import { PlayerTrackers } from './PlayerTrackers';
 import { Respawn } from './Respawn';
-import { PopupAnnouncement } from './Announcements/Popup';
 import { VictoryDefeatAnnouncement } from './Announcements/VictoryDefeat';
 import { DialogueQueue } from './Announcements/Dialogue';
 import { RuneAlerts } from './RuneAlerts';
-import { ClientPerformanceInfo } from './ClientPerformanceInfo';
 import { ScenarioIntro } from './ScenarioIntro';
 import { Compass } from './Compass';
 import { ObjectivesContainer } from './Objectives';
@@ -55,6 +52,8 @@ import { FeatureFlags } from '../../../redux/featureFlagsSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { MatchEndSequence, setMatchEnd } from '../../../redux/matchSlice';
 import { ObjectiveTrackers } from './ObjectiveTrackers';
+import { AnnouncementPopups } from './Announcements/AnnouncementPopups';
+import { updateMutedAll } from '../../../redux/voiceChatSlice';
 
 const Container = 'MainScreen-Container';
 const MatchInfoPosition = 'MainScreen-MatchInfoPosition';
@@ -97,13 +96,13 @@ class HUD extends React.Component<Props> {
     for (let curHandlerKey in this.eventHandlers) {
       this.eventHandlers[curHandlerKey].close();
     }
-    disconnectChat();
   }
 
   public render() {
     return (
       <div id='HUDContainer' className={Container}>
         {this.props.isAlive ? this.getActiveScreen() : this.getDeathScreen()};
+        <ChatService slashCommands={this.props.slashCommands} />
       </div>
     );
   }
@@ -113,17 +112,13 @@ class HUD extends React.Component<Props> {
       <>
         <RuneFullScreenEffects />
         <ExtraButtons />
-        <ClientPerformanceInfo />
         <Mocks />
         <Console slashCommands={this.props.slashCommands} />
         <div id='CompassContainer_HUD' className={CompassContainer}>
           <Compass />
           <ObjectivesContainer />
         </div>
-        <PopupAnnouncement />
-        <div id='VictoryDefeatAnnouncementContainer_HUD' className={VictoryDefeatAnnouncementContainer}>
-          <VictoryDefeatAnnouncement />
-        </div>
+        <AnnouncementPopups />
         <DialogueQueue />
         <RuneAlerts />
         <ScenarioIntro />
@@ -140,12 +135,15 @@ class HUD extends React.Component<Props> {
         <Consumables />
         {this.getSkipToSummary()}
         <FriendlyHealthBars />
-        <Chat slashCommands={this.props.slashCommands} />
+        <Chat />
         <PlayerTrackers />
         <ObjectiveTrackers />
         <AutoRunTracker />
         <SprintBar />
         <LowHealthFullScreenEffects />
+        <div id='VictoryDefeatAnnouncementContainer_HUD' className={VictoryDefeatAnnouncementContainer}>
+          <VictoryDefeatAnnouncement />
+        </div>
       </>
     );
   }
@@ -157,22 +155,22 @@ class HUD extends React.Component<Props> {
         <Console slashCommands={this.props.slashCommands} />
         <div id='CompassContainer_HUD' className={CompassContainer}>
           <Compass />
+          <ObjectivesContainer />
         </div>
-        <PopupAnnouncement />
-        <div id='VictoryDefeatAnnouncementContainer_HUD' className={VictoryDefeatAnnouncementContainer}>
-          <VictoryDefeatAnnouncement />
-        </div>
+        <AnnouncementPopups />
         <DialogueQueue />
         {this.getMatchInfo()}
         <ObjectiveDetails />
-        <ObjectivesContainer />
         <FriendlyHealthBars />
-        <Chat slashCommands={this.props.slashCommands} />
+        <Chat />
         <PlayerTrackers />
         <Respawn
           onLeaveMatch={this.leaveMatch.bind(this, true, true)}
           onSkipEpilogue={this.leaveMatch.bind(this, false, false)}
         />
+        <div id='VictoryDefeatAnnouncementContainer_HUD' className={VictoryDefeatAnnouncementContainer}>
+          <VictoryDefeatAnnouncement />
+        </div>
       </>
     );
   }
@@ -210,6 +208,7 @@ class HUD extends React.Component<Props> {
     if (refreshProfile) {
       this.props.dispatch(startProfileRefresh());
     }
+    this.props.dispatch(updateMutedAll(false));
 
     const sequence = skipStatsScreen ? MatchEndSequence.GotoLobby : MatchEndSequence.GotoStats;
     this.props.dispatch(setMatchEnd({ matchID: this.props.matchID, sequence, refresh: true }));

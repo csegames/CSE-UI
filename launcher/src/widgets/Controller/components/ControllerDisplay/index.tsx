@@ -8,7 +8,13 @@ import * as React from 'react';
 
 import { ControllerDisplayView } from './ControllerDisplayView';
 import { Routes } from '../../../../services/session/routes';
-import { ContextState, ControllerContext, LastSelectedServerName, PatcherServer, ServerType } from '../../ControllerContext';
+import {
+  ContextState,
+  ControllerContext,
+  LastSelectedServerName,
+  PatcherServer,
+  ServerType
+} from '../../ControllerContext';
 import { checkAPIServer } from '../../../../lib/checkAPIServer';
 import { Sound, playSound } from '../../../../lib/Sound';
 import { globalEvents } from '../../../../lib/EventEmitter';
@@ -167,8 +173,7 @@ export class ControllerDisplay extends React.PureComponent<Props, ControllerDisp
   private initializeCUServer() {
     const lastServerName = localStorage.getItem(LastSelectedServerName);
     const selectedServer = this.props.servers[lastServerName];
-    if (selectedServer)
-    {
+    if (selectedServer) {
       this.props.onUpdateState(ContentPhase.Camelot, { selectedServer });
       return;
     }

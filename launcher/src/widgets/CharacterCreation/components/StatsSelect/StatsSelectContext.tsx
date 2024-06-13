@@ -217,7 +217,7 @@ export class StatsSelectContextProvider extends React.Component<Props, ProviderS
       remainingPoints: startingAttributePoints,
       maxPoints: startingAttributePoints
     });
-  };
+  }
 
   private getPrimaryStats() {
     const primaryStats: StatObjectInfo[] = this.state.sortedStats
@@ -228,7 +228,7 @@ export class StatsSelectContextProvider extends React.Component<Props, ProviderS
         defaultValue: this.defaultStatValueMap[statDef.id] || 0
       }));
     return primaryStats;
-  };
+  }
 
   private getSecondaryStats() {
     const secondaryStats: StatObjectInfo[] = this.state.sortedStats
@@ -239,7 +239,7 @@ export class StatsSelectContextProvider extends React.Component<Props, ProviderS
         defaultValue: this.defaultStatValueMap[statDef.id] || 0
       }));
     return secondaryStats;
-  };
+  }
 
   private getDerivedStats() {
     const derivedStats: StatObjectInfo[] = this.state.sortedStats
@@ -250,7 +250,7 @@ export class StatsSelectContextProvider extends React.Component<Props, ProviderS
         defaultValue: this.defaultStatValueMap[statDef.id] || 0
       }));
     return derivedStats;
-  };
+  }
 
   private getStatValue(statID: string) {
     const statDef = this.state.sortedStats.find((statDef) => statDef.id == statID);
@@ -294,5 +294,5 @@ export class StatsSelectContextProvider extends React.Component<Props, ProviderS
     }
 
     return value;
-  };
+  }
 }

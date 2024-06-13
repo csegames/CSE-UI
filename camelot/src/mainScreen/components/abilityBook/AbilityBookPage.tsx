@@ -25,12 +25,12 @@ import { DropTypeAbilityButton } from '../abilityBars/AbilityButton';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import { hideModal, showModal } from '../../redux/modalsSlice';
 import { AbilitiesAPI } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
-import { webConf } from '../../dataSources/networkConfiguration';
 import { deleteAbility, setNowEditingAbilityId } from '../../redux/abilitiesSlice';
 import { toggleMenuWidget } from '../../redux/hudSlice';
 import { WIDGET_NAME_ABILITY_BUILDER } from '../abilityBuilder/AbilityBuilder';
 import { AbilityBarKind } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { AbilityBarSlotDropTargetData } from '../abilityBars/AbilityBarSlot';
+import { webConf } from '../../redux/networkConfiguration';
 
 const Root = 'HUD-AbilityBookPage-Root';
 const ListRoot = 'HUD-AbilityBookPage-ListRoot';
@@ -59,7 +59,6 @@ interface InjectedProps {
   abilityDisplayData: Dictionary<AbilityDisplayData>;
   editStatus: AbilityEditStatus;
   groups: Dictionary<AbilityGroup>;
-
   dispatch?: Dispatch;
 }
 

@@ -6,7 +6,7 @@
 
 // Final Stand: Ragnarok REST interface
 
-import { CurrentMax, ClassDefRef, PerkDefRef, PurchaseDefRef, RaceDefRef, RequestConfig, RequestResult, QuestDefRef, xhrRequest } from './prerequisites'
+import { ClassDefRef, PerkDefRef, PurchaseDefRef, RequestConfig, RequestResult, QuestDefRef, xhrRequest } from './prerequisites'
 
 export type AbilityInstanceID = number;
 export type AccountID = string;
@@ -85,18 +85,16 @@ export enum AnnouncementType {
 
 export enum AuthActionErrorCode {
   Unknown = 0,
-  NoActionRequired = 1,
-  Unauthorized = 2,
-  InvalidToken = 3,
-  CharacterNotFound = 4,
-  PermissionExpired = 5,
-  RenewalTimerExpired = 6,
-  TokenGenerationFailed = 7,
-  TokenAccessRevoked = 8,
-  InvalidEmailOrPassword = 9,
-  RequirePrivacyPolicyAcceptance = 10,
-  Throttled = 11,
-  NoScreenName = 12,
+  Unauthorized = 1,
+  InvalidToken = 2,
+  CharacterNotFound = 3,
+  PermissionExpired = 4,
+  RenewalTimerExpired = 5,
+  TokenGenerationFailed = 6,
+  InvalidEmailOrPassword = 7,
+  RequirePrivacyPolicyAcceptance = 8,
+  Throttled = 9,
+  NoScreenName = 10,
 }
 
 export enum BoneAlias {
@@ -307,25 +305,6 @@ export enum FieldCodes {
 
 export enum GenderNumericID {
   None = 0,
-}
-
-export enum MatchmakingAvailability {
-  Offline = 0,
-  NoAccess = 1,
-  Online = 2,
-}
-
-export enum ModifyScenaioResultCode {
-  Invalid = 0,
-  Success = 1,
-  InvalidScenarioID = 2,
-  NotSupported = 3,
-  InvalidParameter = 4,
-  DBError = 5,
-  InvalidShard = 6,
-  InvalidScenarioState = 7,
-  CallerNotFound = 8,
-  CharacterNotFound = 9,
 }
 
 export enum NPCRank {
@@ -587,12 +566,6 @@ export interface DoesNotExist {
   Message: string;
 }
 
-export interface EnterMatchmakingRequest {
-  Mode: string;
-  ShardID: ShardID;
-  CharacterID: CharacterID;
-}
-
 export interface Euler3f {
   roll: number;
   pitch: number;
@@ -612,10 +585,6 @@ export interface FactionInfo {
   id: number;
   name: string;
   shortName: string;
-}
-
-export interface ForceStartMatchRequest {
-  Mode: string;
 }
 
 export const GameDataAPI = {
@@ -697,12 +666,6 @@ export interface GroupActionError {
   Message: string;
 }
 
-export interface Health {
-  current: number;
-  max: number;
-  wounds: number;
-}
-
 export interface IActionError {
   Code: ActionErrorCode;
   Message: string;
@@ -739,18 +702,17 @@ export interface LoginThrottled {
   Message: string;
 }
 
-export interface ModifyScenarioError {
-  ModifyScenario: ModifyScenarioResult;
-  Message: string;
-  ErrorCode: ModifyScenaioResultCode;
-  CharacterID: CharacterID;
-  Code: FieldCodes;
-}
-
-export interface ModifyScenarioResult {
-  Code: ModifyScenaioResultCode;
-  CharacterID: CharacterID;
-  ErrorMessage: string;
+export const ModerationAPI = {
+  AppealWord: function(config: RequestConfig, word: string): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'post',
+      conf.url + 'v1/appeal/word',
+      { word },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 }
 
 export interface NotAllowedFieldCode {
@@ -806,6 +768,17 @@ export const PresenceAPI = {
     return xhrRequest(
       'get',
       conf.url + 'v1/presence/startingServer',
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  GetChatServer: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'get',
+      conf.url + 'v1/presence/chatServer',
       {},
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
@@ -1211,6 +1184,44 @@ export const ProfileAPI = {
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
+
+  LoadHistory: function(config: RequestConfig, historyID: string, offset: number, count: number): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'post',
+      conf.url + 'v1/profile/loadhistory/',
+      { historyID, offset, count },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+}
+
+export interface ProfileLog {
+  Head: string;
+  Offset: number;
+  Entries: ProfileLogEntry[];
+  MissingEntries: { [key: string]: number; };
+}
+
+export interface ProfileLogEntry {
+  HistoryID: string;
+  Notes: ProfileLogNote[];
+  RealMoneyTransactions: ProfileLogRMT[];
+  PerkDeltas: { [key: string]: number; };
+  Purchases: { [key: string]: number; };
+  QuestDeltas: { [key: string]: string; };
+  Reasons: string[];
+}
+
+export interface ProfileLogNote {
+  AccountID: string;
+  Text: string;
+}
+
+export interface ProfileLogRMT {
+  Vendor: string;
+  OrderID: string;
 }
 
 export interface Quest {
@@ -1261,32 +1272,27 @@ export interface ReportCrashResult {
 }
 
 export const ScenarioAPI = {
-  RewardThumbsUp: function(config: RequestConfig, scenarioID: ScenarioInstanceID, targetAccountID: AccountID): Promise<RequestResult> {
+  RewardThumbsUp: function(config: RequestConfig, scenarioInstanceID: ScenarioInstanceID, targetAccountID: AccountID): Promise<RequestResult> {
     const conf = config();
     return xhrRequest(
       'post',
       conf.url + 'v1/scenarios/rewardthumbsup',
-      { scenarioID, targetAccountID },
+      { scenarioInstanceID, targetAccountID },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
 
-  RevokeThumbsUp: function(config: RequestConfig, scenarioID: ScenarioInstanceID): Promise<RequestResult> {
+  RevokeThumbsUp: function(config: RequestConfig, scenarioInstanceID: ScenarioInstanceID): Promise<RequestResult> {
     const conf = config();
     return xhrRequest(
       'post',
       conf.url + 'v1/scenarios/revokethumbsup',
-      { scenarioID },
+      { scenarioInstanceID },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
-}
-
-export interface SelectChampionRequest {
-  ChampionID: string;
-  ChampionMetaData: { [key: string]: string; };
 }
 
 export interface ServerModel {
@@ -1304,10 +1310,6 @@ export interface ServiceUnavailableFieldCode {
   Message: string;
 }
 
-export interface SetMatchOverridesRequest {
-  MatchOverrides: { [key: string]: string; };
-}
-
 export interface SimpleCharacter {
   archetype: string;
   gender: string;
@@ -1316,15 +1318,6 @@ export interface SimpleCharacter {
   name: string;
   race: string;
   shardID: ShardID;
-}
-
-export interface StatusEffect {
-  id: string;
-  duration: number;
-  startTime: number;
-  name: string;
-  iconURL: string;
-  description: string;
 }
 
 export const TeamJoinAPI = {
@@ -1526,12 +1519,12 @@ export const VivoxAccessAPI = {
     );
   },
 
-  GetJoinMatchToken: function(config: RequestConfig): Promise<RequestResult> {
+  GetJoinMatchToken: function(config: RequestConfig, matchID: string): Promise<RequestResult> {
     const conf = config();
     return xhrRequest(
       'get',
       conf.url + 'v1/voice/tokens/joinMatch',
-      {},
+      { matchID },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );

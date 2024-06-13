@@ -4,85 +4,75 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import ExternalDataSource from '../redux/externalDataSource';
+import { statsSubscription, StatsSubscriptionResult } from './gameStatsNetworkingConstants';
 import {
-  statsQuery,
-  StatsQueryResult,
-  statsSubscription,
-  StatsSubscriptionResult
-} from './gameStatsNetworkingConstants';
-import { setStats, setThumbsUp } from '../redux/gameStatsSlice';
-import {
-  AccountID,
-  OvermindSummaryAlert,
-  ScenarioAlertCategory
-} from '@csegames/library/dist/hordetest/graphql/schema';
-import { game } from '@csegames/library/dist/_baseGame';
+  acceptGameStatsRequests,
+  GameStatsRequests,
+  resolveGameStatsRequests,
+  setStats
+} from '../redux/gameStatsSlice';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import { startProfileRefresh } from '../redux/profileSlice';
-import { MatchEndSequence, setMatchEnd } from '../redux/matchSlice';
+import { RootState } from '../redux/store';
+import { Dispatch } from 'redux';
+
+import { ScenarioAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
+import { showError } from '../redux/navigationSlice';
+import { webConf } from './networkConfiguration';
 
 export class GameStatsNetworkingService extends ExternalDataSource {
   protected async bind(): Promise<ListenerHandle[]> {
-    const scenarioID = this.reduxState.player?.scenarioID;
-    const shardID = game.shardID;
-
-    if (scenarioID == null) {
-      this.leaveOnFailure();
-      return [];
-    }
-
     return [
-      await this.query<StatsQueryResult>(
-        { query: statsQuery, variables: { scenarioID, shardID } },
-        this.handleStatsQueryResult.bind(this)
-      ),
       await this.subscribe<StatsSubscriptionResult>(
-        { operationName: 'stats', query: statsSubscription, variables: { scenarioID } },
-        this.handleSubscriptionUpdate.bind(this)
+        { operationName: 'overmind', query: statsSubscription },
+        this.handleSubscription.bind(this)
       )
     ];
   }
 
-  private handleStatsQueryResult(result: StatsQueryResult): void {
-    // Validate the result.
-    if (!result?.overmindsummary) {
-      console.warn('Received invalid response from GameStats fetch.');
-      this.leaveOnFailure();
+  protected onReduxUpdate(reduxState: RootState, dispatch: Dispatch): void {
+    super.onReduxUpdate(reduxState, dispatch);
+    const toProcess = this.reduxState.gameStats.requests.queued;
+    if (toProcess === null || this.reduxState.gameStats.requests.active !== null) {
       return;
     }
-    this.dispatch(setStats(result.overmindsummary));
+    this.dispatch(acceptGameStatsRequests(toProcess));
+    window.setTimeout(this.handleRequests.bind(this, toProcess), 0);
   }
 
-  private handleSubscriptionUpdate(statsResult: StatsSubscriptionResult) {
-    const result = statsResult?.scenarioAlerts;
-    if (!result) {
-      console.warn('Got invalid response from Stats subscription.', result);
-      return;
-    }
-    if (result.category !== ScenarioAlertCategory.Summary) return;
+  private async handleRequests(requests: GameStatsRequests): Promise<void> {
+    const instanceID = this.reduxState.gameStats.overmindSummary?.id;
 
-    const scenarioAlerts = result as OvermindSummaryAlert;
-    const thumbsUp: { [id: string]: [AccountID] } = {};
-    for (const summary of scenarioAlerts.summary.characterSummaries) {
-      const reward = summary.thumbsUpReward as string;
-      if (!reward || reward === '0000000000000000000000') continue;
-      if (thumbsUp[reward]) {
-        thumbsUp[reward].push(summary.accountID);
-      } else {
-        thumbsUp[reward] = [summary.accountID];
+    if (requests.setThumbsUp !== undefined && instanceID) {
+      const response =
+        requests.setThumbsUp === ''
+          ? await ScenarioAPI.RevokeThumbsUp(webConf, instanceID)
+          : await ScenarioAPI.RewardThumbsUp(webConf, instanceID, requests.setThumbsUp);
+      if (!response.ok) {
+        this.dispatch(showError(response));
+        this.dispatch(resolveGameStatsRequests({ setThumbsUp: requests.setThumbsUp }));
       }
     }
-    this.dispatch(setThumbsUp(thumbsUp));
+    // on success, we wait for graphql subscriptions to give us a state update vs.
+    // immediately clearing the request -- this enables a consistent view of the
+    // request lifecycle where we have our answer before the request is considered
+    // finished.  This will be less messy once we're actually using mutations and
+    // dual rest+graphql input systems have been consolidated.
   }
 
-  private leaveOnFailure(): void {
-    this.dispatch(startProfileRefresh());
-    this.dispatch(
-      setMatchEnd({
-        matchID: this.reduxState.match.currentRound?.roundID,
-        sequence: MatchEndSequence.GotoLobby,
-        refresh: true
-      })
-    );
+  private handleSubscription(update: StatsSubscriptionResult): void {
+    if (!update?.overmindSummaries) {
+      console.warn('Received invalid response from GameStats fetch.');
+      return;
+    }
+
+    this.dispatch(setStats(update.overmindSummaries));
+    if (update.overmindSummaries.matchID === this.reduxState.match.currentRound?.roundID) {
+      const character = update.overmindSummaries.characterSummaries?.find(
+        (c) => c.accountID == this.reduxState.user.id
+      );
+      if (character) {
+        this.dispatch(resolveGameStatsRequests({ setThumbsUp: character.thumbsUpReward ?? '' }));
+      }
+    }
   }
 }

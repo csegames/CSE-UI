@@ -8,10 +8,10 @@ import { engine } from '../engine';
 import { ListenerHandle } from '../listenerHandle';
 import { EventEmitter } from '../types/EventEmitter';
 
-export type NetworkFailureListener = (errorMsg:string, errorCode:number, fatal:boolean) => void;
+export type NetworkFailureListener = (errorMsg: string, errorCode: number, fatal: boolean) => void;
 
 export interface NetworkEventMocks {
-  triggerNetworkFailure(errorMsg:string, errorCode:number, fatal:boolean): void;
+  triggerNetworkFailure(errorMsg: string, errorCode: number, fatal: boolean): void;
 }
 
 export interface NetworkFunctions {
@@ -32,7 +32,7 @@ class NetworkFunctionsBase implements NetworkFunctions, NetworkEventMocks {
     return this.bindNetworkFailureInternal(listener);
   }
 
-  triggerNetworkFailure(errorMsg:string, errorCode:number, fatal:boolean) {
+  triggerNetworkFailure(errorMsg: string, errorCode: number, fatal: boolean) {
     this.events.trigger(networkFailureEventName, errorMsg, errorCode, fatal);
   }
 

@@ -5,78 +5,38 @@
  */
 
 import * as React from 'react';
-import { initChat } from './state/chat';
 import { Pane } from './views/Pane';
-import { chat } from './state/chat';
 import { ChatPaneState } from '../../../../redux/chatSlice';
 import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
-import { game } from '@csegames/library/dist/_baseGame';
-import { SlashCommandRegistry } from '@csegames/library/dist/_baseGame/slashCommandRegistry';
 
 const Screen = 'Chat-Screen';
 
-interface ReactProps {
-  slashCommands: SlashCommandRegistry<RootState>;
-}
+interface ReactProps {}
 
 interface InjectedProps {
   panesArr: ChatPaneState[];
-  host: string;
 }
 
 type Props = ReactProps & InjectedProps;
 
 class Chat extends React.Component<Props> {
-  private chatInitTimeout: number;
   public render() {
     return (
       <div id={'chat'} className={Screen}>
         {this.props.panesArr.map((pane) => (
-          <Pane slashCommands={this.props.slashCommands} key={pane.id} paneID={pane.id} />
+          <Pane key={pane.id} paneID={pane.id} />
         ))}
       </div>
     );
-  }
-
-  public componentDidMount() {
-    this.tryInitChat();
-  }
-
-  public componentWillUnmount() {
-    if (this.chatInitTimeout) {
-      window.clearTimeout(this.chatInitTimeout);
-      this.chatInitTimeout = null;
-    }
-  }
-
-  private tryInitChat() {
-    let inittedChat = false;
-    if (game.isConnectedToServer) {
-      if (!chat || !chat.connected) {
-        var host = game.serverHost;
-        if (this.props.host) {
-          host = this.props.host;
-        }
-
-        inittedChat = initChat(game, host);
-      }
-    }
-
-    if (!inittedChat) {
-      // Retry to init chat every second
-      this.chatInitTimeout = window.setTimeout(this.tryInitChat.bind(this), 1000);
-    }
   }
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { panes } = state.chat;
   const panesArr = Object.values(panes);
-  const host = state.match.currentRound?.serverName;
   return {
     ...ownProps,
-    host,
     panesArr
   };
 }
