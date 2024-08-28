@@ -7,7 +7,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { FactionData } from '../../redux/gameDefsSlice';
 import { RootState } from '../../redux/store';
 import { Theme } from '../../themes/themeConstants';
 import ContextMenuSource from '../ContextMenuSource';
@@ -20,6 +19,7 @@ import { KeybindSequencer } from '../input/KeybindSequencer';
 import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { WIDGET_NAME_ABILITY_BOOK } from '../abilityBook/AbilityBook';
 import { toggleMenuWidget } from '../../redux/hudSlice';
+import { FactionDef } from '../../dataSources/manifest/factionManifest';
 
 // Styles
 const Root = 'HUD-AbilityBarSlot-Root';
@@ -42,7 +42,7 @@ interface ReactProps {
 interface InjectedProps {
   layout: ButtonLayout;
   groupID: number;
-  myFaction: FactionData;
+  myFaction: FactionDef;
   currentTheme: Theme;
   inEditMode: boolean;
   keybinds: Dictionary<Keybind>;
@@ -73,7 +73,7 @@ class AAbilityBarSlot extends React.Component<Props> {
       >
         {showEmptySlot ? (
           <>
-            <img className={EmptySlot} draggable={false} src={this.props.myFaction?.emptyAbilitySlotURL} />
+            <img className={EmptySlot} draggable={false} src={this.props.myFaction?.abilityBarEmptySlotImage} />
             <div className={GoToAbilityBookButton} onMouseDown={this.navigateToAbilityBook.bind(this)}>
               +
             </div>

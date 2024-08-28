@@ -96,14 +96,14 @@ class ALobbyCurrencyHeader extends React.Component<Props> {
     // Only open the PurchaseGems overlay if there are actually gems available to purchase!
     if ((this.props.rmtPurchases?.length ?? 0) > 0) {
       this.props.dispatch(showOverlay(Overlay.PurchaseGems));
-      game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_STORE_OPEN);
+      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_STORE_OPEN);
     }
   }
 
   private onQuestXPClick(): void {
     this.props.dispatch(updateStoreCurrentRoute(StoreRoute.QuestXP));
     this.props.dispatch(navigateTo(LobbyView.Store));
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_STORE_OPEN);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_STORE_OPEN);
   }
 
   private getHardCurrencyIconURL(): string {

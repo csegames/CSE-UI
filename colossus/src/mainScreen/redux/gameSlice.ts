@@ -9,12 +9,13 @@ import { ConsumableItemsStateModel } from '@csegames/library/dist/hordetest/game
 import { CharacterClassDef, CharacterRaceDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
 import { ConsumableItem } from '@csegames/library/dist/hordetest/game/types/Consumables';
 import { EntityDirection } from '@csegames/library/dist/hordetest/game/types/EntityDirection';
-import { StatusDef } from '@csegames/library/dist/_baseGame/types/StatusDef';
 import { ObjectiveDetailCategory, ObjectiveDetailMessageState } from '@csegames/library/dist/_baseGame/types/Objective';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { GameInterface } from '@csegames/library/dist/hordetest/game/GameInterface';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AbilityDisplayDef } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
+import { StatusDef } from '../dataSources/manifest/statusManifest';
+import { StatDefinitionGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 
 export interface IDLookupTable<T> {
   [id: number]: T;
@@ -25,7 +26,9 @@ export interface ObjectiveDetailsList {
 }
 
 interface CustomGameReduxState {
-  statusDefs: IDLookupTable<StatusDef>; //hold a list of StatusDefinitions keyed by ID instead of as a blind array.
+  statDefs: Dictionary<StatDefinitionGQL>;
+  statusDefsByID: Dictionary<StatusDef>;
+  statusDefsByNumericID: IDLookupTable<StatusDef>; //hold a list of StatusDefinitions keyed by ID instead of as a blind array.
   abilityDisplayDefs: IDLookupTable<AbilityDisplayDef>;
   characterClassDefs: IDLookupTable<CharacterClassDef>; //hold a list of character class definitions by id.
   objectiveDetailsPrimary: ObjectiveDetailsList;
@@ -33,6 +36,7 @@ interface CustomGameReduxState {
   characterRaceDefs: IDLookupTable<CharacterRaceDef>;
   playerDirections: Dictionary<EntityDirection>; // character name -> direction
   entityDirections: Dictionary<EntityDirection>; // entityID -> direction
+  useClientResourceManifests: boolean;
 }
 
 type GameReduxState = CustomGameReduxState & Partial<GameInterface>;
@@ -51,7 +55,9 @@ export function createDefaultItem(itemIndex: number): any {
 
 const DefaultGameState: GameReduxState = {
   //CustomGameReduxState Fields
-  statusDefs: {},
+  statDefs: {},
+  statusDefsByID: {},
+  statusDefsByNumericID: {},
   abilityDisplayDefs: {},
   characterClassDefs: {},
   objectiveDetailsPrimary: {},
@@ -76,7 +82,8 @@ const DefaultGameState: GameReduxState = {
     onReady: null
   },
   playerDirections: {},
-  entityDirections: {}
+  entityDirections: {},
+  useClientResourceManifests: true
 };
 
 export const gameSlice = createSlice({
@@ -92,8 +99,28 @@ export const gameSlice = createSlice({
     updateRaceDefs: (state: GameReduxState, action: PayloadAction<IDLookupTable<CharacterRaceDef>>) => {
       state.characterRaceDefs = action.payload;
     },
-    updateStatusDefs: (state: GameReduxState, action: PayloadAction<IDLookupTable<StatusDef>>) => {
-      state.statusDefs = action.payload;
+    updateStatDefs: (state: GameReduxState, action: PayloadAction<Dictionary<StatDefinitionGQL>>) => {
+      state.statDefs = action.payload;
+    },
+    updateStatusDefs: {
+      reducer: (
+        state: GameReduxState,
+        action: PayloadAction<{
+          statusDefsByID: Dictionary<StatusDef>;
+          statusDefsByNumericID: IDLookupTable<StatusDef>;
+        }>
+      ) => {
+        state.statusDefsByID = action.payload.statusDefsByID;
+        state.statusDefsByNumericID = action.payload.statusDefsByNumericID;
+      },
+      prepare: (statusDefsByID: Dictionary<StatusDef>, statusDefsByNumericID: IDLookupTable<StatusDef>) => {
+        return {
+          payload: {
+            statusDefsByID,
+            statusDefsByNumericID
+          }
+        };
+      }
     },
     updateObjectiveDetails: (state: GameReduxState, action: PayloadAction<ObjectiveDetailsList>) => {
       for (const messageID in action.payload) {
@@ -146,6 +173,9 @@ export const gameSlice = createSlice({
       action.payload.forEach((directionID) => {
         delete state.entityDirections[directionID];
       });
+    },
+    setUseClientResourceManifests: (state: GameReduxState, action: PayloadAction<boolean>) => {
+      state.useClientResourceManifests = action.payload;
     }
   }
 });
@@ -154,6 +184,7 @@ export const {
   updateAbilityDisplayDefs,
   updateClassDefs,
   updateRaceDefs,
+  updateStatDefs,
   updateStatusDefs,
   updateObjectiveDetails,
   removeObjectiveDetails,
@@ -162,5 +193,6 @@ export const {
   updatePlayerDirections,
   removePlayerDirections,
   updateEntityDirections,
-  removeEntityDirections
+  removeEntityDirections,
+  setUseClientResourceManifests
 } = gameSlice.actions;

@@ -8,18 +8,12 @@ import { game } from '@csegames/library/dist/_baseGame';
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {
-  HUDHorizontalAnchor,
-  HUDLayer,
-  HUDVerticalAnchor,
-  HUDWidgetRegistration,
-  addMenuWidgetExiting,
-  toggleMenuWidget
-} from '../redux/hudSlice';
+import { HUDLayer, HUDWidgetRegistration, addMenuWidgetExiting, toggleMenuWidget } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
 import { Menu } from './menu/Menu';
 import { WIDGET_NAME_SETTINGS } from './Settings';
 import { Button } from './Button';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 const Root = 'HUD-GameMenu-Root';
 const Container = 'HUD-GameMenu-Container';

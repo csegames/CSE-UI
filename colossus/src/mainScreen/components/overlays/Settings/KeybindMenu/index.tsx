@@ -230,7 +230,7 @@ export class AKeybindMenu extends React.Component<Props, State> {
   };
 
   private onStartBind = (keybind: Keybind, index: number) => {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP);
     this.setState({ keybindMode: KeybindMode.ListeningForKey, keybindListening: keybind, index });
     this.keybindListenPromise = game.listenForKeyBindingAsync();
 
@@ -241,7 +241,7 @@ export class AKeybindMenu extends React.Component<Props, State> {
   };
 
   private onRemoveBind = (keybind: Keybind, index: number) => {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP);
     this.setState({
       keybindMode: KeybindMode.ConfirmRemoveBind,
       keybindListening: keybind,

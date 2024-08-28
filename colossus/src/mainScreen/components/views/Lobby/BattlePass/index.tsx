@@ -37,7 +37,6 @@ import {
 } from '../../../../redux/navigationSlice';
 import { updateSelectedChampion } from '../../../../redux/championInfoSlice';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { startProfileRefresh } from '../../../../redux/profileSlice';
 import { game } from '@csegames/library/dist/_baseGame';
 import {
   getCurrentBattlePassPremiumPurchaseDef,
@@ -62,13 +61,14 @@ import {
 } from '../../../../helpers/stringTableHelpers';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { StarBadge } from '../../../../../shared/components/StarBadge';
-import { battlePassLocalStore } from '../../../../localStorage/battlePassLocalStorage';
 import { QuestXPButton } from '../QuestXPButton';
 import { ConfirmPurchase } from '../../../rightPanel/ConfirmPurchase';
 import TooltipSource from '../../../../../shared/components/TooltipSource';
 import { createAlertsForCollectedQuestProgress } from '../../../../helpers/perkUtils';
 import { RequestResult } from '@csegames/library/dist/_baseGame/types/Request';
 import { webConf } from '../../../../dataSources/networkConfiguration';
+import { refreshProfile } from '../../../../dataSources/profileNetworking';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const BattlePassBGImage = 'StartScreen-BattlePassBGImage';
 const Container = 'BattlePass-Container';
@@ -226,9 +226,6 @@ class ABattlePass extends React.Component<Props, State> {
   }
 
   render() {
-    // See if we need to show a prestitial before letting the player advance to the BP screen.
-    this.checkForPrestitial();
-
     // Until we have calculated our initial state, don't render.
     if (!this.state.displayedBattlePass) {
       return null;
@@ -354,16 +351,18 @@ class ABattlePass extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
+    this.checkForPrestitial();
     // If we're viewing a battlepass for the first time, mark it as seen.
     if (this.props.currentBattlePass) {
-      const lastSeenBattlePassID = battlePassLocalStore.getLastSeenBattlePassID();
+      const lastSeenBattlePassID = clientAPI.getLastSeenBattlePassID();
       if (lastSeenBattlePassID !== this.props.currentBattlePass.id) {
-        battlePassLocalStore.setLastSeenBattlePassID(this.props.currentBattlePass.id);
+        clientAPI.setLastSeenBattlePassID(this.props.currentBattlePass.id);
       }
     }
   }
 
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot?: any): void {
+    this.checkForPrestitial();
     if (this.props.quests !== prevProps.quests || this.props.currentBattlePass !== prevProps.currentBattlePass) {
       this.updateBattlePassState();
     }
@@ -463,7 +462,7 @@ class ABattlePass extends React.Component<Props, State> {
       this.props.previousBattlePass &&
       shouldShowEndedBattlePassModal(this.props.previousBattlePass.id, this.props.questsProgress)
     ) {
-      battlePassLocalStore.setLastEndedBattlePassID(this.props.previousBattlePass.id);
+      clientAPI.setLastEndedBattlePassID(this.props.previousBattlePass.id);
       this.props.dispatch(showOverlay(Overlay.EndedBattlePassModal));
       return;
     }
@@ -492,7 +491,7 @@ class ABattlePass extends React.Component<Props, State> {
     // from the Lobby/Play tab.
     if (this.props.currentBattlePass && shouldShowBattlePassSplashScreen(this.props.currentBattlePass.id)) {
       // Make sure we don't double-splash.
-      battlePassLocalStore.setLastSplashedBattlePassID(this.props.currentBattlePass.id);
+      clientAPI.setLastSplashedBattlePassID(this.props.currentBattlePass.id);
       // Show the splash.
       this.props.dispatch(showOverlay(Overlay.NewBattlePassModal));
       return;
@@ -508,13 +507,13 @@ class ABattlePass extends React.Component<Props, State> {
       );
       const cost = premiumPurchase?.costs?.[0]?.qty ?? 0;
       const isFree = cost === 0;
-      const lastSeenFreeBattlePassID = battlePassLocalStore.getLastSeenFreeBattlePassID();
+      const lastSeenFreeBattlePassID = clientAPI.getLastSeenFreeBattlePassID();
       if (isFree && lastSeenFreeBattlePassID !== this.props.currentBattlePass.id && !!premiumPurchase) {
         // ... show the "you get BP for free" popup.
         this.props.dispatch(showOverlay(Overlay.FreeBattlePassModal));
 
         // And update the "last seen" ID.
-        battlePassLocalStore.setLastSeenFreeBattlePassID(this.props.currentBattlePass.id);
+        clientAPI.setLastSeenFreeBattlePassID(this.props.currentBattlePass.id);
       }
     }
   }
@@ -1033,7 +1032,7 @@ class ABattlePass extends React.Component<Props, State> {
   }
 
   private onLinkClicked(link: QuestLinkDefGQL, index: number, isPremium: boolean): void {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CHARACTER_SELECT_LOCK_IN);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CHARACTER_SELECT_LOCK_IN);
     this.setState({ selectedLink: link, selectedIndex: index, isSelectionPremium: isPremium });
   }
 
@@ -1087,7 +1086,13 @@ class ABattlePass extends React.Component<Props, State> {
       if (res.ok) {
         const quest: QuestDefGQL = this.props.questsById[questId];
         const questProgress: QuestGQL = this.props.quests.find((q) => q.id == questId);
-        createAlertsForCollectedQuestProgress(quest, questProgress, this.props.perksByID, this.props.dispatch);
+        createAlertsForCollectedQuestProgress(
+          quest,
+          questProgress,
+          this.props.perksByID,
+          this.props.champions,
+          this.props.dispatch
+        );
 
         // A summation toaster, rather than one for each item.
         game.trigger(
@@ -1099,7 +1104,7 @@ class ABattlePass extends React.Component<Props, State> {
         );
 
         // Get the new data.
-        this.props.dispatch(startProfileRefresh());
+        refreshProfile();
       } else {
         this.props.dispatch(showError(res));
       }

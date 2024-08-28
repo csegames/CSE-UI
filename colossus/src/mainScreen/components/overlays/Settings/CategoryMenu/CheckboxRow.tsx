@@ -26,11 +26,11 @@ export function CheckboxRow(props: Props) {
     const newOption = cloneDeep(props.option);
     newOption.value = !newOption.value;
     props.onChange(newOption);
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
   }
 
   function onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   const checkboxClassName = props.option.value === true ? 'on' : 'off';

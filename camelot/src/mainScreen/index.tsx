@@ -41,6 +41,7 @@ import { SelfPlayerStateService } from './dataSources/selfPlayerStateService';
 import { WarbandService } from './dataSources/warbandService';
 import { ZonesService } from './dataSources/zonesService';
 import { LoadingScreen } from '../loadingScreen/components/LoadingScreen';
+import { ManifestDefService } from './dataSources/manifest/manifestDefService';
 
 initializeSentry();
 
@@ -66,6 +67,7 @@ ReactDom.render(
       <InventoryService />
       <KeyActionsService />
       <KeybindsService />
+      <ManifestDefService />
       <ScenarioService />
       <SelfPlayerStateService />
       <WarbandService />

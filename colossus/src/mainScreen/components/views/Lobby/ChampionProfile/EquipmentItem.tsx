@@ -106,7 +106,7 @@ class AEquipmentItem extends React.Component<Props> {
       this.props.onClick(this.props.perk);
     }
 
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
   }
 
   private onDoubleClick() {
@@ -120,7 +120,7 @@ class AEquipmentItem extends React.Component<Props> {
       this.props.onMouseEnter(this.props.perk);
     }
 
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 }
 

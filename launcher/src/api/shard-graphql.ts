@@ -1017,7 +1017,6 @@ export interface MyEquippedItems {
   items: (EquippedItem | null)[] | null;
   readiedGearSlots: (GearSlotDefRef | null)[] | null;
   resistances: (StatGQL | null)[] | null;
-  totalMass: Decimal | null;
 }
 /** World.EquippedItem */
 export interface EquippedItem {
@@ -1029,7 +1028,6 @@ export interface MyInventory {
   itemCount: number | null;
   items: (Item | null)[] | null;
   nestedItemCount: number | null;
-  totalMass: Decimal | null;
 }
 /** CU.Groups.Order */
 export interface Order extends IGroup {

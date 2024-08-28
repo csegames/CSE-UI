@@ -94,7 +94,6 @@ class AItemTooltip extends React.Component<Props> {
               statID={ItemStatID.Quality}
               showEmptyValue
             />
-            <ItemStat item={this.props.items[0]} statID={ItemStatID.TotalMass} showEmptyValue />
             <ItemStat
               color={this.props.items[0].location.equipped ? '#555' : '#999'}
               item={this.props.items[0]}

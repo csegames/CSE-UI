@@ -7,20 +7,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { LobbyView } from './navigationSlice';
 
-export enum NotificationsMessageSeverity {
+export interface MessageData {
+  id: string;
+}
+
+export enum NotificationsSeverity {
   INFO = 'info',
   WARNING = 'warning',
   ERROR = 'error'
 }
 
-export interface MessageData {
-  id: string;
-}
-
-export interface NotificationsMessageData extends MessageData {
+export interface PinnedNoticeMessageData extends MessageData {
   title: string;
   body: string;
-  severity: NotificationsMessageSeverity;
+  severity: NotificationsSeverity;
   time: string;
 }
 
@@ -42,32 +42,43 @@ export interface EventAdvertisementPanelMessageData extends MessageData {
   time: string;
 }
 
-export interface MOTDModalData {
+export interface MOTDMessageData extends MessageData {
   image: string;
   title: string;
   body: string;
-}
-
-export interface MOTDMessageData extends MessageData {
-  modal: MOTDModalData;
   time: string;
+}
+export interface WarningBroadcastMessageData extends MessageData {
+  image: string;
+  title: string;
+  severity: NotificationsSeverity;
+  countdown?: {
+    current: number;
+    endsAt: number;
+    max: number;
+  };
+  modalCountdownSeconds?: number;
 }
 
 interface NotificationsState {
   eventAdvertisementPanelMessagesData: EventAdvertisementPanelMessageData[];
   motdMessagesData: MOTDMessageData[];
-  notificationsMessagesData: NotificationsMessageData[];
+  pinnedNoticesMessagesData: PinnedNoticeMessageData[];
+  warningBroadcastMessageData: WarningBroadcastMessageData | null;
   eventAdvertisementModalMessage: EventAdvertisementPanelMessageData | null;
   motdModalMessage: MOTDMessageData | null;
+  warningBroadcastModalMessage: WarningBroadcastMessageData | null;
   seenMOTD: string | null;
 }
 
 const initialState: NotificationsState = {
   eventAdvertisementPanelMessagesData: [],
   motdMessagesData: [],
-  notificationsMessagesData: [],
+  pinnedNoticesMessagesData: [],
+  warningBroadcastMessageData: null,
   eventAdvertisementModalMessage: null,
   motdModalMessage: null,
+  warningBroadcastModalMessage: null,
   seenMOTD: null
 };
 
@@ -94,13 +105,16 @@ export const notificationsSlice = createSlice({
         state.motdMessagesData[index] = action.payload;
       }
     },
-    addNotificationsMessageData: (state: NotificationsState, action: PayloadAction<NotificationsMessageData>) => {
-      const index = state.notificationsMessagesData.findIndex((message) => message.id === action.payload.id);
+    addPinnedNoticeMessageData: (state: NotificationsState, action: PayloadAction<PinnedNoticeMessageData>) => {
+      const index = state.pinnedNoticesMessagesData.findIndex((message) => message.id === action.payload.id);
       if (index === -1) {
-        state.notificationsMessagesData.unshift(action.payload);
+        state.pinnedNoticesMessagesData.unshift(action.payload);
       } else {
-        state.notificationsMessagesData[index] = action.payload;
+        state.pinnedNoticesMessagesData[index] = action.payload;
       }
+    },
+    addWarningBroadcastMessageData: (state: NotificationsState, action: PayloadAction<WarningBroadcastMessageData>) => {
+      state.warningBroadcastMessageData = action.payload;
     },
     removeEventAdvertisementPanelMessageData: (state: NotificationsState, action: PayloadAction<string>) => {
       state.eventAdvertisementPanelMessagesData = state.eventAdvertisementPanelMessagesData.filter(
@@ -110,10 +124,15 @@ export const notificationsSlice = createSlice({
     removeMOTDMessageData: (state: NotificationsState, action: PayloadAction<string>) => {
       state.motdMessagesData = state.motdMessagesData.filter((message) => message.id !== action.payload);
     },
-    removeNotificationsMessageData: (state: NotificationsState, action: PayloadAction<string>) => {
-      state.notificationsMessagesData = state.notificationsMessagesData.filter(
+    removePinnedNoticeMessageData: (state: NotificationsState, action: PayloadAction<string>) => {
+      state.pinnedNoticesMessagesData = state.pinnedNoticesMessagesData.filter(
         (message) => message.id !== action.payload
       );
+    },
+    removeWarningBroadcastMessageData: (state: NotificationsState, action: PayloadAction<string>) => {
+      if (state.warningBroadcastMessageData.id === action.payload) {
+        state.warningBroadcastMessageData = null;
+      }
     },
     setEventAdvertisementPanelModalMessage: (
       state: NotificationsState,
@@ -124,6 +143,18 @@ export const notificationsSlice = createSlice({
     setMOTDModalMessage: (state: NotificationsState, action: PayloadAction<MOTDMessageData>) => {
       state.motdModalMessage = action.payload;
     },
+    setWarningBroadcastModalMessage: (
+      state: NotificationsState,
+      action: PayloadAction<WarningBroadcastMessageData>
+    ) => {
+      state.warningBroadcastModalMessage = action.payload;
+    },
+    updateWarningBroadcastCountdown: (state: NotificationsState, action: PayloadAction<[string, number]>) => {
+      const [id, current] = action.payload;
+      if (state.warningBroadcastMessageData.id === id && state.warningBroadcastMessageData.countdown) {
+        state.warningBroadcastMessageData.countdown.current = current;
+      }
+    },
     setSeenMOTD: (state: NotificationsState, action: PayloadAction<string>) => {
       state.seenMOTD = action.payload;
     }
@@ -133,10 +164,14 @@ export const notificationsSlice = createSlice({
 export const {
   addEventAdvertisementPanelMessageData,
   addMOTDMessageData,
-  addNotificationsMessageData,
+  addPinnedNoticeMessageData,
+  addWarningBroadcastMessageData,
   removeEventAdvertisementPanelMessageData,
   removeMOTDMessageData,
-  removeNotificationsMessageData,
+  removePinnedNoticeMessageData,
+  removeWarningBroadcastMessageData,
+  setWarningBroadcastModalMessage,
+  updateWarningBroadcastCountdown,
   setEventAdvertisementPanelModalMessage,
   setMOTDModalMessage,
   setSeenMOTD

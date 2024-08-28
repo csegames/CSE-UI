@@ -97,7 +97,6 @@ export interface CUQuery {
   patchNotes: (PatchNote | null)[] | null /** Gets patch notes */;
   serverBuildNumber: number | null /** Build number for the actively running server */;
   serverTimestamp: string | null /** Retrieve the current time on the server. */;
-  status: Status | null /** Information about statuses */;
 }
 /** CU.WebApi.GraphQL.ChampionCostumeInfo */
 export interface ChampionCostumeInfo {
@@ -116,11 +115,13 @@ export interface ChampionCostumeInfo {
 export interface ChampionInfo {
   abilities: (ChampionAbility | null)[] | null;
   championSelectSound: number | null;
-  defaultLoadout: ItemLoadoutDefRef | null;
   description: string | null;
   id: string | null;
   name: string | null;
+  progressionCurrencyID: string | null;
   questID: string | null;
+  runeModUnlockCurrencyID: string | null;
+  sortOrder: number | null;
   uIColor: number | null;
 }
 /** CU.WebApi.GraphQL.ChampionAbility */
@@ -128,10 +129,6 @@ export interface ChampionAbility {
   description: string | null;
   iconClass: string | null;
   name: string | null;
-}
-/** CSE.GameplayDefs.ItemLoadoutDefRef */
-export interface ItemLoadoutDefRef {
-  id: string | null;
 }
 /** ServerLib.ApiModels.Channel */
 export interface Channel {
@@ -154,6 +151,7 @@ export interface ProfileGQL {
   lifetimeStats: (MatchStatsGQL | null)[] | null;
   perks: (PerkGQL | null)[] | null;
   profileID: ProfileID | null;
+  progressionNodes: (string | null)[] | null;
   quests: (QuestGQL | null)[] | null;
   timeOffsetSeconds: number | null;
 }
@@ -226,23 +224,23 @@ export interface DebugSessionStatus {
 export interface DebugSession {
   allocated: ProfileDateTime | null;
   completed: ProfileDateTime | null;
+  configured: ProfileDateTime | null;
   created: ProfileDateTime | null;
   createdBy: Player | null;
   ended: ProfileDateTime | null;
   error: Error | null;
+  gameServerAddress: string | null;
   overrideSheetID: string | null;
   overrideTabID: string | null;
   revision: number | null;
   roundID: string | null;
   scenarioID: string | null;
-  serverName: string | null;
-  serverPort: number | null;
   started: ProfileDateTime | null;
   zoneID: string | null;
 }
 /** CU.WebApi.Models.Common.Player */
 export interface Player {
-  defaultChampion: Champion | null;
+  champion: Champion | null;
   displayName: string | null;
   id: string | null;
 }
@@ -267,18 +265,15 @@ export interface Field {
 /** ServerLib.Game.GameDefsGQLData */
 export interface GameDefsGQLData {
   baseStatValues: (StatBonusGQL | null)[] | null /** Base stat values which apply to all races */;
-  itemLoadouts: (ItemLoadoutDefRef | null)[] | null /** Static information about item loadouts */;
+  manifests: (ManifestDef | null)[] | null;
   perks: (PerkDefGQL | null)[] | null /** Static information about perks */;
+  progressionNodes: (ProgressionNodeDef | null)[] | null /** Static information about progression nodes */;
   purchases: (PurchaseDefGQL | null)[] | null /** Static information about possible purchases */;
   quests: (QuestDefGQL | null)[] | null /** Static information about quests */;
   raceStatMods:
     | (RaceStatBonuses | null)[]
     | null /** Stat modifiers that are applied additively to the base stat value for each Race */;
   rMTPurchases: (RMTPurchaseDefGQL | null)[] | null /** Static information about possible RMT purchases */;
-  runeModDisplay:
-    | (RuneModLevelDisplayDef | null)[]
-    | null /** Static information about the display of the rune mod UI before you hit the first level */;
-  runeModLevels: (number | null)[] | null /** Static information about rune mod levels */;
   scenarios: (ScenarioDefGQL | null)[] | null /** Static information about scenarios */;
   settings: GameSettingsDef | null /** Static information about game settings */;
   stats: (StatDefinitionGQL | null)[] | null /** Array of definitions for all available stats */;
@@ -288,6 +283,12 @@ export interface GameDefsGQLData {
 export interface StatBonusGQL {
   amount: Decimal | null;
   stat: string | null;
+}
+/** ServerLib.GraphQL.Types.ManifestDefGQL */
+export interface ManifestDef {
+  contents: string | null;
+  id: string | null;
+  schemaVersion: number | null;
 }
 /** ServerLib.GraphQL.Models.PerkDefGQL */
 export interface PerkDefGQL {
@@ -306,11 +307,14 @@ export interface PerkDefGQL {
   portraitThumbnailURL: string | null;
   questType: QuestType | null;
   rarity: PerkRarity | null;
-  runeModLevel: number | null;
+  runeModTier: number | null;
   showIfUnowned: boolean | null;
   sortOrder: number | null;
+  statAmount: Decimal | null;
+  statID: string | null;
+  statOperation: LAEOp | null;
   videoURL: string | null;
-  weapon: ItemLoadoutDefRef | null;
+  weaponID: string | null;
   xPAmount: number | null;
 }
 /** CSE.GameplayDefs.ClassDefRef */
@@ -326,17 +330,19 @@ export interface RaceDefRef {
   name: string | null;
   numericID: number | null;
 }
-/** ServerLib.GraphQL.Models.PurchaseDefGQL */
-export interface PurchaseDefGQL {
-  bonusDescription: string | null;
+/** ServerLib.GraphQL.Types.ColossusProgressionNodeDefGQL */
+export interface ProgressionNodeDef {
+  championID: string | null;
+  childrenIDs: (string | null)[] | null;
   costs: (CostDefGQL | null)[] | null;
-  description: string | null;
-  iconURL: string | null;
+  icon: string | null;
   id: string | null;
   locks: (ProfileLockDefGQL | null)[] | null;
   name: string | null;
-  perks: (PurchaseRewardDefGQL | null)[] | null;
-  sortOrder: number | null;
+  parentIDs: (string | null)[] | null;
+  positionX: Decimal | null;
+  positionY: Decimal | null;
+  rewards: (PerkRewardDefGQL | null)[] | null;
 }
 /** ServerLib.GraphQL.Models.CostDefGQL */
 export interface CostDefGQL {
@@ -346,8 +352,30 @@ export interface CostDefGQL {
 /** ServerLib.GraphQL.Models.ProfileLockDefGQL */
 export interface ProfileLockDefGQL {
   endTime: string | null;
+  invertConditions: boolean | null;
   perkID: string | null;
+  progressionNodeID: string | null;
+  questID: string | null;
+  questLevel: number | null;
   startTime: string | null;
+}
+/** ServerLib.GraphQL.Models.PerkRewardDefGQL */
+export interface PerkRewardDefGQL {
+  perkID: string | null;
+  qty: number | null;
+}
+/** ServerLib.GraphQL.Models.PurchaseDefGQL */
+export interface PurchaseDefGQL {
+  backgroundURL: string | null;
+  bonusDescription: string | null;
+  costs: (CostDefGQL | null)[] | null;
+  description: string | null;
+  iconURL: string | null;
+  id: string | null;
+  locks: (ProfileLockDefGQL | null)[] | null;
+  name: string | null;
+  perks: (PurchaseRewardDefGQL | null)[] | null;
+  sortOrder: number | null;
 }
 /** ServerLib.GraphQL.Models.PurchaseRewardDefGQL */
 export interface PurchaseRewardDefGQL {
@@ -387,11 +415,6 @@ export interface QuestLinkDefGQL {
   rewardNameOverride: string | null;
   rewards: (PerkRewardDefGQL | null)[] | null;
 }
-/** ServerLib.GraphQL.Models.PerkRewardDefGQL */
-export interface PerkRewardDefGQL {
-  perkID: string | null;
-  qty: number | null;
-}
 /** ServerLib.Game.RaceStatBonuses */
 export interface RaceStatBonuses {
   race: number | null;
@@ -408,18 +431,16 @@ export interface RMTPurchaseDefGQL {
   name: string | null;
   perks: (PerkRewardDefGQL | null)[] | null;
 }
-/** CSE.GameplayDefs.RuneModLevelDisplayDef */
-export interface RuneModLevelDisplayDef {
-  icon: string | null;
-  runeCount: number | null;
-}
 /** ServerLib.GraphQL.Types.ScenarioDefGQL */
 export interface ScenarioDefGQL {
+  applyChampionUpgrades: boolean | null;
   description: string | null;
   id: string | null;
   loadingBackgroundImage: string | null;
   name: string | null;
+  showLeaderboardTab: boolean | null;
   showPlayerProgressionTab: boolean | null;
+  showScoreAsRank: boolean | null;
   summaryBackgroundImage: string | null;
 }
 /** CSE.GameplayDefs.GameSettingsDef */
@@ -431,6 +452,7 @@ export interface GameSettingsDef {
   maxEmoteCount: number | null;
   minCharacterNameLength: number | null;
   normalDailyQuestCount: number | null;
+  runeModTiers: number | null;
   startingAttributePoints: number | null;
   storeTabConfigs: (StoreTabConfig | null)[] | null;
   traitsMaxPoints: number | null;
@@ -445,6 +467,7 @@ export interface StoreTabConfig {
 export interface StatDefinitionGQL {
   addPointsAtCharacterCreation: boolean | null;
   description: string | null;
+  displayType: StatDisplayType | null;
   id: string | null;
   itemRequirementStat: string | null;
   name: string | null;
@@ -463,7 +486,7 @@ export interface Group {
   capacity: number | null;
   id: string | null;
   invitations: (Invitation | null)[] | null;
-  leader: Player | null;
+  leader: Member | null;
   members: (Member | null)[] | null;
   revision: number | null;
   size: number | null;
@@ -485,7 +508,7 @@ export interface Invitation {
 }
 /** CU.WebApi.Models.TeamJoin.Member */
 export interface Member {
-  defaultChampion: Champion | null;
+  champion: Champion | null;
   displayName: string | null;
   id: string | null;
   isOnline: boolean | null;
@@ -523,43 +546,29 @@ export interface MatchStatus {
 export interface Match {
   activityID: string | null;
   allocated: ProfileDateTime | null;
+  chatServerAddress: string | null /** Address of the chat server for this match */;
   completed: ProfileDateTime | null;
+  configured: ProfileDateTime | null;
   created: ProfileDateTime | null;
   ended: ProfileDateTime | null;
   error: Error | null;
-  globalStats: GlobalStats | null;
-  participants: (AccountID | null)[] | null;
-  playerStats: (PlayerStats | null)[] | null;
+  gameServerAddress: string | null /** Address of the game server for this match */;
   revision: number | null;
-  rosters: (Roster | null)[] | null;
+  rosters: (Roster | null)[] | null /** Rosters visible to the player */;
   roundID: string | null;
   scenarioID: string | null;
-  serverName: string | null;
-  serverPort: number | null;
   started: ProfileDateTime | null;
-}
-/** CU.WebApi.Models.Matchmaking.GlobalStats */
-export interface GlobalStats {
-  counts: (NumberValue | null)[] | null;
-  labels: (Field | null)[] | null;
-  scores: (NumberValue | null)[] | null;
-}
-/** CU.WebApi.Models.Matchmaking.NumberValue */
-export interface NumberValue {
-  name: string | null;
-  value: Decimal | null;
-}
-/** CU.WebApi.Models.Matchmaking.PlayerStats */
-export interface PlayerStats {
-  counts: (NumberValue | null)[] | null;
-  labels: (Field | null)[] | null;
-  player: Player | null;
-  scores: (NumberValue | null)[] | null;
 }
 /** CU.WebApi.Models.Matchmaking.Roster */
 export interface Roster {
   members: (Player | null)[] | null;
   teamID: string | null;
+}
+/** CU.WebApi.Models.Matchmaking.Member */
+export interface TeamMember {
+  champion: Champion | null;
+  displayName: string | null;
+  id: string | null;
 }
 /** CU.WebApi.Models.Matchmaking.QueueEntry */
 export interface QueueEntry {
@@ -576,21 +585,22 @@ export interface ChampionSelection {
   durationSeconds: Decimal | null;
   fromQueue: string | null;
   players: (SelectionPlayer | null)[] | null;
+  reservationID: string | null;
   revision: number | null;
   roundID: string | null;
   scenarioID: string | null;
 }
 /** CU.WebApi.Models.Matchmaking.SelectionPlayer */
 export interface SelectionPlayer {
-  defaultChampion: Champion | null;
+  champion: Champion | null;
   displayName: string | null;
   id: string | null;
   locked: boolean | null;
-  selectedChampion: Champion | null;
 }
 /** CU.WebApi.Models.Matchmaking.GameMode */
 export interface GameMode {
   activityID: string | null;
+  backfillStatus: string | null;
   hash: number | null;
   playCriteria: (Criterion | null)[] | null;
   scenarios: (ScenarioOption | null)[] | null;
@@ -610,12 +620,20 @@ export interface Restriction {
 /** CU.WebApi.Models.Matchmaking.ScenarioOption */
 export interface ScenarioOption {
   id: string | null;
+  params: (ScenarioParameter | null)[] | null;
   weight: number | null;
+}
+/** CU.WebApi.Models.Matchmaking.ScenarioParameter */
+export interface ScenarioParameter {
+  name: string | null;
+  value: string | null;
 }
 /** CU.WebApi.Models.Matchmaking.Team */
 export interface Team {
+  maxCopies: number | null;
   maxSize: number | null;
   maxStartSize: number | null;
+  minCopies: number | null;
   roles: (Role | null)[] | null;
   teamID: string | null;
 }
@@ -629,10 +647,13 @@ export interface Role {
 }
 /** CU.WebApi.Models.Matchmaking.Queue */
 export interface Queue {
+  displayAlias: string | null;
+  enabled: boolean | null;
   hash: number | null;
   maxEntrySize: number | null;
   maxWaitBySize: (MaxWaitBySize | null)[] | null;
   minEntrySize: number | null;
+  nextStatusChange: string | null;
   queueID: string | null;
   strategy: string | null;
   targets: (Target | null)[] | null;
@@ -719,6 +740,7 @@ export interface OvermindCharacter {
   deathCount: number | null;
   downedCount: number | null;
   eliteKills: number | null;
+  isHuman: boolean | null;
   kills: number | null;
   level: number | null;
   longestKillStreak: number | null;
@@ -796,30 +818,6 @@ export interface PatchNote {
   utcDisplayEnd: string | null;
   utcDisplayStart: string | null;
 }
-/** ServerLib.Status.Status */
-export interface Status {
-  statuses: (StatusDef | null)[] | null /** List of all status defs */;
-}
-/** CSE.GameplayDefs.StatusDef */
-export interface StatusDef {
-  blocksAbilities: boolean | null /** if the status blocks abilities from running */;
-  description: string | null /** description of the status */;
-  iconClass: string | null /** iconClass of the status */;
-  iconURL: string | null /** icon url of the status */;
-  id: string | null;
-  name: string | null /** name of the status */;
-  numericID: number | null;
-  stacking: StatusStackingDef | null;
-  statusTags: (string | null)[] | null;
-  uIText: string | null;
-  uIVisibility: StatusUIVisibility | null;
-}
-/** CSE.GameplayDefs.StatusStackingDef */
-export interface StatusStackingDef {
-  group: string | null;
-  removalOrder: StatusRemovalOrder | null;
-  statusDurationModType: StatusDurationModification | null;
-}
 /** The root subscriptions object. */
 export interface CUSubscription {
   debugSessionUpdates: IDebuggingUpdate | null /** State updates for remote debugging sessions */;
@@ -827,6 +825,7 @@ export interface CUSubscription {
   group: Group | null /** State updates for an account's current FSR group */;
   groupOffers: OfferEvent | null /** State updates for an account's current FSR group offers */;
   interactiveAlerts: IInteractiveAlert | null /** Alerts */;
+  manifestUpdates: ManifestUpdate | null /** Updates to a manifest */;
   matchmaking: IMatchUpdate | null /** State updates for matchmaking, game modes, and queues */;
   notifications: Notification | null /** Status or event broadcasts identified by purpose */;
   overmindSummaries: OvermindSummaryGQL | null /** State updates for overmind summaries */;
@@ -845,6 +844,10 @@ export interface OfferEvent {
   status: string | null;
   to: Player | null;
 }
+/** ServerLib.GraphQL.Models.ManifestUpdate */
+export interface ManifestUpdate {
+  manifests: (ManifestDef | null)[] | null;
+}
 /** CU.WebApi.Models.Notifications.Notification */
 export interface Notification {
   broadcastDuration: string | null;
@@ -858,9 +861,69 @@ export interface Notification {
   sequenceID: string | null;
   tags: (string | null)[] | null;
 }
+/** CU.Permissions.PermissionInfo */
+export interface PermissionInfo {
+  description: string | null;
+  enables: (string | null)[] | null;
+  id: string | null;
+  name: string | null;
+}
+/** CU.GraphQL.Vec3fGQL */
+export interface Vec3f {
+  x: Decimal | null;
+  y: Decimal | null;
+  z: Decimal | null;
+}
+/** CU.GraphQL.Euler3fGQL */
+export interface Euler3f {
+  pitch: Decimal | null;
+  roll: Decimal | null;
+  yaw: Decimal | null;
+}
+/** CSE.GameplayDefs.DisplayInfoDef */
+export interface DisplayInfoDef {
+  description: DisplayInfoDescription | null;
+  iconClass: string | null;
+  iconURL: CUDisplayInfoIcon | null;
+  name: DisplayInfoName | null;
+}
+/** CSE.GameplayDefs.StatusStackingDef */
+export interface StatusStackingDef {
+  group: string | null;
+  removalOrder: StatusRemovalOrder | null;
+  statusDurationModType: StatusDurationModification | null;
+}
+/** CSE.GameplayDefs.ColorRGBA */
+export interface ColorRGBA {
+  a: Decimal | null;
+  b: number | null;
+  g: number | null;
+  hex: string | null /** Color in Hex format */;
+  hexa: string | null /** Color in Hex format with alpha */;
+  r: number | null;
+  rgba: string | null /** Color in RGBA format */;
+}
 /** ServerLib.GraphQL.ProfileQuery */
 export interface ProfileQuery {
   name: string | null;
+}
+/** CU.WebApi.Models.Matchmaking.NumberValue */
+export interface NumberValue {
+  name: string | null;
+  value: Decimal | null;
+}
+/** CU.WebApi.Models.Matchmaking.GlobalStats */
+export interface GlobalStats {
+  counts: (NumberValue | null)[] | null;
+  labels: (Field | null)[] | null;
+  scores: (NumberValue | null)[] | null;
+}
+/** CU.WebApi.Models.Matchmaking.PlayerStats */
+export interface PlayerStats {
+  counts: (NumberValue | null)[] | null;
+  labels: (Field | null)[] | null;
+  player: Player | null;
+  scores: (NumberValue | null)[] | null;
 }
 /** CU.WebApi.Models.Matchmaking.Updates.AccessChanged */
 export interface AccessChanged extends IMatchUpdate {
@@ -912,7 +975,7 @@ export interface QueueUpdated extends IMatchUpdate {
 }
 /** CU.WebApi.Models.Matchmaking.Updates.SelectionRemoved */
 export interface SelectionRemoved extends IMatchUpdate {
-  roundID: string | null;
+  reservationID: string | null;
   type: string | null;
 }
 /** CU.WebApi.Models.Matchmaking.Updates.SelectionUpdated */
@@ -952,25 +1015,6 @@ export interface OvermindSummaryQuery {
 /** CU.WebApi.GraphQL.UnusedStructure */
 export interface UnusedStructure {
   unused: boolean | null;
-}
-/** CU.Permissions.PermissionInfo */
-export interface PermissionInfo {
-  description: string | null;
-  enables: (string | null)[] | null;
-  id: string | null;
-  name: string | null;
-}
-/** CU.GraphQL.Vec3fGQL */
-export interface Vec3f {
-  x: Decimal | null;
-  y: Decimal | null;
-  z: Decimal | null;
-}
-/** CU.GraphQL.Euler3fGQL */
-export interface Euler3f {
-  pitch: Decimal | null;
-  roll: Decimal | null;
-  yaw: Decimal | null;
 }
 /** ServerLib.ApiModels.ServerModel */
 export interface ServerModel {
@@ -1014,30 +1058,6 @@ export interface CharacterRemovedUpdate extends IPatcherCharacterUpdate {
   characterID: CharacterID | null;
   shard: ShardID | null;
   type: PatcherCharacterUpdateType | null;
-}
-/** CSE.GameplayDefs.DisplayInfoDef */
-export interface DisplayInfoDef {
-  description: DisplayInfoDescription | null;
-  iconClass: string | null;
-  iconURL: CUDisplayInfoIcon | null;
-  name: DisplayInfoName | null;
-}
-/** CSE.GameplayDefs.ScenarioDef */
-export interface ScenarioDef {
-  displayDescription: string | null;
-  displayName: string | null;
-  icon: string | null;
-  id: string | null;
-}
-/** CSE.GameplayDefs.ColorRGBA */
-export interface ColorRGBA {
-  a: Decimal | null;
-  b: number | null;
-  g: number | null;
-  hex: string | null /** Color in Hex format */;
-  hexa: string | null /** Color in Hex format with alpha */;
-  r: number | null;
-  rgba: string | null /** Color in RGBA format */;
 }
 export interface CharactercharacterArgs {
   id: string | null;
@@ -1147,7 +1167,10 @@ export enum PerkType {
   Emote = 'Emote',
   RuneMod = 'RuneMod',
   QuestXP = 'QuestXP',
-  SprintFX = 'SprintFX'
+  SprintFX = 'SprintFX',
+  RuneModTierKey = 'RuneModTierKey',
+  StatusMod = 'StatusMod',
+  StatMod = 'StatMod'
 }
 /** CSE.GameplayDefs.QuestType */
 export enum QuestType {
@@ -1166,6 +1189,17 @@ export enum PerkRarity {
   Rare = 'Rare',
   Unique = 'Unique'
 }
+/** CSE.GameplayDefs.LAEOp */
+export enum LAEOp {
+  Add = 'Add',
+  Multiply = 'Multiply',
+  AddPercent = 'AddPercent',
+  UpperBoundValue = 'UpperBoundValue',
+  LowerBoundValue = 'LowerBoundValue',
+  UpperBoundMultiplier = 'UpperBoundMultiplier',
+  LowerBoundMultiplier = 'LowerBoundMultiplier',
+  Set = 'Set'
+}
 /** CSE.GameplayDefs.StoreTab */
 export enum StoreTab {
   Invalid = 'Invalid',
@@ -1176,6 +1210,12 @@ export enum StoreTab {
   Emote = 'Emote',
   Portrait = 'Portrait',
   QuestXP = 'QuestXP'
+}
+/** CSE.GameplayDefs.StatDisplayType */
+export enum StatDisplayType {
+  Value = 'Value',
+  Percent = 'Percent',
+  IconOnly = 'IconOnly'
 }
 /** CSE.GameplayDefs.StatType */
 export enum StatType {
@@ -1208,33 +1248,6 @@ export enum ScenarioResolution {
   Restarted = 'Restarted',
   Killed = 'Killed'
 }
-/** CSE.GameplayDefs.StatusStackingDef+StatusRemovalOrder */
-export enum StatusRemovalOrder {
-  Invalid = 'Invalid',
-  KeepOldest = 'KeepOldest',
-  KeepNewest = 'KeepNewest',
-  KeepOldestFromSource = 'KeepOldestFromSource',
-  ApplyOldest = 'ApplyOldest',
-  ApplyNewest = 'ApplyNewest'
-}
-/** CSE.GameplayDefs.StatusStackingDef+StatusDurationModification */
-export enum StatusDurationModification {
-  RefreshDuration = 'RefreshDuration',
-  AddAmountToDuration = 'AddAmountToDuration',
-  SetNewDuration = 'SetNewDuration',
-  SetNewDurationIfGreater = 'SetNewDurationIfGreater',
-  DoNothing = 'DoNothing'
-}
-/** CSE.GameplayDefs.StatusUIVisibility */
-export enum StatusUIVisibility {
-  Hidden = 'Hidden',
-  Hud = 'Hud',
-  PopupOnAdd = 'PopupOnAdd',
-  PopupOnRemove = 'PopupOnRemove',
-  ShowInactive = 'ShowInactive',
-  ShowAllActive = 'ShowAllActive',
-  ShowAll = 'ShowAll'
-}
 /** CSE.Notifications.ContentFlags */
 export enum ContentFlags {
   None = 'None',
@@ -1255,6 +1268,23 @@ export enum PatcherCharacterUpdateType {
   None = 'None',
   Updated = 'Updated',
   Removed = 'Removed'
+}
+/** CSE.GameplayDefs.StatusStackingDef+StatusDurationModification */
+export enum StatusDurationModification {
+  RefreshDuration = 'RefreshDuration',
+  AddAmountToDuration = 'AddAmountToDuration',
+  SetNewDuration = 'SetNewDuration',
+  SetNewDurationIfGreater = 'SetNewDurationIfGreater',
+  DoNothing = 'DoNothing'
+}
+/** CSE.GameplayDefs.StatusStackingDef+StatusRemovalOrder */
+export enum StatusRemovalOrder {
+  Invalid = 'Invalid',
+  KeepOldest = 'KeepOldest',
+  KeepNewest = 'KeepNewest',
+  KeepOldestFromSource = 'KeepOldestFromSource',
+  ApplyOldest = 'ApplyOldest',
+  ApplyNewest = 'ApplyNewest'
 }
 /** AccessType */
 export enum AccessType {

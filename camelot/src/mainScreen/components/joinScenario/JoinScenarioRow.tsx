@@ -11,9 +11,9 @@ import { RootState } from '../../redux/store';
 import { Button } from '../Button';
 import { ScenarioMatch } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { ScenarioAPI, Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
-import { setShouldScenarioRefresh } from '../../redux/scenarioSlice';
 import { getScenarioFactionData, isScenarioMatchAvailable } from './joinScenarioUtils';
 import { webConf } from '../../redux/networkConfiguration';
+import { refreshScenario } from '../../dataSources/scenarioService';
 
 const Root = 'HUD-JoinScenarioRow-Root';
 const Icon = 'HUD-JoinScenarioRow-Icon';
@@ -117,7 +117,7 @@ class AJoinScenarioRow extends React.Component<Props, State> {
     } catch {
       console.warn('Failed to update scenario queue.');
     }
-    this.props.dispatch(setShouldScenarioRefresh(true));
+    refreshScenario();
   }
 }
 

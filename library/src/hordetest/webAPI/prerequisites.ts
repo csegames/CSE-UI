@@ -7,12 +7,14 @@
 import { RequestConfig, RequestResult } from '../../_baseGame/types/Request';
 import { legacyRequest as xhrRequest } from '../../_baseGame/utils/request';
 
+type ColossusProgressionNodeDefRef = string;
 type ClassDefRef = string;
 type PerkDefRef = string;
 type PurchaseDefRef = string;
 type QuestDefRef = string;
 
 export {
+  ColossusProgressionNodeDefRef,
   ClassDefRef,
   PerkDefRef,
   PurchaseDefRef,

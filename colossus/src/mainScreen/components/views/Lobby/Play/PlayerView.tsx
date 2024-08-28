@@ -252,12 +252,12 @@ class APlayerView extends React.Component<Props> {
     let standingImage = 'images/hud/champions/berserker.png';
     let thumbnailImage = 'images/hud/champions/berserker-profile.png';
 
-    const costume: ChampionCostumeInfo = player.defaultChampion
-      ? this.getCostumeInfo(player.defaultChampion.costumeID, player.defaultChampion.championID)
+    const costume: ChampionCostumeInfo = player.champion
+      ? this.getCostumeInfo(player.champion.costumeID, player.champion.championID)
       : null;
     if (costume != null) {
       standingImage = costume.standingImageURL;
-      thumbnailImage = this.getChampionThumbnailURL(player.defaultChampion.portraitID, costume);
+      thumbnailImage = this.getChampionThumbnailURL(player.champion.portraitID, costume);
     }
 
     const isSelected = this.props.selectedGroupMemberIndex >= 0 && this.props.selectedGroupMemberIndex == groupIndex;

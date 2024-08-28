@@ -28,7 +28,6 @@ interface ReactProps {
 interface InjectedProps {
   inventoryItems: Item[];
   itemCount: number | null;
-  totalMass: number | null;
   hudWidth: number;
   hudHeight: number;
   itemsPerRow: number | null;
@@ -131,22 +130,12 @@ class AInventoryFooter extends React.Component<Props> {
           <div className={`${Icon} icon-ui-bag`} />
           <span>{this.props.itemCount}</span>
         </TooltipSource>
-        <TooltipSource
-          className={Node}
-          tooltipParams={{
-            id: 'Inventory-Weight',
-            content: `Weight: ${this.props.totalMass}kg`
-          }}
-        >
-          <div className={`${Icon} icon-ui-weight`} />
-          <span>{this.props.totalMass.toFixed(1)}kg</span>
-        </TooltipSource>
       </div>
     );
   }
 
   refresh(): void {
-    refreshItems(this.props.dispatch);
+    refreshItems();
   }
 
   addRow(): void {
@@ -189,7 +178,6 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
     ...ownProps,
     inventoryItems: state.inventory.items ?? [],
     itemCount: state.inventory.itemCount,
-    totalMass: state.inventory.totalMass,
     hudWidth: state.hud.hudWidth,
     hudHeight: state.hud.hudHeight,
     itemsPerRow: state.inventory.itemsPerRow,

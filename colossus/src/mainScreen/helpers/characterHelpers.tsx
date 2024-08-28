@@ -18,9 +18,9 @@ import {
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { PerkType } from '@csegames/library/dist/hordetest/graphql/schema';
-import { storeLocalStore } from '../localStorage/storeLocalStorage';
 import { updateStoreRemoveUnseenEquipment } from '../redux/storeSlice';
 import { Dispatch } from '@reduxjs/toolkit';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 export function getCharacterClassStringIDForNumericID(classes: IDLookupTable<CharacterClassDef>, numericID: number) {
   const classDef = classes[numericID];
@@ -137,50 +137,14 @@ export function getChampionPerkUnlockQuestIndex(champion: ChampionInfo, quests: 
   return -1;
 }
 
-export function hasUnseenPerkForChampion(
-  champion: ChampionInfo,
-  perkTypeFilter: PerkType,
-  newEquipment: Dictionary<boolean>,
-  perksByID: Dictionary<PerkDefGQL>,
-  ownedPerks: Dictionary<number>
-): boolean {
-  const unseenPerk = Object.keys(newEquipment).find((perkID) => {
-    // Does the perk exist?
-    const matchingPerk = perksByID[perkID];
-    if (!matchingPerk) {
-      return false;
-    }
-
-    // if we're filtering perk types, then make sure this perk matches the filter
-    if (perkTypeFilter != PerkType.Invalid && perkTypeFilter != matchingPerk.perkType) {
-      return;
-    }
-
-    // Is the perk of a type that we badge for?
-    if (
-      matchingPerk.perkType !== PerkType.Weapon &&
-      matchingPerk.perkType !== PerkType.Costume &&
-      matchingPerk.perkType !== PerkType.Emote &&
-      matchingPerk.perkType !== PerkType.Portrait &&
-      matchingPerk.perkType !== PerkType.SprintFX &&
-      matchingPerk.perkType !== PerkType.RuneMod
-    ) {
-      return false;
-    }
-    // Does the champion match?
-    if (matchingPerk.champion && champion.id !== matchingPerk.champion.id) {
-      return false;
-    }
-    // If the user doesn't have the item, it doesn't count as new (maybe they sold it before looking at it).
-    // We clean this case up more permanently in storeNetworking.tsx, initializeUnseenEquipment().
-    if (ownedPerks[perkID] === undefined || ownedPerks[perkID] < 1) {
-      return false;
-    }
-
+export function isChampionPendingLevelUp(champion: ChampionInfo, quests: QuestGQL[]): boolean {
+  // If this champion's quest has not been claimed to the current link...
+  const questGQL = findChampionQuestProgress(champion, quests);
+  if (questGQL && questGQL.currentQuestIndex > questGQL.nextCollection) {
     return true;
-  });
+  }
 
-  return unseenPerk !== undefined;
+  return false;
 }
 
 export function isPerkUnseen(
@@ -212,8 +176,40 @@ export function markEquipmentSeen(
     // Redux.
     dispatch(updateStoreRemoveUnseenEquipment(perkID));
     // Local Storage.
-    const newEquipment = storeLocalStore.getUnseenEquipment();
+    const newEquipment = clientAPI.getUnseenEquipment();
     delete newEquipment[perkID];
-    storeLocalStore.setUnseenEquipment(newEquipment);
+    clientAPI.setUnseenEquipment(newEquipment);
   }
+}
+
+export function getUnlockedRuneModTierForChampion(
+  champion: ChampionInfo,
+  perksByID: Dictionary<PerkDefGQL>,
+  ownedPerks: Dictionary<number>
+): number {
+  if (!champion) {
+    return 1;
+  }
+
+  const runeModTier = Object.entries(ownedPerks).reduce<number>((highestTier, [perkID, count]) => {
+    // No matter what the perk is, if you don't have it, it isn't what we want.
+    if (count <= 0) {
+      return highestTier;
+    }
+
+    const perk = perksByID[perkID];
+    // If it's not a tier key, we don't care about it.
+    if (perk?.perkType !== PerkType.RuneModTierKey) {
+      return highestTier;
+    }
+
+    // If it's not for this champion, we don't care about it.
+    if (perk?.champion?.id !== champion.id) {
+      return highestTier;
+    }
+
+    return Math.max(perk?.runeModTier ?? highestTier, highestTier);
+  }, 1); // Always have at least tier 1 unlocked.
+
+  return runeModTier;
 }

@@ -8,12 +8,8 @@ import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { hudLocalStore } from '../localStorage/HUDLocalStorage';
 import {
-  HUDHorizontalAnchor,
-  HUDVerticalAnchor,
   HUDWidget,
-  HUDWidgetState,
   resetAllWidgets,
   resetWidget,
   setSelectedWidget,
@@ -59,6 +55,11 @@ import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenCli
 import { hideModal, showModal } from '../redux/modalsSlice';
 import { AbilityEditStatus, AbilityGroup, ButtonLayout } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
 import Escapable from './Escapable';
+import {
+  HUDHorizontalAnchor,
+  HUDVerticalAnchor,
+  HUDWidgetState
+} from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 // Styles.
 const Root = 'HUD-HUDEditor-Root';
@@ -126,7 +127,7 @@ class HUDEditor extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = { offset: hudLocalStore.getHUDEditorOffset() };
+    this.state = { offset: clientAPI.getHUDEditorOffset() };
   }
 
   render(): JSX.Element {
@@ -636,7 +637,7 @@ class HUDEditor extends React.Component<Props, State> {
       this.state.offset[0] + dragDelta[0] / pxToVmin,
       this.state.offset[1] + dragDelta[1] / pxToVmin
     ];
-    hudLocalStore.setHUDEditorOffset(vminOffset);
+    clientAPI.setHUDEditorOffset(vminOffset);
     this.setState({ offset: vminOffset });
   }
 
@@ -653,7 +654,7 @@ class HUDEditor extends React.Component<Props, State> {
     // Modify the state.
     state.visible = !state.visible;
     // Save to HUDLocalStore.
-    hudLocalStore.updateWidgetState(this.props.selectedWidgetID, state);
+    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
     // Save to Redux.
     const delta: Dictionary<HUDWidgetState> = {};
     delta[this.props.selectedWidgetID] = state;
@@ -752,7 +753,7 @@ class HUDEditor extends React.Component<Props, State> {
     // Modify the state. (clamped between 0 and 1)
     state.opacity = Math.max(0, Math.min(state.opacity + opacityDelta, 1));
     // Save to HUDLocalStore.
-    hudLocalStore.updateWidgetState(this.props.selectedWidgetID, state);
+    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
     // Save to Redux.
     const delta: Dictionary<HUDWidgetState> = {};
     delta[this.props.selectedWidgetID] = state;
@@ -765,7 +766,7 @@ class HUDEditor extends React.Component<Props, State> {
     // Modify the state. (clamped between 0.5 and 3)
     state.scale = Math.max(0.5, Math.min(state.scale + scaleDelta, 3));
     // Save to HUDLocalStore.
-    hudLocalStore.updateWidgetState(this.props.selectedWidgetID, state);
+    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
     // Save to Redux.
     const delta: Dictionary<HUDWidgetState> = {};
     delta[this.props.selectedWidgetID] = state;
@@ -779,7 +780,7 @@ class HUDEditor extends React.Component<Props, State> {
     state.xOffset = Math.round((state.xOffset + pDelta[0]) * 100) / 100;
     state.yOffset = Math.round((state.yOffset + pDelta[1]) * 100) / 100;
     // Save to HUDLocalStore.
-    hudLocalStore.updateWidgetState(this.props.selectedWidgetID, state);
+    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
     // Save to Redux.
     const delta: Dictionary<HUDWidgetState> = {};
     delta[this.props.selectedWidgetID] = state;
@@ -821,7 +822,7 @@ class HUDEditor extends React.Component<Props, State> {
     state.xAnchor = xAnchor;
     state.yAnchor = yAnchor;
     // Save to HUDLocalStore.
-    hudLocalStore.updateWidgetState(this.props.selectedWidgetID, state);
+    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
     // Save to Redux.
     const delta: Dictionary<HUDWidgetState> = {};
     delta[this.props.selectedWidgetID] = state;
@@ -830,17 +831,17 @@ class HUDEditor extends React.Component<Props, State> {
 
   private onResetWidgetClicked(): void {
     // Clear in HUDLocalStore.
-    hudLocalStore.clearWidgetState(this.props.selectedWidgetID);
+    clientAPI.clearWidgetState(this.props.selectedWidgetID);
     // Clear in Redux.
     this.props.dispatch(resetWidget(this.props.selectedWidgetID));
   }
 
   private onResetAllClicked(): void {
     // And reset ourself for good measure.
-    hudLocalStore.setHUDEditorOffset([0, 0]);
+    clientAPI.setHUDEditorOffset([0, 0]);
     this.setState({ offset: [0, 0] });
     // Clear in HUDLocalStore.
-    hudLocalStore.clearAllWidgetStates();
+    clientAPI.clearAllWidgetStates();
     // Clear in Redux.
     this.props.dispatch(resetAllWidgets());
   }

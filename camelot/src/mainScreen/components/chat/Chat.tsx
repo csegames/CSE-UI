@@ -7,13 +7,14 @@
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { HUDHorizontalAnchor, HUDLayer, HUDVerticalAnchor, HUDWidgetRegistration } from '../../redux/hudSlice';
+import { HUDLayer, HUDWidgetRegistration } from '../../redux/hudSlice';
 import { RootState } from '../../redux/store';
 import { game } from '@csegames/library/dist/_baseGame';
 import { ChatRoomData, readRoom, sendToRoom } from '../../redux/chatSlice';
 import { chatGlobalRoomID } from '../../dataSources/chatService';
 import { ChatMessage } from './ChatMessage';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 const Root = 'HUD-Chat-Root';
 const Navigation = 'HUD-Chat-Navigation';

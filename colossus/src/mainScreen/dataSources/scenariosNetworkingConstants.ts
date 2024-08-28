@@ -20,6 +20,9 @@ export const scenariosQuery = gql`
         loadingBackgroundImage
         summaryBackgroundImage
         showPlayerProgressionTab
+        showLeaderboardTab
+        showScoreAsRank
+        applyChampionUpgrades
       }
     }
   }

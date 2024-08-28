@@ -7,7 +7,6 @@
 import * as React from 'react';
 import { StoreNavMenu } from './StoreNavMenu';
 import { ConfirmPurchase } from '../../../rightPanel/ConfirmPurchase';
-import { StoreItemSingle } from './StoreItemSingle';
 import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
 import { StoreRoute, updateStoreNewPurchases } from '../../../../redux/storeSlice';
@@ -16,40 +15,50 @@ import {
   PerkDefGQL,
   PerkType,
   PurchaseDefGQL,
+  QuestGQL,
   RMTPurchaseDefGQL,
+  StoreTab,
+  StoreTabConfig,
   StringTableEntryDef
 } from '@csegames/library/dist/hordetest/graphql/schema';
-import { StoreItemBundle } from './StoreItemBundle';
-import { arePurchaseLocksMatched, isFreeReward, isPurchaseable } from '../../../../helpers/storeHelpers';
+import { StoreItemCell } from './StoreItemCell';
+import {
+  OwnershipStatus,
+  PurchaseOwnershipData,
+  areLocksFulfilled,
+  getPurchaseOwnershipData,
+  isFreeReward,
+  isPurchaseable
+} from '../../../../helpers/storeHelpers';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { Dispatch } from 'redux';
-import { storeLocalStore } from '../../../../localStorage/storeLocalStorage';
 import { showRightPanel } from '../../../../redux/navigationSlice';
 import {
   StringIDGeneralBack,
   StringIDGeneralSelect,
-  getStringTableValue,
-  getTokenizedStringTableValue
+  getStringTableValue
 } from '../../../../helpers/stringTableHelpers';
+import { StoreFeaturingLayout, StoreFeaturingLayoutItemCount, StoreFeaturingPage } from './StoreFeaturingPage';
+import { StoreFilters } from './StoreFilters';
+import { ConfirmPurchaseRewardPreviews } from '../../../rightPanel/ConfirmPurchaseRewardPreviews';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'StartScreen-Store-Container';
 const ItemsContainer = 'StartScreen-Store-ItemsContainer';
+const FilterAndItemsContainer = 'StartScreen-Store-FilterAndItemsContainer';
 const ItemsAnimationContainer = 'StartScreen-Store-ItemsAnimationContainer';
 const ButtonPosition = 'StartScreen-Store-ButtonPosition';
 const ConsoleIcon = 'StartScreen-Store-ConsoleIcon';
-const EmptyPageMessage = 'StartScreen-Store-EmptyPageMessage ';
-
+const EmptyPageMessage = 'StartScreen-Store-EmptyPageMessage';
+const ItemSmall = 'StartScreen-Store-ItemSmall';
 const ConsoleSelectSpacing = 'StartScreen-Store-ConsoleSelectSpacing';
 
-const StringIDStoreTabRewards = 'StoreTabRewards';
-const StringIDStoreTabBundles = 'StoreTabBundles';
-const StringIDStoreTabWeapons = 'StoreTabWeapons';
-const StringIDStoreTabSkins = 'StoreTabSkins';
-const StringIDStoreTabEmotes = 'StoreTabEmotes';
-const StringIDStoreTabPortraits = 'StoreTabPortraits';
-const StringIDStoreTabSprintFX = 'StoreTabSprintFX';
-const StringIDStoreEmptyTab = 'StoreEmptyTab';
-const StringIDStoreTabQuestXP = 'StoreTabQuestXP';
+const StringIDStoreEmptyTab1 = 'StoreEmptyTab1';
+const StringIDStoreEmptyTab2 = 'StoreEmptyTab2';
+
+interface State {
+  sortedPurchases: PurchaseDefGQL[];
+}
 
 interface ReactProps {}
 
@@ -61,24 +70,34 @@ interface InjectedProps {
   rmtPurchases: RMTPurchaseDefGQL[];
   ownedPerks: Dictionary<number>;
   perksByID: Dictionary<PerkDefGQL>;
-  championIDFilter: string;
+  championIDFilters: string[];
+  hideOwnedPurchases: boolean;
   newPurchases: Dictionary<boolean>;
   stringTable: Dictionary<StringTableEntryDef>;
+  storeTabConfigs: StoreTabConfig[];
+  progressionNodes: string[];
+  quests: QuestGQL[];
+  serverTimeDeltaMS: number;
   dispatch?: Dispatch;
 }
 
 type Props = ReactProps & InjectedProps;
 
-class AStore extends React.Component<Props> {
+class AStore extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+
+    this.state = { sortedPurchases: this.getPurchasesToDisplay(props.currentRoute) };
   }
 
   render() {
     return (
       <div className={Container}>
         <StoreNavMenu />
-        {this.renderRoute()}
+        <div className={FilterAndItemsContainer}>
+          <StoreFilters purchases={this.state.sortedPurchases} />
+          {this.renderList()}
+        </div>
         {this.props.usingGamepad && this.props.usingGamepadInMainMenu && (
           <div className={ButtonPosition}>
             <Button
@@ -108,10 +127,52 @@ class AStore extends React.Component<Props> {
     );
   }
 
+  private getPurchasesToDisplay(route: StoreRoute): PurchaseDefGQL[] {
+    switch (route) {
+      case StoreRoute.Rewards:
+        return this.getEarnedRewards();
+      case StoreRoute.Bundles:
+        return this.getDisplayableBundles();
+      case StoreRoute.Weapons:
+        return this.getDisplayableItemsOfType(PerkType.Weapon);
+      case StoreRoute.Skins:
+        return this.getDisplayableItemsOfType(PerkType.Costume);
+      case StoreRoute.Emotes:
+        return this.getDisplayableItemsOfType(PerkType.Emote);
+      case StoreRoute.Portraits:
+        return this.getDisplayableItemsOfType(PerkType.Portrait);
+      case StoreRoute.SprintFX:
+        return this.getDisplayableItemsOfType(PerkType.SprintFX);
+      case StoreRoute.QuestXP:
+        return this.getDisplayableItemsOfType(PerkType.QuestXP);
+      default:
+        return [];
+    }
+  }
+
+  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot?: any): void {
+    // We cache the purchase list so that it doesn't change out from under the player if they purchase something
+    // (owned items are sorted to the back of the list).
+    if (this.props.currentRoute !== prevProps.currentRoute) {
+      this.setState({ sortedPurchases: this.getPurchasesToDisplay(this.props.currentRoute) });
+    }
+  }
+
   private onSkinClick(purchase: PurchaseDefGQL) {
     // We show owned purchases, so don't let them re-purchase stuff!
-    if (isPurchaseable(purchase, this.props.perksByID, this.props.ownedPerks)) {
-      this.props.dispatch(showRightPanel(<ConfirmPurchase purchase={purchase} />));
+    if (
+      isPurchaseable(
+        purchase,
+        this.props.perksByID,
+        this.props.ownedPerks,
+        this.props.progressionNodes,
+        this.props.quests,
+        this.props.serverTimeDeltaMS
+      )
+    ) {
+      this.props.dispatch(
+        showRightPanel(<ConfirmPurchase purchase={purchase} />, <ConfirmPurchaseRewardPreviews purchase={purchase} />)
+      );
     }
 
     // When we click into an item, we can mark it as 'seen', which clears any badging.
@@ -119,78 +180,17 @@ class AStore extends React.Component<Props> {
     delete newNewPurchases[purchase.id]; // This purchase is no longer new.
     this.props.dispatch(updateStoreNewPurchases(newNewPurchases));
     // Local storage data too.
-    const seenPurchases = storeLocalStore.getSeenPurchases();
+    const seenPurchases = clientAPI.getSeenPurchases();
     seenPurchases[purchase.id] = true;
-    storeLocalStore.setSeenPurchases(seenPurchases);
-  }
-
-  private renderRoute() {
-    switch (this.props.currentRoute) {
-      case StoreRoute.Rewards: {
-        return this.renderList(
-          this.props.currentRoute,
-          this.getEarnedRewards(),
-          getStringTableValue(StringIDStoreTabRewards, this.props.stringTable)
-        );
-      }
-      case StoreRoute.Bundles: {
-        return this.renderList(
-          this.props.currentRoute,
-          this.getDisplayableBundles(),
-          getStringTableValue(StringIDStoreTabBundles, this.props.stringTable)
-        );
-      }
-      case StoreRoute.Weapons: {
-        return this.renderList(
-          this.props.currentRoute,
-          this.getDisplayableItemsOfType(PerkType.Weapon),
-          getStringTableValue(StringIDStoreTabWeapons, this.props.stringTable)
-        );
-      }
-      case StoreRoute.Skins: {
-        return this.renderList(
-          this.props.currentRoute,
-          this.getDisplayableItemsOfType(PerkType.Costume),
-          getStringTableValue(StringIDStoreTabSkins, this.props.stringTable)
-        );
-      }
-      case StoreRoute.Emotes: {
-        return this.renderList(
-          this.props.currentRoute,
-          this.getDisplayableItemsOfType(PerkType.Emote),
-          getStringTableValue(StringIDStoreTabEmotes, this.props.stringTable)
-        );
-      }
-      case StoreRoute.Portraits: {
-        return this.renderList(
-          this.props.currentRoute,
-          this.getDisplayableItemsOfType(PerkType.Portrait),
-          getStringTableValue(StringIDStoreTabPortraits, this.props.stringTable)
-        );
-      }
-      case StoreRoute.SprintFX: {
-        return this.renderList(
-          this.props.currentRoute,
-          this.getDisplayableItemsOfType(PerkType.SprintFX),
-          getStringTableValue(StringIDStoreTabSprintFX, this.props.stringTable)
-        );
-      }
-      case StoreRoute.QuestXP: {
-        return this.renderList(
-          this.props.currentRoute,
-          this.getDisplayableItemsOfType(PerkType.QuestXP),
-          getStringTableValue(StringIDStoreTabQuestXP, this.props.stringTable)
-        );
-      }
-    }
+    clientAPI.setSeenPurchases(seenPurchases);
   }
 
   private perkMatchesChampionFilter(perk: PerkDefGQL): boolean {
-    if (this.props.championIDFilter === null || !perk.champion) {
+    if (!perk.champion || this.props.championIDFilters.length === 0) {
       return true;
     }
 
-    return perk.champion.id === this.props.championIDFilter;
+    return this.props.championIDFilters.includes(perk.champion.id);
   }
 
   private getDisplayableItemsOfType(type: PerkType): PurchaseDefGQL[] {
@@ -202,34 +202,74 @@ class AStore extends React.Component<Props> {
         }
 
         // If the user CAN'T make this purchase, don't bother showing it to them.
-        if (!arePurchaseLocksMatched(p.locks, this.props.ownedPerks)) {
+        if (
+          !areLocksFulfilled(
+            p.locks,
+            this.props.ownedPerks,
+            this.props.progressionNodes,
+            this.props.quests,
+            this.props.serverTimeDeltaMS
+          )
+        ) {
           return false;
         }
 
         const perk = this.props.perksByID[p.perks[0].perkID];
         return (
           // Is it the right perkType?
-          perk.perkType === type && this.perkMatchesChampionFilter(perk)
+          perk.perkType === type
         );
       }) ?? [];
 
+    this.sortPurchaseDefsInPlace(items);
+
+    return items || [];
+  }
+
+  private sortPurchaseDefsInPlace(items: PurchaseDefGQL[]): void {
+    // Precalculate ownership because it's expensive.
+    const ownershipData: Dictionary<PurchaseOwnershipData> = {};
+    items.forEach((purchase) => {
+      ownershipData[purchase.id] = getPurchaseOwnershipData(purchase, this.props.perksByID, this.props.ownedPerks);
+    });
+
     items.sort((a, b) => {
-      if (a.sortOrder != b.sortOrder) {
-        return a.sortOrder - b.sortOrder;
+      // Explicit sortOrder gets highest priority.
+      // Items with no value set in the sheets come through as zero, and we want those at the back.
+      const aSortOrder = a.sortOrder ? a.sortOrder : Number.MAX_SAFE_INTEGER;
+      const bSortOrder = b.sortOrder ? b.sortOrder : Number.MAX_SAFE_INTEGER;
+      if (aSortOrder != bSortOrder) {
+        return aSortOrder - bSortOrder;
+      }
+
+      // Owned items should go AFTER unowned items.
+      const aOwnership = ownershipData[a.id];
+      const bOwnership = ownershipData[b.id];
+      if (aOwnership.status !== bOwnership.status) {
+        if (aOwnership.status === OwnershipStatus.FullyOwned) {
+          return 1;
+        } else if (bOwnership.status === OwnershipStatus.FullyOwned) {
+          return -1;
+        }
       }
 
       // Lexographic Order
       return a.id.localeCompare(b.id);
     });
-
-    return items || [];
   }
 
   private getEarnedRewards(): PurchaseDefGQL[] {
     let items = this.props.purchases.filter((p) => {
       return (
         isFreeReward(p) &&
-        isPurchaseable(p, this.props.perksByID, this.props.ownedPerks) &&
+        isPurchaseable(
+          p,
+          this.props.perksByID,
+          this.props.ownedPerks,
+          this.props.progressionNodes,
+          this.props.quests,
+          this.props.serverTimeDeltaMS
+        ) &&
         !(p.perks.length === 1 && this.props.perksByID[p.perks[0].perkID].perkType === PerkType.Key) // free battle pass keys are not shown here, they go on the battle pass page
       );
     });
@@ -258,7 +298,15 @@ class AStore extends React.Component<Props> {
     let items =
       this.props.purchases.filter((p) => {
         // If the user CAN'T make this purchase, don't bother showing it to them.
-        if (!arePurchaseLocksMatched(p.locks, this.props.ownedPerks)) {
+        if (
+          !areLocksFulfilled(
+            p.locks,
+            this.props.ownedPerks,
+            this.props.progressionNodes,
+            this.props.quests,
+            this.props.serverTimeDeltaMS
+          )
+        ) {
           return false;
         }
 
@@ -274,46 +322,112 @@ class AStore extends React.Component<Props> {
         );
       }) ?? [];
 
-    items.sort((a, b) => {
-      return a.id.localeCompare(b.id);
-    });
+    this.sortPurchaseDefsInPlace(items);
 
     return items;
   }
 
-  private renderList(route: StoreRoute, purchases: PurchaseDefGQL[], tabName: string) {
-    if (purchases.length == 0) {
+  private renderList() {
+    // Precalculate ownership because it's expensive.
+    const ownershipData: Dictionary<PurchaseOwnershipData> = {};
+    this.state.sortedPurchases.forEach((purchase) => {
+      ownershipData[purchase.id] = getPurchaseOwnershipData(purchase, this.props.perksByID, this.props.ownedPerks);
+    });
+
+    // We do this filter at the last minute because we are using the unfiltered list for <StoreFilters>.
+    const filteredPurchases = this.state.sortedPurchases.filter((p) => {
+      // If we are hiding owned purchases, remove them from the list now.
+      if (this.props.hideOwnedPurchases && ownershipData[p.id].status === OwnershipStatus.FullyOwned) {
+        return false;
+      }
+
+      return !!p.perks.find((prd) => {
+        const perk = this.props.perksByID[prd.perkID];
+        return perk && this.perkMatchesChampionFilter(perk);
+      });
+    });
+
+    if (filteredPurchases.length == 0) {
       return (
         <div className={ItemsAnimationContainer}>
-          <div className={ItemsContainer} key={route.toString()}>
-            <span className={EmptyPageMessage}>
-              {getTokenizedStringTableValue(StringIDStoreEmptyTab, this.props.stringTable, { REWARD_TYPE: tabName })}
-            </span>
+          <div className={`${ItemsContainer} empty`} key={this.props.currentRoute.toString()}>
+            <div className={EmptyPageMessage}>
+              {getStringTableValue(StringIDStoreEmptyTab1, this.props.stringTable)}
+            </div>
+            <div className={EmptyPageMessage}>
+              {getStringTableValue(StringIDStoreEmptyTab2, this.props.stringTable)}
+            </div>
           </div>
         </div>
       );
     }
+
+    // If a Layout is specified, split off enough items to feed the route's Featuring section, and show the rest in the normal small grid format.
+    let featuredPurchases: PurchaseDefGQL[] = [];
+    let remainingPurchases: PurchaseDefGQL[] = filteredPurchases;
+    const layout = this.getFeaturingLayout();
+    if (layout) {
+      featuredPurchases = remainingPurchases.slice(0, StoreFeaturingLayoutItemCount[layout]);
+      remainingPurchases = remainingPurchases.slice(StoreFeaturingLayoutItemCount[layout]);
+    }
+
     return (
       <div className={ItemsAnimationContainer}>
-        <div className={ItemsContainer} key={route.toString()}>
-          {purchases.map((purchase) => {
-            if (purchase.perks.length > 1) {
-              return <StoreItemBundle purchase={purchase} onClick={this.onSkinClick.bind(this)} />;
-            } else {
-              return <StoreItemSingle purchase={purchase} onClick={this.onSkinClick.bind(this)} />;
-            }
-          })}
-        </div>
+        {featuredPurchases.length > 0 && (
+          <StoreFeaturingPage
+            layout={layout}
+            purchases={featuredPurchases}
+            onItemClick={this.onSkinClick.bind(this)}
+            needsMoreHeader={remainingPurchases.length > 0}
+          />
+        )}
+        {remainingPurchases.length > 0 && (
+          <div className={ItemsContainer} key={this.props.currentRoute.toString()}>
+            {remainingPurchases.map((purchase) => {
+              return (
+                <StoreItemCell sizeClassName={ItemSmall} purchase={purchase} onClick={this.onSkinClick.bind(this)} />
+              );
+            })}
+          </div>
+        )}
       </div>
     );
+  }
+
+  private getFeaturingLayout(): StoreFeaturingLayout {
+    // If the user has selected a filter, don't show any Featuring section.
+    if (this.props.championIDFilters.length > 0) {
+      return StoreFeaturingLayout.None;
+    }
+
+    const tabMap = {
+      [StoreRoute.Bundles]: StoreTab.Bundle,
+      [StoreRoute.Emotes]: StoreTab.Emote,
+      [StoreRoute.None]: StoreTab.Invalid,
+      [StoreRoute.Portraits]: StoreTab.Portrait,
+      [StoreRoute.QuestXP]: StoreTab.QuestXP,
+      [StoreRoute.Rewards]: StoreTab.Invalid,
+      [StoreRoute.Skins]: StoreTab.Costume,
+      [StoreRoute.SprintFX]: StoreTab.SprintFX,
+      [StoreRoute.Weapons]: StoreTab.Weapon
+    };
+
+    const config = this.props.storeTabConfigs.find((config) => {
+      return config.tab === tabMap[this.props.currentRoute];
+    });
+
+    return config?.layout ?? StoreFeaturingLayout.None;
   }
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { usingGamepad, usingGamepadInMainMenu } = state.baseGame;
-  const { currentRoute, championIDFilter, purchases, rmtPurchases, newPurchases, perksByID } = state.store;
-  const { ownedPerks } = state.profile;
+  const { currentRoute, championIDFilters, hideOwnedPurchases, purchases, rmtPurchases, newPurchases, perksByID } =
+    state.store;
+  const { ownedPerks, quests, progressionNodes } = state.profile;
   const { stringTable } = state.stringTable;
+  const { storeTabConfigs } = state.gameSettings;
+  const { serverTimeDeltaMS } = state.clock;
 
   return {
     ...ownProps,
@@ -324,9 +438,14 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     rmtPurchases,
     ownedPerks,
     perksByID,
-    championIDFilter,
+    championIDFilters,
+    hideOwnedPurchases,
     newPurchases,
-    stringTable
+    stringTable,
+    storeTabConfigs,
+    quests,
+    progressionNodes,
+    serverTimeDeltaMS
   };
 }
 

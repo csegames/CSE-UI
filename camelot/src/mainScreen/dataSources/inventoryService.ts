@@ -9,20 +9,17 @@ import { InitTopic } from '../redux/initializationSlice';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { InventoryQueryResult } from './inventoryNetworkingConstants';
 import { inventoryQuery } from './inventoryNetworkingConstants';
-import {
-  addInventoryPendingRefresh,
-  resolveInventoryPendingRefresh,
-  setShouldInventoryRefresh,
-  updateInventory
-} from '../redux/inventorySlice';
-import { RootState } from '../redux/store';
-import { Dispatch } from '@reduxjs/toolkit';
+import { addInventoryPendingRefresh, resolveInventoryPendingRefresh, updateInventory } from '../redux/inventorySlice';
 import { moveHiddenItems } from '../components/items/itemUtils';
+import { EventEmitter } from '@csegames/library/dist/_baseGame/types/EventEmitter';
+
+const inventoryServiceEventEmitter = new EventEmitter();
 
 export class InventoryService extends ExternalDataSource {
   private refreshHandle: ListenerHandle = null;
 
   protected async bind(): Promise<ListenerHandle[]> {
+    inventoryServiceEventEmitter.on('refresh', this.refresh.bind(this));
     return [
       await this.query<InventoryQueryResult>(
         { query: inventoryQuery },
@@ -64,16 +61,8 @@ export class InventoryService extends ExternalDataSource {
     }
   }
 
-  protected onReduxUpdate(reduxState: RootState, dispatch: Dispatch): void {
-    super.onReduxUpdate(reduxState, dispatch);
-    if (reduxState.inventory.shouldInventoryRefresh) {
-      this.refresh();
-    }
-  }
-
   private async refresh(): Promise<void> {
     this.dispatch(addInventoryPendingRefresh());
-    this.dispatch(setShouldInventoryRefresh(false));
     this.refreshHandle?.close();
     this.refreshHandle = await this.query<InventoryQueryResult>(
       { query: inventoryQuery },
@@ -81,3 +70,7 @@ export class InventoryService extends ExternalDataSource {
     );
   }
 }
+
+export const refreshInventory = (): void => {
+  inventoryServiceEventEmitter.trigger('refresh');
+};

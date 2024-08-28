@@ -1,7 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { PerkDefGQL, PurchaseDefGQL, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import {
+  PerkDefGQL,
+  PurchaseDefGQL,
+  QuestGQL,
+  StringTableEntryDef
+} from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getChampionPerkUnlockQuestIndex } from '../../../helpers/characterHelpers';
 import { Button } from '../../shared/Button';
@@ -34,10 +39,13 @@ interface ReactProps {
 interface InjectedProps extends FeatureFlags.Source {
   ownedPerks: Dictionary<number>;
   selectedChampion: ChampionInfo;
-  quests: QuestsByType;
+  questsByType: QuestsByType;
   purchases: PurchaseDefGQL[];
   stringTable: Dictionary<StringTableEntryDef>;
   perksByID: Dictionary<PerkDefGQL>;
+  progressionNodes: string[];
+  quests: QuestGQL[];
+  serverTimeDeltaMS: number;
   dispatch?: Dispatch;
 }
 
@@ -63,7 +71,7 @@ class APerkMultiButton extends React.Component<Props> {
 
     const unlockIndex: number = getChampionPerkUnlockQuestIndex(
       this.props.selectedChampion,
-      this.props.quests.Champion,
+      this.props.questsByType.Champion,
       this.props.perk.id
     );
     if (unlockIndex >= 0) {
@@ -77,7 +85,17 @@ class APerkMultiButton extends React.Component<Props> {
 
     if (FeatureFlags.Store.isEnabled(this.props)) {
       const purchaseDef = this.getPurchaseDef();
-      if (purchaseDef && isPurchaseable(purchaseDef, this.props.perksByID, this.props.ownedPerks)) {
+      if (
+        purchaseDef &&
+        isPurchaseable(
+          purchaseDef,
+          this.props.perksByID,
+          this.props.ownedPerks,
+          this.props.progressionNodes,
+          this.props.quests,
+          this.props.serverTimeDeltaMS
+        )
+      ) {
         const buttonText = isFreeReward(purchaseDef)
           ? getStringTableValue(StringIDGeneralClaim, this.props.stringTable)
           : getStringTableValue(StringIDGeneralPurchase, this.props.stringTable);
@@ -117,8 +135,9 @@ class APerkMultiButton extends React.Component<Props> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { selectedChampion } = state.championInfo;
-  const { ownedPerks } = state.profile;
-  const { quests } = state.quests;
+  const { ownedPerks, quests, progressionNodes } = state.profile;
+  const { serverTimeDeltaMS } = state.clock;
+  const questsByType = state.quests.quests;
   const { purchases, perksByID } = state.store;
   const { stringTable } = state.stringTable;
   const featureFlags = state.featureFlags;
@@ -127,11 +146,14 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     ...ownProps,
     ownedPerks,
     selectedChampion,
-    quests,
+    questsByType,
     purchases,
     stringTable,
     featureFlags,
-    perksByID
+    perksByID,
+    quests,
+    progressionNodes,
+    serverTimeDeltaMS
   };
 }
 

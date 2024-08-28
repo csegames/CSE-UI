@@ -9,11 +9,11 @@ import * as React from 'react';
 import { StatusItem } from './StatusItem';
 import { connect } from 'react-redux';
 import { Status } from '@csegames/library/dist/hordetest/game/types/Status';
-import { StatusDef } from '@csegames/library/dist/_baseGame/types/StatusDef';
 import { game } from '@csegames/library/dist/_baseGame';
 import { RootState } from '../../../../redux/store';
 import { IDLookupTable } from '../../../../redux/gameSlice';
 import { ArrayMap } from '@csegames/library/dist/_baseGame/types/ObjectMap';
+import { StatusDef } from '../../../../dataSources/manifest/statusManifest';
 
 const Container = 'StatusBar-Container';
 
@@ -40,7 +40,7 @@ class AStatusBar extends React.Component<Props> {
     for (const index in this.props.statuses) {
       const status = this.props.statuses[index];
       const statusDef = this.props.statusDefs[status.id];
-      if (!statusDef || statusDef.isUIVisibilityHidden) {
+      if (!statusDef || !statusDef.showInHUD) {
         continue;
       }
       if (statusDef.statusTags.indexOf('friendly') !== -1) {
@@ -97,7 +97,7 @@ function sortStatuses(statuses: StatusWithDef[]): void {
     // statuses support infinite durations which produce a NaN duration result. We also consider this
     // case as two statuses which equal durations and want to sort by ID so they don't jump around order wise
     if (durationResult === 0 || isNaN(durationResult)) {
-      return b.def.id - a.def.id;
+      return b.def.numericID - a.def.numericID;
     }
 
     return durationResult;
@@ -105,7 +105,7 @@ function sortStatuses(statuses: StatusWithDef[]): void {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { statusDefs } = state.game;
+  const { statusDefsByNumericID: statusDefs } = state.game;
   const { statuses } = state.player;
 
   return {

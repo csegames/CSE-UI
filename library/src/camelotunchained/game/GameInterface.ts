@@ -62,10 +62,7 @@ export interface GameInterface extends GameModel {
     callback: (
       scenarioID: string,
       roundID: string,
-      didEnd: boolean,
-      didWin: boolean,
-      roundResultMessage: string,
-      scenarioResultMessage: string
+      didEnd: boolean
     ) => any
   ) => ListenerHandle;
 

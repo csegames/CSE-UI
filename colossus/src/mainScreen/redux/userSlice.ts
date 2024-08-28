@@ -9,9 +9,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // BEGIN INTERFACES AND STATES
 
-export interface UserState extends User {
-  shouldUserRefresh: boolean;
-}
+export interface UserState extends User {}
 
 function generateDefaultUserState() {
   const defaultMyUserState: UserState = {
@@ -19,8 +17,7 @@ function generateDefaultUserState() {
     created: null,
     displayName: null,
     id: null,
-    lastLogin: null,
-    shouldUserRefresh: false
+    lastLogin: null
   };
   return defaultMyUserState;
 }
@@ -30,13 +27,10 @@ export const userSlice = createSlice({
   initialState: generateDefaultUserState(),
   reducers: {
     updateUser: (state: UserState, action: PayloadAction<User>) => {
-      const newState = { ...action.payload, shouldUserRefresh: state.shouldUserRefresh };
+      const newState = { ...action.payload };
       return newState;
-    },
-    setUserShouldRefresh: (state: UserState, action: PayloadAction<boolean>) => {
-      state.shouldUserRefresh = action.payload;
     }
   }
 });
 
-export const { updateUser, setUserShouldRefresh } = userSlice.actions;
+export const { updateUser } = userSlice.actions;

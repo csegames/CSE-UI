@@ -119,7 +119,7 @@ export class APlayButton extends React.Component<Props> {
       ];
     }
 
-    const queue = this.props.queues.find((q) => q.queueID === this.props.queueID);
+    const queue = this.props.queues.find((q) => q.queueID === this.props.queueID && q.enabled);
     if (!queue) {
       return [getStringTableValue(StringIDPlayQueueNotFound, this.props.stringTable), false];
     }

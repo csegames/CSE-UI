@@ -6,7 +6,7 @@
 
 // Final Stand: Ragnarok REST interface
 
-import { ClassDefRef, PerkDefRef, PurchaseDefRef, RequestConfig, RequestResult, QuestDefRef, xhrRequest } from './prerequisites'
+import { ColossusProgressionNodeDefRef, ClassDefRef, PerkDefRef, PurchaseDefRef, RequestConfig, RequestResult, QuestDefRef, xhrRequest } from './prerequisites'
 
 export type AbilityInstanceID = number;
 export type AccountID = string;
@@ -95,6 +95,8 @@ export enum AuthActionErrorCode {
   RequirePrivacyPolicyAcceptance = 8,
   Throttled = 9,
   NoScreenName = 10,
+  InvalidScreenName = 11,
+  ScreenNameTaken = 12,
 }
 
 export enum BoneAlias {
@@ -354,6 +356,9 @@ export enum PerkType {
   RuneMod = 8,
   QuestXP = 9,
   SprintFX = 10,
+  RuneModTierKey = 11,
+  StatusMod = 12,
+  StatMod = 13,
 }
 
 export enum RuneType {
@@ -367,12 +372,14 @@ export enum RuneType {
 export enum ScenarioRoundState {
   Uninitialized = 0,
   Initializing = 1,
-  WaitingForConnections = 2,
-  Countdown = 3,
-  Running = 4,
-  Epilogue = 5,
-  Ended = 6,
-  COUNT = 7,
+  Backfill = 2,
+  BackfillLocked = 3,
+  WaitingForConnections = 4,
+  Countdown = 5,
+  Running = 6,
+  Epilogue = 7,
+  Ended = 8,
+  COUNT = 9,
 }
 
 export enum ServerStatus {
@@ -398,12 +405,12 @@ export const ActivitiesAPI = {
     );
   },
 
-  EnterQueue: function(config: RequestConfig, queueID: string, userTag?: string, allowBackfill?: boolean): Promise<RequestResult> {
+  EnterQueue: function(config: RequestConfig, queueID: string, userTag?: string, requestBackfill?: boolean): Promise<RequestResult> {
     const conf = config();
     const parameters: {[key:string]: any} = {};
     parameters["queueID"] = queueID;
     if (userTag !== undefined) parameters["userTag"] = userTag;
-    if (allowBackfill !== undefined) parameters["allowBackfill"] = allowBackfill;
+    if (requestBackfill !== undefined) parameters["requestBackfill"] = requestBackfill;
     return xhrRequest(
       'post',
       conf.url + 'v1/activities/queue',
@@ -424,12 +431,19 @@ export const ActivitiesAPI = {
     );
   },
 
-  SetChampion: function(config: RequestConfig, roundID: string, championID: string, shouldLock: boolean): Promise<RequestResult> {
+  SetChampion: function(config: RequestConfig, reservationID: string, championID: string, shouldLock: boolean, costumePerkID?: string, portraitPerkID?: string, weaponPerkID?: string): Promise<RequestResult> {
     const conf = config();
+    const parameters: {[key:string]: any} = {};
+    parameters["reservationID"] = reservationID;
+    parameters["championID"] = championID;
+    parameters["shouldLock"] = shouldLock;
+    if (costumePerkID !== undefined) parameters["costumePerkID"] = costumePerkID;
+    if (portraitPerkID !== undefined) parameters["portraitPerkID"] = portraitPerkID;
+    if (weaponPerkID !== undefined) parameters["weaponPerkID"] = weaponPerkID;
     return xhrRequest(
       'put',
       conf.url + 'v1/activities/selection',
-      { roundID, championID, shouldLock },
+      parameters,
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
@@ -452,6 +466,17 @@ export const ActivitiesAPI = {
       'delete',
       conf.url + 'v1/activities/player_vote',
       { roundID, playerID },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  FindProxyByMatchHost: function(config: RequestConfig, matchHost: string): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'get',
+      conf.url + 'v1/activities/find_proxy_by_match_host',
+      { matchHost },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
@@ -991,6 +1016,28 @@ export const ProfileAPI = {
       'post',
       conf.url + 'v1/profile/purchase/',
       { purchase, quantity },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  PurchaseProgressionNode: function(config: RequestConfig, node: ColossusProgressionNodeDefRef): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'post',
+      conf.url + 'v1/profile/purchaseprogressionnode/',
+      { node },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  RespecChampionProgression: function(config: RequestConfig, champion: ClassDefRef): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'post',
+      conf.url + 'v1/profile/respecchampionprogression/',
+      { champion },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );

@@ -38,6 +38,7 @@ const DefaultPlayerState: FullPlayerState = {
   },
   wounds: NaN,
   totalKills: 0,
+  rank: 0,
   teamKills: 0,
   isAlive: true,
   resources: {},

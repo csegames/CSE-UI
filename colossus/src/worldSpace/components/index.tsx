@@ -78,11 +78,13 @@ export interface HealthBarState extends WorldUIState {
   lifeState: LifeState;
   deathStartTime: number;
   downedStateEndTime: number;
+  interactionName: string;
+  interactionEnabled: boolean;
+  interactionDisabledReason: string;
+  interactionRange: number;
   bindingName: string;
   bindingIconClass: string;
-  reviveRange: number;
   worldTime: number;
-  hideReviveBar: boolean;
   resources: ArrayMap<EntityResource>;
 }
 
@@ -92,6 +94,8 @@ export interface InteractionBarState extends WorldUIState {
   description: string;
   gameplayType: ItemGameplayType;
   title: string;
+  enabled: boolean;
+  disabledReason?: string;
   progress?: number;
   keybind?: Binding;
 }
@@ -167,7 +171,7 @@ export class WorldUI extends React.Component<{}, State> {
   }
 
   private renderWorldUI = (worldUI: WorldUIType, position: WorldUIPositionModel) => {
-    if (position === null) {
+    if (!position) {
       return null;
     }
 
@@ -203,7 +207,7 @@ export class WorldUI extends React.Component<{}, State> {
       case WorldUIWidgetType.Objective: {
         return (
           <div className={WorldUIContainer} style={makeWorldUIContainerStyles(worldUI)} key={worldUI.id}>
-            <Objective state={worldUI as ObjectiveState} />
+            <Objective state={worldUI as ObjectiveState} position={position} />
           </div>
         );
       }
@@ -272,11 +276,13 @@ export class WorldUI extends React.Component<{}, State> {
     lifeState: LifeState,
     deathStartTime: number,
     downedStateEndTime: number,
+    interactionName: string,
+    interactionEnabled: boolean,
+    interactionDisabledReason: string,
+    interactionRange: number,
     bindingName: string,
     bindingIconClass: string,
-    reviveRange: number,
     worldTime: number,
-    hideReviveBar: boolean,
     resources: ArrayMap<EntityResource>
   ) => {
     this.createOrUpdateWorldUI({
@@ -297,11 +303,13 @@ export class WorldUI extends React.Component<{}, State> {
       lifeState,
       deathStartTime,
       downedStateEndTime,
+      interactionName,
+      interactionEnabled,
+      interactionDisabledReason,
+      interactionRange,
       bindingName,
       bindingIconClass,
-      reviveRange,
       worldTime,
-      hideReviveBar,
       resources
     });
   };
@@ -316,6 +324,8 @@ export class WorldUI extends React.Component<{}, State> {
     description: string,
     gameplayType: ItemGameplayType,
     title: string,
+    enabled: boolean,
+    disabledReason?: string,
     progress?: number,
     keybind?: Binding
   ) => {
@@ -331,6 +341,8 @@ export class WorldUI extends React.Component<{}, State> {
       description,
       gameplayType,
       title,
+      enabled,
+      disabledReason,
       progress,
       keybind: keybindCopy
     });

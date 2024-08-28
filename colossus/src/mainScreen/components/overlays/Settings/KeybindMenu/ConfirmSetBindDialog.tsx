@@ -66,17 +66,17 @@ export class AConfirmSetBindDialog extends React.Component<Props, State> {
 
   private onYesClick() {
     this.props.onYesClick();
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
   }
 
   private onNoClick() {
     this.props.onNoClick();
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
   }
 
   private onCancelClick() {
     this.props.onCancelClick();
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
   }
 
   public render() {

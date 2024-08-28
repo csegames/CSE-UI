@@ -57,11 +57,7 @@ const itemLocationFragment = gql`
     }
     equipped {
       characterID
-      gearSlots
-    }
-    inVox {
-      voxInstanceID
-      voxJobInstanceID
+      gearSlotSetIndex
     }
   }
 `;
@@ -90,22 +86,9 @@ const itemDefRefFragment = gql`
     isStackableItem
     tags
     equipRequirements
-    deploySettings {
-      resourceID
-      controlRequirements
-      isDoor
-      snapToGround
-      rotateYaw
-      rotatePitch
-      rotateRoll
-    }
+    isDeployable
     gearSlotSets {
       gearSlots
-    }
-    substanceDefinition {
-      id
-      minQuality
-      maxQuality
     }
   }
 `;
@@ -141,17 +124,9 @@ const permissibleHolderFragment = gql`
   }
 `;
 
-const containerStatsFragment = gql`
-  fragment ContainerStats on ContainerDefStat_Single {
-    maxItemCount
-    maxItemMass
-  }
-`;
-
 const containedItemsFragment = gql`
   fragment ContainedItems on Item {
     id
-    givenName
     stackHash
     containerColor {
       ...ContainerColor
@@ -178,16 +153,12 @@ const containedItemsFragment = gql`
       ...PermissibleHolder
     }
     containerDrawers {
-      id
       requirements {
         ...Requirements
       }
-      stats {
-        ...ContainerStats
-      }
+      maxItemPositions
       containedItems {
         id
-        givenName
         stackHash
         containerColor {
           ...ContainerColor
@@ -222,33 +193,26 @@ const containedItemsFragment = gql`
   ${itemDefRefFragment}
   ${permissibleHolderFragment}
   ${requirementsFragment}
-  ${containerStatsFragment}
 `;
 
 const containerDrawersFragment = gql`
   fragment ContainerDrawers on ContainerDrawerGQL {
-    id
     requirements {
       ...Requirements
     }
     containedItems {
       ...ContainedItems
     }
-    stats {
-      ...ContainerStats
-    }
+    maxItemPositions
   }
   ${requirementsFragment}
   ${containedItemsFragment}
-  ${containerStatsFragment}
 `;
 
 export const inventoryItemFragment = gql`
   fragment InventoryItem on Item {
     id
-    givenName
     stackHash
-    hasSubItems
     containerColor {
       ...ContainerColor
     }
@@ -262,10 +226,6 @@ export const inventoryItemFragment = gql`
       currentValue
       id
       maxValue
-    }
-    scenarioRelationship {
-      restrictedToScenario
-      scenarioID
     }
     statList {
       statID

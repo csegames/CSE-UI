@@ -12,13 +12,11 @@ import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEv
 import { RootState } from '../../../redux/store';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { hideAllOverlays, LifecyclePhase, Overlay, showOverlay } from '../../../redux/navigationSlice';
+import { LifecyclePhase, Overlay, showOverlay } from '../../../redux/navigationSlice';
 import { Group, Queue } from '@csegames/library/dist/hordetest/graphql/schema';
-import { enterQueue } from '../../../redux/matchSlice';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
 import { Dictionary } from '@reduxjs/toolkit';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
-import { TutorialQueueID } from '../../../redux/teamJoinSlice';
 
 const Container = 'MenuModal-LeftOptions-Container';
 const MenuTitle = 'MenuModal-LeftOptions-MenuTitle';
@@ -30,7 +28,6 @@ const StringIDMainMenuLeftSettings = 'MainMenuLeftSettings';
 const StringIDMainMenuLeftExit = 'MainMenuLeftExit';
 const StringIDMainMenuLeftChangeDisplayName = 'MainMenuLeftChangeDisplayName';
 const StringIDMainMenuLeftCredits = 'MainMenuLeftCredits';
-const StringIDMainMenuLeftTutorial = 'MainMenuLeftTutorial';
 
 interface ReactProps {}
 
@@ -54,7 +51,6 @@ class ALeftOptions extends React.Component<Props> {
         </div>
         {this.renderChangeNameOption()}
         {this.renderCreditsOption()}
-        {this.legacyRenderTutorialOption()}
         {this.renderDebugOption()}
         <div
           className={`${Item} exit`}
@@ -87,13 +83,8 @@ class ALeftOptions extends React.Component<Props> {
     this.props.dispatch(showOverlay(Overlay.Debug));
   }
 
-  private async startTutorial() {
-    this.props.dispatch(hideAllOverlays());
-    this.props.dispatch(enterQueue({ queueID: TutorialQueueID, userTag: 'tutorial' }));
-  }
-
   private onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   private renderChangeNameOption() {
@@ -114,22 +105,6 @@ class ALeftOptions extends React.Component<Props> {
     return (
       <div className={Item} onClick={this.showCreditsScreen.bind(this)} onMouseEnter={this.onMouseEnter.bind(this)}>
         {getStringTableValue(StringIDMainMenuLeftCredits, this.props.stringTable)}
-      </div>
-    );
-  }
-
-  private legacyRenderTutorialOption() {
-    if (this.props.lifecyclePhase !== LifecyclePhase.Lobby || this.props.group?.id) {
-      return;
-    }
-
-    if (this.props.queues.find((q) => q.queueID == TutorialQueueID) == null) {
-      return;
-    }
-
-    return (
-      <div className={Item} onClick={this.startTutorial.bind(this)} onMouseEnter={this.onMouseEnter.bind(this)}>
-        {getStringTableValue(StringIDMainMenuLeftTutorial, this.props.stringTable)}
       </div>
     );
   }

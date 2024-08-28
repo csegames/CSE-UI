@@ -30,7 +30,7 @@ export function SliderRow(props: Props) {
   }
 
   function onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   return (

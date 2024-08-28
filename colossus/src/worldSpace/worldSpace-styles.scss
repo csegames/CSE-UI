@@ -387,6 +387,10 @@ body {
   padding: 6px;
   z-index: 0;
   background-color: #ffffff1a;
+
+  &.disabled {
+    background: rgba(43, 43, 43, 0.61);
+  }
 }
 
 .WorldSpace-ReviveInteractionBar-Bar {
@@ -405,6 +409,19 @@ body {
   font-family: Lato;
   font-size: 20px;
   z-index: 1;
+
+  &.disabled {
+    color: Grey;
+    font-size: 15px;
+  }
+}
+
+.WorldSpace-ReviveInteractionBar-BarTextDisabledReason {
+  color: white;
+  font-family: Lato;
+  font-size: 12px;
+  z-index: 1;
+  margin-left: 5px;
 }
 
 .WorldSpace-ReviveInteractionBar-KeybindIcon {
@@ -420,6 +437,12 @@ body {
 
   &.pressed {
     opacity: 0.7;
+  }
+
+  &.disabled {
+    background-color: #4d4d4d;
+    border: 1px solid #353535;
+    margin-right: 5px;
   }
 }
 
@@ -519,11 +542,6 @@ body {
     background-size: 100% 100%;
   }
 
-  &.DisabledInteraction {
-    background: url(../images/items/interactionbar-container-disabledinteraction-bg.png);
-    background-size: 100% 100%;
-  }
-
   &.Revive {
     background-color: #60cc00;
   }
@@ -538,6 +556,10 @@ body {
   background-color: rgba(243, 243, 243, 0.2);
   margin-bottom: 5px;
   z-index: 0;
+
+  &.disabled {
+    background: rgba(43, 43, 43, 0.61);
+  }
 }
 
 .WorldSpace-InteractionBar-Bar {
@@ -560,7 +582,16 @@ body {
 
   &.disabled {
     color: #a0a0a0;
+    font-size: 20px;
   }
+}
+
+.WorldSpace-InteractionBar-BarTextDisabledReason {
+  color: white;
+  font-family: Lato;
+  font-size: 15px;
+  z-index: 1;
+  margin-left: 10px;
 }
 
 .WorldSpace-InteractionBar-KeybindIcon {
@@ -578,9 +609,9 @@ body {
   }
 
   &.disabled {
-    background: #a0a0a0;
-    border: 2px solid #2e2d2d;
-    color: #2e2d2d;
+    background-color: #4d4d4d;
+    border: 1px solid #353535;
+    margin-right: 10px;
   }
 }
 
@@ -612,20 +643,12 @@ body {
   font-weight: bold;
   font-size: 20px;
   color: #fff;
-
-  &.disabled {
-    color: #a0a0a0;
-  }
 }
 
 .WorldSpace-InteractionBar-ItemDescription {
   font-family: Lato;
   font-size: 16px;
   color: #fff;
-
-  &.disabled {
-    color: #a0a0a0;
-  }
 }
 
 .WorldSpace-Objective-Container {
@@ -701,6 +724,19 @@ body {
   font-size: 18px;
   font-family: Lato;
   font-weight: bold;
+}
+
+.WorldSpace-Objective-DistanceText {
+  font-size: 0.7rem;
+  font-family: Lato;
+  font-weight: 600;
+  text-shadow: -0.08vmin -0.08vmin 0.08vmin #000, 0 -0.08vmin 0.08vmin #000, 0.08vmin -0.08vmin 0.08vmin #000,
+    0.08vmin 0 0.08vmin #000, 0.08vmin 0.08vmin 0.08vmin #000, 0 0.08vmin 0.08vmin #000,
+    -0.08vmin 0.08vmin 0.08vmin #000, -0.08vmin 0 0.08vmin #000;
+  text-transform: lowercase;
+  color: white;
+  width: 100%;
+  text-align: center;
 }
 
 .WorldSpace-PlayerDifferentiator-Container {

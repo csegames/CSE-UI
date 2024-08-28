@@ -65,6 +65,8 @@ type Props = ReactProps & InjectedProps;
 
 class ALobbyBattlePassStatus extends React.Component<Props> {
   public render(): JSX.Element {
+    // TODO: This is temporary disabled as there is not enough vertical space in the lobby
+    return null;
     const bp = this.props.currentBattlePass;
     if (bp) {
       const currentProgress = this.props.quests.find((quest) => {

@@ -9,8 +9,8 @@ import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ContextMenuItem, ContextMenuState, hideContextMenu } from '../redux/contextMenuSlice';
-import { HUDHorizontalAnchor, HUDVerticalAnchor } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 // If the mouse moves this far away from an open ContextMenu, we will close the menu.
 const MENU_CLOSE_DISTANCE_PX = 10;

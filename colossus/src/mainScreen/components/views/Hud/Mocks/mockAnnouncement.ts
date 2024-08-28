@@ -90,7 +90,7 @@ export const mockDialogueLong: Mock = makeMockDialogue(
   ).toFixed(0)} lights.`,
   'Thor', // speaker name
   'https://s3.amazonaws.com/camelot-unchained/game/4/icons/inventory/other-bomb-sapper-generic-001.png', // speaker icon
-  SoundEvents.PLAY_UI_MAIN_MENU_TAB_CHAMPION_CELT // soundid
+  SoundEvents.PLAY_UI_MAINMENU_TAB_CHAMPION_CELT // soundid
 );
 
 export const mockDialogueShort: Mock = makeMockDialogue(
@@ -98,7 +98,7 @@ export const mockDialogueShort: Mock = makeMockDialogue(
   'Some shorter text for testing purposes.',
   'Odin',
   'https://s3.amazonaws.com/camelot-unchained/icons/inventory/weapon-tdd-OrganicAxe.png', // speaker icon
-  SoundEvents.PLAY_UI_MAIN_MENU_TAB_CHAMPION_KNIGHT // soundid
+  SoundEvents.PLAY_UI_MAINMENU_TAB_CHAMPION_KNIGHT // soundid
 );
 
 export const mockDialogueNoSound: Mock = makeMockDialogue(

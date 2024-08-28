@@ -12,6 +12,7 @@ import {
   PerkDefGQL,
   PerkType,
   PurchaseDefGQL,
+  QuestGQL,
   StringTableEntryDef
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
@@ -21,11 +22,10 @@ import { Overlay, hideOverlay, setCosmeticTab, showError } from '../../redux/nav
 import { RootState } from '../../redux/store';
 import { Button } from '../shared/Button';
 import { StringIDGeneralBack, getStringTableValue } from '../../helpers/stringTableHelpers';
-import { ProfileModel, startProfileRefresh } from '../../redux/profileSlice';
+import { ProfileModel } from '../../redux/profileSlice';
 import {
   getEquippedEmotesForChampion,
   getWornCostumeForChampion,
-  hasUnseenPerkForChampion,
   isPerkUnseen,
   markEquipmentSeen
 } from '../../helpers/characterHelpers';
@@ -41,6 +41,8 @@ import { getPerkTypeLocalizedName } from '../../helpers/perkUtils';
 import { isFreeReward, isPurchaseable } from '../../helpers/storeHelpers';
 import { KeybindIDs, KeybindsState } from '../../redux/keybindsSlice';
 import { webConf } from '../../dataSources/networkConfiguration';
+import { refreshProfile } from '../../dataSources/profileNetworking';
+import { getIsBadgedForUnseenChampionEquipment } from '../../helpers/badgingUtils';
 
 const Root = 'ChampionSelectCosmetics-Root';
 const BackgroundBlurEdges = 'ChampionSelectCosmetics-BackgroundBlurEdges';
@@ -105,7 +107,10 @@ const StringIDCosmetics: { [type in PerkType]: string } = {
   [PerkType.Key]: '',
   [PerkType.CurrentBattlePassXP]: '',
   [PerkType.QuestXP]: '',
-  [PerkType.RuneMod]: ''
+  [PerkType.RuneMod]: '',
+  [PerkType.RuneModTierKey]: '',
+  [PerkType.StatusMod]: '',
+  [PerkType.StatMod]: ''
 };
 const StringIDPlayDefaultDisplayName = 'PlayDefaultDisplayName';
 
@@ -121,13 +126,17 @@ const tabIcons: { [type in PerkType]: string } = {
   [PerkType.Key]: '',
   [PerkType.CurrentBattlePassXP]: '',
   [PerkType.QuestXP]: '',
-  [PerkType.RuneMod]: ''
+  [PerkType.RuneMod]: '',
+  [PerkType.RuneModTierKey]: '',
+  [PerkType.StatusMod]: '',
+  [PerkType.StatMod]: ''
 };
 
 interface ReactProps {}
 
 interface InjectedProps {
   selectedChampion: ChampionInfo;
+  champions: ChampionInfo[];
   ownedPerks: Dictionary<number>;
   perks: PerkDefGQL[];
   perksByID: Dictionary<PerkDefGQL>;
@@ -135,13 +144,16 @@ interface InjectedProps {
   cosmeticTab: PerkType;
   profile: ProfileModel;
   newEquipment: Dictionary<boolean>;
-  champions: ChampionGQL[];
+  championsGQL: ChampionGQL[];
   championCostumes: ChampionCostumeInfo[];
   purchases: PurchaseDefGQL[];
   displayName: string;
   maxEmoteCount: number;
   usingGamepadInMainMenu: boolean;
   keybinds: KeybindsState;
+  progressionNodes: string[];
+  quests: QuestGQL[];
+  serverTimeDeltaMS: number;
   dispatch?: Dispatch;
 }
 
@@ -169,7 +181,16 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
     const purchase = this.props.purchases.find((purchase) => {
       return purchase.perks.length === 1 && purchase.perks[0].perkID === item.id;
     });
-    const canBuy = !!purchase && isPurchaseable(purchase, this.props.perksByID, this.props.ownedPerks);
+    const canBuy =
+      !!purchase &&
+      isPurchaseable(
+        purchase,
+        this.props.perksByID,
+        this.props.ownedPerks,
+        this.props.progressionNodes,
+        this.props.quests,
+        this.props.serverTimeDeltaMS
+      );
     const isFree = !!purchase && isFreeReward(purchase);
     const costPerk = this.props.perksByID[purchase?.costs?.[0]?.perkID];
     const isShowingCostume = this.props.cosmeticTab === PerkType.Costume;
@@ -335,7 +356,7 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
     // Buttons are "selected" if they match the current selected perkID.
     const equippedEmotes = getEquippedEmotesForChampion(
       this.props.selectedChampion.id,
-      this.props.champions,
+      this.props.championsGQL,
       this.props.perksByID,
       this.props.maxEmoteCount
     );
@@ -406,7 +427,7 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
     const portraitURL =
       getWornCostumeForChampion(
         this.props.championCostumes,
-        this.props.champions,
+        this.props.championsGQL,
         this.props.perksByID,
         this.props.selectedChampion?.id
       )?.thumbnailURL ?? 'images/MissingAsset.png';
@@ -441,13 +462,14 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
   private renderNavBarTab(tab: PerkType): React.ReactNode {
     const selectedClass = tab === this.props.cosmeticTab ? 'selected' : '';
 
-    const shouldBadge = hasUnseenPerkForChampion(
+    const shouldBadge = getIsBadgedForUnseenChampionEquipment(
       this.props.selectedChampion,
+      this.props.champions,
       tab,
       this.props.newEquipment,
       this.props.perksByID,
       this.props.ownedPerks
-    );
+    ).value;
 
     return (
       <div
@@ -549,7 +571,7 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
     }
 
     if (res.ok) {
-      this.props.dispatch(startProfileRefresh());
+      refreshProfile();
     } else {
       this.props.dispatch(showError(res));
     }
@@ -679,19 +701,21 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { selectedChampion } = state.championInfo;
-  const { ownedPerks } = state.profile;
+  const { ownedPerks, quests, progressionNodes } = state.profile;
   const { stringTable } = state.stringTable;
   const { perks, perksByID, newEquipment, purchases } = state.store;
   const { cosmeticTab } = state.navigation;
-  const { championCostumes } = state.championInfo;
-  const { champions } = state.profile;
+  const { championCostumes, champions } = state.championInfo;
+  const { champions: championsGQL } = state.profile;
   const { displayName } = state.user;
   const { maxEmoteCount } = state.gameSettings;
   const { usingGamepadInMainMenu } = state.baseGame;
+  const { serverTimeDeltaMS } = state.clock;
 
   return {
     ...ownProps,
     selectedChampion,
+    champions,
     ownedPerks,
     perks,
     perksByID,
@@ -699,13 +723,16 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     cosmeticTab,
     profile: state.profile,
     newEquipment,
-    champions,
+    championsGQL,
     championCostumes,
     purchases,
     displayName,
     maxEmoteCount,
     usingGamepadInMainMenu,
-    keybinds: state.keybinds
+    keybinds: state.keybinds,
+    progressionNodes,
+    quests,
+    serverTimeDeltaMS
   };
 }
 

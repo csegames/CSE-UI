@@ -17,12 +17,13 @@ import {
   ChampionGQL,
   PerkDefGQL
 } from '@csegames/library/dist/hordetest/graphql/schema';
-import { ProfileModel, startProfileRefresh } from '../../../../redux/profileSlice';
+import { ProfileModel } from '../../../../redux/profileSlice';
 import { Dispatch } from 'redux';
 import { getWornCostumeForChampion } from '../../../../../mainScreen/helpers/characterHelpers';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
+import { refreshProfile } from '../../../../dataSources/profileNetworking';
 
 const Container = 'CareerStats-Container';
 const NoDataText = 'CareerStats-NoDataText';
@@ -284,7 +285,7 @@ class ACareerStats extends React.Component<Props> {
 
   componentDidMount() {
     if (this.props.profile) {
-      this.props.dispatch(startProfileRefresh());
+      refreshProfile();
     }
   }
 

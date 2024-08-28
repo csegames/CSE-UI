@@ -6,19 +6,21 @@
 
 import ExternalDataSource from '../redux/externalDataSource';
 import { scenarioQueueQuery, ScenarioQueryResult } from './scenarioNetworkingConstants';
-import { setShouldScenarioRefresh, updateScenarioQueue } from '../redux/scenarioSlice';
+import { updateScenarioQueue } from '../redux/scenarioSlice';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import { RootState } from '../redux/store';
-import { Dispatch } from '@reduxjs/toolkit';
+import { EventEmitter } from '@csegames/library/dist/_baseGame/types/EventEmitter';
+
+const scenarioServiceEventEmitter = new EventEmitter();
 
 export class ScenarioService extends ExternalDataSource {
   private pendingRefreshes: number = 0;
   private refreshHandle: ListenerHandle = null;
 
   protected async bind(): Promise<ListenerHandle[]> {
+    scenarioServiceEventEmitter.on('refresh', this.refresh.bind(this));
     // TODO: Convert the GraphQL query to a subscription in order to eliminate this setInterval
     window.setInterval(() => {
-      this.dispatch(setShouldScenarioRefresh(true));
+      this.refresh();
     }, 2000);
     return [];
   }
@@ -34,16 +36,8 @@ export class ScenarioService extends ExternalDataSource {
     }
   }
 
-  protected onReduxUpdate(reduxState: RootState, dispatch: Dispatch): void {
-    super.onReduxUpdate(reduxState, dispatch);
-    if (reduxState.scenario.shouldScenarioRefresh) {
-      this.refresh();
-    }
-  }
-
   private async refresh(): Promise<void> {
     this.pendingRefreshes++;
-    this.dispatch(setShouldScenarioRefresh(false));
     this.refreshHandle?.close();
     this.refreshHandle = await this.query<ScenarioQueryResult>(
       { query: scenarioQueueQuery },
@@ -51,3 +45,7 @@ export class ScenarioService extends ExternalDataSource {
     );
   }
 }
+
+export const refreshScenario = (): void => {
+  scenarioServiceEventEmitter.trigger('refresh');
+};

@@ -42,6 +42,11 @@ import { VoiceChatFunctions, VoiceChatMocks, impl as vc } from '../_baseGame/cli
 import { NetworkFunctions, NetworkEventMocks, impl as nf } from '../_baseGame/clientFunctions/NetworkFunctions';
 import { AudioFunctions, AudioMocks, impl as audf } from '../_baseGame/clientFunctions/AudioFunctions';
 import { SystemFunctions, SystemMocks, impl as sysf } from '../_baseGame/clientFunctions/SystemFunctions';
+import { BattlePassFunctions, BattlePassMocks, impl as bpf } from './clientFunctions/BattlePassFunctions';
+import { StoreFunctions, StoreMocks, impl as sf } from './clientFunctions/StoreFunctions';
+import { LobbyFunctions, LobbyMocks, impl as lbf } from './clientFunctions/LobbyFunctions';
+import { RuneModsFunctions, RuneModsMocks, impl as rmf } from './clientFunctions/RuneModsFunctions';
+import { ProgressionFunctions, ProgressionMocks, impl as progf } from './clientFunctions/ProgressionFunctions';
 
 const abilityUnsupported = () => console.warn('Ability requests are not currently supported in Final Stand: Ragnarok');
 const createUnsupported = () => {
@@ -54,15 +59,20 @@ const ef = create<BaseEntityStateModel>();
 export type MainScreenClientAPI = AbilityFunctions &
   AudioFunctions &
   AnnouncementFunctions &
+  BattlePassFunctions &
   DebugSessionFunctions &
   DefFunctions &
   EntityFunctions<BaseEntityStateModel> &
   EntityDirectionFunctions &
   LoadingScreenFunctions &
+  LobbyFunctions &
   MatchFunctions &
   NetworkFunctions &
   ObjectiveDetailFunctions &
+  ProgressionFunctions &
+  RuneModsFunctions &
   SelfPlayerFunctions &
+  StoreFunctions &
   SystemFunctions &
   VersionFunctions &
   ViewFunctions &
@@ -72,13 +82,18 @@ export type MainScreenClientAPI = AbilityFunctions &
 export type MainScreenClientMocks = AbilityMocks &
   AudioMocks &
   AnnouncementMocks &
+  BattlePassMocks &
   DebugSessionMocks &
   DefMocks &
   EntityMocks<BaseEntityStateModel> &
   EntityDirectionMocks &
+  LobbyMocks &
   MatchMocks &
   NetworkEventMocks &
   ObjectiveDetailMocks &
+  ProgressionMocks &
+  RuneModsMocks &
+  StoreMocks &
   SystemMocks &
   ViewEventMocks &
   VoiceChatMocks &
@@ -115,13 +130,22 @@ export const clientAPI: MainScreenClientAPI = {
   setUIRaceState: audf.setUIRaceState.bind(audf),
   // Announcement
   bindAnnouncementListener: af.bindAnnouncementListener.bind(af),
+  // Battle Pass
+  getLastSplashedBattlePassID: bpf.getLastSplashedBattlePassID.bind(bpf),
+  getLastEndedBattlePassID: bpf.getLastEndedBattlePassID.bind(bpf),
+  setLastSplashedBattlePassID: bpf.setLastSplashedBattlePassID.bind(bpf),
+  setLastEndedBattlePassID: bpf.setLastEndedBattlePassID.bind(bpf),
+  getLastSeenFreeBattlePassID: bpf.getLastSeenFreeBattlePassID.bind(bpf),
+  setLastSeenFreeBattlePassID: bpf.setLastSeenFreeBattlePassID.bind(bpf),
+  getLastSeenBattlePassID: bpf.getLastSeenBattlePassID.bind(bpf),
+  setLastSeenBattlePassID: bpf.setLastSeenBattlePassID.bind(bpf),
   // DebugSession
   bindDebugSessionConfigListener: dsf.bindDebugSessionConfigListener.bind(dsf),
   // Defs
   bindAbilityDisplayDefsListener: df.bindAbilityDisplayDefsListener.bind(df),
   bindCharacterClassDefsListener: df.bindCharacterClassDefsListener.bind(df),
   bindCharacterRaceDefsListener: df.bindCharacterRaceDefsListener.bind(df),
-  bindStatusDefsListener: df.bindStatusDefsListener.bind(df),
+  bindManifestDefsListener: df.bindManifestDefsListener.bind(df),
   // Entity
   bindEntityContextListener: ef.bindEntityContextListener.bind(ef),
   bindEntityRemovedListener: ef.bindEntityRemovedListener.bind(ef),
@@ -134,14 +158,34 @@ export const clientAPI: MainScreenClientAPI = {
   bindLoadingScreenListener: lf.bindLoadingScreenListener.bind(lf),
   clearManualLoadingScreen: lf.clearManualLoadingScreen.bind(lf),
   setLoadingScreenManually: lf.setLoadingScreenManually.bind(lf),
+  // Lobby
+  getHasClickedInvite: lbf.getHasClickedInvite.bind(lbf),
+  setHasClickedInvite: lbf.setHasClickedInvite.bind(lbf),
+  getSeenMOTDs: lbf.getSeenMOTDs.bind(lbf),
+  setSeenMOTD: lbf.setSeenMOTD.bind(lbf),
   // Match
   bindDefaultQueueListener: mf.bindDefaultQueueListener.bind(mf),
   // Network
   bindNetworkFailureListener: nf.bindNetworkFailureListener.bind(nf),
   // ObjectiveDetails
   bindObjectiveDetailListener: odf.bindObjectiveDetailListener.bind(odf),
+  // Progression
+  getSeenProgressionNodesForChampion: progf.getSeenProgressionNodesForChampion.bind(progf),
+  setSeenProgressionNodesForChampion: progf.setSeenProgressionNodesForChampion.bind(progf),
+  getUnseenUnlockedProgressionNodesForChampion: progf.getUnseenUnlockedProgressionNodesForChampion.bind(progf),
+  setUnseenUnlockedProgressionNodesForChampion: progf.setUnseenUnlockedProgressionNodesForChampion.bind(progf),
+  // RuneMods
+  getHasSeenRuneModsTutorial: rmf.getHasSeenRuneModsTutorial.bind(rmf),
+  setHasSeenRuneModsTutorial: rmf.setHasSeenRuneModsTutorial.bind(rmf),
   // SelfPlayer
   bindSelfPlayerStateListener: spf.bindSelfPlayerStateListener.bind(spf),
+  // Store
+  getUnseenEquipment: sf.getUnseenEquipment.bind(sf),
+  setUnseenEquipment: sf.setUnseenEquipment.bind(sf),
+  getSeenPurchases: sf.getSeenPurchases.bind(sf),
+  setSeenPurchases: sf.setSeenPurchases.bind(sf),
+  getTextChatBlocks: sf.getTextChatBlocks.bind(sf),
+  setTextChatBlocks: sf.setTextChatBlocks.bind(sf),
   // System
   openBrowser: sysf.openBrowser.bind(sysf),
   // Version
@@ -173,7 +217,7 @@ export const mockEvents: MainScreenClientMocks = {
   triggerAbilityDisplayDefsLoaded: df.triggerAbilityDisplayDefsLoaded.bind(df),
   triggerCharacterClassDefsLoaded: df.triggerCharacterClassDefsLoaded.bind(df),
   triggerCharacterRaceDefsLoaded: df.triggerCharacterRaceDefsLoaded.bind(df),
-  triggerStatusDefsLoaded: df.triggerStatusDefsLoaded.bind(df),
+  triggerManifestDefsLoaded: df.triggerManifestDefsLoaded.bind(df),
   // Entity
   triggerEntityContext: ef.triggerEntityContext.bind(ef),
   triggerEntityRemoved: ef.triggerEntityRemoved.bind(ef),

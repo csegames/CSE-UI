@@ -26,13 +26,13 @@ export const debugSessionSubscription = gql`
             id
           }
           created
+          configured
           allocated
           started
           ended
           completed
           revision
-          serverName
-          serverPort
+          gameServerAddress
           scenarioID
           overrideSheetID
           overrideTabID
@@ -61,13 +61,13 @@ export const debugSessionQuery = gql`
           id
         }
         created
+        configured
         allocated
         started
         ended
         completed
         revision
-        serverName
-        serverPort
+        gameServerAddress
         scenarioID
         overrideSheetID
         overrideTabID

@@ -17,13 +17,12 @@ import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { Dispatch } from 'redux';
 import { RootState } from '../redux/store';
 import { isPurchaseable } from '../helpers/storeHelpers';
-import { storeLocalStore } from '../localStorage/storeLocalStorage';
 import { PerkDefGQL, PerkType } from '@csegames/library/dist/hordetest/graphql/schema';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { InitTopic } from '../redux/initializationSlice';
-import { updateRuneModDisplay, updateRuneModLevels } from '../redux/runesSlice';
 import { calculateSelectedRuneMods } from '../helpers/perkUtils';
 import { updateSelectedRuneMods } from '../redux/profileSlice';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 export class StoreNetworkingService extends ExternalDataSource {
   protected async bind(): Promise<ListenerHandle[]> {
@@ -38,7 +37,7 @@ export class StoreNetworkingService extends ExternalDataSource {
 
   private handleStaticDataQueryResult(result: StoreStaticDataQueryResult): void {
     // Validate the result.
-    if (!result?.game?.purchases || !result?.game?.runeModLevels || !result?.game?.perks) {
+    if (!result?.game?.purchases || !result?.game?.perks) {
       console.warn('Received invalid static data from Store fetch.');
       return;
     }
@@ -50,7 +49,7 @@ export class StoreNetworkingService extends ExternalDataSource {
     }
 
     // Calculate which Purchases are "new" so we can badge the Store UI.
-    const seenPurchases = storeLocalStore.getSeenPurchases();
+    const seenPurchases = clientAPI.getSeenPurchases();
     const newPurchases: Dictionary<boolean> = {};
 
     if (seenPurchases === undefined) {
@@ -81,7 +80,16 @@ export class StoreNetworkingService extends ExternalDataSource {
     // Calculate if there are any new Rewards
     let hasPurchasables: boolean = false;
     for (const purchase of result.game.purchases) {
-      if (isPurchaseable(purchase, perksByID, this.reduxState.profile.ownedPerks)) {
+      if (
+        isPurchaseable(
+          purchase,
+          perksByID,
+          this.reduxState.profile.ownedPerks,
+          this.reduxState.profile.progressionNodes,
+          this.reduxState.profile.quests,
+          this.reduxState.clock.serverTimeDeltaMS
+        )
+      ) {
         hasPurchasables = true;
         break;
       }
@@ -94,10 +102,6 @@ export class StoreNetworkingService extends ExternalDataSource {
 
     // We want to do this one last because it sets the 'isDataFetched' flag.
     this.dispatch(updateStoreStaticData(result));
-
-    // Send over the runeModLevels and defaultRuneGauge now
-    this.dispatch(updateRuneModLevels(result.game.runeModLevels));
-    this.dispatch(updateRuneModDisplay(result.game.runeModDisplay));
 
     // this function gets called from multiple sevices, but will only be made after both the
     // perks and profile has loaded.
@@ -130,13 +134,20 @@ export class StoreNetworkingService extends ExternalDataSource {
 
   private calculateNewPurchases(): void {
     // If there are no seen purchases, then this is the first login.
-    let seenPurchases = storeLocalStore.getSeenPurchases();
+    let seenPurchases = clientAPI.getSeenPurchases();
     if (seenPurchases === undefined) {
       seenPurchases = {};
       const newPurchases: Dictionary<boolean> = {};
       this.reduxState.store.purchases.forEach((purchase) => {
         if (
-          isPurchaseable(purchase, this.reduxState.store.perksByID, this.reduxState.profile.ownedPerks) ||
+          isPurchaseable(
+            purchase,
+            this.reduxState.store.perksByID,
+            this.reduxState.profile.ownedPerks,
+            this.reduxState.profile.progressionNodes,
+            this.reduxState.profile.quests,
+            this.reduxState.clock.serverTimeDeltaMS
+          ) ||
           this.reduxState.profile.ownedPerks[purchase.perks[0].perkID]
         ) {
           // "Purchaseable" means the item can show up in the store.  On first launch we do not want to drown
@@ -160,15 +171,15 @@ export class StoreNetworkingService extends ExternalDataSource {
       });
     }
     // Store the "seen" list locally so we will remember across sessions.
-    storeLocalStore.setSeenPurchases(seenPurchases);
+    clientAPI.setSeenPurchases(seenPurchases);
   }
 
   private initializeUnseenEquipment(): void {
     // If we had any unseen equipment from previous sessions, feed it into Redux.
-    let unseenEquipment = storeLocalStore.getUnseenEquipment();
+    let unseenEquipment = clientAPI.getUnseenEquipment();
     if (unseenEquipment === undefined) {
       // Make sure local storage for this is initialized.
-      storeLocalStore.setUnseenEquipment({});
+      clientAPI.setUnseenEquipment({});
     } else {
       // If the user no longer owns a perk we thought was new, then they probably sold it before looking at it.
       // No need to keep track of it any longer.
@@ -185,7 +196,7 @@ export class StoreNetworkingService extends ExternalDataSource {
         delete unseenEquipment[perkID];
       });
 
-      storeLocalStore.setUnseenEquipment(unseenEquipment);
+      clientAPI.setUnseenEquipment(unseenEquipment);
     }
 
     this.dispatch(updateStoreNewEquipment(unseenEquipment || {}));

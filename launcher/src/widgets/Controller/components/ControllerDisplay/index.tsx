@@ -45,6 +45,7 @@ export interface ControllerDisplayState {
   showCreation: boolean;
   serverType: ServerType;
   apiServerStatus: APIServerStatus;
+  hasInitializedServer: boolean;
 }
 
 export class ControllerDisplay extends React.PureComponent<Props, ControllerDisplayState> {
@@ -54,7 +55,8 @@ export class ControllerDisplay extends React.PureComponent<Props, ControllerDisp
       charSelectVisible: false,
       showCreation: false,
       serverType: ServerType.CUGAME,
-      apiServerStatus: {}
+      apiServerStatus: {},
+      hasInitializedServer: false
     };
   }
 
@@ -121,31 +123,29 @@ export class ControllerDisplay extends React.PureComponent<Props, ControllerDisp
   }
 
   private checkForInitializeServer() {
-    const isSelectedServerNull = !this.props.selectedServer;
-
     switch (this.props.phase) {
       case ContentPhase.Login:
         break;
       case ContentPhase.Colossus:
-        if (this.state.serverType !== ServerType.COLOSSUS || isSelectedServerNull) {
+        if (this.state.serverType !== ServerType.COLOSSUS || !this.state.hasInitializedServer) {
           this.setState({ serverType: ServerType.COLOSSUS });
           this.initializeColossusServer();
         }
         break;
       case ContentPhase.Camelot:
-        if (this.state.serverType !== ServerType.CUGAME || isSelectedServerNull) {
+        if (this.state.serverType !== ServerType.CUGAME || !this.state.hasInitializedServer) {
           this.setState({ serverType: ServerType.CUGAME });
           this.initializeCUServer();
         }
         break;
       case ContentPhase.Cube:
-        if (this.state.serverType !== ServerType.CUBE || isSelectedServerNull) {
+        if (this.state.serverType !== ServerType.CUBE || !this.state.hasInitializedServer) {
           this.setState({ serverType: ServerType.CUBE });
           this.initializeCubeServer();
         }
         break;
       case ContentPhase.Tools:
-        if (this.state.serverType !== ServerType.CHANNEL || isSelectedServerNull) {
+        if (this.state.serverType !== ServerType.CHANNEL || !this.state.hasInitializedServer) {
           this.setState({ serverType: ServerType.CHANNEL });
           this.initializeTools();
         }
@@ -156,6 +156,7 @@ export class ControllerDisplay extends React.PureComponent<Props, ControllerDisp
   private initializeCubeServer() {
     const cubeServerKey = Object.keys(this.props.servers).find((key) => this.props.servers[key].channelID === 27);
     this.props.onUpdateState(ContentPhase.Cube, { selectedServer: this.props.servers[cubeServerKey] });
+    this.setState({ hasInitializedServer: true });
   }
 
   private initializeColossusServer() {
@@ -168,6 +169,7 @@ export class ControllerDisplay extends React.PureComponent<Props, ControllerDisp
     // Hardcode find channel 2200 (Vigridr)
     const colossusServer = servers.find((server) => server.channelID === 2200);
     this.props.onUpdateState(ContentPhase.Colossus, { selectedServer: colossusServer });
+    this.setState({ hasInitializedServer: true });
   }
 
   private initializeCUServer() {
@@ -180,11 +182,13 @@ export class ControllerDisplay extends React.PureComponent<Props, ControllerDisp
 
     const matches = this.getServersWithPatchPermissions(ServerType.CUGAME);
     this.props.onUpdateState(ContentPhase.Camelot, { selectedServer: matches.length > 0 ? matches[0] : null });
+    this.setState({ hasInitializedServer: true });
   }
 
   private initializeTools() {
     const servers: PatcherServer[] = this.getServersWithPatchPermissions(ServerType.CUGAME);
     this.props.onUpdateState(ContentPhase.Tools, { selectedServer: servers[0] });
+    this.setState({ hasInitializedServer: true });
   }
 
   private getServersWithPatchPermissions(serverType: ServerType): PatcherServer[] {

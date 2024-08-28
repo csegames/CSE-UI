@@ -28,9 +28,13 @@ export async function query<T>(request: GraphQLQueryRequest, getConfig: RequestC
   const body = { query: print(request.query) };
   if (request.variables) body['variables'] = request.variables;
   const response = await httpRequest('post', config.url, config.headers, {}, body);
-
   try {
     const result = response.ok ? JSON.parse(response.data) : {};
+    if (Array.isArray(result.errors)) {
+      for (const err in result.errors) {
+        console.error(`GraphQL err: "${result.errors.message}"`, err);
+      }
+    }
     return {
       data: result.data as T,
       ok: result.data !== undefined && result.errors === undefined,

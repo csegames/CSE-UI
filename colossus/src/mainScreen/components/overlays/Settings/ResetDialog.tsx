@@ -43,7 +43,7 @@ class AResetDialog extends React.Component<Props> {
 
   private onYesClick() {
     this.props.onYesClick();
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
   }
 
   private onClose() {
@@ -52,7 +52,7 @@ class AResetDialog extends React.Component<Props> {
 
   private onNoClick() {
     this.props.onNoClick();
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
   }
 
   render(): React.ReactNode {

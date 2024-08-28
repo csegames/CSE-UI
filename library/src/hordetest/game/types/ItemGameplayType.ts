@@ -10,6 +10,5 @@ export enum ItemGameplayType {
   Throw = 1,
   Deploy = 2,
   Consume = 3,
-  Interaction = 4,
-  DisabledInteraction = 5
+  Interaction = 4
 }

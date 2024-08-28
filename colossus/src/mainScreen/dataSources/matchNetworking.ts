@@ -97,7 +97,7 @@ export class MatchService extends ExternalDataSource {
         errorMsg: errorMsg,
         errorCode: errorCode,
         fatal: fatal,
-        serverName: round?.serverName,
+        serverName: round?.gameServerAddress,
         roundID: round?.roundID
       })
     );
@@ -162,7 +162,7 @@ export class MatchService extends ExternalDataSource {
     if (requests.select) {
       const response = await ActivitiesAPI.SetChampion(
         webConf,
-        requests.select.roundID,
+        requests.select.reservationID,
         requests.select.championID,
         requests.select.locked
       );
@@ -192,16 +192,49 @@ export class MatchService extends ExternalDataSource {
       return;
     }
 
-    this.dispatch(setGameModes(data.modes));
-    this.dispatch(setQueues(data.queues));
+    this.dispatch(
+      setGameModes(
+        [...data.modes].sort((a, b) => {
+          if (a.activityID < b.activityID) return -1;
+          if (a.activityID > b.activityID) return 1;
+          return 0;
+        })
+      )
+    );
+    this.dispatch(
+      setQueues(
+        [...data.queues].sort((a, b) => {
+          if (a.queueID < b.queueID) return -1;
+          if (a.queueID > b.queueID) return 1;
+          return 0;
+        })
+      )
+    );
 
-    const matches = data.currentMatches ?? [];
-    const entries = data.currentQueues ?? [];
-    const selections = data.currentSelections ?? [];
+    const unsortedMatches = data.currentMatches ?? [];
+    const matches = [...unsortedMatches].sort((a, b) => {
+      if (a.roundID < b.roundID) return -1;
+      if (a.roundID > b.roundID) return 1;
+      return 0;
+    });
+
+    const unsortedEntries = data.currentQueues ?? [];
+    const entries = [...unsortedEntries].sort((a, b) => {
+      if (a.entryID < b.entryID) return -1;
+      if (a.entryID > b.entryID) return 1;
+      return 0;
+    });
+
+    const unsortedSelections = data.currentSelections ?? [];
+    const selections = [...unsortedSelections].sort((a, b) => {
+      if (a.reservationID < b.reservationID) return -1;
+      if (a.reservationID > b.reservationID) return 1;
+      return 0;
+    });
 
     const bestMatch = this.bestFitMatch(matches, this.reduxState.match.matchEnds);
     const currentEntry = this.oldestQueueEntry(entries);
-    const currentSelection = this.oldestChampionSelection(selections);
+    const currentSelection = this.matchingChampionSelection(bestMatch, selections);
 
     this.dispatch(setMatchAccess(data.matchAccess));
     this.dispatch(setMatches([matches, bestMatch]));
@@ -259,7 +292,9 @@ export class MatchService extends ExternalDataSource {
 
         const matches = this.remove(this.reduxState.match.matches, (match) => match.roundID === val.roundID);
         const currentRound = this.bestFitMatch(matches, this.reduxState.match.matchEnds);
+        const currentSelection = this.matchingChampionSelection(currentRound, this.reduxState.match.selections);
         this.dispatch(setMatches([matches, currentRound]));
+        this.dispatch(setSelections([this.reduxState.match.selections, currentSelection]));
         this.dispatch(setStatsMatch(currentRound?.roundID));
 
         this.updateLifecycle({ ...this.reduxState.match, currentRound });
@@ -276,7 +311,9 @@ export class MatchService extends ExternalDataSource {
         );
 
         const bestMatch = this.bestFitMatch(matches, this.reduxState.match.matchEnds);
+        const currentSelection = this.matchingChampionSelection(bestMatch, this.reduxState.match.selections);
         this.dispatch(setMatches([matches, bestMatch]));
+        this.dispatch(setSelections([this.reduxState.match.selections, currentSelection]));
         this.dispatch(setStatsMatch(bestMatch?.roundID));
 
         const selection = this.dispatchRemovedSelection(val.match.roundID); // round clobbers selection
@@ -342,14 +379,10 @@ export class MatchService extends ExternalDataSource {
       }
       case 'SelectionRemoved': {
         const val = msg as SelectionRemoved;
-        // todo : use display time for determining when the selection should close
-        // defer selection cleanup so that we don't flash the lobby
-        window.setTimeout(() => {
-          const [found, currentSelection] = this.dispatchRemovedSelection(val.roundID);
-          if (found) {
-            this.updateLifecycle({ ...this.reduxState.match, currentSelection });
-          }
-        }, 60000);
+        const [found, currentSelection] = this.dispatchRemovedSelection(val.reservationID);
+        if (found) {
+          this.updateLifecycle({ ...this.reduxState.match, currentSelection });
+        }
         break;
       }
       case 'SelectionUpdated': {
@@ -358,25 +391,19 @@ export class MatchService extends ExternalDataSource {
         const selections = this.update(
           this.reduxState.match.selections,
           val.selection,
-          (selection) => selection.roundID === val.selection.roundID,
-          (selection) => selection.roundID >= val.selection.roundID
+          (selection) => selection.reservationID === val.selection.reservationID,
+          (selection) => selection.reservationID >= val.selection.reservationID
         );
-        const currentSelection = this.oldestChampionSelection(selections);
+        const currentSelection = this.matchingChampionSelection(this.reduxState.match.currentRound, selections);
         this.dispatch(setSelections([selections, currentSelection]));
-        {
-          // HACK for 1.0 - when we have a selection, we know the queue has popped and FSR doesn't allow multiple
-          // queues so manually remove any current queue entry as a safety net until we properly receieve the
-          // currently missing entry for queue removal that can lead to bad lobbby state post match.
-          this.dispatch(clearQueueEntries());
-        }
         const player = val.selection.players.find((p) => p.id === this.reduxState.user.id);
-        if (player?.selectedChampion) {
+        if (player?.champion) {
           this.dispatch(
             resolveMatchRequests({
               enqueue: { queueID: val.selection.fromQueue },
               select: {
-                roundID: val.selection.roundID,
-                championID: player.selectedChampion.championID,
+                reservationID: val.selection.reservationID,
+                championID: player.champion.championID,
                 locked: player.locked
               }
             })
@@ -462,8 +489,10 @@ export class MatchService extends ExternalDataSource {
     // still playable but in epilogue
     if (match.ended) return [2, new Date(match.ended)];
     // best state for us -- started, not completed
-    if (match.started) return [4, new Date(match.started)];
-    // not started? still better than completed
+    if (match.started) return [5, new Date(match.started)];
+    // not started? still better than unconfigured
+    if (match.configured) return [4, new Date(match.configured)];
+    // newly created? likely we're getting a champion selection
     if (match.created) return [3, new Date(match.created)];
     // not created? can't use it
     return null;
@@ -482,17 +511,12 @@ export class MatchService extends ExternalDataSource {
     return currentQueue;
   }
 
-  private oldestChampionSelection(selections: ChampionSelection[]) {
-    let currentSelection: ChampionSelection = null;
-    let oldest = Number.MAX_SAFE_INTEGER;
+  private matchingChampionSelection(currentRound: Round, selections: ChampionSelection[]) {
+    if (!currentRound) return null;
     for (const selection of selections ?? []) {
-      const date = new Date(selection.created).valueOf();
-      if (date < oldest) {
-        currentSelection = selection;
-        oldest = date;
-      }
+      if (selection.roundID == currentRound.roundID) return selection;
     }
-    return currentSelection;
+    return null;
   }
 
   private updateLifecycle(state: LifecycleState): void {
@@ -535,12 +559,7 @@ export class MatchService extends ExternalDataSource {
   }
 
   private shouldBeConnected(currentRound: Round, endSequences: Dictionary<MatchEndSequence>): boolean {
-    return (
-      currentRound &&
-      currentRound.serverName &&
-      currentRound.serverPort != null &&
-      this.isRoundActive(currentRound, endSequences)
-    );
+    return currentRound?.gameServerAddress && this.isRoundActive(currentRound, endSequences);
   }
 
   private updateGameConnection(shouldBeConnected: boolean, currentRound: Round): void {
@@ -550,7 +569,10 @@ export class MatchService extends ExternalDataSource {
 
     if (shouldBeConnected) {
       this.dispatch(setConnectionError(null));
-      game.connectToServer(currentRound.serverName, currentRound.serverPort);
+      const fragments = currentRound.gameServerAddress.split(':');
+      const host = fragments[0];
+      const port = Number(fragments[1]);
+      game.connectToServer(host, port);
       clientAPI.setVoiceChannel('match', currentRound.roundID ?? '');
       // TODO : connect chat
       return;
@@ -590,15 +612,18 @@ export class MatchService extends ExternalDataSource {
     return true;
   }
 
-  private dispatchRemovedSelection(roundID: string): [boolean, ChampionSelection] {
-    const selection = this.reduxState.match.selections.find((s) => s.roundID == roundID);
+  private dispatchRemovedSelection(reservationID: string): [boolean, ChampionSelection] {
+    const selection = this.reduxState.match.selections.find((s) => s.reservationID == reservationID);
     if (selection == null) return [false, this.reduxState.match.currentSelection];
 
-    const selections = this.remove(this.reduxState.match.selections, (selection) => selection.roundID === roundID);
-    const currentSelection = this.oldestChampionSelection(selections);
+    const selections = this.remove(
+      this.reduxState.match.selections,
+      (selection) => selection.reservationID === reservationID
+    );
+    const currentSelection = this.matchingChampionSelection(this.reduxState.match.currentRound, selections);
     this.dispatch(setSelections([selections, currentSelection]));
     const active = this.reduxState.match.requests.active;
-    if (active?.select?.roundID === roundID) {
+    if (active?.select?.reservationID === reservationID) {
       this.dispatch(resolveMatchRequests({ select: active.select }));
     }
     return [true, currentSelection];

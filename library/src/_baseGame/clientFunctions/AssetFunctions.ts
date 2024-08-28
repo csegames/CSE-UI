@@ -70,58 +70,6 @@ function isAbilityNetworksDataArray(obj: any): obj is AbilityNetworksData[] {
   }
 }
 
-/** Data format from the CU `factions` tab. */
-export interface FactionsData {
-  ID: string;
-  AbilityBuilderBackgroundImage: string;
-  NameplateIconFrameImage: string;
-  AbilityBarEmptySlotImage: string;
-  AbilityBarDockImage: string;
-  NameplateBackgroundImage: string;
-  NameplateMainFrameImage: string;
-  NameplateMiniFrameImage: string;
-  NameplateProfileImage: string;
-  ScoreboardBackgroundColor: string;
-  ScoreboardTextColor: string;
-  PaperdollBackgroundImage: string;
-  PaperdollBaseImage: string;
-}
-
-function isFactionsData(obj: any): obj is FactionsData {
-  const isCorrectType =
-    Object.keys(obj).length === 13 &&
-    'ID' in obj &&
-    'AbilityBuilderBackgroundImage' in obj &&
-    'NameplateIconFrameImage' in obj &&
-    'AbilityBarEmptySlotImage' in obj &&
-    'AbilityBarDockImage' in obj &&
-    'NameplateBackgroundImage' in obj &&
-    'NameplateMainFrameImage' in obj &&
-    'NameplateMiniFrameImage' in obj &&
-    'NameplateProfileImage' in obj &&
-    'ScoreboardBackgroundColor' in obj &&
-    'ScoreboardTextColor' in obj &&
-    'PaperdollBackgroundImage' in obj &&
-    'PaperdollBaseImage' in obj;
-  if (!isCorrectType) {
-    console.error(`Found invalid Factions object`, obj);
-  }
-  return isCorrectType;
-}
-
-function isFactionsDataArray(obj: any): obj is FactionsData[] {
-  if (!Array.isArray(obj)) {
-    return false;
-  } else {
-    // Are there any items in the array that aren't the correct type?
-    return (
-      obj.find((arrayEntry) => {
-        return !isFactionsData(arrayEntry);
-      }) === undefined
-    );
-  }
-}
-
 /** Data format from the CU `systemability` tab. */
 export interface SystemAbilityData {
   ID: number;
@@ -197,7 +145,6 @@ export interface DynamicManifest {
 export interface AssetFunctions {
   getAbilityBookTabsData(): Promise<AbilityBookTabsData[]>;
   getAbilityNetworksData(): Promise<AbilityNetworksData[]>;
-  getFactionsData(): Promise<FactionsData[]>;
   getSystemAbilityData(): Promise<SystemAbilityData[]>;
   getUserClassesData(): Promise<UserClassesData[]>;
 }
@@ -276,7 +223,6 @@ class CoherentAssetFunctions implements AssetFunctions {
   private abilityBookTabs: Promise<AbilityBookTabsData[]>;
   private abilityNetworks: Promise<AbilityNetworksData[]>;
   private entries: Dictionary<Promise<TypedEntry>> = {};
-  private factionsData: Promise<FactionsData[]>;
   private systemAbilities: Promise<SystemAbilityData[]>;
   private userClassesData: Promise<UserClassesData[]>;
 
@@ -304,16 +250,6 @@ class CoherentAssetFunctions implements AssetFunctions {
 
     // And always return the results of that single load call.
     return this.abilityNetworks;
-  }
-
-  getFactionsData(): Promise<FactionsData[]> {
-    // Only actually load once.
-    if (!this.factionsData) {
-      this.factionsData = fetchJSON<FactionsData[]>('/dynamic/factions/manifest.json', isFactionsDataArray);
-    }
-
-    // And always return the results of that single load call.
-    return this.factionsData;
   }
 
   getSystemAbilityData(): Promise<SystemAbilityData[]> {
@@ -346,9 +282,6 @@ class BrowserAssetFunctions implements AssetFunctions {
     return Promise.resolve([]);
   }
   getAbilityNetworksData(): Promise<AbilityNetworksData[]> {
-    return Promise.resolve([]);
-  }
-  getFactionsData(): Promise<FactionsData[]> {
     return Promise.resolve([]);
   }
   getSystemAbilityData(): Promise<SystemAbilityData[]> {

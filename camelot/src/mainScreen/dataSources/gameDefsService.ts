@@ -8,19 +8,14 @@ import {
   GameDefsQueryResult,
   myCharacterAbilitiesQuery,
   MyCharacterAbilitiesQueryResult,
-  statusesQuery,
-  StatusesQueryResult,
   MyCharacterStatsQueryResult,
-  myCharacterStatsQuery
+  myCharacterStatsQuery,
+  ManifestUpdateSubscriptionResult,
+  manifestUpdateSubscription
 } from './gameDefsNetworkingConstants';
 import {
-  updateFactions,
   updateClasses,
   updateRaces,
-  FactionData,
-  updateStatuses,
-  ItemDefRefData,
-  SubstanceDefRefData,
   updateItems,
   updateAbilityDisplayData,
   updateAbilityNetworks,
@@ -41,14 +36,14 @@ import {
   updateAbilityBookTabs,
   updateDamageTypes,
   updateClassDynamicAssets,
-  updateGenders
+  updateGenders,
+  setUseClientResourceManifests
 } from '../redux/gameDefsSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import {
   AbilityBookTabsData,
   AbilityNetworksData,
-  FactionsData,
   UserClassesData
 } from '@csegames/library/dist/_baseGame/clientFunctions/AssetFunctions';
 import {
@@ -58,11 +53,11 @@ import {
   ItemStatDefinitionGQL,
   ItemTooltipCategoryDef,
   StatDefinitionGQL,
-  StatusDef,
   DamageTypeDefGQL,
   ClassDefGQL,
   RaceDefGQL,
-  GenderDefGQL
+  GenderDefGQL,
+  ItemDefRef
 } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { InitTopic } from '../redux/initializationSlice';
 import ExternalDataSource from '../redux/externalDataSource';
@@ -73,6 +68,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { request } from '@csegames/library/dist/_baseGame/utils/request';
 import { xml2json } from 'xml-js';
 import { connect } from 'react-redux';
+import { processManifest } from './manifest/manifestDefService';
 
 const ICONS_URL = 'http://camelot-unchained.s3.amazonaws.com/?prefix=game/4/icons/skills';
 const ICONS_URL2 = 'http://camelot-unchained.s3.amazonaws.com/?prefix=game/4/icons/components';
@@ -89,14 +85,12 @@ type Props = ReactProps & InjectedProps;
 class AGameDefsService extends ExternalDataSource<Props> {
   private dynamicAbilityBookTabsData: AbilityBookTabsData[];
   private dynamicAbilityNetworksData: AbilityNetworksData[];
-  private dynamicFactionsData: FactionsData[];
   private dynamicUserClassesData: UserClassesData[];
 
   protected async bind(): Promise<ListenerHandle[]> {
     await this.loadDynamicAbilityBookTabsData();
     await this.loadDynamicAbilityData();
     await this.loadDynamicAbilityNetworksData();
-    await this.loadDynamicFactionsData();
     await this.loadDynamicUserClassesData();
 
     return [
@@ -104,11 +98,6 @@ class AGameDefsService extends ExternalDataSource<Props> {
         { query: gameDefsQuery },
         this.handleGameDefsQueryResult.bind(this),
         InitTopic.GameDefs
-      ),
-      await this.query<StatusesQueryResult>(
-        { query: statusesQuery },
-        this.handleStatusesQueryResult.bind(this),
-        InitTopic.Statuses
       ),
       await this.query<MyCharacterAbilitiesQueryResult>(
         { query: myCharacterAbilitiesQuery },
@@ -119,6 +108,10 @@ class AGameDefsService extends ExternalDataSource<Props> {
         { query: myCharacterStatsQuery },
         this.handleMyCharacterStatsQueryResult.bind(this),
         InitTopic.MyCharacterStats
+      ),
+      await this.subscribe<ManifestUpdateSubscriptionResult>(
+        { query: manifestUpdateSubscription },
+        this.handleMySubscriptionUpdate.bind(this)
       ),
       // TODO: This should be dynamic data.
       await this.call(this.getAbilityIconURLs(), this.handleAbilityIconURLs.bind(this))
@@ -157,10 +150,6 @@ class AGameDefsService extends ExternalDataSource<Props> {
     this.dynamicAbilityNetworksData = await clientAPI.getAbilityNetworksData();
   }
 
-  private async loadDynamicFactionsData(): Promise<void> {
-    this.dynamicFactionsData = await clientAPI.getFactionsData();
-  }
-
   private async loadDynamicUserClassesData(): Promise<void> {
     this.dynamicUserClassesData = await clientAPI.getUserClassesData();
     const userClassesDictionary: Dictionary<UserClassesData> = {};
@@ -191,7 +180,6 @@ class AGameDefsService extends ExternalDataSource<Props> {
     // Validate the result.
     if (
       !result.game ||
-      !result.game.factions ||
       !result.game.items ||
       !result.game.itemStats ||
       !result.game.settings ||
@@ -203,52 +191,22 @@ class AGameDefsService extends ExternalDataSource<Props> {
       !result.game.races ||
       !result.game.genders ||
       !result.game.classes ||
-      !result.game.abilityComponents
+      !result.game.abilityComponents ||
+      !result.game.manifests
     ) {
       console.warn('Received invalid response from GameDefs fetch.');
       return false;
     }
 
-    // Factions
-    const factions: Dictionary<FactionData> = {};
-    for (const faction of result.game.factions) {
-      const factionsData = this.dynamicFactionsData.find((fd) => {
-        return fd.ID === faction.id;
-      });
-      const defaultArchetypeFrameURL = factionsData.NameplateIconFrameImage;
-      const nameplateBackgroundURL = factionsData.NameplateBackgroundImage;
-      const nameplateMainFrameURL = factionsData.NameplateMainFrameImage;
-      const nameplateMiniFrameURL = factionsData.NameplateMiniFrameImage;
-      const nameplateProfilePictureURL = factionsData.NameplateProfileImage;
-      const emptyAbilitySlotURL = factionsData.AbilityBarEmptySlotImage;
-      const groupIcon1URL = factionsData.AbilityBarDockImage;
-      const groupIcon2URL = factionsData.AbilityBarDockImage.replace(`-1.`, `-2.`);
-      const groupIcon3URL = factionsData.AbilityBarDockImage.replace(`-1.`, `-3.`);
-      const groupIcon4URL = factionsData.AbilityBarDockImage.replace(`-1.`, `-4.`);
-      const groupIcon5URL = factionsData.AbilityBarDockImage.replace(`-1.`, `-5.`);
-      const groupIcon6URL = factionsData.AbilityBarDockImage.replace(`-1.`, `-6.`);
-      const abilityBuilderBackgroundURL = factionsData.AbilityBuilderBackgroundImage;
-      const scoreboardBackgroundColor = factionsData.ScoreboardBackgroundColor;
-      const scoreboardTextColor = factionsData.ScoreboardTextColor;
-      const paperdollBackgroundImage = factionsData.PaperdollBackgroundImage;
-      const paperdollBaseImage = factionsData.PaperdollBaseImage;
-      factions[faction.id] = {
-        ...faction,
-        defaultArchetypeFrameURL,
-        nameplateBackgroundURL,
-        nameplateMainFrameURL,
-        nameplateMiniFrameURL,
-        nameplateProfilePictureURL,
-        emptyAbilitySlotURL,
-        groupIconURLs: [groupIcon1URL, groupIcon2URL, groupIcon3URL, groupIcon4URL, groupIcon5URL, groupIcon6URL],
-        abilityBuilderBackgroundURL,
-        scoreboardBackgroundColor,
-        scoreboardTextColor,
-        paperdollBackgroundImage,
-        paperdollBaseImage
-      };
+    // manifests - manfiest list will only be filled with entries if the server is running its gameplayDefs
+    // off of the disk instead of from the DB.  If we get any manifest from this query, we want to use them
+    // instead of the ones from the client resource.
+    if (result.game.manifests.length > 0) {
+      this.dispatch(setUseClientResourceManifests(false));
+      for (const manifest of result.game.manifests) {
+        processManifest(this.dispatch, manifest.id, manifest.contents, manifest.schemaVersion);
+      }
     }
-    this.dispatch(updateFactions(factions));
 
     // Gear slots
     const gearSlots: Dictionary<GearSlot> = {};
@@ -260,24 +218,9 @@ class AGameDefsService extends ExternalDataSource<Props> {
     this.dispatch(updateGearSlots(gearSlots));
 
     // Items
-    const items: Dictionary<ItemDefRefData> = {};
+    const items: Dictionary<ItemDefRef> = {};
     for (const item of result.game.items) {
-      // If there is a substanceDefinition, replace its purifyItemDef with a purifyItemDefId.
-      const { substanceDefinition, ...otherItemFields } = item;
-      let finalSubstanceDefinition: SubstanceDefRefData = null;
-      if (substanceDefinition) {
-        const { purifyItemDef, ...otherSubstanceFields } = substanceDefinition;
-        finalSubstanceDefinition = {
-          ...otherSubstanceFields,
-          purifyItemDefId: purifyItemDef?.id ?? null
-        };
-      }
-      const finalItem: ItemDefRefData = {
-        ...otherItemFields,
-        substanceDefinition: finalSubstanceDefinition
-      };
-
-      items[finalItem.id] = finalItem;
+      items[item.id] = item;
     }
     this.dispatch(updateItems(items));
 
@@ -412,26 +355,6 @@ class AGameDefsService extends ExternalDataSource<Props> {
     return true;
   }
 
-  private async handleStatusesQueryResult(result: StatusesQueryResult): Promise<boolean> {
-    // Validate the result.
-    if (!result.status || !result.status.statuses) {
-      console.warn('Received invalid response from Statuses fetch.');
-      return false;
-    }
-
-    const statusesByStringID: Dictionary<StatusDef> = {};
-    const statusesByNumericID: Dictionary<StatusDef> = {};
-
-    result.status.statuses.forEach((status) => {
-      statusesByStringID[status.id] = status;
-      statusesByNumericID[status.numericID] = status;
-    });
-
-    this.dispatch(updateStatuses([statusesByStringID, statusesByNumericID]));
-
-    return true;
-  }
-
   private async handleMyCharacterAbilitiesQueryResult(result: MyCharacterAbilitiesQueryResult): Promise<boolean> {
     // Validate the result.
     // These abilities are required for populating the ability bar, so without them the player can't do much.
@@ -558,6 +481,18 @@ class AGameDefsService extends ExternalDataSource<Props> {
     } catch (e) {
       console.error('Unable to parse AbilityIconURLs', e);
       return false;
+    }
+  }
+
+  private handleMySubscriptionUpdate(manifestUpdateResult: ManifestUpdateSubscriptionResult): void {
+    const result = manifestUpdateResult?.manifestUpdates?.manifests;
+    if (!result) {
+      console.warn('Got invalid response from ManifestUpdate subscription.', result);
+      return;
+    }
+
+    for (const manifest of manifestUpdateResult.manifestUpdates.manifests) {
+      processManifest(this.dispatch, manifest.id, manifest.contents, manifest.schemaVersion);
     }
   }
 }

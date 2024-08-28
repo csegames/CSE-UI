@@ -17,10 +17,10 @@ import { PurchaseDefGQL, StringTableEntryDef } from '@csegames/library/dist/hord
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue } from '../../helpers/stringTableHelpers';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { startProfileRefresh } from '../../redux/profileSlice';
 import { QuestsByType } from '../../redux/questSlice';
 import { getCurrentBattlePassPremiumPurchaseDef } from '../views/Lobby/BattlePass/BattlePassUtils';
 import { webConf } from '../../dataSources/networkConfiguration';
+import { refreshProfile } from '../../dataSources/profileNetworking';
 
 const Container = 'FreeBattlePassModal-Container';
 const Title = 'FreeBattlePassModal-Title';
@@ -69,7 +69,7 @@ class AFreeBattlePassModal extends React.Component<Props> {
   }
 
   private async onClaimClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
 
     // Attempt to claim the BattlePass key.
     const purchase = getCurrentBattlePassPremiumPurchaseDef(
@@ -81,7 +81,7 @@ class AFreeBattlePassModal extends React.Component<Props> {
     if (!res.ok) {
       this.props.dispatch(showError(res));
     } else {
-      this.props.dispatch(startProfileRefresh());
+      refreshProfile();
     }
 
     this.onClose();

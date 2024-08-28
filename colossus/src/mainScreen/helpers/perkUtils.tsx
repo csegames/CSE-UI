@@ -6,6 +6,7 @@
 
 import {
   ChampionGQL,
+  ChampionInfo,
   PerkDefGQL,
   PerkType,
   QuestDefGQL,
@@ -15,6 +16,8 @@ import {
 import { Dictionary, Dispatch } from '@reduxjs/toolkit';
 import { getStringTableValue } from './stringTableHelpers';
 import { updateStoreAddUnseenEquipment } from '../redux/storeSlice';
+import { isBadgeRelatedPerk } from './badgingUtils';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const StringIDPerkTypesCurrency = 'PerkTypesCurrency';
 const StringIDPerkTypesCostume = 'PerkTypesCostume';
@@ -84,7 +87,7 @@ export function calculateSelectedRuneMods(
           return runeMods[epid] || null;
         })) ||
       [];
-    if (!selectedRuneMods || selectedRuneMods.length < 1 || !selectedRuneMods[0] || !selectedRuneMods[0].runeModLevel) {
+    if (!selectedRuneMods || selectedRuneMods.length < 1 || !selectedRuneMods[0] || !selectedRuneMods[0].runeModTier) {
       // if there are null values in the selectedRuneMods, return the entire list as null to avoid errors down stream.
       selectedRuneModsByChamp[champions[i].championID] = null;
     } else {
@@ -99,17 +102,24 @@ export function createAlertsForCollectedQuestProgress(
   questDef: QuestDefGQL,
   questProgress: QuestGQL,
   perksByID: Dictionary<PerkDefGQL>,
+  champions: ChampionInfo[],
   dispatch: Dispatch
 ) {
   if (!questDef || !questProgress) {
     return;
   }
 
+  // The "alerts" in question primarily mean info to decide whether or not to show badges in the UI.
+
+  // clientAPI is used to track "unseen" items between sessions.
+  const allUnseenEquipment = clientAPI.getUnseenEquipment();
+
   for (let i = questProgress.nextCollection; i < questProgress.currentQuestIndex; ++i) {
     questDef.links[i].rewards.forEach((r) => {
       const perkDef = perksByID[r.perkID];
-      if (perkDef && isChampionEquipmentPerk(perkDef.perkType)) {
+      if (perkDef && isBadgeRelatedPerk(perkDef, champions)) {
         dispatch(updateStoreAddUnseenEquipment(perkDef.id));
+        allUnseenEquipment[r.perkID] = true;
       }
     });
   }
@@ -117,9 +127,12 @@ export function createAlertsForCollectedQuestProgress(
   for (let i = questProgress.nextCollectionPremium; i < questProgress.currentQuestIndex; ++i) {
     questDef.links[i].premiumRewards.forEach((r) => {
       const perkDef = perksByID[r.perkID];
-      if (perkDef && isChampionEquipmentPerk(perkDef.perkType)) {
+      if (perkDef && isBadgeRelatedPerk(perkDef, champions)) {
         dispatch(updateStoreAddUnseenEquipment(perkDef.id));
+        allUnseenEquipment[r.perkID] = true;
       }
     });
   }
+
+  clientAPI.setUnseenEquipment(allUnseenEquipment);
 }

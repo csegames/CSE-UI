@@ -40,7 +40,7 @@ import { connect } from 'react-redux';
 import { ScenarioRoundState } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { LobbyView } from '../../../redux/navigationSlice';
 import { Dispatch } from 'redux';
-import { ProfileModel, startProfileRefresh } from '../../../redux/profileSlice';
+import { ProfileModel } from '../../../redux/profileSlice';
 import { Mocks } from './Mocks';
 import { KilledBy } from './Announcements/KilledBy';
 import { AutoRunTracker } from './MovementTrackers/AutoRunTracker';
@@ -54,6 +54,8 @@ import { MatchEndSequence, setMatchEnd } from '../../../redux/matchSlice';
 import { ObjectiveTrackers } from './ObjectiveTrackers';
 import { AnnouncementPopups } from './Announcements/AnnouncementPopups';
 import { updateMutedAll } from '../../../redux/voiceChatSlice';
+import { refreshProfile } from '../../../dataSources/profileNetworking';
+import { FervorStatus } from './FervorStatus';
 
 const Container = 'MainScreen-Container';
 const MatchInfoPosition = 'MainScreen-MatchInfoPosition';
@@ -69,6 +71,7 @@ interface ReactProps {
 interface InjectedProps extends FeatureFlags.Source {
   isAlive: boolean;
   matchID: string;
+  scenarioID: string;
   scenarioRoundState: ScenarioRoundState;
   displayName: string;
   lobbyView: LobbyView;
@@ -108,21 +111,27 @@ class HUD extends React.Component<Props> {
   }
 
   private getActiveScreen(): JSX.Element {
+    const isBackfill =
+      this.props.scenarioRoundState === ScenarioRoundState.Backfill ||
+      this.props.scenarioRoundState === ScenarioRoundState.BackfillLocked;
     return (
       <>
         <RuneFullScreenEffects />
         <ExtraButtons />
         <Mocks />
         <Console slashCommands={this.props.slashCommands} />
-        <div id='CompassContainer_HUD' className={CompassContainer}>
-          <Compass />
-          <ObjectivesContainer />
-        </div>
+        {!isBackfill && (
+          <div id='CompassContainer_HUD' className={CompassContainer}>
+            <Compass />
+            <ObjectivesContainer />
+          </div>
+        )}
         <AnnouncementPopups />
         <DialogueQueue />
         <RuneAlerts />
         <ScenarioIntro />
         <Crosshair />
+        <FervorStatus />
         <UrgentMessage />
         {this.getMatchInfo()}
         <div id='KillstreakContainer_HUD' className={KillStreakContainer}>
@@ -149,14 +158,19 @@ class HUD extends React.Component<Props> {
   }
 
   private getDeathScreen(): JSX.Element {
+    const isBackfill =
+      this.props.scenarioRoundState === ScenarioRoundState.Backfill ||
+      this.props.scenarioRoundState === ScenarioRoundState.BackfillLocked;
     return (
       <>
         <ExtraButtons />
         <Console slashCommands={this.props.slashCommands} />
-        <div id='CompassContainer_HUD' className={CompassContainer}>
-          <Compass />
-          <ObjectivesContainer />
-        </div>
+        {!isBackfill && (
+          <div id='CompassContainer_HUD' className={CompassContainer}>
+            <Compass />
+            <ObjectivesContainer />
+          </div>
+        )}
         <AnnouncementPopups />
         <DialogueQueue />
         {this.getMatchInfo()}
@@ -203,10 +217,10 @@ class HUD extends React.Component<Props> {
     }
   };
 
-  private leaveMatch(skipStatsScreen: boolean, refreshProfile: boolean) {
+  private leaveMatch(skipStatsScreen: boolean, shouldRefreshProfile: boolean) {
     game.playGameSound(SoundEvents.PLAY_SCENARIO_END);
-    if (refreshProfile) {
-      this.props.dispatch(startProfileRefresh());
+    if (shouldRefreshProfile) {
+      refreshProfile();
     }
     this.props.dispatch(updateMutedAll(false));
 
@@ -222,10 +236,12 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { lifeState } = state.player;
   const { featureFlags } = state;
   const matchID = state.match.currentRound?.roundID;
+  const scenarioID = state.match.currentRound?.scenarioID;
   return {
     ...ownProps,
     isAlive,
     matchID,
+    scenarioID,
     featureFlags,
     scenarioRoundState,
     displayName,

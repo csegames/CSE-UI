@@ -11,35 +11,44 @@ import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEv
 import { RootState } from '../../redux/store';
 import { connect } from 'react-redux';
 import {
-  PerkGQL,
   PerkDefGQL,
   PerkRewardDefGQL,
   PurchaseDefGQL,
-  ChampionGQL,
-  ChampionCostumeInfo,
-  ClassDefRef,
-  PerkType
+  PerkType,
+  PurchaseRewardDefGQL
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dispatch } from 'redux';
-import { setPurchaseIdToProcess } from '../../redux/storeSlice';
-import { getThumbnailURLForChampion } from '../../helpers/characterHelpers';
+import { setPurchaseIdToProcess, updateConfirmPurchaseSelectedRewardIndex } from '../../redux/storeSlice';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { BUX_PERK_ID, isFreeReward } from '../../helpers/storeHelpers';
+import {
+  BUX_PERK_ID,
+  OwnershipStatus,
+  PurchaseOwnershipData,
+  getFinalPurchaseCost,
+  getPurchaseOwnershipData,
+  isFreeReward
+} from '../../helpers/storeHelpers';
 import { Overlay, hideRightPanel, showOverlay } from '../../redux/navigationSlice';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../helpers/stringTableHelpers';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkIcon } from '../views/Lobby/Store/PerkIcon';
 
 const Container = 'StartScreen-Store-ConfirmPurchase-Container';
 const ContentCenterer = 'StartScreen-Store-ConfirmPurchase-ContentCenterer';
 const Title = 'StartScreen-Store-ConfirmPurchase-Title';
 const NameAndPriceContainer = 'StartScreen-Store-ConfirmPurchase-NameAndPriceContainer';
+const PriceContainer = 'StartScreen-Store-ConfirmPurchase-PriceContainer';
+const DiscountContainer = 'StartScreen-Store-ConfirmPurchase-DiscountContainer';
 const Name = 'StartScreen-Store-ConfirmPurchase-Name';
+const DiscountName = 'StartScreen-Store-ConfirmPurchase-DiscountName';
 const DescriptionListContainer = 'StartScreen-Store-ConfirmPurchase-DescriptionListContainer';
 const DescriptionListEntry = 'StartScreen-Store-ConfirmPurchase-DescriptionListEntry';
 const RewardsContainer = 'StartScreen-Store-ConfirmPurchase-RewardsContainer';
 const PackageIconContainer = 'StartScreen-Store-ConfirmPurchase-PackageIconContainer';
-const RewardLineChampionPortrait = 'StartScreen-Store-ConfirmPurchase-RewardLineChampionPortrait';
+const PackageIcon = 'StartScreen-Store-ConfirmPurchase-PackageIcon';
+const PackageRewardCount = 'StartScreen-Store-ConfirmPurchase-PackageRewardCount';
+const PackageOwnedOverlay = 'StartScreen-Store-ConfirmPurchase-PackageOwnedOverlay';
 const CostAmount = 'StartScreen-Store-ConfirmPurchase-CostAmount';
 const CostIcon = 'StartScreen-Store-ConfirmPurchase-CostIcon';
 const BuxNeededLabel = 'StartScreen-Store-ConfirmPurchase-BuxNeededLabel';
@@ -56,21 +65,22 @@ const ConfirmPurchaseContainer = 'StartScreen-Store-ConfirmPurchase-ConfirmPurch
 const ConfirmPurchaseButton = 'StartScreen-Store-ConfirmPurchase-ConfirmPurchaseButton';
 const ConfirmPurchaseButtonFill = 'StartScreen-Store-ConfirmPurchase-ConfirmPurchaseButtonFill';
 const ConfirmPurchaseText = 'StartScreen-Store-ConfirmPurchase-ConfirmPurchaseText';
+const CloseButtonCorner = 'Shared-CloseButton-Corner';
 
 const StringIDConfirmPurchaseNeedMore = 'ConfirmPurchaseNeedMore';
 const StringIDConfirmPurchaseUnknownName = 'ConfirmPurchaseUnknownName';
 const StringIDConfirmPurchaseBuyButton = 'ConfirmPurchaseBuyButton';
+const StringIDConfirmPurchaseBuyBundleButton = 'ConfirmPurchaseBuyBundleButton';
 const StringIDConfirmPurchaseRedeemButton = 'ConfirmPurchaseRedeemButton';
 const StringIDConfirmPurchaseBuyMore = 'ConfirmPurchaseBuyMore';
-const StringIDConfirmPurchaseMultipleForChamp = 'ConfirmPurchaseMultipleForChamp';
-const StringIDConfirmPurchaseSingleForChamp = 'ConfirmPurchaseSingleForChamp';
-const StringIDConfirmPurchaseMultiple = 'ConfirmPurchaseMultiple';
-const StringIDConfirmPurchaseConfirm = 'ConfirmPurchaseConfirm';
+const StringIDConfirmPurchaseTitle = 'ConfirmPurchaseTitle';
 const StringIDConfirmBattlePassPurchaseCurrentTiers = 'ConfirmBattlePassPurchaseCurrentTiers';
 const StringIDConfirmBattlePassPurchaseDescription2 = 'ConfirmBattlePassPurchaseDescription2';
 const StringIDConfirmBattlePassPurchaseDescription3 = 'ConfirmBattlePassPurchaseDescription3';
 const StringIDConfirmPurchaseFinalBalance = 'ConfirmPurchaseFinalBalance';
 const StringIDConfirmPurchaseCheckboxText = 'ConfirmPurchaseCheckboxText';
+const StringIDStoreFree = 'StoreFree';
+const StringIDStoreOwned = 'StoreOwned';
 
 interface ReactProps {
   purchase: PurchaseDefGQL;
@@ -82,14 +92,13 @@ interface ReactProps {
 interface InjectedProps {
   usingGamepad: boolean;
   usingGamepadInMainMenu: boolean;
-  ownedPerks: PerkGQL[];
+  ownedPerks: Dictionary<number>;
   rmtCurrencyIds: Dictionary<boolean>;
   dispatch?: Dispatch;
-  championCostumes: ChampionCostumeInfo[];
-  champions: ChampionGQL[];
   perksByID: Dictionary<PerkDefGQL>;
   stringTable: Dictionary<StringTableEntryDef>;
   expensivePurchaseGemThreshold: number;
+  confirmPurchaseSelectedRewardIndex: number;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -112,105 +121,168 @@ class AConfirmPurchase extends React.Component<Props, State> {
   }
 
   render() {
-    const rewards = this.props.purchase.perks;
-
-    let imageSizeClass: string = '';
-    if (rewards.length >= 5) {
-      imageSizeClass = 'Small';
-    }
+    const rewards = this.props.purchase.perks.filter((reward) => {
+      const perk = this.props.perksByID[reward.perkID];
+      return perk.perkType !== PerkType.Key;
+    });
 
     return (
       <div className={Container}>
         <div className={ContentCenterer}>
-          <div className={Title}>{getStringTableValue(StringIDConfirmPurchaseConfirm, this.props.stringTable)}</div>
+          <div
+            className={`${CloseButtonCorner} fs-icon-misc-fail`}
+            onClick={() => {
+              this.props.dispatch?.(hideRightPanel());
+            }}
+          />
+          <div className={Title}>{getStringTableValue(StringIDConfirmPurchaseTitle, this.props.stringTable)}</div>
+          <div className={DividerLine} />
           <div className={NameAndPriceContainer}>
             <div className={Name}>{this.getPackageTitle()}</div>
             {this.renderPrice()}
           </div>
-          <div className={RewardsContainer}>
-            {rewards.map((reward) => {
-              const perk = this.props.perksByID[reward.perkID];
-              if (perk.perkType == PerkType.Key) {
-                return null;
-              }
-
-              return (
-                <div
-                  className={`${PackageIconContainer} ${imageSizeClass} ${perk.perkType}`}
-                  style={{ backgroundImage: `url(${this.getPerkImageURL(perk)})` }}
-                />
-              );
-            })}
-          </div>
+          {this.renderDiscounts()}
+          <div className={RewardsContainer}>{rewards.map(this.renderRewardCell.bind(this))}</div>
           {this.getPackageDescription()}
           <div className={DividerLine} />
-          {this.renderShortageLabels()}
           {this.getConfirmPurchase()}
           {this.getPurchaseButtons()}
           {this.getFinalBalance()}
+          {this.renderShortageLabels()}
         </div>
       </div>
     );
   }
 
-  private renderPrice(): JSX.Element[] {
-    if (isFreeReward(this.props.purchase)) {
-      return null;
-    }
+  private renderRewardCell(reward: PurchaseRewardDefGQL, index: number): React.ReactNode {
+    const perk = this.props.perksByID[reward.perkID];
+    const selectedClass = index === this.props.confirmPurchaseSelectedRewardIndex ? 'selected' : '';
+    const isOwned = perk.isUnique && this.props.ownedPerks[reward.perkID] > 0;
 
-    const priceTags: JSX.Element[] = this.props.purchase.costs.map((cost) => {
-      const perk = this.props.perksByID[cost.perkID];
-      return (
-        <div>
-          <span className={`${CostIcon} ${perk.iconClass}`} style={{ color: `#${perk.iconClassColor}` }} />
-          <span className={CostAmount}>{`${addCommasToNumber(cost.qty)}`}</span>
-        </div>
-      );
-    });
-
-    return priceTags;
+    return (
+      <div
+        className={`${PackageIconContainer} ${perk.perkType} ${selectedClass}`}
+        key={index}
+        onClick={this.onRewardClick.bind(this, index)}
+      >
+        <img className={PackageIcon} src={this.getPerkImageURL(perk)} />
+        {reward.qty > 1 && <div className={PackageRewardCount}>{`x${reward.qty}`}</div>}
+        {isOwned && (
+          <div className={PackageOwnedOverlay}>{getStringTableValue(StringIDStoreOwned, this.props.stringTable)}</div>
+        )}
+      </div>
+    );
   }
 
-  private renderRewardLine(reward: PerkRewardDefGQL): JSX.Element {
-    const perk = this.props.perksByID[reward.perkID];
-    const isSpecificChampion = perk.champion && perk.champion.id;
-    let text: string = '';
-    const tokens = {
-      AMOUNT: reward.qty.toString(),
-      NAME: perk.name
-    };
-
-    if (reward.qty > 1 && isSpecificChampion) {
-      text = getTokenizedStringTableValue(StringIDConfirmPurchaseMultipleForChamp, this.props.stringTable, tokens);
-    } else if (reward.qty <= 1 && isSpecificChampion) {
-      text = getTokenizedStringTableValue(StringIDConfirmPurchaseSingleForChamp, this.props.stringTable, tokens);
-    } else if (reward.qty > 1 && !isSpecificChampion) {
-      text = getTokenizedStringTableValue(StringIDConfirmPurchaseMultiple, this.props.stringTable, tokens);
-    } else {
-      text = `${perk.name}`;
+  componentDidMount(): void {
+    // Whenever ConfirmPurchase is shown, start with the first reward selected.
+    if (this.props.confirmPurchaseSelectedRewardIndex !== 0) {
+      this.props.dispatch?.(updateConfirmPurchaseSelectedRewardIndex(0));
     }
+  }
+
+  private onRewardClick(rewardIndex: number): void {
+    this.props.dispatch?.(updateConfirmPurchaseSelectedRewardIndex(rewardIndex));
+  }
+
+  private renderPrice(): React.ReactNode {
+    // A free item will just say "Free".
+    if (isFreeReward(this.props.purchase)) {
+      return (
+        <div className={`${CostAmount} free`}>{getStringTableValue(StringIDStoreFree, this.props.stringTable)}</div>
+      );
+    }
+
+    // A discounted bundle will show the original price with no icon, strikethrough font.
+    const ownershipData = getPurchaseOwnershipData(this.props.purchase, this.props.perksByID, this.props.ownedPerks);
+    if (ownershipData.hasBundleDiscount) {
+      return (
+        <span className={`${CostAmount} discount strikethrough`}>{`${addCommasToNumber(
+          this.props.purchase.costs[0].qty
+        )}`}</span>
+      );
+    }
+
+    // A full-price item will show the full price.
+    // Note that this currently supports only purchases that cost a single perk type.
+    return (
+      <div className={PriceContainer}>
+        <PerkIcon className={CostIcon} perkID={this.props.purchase.costs[0].perkID} />
+        <span className={CostAmount}>{`${addCommasToNumber(this.props.purchase.costs[0].qty)}`}</span>
+      </div>
+    );
+  }
+
+  private renderDiscounts(): React.ReactNode {
+    const ownershipData = getPurchaseOwnershipData(this.props.purchase, this.props.perksByID, this.props.ownedPerks);
+    if (ownershipData.status === OwnershipStatus.PartiallyOwned && ownershipData.hasBundleDiscount) {
+      const discountedRewards = this.props.purchase.perks.filter((reward) => {
+        return reward.bundleDiscountPerkQty > 0 && ownershipData.ownedUniquePerkIDs.includes(reward.perkID);
+      });
+
+      // Note that this only works for single cost purchases.
+      const cost = this.props.purchase.costs[0];
+      const finalPrice = getFinalPurchaseCost(this.props.purchase, this.props.perksByID, this.props.ownedPerks).find(
+        (c) => c.perkID === cost.perkID
+      ).qty;
+
+      return (
+        <>
+          {discountedRewards.map((reward, index) => {
+            const rewardPerk = this.props.perksByID[reward.perkID];
+            return (
+              <div className={DiscountContainer} key={`discount${index}`}>
+                <div className={DiscountName}>{`${this.getPerkDiscountName(rewardPerk)} - ${getStringTableValue(
+                  StringIDStoreOwned,
+                  this.props.stringTable
+                )}`}</div>
+                <div className={`${CostAmount} discount`}>{`-${addCommasToNumber(reward.bundleDiscountPerkQty)}`}</div>
+              </div>
+            );
+          })}
+          <div className={DiscountContainer}>
+            <div className={DiscountName} />
+            <div className={PriceContainer}>
+              <PerkIcon className={CostIcon} perkID={this.props.purchase.costs[0].perkID} />
+              <span className={CostAmount}>{`${addCommasToNumber(finalPrice)}`}</span>
+            </div>
+          </div>
+        </>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  private getPerkDiscountName(perk: PerkDefGQL): string {
+    if (perk && perk.isUnique && perk.champion) {
+      return `${perk.name} ${perk.champion.name}`;
+    } else {
+      return perk.name;
+    }
+  }
+
+  private renderRewardLine(reward: PerkRewardDefGQL, ownershipData: PurchaseOwnershipData): JSX.Element {
+    const perk = this.props.perksByID[reward.perkID];
+    let text: string = this.getPerkDiscountName(perk);
+
+    if (!perk.isUnique) {
+      text = `${reward.qty}x ${text}`;
+    }
+
+    const isOwned = ownershipData.ownedUniquePerkIDs.includes(perk.id);
 
     return (
       <li className={DescriptionListEntry}>
-        <span className={DescriptionListEntry}>{text}</span>
-        {isSpecificChampion && this.getChampionPortrait(perk.champion)}
+        <span className={`${DescriptionListEntry} ${isOwned ? 'owned' : ''}`}>{text}</span>
+        {isOwned && (
+          <span className={DescriptionListEntry}>{`\xa0-\xa0${getStringTableValue(
+            StringIDStoreOwned,
+            this.props.stringTable
+          )}`}</span>
+        )}
       </li>
     );
-  }
-
-  private getChampionPortrait(champion: ClassDefRef): JSX.Element {
-    if (!champion) {
-      return null;
-    }
-
-    const portraitURL = getThumbnailURLForChampion(
-      this.props.championCostumes,
-      this.props.champions,
-      this.props.perksByID,
-      champion
-    );
-
-    return <img className={RewardLineChampionPortrait} src={portraitURL} />;
   }
 
   private getConfirmPurchase(): JSX.Element {
@@ -246,20 +318,18 @@ class AConfirmPurchase extends React.Component<Props, State> {
     const labels: JSX.Element[] = [];
 
     // Check for shortages.
-    this.props.purchase.costs.forEach((cost) => {
-      const ownedPerk = this.props.ownedPerks.find((p) => p.id == cost.perkID);
-      const numOwned = ownedPerk ? ownedPerk.qty : 0;
+    const finalCosts = getFinalPurchaseCost(this.props.purchase, this.props.perksByID, this.props.ownedPerks);
+    finalCosts.forEach((cost) => {
+      const numOwned = this.props.ownedPerks[cost.perkID] ?? 0;
 
       if (numOwned < cost.qty) {
-        const perk = this.props.perksByID[cost.perkID];
-
         labels.push(
           <div className={InsufficientFundsContainer}>
             <div className={BuxNeededLabel}>
               {getStringTableValue(StringIDConfirmPurchaseNeedMore, this.props.stringTable)}
             </div>
-            <div>
-              <span className={`${CostIcon} ${perk.iconClass}`} style={{ color: `#${perk.iconClassColor}` }} />
+            <div className={PriceContainer}>
+              <PerkIcon className={CostIcon} perkID={cost.perkID} />
               <span className={BuxNeededLabel}>-{addCommasToNumber(cost.qty - numOwned)}</span>
             </div>
           </div>
@@ -294,6 +364,8 @@ class AConfirmPurchase extends React.Component<Props, State> {
       return null;
     }
 
+    const ownershipData = getPurchaseOwnershipData(this.props.purchase, this.props.perksByID, this.props.ownedPerks);
+
     const descriptions: JSX.Element[] = [];
 
     if (this.props.purchase.perks.length === 1) {
@@ -324,7 +396,7 @@ class AConfirmPurchase extends React.Component<Props, State> {
             );
           }
         } else {
-          descriptions.push(this.renderRewardLine(this.props.purchase.perks[0]));
+          descriptions.push(this.renderRewardLine(this.props.purchase.perks[0], ownershipData));
 
           const defDescription =
             this.props.purchase.description && this.props.purchase.description.length > 0
@@ -339,7 +411,7 @@ class AConfirmPurchase extends React.Component<Props, State> {
         }
       }
     } else {
-      this.props.purchase.perks.forEach((p) => descriptions.push(this.renderRewardLine(p)));
+      this.props.purchase.perks.forEach((p) => descriptions.push(this.renderRewardLine(p, ownershipData)));
     }
 
     if (descriptions.length > 0) {
@@ -369,8 +441,12 @@ class AConfirmPurchase extends React.Component<Props, State> {
 
   private getPurchaseButtons(): JSX.Element {
     let tooPoor = this.getShortages().length > 0;
+    const rmtShortage = tooPoor ? this.getRMTShortage() : null;
+
     let buttonText: string | JSX.Element = getStringTableValue(
-      StringIDConfirmPurchaseBuyButton,
+      this.props.purchase.perks.length > 1 && !rmtShortage
+        ? StringIDConfirmPurchaseBuyBundleButton
+        : StringIDConfirmPurchaseBuyButton,
       this.props.stringTable
     );
 
@@ -385,7 +461,6 @@ class AConfirmPurchase extends React.Component<Props, State> {
       );
     }
 
-    const rmtShortage = tooPoor ? this.getRMTShortage() : null;
     return (
       <div className={ButtonsContainer}>
         <Button
@@ -407,7 +482,7 @@ class AConfirmPurchase extends React.Component<Props, State> {
           {getTokenizedStringTableValue(StringIDConfirmPurchaseBuyMore, this.props.stringTable, {
             NAME: rmtShortage.name
           })}
-          <span className={`${ConsoleIcon} ${rmtShortage.iconClass}`} />
+          <PerkIcon className={CostIcon} perkID={rmtShortage.id} colorOverride={'white'} />
         </>
       );
 
@@ -418,6 +493,10 @@ class AConfirmPurchase extends React.Component<Props, State> {
   }
 
   private getFinalBalance(): JSX.Element {
+    if (isFreeReward(this.props.purchase)) {
+      return null;
+    }
+
     let tooPoor = this.getShortages().length > 0;
     if (tooPoor) {
       return null;
@@ -425,10 +504,7 @@ class AConfirmPurchase extends React.Component<Props, State> {
 
     const finalBalances: JSX.Element[] = this.props.purchase.costs.map((cost) => {
       const perk = this.props.perksByID[cost.perkID];
-      const currentQty =
-        this.props.ownedPerks.find((op) => {
-          return op.id === cost.perkID;
-        })?.qty ?? 0;
+      const currentQty = this.props.ownedPerks[cost.perkID] ?? 0;
 
       return (
         <div>
@@ -464,10 +540,8 @@ class AConfirmPurchase extends React.Component<Props, State> {
       if (cost.qty === 0) {
         return;
       }
-      const matchingPerk = this.props.ownedPerks.find((op) => {
-        return op.id === cost.perkID;
-      });
-      if (!matchingPerk || matchingPerk.qty < cost.qty) {
+      const numOwned = this.props.ownedPerks[cost.perkID] ?? 0;
+      if (numOwned < cost.qty) {
         shortages.push(this.props.perksByID[cost.perkID]);
       }
     });
@@ -482,7 +556,7 @@ class AConfirmPurchase extends React.Component<Props, State> {
   }
 
   private async onGoToRMTClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
     // Overlays appear UNDER the right panel, so we have to dismiss it first.
     this.props.dispatch?.(hideRightPanel());
     // Summon RMT purchase overlay.
@@ -490,12 +564,12 @@ class AConfirmPurchase extends React.Component<Props, State> {
   }
 
   private async onConfirmPressed() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
     this.setState({ highlightConfirmation: false, isConfirmed: !this.state.isConfirmed });
   }
 
   private async onPurchaseClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
 
     // if we're showing the high cost confirm widget, the player must have checked it
     // if they haven't checked it, highlight it so it catches their attention
@@ -514,10 +588,8 @@ class AConfirmPurchase extends React.Component<Props, State> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { usingGamepad, usingGamepadInMainMenu } = state.baseGame;
-  const ownedPerks = state.profile?.perks ?? [];
-  const { rmtCurrencyIds, perksByID } = state.store;
-  const { championCostumes } = state.championInfo;
-  const { champions } = state.profile;
+  const { rmtCurrencyIds, perksByID, confirmPurchaseSelectedRewardIndex } = state.store;
+  const { ownedPerks } = state.profile;
   const { stringTable } = state.stringTable;
   const { expensivePurchaseGemThreshold } = state.gameSettings;
 
@@ -527,11 +599,10 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     usingGamepadInMainMenu,
     ownedPerks,
     rmtCurrencyIds,
-    championCostumes,
-    champions,
     perksByID,
     stringTable,
-    expensivePurchaseGemThreshold
+    expensivePurchaseGemThreshold,
+    confirmPurchaseSelectedRewardIndex
   };
 }
 

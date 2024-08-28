@@ -7,16 +7,13 @@
 import { Dictionary, Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { HUDHorizontalAnchor, HUDLayer, HUDVerticalAnchor, HUDWidgetRegistration } from '../redux/hudSlice';
+import { HUDLayer, HUDWidgetRegistration } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
 import { CombatEvent } from '@csegames/library/dist/_baseGame/types/CombatEvent';
 import { EntityResourceIDs } from '@csegames/library/dist/camelotunchained/game/types/EntityResourceIDs';
-import {
-  EntityResourceDefinitionGQL,
-  StatusDef,
-  StatusUIVisibility
-} from '@csegames/library/dist/camelotunchained/graphql/schema';
-import { InitTopic } from '../redux/initializationSlice';
+import { EntityResourceDefinitionGQL } from '@csegames/library/dist/camelotunchained/graphql/schema';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import { StatusDef } from '../dataSources/manifest/statusManifest';
 
 const Root = 'HUD-SelfDamageNumbers-Root';
 const Log = 'HUD-SelfDamageNumbers-Log';
@@ -143,11 +140,7 @@ class ASelfDamageNumbers extends React.Component<Props, State> {
         }
 
         const removed = status.action;
-        if (
-          statusDef.uIVisibility === StatusUIVisibility.ShowAll ||
-          (removed && statusDef.uIVisibility === StatusUIVisibility.PopupOnRemove) ||
-          (!removed && statusDef.uIVisibility === StatusUIVisibility.PopupOnAdd)
-        ) {
+        if ((removed && statusDef.showOnRemove) || (!removed && statusDef.showOnAdd)) {
           logs.unshift({
             event,
             text: `${removed ? '-' : '+'}${status.name}`
@@ -186,7 +179,6 @@ export const selfDamageNumbersRegistry: HUDWidgetRegistration = {
     xOffset: 0,
     yOffset: 10
   },
-  initTopics: [InitTopic.Statuses],
   layer: HUDLayer.HUD,
   render: () => {
     return <SelfDamageNumbers />;

@@ -8,13 +8,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
-import {
-  HUDHorizontalAnchor,
-  HUDLayer,
-  HUDVerticalAnchor,
-  HUDWidgetRegistration,
-  addMenuWidgetExiting
-} from '../../redux/hudSlice';
+import { HUDLayer, HUDWidgetRegistration, addMenuWidgetExiting } from '../../redux/hudSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { AbilityDisplayData, AbilityNetworkDefData } from '../../redux/gameDefsSlice';
 import { AbilityBookPage } from './AbilityBookPage';
@@ -23,6 +17,7 @@ import { BarHeader } from '../BarHeader';
 import { AbilityBookTabsData } from '@csegames/library/dist/_baseGame/clientFunctions/AssetFunctions';
 import { CloseButton } from '../../../shared/components/CloseButton';
 import { InitTopic } from '../../redux/initializationSlice';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 const Root = 'HUD-AbilityBook-Root';
 const Header = 'HUD-AbilityBook-Header';

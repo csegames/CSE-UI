@@ -7,8 +7,9 @@
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { HUDHorizontalAnchor, HUDVerticalAnchor, HUDWidget } from '../redux/hudSlice';
+import { HUDWidget } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 interface ReactProps {}
 

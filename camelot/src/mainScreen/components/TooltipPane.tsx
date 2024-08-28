@@ -9,10 +9,10 @@ import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { FactionData } from '../redux/gameDefsSlice';
 import { RootState } from '../redux/store';
 import { TooltipParams, TooltipState } from '../redux/tooltipSlice';
 import { CSETransition } from '../../shared/components/CSETransition';
+import { FactionDef } from '../dataSources/manifest/factionManifest';
 
 // We offset the tooltip slightly so you can still see what you're hovering the mouse over.
 const TOOLTIP_OFFSET_VMIN = 1;
@@ -34,7 +34,7 @@ interface InjectedProps {
   tooltipState: TooltipState;
   hudWidth: number;
   hudHeight: number;
-  factions: Dictionary<FactionData>;
+  factions: Dictionary<FactionDef>;
   myFaction: Faction;
   dispatch?: Dispatch;
 }

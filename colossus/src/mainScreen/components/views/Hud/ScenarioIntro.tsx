@@ -15,14 +15,22 @@ import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
 
 const Container = 'ScenarioIntro-Container';
-const WaitingForConnectionText = 'ScenarioIntro-WaitingForConnectionText';
-const WaitingTimer = 'ScenarioIntro-WaitingTimer';
+const BackfillText = 'ScenarioIntro-BackfillText';
+const BackfillTimer = 'ScenarioIntro-BackfillTimer';
+const BackfillLockedText = 'ScenarioIntro-BackfillLockedText';
+const BackfillLockedTimer = 'ScenarioIntro-BackfillLockedTimer';
+const WaitingForConnectionsText = 'ScenarioIntro-WaitingForConnectionsText';
+const WaitingForConnectionsTimer = 'ScenarioIntro-WaitingForConnectionsTimer';
 const CountdownText = 'ScenarioIntro-CountdownText';
+const CountdownTimer = 'ScenarioIntro-CountdownTimer';
 
 const GoText = 'ScenarioIntro-GoText';
 
+const StringIDHUDScenarioIntroBackfill = 'HUDScenarioIntroBackfill';
+const StringIDHUDScenarioIntroBackfillLocked = 'HUDScenarioIntroBackfillLocked';
 const StringIDHUDScenarioIntroGo = 'HUDScenarioIntroGo';
-const StringIDHUDScenarioIntroWaitingForPlayers = 'HUDScenarioIntroWaitingForPlayers';
+const StringIDHUDScenarioIntroWaitingForConnections = 'HUDScenarioIntroWaitingForConnections';
+const StringIDHUDScenarioIntroCountdown = 'HUDScenarioIntroCountdown';
 
 interface ComponentProps {}
 
@@ -41,8 +49,8 @@ export interface State {
 }
 
 class AScenarioIntro extends React.Component<Props, State> {
-  private countdownTimeout: number;
-  private animateTimeout: number;
+  private countdownTimeout: number | null = null;
+  private animateTimeout: number | null = null;
   constructor(props: Props) {
     super(props);
 
@@ -73,10 +81,24 @@ class AScenarioIntro extends React.Component<Props, State> {
     const prevState = this.state.scenarioState;
     this.setState({ scenarioState: this.props.scenarioState });
 
+    if (prevState !== ScenarioRoundState.Backfill && this.props.scenarioState === ScenarioRoundState.Backfill) {
+      this.stopCountdown();
+      this.updateCountdown(this.props.scenarioStateEndTime - game.worldTime);
+    }
+
+    if (
+      prevState !== ScenarioRoundState.BackfillLocked &&
+      this.props.scenarioState === ScenarioRoundState.BackfillLocked
+    ) {
+      this.stopCountdown();
+      this.updateCountdown(this.props.scenarioStateEndTime - game.worldTime);
+    }
+
     if (
       prevState !== ScenarioRoundState.WaitingForConnections &&
       this.props.scenarioState === ScenarioRoundState.WaitingForConnections
     ) {
+      this.stopCountdown();
       this.updateCountdown(this.props.scenarioStateEndTime - game.worldTime);
     }
 
@@ -96,8 +118,7 @@ class AScenarioIntro extends React.Component<Props, State> {
   }
 
   public componentWillUnmount() {
-    window.clearTimeout(this.animateTimeout);
-    window.clearTimeout(this.countdownTimeout);
+    this.stopCountdown();
   }
 
   private renderMessage(): JSX.Element {
@@ -106,18 +127,37 @@ class AScenarioIntro extends React.Component<Props, State> {
     }
 
     switch (this.state.scenarioState) {
+      case ScenarioRoundState.Backfill: {
+        return (
+          <div className={BackfillText}>
+            {getStringTableValue(StringIDHUDScenarioIntroBackfill, this.props.stringTable)}
+            <div className={BackfillTimer}>{this.state.message}</div>
+          </div>
+        );
+      }
+      case ScenarioRoundState.BackfillLocked: {
+        return (
+          <div className={BackfillLockedText}>
+            {getStringTableValue(StringIDHUDScenarioIntroBackfillLocked, this.props.stringTable)}
+            <div className={BackfillLockedTimer}>{this.state.message}</div>
+          </div>
+        );
+      }
       case ScenarioRoundState.WaitingForConnections: {
         return (
-          <div className={WaitingForConnectionText}>
-            {getStringTableValue(StringIDHUDScenarioIntroWaitingForPlayers, this.props.stringTable)}
-            <div className={WaitingTimer}>({this.state.message})</div>
+          <div className={WaitingForConnectionsText}>
+            {getStringTableValue(StringIDHUDScenarioIntroWaitingForConnections, this.props.stringTable)}
+            <div className={WaitingForConnectionsTimer}>{this.state.message}</div>
           </div>
         );
       }
 
       case ScenarioRoundState.Countdown: {
         return (
-          <div className={`${CountdownText} ${this.state.shouldAnimate ? 'animate' : ''}`}>{this.state.message}</div>
+          <div className={CountdownText}>
+            {getStringTableValue(StringIDHUDScenarioIntroCountdown, this.props.stringTable)}
+            <div className={CountdownTimer}>{this.state.message}</div>
+          </div>
         );
       }
 
@@ -154,8 +194,14 @@ class AScenarioIntro extends React.Component<Props, State> {
   };
 
   private stopCountdown = () => {
-    window.clearTimeout(this.countdownTimeout);
-    window.clearTimeout(this.animateTimeout);
+    if (this.countdownTimeout) {
+      window.clearTimeout(this.countdownTimeout);
+      this.countdownTimeout = null;
+    }
+    if (this.animateTimeout) {
+      window.clearTimeout(this.animateTimeout);
+      this.animateTimeout = null;
+    }
   };
 
   private showGoMessage = () => {

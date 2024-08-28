@@ -8,7 +8,7 @@ import { Facing2fDegrees } from '@csegames/library/dist/_baseGame/GameClientMode
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { HUDHorizontalAnchor, HUDLayer, HUDVerticalAnchor, HUDWidgetRegistration } from '../redux/hudSlice';
+import { HUDLayer, HUDWidgetRegistration } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
 import { Vec3f } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { distanceVec3 } from '@csegames/library/dist/_baseGame/utils/distance';
@@ -16,6 +16,7 @@ import { GroupMemberState } from '@csegames/library/dist/camelotunchained/graphq
 import TooltipSource from './TooltipSource';
 import { EntityID } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { InitTopic } from '../redux/initializationSlice';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 const Root = 'HUD-Compass-Root';
 const Direction = 'HUD-Compass-Direction';

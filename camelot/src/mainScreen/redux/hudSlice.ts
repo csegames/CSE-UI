@@ -8,6 +8,11 @@ import * as React from 'react';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { InitTopic } from './initializationSlice';
+import {
+  HUDHorizontalAnchor,
+  HUDVerticalAnchor,
+  HUDWidgetState
+} from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 export enum HUDLayer {
   Bottom = 0,
@@ -16,34 +21,9 @@ export enum HUDLayer {
   Top = 3000
 }
 
-export enum HUDVerticalAnchor {
-  Top = 'hud-vertical-anchor-top',
-  Center = 'hud-vertical-anchor-center',
-  Bottom = 'hud-vertical-anchor-bottom'
-}
-
-export enum HUDHorizontalAnchor {
-  Left = 'hud-horizontal-anchor-left',
-  Center = 'hud-horizontal-anchor-center',
-  Right = 'hud-horizontal-anchor-right'
-}
-
 interface ToggleMenuWidgetParams {
   widgetId: string;
   escapableId?: string;
-}
-
-export interface HUDWidgetState {
-  visible?: boolean;
-  initialized?: boolean;
-  xAnchor?: HUDHorizontalAnchor;
-  yAnchor?: HUDVerticalAnchor;
-  /** Measured in vmin. */
-  xOffset?: number;
-  /** Measured in vmin. */
-  yOffset?: number;
-  opacity?: number;
-  scale?: number;
 }
 
 interface HUDEditorState {

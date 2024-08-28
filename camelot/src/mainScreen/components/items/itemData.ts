@@ -8,7 +8,6 @@ export enum ItemStatID {
   ArmorClass = 'ArmorClass',
   Encumbrance = 'Encumbrance',
   Quality = 'Quality',
-  TotalMass = 'TotalMass',
   UnitCount = 'UnitCount'
 }
 

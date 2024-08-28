@@ -16,14 +16,12 @@ import { convertServerTimeToLocalTime } from '@csegames/library/dist/_baseGame/u
 import { createSlice, Dictionary, PayloadAction } from '@reduxjs/toolkit';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue } from '../helpers/stringTableHelpers';
-import { lobbyLocalStore } from '../localStorage/lobbyLocalStorage';
 import { webConf } from '../dataSources/networkConfiguration';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const StringIDGroupsNotificationAccept = 'GroupsNotificationAccept';
 const StringIDGroupsNotificationDecline = 'GroupsNotificationDecline';
 const StringIDGroupsNotificationInviteDescription = 'GroupsNotificationInviteDescription';
-
-export const TutorialQueueID = 'tutorial';
 
 interface TeamJoinState {
   defaultGroupCapacity: number;
@@ -125,7 +123,7 @@ function generateDefaultTeamJoinState() {
       alwaysAllowed: [],
       blocked: [],
       player: {
-        defaultChampion: null,
+        champion: null,
         displayName: null,
         id: null
       },
@@ -135,12 +133,12 @@ function generateDefaultTeamJoinState() {
       applications: [],
       invitations: [],
       player: {
-        defaultChampion: null,
+        champion: null,
         displayName: null,
         id: null
       }
     },
-    hasClickedInvite: lobbyLocalStore.getHasClickedInvite(),
+    hasClickedInvite: clientAPI.getHasClickedInvite(),
     selectedGroupMemberIndex: -1,
     notifications: []
   };

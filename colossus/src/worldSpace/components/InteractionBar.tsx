@@ -13,6 +13,7 @@ const Container = 'WorldSpace-InteractionBar-Container';
 const BarContainer = 'WorldSpace-InteractionBar-BarContainer';
 const Bar = 'WorldSpace-InteractionBar-Bar';
 const BarText = 'WorldSpace-InteractionBar-BarText';
+const BarTextDisabledReason = 'WorldSpace-InteractionBar-BarTextDisabledReason';
 const KeybindIcon = 'WorldSpace-InteractionBar-KeybindIcon';
 const ItemInfoContainer = 'WorldSpace-InteractionBar-ItemInfoContainer';
 const GameTypeText = 'WorldSpace-InteractionBar-GameTypeText';
@@ -38,13 +39,13 @@ export class InteractionBar extends React.Component<Props, State> {
 
   public render() {
     const { state } = this.props;
-    const disabledClassName = state.gameplayType == ItemGameplayType.DisabledInteraction ? 'disabled' : '';
+    const disabledClassName = state.enabled == false ? 'disabled' : '';
     const pressedClassName = this.state.isPressed ? 'pressed' : '';
 
     return state.keybind ? (
       <div className={Wrapper}>
         <div className={`${Container} ${ItemGameplayType[state.gameplayType]}`}>
-          <div className={BarContainer}>
+          <div className={`${BarContainer} ${disabledClassName}`}>
             <div className={Bar} style={{ width: `${state.progress ? state.progress * 100 : 0}%` }} />
             <div className={`${BarText} ${disabledClassName}`}>
               {state.keybind ? (
@@ -59,6 +60,7 @@ export class InteractionBar extends React.Component<Props, State> {
                 )
               ) : null}
               {state.title}
+              {!state.enabled && <span className={BarTextDisabledReason}>{state.disabledReason}</span>}
             </div>
           </div>
           <div className={ItemInfoContainer}>
@@ -73,10 +75,7 @@ export class InteractionBar extends React.Component<Props, State> {
 
   private getGameplayTypeDisplayText(): JSX.Element {
     const { state } = this.props;
-    if (
-      state.gameplayType == ItemGameplayType.Interaction ||
-      state.gameplayType == ItemGameplayType.DisabledInteraction
-    ) {
+    if (state.gameplayType == ItemGameplayType.Interaction) {
       return null;
     }
 

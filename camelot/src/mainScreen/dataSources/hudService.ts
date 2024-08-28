@@ -8,7 +8,6 @@ import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { AnyAction, Dispatch } from '@reduxjs/toolkit';
 import { HUDWidgetRegistration, registerWidget, updateWidgetStates } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
-import { hudLocalStore } from '../localStorage/HUDLocalStorage';
 import { InitTopic, setInitialized } from '../redux/initializationSlice';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import ExternalDataSource from '../redux/externalDataSource';
@@ -32,6 +31,7 @@ import { selfUnitFrameRegistry } from '../components/SelfUnitFrame';
 import { settingsRegistry } from '../components/Settings';
 import { warbandMembersRegistry } from '../components/WarbandMembers';
 import { zoneNameRegistry } from '../components/ZoneName';
+import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 
 // We need all of this at the file level to handle the cases where registerHUDWidget() is
 // called before the HUDService is initialized.
@@ -58,7 +58,7 @@ export class HUDService extends ExternalDataSource {
     this.DEBUGRegisterWidgets();
 
     // Pull data from LocalStorage and send it to Redux.
-    const widgets = hudLocalStore.getWidgets();
+    const widgets = clientAPI.getWidgets();
     this.dispatch(updateWidgetStates(widgets));
 
     // Iterate pendingRegistrations and send those to Redux.

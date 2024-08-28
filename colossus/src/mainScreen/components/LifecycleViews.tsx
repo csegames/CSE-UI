@@ -54,28 +54,38 @@ import { SetDisplayName } from './overlays/SetDisplayName';
 import { Settings } from './overlays/Settings';
 import { SpendQuestXPPotionsModal } from './overlays/SpendQuestXPPotionsModal';
 import { VideoPlayerModal } from './overlays/VideoPlayerModal';
+import { WarningBroadcastModal } from './overlays/WarningBroadcastModal';
+import { GameModeSelectionModal } from './overlays/GameModeSelectionModal';
+import { RuneModsTutorialModal } from './overlays/RuneModsTutorialModal';
+import { FullscreenProgressionTree } from './overlays/Progression/FullscreenProgressionTree';
+import { ConfirmProgressionResetModal } from './overlays/Progression/ConfirmProgressionResetModal';
 
 const overlayElements: Map<Overlay, JSX.Element> = new Map();
 overlayElements.set(Overlay.ChampionDetails, <FullScreenChampionDetails />);
 overlayElements.set(Overlay.ChampionSelectCosmetics, <ChampionSelectCosmetics />);
 overlayElements.set(Overlay.ClaimBattlePassModal, <ClaimBattlePassModal />);
+overlayElements.set(Overlay.ConfirmProgressionReset, <ConfirmProgressionResetModal />);
 overlayElements.set(Overlay.Credits, <CreditsScreen />);
 overlayElements.set(Overlay.Debug, <DebugMenu />);
 overlayElements.set(Overlay.EmoteMenu, <EmoteMenu isVisible={true} />);
 overlayElements.set(Overlay.EndedBattlePassModal, <EndedBattlePassModal />);
 overlayElements.set(Overlay.EventAdvertisementModal, <EventAdvertisementModal />);
 overlayElements.set(Overlay.FreeBattlePassModal, <FreeBattlePassModal />);
+overlayElements.set(Overlay.GameModeSelection, <GameModeSelectionModal />);
 overlayElements.set(Overlay.MainMenu, <MainMenuModal />);
 overlayElements.set(Overlay.MOTDModal, <MOTDModal />);
 overlayElements.set(Overlay.NewBattlePassModal, <NewBattlePassModal />);
+overlayElements.set(Overlay.ProgressionTree, <FullscreenProgressionTree />);
 overlayElements.set(Overlay.PurchaseGems, <PurchaseGemsModal />);
 overlayElements.set(Overlay.PurchaseProcessing, <PurchaseProcessingModal />);
 overlayElements.set(Overlay.ReportPlayer, <ReportPlayer />);
 overlayElements.set(Overlay.RewardCollection, <RewardCollection />);
 overlayElements.set(Overlay.RuneMods, <FullscreenSelectRuneMods />);
+overlayElements.set(Overlay.RuneModsTutorial, <RuneModsTutorialModal />);
 overlayElements.set(Overlay.SetDisplayName, <SetDisplayName />);
 overlayElements.set(Overlay.Settings, <Settings />);
 overlayElements.set(Overlay.SpendQuestXPPotions, <SpendQuestXPPotionsModal />);
+overlayElements.set(Overlay.WarningBroadcastModal, <WarningBroadcastModal />);
 
 interface ReactProps {}
 

@@ -9,20 +9,24 @@ import {
   updateProfile,
   updateOwnedPerks,
   updateSelectedRuneMods,
-  markProfileRefreshStarted,
-  endProfileRefresh
+  endProfileRefresh,
+  startProfileRefresh
 } from '../redux/profileSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { InitTopic } from '../redux/initializationSlice';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import { RootState } from '../redux/store';
 import { calculateSelectedRuneMods } from '../helpers/perkUtils';
-import { Dispatch } from 'redux';
+import { EventEmitter } from '@csegames/library/dist/_baseGame/types/EventEmitter';
+import { Dispatch } from '@reduxjs/toolkit';
+import { detectNewProgressionNodeUnlocks } from '../helpers/badgingUtils';
+
+const profileServiceEventEmitter = new EventEmitter();
 
 export class ProfileService extends ExternalDataSource {
   private refreshHandle: ListenerHandle = null;
 
   protected async bind(): Promise<ListenerHandle[]> {
+    profileServiceEventEmitter.on('refresh', this.refresh.bind(this));
     return [
       await this.query<ProfileQueryResult>({ query: profileQuery }, this.handleProfile.bind(this), InitTopic.Profile),
       this.onInitialize(this.refresh.bind(this))
@@ -64,17 +68,24 @@ export class ProfileService extends ExternalDataSource {
       });
       this.dispatch(endProfileRefresh());
     }
-  }
 
-  protected onReduxUpdate(reduxState: RootState, dispatch: Dispatch): void {
-    super.onReduxUpdate(reduxState, dispatch);
-    if (reduxState.profile.shouldProfileRefresh) {
-      this.refresh();
-    }
+    // Every time we get new profile data, check to see if we have unlocked new ProgressionNodes.
+    // We wait until the animation frame so that the dispatches made earlier in this function will
+    // have already resolved.
+    requestAnimationFrame(() => {
+      detectNewProgressionNodeUnlocks(
+        this.reduxState.championInfo.progressionNodeDefsByChampionID,
+        this.reduxState.profile.ownedPerks,
+        this.reduxState.profile.progressionNodes,
+        this.reduxState.profile.quests,
+        this.reduxState.clock.serverTimeDeltaMS,
+        this.reduxState.navigation.overlays,
+        this.dispatch
+      );
+    });
   }
 
   private async refresh(): Promise<void> {
-    this.dispatch(markProfileRefreshStarted());
     this.refreshHandle?.close();
     this.refreshHandle = await this.query<ProfileQueryResult>(
       { query: profileQuery },
@@ -83,3 +94,10 @@ export class ProfileService extends ExternalDataSource {
     );
   }
 }
+
+export const refreshProfile = (onRefresh?: () => void, dispatch?: Dispatch): void => {
+  profileServiceEventEmitter.trigger('refresh');
+  if (dispatch && onRefresh) {
+    dispatch(startProfileRefresh(onRefresh));
+  }
+};

@@ -33,6 +33,7 @@ import { webConf } from './networkConfiguration';
 const autoconnectSession: DebugSession = {
   allocated: null,
   completed: null,
+  configured: null,
   created: null,
   createdBy: null,
   ended: null,
@@ -42,8 +43,7 @@ const autoconnectSession: DebugSession = {
   revision: null,
   roundID: AUTOCONNECT_MATCH_PLACEHOLDER,
   scenarioID: null,
-  serverName: 'localhost',
-  serverPort: 6000,
+  gameServerAddress: 'localhost:6000',
   started: null,
   zoneID: null
 };

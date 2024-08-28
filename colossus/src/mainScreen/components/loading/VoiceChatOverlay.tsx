@@ -12,7 +12,7 @@ import { RootState } from '../../redux/store';
 import { game } from '@csegames/library/dist/_baseGame';
 import { getVoiceChatStyle } from '../../redux/voiceChatSlice';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { Member, Match, Roster, Player } from '@csegames/library/dist/hordetest/graphql/schema';
+import { Member, Match, Roster } from '@csegames/library/dist/hordetest/graphql/schema';
 import {
   VoiceChatMemberSettings,
   VoiceChatMemberStatus
@@ -95,7 +95,7 @@ class AVoiceChatOverlay extends React.Component<Props> {
   }
 
   private onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   private toggleMute(accountID: string) {
@@ -114,9 +114,9 @@ class AVoiceChatOverlay extends React.Component<Props> {
         const roster: Roster = this.props.match.rosters[rosterIDX];
         if (roster.members) {
           for (let memberIDX = 0; memberIDX < roster.members.length; ++memberIDX) {
-            const player: Player = roster.members[memberIDX];
-            if (player.id == accountID) {
-              return player.displayName;
+            const member = roster.members[memberIDX];
+            if (member.id == accountID) {
+              return member.displayName;
             }
           }
         }

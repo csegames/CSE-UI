@@ -20,7 +20,6 @@ import {
 } from '../../../../redux/abilitySlice';
 import { ArrayMap, Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { Status } from '@csegames/library/dist/hordetest/game/types/Status';
-import { StatusDef } from '@csegames/library/dist/_baseGame/types/StatusDef';
 import { AbilityErrorFlags, AbilityStateFlags } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
 import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
@@ -29,6 +28,7 @@ import { getStringTableValue, getTokenizedStringTableValue } from '../../../../h
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { GameOption } from '@csegames/library/dist/_baseGame/types/Options';
 import { GameOptionIDs } from '../../../../redux/gameOptionsSlice';
+import { StatusDef } from '../../../../dataSources/manifest/statusManifest';
 
 const Container = 'UrgentMessage-Container';
 
@@ -246,12 +246,7 @@ class AUrgentMessage extends React.Component<Props, State> {
     const blockingStatusDef = this.props.statusDefs[blockingStatus.id];
     const messageDuration = blockingStatus.duration - (game.worldTime - blockingStatus.startTime);
 
-    this.setMessage(
-      MessageType.BlockedByStatus,
-      blockingStatusDef.displayInfoName,
-      messageDuration * 1000,
-      blockingStatus
-    );
+    this.setMessage(MessageType.BlockedByStatus, blockingStatusDef.name, messageDuration * 1000, blockingStatus);
   };
 }
 
@@ -270,7 +265,7 @@ function mapStateToProps(state: RootState): Props {
   return {
     playerStatuses: state.player.statuses,
     resourceName,
-    statusDefs: state.game.statusDefs,
+    statusDefs: state.game.statusDefsByNumericID,
     strongAbility: state.abilities[strongAbilityID],
     ultimateAbility: state.abilities[ultimateAbilityID],
     weakAbility: state.abilities[weakAbilityID],

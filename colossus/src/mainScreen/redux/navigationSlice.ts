@@ -36,23 +36,28 @@ export enum Overlay {
   ChampionDetails,
   ChampionSelectCosmetics,
   ClaimBattlePassModal,
+  ConfirmProgressionReset,
   Credits,
   Debug,
   EmoteMenu,
   EndedBattlePassModal,
   EventAdvertisementModal,
   FreeBattlePassModal,
+  GameModeSelection,
   MainMenu,
   MOTDModal,
   NewBattlePassModal,
+  ProgressionTree,
   PurchaseGems,
   PurchaseProcessing,
   ReportPlayer,
   RewardCollection,
   RuneMods,
+  RuneModsTutorial,
   SetDisplayName,
   Settings,
-  SpendQuestXPPotions
+  SpendQuestXPPotions,
+  WarningBroadcastModal
 }
 
 export interface VideoParams {
@@ -82,6 +87,7 @@ interface NavigationState {
   lobbyView: LobbyView;
   overlays: OverlayInstance[];
   rightPanelContent: React.ReactNode; // TODO : hold data to populate the panel instead of the actual content
+  rightPanelVeilContent: React.ReactNode;
   cosmeticTab: PerkType;
 }
 
@@ -91,6 +97,7 @@ const defaultNavigationState: NavigationState = {
   lobbyView: LobbyView.Play,
   overlays: [],
   rightPanelContent: null,
+  rightPanelVeilContent: null,
   cosmeticTab: PerkType.Costume
 };
 
@@ -123,6 +130,7 @@ export const navigationSlice = createSlice({
     },
     hideRightPanel: (state: NavigationState) => {
       state.rightPanelContent = null;
+      state.rightPanelVeilContent = null;
     },
     navigateTo: (state: NavigationState, action: PayloadAction<LobbyView>) => {
       if (state.lifecyclePhase !== LifecyclePhase.Lobby || state.lobbyView == action.payload) {
@@ -152,11 +160,25 @@ export const navigationSlice = createSlice({
         data: action.payload
       });
     },
-    showRightPanel: (state: NavigationState, action: PayloadAction<React.ReactNode>) => {
-      if (state.lifecyclePhase !== LifecyclePhase.Lobby) {
-        return;
+    showRightPanel: {
+      reducer: (
+        state: NavigationState,
+        action: PayloadAction<{ content: React.ReactNode; veilContent?: React.ReactNode }>
+      ) => {
+        if (state.lifecyclePhase !== LifecyclePhase.Lobby) {
+          return;
+        }
+        state.rightPanelContent = action.payload.content;
+        state.rightPanelVeilContent = action.payload.veilContent ?? null;
+      },
+      prepare: (content: React.ReactNode, veilContent?: React.ReactNode) => {
+        return {
+          payload: {
+            content,
+            veilContent
+          }
+        };
       }
-      state.rightPanelContent = action.payload;
     },
     setCosmeticTab: (state: NavigationState, action: PayloadAction<PerkType>) => {
       state.cosmeticTab = action.payload;

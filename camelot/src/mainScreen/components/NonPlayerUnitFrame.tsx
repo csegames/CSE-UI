@@ -16,9 +16,9 @@ import { Theme } from '../themes/themeConstants';
 import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numberUtils';
 import StatusEffects from './StatusEffects';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { FactionData } from '../redux/gameDefsSlice';
 import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { distanceVec3 } from '@csegames/library/dist/_baseGame/utils/distance';
+import { FactionDef } from '../dataSources/manifest/factionManifest';
 
 // Images are imported so that WebPack can find them (and give us errors if they are missing).
 import DefaultNameplateBackgroundURL from '../../images/unit-frames/nameplate-bg.png';
@@ -49,7 +49,7 @@ interface ReactProps {
 
 interface InjectedProps {
   currentTheme: Theme;
-  factions: Dictionary<FactionData>;
+  factions: Dictionary<FactionDef>;
   localEntityID: string;
   positions: EntityPositionMapModel;
 }
@@ -81,7 +81,10 @@ class NonPlayerUnitFrame extends React.Component<Props> {
     return (
       <div className={Root}>
         <div className={FrameRoot}>
-          <img className={NameplateBackground} src={faction?.nameplateBackgroundURL ?? DefaultNameplateBackgroundURL} />
+          <img
+            className={NameplateBackground}
+            src={faction?.nameplateBackgroundImage ?? DefaultNameplateBackgroundURL}
+          />
           <div className={NameplateText}>{this.props.entity.name}</div>
           <img className={FrameImage} src={MiniFrameBackgroundURL} />
           <div className={BarsContainer}>
@@ -89,7 +92,7 @@ class NonPlayerUnitFrame extends React.Component<Props> {
               <div className={HealthBar} style={{ backgroundColor: colors.health, width: `${healthRatio * 90}%` }} />
             )}
           </div>
-          <img className={FrameImage} src={faction?.nameplateMiniFrameURL ?? DefaultMiniFrameURL} />
+          <img className={FrameImage} src={faction?.nameplateMiniFrameImage ?? DefaultMiniFrameURL} />
 
           {health && (
             <div className={`${HealthText} ShowOnHover`}>
@@ -99,14 +102,14 @@ class NonPlayerUnitFrame extends React.Component<Props> {
 
           <div className={ArchetypeContainer}>
             <img className={ArchetypeBackground} src={DefaultArchetypeBackgroundURL} />
-            {faction?.nameplateProfilePictureURL && (
+            {faction?.nameplateProfileImage && (
               <img
                 className={ArchetypeProfilePicture}
-                src={faction.nameplateProfilePictureURL}
+                src={faction.nameplateProfileImage}
                 style={{ WebkitMaskImage: `url(${DefaultArchetypeBackgroundURL})` }}
               />
             )}
-            <img className={ArchetypeFrame} src={faction?.defaultArchetypeFrameURL ?? DefaultArchetypeFrameURL} />
+            <img className={ArchetypeFrame} src={faction?.nameplateIconFrameImage ?? DefaultArchetypeFrameURL} />
           </div>
           <div className={Distance}>
             {this.props.positions[this.props.localEntityID] && this.props.positions[this.props.entity.entityID]

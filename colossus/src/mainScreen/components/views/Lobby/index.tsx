@@ -21,7 +21,7 @@ import { Dispatch } from 'redux';
 import { Button } from '../../shared/Button';
 import { FeatureFlags } from '../../../redux/featureFlagsSlice';
 import { LobbyPartyHeader } from './LobbyPartyHeader';
-import { Notifications } from '../../shared/eventMessaging/Notifications';
+import { PinnedNotices } from '../../shared/notifications/PinnedNotices';
 import { getRaceIDFromCostumeForChampion } from '../../../helpers/characterHelpers';
 import { ChampionGQL, PerkDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
@@ -31,7 +31,7 @@ const Container = 'Fullscreen-Container'; // TODO : reorganize names
 const HideButton = 'Fullscreen-HideButton';
 const TopSection = 'StartScreen-TopSection';
 const Hamburger = 'StartScreen-Hamburger';
-const NotificationsContainer = 'StartScreen-NotificationsContainer';
+const PinnedNoticesContainer = 'StartScreen-PinnedNoticesContainer';
 const PlayContainer = 'StartScreen-PlayContainer';
 const GenericScreenContainer = 'StartScreen-GenericScreenContainer';
 const CareerStatsBGImage = 'StartScreen-CareerStatsBGImage';
@@ -76,8 +76,8 @@ class ALobby extends React.Component<Props> {
           <div className={innerContainerClass}>{this.renderRoute()}</div>
           <div className={TopSection}>
             <div className={Hamburger} onClick={this.onHamburgerClick.bind(this)} />
-            <div className={NotificationsContainer}>
-              <Notifications />
+            <div className={PinnedNoticesContainer}>
+              <PinnedNotices />
             </div>
             <NavMenu />
             <LobbyPartyHeader />

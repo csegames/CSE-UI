@@ -25,7 +25,7 @@ import {
   Queue,
   StringTableEntryDef
 } from '@csegames/library/dist/hordetest/graphql/schema';
-import { TutorialQueueID, updateGroupState } from '../../../../redux/teamJoinSlice';
+import { updateGroupState } from '../../../../redux/teamJoinSlice';
 import { TeamJoinAPIError } from '../../../../dataSources/teamJoinNetworkingConstants';
 import { TeamJoinAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { Overlay, OverlayInstance, showOverlay, showRightPanel } from '../../../../redux/navigationSlice';
@@ -42,11 +42,14 @@ import { QuestsByType } from '../../../../redux/questSlice';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
 import { shouldShowBattlePassSplashScreen } from '../BattlePass/BattlePassUtils';
-import { battlePassLocalStore } from '../../../../localStorage/battlePassLocalStorage';
 import { InitTopic } from '../../../../redux/initializationSlice';
-import { EventAdvertisementPanel } from '../../../shared/eventMessaging/EventAdvertisementPanel';
+import { EventAdvertisementPanel } from '../../../shared/notifications/EventAdvertisementPanel';
 import { MOTDMessageData, setMOTDModalMessage } from '../../../../redux/notificationsSlice';
 import { webConf } from '../../../../dataSources/networkConfiguration';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { GameModeDef } from '../../../../dataSources/manifest/gameModeManifest';
+import { getDefaultQueueGameModeDef } from '../../../../redux/matchSlice';
+import { getSelectedQueueID } from '../../../../helpers/queueHelpers';
 
 const Container = 'StartScreen-Play-Container';
 const LeftPanel = 'StartScreen-Play-LeftPanel';
@@ -55,19 +58,17 @@ const NotificationsListContainer = 'StartScreen-Play-NotificationsListContainer'
 const LeaveGroupButtonClass = 'StartScreen-Play-LeaveGroupButton';
 const QuestSection = 'StartScreen-Play-QuestSection';
 const ActionButtonClass = 'StartScreen-Play-ActionButton';
-const TutorialContainer = 'StartScreen-Play-TutorialContainer';
-const TutorialText = 'StartScreen-Play-TutorialText';
-
+const ModesButton = 'StartScreen-Play-ModesButton';
+const ModesButtonContent = 'StartScreen-Play-ModesButtonContent';
+const ModesHeading = 'StartScreen-Play-ModesHeading';
+const ModeSubheading = 'StartScreen-Play-ModeSubheading';
+const ModesChange = 'StartScreen-Play-ModesChange';
 const ReadyButtonStyle = 'StartScreen-Play-ReadyButton';
-const TutorialButtonStyle = 'StartScreen-Play-TutorialButton';
 
 const StringIDGroupsLeaveGroup = 'GroupsLeaveGroup';
 const StringIDPlayQuestsButton = 'PlayQuestsButton';
-const StringIDPlayTutorialButton = 'PlayTutorialButton';
 const StringIDPlayButton = 'PlayButton';
-const StringIDPlayNewToGame = 'PlayNewToGame';
-
-const TutorialScenario = 'tutorial';
+const StringIDPlayModeChange = 'PlayModeChange';
 
 interface ReactProps {}
 
@@ -90,6 +91,8 @@ interface InjectedProps {
   queues: Queue[];
   serverTimeDeltaMS: number;
   motdMessagesData: MOTDMessageData[];
+  selectedQueueID: string | null;
+  gameModes: Dictionary<GameModeDef>;
   dispatch?: Dispatch;
 }
 
@@ -101,8 +104,6 @@ class APlay extends React.Component<Props> {
   }
 
   public render() {
-    this.checkForPrestitial();
-
     return (
       <div className={Container}>
         <div className={LeftPanel}>
@@ -111,9 +112,9 @@ class APlay extends React.Component<Props> {
           </div>
           <div className={CharacterContainer}>
             <LobbyBattlePassStatus />
+            {this.getModesButton()}
             {this.getPlayButton()}
             <LobbyChampionStatus />
-            {this.getTutorialButton()}
             <div className={QuestSection}>{this.getQuestsButton()}</div>
             <EventAdvertisementPanel />
           </div>
@@ -122,6 +123,14 @@ class APlay extends React.Component<Props> {
         {this.getLeaveGroupButton()}
       </div>
     );
+  }
+
+  public componentDidMount() {
+    this.checkForPrestitial();
+  }
+
+  public componentDidUpdate() {
+    this.checkForPrestitial();
   }
 
   private checkForPrestitial(): void {
@@ -143,7 +152,7 @@ class APlay extends React.Component<Props> {
         this.props.previousBattlePass &&
         shouldShowEndedBattlePassModal(this.props.previousBattlePass.id, this.props.questsProgress)
       ) {
-        battlePassLocalStore.setLastEndedBattlePassID(this.props.previousBattlePass.id);
+        clientAPI.setLastEndedBattlePassID(this.props.previousBattlePass.id);
         this.props.dispatch(showOverlay(Overlay.EndedBattlePassModal));
         return;
       }
@@ -168,7 +177,7 @@ class APlay extends React.Component<Props> {
       // If a new season has started, but we haven't splashed the user yet, splash them!
       if (shouldShowBattlePassSplashScreen(this.props.currentBattlePass?.id ?? '')) {
         // Make sure we don't double-splash.
-        battlePassLocalStore.setLastSplashedBattlePassID(this.props.currentBattlePass?.id);
+        clientAPI.setLastSplashedBattlePassID(this.props.currentBattlePass?.id);
         // Show the splash.
         this.props.dispatch(showOverlay(Overlay.NewBattlePassModal));
         return;
@@ -214,7 +223,7 @@ class APlay extends React.Component<Props> {
 
   private async onLeaveGroup() {
     // TODO : convert to request queue model
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
     const res = await TeamJoinAPI.LeaveV1(webConf);
     const success = res.ok;
 
@@ -236,23 +245,38 @@ class APlay extends React.Component<Props> {
     }
   }
 
-  private getTutorialButton(): JSX.Element {
-    if (!this.showTutorialButton()) {
-      return null;
-    }
-
+  private getModesButton(): JSX.Element {
+    const queueDisplay = this.getGameMode();
+    if (!queueDisplay) return null;
     return (
-      <div className={TutorialContainer}>
-        <span className={TutorialText}>{getStringTableValue(StringIDPlayNewToGame, this.props.stringTable)}</span>
-        <PlayButton
-          buttonType='blue'
-          playText={getStringTableValue(StringIDPlayTutorialButton, this.props.stringTable)}
-          buttonID='tutorial'
-          queueID={TutorialQueueID}
-          style={TutorialButtonStyle}
-        />
+      <div
+        style={{ backgroundImage: `url(${queueDisplay.bannerImage})` }}
+        className={ModesButton}
+        onClick={this.showGameModeSelectionOverlay.bind(this)}
+      >
+        <div className={ModesButtonContent}>
+          <span className={ModesHeading}>{queueDisplay.name}</span>
+          <span className={ModeSubheading}>{queueDisplay.description}</span>
+          <span className={ModesChange}>{getStringTableValue(StringIDPlayModeChange, this.props.stringTable)}</span>
+        </div>
       </div>
     );
+  }
+
+  private getGameMode(): GameModeDef | null {
+    if (
+      this.props.defaultQueueID === null ||
+      (this.props.selectedQueueID !== null && this.props.selectedQueueID !== this.props.defaultQueueID)
+    ) {
+      const queue = this.props.queues.find(
+        (q) =>
+          q.queueID === getSelectedQueueID(this.props.selectedQueueID, this.props.defaultQueueID, this.props.queues) &&
+          q.enabled
+      );
+      if (!queue) return null;
+      return this.props.gameModes[queue.displayAlias];
+    }
+    return getDefaultQueueGameModeDef(this.props.defaultQueueID);
   }
 
   private getPlayButton(): JSX.Element {
@@ -261,29 +285,14 @@ class APlay extends React.Component<Props> {
         buttonType='primary'
         playText={getStringTableValue(StringIDPlayButton, this.props.stringTable)}
         buttonID='standard'
-        queueID={this.props.defaultQueueID ?? 'standard'}
+        queueID={getSelectedQueueID(this.props.selectedQueueID, this.props.defaultQueueID, this.props.queues)}
         style={ReadyButtonStyle}
       />
     );
   }
 
-  private showTutorialButton(): boolean {
-    // if we're in a multiplayer group, hide the button
-    if (this.props.group?.size > 1) {
-      return false;
-    }
-
-    // if we've played the tutorial, hide the button
-    if (this.props.lifetimeStats?.find((matchStats) => matchStats.scenarioID == TutorialScenario)?.matchesPlayed > 0) {
-      return false;
-    }
-
-    if (this.props.queues.find((q) => q.queueID == TutorialQueueID) == null) {
-      return;
-    }
-
-    // if we're offline, hide the button (play button will read "Offline")
-    return this.props.access == MatchAccess.Online;
+  private showGameModeSelectionOverlay(): void {
+    this.props.dispatch(showOverlay(Overlay.GameModeSelection));
   }
 }
 
@@ -291,7 +300,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { group } = state.teamJoin;
   const { quests: questsByType, currentBattlePass, previousBattlePass, nextBattlePass } = state.quests;
   const questsProgress = state.profile.quests;
-  const { defaultQueueID, access, queues } = state.match;
+  const { defaultQueueID, access, queues, selectedQueueID, gameModes } = state.match;
   const lifetimeStats = state.profile.lifetimeStats;
   const { stringTable } = state.stringTable;
   const { overlays } = state.navigation;
@@ -320,7 +329,9 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     battlePassQuests,
     queues,
     serverTimeDeltaMS,
-    motdMessagesData
+    motdMessagesData,
+    selectedQueueID,
+    gameModes
   };
 }
 

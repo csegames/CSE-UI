@@ -9,8 +9,8 @@ export type CUDisplayInfoIcon = any;
 /** CSEUtilsNET.Strings.DisplayInfoName */
 export type DisplayInfoName = any;
 
-/** CSE.GameplayDefs.Tags.GameplayTag */
-export type GameplayTag = any;
+/** CSE.GameplayDefs.Tag */
+export type Tag = any;
 
 /** CSE.GameplayDefs.AbilityInstanceID */
 export type AbilityInstanceID = any;
@@ -29,62 +29,38 @@ export type GroupID = any;
 
 export type Decimal = any;
 
-/** VoxJobInstanceID */
-export type VoxJobInstanceID = any;
-
-/** CSE.GameplayDefs.ContainerDrawerID */
-export type ContainerDrawerID = any;
-
-/** CSE.GameplayDefs.ItemInstanceID */
-export type ItemInstanceID = any;
-
-/** CU.Buildings.BuildingPlotInstanceID */
-export type BuildingPlotInstanceID = any;
-
-/** CSE.GameplayDefs.ScenarioInstanceID */
-export type ScenarioInstanceID = any;
+/** CU.Groups.InviteCode */
+export type InviteCode = any;
 
 /** ShardID */
 export type ShardID = any;
 
-/** CU.ItemStackHash */
-export type ItemStackHash = any;
-
-/** VoxNotesInstanceID */
-export type VoxNotesInstanceID = any;
-
-/** CU.Groups.InviteCode */
-export type InviteCode = any;
-
 /** CU.Groups.TargetID */
 export type TargetID = any;
 
-/** CSE.GameplayDefs.ScenarioTeamID */
-export type ScenarioTeamID = any;
+/** CSE.GameplayDefs.ItemInstanceID */
+export type ItemInstanceID = any;
 
-/** The `Date` scalar type represents a year, month and day in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard. */
-export type Date = any;
-
-/** CSE.GameplayDefs.ItemQuality */
-export type ItemQuality = any;
-
-/** CU.Databases.Models.Progression.Logs.CharacterDaySummaryInstanceID */
-export type CharacterDaySummaryInstanceID = any;
-
-/** CU.Databases.Models.Progression.Logs.ShardDaySummaryInstanceID */
-export type ShardDaySummaryInstanceID = any;
-
-/** CSE.Account.AccountID */
-export type AccountID = any;
+/** CU.ItemStackHash */
+export type ItemStackHash = any;
 
 /** CU.MatchQueueInstanceID */
 export type MatchQueueInstanceID = any;
+
+/** CSE.GameplayDefs.ScenarioInstanceID */
+export type ScenarioInstanceID = any;
+
+/** The `Date` scalar type represents a year, month and day in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard. */
+export type Date = any;
 
 /** CSE.GameplayDefs.RoundInstanceID */
 export type RoundInstanceID = any;
 
 /** CSE.GameplayDefs.RoleID */
 export type RoleID = any;
+
+/** CSE.GameplayDefs.ScenarioTeamID */
+export type ScenarioTeamID = any;
 
 /** CU.Databases.Models.Items.SecureTradeInstanceID */
 export type SecureTradeInstanceID = any;
@@ -100,6 +76,9 @@ export type Seconds = any;
 
 /** The `Milliseconds` scalar type represents a period of time represented as the total number of milliseconds. */
 export type Milliseconds = any;
+
+/** CU.Buildings.BuildingPlotInstanceID */
+export type BuildingPlotInstanceID = any;
 /** CU.WebApi.GraphQL.IGraphQLActiveWarband */
 export interface IGraphQLActiveWarband {
   info: ActiveWarband | null;
@@ -179,16 +158,12 @@ export interface CUQuery {
   channels: (Channel | null)[] | null /** List all channels. */;
   character: CUCharacter | null /** Get a character by id and shard. */;
   connectedServices: ConnectedServices | null /** Status information for connected services */;
-  crafting: CraftingRecipes | null /** Information about crafting recipes, nearby vox status, and potential interactions with the current vox job. */;
-  entityItems: EntityItemResult | null /** retrieve information about an item that is stored in an entity currently loaded on the server */;
   featureFlags: (string | null)[] | null /** Enabled feature flags */;
   game: GameDefsGQLData | null /** Information about gameplay definition data */;
   invite: Invite | null /** Get group invite by InviteCode. Arguments: shard (required), code (required). */;
   invites:
     | (Invite | null)[]
     | null /** Get group invites. Arguments: shard (required), forGroup (optional), toGroup | toCharacter (optional and exclusive, if both are provided, toGroup will be used). */;
-  item: Item | null /** retrieve information about an item */;
-  myActiveScenarioScoreboard: MyScenarioScoreboard | null /** Gets information about the active scenario score a user is in. */;
   myActiveWarband: GraphQLActiveWarband | null /** A users active warband */;
   myBattlegroup: GraphQLBattlegroup | null /** A users battleground */;
   myCharacter: CUCharacter | null /** Get the character of the currently logged in user. */;
@@ -199,7 +174,6 @@ export interface CUQuery {
   myPassiveAlerts:
     | (PassiveAlert | null)[]
     | null /** Alerts that notify players something happened but do not need to be reacted to. */;
-  myprogression: CharacterProgressionData | null /** Information about progression data for the character. */;
   myScenarioQueue: MyScenarioQueue | null /** Gets information about available scenarios and their queue status */;
   patcherHero: (PatcherHero | null)[] | null /** Gets Patcher Hero content */;
   patchNote: PatchNote | null /** Gets a single patch note */;
@@ -211,11 +185,7 @@ export interface CUQuery {
   shardCharacters:
     | (SimpleCharacter | null)[]
     | null /** Gets all the characters from the requested shard for the account. */;
-  shardprogression: ShardProgressionData | null /** Information about progression data for the entire shard. */;
-  status: Status | null /** Information about statuses */;
   traits: TraitsInfo | null /** Get all possible traits. */;
-  voxJob: VoxJobStatusGQL | null /** retrieve information about a vox job */;
-  world: WorldData | null /** Information about the current game world */;
 }
 /** ServerLib.ApiModels.Channel */
 export interface Channel {
@@ -235,7 +205,6 @@ export interface CUCharacter {
   id: CharacterID | null;
   name: NormalizedString | null;
   order: GroupID | null;
-  progression: ProgressionComponentDBModel | null;
   race: string | null;
   session: SessionStatsField | null;
   stats: (CharacterStatField | null)[] | null;
@@ -256,7 +225,7 @@ export interface Ability {
 export interface AbilityComponentDefRef {
   abilityBarKind: AbilityBarKind | null;
   abilityComponentCategory: AbilityComponentCategoryDefRef | null;
-  abilityTags: (GameplayTag | null)[] | null;
+  abilityTags: (Tag | null)[] | null;
   display: DisplayInfoDef | null;
   id: string | null;
   networkRequirements: (AbilityNetworkRequirementGQL | null)[] | null;
@@ -289,7 +258,7 @@ export interface ExcludeAbilityComponentDef {
 }
 /** CSE.GameplayDefs.ExcludeTagDef */
 export interface ExcludeTagDef {
-  tag: GameplayTag | null;
+  tag: Tag | null;
 }
 /** CSE.GameplayDefs.RequireAbilityComponentDef */
 export interface RequireAbilityComponentDef {
@@ -297,28 +266,12 @@ export interface RequireAbilityComponentDef {
 }
 /** CSE.GameplayDefs.RequireTagDef */
 export interface RequireTagDef {
-  tag: GameplayTag | null;
+  tag: Tag | null;
 }
 /** CSE.GameplayDefs.AbilityNetworkDef */
 export interface AbilityNetworkDef {
   componentCategories: (AbilityComponentCategoryDefRef | null)[] | null;
   display: DisplayInfoDef | null;
-  id: string | null;
-}
-/** CU.Databases.Models.ProgressionComponentDBModel */
-export interface ProgressionComponentDBModel {
-  progressionNodes: (string | null)[] | null;
-  progressionXP: (ProgresssionXPDBModel | null)[] | null;
-  statBonuses: (ProgresssionStatBonusDBModel | null)[] | null;
-}
-/** CU.Databases.Models.ProgresssionXPDBModel */
-export interface ProgresssionXPDBModel {
-  id: string | null;
-  xP: number | null;
-}
-/** CU.Databases.Models.ProgresssionStatBonusDBModel */
-export interface ProgresssionStatBonusDBModel {
-  amount: Decimal | null;
   id: string | null;
 }
 /** ServerLib.SessionStatsField */
@@ -372,351 +325,6 @@ export interface ExclusiveTraitsInfo {
 }
 /** ServerLib.GraphQL.ConnectedServices */
 export interface ConnectedServices {}
-/** ServerLib.Crafting.CraftingRecipes */
-export interface CraftingRecipes {
-  nearestVoxEntityID: EntityID | null /** Entity ID of the closest vox that can be crafted with */;
-  recipes: (RecipeDefRef | null)[] | null /** List of recipes for vox jobs */;
-  voxJobGroupLog: (VoxJobGroupLogDBModel | null)[] | null;
-  voxJobGroupLogs: (VoxJobGroupLogDBModel | null)[] | null;
-  voxJobLogCount: number | null;
-  voxJobLogs: (VoxJobLogDBModel | null)[] | null;
-  voxNotes: (VoxNotesDBModel | null)[] | null;
-}
-/** CSE.GameplayDefs.RecipeDefRef */
-export interface RecipeDefRef {
-  id: string | null /** Unique recipe identifier */;
-  ingredients: (RecipeIngredientDef | null)[] | null /** Input ingredients required for this recipe */;
-  job: VoxJobDefRef | null;
-  outputItem: ItemDefRef | null /** Output Item for this recipe */;
-}
-/** CSE.GameplayDefs.RecipeIngredientDef */
-export interface RecipeIngredientDef {
-  ingredient: ItemDefRef | null /** The item required by this part of the recipe */;
-  maxQuality: Decimal | null /** The maximum quality the ingredient must be.  Value is 0-1 */;
-  minQuality: Decimal | null /** The minimum quality the ingredient must be.  Value is 0-1 */;
-  requirement: ItemRequirementDefRef | null /** Extra requirements on the item, not used if the ingredient is provided. */;
-  slot: RecipeSlotTypeDefRef | null /** The type of slot the ingredient will go in */;
-  unitCount:
-    | number
-    | null /** The units of this item that must be provided. Note that multiple sets of final product can be produced given sufficient amounts of all ingredients */;
-}
-/** CSE.GameplayDefs.ItemDefRef */
-export interface ItemDefRef {
-  defaultResourceID: string | null;
-  deploySettings: DeploySettingsDefRef | null;
-  description: string | null /** Description of the item */;
-  equipRequirements: string | null;
-  gearSlotSets: (GearSlotSet | null)[] | null /** the sets of gear slots this item can be equipped to */;
-  iconUrl: string | null /** URL to the item's icon */;
-  id: string | null /** Unique item identifier */;
-  isStackableItem: boolean | null;
-  itemType: ItemType | null;
-  name: string | null /** Name of the item */;
-  numericItemDefID: number | null;
-  substanceDefinition: SubstanceDefRef | null /** Substance information for this item definition */;
-  tags: (GameplayTag | null)[] | null /** Tags on this item, these can be referenced by recipes */;
-  voxUpgradeModule: VoxUpgradeModuleDefRef | null;
-}
-/** CSE.GameplayDefs.DeploySettingsDefRef */
-export interface DeploySettingsDefRef {
-  controlRequirements: string | null;
-  isDoor: boolean | null;
-  itemPlacementType: ItemPlacementType | null;
-  itemTemplateType: ItemTemplateType | null;
-  mapIconClass: string | null;
-  maxPitch: Decimal | null;
-  maxTerrainPitch: Decimal | null;
-  plotSize: string | null;
-  requiredZoneType: ZoneType | null;
-  resourceID: string | null;
-  rotatePitch: boolean | null;
-  rotateRoll: boolean | null;
-  rotateYaw: boolean | null;
-  skipDeployLimitCheck: boolean | null;
-  snapToGround: boolean | null;
-}
-/** CSE.GameplayDefs.GearSlotSet */
-export interface GearSlotSet {
-  gearSlots:
-    | (string | null)[]
-    | null /** A list of gear slots which makes up a valid set of places a item can be equipped on at once. */;
-}
-/** CSE.GameplayDefs.SubstanceDefRef */
-export interface SubstanceDefRef {
-  id: string | null /** The unique identifier for this substance */;
-  maxQuality: Decimal | null;
-  minQuality: Decimal | null;
-  purifyItemDef: ItemDefRef | null;
-}
-/** CSE.GameplayDefs.VoxUpgradeModuleDefRef */
-export interface VoxUpgradeModuleDefRef {
-  id: string | null;
-}
-/** CSE.GameplayDefs.ItemRequirementDefRef */
-export interface ItemRequirementDefRef {
-  condition: string | null;
-  description: string | null;
-  errorDescription: string | null;
-  iconURL: string | null;
-  id: string | null;
-}
-/** CSE.GameplayDefs.RecipeSlotTypeDefRef */
-export interface RecipeSlotTypeDefRef {
-  description: string | null /** Slot Type description */;
-  name: string | null /** Slot Type name */;
-}
-/** CSE.GameplayDefs.VoxJobDefRef */
-export interface VoxJobDefRef {
-  description: string | null;
-  id: string | null;
-  jobType: VoxJobType | null;
-  name: string | null;
-}
-/** CU.Databases.Models.Items.VoxJobGroupLogDBModel */
-export interface VoxJobGroupLogDBModel {
-  crafterID: CharacterID | null;
-  favorite: boolean | null;
-  jobIdentifier: string | null;
-  jobType: VoxJobType | null;
-  lastCrafted: string | null;
-  notes: string | null;
-  timesCrafted: number | null;
-}
-/** CU.Databases.Models.Items.VoxJobLogDBModel */
-export interface VoxJobLogDBModel {
-  crafterID: CharacterID | null;
-  dateEnded: string | null;
-  dateStarted: string | null;
-  favorite: boolean | null;
-  id: VoxJobInstanceID | null;
-  inputItems: (Item | null)[] | null;
-  itemHash: ItemStackHash | null;
-  jobIdentifier: string | null;
-  jobType: VoxJobType | null;
-  notes: string | null;
-  outputItems: (OutputItem | null)[] | null;
-  voxDurabilityCost: Decimal | null;
-}
-/** World.Item */
-export interface Item {
-  actions: (ItemActionDefGQL | null)[] | null;
-  containerColor: ColorRGBA | null /** the UI color for the container UI */;
-  containerDrawers: (ContainerDrawerGQL | null)[] | null;
-  debugname: string | null /** name of the item which includes some basic item information */;
-  givenName: string | null /** Custom name given to item at crafting item */;
-  hasSubItems: boolean | null /** if this item has sub items */;
-  id: ItemInstanceID | null /** Unique instance ID for item. */;
-  location: ItemLocationDescription | null /** details about the location of the item */;
-  permissibleHolder: FlagsPermissibleHolderGQL | null;
-  resourceList: (ItemResourceGQL | null)[] | null;
-  scenarioRelationship: ScenarioRelationship | null;
-  shardID: ShardID | null;
-  stackHash: ItemStackHash | null /** Identifies items that are of the same type and have the same stats. */;
-  staticDefinition: ItemDefRef | null /** The definition for the item. */;
-  statList: (StatGQL | null)[] | null;
-  stats: (ItemStatSetGQL | null)[] | null /** stats of this item */;
-  voxStatus: VoxStatus | null /** The status of the nearest vox belonging to your player */;
-}
-/** World.ItemActionDefGQL */
-export interface ItemActionDefGQL {
-  cooldownSeconds: Decimal | null;
-  disabledDescription: string | null;
-  enabled: boolean | null;
-  id: string | null;
-  interactionPointFilter: (BoneAlias | null)[] | null;
-  lastTimePerformed: string | null;
-  name: string | null;
-  showWhenDisabled: boolean | null;
-  uIReaction: ItemActionUIReaction | null;
-}
-/** CSE.GameplayDefs.ColorRGBA */
-export interface ColorRGBA {
-  a: Decimal | null;
-  b: number | null;
-  g: number | null;
-  hex: string | null /** Color in Hex format */;
-  hexa: string | null /** Color in Hex format with alpha */;
-  r: number | null;
-  rgba: string | null /** Color in RGBA format */;
-}
-/** ServerLib.ContainerDrawerGQL */
-export interface ContainerDrawerGQL {
-  containedItems: (Item | null)[] | null;
-  id: ContainerDrawerID | null;
-  requirements: RequirementDefRef | null;
-  stats: ContainerDefStat_Single | null;
-}
-/** CSE.GameplayDefs.RequirementDefRef */
-export interface RequirementDefRef {
-  description: string | null;
-  icon: string | null;
-  id: string | null;
-}
-
-export interface ContainerDefStat_Single {
-  maxItemCount: Decimal | null /** MaxItemCount */;
-  maxItemMass: Decimal | null /** MaxItemMass */;
-}
-/** World.Items.ItemLocationDescription */
-export interface ItemLocationDescription {
-  building: BuildingPlacedLocation | null /** Location filled if this item in a building place object */;
-  equipped: EquippedLocation | null /** Location filled if this item is equipped */;
-  ground: OnGroundLocation | null /** Location filled if this item in on the ground */;
-  inContainer: InContainerLocation | null /** Location filled if this item is in a container */;
-  inventory: InventoryLocation | null /** Location filled if this item is in a player's inventory */;
-  inVox: InVoxJobLocation | null /** Location filled if this item is in a vox */;
-}
-/** World.BuildingPlacedLocation */
-export interface BuildingPlacedLocation {
-  buildingID: BuildingPlotInstanceID | null;
-}
-/** World.EquippedLocation */
-export interface EquippedLocation {
-  characterID: CharacterID | null /** The character the item is equipped on */;
-  gearSlots: (string | null)[] | null /** The gear slots the item is equipped to */;
-}
-/** World.OnGroundLocation */
-export interface OnGroundLocation {
-  groupID: ItemInstanceID | null /** The group id set for stacked ground items */;
-  isDeployed: boolean | null;
-}
-/** World.InContainerLocation */
-export interface InContainerLocation {
-  containerInstanceID: ItemInstanceID | null /** The item ID of the container this item is in */;
-  drawerID: ContainerDrawerID | null /** The drawer this item is in */;
-  position: number | null /** The UI position of the item */;
-}
-/** World.InventoryLocation */
-export interface InventoryLocation {
-  characterID: CharacterID | null /** The character that has this item in their inventory */;
-  position: number | null /** The UI position of the item */;
-}
-/** World.InVoxJobLocation */
-export interface InVoxJobLocation {
-  itemSlot: RecipeSlotTypeDefRef | null /** The slot this item is associated with the recipe */;
-  voxInstanceID: ItemInstanceID | null /** The item ID of the vox this item is contained in */;
-  voxJobInstanceID: VoxJobInstanceID | null /** The id of the job this item is contained in */;
-}
-/** World.FlagsPermissibleHolderGQL */
-export interface FlagsPermissibleHolderGQL {
-  noActiveSetsPermissions: FlagsPermissibleGQL | null;
-  permissibleSets: (FlagsPermissibleSetGQL | null)[] | null;
-  userGrants: (FlagsPermissibleGrantGQL | null)[] | null;
-  userPermissions: number | null;
-}
-/** World.FlagsPermissibleGQL */
-export interface FlagsPermissibleGQL {
-  grants: (FlagsPermissibleGrantGQL | null)[] | null;
-  permissions: number | null;
-  target: PermissibleTargetGQL | null;
-}
-/** World.FlagsPermissibleGrantGQL */
-export interface FlagsPermissibleGrantGQL {
-  grantPermissions: number | null;
-  grants: (FlagsPermissibleGrantGQL | null)[] | null;
-  permissions: number | null;
-  target: PermissibleTargetGQL | null;
-}
-/** World.PermissibleTargetGQL */
-export interface PermissibleTargetGQL {
-  characterName: string | null;
-  description: string | null;
-  targetType: PermissibleTargetType | null;
-}
-/** World.FlagsPermissibleSetGQL */
-export interface FlagsPermissibleSetGQL {
-  isActive: boolean | null;
-  keyDescription: string | null;
-  keyType: PermissibleSetKeyType | null;
-  permissibles: (FlagsPermissibleGQL | null)[] | null;
-  userMatchesKey: boolean | null;
-}
-/** World.Items.ItemResourceGQL */
-export interface ItemResourceGQL {
-  currentValue: Decimal | null;
-  id: string | null;
-  lastUpdateTime: Decimal | null;
-  maxValue: Decimal | null;
-  regen: Decimal | null;
-}
-/** World.ScenarioRelationship */
-export interface ScenarioRelationship {
-  restrictedToScenario: boolean | null;
-  scenarioID: ScenarioInstanceID | null;
-}
-/** World.Items.StatGQL */
-export interface StatGQL {
-  statID: string | null;
-  value: Decimal | null;
-}
-/** World.Items.ItemStatSetGQL */
-export interface ItemStatSetGQL {
-  id: string | null;
-  stats: (StatGQL | null)[] | null;
-}
-/** World.VoxStatus */
-export interface VoxStatus {
-  jobs: (VoxJobStatus | null)[] | null;
-}
-/** World.VoxJobStatus */
-export interface VoxJobStatus {
-  endQuality: Decimal | null /** The player specified end quality for a substance. Only for Purify jobs */;
-  givenName: string | null /** The custom name for the item being produced. Only for Make jobs */;
-  id: VoxJobInstanceID | null;
-  ingredients:
-    | (Item | null)[]
-    | null /** A list of all ingredients that are currently stored in the vox.  These are destroyed at the end of the job */;
-  jobState: VoxJobState | null /** The current state the job is in. */;
-  jobType: VoxJobType | null /** Which type of crafting job is currently being utilized */;
-  outputItems:
-    | (VoxJobOutputItem | null)[]
-    | null /** The list of all items which will be rewarded when the vox job is completed.  This information is only available is job is fully configured and ready to run */;
-  possibleIngredients: (Item | null)[] | null /** List of inventory items compatible with the current vox job */;
-  possibleIngredientsWithSlots:
-    | (PossibleVoxIngredientGQL | null)[]
-    | null /** List of inventory items compatible with the current vox job */;
-  possibleItemSlots: (RecipeSlotTypeDefRef | null)[] | null /** List of sub item slots this vox job uses */;
-  recipe: RecipeDefRef | null /** The recipe details. */;
-  recipesMatchingIngredients:
-    | (string | null)[]
-    | null /** ID's of recipes which match the current ingredient list in the vox */;
-  startTime:
-    | string
-    | null /** What time the job was started.  The job must be in the Running or Finished state for this information to be valid. */;
-  timeRemaining: Decimal | null /** The total seconds remaining for this job to finish.  This information is only valid while the job is running. */;
-  totalCraftingTime: Decimal | null /** How long the job will take to run.  This information is only available is job is fully configured and ready to run */;
-  usedRepairPoints: Decimal | null /** How many repair points will be used when repairing the item. Only for Repair jobs */;
-  voxDurabilityCost: Decimal | null /** How much damage the vox will take from performing this job. */;
-}
-/** CU.Databases.Models.Items.VoxJobOutputItem */
-export interface VoxJobOutputItem {
-  item: Item | null;
-  outputItemType: VoxJobOutputItemType | null;
-}
-/** World.PossibleVoxIngredientGQL */
-export interface PossibleVoxIngredientGQL {
-  item: Item | null;
-  slots: (RecipeSlotTypeDefRef | null)[] | null;
-}
-/** CU.Databases.Models.Items.VoxJobLogDBModel+OutputItem */
-export interface OutputItem {
-  item: Item | null;
-  outputItemType: VoxJobOutputItemType | null;
-}
-/** CU.Databases.Models.Items.VoxNotesDBModel */
-export interface VoxNotesDBModel {
-  characterID: CharacterID | null;
-  created: string | null;
-  id: VoxNotesInstanceID | null;
-  lastEdited: string | null;
-  notes: string | null;
-}
-/** ServerLib.Items.EntityItemResult */
-export interface EntityItemResult {
-  items:
-    | (Item | null)[]
-    | null /** List of items contained within this item.  This includes wrapped items, inventory, and equipment items */;
-}
 /** ServerLib.Game.GameDefsGQLData */
 export interface GameDefsGQLData {
   abilityComponents:
@@ -729,7 +337,6 @@ export interface GameDefsGQLData {
   entityResources:
     | (EntityResourceDefinitionGQL | null)[]
     | null /** Array of definitions for all available entity resources */;
-  factions: (FactionDef | null)[] | null /** All possible factions */;
   gearSlots: (GearSlot | null)[] | null /** Static information about gear slots */;
   genders: (GenderDefGQL | null)[] | null /** All possible genders */;
   item: ItemDefRef | null /** Static information about a specific item */;
@@ -738,6 +345,7 @@ export interface GameDefsGQLData {
   itemTooltipCategories:
     | (ItemTooltipCategoryDef | null)[]
     | null /** Array of category information for item tooltips */;
+  manifests: (ManifestDef | null)[] | null;
   races: (RaceDefGQL | null)[] | null /** Static information about races */;
   raceStatMods:
     | (RaceStatBonuses | null)[]
@@ -778,13 +386,6 @@ export interface EntityResourceDefinitionGQL {
   unitFrameDisplay: UnitFrameDisplay | null;
   unitFrameSortOrder: number | null;
 }
-/** CSE.GameplayDefs.FactionDef */
-export interface FactionDef {
-  description: string | null;
-  hueRotation: number | null;
-  id: Faction | null;
-  name: string | null;
-}
 /** ServerLib.GraphQL.Types.GearSlotGQL */
 export interface GearSlot {
   gearSlotType: GearSlotType | null /** Which type of slot this is */;
@@ -799,12 +400,33 @@ export interface GenderDefGQL {
   name: string | null;
   numericID: number | null;
 }
+/** CSE.GameplayDefs.ItemDefRef */
+export interface ItemDefRef {
+  defaultResourceID: string | null;
+  description: string | null /** Description of the item */;
+  equipRequirements: string | null;
+  gearSlotSets: (GearSlotSet | null)[] | null /** the sets of gear slots this item can be equipped to */;
+  iconUrl: string | null /** URL to the item's icon */;
+  id: string | null /** Unique item identifier */;
+  isDeployable: boolean | null;
+  isStackableItem: boolean | null;
+  itemType: ItemType | null;
+  name: string | null /** Name of the item */;
+  numericItemDefID: number | null;
+  tags: (Tag | null)[] | null /** Tags on this item, these can be referenced by recipes */;
+}
+/** CSE.GameplayDefs.GearSlotSet */
+export interface GearSlotSet {
+  gearSlots:
+    | (string | null)[]
+    | null /** A list of gear slots which makes up a valid set of places a item can be equipped on at once. */;
+}
 /** ServerLib.Game.ItemStatDefinitionGQL */
 export interface ItemStatDefinitionGQL {
   category: string | null;
   description: string | null;
   displayPrecision: number | null;
-  displayType: ItemStatDisplayType | null;
+  displayType: StatDisplayType | null;
   iconClass: string | null;
   id: string | null;
   name: string | null;
@@ -817,6 +439,12 @@ export interface ItemTooltipCategoryDef {
   id: string | null;
   name: string | null;
   sortOrder: number | null;
+}
+/** ServerLib.GraphQL.Types.ManifestDefGQL */
+export interface ManifestDef {
+  contents: string | null;
+  id: string | null;
+  schemaVersion: number | null;
 }
 /** ServerLib.GraphQL.Models.RaceDefGQL */
 export interface RaceDefGQL {
@@ -835,11 +463,14 @@ export interface RaceStatBonuses {
 }
 /** ServerLib.GraphQL.Types.ScenarioDefGQL */
 export interface ScenarioDefGQL {
+  applyChampionUpgrades: boolean | null;
   description: string | null;
   id: string | null;
   loadingBackgroundImage: string | null;
   name: string | null;
+  showLeaderboardTab: boolean | null;
   showPlayerProgressionTab: boolean | null;
+  showScoreAsRank: boolean | null;
   summaryBackgroundImage: string | null;
 }
 /** CSE.GameplayDefs.GameSettingsDef */
@@ -847,6 +478,7 @@ export interface GameSettingsDef {
   abilityDescriptionMaxLength: number | null;
   abilityNameMaxLength: number | null;
   abilityNameMinLength: number | null;
+  inventoryCapacityBase: number | null;
   itemLowQualityThreshold: Decimal | null;
   maxCharacterNameLength: number | null;
   minCharacterNameLength: number | null;
@@ -854,7 +486,7 @@ export interface GameSettingsDef {
   traitsMaxPoints: number | null;
   traitsMinPoints: number | null;
   voxIngredientHardLimit: number | null;
-  woundStatusTag: GameplayTag | null;
+  woundStatusTag: Tag | null;
 }
 /** ServerLib.Game.StatDefinitionGQL */
 export interface StatDefinitionGQL {
@@ -886,40 +518,6 @@ export interface Invite {
   status: InviteStatus | null;
   targetsID128: TargetID | null;
   uses: number | null;
-}
-/** CU.WebApi.GraphQL.Legacy.MyScenarioScoreboard */
-export interface MyScenarioScoreboard {
-  description: string | null;
-  icon: string | null;
-  id: ScenarioInstanceID | null;
-  name: string | null;
-  rounds: (RoundScore | null)[] | null;
-  roundStartTime: Decimal | null;
-  teams: Faction_TeamScore | null;
-}
-/** CU.WebApi.GraphQL.Legacy.RoundScore */
-export interface RoundScore {
-  active: boolean | null;
-  roundIndex: number | null;
-  winningTeamIDs: (ScenarioTeamID | null)[] | null;
-}
-
-export interface Faction_TeamScore {
-  arthurian: TeamScore | null /** Arthurian */;
-  factionless: TeamScore | null /** Factionless */;
-  tdd: TeamScore | null /** TDD */;
-  viking: TeamScore | null /** Viking */;
-}
-/** CU.WebApi.GraphQL.Legacy.TeamScore */
-export interface TeamScore {
-  players: (PlayerScore | null)[] | null;
-  score: number | null;
-}
-/** CU.WebApi.GraphQL.Legacy.PlayerScore */
-export interface PlayerScore {
-  characterID: CharacterID | null;
-  name: string | null;
-  score: number | null;
 }
 /** CU.WebApi.GraphQL.GraphQLActiveWarband */
 export interface GraphQLActiveWarband extends IGraphQLActiveWarband {
@@ -1018,19 +616,140 @@ export interface MyEquippedItems {
   items: (EquippedItem | null)[] | null;
   readiedGearSlots: (string | null)[] | null;
   resistances: (StatGQL | null)[] | null;
-  totalMass: Decimal | null;
 }
 /** World.EquippedItem */
 export interface EquippedItem {
   gearSlots: (string | null)[] | null /** the list of all the gear slots the item is in */;
   item: Item | null /** The item that is equipped */;
 }
+/** World.Item */
+export interface Item {
+  actions: (ItemActionDefGQL | null)[] | null;
+  containerColor: ColorRGBA | null /** the UI color for the container UI */;
+  containerDrawers: (ContainerDrawerGQL | null)[] | null;
+  debugname: string | null /** name of the item which includes some basic item information */;
+  id: ItemInstanceID | null /** Unique instance ID for item. */;
+  location: ItemLocationDescription | null /** details about the location of the item */;
+  permissibleHolder: FlagsPermissibleHolderGQL | null;
+  resourceList: (ItemResourceGQL | null)[] | null;
+  stackHash: ItemStackHash | null /** Identifies items that are of the same type and have the same stats. */;
+  staticDefinition: ItemDefRef | null /** The definition for the item. */;
+  statList: (StatGQL | null)[] | null;
+  stats: (ItemStatSetGQL | null)[] | null /** stats of this item */;
+}
+/** World.ItemActionDefGQL */
+export interface ItemActionDefGQL {
+  cooldownSeconds: Decimal | null;
+  disabledDescription: string | null;
+  enabled: boolean | null;
+  id: string | null;
+  interactionPointFilter: (BoneAlias | null)[] | null;
+  lastTimePerformed: string | null;
+  name: string | null;
+  showWhenDisabled: boolean | null;
+  uIReaction: ItemActionUIReaction | null;
+}
+/** CSE.GameplayDefs.ColorRGBA */
+export interface ColorRGBA {
+  a: Decimal | null;
+  b: number | null;
+  g: number | null;
+  hex: string | null /** Color in Hex format */;
+  hexa: string | null /** Color in Hex format with alpha */;
+  r: number | null;
+  rgba: string | null /** Color in RGBA format */;
+}
+/** ServerLib.ContainerDrawerGQL */
+export interface ContainerDrawerGQL {
+  containedItems: (Item | null)[] | null;
+  maxItemPositions: number | null;
+  requirements: RequirementDefRef | null;
+}
+/** CSE.GameplayDefs.RequirementDefRef */
+export interface RequirementDefRef {
+  description: string | null;
+  icon: string | null;
+  id: string | null;
+}
+/** World.Items.ItemLocationDescription */
+export interface ItemLocationDescription {
+  equipped: EquippedLocation | null /** Location filled if this item is equipped */;
+  inContainer: InContainerLocation | null /** Location filled if this item is in a container */;
+  inventory: InventoryLocation | null /** Location filled if this item is in a player's inventory */;
+}
+/** World.EquippedLocation */
+export interface EquippedLocation {
+  characterID: CharacterID | null /** The character the item is equipped on */;
+  gearSlotSetIndex: number | null;
+}
+/** World.InContainerLocation */
+export interface InContainerLocation {
+  containerInstanceID: ItemInstanceID | null /** The item ID of the container this item is in */;
+  drawerIndex: number | null /** The drawer this item is in */;
+  position: number | null /** The UI position of the item */;
+}
+/** World.InventoryLocation */
+export interface InventoryLocation {
+  characterID: CharacterID | null /** The character that has this item in their inventory */;
+  position: number | null /** The position of the item in inventory */;
+}
+/** World.FlagsPermissibleHolderGQL */
+export interface FlagsPermissibleHolderGQL {
+  noActiveSetsPermissions: FlagsPermissibleGQL | null;
+  permissibleSets: (FlagsPermissibleSetGQL | null)[] | null;
+  userGrants: (FlagsPermissibleGrantGQL | null)[] | null;
+  userPermissions: number | null;
+}
+/** World.FlagsPermissibleGQL */
+export interface FlagsPermissibleGQL {
+  grants: (FlagsPermissibleGrantGQL | null)[] | null;
+  permissions: number | null;
+  target: PermissibleTargetGQL | null;
+}
+/** World.FlagsPermissibleGrantGQL */
+export interface FlagsPermissibleGrantGQL {
+  grantPermissions: number | null;
+  grants: (FlagsPermissibleGrantGQL | null)[] | null;
+  permissions: number | null;
+  target: PermissibleTargetGQL | null;
+}
+/** World.PermissibleTargetGQL */
+export interface PermissibleTargetGQL {
+  characterName: string | null;
+  description: string | null;
+  targetType: PermissibleTargetType | null;
+}
+/** World.FlagsPermissibleSetGQL */
+export interface FlagsPermissibleSetGQL {
+  isActive: boolean | null;
+  keyDescription: string | null;
+  keyType: PermissibleSetKeyType | null;
+  permissibles: (FlagsPermissibleGQL | null)[] | null;
+  userMatchesKey: boolean | null;
+}
+/** World.Items.ItemResourceGQL */
+export interface ItemResourceGQL {
+  currentValue: Decimal | null;
+  id: string | null;
+  lastUpdateTime: Decimal | null;
+  maxValue: Decimal | null;
+  regen: Decimal | null;
+}
+/** World.Items.StatGQL */
+export interface StatGQL {
+  statID: string | null;
+  value: Decimal | null;
+}
+/** World.Items.ItemStatSetGQL */
+export interface ItemStatSetGQL {
+  id: string | null;
+  stats: (StatGQL | null)[] | null;
+}
 /** ServerLib.Items.MyInventory */
 export interface MyInventory {
   itemCount: number | null;
   items: (Item | null)[] | null;
   nestedItemCount: number | null;
-  totalMass: Decimal | null;
 }
 /** CU.Groups.Order */
 export interface Order extends IGroup {
@@ -1051,195 +770,6 @@ export interface Order extends IGroup {
 export interface PassiveAlert {
   message: string | null;
   targetID: CharacterID | null;
-}
-/** ServerLib.Progression.CharacterProgressionData */
-export interface CharacterProgressionData {
-  accountSummary: AccountProgressionSummary | null /** Information about all characters belonging to this account. */;
-  adjustmentsByDayLogID:
-    | (CharacterAdjustmentDBModel | null)[]
-    | null /** A character adjustments for a specific day log for this character. */;
-  characterAdjustments:
-    | (CharacterAdjustmentDBModel | null)[]
-    | null /** Information about what adjustments happened for this player over the date range provided. */;
-  characterDays:
-    | (CharacterDaySummaryDBModel | null)[]
-    | null /** Information about what happened for this player over the date range provided. */;
-  collectedProgressionSummary: CharacterSummaryDBModel | null /** Global information about this character. */;
-  dayBySummaryNumber: CharacterDaySummaryDBModel | null /** A specific summary number for this character. */;
-  dayLogByID: CharacterDaySummaryDBModel | null /** A specific day log for this character. */;
-  unCollectedDayLogs: (CharacterDaySummaryDBModel | null)[] | null /** All unhandled progression days. */;
-}
-/** ServerLib.Progression.AccountProgressionSummary */
-export interface AccountProgressionSummary {
-  activeDayCount: number | null;
-  characterCount: number | null;
-  crafting: CraftingSummaryDBModel | null;
-  damage: DamageSummaryDBModel | null;
-  distanceMoved: number | null;
-  scenarioOutcomes: ScenarioOutcome_UInt32 | null;
-  secondsActive: number | null;
-}
-/** CU.Databases.Models.Progression.Logs.CraftingSummaryDBModel */
-export interface CraftingSummaryDBModel {
-  alchemySummary: JobSummaryDBModel | null;
-  purifySummary: JobSummaryDBModel | null;
-  recipeSummary: JobSummaryDBModel | null;
-  repairSummary: JobSummaryDBModel | null;
-  salvageSummary: JobSummaryDBModel | null;
-}
-/** CU.Databases.Models.Progression.Logs.CraftingSummaryDBModel+JobSummaryDBModel */
-export interface JobSummaryDBModel {
-  canceled: number | null;
-  collected: number | null;
-  started: number | null;
-}
-/** CU.Databases.Models.Progression.Logs.DamageSummaryDBModel */
-export interface DamageSummaryDBModel {
-  createCount: CountPerTargetTypeDBModel | null;
-  damageApplied: CountPerTargetTypeDBModel | null;
-  damageReceived: CountPerTargetTypeDBModel | null;
-  deathCount: CountPerTargetTypeDBModel | null;
-  healingApplied: CountPerTargetTypeDBModel | null;
-  healingReceived: CountPerTargetTypeDBModel | null;
-  killAssistCount: CountPerTargetTypeDBModel | null;
-  killCount: CountPerTargetTypeDBModel | null;
-  perCharacterClass: (DataPerCharacterClassDBModel | null)[] | null;
-  woundsApplied: CountPerTargetTypeDBModel | null;
-  woundsHealedApplied: CountPerTargetTypeDBModel | null;
-  woundsHealedReceived: CountPerTargetTypeDBModel | null;
-  woundsReceived: CountPerTargetTypeDBModel | null;
-}
-/** CU.Databases.Models.Progression.Logs.CountPerTargetTypeDBModel */
-export interface CountPerTargetTypeDBModel {
-  anyCharacter: number | null;
-  building: number | null;
-  item: number | null;
-  nonPlayerCharacter: number | null;
-  playerCharacter: number | null;
-  resourceNode: number | null;
-  self: number | null;
-}
-/** CU.Databases.Models.Progression.Logs.DamageSummaryDBModel+DataPerCharacterClassDBModel */
-export interface DataPerCharacterClassDBModel {
-  characterClass: string | null;
-  killAssistCount: number | null;
-  killCount: number | null;
-}
-
-export interface ScenarioOutcome_UInt32 {
-  draw: number | null /** Draw */;
-  invalid: number | null /** Invalid */;
-  killed: number | null /** Killed */;
-  lose: number | null /** Lose */;
-  restart: number | null /** Restart */;
-  win: number | null /** Win */;
-}
-/** CU.Databases.Models.Progression.CharacterAdjustments.CharacterAdjustmentDBModel */
-export interface CharacterAdjustmentDBModel {
-  adjustment: CharacterAdjustmentGQLField | null;
-  characterDayLogID: CharacterDaySummaryInstanceID | null;
-  dayEnd: string | null;
-  reason: CharacterAdjustmentReasonGQLField | null;
-  sequence: number | null;
-  shardDayLogID: ShardDaySummaryInstanceID | null;
-}
-/** CU.Databases.Models.Progression.CharacterAdjustments.CharacterAdjustmentGQLField */
-export interface CharacterAdjustmentGQLField {
-  addItem: CharacterAdjustmentAddItem | null;
-  applyStatus: CharacterAdjustmentApplyStatus | null;
-  playerStat: CharacterAdjustmentPlayerStat | null;
-}
-/** CU.Databases.Models.Progression.CharacterAdjustments.Adjustments.CharacterAdjustmentAddItem */
-export interface CharacterAdjustmentAddItem {
-  itemDef: ItemDefRef | null;
-  itemInstanceIDS: (ItemInstanceID | null)[] | null;
-  quality: ItemQuality | null;
-  staticDefinitionID: string | null;
-  unitCount: number | null;
-}
-/** CU.Databases.Models.Progression.CharacterAdjustments.Adjustments.CharacterAdjustmentApplyStatus */
-export interface CharacterAdjustmentApplyStatus {
-  statusID: string | null;
-}
-/** CU.Databases.Models.Progression.CharacterAdjustments.Adjustments.CharacterAdjustmentPlayerStat */
-export interface CharacterAdjustmentPlayerStat {
-  newBonus: Decimal | null;
-  previousBonus: Decimal | null;
-  stat: string | null;
-}
-/** CU.Databases.Models.Progression.CharacterAdjustments.CharacterAdjustmentReasonGQLField */
-export interface CharacterAdjustmentReasonGQLField {
-  adminGrant: boolean | null;
-  useAbilities: CharacterAdjustmentReasonUseAbilities | null;
-  useAbilityComponent: CharacterAdjustmentReasonUseAbilityComponent | null;
-}
-/** CU.Databases.Models.Progression.CharacterAdjustments.Reasons.CharacterAdjustmentReasonUseAbilities */
-export interface CharacterAdjustmentReasonUseAbilities {
-  inCombatCount: number | null;
-  nonCombatCount: number | null;
-}
-/** CU.Databases.Models.Progression.CharacterAdjustments.Reasons.CharacterAdjustmentReasonUseAbilityComponent */
-export interface CharacterAdjustmentReasonUseAbilityComponent {
-  abilityComponentDef: AbilityComponentGQL | null;
-  abilityComponentID: string | null;
-  inCombatCount: number | null;
-  nonCombatCount: number | null;
-}
-/** CU.Databases.Models.Progression.Logs.CharacterDaySummaryDBModel */
-export interface CharacterDaySummaryDBModel {
-  abilityComponentsUsed: (AbilityComponentUsedSummaryDBModel | null)[] | null;
-  accountID: AccountID | null;
-  adjustments: (CharacterAdjustmentDBModel | null)[] | null;
-  characterID: CharacterID | null;
-  crafting: CraftingSummaryDBModel | null;
-  damage: DamageSummaryDBModel | null;
-  dayEnd: string | null;
-  dayStart: string | null;
-  distanceMoved: number | null;
-  id: CharacterDaySummaryInstanceID | null;
-  plots: PlotSummaryDBModel | null;
-  scenarios: (FinishedScenario | null)[] | null;
-  secondsActive: number | null;
-  shardDayLogID: ShardDaySummaryInstanceID | null;
-  shardID: ShardID | null;
-  state: States | null;
-  summaryNumber: number | null;
-}
-/** CU.Databases.Models.Progression.Logs.AbilityComponentUsedSummaryDBModel */
-export interface AbilityComponentUsedSummaryDBModel {
-  abilityComponentDef: AbilityComponentGQL | null;
-  abilityComponentID: string | null;
-  usedInCombatCount: number | null;
-  usedNonCombatCount: number | null;
-}
-/** CU.Databases.Models.Progression.Logs.PlotSummaryDBModel */
-export interface PlotSummaryDBModel {
-  factionPlotsCaptured: number | null;
-  scenarioPlotsCaptured: number | null;
-}
-/** CU.Databases.Models.Progression.Logs.CharacterDaySummaryDBModel+FinishedScenario */
-export interface FinishedScenario {
-  activeAtEnd: boolean | null;
-  outcome: ScenarioOutcome | null;
-  scenarioDefinitionID: string | null;
-  scenarioID: ScenarioInstanceID | null;
-  score: number | null;
-  teamID: ScenarioTeamID | null;
-}
-/** CU.Databases.Models.Progression.Logs.CharacterSummaryDBModel */
-export interface CharacterSummaryDBModel {
-  abilityComponentUsed: (AbilityComponentUsedSummaryDBModel | null)[] | null;
-  accountID: AccountID | null;
-  activeDayCount: number | null;
-  crafting: CraftingSummaryDBModel | null;
-  damage: DamageSummaryDBModel | null;
-  distanceMoved: number | null;
-  lastDayLogProcessedID: CharacterDaySummaryInstanceID | null;
-  lastDayProcessedStart: string | null;
-  plots: PlotSummaryDBModel | null;
-  scenarioOutcomes: ScenarioOutcome_UInt32 | null;
-  secondsActive: number | null;
-  shardID: ShardID | null;
 }
 /** CU.WebApi.GraphQL.Legacy.MyScenarioQueue */
 export interface MyScenarioQueue {
@@ -1289,7 +819,6 @@ export interface ScenarioSummaryDBModel {
   endTime: string | null;
   resolution: ScenarioResolution | null;
   rounds: (RoundOutcome | null)[] | null;
-  scenarioDef: ScenarioDef | null;
   scenarioInstanceID: ScenarioInstanceID | null;
   shardID: ShardID | null;
   startTime: string | null;
@@ -1316,6 +845,51 @@ export interface CharacterOutcomeDBModel {
   displayName: string | null;
   score: number | null;
 }
+/** CU.Databases.Models.Progression.Logs.CraftingSummaryDBModel */
+export interface CraftingSummaryDBModel {
+  alchemySummary: JobSummaryDBModel | null;
+  purifySummary: JobSummaryDBModel | null;
+  recipeSummary: JobSummaryDBModel | null;
+  repairSummary: JobSummaryDBModel | null;
+}
+/** CU.Databases.Models.Progression.Logs.CraftingSummaryDBModel+JobSummaryDBModel */
+export interface JobSummaryDBModel {
+  canceled: number | null;
+  collected: number | null;
+  started: number | null;
+}
+/** CU.Databases.Models.Progression.Logs.DamageSummaryDBModel */
+export interface DamageSummaryDBModel {
+  createCount: CountPerTargetTypeDBModel | null;
+  damageApplied: CountPerTargetTypeDBModel | null;
+  damageReceived: CountPerTargetTypeDBModel | null;
+  deathCount: CountPerTargetTypeDBModel | null;
+  healingApplied: CountPerTargetTypeDBModel | null;
+  healingReceived: CountPerTargetTypeDBModel | null;
+  killAssistCount: CountPerTargetTypeDBModel | null;
+  killCount: CountPerTargetTypeDBModel | null;
+  perCharacterClass: (DataPerCharacterClassDBModel | null)[] | null;
+  woundsApplied: CountPerTargetTypeDBModel | null;
+  woundsHealedApplied: CountPerTargetTypeDBModel | null;
+  woundsHealedReceived: CountPerTargetTypeDBModel | null;
+  woundsReceived: CountPerTargetTypeDBModel | null;
+}
+/** CU.Databases.Models.Progression.Logs.CountPerTargetTypeDBModel */
+export interface CountPerTargetTypeDBModel {
+  anyCharacter: number | null;
+  building: number | null;
+  item: number | null;
+  nonPlayerCharacter: number | null;
+  playerCharacter: number | null;
+  resourceNode: number | null;
+  self: number | null;
+}
+/** CU.Databases.Models.Progression.Logs.DamageSummaryDBModel+DataPerCharacterClassDBModel */
+export interface DataPerCharacterClassDBModel {
+  characterClass: string | null;
+  killAssistCount: number | null;
+  killCount: number | null;
+}
 /** CU.Databases.Models.Progression.Logs.ScenarioSummaryDBModel+TeamOutcomeRound */
 export interface TeamOutcomeRound {
   damageSummary: DamageSummaryDBModel | null /** damage summary sum across all participants in this round */;
@@ -1325,13 +899,6 @@ export interface TeamOutcomeRound {
   role: RoleID | null;
   score: number | null;
   teamID: ScenarioTeamID | null;
-}
-/** CSE.GameplayDefs.ScenarioDef */
-export interface ScenarioDef {
-  displayDescription: string | null;
-  displayName: string | null;
-  icon: string | null;
-  id: string | null;
 }
 /** CU.Databases.Models.Progression.Logs.ScenarioSummaryDBModel+TeamOutcomeScenarioField */
 export interface TeamOutcomeScenarioField {
@@ -1358,196 +925,18 @@ export interface SimpleCharacter {
   race: string | null;
   shardID: ShardID | null;
 }
-/** ServerLib.Progression.ShardProgressionData */
-export interface ShardProgressionData {
-  adjustmentsSummary: CharacterAdjustmentSummary | null /** Information about rewards over a time frame or specific day */;
-  progressionDaySummary: ShardDaySummaryDBModel | null /** Information about a particular day */;
-  progressionSummary: ShardSummaryDBModel | null /** Global information about this shard. */;
-  progressionSummaryRange: ShardSummaryDBModel | null /** Global information about this shard given the time frame. */;
-  realmSummary: RealmDaySummaryDBModel | null /** Information about what happened to a realm on a given day. */;
-  scenarioSummaries: PagedScenarioSummaries | null /** Information about all the finished scenarios within a date range */;
-  shardDays: PagedShardDaySummaries | null /** Information about what happened on a shard over the date range provided. */;
-}
-/** ServerLib.Progression.CharacterAdjustmentSummary */
-export interface CharacterAdjustmentSummary {
-  averageAdjustementsPerCharacter: Decimal | null;
-  characterCount: number | null;
-  characterIDWithMaxAdjustments: CharacterID | null;
-  items: (ItemsAdded | null)[] | null;
-  maxAdjustmentsOnCharacter: number | null;
-  stats: (StatBonusPoints | null)[] | null;
-  statusesApplied: (StatusApplied | null)[] | null;
-}
-/** ServerLib.Progression.CharacterAdjustmentSummary+ItemsAdded */
-export interface ItemsAdded {
-  staticDefinitionID: string | null;
-  unitCount: number | null;
-}
-/** ServerLib.Progression.CharacterAdjustmentSummary+StatBonusPoints */
-export interface StatBonusPoints {
-  bonusChange: Decimal | null;
-  stat: string | null;
-}
-/** ServerLib.Progression.CharacterAdjustmentSummary+StatusApplied */
-export interface StatusApplied {
-  count: number | null;
-  statusID: string | null;
-}
-/** CU.Databases.Models.Progression.Logs.ShardDaySummaryDBModel */
-export interface ShardDaySummaryDBModel {
-  dayEnd: string | null;
-  dayStart: string | null;
-  nonPlayerCharacters: CharacterSummary | null;
-  playerCharacters: CharacterSummary | null;
-  plots: PlotSummary | null;
-  scenarios: (ScenarioSummary | null)[] | null;
-}
-/** CU.Databases.Models.Progression.Logs.ShardSummaryDBModel+CharacterSummary */
-export interface CharacterSummary {
-  crafting: CraftingSummaryDBModel | null;
-  damage: DamageSummaryDBModel | null;
-  distanceMoved: number | null /** Distance traveled by all characters ever for this shard. */;
-  secondsActive:
-    | number
-    | null /** How many seconds of the game have been played by all characters ever for this shard. */;
-}
-/** CU.Databases.Models.Progression.Logs.ShardSummaryDBModel+PlotSummary */
-export interface PlotSummary {
-  blocksCreated: number | null;
-  blocksDestroyed: number | null;
-}
-/** CU.Databases.Models.Progression.Logs.ShardSummaryDBModel+ScenarioSummary */
-export interface ScenarioSummary {
-  finished: number | null;
-  killed: number | null;
-  restarted: number | null;
-  started: number | null;
-}
-/** CU.Databases.Models.Progression.Logs.ShardSummaryDBModel */
-export interface ShardSummaryDBModel {
-  daysProcessed: number | null;
-  nonPlayerCharacters: CharacterSummary | null;
-  playerCharacters: CharacterSummary | null;
-  plots: PlotSummary | null;
-  realmSummaries: Faction_RealmSummaryDBModel | null;
-  scenarios: ScenarioSummary | null;
-  shardID: ShardID | null;
-}
-
-export interface Faction_RealmSummaryDBModel {
-  arthurian: RealmSummaryDBModel | null /** Arthurian */;
-  factionless: RealmSummaryDBModel | null /** Factionless */;
-  tdd: RealmSummaryDBModel | null /** TDD */;
-  viking: RealmSummaryDBModel | null /** Viking */;
-}
-/** CU.Databases.Models.Progression.Logs.RealmSummaryDBModel */
-export interface RealmSummaryDBModel {
-  crafting: CraftingSummaryDBModel | null;
-  damage: DamageSummaryDBModel | null;
-  distanceMoved: number | null;
-  faction: Faction | null;
-  secondsActive: number | null;
-}
-/** CU.Databases.Models.Progression.Logs.RealmDaySummaryDBModel */
-export interface RealmDaySummaryDBModel {
-  abilityComponentsUsed: (AbilityComponentUsedSummaryDBModel | null)[] | null;
-  characterCount: number | null;
-  crafting: CraftingSummaryDBModel | null;
-  damage: DamageSummaryDBModel | null;
-  dayEnd: string | null;
-  dayStart: string | null;
-  distanceMoved: number | null;
-  faction: Faction | null;
-  secondsActive: number | null;
-  shardDayLogID: ShardDaySummaryInstanceID | null;
-  shardID: ShardID | null;
-}
-/** ServerLib.Progression.PagedScenarioSummaries */
-export interface PagedScenarioSummaries {
-  data: (ScenarioSummaryDBModel | null)[] | null;
-  totalCount: number | null;
-}
-/** ServerLib.Progression.PagedShardDaySummaries */
-export interface PagedShardDaySummaries {
-  data: (ShardDaySummaryDBModel | null)[] | null;
-  totalCount: number | null;
-}
-/** ServerLib.Status.Status */
-export interface Status {
-  statuses: (StatusDef | null)[] | null /** List of all status defs */;
-}
-/** CSE.GameplayDefs.StatusDef */
-export interface StatusDef {
-  blocksAbilities: boolean | null /** if the status blocks abilities from running */;
-  description: string | null /** description of the status */;
-  iconClass: string | null /** iconClass of the status */;
-  iconURL: string | null /** icon url of the status */;
-  id: string | null;
-  name: string | null /** name of the status */;
-  numericID: number | null;
-  stacking: StatusStackingDef | null;
-  statusTags: (string | null)[] | null;
-  uIText: string | null;
-  uIVisibility: StatusUIVisibility | null;
-}
-/** CSE.GameplayDefs.StatusStackingDef */
-export interface StatusStackingDef {
-  group: string | null;
-  removalOrder: StatusRemovalOrder | null;
-  statusDurationModType: StatusDurationModification | null;
-}
 /** CSE.GameplayDefs.Store.Cache.TraitsInfo */
 export interface TraitsInfo {
   maxAllowed: number | null;
   minRequired: number | null;
   traits: (Trait | null)[] | null;
 }
-/** ServerLib.Crafting.VoxJobStatusGQL */
-export interface VoxJobStatusGQL {
-  status: VoxJobStatus | null;
-}
-/** ServerLib.Game.WorldData */
-export interface WorldData {
-  map: MapData | null;
-  spawnPoints: (SpawnPoint | null)[] | null /** Currently active spawn points available to you. */;
-}
-/** ServerLib.Game.MapData */
-export interface MapData {
-  dynamic: (MapPoint | null)[] | null;
-  static: (MapPoint | null)[] | null;
-}
-/** ServerLib.Game.MapPoint */
-export interface MapPoint {
-  actions: MapPointActions | null;
-  anchor: (Decimal | null)[] | null;
-  color: string | null;
-  offset: (Decimal | null)[] | null;
-  position: (Decimal | null)[] | null;
-  size: (Decimal | null)[] | null;
-  src: string | null;
-  tooltip: string | null;
-  zone: ZoneInstanceID | null;
-}
-/** ServerLib.Game.MapPointActions */
-export interface MapPointActions {
-  onClick: MapPointAction | null;
-}
-/** ServerLib.Game.MapPointAction */
-export interface MapPointAction {
-  command: string | null;
-  type: MapPointActionType | null;
-}
-/** ServerLib.ApiModels.SpawnPoint */
-export interface SpawnPoint {
-  faction: Faction | null;
-  id: string | null;
-  position: Vec3f | null;
-}
 /** The root subscriptions object. */
 export interface CUSubscription {
   activeGroupUpdates: IGroupUpdate | null /** Updates to a group member in an active group */;
   featureFlags: (string | null)[] | null /** Enabled feature flags */;
   interactiveAlerts: IInteractiveAlert | null /** Alerts */;
+  manifestUpdates: ManifestUpdate | null /** Updates to a manifest */;
   myGroupNotifications: IGroupNotification | null /** Group related notifications for your specific character. Tells you when you joined a group, etc. */;
   myInventoryItems: Item | null /** Real-time updates for inventory items */;
   notifications: Notification | null /** Status or event broadcasts identified by purpose */;
@@ -1555,6 +944,10 @@ export interface CUSubscription {
   secureTradeUpdates: ISecureTradeUpdate | null /** Updates to a secure trade */;
   serverUpdates: IServerUpdate | null /** Subscription for updates to servers */;
   shardCharacterUpdates: IPatcherCharacterUpdate | null /** Subscription for simple updates to characters on a shard */;
+}
+/** ServerLib.GraphQL.Models.ManifestUpdate */
+export interface ManifestUpdate {
+  manifests: (ManifestDef | null)[] | null;
 }
 /** CU.WebApi.Models.Notifications.Notification */
 export interface Notification {
@@ -1627,80 +1020,11 @@ export interface TeamOutcomeScenario {
   outcome: ScenarioOutcome | null;
   teamID: ScenarioTeamID | null;
 }
-/** CSE.GameplayDefs.AlchemyResultDef */
-export interface AlchemyResultDef {
-  id: string | null;
-  name: string | null;
-}
-/** CSE.GameplayDefs.BlockDef */
-export interface BlockDef {
-  id: string | null /** Unique block identifier */;
-}
-/** CSE.GameplayDefs.ReagentDef */
-export interface ReagentDef {
-  id: string | null;
-  requiredContainer: ItemRequirementDefRef | null;
-}
-/** CSE.GameplayDefs.SiegeEngineSettingsDef */
-export interface SiegeEngineSettingsDef {
-  id: string | null /** Unique identifier for this definition */;
-}
-/** CSE.GameplayDefs.WeaponConfigDef */
-export interface WeaponConfigDef {
-  id: string | null /** Unique weapon identifier */;
-}
-/** CSE.GameplayDefs.ResourceNodeSubItemDef+Entry+HarvestItem */
-export interface HarvestItem {
-  itemDefinition: ItemDefRef | null;
-  maxQuality: Decimal | null;
-  maxUnitCount: number | null;
-  minQuality: Decimal | null;
-  minUnitCount: number | null;
-  weight: Decimal | null;
-}
-/** CSE.GameplayDefs.ResourceNodeSubItemDef+Entry */
-export interface Entry {
-  faction: Faction | null;
-  harvestItems: (HarvestItem | null)[] | null;
-}
-/** CSE.GameplayDefs.ResourceNodeSubItemDef */
-export interface ResourceNodeSubItemDef {
-  entries: (Entry | null)[] | null;
-  id: string | null;
-}
-/** CU.WebApi.GraphQL.GroupMemberUpdate */
-export interface GroupMemberUpdate extends IGroupUpdate {
-  characterID: CharacterID | null;
-  groupID: GroupID | null;
-  memberState: string | null;
-  updateType: GroupUpdateType | null;
-}
-/** CU.WebApi.GraphQL.GroupMemberRemovedUpdate */
-export interface GroupMemberRemovedUpdate extends IGroupUpdate {
-  characterID: CharacterID | null;
-  groupID: GroupID | null;
-  updateType: GroupUpdateType | null;
-}
-/** CU.WebApi.GraphQL.GroupNotification */
-export interface GroupNotification extends IGroupNotification {
-  characterID: CharacterID | null;
-  groupID: GroupID | null;
-  groupType: GroupTypes | null;
-  type: GroupNotificationType | null;
-}
-/** CU.WebApi.GraphQL.UnusedStructure */
-export interface UnusedStructure {
-  unused: boolean | null;
-}
-/** CU.WebApi.GraphQL.Legacy.Scoreboard */
-export interface Scoreboard {
-  description: string | null;
-  icon: string | null;
-  id: ScenarioInstanceID | null;
-  name: string | null;
-  rounds: (RoundScore | null)[] | null;
-  roundStartTime: Decimal | null;
-  teams: Faction_TeamScore | null;
+/** CSE.GameplayDefs.StatusStackingDef */
+export interface StatusStackingDef {
+  group: string | null;
+  removalOrder: StatusRemovalOrder | null;
+  statusDurationModType: StatusDurationModification | null;
 }
 /** World.BuildingPlotResult */
 export interface BuildingPlotResult {
@@ -1718,15 +1042,6 @@ export interface BuildingPlotResult {
   position: Vec3f | null;
   scoreToCapture: Decimal | null;
   size: Vec3f | null;
-}
-/** World.BuildingConstructionLocation */
-export interface BuildingConstructionLocation {
-  buildingID: BuildingPlotInstanceID | null;
-}
-/** World.InVoxUpgradeModuleLocation */
-export interface InVoxUpgradeModuleLocation {
-  position: number | null /** The UI position of the item */;
-  voxInstanceID: ItemInstanceID | null /** The item ID of the vox this item is contained in */;
 }
 /** World.SecureTradeLocation */
 export interface SecureTradeLocation {
@@ -1817,69 +1132,39 @@ export interface CharacterRemovedUpdate extends IPatcherCharacterUpdate {
   shard: ShardID | null;
   type: PatcherCharacterUpdateType | null;
 }
-/** CSE.GameplayDefs.Store.Cache.FactionTrait */
-export interface FactionTrait {
-  category: TraitCategory | null /** Category */;
-  description: string | null /** The description of this trait */;
-  exclusives: ExclusiveTraitsInfo | null /** List of exclusive traits.  Only one trait from this group may be selected. */;
-  icon: string | null /** Url for the icon for this trait */;
+/** ServerLib.ApiModels.SpawnPoint */
+export interface SpawnPoint {
+  faction: Faction | null;
   id: string | null;
-  isBoon: boolean | null /** If this trait is a boon */;
-  name: string | null /** The name of this trait */;
-  points: number | null /** The point value of this trait */;
-  prerequisites:
-    | (string | null)[]
-    | null /** List of trait id's that are required to be selected in order to select this trait */;
-  ranks:
-    | (string | null)[]
-    | null /** THIS CURRENTLY RETURNS NULL. List of trait id's that act as pointers to different ranks of a trait */;
-  required: boolean | null /** Whether or not this is a required trait. */;
-  specifier: string | null /** Specifies the defining type based on category */;
+  position: Vec3f | null;
 }
-/** CSE.GameplayDefs.Store.Cache.RaceTrait */
-export interface RaceTrait {
-  category: TraitCategory | null /** Category */;
-  description: string | null /** The description of this trait */;
-  exclusives: ExclusiveTraitsInfo | null /** List of exclusive traits.  Only one trait from this group may be selected. */;
-  icon: string | null /** Url for the icon for this trait */;
-  id: string | null;
-  isBoon: boolean | null /** If this trait is a boon */;
-  name: string | null /** The name of this trait */;
-  points: number | null /** The point value of this trait */;
-  prerequisites:
-    | (string | null)[]
-    | null /** List of trait id's that are required to be selected in order to select this trait */;
-  ranks:
-    | (string | null)[]
-    | null /** THIS CURRENTLY RETURNS NULL. List of trait id's that act as pointers to different ranks of a trait */;
-  required: boolean | null /** Whether or not this is a required trait. */;
-  specifier: string | null /** Specifies the defining type based on category */;
+/** CU.WebApi.GraphQL.GroupMemberUpdate */
+export interface GroupMemberUpdate extends IGroupUpdate {
+  characterID: CharacterID | null;
+  groupID: GroupID | null;
+  memberState: string | null;
+  updateType: GroupUpdateType | null;
 }
-/** CSE.GameplayDefs.Store.Cache.ClassTrait */
-export interface ClassTrait {
-  category: TraitCategory | null /** Category */;
-  description: string | null /** The description of this trait */;
-  exclusives: ExclusiveTraitsInfo | null /** List of exclusive traits.  Only one trait from this group may be selected. */;
-  icon: string | null /** Url for the icon for this trait */;
-  id: string | null;
-  isBoon: boolean | null /** If this trait is a boon */;
-  name: string | null /** The name of this trait */;
-  points: number | null /** The point value of this trait */;
-  prerequisites:
-    | (string | null)[]
-    | null /** List of trait id's that are required to be selected in order to select this trait */;
-  ranks:
-    | (string | null)[]
-    | null /** THIS CURRENTLY RETURNS NULL. List of trait id's that act as pointers to different ranks of a trait */;
-  required: boolean | null /** Whether or not this is a required trait. */;
-  specifier: string | null /** Specifies the defining type based on category */;
+/** CU.WebApi.GraphQL.GroupMemberRemovedUpdate */
+export interface GroupMemberRemovedUpdate extends IGroupUpdate {
+  characterID: CharacterID | null;
+  groupID: GroupID | null;
+  updateType: GroupUpdateType | null;
+}
+/** CU.WebApi.GraphQL.GroupNotification */
+export interface GroupNotification extends IGroupNotification {
+  characterID: CharacterID | null;
+  groupID: GroupID | null;
+  groupType: GroupTypes | null;
+  type: GroupNotificationType | null;
+}
+/** CU.WebApi.GraphQL.UnusedStructure */
+export interface UnusedStructure {
+  unused: boolean | null;
 }
 export interface CharactercharacterArgs {
   id: string | null;
   shard: number | null;
-}
-export interface EntityItemsentityItemsArgs {
-  id: string | null /** Entity ID. (required) */;
 }
 export interface InviteinviteArgs {
   shard: number | null /** shard id. (required) */;
@@ -1891,10 +1176,6 @@ export interface InvitesinvitesArgs {
   toGroup: string | null /** ID of group to which invites are sent to. (optional) */;
   toCharacter: string | null /** ID of character to which invites are sent to. (optional) */;
   includeInactive: boolean | null /** Should the response include inactive invites? */;
-}
-export interface ItemitemArgs {
-  shard: number | null /** Shard ID. (required) */;
-  id: string | null /** Item ID. (required) */;
 }
 export interface MyEquippedItemsmyEquippedItemsArgs {
   allowOfflineItems:
@@ -1927,92 +1208,14 @@ export interface ShardCharactersshardCharactersArgs {
     | number
     | null /** If you want to request for a specific shard, use this parameter. Otherwise, will fetch characters on all shards. */;
 }
-export interface ShardprogressionshardprogressionArgs {
-  shard: number | null /** The id of the shard to request progression data from. */;
-}
-export interface VoxJobvoxJobArgs {
-  entityID: string | null /** Entity ID. (required) */;
-  voxJobID: string | null /** vox job ID. (required) */;
-}
 export interface AbilityabilityArgs {
   id: number | null /** ID of the ability. */;
-}
-export interface VoxJobGroupLogvoxJobGroupLogArgs {
-  jobIdentifier: string | null;
-  jobType: string | null;
-}
-export interface VoxJobLogCountvoxJobLogCountArgs {
-  favoriteFilter: string | null;
-  textFilter: string | null;
-  jobIdentifier: string | null;
-  jobType: string | null;
-}
-export interface VoxJobLogsvoxJobLogsArgs {
-  favoriteFilter: string | null;
-  textFilter: string | null;
-  jobIdentifier: string | null;
-  jobType: string | null;
-  dateSort: string | null;
-  page: number | null;
-  count: number | null;
-}
-export interface PossibleIngredientspossibleIngredientsArgs {
-  slot: string | null /** The slot to get ingredients for. (required) */;
 }
 export interface AbilityComponentsabilityComponentsArgs {
   all: boolean | null /** if all the components should be returned, intead of those for this character */;
 }
 export interface ItemitemArgs {
   itemid: string | null /** The id of the item to look for. (required) */;
-}
-export interface AccountSummaryaccountSummaryArgs {
-  startDate: Date | null /** The starting date to look for. */;
-  endDate: Date | null /** The ending date to look for. */;
-}
-export interface AdjustmentsByDayLogIdadjustmentsByDayLogIDArgs {
-  logID: string | null /** The id of the log to look for adjustments for. (required) */;
-}
-export interface CharacterAdjustmentscharacterAdjustmentsArgs {
-  startDate: Date | null /** The starting date to look for. */;
-  endDate: Date | null /** The ending date to look for. */;
-}
-export interface CharacterDayscharacterDaysArgs {
-  startDate: Date | null /** The starting date to look for. */;
-  endDate: Date | null /** The ending date to look for. */;
-}
-export interface DayBySummaryNumberdayBySummaryNumberArgs {
-  summaryNumber: string | null /** The summary number of the log to look for. (required) */;
-}
-export interface DayLogByIddayLogByIDArgs {
-  logID: string | null /** The id of the log to look for. (required) */;
-}
-export interface AdjustmentsSummaryadjustmentsSummaryArgs {
-  logID: string | null /** The specific day to look for, used instead of date range if specified. */;
-  startDate: Date | null /** The starting date to look for. */;
-  endDate: Date | null /** The ending date to look for. */;
-}
-export interface ProgressionDaySummaryprogressionDaySummaryArgs {
-  logID: string | null /** The specific day to look for */;
-}
-export interface ProgressionSummaryRangeprogressionSummaryRangeArgs {
-  startDate: Date | null /** The starting date to look for. */;
-  endDate: Date | null /** The ending date to look for. */;
-}
-export interface RealmSummaryrealmSummaryArgs {
-  shardDayID: string | null /** The specific log to look for */;
-  faction: string | null /** The faction to look for */;
-}
-export interface ScenarioSummariesscenarioSummariesArgs {
-  skip: number | null /** The number of entries to skip. */;
-  limit: number | null /** Maximum number of entries to return. (max: 30) */;
-  startDate: Date | null /** The starting date to look for. */;
-  endDate: Date | null /** The ending date to look for. */;
-}
-export interface ShardDaysshardDaysArgs {
-  skip: number | null /** The number of entries to skip. */;
-  limit: number | null /** Maximum number of entries to return. (max: 30) */;
-  startDate: Date | null /** The starting date to look for. */;
-  endDate: Date | null /** The ending date to look for. */;
 }
 export interface NotificationsnotificationsArgs {
   tags: (string | null)[] | null /** Strings to match for this subscription */;
@@ -2072,27 +1275,17 @@ export enum TraitCategory {
   Race = 'Race',
   Class = 'Class'
 }
-/** CSE.GameplayDefs.ItemPlacementType */
-export enum ItemPlacementType {
-  None = 'None',
-  Door = 'Door',
-  Plot = 'Plot',
-  BuildingFaceSide = 'BuildingFaceSide',
-  BuildingFaceBottom = 'BuildingFaceBottom',
-  BuildingFaceTop = 'BuildingFaceTop'
+/** CSE.GameplayDefs.UnitFrameDisplay */
+export enum UnitFrameDisplay {
+  Hidden = 'Hidden',
+  HiddenWhenCurrentValue0 = 'HiddenWhenCurrentValue0',
+  Visible = 'Visible'
 }
-/** CSE.GameplayDefs.ItemTemplateType */
-export enum ItemTemplateType {
-  None = 'None',
-  TemplateOnly = 'TemplateOnly',
-  Entity = 'Entity'
-}
-/** CSE.GameplayDefs.ZoneType */
-export enum ZoneType {
-  None = 'None',
-  Home = 'Home',
-  Builder = 'Builder',
-  Contested = 'Contested'
+/** CSE.GameplayDefs.GearSlotType */
+export enum GearSlotType {
+  Unknown = 'Unknown',
+  Weapon = 'Weapon',
+  Armor = 'Armor'
 }
 /** CSE.GameplayDefs.ItemType */
 export enum ItemType {
@@ -2116,14 +1309,37 @@ export enum ItemType {
   Component = 'Component',
   VoxUpgradeModule = 'VoxUpgradeModule'
 }
-/** CSE.GameplayDefs.VoxJobType */
-export enum VoxJobType {
-  Invalid = 'Invalid',
-  Recipe = 'Recipe',
-  Purify = 'Purify',
-  Repair = 'Repair',
-  Salvage = 'Salvage',
-  Alchemy = 'Alchemy'
+/** CSE.GameplayDefs.StatDisplayType */
+export enum StatDisplayType {
+  Value = 'Value',
+  Percent = 'Percent',
+  IconOnly = 'IconOnly'
+}
+/** CSE.GameplayDefs.NumericItemInstanceStatDefID */
+export enum NumericItemInstanceStatDefID {
+  None = 'None'
+}
+/** CSE.GameplayDefs.StatType */
+export enum StatType {
+  None = 'None',
+  Primary = 'Primary',
+  Secondary = 'Secondary',
+  Derived = 'Derived',
+  Hidden = 'Hidden'
+}
+/** CSE.GameplayDefs.GroupTypes */
+export enum GroupTypes {
+  Warband = 'Warband',
+  Battlegroup = 'Battlegroup',
+  Order = 'Order',
+  Campaign = 'Campaign'
+}
+/** CU.Groups.InviteStatus */
+export enum InviteStatus {
+  Active = 'Active',
+  Revoked = 'Revoked',
+  UsageLimitReached = 'UsageLimitReached',
+  Expired = 'Expired'
 }
 /** CSE.GameplayDefs.BoneAlias */
 export enum BoneAlias {
@@ -2311,87 +1527,11 @@ export enum PermissibleSetKeyType {
   ScenarioRole = 'ScenarioRole',
   Scenario = 'Scenario'
 }
-/** CU.Databases.Models.Items.VoxJobState */
-export enum VoxJobState {
-  None = 'None',
-  Configuring = 'Configuring',
-  Queued = 'Queued',
-  Running = 'Running',
-  Finished = 'Finished',
-  Collecting = 'Collecting'
-}
-/** CU.Databases.Models.Items.VoxJobOutputItemType */
-export enum VoxJobOutputItemType {
-  Invalid = 'Invalid',
-  Normal = 'Normal',
-  Byproduct = 'Byproduct',
-  Unused = 'Unused'
-}
-/** CSE.GameplayDefs.UnitFrameDisplay */
-export enum UnitFrameDisplay {
-  Hidden = 'Hidden',
-  HiddenWhenCurrentValue0 = 'HiddenWhenCurrentValue0',
-  Visible = 'Visible'
-}
-/** CSE.GameplayDefs.GearSlotType */
-export enum GearSlotType {
-  Unknown = 'Unknown',
-  Weapon = 'Weapon',
-  Armor = 'Armor'
-}
-/** CSE.GameplayDefs.ItemStatDisplayType */
-export enum ItemStatDisplayType {
-  Value = 'Value',
-  Percent = 'Percent',
-  IconOnly = 'IconOnly'
-}
-/** CSE.GameplayDefs.NumericItemInstanceStatDefID */
-export enum NumericItemInstanceStatDefID {
-  None = 'None'
-}
-/** CSE.GameplayDefs.StatType */
-export enum StatType {
-  None = 'None',
-  Primary = 'Primary',
-  Secondary = 'Secondary',
-  Derived = 'Derived',
-  Hidden = 'Hidden'
-}
-/** CSE.GameplayDefs.GroupTypes */
-export enum GroupTypes {
-  Warband = 'Warband',
-  Battlegroup = 'Battlegroup',
-  Order = 'Order',
-  Campaign = 'Campaign'
-}
-/** CU.Groups.InviteStatus */
-export enum InviteStatus {
-  Active = 'Active',
-  Revoked = 'Revoked',
-  UsageLimitReached = 'UsageLimitReached',
-  Expired = 'Expired'
-}
 /** ServerLib.GraphQL.Models.AlertCategory */
 export enum AlertCategory {
   Trade = 'Trade',
   Group = 'Group',
   Progression = 'Progression'
-}
-/** CU.Databases.Models.Progression.Events.ScenarioOutcome */
-export enum ScenarioOutcome {
-  Invalid = 'Invalid',
-  Win = 'Win',
-  Lose = 'Lose',
-  Draw = 'Draw',
-  Killed = 'Killed',
-  Restart = 'Restart'
-}
-/** CU.Databases.Models.Progression.Logs.CharacterDaySummaryDBModel+States */
-export enum States {
-  Unpublished = 'Unpublished',
-  Initial = 'Initial',
-  Handled = 'Handled',
-  Preserved = 'Preserved'
 }
 /** CSE.GameplayDefs.ScenarioResolution */
 export enum ScenarioResolution {
@@ -2406,6 +1546,15 @@ export enum ProgressionCharacterType {
   PlayerCharacter = 'PlayerCharacter',
   NonPlayerCharacter = 'NonPlayerCharacter'
 }
+/** CU.Databases.Models.Progression.Events.ScenarioOutcome */
+export enum ScenarioOutcome {
+  Invalid = 'Invalid',
+  Win = 'Win',
+  Lose = 'Lose',
+  Draw = 'Draw',
+  Killed = 'Killed',
+  Restart = 'Restart'
+}
 /** World.SecureTradeState */
 export enum SecureTradeState {
   None = 'None',
@@ -2413,42 +1562,6 @@ export enum SecureTradeState {
   ModifyingItems = 'ModifyingItems',
   Locked = 'Locked',
   Confirmed = 'Confirmed'
-}
-/** CSE.GameplayDefs.StatusStackingDef+StatusRemovalOrder */
-export enum StatusRemovalOrder {
-  Invalid = 'Invalid',
-  KeepOldest = 'KeepOldest',
-  KeepNewest = 'KeepNewest',
-  KeepOldestFromSource = 'KeepOldestFromSource',
-  ApplyOldest = 'ApplyOldest',
-  ApplyNewest = 'ApplyNewest'
-}
-/** CSE.GameplayDefs.StatusStackingDef+StatusDurationModification */
-export enum StatusDurationModification {
-  RefreshDuration = 'RefreshDuration',
-  AddAmountToDuration = 'AddAmountToDuration',
-  SetNewDuration = 'SetNewDuration',
-  SetNewDurationIfGreater = 'SetNewDurationIfGreater',
-  DoNothing = 'DoNothing'
-}
-/** CSE.GameplayDefs.StatusUIVisibility */
-export enum StatusUIVisibility {
-  Hidden = 'Hidden',
-  Hud = 'Hud',
-  PopupOnAdd = 'PopupOnAdd',
-  PopupOnRemove = 'PopupOnRemove',
-  ShowInactive = 'ShowInactive',
-  ShowAllActive = 'ShowAllActive',
-  ShowAll = 'ShowAll'
-}
-/** ServerLib.Game.MapPointActionType */
-export enum MapPointActionType {
-  ClientCommand = 'ClientCommand'
-}
-/** CSE.GameplayDefs.ZoneInstanceID */
-export enum ZoneInstanceID {
-  None = 'None',
-  Invalid = 'Invalid'
 }
 /** CU.WebApi.GraphQL.GroupUpdateType */
 export enum GroupUpdateType {
@@ -2490,6 +1603,23 @@ export enum PatcherCharacterUpdateType {
   None = 'None',
   Updated = 'Updated',
   Removed = 'Removed'
+}
+/** CSE.GameplayDefs.StatusStackingDef+StatusDurationModification */
+export enum StatusDurationModification {
+  RefreshDuration = 'RefreshDuration',
+  AddAmountToDuration = 'AddAmountToDuration',
+  SetNewDuration = 'SetNewDuration',
+  SetNewDurationIfGreater = 'SetNewDurationIfGreater',
+  DoNothing = 'DoNothing'
+}
+/** CSE.GameplayDefs.StatusStackingDef+StatusRemovalOrder */
+export enum StatusRemovalOrder {
+  Invalid = 'Invalid',
+  KeepOldest = 'KeepOldest',
+  KeepNewest = 'KeepNewest',
+  KeepOldestFromSource = 'KeepOldestFromSource',
+  ApplyOldest = 'ApplyOldest',
+  ApplyNewest = 'ApplyNewest'
 }
 /** World.BuildingPlotResult+PlotContestedState */
 export enum PlotContestedState {

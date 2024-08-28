@@ -3,13 +3,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { storeLocalStore } from '../localStorage/storeLocalStorage';
 import ExternalDataSource from '../redux/externalDataSource';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import { currentFormatVersion, updateBlockedList } from '../redux/localStorageSlice';
+import { updateBlockedList } from '../redux/localStorageSlice';
 import { RootState } from '../redux/store';
 import { Dispatch } from '@reduxjs/toolkit';
 import { decodeID128, encodeID128 } from '@csegames/library/dist/_baseGame/utils/accountUtils';
+import { currentFormatVersion } from '@csegames/library/dist/hordetest/game/constants/StoreConstants';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 export function toRuntime(stored: string): string {
   return encodeID128(new Uint8Array(Buffer.from(stored, 'base64')));
@@ -21,7 +22,7 @@ export function toStorage(runtime: string): string {
 
 export class LocalStorageSource extends ExternalDataSource {
   protected async bind(): Promise<ListenerHandle[]> {
-    const decodedBlockedList = storeLocalStore.getTextChatBlocks();
+    const decodedBlockedList = clientAPI.getTextChatBlocks();
     this.dispatch(updateBlockedList(decodedBlockedList));
     return;
   }
@@ -36,7 +37,7 @@ export class LocalStorageSource extends ExternalDataSource {
     }
 
     // Get our currently locally stored list. Get our new mutes/un-mutes and add those to a searchable set.
-    let listToMute: string[] = storeLocalStore.getTextChatBlocks().base64AccountIDs;
+    let listToMute: string[] = clientAPI.getTextChatBlocks().base64AccountIDs;
     const newIDs: Set<string> = new Set<string>();
     this.reduxState.localStorage.update.accountIDs.forEach((accountID) => {
       const base64accountID = toStorage(accountID);
@@ -69,7 +70,7 @@ export class LocalStorageSource extends ExternalDataSource {
     }
     // send down our new list to the local store, and then get the new version and update redux
     // also clear out the list of IDs that were pending updates
-    storeLocalStore.setTextChatBlocks({ base64AccountIDs: listToMute, formatVersion: currentFormatVersion });
-    dispatch(updateBlockedList(storeLocalStore.getTextChatBlocks()));
+    clientAPI.setTextChatBlocks({ base64AccountIDs: listToMute, formatVersion: currentFormatVersion });
+    dispatch(updateBlockedList(clientAPI.getTextChatBlocks()));
   }
 }

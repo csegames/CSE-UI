@@ -5,7 +5,7 @@
  */
 
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { ChampionCostumeInfo, ChampionInfo } from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionCostumeInfo, ChampionInfo, ProgressionNodeDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ChampionInfoStaticData {
@@ -13,6 +13,8 @@ export interface ChampionInfoStaticData {
   championCostumes: ChampionCostumeInfo[];
   champions: ChampionInfo[];
   championIDToChampion: Dictionary<ChampionInfo>;
+  progressionNodeDefsByID: Dictionary<ProgressionNodeDef>;
+  progressionNodeDefsByChampionID: Dictionary<ProgressionNodeDef[]>;
 }
 
 export interface ChampionXPData {
@@ -34,8 +36,9 @@ const defaultChampionInfoState: ChampionInfoState = {
   championCostumes: [],
   champions: [],
   championIDToChampion: {},
+  progressionNodeDefsByID: {},
+  progressionNodeDefsByChampionID: {},
   championIDToLastDisplayedXP: {},
-
   selectedChampion: null,
   selectedEmoteIndex: 0
 };

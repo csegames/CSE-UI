@@ -69,10 +69,8 @@ export class BuildModeService extends ExternalDataSource {
         CharacterIDTo: null,
         PositionTo: -1,
         ContainerIDTo: null,
-        DrawerIDTo: null,
+        DrawerIndexTo: 0,
         GearSlotIDTo: null,
-        VoxSlotTo: null,
-        BuildingIDTo: null,
         WorldPositionTo: position,
         RotationTo: rotation,
         BoneAliasTo: 0

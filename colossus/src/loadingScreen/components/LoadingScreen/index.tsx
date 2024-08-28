@@ -36,14 +36,12 @@ interface State {
 }
 
 interface ReactProps {
-  backgroundImageURL: string;
+  backgroundImageURL?: string;
   showLogo: boolean;
   initialMessage?: string;
 }
 
-interface InjectedProps {}
-
-type Props = ReactProps & InjectedProps;
+type Props = ReactProps;
 
 export class LoadingScreen extends React.Component<Props, State> {
   private loadingStateHandle: ListenerHandle;
@@ -56,8 +54,10 @@ export class LoadingScreen extends React.Component<Props, State> {
       hintID: -1
     };
     // preload our background image by creating and immediately discarding a one pixel image unattached to the DOM
-    const img = new Image(1, 1);
-    img.src = this.props.backgroundImageURL;
+    if (this.props.backgroundImageURL) {
+      const img = new Image(1, 1);
+      img.src = this.props.backgroundImageURL;
+    }
   }
 
   public render() {
@@ -69,9 +69,7 @@ export class LoadingScreen extends React.Component<Props, State> {
 
     const hints = this.state.loadingState?.hints ? (
       <div className={HintContainer}>
-        <div className={HintText}>
-          <span>{this.getHintCurrentDescription()}</span>
-        </div>
+        <span className={HintText}>{this.getHintCurrentDescription()}</span>
       </div>
     ) : null;
 
@@ -79,15 +77,17 @@ export class LoadingScreen extends React.Component<Props, State> {
       <div
         id='loadingScreen'
         className={Container}
-        style={{ backgroundImage: `url("${this.props.backgroundImageURL}")` }}
+        style={{
+          backgroundImage: this.props.backgroundImageURL ? `url("${this.props.backgroundImageURL}")` : undefined
+        }}
       >
+        {this.props.children}
         {logo}
         <div className={LoadingTextPosition}>
           <div className={Text}>{this.state.loadingState.message}</div>
           <img className={Sprite} src='images/fullscreen/loadingscreen/loading-anim.gif' />
         </div>
         {hints}
-        {this.props.children}
       </div>
     );
   }

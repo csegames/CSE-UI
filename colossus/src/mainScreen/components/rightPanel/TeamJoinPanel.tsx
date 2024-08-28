@@ -297,11 +297,11 @@ class ATeamJoinPanel extends React.Component<Props, State> {
 
   private onCancelClick(): void {
     this.props.dispatch(hideRightPanel());
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
   }
 
   private async onSendInviteClick(): Promise<void> {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
 
     if (!this.state.inviteName || this.state.inviteName.length < 1) {
       this.setState({
@@ -341,7 +341,7 @@ class ATeamJoinPanel extends React.Component<Props, State> {
       }
     } else {
       // failed
-      game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES_FAILURE);
+      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES_FAILURE);
       try {
         const data: TeamJoinAPIError = JSON.parse(res.data);
         this.setState({ resultMessage: this.buildErrorMessage(data), resultIsSuccess: false });
@@ -466,16 +466,16 @@ class ATeamJoinPanel extends React.Component<Props, State> {
     return this.props.championCostumes[0]?.thumbnailURL ?? '';
   }
 
-  private getChampionThumbnailURL(player: Member | Player): string {
-    if (player.defaultChampion?.portraitID) {
-      const portraitPerk = this.props.perksByID[player.defaultChampion.portraitID];
+  private getChampionThumbnailURL(player: Player): string {
+    if (player.champion?.portraitID) {
+      const portraitPerk = this.props.perksByID[player.champion.portraitID];
       if (portraitPerk) {
         return portraitPerk.portraitThumbnailURL;
       }
     }
 
-    if (player.defaultChampion?.costumeID != '') {
-      const costume = this.props.championCostumes.find((costume) => costume.id == player.defaultChampion?.costumeID);
+    if (player.champion?.costumeID) {
+      const costume = this.props.championCostumes.find((costume) => costume.id == player.champion.costumeID);
       if (costume) {
         return costume.thumbnailURL;
       }

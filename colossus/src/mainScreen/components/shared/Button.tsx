@@ -80,7 +80,7 @@ export class AButton extends React.Component<Props> {
   }
 
   private onMouseEnter = () => {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   };
 
   private getUnderMaintenace(): JSX.Element {

@@ -19,7 +19,6 @@ import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numbe
 import { GroupsAPI, GroupTypes } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import StatusEffects from './StatusEffects';
 import { ArrayMap, Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { FactionData } from '../redux/gameDefsSlice';
 import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { distanceVec3 } from '@csegames/library/dist/_baseGame/utils/distance';
 import ContextMenuSource from './ContextMenuSource';
@@ -38,6 +37,7 @@ import { webConf } from '../redux/networkConfiguration';
 import BackgroundURL from '../../images/unit-frames/unitframe-bg.png';
 import DefaultArchetypeFrameURL from '../../images/unit-frames/default-frame.png';
 import DefaultArchetypeBackgroundURL from '../../images/unit-frames/profile-bg.png';
+import { FactionDef } from '../dataSources/manifest/factionManifest';
 
 // Styles.
 const Root = 'HUD-PlayerUnitFrame-Root';
@@ -78,7 +78,7 @@ interface InjectedProps {
   localPlayerEntityID: string;
   currentTheme: Theme;
   classDynamicAssets: Dictionary<UserClassesData>;
-  factions: Dictionary<FactionData>;
+  factions: Dictionary<FactionDef>;
   friendlyTargetType: string | null;
   warbandID: string;
   warbandMembers: (GroupMemberState | null)[];
@@ -127,7 +127,7 @@ class PlayerUnitFrame extends React.Component<Props> {
           <ContextMenuSource
             className={FrameRoot}
             menuParams={this.getContextMenuParams()}
-            style={{ backgroundImage: `url(${faction.nameplateBackgroundURL})` }}
+            style={{ backgroundImage: `url(${faction.nameplateBackgroundImage})` }}
           >
             <img className={Background} src={BackgroundURL} />
             <div className={NameplateText}>
@@ -146,13 +146,13 @@ class PlayerUnitFrame extends React.Component<Props> {
               />
               <div className={PanicBar} style={{ backgroundColor: colors.panic, width: `${panicRatio * 69}%` }} />
             </div>
-            <img className={Background} src={faction.nameplateMainFrameURL} />
+            <img className={Background} src={faction.nameplateMainFrameImage} />
 
             <div className={ArchetypeContainer}>
               <img className={ArchetypeBackground} src={frameBackground} />
               <img
                 className={ArchetypeProfilePicture}
-                src={faction.nameplateProfilePictureURL}
+                src={faction.nameplateProfileImage}
                 style={{ WebkitMaskImage: `url(${frameBackground})` }}
               />
               <img className={ArchetypeFrame} src={frame} />

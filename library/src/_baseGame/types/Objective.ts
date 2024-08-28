@@ -22,10 +22,11 @@ export enum ObjectiveUIVisibility {
   Compass = 1 << 1,
   Alert = 1 << 2,
   World = 1 << 3,
-  Map = 1 << 4,
-  ScreenEdge = 1 << 5,
+  WorldDistance  = 1 << 4,
+  Map = 1 << 5,
+  ScreenEdge = 1 << 6,
 
-  All = (1 << 6) - 1
+  All = (1 << 7) - 1
 }
 
 export enum ObjectiveDetailCategory {

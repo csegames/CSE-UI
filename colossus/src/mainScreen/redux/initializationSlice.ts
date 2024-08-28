@@ -12,16 +12,17 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // BEGIN INTERFACES AND STATES
 
 export enum InitTopic {
-  Quests = 'quests',
   ChampionInfo = 'championInfo',
-  Profile = 'profile',
   Features = 'features',
-  Matchmaking = 'matchmaking',
-  User = 'user',
-  Store = 'store',
+  GameDefs = 'gameDefs',
   GameSettings = 'gameSettings',
+  Matchmaking = 'matchmaking',
+  Profile = 'profile',
+  Quests = 'quests',
   Scenarios = 'scenarios',
-  StringTable = 'stringTable'
+  Store = 'store',
+  StringTable = 'stringTable',
+  User = 'user'
 }
 
 export interface InitializationState {
@@ -35,17 +36,19 @@ export interface InitializationResult {
   result: boolean;
 }
 
-const initialStatus: Dictionary<boolean | null> = {};
-initialStatus[InitTopic.Quests] = null;
-initialStatus[InitTopic.ChampionInfo] = null;
-initialStatus[InitTopic.Profile] = null;
-initialStatus[InitTopic.Features] = null;
-initialStatus[InitTopic.Matchmaking] = null;
-initialStatus[InitTopic.User] = null;
-initialStatus[InitTopic.Store] = null;
-initialStatus[InitTopic.GameSettings] = null;
-initialStatus[InitTopic.Scenarios] = null;
-initialStatus[InitTopic.StringTable] = null;
+const initialStatus: Dictionary<boolean | null> = {
+  [InitTopic.ChampionInfo]: null,
+  [InitTopic.Features]: null,
+  [InitTopic.GameDefs]: null,
+  [InitTopic.GameSettings]: null,
+  [InitTopic.Matchmaking]: null,
+  [InitTopic.Profile]: null,
+  [InitTopic.Quests]: null,
+  [InitTopic.Scenarios]: null,
+  [InitTopic.Store]: null,
+  [InitTopic.StringTable]: null,
+  [InitTopic.User]: null
+};
 
 const defaultState: InitializationState = {
   componentStatus: initialStatus,

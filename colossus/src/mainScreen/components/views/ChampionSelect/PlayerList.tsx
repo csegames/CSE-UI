@@ -49,7 +49,7 @@ class APlayerList extends React.Component<Props> {
 
   private renderPlayerPortrait(player: SelectionPlayer, index: number): JSX.Element {
     const lockedClass = player.locked ? 'locked' : '';
-    const championID = player.selectedChampion?.championID ?? player.defaultChampion.championID;
+    const championID = player.champion?.championID;
     const champion = this.props.champions.find((c) => c.id == championID) ?? this.props.champions[0];
     const championSelectURL = this.getChampionSelectURL(player);
 
@@ -63,13 +63,13 @@ class APlayerList extends React.Component<Props> {
   }
 
   private getChampionSelectURL(player: SelectionPlayer): string {
-    const portraitID = player.selectedChampion?.portraitID ?? player.defaultChampion.portraitID;
+    const portraitID = player.champion?.portraitID;
     const portraitPerk = this.props.perksByID[portraitID ?? ''];
     if (portraitPerk) {
       return portraitPerk.portraitChampionSelectImageUrl;
     }
 
-    const costumeID = player.selectedChampion?.costumeID ?? player.defaultChampion.costumeID;
+    const costumeID = player.champion?.costumeID;
     const costume = this.props.costumes.find((c) => c.id === costumeID) ?? this.props.costumes[0];
     return costume.championSelectImageURL ?? '';
   }

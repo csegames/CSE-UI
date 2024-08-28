@@ -16,9 +16,9 @@ import {
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { cloneDeep } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { GameModeDef } from '../dataSources/manifest/gameModeManifest';
 
 export const AUTOCONNECT_MATCH_PLACEHOLDER = 'autoconnect-match-placeholder';
-
 // HACK : the client is currently authoritative over this data -- once the
 // game server can update the status of the match it'll be possible to
 // move this to server control
@@ -50,7 +50,7 @@ export interface QueueRequest {
 }
 
 export interface SelectionRequest {
-  roundID: string;
+  reservationID: string;
   championID: string;
   locked: boolean;
 }
@@ -66,6 +66,14 @@ export interface MatchRequestState {
   active: MatchRequests | null; // async match network processing calls in flight
   queued: MatchRequests | null; // client code -> match network processing
 }
+
+export const getDefaultQueueGameModeDef = (defaultQueueID: string): GameModeDef => ({
+  id: "default",
+  name: defaultQueueID,
+  description: 'Default queue from command line argument.',
+  bannerImage: '/images/game-modes/scenarios-banner.jpg',
+  cardImage: '/images/game-modes/scenarios-card.jpg'
+});
 
 export function hasRequest(state: MatchRequestState): boolean {
   return !(!state.active && !state.queued);
@@ -86,7 +94,7 @@ function clearSelect(current?: SelectionRequest, toClear?: SelectionRequest): bo
     !current ||
     (toClear &&
       current.championID == toClear.championID &&
-      current.roundID == toClear.roundID &&
+      current.reservationID == toClear.reservationID &&
       (!current.locked || toClear.locked)) // if current is locked, toClear must be locked
   );
 }
@@ -128,6 +136,8 @@ interface MatchState {
   selections: ChampionSelection[];
   connectionError: ConnectionError | null;
   requests: MatchRequestState;
+  selectedQueueID: string | null;
+  gameModes: Dictionary<GameModeDef>;
 }
 
 const defaultMatchState: MatchState = {
@@ -147,7 +157,9 @@ const defaultMatchState: MatchState = {
   requests: {
     queued: null,
     active: null
-  }
+  },
+  selectedQueueID: null,
+  gameModes: {}
 };
 
 export const matchSlice = createSlice({
@@ -244,6 +256,12 @@ export const matchSlice = createSlice({
     },
     setSelections: (state: MatchState, action: PayloadAction<[ChampionSelection[], ChampionSelection]>) => {
       [state.selections, state.currentSelection] = action.payload;
+    },
+    selectQueue: (state: MatchState, action: PayloadAction<string>) => {
+      state.selectedQueueID = action.payload;
+    },
+    updateGameModes: (state: MatchState, action: PayloadAction<Dictionary<GameModeDef>>) => {
+      state.gameModes = action.payload;
     }
   }
 });
@@ -265,5 +283,7 @@ export const {
   setMatchEnd,
   setQueues,
   setQueueEntries,
-  setSelections
+  setSelections,
+  selectQueue,
+  updateGameModes
 } = matchSlice.actions;

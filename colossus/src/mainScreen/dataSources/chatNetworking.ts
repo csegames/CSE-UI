@@ -33,6 +33,7 @@ import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { CircularArray } from '@csegames/library/dist/_baseGame/types/CircularArray';
 import { getAccountID } from '@csegames/library/dist/_baseGame/utils/accountUtils';
 import { webConf } from './networkConfiguration';
+import { isMatch } from '../redux/matchSlice';
 
 const RoomCategory = chat.RoomInfo.RoomCategory;
 const DEFAULT_CHAT_SERVER_PORT = 4543;
@@ -142,10 +143,17 @@ export class ChatService extends ExternalDataSource<ReactProps> implements Liste
       return;
     }
 
-    const matchServer = this.reduxState.match.currentRound?.serverName; // TODO : supply chat host + port in round data
-    if (matchServer) {
+    if (!isMatch(this.reduxState.match.currentRound)) {
+      return;
+    }
+
+    const chatServerAddress = this.reduxState.match.currentRound?.chatServerAddress;
+    if (chatServerAddress) {
       this.connecting = true;
-      window.setTimeout(this.connect.bind(this, matchServer, DEFAULT_CHAT_SERVER_PORT), 0);
+      const fragments = chatServerAddress.split(':');
+      const host = fragments[0];
+      const port = Number(fragments[1]);
+      window.setTimeout(this.connect.bind(this, host, port), 0);
       return;
     }
     if (game.isAutoConnectEnabled && game.serverHost) {

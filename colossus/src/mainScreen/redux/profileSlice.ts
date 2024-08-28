@@ -15,7 +15,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // in this interface.
 export type ProfileModel = Pick<
   ProfileGQL,
-  'champions' | 'dailyQuestResets' | 'defaultChampionID' | 'lifetimeStats' | 'perks' | 'quests' | 'timeOffsetSeconds'
+  | 'champions'
+  | 'dailyQuestResets'
+  | 'defaultChampionID'
+  | 'lifetimeStats'
+  | 'perks'
+  | 'progressionNodes'
+  | 'quests'
+  | 'timeOffsetSeconds'
   // For 'lifetimeStats', items in the array are split into scenarios. If an item in the array contains a
   // null scenarioID, that is the stats of all the scenarios combined.
 >;
@@ -39,8 +46,9 @@ interface ProfileState extends ProfileModel {
    * Can be used to detect that an explicit refresh has completed.
    */
   localProfileVersion: number;
-  shouldProfileRefresh: boolean;
   onProfileRefreshes: (() => void)[];
+  seenProgressNodeIDsByChampion: Dictionary<string[]>;
+  unseenUnlockedProgressNodeIDsByChampion: Dictionary<string[]>;
 }
 
 function generateDefaultProfileState() {
@@ -57,8 +65,10 @@ function generateDefaultProfileState() {
     timeOffsetSeconds: 0,
     isProfileFetched: false,
     localProfileVersion: 0,
-    shouldProfileRefresh: false,
-    onProfileRefreshes: []
+    onProfileRefreshes: [],
+    progressionNodes: [],
+    seenProgressNodeIDsByChampion: {},
+    unseenUnlockedProgressNodeIDsByChampion: {}
   };
   return defaultProfileState;
 }
@@ -80,16 +90,38 @@ export const profileSlice = createSlice({
       state.selectedRuneMods = action.payload;
     },
     startProfileRefresh: (state: ProfileState, action: PayloadAction<(() => void) | undefined>) => {
-      state.shouldProfileRefresh = true;
       if (action.payload) {
         state.onProfileRefreshes.push(action.payload);
       }
     },
-    markProfileRefreshStarted: (state: ProfileState) => {
-      state.shouldProfileRefresh = false;
-    },
     endProfileRefresh: (state: ProfileState) => {
       state.onProfileRefreshes = [];
+    },
+    updateSeenProgressionNodesForChampion: {
+      reducer: (state: ProfileState, action: PayloadAction<{ championID: string; seenNodeIDs: string[] }>) => {
+        state.seenProgressNodeIDsByChampion[action.payload.championID] = action.payload.seenNodeIDs;
+      },
+      prepare: (championID: string, seenNodeIDs: string[]) => {
+        return {
+          payload: {
+            championID,
+            seenNodeIDs
+          }
+        };
+      }
+    },
+    updateUnseenUnlockedProgressionNodesForChampion: {
+      reducer: (state: ProfileState, action: PayloadAction<{ championID: string; nodeIDs: string[] }>) => {
+        state.unseenUnlockedProgressNodeIDsByChampion[action.payload.championID] = action.payload.nodeIDs;
+      },
+      prepare: (championID: string, nodeIDs: string[]) => {
+        return {
+          payload: {
+            championID,
+            nodeIDs
+          }
+        };
+      }
     }
   }
 });
@@ -99,6 +131,7 @@ export const {
   updateOwnedPerks,
   updateSelectedRuneMods,
   startProfileRefresh,
-  markProfileRefreshStarted,
-  endProfileRefresh
+  endProfileRefresh,
+  updateSeenProgressionNodesForChampion,
+  updateUnseenUnlockedProgressionNodesForChampion
 } = profileSlice.actions;

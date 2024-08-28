@@ -7,14 +7,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {
-  HUDHorizontalAnchor,
-  HUDLayer,
-  HUDVerticalAnchor,
-  HUDWidgetRegistration,
-  addMenuWidgetExiting,
-  toggleMenuWidget
-} from '../redux/hudSlice';
+import { HUDLayer, HUDWidgetRegistration, addMenuWidgetExiting, toggleMenuWidget } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
 import { Menu } from './menu/Menu';
 import { MenuTabData } from './menu/menuData';
@@ -36,6 +29,7 @@ import { updateModalContent } from '../redux/modalsSlice';
 import { hideModal } from '../redux/modalsSlice';
 import { CloseButton } from '../../shared/components/CloseButton';
 import { WIDGET_NAME_OPEN_BUILD } from './OpenBuild';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 const Root = 'HUD-Build-Root';
 const IconGrid = 'HUD-Build-IconGrid';

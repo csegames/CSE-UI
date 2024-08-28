@@ -34,11 +34,11 @@ import { Button } from '../shared/Button';
 import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { startProfileRefresh } from '../../redux/profileSlice';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { getWornCostumeForChampion } from '../../helpers/characterHelpers';
 import { ResourceBar } from '../shared/ResourceBar';
 import { webConf } from '../../dataSources/networkConfiguration';
+import { refreshProfile } from '../../dataSources/profileNetworking';
 
 const Title = 'SpendQuestXPPotionsModal-Title';
 const Description = 'SpendQuestXPPotionsModal-Description';
@@ -450,14 +450,14 @@ class ASpendQuestXPPotionsModal extends React.Component<Props, State> {
       return;
     }
 
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
 
     this.setState({ isSpending: true });
     const res = await ProfileAPI.RedeemQuestXPPerk(webConf, perk?.id, this.props.quest.id, this.state.count);
     if (!res.ok) {
       this.props.dispatch(showError(res));
     } else {
-      this.props.dispatch(startProfileRefresh());
+      refreshProfile();
       this.props.dispatch(hideOverlay(Overlay.SpendQuestXPPotions));
     }
     this.setState({ isSpending: false });

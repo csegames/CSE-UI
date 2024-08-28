@@ -15,7 +15,6 @@ export type BuildingCellDataInstanceID = string;
 export type BuildingPlotInstanceID = string;
 export type ChannelID = number;
 export type CharacterID = string;
-export type ContainerDrawerID = string;
 export type CriterionID = string;
 export type EntityID = string;
 export type FeatureFlag = string;
@@ -105,6 +104,8 @@ export enum AuthActionErrorCode {
   RequirePrivacyPolicyAcceptance = 8,
   Throttled = 9,
   NoScreenName = 10,
+  InvalidScreenName = 11,
+  ScreenNameTaken = 12,
 }
 
 export enum BoneAlias {
@@ -514,11 +515,7 @@ export enum MoveItemRequestLocationType {
   Equipment = 2,
   Ground = 3,
   Inventory = 4,
-  Vox = 5,
-  Trash = 6,
-  BuildingPlaced = 7,
-  BuildingConstruction = 8,
-  VoxModule = 9,
+  Trash = 5,
 }
 
 export enum MoveItemResultCode {
@@ -549,12 +546,10 @@ export enum MoveItemResultCode {
   ItemInversion = 24,
   InvalidVoxSlot = 25,
   ItemCannotBeTraded = 26,
-  RestrictedToScenario = 27,
-  CannotRemoveFromRunningScenario = 28,
-  TrashingItemNotAllowed = 29,
-  OutOfRange = 30,
-  DestroyEffectNotSupported = 31,
-  UnknownError = 32,
+  TrashingItemNotAllowed = 27,
+  OutOfRange = 28,
+  DestroyEffectNotSupported = 29,
+  UnknownError = 30,
 }
 
 export enum NPCRank {
@@ -660,8 +655,7 @@ export enum VoxJobType {
   Recipe = 1,
   Purify = 2,
   Repair = 3,
-  Salvage = 4,
-  Alchemy = 5,
+  Alchemy = 4,
 }
 
 export enum ZoneType {
@@ -828,192 +822,6 @@ export interface ControlPoint {
   size: string;
   x: number;
   y: number;
-}
-
-export const CraftingAPI = {
-  SwapVoxJob: function(config: RequestConfig, voxEntityID: EntityID, jobDefID: string, recipeID?: string): Promise<RequestResult> {
-    const conf = config();
-    const parameters: {[key:string]: any} = {};
-    parameters["voxEntityID"] = voxEntityID;
-    parameters["jobDefID"] = jobDefID;
-    if (recipeID !== undefined) parameters["recipeID"] = recipeID;
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/swapvoxjob',
-      parameters,
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  AppendVoxJob: function(config: RequestConfig, voxEntityID: EntityID, jobDefID: string, recipeID?: string): Promise<RequestResult> {
-    const conf = config();
-    const parameters: {[key:string]: any} = {};
-    parameters["voxEntityID"] = voxEntityID;
-    parameters["jobDefID"] = jobDefID;
-    if (recipeID !== undefined) parameters["recipeID"] = recipeID;
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/appendvoxjob',
-      parameters,
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  ClearVoxJob: function(config: RequestConfig, voxEntityID: EntityID, voxJobInstanceID: VoxJobInstanceID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/clearvoxjob',
-      { voxEntityID, voxJobInstanceID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  MoveQueuedJob: function(config: RequestConfig, voxEntityID: EntityID, voxJobInstanceID: VoxJobInstanceID, newIndex: number): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/movequeuedjob',
-      { voxEntityID, voxJobInstanceID, newIndex },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  SetRecipeID: function(config: RequestConfig, voxEntityID: EntityID, recipeID: string): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/setvoxrecipeid',
-      { voxEntityID, recipeID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  SetQuality: function(config: RequestConfig, voxEntityID: EntityID, quality: number): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/setvoxquality',
-      { voxEntityID, quality },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  SetDoseCount: function(config: RequestConfig, voxEntityID: EntityID, doseCount: number): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/setvoxdosecount',
-      { voxEntityID, doseCount },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  SetCustomItemName: function(config: RequestConfig, voxEntityID: EntityID, itemName: string): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/setvoxcustomitemname',
-      { voxEntityID, itemName },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  StartVoxJob: function(config: RequestConfig, voxEntityID: EntityID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/startvoxjob',
-      { voxEntityID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  CollectFinishedVoxJob: function(config: RequestConfig, voxEntityID: EntityID, jobID: VoxJobInstanceID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/collectfinishedvoxjob',
-      { voxEntityID, jobID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  CancelVoxJob: function(config: RequestConfig, voxEntityID: EntityID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/cancelvoxjob',
-      { voxEntityID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  SetCraftingNotes: function(config: RequestConfig, instanceID: VoxNotesInstanceID, notes: string): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/setvoxnotes',
-      { instanceID, notes },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  SetVoxJobGroupNotes: function(config: RequestConfig, jobIdentifier: string, jobType: VoxJobType, notes: string): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/setvoxjobgroupnotes',
-      { jobIdentifier, jobType, notes },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  SetVoxJobNotes: function(config: RequestConfig, jobID: VoxJobInstanceID, notes: string): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/setvoxjobnotes',
-      { jobID, notes },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  SetVoxJobGroupFavorite: function(config: RequestConfig, jobIdentifier: string, jobType: VoxJobType, favorite: boolean): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/setvoxjobgroupfavorite',
-      { jobIdentifier, jobType, favorite },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  SetVoxJobFavorite: function(config: RequestConfig, jobID: VoxJobInstanceID, favorite: boolean): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/crafting/setvoxjobfavorite',
-      { jobID, favorite },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
 }
 
 export interface CreateAbilityRequest {
@@ -1961,7 +1769,7 @@ export interface ServerPresence {
   zoneBoundsMin: Vec2f;
   restrictToFaction: Faction;
   isStartingZone: boolean;
-  isHidden: boolean;
+  visibleZoneNames: string[];
   isMainInstance: boolean;
   isShuttingDown: boolean;
   isFull: boolean;
@@ -2029,19 +1837,6 @@ export interface StartingServer {
 export interface TimeoutError {
   Code: FieldCodes;
   Message: string;
-}
-
-export const TraitsAPI = {
-  GetTraitsV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/traits',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
 }
 
 export interface UnauthorizedFieldCode {

@@ -7,13 +7,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {
-  HUDHorizontalAnchor,
-  HUDLayer,
-  HUDVerticalAnchor,
-  HUDWidgetRegistration,
-  addMenuWidgetExiting
-} from '../../redux/hudSlice';
+import { HUDLayer, HUDWidgetRegistration, addMenuWidgetExiting } from '../../redux/hudSlice';
 import { RootState } from '../../redux/store';
 import Escapable from '../Escapable';
 import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
@@ -26,11 +20,12 @@ import {
   RaceDefGQL
 } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { FactionData } from '../../redux/gameDefsSlice';
 import { refreshItems } from '../items/itemUtils';
 import { CloseButton } from '../../../shared/components/CloseButton';
 import { InitTopic } from '../../redux/initializationSlice';
 import { UserClassesData } from '@csegames/library/dist/_baseGame/clientFunctions/AssetFunctions';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import { FactionDef } from '../../dataSources/manifest/factionManifest';
 
 const Root = 'HUD-Equipped-Root';
 const Character = 'HUD-Equipped-Character';
@@ -70,7 +65,7 @@ interface InjectedProps {
   classesByNumericID: Dictionary<ClassDefGQL>;
   racesByNumericID: Dictionary<RaceDefGQL>;
   gendersByNumericID: Dictionary<GenderDefGQL>;
-  factions: Dictionary<FactionData>;
+  factions: Dictionary<FactionDef>;
   dispatch?: Dispatch;
 }
 
@@ -99,16 +94,16 @@ class AEquipped extends React.Component<Props> {
           <>
             <span className={SlotsLabel}>Outer</span>
             <div className={`${OrnamentMid} ${OrnamentMidLeft}`} />
-            {['Head', 'Torso', 'Cloak', 'Arms', 'Hands', 'Legs', 'Feet'].map((gearSlotID) =>
+            {['Head', 'Shoulders', 'Torso', 'Arms', 'Hands', 'Legs', 'Feet'].map((gearSlotID) =>
               this.renderGearSlot(gearSlotID, ItemIconFrameVertical)
             )}
           </>
         </div>
         <div className={`${Slots} ${UnderSlots}`}>
           <>
-            <span className={SlotsLabel}>Inner</span>
+            <span className={SlotsLabel}>Accessories</span>
             <div className={`${OrnamentMid} ${OrnamentMidRight}`} />
-            {['HeadUnder', 'TorsoUnder', 'ArmsUnder', 'HandsUnder', 'LegsUnder', 'FeetUnder'].map((gearSlotID) =>
+            {['Earring1', 'Earring2', 'Neck', 'Ring1', 'Ring2'].map((gearSlotID) =>
               this.renderGearSlot(gearSlotID, ItemIconFrameVertical)
             )}
           </>
@@ -129,7 +124,7 @@ class AEquipped extends React.Component<Props> {
               />
             </g>
           </svg>
-          {['OneHandedWeaponLeft', 'OneHandedWeaponRight', 'TwoHandedWeapon'].map((gearSlotID) =>
+          {['OneHandedWeaponLeft', 'OneHandedWeaponRight'].map((gearSlotID) =>
             this.renderGearSlot(gearSlotID, ItemIconFrameHorizontal)
           )}
           <svg className={OrnamentWeapons} fill='#6A6767' viewBox='0 0 68.59 87.74'>
@@ -159,9 +154,7 @@ class AEquipped extends React.Component<Props> {
       classNames.push(ItemIconFrameReadied);
     }
     const items: Item[] = [];
-    const item = this.props.equippedItems.find((equippedItem) =>
-      equippedItem.item.location.equipped.gearSlots.includes(gearSlotID)
-    )?.item;
+    const item = this.props.equippedItems.find((equippedItem) => equippedItem.gearSlots.includes(gearSlotID))?.item;
     if (item) {
       items.push(item);
     }
@@ -173,7 +166,7 @@ class AEquipped extends React.Component<Props> {
   }
 
   componentDidMount(): void {
-    refreshItems(this.props.dispatch);
+    refreshItems();
   }
 
   closeSelf(): void {

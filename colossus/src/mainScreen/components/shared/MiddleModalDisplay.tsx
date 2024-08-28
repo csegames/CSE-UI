@@ -10,9 +10,10 @@ const Container = 'MiddleModal-Container';
 const Overlay = 'MiddleModal-Overlay';
 
 interface ReactProps {
-  onClickOverlay: () => void;
+  onClickOverlay?: () => void;
   isVisible: boolean;
   heightOverride?: string;
+  borderColorOverride?: string;
 }
 
 interface InjectedProps {}
@@ -24,6 +25,9 @@ export class MiddleModalDisplay extends React.Component<Props> {
     const style: React.CSSProperties = {};
     if ((this.props.heightOverride?.length ?? 0) > 0) {
       style.height = this.props.heightOverride;
+    }
+    if ((this.props.borderColorOverride?.length ?? 0) > 0) {
+      style.borderColor = this.props.borderColorOverride;
     }
     const visibilityClassName = this.props.isVisible ? 'visible' : '';
     return (

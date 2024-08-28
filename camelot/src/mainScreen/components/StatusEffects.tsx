@@ -11,12 +11,7 @@ import { StatusState } from '@csegames/library/dist/camelotunchained/game/GameCl
 import TooltipSource from './TooltipSource';
 import { Theme } from '../themes/themeConstants';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import {
-  StatusDef,
-  StatusDurationModification,
-  StatusRemovalOrder,
-  StatusUIVisibility
-} from '@csegames/library/dist/camelotunchained/graphql/schema';
+import { StatusDef } from '../dataSources/manifest/statusManifest';
 
 // Styles.
 const Root = 'HUD-StatusEffects-Root';
@@ -104,44 +99,22 @@ class StatusEffects extends React.Component<Props> {
 
     Object.values(this.props.statuses).forEach((state) => {
       const def = this.props.statusesByNumericID[state.id];
-
-      // If this status shouldn't be shown, skip it.
-      if (def?.uIVisibility === StatusUIVisibility.Hidden) {
+      if (!def) {
         return;
       }
 
-      if (def) {
-        const data: StatusData = { ...def, ...state };
-        if (isBuff(def)) {
-          buffs.push(data);
-        } else {
-          if (!data.statusTags.includes('hostile')) {
-            data.warning = 'This status does not have a "friendly" or "hostile" tag. Defaulting to "hostile".';
-          }
-          debuffs.push(data);
-        }
+      // If this status shouldn't be shown, skip it.
+      if (!def.showInHUD && !def.showOnAdd && !def.showOnInactive && !def.showOnRemove) {
+        return;
+      }
+
+      const data: StatusData = { ...def, ...state };
+      if (isBuff(def)) {
+        buffs.push(data);
       } else {
-        // It is possible for the server to have statuses that the client doesn't know about if someone is
-        // actively creating and testing new statuses, or if the GQL query fails.  In order to keep the UI
-        // from exploding in that scenario, we handle incomplete Statuses here.
-        const data: StatusData = {
-          ...state,
-          numericID: +state.id,
-          blocksAbilities: false,
-          name: 'unknown',
-          description: 'unknown',
-          iconClass: '',
-          iconURL: 'images/MissingAsset.png',
-          stacking: {
-            group: 'unknown',
-            removalOrder: StatusRemovalOrder.Invalid,
-            statusDurationModType: StatusDurationModification.DoNothing
-          },
-          statusTags: [],
-          uIText: 'unknown',
-          uIVisibility: StatusUIVisibility.Hidden,
-          warning: `Could not find API information for status with id: ${state.id}.`
-        };
+        if (!data.statusTags.includes('hostile')) {
+          data.warning = 'This status does not have a "friendly" or "hostile" tag. Defaulting to "hostile".';
+        }
         debuffs.push(data);
       }
     });

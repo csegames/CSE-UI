@@ -15,7 +15,11 @@ import { LobbyView, navigateTo } from '../../../../redux/navigationSlice';
 import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import TooltipSource from '../../../../../shared/components/TooltipSource';
-import { findChampionQuest, findChampionQuestProgress } from '../../../../helpers/characterHelpers';
+import {
+  findChampionQuest,
+  findChampionQuestProgress,
+  getUnlockedRuneModTierForChampion
+} from '../../../../helpers/characterHelpers';
 import { ChampionInfo } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
@@ -32,8 +36,11 @@ const ProgressionProgressContainer = 'LobbyChampionStatus-ProgressionProgressCon
 const ProgressionLevelContainer = 'LobbyChampionStatus-ProgressionLevelContainer';
 const ProgressionXPLabel = 'LobbyChampionStatus-ProgressionXPLabel';
 const RuneSection = 'LobbyChampionStatus-RuneSection';
+const RunesContainer = 'LobbyChampionStatus-RunesContainer';
 const RuneArt = 'LobbyChampionStatus-RuneArt';
-const RuneIcon = 'LobbyChampionStatus-RuneIcon';
+const RuneModButton = 'LobbyChampionStatus-RuneModButton';
+const RuneModIcon = 'LobbyChampionStatus-RuneModIcon';
+const RuneModLockIcon = 'LobbyChampionStatus-RuneModLockIcon';
 const RuneTooltipContainer = 'LobbyChampionStatus-RuneTooltipContainer';
 const RuneTooltipTitle = 'LobbyChampionStatus-RuneTooltipTitle';
 const RuneTooltipDescription = 'LobbyChampionStatus-RuneTooltipDescription';
@@ -59,6 +66,8 @@ interface InjectedProps {
   champion: ChampionInfo;
   championIDToLastDisplayedXP: Dictionary<ChampionXPData>;
   stringTable: Dictionary<StringTableEntryDef>;
+  ownedPerks: Dictionary<number>;
+  perksByID: Dictionary<PerkDefGQL>;
   dispatch?: Dispatch;
 }
 
@@ -87,6 +96,13 @@ class ALobbyChampionStatus extends React.Component<Props, State> {
 
     const notMaxLevel = this.state.displayedLevel < this.state.displayedMaxLevel;
     const maxLevel = notMaxLevel ? '' : 'MaxLevel';
+
+    const unlockedTier = getUnlockedRuneModTierForChampion(
+      this.props.champion,
+      this.props.perksByID,
+      this.props.ownedPerks
+    );
+
     return (
       <div className={Root}>
         <div className={Row}>
@@ -109,16 +125,27 @@ class ALobbyChampionStatus extends React.Component<Props, State> {
         </div>
         <div className={RuneSection}>
           <div className={RuneArt} />
-          {this.props.runeMods?.map((rm, index) => {
-            return (
-              <TooltipSource
-                key={index}
-                tooltipParams={{ id: `${index}`, content: rm ? this.renderRuneModTooltip.bind(this, rm) : null }}
-              >
-                <img className={RuneIcon} key={index} src={rm?.iconURL} onClick={this.onChampionInfoClick.bind(this)} />
-              </TooltipSource>
-            );
-          })}
+          <div className={RunesContainer}>
+            {this.props.runeMods?.map((rm, index) => {
+              // Is this tier unlocked yet?
+              const lockIcon = unlockedTier <= index ? 'fs-icon-misc-lock' : 'fs-icon-misc-unlock';
+              const lockedStyle = unlockedTier <= index ? 'locked' : '';
+              return (
+                <TooltipSource
+                  key={index}
+                  tooltipParams={{ id: `${index}`, content: rm ? this.renderRuneModTooltip.bind(this, rm) : null }}
+                >
+                  <div className={`${RuneModButton} ${lockedStyle}`} onClick={this.onChampionInfoClick.bind(this)}>
+                    {rm ? (
+                      <img className={RuneModIcon} src={rm?.iconURL} />
+                    ) : (
+                      <div className={`${RuneModLockIcon} ${lockedStyle} ${lockIcon}`} />
+                    )}
+                  </div>
+                </TooltipSource>
+              );
+            })}
+          </div>
         </div>
       </div>
     );
@@ -191,7 +218,7 @@ class ALobbyChampionStatus extends React.Component<Props, State> {
   private onChampionInfoClick(): void {
     // Go to Champions tab.
     this.props.dispatch(navigateTo(LobbyView.Champions));
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_CHAMPION_OPEN);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_CHAMPION_OPEN);
   }
 
   private getProgressText(): string {
@@ -297,12 +324,13 @@ class ALobbyChampionStatus extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps) {
-  const { quests: questsGQL } = state.profile;
+  const { quests: questsGQL, ownedPerks } = state.profile;
   const { quests } = state.quests;
   const runeMods = state.profile.selectedRuneMods[state.profile.defaultChampionID];
   const champion = state.championInfo.championIDToChampion[state.profile.defaultChampionID];
   const { championIDToLastDisplayedXP } = state.championInfo;
   const { stringTable } = state.stringTable;
+  const { perksByID } = state.store;
 
   return {
     ...ownProps,
@@ -311,7 +339,9 @@ function mapStateToProps(state: RootState, ownProps: ReactProps) {
     runeMods,
     champion,
     stringTable,
-    championIDToLastDisplayedXP
+    championIDToLastDisplayedXP,
+    ownedPerks,
+    perksByID
   };
 }
 

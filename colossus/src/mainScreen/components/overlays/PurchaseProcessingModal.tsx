@@ -28,12 +28,12 @@ import {
   getTokenizedStringTableValue
 } from '../../helpers/stringTableHelpers';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { startProfileRefresh } from '../../redux/profileSlice';
 import { isChampionEquipmentPerk } from '../../helpers/perkUtils';
 import { updateStoreAddUnseenEquipment } from '../../redux/storeSlice';
-import { storeLocalStore } from '../../localStorage/storeLocalStorage';
 import { ItemGrid } from '../shared/ItemGrid';
 import { webConf } from '../../dataSources/networkConfiguration';
+import { refreshProfile } from '../../dataSources/profileNetworking';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'PurchaseProcessingModal-Container';
 const Title = 'PurchaseProcessingModal-Title';
@@ -157,7 +157,7 @@ class APurchaseProcessingModal extends React.Component<Props, State> {
       this.props.dispatch(showError(res));
     } else {
       this.props.dispatch(hideRightPanel());
-      this.props.dispatch(startProfileRefresh());
+      refreshProfile();
 
       const purchase = this.props.purchases.find((p) => {
         return p.id === this.props.purchaseIdToProcess;
@@ -171,9 +171,9 @@ class APurchaseProcessingModal extends React.Component<Props, State> {
             // Redux
             this.props.dispatch(updateStoreAddUnseenEquipment(perkReward.perkID));
             // Local Storage
-            const allUnseenEquipment = storeLocalStore.getUnseenEquipment();
+            const allUnseenEquipment = clientAPI.getUnseenEquipment();
             allUnseenEquipment[perkReward.perkID] = true;
-            storeLocalStore.setUnseenEquipment(allUnseenEquipment);
+            clientAPI.setUnseenEquipment(allUnseenEquipment);
           }
         });
       }

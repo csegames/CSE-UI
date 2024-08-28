@@ -11,7 +11,7 @@ import { VoiceChatMemberSettings } from '../types/VoiceChatMemberSettings';
 
 export type VoiceChatUpdateListener = (accountID: string, settings: VoiceChatMemberSettings) => void;
 export type VoiceChatRemoveListener = (accountID: string) => void;
-export type ChannelType = "match" | "none";
+export type ChannelType = 'match' | 'none';
 
 // client -> UI (see UIEvents.h)
 const VoiceChatMemberUpdatedEventName = 'voiceChat.memberUpdated';

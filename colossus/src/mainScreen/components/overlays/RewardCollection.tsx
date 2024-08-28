@@ -22,7 +22,6 @@ import {
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { QuestsByType } from '../../redux/questSlice';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { startProfileRefresh } from '../../redux/profileSlice';
 import { ProgressionReward } from '../views/Lobby/ChampionProfile/ProgressionReward';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { findChampionQuestProgress, findChampionQuest } from '../../helpers/characterHelpers';
@@ -31,6 +30,7 @@ import { Dictionary } from '@reduxjs/toolkit';
 import { createAlertsForCollectedQuestProgress } from '../../helpers/perkUtils';
 import { PerkDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { webConf } from '../../dataSources/networkConfiguration';
+import { refreshProfile } from '../../dataSources/profileNetworking';
 
 const Container = 'RewardCollection-Container';
 const LevelUpTitle = 'RewardCollection-LevelUpTitle';
@@ -49,6 +49,7 @@ interface ReactProps {}
 
 interface InjectedProps {
   selectedChampion: ChampionInfo;
+  champions: ChampionInfo[];
   questsGQL: QuestGQL[];
   quests: QuestsByType;
   stringTable: Dictionary<StringTableEntryDef>;
@@ -129,19 +130,25 @@ class ARewardCollection extends React.Component<Props, State> {
     if (!res.ok) {
       this.props.dispatch(showError(res));
     } else {
-      createAlertsForCollectedQuestProgress(quest, questProgress, this.props.perksByID, this.props.dispatch);
+      createAlertsForCollectedQuestProgress(
+        quest,
+        questProgress,
+        this.props.perksByID,
+        this.props.champions,
+        this.props.dispatch
+      );
     }
   }
 
   private onCloseClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
-    this.props.dispatch(startProfileRefresh());
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
+    refreshProfile();
     this.props.dispatch(hideOverlay(Overlay.RewardCollection));
   }
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { selectedChampion } = state.championInfo;
+  const { selectedChampion, champions } = state.championInfo;
   const { quests } = state.profile;
   const questsByType = state.quests.quests;
   const { stringTable } = state.stringTable;
@@ -150,6 +157,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   return {
     ...ownProps,
     selectedChampion,
+    champions,
     questsGQL: quests,
     quests: questsByType,
     stringTable,

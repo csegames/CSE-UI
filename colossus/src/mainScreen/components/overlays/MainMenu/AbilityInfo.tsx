@@ -20,7 +20,7 @@ import {
 import { AbilityDisplayDef } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
 import { ScenarioRoundState } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { ProfileModel } from '../../../redux/profileSlice';
-import { PerkDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkDefGQL, ScenarioDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary, Dispatch } from '@reduxjs/toolkit';
 import { getCharacterClassStringIDForNumericID } from '../../../helpers/characterHelpers';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
@@ -31,6 +31,7 @@ import {
 } from '../../../helpers/stringTableHelpers';
 import { AbilityType, getKeybindInfoForAbility } from '../../../helpers/abilityhelpers';
 import { Overlay, hideOverlay } from '../../../redux/navigationSlice';
+import { Round } from '../../../redux/matchSlice';
 
 const Container = 'MenuModal-AbilityInfo-Container';
 const Section = 'MenuModal-AbilityInfo-Section';
@@ -59,6 +60,8 @@ interface InjectedProps {
   selectedRuneMods: Dictionary<PerkDefGQL[]>;
   inMatchClassID: number;
   stringTable: Dictionary<StringTableEntryDef>;
+  scenarioDefs: Dictionary<ScenarioDefGQL>;
+  currentRound: Round;
   dispatch?: Dispatch;
 }
 
@@ -92,16 +95,29 @@ class AAbilityInfo extends React.Component<Props> {
             {this.renderAbility(AbilityType.Ultimate, displayDefIDs[ultimateAbilityID])}
           </div>
         </div>
-        <div className={`${Section} runeMods`}>
-          <div className={Title}>{getStringTableValue(StringIDAbilityInfoRuneMods, this.props.stringTable)}</div>
-          <div className={ItemsContainer}>{this.renderRuneMods()}</div>
-        </div>
+        {this.renderRuneModContainer()}
       </div>
     );
   }
 
   private hide() {
     this.props.dispatch(hideOverlay(Overlay.MainMenu));
+  }
+
+  private renderRuneModContainer(): React.ReactNode {
+    const scenarioDef = this.props.scenarioDefs[this.props.currentRound?.scenarioID];
+    if (scenarioDef && !scenarioDef.applyChampionUpgrades) {
+      return null;
+    }
+
+    // if not in a scenario, show
+    // if in a scenario, check the scenario def to see if we're doing champ upgrades
+    return (
+      <div className={`${Section} runeMods`}>
+        <div className={Title}>{getStringTableValue(StringIDAbilityInfoRuneMods, this.props.stringTable)}</div>
+        <div className={ItemsContainer}>{this.renderRuneMods()}</div>
+      </div>
+    );
   }
 
   private renderRuneMods(): React.ReactNode[] {
@@ -163,6 +179,8 @@ class AAbilityInfo extends React.Component<Props> {
   private getAbilityDisplayDefIDs(): number[] {
     // during a live game, use the display ids reported by the server
     switch (this.props.scenarioRoundState) {
+      case ScenarioRoundState.Backfill:
+      case ScenarioRoundState.BackfillLocked:
       case ScenarioRoundState.Countdown:
       case ScenarioRoundState.Running:
       case ScenarioRoundState.Epilogue:
@@ -194,6 +212,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { scenarioRoundState, classID } = state.player;
   const { selectedRuneMods } = state.profile;
   const { stringTable } = state.stringTable;
+  const { scenarioDefs } = state.scenarios;
+  const { currentRound } = state.match;
 
   return {
     ...ownProps,
@@ -205,7 +225,9 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     inMatchClassID: classID,
     scenarioRoundState,
     usingGamepadInMainMenu,
-    stringTable
+    stringTable,
+    scenarioDefs,
+    currentRound
   };
 }
 

@@ -27,7 +27,8 @@ import {
   isItemDroppable,
   performItemAction,
   refreshItems,
-  MoveItemRequest
+  MoveItemRequest,
+  isItemTrashable
 } from './itemUtils';
 import { ContextMenuItem, ContextMenuParams, hideContextMenu } from '../../redux/contextMenuSlice';
 import { Faction, MoveItemRequestLocationType } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
@@ -52,6 +53,7 @@ const GearSlotIcon = 'HUD-ItemIcon-GearSlotIcon';
 const Icon = 'HUD-ItemIcon-Icon';
 const IconCount = 'HUD-ItemIcon-IconCount';
 const Overlay = 'HUD-ItemIcon-Overlay';
+const TrashItemAmount = 'HUD-ItemIcon-TrashItemAmount';
 
 enum ItemMoveColor {
   Valid = 'rgba(46, 213, 80, 0.4)',
@@ -95,6 +97,7 @@ type Props = ReactProps & InjectedProps;
 
 class AItemIcon extends React.Component<Props> {
   private splitStackValue: number | null = null;
+  private trashCount: number = 1;
   private mouseDownAt: number | null = null;
   private isShiftHeld: boolean = false;
   private isCtrlHeld: boolean = false;
@@ -239,7 +242,7 @@ class AItemIcon extends React.Component<Props> {
         >
           {slotJSX}
           {this.props.equippedGearSlotID !== undefined && (
-            <div className={`${GearSlotIcon} ${this.props.gearSlots[this.props.equippedGearSlotID].iconClass}`}></div>
+            <div className={`${GearSlotIcon} ${this.props.gearSlots[this.props.equippedGearSlotID]?.iconClass}`}></div>
           )}
         </DropTarget>
       </div>
@@ -262,9 +265,7 @@ class AItemIcon extends React.Component<Props> {
       ? this.props.inventoryItems.find(
           (inventoryItem): boolean => inventoryItem.location.inventory.position === inventoryIndex
         )
-      : this.props.equippedItems.find((equippedItem) =>
-          equippedItem.item.location.equipped.gearSlots.includes(gearSlotID)
-        )?.item;
+      : this.props.equippedItems.find((equippedItem) => equippedItem.gearSlots.includes(gearSlotID))?.item;
   }
 
   getDropTargetHoverColor(draggableID: string): string | null {
@@ -297,7 +298,7 @@ class AItemIcon extends React.Component<Props> {
   getItemContextMenuParams(): ContextMenuParams {
     const content: ContextMenuItem[] = [];
     // Deploy
-    if (isItemDroppable(this.props.items[0]) && this.props.items[0].staticDefinition.deploySettings) {
+    if (isItemDroppable(this.props.items[0]) && this.props.items[0].staticDefinition.isDeployable) {
       const onClick = () => {
         this.deployItem();
       };
@@ -351,9 +352,63 @@ class AItemIcon extends React.Component<Props> {
         onClick: onClick.bind(this)
       });
     }
+    // Trash
+    if (isItemTrashable(this.props.items[0])) {
+      const onClick = () => {
+        this.trashCount = 1;
+        this.props.dispatch(
+          showModal({
+            id: 'TrashItem',
+            content: this.getTrashItemModalContent(),
+            escapable: true
+          })
+        );
+      };
+      content.push({
+        title: 'Trash item',
+        onClick: onClick.bind(this)
+      });
+    }
     return {
       id: `ItemIcon_${this.props.items[0].id}`,
       content
+    };
+  }
+
+  getTrashItemModalContent(): ModalModel {
+    return {
+      title: 'Trash Item',
+      message: `Would you like to trash ${this.props.items[0].staticDefinition.name}?`,
+      body: this.props.items[0].staticDefinition.isStackableItem ? (
+        <div className={TrashItemAmount}>
+          <NumberInput
+            text='Amount'
+            value={this.trashCount}
+            setValue={(deleteCount) => {
+              this.trashCount = deleteCount;
+              this.props.dispatch(updateModalContent(this.getTrashItemModalContent()));
+            }}
+            minValue={1}
+            maxValue={getItemUnitCount(this.props.items[0])}
+            step={1}
+          />
+        </div>
+      ) : undefined,
+      buttons: [
+        {
+          text: 'Confirm',
+          onClick: () => {
+            this.deleteItem();
+            this.props.dispatch(hideModal());
+          }
+        },
+        {
+          text: 'Cancel',
+          onClick: () => {
+            this.props.dispatch(hideModal());
+          }
+        }
+      ]
     };
   }
 
@@ -441,10 +496,8 @@ class AItemIcon extends React.Component<Props> {
       CharacterIDTo: characterID,
       PositionTo: gearSlotID !== null ? -1 : inventoryIndex,
       ContainerIDTo: null,
-      DrawerIDTo: null,
+      DrawerIndexTo: 0,
       GearSlotIDTo: gearSlotID,
-      VoxSlotTo: null,
-      BuildingIDTo: null,
       WorldPositionTo: null,
       RotationTo: null,
       BoneAliasTo: 0
@@ -464,10 +517,11 @@ class AItemIcon extends React.Component<Props> {
         PositionTo: item.location.inventory ? item.location.inventory.position : -1,
         ContainerIDTo: null,
         CharacterIDTo: characterID,
-        DrawerIDTo: null,
-        GearSlotIDTo: item.location.equipped ? item.location.equipped.gearSlots[0] : null,
-        VoxSlotTo: null,
-        BuildingIDTo: null,
+        DrawerIndexTo: 0,
+        GearSlotIDTo:
+          item.location.equipped && item.staticDefinition.gearSlotSets
+            ? item.staticDefinition.gearSlotSets[item.location.equipped.gearSlotSetIndex]?.gearSlots[0]
+            : null,
         WorldPositionTo: null,
         RotationTo: null,
         BoneAliasTo: 0
@@ -480,9 +534,7 @@ class AItemIcon extends React.Component<Props> {
   equipItem(gearSlotID: string): void {
     this.props.dispatch(hideContextMenu());
     const targetItem =
-      this.props.equippedItems.find((equippedItem) =>
-        equippedItem.item.location.equipped.gearSlots.includes(gearSlotID)
-      ) ?? null;
+      this.props.equippedItems.find((equippedItem) => equippedItem.gearSlots.includes(gearSlotID)) ?? null;
     const moves: MoveItemRequest[] = [];
 
     const item = this.props.items[0];
@@ -498,10 +550,8 @@ class AItemIcon extends React.Component<Props> {
       CharacterIDTo: characterID,
       PositionTo: -1,
       ContainerIDTo: null,
-      DrawerIDTo: null,
+      DrawerIndexTo: 0,
       GearSlotIDTo: gearSlotID,
-      VoxSlotTo: null,
-      BuildingIDTo: null,
       WorldPositionTo: null,
       RotationTo: null,
       BoneAliasTo: 0
@@ -519,10 +569,8 @@ class AItemIcon extends React.Component<Props> {
         PositionTo: item.location.inventory?.position ?? -1,
         ContainerIDTo: null,
         CharacterIDTo: characterID,
-        DrawerIDTo: null,
+        DrawerIndexTo: 0,
         GearSlotIDTo: null,
-        VoxSlotTo: null,
-        BuildingIDTo: null,
         WorldPositionTo: null,
         RotationTo: null,
         BoneAliasTo: 0
@@ -560,10 +608,8 @@ class AItemIcon extends React.Component<Props> {
       CharacterIDTo: characterID,
       PositionTo: this.getFirstOpenInventoryIndex(),
       ContainerIDTo: null,
-      DrawerIDTo: null,
+      DrawerIndexTo: 0,
       GearSlotIDTo: null,
-      VoxSlotTo: null,
-      BuildingIDTo: null,
       WorldPositionTo: null,
       RotationTo: null,
       BoneAliasTo: 0
@@ -594,7 +640,7 @@ class AItemIcon extends React.Component<Props> {
       this.props.items[0].id,
       ''
     );
-    refreshItems(this.props.dispatch);
+    refreshItems();
   }
 
   dropItem(): void {
@@ -613,10 +659,48 @@ class AItemIcon extends React.Component<Props> {
       CharacterIDTo: null,
       PositionTo: -1,
       ContainerIDTo: null,
-      DrawerIDTo: null,
+      DrawerIndexTo: 0,
       GearSlotIDTo: null,
-      VoxSlotTo: null,
-      BuildingIDTo: null,
+      WorldPositionTo: null,
+      RotationTo: null,
+      BoneAliasTo: 0
+    };
+
+    attemptItemMoves(
+      [move],
+      this.props.inventoryItems,
+      this.props.equippedItems,
+      this.props.faction,
+      this.props.racesByNumericID[this.props.race],
+      this.props.classesByNumericID[this.props.classID],
+      this.props.raceTags,
+      this.props.myStats,
+      this.props.gearSlots,
+      this.props.inventoryPendingRefreshes,
+      this.props.equippedItemsPendingRefreshes,
+      this.props.stackSplit,
+      this.props.dispatch
+    );
+  }
+
+  deleteItem(): void {
+    this.props.dispatch(hideContextMenu());
+
+    const item = this.props.items[0];
+    const characterID = item.location.inventory?.characterID ?? item.location.equipped?.characterID;
+    const move: MoveItemRequest = {
+      MoveItemID: item.id,
+      UnitCount: this.trashCount,
+      EntityIDFrom: null,
+      CharacterIDFrom: characterID,
+      BoneAliasFrom: 0,
+      LocationTo: MoveItemRequestLocationType.Trash,
+      EntityIDTo: null,
+      CharacterIDTo: null,
+      PositionTo: -1,
+      ContainerIDTo: null,
+      DrawerIndexTo: 0,
+      GearSlotIDTo: null,
       WorldPositionTo: null,
       RotationTo: null,
       BoneAliasTo: 0

@@ -42,7 +42,7 @@ class AErrorModal extends React.Component<Props> {
   }
 
   private onContinueClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
     this.onClose();
   }
 

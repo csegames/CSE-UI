@@ -7,12 +7,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { PlayerEntityStateModel } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
-import { HUDHorizontalAnchor, HUDLayer, HUDVerticalAnchor, HUDWidgetRegistration } from '../redux/hudSlice';
+import { HUDLayer, HUDWidgetRegistration } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
 import PlayerUnitFrame from './PlayerUnitFrame';
 import { camelotMocks } from '@csegames/library/dist/camelotunchained/camelotMockData';
 import { ClassDefGQL } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 // Styles.
 const Root = 'HUD-SelfUnitFrame-Root';

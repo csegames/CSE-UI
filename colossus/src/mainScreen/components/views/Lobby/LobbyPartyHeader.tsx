@@ -26,7 +26,7 @@ import { getStringTableValue, getTokenizedStringTableValue } from '../../../help
 import { LobbyCurrencyHeader } from './LobbyCurrencyHeader';
 import { InviteFriendsButton } from './Play/InviteFriendsButton';
 import { setHasClickedInvite } from '../../../redux/teamJoinSlice';
-import { lobbyLocalStore } from '../../../localStorage/lobbyLocalStorage';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'Lobby-PartyHeader-Container';
 const PlayerPortraitContainer = 'Lobby-PartyHeader-PlayerPortraitContainer';
@@ -105,8 +105,8 @@ class ALobbyPartyHeader extends React.Component<Props> {
       let displayName: string = '';
       if (!!this.props.group && i <= partyMembers.length) {
         const member = partyMembers[i - 1];
-        const defaultChampionCostume = this.getCostume(member.defaultChampion?.costumeID);
-        portraitURL = this.getChampionThumbnailURL(member.defaultChampion?.portraitID, defaultChampionCostume);
+        const defaultChampionCostume = this.getCostume(member.champion?.costumeID);
+        portraitURL = this.getChampionThumbnailURL(member.champion?.portraitID, defaultChampionCostume);
         displayName = member.displayName ?? getStringTableValue(StringIDGroupsUnknownMember, this.props.stringTable);
       }
       const isInvitation = i > partyMembers.length && i <= lastInvitationIndex;
@@ -136,7 +136,7 @@ class ALobbyPartyHeader extends React.Component<Props> {
   private onInviteClicked(): void {
     this.props.dispatch(showRightPanel(<TeamJoinPanel />));
     this.props.dispatch(setHasClickedInvite());
-    lobbyLocalStore.setHasClickedInvite();
+    clientAPI.setHasClickedInvite();
   }
 
   private getCostume(costumeId: string) {

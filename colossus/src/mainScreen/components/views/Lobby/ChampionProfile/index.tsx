@@ -109,7 +109,7 @@ class AChampionProfile extends React.Component<Props> {
     const costumePerk = this.props.perksByID[selectedChampionGQL.costumePerkID];
 
     const equippedCostume = allCostumesForChampion.find((costume) => {
-      return costume.id === costumePerk.costume.id;
+      return costume.id === costumePerk?.costume?.id;
     });
 
     return equippedCostume;

@@ -10,6 +10,7 @@ export enum EntityResourceIDs {
   Blood = 'Blood',
   Barrier = 'Barrier',
   Health = 'Health',
+  Fervor = 'Fervor',
   ReviveProgress = 'ReviveProgress',
   CaptureProgress = 'CaptureProgress'
 }

@@ -7,7 +7,7 @@
 import gql from 'graphql-tag';
 import { CUQuery } from '@csegames/library/dist/hordetest/graphql/schema';
 
-export type ChampionInfoQueryResult = Pick<CUQuery, 'champions' | 'championCostumes' | 'serverTimestamp'>;
+export type ChampionInfoQueryResult = Pick<CUQuery, 'champions' | 'championCostumes' | 'serverTimestamp' | 'game'>;
 
 export const championInfoQuery = gql`
   query ChampionInfoContextQuery {
@@ -31,10 +31,42 @@ export const championInfoQuery = gql`
       championSelectSound
       uIColor
       questID
+      runeModUnlockCurrencyID
+      progressionCurrencyID
       abilities {
         name
         iconClass
         description
+      }
+    }
+
+    game {
+      progressionNodes {
+        championID
+        childrenIDs
+        costs {
+          perkID
+          qty
+        }
+        icon
+        id
+        locks {
+          endTime
+          perkID
+          questID
+          questLevel
+          startTime
+          progressionNodeID
+          invertConditions
+        }
+        name
+        parentIDs
+        positionX
+        positionY
+        rewards {
+          perkID
+          qty
+        }
       }
     }
 

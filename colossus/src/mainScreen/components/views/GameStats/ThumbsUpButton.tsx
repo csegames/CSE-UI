@@ -175,12 +175,12 @@ export class AThumbsUpButton extends React.Component<Props, State> {
   }
 
   private async onThumbsUpClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
     this.props.dispatch(setThumbsUp(this.props.accountID));
   }
 
   private async onRevokeClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
     this.props.dispatch(revokeThumbsUp());
   }
 }

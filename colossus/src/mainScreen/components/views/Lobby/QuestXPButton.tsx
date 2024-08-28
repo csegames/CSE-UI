@@ -183,7 +183,7 @@ class AQuestXPButton extends React.Component<Props> {
     if (quest) {
       this.props.dispatch(updateSpendXPPotionQuest(quest));
       this.props.dispatch(showOverlay(Overlay.SpendQuestXPPotions));
-      game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_STORE_OPEN);
+      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_STORE_OPEN);
     }
   }
 

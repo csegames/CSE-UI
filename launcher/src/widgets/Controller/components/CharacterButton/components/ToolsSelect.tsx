@@ -18,6 +18,8 @@ const InfoContainer = styled.div`
   position: absolute;
   bottom: 25px;
   left: calc(50% - 90px);
+  max-height: calc(100vh - 35px);
+  overflow-y: auto;
 `;
 
 const ToolButton = styled.div`

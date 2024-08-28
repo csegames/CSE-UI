@@ -376,7 +376,6 @@ export class ControllerContextProvider extends React.Component<Props, ContextSta
   }
 
   private handleServerUpdates(serverUpdates: primary.IServerUpdate) {
-    console.log('server status updated', serverUpdates);
     if (!serverUpdates) return;
     const channels = patcher.getAllChannels();
     switch (serverUpdates.type) {

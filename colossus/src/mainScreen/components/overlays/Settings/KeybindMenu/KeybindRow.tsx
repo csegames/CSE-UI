@@ -23,7 +23,7 @@ export interface Props {
 
 export function KeybindRow(props: Props) {
   function onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   function onClick(e: React.MouseEvent, keybind: Keybind, index: number) {

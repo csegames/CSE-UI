@@ -9,7 +9,6 @@ import {
   AbilityNetworkDef,
   AbilityNetworkRequirementGQL,
   CharacterStatField,
-  FactionDef,
   GameSettingsDef,
   GearSlot,
   ItemDefRef,
@@ -17,8 +16,6 @@ import {
   ItemStatDefinitionGQL,
   ItemTooltipCategoryDef,
   StatDefinitionGQL,
-  StatusDef,
-  SubstanceDefRef,
   DamageTypeDefGQL,
   ClassDefGQL,
   RaceDefGQL,
@@ -31,6 +28,8 @@ import {
 } from '@csegames/library/dist/_baseGame/clientFunctions/AssetFunctions';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { FactionDef } from '../dataSources/manifest/factionManifest';
+import { StatusDef } from '../dataSources/manifest/statusManifest';
 
 export interface AbilityDisplayData {
   id: number;
@@ -43,33 +42,6 @@ export interface AbilityDisplayData {
 }
 
 export type AbilityNetworkDefData = AbilityNetworkDef & AbilityNetworksData;
-
-// The GQL type references ItemDefRef, which becomes an infinite recursion, so we
-// replace the full ItemDefRef with an ID that we can look up separately.
-export interface SubstanceDefRefData extends Omit<SubstanceDefRef, 'purifyItemDef'> {
-  purifyItemDefId: string;
-}
-
-// To prevent recursion, we replace the SubstanceDefRef with a version that doesn't
-// directly link back to an ItemDefRef.
-export interface ItemDefRefData extends Omit<ItemDefRef, 'substanceDefinition'> {
-  substanceDefinition: SubstanceDefRefData;
-}
-
-export interface FactionData extends FactionDef {
-  defaultArchetypeFrameURL: string;
-  nameplateBackgroundURL: string;
-  nameplateMainFrameURL: string;
-  nameplateMiniFrameURL: string;
-  nameplateProfilePictureURL: string;
-  emptyAbilitySlotURL: string;
-  groupIconURLs: string[];
-  abilityBuilderBackgroundURL: string;
-  scoreboardBackgroundColor: string;
-  scoreboardTextColor: string;
-  paperdollBackgroundImage: string;
-  paperdollBaseImage: string;
-}
 
 // To prevent recursion, we replace the component refs with a simple id that we can look up in the AbilityComponents list.
 export interface AbilityNetworkRequirementsGQLData
@@ -96,11 +68,11 @@ interface GameDefsState {
   damageTypes: Dictionary<DamageTypeDefGQL>;
   entityResourcesByStringID: Dictionary<EntityResourceDefinitionGQL>;
   entityResourcesByNumericID: Dictionary<EntityResourceDefinitionGQL>;
-  factions: Dictionary<FactionData>;
+  factions: Dictionary<FactionDef>;
   gearSlots: Dictionary<GearSlot>;
   itemStats: Dictionary<ItemStatDefinitionGQL>;
   itemTooltipCategories: Dictionary<ItemTooltipCategoryDef>;
-  items: Dictionary<ItemDefRefData>;
+  items: Dictionary<ItemDefRef>;
   racesByStringID: Dictionary<RaceDefGQL>;
   racesByNumericID: Dictionary<RaceDefGQL>;
   gendersByStringID: Dictionary<GenderDefGQL>;
@@ -111,6 +83,7 @@ interface GameDefsState {
   statusesByStringID: Dictionary<StatusDef>;
   statusesByNumericID: Dictionary<StatusDef>;
   shouldRefetchMyCharacterAbilities: boolean;
+  useClientResourceManifests: boolean;
 }
 
 function buildDefaultGameDefsState() {
@@ -140,7 +113,8 @@ function buildDefaultGameDefsState() {
     stats: {},
     statusesByStringID: {},
     statusesByNumericID: {},
-    shouldRefetchMyCharacterAbilities: false
+    shouldRefetchMyCharacterAbilities: false,
+    useClientResourceManifests: true
   };
 
   return DefaultGameDefsState;
@@ -185,13 +159,13 @@ export const gameDefsSlice = createSlice({
       state.entityResourcesByStringID = byString ?? {};
       state.entityResourcesByNumericID = byNumber ?? {};
     },
-    updateFactions: (state: GameDefsState, action: PayloadAction<Dictionary<FactionData>>) => {
+    updateFactions: (state: GameDefsState, action: PayloadAction<Dictionary<FactionDef>>) => {
       state.factions = action.payload ?? {};
     },
     updateGearSlots: (state: GameDefsState, action: PayloadAction<Dictionary<GearSlot>>) => {
       state.gearSlots = action.payload ?? {};
     },
-    updateItems: (state: GameDefsState, action: PayloadAction<Dictionary<ItemDefRefData>>) => {
+    updateItems: (state: GameDefsState, action: PayloadAction<Dictionary<ItemDefRef>>) => {
       state.items = action.payload ?? {};
     },
     updateItemStats: (state: GameDefsState, action: PayloadAction<Dictionary<ItemStatDefinitionGQL>>) => {
@@ -234,6 +208,9 @@ export const gameDefsSlice = createSlice({
     },
     setShouldRefetchMyCharacterAbilities: (state: GameDefsState, action: PayloadAction<boolean>) => {
       state.shouldRefetchMyCharacterAbilities = action.payload;
+    },
+    setUseClientResourceManifests: (state: GameDefsState, action: PayloadAction<boolean>) => {
+      state.useClientResourceManifests = action.payload;
     }
   }
 });
@@ -260,5 +237,6 @@ export const {
   updateAbilityNetworks,
   updateAbilityIconURLs,
   updateDamageTypes,
-  setShouldRefetchMyCharacterAbilities
+  setShouldRefetchMyCharacterAbilities,
+  setUseClientResourceManifests
 } = gameDefsSlice.actions;

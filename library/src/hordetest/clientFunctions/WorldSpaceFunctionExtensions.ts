@@ -41,11 +41,13 @@ export type HealthBarListener = (
   lifeState: LifeState,
   deathStartTime: number,
   downedStateEndTime: number,
+  interactionName: string,
+  interactionEnabled: boolean,
+  interactionDisabledReason: string,
+  interactionRange: number,
   bindingName: string,
   bindingIconClass: string,
-  reviveRange: number,
   worldTime: number,
-  hideReviveBar: boolean,
   resources: ArrayMap<EntityResource>
 ) => void;
 
@@ -70,6 +72,8 @@ export type InteractionBarListener = (
   description: string,
   gameplayType: ItemGameplayType,
   title: string,
+  enabled: boolean,
+  disabledReason?: string,
   progress?: number,
   keybind?: Binding
 ) => void;

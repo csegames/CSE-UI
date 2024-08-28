@@ -164,16 +164,15 @@ class AChampionSelect extends React.Component<Props> {
   }
 
   private getCurrentRequest(): SelectionRequest {
-    const roundID = this.props.currentSelection.roundID;
+    const reservationID = this.props.currentSelection.reservationID;
     const queued = this.props.requests.queued?.select;
-    if (queued?.roundID === roundID) return queued;
+    if (queued?.reservationID === reservationID) return queued;
     const active = this.props.requests.active?.select;
-    if (active?.roundID === roundID) return active;
+    if (active?.reservationID === reservationID) return active;
     const player = this.props.currentSelection.players.find((p) => p.id == this.props.accountID);
     const locked = player?.locked ?? false;
-    const championID =
-      player?.selectedChampion?.championID ?? player?.defaultChampion?.championID ?? this.props.champions[0].id;
-    return { roundID, championID, locked };
+    const championID = player?.champion?.championID ?? this.props.champions[0].id;
+    return { reservationID, championID, locked };
   }
 
   private getChampionThumbnail(championID: string): string {
@@ -196,8 +195,8 @@ class AChampionSelect extends React.Component<Props> {
   }
 
   private onChampionPick(championID: string) {
-    const roundID = this.props.currentSelection.roundID;
-    this.props.dispatch(selectChampion({ roundID, championID, locked: false }));
+    const reservationID = this.props.currentSelection.reservationID;
+    this.props.dispatch(selectChampion({ reservationID, championID, locked: false }));
     const champ = this.props.champions.find((c) => c.id == championID);
     if (champ?.championSelectSound) {
       game.playGameSound(champ.championSelectSound);
@@ -205,9 +204,9 @@ class AChampionSelect extends React.Component<Props> {
   }
 
   private async onLockIn(championID: string) {
-    const roundID = this.props.currentSelection.roundID;
-    this.props.dispatch(selectChampion({ roundID, championID, locked: true }));
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CHARACTER_SELECT_LOCK_IN);
+    const reservationID = this.props.currentSelection.reservationID;
+    this.props.dispatch(selectChampion({ reservationID, championID, locked: true }));
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CHARACTER_SELECT_LOCK_IN);
   }
 }
 

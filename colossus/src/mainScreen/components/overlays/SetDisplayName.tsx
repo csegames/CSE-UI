@@ -12,12 +12,10 @@ import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEv
 import { game } from '@csegames/library/dist/_baseGame';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { Dispatch } from 'redux';
 import { MiddleModalDisplay } from '../shared/MiddleModalDisplay';
 import { hideOverlay, Overlay } from '../../redux/navigationSlice';
-import { setUserShouldRefresh } from '../../redux/userSlice';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
-import { Dictionary } from '@reduxjs/toolkit';
+import { Dictionary, Dispatch } from '@reduxjs/toolkit';
 import {
   getStringTableValue,
   StringIDGeneralCancel,
@@ -25,6 +23,7 @@ import {
   StringIDGeneralUnknownError
 } from '../../helpers/stringTableHelpers';
 import { webConf } from '../../dataSources/networkConfiguration';
+import { refreshUser } from '../../dataSources/userNetworking';
 
 const Form = 'SetDisplayName-Form';
 const Title = 'SetDisplayName-Title';
@@ -69,7 +68,7 @@ class ASetDisplayName extends React.Component<Props, State> {
       const form = this.form.current;
       const newDisplayName: string = form['displayName'].value;
 
-      game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
       this.setState((s) => ({
         ...s,
         waitingOnRequest: true
@@ -77,7 +76,7 @@ class ASetDisplayName extends React.Component<Props, State> {
 
       var result = await webAPI.DisplayNameAPI.SetDisplayName(webConf, newDisplayName);
       if (result.ok) {
-        this.props.dispatch(setUserShouldRefresh(true)); // TODO : set up profile change subscription
+        refreshUser(); // TODO : set up profile change subscription
         this.onClose();
       } else {
         let lastError = getStringTableValue(StringIDGeneralUnknownError, this.props.stringTable);
@@ -99,7 +98,7 @@ class ASetDisplayName extends React.Component<Props, State> {
   }
 
   private onCancelClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
     this.onClose();
   }
 

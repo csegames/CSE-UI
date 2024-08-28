@@ -13,7 +13,7 @@ import {
   EquippedItem,
   Item,
   ItemStatDefinitionGQL,
-  ItemStatDisplayType,
+  StatDisplayType,
   StatDefinitionGQL
 } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
@@ -51,6 +51,10 @@ type Props = ReactProps & InjectedProps;
 class AItemStat extends React.Component<Props> {
   render(): JSX.Element {
     const stat = this.getStat();
+    if (!stat) {
+      return null;
+    }
+
     const requirementStatID =
       Object.keys(this.props.stats).find((statKey) => {
         const requirementStat = this.props.stats[statKey];
@@ -103,7 +107,7 @@ class AItemStat extends React.Component<Props> {
 
   getRenderedValue(value: number): number {
     const stat = this.getStat();
-    if (stat.displayType === ItemStatDisplayType.Percent) {
+    if (stat.displayType === StatDisplayType.Percent) {
       return value * 100;
     }
     return value;
@@ -114,7 +118,7 @@ class AItemStat extends React.Component<Props> {
     const pieces: string[] = [];
     pieces.push(addCommasToNumber(value.toFixed(stat.displayPrecision)));
 
-    if (stat.displayType === ItemStatDisplayType.Percent) {
+    if (stat.displayType === StatDisplayType.Percent) {
       pieces.push('%');
     }
     pieces.push(stat.unitDescription.toLowerCase());

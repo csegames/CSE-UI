@@ -19,11 +19,11 @@ import {
   QuestGQL,
   StringTableEntryDef,
   QuestDefGQL,
-  PerkDefGQL
+  PerkDefGQL,
+  ChampionInfo
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { startProfileRefresh } from '../../../../redux/profileSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import TooltipSource from '../../../../../shared/components/TooltipSource';
 import { getAllPendingRewardsForQuest } from './BattlePassUtils';
@@ -35,6 +35,7 @@ import {
 } from '../../../../helpers/stringTableHelpers';
 import { createAlertsForCollectedQuestProgress } from '../../../../helpers/perkUtils';
 import { webConf } from '../../../../dataSources/networkConfiguration';
+import { refreshProfile } from '../../../../dataSources/profileNetworking';
 
 const Container = 'BattlePass-DailyQuestPanel-Container';
 const ContentCenterer = 'BattlePass-DailyQuestPanel-ContentCenterer';
@@ -100,6 +101,7 @@ interface InjectedProps {
   localProfileVersion: number;
   stringTable: Dictionary<StringTableEntryDef>;
   perksByID: Dictionary<PerkDefGQL>;
+  champions: ChampionInfo[];
   dispatch?: Dispatch;
 }
 
@@ -423,6 +425,7 @@ class ADailyQuestPanel extends React.Component<Props, State> {
         quest,
         this.props.questsProgress.find((q) => q.id == quest.id),
         this.props.perksByID,
+        this.props.champions,
         this.props.dispatch
       );
 
@@ -439,7 +442,7 @@ class ADailyQuestPanel extends React.Component<Props, State> {
         }
       });
       // Get the new data.
-      this.props.dispatch(startProfileRefresh());
+      refreshProfile();
       // The "isWaiting" flag will be cleared in componentDidUpdate() once the updated quest data has been fetched.
     } else {
       this.props.dispatch(showError(res));
@@ -453,7 +456,7 @@ class ADailyQuestPanel extends React.Component<Props, State> {
 
     if (res.ok) {
       // Refresh the Profile.
-      this.props.dispatch?.(startProfileRefresh());
+      refreshProfile();
       // The "isWaiting" flag will be cleared in componentDidUpdate() once the updated quest data has been fetched.
     } else {
       this.setState({ isWaiting: false, waitingForProfileVersion: Number.MAX_VALUE });
@@ -465,7 +468,7 @@ class ADailyQuestPanel extends React.Component<Props, State> {
 
   private onBackClick() {
     this.props.dispatch(hideRightPanel());
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
   }
 
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot?: any): void {
@@ -485,6 +488,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { perks, dailyQuestResets, localProfileVersion } = state.profile;
   const { stringTable } = state.stringTable;
   const { perksByID } = state.store;
+  const { champions } = state.championInfo;
 
   return {
     ...ownProps,
@@ -498,7 +502,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     localProfileVersion,
     questsById,
     stringTable,
-    perksByID
+    perksByID,
+    champions
   };
 }
 

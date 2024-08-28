@@ -11,16 +11,21 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Overlay, hideOverlay, showError } from '../../redux/navigationSlice';
-import { PerkDefGQL, RMTPurchaseDefGQL, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import {
+  PerkDefGQL,
+  QuestGQL,
+  RMTPurchaseDefGQL,
+  StringTableEntryDef
+} from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { StringIDGeneralCancel, getStringTableValue } from '../../helpers/stringTableHelpers';
-import { arePurchaseLocksMatched } from '../../helpers/storeHelpers';
+import { areLocksFulfilled } from '../../helpers/storeHelpers';
 import { RealMoneyItem } from '../views/Lobby/Store/RealMoneyItem';
 import { Button } from '../shared/Button';
-import { startProfileRefresh } from '../../redux/profileSlice';
 import { ItemGainedToaster } from '../views/Lobby/Store/ItemGainedToaster';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
+import { refreshProfile } from '../../dataSources/profileNetworking';
 
 const Container = 'PurchaseGemsModal-Container';
 const Title = 'PurchaseGemsModal-Title';
@@ -45,6 +50,9 @@ interface InjectedProps {
   usingGamepad: boolean;
   usingGamepadInMainMenu: boolean;
   ownedPerks: Dictionary<number>;
+  progressionNodes: string[];
+  quests: QuestGQL[];
+  serverTimeDeltaMS: number;
   dispatch?: Dispatch;
 }
 
@@ -88,7 +96,13 @@ class APurchaseGemsModal extends React.Component<Props> {
     // Find all valid purchases that cost RealMoney.
     const rmt = this.props.rmtPurchases
       .filter((purchase: RMTPurchaseDefGQL) => {
-        return arePurchaseLocksMatched(purchase.locks, this.props.ownedPerks);
+        return areLocksFulfilled(
+          purchase.locks,
+          this.props.ownedPerks,
+          this.props.progressionNodes,
+          this.props.quests,
+          this.props.serverTimeDeltaMS
+        );
       })
       .sort((a: RMTPurchaseDefGQL, b: RMTPurchaseDefGQL) => {
         // Sorted from lowest Bux to highest Bux.
@@ -133,7 +147,7 @@ class APurchaseGemsModal extends React.Component<Props> {
 
     this.purchaseEVH = game.onSteamPurchaseComplete(this.onPurchaseComplete.bind(this, purchase));
     game.startSteamPurchase(purchase.id);
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
   }
 
   private async onPurchaseComplete(purchase: RMTPurchaseDefGQL, failed: boolean, canceled: boolean, error: string) {
@@ -161,7 +175,7 @@ class APurchaseGemsModal extends React.Component<Props> {
     }
 
     // The server says the purchase was completed successfully, so refetch to update all local state.
-    this.props.dispatch(startProfileRefresh());
+    refreshProfile();
 
     // Purchasing is only complete after we have updated our inventory locally.
     this.setState({ isPurchasing: false });
@@ -181,7 +195,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { usingGamepad, usingGamepadInMainMenu } = state.baseGame;
   const { stringTable } = state.stringTable;
   const { perksByID, rmtPurchases } = state.store;
-  const { ownedPerks } = state.profile;
+  const { ownedPerks, quests, progressionNodes } = state.profile;
+  const { serverTimeDeltaMS } = state.clock;
 
   return {
     ...ownProps,
@@ -190,7 +205,10 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     stringTable,
     perksByID,
     rmtPurchases,
-    ownedPerks
+    ownedPerks,
+    quests,
+    progressionNodes,
+    serverTimeDeltaMS
   };
 }
 

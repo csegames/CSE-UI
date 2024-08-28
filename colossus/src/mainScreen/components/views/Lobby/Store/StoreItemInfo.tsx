@@ -15,10 +15,12 @@ import {
   BUX_PERK_ID,
   OwnershipStatus,
   PurchaseOwnershipData,
+  getFinalPurchaseCost,
   getPurchaseOwnershipData,
   isFreeReward
 } from '../../../../helpers/storeHelpers';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
+import { PerkIcon } from './PerkIcon';
 
 const Root = 'StartScreen-Store-StoreItemInfo-Root';
 const Name = 'StartScreen-Store-StoreItemInfo-Name';
@@ -27,11 +29,10 @@ const BonusText = 'StartScreen-Store-StoreItemInfo-BonusText';
 const StatusFree = 'StartScreen-Store-StoreItemInfo-StatusFree';
 const StatusOwned = 'StartScreen-Store-StoreItemInfo-StatusOwned';
 const CostRow = 'StartScreen-Store-StoreItemInfo-CostRow';
-const CostIconImage = 'StartScreen-Store-StoreItemInfo-CostIconImage';
-const CostIconText = 'StartScreen-Store-StoreItemInfo-CostIconText';
 const CostFinal = 'StartScreen-Store-StoreItemInfo-CostFinal';
 const CostOriginal = 'StartScreen-Store-StoreItemInfo-CostOriginal';
 const CostName = 'StartScreen-Store-StoreItemInfo-CostName';
+const CostIcon = 'StartScreen-Store-StoreItemInfo-CostIcon';
 
 const StringIDStoreFree = 'StoreFree';
 const StringIDStoreOwned = 'StoreOwned';
@@ -68,8 +69,8 @@ class AStoreItemInfo extends React.Component<Props> {
   }
 
   private renderPriceOrStatus(ownershipData: PurchaseOwnershipData): React.ReactNode {
-    // Free.
-    if (isFreeReward(this.props.purchase)) {
+    // Free (and not yet claimed).  If it is already claimed, we will fall through and show "Owned".
+    if (isFreeReward(this.props.purchase) && ownershipData.status !== OwnershipStatus.FullyOwned) {
       return <div className={StatusFree}>{getStringTableValue(StringIDStoreFree, this.props.stringTable)}</div>;
     }
 
@@ -81,7 +82,8 @@ class AStoreItemInfo extends React.Component<Props> {
       }
       case OwnershipStatus.PartiallyOwned:
       case OwnershipStatus.Unowned: {
-        return <>{this.props.purchase.costs.map(this.renderPrice.bind(this, ownershipData))}</>;
+        const finalPrice = getFinalPurchaseCost(this.props.purchase, this.props.perksByID, this.props.ownedPerks);
+        return <>{this.props.purchase.costs.map(this.renderPrice.bind(this, finalPrice))}</>;
       }
     }
   }
@@ -99,46 +101,18 @@ class AStoreItemInfo extends React.Component<Props> {
     }
   }
 
-  private renderPrice(ownershipData: PurchaseOwnershipData, cost: CostDefGQL, index: number): React.ReactNode {
+  private renderPrice(finalPrices: CostDefGQL[], cost: CostDefGQL, index: number): React.ReactNode {
     const costPerk = this.props.perksByID[cost.perkID];
     if (!costPerk) {
       return null;
     }
 
-    const isTextIcon = costPerk.iconClass?.length > 0 && costPerk.iconClassColor?.length > 0;
-
     const originalPrice = cost.qty;
-    let finalPrice = originalPrice;
-    if (ownershipData.status === OwnershipStatus.PartiallyOwned) {
-      ownershipData.ownedUniquePerkIDs.forEach((pid) => {
-        const ownedPerk = this.props.purchase.perks.find((p) => {
-          return p.perkID === pid;
-        });
-        if (ownedPerk?.bundleDiscountPerkID === costPerk.id) {
-          finalPrice -= ownedPerk.bundleDiscountPerkQty;
-        }
-      });
-      // No negative costs permitted.  Should be prevented by the server already, but just in case.
-      finalPrice = Math.max(0, finalPrice);
-    }
+    let finalPrice = finalPrices.find((c) => c.perkID === cost.perkID).qty;
 
     return (
       <div className={CostRow} key={index}>
-        {isTextIcon ? (
-          <div
-            className={`${CostIconText} ${costPerk.iconClass}`}
-            style={{
-              color: `#${costPerk.iconClassColor}`,
-              // Sadly, the required margin may differ per iconClass.  This one worked for Gems at the time I wrote it.
-              marginLeft: costPerk.id === BUX_PERK_ID ? '-0.5vmin' : '0vmin'
-            }}
-          />
-        ) : (
-          <img
-            className={CostIconImage}
-            src={(costPerk?.iconURL?.length ?? 0) > 0 ? costPerk.iconURL : 'images/MissingAsset.png'}
-          />
-        )}
+        <PerkIcon className={CostIcon} perkID={cost.perkID} />
         <div className={CostFinal}>{addCommasToNumber(finalPrice)}</div>
         {finalPrice < originalPrice ? <div className={CostOriginal}>{addCommasToNumber(originalPrice)}</div> : null}
         {costPerk.id !== BUX_PERK_ID && <div className={CostName}>{costPerk.name}</div>}

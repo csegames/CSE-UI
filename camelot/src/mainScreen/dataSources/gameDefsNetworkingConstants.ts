@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import gql from 'graphql-tag';
-import { CUQuery } from '@csegames/library/dist/camelotunchained/graphql/schema';
+import { CUQuery, CUSubscription } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { Pick2 } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 
 // Specify the subset of keys from CUQuery that we are interested in.
@@ -14,7 +14,6 @@ export type GameDefsQueryResult = Pick2<
   | 'abilityNetworks'
   | 'damageTypes'
   | 'entityResources'
-  | 'factions'
   | 'gearSlots'
   | 'items'
   | 'itemStats'
@@ -25,10 +24,11 @@ export type GameDefsQueryResult = Pick2<
   | 'classes'
   | 'genders'
   | 'abilityComponents'
+  | 'manifests'
 >;
-export type StatusesQueryResult = Pick2<CUQuery, 'status', 'statuses'>;
 export type MyCharacterAbilitiesQueryResult = Pick2<CUQuery, 'myCharacter', 'abilities'>;
 export type MyCharacterStatsQueryResult = Pick2<CUQuery, 'myCharacter', 'stats'>;
+export type ManifestUpdateSubscriptionResult = Pick<CUSubscription, 'manifestUpdates'>;
 
 export const gameDefsQuery = gql`
   query GameDefsStaticDataQuery {
@@ -55,11 +55,10 @@ export const gameDefsQuery = gql`
         id
       }
 
-      factions {
-        description
-        hueRotation
+      manifests {
         id
-        name
+        schemaVersion
+        contents
       }
 
       gearSlots {
@@ -72,23 +71,7 @@ export const gameDefsQuery = gql`
 
       items {
         defaultResourceID
-        deploySettings {
-          controlRequirements
-          isDoor
-          itemPlacementType
-          itemTemplateType
-          mapIconClass
-          maxPitch
-          maxTerrainPitch
-          plotSize
-          requiredZoneType
-          resourceID
-          rotatePitch
-          rotateRoll
-          rotateYaw
-          skipDeployLimitCheck
-          snapToGround
-        }
+        isDeployable
         description
         equipRequirements
         gearSlotSets {
@@ -100,16 +83,6 @@ export const gameDefsQuery = gql`
         itemType
         name
         numericItemDefID
-        #TODO: We want to strip these down to an ID as well, probably, but we'd need to re-add "game.substances" to the query.
-        substanceDefinition {
-          id
-          maxQuality
-          minQuality
-          #As defined, this is a full ItemDefRef, but that would be recursive, so we just grab the id and look it up at runtime.
-          purifyItemDef {
-            id
-          }
-        }
         tags
       }
 
@@ -242,29 +215,6 @@ export const gameDefsQuery = gql`
   }
 `;
 
-export const statusesQuery = gql`
-  query StatusesStaticDataQuery {
-    status {
-      statuses {
-        blocksAbilities
-        description
-        iconClass
-        iconURL
-        id
-        name
-        numericID
-        statusTags
-        stacking {
-          group
-          removalOrder
-        }
-        uIText
-        uIVisibility
-      }
-    }
-  }
-`;
-
 export const myCharacterAbilitiesQuery = gql`
   query MyCharacterAbilitiesQuery {
     myCharacter {
@@ -294,6 +244,18 @@ export const myCharacterStatsQuery = gql`
         stat
         value
         description
+      }
+    }
+  }
+`;
+
+export const manifestUpdateSubscription = gql`
+  subscription ManifestUpdateSubscription {
+    manifestUpdates {
+      manifests {
+        id
+        schemaVersion
+        contents
       }
     }
   }

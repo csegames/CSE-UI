@@ -15,7 +15,6 @@ import { RootState } from '../../../redux/store';
 import { RuneType } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { hordetest } from '@csegames/library/dist/hordetest';
 import { LifeState } from '@csegames/library/dist/hordetest/game/types/LifeState';
-import { RuneGauge } from './RuneGauge';
 import { ArrayMap } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { EntityResource } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 
@@ -108,7 +107,6 @@ class ASelfHealthBar extends React.Component<Props, {}> {
 
     return (
       <div id='SelfHealthBarContainer' className={Container}>
-        <RuneGauge />
         <div id='SelfHealthBarColumnContainer' className={ColumnContainer}>
           <StatusBar />
           <HealthBar

@@ -22,7 +22,6 @@ export enum InitTopic {
   Inventory = 'inventory',
   MyCharacterAbilities = 'myCharacterAbilities',
   MyCharacterStats = 'myCharacterStats',
-  Statuses = 'statuses',
   Warband = 'warband',
   Zones = 'zones'
 }

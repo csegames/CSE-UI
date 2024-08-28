@@ -14,29 +14,51 @@ import {
   OvermindSummaryGQL,
   MVP,
   StringTableEntryDef,
-  PerkDefGQL
+  PerkDefGQL,
+  ScenarioDefGQL
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Button } from '../../shared/Button';
-import { StringIDGeneralContinue, getStringTableValue } from '../../../helpers/stringTableHelpers';
+import {
+  StringIDGeneralContinue,
+  getStringTableValue,
+  getTokenizedStringTableValue
+} from '../../../helpers/stringTableHelpers';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
+import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numberUtils';
 
 const MVPPage = 'GameStats-SummaryMVP-MVPPage';
-const Container = 'GameStats-SummaryMVP-Container';
+const MVPContainer = 'GameStats-SummaryMVP-MVPContainer';
 const MVPStatsContainer = 'GameStats-SummaryMVP-MVPStatsContainer';
 const MVPTitle = 'GameStats-SummaryMVP-MVPTitle';
 const MVPName = 'GameStats-SummaryMVP-MVPName';
 const MVPDescription = 'GameStats-SummaryMVP-MVPDescription';
-const ButtonContainer = 'GameStats-SummaryMVP-ButtonContainer';
-const ChampionImage = 'GameStats-SummaryMVP-ChampionImage';
+const ContinueButtonContainer = 'GameStats-SummaryMVP-ContinueButtonContainer';
+const MVPChampionImage = 'GameStats-SummaryMVP-MVPChampionImage';
 const MVPTitleContainer = 'GameStats-SummaryMVP-MVPTitleContainer';
 const MVPPlayerContainer = 'GameStats-SummaryMVP-MVPPlayerContainer';
 const MVPIcon = 'GameStats-SummaryMVP-MVPIcon';
 const MVPPlayerNameContainer = 'GameStats-SummaryMVP-MVPPlayerNameContainer';
 const MVPChampionName = 'GameStats-SummaryMVP-MVPChampionName';
+const PersonalStatsContainer = 'GameStats-SummaryMVP-PersonalStatsContainer';
+const PersonalStatsChampionImage = 'GameStats-SummaryMVP-PersonalStatsChampionImage';
+const PersonalStatsValuesContainer = 'GameStats-SummaryMVP-PersonalStatsValuesContainer';
+const PersonalStatsTitleContainer = 'GameStats-SummaryMVP-PersonalStatsTitleContainer';
+const PersonalStatsTitle = 'GameStats-SummaryMVP-PersonalStatsTitle';
+const PersonalStatsDescription = 'GameStats-SummaryMVP-PersonalStatsDescription';
+const PersonalStatsPlayerContainer = 'GameStats-SummaryMVP-PersonalStatsPlayerContainer';
+const PersonalStatsIcon = 'GameStats-SummaryMVP-PersonalStatsIcon';
+const PersonalStatsPlayerNameContainer = 'GameStats-SummaryMVP-PersonalStatsPlayerNameContainer';
+const PersonalStatsName = 'GameStats-SummaryMVP-PersonalStatsName';
+const PersonalStatsChampionName = 'GameStats-SummaryMVP-PersonalStatsChampionName';
+
+const StringIDGameStatsPersonalHeading = 'GameStatsPersonalHeading';
+const StringIDGameStatsPersonalKills = 'GameStatsPersonalKills';
+const StringIDGameStatsPersonalDamageDealt = 'GameStatsPersonalDamageDealt';
 
 interface ReactProps {
   overmindSummary: OvermindSummaryGQL;
   initialPageShow: boolean;
+  showContinue?: boolean;
   onClose: (e?: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -45,6 +67,9 @@ interface InjectedProps {
   champions: ChampionInfo[];
   perksByID: Dictionary<PerkDefGQL>;
   stringTable: Dictionary<StringTableEntryDef>;
+  overmindSummary: OvermindSummaryGQL;
+  accountID: string;
+  scenarioDef: ScenarioDefGQL;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -57,10 +82,15 @@ class ASummaryMVP extends React.Component<Props> {
   render() {
     return (
       <div className={MVPPage}>
-        {this.renderMVP(2)}
-        {this.renderMVP(1)}
-        {this.renderMVP(0)}
-        {this.renderContinueButton()}
+        {!this.props.scenarioDef?.showScoreAsRank && (
+          <>
+            {this.renderMVP(2)}
+            {this.renderMVP(1)}
+            {this.renderMVP(0)}
+          </>
+        )}
+        {this.props.scenarioDef?.showScoreAsRank && this.renderPersonalStats()}
+        {this.props.showContinue && this.renderContinueButton()}
       </div>
     );
   }
@@ -70,7 +100,7 @@ class ASummaryMVP extends React.Component<Props> {
       const showAnimations = this.props.initialPageShow ? 'ShowAnimations' : '';
 
       return (
-        <div className={`${ButtonContainer} ${showAnimations}`}>
+        <div className={`${ContinueButtonContainer} ${showAnimations}`}>
           <Button
             type={'blue'}
             text={getStringTableValue(StringIDGeneralContinue, this.props.stringTable)}
@@ -111,8 +141,8 @@ class ASummaryMVP extends React.Component<Props> {
     const indexStyle = `Index${index}`;
 
     return (
-      <div className={`${Container} ${indexStyle} ${showAnimations}`}>
-        <img className={`${ChampionImage} ${primary} ${showAnimations}`} src={costume.standingImageURL} />
+      <div className={`${MVPContainer} ${indexStyle} ${showAnimations}`}>
+        <img className={`${MVPChampionImage} ${primary} ${showAnimations}`} src={costume.standingImageURL} />
         <div className={`${MVPStatsContainer} ${showAnimations} ${indexStyle}`}>
           <div className={MVPTitleContainer}>
             <div className={MVPTitle}>{mvp.mVPName}</div>
@@ -129,19 +159,76 @@ class ASummaryMVP extends React.Component<Props> {
       </div>
     );
   }
+
+  private renderPersonalStats(): JSX.Element {
+    const characterSummary = this.props.overmindSummary.characterSummaries.find(
+      (summary) => summary.accountID === this.props.accountID
+    );
+
+    const champion = this.props.champions.find((c) => c.id == characterSummary.classID);
+    if (champion == null) {
+      return null;
+    }
+
+    const costume = this.props.championCostumes.find((c) => c.id == characterSummary.raceID);
+    if (costume == null) {
+      return null;
+    }
+
+    const showAnimations = this.props.initialPageShow ? 'ShowAnimations' : '';
+
+    const portrait =
+      this.props.perksByID[characterSummary.portraitPerkID]?.portraitThumbnailURL ?? costume.thumbnailURL;
+
+    return (
+      <div className={`${PersonalStatsContainer} ${showAnimations}`}>
+        <img className={`${PersonalStatsChampionImage} ${showAnimations}`} src={costume.standingImageURL} />
+        <div className={`${PersonalStatsValuesContainer} ${showAnimations}`}>
+          <div className={PersonalStatsTitleContainer}>
+            <div className={PersonalStatsTitle}>
+              {getStringTableValue(StringIDGameStatsPersonalHeading, this.props.stringTable)}
+            </div>
+            <div className={PersonalStatsDescription}>
+              {getTokenizedStringTableValue(StringIDGameStatsPersonalKills, this.props.stringTable, {
+                KILLS: printWithSeparator(characterSummary.kills, ',')
+              })}
+            </div>
+            <div className={PersonalStatsDescription}>
+              {getTokenizedStringTableValue(StringIDGameStatsPersonalDamageDealt, this.props.stringTable, {
+                DAMAGE: printWithSeparator(characterSummary.damageApplied, ',')
+              })}
+            </div>
+          </div>
+          <div className={PersonalStatsPlayerContainer}>
+            <div className={PersonalStatsIcon} style={{ backgroundImage: `url(${portrait})` }} />
+            <div className={PersonalStatsPlayerNameContainer}>
+              <div className={PersonalStatsName}>{characterSummary.userName}</div>
+              <div className={PersonalStatsChampionName}>{champion.name}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { championCostumes, champions } = state.championInfo;
   const { stringTable } = state.stringTable;
   const { perksByID } = state.store;
+  const { overmindSummary } = state.gameStats;
+  const { id: accountID } = state.user;
+  const { scenarioDefs } = state.scenarios;
 
   return {
     ...ownProps,
     championCostumes,
     champions,
     stringTable,
-    perksByID
+    perksByID,
+    overmindSummary,
+    accountID,
+    scenarioDef: scenarioDefs[overmindSummary?.scenarioID]
   };
 }
 

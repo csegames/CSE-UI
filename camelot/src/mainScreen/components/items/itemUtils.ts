@@ -24,8 +24,8 @@ import {
   Faction
 } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { ItemResourceID, ItemStatID } from './itemData';
-import { InventoryStackSplit, moveInventoryItems, setShouldInventoryRefresh } from '../../redux/inventorySlice';
-import { moveEquippedItems, setShouldEquippedItemsRefresh } from '../../redux/equippedItemsSlice';
+import { InventoryStackSplit, moveInventoryItems } from '../../redux/inventorySlice';
+import { moveEquippedItems } from '../../redux/equippedItemsSlice';
 import { Dispatch } from '@reduxjs/toolkit';
 import { addErrorNotice } from '../../redux/errorNoticesSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
@@ -36,6 +36,8 @@ import { WIDGET_NAME_INVENTORY } from '../inventory/Inventory';
 import { game } from '@csegames/library/dist/_baseGame';
 import { UIReaction } from '@csegames/library/dist/camelotunchained/game/types/ItemActions';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
+import { refreshInventory } from '../../dataSources/inventoryService';
+import { refreshEquippedItems } from '../../dataSources/equippedItemsService';
 
 enum EquipmentRequirementOperator {
   Equals = 'Equals',
@@ -53,10 +55,8 @@ export interface MoveItemRequest {
   CharacterIDTo: string;
   PositionTo: number;
   ContainerIDTo: string;
-  DrawerIDTo: string;
+  DrawerIndexTo: number;
   GearSlotIDTo: string;
-  VoxSlotTo: string;
-  BuildingIDTo: string;
   WorldPositionTo: Vec3f;
   RotationTo: Euler3f;
   BoneAliasTo: number;
@@ -70,9 +70,9 @@ interface EquipRequirement {
   Operator: EquipmentRequirementOperator;
 }
 
-export const refreshItems = (dispatch: Dispatch): void => {
-  dispatch(setShouldInventoryRefresh(true));
-  dispatch(setShouldEquippedItemsRefresh(true));
+export const refreshItems = (): void => {
+  refreshInventory();
+  refreshEquippedItems();
 };
 
 export const isItemStatRenderable = (
@@ -111,9 +111,7 @@ export const getItemStatCompareValue = (
   if (!item.location.equipped) {
     const gearSlotID = getItemGearSlotID(item);
     if (gearSlotID) {
-      const equippedItem = equippedItems.find((equippedItem) =>
-        equippedItem.item.location.equipped.gearSlots.includes(gearSlotID)
-      );
+      const equippedItem = equippedItems.find((equippedItem) => equippedItem.gearSlots.includes(gearSlotID));
       const statValue = equippedItem?.item?.statList?.find(({ statID }) => statID === itemStatID)?.value ?? 0;
       return getItemStatValue(item, itemStatID) - statValue;
     }
@@ -140,11 +138,18 @@ export const getItemGearSlotID = (item: Item): string | null => {
   return null;
 };
 
-export const isItemDroppable = (item: Item): number => {
-  if (!item || !item.permissibleHolder || !item.permissibleHolder.userPermissions) {
-    return ItemPermissions.All;
+export const isItemDroppable = (item: Item): boolean => {
+  if (!item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return true;
   }
-  return item.permissibleHolder.userPermissions & ItemPermissions.Ground;
+  return !!(item.permissibleHolder.userPermissions & ItemPermissions.Ground);
+};
+
+export const isItemTrashable = (item: Item): boolean => {
+  if (!item.permissibleHolder || !item.permissibleHolder.userPermissions) {
+    return true;
+  }
+  return !!(item.permissibleHolder.userPermissions & ItemPermissions.Trash);
 };
 
 export const getItemUnitCount = (item: Item): number => {
@@ -153,14 +158,6 @@ export const getItemUnitCount = (item: Item): number => {
 
 export const canItemsStack = (itemA: Item, itemB: Item): boolean => {
   if (itemA.staticDefinition.id !== itemB.staticDefinition.id) {
-    return false;
-  }
-
-  // If either of these items are restricted to a scenario, they both have to be restricted to the same scenario.
-  if (
-    itemA.scenarioRelationship?.restrictedToScenario !== itemB.scenarioRelationship?.restrictedToScenario ||
-    itemA.scenarioRelationship?.scenarioID !== itemB.scenarioRelationship?.scenarioID
-  ) {
     return false;
   }
 
@@ -218,9 +215,7 @@ export const getMoveErrors = (
         (inventoryItem) => inventoryItem.location.inventory.position === move.PositionTo
       );
     } else if (move.LocationTo === MoveItemRequestLocationType.Equipment) {
-      targetItem = equippedItems.find((equippedItem) =>
-        equippedItem.item.location.equipped.gearSlots.includes(move.GearSlotIDTo)
-      )?.item;
+      targetItem = equippedItems.find((equippedItem) => equippedItem.gearSlots.includes(move.GearSlotIDTo))?.item;
     }
 
     // Splitting a stack to an occupied slot
@@ -357,17 +352,15 @@ export const attemptItemMoves = (
         move.CharacterIDTo,
         move.PositionTo,
         move.ContainerIDTo,
-        move.DrawerIDTo,
+        move.DrawerIndexTo,
         gearSlots[move.GearSlotIDTo]?.numericID ?? 0,
-        move.VoxSlotTo,
-        move.BuildingIDTo,
         move.WorldPositionTo,
         move.RotationTo,
         move.BoneAliasTo
       );
     }
 
-    refreshItems(dispatch);
+    refreshItems();
   }
 };
 
@@ -448,10 +441,8 @@ export const moveHiddenItems = (
         CharacterIDTo: characterID,
         PositionTo: i,
         ContainerIDTo: '0000000000000000000000',
-        DrawerIDTo: null,
+        DrawerIndexTo: 0,
         GearSlotIDTo: null,
-        VoxSlotTo: null,
-        BuildingIDTo: '0000000000000000000000',
         WorldPositionTo: null,
         RotationTo: null,
         BoneAliasTo: 0

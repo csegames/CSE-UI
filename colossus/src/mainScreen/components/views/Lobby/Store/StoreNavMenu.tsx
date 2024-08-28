@@ -15,16 +15,17 @@ import {
   PerkDefGQL,
   PerkType,
   PurchaseDefGQL,
+  QuestGQL,
   RMTPurchaseDefGQL
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { isFreeReward, isPurchaseable } from '../../../../helpers/storeHelpers';
 import { Header } from '../../../shared/Header';
 import { Button } from '../../../shared/Button';
-import { storeLocalStore } from '../../../../localStorage/storeLocalStorage';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
 import { Overlay, showOverlay } from '../../../../redux/navigationSlice';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'StartScreen-Store-StoreNavMenu-Container';
 const HeaderStyles = 'StartScreen-Store-StoreNavMenu-HeaderStyles';
@@ -49,6 +50,18 @@ const StringIDStoreTabSprintFX = 'StoreTabSprintFX';
 const StringIDStoreTabQuestXP = 'StoreTabQuestXP';
 const StringIDStoreBuyGems = 'StoreBuyGems';
 
+const TabSounds = {
+  [StoreRoute.Bundles]: SoundEvents.PLAY_UI_STOREMENU_BUNDLES_SELECT,
+  [StoreRoute.Emotes]: SoundEvents.PLAY_UI_STOREMENU_EMOTES_SELECT,
+  [StoreRoute.None]: 0,
+  [StoreRoute.Portraits]: SoundEvents.PLAY_UI_STOREMENU_PORTRAITS_SELECT,
+  [StoreRoute.QuestXP]: SoundEvents.PLAY_UI_STOREMENU_POTIONS_SELECT,
+  [StoreRoute.Rewards]: SoundEvents.PLAY_UI_STOREMENU_REWARDS_SELECT,
+  [StoreRoute.Skins]: SoundEvents.PLAY_UI_STOREMENU_SKINS_SELECT,
+  [StoreRoute.SprintFX]: SoundEvents.PLAY_UI_STOREMENU_SPRINTS_SELECT,
+  [StoreRoute.Weapons]: SoundEvents.PLAY_UI_STOREMENU_WEAPONS_SELECT
+};
+
 interface ReactProps {
   dispatch?: Dispatch;
 }
@@ -62,6 +75,9 @@ interface InjectedProps {
   ownedPerks: Dictionary<number>;
   perksByID: Dictionary<PerkDefGQL>;
   stringTable: Dictionary<StringTableEntryDef>;
+  progressionNodes: string[];
+  quests: QuestGQL[];
+  serverTimeDeltaMS: number;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -138,17 +154,27 @@ class AStoreNavMenu extends React.Component<Props> {
   }
 
   private onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
   }
 
   private onClick(route: StoreRoute) {
     this.props.dispatch(updateStoreCurrentRoute(route));
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+    game.playGameSound(TabSounds[route]);
   }
 
   private hasUnclaimedRewards(): boolean {
     const reward = this.props.purchases.find((purchase) => {
-      return isFreeReward(purchase) && isPurchaseable(purchase, this.props.perksByID, this.props.ownedPerks);
+      return (
+        isFreeReward(purchase) &&
+        isPurchaseable(
+          purchase,
+          this.props.perksByID,
+          this.props.ownedPerks,
+          this.props.progressionNodes,
+          this.props.quests,
+          this.props.serverTimeDeltaMS
+        )
+      );
     });
 
     return reward !== undefined;
@@ -253,7 +279,16 @@ class AStoreNavMenu extends React.Component<Props> {
       }
       // Finally, if it's not purchaseable, then it won't show in the store, so no need to badge for it.
       // This check inspects time-based locks, so it will refresh every time Redux pings it.
-      return isPurchaseable(purchase, this.props.perksByID, this.props.ownedPerks) && !isFreeReward(purchase);
+      return (
+        isPurchaseable(
+          purchase,
+          this.props.perksByID,
+          this.props.ownedPerks,
+          this.props.progressionNodes,
+          this.props.quests,
+          this.props.serverTimeDeltaMS
+        ) && !isFreeReward(purchase)
+      );
     });
 
     return newPurchase !== undefined;
@@ -275,7 +310,16 @@ class AStoreNavMenu extends React.Component<Props> {
       }
       // Finally, if it's not purchaseable, then it won't show in the store, so no need to badge for it.
       // This check inspects time-based locks, so it will refresh every time Redux pings it.
-      return isPurchaseable(purchase, this.props.perksByID, this.props.ownedPerks) && !isFreeReward(purchase);
+      return (
+        isPurchaseable(
+          purchase,
+          this.props.perksByID,
+          this.props.ownedPerks,
+          this.props.progressionNodes,
+          this.props.quests,
+          this.props.serverTimeDeltaMS
+        ) && !isFreeReward(purchase)
+      );
     });
 
     return newBundlePurchase !== undefined;
@@ -283,11 +327,11 @@ class AStoreNavMenu extends React.Component<Props> {
 
   private markAllSeen(): void {
     // loop through the currently badged items and update the locally stored data.
-    const seenPurchases = storeLocalStore.getSeenPurchases();
+    const seenPurchases = clientAPI.getSeenPurchases();
     for (const [key] of Object.entries(this.props.newPurchases)) {
       seenPurchases[key] = true;
     }
-    storeLocalStore.setSeenPurchases(seenPurchases);
+    clientAPI.setSeenPurchases(seenPurchases);
 
     // now update redux that it is empty
     const emptyNewPurchases: Dictionary<boolean> = {};
@@ -297,7 +341,8 @@ class AStoreNavMenu extends React.Component<Props> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { currentRoute, purchases, rmtPurchases, newPurchases, perks, perksByID } = state.store;
-  const { ownedPerks } = state.profile;
+  const { ownedPerks, quests, progressionNodes } = state.profile;
+  const { serverTimeDeltaMS } = state.clock;
   const { stringTable } = state.stringTable;
 
   return {
@@ -309,7 +354,10 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     perks,
     ownedPerks,
     perksByID,
-    stringTable
+    stringTable,
+    quests,
+    progressionNodes,
+    serverTimeDeltaMS
   };
 }
 

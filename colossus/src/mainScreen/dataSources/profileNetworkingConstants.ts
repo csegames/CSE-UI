@@ -37,6 +37,7 @@ export const profileQuery = gql`
 
       dailyQuestResets
       defaultChampionID
+      progressionNodes
 
       lifetimeStats {
         damageApplied

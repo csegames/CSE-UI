@@ -14,6 +14,7 @@ import { hideAllOverlays, showError } from '../../redux/navigationSlice';
 import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import {
+  ChampionInfo,
   PerkDefGQL,
   PerkGQL,
   QuestDefGQL,
@@ -28,10 +29,10 @@ import {
 } from '../views/Lobby/BattlePass/BattlePassUtils';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { GenericToaster } from '../GenericToaster';
-import { startProfileRefresh } from '../../redux/profileSlice';
 import { createAlertsForCollectedQuestProgress } from '../../helpers/perkUtils';
 import { ItemGrid } from '../shared/ItemGrid';
 import { webConf } from '../../dataSources/networkConfiguration';
+import { refreshProfile } from '../../dataSources/profileNetworking';
 
 const Container = 'ClaimBattlePassModal-Container';
 const Title = 'ClaimBattlePassModal-Title';
@@ -57,6 +58,7 @@ interface InjectedProps {
   battlePassQuests: QuestDefGQL[];
   stringTable: Dictionary<StringTableEntryDef>;
   perksByID: Dictionary<PerkDefGQL>;
+  champions: ChampionInfo[];
   dispatch?: Dispatch;
 }
 
@@ -101,7 +103,7 @@ class AClaimBattlePassModal extends React.Component<Props, State> {
       return;
     }
 
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
 
     this.setState({ isClaimingRewards: true });
 
@@ -124,6 +126,7 @@ class AClaimBattlePassModal extends React.Component<Props, State> {
             q,
             this.props.quests.find((q) => q.id == q.id),
             this.props.perksByID,
+            this.props.champions,
             this.props.dispatch
           )
         );
@@ -137,12 +140,10 @@ class AClaimBattlePassModal extends React.Component<Props, State> {
           />
         );
         // Get the new data.
-        this.props.dispatch(
-          startProfileRefresh(() => {
-            this.setState({ isClaimingRewards: false });
-            this.onClose();
-          })
-        );
+        refreshProfile(() => {
+          this.setState({ isClaimingRewards: false });
+          this.onClose();
+        }, this.props.dispatch);
       }
     });
   }
@@ -153,12 +154,14 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const battlePassQuests = state.quests.quests?.BattlePass;
   const { stringTable } = state.stringTable;
   const { perksByID } = state.store;
+  const { champions } = state.championInfo;
 
   return {
     ...ownProps,
     perks,
     quests,
     battlePassQuests,
+    champions,
     stringTable,
     perksByID
   };

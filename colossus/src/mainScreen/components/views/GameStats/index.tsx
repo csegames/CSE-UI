@@ -23,16 +23,19 @@ import { RootState } from '../../../redux/store';
 import { Dispatch } from 'redux';
 import { MatchEndSequence, setMatchEnd } from '../../../redux/matchSlice';
 import { PlayerProgression } from './PlayerProgression';
-import { startProfileRefresh } from '../../../redux/profileSlice';
 import { AccountID, ScenarioDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../helpers/stringTableHelpers';
 import { updateMutedAll } from '../../../redux/voiceChatSlice';
+import { refreshProfile } from '../../../dataSources/profileNetworking';
 
 const Container = 'GameStats-Container';
 const TopContainer = 'GameStats-TopContainer';
 const TitleContainer = 'GameStats-TitleContainer';
 const OutcomeText = 'GameStats-OutcomeText';
+const PlacementText = 'GameStats-PlacementText';
+const PlacementTextLabel = 'GameStats-PlacementTextLabel';
+const PlacementTextValue = 'GameStats-PlacementTextValue';
 const TeamStats = 'GameStats-TeamStats';
 const TeamStatName = 'GameStats-TeamStatName';
 const ScenarioTitleContainer = 'GameStats-ScenarioTitleContainer';
@@ -57,7 +60,9 @@ const StringIDGameStatsMatchOverview = 'GameStatsMatchOverview';
 const StringIDGameStatsMVP = 'GameStatsMVP';
 const StringIDGameStatsLeaderboard = 'GameStatsLeaderboard';
 const StringIDGameStatsPlayerStats = 'GameStatsPlayerStats';
-const StringIDGameStatsLeave = 'GameStatsLeave';
+const StringIDLeaveMatch = 'GeneralLeaveMatch';
+const StringIDGameStatsPlacementLabel = 'GameStatsPlacementLabel';
+const StringIDGameStatsPlacementValue = 'GameStatsPlacementValue';
 
 interface ReactProps {}
 
@@ -118,13 +123,16 @@ class AGameStats extends React.Component<Props, State> {
       // TODO : display loading screen / spinner
       return null;
     }
-    const winLoseClass = this.scenarioWon() ? 'victory' : 'defeat';
+    const winLoseClass = this.scenarioWon() ? 'victory' : this.props.scenarioDef?.showScoreAsRank ? 'place' : 'defeat';
     const winLoseText = this.scenarioWon()
       ? getStringTableValue(StringIDGameStatsVictory, this.props.stringTable)
       : getStringTableValue(StringIDGameStatsDefeat, this.props.stringTable);
     const displayName = this.props.scenarioDef?.name ?? '';
 
     const scoreTokens = { SCORE: printWithSeparator(this.getTotalScore(overmindSummary), ',') };
+
+    const player = overmindSummary.characterSummaries.find((p) => p.accountID == this.props.accountID);
+
     return (
       <>
         <div className={`${TopContainer} ${winLoseClass}`}>
@@ -135,19 +143,37 @@ class AGameStats extends React.Component<Props, State> {
               </div>
               <div className={ScenarioName}>{displayName}</div>
             </div>
-            <div className={`${OutcomeText} ${winLoseClass}`}>{winLoseText}</div>
-            <div className={TeamStats}>
-              <div className={TeamStatName}>
-                {getTokenizedStringTableValue(StringIDGameStatsFinalScore, this.props.stringTable, scoreTokens)}
+            {this.props.scenarioDef?.showScoreAsRank && this.scenarioWon() && (
+              <div className={`${OutcomeText} ${winLoseClass}`}>{winLoseText}</div>
+            )}
+            {this.props.scenarioDef?.showScoreAsRank && !this.scenarioWon() && (
+              <div className={PlacementText}>
+                <div className={PlacementTextLabel}>
+                  {getStringTableValue(StringIDGameStatsPlacementLabel, this.props.stringTable)}
+                </div>
+                <div className={PlacementTextValue}>
+                  {getTokenizedStringTableValue(StringIDGameStatsPlacementValue, this.props.stringTable, {
+                    PLACE: String(player.score)
+                  })}
+                </div>
               </div>
-            </div>
+            )}
+            {!this.props.scenarioDef?.showScoreAsRank && (
+              <div className={TeamStats}>
+                <div className={TeamStatName}>
+                  {getTokenizedStringTableValue(StringIDGameStatsFinalScore, this.props.stringTable, scoreTokens)}
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className={MainSection}>
           {this.renderTabButtons()}
           {this.state.closedMVPPage && <div className={TabSeparator} />}
           <div className={StatsTabSection}>{this.tryRenderCurrentPage()}</div>
-          {this.state.closedMVPPage && <div className={ButtonMargin}>{this.renderLeaveButton()}</div>}
+          {(this.state.closedMVPPage || this.getNewTab() === null) && (
+            <div className={ButtonMargin}>{this.renderLeaveButton()}</div>
+          )}
         </div>
       </>
     );
@@ -160,7 +186,7 @@ class AGameStats extends React.Component<Props, State> {
     // after we've pulled down the overmind summary.  This is really a hack, which will become unnecessary
     // once we have subscriptions for profile updates.
     if (!this.state.fetchedProfile && this.props.overmindSummary != null) {
-      this.props.dispatch(startProfileRefresh());
+      refreshProfile();
       this.setState({ fetchedProfile: true });
     }
   }
@@ -183,7 +209,7 @@ class AGameStats extends React.Component<Props, State> {
         {this.renderTab(CurrentTab.MVP, StringIDGameStatsMVP)}
         {this.allowPlayerProgressTab() && this.renderTab(CurrentTab.Progression, StringIDGameStatsPlayerStats)}
         {this.renderMatchOverview()}
-        {this.renderTab(CurrentTab.Leaderboard, StringIDGameStatsLeaderboard)}
+        {this.allowLeaderboardTab() && this.renderTab(CurrentTab.Leaderboard, StringIDGameStatsLeaderboard)}
       </div>
     );
   }
@@ -224,6 +250,7 @@ class AGameStats extends React.Component<Props, State> {
       case CurrentTab.MVP:
         return (
           <SummaryMVP
+            showContinue={this.getNewTab() !== null}
             overmindSummary={this.props.overmindSummary}
             initialPageShow={this.state.closedMVPPage == false}
             onClose={this.onCloseMVPPage.bind(this)}
@@ -233,14 +260,20 @@ class AGameStats extends React.Component<Props, State> {
   }
 
   private onCloseMVPPage(): void {
-    var newTab: CurrentTab = CurrentTab.Leaderboard;
-    if (this.allowPlayerProgressTab()) {
-      newTab = CurrentTab.Progression;
-    } else if (this.allowMatchOverviewTab()) {
-      newTab = CurrentTab.MatchOverview;
-    }
+    this.setState({ closedMVPPage: true, currentTab: this.getNewTab() });
+  }
 
-    this.setState({ closedMVPPage: true, currentTab: newTab });
+  private getNewTab(): CurrentTab | null {
+    if (this.allowPlayerProgressTab()) {
+      return CurrentTab.Progression;
+    }
+    if (this.allowMatchOverviewTab()) {
+      return CurrentTab.MatchOverview;
+    }
+    if (this.allowLeaderboardTab()) {
+      return CurrentTab.Leaderboard;
+    }
+    return null;
   }
 
   private renderScorePanels(): JSX.Element {
@@ -293,6 +326,10 @@ class AGameStats extends React.Component<Props, State> {
     );
   }
 
+  private allowLeaderboardTab(): boolean {
+    return this.props.scenarioDef != null && this.props.scenarioDef.showLeaderboardTab;
+  }
+
   private getTotalScore(overmindSummary: OvermindSummaryGQL): number {
     if (!overmindSummary || !overmindSummary.scorePanels) {
       return totalScore;
@@ -312,7 +349,7 @@ class AGameStats extends React.Component<Props, State> {
         text={
           <>
             <span className={`${ConsoleIcon} icon-xb-b`} />{' '}
-            {getStringTableValue(StringIDGameStatsLeave, this.props.stringTable)}
+            {getStringTableValue(StringIDLeaveMatch, this.props.stringTable)}
           </>
         }
         styles={ButtonStyle}
@@ -320,7 +357,7 @@ class AGameStats extends React.Component<Props, State> {
     ) : (
       <Button
         type='blue'
-        text={getStringTableValue(StringIDGameStatsLeave, this.props.stringTable)}
+        text={getStringTableValue(StringIDLeaveMatch, this.props.stringTable)}
         onClick={this.onLeaveClick.bind(this)}
         styles={ButtonStyle}
       />
@@ -338,7 +375,7 @@ class AGameStats extends React.Component<Props, State> {
   }
 
   private onLeaveClick(): void {
-    this.props.dispatch(startProfileRefresh());
+    refreshProfile();
     this.props.dispatch(updateMutedAll(false));
     this.props.dispatch(
       setMatchEnd({ matchID: this.props.matchID, sequence: MatchEndSequence.GotoLobby, refresh: true })

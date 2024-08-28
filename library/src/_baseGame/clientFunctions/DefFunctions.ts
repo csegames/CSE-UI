@@ -9,31 +9,32 @@ import { EventEmitter } from '../../_baseGame/types/EventEmitter';
 import { ListenerHandle } from '../../_baseGame/listenerHandle';
 import { AbilityDisplayDef } from '../types/AbilityTypes';
 import { CharacterClassDef, CharacterRaceDef } from '../../hordetest/game/types/CharacterDef';
-import { StatusDef } from '../types/StatusDef';
+import { ManifestDef } from '../../camelotunchained/graphql/schema';
 
 export type AbilityDisplayDefsListener = (defs: AbilityDisplayDef[]) => void;
 export type CharacterClassDefsListener = (defs: CharacterClassDef[]) => void;
 export type CharacterRaceDefsListener = (defs: CharacterRaceDef[]) => void;
-export type StatusDefsListener = (defs: StatusDef[]) => void;
+export type ManifestDefsListener = (defs: ManifestDef[]) => void;
 
 // client -> UI (see UIEvents.h)
 const abilityDisplayDefsEventName = 'abilityDisplay.defsLoaded';
 const characterClassDefsEventName = 'class.defsLoaded';
 const characterRaceDefsEventName = 'race.defsLoaded';
 const statusDefsEventName = 'status.defsLoaded';
+const manifestDefsEventName = 'manifest.defsLoaded';
 
 export interface DefFunctions {
   bindAbilityDisplayDefsListener(listener: AbilityDisplayDefsListener): ListenerHandle;
   bindCharacterClassDefsListener(listener: CharacterClassDefsListener): ListenerHandle;
   bindCharacterRaceDefsListener(listener: CharacterRaceDefsListener): ListenerHandle;
-  bindStatusDefsListener(listener: StatusDefsListener): ListenerHandle;
+  bindManifestDefsListener(listener: ManifestDefsListener): ListenerHandle;
 }
 
 export interface DefMocks {
   triggerAbilityDisplayDefsLoaded(defs: AbilityDisplayDef[]): void;
   triggerCharacterClassDefsLoaded(defs: CharacterClassDef[]): void;
   triggerCharacterRaceDefsLoaded(defs: CharacterRaceDef[]): void;
-  triggerStatusDefsLoaded(defs: StatusDef[]): void;
+  triggerManifestDefsLoaded(defs: ManifestDef[]): void;
 }
 
 abstract class DefFunctionsBase implements DefFunctions, DefMocks {
@@ -48,8 +49,8 @@ abstract class DefFunctionsBase implements DefFunctions, DefMocks {
   bindCharacterRaceDefsListener(listener: CharacterRaceDefsListener): ListenerHandle {
     return this.events.on(characterRaceDefsEventName, listener);
   }
-  bindStatusDefsListener(listener: StatusDefsListener): ListenerHandle {
-    return this.events.on(statusDefsEventName, listener);
+  bindManifestDefsListener(listener: ManifestDefsListener): ListenerHandle {
+    return this.events.on(manifestDefsEventName, listener);
   }
 
   triggerAbilityDisplayDefsLoaded(defs: AbilityDisplayDef[]): void {
@@ -64,8 +65,8 @@ abstract class DefFunctionsBase implements DefFunctions, DefMocks {
     this.events.trigger(characterRaceDefsEventName, defs);
   }
 
-  triggerStatusDefsLoaded(defs: StatusDef[]): void {
-    this.events.trigger(statusDefsEventName, defs);
+  triggerManifestDefsLoaded(defs: ManifestDef[]): void {
+    this.events.trigger(manifestDefsEventName, defs);
   }
 }
 
@@ -103,9 +104,9 @@ class CoherentDefFunctions extends DefFunctionsBase {
     };
   }
 
-  bindStatusDefsListener(listener: StatusDefsListener): ListenerHandle {
-    const mockHandle = super.bindStatusDefsListener(listener);
-    const engineHandle = engine.on(statusDefsEventName, listener);
+  bindManifestDefsListener(listener: ManifestDefsListener): ListenerHandle {
+    const mockHandle = super.bindManifestDefsListener(listener);
+    const engineHandle = engine.on(manifestDefsEventName, listener);
     return {
       close() {
         mockHandle.close();

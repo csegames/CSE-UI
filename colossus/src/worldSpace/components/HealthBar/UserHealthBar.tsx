@@ -115,11 +115,6 @@ export class UserHealthBar extends React.Component<Props, {}> {
   }
 
   public render() {
-    // the player is in a downed or similar state and is not able to revive, therefore we should hide the revive bar.
-    if (this.props.state.hideReviveBar) {
-      return null;
-    }
-
     // baseline relative physical distance - 0.0 means close up and 1.0 means far away
     const physicalDistanceAlpha = clamp(this.props.position.worldSpaceDistanceToPlayer / FAR_DISTANCE, 0.0, 1.0);
 
@@ -167,7 +162,7 @@ export class UserHealthBar extends React.Component<Props, {}> {
 
     // if a player is downed show either a red arrow to direct players to them or the revive bar
     if (this.props.state.lifeState === LifeState.Downed) {
-      if (this.props.position.worldSpaceDistanceToPlayer > this.props.state.reviveRange) {
+      if (!this.props.state.interactionName || this.props.position.worldSpaceDistanceToPlayer > this.props.state.interactionRange) {
         return (
           <div className={Container}>
             {this.getCharacterName(CHARACTER_NAME_HEIGHT_PX, 1)}

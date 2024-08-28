@@ -7,13 +7,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {
-  HUDHorizontalAnchor,
-  HUDLayer,
-  HUDVerticalAnchor,
-  HUDWidgetRegistration,
-  addMenuWidgetExiting
-} from '../redux/hudSlice';
+import { HUDLayer, HUDWidgetRegistration, addMenuWidgetExiting } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
 import { GameOption, OptionCategory, SelectValue } from '@csegames/library/dist/_baseGame/types/Options';
 import { game } from '@csegames/library/dist/_baseGame';
@@ -30,10 +24,11 @@ import { GameOptionInputsList } from './input/GameOptionInputsList';
 import { Menu } from './menu/Menu';
 import { TextInput } from './input/TextInput';
 import { BooleanInput } from './input/BooleanInput';
-import { keybindsLocalStore } from '../localStorage/KeybindsLocalStorage';
 import { refetchKeybinds } from '../dataSources/keybindsService';
 import { genID } from '@csegames/library/dist/_baseGame/utils/idGen';
 import { clearOptionChanges } from '../redux/gameSettingsSlice';
+import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 const Root = 'HUD-Settings-Root';
 const Search = 'HUD-Settings-Search';
@@ -366,15 +361,15 @@ class ASettings extends React.Component<Props, State> {
   }
 
   confirmSaveAs(): void {
-    const setIDs = keybindsLocalStore.getSetIDs();
+    const setIDs = clientAPI.getKeybindSetIDs();
     const setID = genID();
     setIDs.push(setID);
-    keybindsLocalStore.setSetIDs(setIDs);
+    clientAPI.setKeybindSetIDs(setIDs);
     const keybindSet = {
       name: this.state.saveAsName,
       keybinds: Object.values(this.props.keybinds)
     };
-    keybindsLocalStore.setKeybindSet(setID, keybindSet);
+    clientAPI.setKeybindSet(setID, keybindSet);
     this.props.dispatch(hideModal());
   }
 
@@ -389,10 +384,10 @@ class ASettings extends React.Component<Props, State> {
   }
 
   getLoadModalContent(selectedSetID: string | null): ModalModel {
-    const setIDs = keybindsLocalStore.getSetIDs();
+    const setIDs = clientAPI.getKeybindSetIDs();
     const confirmLoad = (): void => {
       const setIDToLoad = selectedSetID || setIDs[0];
-      const keybindSetToLoad = keybindsLocalStore.getKeybindSet(setIDToLoad);
+      const keybindSetToLoad = clientAPI.getKeybindSet(setIDToLoad);
       for (const keybindToLoad of keybindSetToLoad.keybinds) {
         const matchedKeybind = Object.values(this.props.keybinds).find((keybind) => keybind.id === keybindToLoad.id);
         if (matchedKeybind) {
@@ -412,7 +407,7 @@ class ASettings extends React.Component<Props, State> {
       content.body = (
         <div className={LoadModalBody}>
           {setIDs.map((setID, index) => {
-            const keybindSet = keybindsLocalStore.getKeybindSet(setID);
+            const keybindSet = clientAPI.getKeybindSet(setID);
             const checked =
               // is first in list and none selected
               (index === 0 && selectedSetID === null) ||
@@ -438,8 +433,8 @@ class ASettings extends React.Component<Props, State> {
       const deleteSet = (): void => {
         const setIDToDelete = selectedSetID || setIDs[0];
         const filteredSetIDs = setIDs.filter((setID) => setID !== setIDToDelete);
-        keybindsLocalStore.setSetIDs(filteredSetIDs);
-        keybindsLocalStore.removeKeybindSet(setIDToDelete);
+        clientAPI.setKeybindSetIDs(filteredSetIDs);
+        clientAPI.removeKeybindSet(setIDToDelete);
         this.props.dispatch(updateModalContent(this.getLoadModalContent(filteredSetIDs[0] ?? null)));
         this.props.dispatch(hideModal());
       };

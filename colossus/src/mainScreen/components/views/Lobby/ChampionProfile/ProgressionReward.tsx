@@ -23,12 +23,13 @@ import { getRewardTypeText } from '../BattlePass/BattlePassUtils';
 import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
+import { PerkIcon } from '../Store/PerkIcon';
 
 const Container = 'ChampionProfile-ProgressionReward-Container';
 const Title = 'ChampionProfile-ProgressionReward-RewardTitle';
 const RewardContainer = 'ChampionProfile-ProgressionReward-RewardContainer';
 const RewardTextContainer = 'ChampionProfile-ProgressionReward-RewardTextContainer';
-const RewardIcon = 'ChampionProfile-ProgressionReward-RewardIcon';
+const ImageContainer = 'ChampionProfile-ProgressionReward-ImageContainer';
 const RewardName = 'ChampionProfile-ProgressionReward-RewardTitle';
 const RewardLevel = 'ChampionProfile-ProgressionReward-RewardLevel';
 const RewardDescription = 'ChampionProfile-ProgressionReward-RewardDescription';
@@ -125,7 +126,12 @@ export class AProgressionReward extends React.Component<Props, State> {
       <div className={`${Container} ${nextReward}`}>
         <span className={`${Title} TopTitle ${endStatTitle}`}>{title}</span>
         <div className={RewardContainer}>
-          {this.getPerkIcon()}
+          <PerkIcon
+            className={ImageContainer}
+            perkID={this.state.reward.reward?.perkID}
+            imageURLOverride={this.state.reward.questLink.rewardImageOverride}
+          />
+
           <div className={RewardTextContainer}>
             <span className={RewardName}>{this.getRewardName()}</span>
             <span className={RewardLevel}>
@@ -164,22 +170,6 @@ export class AProgressionReward extends React.Component<Props, State> {
     return perk?.description;
   }
 
-  private getPerkIcon(): JSX.Element {
-    const { reward } = this.state;
-    const perk = this.props.perksByID[reward.reward?.perkID];
-
-    const iconURL =
-      reward.questLink.rewardImageOverride?.length > 0
-        ? reward.questLink.rewardImageOverride
-        : perk?.perkType === PerkType.Portrait
-        ? perk?.portraitThumbnailURL
-        : perk?.iconURL;
-    if (iconURL) {
-      return <img className={RewardIcon} src={iconURL} />;
-    }
-    return null;
-  }
-
   private getSortedRewards(links: QuestLinkDefGQL[], questGQL: QuestGQL): RewardAndLevel[] {
     if (this.state.sortedRewards.length <= 0 && links) {
       const currentQuestIndex = questGQL?.currentQuestIndex ?? 0;
@@ -189,13 +179,17 @@ export class AProgressionReward extends React.Component<Props, State> {
       if (this.props.nextReward) {
         let linkIndex: number = currentQuestIndex;
         const rewards: RewardAndLevel[] = [];
-        links[linkIndex].rewards.forEach((r) =>
-          rewards.push({
-            reward: r,
-            level: linkIndex,
-            questLink: links[linkIndex]
-          })
-        );
+        links[linkIndex].rewards.forEach((r) => {
+          const perk = this.props.perksByID[r.perkID];
+          // Rune Tier Keys aren't displayed as reward items.
+          if (perk.perkType !== PerkType.RuneModTierKey) {
+            rewards.push({
+              reward: r,
+              level: linkIndex,
+              questLink: links[linkIndex]
+            });
+          }
+        });
         if (rewards.length > 0) {
           rewards.sort((a, b) => this.compareRewardAndLevel(a, b));
           return rewards;
@@ -206,13 +200,17 @@ export class AProgressionReward extends React.Component<Props, State> {
         let linkIndex: number = nextCollection;
         const rewards: RewardAndLevel[] = [];
         for (linkIndex; linkIndex < currentQuestIndex; linkIndex++) {
-          links[linkIndex].rewards.forEach((r) =>
-            rewards.push({
-              reward: r,
-              level: linkIndex,
-              questLink: links[linkIndex]
-            })
-          );
+          links[linkIndex].rewards.forEach((r) => {
+            const perk = this.props.perksByID[r.perkID];
+            // Rune Tier Keys aren't displayed as reward items.
+            if (perk.perkType !== PerkType.RuneModTierKey) {
+              rewards.push({
+                reward: r,
+                level: linkIndex,
+                questLink: links[linkIndex]
+              });
+            }
+          });
         }
         if (rewards.length > 0) {
           rewards.sort((a, b) => this.compareRewardAndLevel(a, b));

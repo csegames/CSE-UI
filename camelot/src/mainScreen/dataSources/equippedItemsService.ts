@@ -12,17 +12,18 @@ import { equippedItemsQuery } from './equippedItemsNetworkingConstants';
 import {
   addEquippedItemsPendingRefresh,
   resolveEquippedItemsPendingRefresh,
-  setShouldEquippedItemsRefresh,
   updateEquippedItems
 } from '../redux/equippedItemsSlice';
-import { RootState } from '../redux/store';
-import { Dispatch } from '@reduxjs/toolkit';
 import { moveHiddenItems } from '../components/items/itemUtils';
+import { EventEmitter } from '@csegames/library/dist/_baseGame/types/EventEmitter';
+
+const equippedItemsServiceEventEmitter = new EventEmitter();
 
 export class EquippedItemsService extends ExternalDataSource {
   private refreshHandle: ListenerHandle = null;
 
   protected async bind(): Promise<ListenerHandle[]> {
+    equippedItemsServiceEventEmitter.on('refresh', this.refresh.bind(this));
     return [
       await this.query<EquippedItemsQueryResult>(
         { query: equippedItemsQuery },
@@ -64,16 +65,8 @@ export class EquippedItemsService extends ExternalDataSource {
     }
   }
 
-  protected onReduxUpdate(reduxState: RootState, dispatch: Dispatch): void {
-    super.onReduxUpdate(reduxState, dispatch);
-    if (reduxState.equippedItems.shouldEquippedItemsRefresh) {
-      this.refresh();
-    }
-  }
-
   private async refresh(): Promise<void> {
     this.dispatch(addEquippedItemsPendingRefresh());
-    this.dispatch(setShouldEquippedItemsRefresh(false));
     this.refreshHandle?.close();
     this.refreshHandle = await this.query<EquippedItemsQueryResult>(
       { query: equippedItemsQuery },
@@ -81,3 +74,7 @@ export class EquippedItemsService extends ExternalDataSource {
     );
   }
 }
+
+export const refreshEquippedItems = (): void => {
+  equippedItemsServiceEventEmitter.trigger('refresh');
+};

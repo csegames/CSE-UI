@@ -13,9 +13,11 @@ import '@csegames/library/dist/hordetest/webAPI/definitions';
 import { ProgressCircle, ProgressCircleUnit } from '../../shared/components/ProgressCircle';
 import {
   BaseEntityStateModel,
-  findEntityResource
+  findEntityResource,
+  WorldUIPositionModel
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { EntityResourceIDs } from '@csegames/library/dist/hordetest/game/types/EntityResourceIDs';
+import { ObjectiveUIVisibility } from '@csegames/library/dist/_baseGame/types/Objective';
 
 // radius in pixels of the outer objective circle
 const OBJECTIVE_OUTER_CIRCLE_RADIUS_PX: number = 25;
@@ -23,11 +25,13 @@ const Container = 'WorldSpace-Objective-Container';
 const IndicatorLabel = 'WorldSpace-Objective-IndicatorLabel';
 const Circle = 'WorldSpace-Objective-Circle';
 const Icon = 'WorldSpace-Objective-Icon';
+const DistanceText = 'WorldSpace-Objective-DistanceText';
 
 const ObjectiveIndicator = 'WorldSpace-Objective-ObjectiveIndicator';
 
 export interface Props {
   state: ObjectiveState;
+  position: WorldUIPositionModel;
 }
 
 export interface State {
@@ -103,8 +107,21 @@ export class Objective extends React.Component<Props, State> {
             style={{ position: 'absolute', zIndex: -1 }}
           />
         </div>
+        {this.getDistanceText()}
       </div>
     );
+  }
+
+  private getDistanceText(): JSX.Element {
+    if ((this.props.state.entity.objective.visibility & ObjectiveUIVisibility.WorldDistance) === 0) {
+      return;
+    }
+
+    const distance = Math.max(
+      0,
+      Math.floor(this.props.position.worldSpaceDistanceToPlayer - this.props.state.entity.objective.footprintRadius)
+    );
+    return <span className={DistanceText}>{`${distance}m`}</span>;
   }
 
   private getObjectiveColor(itemEntity: ItemEntityStateModel): string {

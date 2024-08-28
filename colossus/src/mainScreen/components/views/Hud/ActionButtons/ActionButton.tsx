@@ -1,6 +1,11 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 import { CharacterClassDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
 import { Status } from '@csegames/library/dist/hordetest/game/types/Status';
-import { StatusDef } from '@csegames/library/dist/_baseGame/types/StatusDef';
 import { game } from '@csegames/library/dist/_baseGame';
 import { CurrentMax } from '@csegames/library/dist/_baseGame/types/CurrentMax';
 import { DeepImmutableObject } from '@csegames/library/dist/_baseGame/types/DeepImmutable';
@@ -37,6 +42,7 @@ import {
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { GameOption } from '@csegames/library/dist/_baseGame/types/Options';
 import { GameOptionIDs } from '../../../../redux/gameOptionsSlice';
+import { StatusDef } from '../../../../dataSources/manifest/statusManifest';
 
 interface ReactProps {
   type: string;
@@ -387,7 +393,7 @@ class AActionButton extends React.Component<Partial<Props>, State> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { abilityDisplayDefs, characterClassDefs, statusDefs } = state.game;
+  const { abilityDisplayDefs, characterClassDefs, statusDefsByNumericID: statusDefs } = state.game;
   const { worldTime, usingGamepad } = state.baseGame;
   const { classID, statuses, resources } = state.player;
   const { gameOptions } = state.gameOptions;

@@ -8,7 +8,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { ClientAnnouncementPopups } from './ClientAnnouncementPopups';
-import { RuneModAnnouncementPopups } from './RuneModAnnouncementPopups';
+import { PlacementPopup } from './PlacementPopup';
 
 const Root = 'Announcements-Popups';
 
@@ -21,7 +21,7 @@ class AAnnouncementPopups extends React.Component<Props> {
     return (
       <div className={Root}>
         <ClientAnnouncementPopups />
-        <RuneModAnnouncementPopups />
+        <PlacementPopup />
       </div>
     );
   }

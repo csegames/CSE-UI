@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import {
+  ChampionInfo,
   PerkDefGQL,
   PerkGQL,
   PurchaseDefGQL,
@@ -18,20 +19,23 @@ import {
   QuestGQL,
   StringTableEntryDef
 } from '@csegames/library/dist/hordetest/graphql/schema';
-import { isFreeReward, isPurchaseable } from '../../../helpers/storeHelpers';
 import { navigateTo, LobbyView } from '../../../redux/navigationSlice';
 import { FeatureFlags } from '../../../redux/featureFlagsSlice';
 import { updateSelectedChampion } from '../../../redux/championInfoSlice';
 import { RootState } from '../../../redux/store';
 import { Header } from '../../shared/Header';
 import { QuestsByType } from '../../../redux/questSlice';
-import { getAllPendingBattlePassRewards, isBattlePassVisible } from './BattlePass/BattlePassUtils';
+import { isBattlePassVisible } from './BattlePass/BattlePassUtils';
 import { WarningMessage } from './WarningMessage';
 import { FittingView } from '../../../../shared/components/FittingView';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../helpers/stringTableHelpers';
-import { battlePassLocalStore } from '../../../localStorage/battlePassLocalStorage';
 import { formatCountdown } from '../../../helpers/timeHelpers';
 import { getServerTimeMS } from '@csegames/library/dist/_baseGame/utils/timeUtils';
+import {
+  getIsBadgedForAnyChampion,
+  getIsBadgedForBattlePass,
+  getIsBadgedForStore
+} from '../../../helpers/badgingUtils';
 
 const Container = 'StartScreen-NavMenu-Container';
 const ContentSizer = 'StartScreen-NavMenu-ContentSizer';
@@ -70,6 +74,8 @@ interface InjectedProps extends FeatureFlags.Source {
   stringTable: Dictionary<StringTableEntryDef>;
   minuteTicker: number;
   serverTimeDeltaMS: number;
+  progressionNodes: string[];
+  champions: ChampionInfo[];
   dispatch?: Dispatch;
 }
 
@@ -155,26 +161,26 @@ class ANavMenu extends React.Component<Props> {
 
     switch (view) {
       case LobbyView.Champions: {
-        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_CHAMPION_OPEN);
+        game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_CHAMPION_OPEN);
         break;
       }
       case LobbyView.CareerStats: {
-        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_CAREER_OPEN);
+        game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_CAREER_OPEN);
         break;
       }
       case LobbyView.Store: {
-        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_TAB_STORE_OPEN);
+        game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_STORE_OPEN);
         break;
       }
       default: {
-        game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+        game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
         break;
       }
     }
   }
 
   private onMouseEnterRoute() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   private renderRouteButton(view: LobbyView, extraJSX?: JSX.Element | JSX.Element[]) {
@@ -266,60 +272,35 @@ class ANavMenu extends React.Component<Props> {
   private isViewBadged(route: LobbyView): boolean {
     switch (route) {
       case LobbyView.Champions: {
-        const hasNewEquipment =
-          Object.keys(this.props.newEquipment).find((perkID) => {
-            return this.props.perksByID[perkID];
-          }) !== undefined;
-
-        return hasNewEquipment;
+        const isBadged = getIsBadgedForAnyChampion(
+          this.props.champions,
+          this.props.newEquipment,
+          this.props.ownedPerks,
+          this.props.perksByID,
+          this.props.quests
+        ).value;
+        return isBadged;
       }
       case LobbyView.Store: {
-        // If there are any unclaimed rewards, badge the store tab.
-        if (
-          this.props.purchases.find((purchase) => {
-            return isFreeReward(purchase) && isPurchaseable(purchase, this.props.perksByID, this.props.ownedPerks);
-          })
-        ) {
-          return true;
-        }
-        // If there are any unlocked "new" purchaseables in the Store, badge the store tab.
-        const purchaseIDs = Object.keys(this.props.newPurchases);
-        if (purchaseIDs.length > 0) {
-          const unlockedPurchaseID = purchaseIDs.find((pid) => {
-            const purchase = this.props.purchases.find((p) => {
-              return p.id === pid;
-            });
-
-            if (purchase === undefined) {
-              // No purchase matching this ID.  Should never happen, but if it does then the
-              // the user obviously won't be seeing a matching purchase in the store.
-              return false;
-            } else {
-              // The purchase exists.  Next we check if the user can see it.
-              return isPurchaseable(purchase, this.props.perksByID, this.props.ownedPerks);
-            }
-          });
-
-          // If we found any unseen, purchaseable things, we should badge.
-          return unlockedPurchaseID !== undefined;
-        } else {
-          return false;
-        }
+        const isBadged = getIsBadgedForStore(
+          this.props.purchases,
+          this.props.newPurchases,
+          this.props.perksByID,
+          this.props.ownedPerks,
+          this.props.progressionNodes,
+          this.props.quests,
+          this.props.serverTimeDeltaMS
+        ).value;
+        return isBadged;
       }
       case LobbyView.BattlePass: {
-        // If there is a new, unseen-as-of-yet BattlePass, badge it!
-        if (this.props.currentBattlePass) {
-          const lastSeenBattlePassID = battlePassLocalStore.getLastSeenBattlePassID();
-          if (lastSeenBattlePassID !== this.props.currentBattlePass.id) {
-            return true;
-          }
-        }
-
-        // If there are unclaimed rewards, we need a badge.
-        return (
-          getAllPendingBattlePassRewards(this.props.questDefs?.BattlePass, this.props.perks, this.props.quests)
-            ?.length > 0
-        );
+        const isBadged = getIsBadgedForBattlePass(
+          this.props.currentBattlePass,
+          this.props.questDefs,
+          this.props.perks,
+          this.props.quests
+        ).value;
+        return isBadged;
       }
       default: {
         return false;
@@ -333,11 +314,12 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const lobbyView = state.navigation.lobbyView;
   const { perksByID, purchases, newPurchases, newEquipment, hasPurchasables } = state.store;
   const featureFlags = state.featureFlags;
-  const { ownedPerks, perks, quests } = state.profile;
+  const { ownedPerks, perks, quests, progressionNodes } = state.profile;
   const questDefs = state.quests.quests;
   const { currentBattlePass, nextBattlePass, previousBattlePass } = state.quests;
   const { stringTable } = state.stringTable;
   const { minuteTicker, serverTimeDeltaMS } = state.clock;
+  const { champions } = state.championInfo;
 
   return {
     ...ownProps,
@@ -359,7 +341,9 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     previousBattlePass,
     stringTable,
     minuteTicker,
-    serverTimeDeltaMS
+    serverTimeDeltaMS,
+    progressionNodes,
+    champions
   };
 }
 

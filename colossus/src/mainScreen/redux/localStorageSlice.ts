@@ -6,14 +6,7 @@
 
 import { createSlice, Dictionary, PayloadAction } from '@reduxjs/toolkit';
 import { toRuntime } from '../dataSources/localStorageDataSource';
-
-// Current version of encoding to check in case future versions require special handling.
-export var currentFormatVersion: number = 1;
-
-export interface MutedPlayerData {
-  base64AccountIDs: string[];
-  formatVersion: number;
-}
+import { MutedPlayerData } from '@csegames/library/dist/hordetest/game/types/StoreTypes';
 
 export interface AccountIDsToMutePayload {
   accountIDs: string[];

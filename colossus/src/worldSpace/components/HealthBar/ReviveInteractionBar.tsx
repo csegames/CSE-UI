@@ -17,6 +17,7 @@ const Container = 'WorldSpace-ReviveInteractionBar-Container';
 const BarContainer = 'WorldSpace-ReviveInteractionBar-BarContainer';
 const Bar = 'WorldSpace-ReviveInteractionBar-Bar';
 const BarText = 'WorldSpace-ReviveInteractionBar-BarText';
+const BarTextDisabledReason = 'WorldSpace-ReviveInteractionBar-BarTextDisabledReason';
 const KeybindIcon = 'WorldSpace-ReviveInteractionBar-KeybindIcon';
 const DescriptionTitle = 'WorldSpace-ReviveInteractionBar-DescriptionTitle';
 const Description = 'WorldSpace-ReviveInteractionBar-Description';
@@ -37,6 +38,7 @@ export class ReviveInteractionBar extends React.Component<Props, State> {
 
   public render() {
     const { state } = this.props;
+    const disabled = this.props.state.interactionEnabled ? '' : 'disabled';
     const pressedClassName = this.state.isPressed ? 'pressed' : '';
     const reviveProgressCurrent = findEntityResource(state.resources, EntityResourceIDs.ReviveProgress);
     const progressBar = reviveProgressCurrent ? (reviveProgressCurrent.current / reviveProgressCurrent.max) * 100 : 0;
@@ -48,15 +50,18 @@ export class ReviveInteractionBar extends React.Component<Props, State> {
           <div className={ReviveIcon}>{downTimer}</div>
         </div>
         <div className={`${Container} ${'Revive'}`}>
-          <div className={BarContainer}>
+          <div className={`${BarContainer} ${disabled}`}>
             <div className={Bar} style={{ width: `${progressBar}%` }} />
-            <div className={BarText}>
+            <div className={`${BarText} ${disabled}`}>
               {state.bindingIconClass ? (
-                <span className={`${KeybindIcon} ${pressedClassName} ${state.bindingIconClass}`} />
+                <span className={`${KeybindIcon} ${pressedClassName} ${disabled} ${state.bindingIconClass}`} />
               ) : (
-                <span className={`${KeybindIcon} ${pressedClassName}`}>{state.bindingName}</span>
+                <span className={`${KeybindIcon} ${pressedClassName} ${disabled}`}>{state.bindingName}</span>
               )}
-              Revive
+              {`Revive`}
+              {!state.interactionEnabled && (
+                <span className={BarTextDisabledReason}>{state.interactionDisabledReason}</span>
+              )}
             </div>
           </div>
           <span className={DescriptionTitle}>Down Champion</span>

@@ -53,7 +53,6 @@ import {
   removePlayerDirections,
   updateEntityDirections,
   removeEntityDirections,
-  updateStatusDefs,
   updateClassDefs,
   updateRaceDefs,
   updateAbilityDisplayDefs
@@ -68,7 +67,6 @@ import { updateKeybinds, KeybindIDs } from '../../redux/keybindsSlice';
 import { hordetest } from '@csegames/library/dist/hordetest';
 import { game } from '@csegames/library/dist/_baseGame';
 import { UsingGamepadState } from '@csegames/library/dist/_baseGame/GameClientModels/UsingGamepadState';
-import { StatusDef } from '@csegames/library/dist/_baseGame/types/StatusDef';
 import { CharacterClassDef, CharacterRaceDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
 import {
   BaseEntityStateModel,
@@ -187,7 +185,6 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
       runes: hordetest.game.onCollectedRunesUpdate(this.handleCollectedRunesUpdated.bind(this)),
       scenarioRoundEnded: hordetest.game.onScenarioRoundEnded(this.handleRoundEnded.bind(this)),
       selfPlayerState: hordetest.game.selfPlayerState.onUpdated(game)(this.handleSelfPlayerStateUpdate.bind(this)),
-      statusDefsLoaded: clientAPI.bindStatusDefsListener(this.handleStatusDefsLoaded.bind(this)),
       ui: game.onReady(this.handleUIInitialized.bind(this)),
       onVoiceChatMemberUpdate: clientAPI.bindVoiceChatMemberUpdatedListener(
         this.handleVoiceChatMemberUpdated.bind(this)
@@ -276,14 +273,6 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
     this.props.dispatch(updateRaceDefs(characterRaceDefs));
   }
 
-  private handleStatusDefsLoaded(defs: StatusDef[]) {
-    const statusDefs: IDLookupTable<StatusDef> = {};
-    defs.forEach((curStatusDef: StatusDef) => {
-      statusDefs[curStatusDef.id] = curStatusDef;
-    });
-    this.props.dispatch(updateStatusDefs(statusDefs));
-  }
-
   private handleSystemMessageReceived(message: string) {
     this.props.dispatch(updateSystemMessageReceived(message));
   }
@@ -368,6 +357,7 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
       this.checkMaxDeathsUpdated(newEntityState.maxDeaths, playerDelta);
       this.checkCurrentDeathsUpdated(newEntityState.currentDeaths, playerDelta);
       this.checkPlayerFactionUpdated(newEntityState.faction, playerDelta);
+      this.checkPlayerRank(newEntityState.rank, playerDelta);
 
       this.props.dispatch(updatePlayerDelta(playerDelta));
       // We are deliberately NOT returning here.  The behavior is that the local user will get
@@ -532,6 +522,12 @@ export class ClientStateCommunicationContextProvider extends React.Component<Pro
   private checkPlayerFactionUpdated(newFaction: number, playerDelta: Partial<PlayerEntityStateModel>): void {
     if (this.stateMirror.player.faction != newFaction) {
       playerDelta.faction = newFaction;
+    }
+  }
+
+  private checkPlayerRank(newRank: number, playerDelta: Partial<PlayerEntityStateModel>): void {
+    if (this.stateMirror.player.rank != newRank) {
+      playerDelta.rank = newRank;
     }
   }
 

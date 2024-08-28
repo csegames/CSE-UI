@@ -9,11 +9,8 @@ import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import {
-  HUDHorizontalAnchor,
   HUDLayer,
-  HUDVerticalAnchor,
   HUDWidget,
-  HUDWidgetState,
   addMenuWidgetExiting,
   hideMenuWidget,
   removeMenuWidgetExiting,
@@ -23,7 +20,6 @@ import {
 import { RootState } from '../redux/store';
 import Draggable from './Draggable';
 import DraggableHandle, { DropHandlerDraggableData } from './DraggableHandle';
-import { hudLocalStore } from '../localStorage/HUDLocalStorage';
 import HUDForceScaler from './HUDForceScaler';
 import HUDAnchorChain from './HUDAnchorChain';
 import { CSETransition } from '../../shared/components/CSETransition';
@@ -43,6 +39,12 @@ import AnchorRightURL from '../../images/hudeditor/anchor-selected-right.png';
 import AnchorBottomLeftURL from '../../images/hudeditor/anchor-selected-bottomleft.png';
 import AnchorBottomURL from '../../images/hudeditor/anchor-selected-bottom.png';
 import AnchorBottomRightURL from '../../images/hudeditor/anchor-selected-bottomright.png';
+import {
+  HUDHorizontalAnchor,
+  HUDVerticalAnchor,
+  HUDWidgetState
+} from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 
 // Styles
 const Root = 'HUD-BaseWidget-Root';
@@ -342,7 +344,7 @@ class BaseHUDWidget extends React.Component<Props, State> {
     newWidgetState.xOffset += xDelta;
     newWidgetState.yOffset += yDelta;
 
-    hudLocalStore.updateWidgetState(this.props.widgetID, newWidgetState);
+    clientAPI.updateWidgetState(this.props.widgetID, newWidgetState);
     this.props.dispatch(updateWidgetStates({ [this.props.widgetID]: newWidgetState }));
   }
 }

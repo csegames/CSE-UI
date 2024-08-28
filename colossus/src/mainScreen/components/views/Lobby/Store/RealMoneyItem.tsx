@@ -70,7 +70,7 @@ export class ARealMoneyItem extends React.Component<Props> {
 
   private onMouseEnter(e: React.MouseEvent<HTMLDivElement>) {
     this.props.onMouseEnter?.(e);
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   private onClick(e: React.MouseEvent<HTMLDivElement>) {

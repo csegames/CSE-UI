@@ -16,11 +16,11 @@ import {
   ChampionCostumeInfo,
   ChampionInfo,
   PerkDefGQL,
-  PerkType
+  QuestGQL
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { StarBadge } from '../../../../../shared/components/StarBadge';
-import { hasUnseenPerkForChampion } from '../../../../helpers/characterHelpers';
+import { getIsBadgedForChampionSelect } from '../../../../helpers/badgingUtils';
 
 const Container = 'ChampionProfile-ChampionSelect-Container';
 const ChampionContainer = 'ChampionProfile-ChampionSelect-ChampionContainer';
@@ -38,6 +38,7 @@ interface InjectedProps {
   perksByID: Dictionary<PerkDefGQL>;
   ownedPerks: Dictionary<number>;
   newEquipment: Dictionary<boolean>;
+  quests: QuestGQL[];
   dispatch?: Dispatch;
 }
 
@@ -52,12 +53,13 @@ class AChampionSelect extends React.Component<Props> {
           const thumbnailURL = (costume && costume.thumbnailURL) || '';
 
           const selectedClassName = champion.id === this.props.selectedChampion.id ? 'selected' : '';
-          const isBadged = hasUnseenPerkForChampion(
+          const isBadgedEV = getIsBadgedForChampionSelect(
             champion,
-            PerkType.Invalid,
+            this.props.champions,
             this.props.newEquipment,
+            this.props.ownedPerks,
             this.props.perksByID,
-            this.props.ownedPerks
+            this.props.quests
           );
 
           return (
@@ -70,7 +72,7 @@ class AChampionSelect extends React.Component<Props> {
               {this.props.profile.defaultChampionID === champion.id ? (
                 <span className={`${StarIcon} fs-icon-misc-star`} />
               ) : null}
-              {isBadged && <StarBadge className={Badge} />}
+              {isBadgedEV.value && <StarBadge className={Badge} />}
             </div>
           );
         })}
@@ -83,12 +85,12 @@ class AChampionSelect extends React.Component<Props> {
     if (champion.championSelectSound) {
       game.playGameSound(champion.championSelectSound);
     } else {
-      game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
     }
   }
 
   private onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   private getEquippedCostumeForChampion(champion: ChampionInfo): ChampionCostumeInfo {
@@ -101,10 +103,10 @@ class AChampionSelect extends React.Component<Props> {
       }
     );
 
-    const costumePerk = this.props.perksByID[championGQL.costumePerkID];
+    const costumePerk = this.props.perksByID[championGQL?.costumePerkID];
 
     const equippedCostume = allCostumesForChampion.find((costume) => {
-      return costume.id === costumePerk.costume.id;
+      return costume.id === costumePerk?.costume?.id;
     });
 
     return equippedCostume;
@@ -112,7 +114,7 @@ class AChampionSelect extends React.Component<Props> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { ownedPerks } = state.profile;
+  const { ownedPerks, quests } = state.profile;
   const { selectedChampion, champions, championCostumes } = state.championInfo;
   const { perksByID, newEquipment } = state.store;
 
@@ -124,7 +126,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     championCostumes: championCostumes || [],
     perksByID,
     ownedPerks,
-    newEquipment
+    newEquipment,
+    quests
   };
 }
 

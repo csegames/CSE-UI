@@ -8,17 +8,10 @@ import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
-import {
-  HUDHorizontalAnchor,
-  HUDLayer,
-  HUDVerticalAnchor,
-  HUDWidgetRegistration,
-  addMenuWidgetExiting
-} from '../../redux/hudSlice';
+import { HUDLayer, HUDWidgetRegistration, addMenuWidgetExiting } from '../../redux/hudSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { AbilityNetworkDefData, FactionData, AbilityDisplayData } from '../../redux/gameDefsSlice';
+import { AbilityNetworkDefData, AbilityDisplayData } from '../../redux/gameDefsSlice';
 import Escapable from '../Escapable';
-import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { AbilityBuilderTypeSelector } from './AbilityBuilderTypeSelector';
 import { BarHeader } from '../BarHeader';
 import { AbilityBuilderCreate } from './AbilityBuilderCreate';
@@ -32,6 +25,7 @@ import { InitTopic } from '../../redux/initializationSlice';
 import BackgroundChooseTypeURL from '../../../images/abilitybuilder/classes-bg-texture.jpg';
 import BackgroundGenericURL from '../../../images/abilitybuilder/classes-bg-generic.jpg';
 import { UserClassesData } from '@csegames/library/dist/_baseGame/clientFunctions/AssetFunctions';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 const Root = 'HUD-AbilityBuilder-Root';
 const Header = 'HUD-AbilityBuilder-Header';
@@ -57,7 +51,6 @@ interface InjectedProps {
   abilityNetworks: Dictionary<AbilityNetworkDefData>;
   abilityDisplayData: Dictionary<AbilityDisplayData>;
   characterClass: UserClassesData;
-  myFaction: FactionData;
   nowEditingAbilityId: number | null;
   dispatch?: Dispatch;
 }
@@ -223,9 +216,6 @@ class AAbilityBuilder extends React.Component<Props, State> {
       if (this.props.characterClass?.AbilityBuilderBackgroundImage?.length > 0) {
         // First choice is a class-specific background.
         return this.props.characterClass.AbilityBuilderBackgroundImage;
-      } else if (this.props.myFaction?.abilityBuilderBackgroundURL?.length > 0) {
-        // Second choice is a faction-specific background.
-        return this.props.myFaction.abilityBuilderBackgroundURL;
       } else {
         // If all else fails, we have a generic background we can use.
         return BackgroundGenericURL;
@@ -240,14 +230,12 @@ class AAbilityBuilder extends React.Component<Props, State> {
 const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
   const { abilityNetworks, abilityDisplayData } = state.gameDefs;
   const characterClass = state.gameDefs.classDynamicAssets[state.player.classID];
-  const myFaction = state.gameDefs.factions[Faction[state.player.faction]];
   const { nowEditingAbilityId } = state.abilities;
   return {
     ...ownProps,
     abilityNetworks,
     abilityDisplayData,
     characterClass,
-    myFaction,
     nowEditingAbilityId
   };
 };

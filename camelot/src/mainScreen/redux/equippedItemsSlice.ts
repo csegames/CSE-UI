@@ -16,34 +16,27 @@ import { MoveItemRequestLocationType } from '@csegames/library/dist/camelotuncha
 import { MoveItemRequest } from '../components/items/itemUtils';
 
 interface EquippedItemsState {
-  shouldEquippedItemsRefresh: boolean;
   equippedItemsPendingRefreshes: number;
   armorClass: Decimal | null;
   itemCount: number | null;
   items: (EquippedItem | null)[] | null;
   readiedGearSlots: (string | null)[] | null;
   resistances: (StatGQL | null)[] | null;
-  totalMass: Decimal | null;
 }
 
 const DefaultEquippedItemsState: EquippedItemsState = {
-  shouldEquippedItemsRefresh: false,
   equippedItemsPendingRefreshes: 0,
   armorClass: null,
   itemCount: null,
   items: null,
   readiedGearSlots: null,
   resistances: null,
-  totalMass: null
 };
 
 export const equippedItemsSlice = createSlice({
   name: 'equippedItems',
   initialState: DefaultEquippedItemsState,
   reducers: {
-    setShouldEquippedItemsRefresh: (state: EquippedItemsState, action: PayloadAction<boolean>) => {
-      state.shouldEquippedItemsRefresh = action.payload;
-    },
     addEquippedItemsPendingRefresh: (state) => {
       state.equippedItemsPendingRefreshes++;
     },
@@ -56,7 +49,6 @@ export const equippedItemsSlice = createSlice({
       state.items = action.payload.items;
       state.readiedGearSlots = action.payload.readiedGearSlots;
       state.resistances = action.payload.resistances;
-      state.totalMass = action.payload.totalMass;
     },
     moveEquippedItems: (state, action: PayloadAction<[MoveItemRequest, Item][]>) => {
       if (!state.items) {
@@ -64,6 +56,7 @@ export const equippedItemsSlice = createSlice({
       }
       action.payload.forEach(([move, item]) => {
         const gearSlots: string[] = !move.GearSlotIDTo ? null : [move.GearSlotIDTo];
+        const gearSlotSetIndex: number = item.staticDefinition?.gearSlotSets?.findIndex((g) => g.gearSlots.includes(move.GearSlotIDTo)) ?? -1;
 
         if (move.LocationTo == MoveItemRequestLocationType.Equipment && item.location.equipped) {
           // item is currently equipped, but moving to a different equip spot
@@ -77,7 +70,7 @@ export const equippedItemsSlice = createSlice({
                   ...item.location,
                   equipped: {
                     ...item.location.equipped,
-                    gearSlots
+                    gearSlotSetIndex
                   }
                 }
               }
@@ -94,7 +87,7 @@ export const equippedItemsSlice = createSlice({
                 inventory: null,
                 equipped: {
                   characterID: item.location.inventory.characterID,
-                  gearSlots
+                  gearSlotSetIndex
                 }
               }
             }
@@ -112,7 +105,6 @@ export const equippedItemsSlice = createSlice({
 });
 
 export const {
-  setShouldEquippedItemsRefresh,
   addEquippedItemsPendingRefresh,
   resolveEquippedItemsPendingRefresh,
   updateEquippedItems,

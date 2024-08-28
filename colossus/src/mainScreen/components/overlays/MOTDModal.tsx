@@ -38,9 +38,9 @@ class AMOTDModal extends React.Component<Props> {
     return (
       <MiddleModalDisplay isVisible={true} onClickOverlay={this.onClose.bind(this)} heightOverride={'80vmin'}>
         <div className={Container}>
-          <img className={Background} src={this.props.motdMessage.modal.image} />
-          <div className={Title}>{this.props.motdMessage.modal.title}</div>
-          <div className={Body}>{this.props.motdMessage.modal.body}</div>
+          <img className={Background} src={this.props.motdMessage.image} />
+          <div className={Title}>{this.props.motdMessage.title}</div>
+          <div className={Body}>{this.props.motdMessage.body}</div>
         </div>
         <div className={ButtonRow}>
           <Button

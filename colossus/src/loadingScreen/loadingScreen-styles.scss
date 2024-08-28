@@ -11,6 +11,94 @@
   background-repeat: 'no-repeat';
 }
 
+.LoadingScreen-ScenarioBackgroundImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.LoadingScreen-Champions {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 110vmin;
+  position: absolute;
+  top: 10vmin;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  @media (max-aspect-ratio: 4 / 3) {
+    width: 90vmin;
+  }
+}
+
+.LoadingScreen-ChampionsCentered {
+  justify-content: center;
+}
+
+.LoadingScreen-Champion {
+  margin-bottom: 2vmin;
+  margin-left: 2vmin;
+  margin-right: 2vmin;
+  width: 23.5vmin;
+  @media (max-aspect-ratio: 4 / 3) {
+    width: 18.5vmin;
+  }
+}
+
+.LoadingScreen-ChampionPortrait {
+  position: relative;
+  width: 100%;
+}
+
+.LoadingScreen-ChampionPortraitImage {
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+  height: 29.5vmin;
+  @media (max-aspect-ratio: 4 / 3) {
+    height: 23.125vmin;
+  }
+}
+
+.LoadingScreen-ChampionPortraitShadow {
+  background: linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(0, 0, 0, 0.747) 100%);
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.LoadingScreen-ChampionPortraitName {
+  font-family: Colus;
+  line-height: 1;
+  position: absolute;
+  bottom: 0;
+  color: white;
+  font-size: 2rem;
+  padding: 1vmin;
+}
+
+.LoadingScreen-ChampionName {
+  font-family: Lato;
+  display: block;
+  line-height: 1;
+  font-weight: bold;
+  font-size: 1.5rem;
+  padding: 0.75vmin;
+  text-align: center;
+  background-color: #101326;
+  color: white;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: calc(100% - 1.5vmin);
+}
+
 .LoadingScreen-Logo {
   position: fixed;
   left: 5.55vmin;
@@ -42,7 +130,14 @@
 }
 
 .LoadingScreen-HintContainer {
-  height: 9.25vmin;
+  min-height: 9.25vmin;
+  min-width: 45.55vmin;
+  max-width: 55.55vmin;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
   background-image: url('../images/hud/backgrounds/BlackBackground80.png');
   background-repeat: repeat;
   outline-offset: -0.45vmin;
@@ -51,25 +146,15 @@
   bottom: 2.778vmin;
   left: 50%;
   transform: translate(-50%, 0%);
-  width: calc(100vw - 87.95vmin);
-  max-width: 55.55vmin;
 }
 
 .LoadingScreen-HintText {
-  position: absolute;
+  position: relative;
   font-size: 1.35rem;
   color: white;
   font-family: Lato;
-  width: calc(100% - 2vmin);
-  height: calc(100% - 2vmin);
-  margin-top: 1vmin;
-  margin-left: 1vmin;
-
-  /* horizontal and vertical text centering */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  margin-right: 2vmin;
+  margin-left: 2vmin;
 }
 
 .LoadingScreen-Sprite {

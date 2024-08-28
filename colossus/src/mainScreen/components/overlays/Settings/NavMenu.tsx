@@ -63,11 +63,11 @@ class ANavMenu extends React.Component<Props> {
 
   private onClick(route: SettingsRoute): void {
     this.props.onSelectRoute(route);
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
   }
 
   private onMouseEnter(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   private renderRouteButton(route: SettingsRoute, extraJSX?: JSX.Element | JSX.Element[]): JSX.Element {

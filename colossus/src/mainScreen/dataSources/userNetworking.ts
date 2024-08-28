@@ -6,17 +6,19 @@
 
 import * as Sentry from '@sentry/browser';
 import { userQuery, UserQueryResult } from './userNetworkingConstants';
-import { setUserShouldRefresh, updateUser } from '../redux/userSlice';
+import { updateUser } from '../redux/userSlice';
 import ExternalDataSource from '../redux/externalDataSource';
 import { InitTopic } from '../redux/initializationSlice';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import { RootState } from '../redux/store';
-import { Dispatch } from 'redux';
+import { EventEmitter } from '@csegames/library/dist/_baseGame/types/EventEmitter';
+
+const userServiceEventEmitter = new EventEmitter();
 
 export class UserNetworkingService extends ExternalDataSource {
   private refreshHandle: ListenerHandle = null;
 
   protected async bind(): Promise<ListenerHandle[]> {
+    userServiceEventEmitter.on('refresh', this.refresh.bind(this));
     return [await this.query<UserQueryResult>({ query: userQuery }, this.handleUserData.bind(this), InitTopic.User)];
   }
 
@@ -25,15 +27,7 @@ export class UserNetworkingService extends ExternalDataSource {
     this.dispatch(updateUser(result.myUser));
   }
 
-  protected onReduxUpdate(reduxState: RootState, dispatch: Dispatch): void {
-    super.onReduxUpdate(reduxState, dispatch);
-    if (reduxState.user.shouldUserRefresh) {
-      this.refresh();
-    }
-  }
-
   private async refresh(): Promise<void> {
-    this.dispatch(setUserShouldRefresh(false));
     this.refreshHandle?.close();
     this.refreshHandle = await this.query<UserQueryResult>(
       { query: userQuery },
@@ -42,3 +36,7 @@ export class UserNetworkingService extends ExternalDataSource {
     );
   }
 }
+
+export const refreshUser = (): void => {
+  userServiceEventEmitter.trigger('refresh');
+};

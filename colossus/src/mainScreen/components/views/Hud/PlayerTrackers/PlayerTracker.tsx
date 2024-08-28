@@ -20,10 +20,11 @@ import {
 
 const Container = 'PlayerTrackers-PlayerTracker-Container';
 const DownContainer = 'PlayerTrackers-PlayerTracker-DownContainer';
-const DownNameAndIconContainer = 'PlayerTrackers-PlayerTracker-NameAndIconContainer';
-const DownDiamond = 'PlayerTrackers-PlayerTracker-DownArrow';
+const NameAndIconContainer = 'PlayerTrackers-PlayerTracker-NameAndIconContainer';
+const DirectionDiamond = 'PlayerTrackers-PlayerTracker-DirectionArrow';
 const DownIcon = 'PlayerTrackers-PlayerTracker-DownIcon';
 const DownName = 'PlayerTrackers-PlayerTracker-DownName';
+const SpeakingName = 'PlayerTrackers-PlayerTracker-SpeakingName';
 const SpeakerIcon = 'PlayerTrackers-PlayerTracker-SpeakerIcon';
 
 interface PlayerTrackStyles {
@@ -135,81 +136,75 @@ class APlayerTracker extends React.Component<Props, {}> {
   }
 
   public render() {
-    //No PlayerTracker if a player is dead.
-    if (this.props.lifeState == LifeState.Dead) {
+    const isSpeaking = this.props.voiceChatSettings?.status === VoiceChatMemberStatus.Speaking;
+    const isDowned = this.props.lifeState === LifeState.Downed;
+
+    //No PlayerTracker if a player is dead, not talking, or not downed.
+    if (this.props.lifeState == LifeState.Dead || (!isSpeaking && !isDowned)) {
       return null;
     }
 
-    const isSpeaking = this.props.voiceChatSettings?.status === VoiceChatMemberStatus.Speaking;
-
     const alignment = this.getAlignment();
-    let classList: string = `${DownName} `;
-    let speakingName = null;
-    //this is just for the Alive arrow
-    let arrowColor: string = '#AEFC0E';
-    if (isSpeaking) {
-      classList += 'Speaking ';
-      const speaker = getSpeakingIcon(this.props.voiceChatSettings.volume);
-      speakingName = (
-        <div className={DownNameAndIconContainer}>
-          <span className={classList}>{this.props.playerName}</span>
-          <div className={`${SpeakerIcon} ${speaker}`} />
-        </div>
-      );
-      arrowColor = '#28FF00';
-    }
+    const arrowColor: string = isDowned ? '#C00' : '#28FF00';
 
-    if (this.props.lifeState == LifeState.Downed) {
-      const reviveProgress = findEntityResource(this.props.resources, EntityResourceIDs.ReviveProgress);
-      const startedReviving: boolean = reviveProgress.current > 0;
-      const reviveIconStyle: string = startedReviving ? 'reviving' : 'down';
-      if (
-        alignment.alignmentStyle.right === FLUSH_MARGIN ||
-        alignment.alignmentStyle.bottom === TOP_BOTTOM_MARGIN_DISPLACMENT
-      ) {
-        return (
-          <div className={`${DownContainer} ${alignment.orientation}`} style={alignment.alignmentStyle}>
-            <div className={DownNameAndIconContainer}>
-              <span className={classList}>{this.props.playerName}</span>
-              <div className={`${DownIcon} ${reviveIconStyle} fs-icon-misc-revive-player`} />
-            </div>
-            {this.getDownDiamond(alignment.alignmentStyle, '#C00', isSpeaking)}
-          </div>
-        );
-      } else {
-        return (
-          <div className={`${DownContainer} ${alignment.orientation}`} style={alignment.alignmentStyle}>
-            {this.getDownDiamond(alignment.alignmentStyle, '#C00', isSpeaking)}
-            <div className={DownNameAndIconContainer}>
-              <span className={classList}>{this.props.playerName}</span>
-              <div className={`${DownIcon} ${reviveIconStyle} fs-icon-misc-revive-player`} />
-            </div>
-          </div>
-        );
-      }
-    }
     if (
       alignment.alignmentStyle.right === FLUSH_MARGIN ||
       alignment.alignmentStyle.bottom === TOP_BOTTOM_MARGIN_DISPLACMENT
     ) {
       return (
-        <div className={Container} style={alignment.alignmentStyle}>
-          {speakingName}
-          {this.getDownDiamond(alignment.alignmentStyle, arrowColor, isSpeaking)}
+        <div className={this.getContainer(isDowned, alignment)} style={alignment.alignmentStyle}>
+          {this.getNameContainerRightOrdered(isDowned, isSpeaking)}
+          {this.getDirectionDiamond(alignment.alignmentStyle, arrowColor, isSpeaking)}
         </div>
       );
     } else {
       return (
-        <div className={Container} style={alignment.alignmentStyle}>
-          {this.getDownDiamond(alignment.alignmentStyle, arrowColor, isSpeaking)}
-          {speakingName}
+        <div className={this.getContainer(isDowned, alignment)} style={alignment.alignmentStyle}>
+          {this.getDirectionDiamond(alignment.alignmentStyle, arrowColor, isSpeaking)}
+          {this.getNameContainerLeftOrdered(isDowned, isSpeaking)}
         </div>
       );
     }
   }
 
-  private getDownDiamond(alignment: PlayerTrackStyles, arrowColor: string, isSpeaking: boolean): JSX.Element {
-    let classList: string = `${DownDiamond} `;
+  private getNameContainerRightOrdered(isDowned: boolean, isSpeaking: boolean): JSX.Element {
+    const Name: string = isDowned ? DownName : SpeakingName;
+    return (
+      <div className={NameAndIconContainer}>
+        <span className={Name}>{this.props.playerName}</span>
+        {isDowned && <div className={`${DownIcon} ${this.getDownedIconStyle()} fs-icon-misc-revive-player`} />}
+        {isSpeaking && <div className={`${SpeakerIcon} ${getSpeakingIcon(this.props.voiceChatSettings.volume)}`} />}
+      </div>
+    );
+  }
+
+  private getNameContainerLeftOrdered(isDowned: boolean, isSpeaking: boolean): JSX.Element {
+    const Name: string = isDowned ? DownName : SpeakingName;
+    return (
+      <div className={NameAndIconContainer}>
+        {isSpeaking && <div className={`${SpeakerIcon} ${getSpeakingIcon(this.props.voiceChatSettings.volume)}`} />}
+        {isDowned && <div className={`${DownIcon} ${this.getDownedIconStyle()} fs-icon-misc-revive-player`} />}
+        <span className={Name}>{this.props.playerName}</span>
+      </div>
+    );
+  }
+
+  private getContainer(isDowned: boolean, alignment: PlayerTrackerAlignment): string {
+    if (isDowned) {
+      return `${DownContainer} ${alignment.orientation}`;
+    } else {
+      return Container;
+    }
+  }
+
+  private getDownedIconStyle(): string {
+    const reviveProgress = findEntityResource(this.props.resources, EntityResourceIDs.ReviveProgress);
+    const startedReviving: boolean = reviveProgress.current > 0;
+    return startedReviving ? 'reviving' : 'down';
+  }
+
+  private getDirectionDiamond(alignment: PlayerTrackStyles, arrowColor: string, isSpeaking: boolean): JSX.Element {
+    let classList: string = `${DirectionDiamond} `;
     if (isSpeaking) {
       classList += 'Speaking ';
     }
@@ -224,7 +219,7 @@ class APlayerTracker extends React.Component<Props, {}> {
     return (
       <div className={classList} style={{ transform: `rotate(${rotation})` }}>
         <div
-          className={DownDiamond}
+          className={DirectionDiamond}
           style={{ border: '2vmin solid transparent', borderLeft: `2vmin solid ${arrowColor}`, right: '0.25vmin' }}
         />
       </div>

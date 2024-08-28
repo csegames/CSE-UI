@@ -20,6 +20,7 @@ import { FeatureFlagsService } from '../../dataSources/featureFlagsNetworking';
 import { GameSettingsNetworkingService } from '../../dataSources/gameSettingsNetworking';
 import { GameStatsNetworkingService } from '../../dataSources/gameStatsNetworking';
 import { LocalStorageSource } from '../../dataSources/localStorageDataSource';
+import { ManifestDefService } from '../../dataSources/manifest/manifestDefService';
 import { MatchService } from '../../dataSources/matchNetworking';
 import { NotificationsService } from '../../dataSources/notificationsNetworking';
 import { ProfileService } from '../../dataSources/profileNetworking';
@@ -30,6 +31,7 @@ import { StringTableNetworkingService } from '../../dataSources/stringTableNetwo
 import { TeamJoinNetworkingService } from '../../dataSources/teamJoinNetworking';
 import { UserNetworkingService } from '../../dataSources/userNetworking';
 import { WarningIconsDataService } from '../../dataSources/warningIconsDataService';
+import { GameDefsService } from '../../dataSources/gameDefsNetworking';
 
 const SharedContextProvidersContainer = 'Context-SharedContextProvidersContainer';
 
@@ -53,9 +55,11 @@ class ASharedContextProviders extends React.Component<Props> {
         <ContextProviders />
         <DebugSessionService />
         <FeatureFlagsService />
+        <GameDefsService />
         <GameSettingsNetworkingService />
         <GameStatsNetworkingService />
         <LocalStorageSource />
+        <ManifestDefService />
         <MatchService />
         <NotificationsService />
         <ProfileService />

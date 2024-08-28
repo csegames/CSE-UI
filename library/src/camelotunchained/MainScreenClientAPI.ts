@@ -20,6 +20,7 @@ import { ViewFunctions, ViewEventMocks, impl as vf } from '../_baseGame/clientFu
 import { AnyEntityStateModel } from './game/GameClientModels/EntityState';
 import { AudioFunctions, AudioMocks, impl as audf } from '../_baseGame/clientFunctions/AudioFunctions';
 import { SystemFunctions, SystemMocks, impl as sysf } from '../_baseGame/clientFunctions/SystemFunctions';
+import { KeybindsFunctions, KeybindsMocks, impl as kbf } from './clientFunctions/KeybindsFunctions';
 
 /**
  * ClientAPI is intended to serve as an abstraction layer such that only the Library has to know
@@ -41,6 +42,7 @@ export type MainScreenClientAPI = AbilityFunctions &
   DefFunctions &
   EntityFunctions<AnyEntityStateModel> &
   HUDFunctions &
+  KeybindsFunctions &
   LoadingScreenFunctions &
   SelfPlayerFunctions &
   SystemFunctions &
@@ -52,6 +54,7 @@ export type MainScreenClientMocks = AbilityMocks &
   AnnouncementMocks &
   BuildModeMocks &
   DefMocks &
+  KeybindsMocks &
   SystemMocks &
   ViewEventMocks &
   WarningIconsMocks;
@@ -91,7 +94,6 @@ export const clientAPI: MainScreenClientAPI = {
   // Asset
   getAbilityBookTabsData: af.getAbilityBookTabsData.bind(af),
   getAbilityNetworksData: af.getAbilityNetworksData.bind(af),
-  getFactionsData: af.getFactionsData.bind(af),
   getSystemAbilityData: af.getSystemAbilityData.bind(af),
   getUserClassesData: af.getUserClassesData.bind(af),
   // BuildMode
@@ -102,7 +104,7 @@ export const clientAPI: MainScreenClientAPI = {
   bindAbilityDisplayDefsListener: df.bindAbilityDisplayDefsListener.bind(df),
   bindCharacterClassDefsListener: df.bindCharacterClassDefsListener.bind(df),
   bindCharacterRaceDefsListener: df.bindCharacterRaceDefsListener.bind(df),
-  bindStatusDefsListener: df.bindStatusDefsListener.bind(df),
+  bindManifestDefsListener: df.bindManifestDefsListener.bind(df),
   // Entity
   bindEntityContextListener: ef.bindEntityContextListener.bind(ef),
   bindEntityRemovedListener: ef.bindEntityRemovedListener.bind(ef),
@@ -115,6 +117,20 @@ export const clientAPI: MainScreenClientAPI = {
   bindToggleHUDEditorListener: hf.bindToggleHUDEditorListener.bind(hf),
   performItemAction: hf.performItemAction.bind(hf),
   moveItem: hf.moveItem.bind(hf),
+  setContainerColor: hf.setContainerColor.bind(hf),
+  getWidgets: hf.getWidgets.bind(hf),
+  updateWidgetState: hf.updateWidgetState.bind(hf),
+  clearWidgetState: hf.clearWidgetState.bind(hf),
+  clearAllWidgetStates: hf.clearAllWidgetStates.bind(hf),
+  getHUDEditorOffset: hf.getHUDEditorOffset.bind(hf),
+  setHUDEditorOffset: hf.setHUDEditorOffset.bind(hf),
+  // Keybinds
+  getKeybindSetIDs: kbf.getKeybindSetIDs.bind(kbf),
+  setKeybindSetIDs: kbf.setKeybindSetIDs.bind(kbf),
+  getKeybindSet: kbf.getKeybindSet.bind(kbf),
+  removeKeybindSet: kbf.removeKeybindSet.bind(kbf),
+  setKeybindSet: kbf.setKeybindSet.bind(kbf),
+  getKeybindSetKey: kbf.getKeybindSetKey.bind(kbf),
   // LoadingScreenFunctions
   bindLoadingScreenListener: lf.bindLoadingScreenListener.bind(lf),
   clearManualLoadingScreen: lf.clearManualLoadingScreen.bind(lf),
@@ -147,7 +163,7 @@ export const mockEvents: MainScreenClientMocks = {
   triggerAbilityDisplayDefsLoaded: df.triggerAbilityDisplayDefsLoaded.bind(df),
   triggerCharacterClassDefsLoaded: df.triggerCharacterClassDefsLoaded.bind(df),
   triggerCharacterRaceDefsLoaded: df.triggerCharacterRaceDefsLoaded.bind(df),
-  triggerStatusDefsLoaded: df.triggerStatusDefsLoaded.bind(df),
+  triggerManifestDefsLoaded: df.triggerManifestDefsLoaded.bind(df),
   // View
   triggerNavigate: vf.triggerNavigate.bind(vf),
   // WarningIcons

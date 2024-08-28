@@ -27,7 +27,6 @@ export const equippedItemsQuery = gql`
         statID
         value
       }
-      totalMass
     }
   }
   ${inventoryItemFragment}

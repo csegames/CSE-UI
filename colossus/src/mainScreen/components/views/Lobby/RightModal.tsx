@@ -21,6 +21,7 @@ interface ReactProps {}
 
 interface InjectedProps {
   content: React.ReactNode;
+  veilContent?: React.ReactNode;
   dispatch?: Dispatch;
 }
 
@@ -29,10 +30,10 @@ type Props = ReactProps & InjectedProps;
 class ARightModal extends React.Component<Props> {
   public componentDidUpdate(prevProps: Readonly<Props>): void {
     if (this.props.content && !prevProps.content) {
-      game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_SIDEBAR_OPEN);
+      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_SIDEBAR_OPEN);
     }
     if (prevProps.content && !this.props.content) {
-      game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_SIDEBAR_CLOSE);
+      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_SIDEBAR_CLOSE);
     }
   }
 
@@ -40,7 +41,9 @@ class ARightModal extends React.Component<Props> {
     const visibleClass = this.props.content ? 'visible' : '';
     return (
       <>
-        <div className={`${ScreenOverlay} ${visibleClass}`} onClick={this.onClick.bind(this)} />
+        <div className={`${ScreenOverlay} ${visibleClass}`} onClick={this.onClick.bind(this)}>
+          {this.props.veilContent ?? null}
+        </div>
         <div id='RightModal' className={`${Container} ${visibleClass}`}>
           <div className={ContentContainer}>{this.props.content}</div>
         </div>
@@ -49,16 +52,19 @@ class ARightModal extends React.Component<Props> {
   }
 
   public onClick() {
-    this.props.dispatch(hideRightPanel());
+    if (!this.props.veilContent) {
+      this.props.dispatch(hideRightPanel());
+    }
   }
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { rightPanelContent } = state.navigation;
+  const { rightPanelContent, rightPanelVeilContent } = state.navigation;
 
   return {
     ...ownProps,
-    content: rightPanelContent
+    content: rightPanelContent,
+    veilContent: rightPanelVeilContent
   };
 }
 

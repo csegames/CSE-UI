@@ -80,6 +80,7 @@ export interface PlayerEntityStateModel extends BaseEntityStateModel {
   survivedTime: number;
   teamKills: number;
   totalKills: number;
+  rank: number;
 }
 
 export type UpdatablePlayerEntityStateModel = PlayerEntityStateModel & Updatable;
@@ -144,7 +145,8 @@ export function defaultPlayerEntityStateModel(): PlayerEntityStateModel {
     scenarioRoundStateStartTime: 0,
     lifeState: LifeState.Alive,
     deathStartTime: 0,
-    downedStateEndTime: 0
+    downedStateEndTime: 0,
+    rank: 0
   };
 }
 

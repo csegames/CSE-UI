@@ -90,7 +90,7 @@ class ANewBattlePassModal extends React.Component<Props> {
   }
 
   private async onViewClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
 
     this.props.dispatch(navigateTo(LobbyView.BattlePass));
 

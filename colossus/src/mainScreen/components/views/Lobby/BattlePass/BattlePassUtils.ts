@@ -17,12 +17,12 @@ import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { getServerTimeMS } from '@csegames/library/dist/_baseGame/utils/timeUtils';
 import { isChampionEquipmentPerk, getPerkTypeLocalizedName } from '../../../../helpers/perkUtils';
 import { QuestsByType } from '../../../../redux/questSlice';
-import { battlePassLocalStore } from '../../../../localStorage/battlePassLocalStorage';
 import { Dispatch } from '@reduxjs/toolkit';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { startProfileRefresh } from '../../../../redux/profileSlice';
 import { InitTopic } from '../../../../redux/initializationSlice';
 import { webConf } from '../../../../dataSources/networkConfiguration';
+import { refreshProfile } from '../../../../dataSources/profileNetworking';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 export interface PerkRewardDisplayData extends PerkRewardDefGQL {
   isPremium: boolean;
@@ -35,7 +35,7 @@ export function shouldShowBattlePassSplashScreen(bpID: string): boolean {
   }
 
   // Only show if the current BP has not been Splashed yet.
-  const lastSplashedID = battlePassLocalStore.getLastSplashedBattlePassID();
+  const lastSplashedID = clientAPI.getLastSplashedBattlePassID();
 
   return lastSplashedID !== bpID;
 }
@@ -47,7 +47,7 @@ export function shouldShowEndedBattlePassModal(bpID: string, questsProgress: Que
   }
 
   // Only show if the current BP ended modal has not been shown yet.
-  const lastEndedID = battlePassLocalStore.getLastEndedBattlePassID();
+  const lastEndedID = clientAPI.getLastEndedBattlePassID();
 
   return lastEndedID !== bpID;
 }
@@ -286,7 +286,7 @@ export function getAllPendingBattlePassRewards(
     }
 
     // Any pending rewards from the Free track?
-    for (let i = progress.nextCollection; i < progress.currentQuestIndex; ++i) {
+    for (let i = progress.nextCollection; i < progress.currentQuestIndex && i < bpq.links.length; ++i) {
       bpq.links[i].rewards.forEach((reward) => {
         // Merge duplicate rewards (mostly gems).
         const qty = reward.qty + (rewardsByPerkId[reward.perkID]?.qty ?? 0);
@@ -299,7 +299,7 @@ export function getAllPendingBattlePassRewards(
     }
     // Any pending rewards from the Premium track?
     if (isPlayerPremiumForBattlePass(battlePassQuests, profilePerks, bpq.id)) {
-      for (let i = progress.nextCollectionPremium; i < progress.currentQuestIndex; ++i) {
+      for (let i = progress.nextCollectionPremium; i < progress.currentQuestIndex && i < bpq.links.length; ++i) {
         bpq.links[i].premiumRewards.forEach((reward) => {
           // Merge duplicate rewards (mostly gems).
           const qty = reward.qty + (rewardsByPerkId[reward.perkID]?.qty ?? 0);
@@ -440,7 +440,7 @@ export async function ensureBattlePassIsInitialized(
     const res = await ProfileAPI.AddQuest(webConf, battlepass.id);
     if (res.ok) {
       // Refetch the profile to get the quest records into Redux.
-      dispatch(startProfileRefresh());
+      refreshProfile();
     } else {
       console.error(`Failed to initialize BattlePass (${battlepass.id})`);
     }

@@ -45,11 +45,19 @@ export const questStaticDataQuery = gql`
           endTime
           perkID
           startTime
+          questID
+          questLevel
+          progressionNodeID
+          invertConditions
         }
         questLock {
           endTime
           perkID
           startTime
+          questID
+          questLevel
+          progressionNodeID
+          invertConditions
         }
         questType
         subQuestIDs

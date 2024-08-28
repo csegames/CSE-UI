@@ -91,7 +91,7 @@ class ARightOptions extends React.Component<Props, State> {
   }
 
   private onMouseEnter(index: number) {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_HOVER);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
     this.setState({ hoveredPlayer: index });
   }
 
@@ -230,7 +230,7 @@ class ARightOptions extends React.Component<Props, State> {
     if (!defaultPortrait || defaultPortrait?.length <= 0) {
       const defaultPortraitID = this.props.profile.champions.find(
         (c) => c.championID == this.props.profile.defaultChampionID
-      ).portraitPerkID;
+      )?.portraitPerkID;
       defaultPortrait = this.props.perksByID[defaultPortraitID]?.portraitThumbnailURL;
       if (!defaultPortrait || defaultPortrait.length <= 0) {
         defaultPortrait = 'images/hud/champions/berserker-profile.png';

@@ -25,16 +25,14 @@ import {
   updateAbilityGroup
 } from '../redux/abilitiesSlice';
 import { InitTopic, setInitialized } from '../redux/initializationSlice';
-import {
-  HUDHorizontalAnchor,
-  HUDLayer,
-  HUDVerticalAnchor,
-  HUDWidgetRegistration,
-  HUDWidgetState,
-  setSelectedWidget
-} from '../redux/hudSlice';
+import { HUDLayer, HUDWidgetRegistration, setSelectedWidget } from '../redux/hudSlice';
 import { registerHUDWidget } from './hudService';
 import { AbilityBar } from '../components/abilityBars/AbilityBar';
+import {
+  HUDHorizontalAnchor,
+  HUDVerticalAnchor,
+  HUDWidgetState
+} from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 export class AbilitiesService extends ExternalDataSource {
   protected bind(): Promise<ListenerHandle[]> {

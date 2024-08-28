@@ -63,6 +63,7 @@ const ChampionName = 'GameStats-PlayerProgression-ChampionName';
 const RewardsContainer = 'GameStats-PlayerProgression-RewardsContainer';
 const RewardsNewTitle = 'GameStats-PlayerProgression-RewardsNewTitle';
 const Reward = 'GameStats-PlayerProgression-Reward';
+const RewardBackground = 'GameStats-PlayerProgression-RewardBackground';
 const RewardIcon = 'GameStats-PlayerProgression-RewardIcon';
 const RewardCount = 'GameStats-PlayerProgression-RewardCount';
 
@@ -380,7 +381,13 @@ class APlayerProgression extends React.Component<Props> {
       console.error('failed to claim all progression rewards');
       this.props.dispatch(showError(res));
     } else {
-      createAlertsForCollectedQuestProgress(quest, questProgress, this.props.perksByID, this.props.dispatch);
+      createAlertsForCollectedQuestProgress(
+        quest,
+        questProgress,
+        this.props.perksByID,
+        this.props.champions,
+        this.props.dispatch
+      );
     }
   }
 
@@ -408,7 +415,8 @@ class APlayerProgression extends React.Component<Props> {
       for (let i = questProg.previousIndex; i < questGQL.currentQuestIndex; ++i) {
         quest.links[i].rewards.forEach((r) => {
           const perk = this.props.perksByID[r.perkID];
-          if (perk) {
+          // Rune Tier Keys are not displayed as reward items.
+          if (perk && perk.perkType !== PerkType.RuneModTierKey) {
             const perkIcon = perk.perkType == PerkType.Portrait ? perk.portraitThumbnailURL : perk.iconURL;
             rewards.push(
               <TooltipSource
@@ -420,6 +428,9 @@ class APlayerProgression extends React.Component<Props> {
                 }}
               >
                 <div className={Reward}>
+                  {(perk.backgroundURL?.length ?? 0) > 0 && (
+                    <img className={RewardBackground} src={perk.backgroundURL} />
+                  )}
                   <div className={`${RewardIcon} ${perk.perkType}`} style={{ backgroundImage: `url(${perkIcon})` }}>
                     {r.qty > 1 && (
                       <span className={RewardCount}>

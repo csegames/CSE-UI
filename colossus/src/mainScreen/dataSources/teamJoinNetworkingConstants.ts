@@ -45,7 +45,7 @@ export const currentStateQuery = gql`
         displayName
       }
       members {
-        defaultChampion {
+        champion {
           championID
           costumeID
           portraitID
@@ -107,7 +107,7 @@ export const groupSubscription = gql`
         displayName
       }
       members {
-        defaultChampion {
+        champion {
           championID
           costumeID
           portraitID

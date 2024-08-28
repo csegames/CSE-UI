@@ -5,9 +5,9 @@
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Decimal, Item, MyInventory } from '@csegames/library/dist/camelotunchained/graphql/schema';
+import { Item, MyInventory } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { ItemStatID } from '../components/items/itemData';
-import { getItemStatValue, MoveItemRequest } from '../components/items/itemUtils';
+import { MoveItemRequest } from '../components/items/itemUtils';
 
 export interface InventoryStackSplit {
   itemID: string;
@@ -15,26 +15,22 @@ export interface InventoryStackSplit {
 }
 
 interface InventoryState {
-  shouldInventoryRefresh: boolean;
   inventoryPendingRefreshes: number;
   stackSplit: InventoryStackSplit | null;
   itemCount: number | null;
   items: (Item | null)[] | null;
   nestedItemCount: number | null;
-  totalMass: Decimal | null;
   itemsPerRow: number | null;
   emptyRows: number;
   searchValue: string;
 }
 
 const DefaultInventoryState: InventoryState = {
-  shouldInventoryRefresh: false,
   inventoryPendingRefreshes: 0,
   stackSplit: null,
   itemCount: null,
   items: null,
   nestedItemCount: null,
-  totalMass: null,
   itemsPerRow: null,
   emptyRows: 0,
   searchValue: ''
@@ -44,9 +40,6 @@ export const inventorySlice = createSlice({
   name: 'inventory',
   initialState: DefaultInventoryState,
   reducers: {
-    setShouldInventoryRefresh: (state: InventoryState, action: PayloadAction<boolean>) => {
-      state.shouldInventoryRefresh = action.payload;
-    },
     addInventoryPendingRefresh: (state) => {
       state.inventoryPendingRefreshes++;
     },
@@ -57,7 +50,6 @@ export const inventorySlice = createSlice({
       state.itemCount = action.payload.itemCount;
       state.items = action.payload.items;
       state.nestedItemCount = action.payload.nestedItemCount;
-      state.totalMass = action.payload.totalMass;
     },
     moveInventoryItems: (state, action: PayloadAction<[MoveItemRequest, Item][]>) => {
       if (!state.items) {
@@ -117,11 +109,6 @@ export const inventorySlice = createSlice({
       });
 
       state.itemCount = state.items.length;
-      let totalMass = 0;
-      state.items.forEach((item) => {
-        totalMass += getItemStatValue(item, ItemStatID.TotalMass);
-      });
-      state.totalMass = totalMass;
     },
     updateStackSplit: (state, action: PayloadAction<InventoryStackSplit>) => {
       state.stackSplit = action.payload;
@@ -142,7 +129,6 @@ export const inventorySlice = createSlice({
 });
 
 export const {
-  setShouldInventoryRefresh,
   addInventoryPendingRefresh,
   resolveInventoryPendingRefresh,
   updateInventory,

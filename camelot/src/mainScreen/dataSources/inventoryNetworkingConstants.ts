@@ -18,7 +18,6 @@ export const inventoryQuery = gql`
         ...InventoryItem
       }
       itemCount
-      totalMass
     }
   }
   ${inventoryItemFragment}

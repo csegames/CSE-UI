@@ -75,6 +75,7 @@ export const matchSubscription = gql`
         match {
           activityID
           completed
+          configured
           created
           error {
             system
@@ -87,9 +88,10 @@ export const matchSubscription = gql`
           revision
           rosters {
             members {
-              defaultChampion {
+              champion {
                 championID
                 costumeID
+                portraitID
               }
               displayName
               id
@@ -98,41 +100,10 @@ export const matchSubscription = gql`
           }
           roundID
           scenarioID
-          serverName
-          serverPort
+          gameServerAddress
+          chatServerAddress
           started
-          playerStats {
-            player {
-              displayName
-              id
-            }
-            counts {
-              name
-              value
-            }
-            labels {
-              name
-              value
-            }
-            scores {
-              name
-              value
-            }
-          }
-          globalStats {
-            counts {
-              name
-              value
-            }
-            labels {
-              name
-              value
-            }
-            scores {
-              name
-              value
-            }
-          }
+          ended
         }
       }
       ... on QueueEntryRemoved {
@@ -165,6 +136,9 @@ export const matchSubscription = gql`
       }
       ... on QueueUpdated {
         queue {
+          displayAlias
+          enabled
+          nextStatusChange
           maxEntrySize
           maxWaitBySize {
             durationSec
@@ -180,7 +154,7 @@ export const matchSubscription = gql`
         }
       }
       ... on SelectionRemoved {
-        roundID
+        reservationID
       }
       ... on SelectionUpdated {
         selection {
@@ -188,21 +162,17 @@ export const matchSubscription = gql`
           created
           durationSeconds
           players {
-            defaultChampion {
-              championID
-              costumeID
-              portraitID
-            }
             displayName
             id
             locked
-            selectedChampion {
+            champion {
               championID
               costumeID
               portraitID
             }
           }
           revision
+          reservationID
           roundID
           scenarioID
         }
@@ -269,6 +239,7 @@ export const matchQuery = gql`
       currentMatches {
         activityID
         completed
+        configured
         created
         ended
         error {
@@ -282,6 +253,11 @@ export const matchQuery = gql`
         revision
         rosters {
           members {
+            champion {
+              portraitID
+              championID
+              costumeID
+            }
             displayName
             id
           }
@@ -289,41 +265,10 @@ export const matchQuery = gql`
         }
         roundID
         scenarioID
-        serverName
-        serverPort
+        gameServerAddress
+        chatServerAddress
         started
-        playerStats {
-          player {
-            displayName
-            id
-          }
-          counts {
-            name
-            value
-          }
-          labels {
-            name
-            value
-          }
-          scores {
-            name
-            value
-          }
-        }
-        globalStats {
-          counts {
-            name
-            value
-          }
-          labels {
-            name
-            value
-          }
-          scores {
-            name
-            value
-          }
-        }
+        ended
       }
       currentQueues {
         enteredBy {
@@ -339,26 +284,25 @@ export const matchQuery = gql`
         created
         durationSeconds
         players {
-          defaultChampion {
-            championID
-            costumeID
-            portraitID
-          }
           displayName
           id
           locked
-          selectedChampion {
+          champion {
             championID
             costumeID
             portraitID
           }
         }
         revision
+        reservationID
         roundID
         scenarioID
       }
       matchAccess
       queues {
+        displayAlias
+        enabled
+        nextStatusChange
         maxEntrySize
         maxWaitBySize {
           durationSec

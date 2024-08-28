@@ -200,7 +200,7 @@ class ASettings extends React.Component<Props, State> {
   };
 
   private showResetDialog(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP);
     this.setState({ showReset: true });
   }
 
@@ -209,7 +209,7 @@ class ASettings extends React.Component<Props, State> {
   }
 
   private async onApplyClick(): Promise<void> {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_YES);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
     const dndOpt = this.props.pendingSettingsChanges['optDoNotDisturb'];
     if (dndOpt) {
       // We want the TeamJoin server to be authoritative on this flag, so we set it there as well.
@@ -233,7 +233,7 @@ class ASettings extends React.Component<Props, State> {
   }
 
   private onBackClick(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CONFIRM_WINDOW_POPUP_NO);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
     this.props.dispatch(hideOverlay(Overlay.Settings));
   }
 }

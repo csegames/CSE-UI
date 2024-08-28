@@ -36,7 +36,8 @@ function generateDefaultGameSettingsState() {
     // UI state additions.
     pendingSettingsChanges: {},
     advanceSettingsChanges: {},
-    advanceSettingsOriginalValues: {}
+    advanceSettingsOriginalValues: {},
+    runeModTiers: 0
   };
   return defaultGameSettingsState;
 }

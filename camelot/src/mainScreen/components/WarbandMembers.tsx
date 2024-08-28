@@ -7,13 +7,12 @@
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { HUDHorizontalAnchor, HUDLayer, HUDVerticalAnchor, HUDWidgetRegistration } from '../redux/hudSlice';
+import { HUDLayer, HUDWidgetRegistration } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
 import {
   ClassDefGQL,
   EntityResourceDefinitionGQL,
-  GroupMemberState,
-  StatusDef
+  GroupMemberState
 } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import PlayerUnitFrame from './PlayerUnitFrame';
 import { ArrayMap, Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
@@ -23,6 +22,8 @@ import {
   EntityPositionMapModel
 } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
 import { InitTopic } from '../redux/initializationSlice';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import { StatusDef } from '../dataSources/manifest/statusManifest';
 
 const Root = 'HUD-WarbandMembers-Root';
 
@@ -137,7 +138,7 @@ export const warbandMembersRegistry: HUDWidgetRegistration = {
     xOffset: 0,
     yOffset: 20
   },
-  initTopics: [InitTopic.GameDefs, InitTopic.Statuses, InitTopic.Warband],
+  initTopics: [InitTopic.GameDefs, InitTopic.Warband],
   layer: HUDLayer.HUD,
   render: () => {
     return <WarbandMembers />;

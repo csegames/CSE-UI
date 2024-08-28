@@ -8,12 +8,12 @@ import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenCli
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { FactionData } from '../../redux/gameDefsSlice';
 import { RootState } from '../../redux/store';
 import { Theme } from '../../themes/themeConstants';
 import { AbilityGroup, ButtonLayout } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
 import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { AbilityBarSlot } from './AbilityBarSlot';
+import { FactionDef } from '../../dataSources/manifest/factionManifest';
 
 // Styles
 const Root = 'HUD-AbilityBar-Root';
@@ -27,7 +27,7 @@ interface ReactProps {
 interface InjectedProps {
   layout: ButtonLayout;
   group: AbilityGroup;
-  myFaction: FactionData;
+  myFaction: FactionDef;
   currentTheme: Theme;
   selectedWidgetId: string;
   isShown: boolean;
@@ -59,7 +59,7 @@ class AAbilityBar extends React.Component<Props> {
           className={GroupIcon}
           draggable={false}
           style={{ width: `${buttonRadius * 2}vmin`, height: `${buttonRadius * 2}vmin` }}
-          src={this.props.myFaction?.groupIconURLs[currentGroupNumber - 1]}
+          src={this.props.myFaction?.abilityBarDockImages[currentGroupNumber - 1]}
           onMouseDown={this.handleMouseDown.bind(this)}
           onWheel={this.handleWheel.bind(this)}
         />

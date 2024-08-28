@@ -15,7 +15,6 @@ import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { storeLocalStore } from '../../../../localStorage/storeLocalStorage';
 import { setCosmeticTab, Overlay, hideOverlay, showError, showOverlay } from '../../../../redux/navigationSlice';
 import { RootState } from '../../../../redux/store';
 import { updateStoreRemoveUnseenEquipment } from '../../../../redux/storeSlice';
@@ -27,7 +26,7 @@ import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions'
 import {
   findChampionQuestProgress,
   findChampionQuest,
-  hasUnseenPerkForChampion
+  getUnlockedRuneModTierForChampion
 } from '../../../../helpers/characterHelpers';
 import { QuestType, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
@@ -36,8 +35,16 @@ import { StarBadge } from '../../../../../shared/components/StarBadge';
 import { createAlertsForCollectedQuestProgress } from '../../../../helpers/perkUtils';
 import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { startProfileRefresh } from '../../../../redux/profileSlice';
 import { webConf } from '../../../../dataSources/networkConfiguration';
+import { refreshProfile } from '../../../../dataSources/profileNetworking';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import {
+  getIsBadgedForUnseenRuneKeys,
+  getIsBadgedForUnseenChampionEquipment,
+  getIsBadgedForChampionProgression
+} from '../../../../helpers/badgingUtils';
+import { AspectRatioDiv } from '../../../../../shared/components/AspectRatioDiv';
+import { PerkIcon } from '../Store/PerkIcon';
 
 const Container = 'ChampionProfile-ChampionInfoDisplay-Container';
 const ChampionName = 'ChampionProfile-ChampionInfoDisplay-ChampionName';
@@ -49,6 +56,7 @@ const RuneModsOrnament = 'ChampionProfile-ChampionInfoDisplay-RuneModsOrnament';
 const RuneModButtonWrapper = 'ChampionProfile-ChampionInfoDisplay-RuneModButtonWrapper';
 const RuneModButton = 'ChampionProfile-ChampionInfoDisplay-RuneModButton';
 const RuneModIcon = 'ChampionProfile-ChampionInfoDisplay-RuneModIcon';
+const RuneModLockIcon = 'ChampionProfile-ChampionInfoDisplay-RuneModLockIcon';
 const RuneModToolTipContainer = 'LobbyChampionStatus-RuneTooltipContainer';
 const RuneModToolTipTitle = 'LobbyChampionStatus-RuneTooltipTitle';
 const RuneModToolTipDescription = 'LobbyChampionStatus-RuneTooltipDescription';
@@ -59,6 +67,12 @@ const CustomizationButtonIcon = 'ChampionProfile-ChampionInfoDisplay-Customizati
 const MarkSeenButton = 'ChampionProfile-ChampionInfoDisplay-MarkSeenButton';
 const RuneModStar = 'ChampionProfile-ChampionInfoDisplay-RuneModStar';
 const ChampionQuestXPButton = 'ChampionProfile-ChampionInfoDisplay-ChampionQuestXPButton';
+const ProgressionTreeSection = 'ChampionProfile-ChampionInfoDisplay-ProgressionTreeSection';
+const ProgressionTreeContainer = 'ChampionProfile-ChampionInfoDisplay-ProgressionTreeContainer';
+const ProgressionTreeBadge = 'ChampionProfile-ChampionInfoDisplay-ProgressionTreeBadge';
+const TwigContainer = 'ChampionProfile-ChampionInfoDisplay-TwigContainer';
+const TwigCount = 'ChampionProfile-ChampionInfoDisplay-TwigCount';
+const TwigIcon = 'ChampionProfile-ChampionInfoDisplay-TwigIcon';
 
 const ButtonPosition = 'ChampionProfile-ButtonPosition';
 const ChampionButton = 'ChampionProfile-ChampionButton';
@@ -68,6 +82,7 @@ const ConsoleSelectSpacing = 'ChampionProfile-ConsoleSelectSpacing';
 
 const StringIDMarkAllSeen = 'ChampionInfoDisplayMarkAllSeenTitle';
 const StringIDRuneMods = 'ChampionInfoDisplayRuneModsTitle';
+const StringIDProgressionTree = 'ChampionInfoDisplayProgressionTreeTitle';
 const StringIDCustomization = 'ChampionInfoDisplayCustomizationTitle';
 const StringIDChampionProfileSetAsDefault = 'ChampionProfileSetAsDefault';
 const StringIDChampionProfileShowSkills = 'ChampionProfileShowSkills';
@@ -81,6 +96,7 @@ interface ReactProps {}
 
 interface InjectedProps {
   selectedChampion: ChampionInfo;
+  champions: ChampionInfo[];
   perksByID: Dictionary<PerkDefGQL>;
   ownedPerks: Dictionary<number>;
   selectedRuneMods: PerkDefGQL[];
@@ -101,8 +117,6 @@ class AChampionInfoDisplay extends React.Component<Props> {
   }
 
   public render(): JSX.Element {
-    this.checkForCollectableReward();
-
     return (
       <div className={Container}>
         <div className={ChampionName}>{this.props.selectedChampion.name}</div>
@@ -111,14 +125,24 @@ class AChampionInfoDisplay extends React.Component<Props> {
     );
   }
 
+  public componentDidMount(): void {
+    this.checkForCollectableReward();
+  }
+
+  public componentDidUpdate(): void {
+    this.checkForCollectableReward();
+  }
+
   private renderEquipment(): JSX.Element {
-    const hasUnseenRunes = hasUnseenPerkForChampion(
+    const shouldBadgeRuneMods = getIsBadgedForUnseenRuneKeys(
       this.props.selectedChampion,
-      PerkType.RuneMod,
       this.props.newEquipment,
-      this.props.perksByID,
-      this.props.ownedPerks
-    );
+      this.props.ownedPerks,
+      this.props.perksByID
+    ).value;
+
+    const shouldBadgeProgressionTree = getIsBadgedForChampionProgression(this.props.selectedChampion).value;
+    const progressionCurrencyCount = this.props.ownedPerks[this.props.selectedChampion.progressionCurrencyID] ?? 0;
 
     return (
       <>
@@ -128,6 +152,21 @@ class AChampionInfoDisplay extends React.Component<Props> {
           styles={ChampionQuestXPButton}
           champion={this.props.selectedChampion}
         />
+        <div className={ProgressionTreeSection}>
+          <span className={SectionHeading}>{getStringTableValue(StringIDProgressionTree, this.props.stringTable)}</span>
+          <AspectRatioDiv
+            aspectRatio={1702 / 320}
+            retain='width'
+            className={ProgressionTreeContainer}
+            onClick={this.onProgressionTreeClick.bind(this)}
+          >
+            <div className={TwigContainer}>
+              <div className={TwigCount}>{progressionCurrencyCount}</div>
+              <PerkIcon className={TwigIcon} perkID={this.props.selectedChampion.progressionCurrencyID} />
+            </div>
+            {shouldBadgeProgressionTree && <StarBadge className={ProgressionTreeBadge} />}
+          </AspectRatioDiv>
+        </div>
         <div className={RuneModContainer}>
           <span className={SectionHeading}>{getStringTableValue(StringIDRuneMods, this.props.stringTable)}</span>
           <div
@@ -138,7 +177,7 @@ class AChampionInfoDisplay extends React.Component<Props> {
             {this.renderRuneModOrnament()}
             <div className={RuneModsContainerInner}>{this.renderRuneMods()}</div>
           </div>
-          {hasUnseenRunes && <StarBadge className={RuneModStar} />}
+          {shouldBadgeRuneMods && <StarBadge className={RuneModStar} />}
         </div>
         <div className={CustomizationContainer}>
           <div className={SectionHeading}>{getStringTableValue(StringIDCustomization, this.props.stringTable)}</div>
@@ -186,11 +225,18 @@ class AChampionInfoDisplay extends React.Component<Props> {
 
   private renderRuneMods(): JSX.Element {
     const buttons: JSX.Element[] = [];
+
+    const unlockedTier = getUnlockedRuneModTierForChampion(
+      this.props.selectedChampion,
+      this.props.perksByID,
+      this.props.ownedPerks
+    );
+
     if (this.props.selectedRuneMods && this.props.selectedRuneMods.length > 0) {
       this.props.selectedRuneMods.map((runeMod, index) => {
-        if (!runeMod || !runeMod.id || !runeMod.iconURL) {
-          return;
-        }
+        // Is this tier unlocked yet?
+        const lockIcon = unlockedTier <= index ? 'fs-icon-misc-lock' : 'fs-icon-misc-unlock';
+        const lockedStyle = unlockedTier <= index ? 'locked' : '';
 
         buttons.push(
           <TooltipSource
@@ -198,8 +244,12 @@ class AChampionInfoDisplay extends React.Component<Props> {
             className={RuneModButtonWrapper}
             tooltipParams={{ id: `${index}`, content: runeMod ? this.renderRuneModTooltip.bind(this, runeMod) : null }}
           >
-            <div className={RuneModButton} key={runeMod.id}>
-              <img className={RuneModIcon} src={runeMod ? runeMod.iconURL : null} />
+            <div className={`${RuneModButton} ${lockedStyle}`}>
+              {runeMod ? (
+                <img className={RuneModIcon} src={runeMod.iconURL} />
+              ) : (
+                <div className={`${RuneModLockIcon} ${lockedStyle} ${lockIcon}`} />
+              )}
             </div>
           </TooltipSource>
         );
@@ -211,86 +261,91 @@ class AChampionInfoDisplay extends React.Component<Props> {
   }
 
   private renderSkinsButton(): JSX.Element {
-    const alertStar = hasUnseenPerkForChampion(
+    const isBadged = getIsBadgedForUnseenChampionEquipment(
       this.props.selectedChampion,
+      this.props.champions,
       PerkType.Costume,
       this.props.newEquipment,
       this.props.perksByID,
       this.props.ownedPerks
-    );
+    ).value;
 
     return this.renderCustomizationButton(
       getStringTableValue(StringIDSkins, this.props.stringTable),
       'fs-icon-misc-skins',
-      alertStar,
+      isBadged,
       this.onSkinSlotClick.bind(this)
     );
   }
 
   private renderWeaponsButton(): JSX.Element {
-    const alertStar = hasUnseenPerkForChampion(
+    const isBadged = getIsBadgedForUnseenChampionEquipment(
       this.props.selectedChampion,
+      this.props.champions,
       PerkType.Weapon,
       this.props.newEquipment,
       this.props.perksByID,
       this.props.ownedPerks
-    );
+    ).value;
 
     return this.renderCustomizationButton(
       getStringTableValue(StringIDWeapons, this.props.stringTable),
       'fs-icon-misc-weapons',
-      alertStar,
+      isBadged,
       this.onWeaponSlotClick.bind(this)
     );
   }
 
   private renderSprintButton(): JSX.Element {
-    const alertStar = hasUnseenPerkForChampion(
+    const isBadged = getIsBadgedForUnseenChampionEquipment(
       this.props.selectedChampion,
+      this.props.champions,
       PerkType.SprintFX,
       this.props.newEquipment,
       this.props.perksByID,
       this.props.ownedPerks
-    );
+    ).value;
 
     return this.renderCustomizationButton(
       getStringTableValue(StringIDSprints, this.props.stringTable),
       'fs-icon-effects-speed-boost',
-      alertStar,
+      isBadged,
       this.onSprintClick.bind(this)
     );
   }
 
   private renderPortraitButton(): JSX.Element {
-    const alertStar = hasUnseenPerkForChampion(
+    const isBadged = getIsBadgedForUnseenChampionEquipment(
       this.props.selectedChampion,
+      this.props.champions,
       PerkType.Portrait,
       this.props.newEquipment,
       this.props.perksByID,
       this.props.ownedPerks
-    );
+    ).value;
 
     return this.renderCustomizationButton(
       getStringTableValue(StringIDPortraits, this.props.stringTable),
       'fs-icon-misc-portraits',
-      alertStar,
+      isBadged,
       this.onPortraitClick.bind(this)
     );
   }
 
   private renderEmoteButton(): JSX.Element {
-    const alertStar = hasUnseenPerkForChampion(
+    const isBadged = getIsBadgedForUnseenChampionEquipment(
       this.props.selectedChampion,
+      this.props.champions,
       PerkType.Emote,
       this.props.newEquipment,
       this.props.perksByID,
       this.props.ownedPerks
-    );
+    ).value;
 
     return this.renderCustomizationButton(
       getStringTableValue(StringIDEmotes, this.props.stringTable),
       'fs-icon-misc-emotes',
-      alertStar,
+      isBadged,
       this.onEmoteSlotClick.bind(this)
     );
   }
@@ -298,7 +353,7 @@ class AChampionInfoDisplay extends React.Component<Props> {
   private renderCustomizationButton(
     name: string,
     iconClass: string,
-    alertStar: boolean,
+    isBadged: boolean,
     onClick: () => void
   ): JSX.Element {
     return (
@@ -313,7 +368,7 @@ class AChampionInfoDisplay extends React.Component<Props> {
         >
           <div className={CustomizationButton}>
             <div className={`${CustomizationButtonIcon} ${iconClass}`} />
-            {alertStar && <StarBadge className={RuneModStar} />}
+            {isBadged && <StarBadge className={RuneModStar} />}
           </div>
         </TooltipSource>
       </>
@@ -396,6 +451,10 @@ class AChampionInfoDisplay extends React.Component<Props> {
     this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
   }
 
+  private onProgressionTreeClick(): void {
+    this.props.dispatch(showOverlay(Overlay.ProgressionTree));
+  }
+
   private onRuneModClick(): void {
     game.playGameSound(SoundEvents.PLAY_UI_RUNEMENU_CLICK);
     this.props.dispatch(showOverlay(Overlay.RuneMods));
@@ -419,7 +478,7 @@ class AChampionInfoDisplay extends React.Component<Props> {
       this.props.dispatch(updateStoreRemoveUnseenEquipment(key));
     }
     // update local store
-    storeLocalStore.setUnseenEquipment({});
+    clientAPI.setUnseenEquipment({});
   }
 
   private renderRuneModTooltip(runeMod: PerkDefGQL): JSX.Element {
@@ -454,13 +513,19 @@ class AChampionInfoDisplay extends React.Component<Props> {
       console.error('failed to claim all progression rewards in championInfoDisplay');
       this.props.dispatch(showError(res));
     } else {
-      createAlertsForCollectedQuestProgress(quest, questProgress, this.props.perksByID, this.props.dispatch);
+      createAlertsForCollectedQuestProgress(
+        quest,
+        questProgress,
+        this.props.perksByID,
+        this.props.champions,
+        this.props.dispatch
+      );
     }
   }
 
   private onShowSkills() {
     this.props.dispatch(showOverlay(Overlay.ChampionDetails));
-    game.playGameSound(SoundEvents.PLAY_UI_MAIN_MENU_CLICK);
+    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
   }
 
   private async onSetAsDefault() {
@@ -469,7 +534,7 @@ class AChampionInfoDisplay extends React.Component<Props> {
     const res = await ProfileAPI.SetDefaultChampion(webConf, this.props.selectedChampion.id as any);
 
     if (res.ok) {
-      this.props.dispatch(startProfileRefresh());
+      refreshProfile();
     }
   }
 }
@@ -477,7 +542,7 @@ class AChampionInfoDisplay extends React.Component<Props> {
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { usingGamepad, usingGamepadInMainMenu } = state.baseGame;
   const { perksByID, newEquipment } = state.store;
-  const { selectedChampion } = state.championInfo;
+  const { selectedChampion, champions } = state.championInfo;
   const { ownedPerks, selectedRuneMods, quests } = state.profile;
   const selectedRuneModsByChamp = selectedRuneMods[selectedChampion.id];
   const questsByType = state.quests.quests;
@@ -488,6 +553,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     usingGamepad,
     usingGamepadInMainMenu,
     selectedChampion,
+    champions,
     perksByID,
     ownedPerks,
     selectedRuneMods: selectedRuneModsByChamp,

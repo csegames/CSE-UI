@@ -9,7 +9,7 @@ import { championInfoQuery, ChampionInfoQueryResult } from './championInfoNetwor
 import { InitTopic } from '../redux/initializationSlice';
 import { updateServerTimeDelta } from '../redux/clockSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { ChampionInfo } from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionInfo, ProgressionNodeDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { updateChampionInfo } from '../redux/championInfoSlice';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 
@@ -25,7 +25,13 @@ export class ChampionInfoService extends ExternalDataSource {
   }
 
   private handleChampionInfo(result: ChampionInfoQueryResult): void {
-    if (!result.championCostumes || !result.champions || !result.serverTimestamp) {
+    if (
+      !result.championCostumes ||
+      !result.champions ||
+      !result.serverTimestamp ||
+      !result.game ||
+      !result.game.progressionNodes
+    ) {
       console.error('Missing data, championCostumes, or champions from ChampionInfoContextQuery query');
       return;
     }
@@ -36,8 +42,27 @@ export class ChampionInfoService extends ExternalDataSource {
     champions.forEach((champion) => {
       championIDToChampion[champion.id] = champion;
     });
+    const progressionNodes = result.game.progressionNodes;
+    const progressionNodeDefsByID: Dictionary<ProgressionNodeDef> = {};
+    const progressionNodeDefsByChampionID: Dictionary<ProgressionNodeDef[]> = {};
+    progressionNodes.forEach((node) => {
+      progressionNodeDefsByID[node.id] = node;
+
+      if (!progressionNodeDefsByChampionID[node.championID]) {
+        progressionNodeDefsByChampionID[node.championID] = [];
+      }
+      progressionNodeDefsByChampionID[node.championID].push(node);
+    });
 
     this.dispatch(updateServerTimeDelta(result.serverTimestamp));
-    this.dispatch(updateChampionInfo({ champions, championCostumes, championIDToChampion }));
+    this.dispatch(
+      updateChampionInfo({
+        champions,
+        championCostumes,
+        championIDToChampion,
+        progressionNodeDefsByID,
+        progressionNodeDefsByChampionID
+      })
+    );
   }
 }
