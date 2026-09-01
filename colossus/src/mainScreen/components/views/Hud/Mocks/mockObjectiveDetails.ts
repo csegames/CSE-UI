@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { game } from '@csegames/library/dist/_baseGame';
 import { ObjectiveDetailMessageState } from '@csegames/library/dist/_baseGame/types/Objective';
 import { Mock } from './data';
 import { mockEvents } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
@@ -26,8 +25,8 @@ function makeObjectiveDetail(
   title: string,
   text: string,
   category: ObjectiveDetailCategory,
-  hasTimer: boolean,
-  hasCounter: boolean
+  hasCounter: boolean,
+  startTime?: number
 ) {
   let obj: ObjectiveDetailMessageState = {
     messageID: id,
@@ -40,9 +39,9 @@ function makeObjectiveDetail(
     totalTime: 0,
     startTime: 0
   };
-  if (hasTimer) {
+  if (startTime !== undefined) {
     obj.totalTime = 12 + Math.floor(Math.random() * 10);
-    obj.startTime = game.worldTime;
+    obj.startTime = startTime;
   }
   if (hasCounter) {
     if (Math.random() < 0.2) {
@@ -73,15 +72,15 @@ export const mockClearAllObjectiveDetails: Mock = {
 export const mockPrimaryTimer: Mock = {
   name: 'Primary Timer',
   expectedOutcomeDescription: `Sets a primary objective detail popup with a timer`,
-  function: () => {
+  function: (worldTime?: number) => {
     mockEvents.triggerObjectiveDetails([
       makeObjectiveDetail(
         'mock_primary_timer',
         'primary timer',
         'timer description',
         ObjectiveDetailCategory.Primary,
-        true,
-        false
+        false,
+        worldTime
       )
     ]);
   }
@@ -97,7 +96,6 @@ export const mockPrimaryCounter: Mock = {
         'primary counter',
         'counter description',
         ObjectiveDetailCategory.Primary,
-        false,
         true
       )
     ]);
@@ -107,7 +105,7 @@ export const mockPrimaryCounter: Mock = {
 export const mockPrimaryTimerAndCounter: Mock = {
   name: 'Primary Timer and Counter',
   expectedOutcomeDescription: `Sets a primary objective detail popup with a timer and counter`,
-  function: () => {
+  function: (worldTime?: number) => {
     mockEvents.triggerObjectiveDetails([
       makeObjectiveDetail(
         'mock_primary_timer_counter',
@@ -115,7 +113,7 @@ export const mockPrimaryTimerAndCounter: Mock = {
         'timer and counter description',
         ObjectiveDetailCategory.Primary,
         true,
-        true
+        worldTime
       )
     ]);
   }
@@ -124,15 +122,15 @@ export const mockPrimaryTimerAndCounter: Mock = {
 export const mockMainQuestTimer: Mock = {
   name: 'Main Quest Timer',
   expectedOutcomeDescription: `Sets a main quest objective detail popup with a timer`,
-  function: () => {
+  function: (worldTime?: number) => {
     mockEvents.triggerObjectiveDetails([
       makeObjectiveDetail(
         'mock_main_timer',
         'main quest timer',
         'main quest timer description',
         ObjectiveDetailCategory.MainQuest,
-        true,
-        false
+        false,
+        worldTime
       )
     ]);
   }
@@ -148,7 +146,6 @@ export const mockMainQuestCounter: Mock = {
         'main quest counter',
         'main quest counter description',
         ObjectiveDetailCategory.MainQuest,
-        false,
         true
       )
     ]);
@@ -158,7 +155,7 @@ export const mockMainQuestCounter: Mock = {
 export const mockMainQuestTimerCounter: Mock = {
   name: 'Main Quest Timer and Counter',
   expectedOutcomeDescription: `Sets a main quest objective detail popup with a timer and counter`,
-  function: () => {
+  function: (worldTime?: number) => {
     mockEvents.triggerObjectiveDetails([
       makeObjectiveDetail(
         'mock_main_timer_counter',
@@ -166,7 +163,7 @@ export const mockMainQuestTimerCounter: Mock = {
         'main quest timer and counter description',
         ObjectiveDetailCategory.MainQuest,
         true,
-        true
+        worldTime
       )
     ]);
   }
@@ -175,15 +172,15 @@ export const mockMainQuestTimerCounter: Mock = {
 export const mockSideQuestTimer: Mock = {
   name: 'Side Quest Timer',
   expectedOutcomeDescription: `Sets a side quest objective detail popup with a timer`,
-  function: () => {
+  function: (worldTime?: number) => {
     mockEvents.triggerObjectiveDetails([
       makeObjectiveDetail(
         'mock_side_timer',
         'side quest timer',
         'side quest timer description',
         ObjectiveDetailCategory.SideQuest,
-        true,
-        false
+        false,
+        worldTime
       )
     ]);
   }
@@ -199,7 +196,6 @@ export const mockSideQuestCounter: Mock = {
         'side quest counter with no desc',
         'side quest counter description',
         ObjectiveDetailCategory.SideQuest,
-        false,
         true
       )
     ]);
@@ -209,7 +205,7 @@ export const mockSideQuestCounter: Mock = {
 export const mockSideQuestTimerCounter: Mock = {
   name: 'Side Quest Timer and Counter',
   expectedOutcomeDescription: `Sets a side quest objective detail popup with a timer and counter`,
-  function: () => {
+  function: (worldTime?: number) => {
     mockEvents.triggerObjectiveDetails([
       makeObjectiveDetail(
         'mock_side_timer_counter',
@@ -217,14 +213,14 @@ export const mockSideQuestTimerCounter: Mock = {
         'side quest timer and counter description',
         ObjectiveDetailCategory.SideQuest,
         true,
-        true
+        worldTime
       )
     ]);
   }
 };
 
 // helper function to generate all permutations of objective details (timer, counter, and timer+counter with primary, mainquest, and sidequest categories)
-function generateAll(withTitle: boolean, withDesc: boolean) {
+function generateAll(withTitle: boolean, withDesc: boolean, worldTime?: number) {
   const desc: string = withDesc ? 'description' : '';
   const optionalTitle = (str: string) => (withTitle ? str : '');
   return [
@@ -233,15 +229,14 @@ function generateAll(withTitle: boolean, withDesc: boolean) {
       optionalTitle('primary timer'),
       desc,
       ObjectiveDetailCategory.Primary,
-      true,
-      false
+      false,
+      worldTime
     ),
     makeObjectiveDetail(
       'mock_primary_counter',
       optionalTitle('primary counter'),
       desc,
       ObjectiveDetailCategory.Primary,
-      false,
       true
     ),
     makeObjectiveDetail(
@@ -250,22 +245,21 @@ function generateAll(withTitle: boolean, withDesc: boolean) {
       desc,
       ObjectiveDetailCategory.Primary,
       true,
-      true
+      worldTime
     ),
     makeObjectiveDetail(
       'mock_main_timer',
       optionalTitle('main quest timer'),
       desc,
       ObjectiveDetailCategory.MainQuest,
-      true,
-      false
+      false,
+      worldTime
     ),
     makeObjectiveDetail(
       'mock_main_counter',
       optionalTitle('main quest counter'),
       desc,
       ObjectiveDetailCategory.MainQuest,
-      false,
       true
     ),
     makeObjectiveDetail(
@@ -274,22 +268,21 @@ function generateAll(withTitle: boolean, withDesc: boolean) {
       desc,
       ObjectiveDetailCategory.MainQuest,
       true,
-      true
+      worldTime
     ),
     makeObjectiveDetail(
       'mock_side_timer',
       optionalTitle('side quest timer'),
       desc,
       ObjectiveDetailCategory.SideQuest,
-      true,
-      false
+      false,
+      worldTime
     ),
     makeObjectiveDetail(
       'mock_side_counter',
       optionalTitle('side quest counter'),
       desc,
       ObjectiveDetailCategory.SideQuest,
-      false,
       true
     ),
     makeObjectiveDetail(
@@ -298,7 +291,7 @@ function generateAll(withTitle: boolean, withDesc: boolean) {
       desc,
       ObjectiveDetailCategory.SideQuest,
       true,
-      true
+      worldTime
     )
   ];
 }
@@ -328,65 +321,65 @@ function makeObjectiveDetailMock(
 // all the permutations of ObjectiveDetailState with both text lines, only a title, only a description, and no text lines (progress bar only)
 
 export const mockMultipleObjectiveDetails: Mock = makeObjectiveDetailMock(
-  generateAll(true, true),
+  generateAll(true, true, 0),
   ObjectiveDetailState.InProgress,
   ''
 );
 export const mockSetAllSuccess: Mock = makeObjectiveDetailMock(
-  generateAll(true, true),
+  generateAll(true, true, 0),
   ObjectiveDetailState.CompletedSuccess,
   ''
 );
 export const mockSetAllFailed: Mock = makeObjectiveDetailMock(
-  generateAll(true, true),
+  generateAll(true, true, 0),
   ObjectiveDetailState.CompletedFailed,
   ''
 );
 
 export const mockMultipleObjectiveDetailsNoDesc: Mock = makeObjectiveDetailMock(
-  generateAll(true, false),
+  generateAll(true, false, 0),
   ObjectiveDetailState.InProgress,
   'no description'
 );
 export const mockSetAllSuccessNoDesc: Mock = makeObjectiveDetailMock(
-  generateAll(true, false),
+  generateAll(true, false, 0),
   ObjectiveDetailState.CompletedSuccess,
   'no description'
 );
 export const mockSetAllFailedNoDesc: Mock = makeObjectiveDetailMock(
-  generateAll(true, false),
+  generateAll(true, false, 0),
   ObjectiveDetailState.CompletedFailed,
   'no description'
 );
 
 export const mockMultipleObjectiveDetailsNoTitle: Mock = makeObjectiveDetailMock(
-  generateAll(false, true),
+  generateAll(false, true, 0),
   ObjectiveDetailState.InProgress,
   'no title'
 );
 export const mockSetAllSuccessNoTitle: Mock = makeObjectiveDetailMock(
-  generateAll(false, true),
+  generateAll(false, true, 0),
   ObjectiveDetailState.CompletedSuccess,
   'no title'
 );
 export const mockSetAllFailedNoTitle: Mock = makeObjectiveDetailMock(
-  generateAll(false, true),
+  generateAll(false, true, 0),
   ObjectiveDetailState.CompletedFailed,
   'no title'
 );
 
 export const mockMultipleObjectiveDetailsProgressBarOnly: Mock = makeObjectiveDetailMock(
-  generateAll(false, false),
+  generateAll(false, false, 0),
   ObjectiveDetailState.InProgress,
   'progress bar only'
 );
 export const mockSetAllSuccessProgressBarOnly: Mock = makeObjectiveDetailMock(
-  generateAll(false, false),
+  generateAll(false, false, 0),
   ObjectiveDetailState.CompletedSuccess,
   'progress bar only'
 );
 export const mockSetAllFailedProgressBarOnly: Mock = makeObjectiveDetailMock(
-  generateAll(false, false),
+  generateAll(false, false, 0),
   ObjectiveDetailState.CompletedFailed,
   'progress bar only'
 );

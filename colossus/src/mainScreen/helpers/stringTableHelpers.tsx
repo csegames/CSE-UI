@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { PlayerStatus } from '../components/overlays/MainMenu/testData';
+import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
 
 export const StringIDGeneralYes = 'GeneralYes';
 export const StringIDGeneralNo = 'GeneralNo';
@@ -59,11 +59,14 @@ export function getStringTableValue(entryID: string, stringTable: Dictionary<Str
 
   const tableValue = stringTable[entryID];
   if (!tableValue) {
-    console.error(`Failed to find string table entry with id ${entryID}`);
+    if (Object.keys(stringTable).length) {
+      // only complain if we've initialized the table
+      console.error(`Failed to find string table entry with id ${entryID}`);
+    }
     return entryID;
   }
 
-  return tableValue.value;
+  return tableValue.text;
 }
 
 export function getTokenizedStringTableValue(
@@ -92,8 +95,8 @@ export function getPlayerStatusString(
       return getStringTableValue(StringIDPlayerStatusOnline, stringTable);
     case PlayerStatus.Away:
       return getStringTableValue(StringIDPlayerStatusAway, stringTable);
+    default:
+      console.error(`Unknown player status ${playerStatus}`);
+      return playerStatus;
   }
-
-  console.error(`Failed to find string entry for player status ${playerStatus}`);
-  return playerStatus;
 }

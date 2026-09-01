@@ -9,7 +9,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { GameStats } from './views/GameStats';
-import { InitializationState } from '../redux/initializationSlice';
 import {
   hideOverlay,
   hideRightPanel,
@@ -90,7 +89,7 @@ overlayElements.set(Overlay.WarningBroadcastModal, <WarningBroadcastModal />);
 interface ReactProps {}
 
 interface InjectedProps {
-  initialization: InitializationState;
+  initCompleted: boolean;
   lifecyclePhase: LifecyclePhase;
   overlays: OverlayInstance[];
   rightPanelContent: React.ReactNode;
@@ -99,7 +98,7 @@ interface InjectedProps {
   dispatch?: Dispatch;
 }
 
-const slashCommands = new SlashCommandRegistry<RootState>(() => store.getState());
+const slashCommands = new SlashCommandRegistry<RootState, Dispatch>(() => store.getState(), store.dispatch);
 initializeConsole(slashCommands);
 
 type Props = ReactProps & InjectedProps;
@@ -112,7 +111,7 @@ class LifecycleViews extends React.Component<Props> {
     // so we listen at the window level, and anyone who cares can watch the size via Redux.
     window.addEventListener('resize', this.reportCurrentSize.bind(this));
 
-    this.onNavigate = clientAPI.bindNavigateListener(this.handleNavigate.bind(this));
+    this.onNavigate = clientAPI.bindToggleWidgetListener(this.handleNavigate.bind(this));
 
     game.setSelectedEmoteIndex(0);
   }
@@ -123,12 +122,12 @@ class LifecycleViews extends React.Component<Props> {
   }
 
   public render(): React.ReactNode {
-    if (!this.props.initialization.completed) {
-      return null;
-    }
     this.reportCurrentSize();
     if (this.hasBuildMismatch()) {
       return <BuildMismatchModal serverIsNewer={this.props.serverBuild > this.props.clientBuild} />;
+    }
+    if (!this.props.initCompleted) {
+      return null;
     }
     return (
       <>
@@ -210,14 +209,14 @@ class LifecycleViews extends React.Component<Props> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const initialization = state.initialization;
+  const { initCompleted } = state.loading;
   const { lifecyclePhase, overlays, rightPanelContent } = state.navigation;
   const { clientBuild, serverBuild } = state.featureFlags;
   return {
     ...ownProps,
     clientBuild,
     serverBuild,
-    initialization,
+    initCompleted,
     lifecyclePhase,
     overlays,
     rightPanelContent

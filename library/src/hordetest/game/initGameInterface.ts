@@ -5,9 +5,6 @@
  */
 
 import { DevGameInterface } from './GameInterface';
-import { initPlayerState } from './GameClientModels/PlayerState';
-import { initEntityState } from './GameClientModels/EntityState';
-import { initConsumableItemsState } from './GameClientModels/ConsumableItemsState';
 import { HordeTestModel } from './HordeTestModel';
 import { initEventForwarding } from './engineEvents';
 import { BaseDevGameInterface } from '../../_baseGame/BaseGameInterface';
@@ -26,14 +23,6 @@ export default function (_devGame: BaseDevGameInterface): HordeTestModel {
     game: hordeGame
   };
   initEventForwarding(hordeGame, _devGame);
-
-  // Entity state
-  hordeGame.entities = {};
-  initEntityState(_devGame);
-
-  // INIT MODELS
-  initPlayerState(_devGame, hordetest);
-  initConsumableItemsState(_devGame, hordetest);
 
   return hordetest;
 }

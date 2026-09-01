@@ -12,9 +12,6 @@ import { ListenerHandle } from '../../_baseGame/listenerHandle';
 
 const regMap: { [key: string]: string } = {};
 
-export const EE_CombatEvent = 'combatEvent';
-regMap[EE_CombatEvent] = 'onCombatEvent';
-
 export const EE_OnCycleTeam = 'cycleTeam';
 regMap[EE_OnCycleTeam] = 'onCycleTeam';
 
@@ -24,17 +21,8 @@ regMap[EE_OnSkipEpilogue] = 'onSkipEpilogue';
 export const EE_OnOptionChanged = 'optionChanged';
 regMap[EE_OnOptionChanged] = 'onOptionChanged';
 
-export const EE_OnEntityDirectionUpdate = 'entityDirections.update';
-regMap[EE_OnEntityDirectionUpdate] = 'onEntityDirectionUpdate';
-
 export const EE_OnScenarioRoundEnd = 'scenarioRoundEnd';
 regMap[EE_OnScenarioRoundEnd] = 'onScenarioRoundEnded';
-
-export const EE_OnEntityUpdated = 'entity.updated';
-regMap[EE_OnEntityUpdated] = 'onEntityUpdated';
-
-export const EE_OnEntityRemoved = 'entity.removed';
-regMap[EE_OnEntityRemoved] = 'onEntityRemoved';
 
 export const EE_OnKillStreakUpdate = 'killStreak.update';
 regMap[EE_OnKillStreakUpdate] = 'onKillStreakUpdate';

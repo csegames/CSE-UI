@@ -6,24 +6,20 @@
 
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import ExternalDataSource from '../redux/externalDataSource';
+import { ExternalDataSource } from '../redux/externalDataSource';
 import {
   Vec3f,
   Euler3f,
   MoveItemRequestLocationType
 } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
-import { MoveItemRequest, attemptItemMoves } from '../components/items/itemUtils';
-import { BuildingMode } from '@csegames/library/dist/_baseGame/types/Building';
-import { addMenuWidgetExiting, toggleMenuWidget } from '../redux/hudSlice';
-import { WIDGET_NAME_BUILD } from '../components/Build';
-import { WIDGET_NAME_PLACEMENT } from '../components/Placement';
-import { WIDGET_NAME_OPEN_BUILD } from '../components/OpenBuild';
-import { game } from '@csegames/library/dist/_baseGame';
+import { MoveItemRequest, attemptItemMoves } from '../helpers/itemHelpers';
+import { addConditionalWidgetExiting, toggleConditionalWidget } from '../redux/hudSlice';
+import { WIDGET_ID_PLACEMENT } from '../components/Placement';
+import { getStringFromTagAffixIDs } from '../helpers/tagHelpers';
 
 export class BuildModeService extends ExternalDataSource {
   protected bind(): Promise<ListenerHandle[]> {
     const handles = Promise.resolve([
-      clientAPI.bindBuildingModeChangedListener(this.handleBuildingModeChanged.bind(this)),
       clientAPI.bindItemPlacementModeChangedListener(this.handleItemPlacementModeChanged.bind(this)),
       clientAPI.bindItemPlacementCommitListener(this.handleItemPlacementCommit.bind(this))
     ]);
@@ -31,21 +27,11 @@ export class BuildModeService extends ExternalDataSource {
     return handles;
   }
 
-  private handleBuildingModeChanged(mode: BuildingMode): void {
-    if (mode === BuildingMode.NotBuilding) {
-      game.itemPlacementMode.requestCancel();
-      this.dispatch(addMenuWidgetExiting(WIDGET_NAME_BUILD));
-      this.dispatch(addMenuWidgetExiting(WIDGET_NAME_OPEN_BUILD));
-    } else if (!this.reduxState.hud.activeMenuIds.includes(WIDGET_NAME_BUILD)) {
-      this.dispatch(toggleMenuWidget({ widgetId: WIDGET_NAME_BUILD, escapableId: WIDGET_NAME_BUILD }));
-    }
-  }
-
   private handleItemPlacementModeChanged(isActive: boolean): void {
     if (!isActive) {
-      this.dispatch(addMenuWidgetExiting(WIDGET_NAME_PLACEMENT));
-    } else if (!this.reduxState.hud.activeMenuIds.includes(WIDGET_NAME_PLACEMENT)) {
-      this.dispatch(toggleMenuWidget({ widgetId: WIDGET_NAME_PLACEMENT, escapableId: WIDGET_NAME_PLACEMENT }));
+      this.dispatch(addConditionalWidgetExiting(WIDGET_ID_PLACEMENT));
+    } else if (!this.reduxState.hud.activeConditionalWidgetIDs.includes(WIDGET_ID_PLACEMENT)) {
+      this.dispatch(toggleConditionalWidget(WIDGET_ID_PLACEMENT));
     }
   }
 
@@ -55,14 +41,17 @@ export class BuildModeService extends ExternalDataSource {
     rotation: Euler3f,
     actionID: string | null
   ): void {
+    const localPlayer = this.reduxState.entities.self;
+    const { primary: inventory, equipment, accountBank, stackSplit } = this.reduxState.inventory;
+
     if (actionID) {
-      clientAPI.performItemAction(itemInstanceID, this.reduxState.player.entityID, actionID, position, rotation, 0);
+      clientAPI.performItemAction(itemInstanceID, localPlayer.entityID, actionID, position, rotation, 0);
     } else {
       const move: MoveItemRequest = {
         MoveItemID: itemInstanceID,
         UnitCount: -1,
         EntityIDFrom: null,
-        CharacterIDFrom: this.reduxState.player.characterID,
+        CharacterIDFrom: localPlayer.characterID,
         BoneAliasFrom: 0,
         LocationTo: MoveItemRequestLocationType.Ground,
         EntityIDTo: null,
@@ -76,22 +65,25 @@ export class BuildModeService extends ExternalDataSource {
         BoneAliasTo: 0
       };
 
-      const raceId = this.reduxState.player.race;
-      const raceDef = this.reduxState.gameDefs.racesByNumericID[raceId];
+      const raceDef = this.reduxState.gameDefs.racesByNumericID[localPlayer.race];
+
+      const tagStrings = Object.values(localPlayer.tags).map((tag) =>
+        getStringFromTagAffixIDs(Object.values(tag.affixes), this.reduxState.gameDefs.tagAffixByNumericID)
+      );
 
       attemptItemMoves(
         [move],
-        this.reduxState.inventory.items,
-        this.reduxState.equippedItems.items,
-        this.reduxState.player.faction,
+        inventory,
+        equipment,
+        accountBank,
+        localPlayer.faction,
         raceDef,
-        this.reduxState.gameDefs.classesByNumericID[this.reduxState.player.classID],
-        raceDef?.raceTags ?? [],
-        this.reduxState.gameDefs.myStats,
-        this.reduxState.gameDefs.gearSlots,
-        this.reduxState.inventory.inventoryPendingRefreshes,
-        this.reduxState.equippedItems.equippedItemsPendingRefreshes,
-        this.reduxState.inventory.stackSplit,
+        this.reduxState.gameDefs.classesByNumericID[localPlayer.classID],
+        tagStrings,
+        localPlayer.stats,
+        stackSplit,
+        this.reduxState.stringTable.stringTable,
+        this.reduxState.gameDefs,
         this.dispatch
       );
     }

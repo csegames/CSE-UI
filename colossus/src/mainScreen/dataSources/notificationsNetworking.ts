@@ -101,19 +101,10 @@ export class NotificationsService extends ExternalDataSource {
   protected async bind(): Promise<ListenerHandle[]> {
     return [
       await this.subscribe<NotificationsSubscriptionResult>(
-        { operationName: 'notification', query: notificationsSubscription(this.reduxState.player.shardID) },
+        { operationName: 'notification', query: notificationsSubscription },
         this.handleSubscription.bind(this)
       )
     ];
-  }
-
-  protected canBind(): boolean {
-    return (
-      // We need champion data to load before we can validate that notifications are sending valid champion IDs
-      this.reduxState.championInfo.champions.length > 0 &&
-      // We need the shard ID to use as a tag when subscribing
-      this.reduxState.player.shardID !== 0
-    );
   }
 
   protected onReduxUpdate(reduxState: RootState, dispatch: Dispatch): void {
@@ -331,7 +322,7 @@ export class NotificationsService extends ExternalDataSource {
     }
     if ('champion' in content) {
       if (typeof content.champion !== 'string') return false;
-      if (!this.reduxState.championInfo.champions.some((champion) => champion.id === content.champion)) return false;
+      return this.reduxState.championInfo.champions.some((champion) => champion.id === content.champion);
     }
     return true;
   }

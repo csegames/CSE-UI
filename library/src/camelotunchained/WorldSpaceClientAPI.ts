@@ -1,11 +1,14 @@
-import { WorldSpaceFunctions, impl as wsf } from '../_baseGame/clientFunctions/WorldSpaceFunctions';
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 
-// TODO: append other function bindings
-export type WorldSpaceClientAPI = WorldSpaceFunctions;
+import { DebugHintFunctions, impl as dhf } from '../_baseGame/clientFunctions/DebugHintFunctions';
 
-// exposure of implementation
+export type WorldSpaceClientAPI = DebugHintFunctions;
+
 export const clientAPI: WorldSpaceClientAPI = {
-  bindProgressBarListener: wsf.bindProgressBarListener.bind(wsf),
-  bindWorldUIRemovedListener: wsf.bindWorldUIRemovedListener.bind(wsf),
-  bindWorldUIUpdatedListener: wsf.bindWorldUIUpdatedListener.bind(wsf)
+  // DebugHintFunctions
+  getDebugHints: dhf.getDebugHints.bind(dhf)
 };

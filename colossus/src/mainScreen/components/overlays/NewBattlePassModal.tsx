@@ -11,12 +11,14 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { LobbyView, hideAllOverlays, navigateTo } from '../../redux/navigationSlice';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { QuestDefGQL, QuestGQL, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { StringIDGeneralClose, getStringTableValue } from '../../helpers/stringTableHelpers';
 import { ensureBattlePassIsInitialized } from '../views/Lobby/BattlePass/BattlePassUtils';
+import { QuestDef } from '../../dataSources/manifest/questManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'NewBattlePassModal-Container';
 const Background = 'NewBattlePassModal-Background';
@@ -33,7 +35,7 @@ interface ReactProps {}
 
 interface InjectedProps {
   stringTable: Dictionary<StringTableEntryDef>;
-  currentBattlePass: QuestDefGQL;
+  currentBattlePass: QuestDef;
   lobbyView: LobbyView;
   quests: QuestGQL[];
   dispatch?: Dispatch;
@@ -90,7 +92,7 @@ class ANewBattlePassModal extends React.Component<Props> {
   }
 
   private async onViewClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
 
     this.props.dispatch(navigateTo(LobbyView.BattlePass));
 

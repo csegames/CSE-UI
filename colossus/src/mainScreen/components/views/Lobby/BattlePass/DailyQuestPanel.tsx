@@ -13,15 +13,7 @@ import { Button } from '../../../shared/Button';
 import { hideRightPanel, showError } from '../../../../redux/navigationSlice';
 import { RootState } from '../../../../redux/store';
 import { QuestsByType } from '../../../../redux/questSlice';
-import {
-  PerkGQL,
-  PerkType,
-  QuestGQL,
-  StringTableEntryDef,
-  QuestDefGQL,
-  PerkDefGQL,
-  ChampionInfo
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
@@ -36,6 +28,11 @@ import {
 import { createAlertsForCollectedQuestProgress } from '../../../../helpers/perkUtils';
 import { webConf } from '../../../../dataSources/networkConfiguration';
 import { refreshProfile } from '../../../../dataSources/profileNetworking';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { QuestDef } from '../../../../dataSources/manifest/questManifest';
+import { PerkDef, PerkType } from '../../../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../../../dataSources/manifest/championManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'BattlePass-DailyQuestPanel-Container';
 const ContentCenterer = 'BattlePass-DailyQuestPanel-ContentCenterer';
@@ -84,7 +81,7 @@ const StringIDDailyQuestsRefresh = 'DailyQuestsRefresh';
 interface State {
   isWaiting: boolean;
   waitingForProfileVersion: number;
-  selectedQuest: QuestDefGQL;
+  selectedQuest: QuestDef;
 }
 
 interface ReactProps {}
@@ -93,15 +90,15 @@ interface InjectedProps {
   usingGamepad: boolean;
   usingGamepadInMainMenu: boolean;
   quests: QuestsByType;
-  questsById: Dictionary<QuestDefGQL>;
+  questsById: Dictionary<QuestDef>;
   questsProgress: QuestGQL[];
   perks: PerkGQL[];
   dailyQuestResetsAllowed: number;
   dailyQuestResets: number;
   localProfileVersion: number;
   stringTable: Dictionary<StringTableEntryDef>;
-  perksByID: Dictionary<PerkDefGQL>;
-  champions: ChampionInfo[];
+  perksByID: Dictionary<PerkDef>;
+  champions: ChampionDef[];
   dispatch?: Dispatch;
 }
 
@@ -154,7 +151,7 @@ class ADailyQuestPanel extends React.Component<Props, State> {
     );
   }
 
-  private renderQuestCell(q: QuestDefGQL): React.ReactNode {
+  private renderQuestCell(q: QuestDef): React.ReactNode {
     const progress = this.props.questsProgress.find((qp) => qp.id === q.id);
     const selectClass = q.id === this.state.selectedQuest?.id ? 'Selected' : '';
     return (
@@ -191,7 +188,7 @@ class ADailyQuestPanel extends React.Component<Props, State> {
     );
   }
 
-  private renderQuestReward(quest: QuestDefGQL, progress: QuestGQL): React.ReactNode {
+  private renderQuestReward(quest: QuestDef, progress: QuestGQL): React.ReactNode {
     const isComplete = this.isQuestCompleted(progress);
     if (isComplete && this.isQuestCollected(progress)) {
       return;
@@ -214,7 +211,7 @@ class ADailyQuestPanel extends React.Component<Props, State> {
     );
   }
 
-  private renderQuestCompletedFooter(quest: QuestDefGQL, progress: QuestGQL): React.ReactNode {
+  private renderQuestCompletedFooter(quest: QuestDef, progress: QuestGQL): React.ReactNode {
     if (!this.isQuestCompleted(progress) || !this.isQuestCollected(progress)) {
       return;
     }
@@ -235,7 +232,7 @@ class ADailyQuestPanel extends React.Component<Props, State> {
     );
   }
 
-  private renderQuestObjectives(quest: QuestDefGQL, progress: QuestGQL): React.ReactNode {
+  private renderQuestObjectives(quest: QuestDef, progress: QuestGQL): React.ReactNode {
     if (this.isQuestCompleted(progress) && this.isQuestCollected(progress)) {
       return;
     }
@@ -243,7 +240,7 @@ class ADailyQuestPanel extends React.Component<Props, State> {
     const numSubQuests = quest.subQuestIDs?.length ?? 0;
     const displaySubQuests = numSubQuests > 0 && quest.displaySubQuests;
     const needsTooltip = numSubQuests > 0 && !quest.displaySubQuests;
-    const objectiveQuests: QuestDefGQL[] = [];
+    const objectiveQuests: QuestDef[] = [];
 
     if (displaySubQuests) {
       quest.subQuestIDs.forEach((sqId) => {
@@ -271,7 +268,7 @@ class ADailyQuestPanel extends React.Component<Props, State> {
     );
   }
 
-  private renderQuestTooltip(quest: QuestDefGQL): React.ReactNode {
+  private renderQuestTooltip(quest: QuestDef): React.ReactNode {
     // We already know that there are at least 3 subquests.  Dig out the relevant data.
     const objectiveData = quest.subQuestIDs.map((sqId) => {
       const q = this.props.questsById[sqId];
@@ -304,7 +301,7 @@ class ADailyQuestPanel extends React.Component<Props, State> {
     );
   }
 
-  private renderQuestObjective(needsSubquestText: boolean, q: QuestDefGQL): React.ReactNode {
+  private renderQuestObjective(needsSubquestText: boolean, q: QuestDef): React.ReactNode {
     const progress = this.props.questsProgress.find((qp) => qp.id === q.id);
 
     // Once you complete the last link in a quest, the questIndex increments out of bounds.
@@ -329,9 +326,9 @@ class ADailyQuestPanel extends React.Component<Props, State> {
     );
   }
 
-  private getQuestsToDisplay(): QuestDefGQL[] {
+  private getQuestsToDisplay(): QuestDef[] {
     // Your active quests all have progress data, even if that value is zero.
-    const quests: QuestDefGQL[] = [];
+    const quests: QuestDef[] = [];
     this.props.questsProgress.forEach((qp) => {
       // Is this a DailyNormal quest?
       const normalQuest = this.props.quests.DailyNormal.find((q) => q.id === qp.id);
@@ -419,7 +416,7 @@ class ADailyQuestPanel extends React.Component<Props, State> {
 
     const res = await ProfileAPI.CollectQuestReward(webConf, this.state.selectedQuest.id);
     if (res.ok) {
-      const quest: QuestDefGQL = this.props.questsById[this.state.selectedQuest.id];
+      const quest: QuestDef = this.props.questsById[this.state.selectedQuest.id];
 
       createAlertsForCollectedQuestProgress(
         quest,
@@ -468,7 +465,7 @@ class ADailyQuestPanel extends React.Component<Props, State> {
 
   private onBackClick() {
     this.props.dispatch(hideRightPanel());
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
   }
 
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot?: any): void {

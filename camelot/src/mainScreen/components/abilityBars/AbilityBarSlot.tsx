@@ -8,7 +8,6 @@ import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { Theme } from '../../themes/themeConstants';
 import ContextMenuSource from '../ContextMenuSource';
 import DropTarget from '../DropTarget';
 import { AbilityButton, DropTypeAbilityButton } from './AbilityButton';
@@ -16,16 +15,24 @@ import { NoAbilityId, ButtonLayout } from '@csegames/library/dist/_baseGame/type
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { Keybind } from '@csegames/library/dist/_baseGame/types/Keybind';
 import { KeybindSequencer } from '../input/KeybindSequencer';
-import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
-import { WIDGET_NAME_ABILITY_BOOK } from '../abilityBook/AbilityBook';
-import { toggleMenuWidget } from '../../redux/hudSlice';
-import { FactionDef } from '../../dataSources/manifest/factionManifest';
+import { WIDGET_ID_ABILITY_BOOK } from '../abilityBook/AbilityBook';
+import { toggleConditionalWidget } from '../../redux/hudSlice';
+import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
+import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
+import { getStringTableValue, StringIDGeneralPlus } from '../../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
+import { getFactionData } from '../../gameData/factionData';
 
-// Styles
+// CSS classes
 const Root = 'HUD-AbilityBarSlot-Root';
 const EmptySlot = 'HUD-AbilityBarSlot-EmptySlot';
 const GoToAbilityBookButton = 'HUD-AbilityBarSlot-GoToAbilityBookButton';
 const AbilityButtonWrapper = 'HUD-AbilityBarSlot-AbilityButtonWrapper';
+const DecorationBack = 'HUD-AbilityBarSlot-DecorationBack';
+const DecorationFront = 'HUD-AbilityBarSlot-DecorationFront';
+
+// String IDs
+const StringIDAbilityBarBindKey = 'AbilityBarBindKey';
 
 export interface AbilityBarSlotDropTargetData {
   layoutID: number;
@@ -42,10 +49,11 @@ interface ReactProps {
 interface InjectedProps {
   layout: ButtonLayout;
   groupID: number;
-  myFaction: FactionDef;
-  currentTheme: Theme;
+  uiFactionID: string;
   inEditMode: boolean;
   keybinds: Dictionary<Keybind>;
+  activeConditionalWidgetIDs: string[];
+  stringTable: Dictionary<StringTableEntryDef>;
   dispatch?: Dispatch;
 }
 
@@ -53,7 +61,6 @@ type Props = ReactProps & InjectedProps;
 
 class AAbilityBarSlot extends React.Component<Props> {
   render(): React.ReactNode {
-    const buttonRadius: number = this.props.currentTheme.abilityButtons.display.radius;
     const showEmptySlot = this.props.inEditMode && this.props.abilityId === NoAbilityId;
     const dropID = `${this.props.groupID}:${this.props.slotIndex}`;
     const dropData: AbilityBarSlotDropTargetData = {
@@ -62,6 +69,8 @@ class AAbilityBarSlot extends React.Component<Props> {
       slotIndex: this.props.slotIndex
     };
 
+    const factionData = getFactionData(this.props.uiFactionID);
+
     return (
       <DropTarget
         // Have to explicitly add a key, or else this doesn't update when the user cycles groups.
@@ -69,13 +78,13 @@ class AAbilityBarSlot extends React.Component<Props> {
         dropData={dropData}
         dropType={DropTypeAbilityButton}
         className={Root}
-        style={{ width: `${buttonRadius * 2}vmin`, height: `${buttonRadius * 2}vmin` }}
       >
+        <img className={DecorationBack} src={factionData.abilityBarCenterBackImage} />
         {showEmptySlot ? (
           <>
-            <img className={EmptySlot} draggable={false} src={this.props.myFaction?.abilityBarEmptySlotImage} />
+            <img className={EmptySlot} draggable={false} src={factionData.abilityBarEmptySlotImage} />
             <div className={GoToAbilityBookButton} onMouseDown={this.navigateToAbilityBook.bind(this)}>
-              +
+              {getStringTableValue(StringIDGeneralPlus, this.props.stringTable)}
             </div>
           </>
         ) : (
@@ -84,17 +93,23 @@ class AAbilityBarSlot extends React.Component<Props> {
               className={AbilityButtonWrapper}
               menuParams={{
                 id: `L${this.props.layoutId}:${this.props.slotIndex}`,
-                content: [{ title: 'Bind key', onClick: this.onChangeKeybindClick.bind(this) }]
+                content: [
+                  {
+                    title: getStringTableValue(StringIDAbilityBarBindKey, this.props.stringTable),
+                    onClick: this.onChangeKeybindClick.bind(this)
+                  }
+                ]
               }}
             >
               <AbilityButton
-                layoutId={this.props.layoutId}
+                layoutID={this.props.layoutId}
                 slotIndex={this.props.slotIndex}
-                abilityId={this.props.abilityId}
+                abilityID={this.props.abilityId}
               />
             </ContextMenuSource>
           )
         )}
+        <img className={DecorationFront} src={factionData.abilityBarCenterFrontImage} />
       </DropTarget>
     );
   }
@@ -103,34 +118,35 @@ class AAbilityBarSlot extends React.Component<Props> {
     const keybindId = this.props.layout.keybindBegin + this.props.slotIndex;
     const keybind = this.props.keybinds[keybindId];
 
-    const sequencer = new KeybindSequencer();
+    const sequencer = new KeybindSequencer(this.props.stringTable);
     sequencer.beginKeybindSequence(this.props.keybinds, keybind, 0, dispatch);
   }
 
   private navigateToAbilityBook(): void {
-    this.props.dispatch(
-      toggleMenuWidget({ widgetId: WIDGET_NAME_ABILITY_BOOK, escapableId: WIDGET_NAME_ABILITY_BOOK })
-    );
+    if (!this.props.activeConditionalWidgetIDs.includes(WIDGET_ID_ABILITY_BOOK)) {
+      clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_WINDOW_CLOSED);
+      this.props.dispatch(toggleConditionalWidget(WIDGET_ID_ABILITY_BOOK));
+    }
   }
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { currentTheme } = state.themes;
   const { keybinds } = state;
   const layout = state.abilities.layouts[ownProps.layoutId];
   // Have to split this off from layout or else we don't re-render (and change the drop target data) when
   // the user cycles between groups.
   const groupID = layout.groupID;
-  const myFaction = state.gameDefs.factions[Faction[state.player.faction]];
+  const { stringTable } = state.stringTable;
 
   return {
     ...ownProps,
     layout,
     groupID,
-    myFaction,
-    currentTheme,
+    uiFactionID: state.hud.uiFactionID,
     inEditMode: state.abilities.editStatus.canEdit,
-    keybinds
+    keybinds,
+    activeConditionalWidgetIDs: state.hud.activeConditionalWidgetIDs,
+    stringTable
   };
 }
 

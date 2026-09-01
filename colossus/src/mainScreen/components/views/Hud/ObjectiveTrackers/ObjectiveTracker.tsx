@@ -4,10 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REFACTOR
+
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
-import { BaseEntityStateModel } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
+import { BaseEntityState } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { Objective } from '../Objectives/Objective';
 import { EntityDirection } from '@csegames/library/dist/hordetest/game/types/EntityDirection';
 import { Vec2f } from '@csegames/library/dist/hordetest/webAPI/definitions';
@@ -28,7 +30,7 @@ interface ObjectiveTrackStyles {
 
 interface InjectedProps {
   screenPos: Vec2f;
-  objective: BaseEntityStateModel;
+  objective: BaseEntityState;
 }
 
 interface ReactProps {
@@ -137,3 +139,5 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
 }
 
 export const ObjectiveTracker = connect(mapStateToProps)(AObjectiveTracker);
+
+*/

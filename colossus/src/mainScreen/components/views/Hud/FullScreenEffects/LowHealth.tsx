@@ -42,9 +42,10 @@ class ALowHealthFullScreenEffects extends React.Component<Props, {}> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ComponentProps) {
+  const { resources, lifeState } = state.entities.self;
   return {
-    resources: state.player.resources,
-    lifeState: state.player.lifeState
+    resources,
+    lifeState
   };
 }
 

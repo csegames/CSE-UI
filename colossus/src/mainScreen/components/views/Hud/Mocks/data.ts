@@ -12,7 +12,7 @@ import * as mockFriendlyPlayers from './mockFriendlyPlayers';
 export interface Mock {
   name: string;
   expectedOutcomeDescription: string;
-  function: () => void;
+  function: (worldTime?: number) => void;
 }
 
 const mocks: { [section: string]: Mock[] } = {

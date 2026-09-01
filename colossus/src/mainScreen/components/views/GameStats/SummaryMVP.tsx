@@ -7,16 +7,8 @@
 import * as React from 'react';
 import { RootState } from '../../../redux/store';
 import { connect } from 'react-redux';
-import {
-  ChampionCostumeInfo,
-  ChampionInfo,
-  OvermindCharacter,
-  OvermindSummaryGQL,
-  MVP,
-  StringTableEntryDef,
-  PerkDefGQL,
-  ScenarioDefGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { OvermindCharacter, OvermindSummaryGQL, MVP } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Button } from '../../shared/Button';
 import {
   StringIDGeneralContinue,
@@ -25,6 +17,10 @@ import {
 } from '../../../helpers/stringTableHelpers';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numberUtils';
+import { PerkDef } from '../../../dataSources/manifest/perkManifest';
+import { CostumeDef } from '../../../dataSources/manifest/costumeManifest';
+import { ScenarioDef } from '../../../dataSources/manifest/scenarioManifest';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
 
 const MVPPage = 'GameStats-SummaryMVP-MVPPage';
 const MVPContainer = 'GameStats-SummaryMVP-MVPContainer';
@@ -63,13 +59,13 @@ interface ReactProps {
 }
 
 interface InjectedProps {
-  championCostumes: ChampionCostumeInfo[];
-  champions: ChampionInfo[];
-  perksByID: Dictionary<PerkDefGQL>;
+  championCostumes: CostumeDef[];
+  champions: ChampionDef[];
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
   overmindSummary: OvermindSummaryGQL;
   accountID: string;
-  scenarioDef: ScenarioDefGQL;
+  scenarioDef: ScenarioDef;
 }
 
 type Props = ReactProps & InjectedProps;

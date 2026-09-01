@@ -5,10 +5,10 @@
  */
 
 import * as React from 'react';
-import { PerkDefGQL, PerkType } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
+import { PerkDef, PerkType } from '../../../../dataSources/manifest/perkManifest';
 
 const Root = 'StartScreen-Store-PerkIcon-Root';
 const Image = 'StartScreen-Store-PerkIcon-Image';
@@ -22,7 +22,7 @@ interface ReactProps {
 }
 
 interface InjectedProps {
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
 }
 
 type Props = ReactProps & InjectedProps;

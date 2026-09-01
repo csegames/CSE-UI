@@ -5,12 +5,6 @@
  */
 
 import * as React from 'react';
-import {
-  ChampionInfo,
-  ChampionCostumeInfo,
-  PerkDefGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
 import { ChampionInfoDisplay } from './ChampionInfoDisplay';
 import { ChampionSelect } from './ChampionSelect';
 import { TransitionAnimation } from '../../../shared/TransitionAnimation';
@@ -21,7 +15,11 @@ import { Dispatch } from 'redux';
 import { updateSelectedChampion } from '../../../../redux/championInfoSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
-import { InitTopic } from '../../../../redux/initializationSlice';
+import { LoadingTopic } from '../../../../redux/loadingSlice';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { CostumeDef } from '../../../../dataSources/manifest/costumeManifest';
+import { ChampionDef } from '../../../../dataSources/manifest/championManifest';
+import { PerkDef } from '../../../../dataSources/manifest/perkManifest';
 
 const Container = 'ChampionProfile-Container';
 const ErrorContainer = 'ChampionProfile-ErrorContainer';
@@ -36,15 +34,15 @@ const StringIDChampionProfileErrors = 'ChampionProfileErrors';
 interface ReactProps {}
 
 interface InjectedProps {
-  selectedChampion: ChampionInfo;
-  championCostumes: ChampionCostumeInfo[];
-  champions: ChampionInfo[];
+  selectedChampion: ChampionDef;
+  championCostumes: CostumeDef[];
+  champions: ChampionDef[];
   profile: ProfileModel;
   usingGamepad: boolean;
   usingGamepadInMainMenu: boolean;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
-  initializationTopics: Dictionary<Boolean>;
+  loadingTopics: Dictionary<Boolean>;
   dispatch?: Dispatch;
 }
 
@@ -56,7 +54,7 @@ class AChampionProfile extends React.Component<Props> {
   }
 
   render() {
-    if (this.props.champions && this.props.selectedChampion && this.props.initializationTopics[InitTopic.Store]) {
+    if (this.props.champions && this.props.selectedChampion && this.props.loadingTopics[LoadingTopic.Store]) {
       const costume = this.getEquippedCostumeForSelectedChampion();
       const standingImage = (costume && costume.standingImageURL) || '';
 
@@ -91,7 +89,7 @@ class AChampionProfile extends React.Component<Props> {
     }
   }
 
-  private getEquippedCostumeForSelectedChampion(): ChampionCostumeInfo {
+  private getEquippedCostumeForSelectedChampion(): CostumeDef {
     const selectedChampionGQL = this.props.profile.champions.find((c) => {
       return c.championID === this.props.selectedChampion.id;
     });
@@ -100,16 +98,14 @@ class AChampionProfile extends React.Component<Props> {
       return null;
     }
 
-    const allCostumesForChampion: ChampionCostumeInfo[] = this.props.championCostumes.filter(
-      (costume: ChampionCostumeInfo) => {
-        return costume.requiredChampionID === this.props.selectedChampion.id;
-      }
-    );
+    const allCostumesForChampion: CostumeDef[] = this.props.championCostumes.filter((costume: CostumeDef) => {
+      return costume.requiredChampionID === this.props.selectedChampion.id;
+    });
 
     const costumePerk = this.props.perksByID[selectedChampionGQL.costumePerkID];
 
     const equippedCostume = allCostumesForChampion.find((costume) => {
-      return costume.id === costumePerk?.costume?.id;
+      return costume.id === costumePerk?.costumeID;
     });
 
     return equippedCostume;
@@ -135,7 +131,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { champions, championCostumes, selectedChampion } = state.championInfo;
   const { perksByID } = state.store;
   const { stringTable } = state.stringTable;
-  const initializationTopics = state.initialization.componentStatus;
+  const loadingTopics = state.loading.componentStatus;
 
   return {
     ...ownProps,
@@ -147,7 +143,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     usingGamepadInMainMenu,
     perksByID,
     stringTable,
-    initializationTopics
+    loadingTopics
   };
 }
 

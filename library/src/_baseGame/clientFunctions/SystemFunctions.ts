@@ -7,28 +7,56 @@
 import { engine } from '../../_baseGame/engine';
 
 // UI -> client (see UIViewListener.cpp)
-const openBrowserCallbackName = 'system.OpenBrowser';
+const OpenBrowserCallbackName = 'system.OpenBrowser';
+const QuitCallbackName = 'system.quit';
+const ReloadUICallbackName = 'system.reloadUI';
+const RequestAddImageToCacheCallbackName = 'system.requestAddImageToCache';
+const RequestRemoveImageFromCacheCallbackName = 'system.requestRemoveImageFromCache';
 
 export interface SystemFunctions {
-  openBrowser(url: string): void;
+  openBrowser(topic: string, arg?: string): void;
+  quit(): void;
+  reloadUI(): void;
+  requestAddImageToCache(url: string);
+  requestRemoveImageFromCache(url: string);
 }
 
-export interface SystemMocks {}
-
-abstract class SystemFunctionsBase implements SystemFunctions, SystemMocks {
-  abstract openBrowser(url: string): void;
-}
-
-class CoherentSystemFunctions extends SystemFunctionsBase {
-  openBrowser(url: string): void {
-    engine.trigger(openBrowserCallbackName, url);
+class CoherentSystemFunctions implements SystemFunctions {
+  openBrowser(topic: string, arg?: string): void {
+    if (arg) {
+      engine.trigger(OpenBrowserCallbackName, topic, arg);
+    } else {
+      engine.trigger(OpenBrowserCallbackName, topic);
+    }
+  }
+  quit(): void {
+    engine.trigger(QuitCallbackName);
+  }
+  reloadUI(): void {
+    engine.trigger(ReloadUICallbackName);
+  }
+  requestAddImageToCache(url: string) {
+    engine.trigger(RequestAddImageToCacheCallbackName, url);
+  }
+  requestRemoveImageFromCache(url: string) {
+    engine.trigger(RequestRemoveImageFromCacheCallbackName, url);
   }
 }
 
-class BrowserSystemFunctions extends SystemFunctionsBase {
-  openBrowser(url: string): void {}
+class BrowserSystemFunctions implements SystemFunctions {
+  openBrowser(topic: string, arg?: string): void {
+    // simulating the window properly would require calling the shardAPI
+    // and we don't have the configuration in context here
+    alert(`External link requested: ${topic},${arg}`);
+  }
+  quit(): void {
+    alert('Quit requested');
+  }
+  reloadUI(): void {
+    window.location.reload();
+  }
+  requestAddImageToCache(url: string) {}
+  requestRemoveImageFromCache(url: string) {}
 }
 
-export const impl: SystemFunctions & SystemMocks = engine.isAttached
-  ? new CoherentSystemFunctions()
-  : new BrowserSystemFunctions();
+export const impl: SystemFunctions = engine.isAttached ? new CoherentSystemFunctions() : new BrowserSystemFunctions();

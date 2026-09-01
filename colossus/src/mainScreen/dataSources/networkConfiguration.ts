@@ -5,7 +5,7 @@
  */
 
 import { game } from '@csegames/library/dist/_baseGame';
-import { SubscriptionSettings } from '@csegames/library/dist/_baseGame/graphql/subscription';
+import { SubscriptionSettings } from '@csegames/library/dist/_baseGame/legacy_graphql/subscription';
 import { RequestConfig } from '@csegames/library/dist/_baseGame/types/Request';
 
 export const networkConfigurationState = {
@@ -17,6 +17,7 @@ export function setShardID(shardID: number) {
 }
 
 function combine(url: string, path: string): string {
+  if (!url) return null;
   if (url.endsWith('/')) return url + path;
   return url + '/' + path;
 }
@@ -49,7 +50,7 @@ type SubscriptionSettingsSource = () => SubscriptionSettings;
 
 export const subsConf: SubscriptionSettingsSource = () => {
   return {
-    getUrl: () => combine(game.webAPIHost.replace('http', 'ws'), 'graphql'),
+    getUrl: () => combine(game.webAPIHost?.replace('http', 'ws'), 'graphql'),
     getInitPayload: () => {
       return {
         characterID: game.characterID,

@@ -9,7 +9,6 @@ import * as React from 'react';
 import { StatusItem } from './StatusItem';
 import { connect } from 'react-redux';
 import { Status } from '@csegames/library/dist/hordetest/game/types/Status';
-import { game } from '@csegames/library/dist/_baseGame';
 import { RootState } from '../../../../redux/store';
 import { IDLookupTable } from '../../../../redux/gameSlice';
 import { ArrayMap } from '@csegames/library/dist/_baseGame/types/ObjectMap';
@@ -55,11 +54,27 @@ class AStatusBar extends React.Component<Props> {
 
     return (
       <div id='StatusBar' className={Container}>
-        {friendly.map((status: StatusWithDef, statusIndex: number) => {
-          return <StatusItem key={`friendlyStatus_${statusIndex}`} type='friendly' status={status} />;
+        {friendly.map((data: StatusWithDef, statusIndex: number) => {
+          return (
+            <StatusItem
+              key={`friendlyStatus_${statusIndex}`}
+              type='friendly'
+              status={data.status}
+              def={data.def}
+              count={data.count}
+            />
+          );
         })}
-        {hostile.map((status: StatusWithDef, statusIndex: number) => {
-          return <StatusItem key={`hostileStatus_${statusIndex}`} type='hostile' status={status} />;
+        {hostile.map((data: StatusWithDef, statusIndex: number) => {
+          return (
+            <StatusItem
+              key={`hostileStatus_${statusIndex}`}
+              type='hostile'
+              status={data.status}
+              def={data.def}
+              count={data.count}
+            />
+          );
         })}
       </div>
     );
@@ -70,9 +85,7 @@ function addStatusToList(statusDef: StatusDef, status: Status, statusList: Statu
   var existing = statusList.find((s) => s.def == statusDef);
   if (existing) {
     // keep track of the status that is going to expire first, that's the one that we want to show the countdown for
-    const existingDuration = getStatusRemainingDuration(existing.status.duration, existing.status.startTime);
-    const newDuration = getStatusRemainingDuration(status.duration, status.startTime);
-    if (newDuration < existingDuration) {
+    if (getEndTime(status) < getEndTime(existing.status)) {
       existing.status = status;
     }
     existing.count++;
@@ -81,17 +94,14 @@ function addStatusToList(statusDef: StatusDef, status: Status, statusList: Statu
   }
 }
 
-function getStatusRemainingDuration(fullDuration: number, startTime: number) {
-  return fullDuration - (game.worldTime - startTime);
+function getEndTime(status: Status) {
+  return status.startTime + status.duration;
 }
 
 function sortStatuses(statuses: StatusWithDef[]): void {
-  // Sort by largest remaining duration
+  // Sort by last end time
   statuses.sort((a, b) => {
-    const remainingDurationA = getStatusRemainingDuration(a.status.duration, a.status.startTime);
-    const remainingDurationB = getStatusRemainingDuration(b.status.duration, b.status.startTime);
-
-    const durationResult = remainingDurationB - remainingDurationA;
+    const durationResult = getEndTime(b.status) - getEndTime(a.status);
 
     // if there's a case where durations are equal on two statuses, use the ID as a secondary sort.
     // statuses support infinite durations which produce a NaN duration result. We also consider this
@@ -106,7 +116,7 @@ function sortStatuses(statuses: StatusWithDef[]): void {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { statusDefsByNumericID: statusDefs } = state.game;
-  const { statuses } = state.player;
+  const { statuses } = state.entities.self;
 
   return {
     statusDefs,

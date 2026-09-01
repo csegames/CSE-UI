@@ -9,13 +9,11 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 // BEGIN INTERFACES AND STATES
 
 interface ClockState {
-  minuteTicker: number;
   serverTimeDeltaMS: number;
 }
 
 function generateDefaultClockState(): ClockState {
   const defaultClockState: ClockState = {
-    minuteTicker: 0,
     serverTimeDeltaMS: 0
   };
 
@@ -26,9 +24,6 @@ export const clockSlice = createSlice({
   name: 'clock',
   initialState: generateDefaultClockState(),
   reducers: {
-    updateClockMinuteTicker: (state: ClockState) => {
-      state.minuteTicker += 1;
-    },
     updateServerTimeDelta: (state: ClockState, action: PayloadAction<string>) => {
       const serverTimeMS: number = new Date(action.payload).valueOf();
       const localTimeMS: number = Date.now();
@@ -39,4 +34,4 @@ export const clockSlice = createSlice({
   }
 });
 
-export const { updateClockMinuteTicker, updateServerTimeDelta } = clockSlice.actions;
+export const { updateServerTimeDelta } = clockSlice.actions;

@@ -8,16 +8,17 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { Dispatch } from 'redux';
-import { ChampionInfo, OvermindSummaryGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { OvermindSummaryGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { QuestsByType } from '../../../../redux/questSlice';
 import { showRightPanel } from '../../../../redux/navigationSlice';
 import { ProgressionInfo } from '../../../rightPanel/ProgressionInfo';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { findChampionQuestProgress, findChampionQuest } from '../../../../helpers/characterHelpers';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { ExperienceBar } from '../../../shared/ExperienceBar';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { ChampionDef } from '../../../../dataSources/manifest/championManifest';
 
 const ProgressionContainer = 'ChampionProfile-ChampionProgressionLevel-ProgressionContainer';
 const ProgressionLevel = 'ChampionProfile-ChampionProgressionLevel-ProgressionLevel';
@@ -51,11 +52,11 @@ interface ReactProps {
 
 interface InjectedProps {
   overmindSummary: OvermindSummaryGQL;
-  selectedChampion: ChampionInfo;
+  selectedChampion: ChampionDef;
   questsGQL: QuestGQL[];
   quests: QuestsByType;
   playerName: string;
-  championIDToChampion: { [championID: string]: ChampionInfo };
+  championIDToChampion: { [championID: string]: ChampionDef };
   stringTable: Dictionary<StringTableEntryDef>;
   dispatch?: Dispatch;
 }
@@ -73,7 +74,7 @@ class AAnimatedChampionProgressionLevel extends React.Component<Props, State> {
   }
 
   public render() {
-    let champion: ChampionInfo = null;
+    let champion: ChampionDef = null;
     if (this.props.selectedChampion) {
       champion = this.props.selectedChampion;
     } else if (this.props.overmindSummary) {
@@ -220,7 +221,7 @@ class AAnimatedChampionProgressionLevel extends React.Component<Props, State> {
       emblemMaxXP: 100
     };
 
-    let champion: ChampionInfo = null;
+    let champion: ChampionDef = null;
     if (this.props.selectedChampion) {
       champion = this.props.selectedChampion;
     } else if (this.props.overmindSummary) {
@@ -272,7 +273,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { selectedChampion } = state.championInfo;
   const { quests } = state.profile;
   const questsByType = state.quests.quests;
-  const playerName = state.player.name;
+  const playerName = state.user.displayName;
   const { championIDToChampion } = state.championInfo;
   const { stringTable } = state.stringTable;
 

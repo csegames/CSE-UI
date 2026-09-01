@@ -4,125 +4,143 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { EntityContext } from '@csegames/library/dist/_baseGame/types/EntityContext';
+import { EntityID } from '@csegames/library/dist/_baseGame/types/localDefinitions';
 import {
-  BaseEntityStateModel,
-  PlayerEntityStateModel,
-  EntityPositionMapModel
+  BaseEntityState,
+  PlayerEntityState
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
+import { CharacterKind } from '@csegames/library/dist/hordetest/game/types/CharacterKind';
+import { LifeState } from '@csegames/library/dist/hordetest/game/types/LifeState';
+import { ScenarioRoundState } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface FriendsList {
-  [entityName: string]: PlayerEntityStateModel;
+  [entityName: string]: PlayerEntityState; // TODO: track by accountID
 }
 
 export interface EntityList {
-  [entityID: string]: PlayerEntityStateModel;
+  [entityID: string]: PlayerEntityState;
 }
 
 export interface ObjectivesList {
-  [entityID: string]: BaseEntityStateModel;
+  [entityID: string]: BaseEntityState;
 }
 
-interface FriendUpdate {
-  name: string;
-  delta: Partial<PlayerEntityStateModel>;
-}
-
-interface BossUpdate {
-  entityID: string;
-  delta: Partial<PlayerEntityStateModel>;
-}
-
-interface ObjectiveUpdate {
-  entityID: string;
-  delta: Partial<BaseEntityStateModel>;
-}
+const defaultPlayerState: PlayerEntityState = {
+  characterKind: CharacterKind.User,
+  accountID: '',
+  classID: 0,
+  resources: {},
+  gender: 0,
+  race: 0,
+  currentDeaths: NaN,
+  deathStartTime: 0,
+  downedStateEndTime: NaN,
+  killersName: null,
+  killersRace: 0,
+  lifeState: LifeState.Alive,
+  maxDeaths: NaN,
+  portraitURL: '',
+  iconClass: '',
+  scenarioID: null,
+  scenarioRoundState: ScenarioRoundState.Uninitialized,
+  isShielded: false,
+  scenarioRoundStateEndTime: NaN,
+  scenarioRoundStateStartTime: NaN,
+  survivedTime: NaN,
+  teamKills: 0,
+  totalKills: 0,
+  rank: 0,
+  entityID: '',
+  type: '',
+  faction: 0,
+  name: '',
+  isAlive: true,
+  statuses: {},
+  objective: null
+};
 
 interface EntitiesState {
   friends: FriendsList;
   friendsPage: number;
   friendsPerPage: number;
+  self: PlayerEntityState;
+  selfID: EntityID;
   bosses: EntityList;
   objectives: ObjectivesList;
-  positions: EntityPositionMapModel;
 }
 
 const DefaultEntitiesState: EntitiesState = {
   friends: {},
   friendsPage: 1,
   friendsPerPage: 12, //this should effectively be a const.
+  self: defaultPlayerState,
+  selfID: null,
   bosses: {},
-  objectives: {},
-  positions: {}
+  objectives: {}
 };
 
 export const entitiesSlice = createSlice({
   name: 'entities',
   initialState: DefaultEntitiesState,
   reducers: {
-    addFriend: (state: EntitiesState, action: PayloadAction<PlayerEntityStateModel>) => {
-      state.friends[action.payload.name] = action.payload;
-    },
-    updateFriend: (state: EntitiesState, action: PayloadAction<FriendUpdate>) => {
-      state.friends[action.payload.name] = {
-        ...state.friends[action.payload.name],
-        ...action.payload.delta
-      };
-    },
-    removeFriend: (state: EntitiesState, action: PayloadAction<string>) => {
-      delete state.friends[action.payload];
-    },
-    clearFriends: (state: EntitiesState) => {
-      state.friends = {};
-    },
-    updateFriendsPage: (state: EntitiesState, action: PayloadAction<number>) => {
-      state.friendsPage = action.payload;
-    },
-    addBoss: (state: EntitiesState, action: PayloadAction<PlayerEntityStateModel>) => {
+    addOrUpdateBoss: (state: EntitiesState, action: PayloadAction<PlayerEntityState>) => {
       state.bosses[action.payload.entityID] = action.payload;
     },
-    updateBoss: (state: EntitiesState, action: PayloadAction<BossUpdate>) => {
-      state.bosses[action.payload.entityID] = {
-        ...state.bosses[action.payload.entityID],
-        ...action.payload.delta
-      };
+    addOrUpdateFriend: (state: EntitiesState, action: PayloadAction<PlayerEntityState>) => {
+      state.friends[action.payload.name] = action.payload;
+      if (action.payload.entityID == state.selfID) {
+        state.self = action.payload;
+      }
     },
-    removeBoss: (state: EntitiesState, action: PayloadAction<string>) => {
-      delete state.bosses[action.payload];
+    addOrUpdateObjective: (state: EntitiesState, action: PayloadAction<BaseEntityState>) => {
+      state.objectives[action.payload.entityID] = action.payload;
     },
     clearBosses: (state: EntitiesState) => {
       state.bosses = {};
     },
-    addObjective: (state: EntitiesState, action: PayloadAction<BaseEntityStateModel>) => {
-      state.objectives[action.payload.entityID] = action.payload;
+    clearFriends: (state: EntitiesState) => {
+      state.friends = {};
     },
-    updateObjective: (state: EntitiesState, action: PayloadAction<ObjectiveUpdate>) => {
-      state.objectives[action.payload.entityID] = {
-        ...state.objectives[action.payload.entityID],
-        ...action.payload.delta
-      };
-    },
-    removeObjective: (state: EntitiesState, action: PayloadAction<string>) => {
+    removeEntity: (state: EntitiesState, action: PayloadAction<string>) => {
+      for (const [key, value] of Object.entries(state.friends)) {
+        if (value?.entityID == action.payload) {
+          delete state.friends[key];
+          break;
+        }
+      }
+      if (state.selfID == action.payload) {
+        state.selfID = '';
+        state.self = defaultPlayerState;
+      }
+      delete state.bosses[action.payload];
       delete state.objectives[action.payload];
     },
-    updatePositions: (state: EntitiesState, action: PayloadAction<EntityPositionMapModel>) => {
-      state.positions = action.payload;
+    setEntityContext: (state: EntitiesState, action: PayloadAction<{ context: EntityContext; entityID: EntityID }>) => {
+      if (action.payload.context == 'player') {
+        state.selfID = action.payload.entityID;
+        for (const [, value] of Object.entries(state.friends)) {
+          if (value?.entityID == action.payload.entityID) {
+            state.self = value;
+            break;
+          }
+        }
+      }
+    },
+    updateFriendsPage: (state: EntitiesState, action: PayloadAction<number>) => {
+      state.friendsPage = action.payload;
     }
   }
 });
 
 export const {
-  addFriend,
-  updateFriend,
-  removeFriend,
+  addOrUpdateBoss,
+  addOrUpdateFriend,
+  addOrUpdateObjective,
   clearFriends,
-  updateFriendsPage,
-  addBoss,
-  updateBoss,
-  removeBoss,
   clearBosses,
-  addObjective,
-  updateObjective,
-  removeObjective,
-  updatePositions
+  removeEntity,
+  setEntityContext,
+  updateFriendsPage
 } = entitiesSlice.actions;

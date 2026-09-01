@@ -13,25 +13,20 @@ import ClientStateCommunicationContextProvider from './ClientStateCommunicationC
 import { connect, useStore } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { FeatureFlags } from '../../redux/featureFlagsSlice';
-import { ChampionInfoService } from '../../dataSources/championInfoNetworking';
-import { ClockDataSource } from '../../dataSources/clockDataSource';
 import { DebugSessionService } from '../../dataSources/debugSessionNetworking';
 import { FeatureFlagsService } from '../../dataSources/featureFlagsNetworking';
-import { GameSettingsNetworkingService } from '../../dataSources/gameSettingsNetworking';
+import { GameDefsService } from '../../dataSources/gameDefsNetworking';
 import { GameStatsNetworkingService } from '../../dataSources/gameStatsNetworking';
 import { LocalStorageSource } from '../../dataSources/localStorageDataSource';
 import { ManifestDefService } from '../../dataSources/manifest/manifestDefService';
 import { MatchService } from '../../dataSources/matchNetworking';
 import { NotificationsService } from '../../dataSources/notificationsNetworking';
+import { PerformanceWarningsDataService } from '../../dataSources/performanceWarningsDataService';
 import { ProfileService } from '../../dataSources/profileNetworking';
 import { QuestNetworkingService } from '../../dataSources/questNetworking';
-import { ScenariosNetworkingService } from '../../dataSources/scenariosNetworking';
 import { StoreNetworkingService } from '../../dataSources/storeNetworking';
-import { StringTableNetworkingService } from '../../dataSources/stringTableNetworking';
 import { TeamJoinNetworkingService } from '../../dataSources/teamJoinNetworking';
 import { UserNetworkingService } from '../../dataSources/userNetworking';
-import { WarningIconsDataService } from '../../dataSources/warningIconsDataService';
-import { GameDefsService } from '../../dataSources/gameDefsNetworking';
 
 const SharedContextProvidersContainer = 'Context-SharedContextProvidersContainer';
 
@@ -50,26 +45,21 @@ class ASharedContextProviders extends React.Component<Props> {
   public render() {
     return (
       <div className={SharedContextProvidersContainer}>
-        <ChampionInfoService />
-        <ClockDataSource />
         <ContextProviders />
         <DebugSessionService />
         <FeatureFlagsService />
         <GameDefsService />
-        <GameSettingsNetworkingService />
         <GameStatsNetworkingService />
         <LocalStorageSource />
         <ManifestDefService />
         <MatchService />
         <NotificationsService />
+        <PerformanceWarningsDataService />
         <ProfileService />
         <QuestNetworkingService />
-        <ScenariosNetworkingService />
         <StoreNetworkingService />
-        <StringTableNetworkingService />
         <TeamJoinNetworkingService />
         <UserNetworkingService />
-        <WarningIconsDataService />
         {this.props.children}
       </div>
     );

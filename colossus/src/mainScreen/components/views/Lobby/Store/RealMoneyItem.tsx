@@ -5,13 +5,14 @@
  */
 
 import * as React from 'react';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { PerkDefGQL, RMTPurchaseDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { RMTPurchaseDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { Button } from '../../../shared/Button';
+import { PerkDef } from '../../../../dataSources/manifest/perkManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'StartScreen-Store-RealMoneyItem-Container';
 const PackageIcon = 'StartScreen-Store-RealMoneyItem-PackageIcon';
@@ -30,7 +31,7 @@ interface ReactProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 interface InjectedProps {
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -70,7 +71,7 @@ export class ARealMoneyItem extends React.Component<Props> {
 
   private onMouseEnter(e: React.MouseEvent<HTMLDivElement>) {
     this.props.onMouseEnter?.(e);
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   private onClick(e: React.MouseEvent<HTMLDivElement>) {

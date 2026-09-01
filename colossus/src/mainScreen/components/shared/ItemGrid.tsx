@@ -5,12 +5,14 @@
  */
 
 import * as React from 'react';
-import { PerkDefGQL, PerkRewardDefGQL, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkRewardDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import TooltipSource from '../../../shared/components/TooltipSource';
 import { StringIDGeneralQty, getTokenizedStringTableValue } from '../../helpers/stringTableHelpers';
+import { PerkDef } from '../../dataSources/manifest/perkManifest';
 
 const Root = 'ItemGrid-Root';
 const ItemsContainer = 'ItemGrid-ItemsContainer';
@@ -29,7 +31,7 @@ interface ReactProps extends React.HTMLAttributes<HTMLDivElement> {
 
 interface InjectedProps {
   stringTable: Dictionary<StringTableEntryDef>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
 }
 
 type Props = ReactProps & InjectedProps;

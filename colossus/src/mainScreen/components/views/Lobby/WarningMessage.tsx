@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootState } from '../../../redux/store';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 
 const Container = 'StartScreen-WarningContainer';
 const WarningIcon = 'StartScreen-WarningIcon';
@@ -17,7 +17,7 @@ const StringIDPlayWarningMessage = 'PlayWarningMessage';
 interface ReactProps {}
 
 interface InjectedProps {
-  initOK: boolean;
+  initSuccessful: boolean;
   stringTable: Dictionary<StringTableEntryDef>;
   dispatch?: Dispatch;
 }
@@ -80,7 +80,7 @@ class AWarningMessage extends React.Component<Props, State> {
   }
 
   private getWarningMessage() {
-    if (!this.props.initOK) {
+    if (!this.props.initSuccessful) {
       // checking to see if we have the string table loaded.
       // if it has, localize the warning, if it hasn't show a hard coded version
       if (this.props.stringTable && this.props.stringTable[StringIDPlayWarningMessage]) {
@@ -95,12 +95,12 @@ class AWarningMessage extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { successful } = state.initialization;
+  const { initSuccessful } = state.loading;
   const { stringTable } = state.stringTable;
 
   return {
     ...ownProps,
-    initOK: successful,
+    initSuccessful,
     stringTable
   };
 }

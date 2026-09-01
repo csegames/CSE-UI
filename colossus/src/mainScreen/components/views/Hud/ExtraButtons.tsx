@@ -9,7 +9,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { LifecyclePhase, setLifecycleOverride } from '../../../redux/navigationSlice';
-import { mockEvents } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { clientAPI, mockEvents } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { RootState } from '../../../redux/store';
 
 const ExtraButtonsContainer = 'MainScreen-ExtraButtonsContainer';
@@ -28,16 +28,16 @@ class AExtraButtons extends React.Component<Props> {
   public render(): React.ReactNode {
     return !game.isPublicBuild ? (
       <div id='ExtraButtonsContainer_HUD' className={ExtraButtonsContainer}>
-        <button className={ExtraButton} onClick={() => game.reloadUI()}>
+        <button className={ExtraButton} onClick={() => clientAPI.reloadUI()}>
           <span className='fs-icon-misc-sync' />
         </button>
         <button className={ExtraButton} onClick={() => this.props.dispatch(setLifecycleOverride(LifecyclePhase.Lobby))}>
           <span className='fs-icon-misc-expand' />
         </button>
-        <button className={ExtraButton} onClick={() => mockEvents.triggerNavigate('console')}>
+        <button className={ExtraButton} onClick={() => mockEvents.triggerToggleWidget('console')}>
           <span className='fs-icon-misc-terminal' />
         </button>
-        <button className={ExtraButton} onClick={() => mockEvents.triggerNavigate('mocks')}>
+        <button className={ExtraButton} onClick={() => mockEvents.triggerToggleWidget('mocks')}>
           <span className='fs-icon-misc-tasks' />
         </button>
       </div>

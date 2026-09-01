@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "module": "NodeNext",
+    "target": "ES2022",
+    "jsx": "react",
+    "allowJs": true,
+    "moduleResolution": "nodenext",
+    "sourceMap": true,
+    "strict": true,
+    "useUnknownInCatchVariables": true,
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

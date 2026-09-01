@@ -5,16 +5,7 @@
  */
 
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import {
-  ChampionInfo,
-  PerkDefGQL,
-  PerkGQL,
-  PerkType,
-  ProgressionNodeDef,
-  PurchaseDefGQL,
-  QuestDefGQL,
-  QuestGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkGQL, PurchaseDefGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { isChampionPendingLevelUp, isPerkUnseen } from './characterHelpers';
 import { isChampionEquipmentPerk } from './perkUtils';
 import { game } from '@csegames/library/dist/_baseGame';
@@ -30,8 +21,12 @@ import {
   updateSeenProgressionNodesForChampion,
   updateUnseenUnlockedProgressionNodesForChampion
 } from '../redux/profileSlice';
+import { PerkDef, PerkType } from '../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../dataSources/manifest/championManifest';
+import { ProgressionNodeDef } from '../dataSources/manifest/progressionNodeManifest';
+import { QuestDef } from '../dataSources/manifest/questManifest';
 
-export function isBadgeRelatedPerk(perk: PerkDefGQL, champions: ChampionInfo[]): boolean {
+export function isBadgeRelatedPerk(perk: PerkDef, champions: ChampionDef[]): boolean {
   // No perk, no badges.
   if (!perk) {
     return false;
@@ -56,10 +51,10 @@ export function isBadgeRelatedPerk(perk: PerkDefGQL, champions: ChampionInfo[]):
 }
 
 export function getIsBadgedForUnseenRuneKeys(
-  champion: ChampionInfo,
+  champion: ChampionDef,
   newEquipment: Dictionary<boolean>,
   ownedPerks: Dictionary<number>,
-  perksByID: Dictionary<PerkDefGQL>
+  perksByID: Dictionary<PerkDef>
 ): ExplainedValue<boolean> {
   const builder = new ExplanationBuilder<boolean>(`Unseen Rune Keys - ${champion.name}`, false, !game.isPublicBuild);
   builder.addRow(`TRUE if any of the following are true`);
@@ -72,7 +67,7 @@ export function getIsBadgedForUnseenRuneKeys(
   const hasUnseenRuneTierKey =
     Object.keys(newEquipment).find((perkID) => {
       const perk = perksByID[perkID];
-      if (perk.perkType === PerkType.RuneModTierKey && perk.champion.id === champion.id) {
+      if (perk && perk.perkType === PerkType.RuneModTierKey && perk.championID === champion.id) {
         return true;
       }
     })?.length > 0;
@@ -83,11 +78,11 @@ export function getIsBadgedForUnseenRuneKeys(
 }
 
 export function getIsBadgedForUnseenChampionEquipment(
-  champion: ChampionInfo,
-  champions: ChampionInfo[],
+  champion: ChampionDef,
+  champions: ChampionDef[],
   perkTypeFilter: PerkType,
   newEquipment: Dictionary<boolean>,
-  perksByID: Dictionary<PerkDefGQL>,
+  perksByID: Dictionary<PerkDef>,
   ownedPerks: Dictionary<number>
 ): ExplainedValue<boolean> {
   const builder = new ExplanationBuilder<boolean>(`Unseen Equipment - ${champion.name}`, false, !game.isPublicBuild);
@@ -111,7 +106,7 @@ export function getIsBadgedForUnseenChampionEquipment(
     }
 
     // Does the champion match?
-    if (matchingPerk.champion && champion.id !== matchingPerk.champion.id) {
+    if (matchingPerk.championID && champion.id !== matchingPerk.championID) {
       return false;
     }
 
@@ -134,11 +129,11 @@ export function getIsBadgedForUnseenChampionEquipment(
 }
 
 export function getIsBadgedForChampionSelect(
-  champion: ChampionInfo,
-  champions: ChampionInfo[],
+  champion: ChampionDef,
+  champions: ChampionDef[],
   newEquipment: Dictionary<boolean>,
   ownedPerks: Dictionary<number>,
-  perksByID: Dictionary<PerkDefGQL>,
+  perksByID: Dictionary<PerkDef>,
   quests: QuestGQL[]
 ): ExplainedValue<boolean> {
   const builder = new ExplanationBuilder<boolean>(`Champion Select - ${champion.name}`, false, !game.isPublicBuild);
@@ -179,10 +174,10 @@ export function getIsBadgedForChampionSelect(
 }
 
 export function getIsBadgedForAnyChampion(
-  champions: ChampionInfo[],
+  champions: ChampionDef[],
   newEquipment: Dictionary<boolean>,
   ownedPerks: Dictionary<number>,
-  perksByID: Dictionary<PerkDefGQL>,
+  perksByID: Dictionary<PerkDef>,
   quests: QuestGQL[]
 ): ExplainedValue<boolean> {
   const builder = new ExplanationBuilder<boolean>(`Champion Select`, false, !game.isPublicBuild);
@@ -209,7 +204,7 @@ export function getIsBadgedForAnyChampion(
 export function getIsBadgedForStore(
   purchases: PurchaseDefGQL[],
   newPurchases: Dictionary<boolean>,
-  perksByID: Dictionary<PerkDefGQL>,
+  perksByID: Dictionary<PerkDef>,
   ownedPerks: Dictionary<number>,
   progressionNodes: string[],
   quests: QuestGQL[],
@@ -252,7 +247,7 @@ export function getIsBadgedForStore(
 }
 
 export function getIsBadgedForBattlePass(
-  currentBattlePass: QuestDefGQL,
+  currentBattlePass: QuestDef,
   questDefs: QuestsByType,
   perks: PerkGQL[],
   quests: QuestGQL[]
@@ -281,7 +276,7 @@ export function getIsBadgedForBattlePass(
   return builder.getExplainedValue();
 }
 
-export function getIsBadgedForChampionProgression(champion: ChampionInfo): ExplainedValue<boolean> {
+export function getIsBadgedForChampionProgression(champion: ChampionDef): ExplainedValue<boolean> {
   const builder = new ExplanationBuilder<boolean>(
     `Champion Progression - ${champion.name}`,
     false,
@@ -346,7 +341,7 @@ export function detectNewProgressionNodeUnlocks(
   });
 }
 
-export function getIsBadgedForUnseenProgressionNodes(champion: ChampionInfo): ExplainedValue<boolean> {
+export function getIsBadgedForUnseenProgressionNodes(champion: ChampionDef): ExplainedValue<boolean> {
   const builder = new ExplanationBuilder<boolean>(
     `Unseen Progression Nodes - ${champion.name}`,
     false,

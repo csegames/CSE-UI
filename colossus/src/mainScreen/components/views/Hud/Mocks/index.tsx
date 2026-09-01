@@ -23,9 +23,12 @@ const Description = `Mocks-MocksDescription`;
 
 const Button = `Mocks-MocksButton`;
 
+// TODO_ANIMATE_REFACTOR : grab startTime from animation loop
+
 export interface State {
   isVisible: boolean;
   selectedMockId: string;
+  startTime: DOMHighResTimeStamp | undefined;
 }
 
 export class Mocks extends React.Component<{}, State> {
@@ -33,7 +36,8 @@ export class Mocks extends React.Component<{}, State> {
     super(props);
     this.state = {
       isVisible: false,
-      selectedMockId: ''
+      selectedMockId: '',
+      startTime: undefined
     };
   }
 
@@ -54,7 +58,7 @@ export class Mocks extends React.Component<{}, State> {
                   >
                     <div className={Name}>
                       {mock.name} -
-                      <button className={Button} onClick={mock.function}>
+                      <button className={Button} onClick={() => mock.function(this.state.startTime)}>
                         Run
                       </button>
                     </div>
@@ -70,7 +74,7 @@ export class Mocks extends React.Component<{}, State> {
   }
 
   public componentDidMount() {
-    clientAPI.bindNavigateListener(this.handleNavigate.bind(this), 'mocks');
+    clientAPI.bindToggleWidgetListener(this.handleNavigate.bind(this), 'mocks');
   }
 
   private handleNavigate() {

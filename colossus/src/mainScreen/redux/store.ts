@@ -18,13 +18,13 @@ import { gameSettingsSlice } from './gameSettingsSlice';
 import { gameSlice } from './gameSlice';
 import { gameStatsSlice } from './gameStatsSlice';
 import { hudSlice } from './hudSlice';
-import { initializationSlice } from './initializationSlice';
 import { keybindsSlice } from './keybindsSlice';
+import { loadingSlice } from './loadingSlice';
 import { localStorageSlice } from './localStorageSlice';
 import { matchSlice } from './matchSlice';
 import { navigationSlice } from './navigationSlice';
 import { notificationsSlice } from './notificationsSlice';
-import { playerSlice } from './playerSlice';
+import { performanceWarningsSlice } from './performanceWarningsSlice';
 import { profileSlice } from './profileSlice';
 import { questSlice } from './questSlice';
 import { runesSlice } from './runesSlice';
@@ -35,7 +35,6 @@ import { teamJoinSlice } from './teamJoinSlice';
 import { tooltipSlice } from './tooltipSlice';
 import { userSlice } from './userSlice';
 import { voiceChatSlice } from './voiceChatSlice';
-import { warningIconsSlice } from './warningIconsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -52,13 +51,13 @@ export const store = configureStore({
     gameSettings: gameSettingsSlice.reducer,
     gameStats: gameStatsSlice.reducer,
     hud: hudSlice.reducer,
-    initialization: initializationSlice.reducer,
     keybinds: keybindsSlice.reducer,
+    loading: loadingSlice.reducer,
     localStorage: localStorageSlice.reducer,
     match: matchSlice.reducer,
     navigation: navigationSlice.reducer,
     notifications: notificationsSlice.reducer,
-    player: playerSlice.reducer,
+    performanceWarnings: performanceWarningsSlice.reducer,
     profile: profileSlice.reducer,
     quests: questSlice.reducer,
     runes: runesSlice.reducer,
@@ -68,8 +67,7 @@ export const store = configureStore({
     teamJoin: teamJoinSlice.reducer,
     tooltip: tooltipSlice.reducer,
     user: userSlice.reducer,
-    voiceChat: voiceChatSlice.reducer,
-    warningIcons: warningIconsSlice.reducer
+    voiceChat: voiceChatSlice.reducer
   }
 });
 

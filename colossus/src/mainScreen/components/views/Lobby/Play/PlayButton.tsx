@@ -11,16 +11,11 @@ import { connect } from 'react-redux';
 import { TimeElapsed } from '../../../shared/TimeElapsed';
 
 import { Dispatch } from 'redux';
-import {
-  Group,
-  MatchAccess,
-  Queue,
-  QueueEntry,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { Group, MatchAccess, Queue, QueueEntry } from '@csegames/library/dist/hordetest/graphql/schema';
 import { enterQueue, hasRequest, leaveQueue, MatchRequestState } from '../../../../redux/matchSlice';
 import { Dictionary } from '@reduxjs/toolkit';
 import { StringIDGeneralCancel, getStringTableValue } from '../../../../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 
 const ConsoleButton = 'StartScreen-Play-ReadyButton-ConsoleButton';
 const ButtonIcon = 'StartScreen-Play-ReadyButton-ButtonIcon';

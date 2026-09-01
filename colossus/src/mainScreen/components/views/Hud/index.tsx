@@ -11,24 +11,28 @@ import { ChatService } from '../../../dataSources/chatNetworking';
 
 import { MatchInfo } from './MatchInfo';
 import { Crosshair } from './Crosshair';
-import { SprintBar } from './MovementTrackers/SprintBar';
+/* TODO_ANIMATION_REFACTOR
+import { Compass } from './Compass/Compass';
+import { Consumables } from './Consumables';
+import { FriendlyHealthBars } from './FriendlyHealthBars';
 import { KillStreakCounter } from './KillStreakCounter';
 import { ObjectiveDetails } from './Objectives/ObjectiveDetails';
+import { ObjectivesContainer } from './Objectives';
+import { ObjectiveTrackers } from './ObjectiveTrackers';
+import { SelfHealthBar } from './SelfHealthBar';
+import { SelfReviveBar } from './HealthBar/SelfReviveBar';
+import { SprintBar } from './MovementTrackers/SprintBar';
+import { UrgentMessage } from './UrgentMessage';
+*/
 import { PlayerTrackers } from './PlayerTrackers';
 import { Respawn } from './Respawn';
 import { VictoryDefeatAnnouncement } from './Announcements/VictoryDefeat';
 import { DialogueQueue } from './Announcements/Dialogue';
 import { RuneAlerts } from './RuneAlerts';
 import { ScenarioIntro } from './ScenarioIntro';
-import { Compass } from './Compass';
-import { ObjectivesContainer } from './Objectives';
 import { Console } from './Console';
-import { SelfHealthBar } from './SelfHealthBar';
-import { Consumables } from './Consumables';
-import { FriendlyHealthBars } from './FriendlyHealthBars';
 import { RuneFullScreenEffects } from './FullScreenEffects/Runes';
 import { ExtraButtons } from './ExtraButtons';
-import { UrgentMessage } from './UrgentMessage';
 import { PressToSkipToSummary } from './PressToSkipToSummary';
 import { game } from '@csegames/library/dist/_baseGame';
 import { hordetest } from '@csegames/library/dist/hordetest';
@@ -44,18 +48,17 @@ import { ProfileModel } from '../../../redux/profileSlice';
 import { Mocks } from './Mocks';
 import { KilledBy } from './Announcements/KilledBy';
 import { AutoRunTracker } from './MovementTrackers/AutoRunTracker';
-import { SelfReviveBar } from './HealthBar/SelfReviveBar';
 import { LifeState } from '@csegames/library/dist/hordetest/game/types/LifeState';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { SlashCommandRegistry } from '@csegames/library/dist/_baseGame/slashCommandRegistry';
 import { FeatureFlags } from '../../../redux/featureFlagsSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { MatchEndSequence, setMatchEnd } from '../../../redux/matchSlice';
-import { ObjectiveTrackers } from './ObjectiveTrackers';
 import { AnnouncementPopups } from './Announcements/AnnouncementPopups';
 import { updateMutedAll } from '../../../redux/voiceChatSlice';
 import { refreshProfile } from '../../../dataSources/profileNetworking';
 import { FervorStatus } from './FervorStatus';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'MainScreen-Container';
 const MatchInfoPosition = 'MainScreen-MatchInfoPosition';
@@ -65,7 +68,7 @@ const VictoryDefeatAnnouncementContainer = 'MainScreen-VictoryDefeatAnnouncement
 const CompassContainer = 'MainScreen-CompassContainer';
 
 interface ReactProps {
-  slashCommands: SlashCommandRegistry<RootState>;
+  slashCommands: SlashCommandRegistry<RootState, Dispatch>;
 }
 
 interface InjectedProps extends FeatureFlags.Source {
@@ -81,6 +84,23 @@ interface InjectedProps extends FeatureFlags.Source {
 }
 
 type Props = ReactProps & InjectedProps;
+
+// TODO_ANIMATION_REFACTOR
+class Empty extends React.Component {
+  public render(): React.ReactNode { return null; }
+}
+class Compass extends Empty {}
+class Consumables extends Empty {}
+class FriendlyHealthBars extends Empty {}
+class KillStreakCounter extends Empty {}
+class ObjectiveDetails extends Empty {}
+class ObjectivesContainer extends Empty {}
+class ObjectiveTrackers extends Empty {}
+class SelfHealthBar extends Empty {}
+class SelfReviveBar extends Empty {}
+class SprintBar extends Empty {}
+class UrgentMessage extends Empty {}
+// END TODO_ANIMATION_REFACTOR
 
 class HUD extends React.Component<Props> {
   private eventHandlers: Dictionary<ListenerHandle> = {};
@@ -218,7 +238,7 @@ class HUD extends React.Component<Props> {
   };
 
   private leaveMatch(skipStatsScreen: boolean, shouldRefreshProfile: boolean) {
-    game.playGameSound(SoundEvents.PLAY_SCENARIO_END);
+    clientAPI.playGameSound(SoundEvents.PLAY_SCENARIO_END);
     if (shouldRefreshProfile) {
       refreshProfile();
     }
@@ -230,10 +250,9 @@ class HUD extends React.Component<Props> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { isAlive, scenarioRoundState } = state.player;
+  const { isAlive, scenarioRoundState, lifeState } = state.entities.self;
   const { displayName } = state.user;
   const { lobbyView } = state.navigation;
-  const { lifeState } = state.player;
   const { featureFlags } = state;
   const matchID = state.match.currentRound?.roundID;
   const scenarioID = state.match.currentRound?.scenarioID;

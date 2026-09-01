@@ -2,17 +2,16 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
  */
 
 import * as React from 'react';
 import { Keybind } from '@csegames/library/dist/_baseGame/types/Keybind';
 import { toTitleCase } from '@csegames/library/dist/_baseGame/utils/textUtils';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 
 const Container = 'Settings-Keybinds-ListeningDialog-Container';
 const ListeningTitle = 'Settings-Keybinds-ListeningDialog-ListeningTitle';

@@ -10,6 +10,14 @@ export enum HUDHorizontalAnchor {
   Right = 'hud-horizontal-anchor-right'
 }
 
+export interface HUDResizableParams {
+  widthVmin: number;
+  heightVmin: number;
+  minWidthVmin: number;
+  minHeightVmin: number;
+  isMaximized: boolean;
+}
+
 export interface HUDWidgetState {
   visible?: boolean;
   initialized?: boolean;
@@ -21,4 +29,19 @@ export interface HUDWidgetState {
   yOffset?: number;
   opacity?: number;
   scale?: number;
+  resizable?: HUDResizableParams;
+  /** Determines render order.  Higher values are rendered on top of lower values. */
+  layerOffset?: number;
+  /** Chat-only: integer percentage (50–150, default 100) controlling font size for chat messages and the chat input. */
+  chatFontSize?: number;
+  /** Notification widgets only: seconds each toast stays on screen (0 hides notifications entirely). */
+  toastDurationSeconds?: number;
+}
+
+// These are pseudo-MapDataType entries, split off from MapDataType.Player.
+export enum GroupPOIType {
+  PartyMember = -2,
+  WarbandMember = -3,
+  WarbandLeader = -4,
+  WarbandDeputy = -5
 }

@@ -28,10 +28,12 @@
     "prepack": "npm run build",
     "prebuild": "rimraf dist",
     "build": "tsc",
-    "postbuild": "cd src && copyfiles _baseGame/chat/chat_proto.* ../dist",
+    "postbuild": "cd src && copyfiles _baseGame/legacyChat/chat_proto.* ../dist",
     "prettier": "prettier . --write",
-    "gen:chat": "cd src/_baseGame/chat && pbjs -t static-module chat.proto --wrap es6 --keep-case -o chat_proto.js && pbts -o chat_proto.d.ts chat_proto.js",
-    "gen:cu": "npm run gen:cu-gql && npm run gen:cu-rest",
+    "gen:legacy-chat": "cd src/_baseGame/chat && pbjs -t static-module chat.proto --wrap es6 --keep-case -o chat_proto.js && pbts -o chat_proto.d.ts chat_proto.js",
+    "gen:chat": "node download-chat-protocol.js",
+    "gen-local:chat": "node downloadLocal.js",
+    "gen:cu": "npm run gen:cu-gql && npm run gen:cu-rest && npm run gen:chat",
     "gen:cu-gql": "download https://hatcheryapi.camelotunchained.com/v1/api/schema > ./src/camelotunchained/graphql/schema.json && gql-gen --schema src/camelotunchained/graphql/schema.json --template graphql-codegen-typescript-no-pascal-template --config ./gql-gen.json --out ./src/camelotunchained/graphql/schema.ts",
     "gen:cu-rest": "download https://hatcheryapi.camelotunchained.com/v1/codegen/definitions.ts?useUpdatedFormat=true > ./src/camelotunchained/webAPI/definitions.ts",
     "gen:ht": "npm run gen:ht-gql && npm run gen:ht-rest",
@@ -60,12 +62,11 @@
   ],
   "dependencies": {
     "@csegames/coherent": "file:../coherent",
+    "@sentry/browser": "^5.11.1",
     "big-integer": "^1.6.52",
     "graphql": "0.13.0",
     "graphql-tag": "^1.2.4",
-    "protobufjs": "^6.11.3",
-    "raven-js": "^3.27.2",
-    "react": "^16.12.0"
+    "protobufjs": "^6.11.3"
   },
   "devDependencies": {
     "@types/graphql": "^0.13.4",

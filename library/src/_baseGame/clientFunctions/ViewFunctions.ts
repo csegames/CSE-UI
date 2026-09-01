@@ -9,19 +9,28 @@ import { ListenerHandle } from '../listenerHandle';
 import { EventEmitter } from '../types/EventEmitter';
 
 export type NotificationListener = () => void;
-export type NavigateListener = (name: string) => void;
+export type WidgetEventListener = (name: string) => void;
 
 export interface ViewEventMocks {
-  triggerNavigate(name: string): void;
+  triggerShowWidget(name: string): void;
+  triggerHideWidget(name: string): void;
+  triggerToggleWidget(name: string): void;
 }
 
 export interface ViewFunctions {
   setInitializationComplete(): void;
-  bindNavigateListener(listener: NotificationListener, name: string): ListenerHandle;
-  bindNavigateListener(listener: NavigateListener): ListenerHandle;
+  bindShowWidgetListener(listener: NotificationListener, name: string): ListenerHandle;
+  bindShowWidgetListener(listener: WidgetEventListener): ListenerHandle;
+  bindHideWidgetListener(listener: NotificationListener, name: string): ListenerHandle;
+  bindHideWidgetListener(listener: WidgetEventListener): ListenerHandle;
+  bindToggleWidgetListener(listener: NotificationListener, name: string): ListenerHandle;
+  bindToggleWidgetListener(listener: WidgetEventListener): ListenerHandle;
+  requestTextInput(on: boolean): void;
 }
 
-const navigateEventName = 'navigate';
+const showWidgetEventName = 'widget.show';
+const hideWidgetEventName = 'widget.hide';
+const toggleWidgetEventName = 'widget.toggle';
 
 class ViewFunctionsBase implements ViewFunctions, ViewEventMocks {
   private readonly events = new EventEmitter();
@@ -30,21 +39,47 @@ class ViewFunctionsBase implements ViewFunctions, ViewEventMocks {
     console.info('Initialization complete');
   }
 
-  bindNavigateListener(listener: NavigateListener | NotificationListener, name?: string): ListenerHandle {
+  bindShowWidgetListener(listener: WidgetEventListener | NotificationListener, name?: string): ListenerHandle {
+    return this.bindWidgetEventListener(showWidgetEventName, listener, name);
+  }
+
+  bindHideWidgetListener(listener: WidgetEventListener | NotificationListener, name?: string): ListenerHandle {
+    return this.bindWidgetEventListener(hideWidgetEventName, listener, name);
+  }
+
+  bindToggleWidgetListener(listener: WidgetEventListener | NotificationListener, name?: string): ListenerHandle {
+    return this.bindWidgetEventListener(toggleWidgetEventName, listener, name);
+  }
+
+  triggerShowWidget(name: string): void {
+    this.events.trigger(showWidgetEventName, name);
+  }
+
+  triggerHideWidget(name: string): void {
+    this.events.trigger(hideWidgetEventName, name);
+  }
+
+  triggerToggleWidget(name: string): void {
+    this.events.trigger(toggleWidgetEventName, name);
+  }
+
+  requestTextInput(on: boolean): void {}
+
+  private bindWidgetEventListener(
+    eventName: string,
+    listener: WidgetEventListener | NotificationListener,
+    name?: string
+  ): ListenerHandle {
     if (name === undefined) {
-      return this.bindNavigateInternal(listener);
+      return this.bindWidgetEventInternal(eventName, listener);
     }
-    return this.bindNavigateInternal((ev) => {
+    return this.bindWidgetEventInternal(eventName, (ev) => {
       if (ev === name) (listener as NotificationListener)();
     });
   }
 
-  triggerNavigate(name: string): void {
-    this.events.trigger(navigateEventName, name);
-  }
-
-  protected bindNavigateInternal(listener: NavigateListener): ListenerHandle {
-    return this.events.on(navigateEventName, listener);
+  protected bindWidgetEventInternal(eventName: string, listener: WidgetEventListener): ListenerHandle {
+    return this.events.on(eventName, listener);
   }
 }
 
@@ -54,15 +89,19 @@ class CoherentViewFunctions extends ViewFunctionsBase {
     engine.trigger('OnReadyForDisplay');
   }
 
-  protected override bindNavigateInternal(listener: NavigateListener): ListenerHandle {
-    const jsHandle = super.bindNavigateInternal(listener);
-    const engineHandle = engine.on(navigateEventName, listener);
+  protected override bindWidgetEventInternal(eventName: string, listener: WidgetEventListener): ListenerHandle {
+    const jsHandle = super.bindWidgetEventInternal(eventName, listener);
+    const engineHandle = engine.on(eventName, listener);
     return {
       close() {
         jsHandle.close();
         engineHandle.clear();
       }
     };
+  }
+
+  override requestTextInput(on: boolean): void {
+    engine.trigger('OnTextInputTypeChanged', on ? 1 : 0);
   }
 }
 

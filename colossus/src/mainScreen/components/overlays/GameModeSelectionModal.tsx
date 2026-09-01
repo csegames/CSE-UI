@@ -11,7 +11,8 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Overlay, hideOverlay } from '../../redux/navigationSlice';
-import { Queue, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { Queue } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import {
   StringIDGeneralClose,
@@ -130,6 +131,7 @@ class AGameModeSelectionModal extends React.Component<Props> {
         onClick={() => {
           if (enabled) {
             this.props.dispatch(selectQueue(queueID));
+            this.props.dispatch(hideOverlay(Overlay.GameModeSelection));
           }
         }}
         key={queueID}

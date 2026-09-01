@@ -36,10 +36,9 @@ module.exports = function (e, argv = { isProduction }) {
     },
     devtool: 'cheap-source-map',
     entry: {
-      loadingScreen: path.resolve(__dirname, 'src/loadingScreen/index.tsx'),
       mainScreen: path.resolve(__dirname, 'src/mainScreen/preload.ts'),
       protectedScreen: path.resolve(__dirname, 'src/protectedScreen/preload.ts'),
-      worldSpace: path.resolve(__dirname, 'src/worldSpace/index.tsx')
+      projected: path.resolve(__dirname, 'src/projected/index.ts')
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx']
@@ -49,10 +48,10 @@ module.exports = function (e, argv = { isProduction }) {
         {
           oneOf: [
             {
-              test: [/\.gif$/, /\.jpe?g$/, /\.png$/],
+              test: [/\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/, /\.webm$/],
               loader: require.resolve('url-loader'),
               options: {
-                limit: 10000,
+                limit: 1,
                 name: 'images/[name].[ext]'
               }
             },
@@ -62,6 +61,14 @@ module.exports = function (e, argv = { isProduction }) {
               options: {
                 limit: 10000,
                 name: 'fonts/[name].[ext]'
+              }
+            },
+            {
+              test: [/\.cur$/],
+              loader: require.resolve('url-loader'),
+              options: {
+                limit: 1,
+                name: 'cursors/[name].[ext]'
               }
             },
             {
@@ -117,11 +124,6 @@ module.exports = function (e, argv = { isProduction }) {
         }, {})
       }),
       new HtmlWebpackPlugin({
-        filename: 'loadingScreen.html',
-        template: 'src/loadingScreen/loadingScreen.html',
-        chunks: ['loadingScreen']
-      }),
-      new HtmlWebpackPlugin({
         filename: 'mainScreen.html',
         template: 'src/mainScreen/mainScreen.html',
         chunks: ['mainScreen']
@@ -132,12 +134,16 @@ module.exports = function (e, argv = { isProduction }) {
         chunks: ['protectedScreen']
       }),
       new HtmlWebpackPlugin({
-        filename: 'worldSpace.html',
-        template: 'src/worldSpace/worldSpace.html',
-        chunks: ['worldSpace']
+        filename: 'projected.html',
+        template: 'src/projected/projected.html',
+        chunks: ['projected']
       }),
       // placeholder until we have dynamic asset pipeline built
-      new CopyWebpackPlugin([{context: './dynamic/', from: '**/*', to: './dynamic'}]),
+      new CopyWebpackPlugin([{ context: './dynamic/', from: '**/*', to: './dynamic' }]),
+      new CopyWebpackPlugin([{ context: './cursors/', from: '**/*', to: './cursors' }]),
+      new CopyWebpackPlugin(['images/icons/**/*'], {
+        context: path.resolve(__dirname, './src')
+      }),
       new MiniCssExtractPlugin()
     ],
     performance: {
@@ -147,10 +153,9 @@ module.exports = function (e, argv = { isProduction }) {
       child_process: 'empty',
       dns: 'empty',
       net: 'empty',
-      tls: 'empty',
-    },
+      tls: 'empty'
+    }
   };
-  
 
   return config;
 };

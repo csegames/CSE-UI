@@ -4,11 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ContextMenuParams, hideContextMenu, showContextMenu } from '../redux/contextMenuSlice';
-import { RootState } from '../redux/store';
+import { AddDispatch, RootState } from '../redux/store';
 import { hideTooltip } from '../redux/tooltipSlice';
 
 // Styles
@@ -19,11 +18,10 @@ interface ReactProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 interface InjectedProps {
-  currentMenuID: string;
-  dispatch?: Dispatch;
+  currentMenuID: string | null;
 }
 
-type Props = ReactProps & InjectedProps;
+type Props = ReactProps & InjectedProps & AddDispatch;
 
 class ContextMenuSource extends React.Component<Props> {
   public render(): React.ReactNode {
@@ -35,9 +33,13 @@ class ContextMenuSource extends React.Component<Props> {
     );
   }
 
-  private onMouseDown(e: React.MouseEvent) {
+  private onMouseDown(e: React.MouseEvent<HTMLDivElement>) {
     // If we don't want to show a context menu right now (maybe content is conditional), just do nothing.
-    if (!this.props.menuParams || !this.props.menuParams.content) {
+    if (
+      !this.props.menuParams ||
+      !this.props.menuParams.content ||
+      (Array.isArray(this.props.menuParams.content) && this.props.menuParams.content.length === 0)
+    ) {
       return;
     }
 
@@ -59,7 +61,7 @@ class ContextMenuSource extends React.Component<Props> {
   }
 }
 
-function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
+function mapStateToProps(state: RootState, ownProps: ReactProps): ReactProps & InjectedProps {
   const currentMenuID = state.contextMenu.id;
   return {
     ...ownProps,

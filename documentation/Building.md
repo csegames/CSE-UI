@@ -22,7 +22,8 @@ Ensure you have **Node 10.19** installed by following the steps in the [Installi
 
 # Building the Launcher UI
 
-## Step 1: Build the launche project
+## Step 1: Build the launcher project
+
 1. Go to the `launcher/` project folder in the terminal
 2. Run `npm ci` (Only need to do this after pulling new code)
 3. Run `npm run build`

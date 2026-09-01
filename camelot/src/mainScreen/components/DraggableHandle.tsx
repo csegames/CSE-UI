@@ -7,62 +7,65 @@
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, DispatchProp } from 'react-redux';
 import {
   DropTargetParams,
   endDrag,
+  SimpleRect,
   startDrag,
   updateDragDelta,
   updateForcedDraggableID
 } from '../redux/dragAndDropSlice';
-import { RootState } from '../redux/store';
+import { RootState, store } from '../redux/store';
+import { addMouseUpNeededReason, removeMouseUpNeededReason } from '../redux/hudSlice';
 
 // Styles
 const Root = 'DraggableHandle-Root';
 
+export const MOUSE_UP_NEEDED_REASON_DRAGGING = 'Dragging';
+
 export interface DropHandlerDraggableData {
   currentDraggableID: string;
-  currentDraggableBounds: DOMRect;
+  currentDraggableBounds: SimpleRect;
   dragDelta: [number, number];
 }
 
 interface ReactProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Must match with the draggableID on a Draggable. */
   draggableID: string;
-  /** Used to render the matched Draggable when it is being dragged. */
-  draggingRender: () => JSX.Element;
   /** Can only trigger drop events on DropTargets with a matching dropType. */
   dropType?: string;
   /** Fired when a drag ends, whether or not it is over a matching DropTarget. */
   dropHandler?: (data: any, draggableData: DropHandlerDraggableData) => void;
   /** Fired when a drag begins (technically on mouseDown). */
   dragStartHandler?: () => void;
+  /** Optional hook to transform (e.g. snap/align) the raw drag delta before it is applied. */
+  snapDelta?: (rawDelta: [number, number]) => [number, number];
+  isDisabled?: boolean;
 }
 
 interface InjectedProps {
-  currentDraggableBounds: DOMRect;
+  currentDraggableBounds: SimpleRect;
   dragDelta: [number, number];
   dropTargets: Dictionary<Dictionary<DropTargetParams>>;
   forcedDraggableID: string | null;
-  mouseX: number;
-  mouseY: number;
   currentDraggableID: string;
   dispatch?: Dispatch;
 }
 
 type Props = ReactProps & InjectedProps;
 
-class DraggableHandle extends React.Component<Props> {
+class DraggableHandle extends React.Component<Props & DispatchProp> {
   private element: HTMLDivElement | null = null;
   private isDragStarted: boolean = false;
   // Storing these here since consumers only care about the delta.
-  private dragStartX: number;
-  private dragStartY: number;
+  private dragStartX: number = 0;
+  private dragStartY: number = 0;
 
   private mouseMoveHandler: (e: MouseEvent) => void;
   private mouseUpHandler: (e: MouseEvent) => void;
 
-  constructor(props: Props) {
+  constructor(props: Props & DispatchProp) {
     super(props);
     // Stashing the function pointers used to register for window events, so we can unregister them later.
     this.mouseMoveHandler = this.handleMouseMove.bind(this);
@@ -70,7 +73,7 @@ class DraggableHandle extends React.Component<Props> {
   }
 
   public render(): React.ReactNode {
-    const { children, className, ...otherProps } = this.props;
+    const { children, className, onMouseDown, snapDelta, ...otherProps } = this.props;
     return (
       <div
         ref={(element) => {
@@ -87,41 +90,56 @@ class DraggableHandle extends React.Component<Props> {
   }
 
   public componentDidUpdate(): void {
+    // When a forcedDraggableID is set, this code will ensure that drag bookkeeping is initialized for it.
     if (this.props.forcedDraggableID === this.props.draggableID) {
+      // We unset the forcing because we are about to do a proper init.
       this.props.dispatch(updateForcedDraggableID(null));
       if (this.element) {
         const rect = this.element.getBoundingClientRect();
-        this.startDrag(rect.x + rect.width / 2, rect.y + rect.height / 2);
+        // We have to delay the drag start a little, or else it can result in the drag ending on the same frame that it starts due
+        // to in-progress mouse handling from other sources.  This can occur when mouse handlers are added and removed in response
+        // to mouse events (e.g. a button click).  By waiting a frame, the triggering mouse event will have been cleaned up before
+        // altering which NEW mouse events to respond to.
+        window.setTimeout(() => {
+          // Since the user's mouse could be anywhere, we pretend they started by clicking in the center of this DraggableHandle.
+          this.startDrag(rect.x + rect.width / 2, rect.y + rect.height / 2);
+        }, 1);
       }
     }
   }
 
   private handleMouseDown(e: React.MouseEvent<HTMLDivElement>): void {
+    if (this.props.isDisabled) {
+      return;
+    }
+
     if (e.button === 0 && !this.props.currentDraggableID) {
       this.startDrag(e.clientX, e.clientY);
+      // Because mouseUp doesn't trigger over transparent UI pixels, we use this to turn on a
+      // background capable of ensuring that we will receive the event.
+      this.props.dispatch?.(addMouseUpNeededReason(MOUSE_UP_NEEDED_REASON_DRAGGING));
     }
+
+    // Run any passed-in handlers as well.
+    this.props.onMouseDown?.(e);
   }
 
   private startDrag(clientX: number, clientY: number): void {
     if (!this.isDragStarted) {
       this.isDragStarted = true;
       this.props.dragStartHandler?.();
+
+      // Stash the start coordinates so we can calculate deltas.
+      this.dragStartX = clientX;
+      this.dragStartY = clientY;
+
+      // Register for window-level events, since we aren't moving the original Draggable.
+      // Need to be able to catch the mouseUp and mouseMove when the cursor is over other widgets.
+      window.addEventListener('mousemove', this.mouseMoveHandler);
+      window.addEventListener('mouseup', this.mouseUpHandler);
+      // Tell Redux what we'll be dragging around.
+      this.props.dispatch(startDrag(this.props.draggableID));
     }
-
-    // Stash the start coordinates so we can calculate deltas.
-    this.dragStartX = clientX;
-    this.dragStartY = clientY;
-
-    // Register for window-level events, since we aren't moving the original Draggable.
-    // Need to be able to catch the mouseUp and mouseMove when the cursor is over other widgets.
-    window.addEventListener('mousemove', this.mouseMoveHandler);
-    window.addEventListener('mouseup', this.mouseUpHandler);
-    // Tell Redux what we'll be dragging around.
-    this.props.dispatch(startDrag({ draggableID: this.props.draggableID, draggingRender: this.props.draggingRender }));
-
-    const dragDeltaX = this.props.mouseX - this.dragStartX;
-    const dragDeltaY = this.props.mouseY - this.dragStartY;
-    this.props.dispatch(updateDragDelta([dragDeltaX, dragDeltaY]));
   }
 
   private handleMouseUp(e: React.MouseEvent<HTMLDivElement>): void {
@@ -132,21 +150,24 @@ class DraggableHandle extends React.Component<Props> {
       window.removeEventListener('mousemove', this.mouseMoveHandler);
       window.removeEventListener('mouseup', this.mouseUpHandler);
 
-      const currentDraggableID = this.props.currentDraggableID;
-      const currentDraggableBounds = this.props.currentDraggableBounds;
-      const dragDelta = this.props.dragDelta;
+      // I haven't figured out why, but even though the "this" pointer is valid, this.props isn't reliable.
+      // Safer to go directly to the Redux store.
+      const { currentDraggableID, currentDraggableBounds, dragDelta } = store.getState().dragAndDrop;
+
+      // Report the drop before ending the drag so that the data is all still available.
+      this.reportDrop({ currentDraggableID, currentDraggableBounds, dragDelta });
 
       // Tell Redux we're done dragging.
       this.props.dispatch(endDrag());
-
-      this.reportDrop({ currentDraggableID, currentDraggableBounds, dragDelta });
+      // And that we no longer need the special background that ensures we will receive mouseUp events.
+      this.props.dispatch(removeMouseUpNeededReason(MOUSE_UP_NEEDED_REASON_DRAGGING));
     }
   }
 
   private handleMouseMove(e: React.MouseEvent<HTMLDivElement>): void {
-    const dragDeltaX = e.clientX - this.dragStartX;
-    const dragDeltaY = e.clientY - this.dragStartY;
-    this.props.dispatch(updateDragDelta([dragDeltaX, dragDeltaY]));
+    const rawDelta: [number, number] = [e.clientX - this.dragStartX, e.clientY - this.dragStartY];
+    const delta = this.props.snapDelta ? this.props.snapDelta(rawDelta) : rawDelta;
+    this.props.dispatch(updateDragDelta(delta));
   }
 
   private reportDrop(draggableData: DropHandlerDraggableData): void {
@@ -193,7 +214,6 @@ class DraggableHandle extends React.Component<Props> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { currentDraggableBounds, dragDelta, dropTargets, forcedDraggableID, currentDraggableID } = state.dragAndDrop;
-  const { mouseX, mouseY } = state.hud;
 
   return {
     ...ownProps,
@@ -201,8 +221,6 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     dragDelta,
     dropTargets,
     forcedDraggableID,
-    mouseX,
-    mouseY,
     currentDraggableID
   };
 }

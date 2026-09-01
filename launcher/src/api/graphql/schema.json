@@ -1,0 +1,4213 @@
+{
+  "data": {
+    "__schema": {
+      "queryType": {
+        "name": "CUQuery"
+      },
+      "mutationType": null,
+      "subscriptionType": {
+        "name": "CUSubscription"
+      },
+      "types": [
+        {
+          "kind": "SCALAR",
+          "name": "String",
+          "description": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "Boolean",
+          "description": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "Float",
+          "description": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "Int",
+          "description": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "ID",
+          "description": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "Date",
+          "description": "The `Date` scalar type represents a year, month and day in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "DateTime",
+          "description": "The `DateTime` scalar type represents a date and time. `DateTime` expects timestamps to be formatted in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "DateTimeOffset",
+          "description": "The `DateTimeOffset` scalar type represents a date, time and offset from UTC. `DateTimeOffset` expects timestamps to be formatted in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "Seconds",
+          "description": "The `Seconds` scalar type represents a period of time represented as the total number of seconds.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "Milliseconds",
+          "description": "The `Milliseconds` scalar type represents a period of time represented as the total number of milliseconds.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "Decimal",
+          "description": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "__Schema",
+          "description": "A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations.",
+          "fields": [
+            {
+              "name": "directives",
+              "description": "A list of all directives supported by this server.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "__Directive",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mutationType",
+              "description": "If this server supports mutation, the type that mutation operations will be rooted at.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "__Type",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "queryType",
+              "description": "The type that query operations will be rooted at.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__Type",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "subscriptionType",
+              "description": "If this server supports subscription, the type that subscription operations will be rooted at.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "__Type",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "types",
+              "description": "A list of all types supported by this server.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "__Type",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "__Type",
+          "description": "The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.\n\nDepending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name and description, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.",
+          "fields": [
+            {
+              "name": "description",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "enumValues",
+              "description": null,
+              "args": [
+                {
+                  "name": "includeDeprecated",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "__EnumValue",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "fields",
+              "description": null,
+              "args": [
+                {
+                  "name": "includeDeprecated",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "__Field",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "inputFields",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "__InputValue",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "interfaces",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "__Type",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "kind",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "__TypeKind",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ofType",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "__Type",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "possibleTypes",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "__Type",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "__TypeKind",
+          "description": "An enum describing what kind of type a given __Type is.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "SCALAR",
+              "description": "Indicates this type is a scalar.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "OBJECT",
+              "description": "Indicates this type is an object.  `fields` and `possibleTypes` are valid fields.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INTERFACE",
+              "description": "Indicates this type is an interface.  `fields` and `possibleTypes` are valid fields.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UNION",
+              "description": "Indicates this type is a union.  `possibleTypes` is a valid field.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ENUM",
+              "description": "Indicates this type is an num.  `enumValues` is a valid field.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INPUT_OBJECT",
+              "description": "Indicates this type is an input object.  `inputFields` is a valid field.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LIST",
+              "description": "Indicates this type is a list.  `ofType` is a valid field.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NON_NULL",
+              "description": "Indicates this type is a non-null.  `ofType` is a valid field.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "__Field",
+          "description": "Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type.",
+          "fields": [
+            {
+              "name": "args",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "__InputValue",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "deprecationReason",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "isDeprecated",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__Type",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "__InputValue",
+          "description": "Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value.",
+          "fields": [
+            {
+              "name": "defaultValue",
+              "description": "A GraphQL-formatted string representing the default value for this input value.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__Type",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "__EnumValue",
+          "description": "One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string.",
+          "fields": [
+            {
+              "name": "deprecationReason",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "isDeprecated",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "__Directive",
+          "description": "A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.\n\nIn some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.",
+          "fields": [
+            {
+              "name": "args",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "__InputValue",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "locations",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "__DirectiveLocation",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "onField",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Use 'locations'."
+            },
+            {
+              "name": "onFragment",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Use 'locations'."
+            },
+            {
+              "name": "onOperation",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Use 'locations'."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "__DirectiveLocation",
+          "description": "A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "QUERY",
+              "description": "Location adjacent to a query operation.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MUTATION",
+              "description": "Location adjacent to a mutation operation.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SUBSCRIPTION",
+              "description": "Location adjacent to a subscription operation.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FIELD",
+              "description": "Location adjacent to a field.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FRAGMENT_DEFINITION",
+              "description": "Location adjacent to a fragment definition.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FRAGMENT_SPREAD",
+              "description": "Location adjacent to a fragment spread.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INLINE_FRAGMENT",
+              "description": "Location adjacent to an inline fragment.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SCHEMA",
+              "description": "Location adjacent to a schema definition.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SCALAR",
+              "description": "Location adjacent to a scalar definition.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "OBJECT",
+              "description": "Location adjacent to an object type definition.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FIELD_DEFINITION",
+              "description": "Location adjacent to a field definition.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ARGUMENT_DEFINITION",
+              "description": "Location adjacent to an argument definition.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INTERFACE",
+              "description": "Location adjacent to an interface definition.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UNION",
+              "description": "Location adjacent to a union definition.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ENUM",
+              "description": "Location adjacent to an enum definition",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ENUM_VALUE",
+              "description": "Location adjacent to an enum value definition",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INPUT_OBJECT",
+              "description": "Location adjacent to an input object type definition.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INPUT_FIELD_DEFINITION",
+              "description": "Location adjacent to an input object field definition.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "AccessType",
+          "description": "AccessType",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "Public",
+              "description": "Public",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Live",
+              "description": "Live",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Beta3",
+              "description": "Beta3",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Beta2",
+              "description": "Beta2",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Beta1",
+              "description": "Beta1",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Alpha",
+              "description": "Alpha",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "InternalTest",
+              "description": "InternalTest",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Employees",
+              "description": "Employees",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Invalid",
+              "description": "Invalid",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ServerStatus",
+          "description": "LauncherApi.Legacy.Model.ServerStatus",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "Offline",
+              "description": "Offline",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Starting",
+              "description": "Starting",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Online",
+              "description": "Online",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ServerModel",
+          "description": "LauncherApi.Legacy.Model.ServerModel",
+          "fields": [
+            {
+              "name": "accessLevel",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "AccessType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "apiHost",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "channelID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "channelPatchPermissions",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "shardID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "status",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ServerStatus",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ConnectedServices",
+          "description": "LauncherApi.Legacy.Model.ConnectedServices",
+          "fields": [
+            {
+              "name": "servers",
+              "description": "list of game server shards",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ServerModel",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ServerUpdateType",
+          "description": "LauncherApi.Legacy.Model.ServerUpdateType",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "None",
+              "description": "None",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Updated",
+              "description": "Updated",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UpdatedAll",
+              "description": "UpdatedAll",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UnavailableAll",
+              "description": "UnavailableAll",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "INTERFACE",
+          "name": "IServerUpdate",
+          "description": "LauncherApi.Legacy.Model.IServerUpdate",
+          "fields": [
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ServerUpdateType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "ServerUpdated",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "ServerUpdatedAll",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "ServerUnavailableAllUpdate",
+              "ofType": null
+            }
+          ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ServerUpdated",
+          "description": "LauncherApi.Legacy.Model.Updates.ServerUpdated",
+          "fields": [
+            {
+              "name": "server",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ServerModel",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ServerUpdateType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "IServerUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ServerUpdatedAll",
+          "description": "LauncherApi.Legacy.Model.Updates.ServerUpdatedAll",
+          "fields": [
+            {
+              "name": "server",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ServerModel",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ServerUpdateType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "IServerUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ServerUnavailableAllUpdate",
+          "description": "LauncherApi.Legacy.Model.Updates.ServerUnavailableAllUpdate",
+          "fields": [
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ServerUpdateType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "IServerUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "Faction",
+          "description": "CSE.GameplayDefs.Faction",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "Factionless",
+              "description": "Factionless",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TDD",
+              "description": "TDD",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Viking",
+              "description": "Viking",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Arthurian",
+              "description": "Arthurian",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SimpleCharacter",
+          "description": "LauncherApi.Legacy.Model.SimpleCharacter",
+          "fields": [
+            {
+              "name": "archetype",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "faction",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "Faction",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "gender",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "CharacterID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "lastLogin",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "race",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "shardID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ShardID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "CharacterID",
+          "description": "CSE.CharacterID",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "ShardID",
+          "description": "ShardID",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Notification",
+          "description": "LauncherApi.Notifications.Model.GraphQL.Notification",
+          "fields": [
+            {
+              "name": "broadcastDuration",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "content",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "counter",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "displayDuration",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "displayHints",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "displayTime",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mimeType",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "purpose",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sequenceID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "tags",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "NotificationPage",
+          "description": "LauncherApi.Notifications.Model.GraphQL.NotificationPage",
+          "fields": [
+            {
+              "name": "entries",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Notification",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nextPage",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ScriptEntry",
+          "description": "LauncherApi.Notifications.Model.GraphQL.ScriptEntry",
+          "fields": [
+            {
+              "name": "broadcastDuration",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "content",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "displayDuration",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "displayHints",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "displayOffset",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mimeType",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "purpose",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Script",
+          "description": "LauncherApi.Notifications.Model.GraphQL.Script",
+          "fields": [
+            {
+              "name": "messages",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ScriptEntry",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "revision",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ScriptPage",
+          "description": "LauncherApi.Notifications.Model.GraphQL.ScriptPage",
+          "fields": [
+            {
+              "name": "entries",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Script",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nextPage",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Target",
+          "description": "LauncherApi.Notifications.Model.GraphQL.Target",
+          "fields": [
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "revision",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "tags",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "TargetPage",
+          "description": "LauncherApi.Notifications.Model.GraphQL.TargetPage",
+          "fields": [
+            {
+              "name": "entries",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Target",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nextPage",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "NotificationAdminData",
+          "description": "LauncherApi.Notifications.Model.GraphQL.NotificationAdminData",
+          "fields": [
+            {
+              "name": "notifications",
+              "description": "Notification targets (admin)",
+              "args": [
+                {
+                  "name": "pageToken",
+                  "description": "Optional: Token to access the next page of data",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                },
+                {
+                  "name": "sequenceID",
+                  "description": "Optional: Sequence to use as a filter",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "NotificationPage",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "script",
+              "description": "Script by name (admin)",
+              "args": [
+                {
+                  "name": "name",
+                  "description": "Optional: Name of the script to pull",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Script",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "scripts",
+              "description": "Notification scripts (admin)",
+              "args": [
+                {
+                  "name": "pageToken",
+                  "description": "Optional: Token to access the next page of data",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ScriptPage",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "target",
+              "description": "Target by name (admin)",
+              "args": [
+                {
+                  "name": "name",
+                  "description": "Optional: Name of the script to pull",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Target",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "targets",
+              "description": "Notification targets (admin)",
+              "args": [
+                {
+                  "name": "pageToken",
+                  "description": "Optional: Token to access the next page of data",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "TargetPage",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "PatchNote",
+          "description": "CU.Databases.Models.Content.PatchNote",
+          "fields": [
+            {
+              "name": "channels",
+              "description": "Which channels will this patch note be presented on.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "htmlContent",
+              "description": "HTML Content for the patch note.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "jSONContent",
+              "description": "JSON data of HTML Content for the patch note.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "patchNumber",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "title",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "utcCreated",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "utcDisplayEnd",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "utcDisplayStart",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Discriminator",
+          "description": "LauncherApi.Discovery.Model.Discriminator",
+          "fields": [
+            {
+              "name": "key",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "values",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "FormatRecord",
+          "description": "LauncherApi.Discovery.Model.FormatRecord",
+          "fields": [
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "versions",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "EndPointRecord",
+          "description": "LauncherApi.Discovery.Model.EndPointRecord",
+          "fields": [
+            {
+              "name": "formats",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "FormatRecord",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "port",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "protocol",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "version",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "HealthEntry",
+          "description": "LauncherApi.Discovery.Model.HealthEntry",
+          "fields": [
+            {
+              "name": "detail",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "status",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ServerRecord",
+          "description": "LauncherApi.Discovery.Model.ServerRecord",
+          "fields": [
+            {
+              "name": "discriminators",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Discriminator",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "endPoints",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "EndPointRecord",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "health",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "HealthEntry",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "healthSummary",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ipAddress",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "serviceName",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "shardID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INTERFACE",
+          "name": "IDiscoveryUpdate",
+          "description": "LauncherApi.Discovery.Model.IDiscoveryUpdate",
+          "fields": [
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "RecordRemoved",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "RecordUpdated",
+              "ofType": null
+            }
+          ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "RecordRemoved",
+          "description": "LauncherApi.Discovery.Model.Update.RecordRemoved",
+          "fields": [
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "IDiscoveryUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "RecordUpdated",
+          "description": "LauncherApi.Discovery.Model.Update.RecordUpdated",
+          "fields": [
+            {
+              "name": "record",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ServerRecord",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "IDiscoveryUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ShardGroup",
+          "description": "LauncherApi.Shard.Model.ShardGroup",
+          "fields": [
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "priority",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Installable",
+          "description": "LauncherApi.Distribution.Model.Installable",
+          "fields": [
+            {
+              "name": "accessRequirement",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "AccessType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "apiHost",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "canAccess",
+              "description": "Can the current account access the servers for this item?",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "canInstall",
+              "description": "Can the current account install this item?",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "channelID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "commandLineVersion",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "group",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ShardGroup",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "isAvailable",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "isOnline",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "productID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "productType",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "shardID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INTERFACE",
+          "name": "IInstallableUpdate",
+          "description": "LauncherApi.Distribution.Model.IInstallableUpdate",
+          "fields": [
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "InstallableUpdated",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "InstallableRemoved",
+              "ofType": null
+            }
+          ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "InstallableUpdated",
+          "description": "LauncherApi.Distribution.Model.InstallableUpdated",
+          "fields": [
+            {
+              "name": "data",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Installable",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "IInstallableUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "InstallableRemoved",
+          "description": "LauncherApi.Distribution.Model.InstallableRemoved",
+          "fields": [
+            {
+              "name": "shardID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "IInstallableUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INTERFACE",
+          "name": "INotificationUpdate",
+          "description": "LauncherApi.Notifications.Model.GraphQL.INotificationUpdate",
+          "fields": [
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "NotificationRemoved",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "NotificationUpdated",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "ScriptRemoved",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "ScriptUpdated",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "SequenceRemoved",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "TargetRemoved",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "TargetUpdated",
+              "ofType": null
+            }
+          ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "NotificationRemoved",
+          "description": "LauncherApi.Notifications.Model.GraphQL.Updates.NotificationRemoved",
+          "fields": [
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "INotificationUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "NotificationUpdated",
+          "description": "LauncherApi.Notifications.Model.GraphQL.Updates.NotificationUpdated",
+          "fields": [
+            {
+              "name": "notification",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Notification",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "INotificationUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ScriptRemoved",
+          "description": "LauncherApi.Notifications.Model.GraphQL.Updates.ScriptRemoved",
+          "fields": [
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "INotificationUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ScriptUpdated",
+          "description": "LauncherApi.Notifications.Model.GraphQL.Updates.ScriptUpdated",
+          "fields": [
+            {
+              "name": "script",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Script",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "INotificationUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SequenceRemoved",
+          "description": "LauncherApi.Notifications.Model.GraphQL.Updates.SequenceRemoved",
+          "fields": [
+            {
+              "name": "sequenceID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "INotificationUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "TargetRemoved",
+          "description": "LauncherApi.Notifications.Model.GraphQL.Updates.TargetRemoved",
+          "fields": [
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "INotificationUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "TargetUpdated",
+          "description": "LauncherApi.Notifications.Model.GraphQL.Updates.TargetUpdated",
+          "fields": [
+            {
+              "name": "target",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Target",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "INotificationUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "AccessSettings",
+          "description": "LauncherApi.Shard.Model.AccessSettings",
+          "fields": [
+            {
+              "name": "access",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "play",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "view",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ServerAddress",
+          "description": "LauncherApi.Shard.Model.ServerAddress",
+          "fields": [
+            {
+              "name": "host",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "port",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "WriteFormatVersion",
+          "description": "LauncherApi.Shard.Model.WriteFormatVersion",
+          "fields": [
+            {
+              "name": "key",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "value",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "FeatureFlag",
+          "description": "LauncherApi.Shard.Model.FeatureFlag",
+          "fields": [
+            {
+              "name": "key",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "value",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ShardInfo",
+          "description": "LauncherApi.Shard.Model.ShardInfo",
+          "fields": [
+            {
+              "name": "access",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AccessSettings",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "apiHost",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "channelID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "chatServer",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ServerAddress",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "clientCommandLineVersion",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "featureFlags",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "FeatureFlag",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "group",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ShardGroup",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "notes",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "presenceServer",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ServerAddress",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "productID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "progressionDBName",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "progressionDBPath",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "worldStateDBName",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "worldStateDBPath",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "writeFormatVersions",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "WriteFormatVersion",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INTERFACE",
+          "name": "IShardInfoUpdate",
+          "description": "LauncherApi.Shard.Model.IShardInfoUpdate",
+          "fields": [
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "ShardInfoUpdated",
+              "ofType": null
+            }
+          ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ShardInfoUpdated",
+          "description": "LauncherApi.Shard.Model.Update.ShardInfoUpdated",
+          "fields": [
+            {
+              "name": "shardInfo",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ShardInfo",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "IShardInfoUpdate",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CUQuery",
+          "description": "The root query object.",
+          "fields": [
+            {
+              "name": "connectedServices",
+              "description": "Status information for connected services",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ConnectedServices",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "discoveryAdmin",
+              "description": "Admin only live service status queries",
+              "args": [
+                {
+                  "name": "shardID",
+                  "description": "Filter returns by shard id",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                },
+                {
+                  "name": "serviceName",
+                  "description": "Filter returns by serviceName",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ServerRecord",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "installable",
+              "description": "Listing of items that can be installed by the launcher",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Installable",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "notificationAdmin",
+              "description": "Admin only notification data",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "NotificationAdminData",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "patchNote",
+              "description": "Gets a single patch note",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "Required: ID of the patch note.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "PatchNote",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "patchNotes",
+              "description": "Gets patch notes",
+              "args": [
+                {
+                  "name": "from",
+                  "description": "Optional: Oldest date (non-inclusive) from which to return patch notes.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Date",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                },
+                {
+                  "name": "to",
+                  "description": "Optional: Newest date (non-inclusive) from which to return patch notes.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Date",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                },
+                {
+                  "name": "channel",
+                  "description": "Required: Channel ID from which to return patch notes.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PatchNote",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "shardCharacters",
+              "description": "Gets all the characters from the requested shard for the account.",
+              "args": [
+                {
+                  "name": "onShard",
+                  "description": "If you want to request for a specific shard, use this parameter. Otherwise, will fetch characters on all shards.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": "-1"
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SimpleCharacter",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "shardInfo",
+              "description": "Admin only shard info",
+              "args": [
+                {
+                  "name": "shardID",
+                  "description": "Filter returns by shard id",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ShardInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CUSubscription",
+          "description": "The root subscriptions object.",
+          "fields": [
+            {
+              "name": "discovery",
+              "description": "Admin only live service status updates",
+              "args": [
+                {
+                  "name": "shardIDs",
+                  "description": "Optional filter for updates",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "IDiscoveryUpdate",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "installable",
+              "description": "Updates for items that can be installed by the launcher",
+              "args": [],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "IInstallableUpdate",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "notificationAdmin",
+              "description": "Admin only notification updates",
+              "args": [],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "INotificationUpdate",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "notifications",
+              "description": "Status or event broadcasts identified by purpose",
+              "args": [
+                {
+                  "name": "tags",
+                  "description": "Strings to match for this subscription",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Notification",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "serverUpdates",
+              "description": "Server status updates",
+              "args": [
+                {
+                  "name": "tags",
+                  "description": "Strings to match for this subscription",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "IServerUpdate",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "shardInfo",
+              "description": "Admin only shard info",
+              "args": [
+                {
+                  "name": "shardIDs",
+                  "description": "Optional filter for updates",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "IShardInfoUpdate",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        }
+      ],
+      "directives": [
+        {
+          "name": "include",
+          "description": "Directs the executor to include this field or fragment only when the 'if' argument is true.",
+          "locations": [
+            "FIELD",
+            "FRAGMENT_SPREAD",
+            "INLINE_FRAGMENT"
+          ],
+          "args": [
+            {
+              "name": "if",
+              "description": "Included when true.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "defaultValue": "null"
+            }
+          ]
+        },
+        {
+          "name": "skip",
+          "description": "Directs the executor to skip this field or fragment when the 'if' argument is true.",
+          "locations": [
+            "FIELD",
+            "FRAGMENT_SPREAD",
+            "INLINE_FRAGMENT"
+          ],
+          "args": [
+            {
+              "name": "if",
+              "description": "Skipped when true.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "defaultValue": "null"
+            }
+          ]
+        },
+        {
+          "name": "deprecated",
+          "description": "Marks an element of a GraphQL schema as no longer supported.",
+          "locations": [
+            "FIELD_DEFINITION",
+            "ENUM_VALUE"
+          ],
+          "args": [
+            {
+              "name": "reason",
+              "description": "Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted in [Markdown](https://daringfireball.net/projects/markdown/).",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": "\"No longer supported\""
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

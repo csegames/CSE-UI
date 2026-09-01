@@ -13,12 +13,13 @@ import {
   startProfileRefresh
 } from '../redux/profileSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { InitTopic } from '../redux/initializationSlice';
+import { LoadingTopic } from '../redux/loadingSlice';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { calculateSelectedRuneMods } from '../helpers/perkUtils';
 import { EventEmitter } from '@csegames/library/dist/_baseGame/types/EventEmitter';
 import { Dispatch } from '@reduxjs/toolkit';
 import { detectNewProgressionNodeUnlocks } from '../helpers/badgingUtils';
+import { updateServerTimeDelta } from '../redux/clockSlice';
 
 const profileServiceEventEmitter = new EventEmitter();
 
@@ -28,7 +29,11 @@ export class ProfileService extends ExternalDataSource {
   protected async bind(): Promise<ListenerHandle[]> {
     profileServiceEventEmitter.on('refresh', this.refresh.bind(this));
     return [
-      await this.query<ProfileQueryResult>({ query: profileQuery }, this.handleProfile.bind(this), InitTopic.Profile),
+      await this.query<ProfileQueryResult>(
+        { query: profileQuery },
+        this.handleProfile.bind(this),
+        LoadingTopic.Profile
+      ),
       this.onInitialize(this.refresh.bind(this))
     ];
   }
@@ -36,12 +41,17 @@ export class ProfileService extends ExternalDataSource {
   private handleProfile(result: ProfileQueryResult): void {
     if (
       !result.colossusProfile ||
+      !result.serverTimestamp ||
       !Array.isArray(result.colossusProfile.champions) ||
       !Array.isArray(result.colossusProfile.lifetimeStats)
     ) {
-      console.warn('Missing data, colossusProfile, colossusProfile champions, colossusProfile lifetimeStats query');
+      console.warn(
+        'Missing data, serverTimestamp colossusProfile, colossusProfile champions, colossusProfile lifetimeStats query'
+      );
       return;
     }
+
+    this.dispatch(updateServerTimeDelta(result.serverTimestamp));
 
     // Precalculate to avoid expensive lookups all over the place.
     const ownedPerks: Dictionary<number> = {};
@@ -90,7 +100,7 @@ export class ProfileService extends ExternalDataSource {
     this.refreshHandle = await this.query<ProfileQueryResult>(
       { query: profileQuery },
       this.handleProfile.bind(this),
-      InitTopic.Profile
+      LoadingTopic.Profile
     );
   }
 }

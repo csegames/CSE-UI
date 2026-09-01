@@ -10,11 +10,12 @@ import { connect } from 'react-redux';
 import { HUDWidget } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
 import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import { SimpleRect } from '../redux/dragAndDropSlice';
 
 interface ReactProps {}
 
 interface InjectedProps {
-  currentDraggableBounds: DOMRect;
+  currentDraggableBounds: SimpleRect;
   selectedWidgetID: string;
   widgets: Dictionary<HUDWidget>;
   dragDelta: [number, number];
@@ -116,7 +117,7 @@ class HUDAnchorChain extends React.Component<Props> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { widgets, hudWidth, hudHeight } = state.hud;
-  const { selectedWidgetId: selectedWidgetID } = state.hud.editor;
+  const { selectedWidgetID } = state.hud.editor;
   const { currentDraggableBounds, dragDelta } = state.dragAndDrop;
   return {
     ...ownProps,

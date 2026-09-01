@@ -4,234 +4,214 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { game } from '@csegames/library/dist/_baseGame';
-import { Dispatch } from '@reduxjs/toolkit';
+// Images are imported so that WebPack can find them (and give us errors if they are missing).
+import IconWarningURL from '../../images/hudnav/hudnavicon_warning.png';
+
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { HUDLayer, HUDWidget, HUDWidgetRegistration, toggleBuildingMode, toggleMenuWidget } from '../redux/hudSlice';
+import { connect, DispatchProp } from 'react-redux';
+import { HUDLayer, HUDWidget, HUDWidgetRegistration, toggleConditionalWidget } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
 import HUDNavMenuButton from './HUDNavMenuButton';
-import { KeyActionsState } from '../redux/keyActionsSlice';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
-import { WIDGET_NAME_ABILITY_BOOK } from './abilityBook/AbilityBook';
-import { WIDGET_NAME_ABILITY_BUILDER } from './abilityBuilder/AbilityBuilder';
-import { WIDGET_NAME_EQUIPPED } from './equipped/Equipped';
-import { WIDGET_NAME_GAME_INFO } from './GameInfo';
-import { WIDGET_NAME_GAME_MENU } from './GameMenu';
-import { WIDGET_NAME_INVENTORY } from './inventory/Inventory';
-import { WIDGET_NAME_JOIN_SCENARIO } from './joinScenario/JoinScenario';
-import { InitTopic } from '../redux/initializationSlice';
+import { WIDGET_ID_ABILITY_BOOK } from './abilityBook/AbilityBook';
+import { WIDGET_ID_EQUIPPED } from './Equipped';
+import { WIDGET_ID_GAME_INFO } from './GameInfo';
+import { WIDGET_ID_GAME_MENU } from './GameMenu';
+import { WIDGET_ID_INVENTORY } from './inventory/Inventory';
+import { WIDGET_ID_WORLD_MAP } from './WorldMap';
+import { LoadingTopic } from '../redux/loadingSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { MyScenarioQueue } from '@csegames/library/dist/camelotunchained/graphql/schema';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
+import { getFactionData } from '../gameData/factionData';
+import { FactionBorder, BorderType } from './FactionBorder';
+import { Keybind } from '@csegames/library/dist/_baseGame/types/Keybind';
+import { getStringTableValue } from '../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
+import { ResizeDetector } from '../../shared/components/ResizeDetector';
+import { WIDGET_ID_MAIL } from './mail/Mail';
+import { WIDGET_ID_GUILD } from './guild/Guild';
+import { WIDGET_ID_QUESTLOG } from './quests/QuestLog';
+import { getAvailableAbilityPoints } from '../helpers/abilityBookHelpers';
 
-// Images are imported so that WebPack can find them (and give us errors if they are missing).
-import IconAbilityBookURL from '../../images/hudnav/hudnavicon_book.png';
-import IconAbilityBuilderURL from '../../images/hudnav/hudnavicon_toolbox.png';
-import IconCogURL from '../../images/hudnav/hudnavicon_cog.png';
-import IconCollapseURL from '../../images/hudnav/hudnavicon_collapse.png';
-import IconCubeURL from '../../images/hudnav/hudnavicon_cube.png';
-import IconEquippedURL from '../../images/hudnav/hudnavicon_equipped.png';
-import IconExpandURL from '../../images/hudnav/hudnavicon_expand.png';
-import IconInfoURL from '../../images/hudnav/hudnavicon_info.png';
-import IconInventoryURL from '../../images/hudnav/hudnavicon_briefcase.png';
-import IconJoinScenarioURL from '../../images/hudnav/hudnavicon_joinscenario.png';
-import IconNearbyPlotURL from '../../images/hudnav/hudnavicon_nearbyplot.png';
-import IconOwnedPlotURL from '../../images/hudnav/hudnavicon_ownedplot.png';
-import IconProgressionURL from '../../images/hudnav/hudnavicon_progression.png';
-import IconReloadUIURL from '../../images/hudnav/hudnavicon_reloadui.png';
-import IconScenarioManagementURL from '../../images/hudnav/hudnavicon_scenariomanagement.png';
-import IconToggleUIEditModeURL from '../../images/hudnav/hudnavicon_toggleuieditmode.png';
-import IconWarningURL from '../../images/hudnav/hudnavicon_warning.png';
-import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
-import { isScenarioMatchAvailable } from './joinScenario/joinScenarioUtils';
-
-// Styles.
+// CSS classes
 const Root = 'HUD-NavMenu-Root';
+const Collapser = 'HUD-NavMenu-Collapser';
+const End = 'HUD-NavMenu-End';
+const Icons = 'HUD-NavMenu-Icons';
+
+// String IDs
+const StringIDHUDEditorWidgetNameGameMenu = 'HUDEditorWidgetNameGameMenu';
+const StringIDHUDEditorWidgetNameWorldMap = 'HUDEditorWidgetNameWorldMap';
+const StringIDHUDEditorWidgetNameEquipped = 'HUDEditorWidgetNameEquipped';
+const StringIDHUDEditorWidgetNameInventory = 'HUDEditorWidgetNameInventory';
+const StringIDHUDEditorWidgetNameGameInfo = 'HUDEditorWidgetNameGameInfo';
+const StringIDHUDEditorWidgetNameAbilityBook = 'HUDEditorWidgetNameAbilityBook';
+const StringIDHUDEditorWidgetNameMail = 'HUDEditorWidgetNameMail';
+const StringIDHUDEditorWidgetNameGuild = 'HUDEditorWidgetNameGuild';
+const StringIDHUDEditorWidgetNameQuestLog = 'HUDEditorWidgetNameQuestLog';
+
+// Keybind IDs - must match values from Input.h in the client repo.
+const KeybindIDGameMenu = 33; // UIMenu
+const KeybindIDInventory = 35; // UIInventoryWindow
+const KeybindIDEquipped = 36; // UIEquippedGearWindow
+const KeybindIDMap = 37; // UIMapWindow
+const KeybindIDAbilityBook = 40; // UIAbilityBookWindow
 
 interface State {
   collapsed: boolean;
+  originalBarWidth: number;
+  originalBarHeight: number;
 }
 
-interface ReactProps {}
+interface ReactProps {
+  isDragCopy: boolean;
+}
 
 interface InjectedProps {
-  keyActions: KeyActionsState;
-  isHUDEditingEnabled: boolean;
-  activeMenuIds: string[];
+  activeConditionalWidgetIDs: string[];
   isBuildingModeActive: boolean;
-  uninitializedTopics: InitTopic[];
+  uninitializedTopics: LoadingTopic[];
   widgets: Dictionary<HUDWidget>;
-  scenarioQueue: MyScenarioQueue | null;
-  faction: Faction;
-  dispatch?: Dispatch;
+  isEditingHUD: boolean;
+  uiFactionID: string;
+  stringTable: Record<string, StringTableEntryDef>;
+  keybinds: Record<string, Keybind>;
+  hasAvailableAbilityPoints: boolean;
 }
 
 type Props = ReactProps & InjectedProps;
 
-class AHUDNavMenu extends React.Component<Props, State> {
-  constructor(props: Props) {
+class AHUDNavMenu extends React.Component<Props & DispatchProp, State> {
+  constructor(props: Props & DispatchProp) {
     super(props);
 
     this.state = {
-      collapsed: false
+      collapsed: false,
+      originalBarWidth: 0,
+      originalBarHeight: 0
     };
   }
 
   render(): JSX.Element {
-    let scenarioCount: number | undefined;
-    if (this.props.scenarioQueue?.availableMatches) {
-      const scenarioAmount: number = this.props.scenarioQueue.availableMatches.filter(
-        (match) => match && isScenarioMatchAvailable(match, this.props.faction)
-      ).length;
-      if (scenarioAmount > 0) {
-        scenarioCount = scenarioAmount;
-      }
-    }
+    let preferredWidth = this.state.collapsed ? 0 : this.state.originalBarWidth;
+
+    const isMailAllowed = true;
+
+    const factionData = getFactionData(this.props.uiFactionID);
     return (
       <div className={Root}>
-        {this.state.collapsed ? (
-          <>
-            <HUDNavMenuButton
-              tooltipContent={'Show Quick Menu'}
-              tooltipID={'HUDNav-ShowQuickMenu'}
-              icon={IconExpandURL}
-              onClick={this.onExpandClicked.bind(this)}
-            />
-          </>
-        ) : (
-          <>
-            {this.props.uninitializedTopics.length > 0 && (
+        <img className={End} src={factionData.hudnavEndImage} onClick={this.onToggleCollapse.bind(this)} />
+        <div
+          className={Collapser}
+          style={{
+            width: this.state.originalBarWidth > 0 ? `${preferredWidth}px` : undefined,
+            height: this.state.originalBarHeight > 0 ? `${this.state.originalBarHeight}px` : undefined
+          }}
+        >
+          <FactionBorder
+            style={{ backgroundImage: `url(${factionData.windowBackgroundImage})` }}
+            className={Icons}
+            type={BorderType.Primary}
+            includeRight={false}
+          >
+            <>
+              <ResizeDetector onResize={this.onBarLayout.bind(this)} />
+              {this.props.uninitializedTopics.length > 0 && (
+                <HUDNavMenuButton
+                  tooltipContent={this.getWarningTooltipContent.bind(this)}
+                  tooltipID={'HUDNav-Warning'}
+                  icon={IconWarningURL}
+                />
+              )}
               <HUDNavMenuButton
-                tooltipContent={this.getWarningTooltipContent.bind(this)}
-                tooltipID={'HUDNav-Warning'}
-                icon={IconWarningURL}
+                tooltipContent={this.buildTooltipText(StringIDHUDEditorWidgetNameWorldMap, KeybindIDMap)}
+                tooltipID={'HUDNav-Map'}
+                icon={factionData.hudnavIconWorldMapImage}
+                onClick={this.onMapClicked.bind(this)}
               />
-            )}
-            {/* TODO: Console */}
-            <HUDNavMenuButton
-              tooltipContent={'Game Menu'}
-              tooltipID={'HUDNav-GameMenu'}
-              icon={IconCogURL}
-              onClick={this.onGameMenuClicked.bind(this)}
-            />
-            <HUDNavMenuButton
-              tooltipContent={'Toggle Building Mode'}
-              tooltipID={'HUDNav-ToggleBuildingMode'}
-              icon={IconCubeURL}
-              onClick={this.onToggleBuildingModeClicked.bind(this)}
-            />
-            {/* TODO: Character */}
-            <HUDNavMenuButton
-              tooltipContent={'Equipped Items'}
-              tooltipID={'HUDNav-Equipped'}
-              icon={IconEquippedURL}
-              onClick={this.onEquippedClicked.bind(this)}
-            />
-            <HUDNavMenuButton
-              tooltipContent={'Inventory'}
-              tooltipID={'HUDNav-Inventory'}
-              icon={IconInventoryURL}
-              onClick={this.onInventoryClicked.bind(this)}
-            />
-            {/* TODO: Crafting */}
-            <HUDNavMenuButton
-              tooltipContent={'Nearby Plot'}
-              tooltipID={'HUDNav-NearbyPlot'}
-              icon={IconNearbyPlotURL}
-              onClick={this.onNearbyPlotClicked.bind(this)}
-            />
-            <HUDNavMenuButton
-              tooltipContent={'Game Info'}
-              tooltipID={'HUDNav-GameInfo'}
-              icon={IconInfoURL}
-              onClick={this.onGameInfoClicked.bind(this)}
-            />
-            <HUDNavMenuButton
-              tooltipContent={'Owned Plot'}
-              tooltipID={'HUDNav-OwnedPlot'}
-              icon={IconOwnedPlotURL}
-              onClick={this.onOwnedPlotClicked.bind(this)}
-            />
-            {/* TODO: World Map */}
-            <HUDNavMenuButton
-              tooltipContent={'Join Scenario'}
-              tooltipID={'HUDNav-JoinScenario'}
-              icon={IconJoinScenarioURL}
-              count={scenarioCount}
-              onClick={this.onJoinScenarioClicked.bind(this)}
-            />
-            <HUDNavMenuButton
-              tooltipContent={'Scenario Management'}
-              tooltipID={'HUDNav-ScenarioManagement'}
-              icon={IconScenarioManagementURL}
-              onClick={this.onScenarioManagementClicked.bind(this)}
-            />
-            {/* TODO: Scenario Results */}
-            {/* TODO: Progression */}
-            <HUDNavMenuButton
-              tooltipContent={'Ability Builder'}
-              tooltipID={'HUDNav-AbilityBuilder'}
-              icon={IconAbilityBuilderURL}
-              onClick={this.onAbilityBuilderClicked.bind(this)}
-            />
-            <HUDNavMenuButton
-              tooltipContent={'Ability Book'}
-              tooltipID={'HUDNav-AbilityBook'}
-              icon={IconAbilityBookURL}
-              onClick={this.onAbilityBookClicked.bind(this)}
-            />
-            <HUDNavMenuButton
-              tooltipContent={'Progression'}
-              tooltipID={'HUDNav-Progression'}
-              icon={IconProgressionURL}
-              onClick={this.onProgressionClicked.bind(this)}
-            />
-            <HUDNavMenuButton
-              tooltipContent={'Toggle UI Edit Mode'}
-              tooltipID={'HUDNav-ToggleUIEditMode'}
-              icon={IconToggleUIEditModeURL}
-              onClick={this.onToggleUIEditMode.bind(this)}
-            />
-            <HUDNavMenuButton
-              tooltipContent={'Reload UI'}
-              tooltipID={'HUDNav-ReloadUI'}
-              icon={IconReloadUIURL}
-              onClick={this.onReloadUIClicked.bind(this)}
-            />
-            <HUDNavMenuButton
-              tooltipContent={'Collapse Quick Menu'}
-              tooltipID={'HUDNav-CollapseQuickMenu'}
-              icon={IconCollapseURL}
-              onClick={this.onCollapseClicked.bind(this)}
-            />
-          </>
-        )}
+              <HUDNavMenuButton
+                tooltipContent={this.buildTooltipText(StringIDHUDEditorWidgetNameInventory, KeybindIDInventory)}
+                tooltipID={'HUDNav-Inventory'}
+                icon={factionData.hudnavIconInventoryImage}
+                onClick={this.onInventoryClicked.bind(this)}
+              />
+              <HUDNavMenuButton
+                tooltipContent={this.buildTooltipText(StringIDHUDEditorWidgetNameEquipped, KeybindIDEquipped)}
+                tooltipID={'HUDNav-Equipped'}
+                icon={factionData.hudnavIconEquippedImage}
+                onClick={this.onEquippedClicked.bind(this)}
+              />
+              <HUDNavMenuButton
+                tooltipContent={this.buildTooltipText(StringIDHUDEditorWidgetNameAbilityBook, KeybindIDAbilityBook)}
+                tooltipID={'HUDNav-AbilityBook'}
+                icon={factionData.hudnavIconAbilityBookImage}
+                glow={this.props.hasAvailableAbilityPoints}
+                onClick={this.onAbilityBookClicked.bind(this)}
+              />
+              {isMailAllowed && (
+                <HUDNavMenuButton
+                  tooltipContent={getStringTableValue(StringIDHUDEditorWidgetNameMail, this.props.stringTable)}
+                  tooltipID={'HUDNav-Mail'}
+                  icon={factionData.hudnavIconMailImage}
+                  onClick={this.onMailClicked.bind(this)}
+                />
+              )}
+              <HUDNavMenuButton
+                tooltipContent={getStringTableValue(StringIDHUDEditorWidgetNameQuestLog, this.props.stringTable)}
+                tooltipID={'HUDNav-QuestLog'}
+                icon={factionData.hudnavIconQuestLogImage}
+                onClick={this.onQuestLogClicked.bind(this)}
+              />
+              <HUDNavMenuButton
+                tooltipContent={getStringTableValue(StringIDHUDEditorWidgetNameGuild, this.props.stringTable)}
+                tooltipID={'HUDNav-Guild'}
+                icon={factionData.hudnavIconGuildImage}
+                onClick={this.onGuildClicked.bind(this)}
+              />
+              <HUDNavMenuButton
+                tooltipContent={getStringTableValue(StringIDHUDEditorWidgetNameGameInfo, this.props.stringTable)}
+                tooltipID={'HUDNav-GameInfo'}
+                icon={factionData.hudnavIconGameInfoImage}
+                onClick={this.onGameInfoClicked.bind(this)}
+              />
+              <HUDNavMenuButton
+                tooltipContent={this.buildTooltipText(StringIDHUDEditorWidgetNameGameMenu, KeybindIDGameMenu)}
+                tooltipID={'HUDNav-GameMenu'}
+                icon={factionData.hudnavIconGameMenuImage}
+                onClick={this.onGameMenuClicked.bind(this)}
+              />
+            </>
+          </FactionBorder>
+        </div>
       </div>
     );
   }
 
-  private onExpandClicked(): void {
-    this.setState({ collapsed: false });
-  }
+  private buildTooltipText(nameStringID: string, keybindID?: number): string {
+    const name = getStringTableValue(nameStringID, this.props.stringTable);
+    const keybind = this.props.keybinds[keybindID ?? -1]?.binds[0]?.name;
+    if (!keybind) {
+      return name;
+    }
 
-  private onCollapseClicked(): void {
-    this.setState({ collapsed: true });
+    return `${name} (${keybind})`;
   }
 
   private getWarningTooltipContent(): React.ReactNode {
-    const widgetNames: string[] = [];
+    const widgetIDs: string[] = [];
     for (const widgetID of Object.keys(this.props.widgets)) {
       if (!this.props.widgets[widgetID].state.initialized && this.props.widgets[widgetID].registration) {
-        widgetNames.push(this.props.widgets[widgetID].registration.name);
+        widgetIDs.push(this.props.widgets[widgetID].registration.id);
       }
     }
     return (
       <>
-        <span>Some requests failed during initialization.</span>
-        {widgetNames.length > 0 && (
+        <span>{'Some requests failed during initialization.'}</span>
+        {widgetIDs.length > 0 && (
           <>
             <br />
-            <span>Impacted widgets: {widgetNames.join(', ')}</span>
+            <span>{`Impacted widgets: ${widgetIDs.join(', ')}`}</span>
           </>
         )}
       </>
@@ -239,94 +219,100 @@ class AHUDNavMenu extends React.Component<Props, State> {
   }
 
   private onGameMenuClicked(): void {
-    this.props.dispatch(toggleMenuWidget({ widgetId: WIDGET_NAME_GAME_MENU, escapableId: WIDGET_NAME_GAME_MENU }));
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_QUICK_MENU_SELECT);
+    this.props.dispatch(toggleConditionalWidget(WIDGET_ID_GAME_MENU));
   }
 
-  private onToggleBuildingModeClicked(): void {
-    // Send the KeyAction to the Client.  This will update the ActionBar SystemAnchor for building mode.
-    game.triggerKeyAction(this.props.keyActions.UIToggleBuildingMode);
-    this.props.dispatch(toggleBuildingMode());
+  private onMapClicked(): void {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_QUICK_MENU_SELECT);
+    this.props.dispatch(toggleConditionalWidget(WIDGET_ID_WORLD_MAP));
   }
 
   private onEquippedClicked(): void {
-    this.props.dispatch(toggleMenuWidget({ widgetId: WIDGET_NAME_EQUIPPED, escapableId: WIDGET_NAME_EQUIPPED }));
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_QUICK_MENU_SELECT);
+    this.props.dispatch(toggleConditionalWidget(WIDGET_ID_EQUIPPED));
   }
 
   private onInventoryClicked(): void {
-    this.props.dispatch(toggleMenuWidget({ widgetId: WIDGET_NAME_INVENTORY, escapableId: WIDGET_NAME_INVENTORY }));
-  }
-
-  private onNearbyPlotClicked(): void {
-    game.sendSlashCommand('plot showui --nearby');
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_QUICK_MENU_SELECT);
+    this.props.dispatch(toggleConditionalWidget(WIDGET_ID_INVENTORY));
   }
 
   private onGameInfoClicked(): void {
-    this.props.dispatch(toggleMenuWidget({ widgetId: WIDGET_NAME_GAME_INFO, escapableId: WIDGET_NAME_GAME_INFO }));
-  }
-
-  private onOwnedPlotClicked(): void {
-    game.sendSlashCommand('plot showui --owned');
-  }
-
-  private onJoinScenarioClicked(): void {
-    this.props.dispatch(
-      toggleMenuWidget({ widgetId: WIDGET_NAME_JOIN_SCENARIO, escapableId: WIDGET_NAME_JOIN_SCENARIO })
-    );
-  }
-
-  private onScenarioManagementClicked(): void {
-    game.sendSlashCommand('scenario showdevui');
-  }
-
-  private onAbilityBuilderClicked(): void {
-    this.props.dispatch(
-      toggleMenuWidget({ widgetId: WIDGET_NAME_ABILITY_BUILDER, escapableId: WIDGET_NAME_ABILITY_BUILDER })
-    );
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_QUICK_MENU_SELECT);
+    this.props.dispatch(toggleConditionalWidget(WIDGET_ID_GAME_INFO));
   }
 
   private onAbilityBookClicked(): void {
-    this.props.dispatch(
-      toggleMenuWidget({ widgetId: WIDGET_NAME_ABILITY_BOOK, escapableId: WIDGET_NAME_ABILITY_BOOK })
-    );
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_QUICK_MENU_SELECT);
+    if (this.props.activeConditionalWidgetIDs.includes(WIDGET_ID_ABILITY_BOOK)) {
+      if (!this.props.isEditingHUD) {
+        clientAPI.requestEditMode(false);
+      }
+    } else {
+      clientAPI.requestEditMode(true);
+    }
+    this.props.dispatch(toggleConditionalWidget(WIDGET_ID_ABILITY_BOOK));
   }
 
-  private onProgressionClicked(): void {
-    game.sendSlashCommand('progressiondevui show');
+  private onMailClicked(): void {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_QUICK_MENU_SELECT);
+
+    this.props.dispatch(toggleConditionalWidget(WIDGET_ID_MAIL));
   }
 
-  private onToggleUIEditMode(): void {
-    clientAPI.requestEditMode(!this.props.isHUDEditingEnabled);
+  private onQuestLogClicked(): void {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_QUICK_MENU_SELECT);
+
+    this.props.dispatch(toggleConditionalWidget(WIDGET_ID_QUESTLOG));
   }
 
-  private onReloadUIClicked(): void {
-    game.reloadUI();
+  private onGuildClicked(): void {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_QUICK_MENU_SELECT);
+    this.props.dispatch(toggleConditionalWidget(WIDGET_ID_GUILD));
+  }
+
+  private onBarLayout(newWidth: number, newHeight: number, oldWidth: number, oldHeight: number): void {
+    if (newWidth > 0 && newHeight > 0) {
+      this.setState({ originalBarWidth: newWidth, originalBarHeight: newHeight });
+    }
+  }
+
+  private onToggleCollapse(): void {
+    this.setState({ collapsed: !this.state.collapsed });
   }
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { keyActions } = state;
-  const isHUDEditingEnabled = state.abilities.editStatus.canEdit;
+  const myClass = state.gameDefs.classesByNumericID[state.entities.self?.classID];
   return {
     ...ownProps,
-    keyActions,
-    isHUDEditingEnabled,
-    activeMenuIds: state.hud.activeMenuIds,
+    activeConditionalWidgetIDs: state.hud.activeConditionalWidgetIDs,
     isBuildingModeActive: state.hud.isBuildingModeActive,
-    uninitializedTopics: state.initialization.uninitializedTopics,
+    uninitializedTopics: state.loading.uninitializedTopics,
     widgets: state.hud.widgets,
-    scenarioQueue: state.scenario.queue,
-    faction: state.player.faction
+    isEditingHUD: state.hud.isEditingHUD,
+    uiFactionID: state.hud.uiFactionID,
+    stringTable: state.stringTable.stringTable,
+    keybinds: state.keybinds,
+    hasAvailableAbilityPoints: getAvailableAbilityPoints(myClass, state.gameDefs, state.entities.self) > 0
   };
 }
 
 const HUDNavMenu = connect(mapStateToProps)(AHUDNavMenu);
 
-const WIDGET_NAME = 'Nav Menu';
+export const WIDGET_ID_NAV_MENU = 'Nav Menu';
 export const hudNavMenuRegistry: HUDWidgetRegistration = {
-  name: WIDGET_NAME,
-  defaults: {},
+  id: WIDGET_ID_NAV_MENU,
+  nameStringID: 'HUDEditorWidgetNameQuickAccessMenu',
+  defaults: {
+    xAnchor: HUDHorizontalAnchor.Right,
+    yAnchor: HUDVerticalAnchor.Bottom,
+    yOffset: 1
+  },
   layer: HUDLayer.HUD,
-  render: () => {
-    return <HUDNavMenu />;
+  requiresGameDefsLoaded: true,
+  render: (isDragCopy: boolean) => {
+    return <HUDNavMenu isDragCopy={isDragCopy} />;
   }
 };

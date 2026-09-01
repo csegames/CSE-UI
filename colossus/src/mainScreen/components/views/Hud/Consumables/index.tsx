@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REFACTOR
+
 import * as React from 'react';
 import ConsumableButton from './ConsumableButton';
 import { connect } from 'react-redux';
@@ -15,6 +17,8 @@ import { ItemGameplayType } from '@csegames/library/dist/hordetest/game/types/It
 import { ConsumableItemsState } from '@csegames/library/dist/hordetest/game/GameClientModels/ConsumableItemsState';
 import { ArrayMap } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { game } from '@csegames/library/dist/_baseGame';
+import { Dictionary } from '@reduxjs/toolkit';
+import { ItemDef } from '../../../../dataSources/manifest/itemManifest';
 
 const DESCRIPTION_VISIBILITY_TIME_SECONDS = 4.0;
 const OuterContainer = 'Consumables-OuterContainer';
@@ -38,6 +42,7 @@ export interface Props {
   keybindToUse: Keybind;
   usingGamepad: boolean;
   lastUpdatedTimestamp: number;
+  itemsByID: Dictionary<ItemDef>;
 }
 
 interface State {
@@ -62,7 +67,7 @@ class AConsumables extends React.Component<Props, State> {
     };
 
     this.lastViewedItemType = ItemGameplayType.None;
-    let activeItem = this.getActiveItem();
+    let activeItem = this.getActiveItemDef();
     if (activeItem != null) {
       this.lastViewedItemType = activeItem.gameplayType;
     }
@@ -103,39 +108,39 @@ class AConsumables extends React.Component<Props, State> {
     }
   }
 
-  private getConsumableButtons(item: ConsumableItem, itemIndex: number): JSX.Element {
+  private getConsumableButtons(item: ConsumableItem, itemDef: ItemDef, itemIndex: number): JSX.Element {
     const binding: Binding = getActiveBindForKey(this.props.usingGamepad, this.props.keybindToUse);
     return (
       <ConsumableButton
-        key={`consumableKey_${item.name}_index_${itemIndex}`}
+        key={`consumableKey_${item.id}_index_${itemIndex}`}
         item={item}
         isActive={itemIndex === this.props.activeIndex}
         useKeybind={binding}
+        itemDef={itemDef}
       />
     );
   }
 
-  private getItemDescriptionName(item: ConsumableItem): JSX.Element {
+  private getItemDescriptionName(item: ItemDef): JSX.Element {
     if (item != null) {
       return <div className={`${ItemDescText} item-name`}>{item.name}</div>;
     }
     return null;
   }
 
-  private getItemDescriptionText(item: ConsumableItem): JSX.Element {
+  private getItemDescriptionText(item: ItemDef): JSX.Element {
     if (item != null) {
       return <div className={`${ItemDescText} item-description`}>{item.description}</div>;
     }
     return null;
   }
 
-  private getItemDescription(item: ConsumableItem): JSX.Element {
+  private getItemDescription(item: ItemDef): JSX.Element {
     // This container should always exit so that it's size doesn't change, item or no item.
     // The whole consumables block is aligned to the bottom of the screen, so changing the
     // height of the bottom-most element would move the consumable buttons around vertically.
     const visibilityClass = item != null && this.state.descriptionVisible ? 'desc-visible' : 'desc-hidden';
-    const itemTypeClass =
-      item != null ? ItemGameplayType[item.gameplayType] : ItemGameplayType[this.lastViewedItemType];
+    const itemTypeClass = item != null ? item.gameplayType : this.lastViewedItemType;
     return (
       <div className={`${SelectedItemDescriptionContainer} ${visibilityClass}`}>
         <div className={`${SelectedItemDescription} ${itemTypeClass}`}>
@@ -146,11 +151,11 @@ class AConsumables extends React.Component<Props, State> {
     );
   }
 
-  private getActiveItem(props: Props = null): ConsumableItem {
+  private getActiveItemDef(props: Props = null): ItemDef {
     if (props === null) {
       props = this.props;
     }
-    return props.activeIndex in props.items ? props.items[props.activeIndex] : null;
+    return props.activeIndex in props.items ? props.itemsByID[props.items[props.activeIndex]?.id] : null;
   }
 
   // returns the number of actual items in an item arraymap (as opposed to the number of item _slots_)
@@ -161,7 +166,7 @@ class AConsumables extends React.Component<Props, State> {
 
     let numItems = 0;
     Object.values(items).map((item: ConsumableItem) => {
-      if (item.name) {
+      if (item.id) {
         numItems++;
       }
     });
@@ -169,8 +174,8 @@ class AConsumables extends React.Component<Props, State> {
   }
 
   public componentDidUpdate(prevProps: Props) {
-    const newActiveItem: ConsumableItem = this.getActiveItem(this.props);
-    const prevActiveItem: ConsumableItem = this.getActiveItem(prevProps);
+    const newActiveItem: ItemDef = this.getActiveItemDef(this.props);
+    const prevActiveItem: ItemDef = this.getActiveItemDef(prevProps);
 
     // item changed, or timestamp changed and we have exactly one item in the inventory
     if (
@@ -214,7 +219,7 @@ class AConsumables extends React.Component<Props, State> {
   public render(): JSX.Element {
     let itemElements: JSX.Element[] = [];
     Object.values(this.props.items).map((item: ConsumableItem, index: number) => {
-      itemElements.push(this.getConsumableButtons(item, index));
+      itemElements.push(this.getConsumableButtons(item, this.props.itemsByID[item?.id], index));
     });
 
     return (
@@ -227,7 +232,7 @@ class AConsumables extends React.Component<Props, State> {
           `${PrevArrow} fs-icon-misc-chevron-left`
         )}
         <div className={InnerContainer}>
-          {this.getItemDescription(this.getActiveItem())}
+          {this.getItemDescription(this.getActiveItemDef())}
           <div className={ConsumableButtons}>{itemElements}</div>
         </div>
         {this.getKeybind(
@@ -253,6 +258,7 @@ function mapStateToProps(state: RootState) {
   const activeIndex = consumableItemsState.activeIndex;
   const usingGamepad = state.baseGame.usingGamepad;
   const lastUpdatedTimestamp = consumableItemsState.timestamp;
+  const itemsByID = state.game.itemsByID;
 
   return {
     keybindForNext,
@@ -261,8 +267,11 @@ function mapStateToProps(state: RootState) {
     items,
     activeIndex,
     usingGamepad,
-    lastUpdatedTimestamp
+    lastUpdatedTimestamp,
+    itemsByID
   };
 }
 
 export const Consumables = connect(mapStateToProps)(AConsumables);
+
+*/

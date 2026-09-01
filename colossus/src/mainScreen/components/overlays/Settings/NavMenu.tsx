@@ -5,15 +5,15 @@
  */
 
 import * as React from 'react';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { toTitleCase } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { RootState } from '../../../redux/store';
 import { connect } from 'react-redux';
 import { Header } from '../../shared/Header';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'Settings-NavMenu-Container';
 
@@ -63,11 +63,11 @@ class ANavMenu extends React.Component<Props> {
 
   private onClick(route: SettingsRoute): void {
     this.props.onSelectRoute(route);
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
   }
 
   private onMouseEnter(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   private renderRouteButton(route: SettingsRoute, extraJSX?: JSX.Element | JSX.Element[]): JSX.Element {

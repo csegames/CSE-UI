@@ -36,7 +36,6 @@ export default function (game: BaseGameInterface, isAttached: boolean) {
   _devGame._activeTasks = {};
   _devGame.listenForKeyBindingAsync = makeClientPromise((game) => game._cse_dev_listenForKeyBindingTask());
   _devGame.setOptionsAsync = makeClientPromise((game, options) => game._cse_dev_setOptions(options));
-  _devGame.testOptionAsync = makeClientPromise((game, option) => game._cse_dev_testOption(option));
   _devGame.takeScreenshotAsync = makeClientPromise((game) => game._cse_dev_takeScreenshot());
   // Building API Tasks
   _devGame.building.setModeAsync = makeClientPromise((game, mode) => game.building._cse_dev_setMode(mode));
@@ -64,7 +63,7 @@ export default function (game: BaseGameInterface, isAttached: boolean) {
   _devGame.on = globalEmitter.on.bind(globalEmitter);
   _devGame.once = globalEmitter.listenOnce.bind(globalEmitter);
   _devGame.trigger = globalEmitter.trigger.bind(globalEmitter);
-  _devGame.off = globalEmitter.trigger.bind(globalEmitter);
+  _devGame.off = globalEmitter.off.bind(globalEmitter);
 
   initClientTasks();
   initEventForwarding(_devGame);
@@ -76,33 +75,19 @@ export default function (game: BaseGameInterface, isAttached: boolean) {
 
 export function initOutOfContextGame(): BaseGameInterface {
   const model: BaseGameModel = {
-    patchResourceChannel: 4,
     characterID: 'test-characterID',
-    pktHash: '',
     accessToken: 'developer',
     webAPIHost: 'https://hatcheryapi.camelotunchained.com',
     serverHost: 'https://hatcheryd.camelotunchained.com',
     options: {},
     keybinds: {},
-    worldTime: 0,
-    fps: 0,
     npcCount: 0,
     isPublicBuild: true,
-    buildNumber: 0,
     showPerfHUD: true,
-    isCUBE: false,
-    uiMockMode: 0,
 
-    reloadUI: noOp,
-    quit: noOp,
     sendSlashCommand: noOp,
     tabComplete: noOp,
-    addOfflineCharacter: noOp,
-    removeOfflineCharacter: noOp,
-    setOfflineCharacterAnimation: noOp,
     triggerKeyAction: noOp,
-    playGameSound: noOp,
-
     setKeybind: noOp,
     clearKeybind: noOp,
     resetKeybinds: noOp,
@@ -152,12 +137,7 @@ export function initOutOfContextGame(): BaseGameInterface {
       positionOffset: { x: 0, y: 0 }
     },
 
-    connectToServer: noOp,
-    disconnectFromAllServers: noOp,
     isAutoConnectEnabled: false,
-    isConnectedOrConnectingToServer: false,
-    isConnectedToServer: false,
-    isDisconnectingFromAllServers: false,
 
     actions: {
       inEditMode: false,
@@ -184,9 +164,6 @@ export function initOutOfContextGame(): BaseGameInterface {
     ...model,
     ready: true,
     onBeginChat: (callback: (msg: string) => {}) => mockEmitter.on('beginChat', callback),
-    beginChat: (msg: string) => mockEmitter.trigger('beginChat', msg),
-    onPushChat: (callback: (msg: string) => {}) => mockEmitter.on('pushChat', callback),
-    pushChat: (msg: string) => mockEmitter.trigger('pushChat', msg),
     onReady: mockOnReady,
     debug,
     setDebug: (value: boolean) => (debug = value),
@@ -194,9 +171,7 @@ export function initOutOfContextGame(): BaseGameInterface {
     onConsoleText: noOp,
     onKeybindChanged: noOp,
     onGameOptionChanged: noOp,
-    getKeybindSafe: noOp,
     onControllerSelect: noOp,
-    onNetworkFailure: noOp,
     onAnchorVisibilityChanged: noOp,
     onSteamPurchaseComplete: noOp,
     onMenuControllerEvent: noOp,

@@ -6,258 +6,18 @@
 
 // Camelot Unchained REST interface
 
-import { RequestConfig, RequestResult, xhrRequest } from './prerequisites'
+import { RequestConfig, RequestResult, xhrRequest } from './prerequisites';
 
-export type AbilityInstanceID = number;
 export type AccountID = string;
-export type ActivityID = string;
-export type BuildingCellDataInstanceID = string;
-export type BuildingPlotInstanceID = string;
-export type ChannelID = number;
 export type CharacterID = string;
-export type CriterionID = string;
 export type EntityID = string;
-export type FeatureFlag = string;
-export type GroupID = string;
-export type ID128 = string;
-export type InviteCode = string;
-export type ItemInstanceID = string;
-export type ItemStackHash = string;
-export type MatchQueueInstanceID = string;
-export type QueueID = string;
-export type RoleID = string;
 export type ScenarioInstanceID = string;
-export type ScenarioTeamID = string;
-export type SecureTradeInstanceID = string;
 export type ShardID = number;
-export type SpawnPointID = string;
-export type StringID = string;
-export type TargetID = string;
-export type TeamID = string;
-export type VoxJobGroupInstanceID = string;
-export type VoxJobInstanceID = string;
-export type VoxNotesInstanceID = string;
-export type ZoneInstanceID = any;
-export enum AccessType {
-  Public = 0,
-  Live = 1,
-  Beta3 = 2,
-  Beta2 = 3,
-  Beta1 = 4,
-  Alpha = 5,
-  InternalTest = 6,
-  Employees = 7,
-}
-
-export enum ActionErrorCode {
-  UnspecifiedError = 0,
-  ServerException = 1,
-  TokenAuthorizationFailed = 2,
-  NoActionRequired = 3,
-  GeneralDatabaseError = 4,
-  PermissionDenied = 5,
-  CharacterNotFound = 6,
-  GroupNotFound = 7,
-  WrongGroupType = 8,
-  WrongFaction = 9,
-  NameLength = 10,
-  NameContainsInvalidCharacters = 11,
-  NameContainsNaughtyWords = 12,
-  NameContainsReservedWords = 13,
-  NameAlreadyInUse = 14,
-  ActiveWarbandAlreadyExists = 15,
-  AlreadyAnOrderMember = 16,
-  MemberLimitReached = 17,
-  InviteCodeNotFound = 18,
-  InviteRequirementsNotMet = 19,
-  InviteExpired = 20,
-  InviteRevoked = 21,
-  InviteUsageLimitReached = 22,
-  RankLimitReached = 23,
-  InvalidRankLevel = 24,
-  AlreadyReady = 25,
-  AlreadyNotReady = 26,
-}
-
-export enum AnnouncementType {
-  Text = 1,
-  PopUp = 2,
-  Worldspace = 4,
-  PassiveAlert = 8,
-  Victory = 16,
-  Defeat = 32,
-  Dialogue = 64,
-  ObjectiveSuccess = 128,
-  ObjectiveFail = 256,
-  ALL = -1,
-}
-
-export enum AuthActionErrorCode {
-  Unknown = 0,
-  Unauthorized = 1,
-  InvalidToken = 2,
-  CharacterNotFound = 3,
-  PermissionExpired = 4,
-  RenewalTimerExpired = 5,
-  TokenGenerationFailed = 6,
-  InvalidEmailOrPassword = 7,
-  RequirePrivacyPolicyAcceptance = 8,
-  Throttled = 9,
-  NoScreenName = 10,
-  InvalidScreenName = 11,
-  ScreenNameTaken = 12,
-}
-
-export enum BoneAlias {
-  Unknown = 0,
-  BodyPelvis = 1,
-  Attachment1 = 2,
-  Attachment2 = 3,
-  Attachment3 = 4,
-  Attachment4 = 5,
-  Attachment5 = 6,
-  Attachment6 = 7,
-  Attachment7 = 8,
-  SpineSacral = 9,
-  SpineLumbar = 10,
-  SpineThoracic = 11,
-  SpineCervical = 12,
-  BodyTorso = 13,
-  BodyNeck = 14,
-  BodyHead = 15,
-  HairScalp = 16,
-  HairBody = 17,
-  HairEnd = 18,
-  TailBase = 19,
-  TailMiddle = 20,
-  TailEnd = 21,
-  ArmLeftClavical = 22,
-  ArmLeftPauldron = 23,
-  ArmLeftHumerus = 24,
-  ArmLeftElbow = 25,
-  ArmLeftUlna = 26,
-  HandLeftPalm = 27,
-  HandLeftThumbProximal = 28,
-  HandLeftThumbMiddle = 29,
-  HandLeftThumbPhalanx = 30,
-  HandLeftIndexFingerProximal = 31,
-  HandLeftIndexFingerMiddle = 32,
-  HandLeftIndexFingerPhalanx = 33,
-  HandLeftMiddleFingerProximal = 34,
-  HandLeftMiddleFingerMiddle = 35,
-  HandLeftMiddleFingerPhalanx = 36,
-  HandLeftRingFingerProximal = 37,
-  HandLeftRingFingerMiddle = 38,
-  HandLeftRingFingerPhalanx = 39,
-  HandLeftPinkyProximal = 40,
-  HandLeftPinkyMiddle = 41,
-  HandLeftPinkyPhalanx = 42,
-  ArmRightClavical = 43,
-  ArmRightPauldron = 44,
-  ArmRightHumerus = 45,
-  ArmRightElbow = 46,
-  ArmRightUlna = 47,
-  HandRightPalm = 48,
-  HandRightThumbProximal = 49,
-  HandRightThumbMiddle = 50,
-  HandRightThumbPhalanx = 51,
-  HandRightIndexFingerProximal = 52,
-  HandRightIndexFingerMiddle = 53,
-  HandRightIndexFingerPhalanx = 54,
-  HandRightMiddleFingerProximal = 55,
-  HandRightMiddleFingerMiddle = 56,
-  HandRightMiddleFingerPhalanx = 57,
-  HandRightRingFingerProximal = 58,
-  HandRightRingFingerMiddle = 59,
-  HandRightRingFingerPhalanx = 60,
-  HandRightPinkyProximal = 61,
-  HandRightPinkyMiddle = 62,
-  HandRightPinkyPhalanx = 63,
-  TabardLower = 64,
-  TabardUpper = 65,
-  CapeTop = 66,
-  CapeUpperMiddle = 67,
-  CapeLowerMiddle = 68,
-  CapeEnd = 69,
-  CapeLeftTail = 70,
-  CapeRightTail = 71,
-  LegLeftThigh = 72,
-  LegLeftCalf = 73,
-  FootLeftAnkle = 74,
-  FootLeftToes = 75,
-  LegRightThigh = 76,
-  LegRightCalf = 77,
-  FootRightAnkle = 78,
-  FootRightToes = 79,
-  SkirtBackUpper = 80,
-  SkirtBackMiddle = 81,
-  SkirtBackLower = 82,
-  SkirtFrontUpper = 83,
-  SkirtFrontMiddle = 84,
-  SkirtFrontLower = 85,
-  SkirtLeftUpper = 86,
-  SkirtLeftMiddle = 87,
-  SkirtLeftLower = 88,
-  SkirtRightUpper = 89,
-  SkirtRightMiddle = 90,
-  SkirtRightLower = 91,
-  TassetLeftUpper = 92,
-  TassetLeftLower = 93,
-  TassetRightUpper = 94,
-  TassetRightLower = 95,
-  WingRoot = 96,
-  WingLeftBase = 97,
-  WingLeftMiddle = 98,
-  WingLeftTip = 99,
-  WingRightBase = 100,
-  WingRightMiddle = 101,
-  WingRightTip = 102,
-  SiegeRotate = 103,
-  SiegePitch = 104,
-  SiegeCharacterCenter = 105,
-  SiegeCharacterCenter2 = 106,
-  SiegeCharacterCenter3 = 107,
-  SiegeCharacterCenter4 = 108,
-  SiegeCharacterCenter5 = 109,
-  SiegeCharacterCenter6 = 110,
-  SiegeCharacterCenter7 = 111,
-  SiegeCharacterCenter8 = 112,
-  Hinge1 = 113,
-  Hinge2 = 114,
-  CollisionAttach1 = 115,
-  CollisionAttach2 = 116,
-  CollisionAttach3 = 117,
-  CollisionAttach4 = 118,
-  BuildingAttachWall = 119,
-  BuildingAttachCeiling = 120,
-  TrailSlashStart01 = 121,
-  TrailSlashEnd01 = 122,
-  TrailSlashStart02 = 123,
-  TrailSlashEnd02 = 124,
-  TrailPierceStart01 = 125,
-  TrailPierceEnd01 = 126,
-  TrailPierceStart02 = 127,
-  TrailPierceEnd02 = 128,
-  TrailCrushStart01 = 129,
-  TrailCrushEnd01 = 130,
-  TrailCrushStart02 = 131,
-  TrailCrushEnd02 = 132,
-  TrailGripStart01 = 133,
-  TrailGripEnd01 = 134,
-  TrailShaftStart01 = 135,
-  TrailShaftEnd01 = 136,
-  TrailMotionStart = 137,
-  TrailMotionEnd = 138,
-  PointStringTop = 139,
-  PointStringBottom = 140,
-  PointKnock = 141,
-  PointPommel01 = 142,
-  PointVfx01 = 143,
-  PointVfxCenter01 = 144,
-  PointVfxRadius01 = 145,
-  PointFocusSource = 146,
-  GameplayCameraFocus = 147,
-  GameplayProjectileOrigin = 148,
+export type TradeID = string;
+export enum BackerLevel {
+  none = 0,
+  builder = 10,
+  founder = 20,
 }
 
 export enum Faction {
@@ -267,298 +27,14 @@ export enum Faction {
   Arthurian = 3,
 }
 
-export enum FieldCodes {
-  BasicSuccess = 0,
-  GroupActionSuccess = 1,
-  ModifyVoxJobSuccess = 2,
-  MoveItemSuccess = 3,
-  ProgressionSuccess = 4,
-  ModifySecureTradeSuccess = 5,
-  ModifyPlotSuccess = 6,
-  ModifyItemSuccess = 7,
-  LoginSuccess = 8,
-  ItemActionSuccess = 9,
-  AuthActionSuccess = 10,
-  ModifyAbilitySuccess = 11,
-  ModifyScenarioSuccess = 12,
-  UnspecifiedAuthorizationDenied = 1000,
-  AuthorizationFailed = 1001,
-  LoginTokenAuthorizationFailed = 1002,
-  RealmRestricted = 1003,
-  LoginFailed = 1004,
-  LoginThrottled = 1005,
-  UnspecifiedNotAllowed = 2000,
-  RateLimitExceeded = 2001,
-  InternalAction = 2002,
-  UnspecifiedRequestError = 3000,
-  UnspecifiedExecutionError = 4000,
-  UnhandledExecutionException = 4001,
-  DoesNotExist = 4002,
-  UserStateConflict = 4003,
-  InsufficientResource = 4004,
-  VoxJobError = 4005,
-  MoveItemError = 4006,
-  SecureTradeError = 4007,
-  ProgressionError = 4008,
-  GroupActionError = 4009,
-  TimeoutError = 4010,
-  ModifyItemError = 4011,
-  ItemActionError = 4012,
-  AuthActionError = 4013,
-  ModifyAbilityError = 4014,
-  ModifyScenarioError = 4015,
-  MatchmakingUserNotReady = 4016,
-  MatchmakingUserAlreadyInQueue = 4017,
-  MatchmakingBadGameMode = 4018,
-  MatchmakingFailedToEnterQueue = 4019,
-  DisplayNameError = 4020,
-  ModifyProfileError = 4021,
-  UnspecifiedServiceUnavailable = 5000,
-  DatabaseUnavailable = 5001,
-  GroupServiceUnavailable = 5002,
-  GameServiceUnavailable = 5003,
-  PresenceServiceUnavailable = 5004,
-  InvalidModel = 30001,
-}
-
-export enum GenderNumericID {
-  None = 0,
-}
-
-export enum GroupTypes {
-  Warband = 0,
-  Battlegroup = 1,
-  Order = 2,
-  Campaign = 3,
-}
-
-export enum InviteStatus {
-  Active = 0,
-  Revoked = 1,
-  UsageLimitReached = 2,
-  Expired = 3,
-}
-
-export enum ItemActionResultCode {
-  Invalid = 0,
-  Success = 1,
-  UnknownError = 2,
-  PermissionDenied = 3,
-  ErrorNotFound = 4,
-  OutOfRange = 5,
-  ActionNotFound = 6,
-  OnCooldown = 7,
-  PositionNotFound = 8,
-  LimitReached = 9,
-  InvalidPosition = 10,
-  FeatureNotEnabled = 11,
-  ItemMoveError = 12,
-}
-
-export enum ItemPermissions {
-  None = 0,
-  Trade = 1,
-  Trash = 2,
-  CraftWithVox = 4,
-  Control = 8,
-  AddContents = 16,
-  RemoveContents = 32,
-  ViewContents = 64,
-  ModifyDisplay = 128,
-  Ground = 256,
-  Inventory = 512,
-  Equipment = 1024,
-  Container = 2048,
-  Vox = 4096,
-  Use = 8192,
-  All = -1,
-}
-
-export enum ItemPlacementType {
-  None = 0,
-  Door = 1,
-  Plot = 2,
-  BuildingFaceSide = 3,
-  BuildingFaceBottom = 4,
-  BuildingFaceTop = 5,
-}
-
-export enum ItemTemplateType {
-  None = 0,
-  TemplateOnly = 1,
-  Entity = 2,
-}
-
-export enum ModifyAbilityResultCode {
-  Success = 0,
-  PlayerNotFound = 1,
-  AbilitiesDisabled = 2,
-  AbilityNotFound = 3,
-  NameTooShort = 4,
-  NameTooLong = 5,
-  DescriptionTooLong = 6,
-  AbilityIconInvalid = 7,
-  InvalidNetwork = 8,
-  MissingComponents = 9,
-  InvalidComponent = 10,
-  ComponentNotAvailable = 11,
-  ComponentLocked = 12,
-  TooManyAbilities = 13,
-  RequiredComponentMissing = 14,
-  TooManyAbilityComponents = 15,
-  ComponentIncompatible = 16,
-  PermissionDenied = 17,
-  UnknownError = 18,
-  InvalidRequest = -1,
-}
-
-export enum ModifyItemResultCode {
-  Invalid = 0,
-  Success = 1,
-  NotSupported = 2,
-  InvalidName = 3,
-  PermissionDenied = 4,
-  EntityNotFound = 5,
-  ItemNotFound = 6,
-  IncompatiblePermissions = 7,
-  UnknownError = 8,
-}
-
-export enum ModifyPlotResultCode {
-  Success = 0,
-  PlotNotFound = 1,
-  CharacterNotFound = 2,
-  InvalidParameter = 3,
-  NoMatchingPermissionSetFound = 4,
-  PermissionDenied = 5,
-  CharacterNotOnPlot = 6,
-  PlotNotCompatibleWithScenario = 7,
-  PlotNotCompatibleWithFaction = 8,
-  ScenarioNotFound = 9,
-  TeamNotForScenario = 10,
-  NullTeam = 11,
-  DatabaseError = 12,
-  NotSupported = 13,
-  FeatureDisabled = 14,
-  UnknownError = 15,
-  MaxPlotsOwned = 16,
-}
-
-export enum ModifySecureTradeResultCode {
-  Success = 0,
-  NoTrade = 1,
-  IncorrectState = 2,
-  ItemNotFound = 3,
-  InventoryNotFound = 4,
-  DuplicateItemInRequest = 5,
-  NoPendingInvite = 6,
-  MissingFaction = 7,
-  FactionMismatch = 8,
-  TradeSourceNotAlive = 9,
-  TradeTargetNotAlive = 10,
-  NoEntityPosition = 11,
-  TooFarAway = 12,
-  EntityMismatch = 13,
-  CanceledEntityMissing = 14,
-  DBError = 15,
-  NotLoggedIn = 16,
-  EntityToTradeWithNotFound = 17,
-  CannotTradeWithSelf = 18,
-  MoveItemError = 19,
-  EntityCannotTrade = 20,
-  LockTimeNotPassed = 21,
-  UnknownError = 22,
-  InvalidRequest = -1,
-}
-
-export enum ModifyVoxJobResultCode {
-  Success = 0,
-  TooManyJobs = 1,
-  InvalidJob = 2,
-  NoCurrentJob = 3,
-  ItemsInVox = 4,
-  IncorrectJobState = 5,
-  DBError = 6,
-  NotSupported = 7,
-  InvalidRecipe = 8,
-  TooManyIngredients = 9,
-  NotEnoughIngredients = 10,
-  IncorrectIngredient = 11,
-  InvalidIngredient = 12,
-  InvalidQuality = 13,
-  InventoryFull = 14,
-  NoRepairPoints = 15,
-  InvalidUnitCount = 16,
-  ParameterError = 17,
-  VoxNotFound = 18,
-  RecipeAlreadyDiscovered = 19,
-  RecipeNotSet = 20,
-  ItemSlotNotSupported = 21,
-  IngredientsExist = 22,
-  VoxBroken = 23,
-  IngredientBroken = 24,
-  PlayerNotFound = 25,
-  MoveItemError = 26,
-  InvalidItemName = 27,
-  UnknownError = 28,
-  PermissionDenied = 29,
-  VoxJobNotFound = 30,
-  VoxTooFarAway = 31,
-  RequirementFailed = 32,
-  PlayerNotAlive = 33,
-  InvalidRequest = -1,
-}
-
 export enum MoveItemRequestLocationType {
   Invalid = 0,
   Container = 1,
   Equipment = 2,
   Ground = 3,
   Inventory = 4,
-  Trash = 5,
-}
-
-export enum MoveItemResultCode {
-  Success = 0,
-  None = 1,
-  Timeout = 2,
-  PlayerNotFound = 3,
-  EntityNotFound = 4,
-  ItemNotFound = 5,
-  ItemNotValid = 6,
-  MixedError = 7,
-  TooManyItems = 8,
-  InventoryNotFound = 9,
-  EquipmentNotFound = 10,
-  DefinitionNotFound = 11,
-  SecureTradeNotFound = 12,
-  InvalidParameter = 13,
-  SpatialNotFound = 14,
-  ItemFeatureTurnedOff = 15,
-  BrokenItem = 16,
-  ItemRequirementNotMet = 17,
-  ItemStatRequirementNotMet = 18,
-  EntityNotValid = 19,
-  MultiItemMoveNotSupported = 20,
-  ItemsDoNotStack = 21,
-  TooFarAway = 22,
-  PermissionDenied = 23,
-  ItemInversion = 24,
-  InvalidVoxSlot = 25,
-  ItemCannotBeTraded = 26,
-  TrashingItemNotAllowed = 27,
-  OutOfRange = 28,
-  DestroyEffectNotSupported = 29,
-  UnknownError = 30,
-}
-
-export enum NPCRank {
-  None = 0,
-  Elite = 1,
-  StrongElite = 2,
-  Unique = 3,
-  MiniBoss = 4,
-  Boss = 5,
+  AccountBank = 5,
+  Trash = 6,
 }
 
 export enum ObjectiveState {
@@ -568,78 +44,29 @@ export enum ObjectiveState {
   Canceled = 3,
 }
 
-export enum PatchPermissions {
-  Public = 0,
-  AllBackers = 1,
-  InternalTest = 2,
-  Development = 4,
-  Alpha = 8,
-  Beta1 = 16,
-  Beta2 = 32,
-  Beta3 = 64,
-  Live = 128,
+export enum OptInType {
+  Scope = 1,
+  WhatWeCollect = 2,
+  HowWeCollect = 3,
+  WhyWeCollect = 4,
+  YourRights = 5,
+  LegalComplianceAndSecurity = 6,
+  DataRetention = 7,
+  Children = 8,
+  DataChoices = 9,
+  DataProtection = 10,
+  Changes = 11,
+  ReadAndAck = 12,
 }
 
-export enum PermissibleSetKeyType {
-  Invalid = 0,
-  Faction = 1,
-  ScenarioTeam = 2,
-  ScenarioRole = 3,
-  Scenario = 4,
-}
-
-export enum PermissibleTargetType {
-  Invalid = 0,
-  Any = 1,
-  Faction = 2,
-  Character = 3,
-  ScenarioTeam = 4,
-  Warband = 5,
-  CharactersWarband = 6,
-  CharactersFaction = 7,
-  CharactersOrder = 8,
-  InNoScenario = 9,
-  Inverse = 10,
-  And = 11,
-  ScenarioRole = 12,
-  Scenario = 13,
-  Account = 14,
-}
-
-export enum PlotPermissions {
+export enum PlayTime {
   None = 0,
-  ModifyPlannedBuilding = 1,
-  RemoveDroppedBlocks = 2,
-  Owned = 4,
-  UseSpawnPoint = 8,
-  AddItems = 16,
-  RemoveItems = 32,
-  NoPlayerOwnerPermissions = -5,
-  All = -1,
-}
-
-export enum ProgressionResultCode {
-  Success = 0,
-  InProgress = 1,
-  PlayerNotFound = 2,
-  DailyLogNotFound = 3,
-  DBError = 4,
-  DailyLogNotPublished = 5,
-  NotNextDayLog = 6,
-  InItemLoadoutScenario = 7,
-  InvalidRequest = -1,
-}
-
-export enum ServerStatus {
-  Offline = 0,
-  Starting = 1,
-  Online = 2,
-}
-
-export enum SpawnPointPermissions {
-  None = 0,
-  Spawn = 1,
-  All = -1,
+  EST = 1,
+  PST = 2,
+  EET = 8,
+  WET = 16,
+  Asia = 32,
+  All = 4294967295,
 }
 
 export enum StatType {
@@ -650,201 +77,85 @@ export enum StatType {
   Hidden = 4,
 }
 
-export enum VoxJobType {
-  Invalid = 0,
-  Recipe = 1,
-  Purify = 2,
-  Repair = 3,
-  Alchemy = 4,
+export enum TransactionType {
+  Paypal = 1,
+  Kickstarter = 2,
+  Child = 3,
+  Stripe = 4,
+  CSE = 5,
 }
 
-export enum ZoneType {
-  None = 0,
-  Home = 1,
-  Builder = 2,
-  Contested = 3,
-}
-
-export const AbilitiesAPI = {
-  CreateAbility: function(config: RequestConfig, request: CreateAbilityRequest): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/abilities/create',
-      { request },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  ModifyAbility: function(config: RequestConfig, abilityID: number, request: CreateAbilityRequest): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/abilities/modify',
-      { abilityID, request },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  DeleteAbility: function(config: RequestConfig, abilityID: number): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/abilities/delete',
-      { abilityID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-}
-
-export interface ApiErrorResponse {
-  Code: number;
-  Message: string;
-  FieldCodes: IFieldCode[];
-}
-
-export interface APIKeyAuthorizationFailed {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface ArchetypeInfo {
-  description: string;
-  faction: Faction;
-  id: number;
-  numericID: number;
-  stringID: string;
+export interface CharacterCreationInput {
+  classID: string;
+  stats: { [key: string]: number; };
+  factionID: Faction;
+  bodyTypeID: string;
   name: string;
-  importantStats: string[];
-}
-
-export interface AuthActionErrorFieldCode {
-  Action: IAuthActionError;
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface BadRequestFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface BaseContentModel {
-  ID: string;
-  UtcDisplayStart: string;
-  UtcDisplayEnd: string;
-  UtcCreated: string;
-}
-
-export interface Channel {
-  ID: number;
-  Name: string;
-  Description: string;
-  Permissions: PatchPermissions;
-}
-
-export interface Character {
-  archetype: string;
-  attributes: { [key: string]: number; };
-  traitIDs: string[];
-  faction: Faction;
-  gender: string;
-  id: string;
-  lastLogin: string;
-  name: string;
-  race: string;
-  shardID: number;
+  raceID: string;
 }
 
 export const CharactersAPI = {
-  CreateCharacterV2: function(config: RequestConfig, shardID: ShardID, character: Character): Promise<RequestResult> {
+  CreateCharacterV3: function(config: RequestConfig, character: CharacterCreationInput): Promise<RequestResult> {
     const conf = config();
     return xhrRequest(
       'post',
-      conf.url + 'v1/characters/create',
-      { shardID },
-      character,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  CSECreateCharacterV2: function(config: RequestConfig, shardID: ShardID, accountID: AccountID, character: Character): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/characters/csecreate',
-      { shardID, accountID },
-      character,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  DeleteCharacterV1: function(config: RequestConfig, shardID: ShardID, characterID: CharacterID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/characters/delete',
-      { shardID, characterID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-}
-
-export const ContentAPI = {
-  PatcherHeroContentV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/patcherherocontent',
+      `${conf.url}v3/characters/create`,
       {},
+      character,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  SelectCharacter: function(config: RequestConfig, data: SelectCharacterParams): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'put',
+      `${conf.url}v1/characters/token`,
+      {},
+      data,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  CSECreateCharacterV2: function(config: RequestConfig, accountID: AccountID, character: CharacterCreationInput): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'post',
+      `${conf.url}v3/characters/csecreate`,
+      { accountID },
+      character,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  DeleteCharacterV2: function(config: RequestConfig, characterID: CharacterID): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'post',
+      `${conf.url}v2/characters/delete`,
+      { characterID },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
 }
 
-export interface ControlGameState {
-  arthurianScore: number;
-  controlPoints: ControlPoint[];
-  gameState: number;
-  timeLeft: number;
-  tuathaDeDanannScore: number;
-  vikingScore: number;
+export interface ChatServerRecord {
+  address: string;
+  transport: string;
 }
 
-export interface ControlPoint {
-  faction: string;
-  id: string;
-  size: string;
-  x: number;
-  y: number;
-}
-
-export interface CreateAbilityRequest {
-  Name: string;
-  Description: string;
-  IconURL: string;
-  NetworkID: string;
-  Components: string[];
-}
-
-export interface DatabaseUnavailable {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface DisplayNameErrorFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface DoesNotExist {
-  Code: FieldCodes;
-  Message: string;
+export const DisplayNameAPI = {
+  SetDisplayName: function(config: RequestConfig, wantName: string): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'post',
+      `${conf.url}v1/displayname/set`,
+      { wantName },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 }
 
 export interface Euler3f {
@@ -856,381 +167,232 @@ export interface Euler3f {
   z: number;
 }
 
-export interface ExecutionErrorFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface FactionInfo {
-  description: string;
-  id: number;
-  name: string;
-  shortName: string;
-}
-
-export const GameDataAPI = {
-  GetFactionInfoV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/gamedata/factionInfo',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GetFactionsV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/gamedata/factions',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GetArchetypesV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/gamedata/archetypes',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GetRacesV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/gamedata/races',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GetOrderPermissionsV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/gamedata/orderPermissions',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GetChatAddressV1: function(config: RequestConfig, shard: ShardID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/gamedata/getchataddress',
-      { shard },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-}
-
-export interface GameServiceUnavailable {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface GroupActionError {
-  Actions: IActionError[];
-  Code: FieldCodes;
-  Message: string;
-}
-
-export const GroupsAPI = {
-  KickV1: function(config: RequestConfig, groupID: GroupID, targetEntityID?: EntityID | null, targetCharacterID?: CharacterID | null, targetName?: string): Promise<RequestResult> {
+export const GuildsAPI = {
+  CreateInvitationV1: function(config: RequestConfig, targetID?: AccountID, name?: string): Promise<RequestResult> {
     const conf = config();
     const parameters: {[key:string]: any} = {};
-    parameters["groupID"] = groupID;
-    if (targetEntityID !== undefined) parameters["targetEntityID"] = targetEntityID;
-    if (targetCharacterID !== undefined) parameters["targetCharacterID"] = targetCharacterID;
-    if (targetName !== undefined) parameters["targetName"] = targetName;
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/groups/kick',
-      parameters,
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  MakeLeaderV1: function(config: RequestConfig, groupID: GroupID, targetEntityID?: EntityID | null, targetCharacterID?: CharacterID | null, targetName?: string): Promise<RequestResult> {
-    const conf = config();
-    const parameters: {[key:string]: any} = {};
-    parameters["groupID"] = groupID;
-    if (targetEntityID !== undefined) parameters["targetEntityID"] = targetEntityID;
-    if (targetCharacterID !== undefined) parameters["targetCharacterID"] = targetCharacterID;
-    if (targetName !== undefined) parameters["targetName"] = targetName;
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/groups/makeleader',
-      parameters,
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GrantPermissionV1: function(config: RequestConfig, groupID: GroupID, permissionToGrant: string, targetEntityID?: EntityID | null, targetCharacterID?: CharacterID | null, targetName?: string): Promise<RequestResult> {
-    const conf = config();
-    const parameters: {[key:string]: any} = {};
-    parameters["groupID"] = groupID;
-    parameters["permissionToGrant"] = permissionToGrant;
-    if (targetEntityID !== undefined) parameters["targetEntityID"] = targetEntityID;
-    if (targetCharacterID !== undefined) parameters["targetCharacterID"] = targetCharacterID;
-    if (targetName !== undefined) parameters["targetName"] = targetName;
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/groups/grantpermission',
-      parameters,
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GrantInvitePermissionV1: function(config: RequestConfig, groupID: GroupID, targetEntityID?: EntityID | null, targetCharacterID?: CharacterID | null, targetName?: string): Promise<RequestResult> {
-    const conf = config();
-    const parameters: {[key:string]: any} = {};
-    parameters["groupID"] = groupID;
-    if (targetEntityID !== undefined) parameters["targetEntityID"] = targetEntityID;
-    if (targetCharacterID !== undefined) parameters["targetCharacterID"] = targetCharacterID;
-    if (targetName !== undefined) parameters["targetName"] = targetName;
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/groups/grantinvitepermission',
-      parameters,
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  RevokePermissionV1: function(config: RequestConfig, groupID: GroupID, permissionToRevoke: string, targetEntityID?: EntityID | null, targetCharacterID?: CharacterID | null, targetName?: string): Promise<RequestResult> {
-    const conf = config();
-    const parameters: {[key:string]: any} = {};
-    parameters["groupID"] = groupID;
-    parameters["permissionToRevoke"] = permissionToRevoke;
-    if (targetEntityID !== undefined) parameters["targetEntityID"] = targetEntityID;
-    if (targetCharacterID !== undefined) parameters["targetCharacterID"] = targetCharacterID;
-    if (targetName !== undefined) parameters["targetName"] = targetName;
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/groups/revokepermission',
-      parameters,
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  CreateWarbandV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/groups/createWarband',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  CreatePermanentWarbandV1: function(config: RequestConfig, name: string): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/groups/createPermanentWarband',
-      { name },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  CreateBattlegroupV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/groups/createBattlegroup',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  CreateOrderV1: function(config: RequestConfig, name: string): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/groups/createOrder',
-      { name },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  InviteV1: function(config: RequestConfig, groupID?: GroupID | null, targetID?: CharacterID | null, targetName?: string, groupType?: GroupTypes | null): Promise<RequestResult> {
-    const conf = config();
-    const parameters: {[key:string]: any} = {};
-    if (groupID !== undefined) parameters["groupID"] = groupID;
     if (targetID !== undefined) parameters["targetID"] = targetID;
-    if (targetName !== undefined) parameters["targetName"] = targetName;
-    if (groupType !== undefined) parameters["groupType"] = groupType;
+    if (name !== undefined) parameters["name"] = name;
     return xhrRequest(
       'post',
-      conf.url + 'v1/groups/invite',
+      `${conf.url}v1/guild/invitation`,
       parameters,
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
 
-  JoinV1: function(config: RequestConfig, groupID: GroupID, inviteCode?: InviteCode | null): Promise<RequestResult> {
+  AcceptInvitationV1: function(config: RequestConfig, targetID: AccountID): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'put',
+      `${conf.url}v1/guild/invitation`,
+      { targetID },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  RejectInvitationV1: function(config: RequestConfig, targetID: AccountID): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'delete',
+      `${conf.url}v1/guild/invitation`,
+      { targetID },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  CreateApplicationV1: function(config: RequestConfig, targetID?: AccountID, name?: string): Promise<RequestResult> {
     const conf = config();
     const parameters: {[key:string]: any} = {};
-    parameters["groupID"] = groupID;
-    if (inviteCode !== undefined) parameters["inviteCode"] = inviteCode;
+    if (targetID !== undefined) parameters["targetID"] = targetID;
+    if (name !== undefined) parameters["name"] = name;
     return xhrRequest(
       'post',
-      conf.url + 'v1/groups/join',
+      `${conf.url}v1/guild/application`,
       parameters,
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
 
-  QuitV1: function(config: RequestConfig, groupID?: GroupID | null): Promise<RequestResult> {
+  AcceptApplicationV1: function(config: RequestConfig, targetID: AccountID): Promise<RequestResult> {
     const conf = config();
-    const parameters: {[key:string]: any} = {};
-    if (groupID !== undefined) parameters["groupID"] = groupID;
     return xhrRequest(
-      'post',
-      conf.url + 'v1/groups/quit',
-      parameters,
+      'put',
+      `${conf.url}v1/guild/application`,
+      { targetID },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
 
-  AbandonV1: function(config: RequestConfig, groupID: GroupID): Promise<RequestResult> {
+  RejectApplicationV1: function(config: RequestConfig, targetID: AccountID): Promise<RequestResult> {
     const conf = config();
     return xhrRequest(
-      'post',
-      conf.url + 'v1/groups/abandon',
-      { groupID },
+      'delete',
+      `${conf.url}v1/guild/application`,
+      { targetID },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
 
-  DisbandV1: function(config: RequestConfig, groupID: GroupID): Promise<RequestResult> {
+  SetRankV1: function(config: RequestConfig, targetID: AccountID, targetRank: string): Promise<RequestResult> {
     const conf = config();
     return xhrRequest(
-      'post',
-      conf.url + 'v1/groups/disband',
-      { groupID },
+      'put',
+      `${conf.url}v1/guild/member`,
+      { targetID, targetRank },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
 
-  ReadyUpV1: function(config: RequestConfig, groupID: GroupID): Promise<RequestResult> {
+  KickV1: function(config: RequestConfig, targetID: AccountID): Promise<RequestResult> {
     const conf = config();
     return xhrRequest(
-      'post',
-      conf.url + 'v1/groups/ready',
-      { groupID },
+      'delete',
+      `${conf.url}v1/guild/member`,
+      { targetID },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
 
-  UnReadyV1: function(config: RequestConfig, groupID: GroupID): Promise<RequestResult> {
+  CreateRankV1: function(config: RequestConfig, name: string): Promise<RequestResult> {
     const conf = config();
     return xhrRequest(
       'post',
-      conf.url + 'v1/groups/unready',
-      { groupID },
+      `${conf.url}v1/guild/rank`,
+      { name },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
-}
 
-export interface IActionError {
-  Code: ActionErrorCode;
-  Message: string;
-}
+  DeleteRankV1: function(config: RequestConfig, name: string): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'delete',
+      `${conf.url}v1/guild/rank`,
+      { name },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 
-export interface IAuthActionError {
-  Code: AuthActionErrorCode;
-  Message: string;
-}
+  RenameRankV1: function(config: RequestConfig, currentName: string, newName: string): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'put',
+      `${conf.url}v1/guild/rank`,
+      { currentName, newName },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 
-export interface IFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
+  EnablePermissionV1: function(config: RequestConfig, rank: string, permission: string): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'put',
+      `${conf.url}v1/guild/rank/permission`,
+      { rank, permission },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 
-export interface IGroupInvite {
-  Code: InviteCode;
-  Shard: ShardID;
-  Status: InviteStatus;
-  TargetsID128: TargetID;
-  ForGroup: GroupID;
-  ForGroupType: GroupTypes;
-  Created: string;
-  MaxUses: number;
-  Uses: number;
-  DurationTicks: number;
-}
+  DisablePermissionV1: function(config: RequestConfig, rank: string, permission: string): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'delete',
+      `${conf.url}v1/guild/rank/permission`,
+      { rank, permission },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 
-export interface IItemRequirementContext {
-  Ctx: IItemRequirementContext;
-  VoxJobID: string;
-}
+  ShiftRankV1: function(config: RequestConfig, name: string, delta: number): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'post',
+      `${conf.url}v1/guild/rank/shift`,
+      { name, delta },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 
-export interface InternalAction {
-  Code: FieldCodes;
-  Message: string;
-}
+  SetNameV1: function(config: RequestConfig, name: string): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'put',
+      `${conf.url}v1/guild/name`,
+      { name },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 
-export interface ItemActionError {
-  ItemActionResult: ItemActionResult;
-  Message: string;
-  ItemActionCode: ItemActionResultCode;
-  Code: FieldCodes;
-}
+  SetMOTDV1: function(config: RequestConfig, motd: string): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'put',
+      `${conf.url}v1/guild/motd`,
+      { motd },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 
-export interface ItemActionResult {
-  Code: ItemActionResultCode;
-  Message: string;
-}
+  LeaveV1: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'delete',
+      `${conf.url}v1/guild`,
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 
-export interface ItemRequirementContext {
-  Ctx: IItemRequirementContext;
-  VoxJobID: string;
-}
+  RejectAllOffersV1: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'delete',
+      `${conf.url}v1/guild/offers`,
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 
-export interface LoginFailed {
-  Code: FieldCodes;
-  Message: string;
-}
+  BlockOffersV1: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'delete',
+      `${conf.url}v1/guild/offers`,
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 
-export interface LoginSuccess {
-  Token: string;
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface LoginThrottled {
-  Code: FieldCodes;
-  Message: string;
+  AllowOffersV1: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'put',
+      `${conf.url}v1/guild/offers`,
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 }
 
 export const ModerationAPI = {
@@ -1238,7 +400,7 @@ export const ModerationAPI = {
     const conf = config();
     return xhrRequest(
       'post',
-      conf.url + 'v1/appeal/word',
+      `${conf.url}v1/appeal/word`,
       { word },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
@@ -1246,206 +408,9 @@ export const ModerationAPI = {
   },
 }
 
-export interface ModifyAbilityError {
-  AbilityResult: ModifyAbilityResult;
-  Message: string;
-  AbilityCode: ModifyAbilityResultCode;
-  Code: FieldCodes;
-}
-
-export interface ModifyAbilityResult {
-  Result: ModifyAbilityResultCode;
-  IsSuccess: boolean;
-  Details: string;
-  ErrorComponentID: string;
-}
-
-export interface ModifyItemError {
-  ModifyItemResult: ModifyItemResult;
-  Message: string;
-  ReanameItemCode: ModifyItemResultCode;
-  Code: FieldCodes;
-}
-
-export interface ModifyItemResult {
-  Code: ModifyItemResultCode;
-  Message: string;
-}
-
-export interface ModifyPlotError {
-  ModifyPlotResult: ModifyPlotResult;
-  Message: string;
-  MoveItemCode: ModifyPlotResultCode;
-  Code: FieldCodes;
-}
-
-export interface ModifyPlotResult {
-  Code: ModifyPlotResultCode;
-  Message: string;
-  QueueStatus: QueueStatusMessage;
-}
-
-export interface ModifySecureTradeAPIResult {
-  Result: ModifySecureTradeResultCode;
-  IsSuccess: boolean;
-  Details: string;
-  SecureTradeID: SecureTradeInstanceID;
-  TradeCompleted: boolean;
-  MovedItemIDs: ItemInstanceID[];
-}
-
-export interface ModifyVoxJobError {
-  VoxJobResult: ModifyVoxJobResult;
-  Message: string;
-  VoxJobCode: ModifyVoxJobResultCode;
-  Code: FieldCodes;
-}
-
-export interface ModifyVoxJobResult {
-  Result: ModifyVoxJobResultCode;
-  IsSuccess: boolean;
-  Details: string;
-  MovedItemID: ItemInstanceID;
-  DiscoveredRecipeIDs: string[];
-  NewVoxJobID: VoxJobInstanceID;
-}
-
-export interface MoveItemError {
-  MoveItemResult: MoveItemResult;
-  Message: string;
-  MoveItemCode: MoveItemResultCode;
-  Code: FieldCodes;
-}
-
-export interface MoveItemResult {
-  MovedItemIDs: ItemInstanceID[];
-  CreatedEntityID: EntityID;
-  Code: MoveItemResultCode;
-  Message: string;
-}
-
-export interface NotAllowedFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface PatcherHero {
-  HTMLContent: string;
-  Priority: number;
-  ID: string;
-  UtcDisplayStart: string;
-  UtcDisplayEnd: string;
-  UtcCreated: string;
-}
-
-export interface PatcherHeroContent {
-  content: string;
-  id: string;
-  priority: number;
-  utcDateEnd: string;
-  utcDateStart: string;
-}
-
-export interface PatchNote {
-  Channels: ChannelID[];
-  ChannelsAsLongs: number[];
-  HTMLContent: string;
-  JSONContent: string;
-  Title: string;
-  PatchNumber: string;
-  ID: string;
-  UtcDisplayStart: string;
-  UtcDisplayEnd: string;
-  UtcCreated: string;
-}
-
-export interface PermissibleGrantTargetConfig {
-  TargetType: PermissibleTargetType;
-  CharacterName: string;
-  CharacterID: CharacterID;
-  CharacterFaction: Faction;
-}
-
-export interface PlayerCounts {
-  arthurian: number;
-  maxPlayers: number;
-  tuatha: number;
-  viking: number;
-}
-
-export interface PlayerPresence {
-  characterID: CharacterID;
-  connectedZoneInstanceIDs: number[];
-  activeZoneInstanceID: number;
-  desiredZoneInstanceID: number;
-}
-
-export const PlotsAPI = {
-  ReleasePlot: function(config: RequestConfig, plotInstanceID: BuildingPlotInstanceID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/plot/releasePlot',
-      { plotInstanceID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GeneratePlotDeed: function(config: RequestConfig, plotInstanceID: BuildingPlotInstanceID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/plot/generatePlotDeed',
-      { plotInstanceID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  TakeOwnership: function(config: RequestConfig, plotInstanceID: BuildingPlotInstanceID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/plot/takeOwnership',
-      { plotInstanceID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GrantPermissions: function(config: RequestConfig, plotInstanceID: BuildingPlotInstanceID, newPermissions: PlotPermissions, target: PermissibleGrantTargetConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/plot/grantPermissions',
-      { plotInstanceID, newPermissions, target },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  RevokePermissions: function(config: RequestConfig, plotInstanceID: BuildingPlotInstanceID, revokePermissions: PlotPermissions, target: PermissibleGrantTargetConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/plot/revokePermissions',
-      { plotInstanceID, revokePermissions, target },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GetQueueStatus: function(config: RequestConfig, plotInstanceID: BuildingPlotInstanceID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/plot/getQueueStatus',
-      { plotInstanceID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
+export interface NormalizedString {
+  Normalized: string;
+  Entered: string;
 }
 
 export const PresenceAPI = {
@@ -1453,7 +418,18 @@ export const PresenceAPI = {
     const conf = config();
     return xhrRequest(
       'get',
-      conf.url + 'v1/presence/startingServer',
+      `${conf.url}v1/presence/startingServer`,
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  GetBestServer: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'get',
+      `${conf.url}v1/presence/bestServer`,
       {},
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
@@ -1464,7 +440,7 @@ export const PresenceAPI = {
     const conf = config();
     return xhrRequest(
       'get',
-      conf.url + 'v1/presence/chatServer',
+      `${conf.url}v1/presence/chatServer`,
       {},
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
@@ -1475,7 +451,7 @@ export const PresenceAPI = {
     const conf = config();
     return xhrRequest(
       'get',
-      conf.url + 'v1/presence/proxyByZone/{zoneInstanceID}',
+      `${conf.url}v1/presence/proxyByZone/${zoneInstanceID}`,
       { zoneInstanceID },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
@@ -1486,7 +462,7 @@ export const PresenceAPI = {
     const conf = config();
     return xhrRequest(
       'get',
-      conf.url + 'v1/presence/proxyByServerAddress/{serverAddress}',
+      `${conf.url}v1/presence/proxyByServerAddress/${serverAddress}`,
       { serverAddress },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
@@ -1497,7 +473,7 @@ export const PresenceAPI = {
     const conf = config();
     return xhrRequest(
       'get',
-      conf.url + 'v1/presence/servers',
+      `${conf.url}v1/presence/servers`,
       {},
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
@@ -1508,7 +484,32 @@ export const PresenceAPI = {
     const conf = config();
     return xhrRequest(
       'get',
-      conf.url + 'v1/presence/players',
+      `${conf.url}v1/presence/players`,
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  RestartZone: function(config: RequestConfig, name?: string, zoneInstanceID?: string): Promise<RequestResult> {
+    const conf = config();
+    const parameters: {[key:string]: any} = {};
+    if (name !== undefined) parameters["name"] = name;
+    if (zoneInstanceID !== undefined) parameters["zoneInstanceID"] = zoneInstanceID;
+    return xhrRequest(
+      'post',
+      `${conf.url}v1/presence/restartzone`,
+      parameters,
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  RestartAllZones: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'post',
+      `${conf.url}v1/presence/restartallzones`,
       {},
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
@@ -1516,251 +517,14 @@ export const PresenceAPI = {
   },
 }
 
-export interface PresenceServiceUnavailable {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export const ProgressionAPI = {
-  CollectCharacterDayProgression: function(config: RequestConfig, logID: string): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/character/collectdayprogression',
-      { logID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-}
-
-export interface ProgressionError {
-  ProgressionResult: ProgressionResult;
-  Message: string;
-  ResultCode: ProgressionResultCode;
-  Code: FieldCodes;
-}
-
-export interface ProgressionResult {
-  Result: ProgressionResultCode;
-  IsSuccess: boolean;
-  Details: string;
-}
-
-export interface Proxy {
-  Address: string;
-  Port: number;
-}
-
-export interface QueuedBlueprintMessage {
-  percentComplete: number;
-  estTimeRemaining: number;
-  subName: string;
-  amtNeeded: number;
-}
-
-export interface QueueStatusMessage {
-  status: string;
-  numContributors: number;
-  maxContributors: number;
-  blueprints: QueuedBlueprintMessage[];
-}
-
-export interface RaceInfo {
-  name: string;
-  description: string;
-  faction: Faction;
-  id: number;
-  stringID: string;
-  numericID: number;
-}
-
-export interface RateLimitExceeded {
-  Retry: number;
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface ReportCrashResult {
-  ID: string;
-}
-
-export const ScenarioAPI = {
-  AddToQueue: function(config: RequestConfig, queueID: MatchQueueInstanceID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/scenarios/addtoqueue',
-      { queueID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  RemoveFromQueue: function(config: RequestConfig, queueID: MatchQueueInstanceID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/scenarios/removefromqueue',
-      { queueID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  RemoveFromScenario: function(config: RequestConfig, scenarioID: ScenarioInstanceID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/scenarios/removefromscenario',
-      { scenarioID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-}
-
-export const SecureTradeAPI = {
-  Invite: function(config: RequestConfig, tradeTargetID: EntityID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/secureTrade/invite',
-      { tradeTargetID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  RevokeInvite: function(config: RequestConfig, inviteTargetID: EntityID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/secureTrade/revokeinvite',
-      { inviteTargetID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  AcceptInvite: function(config: RequestConfig, inviterID: EntityID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/secureTrade/acceptinvite',
-      { inviterID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  RejectInvite: function(config: RequestConfig, inviterID: EntityID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/secureTrade/rejectinvite',
-      { inviterID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  AbortSecureTrade: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/secureTrade/abort',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  Lock: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/secureTrade/lock',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  Unlock: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/secureTrade/unlock',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  AddItem: function(config: RequestConfig, itemInstanceID: ItemInstanceID, unitCount: number): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/secureTrade/additem',
-      { itemInstanceID, unitCount },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  RemoveItem: function(config: RequestConfig, itemInstanceID: ItemInstanceID, unitCount: number): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/secureTrade/removeItem',
-      { itemInstanceID, unitCount },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  Confirm: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/secureTrade/confirm',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  CancelTradeConfirmation: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/secureTrade/cancelconfirmation',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-}
-
-export interface SecureTradeError {
-  SecureTradeResult: ModifySecureTradeAPIResult;
-  Message: string;
-  ResultCode: ModifySecureTradeResultCode;
-  Code: FieldCodes;
-}
-
-export interface ServerModel {
-  accessLevel: AccessType;
-  channelID: number;
-  channelPatchPermissions: number;
-  name: string;
-  shardID: number;
-  status: ServerStatus;
-  apiHost: string;
+export interface SelectCharacterParams {
+  accessToken: string;
+  refreshToken: string;
+  characterID: string;
 }
 
 export interface ServerPresence {
+  name: string;
   address: string;
   zoneResourceID: number;
   zoneInstanceID: number;
@@ -1782,7 +546,7 @@ export const ServersAPI = {
     if (shard !== undefined) parameters["shard"] = shard;
     return xhrRequest(
       'get',
-      conf.url + 'v1/availableZones',
+      `${conf.url}v1/availableZones`,
       parameters,
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
@@ -1793,81 +557,12 @@ export const ServersAPI = {
     const conf = config();
     return xhrRequest(
       'get',
-      conf.url + 'v1/getZoneInfo',
+      `${conf.url}v1/getZoneInfo`,
       { shard, zoneID },
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
-}
-
-export interface ServerState {
-  controlGameState: ControlGameState;
-  playerCounts: PlayerCounts;
-  spawnPoints: SpawnPoint[];
-}
-
-export interface ServiceUnavailableFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface SimpleCharacter {
-  archetype: string;
-  faction: Faction;
-  gender: string;
-  id: CharacterID;
-  lastLogin: string;
-  name: string;
-  race: string;
-  shardID: ShardID;
-}
-
-export interface SpawnPoint {
-  id: string;
-  faction: Faction;
-  position: Vec3f;
-}
-
-export interface StartingServer {
-  Address: string;
-  ZoneInstanceID: number;
-}
-
-export interface TimeoutError {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface UnauthorizedFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface UnhandledExecutionException {
-  Exception: string;
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface UnspecifiedAuthorizationDenied {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface UnspecifiedExecutionError {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface UnspecifiedNotAllowed {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface UnspecifiedRequestError {
-  Code: FieldCodes;
-  Message: string;
 }
 
 export interface Vec2f {
@@ -1881,11 +576,185 @@ export interface Vec3f {
   z: number;
 }
 
+export const WarbandsAPI = {
+  CreateInvitationV1: function(config: RequestConfig, targetID?: CharacterID, name?: string): Promise<RequestResult> {
+    const conf = config();
+    const parameters: {[key:string]: any} = {};
+    if (targetID !== undefined) parameters["targetID"] = targetID;
+    if (name !== undefined) parameters["name"] = name;
+    return xhrRequest(
+      'post',
+      `${conf.url}v1/warband/invitation`,
+      parameters,
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  AcceptInvitationV1: function(config: RequestConfig, targetID: CharacterID): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'put',
+      `${conf.url}v1/warband/invitation`,
+      { targetID },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  RejectInvitationV1: function(config: RequestConfig, targetID: CharacterID): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'delete',
+      `${conf.url}v1/warband/invitation`,
+      { targetID },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  CreateApplicationV1: function(config: RequestConfig, targetID?: CharacterID, name?: string): Promise<RequestResult> {
+    const conf = config();
+    const parameters: {[key:string]: any} = {};
+    if (targetID !== undefined) parameters["targetID"] = targetID;
+    if (name !== undefined) parameters["name"] = name;
+    return xhrRequest(
+      'post',
+      `${conf.url}v1/warband/application`,
+      parameters,
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  AcceptApplicationV1: function(config: RequestConfig, targetID: CharacterID): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'put',
+      `${conf.url}v1/warband/application`,
+      { targetID },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  RejectApplicationV1: function(config: RequestConfig, targetID: CharacterID): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'delete',
+      `${conf.url}v1/warband/application`,
+      { targetID },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  SetRankV1: function(config: RequestConfig, targetID: CharacterID, targetRank: string): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'put',
+      `${conf.url}v1/warband/member`,
+      { targetID, targetRank },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  KickV1: function(config: RequestConfig, targetID: CharacterID): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'delete',
+      `${conf.url}v1/warband/member`,
+      { targetID },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  SetSubgroupV1: function(config: RequestConfig, targetID: CharacterID, targetSubgroup: number): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'put',
+      `${conf.url}v1/warband/subgroup`,
+      { targetID, targetSubgroup },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  SwapSubgroupsV1: function(config: RequestConfig, targetID0: CharacterID, targetID1: CharacterID): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'post',
+      `${conf.url}v1/warband/subgroup`,
+      { targetID0, targetID1 },
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  LeaveV1: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'delete',
+      `${conf.url}v1/warband`,
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  UpgradeV1: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'put',
+      `${conf.url}v1/warband`,
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  RejectAllOffersV1: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'delete',
+      `${conf.url}v1/warband/offers`,
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  BlockOffersV1: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'delete',
+      `${conf.url}v1/warband/offers`,
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  AllowOffersV1: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'put',
+      `${conf.url}v1/warband/offers`,
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+}
+
 export interface ZoneInfo {
   ID: string;
   Name: string;
   Address: string;
   Bounds: string;
+  RestrictToFaction: Faction;
 }
 
 

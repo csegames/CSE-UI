@@ -10,17 +10,11 @@ import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { Dispatch } from 'redux';
 import {
-  ChampionCostumeInfo,
-  ChampionInfo,
   OvermindCharacter,
   OvermindSummaryGQL,
-  PerkDefGQL,
-  PerkType,
-  QuestDefGQL,
   QuestGQL,
   QuestProgress,
-  QuestStatus,
-  QuestType
+  QuestStatus
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { QuestsByType } from '../../../redux/questSlice';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
@@ -35,13 +29,17 @@ import {
   getStringTableValue,
   getTokenizedStringTableValue
 } from '../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { addQuestAsClaimed } from '../../../redux/gameStatsSlice';
 import { createAlertsForCollectedQuestProgress } from '../../../helpers/perkUtils';
 import { AnimatedQuestBar } from './AnimatedQuestBar';
 import TooltipSource from '../../../../shared/components/TooltipSource';
 import { webConf } from '../../../dataSources/networkConfiguration';
+import { PerkDef, PerkType } from '../../../dataSources/manifest/perkManifest';
+import { QuestDef, QuestType } from '../../../dataSources/manifest/questManifest';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
+import { CostumeDef } from '../../../dataSources/manifest/costumeManifest';
 
 const Tab = 'GameStats-PlayerProgression-Tab';
 const Container = 'GameStats-PlayerProgression-Container';
@@ -78,6 +76,11 @@ const StringIDPlayerProgressionBattlePassProgressAmount = 'PlayerProgressionBatt
 const StringIDBattlePassMatchPoints = 'PlayerProgressionBattlePassMatchPoints';
 const StringIDBattlePassQuestTitle = 'PlayerProgressionBattlePassQuestTitle';
 
+interface RewardsList {
+  perk: PerkDef;
+  quantity: number;
+}
+
 interface ReactProps {
   shouldAnimateExperienceBars: boolean;
 }
@@ -89,13 +92,13 @@ interface InjectedProps {
   questsGQL: QuestGQL[];
   quests: QuestsByType;
   questsProgress: QuestGQL[];
-  questsByID: Dictionary<QuestDefGQL>;
-  perksByID: Dictionary<PerkDefGQL>;
-  championIDToChampion: { [championID: string]: ChampionInfo };
+  questsByID: Dictionary<QuestDef>;
+  perksByID: Dictionary<PerkDef>;
+  championIDToChampion: { [championID: string]: ChampionDef };
   stringTable: Dictionary<StringTableEntryDef>;
   accountID: string;
-  championCostumes: ChampionCostumeInfo[];
-  champions: ChampionInfo[];
+  championCostumes: CostumeDef[];
+  champions: ChampionDef[];
   dispatch?: Dispatch;
 }
 
@@ -127,7 +130,7 @@ class APlayerProgression extends React.Component<Props> {
     );
   }
 
-  private getChampion(characterSummary: OvermindCharacter, champion: ChampionInfo): JSX.Element {
+  private getChampion(characterSummary: OvermindCharacter, champion: ChampionDef): JSX.Element {
     if (characterSummary == null || champion == null) {
       return null;
     }
@@ -154,7 +157,7 @@ class APlayerProgression extends React.Component<Props> {
     );
   }
 
-  private getChampionProgressionBar(quest: QuestDefGQL, questProg: QuestProgress, questGQL: QuestGQL): JSX.Element {
+  private getChampionProgressionBar(quest: QuestDef, questProg: QuestProgress, questGQL: QuestGQL): JSX.Element {
     if (!quest || !questGQL) {
       return null;
     }
@@ -184,7 +187,7 @@ class APlayerProgression extends React.Component<Props> {
     );
   }
 
-  private getChampionExperienceList(quest: QuestDefGQL, questProg: QuestProgress): JSX.Element {
+  private getChampionExperienceList(quest: QuestDef, questProg: QuestProgress): JSX.Element {
     const progresses: JSX.Element[] = [];
     if (questProg) {
       let index = 0;
@@ -316,7 +319,7 @@ class APlayerProgression extends React.Component<Props> {
     );
   }
 
-  private getXPRewardForBattlePassQuest(quest: QuestDefGQL): number {
+  private getXPRewardForBattlePassQuest(quest: QuestDef): number {
     const link = quest.links[0];
     return (
       link?.rewards.filter((reward) => this.props.perksByID[reward.perkID].perkType === PerkType.CurrentBattlePassXP)[0]
@@ -324,7 +327,7 @@ class APlayerProgression extends React.Component<Props> {
     );
   }
 
-  private getBPQuestLine(questprog: QuestGQL, quest: QuestDefGQL, shadeStyle: string) {
+  private getBPQuestLine(questprog: QuestGQL, quest: QuestDef, shadeStyle: string) {
     const xp = this.getXPRewardForBattlePassQuest(quest);
     const tokens: Dictionary<string> = {
       XP_AMOUNT: `${addCommasToNumber(xp)}`,
@@ -375,7 +378,7 @@ class APlayerProgression extends React.Component<Props> {
     return total;
   }
 
-  private async claimReward(quest: QuestDefGQL, questProgress: QuestGQL) {
+  private async claimReward(quest: QuestDef, questProgress: QuestGQL) {
     const res = await ProfileAPI.CollectQuestReward(webConf, quest.id);
     if (!res.ok) {
       console.error('failed to claim all progression rewards');
@@ -392,7 +395,7 @@ class APlayerProgression extends React.Component<Props> {
   }
 
   private getBPLevelAndXP(
-    bp: QuestDefGQL,
+    bp: QuestDef,
     bpMatchProg: QuestProgress,
     characterSummary: OvermindCharacter
   ): [number, number] {
@@ -405,46 +408,60 @@ class APlayerProgression extends React.Component<Props> {
     return [Math.min(bp.links.length, i + 1), curEXP];
   }
 
-  private getRewards(quest: QuestDefGQL, questProg: QuestProgress, questGQL: QuestGQL): JSX.Element {
+  private getRewards(quest: QuestDef, questProg: QuestProgress, questGQL: QuestGQL): JSX.Element {
     if (!questProg || !questGQL || !quest) {
       return null;
     }
     // If this quest has leveled up:
     if (questGQL.currentQuestIndex > questProg.previousIndex) {
-      const rewards: JSX.Element[] = [];
+      const rewardsList: RewardsList[] = [];
       for (let i = questProg.previousIndex; i < questGQL.currentQuestIndex; ++i) {
         quest.links[i].rewards.forEach((r) => {
           const perk = this.props.perksByID[r.perkID];
           // Rune Tier Keys are not displayed as reward items.
           if (perk && perk.perkType !== PerkType.RuneModTierKey) {
-            const perkIcon = perk.perkType == PerkType.Portrait ? perk.portraitThumbnailURL : perk.iconURL;
-            rewards.push(
-              <TooltipSource
-                className={RewardTooltipSource}
-                key={perk.id}
-                tooltipParams={{
-                  id: `${perk.id}`,
-                  content: this.renderPerkTooltip.bind(this, perk)
-                }}
-              >
-                <div className={Reward}>
-                  {(perk.backgroundURL?.length ?? 0) > 0 && (
-                    <img className={RewardBackground} src={perk.backgroundURL} />
-                  )}
-                  <div className={`${RewardIcon} ${perk.perkType}`} style={{ backgroundImage: `url(${perkIcon})` }}>
-                    {r.qty > 1 && (
-                      <span className={RewardCount}>
-                        {getTokenizedStringTableValue(StringIDGeneralQty, this.props.stringTable, {
-                          QTY: r.qty.toString()
-                        })}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </TooltipSource>
-            );
+            let found = false;
+            for (let j = 0; j < rewardsList.length; j++) {
+              if (rewardsList[j].perk.id == perk.id) {
+                rewardsList[j].quantity += r.qty;
+                j = rewardsList.length;
+                found = true;
+              }
+            }
+            if (!found) {
+              rewardsList.push({ perk: perk, quantity: r.qty });
+            }
           }
         });
+      }
+
+      const rewards: JSX.Element[] = [];
+      for (let i = 0; i < rewardsList.length; i++) {
+        const perk = rewardsList[i].perk;
+        const perkIcon = perk.perkType == PerkType.Portrait ? perk.portraitThumbnailURL : perk.iconURL;
+        rewards.push(
+          <TooltipSource
+            className={RewardTooltipSource}
+            key={perk.id}
+            tooltipParams={{
+              id: `${perk.id}`,
+              content: this.renderPerkTooltip.bind(this, perk)
+            }}
+          >
+            <div className={Reward}>
+              {(perk.backgroundURL?.length ?? 0) > 0 && <img className={RewardBackground} src={perk.backgroundURL} />}
+              <div className={`${RewardIcon} ${perk.perkType}`} style={{ backgroundImage: `url(${perkIcon})` }}>
+                {rewardsList[i].quantity > 1 && (
+                  <span className={RewardCount}>
+                    {getTokenizedStringTableValue(StringIDGeneralQty, this.props.stringTable, {
+                      QTY: rewardsList[i].quantity.toString()
+                    })}
+                  </span>
+                )}
+              </div>
+            </div>
+          </TooltipSource>
+        );
       }
 
       if (this.props.shouldAnimateExperienceBars) {
@@ -464,7 +481,7 @@ class APlayerProgression extends React.Component<Props> {
     return null;
   }
 
-  private renderPerkTooltip(perk: PerkDefGQL): JSX.Element {
+  private renderPerkTooltip(perk: PerkDef): JSX.Element {
     return (
       <div className={ToolTipContainer}>
         <span className={ToolTipName}>{perk.name}</span>
@@ -481,17 +498,16 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const questsByType = state.quests.quests;
   const { questsById } = state.quests;
   const { perksByID } = state.store;
-  const playerName = state.player.name;
   const { championIDToChampion } = state.championInfo;
   const { stringTable } = state.stringTable;
-  const { accountID } = state.player;
+  const { accountID, name } = state.entities.self;
   const { championCostumes, champions } = state.championInfo;
 
   return {
     ...ownProps,
     overmindSummary,
     pendingQuestClaims,
-    playerName,
+    playerName: name,
     questsGQL: quests,
     quests: questsByType,
     questsProgress,

@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REFACTOR
+
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
@@ -16,6 +18,13 @@ import {
 } from '@csegames/library/dist/_baseGame/types/Objective';
 import { game } from '@csegames/library/dist/_baseGame';
 import { clamp, largeIntegerToFriendlyString } from '@csegames/library/dist/_baseGame/utils/numberUtils';
+
+const MainFailObjectiveIcon = 'images/hud/objective-icons/main-fail.png';
+const MainSuccessObjectiveIcon = 'images/hud/objective-icons/main-success.png';
+const MainNeutralObjectiveIcon = 'images/hud/objective-icons/main-neutral.png';
+const SideFailObjectiveIcon = 'images/hud/objective-icons/side-fail.png';
+const SideSuccessObjectiveIcon = 'images/hud/objective-icons/side-success.png';
+const SideNeutralObjectiveIcon = 'images/hud/objective-icons/side-neutral.png';
 
 const containerClass = 'ObjectiveDetails-Container';
 const objectiveGroupContainerClass = 'ObjectiveDetails-ObjectiveGroupContainer';
@@ -217,24 +226,30 @@ class AObjectiveDetails extends React.Component<Props, {}> {
         continue;
       }
 
-      let state: string = '';
-      let stateClass: string = '';
-      if (obj.state == ObjectiveDetailState.CompletedSuccess) {
-        state = String.fromCharCode(10003);
-        stateClass = 'is-success';
-      } else if (obj.state == ObjectiveDetailState.CompletedFailed) {
-        state = String.fromCharCode(0x2717);
-        stateClass = 'is-failure';
-      }
+      const getIcon = (): string => {
+        switch (obj.state) {
+          case ObjectiveDetailState.CompletedFailed:
+            return category === ObjectiveDetailCategory.MainQuest ? MainFailObjectiveIcon : SideFailObjectiveIcon;
+          case ObjectiveDetailState.CompletedSuccess:
+            return category === ObjectiveDetailCategory.MainQuest ? MainSuccessObjectiveIcon : SideSuccessObjectiveIcon;
+          case ObjectiveDetailState.InProgress:
+            return category === ObjectiveDetailCategory.MainQuest ? MainNeutralObjectiveIcon : SideNeutralObjectiveIcon;
+        }
+      };
 
       const makeObjStateIcon = (extraClass: string = ''): JSX.Element => {
-        return state ? <span className={`${objectiveStateClass} ${stateClass} ${extraClass}`}>{state}</span> : null;
+        return (
+          <img
+            src={getIcon()}
+            className={`${objectiveStateClass} ${ObjectiveDetailCategory[category]} ${extraClass}`}
+          />
+        );
       };
 
       if (obj.title) {
         // we have a title, maybe text, and if we have a state icon it can go next to the title
         objectiveElements.push(
-          <div key={obj.messageID} className={objectiveContainerClass}>
+          <div key={obj.messageID} className={`${objectiveContainerClass} ${ObjectiveDetailCategory[category]}`}>
             <div className={objectiveTitleClass}>
               {makeObjStateIcon()}
               {obj.title}
@@ -246,7 +261,7 @@ class AObjectiveDetails extends React.Component<Props, {}> {
       } else if (obj.text) {
         // no title, but we have some text we can stick the state icon next to if needed
         objectiveElements.push(
-          <div key={obj.messageID} className={objectiveContainerClass}>
+          <div key={obj.messageID} className={`${objectiveContainerClass} ${ObjectiveDetailCategory[category]}`}>
             <div className={`${objectiveTextClass} no-title`}>
               {makeObjStateIcon()}
               {obj.text}
@@ -257,7 +272,7 @@ class AObjectiveDetails extends React.Component<Props, {}> {
       } else {
         // edge case here - we have no title or text to stick the icon next to if we have one, so put it next to the progress bar
         objectiveElements.push(
-          <div key={obj.messageID} className={objectiveContainerClass}>
+          <div key={obj.messageID} className={`${objectiveContainerClass} ${ObjectiveDetailCategory[category]}`}>
             <ObjectiveDetailsProgressBar objective={obj} scenarioRoundStartTime={this.props.scenarioRoundStartTime}>
               {makeObjStateIcon('no-text')}
             </ObjectiveDetailsProgressBar>
@@ -300,3 +315,5 @@ function mapStateToProps(state: RootState) {
 }
 
 export const ObjectiveDetails = connect(mapStateToProps)(AObjectiveDetails);
+
+*/

@@ -36,7 +36,7 @@ export interface AnimateProps {
   component?: string;
 }
 
-class Animate extends React.Component<AnimateProps, {}> {
+export class Animate extends React.Component<AnimateProps, {}> {
   public render() {
     const { children, animationEnter, animationLeave, durationEnter, durationLeave } = this.props;
 
@@ -90,5 +90,3 @@ class Animate extends React.Component<AnimateProps, {}> {
         `;
   };
 }
-
-export default Animate;

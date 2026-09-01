@@ -8,10 +8,11 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Dispatch } from '@reduxjs/toolkit';
+import { getFactionData } from '../../gameData/factionData';
 
 const Root = 'HUD-InputBox-Root';
 const InnerPadded = 'HUD-InputBox-InnerPadded';
-const Border = 'HUD-InputBox-Border';
+const Background = 'HUD-InputBox-Background';
 const Inner = 'HUD-InputBox-Inner';
 
 interface ReactProps {
@@ -20,6 +21,7 @@ interface ReactProps {
 }
 
 interface InjectedProps {
+  uiFactionID: string;
   dispatch?: Dispatch;
 }
 
@@ -31,13 +33,14 @@ class AInputBox extends React.Component<Props> {
   }
 
   render(): JSX.Element {
+    const factionData = getFactionData(this.props.uiFactionID);
+
     return (
-      <div className={Root}>
-        <div className={Border}>
-          <div className={this.props.padded ? `${Inner} ${InnerPadded}` : Inner}>
-            {this.props.text && <span>{this.props.text}</span>}
-            {this.props.children}
-          </div>
+      <div className={Root} style={{ borderColor: factionData.borderColor }}>
+        <img className={Background} src={factionData.windowBackgroundImage} />
+        <div className={this.props.padded ? `${Inner} ${InnerPadded}` : Inner}>
+          {this.props.text && <span>{this.props.text}</span>}
+          {this.props.children}
         </div>
       </div>
     );
@@ -46,7 +49,8 @@ class AInputBox extends React.Component<Props> {
 
 const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
   return {
-    ...ownProps
+    ...ownProps,
+    uiFactionID: state.hud.uiFactionID
   };
 };
 

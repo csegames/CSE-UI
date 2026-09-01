@@ -8,13 +8,15 @@ import * as React from 'react';
 import { formatDuration } from '@csegames/library/dist/_baseGame/utils/timeUtils';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { game } from '@csegames/library/dist/_baseGame';
 import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numberUtils';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getTokenizedStringTableValue } from '../../../helpers/stringTableHelpers';
 import { GameOptionIDs } from '../../../redux/gameOptionsSlice';
 import { GameOption } from '@csegames/library/dist/_baseGame/types/Options';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
+import { AnimationData } from '@csegames/library/dist/_baseGame/GameClientModels/AnimationData';
 
 const MatchInfoContainerAdvanced = 'MatchInfo-MatchInfoContainerAdvanced';
 const AdvancedFirstLine = 'MatchInfo-AdvancedFirstLine';
@@ -31,8 +33,6 @@ const StringIDHUDMatchInfoKills = 'HUDMatchInfoKills';
 const StringIDHUDMatchInfoFPS = 'HUDMatchInfoFPS';
 
 interface Props {
-  fps?: number;
-  worldTime?: number;
   roundStartTime?: number;
   totalKills?: number;
   teamKills?: number;
@@ -41,9 +41,20 @@ interface Props {
   gameOptions: Dictionary<GameOption>;
 }
 
-class AMatchInfo extends React.Component<Props, {}> {
+interface State {
+  animationHandle: ListenerHandle | null;
+  fps: string;
+  duration: string;
+}
+
+class AMatchInfo extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    this.state = {
+      animationHandle: clientAPI.startAnimation(this.animate.bind(this)),
+      fps: '',
+      duration: ''
+    };
   }
 
   public render(): JSX.Element {
@@ -57,13 +68,17 @@ class AMatchInfo extends React.Component<Props, {}> {
     }
   }
 
+  componentWillUnmount(): void {
+    this.state.animationHandle?.close();
+  }
+
   public renderAdvancedInfo(): JSX.Element {
     const itemStyle = 'advanced';
     const tokens = {
       NPC_COUNT: printWithSeparator(this.props.npcCount, ','),
       TEAM_KILLS: printWithSeparator(this.props.teamKills, ','),
       SOLO_KILLS: printWithSeparator(this.props.totalKills, ','),
-      FPS: this.props.fps.toString()
+      FPS: this.state.fps
     };
 
     return (
@@ -71,15 +86,12 @@ class AMatchInfo extends React.Component<Props, {}> {
         <div className={AdvancedFirstLine}>
           <div className={`${Item} ${MatchTimerStyle} ${itemStyle}`}>
             <span className={`${Icon} fs-icon-misc-time`} />
-            {isFinite(this.props.worldTime) && isFinite(this.props.roundStartTime)
-              ? formatDuration(game.worldTime - this.props.roundStartTime)
-              : '00:00'}
+            {this.state.duration}
           </div>
           <div className={`${Item} ${itemStyle}`}>
             {getTokenizedStringTableValue(StringIDHUDMatchInfoFPS, this.props.stringTable, tokens)}
           </div>
         </div>
-
         <div className={`${Item} ${itemStyle}`}>
           {getTokenizedStringTableValue(StringIDHUDMatchInfoNPCS, this.props.stringTable, tokens)}
         </div>
@@ -98,7 +110,8 @@ class AMatchInfo extends React.Component<Props, {}> {
   public renderBasicInfo(): JSX.Element {
     const itemStyle = 'simple';
     const tokens = {
-      SOLO_KILLS: printWithSeparator(this.props.totalKills, ',')
+      SOLO_KILLS: printWithSeparator(this.props.totalKills, ','),
+      FPS: this.state.fps
     };
 
     return (
@@ -108,24 +121,34 @@ class AMatchInfo extends React.Component<Props, {}> {
         </div>
         <div className={`${Item} ${MatchTimerStyle}`}>
           <span className={`${Icon} fs-icon-misc-time`} />
-          {isFinite(this.props.worldTime) && isFinite(this.props.roundStartTime)
-            ? formatDuration(game.worldTime - this.props.roundStartTime)
-            : '00:00'}
+          {this.state.duration}
         </div>
-        <div className={`${Item} ${itemStyle}`}>{this.props.fps} FPS</div>
+        <div className={`${Item} ${itemStyle}`}>
+          {getTokenizedStringTableValue(StringIDHUDMatchInfoFPS, this.props.stringTable, tokens)}
+        </div>
       </div>
     );
+  }
+
+  public animate(data: AnimationData, _: DOMHighResTimeStamp): void {
+    const elapsed = data.worldTime - this.props.roundStartTime;
+
+    const duration = isNaN(elapsed) ? '' : formatDuration(elapsed);
+    const fps = data.fps.toFixed(0);
+    if (fps != this.state.fps || duration != this.state.duration) {
+      this.setState({ fps, duration });
+    }
   }
 }
 
 function mapStateToProps(state: RootState) {
+  const { teamKills, totalKills, scenarioRoundStateStartTime } = state.entities.self;
+  const { npcCount } = state.baseGame;
   return {
-    fps: Math.round(state.baseGame.fps),
-    teamKills: state.player.teamKills,
-    npcCount: state.baseGame.npcCount,
-    worldTime: state.baseGame.worldTime,
-    roundStartTime: state.player.scenarioRoundStateStartTime,
-    totalKills: state.player.totalKills,
+    teamKills: teamKills,
+    npcCount: npcCount,
+    roundStartTime: scenarioRoundStateStartTime,
+    totalKills: totalKills,
     stringTable: state.stringTable.stringTable,
     gameOptions: state.gameOptions.gameOptions
   };

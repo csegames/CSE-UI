@@ -8,7 +8,7 @@ import * as React from 'react';
 import { ItemContainer } from './ItemContainer';
 import { Input } from '../../Input';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';

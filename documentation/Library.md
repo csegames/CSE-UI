@@ -43,7 +43,5 @@ Once the UI gets one of these events, it resolves/rejects the promise associated
 
 The functions that require themselves to be wrapped by makeClientPromise have a similar naming convention where they are prefixed with `_cse_dev_`. These are actions that generally need a result after a certain amount of time/user input. Some examples of functions that would need this are
 
-- `_cse_dev_enterActionBarEditMode`
-- `_cse_dev_exitActionBarEditMode`
 - `_cse_dev_listenForKeyBindingTask`
   etc.

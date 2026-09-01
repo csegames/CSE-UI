@@ -5,24 +5,31 @@
  */
 
 import gql from 'graphql-tag';
-import { CUQuery } from '@csegames/library/dist/hordetest/graphql/schema';
+import { CUQuery, CUSubscription } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Pick2 } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 
-export type GameDefsQueryResult = Pick2<CUQuery, 'game', 'stats'>;
+export type GameDefsQueryResult = Pick2<CUQuery, 'game', 'manifests'>;
+export type ManifestUpdateSubscriptionResult = Pick<CUSubscription, 'manifestUpdates'>;
 
 export const gameDefsQuery = gql`
   query GameDefsQuery {
     game {
-      stats {
-        addPointsAtCharacterCreation
-        description
-        displayType
+      manifests {
         id
-        itemRequirementStat
-        name
-        operation
-        showAtCharacterCreation
-        statType
+        schemaVersion
+        contents
+      }
+    }
+  }
+`;
+
+export const manifestUpdateSubscription = gql`
+  subscription ManifestUpdateSubscription {
+    manifestUpdates {
+      manifests {
+        id
+        schemaVersion
+        contents
       }
     }
   }

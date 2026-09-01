@@ -4,25 +4,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {
-  PerkGQL,
-  PerkRewardDefGQL,
-  PurchaseDefGQL,
-  QuestGQL,
-  StringTableEntryDef,
-  QuestDefGQL,
-  PerkDefGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkGQL, PerkRewardDefGQL, PurchaseDefGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { getServerTimeMS } from '@csegames/library/dist/_baseGame/utils/timeUtils';
 import { isChampionEquipmentPerk, getPerkTypeLocalizedName } from '../../../../helpers/perkUtils';
 import { QuestsByType } from '../../../../redux/questSlice';
 import { Dispatch } from '@reduxjs/toolkit';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { InitTopic } from '../../../../redux/initializationSlice';
+import { LoadingTopic } from '../../../../redux/loadingSlice';
 import { webConf } from '../../../../dataSources/networkConfiguration';
 import { refreshProfile } from '../../../../dataSources/profileNetworking';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { QuestDef } from '../../../../dataSources/manifest/questManifest';
+import { PerkDef } from '../../../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../../../dataSources/manifest/championManifest';
 
 export interface PerkRewardDisplayData extends PerkRewardDefGQL {
   isPremium: boolean;
@@ -53,24 +49,21 @@ export function shouldShowEndedBattlePassModal(bpID: string, questsProgress: Que
 }
 
 export function shouldShowClaimBattlePassModal(
-  previousBattlePass: QuestDefGQL,
-  currentBattlePass: QuestDefGQL,
-  nextBattlePass: QuestDefGQL,
+  previousBattlePass: QuestDef,
+  currentBattlePass: QuestDef,
+  nextBattlePass: QuestDef,
   initializationTopics: Dictionary<Boolean>,
-  battlePassQuests: QuestDefGQL[],
+  battlePassQuests: QuestDef[],
   perks: PerkGQL[],
   quests: QuestGQL[],
-  serverTimeDeltaMS: number
+  serverTimeDeltaMS: number,
+  gameplayDefsLoaded: boolean
 ): boolean {
-  if (
-    !initializationTopics[InitTopic.Store] ||
-    !initializationTopics[InitTopic.Quests] ||
-    !initializationTopics[InitTopic.ChampionInfo]
-  ) {
+  if (!initializationTopics[LoadingTopic.Store] || !gameplayDefsLoaded) {
     return false;
   }
 
-  let displayedBattlePass: QuestDefGQL | null = null;
+  let displayedBattlePass: QuestDef | null = null;
   if (!nextBattlePass || !isBattlePassVisible(nextBattlePass, serverTimeDeltaMS)) {
     displayedBattlePass = (currentBattlePass || previousBattlePass) ?? null;
   }
@@ -85,7 +78,7 @@ export function shouldShowClaimBattlePassModal(
 
 export function hasExpiredBattlePassRewards(
   currentBattlePassID: string,
-  battlePassQuests: QuestDefGQL[],
+  battlePassQuests: QuestDef[],
   perks: PerkGQL[],
   quests: QuestGQL[]
 ): boolean {
@@ -94,7 +87,7 @@ export function hasExpiredBattlePassRewards(
   return battlePasses.some((bpq) => bpq.id !== currentBattlePassID);
 }
 
-export function hasPremiumForBattlePass(bpq: QuestDefGQL, ownedPerks: PerkGQL[]): boolean {
+export function hasPremiumForBattlePass(bpq: QuestDef, ownedPerks: PerkGQL[]): boolean {
   // If there is no BP, then you don't have a key for it.
   if (!bpq) {
     return false;
@@ -109,13 +102,13 @@ export function hasPremiumForBattlePass(bpq: QuestDefGQL, ownedPerks: PerkGQL[])
   return ownsPremiumKey;
 }
 
-export function isBattlePassVisible(bpq: QuestDefGQL, serverTimeDeltaMS: number): boolean {
+export function isBattlePassVisible(bpq: QuestDef, serverTimeDeltaMS: number): boolean {
   const previewTime = new Date(bpq?.previewDate).getTime();
   const isBPVisible = getServerTimeMS(serverTimeDeltaMS) >= previewTime;
   return isBPVisible;
 }
 
-export function getBattlePassStartTimeMS(bpq: QuestDefGQL): number {
+export function getBattlePassStartTimeMS(bpq: QuestDef): number {
   const startDate = new Date(
     bpq.questLock?.find((lock) => {
       return !!lock.startTime;
@@ -124,7 +117,7 @@ export function getBattlePassStartTimeMS(bpq: QuestDefGQL): number {
   return startDate.getTime();
 }
 
-export function getBattlePassEndTimeMS(bpq: QuestDefGQL): number {
+export function getBattlePassEndTimeMS(bpq: QuestDef): number {
   const endDate = new Date(
     bpq.questLock?.find((lock) => {
       return !!lock.endTime;
@@ -133,7 +126,7 @@ export function getBattlePassEndTimeMS(bpq: QuestDefGQL): number {
   return endDate.getTime();
 }
 
-export function getCurrentBattlePass(battlePassQuests: QuestDefGQL[], serverTimeDeltaMS: number): QuestDefGQL {
+export function getCurrentBattlePass(battlePassQuests: QuestDef[], serverTimeDeltaMS: number): QuestDef {
   const serverTime = getServerTimeMS(serverTimeDeltaMS);
   const currentBattlePass = battlePassQuests?.find((bpq) => {
     const startTime = getBattlePassStartTimeMS(bpq);
@@ -145,11 +138,11 @@ export function getCurrentBattlePass(battlePassQuests: QuestDefGQL[], serverTime
   return currentBattlePass;
 }
 
-export function getNextBattlePass(battlePassQuests: QuestDefGQL[], serverTimeDeltaMS: number): QuestDefGQL {
+export function getNextBattlePass(battlePassQuests: QuestDef[], serverTimeDeltaMS: number): QuestDef {
   const serverTime = getServerTimeMS(serverTimeDeltaMS);
   const futureBattlePasses = getFutureBattlePasses(battlePassQuests, serverTimeDeltaMS);
 
-  const next = futureBattlePasses.reduce((bestYet: QuestDefGQL, quest: QuestDefGQL) => {
+  const next = futureBattlePasses.reduce((bestYet: QuestDef, quest: QuestDef) => {
     // If nothing yet, first is best!
     if (!bestYet) return quest;
 
@@ -165,7 +158,7 @@ export function getNextBattlePass(battlePassQuests: QuestDefGQL[], serverTimeDel
   return next;
 }
 
-export function getPreviousBattlePasses(battlePassQuests: QuestDefGQL[], serverTimeDeltaMS: number): QuestDefGQL[] {
+export function getPreviousBattlePasses(battlePassQuests: QuestDef[], serverTimeDeltaMS: number): QuestDef[] {
   const serverTime = getServerTimeMS(serverTimeDeltaMS);
   const previousBattlePasses = (battlePassQuests ?? [])?.filter((bpq) => {
     const endTime = getBattlePassEndTimeMS(bpq);
@@ -175,7 +168,7 @@ export function getPreviousBattlePasses(battlePassQuests: QuestDefGQL[], serverT
   return previousBattlePasses;
 }
 
-export function getFutureBattlePasses(battlePassQuests: QuestDefGQL[], serverTimeDeltaMS: number): QuestDefGQL[] {
+export function getFutureBattlePasses(battlePassQuests: QuestDef[], serverTimeDeltaMS: number): QuestDef[] {
   const serverTime = getServerTimeMS(serverTimeDeltaMS);
   const futureBattlePasses = (battlePassQuests ?? []).filter((bpq) => {
     const startTime = getBattlePassStartTimeMS(bpq);
@@ -185,14 +178,11 @@ export function getFutureBattlePasses(battlePassQuests: QuestDefGQL[], serverTim
   return futureBattlePasses;
 }
 
-export function getMostRecentExpiredBattlePass(
-  battlePassQuests: QuestDefGQL[],
-  serverTimeDeltaMS: number
-): QuestDefGQL {
+export function getMostRecentExpiredBattlePass(battlePassQuests: QuestDef[], serverTimeDeltaMS: number): QuestDef {
   const serverTime = getServerTimeMS(serverTimeDeltaMS);
   const previousBattlePasses = getPreviousBattlePasses(battlePassQuests, serverTimeDeltaMS);
 
-  const mostRecent = previousBattlePasses.reduce((bestYet: QuestDefGQL, quest: QuestDefGQL) => {
+  const mostRecent = previousBattlePasses.reduce((bestYet: QuestDef, quest: QuestDef) => {
     // If nothing yet, first is best!
     if (!bestYet) return quest;
 
@@ -216,7 +206,7 @@ export function getMostRecentExpiredBattlePass(
 }
 
 export function isPlayerPremiumForBattlePass(
-  battlePassQuests: QuestDefGQL[],
+  battlePassQuests: QuestDef[],
   profilePerks: PerkGQL[],
   battlePassQuestId: string
 ): boolean {
@@ -237,10 +227,10 @@ export function isPlayerPremiumForBattlePass(
 }
 
 export function getBattlePassesWithUnclaimedRewards(
-  battlePassQuests: QuestDefGQL[],
+  battlePassQuests: QuestDef[],
   profilePerks: PerkGQL[],
   profileQuests: QuestGQL[]
-): QuestDefGQL[] {
+): QuestDef[] {
   const withUnclaimed = (battlePassQuests ?? []).filter((bpq) => {
     const progress = profileQuests.find((q) => {
       return q.id === bpq.id;
@@ -270,7 +260,7 @@ export function getBattlePassesWithUnclaimedRewards(
 }
 
 export function getAllPendingBattlePassRewards(
-  battlePassQuests: QuestDefGQL[],
+  battlePassQuests: QuestDef[],
   profilePerks: PerkGQL[],
   profileQuests: QuestGQL[]
 ): PerkRewardDisplayData[] {
@@ -317,8 +307,8 @@ export function getAllPendingBattlePassRewards(
 }
 
 export function getAllPendingRewardsForQuest(
-  quest: QuestDefGQL,
-  battlePassQuests: QuestDefGQL[],
+  quest: QuestDef,
+  battlePassQuests: QuestDef[],
   profileQuests: QuestGQL[],
   profilePerks: PerkGQL[]
 ): PerkRewardDisplayData[] {
@@ -366,22 +356,22 @@ export function getAllPendingRewardsForQuest(
 export function getRewardTypeText(
   reward: PerkRewardDefGQL,
   stringTable: Dictionary<StringTableEntryDef>,
-  perksByID: Dictionary<PerkDefGQL>
+  perksByID: Dictionary<PerkDef>,
+  champions: Dictionary<ChampionDef>
 ): string {
   const perk = perksByID[reward?.perkID];
   if (!perk?.perkType) return '';
 
   if (isChampionEquipmentPerk(perk.perkType)) {
-    return `${getPerkTypeLocalizedName(perk.perkType, stringTable)} ${
-      perk.champion?.name ? ` - ${perk.champion.name}` : ''
-    }`;
+    const champion = champions[perk.championID];
+    return `${getPerkTypeLocalizedName(perk.perkType, stringTable)} ${champion?.name ? ` - ${champion.name}` : ''}`;
   } else {
     return getPerkTypeLocalizedName(perk.perkType, stringTable);
   }
 }
 
 export function getCurrentBattlePassPremiumPurchaseDef(
-  battlePassQuests: QuestDefGQL[],
+  battlePassQuests: QuestDef[],
   purchases: PurchaseDefGQL[],
   serverTimeDeltaMS: number
 ): PurchaseDefGQL {
@@ -410,7 +400,7 @@ export function hasUncollectedDailyQuest(quests: QuestsByType, questsProgress: Q
   );
 }
 
-function hasUncollectedNonPremiumQuestInList(questList: QuestDefGQL[], questsProgress: QuestGQL[]): boolean {
+function hasUncollectedNonPremiumQuestInList(questList: QuestDef[], questsProgress: QuestGQL[]): boolean {
   return (
     questList.find((quest) => {
       const progress = questsProgress.find((qp) => qp.id === quest.id);
@@ -426,7 +416,7 @@ function hasUncollectedNonPremiumQuestInList(questList: QuestDefGQL[], questsPro
 }
 
 export async function ensureBattlePassIsInitialized(
-  battlepass: QuestDefGQL,
+  battlepass: QuestDef,
   quests: QuestGQL[],
   dispatch: Dispatch
 ): Promise<void> {
@@ -449,7 +439,7 @@ export async function ensureBattlePassIsInitialized(
 
 /** If no claimable reward, returns the currently-in-progress tier (or last if max level).  Returns zero for no progress or invalid data. */
 export function getTierOfLastClaimableBattlePassReward(
-  battlepass: QuestDefGQL,
+  battlepass: QuestDef,
   quests: QuestGQL[],
   ownedPerks: PerkGQL[]
 ): number {
@@ -517,7 +507,7 @@ export function getTierOfLastClaimableBattlePassReward(
 
 /** If no claimable reward, returns the currently-in-progress tier (or last if max level).  Returns zero for no progress or invalid data. */
 export function getTierOfFirstClaimableBattlePassReward(
-  battlepass: QuestDefGQL,
+  battlepass: QuestDef,
   quests: QuestGQL[],
   ownedPerks: PerkGQL[]
 ): number {

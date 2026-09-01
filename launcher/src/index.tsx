@@ -5,21 +5,19 @@
  */
 
 import './index.scss';
+import './third-party/fontawesome-all.min.css';
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 
-import { thunkMiddleware } from './lib/reduxUtils';
-import reducer from './services/session';
-import PatcherApp from './components/App';
+import { PatcherApp } from './components/App';
+import { store } from './redux/store';
 
-const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 const root = document.getElementById('Patcher');
 
 ReactDom.render(
-  <Provider store={store as any}>
+  <Provider store={store}>
     <PatcherApp />
   </Provider>,
   root

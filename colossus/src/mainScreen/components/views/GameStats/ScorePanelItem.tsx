@@ -6,7 +6,8 @@
 
 import * as React from 'react';
 import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numberUtils';
-import { ScorePanel, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { ScorePanel } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import TooltipSource from '../../../../shared/components/TooltipSource';
 import { Dictionary } from '@reduxjs/toolkit';
 import { connect } from 'react-redux';

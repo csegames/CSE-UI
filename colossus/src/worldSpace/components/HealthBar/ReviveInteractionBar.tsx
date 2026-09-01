@@ -22,11 +22,11 @@ const KeybindIcon = 'WorldSpace-ReviveInteractionBar-KeybindIcon';
 const DescriptionTitle = 'WorldSpace-ReviveInteractionBar-DescriptionTitle';
 const Description = 'WorldSpace-ReviveInteractionBar-Description';
 
-export interface Props {
+interface Props {
   state: HealthBarState;
 }
 
-export interface State {
+interface State {
   isPressed: boolean;
 }
 

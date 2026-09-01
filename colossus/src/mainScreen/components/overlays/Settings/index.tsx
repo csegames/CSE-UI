@@ -23,8 +23,9 @@ import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { clearOptionChanges, dequeuePendingGameOptionChange } from '../../../redux/gameSettingsSlice';
 import { hideOverlay, Overlay } from '../../../redux/navigationSlice';
 import { StringIDGeneralApply, StringIDGeneralBack, getStringTableValue } from '../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { webConf } from '../../../dataSources/networkConfiguration';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'Settings-Container';
 const MenuBG = 'Settings-MenuBG';
@@ -200,7 +201,7 @@ class ASettings extends React.Component<Props, State> {
   };
 
   private showResetDialog(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP);
     this.setState({ showReset: true });
   }
 
@@ -209,7 +210,7 @@ class ASettings extends React.Component<Props, State> {
   }
 
   private async onApplyClick(): Promise<void> {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
     const dndOpt = this.props.pendingSettingsChanges['optDoNotDisturb'];
     if (dndOpt) {
       // We want the TeamJoin server to be authoritative on this flag, so we set it there as well.
@@ -233,7 +234,7 @@ class ASettings extends React.Component<Props, State> {
   }
 
   private onBackClick(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
     this.props.dispatch(hideOverlay(Overlay.Settings));
   }
 }

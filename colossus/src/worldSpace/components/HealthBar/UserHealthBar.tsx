@@ -104,7 +104,7 @@ const NameContainer = 'WorldSpace-ReviveInteractionBar-NameContainer';
 
 const ReviveIcon = 'Worldspace-ReviveInteractionBar-ReviveIcon';
 
-export interface Props {
+interface Props {
   state: HealthBarState;
   position: WorldUIPositionModel;
 }
@@ -162,7 +162,10 @@ export class UserHealthBar extends React.Component<Props, {}> {
 
     // if a player is downed show either a red arrow to direct players to them or the revive bar
     if (this.props.state.lifeState === LifeState.Downed) {
-      if (!this.props.state.interactionName || this.props.position.worldSpaceDistanceToPlayer > this.props.state.interactionRange) {
+      if (
+        !this.props.state.interactionName ||
+        this.props.position.worldSpaceDistanceToPlayer > this.props.state.interactionRange
+      ) {
         return (
           <div className={Container}>
             {this.getCharacterName(CHARACTER_NAME_HEIGHT_PX, 1)}

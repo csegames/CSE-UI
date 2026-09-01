@@ -8,16 +8,13 @@ import * as React from 'react';
 import { formatDuration } from '@csegames/library/dist/_baseGame/utils/timeUtils';
 import { RootState } from '../../../redux/store';
 import { connect } from 'react-redux';
-import {
-  ChampionCostumeInfo,
-  ChampionInfo,
-  OvermindCharacter,
-  OvermindSummaryGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { OvermindCharacter, OvermindSummaryGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numberUtils';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
 import { Dictionary } from '@reduxjs/toolkit';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
+import { CostumeDef } from '../../../dataSources/manifest/costumeManifest';
 
 const Container = 'GameStats-Highlights-Container';
 const HighlightContainer = 'GameStats-Highlights-HighlightContainer';
@@ -43,8 +40,8 @@ interface ReactProps {
 }
 
 interface InjectedProps {
-  championCostumes: ChampionCostumeInfo[];
-  champions: ChampionInfo[];
+  championCostumes: CostumeDef[];
+  champions: ChampionDef[];
   stringTable: Dictionary<StringTableEntryDef>;
 }
 

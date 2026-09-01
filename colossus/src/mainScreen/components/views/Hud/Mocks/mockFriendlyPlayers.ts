@@ -5,8 +5,8 @@
  */
 import {
   EntityResource,
-  defaultPlayerEntityStateModel,
-  PlayerEntityStateModel
+  defaultPlayerEntityState,
+  PlayerEntityState
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { mockEvents } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { ScenarioRoundState } from '@csegames/library/dist/hordetest/webAPI/definitions';
@@ -105,9 +105,8 @@ function makeMockPlayerEntity(name: string, entityID: string, scenarioID: string
   resources[2] = randomEntityResource(EntityResourceIDs.Barrier);
   resources[2] = randomEntityResource(EntityResourceIDs.Health);
 
-  const model: PlayerEntityStateModel = {
-    ...defaultPlayerEntityStateModel(),
-    wounds: 2,
+  const model: PlayerEntityState = {
+    ...defaultPlayerEntityState(),
     resources: resources,
     currentDeaths: randomChoice<number>([0, 1, 2]),
     maxDeaths: 3,

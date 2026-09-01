@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REFACTOR
+
 import * as React from 'react';
 import { Dispatch } from 'redux';
 import { FriendlyHealthBar } from './FriendlyHealthBar';
@@ -11,13 +13,13 @@ import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
 import { updateFriendsPage } from '../../../../redux/entitiesSlice';
 import { KeybindIDs, getActiveBindForKey } from '../../../../redux/keybindsSlice';
-import { PlayerEntityStateModel } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
+import { PlayerEntityState } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { Keybind } from '@csegames/library/dist/_baseGame/types/Keybind';
 import { game } from '@csegames/library/dist/_baseGame';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 
 const Container = 'FriendlyHealthBars-Container';
 const PageContainer = 'FriendlyHealthBars-PageContainer';
@@ -34,7 +36,7 @@ const StringIDHUDPlayerCount = 'HUDPlayerCount';
 interface InjectedProps {
   dispatch?: Dispatch;
   friends?: {
-    [entityID: string]: PlayerEntityStateModel;
+    [entityID: string]: PlayerEntityState;
   };
   friendsPage?: number;
   friendsPerPage?: number;
@@ -97,10 +99,7 @@ class AFriendlyHealthBars extends React.Component<Props, {}> {
         <div className={HealthBarCount}>
           {getTokenizedStringTableValue(StringIDHUDPlayerCount, this.props.stringTable, tokens)}
         </div>
-        <div className={PageContainerFiller} />{' '}
-        {/* Want to remove this explicit spacer  ^.  Elements like this should never be necessary. --DM */}
-        {this.pageKeybind()}
-      </div>
+        <div className={PageContainerFiller} />{` ${this.pageKeybind()}`}</div>
     );
   }
 
@@ -165,3 +164,5 @@ function mapStateToProps(state: RootState) {
 }
 
 export const FriendlyHealthBars = connect(mapStateToProps)(AFriendlyHealthBars);
+
+*/

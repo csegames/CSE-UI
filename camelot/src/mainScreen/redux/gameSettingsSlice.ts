@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { GameSettingsDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { GameOption } from '@csegames/library/dist/_baseGame/types/Options';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -21,9 +20,6 @@ export const gameSettingsSlice = createSlice({
   name: 'gameSettings',
   initialState: defaultGameSettingsState,
   reducers: {
-    updateGameSettings: (state: GameSettingsState, action: PayloadAction<GameSettingsDef>) => {
-      Object.assign(state, action.payload);
-    },
     updateAdvanceGameOption: (state: GameSettingsState, action: PayloadAction<[GameOption, GameOption]>) => {
       const [newChange, originalChange] = action.payload;
       const storedOriginalChange = state.advanceSettingsOriginalValues[originalChange.name];
@@ -40,4 +36,4 @@ export const gameSettingsSlice = createSlice({
   }
 });
 
-export const { updateGameSettings, updateAdvanceGameOption, clearOptionChanges } = gameSettingsSlice.actions;
+export const { updateAdvanceGameOption, clearOptionChanges } = gameSettingsSlice.actions;

@@ -19,7 +19,7 @@ const IconBackground = 'WorldSpace-HealthBar-BossHealthBar-IconBackground';
 
 const Icon = 'WorldSpace-HealthBar-BossHealthBar-Icon';
 
-export interface Props {
+interface Props {
   state: HealthBarState;
 }
 

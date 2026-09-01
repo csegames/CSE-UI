@@ -10,19 +10,7 @@ import { Button } from '../../../shared/Button';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { QuestsByType } from '../../../../redux/questSlice';
-import {
-  ChampionInfo,
-  PerkGQL,
-  PerkRewardDefGQL,
-  PerkDefGQL,
-  PerkType,
-  PurchaseDefGQL,
-  QuestGQL,
-  QuestLinkDefGQL,
-  StringTableEntryDef,
-  QuestDefGQL,
-  QuestType
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkGQL, PerkRewardDefGQL, PurchaseDefGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dispatch } from '@reduxjs/toolkit';
 import { CSETransition } from '../../../../../shared/components/CSETransition';
 import {
@@ -69,6 +57,10 @@ import { RequestResult } from '@csegames/library/dist/_baseGame/types/Request';
 import { webConf } from '../../../../dataSources/networkConfiguration';
 import { refreshProfile } from '../../../../dataSources/profileNetworking';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { QuestDef, QuestLinkDef, QuestType } from '../../../../dataSources/manifest/questManifest';
+import { PerkDef, PerkType } from '../../../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../../../dataSources/manifest/championManifest';
 
 const BattlePassBGImage = 'StartScreen-BattlePassBGImage';
 const Container = 'BattlePass-Container';
@@ -168,35 +160,36 @@ interface ReactProps {}
 interface InjectedProps {
   needGamepadIcons: boolean;
   questDefs: QuestsByType;
-  questsById: Dictionary<QuestDefGQL>;
+  questsById: Dictionary<QuestDef>;
   quests: QuestGQL[];
   questsProgress: QuestGQL[];
   perks: PerkGQL[];
   vminPx: number;
-  champions: ChampionInfo[];
+  champions: ChampionDef[];
+  championIDToChampion: Dictionary<ChampionDef>;
   purchases: PurchaseDefGQL[];
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
-  currentBattlePass: QuestDefGQL;
-  nextBattlePass: QuestDefGQL;
-  previousBattlePass: QuestDefGQL;
-  minuteTicker: number;
+  currentBattlePass: QuestDef;
+  nextBattlePass: QuestDef;
+  previousBattlePass: QuestDef;
   overlays: OverlayInstance[];
   initializationTopics: Dictionary<boolean>;
-  battlePassQuests: QuestDefGQL[];
+  battlePassQuests: QuestDef[];
   serverTimeDeltaMS: number;
+  gameDefsLoaded: boolean;
   dispatch?: Dispatch;
 }
 
 type Props = ReactProps & InjectedProps;
 
 interface State {
-  displayedBattlePass: QuestDefGQL;
+  displayedBattlePass: QuestDef;
   displayedProgress: QuestGQL;
   currentPage: number;
   questsToClaim: string[];
   hasPremiumForDisplayedBattlePass: boolean;
-  selectedLink: QuestLinkDefGQL;
+  selectedLink: QuestLinkDef;
   selectedIndex: number;
   isSelectionPremium: boolean;
   isClaimingRewards: boolean;
@@ -376,7 +369,7 @@ class ABattlePass extends React.Component<Props, State> {
     const { currentBattlePass, nextBattlePass, previousBattlePass, perks } = this.props;
 
     // First choice is to show a current battlepass.
-    let displayedBattlePass: QuestDefGQL = currentBattlePass;
+    let displayedBattlePass: QuestDef = currentBattlePass;
     let isReview: boolean = false;
     if (!displayedBattlePass) {
       // Second choice is to show the most recently completed battlepass (in review mode).
@@ -476,7 +469,8 @@ class ABattlePass extends React.Component<Props, State> {
         this.props.battlePassQuests,
         this.props.perks,
         this.props.quests,
-        this.props.serverTimeDeltaMS
+        this.props.serverTimeDeltaMS,
+        this.props.gameDefsLoaded
       )
     ) {
       this.props.dispatch(showOverlay(Overlay.ClaimBattlePassModal));
@@ -610,7 +604,12 @@ class ABattlePass extends React.Component<Props, State> {
       return this.state.selectedLink.rewardDescriptionOverride;
     }
 
-    return getRewardTypeText(this.getSelectedPreviewItem(), this.props.stringTable, this.props.perksByID);
+    return getRewardTypeText(
+      this.getSelectedPreviewItem(),
+      this.props.stringTable,
+      this.props.perksByID,
+      this.props.championIDToChampion
+    );
   }
 
   private isShowingUnearnedPrize(): boolean {
@@ -770,10 +769,8 @@ class ABattlePass extends React.Component<Props, State> {
   private onViewInventoryClicked(reward: PerkRewardDefGQL): void {
     const perk = this.props.perksByID[reward.perkID];
     // If available, directly select the champion this reward is associated with.
-    if (!!perk.champion) {
-      const championInfo = this.props.champions.find((ci) => {
-        return ci.id === perk.champion.id;
-      });
+    if (!!perk.championID) {
+      const championInfo = this.props.championIDToChampion[perk.championID];
       if (championInfo) {
         this.props.dispatch(updateSelectedChampion(championInfo));
       }
@@ -830,7 +827,7 @@ class ABattlePass extends React.Component<Props, State> {
     return Math.floor(availableWidth / maxVisibleTiers);
   }
 
-  private renderBattlePassLink(currentLinkIndex: number, link: QuestLinkDefGQL, index: number): React.ReactNode {
+  private renderBattlePassLink(currentLinkIndex: number, link: QuestLinkDef, index: number): React.ReactNode {
     const perk = this.props.perksByID[link?.rewards?.[0]?.perkID];
     const premiumPerk = this.props.perksByID[link?.premiumRewards?.[0]?.perkID];
 
@@ -971,7 +968,7 @@ class ABattlePass extends React.Component<Props, State> {
     );
   }
 
-  private renderPageControls(battlePass: QuestDefGQL): React.ReactNode {
+  private renderPageControls(battlePass: QuestDef): React.ReactNode {
     const tierWidthPx = this.getTierWidthPx();
     const tierGapPx = this.getTierGapPx();
     const numPages = Math.ceil(battlePass.links.length / maxVisibleTiers);
@@ -1031,12 +1028,12 @@ class ABattlePass extends React.Component<Props, State> {
     }
   }
 
-  private onLinkClicked(link: QuestLinkDefGQL, index: number, isPremium: boolean): void {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CHARACTER_SELECT_LOCK_IN);
+  private onLinkClicked(link: QuestLinkDef, index: number, isPremium: boolean): void {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CHARACTER_SELECT_LOCK_IN);
     this.setState({ selectedLink: link, selectedIndex: index, isSelectionPremium: isPremium });
   }
 
-  private getExpiryText(battlePass: QuestDefGQL): string {
+  private getExpiryText(battlePass: QuestDef): string {
     const expiryDate = new Date(
       battlePass.questLock?.find((lock) => {
         return !!lock.endTime;
@@ -1084,7 +1081,7 @@ class ABattlePass extends React.Component<Props, State> {
       }
 
       if (res.ok) {
-        const quest: QuestDefGQL = this.props.questsById[questId];
+        const quest: QuestDef = this.props.questsById[questId];
         const questProgress: QuestGQL = this.props.quests.find((q) => q.id == questId);
         createAlertsForCollectedQuestProgress(
           quest,
@@ -1120,13 +1117,14 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { perks, quests } = state.profile;
   const questsProgress = state.profile.quests;
   const { vminPx } = state.hud;
-  const { champions } = state.championInfo;
+  const { champions, championIDToChampion } = state.championInfo;
   const { purchases, perksByID } = state.store;
   const { stringTable } = state.stringTable;
-  const { minuteTicker, serverTimeDeltaMS } = state.clock;
+  const { serverTimeDeltaMS } = state.clock;
   const { overlays } = state.navigation;
-  const initializationTopics = state.initialization.componentStatus;
+  const initializationTopics = state.loading.componentStatus;
   const battlePassQuests = state.quests.quests?.BattlePass;
+  const { gameDefsLoaded } = state.game;
 
   return {
     ...ownProps,
@@ -1138,17 +1136,18 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     perks,
     vminPx,
     champions,
+    championIDToChampion,
     purchases,
     perksByID,
     stringTable,
     currentBattlePass,
     nextBattlePass,
     previousBattlePass,
-    minuteTicker,
     overlays,
     initializationTopics,
     battlePassQuests,
-    serverTimeDeltaMS
+    serverTimeDeltaMS,
+    gameDefsLoaded
   };
 }
 

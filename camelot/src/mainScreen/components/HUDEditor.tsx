@@ -5,20 +5,91 @@
  */
 
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import {
+  hideHUDEditor,
   HUDWidget,
+  HUDWidgetRegistration,
   resetAllWidgets,
   resetWidget,
+  setNameplateStyle,
   setSelectedWidget,
+  setSelectedWidgetGroup,
+  setSnapEnabled,
+  setGuidesEnabled,
   unregisterWidget,
   updateWidgetStates
 } from '../redux/hudSlice';
-import { RootState } from '../redux/store';
+import { AddDispatch, RootState } from '../redux/store';
+import Draggable from './Draggable';
+import DraggableHandle, { DropHandlerDraggableData } from './DraggableHandle';
+import TooltipSource from './TooltipSource';
+import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
+import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
+import { hideModal, showModal } from '../redux/modalsSlice';
+import { AbilityEditStatus, AbilityGroup, ButtonLayout } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
+import Escapable from './Escapable';
+import {
+  HUDHorizontalAnchor,
+  HUDVerticalAnchor,
+  HUDWidgetState
+} from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import {
+  getStringTableValue,
+  getTokenizedStringTableValue,
+  StringIDGeneralCancel,
+  StringIDGeneralDelete,
+  StringIDGeneralPercent
+} from '../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
+import { WIDGET_ID_ABILITY_BOOK } from './abilityBook/AbilityBook';
+import { WIDGET_ID_ABILITY_CASTING } from './AbilityCasting';
+import { WIDGET_ID_BANK } from './bank/Bank';
+import { WIDGET_ID_CRAFTING } from './crafting/Crafting';
+import { WIDGET_ID_EQUIPPED } from './Equipped';
+import { WIDGET_ID_INVENTORY } from './inventory/Inventory';
+import { WIDGET_ID_LEVEL_BARS } from './levelBars/LevelBars';
+import { WIDGET_ID_NAV_MENU } from './HUDNavMenu';
+import { WIDGET_ID_PARTY } from './party/Party';
+import { WIDGET_ID_WORLD_MAP } from './WorldMap';
+import { WIDGET_ID_WORLD_MAP as WIDGET_ID_MINI_MAP } from './MiniMap';
+import { WIDGET_ID_REPAIRWARNING } from './repairWarning/RepairWarning';
+import { WIDGET_ID_RESPAWN } from './Respawn';
+import { WIDGET_ID_WARBAND } from './warband/Warband';
+import { WIDGET_ID_CHAT } from './chat/Chat';
+import { WIDGET_ID_GUILD } from './guild/Guild';
+import { WIDGET_ID_ZONENAME } from './zoneName/ZoneName';
+import { WIDGET_ID_QUESTLOG } from './quests/QuestLog';
+import { WIDGET_ID_QUESTTRACKER } from './quests/QuestTracker';
+import { WIDGET_ID_LEVEL_NOTIFICATIONS, WIDGET_ID_QUEST_NOTIFICATIONS } from './NotificationToasts';
+import { WIDGET_ID_MAIL } from './mail/Mail';
+import { WIDGET_ID_TRADE } from './trade/Trade';
+import { WIDGET_ID_TRADEREQUESTS } from './trade/TradeRequests';
+import { WIDGET_ID_VENDOR } from './vendor/Vendor';
+import { WIDGET_ID_GAME_INFO } from './GameInfo';
+import { WIDGET_ID_GAME_MENU } from './GameMenu';
+import { WIDGET_ID_SERVERMESSAGES } from './serverMessages/ServerMessages';
+import { WIDGET_ID_SETTINGS } from './Settings';
+import { WIDGET_ID_WARNING_ICONS } from './WarningIcons';
+import { WIDGET_ID_SELF } from './unitFrames/SelfUnitFrame';
+import { WIDGET_ID_FRIENDLY, WIDGET_ID_ENEMY } from './unitFrames/TargetUnitFrame';
+import {
+  MAX_UI_SCALE,
+  MIN_UI_SCALE,
+  NameplateStyle
+} from '@csegames/library/dist/camelotunchained/clientFunctions/HUDFunctions';
+// import { getAbilityBarsCount } from '../helpers/abilityBarHelpers';
+import { onToggleUIEditMode } from '../helpers/hudEditModeHelpers';
+import { FlatButton } from './FlatButton';
+import { SimpleRect } from '../redux/dragAndDropSlice';
+import { BorderBackground, BorderType, FactionBorder } from './FactionBorder';
+import { CornerButtonType, FactionCornerButton } from './FactionCornerButton';
+import { FactionData, getFactionData } from '../gameData/factionData';
+import { FactionScrollArea } from './FactionScrollArea';
 
 // Images are imported so that WebPack can find them (and give us errors if they are missing).
+import RefreshIconURL from '../../images/hudeditor/refresh-icon.png';
 import AnchorTopLeftURL from '../../images/hudeditor/anchor-topleft.png';
 import AnchorTopURL from '../../images/hudeditor/anchor-top.png';
 import AnchorTopRightURL from '../../images/hudeditor/anchor-topright.png';
@@ -38,47 +109,41 @@ import AnchorSelectedBottomLeftURL from '../../images/hudeditor/anchor-selected-
 import AnchorSelectedBottomURL from '../../images/hudeditor/anchor-selected-bottom.png';
 import AnchorSelectedBottomRightURL from '../../images/hudeditor/anchor-selected-bottomright.png';
 import ArrowDownURL from '../../images/hudeditor/arrow-down.png';
+import HorVertArrowURL from '../../images/hudeditor/hor-vert-arrow.png';
 import ArrowLeftURL from '../../images/hudeditor/arrow-left.png';
 import ArrowRightURL from '../../images/hudeditor/arrow-right.png';
 import ArrowUpURL from '../../images/hudeditor/arrow-up.png';
-import EyeURL from '../../images/icons/eye.png';
-import EyeSlashURL from '../../images/icons/eye-slash.png';
-import LightbulbURL from '../../images/icons/lightbulb.png';
-import MagnifyingGlassURL from '../../images/icons/magnifying-glass.png';
-import MinusURL from '../../images/icons/minus.png';
-import PlusURL from '../../images/icons/plus.png';
-import ResetURL from '../../images/icons/reset.png';
-import Draggable from './Draggable';
-import DraggableHandle, { DropHandlerDraggableData } from './DraggableHandle';
-import TooltipSource from './TooltipSource';
-import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
-import { hideModal, showModal } from '../redux/modalsSlice';
-import { AbilityEditStatus, AbilityGroup, ButtonLayout } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
-import Escapable from './Escapable';
-import {
-  HUDHorizontalAnchor,
-  HUDVerticalAnchor,
-  HUDWidgetState
-} from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import { FactionNumberSelector } from './FactionNumberSelector';
+import { FactionButton } from './FactionButton';
+import { FactionSearchBar } from './FactionSearchBar';
+import { FactionCheckbox } from './FactionCheckbox';
 
-// Styles.
+// CSS classes
 const Root = 'HUD-HUDEditor-Root';
 const Contents = 'HUD-HUDEditor-Contents';
-const ActionButton = 'HUD-HUDEditor-ActionButton';
 const Header = 'HUD-HUDEditor-Header';
 const HeaderText = 'HUD-HUDEditor-HeaderText';
-const ResetAllButton = 'HUD-HUDEditor-ResetAllButton';
+const ResetSection = 'HUD-HUDEditor-ResetSection';
+const Search = 'HUD-HUDEditor-Search';
+const ExpandCollapseButton = 'HUD-HUDEditor-ExpandCollapseButton';
 const ListContainer = 'HUD-HUDEditor-ListContainer';
+const ListContent = 'HUD-HUDEditor-ListContent';
 const ListItem = 'HUD-HUDEditor-ListItem';
 const ListItemName = 'HUD-HUDEditor-ListItem-Name';
+const ListItemRefreshButton = 'HUD-HUDEditor-ListItem-RefreshButton';
 const Footer = 'HUD-HUDEditor-Footer';
 const SelectedWidgetName = 'HUD-HUDEditor-SelectedWidgetName';
 const ToolbarRow = 'HUD-HUDEditor-ToolbarRow';
 const ToolbarItem = 'HUD-HUDEditor-ToolbarItem';
-const ToolbarIcon = 'HUD-HUDEditor-ToolbarIcon';
 const ToolbarControls = 'HUD-HUDEditor-ToolbarItemControls';
-const ToolbarButton = 'HUD-HUDEditor-ToolbarItemControls-Button';
 const ToolbarText = 'HUD-HUDEditor-ToolbarItemControls-Text';
+const OptionRow = 'HUD-HUDEditor-OptionRow';
+const OptionLabel = 'HUD-HUDEditor-OptionLabel';
+const DisplayPrioritySelector = 'HUD-HUDEditor-DisplayPrioritySelector';
+const SelectedWidgetHeader = 'HUD-HUDEditor-SelectedWidgetHeader';
+const SelectedWidgetDivider = 'HUD-HUDEditor-SelectedWidgetDivider';
+const SliderInput = 'HUD-HUDEditor-SliderInput';
+const SliderRow = 'HUD-HUDEditor-SliderRow';
 const MovementContainer = 'HUD-HUDEditor-MovementControls-Container';
 const MovementUp = 'HUD-HUDEditor-MovementControls-Up';
 const MovementDown = 'HUD-HUDEditor-MovementControls-Down';
@@ -87,7 +152,6 @@ const MovementRight = 'HUD-HUDEditor-MovementControls-Right';
 const AnchorContainer = 'HUD-HUDEditor-AnchorControls-Container';
 const AnchorButton = 'HUD-HUDEditor-AnchorControls-Button';
 const ControlHeaderText = 'HUD-HUDEditor-ControlHeaderText';
-const Scroller = 'Scroller-ThumbOnly';
 const AddAbilityBarsSection = 'HUD-HUDEditor-AddAbilityBarsSection';
 const AddAbilityBarsSectionLabel = 'HUD-HUDEditor-AddAbilityBarsSection-Label';
 const AbilityBarSection = 'HUD-HUDEditor-AbilityBarSection';
@@ -95,11 +159,172 @@ const AbilityBarSectionRow = 'HUD-HUDEditor-AbilityBarSection-Row';
 const AbilityBarSectionButtonRow = 'HUD-HUDEditor-AbilityBarSection-ButtonRow';
 const AbilityBarSectionLabel = 'HUD-HUDEditor-AbilityBarSection-Label';
 const PlusMinusButton = 'HUD-HUDEditor-AbilityBarSection-PlusMinusButton';
+const PartyLayoutButton = 'HUD-HUDEditor-PartyLayoutButton';
+const PartyLayoutIcon = 'HUD-HUDEditor-PartyLayoutIcon';
+const PartySection = 'HUD-HUDEditor-PartySection';
+const PartySectionButtonRow = 'HUD-HUDEditor-PartySection-ButtonRow';
+const PartySectionLabel = 'HUD-HUDEditor-PartySection-Label';
+const ActionButton = 'HUD-HUDEditor-ActionButton';
+const TargetPlatesGroup = 'HUD-HUDEditor-TargetPlatesGroup';
+const TargetPlatesGroupHeader = 'HUD-HUDEditor-TargetPlatesGroupHeader';
+const TargetPlatesGroupArrow = 'HUD-HUDEditor-TargetPlatesGroupArrow';
+const TargetPlatesGroupDivider = 'HUD-HUDEditor-TargetPlatesGroupDivider';
+const TargetPlatesGroupContent = 'HUD-HUDEditor-TargetPlatesGroupContent';
+const TargetPlatesGroupItem = 'HUD-HUDEditor-TargetPlatesGroupItem';
+const SnapToggleContainer = 'HUD-HUDEditor-SnapToggleContainer';
+const SnapToggleRow = 'HUD-HUDEditor-SnapToggleRow';
+const SnapToggleDivider = 'HUD-HUDEditor-SnapToggleDivider';
+const PartyLayoutIconHorizontal = 'HUD-HUDEditor-PartyLayoutIcon--horizontal';
+
+// CSS state modifier classes
+const ModSelected = 'selected';
+const ModHidden = 'hidden';
+const ModCollapsed = 'collapsed';
+
+// Ability bar limits
+const AbilitiesBarIDPrefixLength = 'Bar: Abilities '.length;
+const MaxAbilityGroups = 6;
+const MaxAbilitySlots = 20;
+
+// Widget scale bounds
+const MinWidgetScale = 0.5;
+const MaxWidgetScale = 3;
+
+// String IDs
+const StringIDHUDEditorResetAll = 'HUDEditorResetAll';
+const StringIDHUDEditorReloadUI = 'HUDEditorReloadUI';
+const StringIDHUDEditorAbilityBarGroupsLabel = 'HUDEditorAbilityBarGroupsLabel';
+const StringIDHUDEditorAbilityBarSlotsLabel = 'HUDEditorAbilityBarSlotsLabel';
+const StringIDHUDEditorDeleteAbilityBar = 'HUDEditorDeleteAbilityBar';
+const StringIDHUDEditorCreateAbilityGroupErrorTitle = 'HUDEditorCreateAbilityGroupErrorTitle';
+const StringIDHUDEditorCreateAbilityGroupErrorMessage = 'HUDEditorCreateAbilityGroupErrorMessage';
+const StringIDHUDEditorConfirmDeleteButtonLayoutTitle = 'HUDEditorConfirmDeleteButtonLayoutTitle';
+const StringIDHUDEditorConfirmDeleteButtonLayoutMessage = 'HUDEditorConfirmDeleteButtonLayoutMessage';
+const StringIDHUDEditorSelectedWidgetName = 'HUDEditorSelectedWidgetName';
+const StringIDHUDEditorSelectedWidgetNone = 'HUDEditorSelectedWidgetNone';
+const StringIDHUDEditorSelectedWidgetPositionLabel = 'HUDEditorSelectedWidgetPositionLabel';
+const StringIDHUDEditorSelectedWidgetAnchorLabel = 'HUDEditorSelectedWidgetAnchorLabel';
+const StringIDHUDEditorSelectedWidgetResetWidget = 'HUDEditorSelectedWidgetResetWidget';
+const StringIDHUDEditorSelectedWidgetMoveWidget = 'HUDEditorSelectedWidgetMoveWidget';
+const StringIDHUDEditorSelectedWidgetChangeAnchor = 'HUDEditorSelectedWidgetChangeAnchor';
+const StringIDHUDEditorDisplayPriority = 'HUDEditorDisplayPriority';
+const StringIDHUDEditorToggleGridSnapping = 'HUDEditorToggleGridSnapping';
+const StringIDHUDEditorToggleGuides = 'HUDEditorToggleGuides';
+const StringIDHUDEditorUIUniversalScale = 'HUDEditorUIUniversalScale';
+const StringIDHUDEditorTitle = 'HUDEditorTitle';
+const StringIDHUDEditorDisplayPriorityExplanation = 'HUDEditorDisplayPriorityExplanation';
+const StringIDHUDEditorPartyLayoutOptions = 'HUDEditorWidgetPartyLayoutOptions';
+const StringIDHUDEditorTargetPlatesGroupName = 'HUDEditorTargetPlatesGroupName';
+const StringIDHUDEditorAbilitiesGroupName = 'HUDEditorAbilitiesGroupName';
+const StringIDHUDEditorCharacterGroupName = 'HUDEditorCharacterGroupName';
+const StringIDHUDEditorEconomyGroupName = 'HUDEditorEconomyGroupName';
+const StringIDHUDEditorMapsGroupName = 'HUDEditorMapsGroupName';
+const StringIDHUDEditorSocialGroupName = 'HUDEditorSocialGroupName';
+const StringIDHUDEditorQuestsGroupName = 'HUDEditorQuestsGroupName';
+const StringIDHUDEditorTradeGroupName = 'HUDEditorTradeGroupName';
+const StringIDHUDEditorSystemGroupName = 'HUDEditorSystemGroupName';
+const StringIDHUDEditorTargetPlatesSimple = 'HUDEditorTargetPlatesSimple';
+const StringIDHUDEditorTargetPlatesFancy = 'HUDEditorTargetPlatesFancy';
+const StringIDHUDEditorChatFontSize = 'HUDEditorChatFontSize';
+const StringIDHUDEditorToastDuration = 'HUDEditorToastDuration';
+const StringIDHUDEditorExpandAll = 'HUDEditorExpandAll';
+const StringIDHUDEditorCollapseAll = 'HUDEditorCollapseAll';
+const StringIDHUDEditorSelectedWidgetOpacity = 'HUDEditorSelectedWidgetOpacity';
+const StringIDHUDEditorSelectedWidgetSize = 'HUDEditorSelectedWidgetSize';
 
 const FirstButtonRepeatTimeoutMS = 400;
 const ButtonRepeatTimeoutMS = 80;
 
+const ChatFontSizeMin = 50;
+const ChatFontSizeMax = 150;
+const ChatFontSizeDefault = 100;
+
+const ToastDurationSecondsMin = 0;
+const ToastDurationSecondsMax = 5;
+const ToastDurationSecondsDefault = 5;
+
 const DraggableID = 'HUDEditor';
+
+interface HUDEditorWidgetGroup {
+  // Also tracks expanded/collapsed state.
+  key: string;
+  labelStringID: string;
+  fallbackLabel: string;
+  // Matched members are sorted alphabetically by display name.
+  match: (widgetID: string) => boolean;
+}
+
+const HUDEditorWidgetGroups: HUDEditorWidgetGroup[] = [
+  {
+    key: 'health-bars-group',
+    labelStringID: StringIDHUDEditorTargetPlatesGroupName,
+    fallbackLabel: 'Health Bars',
+    match: (id) => [WIDGET_ID_ENEMY, WIDGET_ID_FRIENDLY, WIDGET_ID_SELF].includes(id)
+  },
+  {
+    key: 'abilities-group',
+    labelStringID: StringIDHUDEditorAbilitiesGroupName,
+    fallbackLabel: 'Abilities',
+    match: (id) => id.startsWith('Bar:') || [WIDGET_ID_ABILITY_BOOK, WIDGET_ID_ABILITY_CASTING].includes(id)
+  },
+  {
+    key: 'character-group',
+    labelStringID: StringIDHUDEditorCharacterGroupName,
+    fallbackLabel: 'Character',
+    match: (id) =>
+      [
+        WIDGET_ID_EQUIPPED,
+        WIDGET_ID_LEVEL_BARS,
+        WIDGET_ID_LEVEL_NOTIFICATIONS,
+        WIDGET_ID_REPAIRWARNING,
+        WIDGET_ID_RESPAWN
+      ].includes(id)
+  },
+  {
+    key: 'economy-group',
+    labelStringID: StringIDHUDEditorEconomyGroupName,
+    fallbackLabel: 'Economy',
+    match: (id) => [WIDGET_ID_BANK, WIDGET_ID_CRAFTING, WIDGET_ID_INVENTORY].includes(id)
+  },
+  {
+    key: 'maps-group',
+    labelStringID: StringIDHUDEditorMapsGroupName,
+    fallbackLabel: 'Maps',
+    match: (id) => [WIDGET_ID_WORLD_MAP, WIDGET_ID_MINI_MAP, WIDGET_ID_ZONENAME].includes(id)
+  },
+  {
+    key: 'social-group',
+    labelStringID: StringIDHUDEditorSocialGroupName,
+    fallbackLabel: 'Social',
+    match: (id) => [WIDGET_ID_PARTY, WIDGET_ID_WARBAND, WIDGET_ID_CHAT, WIDGET_ID_GUILD, WIDGET_ID_MAIL].includes(id)
+  },
+  {
+    key: 'quests-group',
+    labelStringID: StringIDHUDEditorQuestsGroupName,
+    fallbackLabel: 'Quests',
+    match: (id) => [WIDGET_ID_QUESTLOG, WIDGET_ID_QUESTTRACKER, WIDGET_ID_QUEST_NOTIFICATIONS].includes(id)
+  },
+  {
+    key: 'trade-group',
+    labelStringID: StringIDHUDEditorTradeGroupName,
+    fallbackLabel: 'Trade',
+    match: (id) => [WIDGET_ID_TRADE, WIDGET_ID_TRADEREQUESTS, WIDGET_ID_VENDOR].includes(id)
+  },
+  {
+    key: 'system-group',
+    labelStringID: StringIDHUDEditorSystemGroupName,
+    fallbackLabel: 'System',
+    match: (id) =>
+      [
+        WIDGET_ID_GAME_INFO,
+        WIDGET_ID_GAME_MENU,
+        WIDGET_ID_NAV_MENU,
+        WIDGET_ID_SERVERMESSAGES,
+        WIDGET_ID_SETTINGS,
+        WIDGET_ID_WARNING_ICONS
+      ].includes(id)
+  }
+];
 
 interface ReactProps {}
 
@@ -108,40 +333,65 @@ interface InjectedProps {
   hudHeight: number;
   widgets: Dictionary<HUDWidget>;
   selectedWidgetID: string;
-  selectedWidgetBounds: DOMRect;
+  selectedGroupKey: string;
+  selectedWidgetBounds: SimpleRect;
   editStatus: AbilityEditStatus;
   layouts: Dictionary<ButtonLayout>;
   groups: Dictionary<AbilityGroup>;
-  dispatch?: Dispatch;
+  activeConditionalWidgetIDs: string[];
+  stringTable: Record<string, StringTableEntryDef>;
+  uiFactionID: string;
+  isPartyHorizontal: boolean;
+  nameplateStyle: NameplateStyle;
+  uiScale: number;
+  snapEnabled: boolean;
+  guidesEnabled: boolean;
 }
 
-type Props = ReactProps & InjectedProps;
+type Props = ReactProps & InjectedProps & AddDispatch;
 
 interface State {
   offset: [number, number];
+  expandedGroups: Record<string, boolean>;
+  searchQuery: string;
+  expandAll: boolean;
 }
 
-class HUDEditor extends React.Component<Props, State> {
-  private buttonHeldHandle: number;
+class AHUDEditor extends React.Component<Props, State> {
+  private buttonHeldHandle: number = 0;
   private isApplyingChanges = false;
 
   constructor(props: Props) {
     super(props);
-    this.state = { offset: clientAPI.getHUDEditorOffset() };
+    this.state = { offset: clientAPI.getHUDEditorOffset(), expandedGroups: {}, searchQuery: '', expandAll: false };
+  }
+
+  componentDidUpdate(prevProps: Props): void {
+    if (this.props.selectedWidgetID && this.props.selectedWidgetID !== prevProps.selectedWidgetID) {
+      for (const group of HUDEditorWidgetGroups) {
+        if (this.getGroupMemberIDs(group).includes(this.props.selectedWidgetID)) {
+          this.setState((prev) => ({ expandedGroups: { ...prev.expandedGroups, [group.key]: true } }));
+          break;
+        }
+      }
+    }
   }
 
   render(): JSX.Element {
-    // Having renderDraggableContents as a separate function makes it very easy to use as the `draggingRender` param later.
     return (
       <Draggable
         className={Root}
         draggableID={DraggableID}
         style={{ transform: `translate(${this.state.offset[0]}vmin,${this.state.offset[1]}vmin)` }}
+        draggingRender={this.renderDraggableContents.bind(this)}
       >
         <Escapable
           escapeID={'closeHUDEditor'}
           onEscape={() => {
-            clientAPI.requestEditMode(false);
+            this.props.dispatch(hideHUDEditor());
+            if (!this.props.activeConditionalWidgetIDs.includes(WIDGET_ID_ABILITY_BOOK)) {
+              clientAPI.requestEditMode(false);
+            }
           }}
         />
         {this.renderDraggableContents()}
@@ -150,64 +400,391 @@ class HUDEditor extends React.Component<Props, State> {
   }
 
   private renderDraggableContents(): JSX.Element {
-    // The -2 is to account for Siege and BuildMode (system bars).
-    const numBars =
-      Object.keys(this.props.widgets).filter((widgetName) => {
-        return this.props.widgets[widgetName].registration && widgetName.startsWith('Bar:');
-      }).length - 2;
-
-    const addLayoutDisabledClass = this.props.editStatus.canAddButtons ? '' : 'disabled';
+    // const numBars = getAbilityBarsCount(this.props.widgets);
+    const factionData = getFactionData(this.props.uiFactionID);
 
     return (
-      <div className={Contents}>
+      <FactionBorder
+        className={Contents}
+        type={BorderType.Primary}
+        background={BorderBackground.Leather}
+        cornerButtons={[
+          <FactionCornerButton type={CornerButtonType.Close} small onClick={this.onCloseClick.bind(this)} />
+        ]}
+      >
         <DraggableHandle
           className={Header}
           draggableID={DraggableID}
-          draggingRender={this.renderDraggableContents.bind(this)}
           dropHandler={this.handleDragEnded.bind(this)}
+          style={{ borderBottomColor: factionData.borderColor }}
         >
-          <div className={HeaderText}>HUD Widgets</div>
+          <div className={HeaderText}>{getStringTableValue(StringIDHUDEditorTitle, this.props.stringTable)}</div>
         </DraggableHandle>
-        <div className={ResetAllButton} onClick={this.onResetAllClicked.bind(this)}>
-          Reset All
-        </div>
-        <div className={AddAbilityBarsSection}>
-          <div className={AddAbilityBarsSectionLabel}>{`Ability Bars: ${numBars}/9`}</div>
-          <div className={`${ActionButton} ${addLayoutDisabledClass}`} onClick={this.onAddNewLayoutClicked.bind(this)}>
-            Add New
-          </div>
-        </div>
-        <div className={`${ListContainer} ${Scroller}`}>
-          {Object.keys(this.props.widgets)
-            .filter((widgetID) => this.props.widgets[widgetID].registration)
-            .sort() // Alphabetical order
-            .map((widgetID) => {
-              const selectedClass = widgetID === this.props.selectedWidgetID ? 'selected' : '';
-              const hiddenClass = this.props.widgets[widgetID].state.visible ? '' : 'hidden';
-              return (
-                <div
-                  className={`${ListItem} ${selectedClass} ${hiddenClass}`}
-                  key={widgetID}
-                  onClick={this.onWidgetSelected.bind(this, widgetID)}
-                >
-                  <div className={ListItemName}>{widgetID}</div>
-                </div>
-              );
+        {/* "Ability Bars X/9" + Add New row disabled for now — adding ability bars isn't supported yet.
+        <div className={AddAbilityBarsSection} style={{ borderBottomColor: factionData.borderColor }}>
+          <div className={AddAbilityBarsSectionLabel}>
+            {getTokenizedStringTableValue(StringIDHUDEditorAbilityBarsLabel, this.props.stringTable, {
+              MIN: String(numBars),
+              MAX: String(9)
             })}
+          </div>
+          <FactionButton
+            className={ActionButton}
+            widthOverrideVmin={8}
+            disabled={!this.props.editStatus.canAddButtons}
+            onClick={this.onAddNewLayoutClicked.bind(this)}
+          >
+            {getStringTableValue(StringIDHUDEditorAddAbilityBar, this.props.stringTable)}
+          </FactionButton>
         </div>
-        <div className={Footer}>{this.renderWidgetControls()}</div>
-        {this.renderAbilityBarControls()}
+        */}
+        {this.renderUIScaleControls(factionData)}
+        <FactionSearchBar
+          className={Search}
+          value={this.state.searchQuery}
+          onValueChanged={(value) => this.setState({ searchQuery: value })}
+          heightOverrideVmin={2.67}
+        />
+        <div className={ExpandCollapseButton} onClick={this.onExpandCollapseAllClicked.bind(this)}>
+          {this.state.expandAll
+            ? getStringTableValue(StringIDHUDEditorCollapseAll, this.props.stringTable)
+            : getStringTableValue(StringIDHUDEditorExpandAll, this.props.stringTable)}
+        </div>
+        <style>{`.HUD-HUDEditor-ExpandCollapseButton { color: ${factionData.borderColor}; }`}</style>
+        <style>{`.HUD-HUDEditor-ExpandCollapseButton:hover { background-color: ${factionData.borderColor}aa; }`}</style>
+        <style>{`.HUD-HUDEditor-ListItem-Name { color: ${factionData.borderColor}; }`}</style>
+        <style>{`.HUD-HUDEditor-ListItem:not(.hidden):hover { background-color: ${factionData.borderColor}aa; }`}</style>
+        <style>{`.HUD-HUDEditor-ListItem.selected { background-color: ${factionData.borderColor} !important; }`}</style>
+        <style>{`.HUD-HUDEditor-TargetPlatesGroupHeader:hover { background-color: ${factionData.borderColor}aa; }`}</style>
+        {/* A selected group stands out as a whole: a faction tint over the block, with a left accent
+            bar running only the height of the expanded submenu (the member list). */}
+        <style>{`.HUD-HUDEditor-TargetPlatesGroup.selected { box-shadow: inset 0 0 0 100vmax ${factionData.borderColor}22; }`}</style>
+        <style>{`.HUD-HUDEditor-TargetPlatesGroup.selected .HUD-HUDEditor-TargetPlatesGroupContent { box-shadow: inset 0.4vmin 0 0 0 ${factionData.borderColor}; }`}</style>
+        <style>{`.HUD-HUDEditor-TargetPlatesGroup.selected .HUD-HUDEditor-ListItem:not(.selected):not(:hover) { background-color: transparent; }`}</style>
+        <style>{`.HUD-HUDEditor-SliderInput::-webkit-slider-thumb { background-image: url(${factionData.sliderMiniImage}); }`}</style>
+        <style>{`.HUD-HUDEditor-SliderInput::-webkit-slider-runnable-track { border-color: ${factionData.borderColor}; }`}</style>
+        <FactionScrollArea
+          className={ListContainer}
+          contentClassName={ListContent}
+          useSmallThumb
+          scrollbarWidth={'1.5vmin'}
+        >
+          {this.renderWidgetList(factionData)}
+        </FactionScrollArea>
+        <div className={Footer} style={{ borderTopColor: factionData.borderColor }}>
+          {this.renderWidgetControls(factionData)}
+        </div>
+        {this.renderAbilityBarControls(factionData)}
+        {this.renderPartyControls(factionData)}
+        {this.renderNameplateStyleControls(factionData)}
+        <div className={ResetSection} style={{ borderTopColor: factionData.borderColor }}>
+          <FactionButton className={ActionButton} onClick={this.onResetAllClicked.bind(this)} widthOverrideVmin={8}>
+            {getStringTableValue(StringIDHUDEditorResetAll, this.props.stringTable)}
+          </FactionButton>
+          <FactionButton className={ActionButton} onClick={this.onReloadUIClicked.bind(this)} widthOverrideVmin={8}>
+            {getStringTableValue(StringIDHUDEditorReloadUI, this.props.stringTable)}
+          </FactionButton>
+        </div>
+      </FactionBorder>
+    );
+  }
+
+  private renderWidgetList(factionData: FactionData): React.ReactNode[] {
+    const groupMembers: Record<string, string[]> = {};
+    const groupedIDs = new Set<string>();
+    HUDEditorWidgetGroups.forEach((group) => {
+      const members = this.getGroupMemberIDs(group);
+      if (members.length === 0) {
+        return;
+      }
+      groupMembers[group.key] = members;
+      members.forEach((id) => groupedIDs.add(id));
+    });
+    interface ListEntry {
+      sortKey: string;
+      render: () => React.ReactNode;
+    }
+    const entries: ListEntry[] = [];
+
+    const query = this.state.searchQuery.trim().toLowerCase();
+    const nameMatches = (id: string): boolean =>
+      this.getWidgetName(this.props.widgets[id].registration).toLowerCase().includes(query);
+
+    Object.keys(this.props.widgets)
+      .filter((id) => this.props.widgets[id].registration && !groupedIDs.has(id))
+      .filter((id) => !query || nameMatches(id))
+      .forEach((id) => {
+        entries.push({
+          sortKey: this.getWidgetName(this.props.widgets[id].registration),
+          render: () => this.renderListItem(id)
+        });
+      });
+
+    HUDEditorWidgetGroups.forEach((group) => {
+      const members = groupMembers[group.key];
+      if (!members) {
+        return;
+      }
+      const label = getStringTableValue(group.labelStringID, this.props.stringTable) || group.fallbackLabel;
+      // When searching, a group shows if its label matches (then all members) or any member matches
+      // (then just the matching members). Groups with no match are hidden entirely.
+      let visibleMembers = members;
+      if (query) {
+        const labelMatches = label.toLowerCase().includes(query);
+        visibleMembers = labelMatches ? members : members.filter(nameMatches);
+        if (visibleMembers.length === 0) {
+          return;
+        }
+      }
+      entries.push({
+        sortKey: label,
+        render: () => this.renderWidgetGroup(group, visibleMembers, label, factionData)
+      });
+    });
+
+    return entries.sort((a, b) => a.sortKey.localeCompare(b.sortKey)).map((entry) => entry.render());
+  }
+
+  private getGroupMemberIDs(group: HUDEditorWidgetGroup): string[] {
+    return Object.keys(this.props.widgets)
+      .filter((id) => this.props.widgets[id].registration && group.match(id))
+      .sort((a, b) =>
+        this.getWidgetName(this.props.widgets[a].registration).localeCompare(
+          this.getWidgetName(this.props.widgets[b].registration)
+        )
+      );
+  }
+
+  private toggleGroupExpanded(key: string): void {
+    this.setState((prev) => ({ expandedGroups: { ...prev.expandedGroups, [key]: !prev.expandedGroups[key] } }));
+  }
+
+  private onExpandCollapseAllClicked(): void {
+    this.setState((prev) => ({ expandAll: !prev.expandAll, expandedGroups: {} }));
+  }
+
+  private onGroupHeaderClicked(group: HUDEditorWidgetGroup, memberIDs: string[]): void {
+    this.toggleGroupExpanded(group.key);
+    // Selecting a group makes all members individually movable in the HUD.
+    this.props.dispatch(setSelectedWidgetGroup({ groupKey: group.key, memberIDs }));
+  }
+
+  private renderListItem(widgetID: string): React.ReactNode {
+    const isSelected = widgetID === this.props.selectedWidgetID;
+    const selectedClass = isSelected ? ModSelected : '';
+    const hiddenClass = this.props.widgets[widgetID].state.visible ? '' : ModHidden;
+    return (
+      <div
+        className={`${ListItem} ${selectedClass} ${hiddenClass}`}
+        key={widgetID}
+        onClick={this.onWidgetSelected.bind(this, widgetID)}
+      >
+        <div className={`${ListItemName} ${selectedClass} ${hiddenClass}`}>
+          {this.getWidgetName(this.props.widgets[widgetID].registration)}
+        </div>
+        {isSelected && (
+          <TooltipSource
+            className={ListItemRefreshButton}
+            id='ResetWidget'
+            tooltipID='HUDEditor-ResetWidget'
+            content={() => getStringTableValue(StringIDHUDEditorSelectedWidgetResetWidget, this.props.stringTable)}
+            positionType='mouse'
+          >
+            <img
+              src={RefreshIconURL}
+              onClick={(e) => {
+                e.stopPropagation();
+                this.onResetWidgetClicked();
+              }}
+            />
+          </TooltipSource>
+        )}
       </div>
     );
   }
 
-  private renderAbilityBarControls(): React.ReactNode {
-    // Only show bar controls if we're inspecting an editable AbilityBar!
+  private renderWidgetGroup(
+    group: HUDEditorWidgetGroup,
+    memberIDs: string[],
+    label: string,
+    factionData: FactionData
+  ): React.ReactNode {
+    // Force groups open while searching so matching members are visible.
+    const isExpanded =
+      this.state.searchQuery.trim().length > 0 || this.state.expandAll || !!this.state.expandedGroups[group.key];
+    const isGroupSelected = this.props.selectedGroupKey === group.key;
+    const anyMemberSelected = memberIDs.includes(this.props.selectedWidgetID);
+    const dividerImage = factionData.dividerVerticalSimpleImage;
+
+    return (
+      <div className={`${TargetPlatesGroup}${isGroupSelected ? ` ${ModSelected}` : ''}`} key={group.key}>
+        <div
+          className={`${TargetPlatesGroupHeader}${isGroupSelected || anyMemberSelected ? ` ${ModSelected}` : ''}`}
+          onClick={() => this.onGroupHeaderClicked(group, memberIDs)}
+        >
+          <img
+            className={`${TargetPlatesGroupArrow}${isExpanded ? '' : ` ${ModCollapsed}`}`}
+            src={factionData.arrowPointerImage}
+          />
+          <div className={ListItemName}>{label}</div>
+        </div>
+        {isExpanded && (
+          <>
+            {dividerImage && <img className={TargetPlatesGroupDivider} src={dividerImage} />}
+            <div className={TargetPlatesGroupContent}>
+              {memberIDs.map((id) => {
+                const isSelected = id === this.props.selectedWidgetID;
+                const selectedClass = isSelected ? ModSelected : '';
+                const hiddenClass = this.props.widgets[id]?.state.visible ? '' : ModHidden;
+                return (
+                  <div
+                    className={`${TargetPlatesGroupItem} ${ListItem} ${selectedClass} ${hiddenClass}`}
+                    key={id}
+                    onClick={this.onWidgetSelected.bind(this, id)}
+                  >
+                    <div className={`${ListItemName} ${selectedClass} ${hiddenClass}`}>
+                      {this.getWidgetName(this.props.widgets[id].registration)}
+                    </div>
+                    {isSelected && (
+                      <TooltipSource
+                        className={ListItemRefreshButton}
+                        id='ResetWidget'
+                        tooltipID='HUDEditor-ResetWidget'
+                        content={() =>
+                          getStringTableValue(StringIDHUDEditorSelectedWidgetResetWidget, this.props.stringTable)
+                        }
+                        positionType='mouse'
+                      >
+                        <img
+                          src={RefreshIconURL}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            this.onResetWidgetClicked();
+                          }}
+                        />
+                      </TooltipSource>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            {dividerImage && <img className={TargetPlatesGroupDivider} src={dividerImage} />}
+          </>
+        )}
+      </div>
+    );
+  }
+
+  private renderPartyControls(factionData: FactionData): React.ReactNode {
+    if (this.props.selectedWidgetID !== WIDGET_ID_PARTY) {
+      return null;
+    }
+    const isHorizontal = this.props.isPartyHorizontal;
+
+    return (
+      <div className={PartySection} style={{ borderTopColor: factionData.borderColor }}>
+        <div className={PartySectionButtonRow}>
+          <div className={PartySectionLabel}>
+            {getStringTableValue(StringIDHUDEditorPartyLayoutOptions, this.props.stringTable)}
+          </div>
+          <div className={ToolbarControls}>
+            <FlatButton
+              className={`${PartyLayoutButton}${!isHorizontal ? ` ${ModSelected}` : ''}`}
+              onClick={() => {
+                clientAPI.setPartyLayout('vertical');
+              }}
+            >
+              <img src={HorVertArrowURL} className={PartyLayoutIcon} />
+            </FlatButton>
+            <FlatButton
+              className={`${PartyLayoutButton}${isHorizontal ? ` ${ModSelected}` : ''}`}
+              onClick={() => {
+                clientAPI.setPartyLayout('horizontal');
+              }}
+            >
+              <img src={HorVertArrowURL} className={`${PartyLayoutIcon} ${PartyLayoutIconHorizontal}`} />
+            </FlatButton>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  private renderUIScaleControls(factionData: FactionData): React.ReactNode {
+    const percent = Math.round(this.props.uiScale * 100);
+    return (
+      <div className={AddAbilityBarsSection} style={{ borderBottomColor: factionData.borderColor }}>
+        <div className={AddAbilityBarsSectionLabel}>
+          {getStringTableValue(StringIDHUDEditorUIUniversalScale, this.props.stringTable)}
+        </div>
+        <div className={SliderRow}>
+          <input
+            className={SliderInput}
+            type='range'
+            min={Math.round(MIN_UI_SCALE * 100)}
+            max={Math.round(MAX_UI_SCALE * 100)}
+            step={1}
+            value={percent}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setUIScaleAbsolute(Number(e.target.value) / 100)}
+          />
+          <div className={ToolbarText}>
+            {getTokenizedStringTableValue(StringIDGeneralPercent, this.props.stringTable, {
+              VALUE: String(percent)
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  private renderNameplateStyleControls(factionData: FactionData): React.ReactNode {
+    const plateIDs = [WIDGET_ID_SELF, WIDGET_ID_FRIENDLY, WIDGET_ID_ENEMY];
+    if (!plateIDs.includes(this.props.selectedWidgetID)) {
+      return null;
+    }
+    const isSimple = this.props.nameplateStyle === 'simple';
+
+    return (
+      <div className={PartySection} style={{ borderTopColor: factionData.borderColor }}>
+        <div className={PartySectionButtonRow}>
+          <div className={PartySectionLabel}>
+            {getStringTableValue(StringIDHUDEditorTargetPlatesGroupName, this.props.stringTable) || 'Health Bars'}
+          </div>
+          <div className={ToolbarControls}>
+            <FlatButton
+              className={`${PartyLayoutButton}${!isSimple ? ` ${ModSelected}` : ''}`}
+              onClick={() => {
+                this.props.dispatch(setNameplateStyle('fancy'));
+                clientAPI.setNameplateStyle('fancy');
+              }}
+            >
+              {getStringTableValue(StringIDHUDEditorTargetPlatesFancy, this.props.stringTable) || 'Fancy'}
+            </FlatButton>
+            <FlatButton
+              className={`${PartyLayoutButton}${isSimple ? ` ${ModSelected}` : ''}`}
+              onClick={() => {
+                this.props.dispatch(setNameplateStyle('simple'));
+                clientAPI.setNameplateStyle('simple');
+              }}
+            >
+              {getStringTableValue(StringIDHUDEditorTargetPlatesSimple, this.props.stringTable) || 'Simple'}
+            </FlatButton>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  private renderAbilityBarControls(factionData: FactionData): React.ReactNode {
+    // Disabled for now: ability-bar group/slot editing (Bar Groups, Ability Slots) and bar deletion
+    // aren't enabled features yet. Remove this early return to bring the controls back.
+    return null;
+
     if (!this.props.selectedWidgetID?.startsWith('Bar: Abilities')) {
       return null;
     }
 
-    const selectedLayoutId = +this.props.selectedWidgetID.slice(15);
+    const selectedLayoutId = +this.props.selectedWidgetID.slice(AbilitiesBarIDPrefixLength);
     const selectedLayout: ButtonLayout = this.props.layouts[selectedLayoutId];
     if (!selectedLayout) {
       return null;
@@ -217,56 +794,65 @@ class HUDEditor extends React.Component<Props, State> {
       return null;
     }
 
-    const groupPlusDisabledClass = selectedLayout.groupCycle.length >= 6 ? 'disabled' : '';
-    const groupMinusDisabledClass = selectedLayout.groupCycle.length <= 1 ? 'disabled' : '';
-
-    const slotPlusDisabledClass = selectedGroup.abilities.length >= 20 ? 'disabled' : '';
-    const slotMinusDisabledClass = selectedGroup.abilities.length <= 1 ? 'disabled' : '';
-
     return (
-      <div className={AbilityBarSection}>
+      <div className={AbilityBarSection} style={{ borderTopColor: factionData.borderColor }}>
         <div className={AbilityBarSectionRow}>
-          <div className={AbilityBarSectionLabel}>{`Bar Groups ${selectedLayout.groupCycle.length}/6`}</div>
-          <div
-            className={`${PlusMinusButton} ${groupPlusDisabledClass}`}
+          <div className={AbilityBarSectionLabel}>
+            {getTokenizedStringTableValue(StringIDHUDEditorAbilityBarGroupsLabel, this.props.stringTable, {
+              MIN: String(selectedLayout.groupCycle.length),
+              MAX: String(MaxAbilityGroups)
+            })}
+          </div>
+          <FlatButton
+            className={PlusMinusButton}
+            disabled={selectedLayout.groupCycle.length >= MaxAbilityGroups}
             onClick={this.onAddGroupClicked.bind(this, selectedLayout)}
           >
-            +
-          </div>
-          <div
-            className={`${PlusMinusButton} ${groupMinusDisabledClass}`}
+            {'+'}
+          </FlatButton>
+          <FlatButton
+            className={PlusMinusButton}
+            disabled={selectedLayout.groupCycle.length <= 1}
             onClick={this.onDeleteGroupClicked.bind(this, selectedLayout)}
           >
-            -
-          </div>
+            {'-'}
+          </FlatButton>
         </div>
         <div className={AbilityBarSectionRow}>
-          <div className={AbilityBarSectionLabel}>{`Ability Slots ${selectedGroup.abilities.length}/20`}</div>
-          <div
-            className={`${PlusMinusButton} ${slotPlusDisabledClass}`}
+          <div className={AbilityBarSectionLabel}>
+            {getTokenizedStringTableValue(StringIDHUDEditorAbilityBarSlotsLabel, this.props.stringTable, {
+              MIN: String(selectedGroup.abilities.length),
+              MAX: String(MaxAbilitySlots)
+            })}
+          </div>
+          <FlatButton
+            className={PlusMinusButton}
+            disabled={selectedGroup.abilities.length >= MaxAbilitySlots}
             onClick={this.onAddSlotClicked.bind(this, selectedLayout)}
           >
-            +
-          </div>
-          <div
-            className={`${PlusMinusButton} ${slotMinusDisabledClass}`}
+            {'+'}
+          </FlatButton>
+          <FlatButton
+            className={PlusMinusButton}
+            disabled={selectedGroup.abilities.length <= 1}
             onClick={this.onDeleteSlotClicked.bind(this, selectedLayout)}
           >
-            -
-          </div>
+            {'-'}
+          </FlatButton>
         </div>
-        {
-          // Can't delete "Bar: Abilities 1".
-          selectedLayoutId !== 1 && (
-            <div className={AbilityBarSectionButtonRow}>
-              <div className={ActionButton} onClick={this.onDeleteButtonLayoutClicked.bind(this, selectedLayout)}>
-                Delete this Ability Bar
-              </div>
-            </div>
-          )
-        }
+        {selectedLayout.canDelete === true && (
+          <div className={AbilityBarSectionButtonRow}>
+            <FlatButton onClick={this.onDeleteButtonLayoutClicked.bind(this, selectedLayout)}>
+              {getStringTableValue(StringIDHUDEditorDeleteAbilityBar, this.props.stringTable)}
+            </FlatButton>
+          </div>
+        )}
       </div>
     );
+  }
+
+  private onCloseClick(): void {
+    onToggleUIEditMode(true, this.props.activeConditionalWidgetIDs, this.props.dispatch);
   }
 
   private async onAddGroupClicked(layout: ButtonLayout): Promise<void> {
@@ -274,26 +860,22 @@ class HUDEditor extends React.Component<Props, State> {
       return;
     }
     this.isApplyingChanges = true;
-    // Create the group.
     const newGroupId: number = await clientAPI.createAbilityGroup(`layout${layout.id}group${layout.groupCycle.length}`);
     if (newGroupId === 0) {
       this.props.dispatch(
         showModal({
           id: 'AbilityGroupCreateError',
           content: {
-            title: 'Error!',
-            message: 'An error occurred while attempting to create an Ability Group.  Please try again later.'
+            title: getStringTableValue(StringIDHUDEditorCreateAbilityGroupErrorTitle, this.props.stringTable),
+            message: getStringTableValue(StringIDHUDEditorCreateAbilityGroupErrorMessage, this.props.stringTable)
           },
           escapable: true
         })
       );
     } else {
-      // Add some button slots to the new group.  Same number as the current group.
       clientAPI.setVisibleAbilitySlots(newGroupId, this.props.groups[layout.groupID].abilities.length);
-      // Add the group to the current layout.
       const groupCycle: number[] = [...layout.groupCycle, newGroupId];
       clientAPI.selectAbilityLayoutGroupCycle(layout.id, groupCycle);
-      // Select the newly added group.
       clientAPI.selectAbilityLayoutGroup(layout.id, newGroupId);
     }
     this.isApplyingChanges = false;
@@ -306,24 +888,16 @@ class HUDEditor extends React.Component<Props, State> {
     this.isApplyingChanges = true;
 
     let groupIndex: number = layout.groupCycle.indexOf(layout.groupID);
-    // Remove the group from this layout.
-    const groupCycle: number[] = layout.groupCycle.filter((groupId) => {
-      return groupId !== layout.groupID;
-    });
+    const groupCycle: number[] = layout.groupCycle.filter((groupId) => groupId !== layout.groupID);
     clientAPI.selectAbilityLayoutGroupCycle(layout.id, groupCycle);
-    // Select an adjacent group.
     if (groupIndex >= groupCycle.length) {
       groupIndex -= 1;
     }
     clientAPI.selectAbilityLayoutGroup(layout.id, groupCycle[groupIndex]);
-    // Destroy the group itself.
     clientAPI.deleteAbilityGroup(layout.groupID);
-    // If this was not the last group in the layout, rename the following groups.
     for (let i = groupIndex + 1; i < groupCycle.length; ++i) {
-      const newName = `layout${layout.id}group${i}`;
-      clientAPI.renameAbilityGroup(groupCycle[i], newName);
+      clientAPI.renameAbilityGroup(groupCycle[i], `layout${layout.id}group${i}`);
     }
-
     this.isApplyingChanges = false;
   }
 
@@ -332,12 +906,9 @@ class HUDEditor extends React.Component<Props, State> {
       return;
     }
     this.isApplyingChanges = true;
-
-    // We expect all groups in a particular layout to have the same number of button slots.
     layout.groupCycle.forEach((groupId) => {
       clientAPI.setVisibleAbilitySlots(groupId, this.props.groups[layout.groupID].abilities.length + 1);
     });
-
     this.isApplyingChanges = false;
   }
 
@@ -346,16 +917,12 @@ class HUDEditor extends React.Component<Props, State> {
       return;
     }
     this.isApplyingChanges = true;
-
-    // Remove the last slot for all groups in this layout to maintain consistent ability slot counts.
     const newSlotCount = this.props.groups[layout.groupID].abilities.length - 1;
     layout.groupCycle.forEach((groupId) => {
-      // Clear the last ability slot manually, since "setVisibleSlots" doesn't actually shrink the array.
+      // "setVisibleSlots" doesn't shrink the array — clear the last slot manually first.
       clientAPI.clearAbility(groupId, newSlotCount);
-      // Then, reduce the number of visible slots by one.
       clientAPI.setVisibleAbilitySlots(groupId, newSlotCount);
     });
-
     this.isApplyingChanges = false;
   }
 
@@ -364,35 +931,34 @@ class HUDEditor extends React.Component<Props, State> {
       return;
     }
     this.isApplyingChanges = true;
-
     this.props.dispatch(
       showModal({
         id: 'ConfirmDeleteButtonLayout',
         content: {
-          title: 'Confirm Deletion',
-          message: `Are you sure you wish to delete Ability Bar ${layout.id}?  This cannot be undone.`,
+          title: StringIDHUDEditorConfirmDeleteButtonLayoutTitle,
+          message: getTokenizedStringTableValue(
+            StringIDHUDEditorConfirmDeleteButtonLayoutMessage,
+            this.props.stringTable,
+            { LAYOUT_ID: String(layout.id) }
+          ),
           buttons: [
             {
-              text: 'Delete',
+              text: getStringTableValue(StringIDGeneralCancel, this.props.stringTable),
               onClick: () => {
-                clientAPI.deleteAbilityLayout(layout.id);
-                // The client treats groups as independent objects, so we have to manually clean up
-                // any groups associated with this anchor.
-                layout.groupCycle.forEach((groupId) => {
-                  clientAPI.deleteAbilityGroup(groupId);
-                });
-
-                this.props.dispatch(unregisterWidget(`Bar: Abilities ${layout.id}`));
                 this.props.dispatch(hideModal());
-                this.props.dispatch(setSelectedWidget(null));
-
                 this.isApplyingChanges = false;
               }
             },
             {
-              text: 'Cancel',
+              text: getStringTableValue(StringIDGeneralDelete, this.props.stringTable),
               onClick: () => {
+                clientAPI.deleteAbilityLayout(layout.id);
+                layout.groupCycle.forEach((groupId) => {
+                  clientAPI.deleteAbilityGroup(groupId);
+                });
+                this.props.dispatch(unregisterWidget(`Bar: Abilities ${layout.id}`));
                 this.props.dispatch(hideModal());
+                this.props.dispatch(setSelectedWidget(''));
                 this.isApplyingChanges = false;
               }
             }
@@ -402,96 +968,104 @@ class HUDEditor extends React.Component<Props, State> {
     );
   }
 
-  private renderWidgetControls(): JSX.Element {
-    if (this.props.selectedWidgetID?.length > 0) {
+  private renderWidgetControls(factionData: FactionData): JSX.Element {
+    if ((this.props.selectedWidgetID?.length ?? 0) > 0) {
       const widget = this.props.widgets[this.props.selectedWidgetID];
       return (
         <>
-          <div className={SelectedWidgetName}>{`- ${widget.registration.name} -`}</div>
-          <div className={ToolbarRow}>
-            <TooltipSource
-              className={ToolbarItem}
-              id={'ToggleVisibility'}
-              tooltipParams={{ content: 'Toggle Visibility', id: 'HUDEditor-ToggleVisibility' }}
-            >
-              <img
-                src={widget.state.visible ? EyeURL : EyeSlashURL}
-                className={`${ToolbarIcon} button`}
-                onClick={this.toggleVisibility.bind(this)}
-              ></img>
-            </TooltipSource>
-            <TooltipSource
-              className={ToolbarItem}
-              id={'Opacity'}
-              tooltipParams={{ content: 'Change Opacity', id: 'HUDEditor-ChangeOpacity' }}
-            >
-              <img src={LightbulbURL} className={ToolbarIcon}></img>
-              <div className={ToolbarControls}>
-                <img
-                  className={ToolbarButton}
-                  src={MinusURL}
-                  onMouseDown={this.onOpacityMinusMouseDown.bind(this)}
-                  onMouseUp={this.onButtonMouseUp.bind(this)}
-                ></img>
-                <div className={ToolbarText}>{Math.round(widget.state.opacity * 100)}%</div>
-                <img
-                  className={ToolbarButton}
-                  src={PlusURL}
-                  onMouseDown={this.onOpacityPlusMouseDown.bind(this)}
-                  onMouseUp={this.onButtonMouseUp.bind(this)}
-                ></img>
-              </div>
-            </TooltipSource>
-            <TooltipSource
-              className={ToolbarItem}
-              id={'Scale'}
-              style={{ marginLeft: '0.5vmin' }}
-              tooltipParams={{ content: 'Change Size', id: 'HUDEditor-ChangeSize' }}
-            >
-              <img src={MagnifyingGlassURL} className={ToolbarIcon}></img>
-              <div className={ToolbarControls}>
-                <img
-                  className={ToolbarButton}
-                  src={MinusURL}
-                  onMouseDown={this.onScaleMinusMouseDown.bind(this)}
-                  onMouseUp={this.onButtonMouseUp.bind(this)}
-                ></img>
-                <div className={ToolbarText}>{Math.round(widget.state.scale * 100)}%</div>
-                <img
-                  className={ToolbarButton}
-                  src={PlusURL}
-                  onMouseDown={this.onScalePlusMouseDown.bind(this)}
-                  onMouseUp={this.onButtonMouseUp.bind(this)}
-                ></img>
-              </div>
-            </TooltipSource>
-            <TooltipSource
-              className={ToolbarItem}
-              id={'ResetWidget'}
-              tooltipParams={{ content: 'Reset Widget', id: 'HUDEditor-ResetWidget' }}
-            >
-              <img
-                src={ResetURL}
-                className={`${ToolbarIcon} button`}
-                onClick={this.onResetWidgetClicked.bind(this)}
-              ></img>
-            </TooltipSource>
+          <div className={SelectedWidgetHeader}>
+            <div className={SelectedWidgetName}>
+              {getTokenizedStringTableValue(StringIDHUDEditorSelectedWidgetName, this.props.stringTable, {
+                NAME: this.getWidgetName(widget.registration)
+              })}
+            </div>
           </div>
+          <div className={SelectedWidgetDivider} style={{ backgroundColor: factionData.borderColor }} />
+          <div className={OptionRow}>
+            <div className={OptionLabel}>
+              {getStringTableValue(StringIDHUDEditorSelectedWidgetOpacity, this.props.stringTable)}
+            </div>
+            <div className={SliderRow}>
+              <input
+                className={SliderInput}
+                type='range'
+                min={0}
+                max={100}
+                step={1}
+                value={Math.round((widget.state.opacity ?? 1) * 100)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setOpacity(Number(e.target.value) / 100)}
+              />
+              <div className={ToolbarText}>
+                {getTokenizedStringTableValue(StringIDGeneralPercent, this.props.stringTable, {
+                  VALUE: String(Math.round((widget.state.opacity ?? 1) * 100))
+                })}
+              </div>
+            </div>
+          </div>
+          <div className={OptionRow}>
+            <div className={OptionLabel}>
+              {getStringTableValue(StringIDHUDEditorSelectedWidgetSize, this.props.stringTable)}
+            </div>
+            <div className={SliderRow}>
+              <input
+                className={SliderInput}
+                type='range'
+                min={50}
+                max={300}
+                step={1}
+                value={Math.round((widget.state.scale ?? 1) * 100)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setScale(Number(e.target.value) / 100)}
+              />
+              <div className={ToolbarText}>
+                {getTokenizedStringTableValue(StringIDGeneralPercent, this.props.stringTable, {
+                  VALUE: String(Math.round((widget.state.scale ?? 1) * 100))
+                })}
+              </div>
+            </div>
+          </div>
+          <div className={SelectedWidgetDivider} style={{ backgroundColor: factionData.borderColor }} />
+          <div className={ToolbarRow}>{this.renderSnapToggle(factionData)}</div>
+          <div className={SelectedWidgetDivider} style={{ backgroundColor: factionData.borderColor }} />
           <div className={ToolbarRow}>
             {this.renderMovementControls()}
             {this.renderAnchorControls()}
           </div>
+          <div className={SelectedWidgetDivider} style={{ backgroundColor: factionData.borderColor }} />
+          <div className={ToolbarRow}>{this.renderLayerControls()}</div>
+          {this.props.selectedWidgetID === WIDGET_ID_CHAT && (
+            <>
+              <div className={SelectedWidgetDivider} style={{ backgroundColor: factionData.borderColor }} />
+              {this.renderChatFontSizeControls(factionData)}
+            </>
+          )}
+          {[WIDGET_ID_QUEST_NOTIFICATIONS, WIDGET_ID_LEVEL_NOTIFICATIONS].includes(this.props.selectedWidgetID) && (
+            <>
+              <div className={SelectedWidgetDivider} style={{ backgroundColor: factionData.borderColor }} />
+              {this.renderToastDurationControls()}
+            </>
+          )}
         </>
       );
     } else {
-      return <div className={SelectedWidgetName}>- No Widget Selected -</div>;
+      return (
+        <div className={SelectedWidgetName}>
+          {getStringTableValue(StringIDHUDEditorSelectedWidgetNone, this.props.stringTable)}
+        </div>
+      );
     }
   }
 
   private renderMovementControls(): JSX.Element {
     return (
-      <TooltipSource className={ToolbarItem} tooltipParams={{ content: 'Move Widget', id: 'HUDEditor-MoveWidget' }}>
-        <div className={ControlHeaderText}>Position</div>
+      <TooltipSource
+        className={ToolbarItem}
+        tooltipID='HUDEditor-MoveWidget'
+        content={() => getStringTableValue(StringIDHUDEditorSelectedWidgetMoveWidget, this.props.stringTable)}
+        positionType='mouse'
+      >
+        <div className={ControlHeaderText}>
+          {getStringTableValue(StringIDHUDEditorSelectedWidgetPositionLabel, this.props.stringTable)}
+        </div>
         <div className={MovementContainer}>
           <img
             className={MovementUp}
@@ -531,8 +1105,15 @@ class HUDEditor extends React.Component<Props, State> {
     const c = widget.state.xAnchor === HUDHorizontalAnchor.Center;
     const r = widget.state.xAnchor === HUDHorizontalAnchor.Right;
     return (
-      <TooltipSource className={ToolbarItem} tooltipParams={{ content: 'Change Anchor', id: 'HUDEditor-ChangeAnchor' }}>
-        <div className={ControlHeaderText}>Anchor</div>
+      <TooltipSource
+        className={ToolbarItem}
+        tooltipID='HUDEditor-ChangeAnchor'
+        content={() => getStringTableValue(StringIDHUDEditorSelectedWidgetChangeAnchor, this.props.stringTable)}
+        positionType='mouse'
+      >
+        <div className={ControlHeaderText}>
+          {getStringTableValue(StringIDHUDEditorSelectedWidgetAnchorLabel, this.props.stringTable)}
+        </div>
         <div className={AnchorContainer}>
           <img
             className={`${AnchorButton} corner top left`}
@@ -584,6 +1165,125 @@ class HUDEditor extends React.Component<Props, State> {
     );
   }
 
+  private renderLayerControls(): JSX.Element {
+    const widget = this.props.widgets[this.props.selectedWidgetID];
+
+    return (
+      <TooltipSource
+        className={OptionRow}
+        tooltipID='HUDEditor-DisplayPriority'
+        content={() => getStringTableValue(StringIDHUDEditorDisplayPriorityExplanation, this.props.stringTable)}
+        positionType='mouse'
+      >
+        <div className={OptionLabel}>
+          {getStringTableValue(StringIDHUDEditorDisplayPriority, this.props.stringTable)}
+        </div>
+        <FactionNumberSelector
+          className={DisplayPrioritySelector}
+          value={widget.state.layerOffset ?? 0}
+          onValueChanged={(newValue: number) => {
+            // Copy the original state.
+            const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
+
+            // Update the value.
+            state.layerOffset = newValue;
+
+            // Save to HUDLocalStore.
+            clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
+            // Save to Redux.
+            const delta: Record<string, HUDWidgetState> = {};
+            delta[this.props.selectedWidgetID] = state;
+            this.props.dispatch(updateWidgetStates(delta));
+          }}
+        />
+      </TooltipSource>
+    );
+  }
+
+  private renderSnapToggle(factionData: FactionData): JSX.Element {
+    return (
+      <div className={SnapToggleContainer}>
+        <div className={SnapToggleRow}>
+          <FactionCheckbox
+            isChecked={this.props.snapEnabled}
+            onCheckedChanged={() => this.props.dispatch(setSnapEnabled(!this.props.snapEnabled))}
+            heightOverrideVmin={1.8}
+          />
+          <div className={OptionLabel}>
+            {getStringTableValue(StringIDHUDEditorToggleGridSnapping, this.props.stringTable)}
+          </div>
+          <div className={SnapToggleDivider} style={{ backgroundColor: factionData.borderColor }} />
+          <FactionCheckbox
+            isChecked={this.props.guidesEnabled}
+            onCheckedChanged={() => this.props.dispatch(setGuidesEnabled(!this.props.guidesEnabled))}
+            heightOverrideVmin={1.8}
+          />
+          <div className={OptionLabel}>
+            {getStringTableValue(StringIDHUDEditorToggleGuides, this.props.stringTable)}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  private renderChatFontSizeControls(factionData: FactionData): JSX.Element {
+    const widget = this.props.widgets[this.props.selectedWidgetID];
+    const value = widget.state.chatFontSize ?? ChatFontSizeDefault;
+    return (
+      <div className={OptionRow}>
+        <div className={OptionLabel}>{getStringTableValue(StringIDHUDEditorChatFontSize, this.props.stringTable)}</div>
+        <div className={SliderRow}>
+          <input
+            className={SliderInput}
+            type='range'
+            min={ChatFontSizeMin}
+            max={ChatFontSizeMax}
+            step={1}
+            value={value}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setChatFontSize(Number(e.target.value))}
+          />
+          <div className={ToolbarText}>
+            {getTokenizedStringTableValue(StringIDGeneralPercent, this.props.stringTable, {
+              VALUE: String(value)
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  private renderToastDurationControls(): JSX.Element {
+    const widget = this.props.widgets[this.props.selectedWidgetID];
+    const value = widget.state.toastDurationSeconds ?? ToastDurationSecondsDefault;
+    return (
+      <div className={OptionRow}>
+        <div className={OptionLabel}>{getStringTableValue(StringIDHUDEditorToastDuration, this.props.stringTable)}</div>
+        <div className={SliderRow}>
+          <input
+            className={SliderInput}
+            type='range'
+            min={ToastDurationSecondsMin}
+            max={ToastDurationSecondsMax}
+            step={0.5}
+            value={value}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setToastDuration(Number(e.target.value))}
+          />
+          <div className={ToolbarText}>{`${value.toFixed(1)}s`}</div>
+        </div>
+      </div>
+    );
+  }
+
+  private setToastDuration(value: number): void {
+    const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
+    state.toastDurationSeconds = Math.max(ToastDurationSecondsMin, Math.min(value, ToastDurationSecondsMax));
+    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
+    const update: Record<string, HUDWidgetState> = {};
+    update[this.props.selectedWidgetID] = state;
+    this.props.dispatch(updateWidgetStates(update));
+  }
+
+  /*
   private async onAddNewLayoutClicked(): Promise<void> {
     const newLayoutId = await clientAPI.createAbilityLayout();
     if (newLayoutId === 0) {
@@ -591,24 +1291,17 @@ class HUDEditor extends React.Component<Props, State> {
       return;
     }
 
-    // Create a default group for the new layout.
     const newGroupId: number = await clientAPI.createAbilityGroup(`layout${newLayoutId}group1`);
     if (newGroupId === 0) {
       this.showAbilityBarCreateErrorModal();
-      // Failed to create a group for the layout, so get rid of the broken ButtonLayout.
       await clientAPI.deleteAbilityLayout(newLayoutId);
       return;
     } else {
-      // Add a button slot to the new group (otherwise it won't render).
       clientAPI.setVisibleAbilitySlots(newGroupId, 1);
-      // Add the group to the new layout.
       const groupCycle: number[] = [newGroupId];
       clientAPI.selectAbilityLayoutGroupCycle(newLayoutId, groupCycle);
-      // Select the newly added group.
       clientAPI.selectAbilityLayoutGroup(newLayoutId, newGroupId);
-
-      // And select the new AbilityBar in the HUDEditor!
-      // Have to wait a frame so the new ButtonLayout's update event arrives before we select it.
+      // Wait a frame so the new ButtonLayout's update event arrives before selecting it.
       requestAnimationFrame(() => {
         this.onWidgetSelected(`Bar: Abilities ${newLayoutId}`);
       });
@@ -620,13 +1313,14 @@ class HUDEditor extends React.Component<Props, State> {
       showModal({
         id: 'ButtonLayoutCreateError',
         content: {
-          title: 'Error!',
-          message: 'An error occurred while attempting to create an Ability Bar.  Please try again later.'
+          title: getStringTableValue(StringIDHUDEditorCreateAbilityBarErrorTitle, this.props.stringTable),
+          message: getStringTableValue(StringIDHUDEditorCreateAbilityBarErrorMessage, this.props.stringTable)
         },
         escapable: true
       })
     );
   }
+  */
 
   private handleDragEnded(_data: unknown, { dragDelta }: DropHandlerDraggableData): void {
     // Save the widget's overridden location.
@@ -644,21 +1338,8 @@ class HUDEditor extends React.Component<Props, State> {
   componentWillUnmount(): void {
     if (this.buttonHeldHandle) {
       clearInterval(this.buttonHeldHandle);
-      this.buttonHeldHandle = null;
+      this.buttonHeldHandle = 0;
     }
-  }
-
-  private toggleVisibility(): void {
-    // Copy the original state.
-    const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
-    // Modify the state.
-    state.visible = !state.visible;
-    // Save to HUDLocalStore.
-    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
-    // Save to Redux.
-    const delta: Dictionary<HUDWidgetState> = {};
-    delta[this.props.selectedWidgetID] = state;
-    this.props.dispatch(updateWidgetStates(delta));
   }
 
   private performRepeatableButtonAction(action: () => void): void {
@@ -676,28 +1357,20 @@ class HUDEditor extends React.Component<Props, State> {
     }, FirstButtonRepeatTimeoutMS);
   }
 
-  private onOpacityMinusMouseDown(): void {
-    this.performRepeatableButtonAction(() => {
-      this.changeOpacity(-0.01);
-    });
+  private setUIScaleAbsolute(value: number): void {
+    const next = Math.max(MIN_UI_SCALE, Math.min(value, MAX_UI_SCALE));
+    if (next !== this.props.uiScale) {
+      clientAPI.setUIScale(next);
+    }
   }
 
-  private onOpacityPlusMouseDown(): void {
-    this.performRepeatableButtonAction(() => {
-      this.changeOpacity(0.01);
-    });
-  }
-
-  private onScaleMinusMouseDown(): void {
-    this.performRepeatableButtonAction(() => {
-      this.changeScale(-0.01);
-    });
-  }
-
-  private onScalePlusMouseDown(): void {
-    this.performRepeatableButtonAction(() => {
-      this.changeScale(0.01);
-    });
+  private setChatFontSize(value: number): void {
+    const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
+    state.chatFontSize = Math.max(ChatFontSizeMin, Math.min(value, ChatFontSizeMax));
+    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
+    const update: Record<string, HUDWidgetState> = {};
+    update[this.props.selectedWidgetID] = state;
+    this.props.dispatch(updateWidgetStates(update));
   }
 
   private getHorizontalMove(delta: number): [number, number] {
@@ -744,30 +1417,22 @@ class HUDEditor extends React.Component<Props, State> {
 
   private onButtonMouseUp(): void {
     clearInterval(this.buttonHeldHandle);
-    this.buttonHeldHandle = null;
+    this.buttonHeldHandle = 0;
   }
 
-  private changeOpacity(opacityDelta: number): void {
-    // Copy the original state.
+  private setOpacity(opacity: number): void {
     const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
-    // Modify the state. (clamped between 0 and 1)
-    state.opacity = Math.max(0, Math.min(state.opacity + opacityDelta, 1));
-    // Save to HUDLocalStore.
+    state.opacity = Math.max(0, Math.min(opacity, 1));
     clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
-    // Save to Redux.
     const delta: Dictionary<HUDWidgetState> = {};
     delta[this.props.selectedWidgetID] = state;
     this.props.dispatch(updateWidgetStates(delta));
   }
 
-  private changeScale(scaleDelta: number): void {
-    // Copy the original state.
+  private setScale(scale: number): void {
     const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
-    // Modify the state. (clamped between 0.5 and 3)
-    state.scale = Math.max(0.5, Math.min(state.scale + scaleDelta, 3));
-    // Save to HUDLocalStore.
+    state.scale = Math.max(MinWidgetScale, Math.min(scale, MaxWidgetScale));
     clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
-    // Save to Redux.
     const delta: Dictionary<HUDWidgetState> = {};
     delta[this.props.selectedWidgetID] = state;
     this.props.dispatch(updateWidgetStates(delta));
@@ -777,8 +1442,8 @@ class HUDEditor extends React.Component<Props, State> {
     // Copy the original state.
     const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
     // Modify the state.
-    state.xOffset = Math.round((state.xOffset + pDelta[0]) * 100) / 100;
-    state.yOffset = Math.round((state.yOffset + pDelta[1]) * 100) / 100;
+    state.xOffset = Math.round(((state.xOffset ?? 0) + pDelta[0]) * 100) / 100;
+    state.yOffset = Math.round(((state.yOffset ?? 0) + pDelta[1]) * 100) / 100;
     // Save to HUDLocalStore.
     clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
     // Save to Redux.
@@ -824,7 +1489,7 @@ class HUDEditor extends React.Component<Props, State> {
     // Save to HUDLocalStore.
     clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
     // Save to Redux.
-    const delta: Dictionary<HUDWidgetState> = {};
+    const delta: Record<string, HUDWidgetState> = {};
     delta[this.props.selectedWidgetID] = state;
     this.props.dispatch(updateWidgetStates(delta));
   }
@@ -846,14 +1511,32 @@ class HUDEditor extends React.Component<Props, State> {
     this.props.dispatch(resetAllWidgets());
   }
 
+  private onReloadUIClicked(): void {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_QUICK_MENU_SELECT);
+    clientAPI.reloadUI();
+  }
+
   private onWidgetSelected(widgetID: string): void {
     this.props.dispatch(setSelectedWidget(widgetID));
   }
+
+  private getWidgetName(registration: HUDWidgetRegistration | null): string {
+    if (!registration) return '';
+
+    if (registration.nameStringTokens) {
+      return getTokenizedStringTableValue(
+        registration.nameStringID,
+        this.props.stringTable,
+        registration.nameStringTokens
+      );
+    }
+    return getStringTableValue(registration.nameStringID, this.props.stringTable);
+  }
 }
 
-function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { hudWidth, hudHeight, widgets } = state.hud;
-  const { selectedWidgetId: selectedWidgetID, selectedWidgetBounds } = state.hud.editor;
+function mapStateToProps(state: RootState, ownProps: ReactProps): ReactProps & InjectedProps {
+  const { hudWidth, hudHeight, widgets, activeConditionalWidgetIDs, uiFactionID, nameplateStyle, uiScale } = state.hud;
+  const { selectedWidgetID, selectedGroupKey, selectedWidgetBounds, snapEnabled, guidesEnabled } = state.hud.editor;
   const { editStatus, layouts, groups } = state.abilities;
   return {
     ...ownProps,
@@ -861,11 +1544,20 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     hudHeight,
     widgets,
     selectedWidgetID,
+    selectedGroupKey,
     selectedWidgetBounds,
     editStatus,
     layouts,
-    groups
+    groups,
+    activeConditionalWidgetIDs,
+    stringTable: state.stringTable.stringTable,
+    uiFactionID,
+    isPartyHorizontal: state.party.isHorizontal,
+    nameplateStyle,
+    uiScale,
+    snapEnabled,
+    guidesEnabled
   };
 }
 
-export default connect(mapStateToProps)(HUDEditor);
+export const HUDEditor = connect(mapStateToProps)(AHUDEditor);

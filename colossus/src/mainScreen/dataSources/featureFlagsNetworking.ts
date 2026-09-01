@@ -7,7 +7,7 @@
 import ExternalDataSource from '../redux/externalDataSource';
 import { featureFlagQuery, FeatureFlagQueryResult } from './featureFlagsNetworkingConstants';
 import { updateFeatureFlags } from '../redux/featureFlagsSlice';
-import { InitTopic } from '../redux/initializationSlice';
+import { LoadingTopic } from '../redux/loadingSlice';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
@@ -17,7 +17,7 @@ export class FeatureFlagsService extends ExternalDataSource {
       await this.query<FeatureFlagQueryResult>(
         { query: featureFlagQuery },
         this.handleFeatureFlags.bind(this),
-        InitTopic.Features
+        LoadingTopic.Features
       )
     ];
   }

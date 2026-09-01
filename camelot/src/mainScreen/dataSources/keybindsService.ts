@@ -7,7 +7,7 @@
 import { game } from '@csegames/library/dist/_baseGame';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { Dispatch } from '@reduxjs/toolkit';
-import ExternalDataSource from '../redux/externalDataSource';
+import { ExternalDataSource } from '../redux/externalDataSource';
 import { setKeybinds } from '../redux/keybindsSlice';
 
 export function refetchKeybinds(dispatch: Dispatch) {

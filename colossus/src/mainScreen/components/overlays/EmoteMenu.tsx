@@ -5,8 +5,7 @@
  */
 
 import { hordetest } from '@csegames/library/dist/hordetest';
-import { PerkDefGQL, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
-import { getCharacterClassStringIDForNumericID } from '../../helpers/characterHelpers';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -16,11 +15,11 @@ import { game } from '@csegames/library/dist/_baseGame';
 import { Dispatch } from 'redux';
 import { hideOverlay, Overlay } from '../../redux/navigationSlice';
 import { ProfileModel } from '../../redux/profileSlice';
-import { IDLookupTable } from '../../redux/gameSlice';
-import { CharacterClassDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { getStringTableValue } from '../../helpers/stringTableHelpers';
 import { RadialMenu, RadialMenuButtonData, getRadialMenuButtonIndexForAngle } from '../shared/RadialMenu';
+import { PerkDef } from '../../dataSources/manifest/perkManifest';
+import { ChampionGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 
 // Center of button one is at the top of the wheel.
 const firstButtonAngle = -Math.PI / 2;
@@ -51,15 +50,15 @@ interface ReactProps {
 interface InjectedProps {
   maxEmoteCount: number;
   profile: ProfileModel;
-  perksByID: Dictionary<PerkDefGQL>;
-  characterClassDefs: IDLookupTable<CharacterClassDef>;
+  classID: string;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
 }
 
 type Props = ReactProps & InjectedProps;
 
 interface State {
-  equippedEmotes: PerkDefGQL[];
+  equippedEmotes: PerkDef[];
   pointerAngle: number;
   hoveredIndex: number;
   isSelecting: boolean; // Selection animation controller.
@@ -133,7 +132,7 @@ class AEmoteMenu extends React.Component<Props, State> {
   }
 
   private renderEmoteButtonContent(
-    emotePerk: PerkDefGQL | null,
+    emotePerk: PerkDef | null,
     index: number,
     isHovered: boolean,
     isSelected: boolean,
@@ -312,8 +311,11 @@ class AEmoteMenu extends React.Component<Props, State> {
   }
 
   private checkIsPlayerReady(): void {
-    if (hordetest.game.selfPlayerEntityState && hordetest.game.selfPlayerEntityState.name !== 'unknown') {
-      this.setState({ equippedEmotes: this.getEquippedEmotes() });
+    const champ = this.props.profile?.champions?.find((c) => {
+      return c.championID === this.props.classID;
+    });
+    if (champ != null) {
+      this.setState({ equippedEmotes: this.getEquippedEmotes(champ) });
     } else {
       window.setTimeout(() => {
         this.checkIsPlayerReady();
@@ -325,21 +327,11 @@ class AEmoteMenu extends React.Component<Props, State> {
     return this.state.equippedEmotes.length > index && this.state.equippedEmotes[index] != null;
   }
 
-  private getEquippedEmotes(): PerkDefGQL[] {
-    const champ = this.props.profile?.champions?.find((c) => {
-      return (
-        c.championID ===
-        getCharacterClassStringIDForNumericID(
-          this.props.characterClassDefs,
-          hordetest.game.selfPlayerEntityState.classID
-        )
-      );
-    });
+  private getEquippedEmotes(champ: ChampionGQL): PerkDef[] {
     const equippedEmotes = champ?.emotePerkIDs?.map((epid) => this.props.perksByID[epid] ?? null) ?? [];
     while (equippedEmotes.length < this.props.maxEmoteCount) {
       equippedEmotes.push(null);
     }
-
     return equippedEmotes;
   }
 }
@@ -349,13 +341,14 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { perksByID } = state.store;
   const { characterClassDefs } = state.game;
   const { stringTable } = state.stringTable;
+  const classID = characterClassDefs[state.entities.self.classID]?.stringID;
 
   return {
     ...ownProps,
     maxEmoteCount,
     perksByID,
     profile: state.profile,
-    characterClassDefs,
+    classID,
     stringTable
   };
 }

@@ -8,14 +8,7 @@ import * as React from 'react';
 import { RootState } from '../../redux/store';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import {
-  ChampionCostumeInfo,
-  ChampionGQL,
-  Group,
-  Member,
-  PerkDefGQL,
-  Player
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionGQL, Group, Member, Player } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Input } from '../Input';
 import { hideRightPanel } from '../../redux/navigationSlice';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
@@ -28,13 +21,16 @@ import { getAccountID } from '@csegames/library/dist/_baseGame/utils/accountUtil
 import { CSETransition } from '../../../shared/components/CSETransition';
 import { getServerTimeMS } from '@csegames/library/dist/_baseGame/utils/timeUtils';
 import { formatDurationSeconds } from '@csegames/library/dist/_baseGame/utils/textUtils';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import {
   StringIDGeneralCancel,
   getStringTableValue,
   getTokenizedStringTableValue
 } from '../../helpers/stringTableHelpers';
 import { webConf } from '../../dataSources/networkConfiguration';
+import { CostumeDef } from '../../dataSources/manifest/costumeManifest';
+import { PerkDef } from '../../dataSources/manifest/perkManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'TeamJoinPanel-Container';
 const Title = 'TeamJoinPanel-Title';
@@ -101,8 +97,8 @@ interface ReactProps {}
 interface InjectedProps {
   defaultGroupCapacity: number;
   group: Group;
-  perksByID: Dictionary<PerkDefGQL>;
-  championCostumes: ChampionCostumeInfo[];
+  perksByID: Dictionary<PerkDef>;
+  championCostumes: CostumeDef[];
   playerDisplayName: string;
   playerCharacterId: string;
   champions: ChampionGQL[];
@@ -297,11 +293,11 @@ class ATeamJoinPanel extends React.Component<Props, State> {
 
   private onCancelClick(): void {
     this.props.dispatch(hideRightPanel());
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
   }
 
   private async onSendInviteClick(): Promise<void> {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
 
     if (!this.state.inviteName || this.state.inviteName.length < 1) {
       this.setState({
@@ -341,7 +337,7 @@ class ATeamJoinPanel extends React.Component<Props, State> {
       }
     } else {
       // failed
-      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES_FAILURE);
+      clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES_FAILURE);
       try {
         const data: TeamJoinAPIError = JSON.parse(res.data);
         this.setState({ resultMessage: this.buildErrorMessage(data), resultIsSuccess: false });

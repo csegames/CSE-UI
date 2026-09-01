@@ -1,4 +1,4 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -9,12 +9,11 @@ import { connect } from 'react-redux';
 import { KeybindIDs, getActiveBindForKey } from '../../../redux/keybindsSlice';
 import { RootState } from '../../../redux/store';
 import { Keybind } from '@csegames/library/dist/_baseGame/types/Keybind';
-import { hordetest } from '@csegames/library/dist/hordetest';
 import { game } from '@csegames/library/dist/_baseGame';
 import { Dispatch } from 'redux';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 
 const Button = 'PressToSkipToSummary-Button';
@@ -32,7 +31,7 @@ export interface InjectedProps {
 }
 
 export interface ReactProps {
-  onLeaveMatch: (scenarioID: string) => void;
+  onLeaveMatch: () => void;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -48,7 +47,7 @@ class APressToSkipToSummary extends React.Component<Props, {}> {
     var controllerKeybind = getActiveBindForKey(this.props.usingGamepad, this.props.keybindToSkip);
 
     return (
-      <div className={Button} onClick={this.onLeaveMatch}>
+      <div className={Button} onClick={this.props.onLeaveMatch}>
         {this.props.usingGamepad && controllerKeybind && controllerKeybind.iconClass && (
           <span className={`${controllerKeybind.iconClass} ${ControllerIcon}`} />
         )}
@@ -58,7 +57,7 @@ class APressToSkipToSummary extends React.Component<Props, {}> {
   }
 
   public componentDidMount() {
-    this.controllerSelectEVH = game.on('skipEpilogue', this.onLeaveMatch);
+    this.controllerSelectEVH = game.on('skipEpilogue', this.props.onLeaveMatch);
 
     if (this.props.usingGamepad) {
       this.setWaitingForSelect(true);
@@ -85,10 +84,6 @@ class APressToSkipToSummary extends React.Component<Props, {}> {
     }
   }
 
-  private onLeaveMatch = () => {
-    this.props.onLeaveMatch(hordetest.game.selfPlayerEntityState.scenarioID);
-  };
-
   private setWaitingForSelect = (isWaitingForSelect: boolean) => {
     game.setWaitingForSelect(isWaitingForSelect);
   };
@@ -99,7 +94,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps) {
 
   const keybindToSkip = keybindsState[KeybindIDs.SkipEpilogue];
   const usingGamepad = state.baseGame.usingGamepad;
-  const scenarioID = state.player.scenarioID;
+  const scenarioID = state.entities.self.scenarioID;
   const { stringTable } = state.stringTable;
 
   return {

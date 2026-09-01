@@ -7,11 +7,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
-import { PurchaseDefGQL, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { PurchaseDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { StoreItemCell } from './StoreItemCell';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
 import { StoreRoute } from '../../../../redux/storeSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 
 const Root = 'StartScreen-Store-StoreFeaturingPage-Root';
 const ItemsContainer = 'StartScreen-Store-StoreFeaturingPage-ItemsContainer';

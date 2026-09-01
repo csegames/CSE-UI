@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { formatDuration, getServerTimeMS } from '@csegames/library/dist/_baseGame/utils/timeUtils';
 import { clamp } from '@csegames/library/dist/_baseGame/utils/numberUtils';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 
 const LockInButton = 'ChampionSelect-LockIn-LockInButton';

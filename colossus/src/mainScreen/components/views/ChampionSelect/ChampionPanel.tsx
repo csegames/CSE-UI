@@ -2,14 +2,13 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
  */
 
-import { ChampionInfo } from '@csegames/library/dist/hordetest/graphql/schema';
 import * as React from 'react';
 import { AbilityType, getKeybindInfoForAbility } from '../../../helpers/abilityhelpers';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
 
 const Container = 'ChampionSelect-ChampionInfo-Container';
 const ChampionName = 'ChampionSelect-ChampionInfo-ChampionName';
@@ -22,7 +21,7 @@ const AbilityDescription = 'ChampionSelect-ChampionInfo-AbilityDescription';
 const KeyBindIcon = 'ChampionSelect-ChampionInfo-KeyBindIcon';
 
 interface ReactProps {
-  selected: ChampionInfo;
+  selected: ChampionDef;
 }
 
 interface InjectedProps {

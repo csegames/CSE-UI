@@ -8,11 +8,13 @@ import * as React from 'react';
 import { RootState } from '../../../redux/store';
 import { connect } from 'react-redux';
 import { ScenarioRoundState } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
+import { AnimationData } from '@csegames/library/dist/_baseGame/GameClientModels/AnimationData';
 
 const Container = 'ScenarioIntro-Container';
 const BackfillText = 'ScenarioIntro-BackfillText';
@@ -32,7 +34,9 @@ const StringIDHUDScenarioIntroGo = 'HUDScenarioIntroGo';
 const StringIDHUDScenarioIntroWaitingForConnections = 'HUDScenarioIntroWaitingForConnections';
 const StringIDHUDScenarioIntroCountdown = 'HUDScenarioIntroCountdown';
 
-interface ComponentProps {}
+const ShowGoUntilMS = 5000;
+
+interface ReactProps {}
 
 interface InjectedProps {
   scenarioState: ScenarioRoundState;
@@ -40,242 +44,192 @@ interface InjectedProps {
   stringTable: Dictionary<StringTableEntryDef>;
 }
 
-type Props = ComponentProps & InjectedProps;
+type Props = ReactProps & InjectedProps;
 
 export interface State {
-  scenarioState: ScenarioRoundState;
+  animationHandle: ListenerHandle | null;
   message: string;
-  shouldAnimate: boolean;
+  prevState: ScenarioRoundState | null;
+  showGoUntil: DOMHighResTimeStamp;
 }
 
 class AScenarioIntro extends React.Component<Props, State> {
-  private countdownTimeout: number | null = null;
-  private animateTimeout: number | null = null;
   constructor(props: Props) {
     super(props);
-
     this.state = {
-      scenarioState: ScenarioRoundState.Uninitialized,
-      message: '',
-      shouldAnimate: false
+      animationHandle: this.isCountdownState() ? clientAPI.startAnimation(this.animate.bind(this)) : null,
+      message: null,
+      prevState: ScenarioRoundState.Uninitialized,
+      showGoUntil: NaN
     };
   }
 
   public render() {
+    if (isFinite(this.state.showGoUntil)) {
+      return (
+        <div id='ScenarioIntroContainer_HUD' className={Container}>
+          <div className={GoText}>{this.state.message}</div>
+        </div>
+      );
+    }
+
+    const details = this.getRenderDetails();
+    if (!details) return null;
     return (
       <div id='ScenarioIntroContainer_HUD' className={Container}>
-        {this.renderMessage()}
+        <div className={details.className}>
+          {getStringTableValue(details.stringID, this.props.stringTable)}
+          <div className={details.messageClassName}>{this.state.message}</div>
+        </div>
       </div>
     );
   }
 
   public componentDidUpdate(prevProps: Props): void {
-    this.checkScenarioState();
-  }
-
-  private checkScenarioState(): void {
-    if (this.props.scenarioState == this.state.scenarioState) {
-      return;
+    if (this.shouldAnimate() && !this.state.animationHandle) {
+      this.setState({ animationHandle: clientAPI.startAnimation(this.animate.bind(this)) });
     }
-
-    const prevState = this.state.scenarioState;
-    this.setState({ scenarioState: this.props.scenarioState });
-
-    if (prevState !== ScenarioRoundState.Backfill && this.props.scenarioState === ScenarioRoundState.Backfill) {
-      this.stopCountdown();
-      this.updateCountdown(this.props.scenarioStateEndTime - game.worldTime);
-    }
-
-    if (
-      prevState !== ScenarioRoundState.BackfillLocked &&
-      this.props.scenarioState === ScenarioRoundState.BackfillLocked
-    ) {
-      this.stopCountdown();
-      this.updateCountdown(this.props.scenarioStateEndTime - game.worldTime);
-    }
-
-    if (
-      prevState !== ScenarioRoundState.WaitingForConnections &&
-      this.props.scenarioState === ScenarioRoundState.WaitingForConnections
-    ) {
-      this.stopCountdown();
-      this.updateCountdown(this.props.scenarioStateEndTime - game.worldTime);
-    }
-
-    if (prevState !== ScenarioRoundState.Countdown && this.props.scenarioState === ScenarioRoundState.Countdown) {
-      this.stopCountdown();
-      this.updateCountdown(this.props.scenarioStateEndTime - game.worldTime);
-    }
-
-    if (prevState === ScenarioRoundState.Countdown && this.props.scenarioState !== ScenarioRoundState.Countdown) {
-      this.stopCountdown();
-      this.showGoMessage();
-    }
-  }
-
-  public componentDidMount() {
-    this.checkScenarioState();
   }
 
   public componentWillUnmount() {
-    this.stopCountdown();
+    this.state.animationHandle?.close();
   }
 
-  private renderMessage(): JSX.Element {
-    if (!this.state.message) {
-      return;
+  private animate(data: AnimationData, timestamp: DOMHighResTimeStamp): void {
+    if (!this.shouldAnimate()) {
+      this.clearState(true);
     }
 
-    switch (this.state.scenarioState) {
-      case ScenarioRoundState.Backfill: {
-        return (
-          <div className={BackfillText}>
-            {getStringTableValue(StringIDHUDScenarioIntroBackfill, this.props.stringTable)}
-            <div className={BackfillTimer}>{this.state.message}</div>
-          </div>
-        );
-      }
-      case ScenarioRoundState.BackfillLocked: {
-        return (
-          <div className={BackfillLockedText}>
-            {getStringTableValue(StringIDHUDScenarioIntroBackfillLocked, this.props.stringTable)}
-            <div className={BackfillLockedTimer}>{this.state.message}</div>
-          </div>
-        );
-      }
-      case ScenarioRoundState.WaitingForConnections: {
-        return (
-          <div className={WaitingForConnectionsText}>
-            {getStringTableValue(StringIDHUDScenarioIntroWaitingForConnections, this.props.stringTable)}
-            <div className={WaitingForConnectionsTimer}>{this.state.message}</div>
-          </div>
-        );
-      }
+    let message = '';
+    let showGoUntil = NaN;
+    let sound: SoundEvents | null = null;
 
-      case ScenarioRoundState.Countdown: {
-        return (
-          <div className={CountdownText}>
-            {getStringTableValue(StringIDHUDScenarioIntroCountdown, this.props.stringTable)}
-            <div className={CountdownTimer}>{this.state.message}</div>
-          </div>
-        );
+    if (this.isCountdownState()) {
+      message = Math.max(1, Math.ceil(this.props.scenarioStateEndTime - data.worldTime)).toFixed(0);
+      if (message != this.state.message) {
+        switch (message) {
+          case '10':
+            sound = SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_10;
+            break;
+          case '9':
+            sound = SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_9;
+            break;
+          case '8':
+            sound = SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_8;
+            break;
+          case '7':
+            sound = SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_7;
+            break;
+          case '6':
+            sound = SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_6;
+            break;
+          case '5':
+            sound = SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_5;
+            break;
+          case '4':
+            sound = SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_4;
+            break;
+          case '3':
+            sound = SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_3;
+            break;
+          case '2':
+            sound = SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_2;
+            break;
+          case '1':
+            sound = SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_1;
+            break;
+        }
       }
-
-      case ScenarioRoundState.Running: {
-        return <div className={GoText}>{this.state.message}</div>;
-      }
-
-      default: {
+    } else if (this.state.prevState == ScenarioRoundState.Countdown) {
+      message = getStringTableValue(StringIDHUDScenarioIntroGo, this.props.stringTable);
+      sound = SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_GO;
+      showGoUntil = timestamp + ShowGoUntilMS;
+    } else if (isFinite(this.state.showGoUntil)) {
+      if (this.state.showGoUntil > timestamp) {
         return;
       }
-    }
-  }
-
-  private updateCountdown = (countdown: number) => {
-    const roundedCountdown = Math.round(countdown);
-
-    if (Number.isNaN(roundedCountdown) || Number.isFinite(roundedCountdown) == false || roundedCountdown <= 0) {
+      this.clearState(true);
       return;
     }
 
-    this.setState({ shouldAnimate: true, message: roundedCountdown.toString() });
-    this.playCountdownSound(roundedCountdown);
-
-    this.animateTimeout = window.setTimeout(() => {
-      this.setState({ shouldAnimate: false });
-    }, 200);
-
-    const newCountdown = countdown - 1;
-    if (newCountdown > 0) {
-      this.countdownTimeout = window.setTimeout(() => {
-        this.updateCountdown(newCountdown);
-      }, 1000);
-    }
-  };
-
-  private stopCountdown = () => {
-    if (this.countdownTimeout) {
-      window.clearTimeout(this.countdownTimeout);
-      this.countdownTimeout = null;
-    }
-    if (this.animateTimeout) {
-      window.clearTimeout(this.animateTimeout);
-      this.animateTimeout = null;
-    }
-  };
-
-  private showGoMessage = () => {
-    game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_GO);
-    this.setState({ message: getStringTableValue(StringIDHUDScenarioIntroGo, this.props.stringTable) });
-
-    window.setTimeout(() => {
-      this.setState({ message: '' });
-    }, 5000);
-  };
-
-  private playCountdownSound = (countdown: number) => {
-    switch (countdown) {
-      case 10: {
-        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_10);
-        break;
-      }
-
-      case 9: {
-        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_9);
-        break;
-      }
-
-      case 8: {
-        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_8);
-        break;
-      }
-
-      case 7: {
-        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_7);
-        break;
-      }
-
-      case 6: {
-        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_6);
-        break;
-      }
-
-      case 5: {
-        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_5);
-        break;
-      }
-
-      case 4: {
-        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_4);
-        break;
-      }
-
-      case 3: {
-        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_3);
-        break;
-      }
-
-      case 2: {
-        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_2);
-        break;
-      }
-
-      case 1: {
-        game.playGameSound(SoundEvents.PLAY_SCENARIO_START_COUNTDOWN_1);
-        break;
-      }
-
-      default: {
-        break;
+    if (message !== this.state.message || this.state.prevState != this.props.scenarioState) {
+      this.setState({ message, prevState: this.props.scenarioState, showGoUntil });
+      if (sound) {
+        clientAPI.playGameSound(sound);
       }
     }
-  };
+  }
+
+  private isCountdownState(): boolean {
+    switch (this.props.scenarioState) {
+      case ScenarioRoundState.Backfill:
+      case ScenarioRoundState.BackfillLocked:
+      case ScenarioRoundState.WaitingForConnections:
+      case ScenarioRoundState.Countdown:
+        return true;
+    }
+    return false;
+  }
+
+  private shouldAnimate(): boolean {
+    return (
+      this.isCountdownState() ||
+      (this.state.message && this.state.prevState === ScenarioRoundState.Countdown) ||
+      isFinite(this.state.showGoUntil)
+    );
+  }
+
+  private clearState(stopAnimation: boolean): void {
+    if (!this.state.message && (!stopAnimation || !this.state.animationHandle)) {
+      return;
+    }
+
+    let animationHandle = this.state.animationHandle;
+    if (stopAnimation) {
+      animationHandle?.close();
+      animationHandle = null;
+    }
+    this.setState({
+      animationHandle,
+      message: null,
+      prevState: ScenarioRoundState.Uninitialized,
+      showGoUntil: NaN
+    });
+  }
+
+  private getRenderDetails(): { className: string; stringID: string; messageClassName: string } | null {
+    switch (this.props.scenarioState) {
+      case ScenarioRoundState.Backfill:
+        return { className: BackfillText, stringID: StringIDHUDScenarioIntroBackfill, messageClassName: BackfillTimer };
+      case ScenarioRoundState.BackfillLocked:
+        return {
+          className: BackfillLockedText,
+          stringID: StringIDHUDScenarioIntroBackfillLocked,
+          messageClassName: BackfillLockedTimer
+        };
+      case ScenarioRoundState.WaitingForConnections:
+        return {
+          className: WaitingForConnectionsText,
+          stringID: StringIDHUDScenarioIntroWaitingForConnections,
+          messageClassName: WaitingForConnectionsTimer
+        };
+      case ScenarioRoundState.Countdown:
+        return {
+          className: CountdownText,
+          stringID: StringIDHUDScenarioIntroCountdown,
+          messageClassName: CountdownTimer
+        };
+      default:
+        return null;
+    }
+  }
 }
 
 function mapStateToProps(state: RootState): Props {
+  const { scenarioRoundState, scenarioRoundStateEndTime } = state.entities.self;
   return {
-    scenarioState: state.player.scenarioRoundState,
-    scenarioStateEndTime: state.player.scenarioRoundStateEndTime,
+    scenarioState: scenarioRoundState,
+    scenarioStateEndTime: scenarioRoundStateEndTime,
     stringTable: state.stringTable.stringTable
   };
 }

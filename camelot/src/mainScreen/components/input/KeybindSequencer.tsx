@@ -13,9 +13,29 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { refetchKeybinds } from '../../dataSources/keybindsService';
 import { endIsBindingKey, startIsBindingKey } from '../../redux/hudSlice';
 import { hideModal, showModal, updateModalContent } from '../../redux/modalsSlice';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
+import {
+  getStringTableValue,
+  getTokenizedStringTableValue,
+  StringIDGeneralComma,
+  StringIDGeneralNo,
+  StringIDGeneralYes
+} from '../../helpers/stringTableHelpers';
 
-// Styles
+const ModalID = 'KeybindInput';
+
+// CSS classes
 const BindMessage = 'HUD-KeybindInput-BindMessage';
+
+// String IDs
+const StringIDKeybindSequencerListening = 'KeybindSequencerListening';
+const StringIDKeybindSequencerPress = 'KeybindSequencerPress';
+const StringIDKeybindSequencerRemove = 'KeybindSequencerRemove';
+const StringIDKeybindSequencerConfirm = 'KeybindSequencerConfirm';
+const StringIDKeybindSequencerBind = 'KeybindSequencerBind';
+const StringIDKeybindSequencerWarning = 'KeybindSequencerWarning';
+const StringIDKeybindSequencerConflict = 'KeybindSequencerConflict';
+const StringIDKeybindSequencerRebind = 'KeybindSequencerRebind';
 
 export class KeybindSequencer {
   private keybinds: Dictionary<Keybind>;
@@ -24,6 +44,11 @@ export class KeybindSequencer {
   private binding: Binding;
   private dispatch: Dispatch;
   private listenForKeyBindingPromise: CancellablePromise<Binding> | null;
+  private stringTable: Dictionary<StringTableEntryDef>;
+
+  constructor(stringTable: Dictionary<StringTableEntryDef>) {
+    this.stringTable = stringTable;
+  }
 
   public beginKeybindSequence(
     keybinds: Dictionary<Keybind>,
@@ -41,13 +66,15 @@ export class KeybindSequencer {
     this.listenForKeyBindingPromise.then(this.handleBindStart.bind(this));
     this.dispatch(
       showModal({
-        id: 'KeybindInput',
+        id: ModalID,
         content: {
-          title: 'Listening',
-          message: `Press the key / key combination you wish to bind to ${this.keybind.description}.`,
+          title: getStringTableValue(StringIDKeybindSequencerListening, this.stringTable),
+          message: getTokenizedStringTableValue(StringIDKeybindSequencerPress, this.stringTable, {
+            DESCRIPTION: this.keybind.description
+          }),
           buttons: [
             {
-              text: 'Remove Bind',
+              text: getStringTableValue(StringIDKeybindSequencerRemove, this.stringTable),
               onClick: this.removeBind.bind(this)
             }
           ]
@@ -68,38 +95,50 @@ export class KeybindSequencer {
     const conflictingKeybinds = this.getConflictingKeybinds(binding);
     this.dispatch(endIsBindingKey());
     this.binding = binding;
-    const messageLines = ['Bind', binding.name, `to ${this.keybind.description}?`];
+    const messageLines = [
+      getTokenizedStringTableValue(StringIDKeybindSequencerBind, this.stringTable, {
+        NAME: binding.name,
+        DESCRIPTION: this.keybind.description
+      })
+    ];
     if (conflictingKeybinds.length) {
+      const conflicts = conflictingKeybinds
+        .map((conflictingKeybind): string => conflictingKeybind.description)
+        .join(`${getStringTableValue(StringIDGeneralComma, this.stringTable)} `);
       messageLines.push(
         null,
-        'Warning!',
-        binding.name,
-        'is also bound to',
-        conflictingKeybinds.map((conflictingKeybind): string => conflictingKeybind.description).join(', '),
-        'Do you still want to rebind?'
+        getStringTableValue(StringIDKeybindSequencerWarning, this.stringTable),
+        getTokenizedStringTableValue(StringIDKeybindSequencerConflict, this.stringTable, {
+          NAME: binding.name,
+          CONFLICTS: conflicts
+        }),
+        getStringTableValue(StringIDKeybindSequencerRebind, this.stringTable)
       );
     }
     this.dispatch(
-      updateModalContent({
-        title: 'Confirm Bind',
-        body: (
-          <div className={BindMessage}>
-            {messageLines.map((messagePiece, index) =>
-              messagePiece ? <span key={index}>{messagePiece}</span> : <br key={index} />
-            )}
-          </div>
-        ),
-        buttons: [
-          {
-            text: 'Yes',
-            onClick: this.confirmBind.bind(this)
-          },
-          {
-            text: 'No',
-            onClick: this.cancelBind.bind(this)
-          }
-        ]
-      })
+      updateModalContent([
+        ModalID,
+        {
+          title: getStringTableValue(StringIDKeybindSequencerConfirm, this.stringTable),
+          body: (
+            <div className={BindMessage}>
+              {messageLines.map((messagePiece, index) =>
+                messagePiece ? <span key={index}>{messagePiece}</span> : <br key={index} />
+              )}
+            </div>
+          ),
+          buttons: [
+            {
+              text: getStringTableValue(StringIDGeneralNo, this.stringTable),
+              onClick: this.cancelBind.bind(this)
+            },
+            {
+              text: getStringTableValue(StringIDGeneralYes, this.stringTable),
+              onClick: this.confirmBind.bind(this)
+            }
+          ]
+        }
+      ])
     );
   }
 

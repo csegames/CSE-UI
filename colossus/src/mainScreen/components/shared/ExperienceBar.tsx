@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import * as React from 'react';
 import { HorizontalWipe, WipeType } from '../../../shared/components/HorizontalWipe';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const ResourceBarContainer = 'Shared-ExperienceBar-ResourceBarContainer';
 const BackFill = 'Shared-ExperienceBar-BackFill';
@@ -133,7 +133,7 @@ export class ExperienceBar extends React.Component<Props, State> {
             // Reached max level!  Fancy wipe!
             this.pendingAnimations.push(() => {
               if (isAnimationExpired()) return;
-              game.playGameSound(SoundEvents.PLAY_UI_ABILITY_COOLDOWN_OVER);
+              clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_COOLDOWN_OVER);
               this.props.onLevelUpAnimationBegun?.(capturedCurrentLevel, 1500);
               this.setState({ shouldAnimateXP: false, wipe: 'bifrost' });
               this.runNextAnimationAfterMS(1500);
@@ -151,7 +151,7 @@ export class ExperienceBar extends React.Component<Props, State> {
             // Wipe animation to celebrate a level up.
             this.pendingAnimations.push(() => {
               if (isAnimationExpired()) return;
-              game.playGameSound(SoundEvents.PLAY_UI_ABILITY_COOLDOWN_OVER);
+              clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_COOLDOWN_OVER);
               this.props.onLevelUpAnimationBegun?.(capturedCurrentLevel, 1500);
               this.setState({ shouldAnimateXP: false, wipe: 'white' });
               this.runNextAnimationAfterMS(1500);

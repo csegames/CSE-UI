@@ -6,16 +6,14 @@
 
 import * as React from 'react';
 import { Button } from '../shared/Button';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { RootState } from '../../redux/store';
 import { connect } from 'react-redux';
 import {
-  PerkDefGQL,
   PerkRewardDefGQL,
   PurchaseDefGQL,
-  PerkType,
-  PurchaseRewardDefGQL
+  PurchaseRewardDefGQL,
+  RMTPurchaseDefGQL
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dispatch } from 'redux';
 import { setPurchaseIdToProcess, updateConfirmPurchaseSelectedRewardIndex } from '../../redux/storeSlice';
@@ -31,8 +29,11 @@ import {
 } from '../../helpers/storeHelpers';
 import { Overlay, hideRightPanel, showOverlay } from '../../redux/navigationSlice';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { PerkIcon } from '../views/Lobby/Store/PerkIcon';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
+import { PerkDef, PerkType } from '../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../dataSources/manifest/championManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'StartScreen-Store-ConfirmPurchase-Container';
 const ContentCenterer = 'StartScreen-Store-ConfirmPurchase-ContentCenterer';
@@ -93,12 +94,13 @@ interface InjectedProps {
   usingGamepad: boolean;
   usingGamepadInMainMenu: boolean;
   ownedPerks: Dictionary<number>;
-  rmtCurrencyIds: Dictionary<boolean>;
+  rmtPurchases: RMTPurchaseDefGQL[];
   dispatch?: Dispatch;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
   expensivePurchaseGemThreshold: number;
   confirmPurchaseSelectedRewardIndex: number;
+  championIDToChampion: Dictionary<ChampionDef>;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -254,9 +256,10 @@ class AConfirmPurchase extends React.Component<Props, State> {
     }
   }
 
-  private getPerkDiscountName(perk: PerkDefGQL): string {
-    if (perk && perk.isUnique && perk.champion) {
-      return `${perk.name} ${perk.champion.name}`;
+  private getPerkDiscountName(perk: PerkDef): string {
+    if (perk && perk.isUnique && perk.championID) {
+      const champion = this.props.championIDToChampion[perk.championID];
+      return `${perk.name} ${champion?.name}`;
     } else {
       return perk.name;
     }
@@ -422,7 +425,7 @@ class AConfirmPurchase extends React.Component<Props, State> {
     return null;
   }
 
-  private getPerkImageURL(perk: PerkDefGQL): string {
+  private getPerkImageURL(perk: PerkDef): string {
     if (
       this.props.purchase.iconURL &&
       this.props.purchase.iconURL.length > 0 &&
@@ -468,14 +471,14 @@ class AConfirmPurchase extends React.Component<Props, State> {
           type='primary'
           onClick={this.onPurchaseClick.bind(this)}
           styles={ButtonStyle}
-          disabled={tooPoor || this.state.isPurchasing}
+          disabled={tooPoor || this.state.isPurchasing || !this.state.isConfirmed}
         />
         {this.getShortageButton(rmtShortage)}
       </div>
     );
   }
 
-  private getShortageButton(rmtShortage: PerkDefGQL): JSX.Element {
+  private getShortageButton(rmtShortage: PerkDef): JSX.Element {
     if (rmtShortage) {
       const buttonText = (
         <>
@@ -533,8 +536,8 @@ class AConfirmPurchase extends React.Component<Props, State> {
     );
   }
 
-  private getShortages(): PerkDefGQL[] {
-    const shortages: PerkDefGQL[] = [];
+  private getShortages(): PerkDef[] {
+    const shortages: PerkDef[] = [];
     this.props.purchase.costs.forEach((cost) => {
       // If it costs zero, there's no shortage.
       if (cost.qty === 0) {
@@ -548,15 +551,27 @@ class AConfirmPurchase extends React.Component<Props, State> {
     return shortages;
   }
 
-  private getRMTShortage(): PerkDefGQL {
+  private getRMTShortage(): PerkDef {
     // Any shortage that can be fixed with real money is an opportunity. ;)
     return this.getShortages().find((perk) => {
-      return this.props.rmtCurrencyIds[perk.id] != null;
+      if (perk.perkType != PerkType.Currency) {
+        return false;
+      }
+
+      for (const rmt of this.props.rmtPurchases) {
+        for (const reward of rmt.perks) {
+          if (reward.perkID == perk.id) {
+            return true;
+          }
+        }
+      }
+
+      return false;
     });
   }
 
   private async onGoToRMTClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
     // Overlays appear UNDER the right panel, so we have to dismiss it first.
     this.props.dispatch?.(hideRightPanel());
     // Summon RMT purchase overlay.
@@ -564,12 +579,12 @@ class AConfirmPurchase extends React.Component<Props, State> {
   }
 
   private async onConfirmPressed() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
     this.setState({ highlightConfirmation: false, isConfirmed: !this.state.isConfirmed });
   }
 
   private async onPurchaseClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
 
     // if we're showing the high cost confirm widget, the player must have checked it
     // if they haven't checked it, highlight it so it catches their attention
@@ -588,21 +603,23 @@ class AConfirmPurchase extends React.Component<Props, State> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { usingGamepad, usingGamepadInMainMenu } = state.baseGame;
-  const { rmtCurrencyIds, perksByID, confirmPurchaseSelectedRewardIndex } = state.store;
+  const { perksByID, confirmPurchaseSelectedRewardIndex, rmtPurchases } = state.store;
   const { ownedPerks } = state.profile;
   const { stringTable } = state.stringTable;
   const { expensivePurchaseGemThreshold } = state.gameSettings;
+  const { championIDToChampion } = state.championInfo;
 
   return {
     ...ownProps,
     usingGamepad,
     usingGamepadInMainMenu,
     ownedPerks,
-    rmtCurrencyIds,
+    rmtPurchases,
     perksByID,
     stringTable,
     expensivePurchaseGemThreshold,
-    confirmPurchaseSelectedRewardIndex
+    confirmPurchaseSelectedRewardIndex,
+    championIDToChampion
   };
 }
 

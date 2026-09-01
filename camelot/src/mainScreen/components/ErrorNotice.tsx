@@ -9,19 +9,27 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../redux/store';
 import { ErrorNotice as IErrorNotice, hideErrorNotice } from '../redux/errorNoticesSlice';
+import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
+import { getStringTableValue } from '../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
 
 // Images are imported so that WebPack can find them (and give us errors if they are missing).
 import ErrorNoticeIconURL from '../../images/error-notice-icon.png';
 
+// CSS classes
 const Root = 'HUD-ErrorNotice-Root';
 const Icon = 'HUD-ErrorNotice-Icon';
 const Text = 'HUD-ErrorNotice-Text';
+
+// String IDs
+const StringIDErrorNoticeHeading = 'ErrorNoticeHeading';
 
 interface ReactProps {
   errorNotice: IErrorNotice;
 }
 
 interface InjectedProps {
+  stringTable: Dictionary<StringTableEntryDef>;
   dispatch?: Dispatch;
 }
 
@@ -35,7 +43,7 @@ class AErrorNotice extends React.Component<Props> {
       <div className={Root} onClick={this.closeSelf.bind(this)}>
         <img className={Icon} src={ErrorNoticeIconURL} />
         <div className={Text}>
-          <span>Oh No!</span>
+          <span>{getStringTableValue(StringIDErrorNoticeHeading, this.props.stringTable)}</span>
           <span>{this.props.errorNotice.text}</span>
         </div>
       </div>
@@ -57,7 +65,8 @@ class AErrorNotice extends React.Component<Props> {
 
 const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
   return {
-    ...ownProps
+    ...ownProps,
+    stringTable: state.stringTable.stringTable
   };
 };
 

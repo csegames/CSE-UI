@@ -20,9 +20,9 @@ export class Store {
     localStorage.setItem(this.prefixed(key), JSON.stringify(value));
   };
 
-  public get = <T>(key: string) => {
+  public get = <T>(key: string): T | undefined => {
     const data = localStorage.getItem(this.prefixed(key));
-    return (data && (JSON.parse(data) as T)) || undefined;
+    return data === null ? undefined : (JSON.parse(data) as T);
   };
 
   public remove = (key: string) => {

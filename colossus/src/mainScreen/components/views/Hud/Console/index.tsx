@@ -12,6 +12,7 @@ import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle'
 import { clientAPI, mockEvents } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { SlashCommandRegistry } from '@csegames/library/dist/_baseGame/slashCommandRegistry';
 import { RootState } from '../../../../redux/store';
+import { Dispatch } from 'redux';
 
 const Container = 'Console-Container';
 const InfoWrapper = 'Console-InfoWrapper';
@@ -23,7 +24,7 @@ const Line = 'Console-Line';
 const ToggleConsolePosition = 'Console-ToggleConsolePosition';
 
 export interface ConsoleProps {
-  slashCommands: SlashCommandRegistry<RootState>;
+  slashCommands: SlashCommandRegistry<RootState, Dispatch>;
 }
 
 export interface ConsoleState {
@@ -74,7 +75,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
   public componentDidMount(): void {
     this.eventHandles = [
       clientAPI.bindAnnouncementListener(this.onConsoleText.bind(this)),
-      clientAPI.bindNavigateListener(this.handleHUDNavNavigate.bind(this), 'console')
+      clientAPI.bindToggleWidgetListener(this.handleHUDNavNavigate.bind(this), 'console')
     ];
   }
 
@@ -85,7 +86,7 @@ export class Console extends React.Component<ConsoleProps, ConsoleState> {
   public render() {
     return this.state.show ? (
       <div className={Container} data-input-group='block'>
-        <div className={ToggleConsolePosition} onClick={() => mockEvents.triggerNavigate('console')}>
+        <div className={ToggleConsolePosition} onClick={() => mockEvents.triggerToggleWidget('console')}>
           Close Console
         </div>
         <div className={ConsoleWrapper}>

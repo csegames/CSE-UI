@@ -4,217 +4,399 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { HUDLayer, HUDWidgetRegistration } from '../../redux/hudSlice';
-import { RootState } from '../../redux/store';
-import { game } from '@csegames/library/dist/_baseGame';
-import { ChatRoomData, readRoom, sendToRoom } from '../../redux/chatSlice';
-import { chatGlobalRoomID } from '../../dataSources/chatService';
-import { ChatMessage } from './ChatMessage';
+import { HUDLayer, HUDWidget, HUDWidgetRegistration } from '../../redux/hudSlice';
+import { AddDispatch, RootState } from '../../redux/store';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import {
+  ChatScope,
+  ChatScopes,
+  ChatTab,
+  isChatScope
+} from '@csegames/library/dist/camelotunchained/game/types/ChatTypes';
+import { getStringTableValue } from '../../helpers/stringTableHelpers';
+import { StringTable } from '../../dataSources/manifest/stringTableManifest';
+import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
+import { getFactionData } from '../../gameData/factionData';
+import { FactionBorder, BorderType, BorderBackground } from '../FactionBorder';
+import { FactionScrollArea } from '../FactionScrollArea';
+import { handleHUDWidgetResizeEvent } from '../BaseHUDWidget';
+import { ChatLine, incrementChatConnections } from './ChatLine';
+import { allChatScopeDisplayData } from './ChatScopes';
+import { chatRenderer, chatService } from './ChatSetup';
+import { ChatLineSimple } from './lines/ChatLineSimple';
+import { game } from '@csegames/library/dist/_baseGame';
+import { ChatLineCombat } from './lines/ChatLineCombat';
+import { ChatInput } from './ChatInput';
+import { ChatTabs } from './ChatTabs';
+import { ChatServiceListener } from '@csegames/library/dist/chat/ChatServiceListener';
+import { RoomRecord, ReceivedResponse, ErroredResponse } from '@csegames/library/dist/chat/generated/uce-chat-v3';
+import { ChatLineMessage } from './lines/ChatLineMessage';
+import { convertError, isServiceError } from '../../helpers/errorConversionHelpers';
+import { binarySearch } from '@csegames/library/dist/_baseGame/utils/arrayUtils';
+import { ChatLineNotice } from './lines/ChatLineNotice';
+import { AnnouncementType } from '@csegames/library/dist/_baseGame/types/localDefinitions';
+import Escapable from '../Escapable';
 
+// CSS classes
 const Root = 'HUD-Chat-Root';
-const Navigation = 'HUD-Chat-Navigation';
-const Room = 'HUD-Chat-Room';
-const CurrentRoom = 'HUD-Chat-CurrentRoom';
-const RoomName = 'HUD-Chat-RoomName';
-const RoomUnreadCount = 'HUD-Chat-RoomUnreadCount';
+const RootActive = 'HUD-Chat-RootActive';
+const MainBorder = 'HUD-Chat-MainBorder';
 const Content = 'HUD-Chat-Content';
+const MessagesScrollArea = 'HUD-Chat-MessagesScrollArea';
+const MessagesScrollAreaUnseen = 'HUD-Chat-MessagesScrollArea-Unseen';
 const Messages = 'HUD-Chat-Messages';
-const InputContainer = 'HUD-Chat-InputContainer';
-const Form = 'HUD-Chat-Form';
-const Input = 'HUD-Chat-Input';
-const Scroller = 'Scroller-ThumbOnly';
 
-interface ReactProps {}
+// String IDs
+const StringIDChatRoomNotFound = 'ChatRoomNotFound';
+
+const MAX_LINES = 1000; // Shared across all scopes
+
+interface ReactProps {
+  isDragCopy: boolean;
+}
 
 interface InjectedProps {
-  rooms: ChatRoomData[];
-  dispatch?: Dispatch;
+  characterID: string;
+  stringTable: StringTable;
+  widgets: Record<string, HUDWidget>;
+  vminPx: number;
+  uiFactionID: string;
 }
 
-type Props = ReactProps & InjectedProps;
+type Props = ReactProps & InjectedProps & AddDispatch;
 
+// TODO : maintain array of prefiltered (by current tab), prerendered chat lines for faster display calculation
 interface State {
-  currentRoomID: string;
-  inputValue: string;
-  sentHistory: string[];
-  historyIndex: number;
+  chatLines: ChatLine[];
+  currentTab: ChatTab;
+  isActive: boolean;
+  hasUnseenMessages: boolean;
+  responseTarget?: string; // Character name
+  pendingWhisperTarget?: string; // Character name to start a whisper to; applied by ChatInput.
 }
 
-class AChat extends React.Component<Props, State> {
-  private messagesRef: React.RefObject<HTMLDivElement> = React.createRef();
-  private inputRef: React.RefObject<HTMLInputElement> = React.createRef();
-  private chatHandle: ListenerHandle;
+interface Snapshot {
+  shouldScroll: boolean;
+}
+
+class AChat extends React.Component<Props, State, Snapshot> implements ChatServiceListener {
+  private rootRef: HTMLDivElement | null = null;
+  private messagesEndRef: HTMLDivElement | null = null;
+  private listeners: ListenerHandle[] = [];
+  private isScrolledToBottom: boolean = true;
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      currentRoomID: chatGlobalRoomID,
-      inputValue: '',
-      sentHistory: [],
-      historyIndex: -1
+      chatLines: [],
+      currentTab: clientAPI.getChatTabs()[0],
+      isActive: false,
+      hasUnseenMessages: false
     };
   }
 
-  render(): JSX.Element {
+  onJoined(room: RoomRecord): void {
+    if (!isChatScope(room.scope)) return;
+    const id = allChatScopeDisplayData[room.scope]?.joinedStringID;
+    if (!id) return;
+    this.addChatLine(new ChatLineNotice(getStringTableValue(id, this.props.stringTable)));
+  }
+
+  onLeft(room: RoomRecord): void {
+    if (!isChatScope(room.scope)) return;
+    const id = allChatScopeDisplayData[room.scope]?.leftStringID;
+    if (!id) return;
+    this.addChatLine(new ChatLineNotice(getStringTableValue(id, this.props.stringTable)));
+  }
+
+  onReceived(message: ReceivedResponse): void {
+    const scope = isChatScope(message.room.scope) ? message.room.scope : ChatScopes.Local;
+    if (scope === ChatScopes.Whisper && message.senderID != this.props.characterID) {
+      this.setState({ responseTarget: message.senderName });
+    }
+    this.addChatLine(new ChatLineMessage(scope, message, chatRenderer.render(message), this.startWhisper.bind(this)));
+  }
+
+  // Opens the chat input in whisper mode for the given player (used by left-clicking a chat name).
+  private startWhisper(name: string): void {
+    this.setState({ pendingWhisperTarget: name, isActive: true });
+  }
+
+  onError(error: ErroredResponse): void {
+    if (isServiceError(error)) {
+      this.addChatLine(new ChatLineSimple(ChatScopes.Error, convertError(error, false).message));
+    } else {
+      this.addChatLine(new ChatLineSimple(ChatScopes.Error, error.error.type));
+    }
+  }
+
+  onConnected(): void {
+    incrementChatConnections();
+  }
+
+  onConnectionFailure(reconnecting: boolean): void {
+    if (!reconnecting) this.openConnection();
+    // TODO : message for failure
+  }
+
+  onDisconnected(reconnecting: boolean): void {
+    if (!reconnecting) this.openConnection();
+    // TODO : message for disconnection
+  }
+
+  render(): React.ReactNode {
+    const selfWidget = this.props.widgets[WIDGET_ID_CHAT];
+    const chatFontSize = (selfWidget?.state?.chatFontSize ?? 100) / 100;
+    const { isActive } = this.state;
+
     return (
-      <div className={Root}>
-        <div className={Navigation}>
-          {this.props.rooms.map((room) => {
-            const isCurrentRoom = room.id === this.state.currentRoomID;
-            const selectRoom = (): void => {
-              this.setState({ currentRoomID: room.id });
-            };
-            const unreadCount = room.messages.filter((message) => !message.isSeen).length;
-            return (
-              <div
-                onClick={isCurrentRoom ? undefined : selectRoom.bind(this)}
-                className={isCurrentRoom ? `${Room} ${CurrentRoom}` : Room}
-                key={room.id}
-              >
-                <span className={RoomName}>{room.id}</span>
-                {unreadCount > 0 && <span className={RoomUnreadCount}>{unreadCount > 99 ? '99+' : unreadCount}</span>}
+      <div
+        className={isActive ? `${Root} ${RootActive}` : Root}
+        onClick={() => this.setState({ isActive: true })}
+        ref={this.setRootRef.bind(this)}
+      >
+        <ChatTabs
+          isActive={isActive}
+          setActive={(isActive: boolean) => this.setState({ isActive })}
+          onTabChanged={(tab: ChatTab) => this.setState({ currentTab: tab })}
+        />
+        <FactionBorder
+          className={MainBorder}
+          type={BorderType.Primary}
+          background={BorderBackground.PatternLarge}
+          resizing={{
+            onSizeChanged: (dt: number, dr: number, db: number, dl: number) =>
+              handleHUDWidgetResizeEvent(selfWidget, false, this.props.vminPx, this.props.dispatch, dt, dr, db, dl),
+            onSizeFinalized: (dt: number, dr: number, db: number, dl: number) =>
+              handleHUDWidgetResizeEvent(selfWidget, true, this.props.vminPx, this.props.dispatch, dt, dr, db, dl)
+          }}
+        >
+          <div className={Content}>
+            <FactionScrollArea
+              className={`${MessagesScrollArea}${this.state.hasUnseenMessages ? ` ${MessagesScrollAreaUnseen}` : ''}`}
+              borderType={BorderType.Secondary}
+              background={BorderBackground.Darken}
+              scrollbarWidth={'1.5vmin'}
+              useSmallThumb
+              barOnLeft
+              showEmptyTrack
+              onScroll={this.handleMessagesScroll.bind(this)}
+              style={
+                {
+                  '--chat-glow-color': getFactionData(this.props.uiFactionID).selectionGlowColor
+                } as React.CSSProperties
+              }
+            >
+              <div className={Messages} style={{ fontSize: `${chatFontSize}rem` }}>
+                {this.renderChatLines()}
+                <div ref={this.setMessagesRef.bind(this)} />
               </div>
-            );
-          })}
-        </div>
-        <div className={Content}>
-          <div className={`${Messages} ${Scroller}`} ref={this.messagesRef}>
-            {this.getCurrentRoom()?.messages?.map?.((message, messageIndex) => (
-              <ChatMessage message={message} key={`${this.state.currentRoomID}-${messageIndex}`} />
-            ))}
+            </FactionScrollArea>
+            <ChatInput
+              isActive={isActive}
+              setActive={(isActive: boolean) => this.setState({ isActive })}
+              getResponseTarget={() => this.state.responseTarget} // TODO: look up last person who whispered us
+              sendMessage={this.sendMessage.bind(this)}
+              whisperTargetRequest={this.state.pendingWhisperTarget}
+              onWhisperTargetConsumed={() => this.setState({ pendingWhisperTarget: undefined })}
+              chatFontSize={chatFontSize}
+            />
           </div>
-          <div className={InputContainer}>
-            <form className={Form} onSubmit={this.handleFormSubmit.bind(this)}>
-              <input
-                className={Input}
-                type='text'
-                value={this.state.inputValue}
-                onKeyDown={this.handleInputKeydown.bind(this)}
-                onChange={this.handleInputValueChange.bind(this)}
-                placeholder='Say something!'
-                ref={this.inputRef}
-              />
-            </form>
-          </div>
-        </div>
+        </FactionBorder>
+        {isActive && !this.props.isDragCopy && (
+          <Escapable escapeID='WIDGET_ID_CHAT' onEscape={() => this.setState({ isActive: false })} />
+        )}
       </div>
     );
   }
 
+  setRootRef(ref: HTMLDivElement | null): void {
+    this.rootRef = ref;
+  }
+
+  setMessagesRef(ref: HTMLDivElement | null): void {
+    this.messagesEndRef = ref;
+  }
+
   componentDidMount(): void {
-    this.chatHandle = game.onBeginChat(this.focusInput.bind(this));
+    chatService.addListener(this);
+    this.listeners.push(
+      clientAPI.bindCombatEventListener((combatEvents) =>
+        combatEvents.forEach((ev) => this.addChatLine(new ChatLineCombat(ev)))
+      ),
+      clientAPI.bindAnnouncementListener((type, text) => {
+        if (type == AnnouncementType.Text) this.addChatLine(new ChatLineSimple(ChatScopes.Global, text));
+      }),
+      game.onConsoleText((consoleText) => this.addChatLine(new ChatLineSimple(ChatScopes.Console, consoleText)))
+    );
+    window.addEventListener('click', this.handleWindowClick.bind(this));
+    if (!chatService.connected && this.props.characterID.length > 0) {
+      this.openConnection();
+    }
   }
 
   componentWillUnmount(): void {
-    if (this.chatHandle) {
-      this.chatHandle.close();
+    window.removeEventListener('click', this.handleWindowClick.bind(this));
+    chatService.removeListener(this);
+    for (const listener of this.listeners) {
+      listener.close();
     }
   }
 
-  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>): void {
-    if (
-      this.state.currentRoomID !== prevState.currentRoomID ||
-      this.getCurrentRoom()?.messages?.some?.((message) => !message.isSeen)
-    ) {
-      this.messagesRef.current.scrollTop =
-        this.messagesRef.current.scrollHeight - this.messagesRef.current.offsetHeight;
-      this.props.dispatch(readRoom(this.state.currentRoomID));
-    }
+  getSnapshotBeforeUpdate(): Snapshot | null {
+    return { shouldScroll: this.isScrolledToBottom };
   }
 
-  getCurrentRoom(): ChatRoomData | null {
-    return this.props.rooms.find((room) => room.id === this.state.currentRoomID) ?? null;
-  }
-
-  handleInputKeydown(e: KeyboardEvent): void {
-    switch (e.keyCode) {
-      // Up arrow
-      case 38: {
-        this.navigateHistory(1);
-        break;
-      }
-      // Down arrow
-      case 40: {
-        this.navigateHistory(-1);
-        break;
+  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot: Snapshot): void {
+    if (prevState.chatLines !== this.state.chatLines) {
+      if (snapshot.shouldScroll) {
+        this.messagesEndRef?.scrollIntoView();
+      } else {
+        this.setState({ hasUnseenMessages: true });
       }
     }
-  }
 
-  handleInputValueChange(e: Event): void {
-    const target = e.target as HTMLInputElement;
-    this.setState({ inputValue: target.value });
-  }
-
-  handleFormSubmit(e: Event): void {
-    e.preventDefault();
-    if (this.state.inputValue.startsWith('/')) {
-      this.sendSlashCommand();
-    } else {
-      this.sendMessage();
+    if (this.state.currentTab !== prevState.currentTab) {
+      this.messagesEndRef?.scrollIntoView();
     }
-    this.setState({
-      sentHistory: [this.state.inputValue, ...this.state.sentHistory],
-      inputValue: '',
-      historyIndex: -1
+
+    if (this.props.characterID != prevProps.characterID) {
+      this.getShouldConnect().then((shouldConnect) => {
+        if (shouldConnect) {
+          chatService.reset();
+        } else if (chatService.connected) {
+          chatService.close();
+        }
+      });
+    }
+  }
+
+  private async getShouldConnect(): Promise<boolean> {
+    if (!this.props.characterID) return Promise.resolve(false);
+    return !(await clientAPI.isOfflineMode());
+  }
+
+  private openConnection(): void {
+    this.getShouldConnect().then((shouldConnect) => {
+      if (shouldConnect) chatService.open();
     });
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
+  }
+
+  private handleMessagesScroll(e: React.UIEvent<HTMLDivElement>): void {
+    const el = e.currentTarget;
+    this.isScrolledToBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 10;
+    if (this.isScrolledToBottom && this.state.hasUnseenMessages) {
+      this.setState({ hasUnseenMessages: false });
     }
   }
 
-  navigateHistory(offset: number): void {
-    const historyIndex = Math.max(Math.min(this.state.historyIndex + offset, this.state.sentHistory.length - 1), -1);
-    const inputValue = this.state.sentHistory[historyIndex] ?? '';
-    this.setState({ historyIndex, inputValue });
+  private handleWindowClick(e: MouseEvent): void {
+    if (this.state.isActive && !(e.target instanceof HTMLElement && this.rootRef?.contains(e.target))) {
+      this.setState({ isActive: false });
+    }
   }
 
-  sendSlashCommand(): void {
-    game.sendSlashCommand(this.state.inputValue.substring(1));
-  }
+  private addChatLine(line: ChatLine): void {
+    const lines = this.state.chatLines.slice();
 
-  sendMessage(): void {
-    this.props.dispatch(
-      sendToRoom({
-        contents: this.state.inputValue,
-        roomID: this.state.currentRoomID
-      })
+    let index = binarySearch(
+      line,
+      lines,
+      (l?: ChatLine, r?: ChatLine) =>
+        (l?.numConnections ?? 0) - (r?.numConnections ?? 0) ||
+        (l?.timestamp ?? 0) - (r?.timestamp ?? 0) ||
+        (l?.id ?? 0) - (r?.id ?? 0) ||
+        0
     );
+    if (index < 0) {
+      lines.splice(-index - 1, 0, line);
+    } else if (lines.length < index) {
+      lines.push(line);
+    } else {
+      lines.splice(index, 0, line);
+    }
+
+    if (lines.length > MAX_LINES) {
+      lines.shift();
+    }
+
+    this.setState({ chatLines: lines });
   }
 
-  focusInput(inputValue: string): void {
-    if (this.inputRef.current) {
-      this.setState({ inputValue });
-      this.inputRef.current.focus();
+  private renderChatLines(): React.ReactNode {
+    const scopes = this.state.currentTab.scopes;
+    if (!scopes) return null;
+
+    const activeScopes = new Set(scopes);
+    const elements = [];
+
+    for (const line of this.state.chatLines) {
+      if (!activeScopes.has(line.scope)) continue;
+      elements.push(line.render());
+    }
+    return elements;
+  }
+
+  private sendMessage(scope: ChatScope, text: string, whisperTarget?: string): void {
+    const room = chatService.rooms.find((r) => r.scope === scope);
+    if (!room || (scope == ChatScopes.Whisper && !whisperTarget)) {
+      this.addChatLine(
+        new ChatLineSimple(
+          ChatScopes.Error,
+          getStringTableValue(
+            allChatScopeDisplayData[scope]?.missingStringID ?? StringIDChatRoomNotFound,
+            this.props.stringTable
+          )
+        )
+      );
+      return;
+    }
+
+    if (scope == ChatScopes.Whisper) {
+      chatService.sendWhisper(whisperTarget!, text);
+    } else {
+      chatService.sendMessage(room, text);
     }
   }
 }
 
-const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
+const mapStateToProps = (state: RootState, ownProps: ReactProps): ReactProps & InjectedProps => {
+  const { widgets, vminPx, uiFactionID } = state.hud;
   return {
     ...ownProps,
-    rooms: state.chat.rooms
+    characterID: state.entities.self.characterID,
+    stringTable: state.stringTable.stringTable,
+    widgets,
+    vminPx,
+    uiFactionID
   };
 };
 
 const Chat = connect(mapStateToProps)(AChat);
 
-export const WIDGET_NAME_GAME_MENU = 'Chat';
+export const WIDGET_ID_CHAT = 'Chat';
 export const chatRegistry: HUDWidgetRegistration = {
-  name: WIDGET_NAME_GAME_MENU,
+  id: WIDGET_ID_CHAT,
+  nameStringID: 'HUDEditorWidgetNameChat',
   defaults: {
     xAnchor: HUDHorizontalAnchor.Left,
     yAnchor: HUDVerticalAnchor.Bottom,
-    xOffset: 0,
-    yOffset: 20
+    xOffset: 1,
+    yOffset: 1,
+    resizable: {
+      widthVmin: 37.5,
+      heightVmin: 21.5,
+      minWidthVmin: 37.5,
+      minHeightVmin: 21.5,
+      isMaximized: false
+    }
   },
+  requiresGameDefsLoaded: true,
   layer: HUDLayer.HUD,
-  render: () => {
-    return <Chat />;
+  render: (isDragCopy: boolean) => {
+    return <Chat isDragCopy={isDragCopy} />;
   }
 };

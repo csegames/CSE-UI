@@ -8,13 +8,13 @@ import * as React from 'react';
 import { RootState } from '../../../redux/store';
 import { connect } from 'react-redux';
 import { Dictionary, Dispatch } from '@reduxjs/toolkit';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
 import { Button } from '../../shared/Button';
 import { ReportAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { Overlay, hideOverlay } from '../../../redux/navigationSlice';
 import { VoiceChatReport, clearPlayerToReport, updateReport } from '../../../redux/voiceChatSlice';
-import { PlayerEntityStateModel } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
+import { PlayerEntityState } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { IDLookupTable } from '../../../redux/gameSlice';
 import { CharacterClassDef, CharacterRaceDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
 import { webConf } from '../../../dataSources/networkConfiguration';
@@ -51,7 +51,7 @@ interface ReactProps {}
 
 interface InjectedProps {
   stringTable: Dictionary<StringTableEntryDef>;
-  playerToReport: PlayerEntityStateModel;
+  playerToReport: PlayerEntityState;
   raceDefs: IDLookupTable<CharacterRaceDef>;
   classDefs: IDLookupTable<CharacterClassDef>;
   report: VoiceChatReport;

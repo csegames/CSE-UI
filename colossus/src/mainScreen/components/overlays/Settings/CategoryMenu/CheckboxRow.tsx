@@ -7,10 +7,10 @@
 import * as React from 'react';
 import { ItemContainer } from '../ItemContainer';
 import { BooleanOption } from '@csegames/library/dist/_baseGame/types/Options';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { toTitleCase } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { cloneDeep } from '@csegames/library/dist/_baseGame/utils/objectUtils';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const ItemContainerStyles = 'Settings-CategoryMenu-CheckboxRow-ItemContainerStyles';
 
@@ -26,11 +26,11 @@ export function CheckboxRow(props: Props) {
     const newOption = cloneDeep(props.option);
     newOption.value = !newOption.value;
     props.onChange(newOption);
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
   }
 
   function onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   const checkboxClassName = props.option.value === true ? 'on' : 'off';

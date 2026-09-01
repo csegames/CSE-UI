@@ -8,23 +8,20 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { Dispatch } from 'redux';
-import {
-  ChampionInfo,
-  OvermindSummaryGQL,
-  QuestGQL,
-  QuestLinkDefGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { OvermindSummaryGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { QuestsByType } from '../../../../redux/questSlice';
 import { ResourceBar } from '../../../shared/ResourceBar';
 import { showRightPanel } from '../../../../redux/navigationSlice';
 import { ProgressionInfo } from '../../../rightPanel/ProgressionInfo';
 import { findChampionQuestProgress, findChampionQuest } from '../../../../helpers/characterHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import TooltipSource from '../../../../../shared/components/TooltipSource';
 import { StringIDGeneralXPProgress, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { ChampionDef } from '../../../../dataSources/manifest/championManifest';
+import { QuestLinkDef } from '../../../../dataSources/manifest/questManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const ProgressionContainer = 'ChampionProfile-ChampionProgressionLevel-ProgressionContainer';
 const ProgressionLevel = 'ChampionProfile-ChampionProgressionLevel-ProgressionLevel';
@@ -40,11 +37,11 @@ interface ReactProps {
 
 interface InjectedProps {
   overmindSummary: OvermindSummaryGQL;
-  selectedChampion: ChampionInfo;
+  selectedChampion: ChampionDef;
   questsGQL: QuestGQL[];
   quests: QuestsByType;
   playerName: string;
-  championIDToChampion: { [championID: string]: ChampionInfo };
+  championIDToChampion: { [championID: string]: ChampionDef };
   stringTable: Dictionary<StringTableEntryDef>;
   dispatch?: Dispatch;
 }
@@ -53,7 +50,7 @@ type Props = ReactProps & InjectedProps;
 
 class AChampionProgressionLevel extends React.Component<Props> {
   public render() {
-    let champion: ChampionInfo = null;
+    let champion: ChampionDef = null;
     if (this.props.selectedChampion) {
       champion = this.props.selectedChampion;
     } else if (this.props.overmindSummary) {
@@ -112,7 +109,7 @@ class AChampionProgressionLevel extends React.Component<Props> {
   }
 
   private onMouseEnter(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
   }
 
   private getLevel(questGQL: QuestGQL, notMaxLevel: boolean): string {
@@ -123,12 +120,12 @@ class AChampionProgressionLevel extends React.Component<Props> {
     return notMaxLevel ? `${questGQL.currentQuestIndex + 1}` : `${questGQL.currentQuestIndex}`;
   }
 
-  private getMaxBarProgress(questLink: QuestLinkDefGQL): number {
+  private getMaxBarProgress(questLink: QuestLinkDef): number {
     // if there is no current link you have reached max level, so return a full bar.
     return questLink?.progress ?? 100;
   }
 
-  private getCurrentBarProgress(questGQL: QuestGQL, questLink: QuestLinkDefGQL): number {
+  private getCurrentBarProgress(questGQL: QuestGQL, questLink: QuestLinkDef): number {
     if (!questGQL) {
       return 0;
     }
@@ -147,7 +144,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { selectedChampion } = state.championInfo;
   const { quests } = state.profile;
   const questsByType = state.quests.quests;
-  const playerName = state.player.name;
+  const playerName = state.user.displayName;
   const { championIDToChampion } = state.championInfo;
   const { stringTable } = state.stringTable;
 

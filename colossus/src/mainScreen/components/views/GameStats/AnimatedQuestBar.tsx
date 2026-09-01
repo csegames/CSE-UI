@@ -8,11 +8,11 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { Dispatch } from 'redux';
-import { QuestDefGQL, QuestType } from '@csegames/library/dist/hordetest/graphql/schema';
 import { StringIDGeneralBP, StringIDGeneralXP, getStringTableValue } from '../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { ExperienceBar } from '../../shared/ExperienceBar';
+import { QuestDef, QuestType } from '../../../dataSources/manifest/questManifest';
 
 const QuestContainer = 'GameStats-PlayerProgression-QuestContainer';
 const QuestResourceBar = 'GameStats-PlayerProgression-QuestResourceBar';
@@ -46,7 +46,7 @@ interface ReactProps {
   initialXP: number;
   endingLevel: number;
   endingXP: number;
-  questDef: QuestDefGQL;
+  questDef: QuestDef;
 }
 
 interface InjectedProps {

@@ -9,8 +9,8 @@ import { Button } from '../../../shared/Button';
 import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 
 const InviteFriendsButtonClass = 'Lobby-PartyHeader-InviteFriendsButton';
 const ActionButtonClass = 'StartScreen-Play-ActionButton';

@@ -4,11 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { HUDLayer, HUDWidgetRegistration, addMenuWidgetExiting } from '../redux/hudSlice';
-import { RootState } from '../redux/store';
+import { HUDLayer, HUDWidgetRegistration, addConditionalWidgetExiting } from '../redux/hudSlice';
+import { AddDispatch, RootState } from '../redux/store';
 import { GameOption, OptionCategory, SelectValue } from '@csegames/library/dist/_baseGame/types/Options';
 import { game } from '@csegames/library/dist/_baseGame';
 import { CancellablePromise } from '@csegames/library/dist/_baseGame/clientTasks';
@@ -29,21 +28,53 @@ import { genID } from '@csegames/library/dist/_baseGame/utils/idGen';
 import { clearOptionChanges } from '../redux/gameSettingsSlice';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import {
+  getStringTableValue,
+  StringIDGeneralApply,
+  StringIDGeneralCancel,
+  StringIDGeneralDefault,
+  StringIDGeneralDelete,
+  StringIDGeneralLoad,
+  StringIDGeneralSave,
+  StringIDGeneralSaveAs,
+  StringIDGeneralYes
+} from '../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
+import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
 
+const ModalID = 'SaveKeybindsAs';
+
+// CSS classes
 const Root = 'HUD-Settings-Root';
 const Search = 'HUD-Settings-Search';
 const SaveAsModalBody = 'HUD-Settings-SaveAsModalBody';
 const LoadModalBody = 'HUD-Settings-LoadModalBody';
 
-interface ReactProps {}
+// String IDs
+const StringIDSettingsTitle = 'SettingsTitle';
+const StringIDSettingsTabTitleGeneral = 'SettingsTabTitleGeneral';
+const StringIDSettingsTabTitleAddons = 'SettingsTabTitleAddons';
+const StringIDSettingsSectionTitleKeyBindings = 'SettingsSectionTitleKeyBindings';
+const StringIDSettingsSectionTitleInput = 'SettingsSectionTitleInput';
+const StringIDSettingsSectionTitleAudio = 'SettingsSectionTitleAudio';
+const StringIDSettingsSectionTitleGraphics = 'SettingsSectionTitleGraphics';
+const StringIDSettingsSaveKeybindsModalInputLabel = 'SettingsSaveKeybindsModalInputLabel';
+const StringIDSettingsResetKeybindsModalTitle = 'SettingsResetKeybindsModalTitle';
+const StringIDSettingsResetKeybindsModalMessage = 'SettingsResetKeybindsModalMessage';
+const StringIDSettingsLoadKeybindsModalTitle = 'SettingsLoadKeybindsModalTitle';
+const StringIDSettingsLoadKeybindsModalEmptyMessage = 'SettingsLoadKeybindsModalEmptyMessage';
+
+interface ReactProps {
+  isDragCopy: boolean;
+}
 
 interface InjectedProps {
   keybinds: Dictionary<Keybind>;
   advanceSettingsOriginalValues: Dictionary<GameOption>;
-  dispatch?: Dispatch;
+  stringTable: Dictionary<StringTableEntryDef>;
 }
 
-type Props = ReactProps & InjectedProps;
+type Props = ReactProps & InjectedProps & AddDispatch;
 
 interface State {
   optionValues: Map<string, number | boolean | SelectValue>;
@@ -62,7 +93,6 @@ interface State {
 
 enum SettingsTab {
   General = 'general',
-  Interface = 'interface',
   Addons = 'addons'
 }
 
@@ -72,7 +102,8 @@ enum SettingsSection {
   Audio = 'audio',
   Graphics = 'graphics',
   SkillButtons = 'skill-buttons',
-  Chat = 'chat'
+  Chat = 'chat',
+  UI = 'ui'
 }
 
 class ASettings extends React.Component<Props, State> {
@@ -90,7 +121,7 @@ class ASettings extends React.Component<Props, State> {
     // Key Bindings
     const keyBindingsSection: MenuSectionData = {
       id: SettingsSection.KeyBindings,
-      title: 'Key Bindings',
+      title: getStringTableValue(StringIDSettingsSectionTitleKeyBindings, this.props.stringTable),
       content: {
         node: (
           <>
@@ -101,12 +132,15 @@ class ASettings extends React.Component<Props, State> {
           </>
         ),
         scrollable: true
+      },
+      onOpen: () => {
+        clientAPI.playGameSound(SoundEvents.PLAY_UI_GAME_MENU_OPTIONS);
       }
     };
     // Input
     const inputSection: MenuSectionData = {
       id: SettingsSection.Input,
-      title: 'Input',
+      title: getStringTableValue(StringIDSettingsSectionTitleInput, this.props.stringTable),
       content: {
         node: (
           <>
@@ -120,12 +154,15 @@ class ASettings extends React.Component<Props, State> {
           </>
         ),
         scrollable: true
+      },
+      onOpen: () => {
+        clientAPI.playGameSound(SoundEvents.PLAY_UI_GAME_MENU_OPTIONS);
       }
     };
     // Audio
     const audioSection: MenuSectionData = {
       id: SettingsSection.Audio,
-      title: 'Audio',
+      title: getStringTableValue(StringIDSettingsSectionTitleAudio, this.props.stringTable),
       content: {
         node: (
           <>
@@ -140,12 +177,15 @@ class ASettings extends React.Component<Props, State> {
           </>
         ),
         scrollable: true
+      },
+      onOpen: () => {
+        clientAPI.playGameSound(SoundEvents.PLAY_UI_GAME_MENU_OPTIONS);
       }
     };
     // Graphics
     const graphicsSection: MenuSectionData = {
       id: SettingsSection.Graphics,
-      title: 'Graphics',
+      title: getStringTableValue(StringIDSettingsSectionTitleGraphics, this.props.stringTable),
       content: {
         node: (
           <>
@@ -159,65 +199,74 @@ class ASettings extends React.Component<Props, State> {
           </>
         ),
         scrollable: true
+      },
+      onOpen: () => {
+        clientAPI.playGameSound(SoundEvents.PLAY_UI_GAME_MENU_OPTIONS);
       }
     };
-    // Skill Buttons
-    const skillButtonsSection: MenuSectionData = {
-      id: SettingsSection.SkillButtons,
-      title: 'Skill Buttons'
-    };
-    // Chat
-    const chatSection: MenuSectionData = {
-      id: SettingsSection.Chat,
-      title: 'Chat'
-    };
+    // UI section removed — "Toggle UI Edit Mode" moved to the Game Menu (Esc menu) and
+    // "Reload UI" moved into the HUD Editor screen.
     const tabs: MenuTabData[] = [
       {
         id: SettingsTab.General,
-        title: 'General',
+        title: getStringTableValue(StringIDSettingsTabTitleGeneral, this.props.stringTable),
         sections: [keyBindingsSection, inputSection, audioSection, graphicsSection]
       },
       {
-        id: SettingsTab.Interface,
-        title: 'Interface',
-        sections: [skillButtonsSection, chatSection]
-      },
-      {
         id: SettingsTab.Addons,
-        title: 'Addons'
+        title: getStringTableValue(StringIDSettingsTabTitleAddons, this.props.stringTable)
       }
     ];
     return (
       <div className={Root}>
         <Menu
-          title='Settings'
-          menuID={WIDGET_NAME_SETTINGS}
+          isDragCopy={this.props.isDragCopy}
+          title={getStringTableValue(StringIDSettingsTitle, this.props.stringTable)}
+          menuID={WIDGET_ID_SETTINGS}
           closeSelf={this.closeSelf.bind(this)}
           tabs={tabs}
           getFooterButtons={(tabID, sectionID) => {
             const defaultKeybindsButton: FooterButtonData = {
-              onClick: this.resetKeybindsToDefaults.bind(this),
-              text: 'Default'
+              onClick: () => {
+                this.resetKeybindsToDefaults();
+                clientAPI.playGameSound(SoundEvents.PLAY_UI_GAME_MENU_OPTIONS);
+              },
+              text: getStringTableValue(StringIDGeneralDefault, this.props.stringTable)
             };
             const defaultOptionsButton: FooterButtonData = {
-              onClick: this.resetOptionsToDefaults.bind(this),
-              text: 'Default'
+              onClick: () => {
+                this.resetOptionsToDefaults();
+                clientAPI.playGameSound(SoundEvents.PLAY_UI_GAME_MENU_OPTIONS);
+              },
+              text: getStringTableValue(StringIDGeneralDefault, this.props.stringTable)
             };
             const applyButton: FooterButtonData = {
-              onClick: this.apply.bind(this),
-              text: 'Apply'
+              onClick: () => {
+                this.apply();
+                clientAPI.playGameSound(SoundEvents.PLAY_UI_GAME_MENU_OPTIONS);
+              },
+              text: getStringTableValue(StringIDGeneralApply, this.props.stringTable)
             };
             const saveAsButton: FooterButtonData = {
-              onClick: this.saveAs.bind(this),
-              text: 'Save As'
+              onClick: () => {
+                this.saveAs();
+                clientAPI.playGameSound(SoundEvents.PLAY_UI_GAME_MENU_OPTIONS);
+              },
+              text: getStringTableValue(StringIDGeneralSaveAs, this.props.stringTable)
             };
             const loadButton: FooterButtonData = {
-              onClick: this.load.bind(this),
-              text: 'Load'
+              onClick: () => {
+                this.load();
+                clientAPI.playGameSound(SoundEvents.PLAY_UI_GAME_MENU_OPTIONS);
+              },
+              text: getStringTableValue(StringIDGeneralLoad, this.props.stringTable)
             };
             const cancelButton: FooterButtonData = {
-              onClick: this.closeSelf.bind(this),
-              text: 'Cancel'
+              onClick: () => {
+                this.closeSelf();
+                clientAPI.playGameSound(SoundEvents.PLAY_UI_GAME_MENU_OPTIONS);
+              },
+              text: getStringTableValue(StringIDGeneralCancel, this.props.stringTable)
             };
             switch (tabID) {
               case SettingsTab.General:
@@ -232,9 +281,6 @@ class ASettings extends React.Component<Props, State> {
                   }
                 }
                 break;
-              case SettingsTab.Interface: {
-                return [];
-              }
               case SettingsTab.Addons: {
                 return [];
               }
@@ -261,7 +307,7 @@ class ASettings extends React.Component<Props, State> {
 
   closeSelf(): void {
     this.setState({ optionValues: new Map() });
-    this.props.dispatch(addMenuWidgetExiting(WIDGET_NAME_SETTINGS));
+    this.props.dispatch(addConditionalWidgetExiting(WIDGET_ID_SETTINGS));
   }
 
   resetKeybindsToDefaults(): void {
@@ -269,18 +315,17 @@ class ASettings extends React.Component<Props, State> {
       showModal({
         id: 'ResetKeybindsToDefaults',
         content: {
-          title: 'Confirm Reset',
-          message:
-            "Clicking 'Yes' will reset all keybinds to their default values. Are you sure you wish to reset all keybinds?",
+          title: getStringTableValue(StringIDSettingsResetKeybindsModalTitle, this.props.stringTable),
+          message: getStringTableValue(StringIDSettingsResetKeybindsModalMessage, this.props.stringTable),
 
           buttons: [
             {
-              text: 'Yes',
-              onClick: this.confirmKeybindsReset.bind(this)
+              text: getStringTableValue(StringIDGeneralCancel, this.props.stringTable),
+              onClick: this.cancelKeybindsReset.bind(this)
             },
             {
-              text: 'Cancel',
-              onClick: this.cancelKeybindsReset.bind(this)
+              text: getStringTableValue(StringIDGeneralYes, this.props.stringTable),
+              onClick: this.confirmKeybindsReset.bind(this)
             }
           ]
         },
@@ -322,7 +367,10 @@ class ASettings extends React.Component<Props, State> {
     }
     const setOptionsPromise = game.setOptionsAsync(updatedOptions);
     this.setState({ setOptionsPromise });
-    setOptionsPromise.finally(() => {
+    setOptionsPromise.then(() => {
+      this.setState({ setOptionsPromise: null });
+    });
+    setOptionsPromise.catch(() => {
       this.setState({ setOptionsPromise: null });
     });
     this.props.dispatch(clearOptionChanges());
@@ -331,7 +379,7 @@ class ASettings extends React.Component<Props, State> {
   saveAs(): void {
     this.props.dispatch(
       showModal({
-        id: 'SaveKeybindsAs',
+        id: ModalID,
         content: this.getSaveAsModalContent(''),
         escapable: true
       })
@@ -340,21 +388,25 @@ class ASettings extends React.Component<Props, State> {
 
   setSaveAsName(saveAsName: string): void {
     this.setState({ saveAsName });
-    this.props.dispatch(updateModalContent(this.getSaveAsModalContent(saveAsName)));
+    this.props.dispatch(updateModalContent([ModalID, this.getSaveAsModalContent(saveAsName)]));
   }
 
   getSaveAsModalContent(inputValue: string): ModalModel {
     return {
-      title: 'Save As',
+      title: getStringTableValue(StringIDGeneralSaveAs, this.props.stringTable),
       buttons: [
         {
-          text: 'Save',
+          text: getStringTableValue(StringIDGeneralSave, this.props.stringTable),
           onClick: this.confirmSaveAs.bind(this)
         }
       ],
       body: (
         <div className={SaveAsModalBody}>
-          <TextInput text='Save keybinds as:' value={inputValue} setValue={this.setSaveAsName.bind(this)} />
+          <TextInput
+            text={getStringTableValue(StringIDSettingsSaveKeybindsModalInputLabel, this.props.stringTable)}
+            value={inputValue}
+            setValue={this.setSaveAsName.bind(this)}
+          />
         </div>
       )
     };
@@ -388,7 +440,7 @@ class ASettings extends React.Component<Props, State> {
     const confirmLoad = (): void => {
       const setIDToLoad = selectedSetID || setIDs[0];
       const keybindSetToLoad = clientAPI.getKeybindSet(setIDToLoad);
-      for (const keybindToLoad of keybindSetToLoad.keybinds) {
+      for (const keybindToLoad of keybindSetToLoad?.keybinds ?? []) {
         const matchedKeybind = Object.values(this.props.keybinds).find((keybind) => keybind.id === keybindToLoad.id);
         if (matchedKeybind) {
           matchedKeybind.binds.forEach((matchedBind, index) => {
@@ -402,7 +454,9 @@ class ASettings extends React.Component<Props, State> {
       refetchKeybinds(this.props.dispatch);
       this.props.dispatch(hideModal());
     };
-    const content: ModalModel = { title: 'Load Keybinds' };
+    const content: ModalModel = {
+      title: getStringTableValue(StringIDSettingsLoadKeybindsModalTitle, this.props.stringTable)
+    };
     if (setIDs.length > 0) {
       content.body = (
         <div className={LoadModalBody}>
@@ -415,32 +469,37 @@ class ASettings extends React.Component<Props, State> {
               setID === selectedSetID;
             const onKeybindClick = (value: boolean): void => {
               if (value) {
-                this.props.dispatch(updateModalContent(this.getLoadModalContent(setID)));
+                this.props.dispatch(updateModalContent([ModalID, this.getLoadModalContent(setID)]));
               }
             };
             return (
-              <BooleanInput text={keybindSet.name} key={setID} value={checked} setValue={onKeybindClick.bind(this)} />
+              <BooleanInput
+                text={keybindSet?.name || ''}
+                key={setID}
+                value={checked}
+                setValue={onKeybindClick.bind(this)}
+              />
             );
           })}
         </div>
       );
-      content.buttons = [
-        {
-          text: 'Load',
-          onClick: confirmLoad.bind(this)
-        }
-      ];
       const deleteSet = (): void => {
         const setIDToDelete = selectedSetID || setIDs[0];
         const filteredSetIDs = setIDs.filter((setID) => setID !== setIDToDelete);
         clientAPI.setKeybindSetIDs(filteredSetIDs);
         clientAPI.removeKeybindSet(setIDToDelete);
-        this.props.dispatch(updateModalContent(this.getLoadModalContent(filteredSetIDs[0] ?? null)));
+        this.props.dispatch(updateModalContent([ModalID, this.getLoadModalContent(filteredSetIDs[0] ?? null)]));
         this.props.dispatch(hideModal());
       };
-      content.buttons = [{ text: 'Delete', onClick: deleteSet.bind(this) }];
+      content.buttons = [
+        {
+          text: getStringTableValue(StringIDGeneralLoad, this.props.stringTable),
+          onClick: confirmLoad.bind(this)
+        },
+        { text: getStringTableValue(StringIDGeneralDelete, this.props.stringTable), onClick: deleteSet.bind(this) }
+      ];
     } else {
-      content.message = 'No saved Keybind Sets';
+      content.message = getStringTableValue(StringIDSettingsLoadKeybindsModalEmptyMessage, this.props.stringTable);
     }
     return content;
   }
@@ -478,28 +537,32 @@ class ASettings extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
+const mapStateToProps = (state: RootState, ownProps: ReactProps): ReactProps & InjectedProps => {
   const { advanceSettingsOriginalValues } = state.gameSettings;
   return {
     ...ownProps,
     advanceSettingsOriginalValues,
-    keybinds: state.keybinds
+    keybinds: state.keybinds,
+    stringTable: state.stringTable.stringTable
   };
 };
 
 const Settings = connect(mapStateToProps)(ASettings);
 
-export const WIDGET_NAME_SETTINGS = 'Settings';
+export const WIDGET_ID_SETTINGS = 'Settings';
 export const settingsRegistry: HUDWidgetRegistration = {
-  name: WIDGET_NAME_SETTINGS,
+  id: WIDGET_ID_SETTINGS,
+  nameStringID: 'HUDEditorWidgetNameSettings',
   defaults: {
     xAnchor: HUDHorizontalAnchor.Center,
     yAnchor: HUDVerticalAnchor.Center,
     xOffset: 0,
     yOffset: 0
   },
-  layer: HUDLayer.Menus,
-  render: () => {
-    return <Settings />;
+  requiresGameDefsLoaded: true,
+  layer: HUDLayer.Top,
+  isConditional: true,
+  render: (isDragCopy: boolean) => {
+    return <Settings isDragCopy={isDragCopy} />;
   }
 };

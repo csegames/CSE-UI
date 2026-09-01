@@ -8,6 +8,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../redux/store';
+import { SimpleRect } from '../redux/dragAndDropSlice';
 
 // Styles.
 const Root = 'HUD-DragAndDrop-Root';
@@ -17,8 +18,8 @@ interface ReactProps {}
 
 interface InjectedProps {
   currentDraggableID: string;
-  currentDraggableBounds: DOMRect;
-  currentDraggingRender: () => JSX.Element;
+  currentDraggableBounds: SimpleRect;
+  currentDraggingRender: () => React.ReactNode;
   dragDelta: [number, number];
   dispatch?: Dispatch;
 }
@@ -42,8 +43,10 @@ class DragAndDropPane extends React.Component<Props> {
       const { x, y, width, height } = this.props.currentDraggableBounds;
       const draggableStyle: React.CSSProperties = {
         position: 'absolute',
-        top: `${y + this.props.dragDelta[1]}px`,
-        left: `${x + this.props.dragDelta[0]}px`,
+        top: '0',
+        left: '0',
+        // Using transform instead of position is much more performant, since it doesn't trigger siblings to re-layout.
+        transform: `translate(${x + this.props.dragDelta[0]}px, ${y + this.props.dragDelta[1]}px)`,
         width: `${width}px`,
         height: `${height}px`
       };

@@ -1,4 +1,4 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -116,15 +116,15 @@
 }
 
 .art-counts {
-  @include server-count('../images/art-counts.png');
+  @include server-count('./images/art-counts.png');
 }
 
 .tdd-counts {
-  @include server-count('../images/tdd-counts.png');
+  @include server-count('./images/tdd-counts.png');
 }
 
 .vik-counts {
-  @include server-count('../images/vik-counts.png');
+  @include server-count('./images/vik-counts.png');
 }
 
 .fullscreen-modal {

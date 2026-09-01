@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { QuestDefGQL, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { MiddleModalDisplay } from '../shared/MiddleModalDisplay';
@@ -12,6 +12,7 @@ import {
   getTokenizedStringTableValue
 } from '../../helpers/stringTableHelpers';
 import { hideAllOverlays } from '../../redux/navigationSlice';
+import { QuestDef } from '../../dataSources/manifest/questManifest';
 
 const Container = 'EndedBattlePassModal-Container';
 const Background = 'EndedBattlePassModal-Background';
@@ -25,7 +26,7 @@ interface ReactProps {}
 
 interface InjectedProps {
   stringTable: Dictionary<StringTableEntryDef>;
-  previousBattlePass: QuestDefGQL;
+  previousBattlePass: QuestDef;
   dispatch?: Dispatch;
 }
 

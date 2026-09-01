@@ -5,8 +5,13 @@
  */
 
 export enum ItemStatID {
-  ArmorClass = 'ArmorClass',
-  Encumbrance = 'Encumbrance',
+  BaseValue = 'BaseValue',
+  CritChance = 'CriticalHitRating',
+  CritDamageMultiplier = 'CriticalDamageMultiplier',
+  DamageRating = 'WeaponDamage',
+  PhysicalArmorRating = 'PhysicalArmorRating',
+  MagicArmorRating = 'MagicArmorRating',
+  MaxCraftingJobs = 'MaxCraftingJobs',
   Quality = 'Quality',
   UnitCount = 'UnitCount'
 }

@@ -7,8 +7,6 @@ import { game } from '@csegames/library/dist/_baseGame';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface BaseGameState {
-  worldTime: number;
-  fps: number;
   npcCount: number;
   usingGamepad: boolean;
   /**
@@ -20,8 +18,6 @@ export interface BaseGameState {
 }
 
 const defaultBaseGameState: BaseGameState = {
-  worldTime: game.worldTime,
-  fps: game.fps,
   npcCount: game.npcCount,
   usingGamepad: game.usingGamepad,
   usingGamepadInMainMenu: false,
@@ -32,12 +28,6 @@ export const baseGameSlice = createSlice({
   name: 'baseGame',
   initialState: defaultBaseGameState,
   reducers: {
-    updateWorldTime: (state: BaseGameState, action: PayloadAction<number>) => {
-      state.worldTime = action.payload;
-    },
-    updateUIFPS: (state: BaseGameState, action: PayloadAction<number>) => {
-      state.fps = action.payload;
-    },
     updateUsingGamepad: (state: BaseGameState, action: PayloadAction<boolean>) => {
       state.usingGamepad = action.payload;
     },
@@ -50,5 +40,4 @@ export const baseGameSlice = createSlice({
   }
 });
 
-export const { updateWorldTime, updateUIFPS, updateUsingGamepad, updateNPCCount, updateIsAutoRunning } =
-  baseGameSlice.actions;
+export const { updateUsingGamepad, updateNPCCount, updateIsAutoRunning } = baseGameSlice.actions;

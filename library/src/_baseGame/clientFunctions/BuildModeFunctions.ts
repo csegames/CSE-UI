@@ -7,7 +7,7 @@
 import { engine } from '../../_baseGame/engine';
 import { EventEmitter } from '../../_baseGame/types/EventEmitter';
 import { ListenerHandle } from '../../_baseGame/listenerHandle';
-import { Vec3f, Euler3f } from '../../camelotunchained/webAPI/definitions';
+import { Vec3f, Euler3f } from '../../camelotunchained/graphql/schema';
 import { BuildingMode } from '../types/Building';
 
 export type BuildingModeChangedListener = (mode: BuildingMode) => void;

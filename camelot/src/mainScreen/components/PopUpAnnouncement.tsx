@@ -29,7 +29,9 @@ class APopUpAnnouncement extends React.Component<Props> {
   render(): JSX.Element {
     return (
       <div className={Root}>
-        <span className={Message}>{this.props.popUpAnnouncement.text}</span>
+        <span className={Message} style={{ color: this.props.popUpAnnouncement.color }}>
+          {this.props.popUpAnnouncement.text}
+        </span>
       </div>
     );
   }

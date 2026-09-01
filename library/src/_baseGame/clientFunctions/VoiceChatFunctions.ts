@@ -11,11 +11,13 @@ import { VoiceChatMemberSettings } from '../types/VoiceChatMemberSettings';
 
 export type VoiceChatUpdateListener = (accountID: string, settings: VoiceChatMemberSettings) => void;
 export type VoiceChatRemoveListener = (accountID: string) => void;
+export type VoiceChatScopeListener = (scope: string) => void;
 export type ChannelType = 'match' | 'none';
 
 // client -> UI (see UIEvents.h)
 const VoiceChatMemberUpdatedEventName = 'voiceChat.memberUpdated';
 const VoiceChatMemberRemovedEventName = 'voiceChat.memberRemoved';
+const VoiceChatScopeUpdatedEventName = 'voiceChat.scopeUpdated';
 
 // UI -> client (see UIViewListener.cpp)
 const SetVoiceChatMemberMutedFuncName = 'voiceChat.SetMemberMuted';
@@ -24,6 +26,7 @@ const SetVoiceChannelFuncName = 'voiceChat.SetVoiceChannel';
 export interface VoiceChatFunctions {
   bindVoiceChatMemberUpdatedListener(listener: VoiceChatUpdateListener): ListenerHandle;
   bindVoiceChatMemberRemovedListener(listener: VoiceChatRemoveListener): ListenerHandle;
+  bindVoiceChatScopeUpdateListener(listener: VoiceChatScopeListener): ListenerHandle;
   setVoiceChatMemberMuted(accountID: string, isMuted: boolean): void;
   setVoiceChannel(type: ChannelType, roomID: string): void;
 }
@@ -42,6 +45,10 @@ abstract class VoiceChatFunctionsBase implements VoiceChatFunctions, VoiceChatMo
 
   bindVoiceChatMemberRemovedListener(listener: VoiceChatRemoveListener): ListenerHandle {
     return this.events.on(VoiceChatMemberRemovedEventName, listener);
+  }
+
+  bindVoiceChatScopeUpdateListener(listener: VoiceChatScopeListener): ListenerHandle {
+    return this.events.on(VoiceChatScopeUpdatedEventName, listener);
   }
 
   triggerVoiceChatMemberUpdated(accountID: string, settings: VoiceChatMemberSettings): void {
@@ -71,6 +78,17 @@ class CoherentVoiceChatFunctions extends VoiceChatFunctionsBase {
   bindVoiceChatMemberRemovedListener(listener: VoiceChatRemoveListener): ListenerHandle {
     const mockHandle = super.bindVoiceChatMemberRemovedListener(listener);
     const engineHandle = engine.on(VoiceChatMemberRemovedEventName, listener);
+    return {
+      close() {
+        mockHandle.close();
+        engineHandle.clear();
+      }
+    };
+  }
+
+  bindVoiceChatScopeUpdateListener(listener: VoiceChatScopeListener): ListenerHandle {
+    const mockHandle = super.bindVoiceChatScopeUpdateListener(listener);
+    const engineHandle = engine.on(VoiceChatScopeUpdatedEventName, listener);
     return {
       close() {
         mockHandle.close();

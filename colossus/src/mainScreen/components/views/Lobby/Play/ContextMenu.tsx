@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Member, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { Member } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -15,6 +15,7 @@ import {
   getStringTableValue,
   getTokenizedStringTableValue
 } from '../../../../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 
 // ===== Start ContextMenu Styles =====
 const ContextMenuContainer = 'StartScreen-Play-ContextMenu-ContextMenuContainer';

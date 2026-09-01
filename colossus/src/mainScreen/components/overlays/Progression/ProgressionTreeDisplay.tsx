@@ -5,18 +5,16 @@
  */
 
 import * as React from 'react';
-import {
-  ChampionInfo,
-  PerkDefGQL,
-  ProgressionNodeDef,
-  QuestGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootState } from '../../../redux/store';
 import { getProgressionNodeStatus, ProgressionNodeDisplay } from './ProgressionNodeDisplay';
+import { PerkDef } from '../../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
+import { ProgressionNodeDef } from '../../../dataSources/manifest/progressionNodeManifest';
 
 const Root = 'ProgressionTreeDisplay-Root';
 const ConnectorContainer = 'ProgressionTreeDisplay-ConnectorContainer';
@@ -38,9 +36,9 @@ interface ReactProps {
 }
 
 interface InjectedProps {
-  selectedChampion: ChampionInfo;
+  selectedChampion: ChampionDef;
   ownedPerks: Dictionary<number>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
   progressionNodes: string[];
   nodeDefs: ProgressionNodeDef[];

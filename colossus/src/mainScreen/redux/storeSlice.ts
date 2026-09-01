@@ -4,17 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {
-  PerkDefGQL,
-  //  PerkRarity,
-  //  PerkType,
-  PurchaseDefGQL,
-  QuestDefGQL,
-  RMTPurchaseDefGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PurchaseDefGQL, RMTPurchaseDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { StoreStaticDataQueryResult } from '../dataSources/storeNetworkingConstants';
+import { QuestDef } from '../dataSources/manifest/questManifest';
+import { PerkDef } from '../dataSources/manifest/perkManifest';
 
 export enum StoreRoute {
   None,
@@ -39,19 +34,17 @@ export interface StoreState {
   purchases: PurchaseDefGQL[];
   rmtPurchases: RMTPurchaseDefGQL[];
   // Static data for all perk items.
-  perks: PerkDefGQL[];
+  perks: PerkDef[];
   // Indexed by perk.id for rapid lookup.
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   // Purchases that should be badged as "new".  Key is the purchase ID.
   newPurchases: Dictionary<boolean>;
   // Owned equipment that should be badged as "new".  Key is the perk ID.
   newEquipment: Dictionary<boolean>;
-  // Map of the ids for currency perks that can be bought via RMT.
-  rmtCurrencyIds: Dictionary<boolean>;
   // flag to show the store if there are new free rewards.
   hasPurchasables: boolean;
   // which quest we're attempting to spend XP on for the SpendQuestXPPotionsModal
-  spendXPPotionQuest: QuestDefGQL;
+  spendXPPotionQuest: QuestDef;
   // What purchase should we attempt to process?
   purchaseIdToProcess: string;
   // If the next time we process a purchase we should suppress alerts
@@ -73,7 +66,6 @@ function generateDefaultStoreState() {
     perksByID: {},
     newPurchases: {},
     newEquipment: {},
-    rmtCurrencyIds: {},
     hasPurchasables: false,
     isDataFetched: false,
     spendXPPotionQuest: null,
@@ -91,11 +83,14 @@ export const storeSlice = createSlice({
     updateStoreStaticData: (state: StoreState, action: PayloadAction<StoreStaticDataQueryResult>) => {
       state.purchases = action.payload.game.purchases;
       state.rmtPurchases = action.payload.game.rMTPurchases;
-      state.perks = action.payload.game.perks;
       state.isDataFetched = true;
     },
-    updateStorePerksByID: (state: StoreState, action: PayloadAction<Dictionary<PerkDefGQL>>) => {
-      state.perksByID = action.payload;
+    updateStorePerksByID: (state: StoreState, action: PayloadAction<{
+      perks: PerkDef[];
+      perksByID: Dictionary<PerkDef>;
+    }>) => {
+      state.perks = action.payload.perks
+      state.perksByID = action.payload.perksByID;
     },
     updateStoreCurrentRoute: (state: StoreState, action: PayloadAction<StoreRoute>) => {
       state.currentRoute = action.payload;
@@ -118,13 +113,10 @@ export const storeSlice = createSlice({
     updateStoreRemoveUnseenEquipment: (state: StoreState, action: PayloadAction<string>) => {
       delete state.newEquipment[action.payload];
     },
-    updateStoreRMTCurrencies: (state: StoreState, action: PayloadAction<Dictionary<boolean>>) => {
-      state.rmtCurrencyIds = action.payload;
-    },
     updateStoreHasPurchasables: (state: StoreState, action: PayloadAction<boolean>) => {
       state.hasPurchasables = action.payload;
     },
-    updateSpendXPPotionQuest: (state: StoreState, action: PayloadAction<QuestDefGQL>) => {
+    updateSpendXPPotionQuest: (state: StoreState, action: PayloadAction<QuestDef>) => {
       state.spendXPPotionQuest = action.payload;
     },
     setPurchaseIdToProcess: (state: StoreState, action: PayloadAction<[string, boolean]>) => {
@@ -147,7 +139,6 @@ export const {
   updateStoreNewEquipment,
   updateStoreAddUnseenEquipment,
   updateStoreRemoveUnseenEquipment,
-  updateStoreRMTCurrencies,
   updateStoreHasPurchasables,
   updateSpendXPPotionQuest,
   setPurchaseIdToProcess,

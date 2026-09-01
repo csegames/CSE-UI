@@ -9,7 +9,7 @@ import { ItemContainer } from '../ItemContainer';
 import { Keybind } from '@csegames/library/dist/_baseGame/types/Keybind';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { toTitleCase } from '@csegames/library/dist/_baseGame/utils/textUtils';
-import { game } from '@csegames/library/dist/_baseGame';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const BindsContainer = 'Settings-Keybinds-KeybindRow-BindsContainer';
 
@@ -23,7 +23,7 @@ export interface Props {
 
 export function KeybindRow(props: Props) {
   function onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   function onClick(e: React.MouseEvent, keybind: Keybind, index: number) {

@@ -1,7 +1,0 @@
-{
-  "name": "bugreport",
-  "mainFile": "bugreport.html",
-  "layer": 3,
-  "handlesInput": true,
-  "handlesCharacter": true
-}

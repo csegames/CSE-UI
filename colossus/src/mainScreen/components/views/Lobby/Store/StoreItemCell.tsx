@@ -5,14 +5,16 @@
  */
 
 import * as React from 'react';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { PerkDefGQL, PurchaseDefGQL, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { PurchaseDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { StarBadge } from '../../../../../shared/components/StarBadge';
 import { StoreItemInfo } from './StoreItemInfo';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { PerkDef } from '../../../../dataSources/manifest/perkManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'StartScreen-Store-ItemCell-Container';
 const Image = 'StartScreen-Store-ItemCell-Image';
@@ -27,7 +29,7 @@ interface ReactProps {
 
 interface InjectedProps {
   newPurchases: Dictionary<boolean>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
 }
 
@@ -106,13 +108,13 @@ class AStoreItemCell extends React.Component<Props> {
   }
 
   private onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   private onClick() {
     this.props.onClick(this.props.purchase);
 
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
   }
 }
 

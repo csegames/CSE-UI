@@ -2,16 +2,14 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
  */
 
 import * as React from 'react';
 import { Button } from '../../../shared/Button';
 import { Binding, Keybind } from '@csegames/library/dist/_baseGame/types/Keybind';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { toTitleCase } from '@csegames/library/dist/_baseGame/utils/textUtils';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
@@ -22,6 +20,7 @@ import {
   getStringTableValue,
   getTokenizedStringTableValue
 } from '../../../../helpers/stringTableHelpers';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'Settings-Keybinds-ConfirmRemoveBindDialog-Container';
 const ConfirmBindingText = 'Settings-Keybinds-ConfirmRemoveBindDialog-ConfirmBindingText';
@@ -59,12 +58,12 @@ export class AConfirmRemoveBindDialog extends React.Component<Props, State> {
 
   private onYesClick() {
     this.props.onYesClick();
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
   }
 
   private onNoClick() {
     this.props.onNoClick();
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
   }
 
   public render() {

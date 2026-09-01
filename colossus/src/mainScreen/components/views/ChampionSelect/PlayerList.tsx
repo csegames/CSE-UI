@@ -2,20 +2,16 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
  */
 
 import * as React from 'react';
 import { RootState } from '../../../redux/store';
 import { connect } from 'react-redux';
-import {
-  ChampionCostumeInfo,
-  ChampionInfo,
-  ChampionSelection,
-  SelectionPlayer,
-  PerkDefGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionSelection, SelectionPlayer } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
+import { PerkDef } from '../../../dataSources/manifest/perkManifest';
+import { CostumeDef } from '../../../dataSources/manifest/costumeManifest';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
 
 const Container = 'ChampionSelect-LockedList-Container';
 const ListItem = 'ChampionSelect-LockedList-ListItem';
@@ -25,10 +21,10 @@ const NameOfPlayer = 'ChampionSelect-LockedList-NameOfPlayer';
 interface ReactProps {}
 
 interface InjectedProps {
-  champions: ChampionInfo[];
-  costumes: ChampionCostumeInfo[];
+  champions: ChampionDef[];
+  costumes: CostumeDef[];
   currentSelection: ChampionSelection;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
 }
 
 type Props = ReactProps & InjectedProps;

@@ -11,12 +11,8 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Overlay, hideOverlay, showError } from '../../redux/navigationSlice';
-import {
-  PerkDefGQL,
-  QuestGQL,
-  RMTPurchaseDefGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { QuestGQL, RMTPurchaseDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { StringIDGeneralCancel, getStringTableValue } from '../../helpers/stringTableHelpers';
 import { areLocksFulfilled } from '../../helpers/storeHelpers';
@@ -26,6 +22,8 @@ import { ItemGainedToaster } from '../views/Lobby/Store/ItemGainedToaster';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { refreshProfile } from '../../dataSources/profileNetworking';
+import { PerkDef } from '../../dataSources/manifest/perkManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'PurchaseGemsModal-Container';
 const Title = 'PurchaseGemsModal-Title';
@@ -45,7 +43,7 @@ interface ReactProps {}
 
 interface InjectedProps {
   stringTable: Dictionary<StringTableEntryDef>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   rmtPurchases: RMTPurchaseDefGQL[];
   usingGamepad: boolean;
   usingGamepadInMainMenu: boolean;
@@ -147,7 +145,7 @@ class APurchaseGemsModal extends React.Component<Props> {
 
     this.purchaseEVH = game.onSteamPurchaseComplete(this.onPurchaseComplete.bind(this, purchase));
     game.startSteamPurchase(purchase.id);
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
   }
 
   private async onPurchaseComplete(purchase: RMTPurchaseDefGQL, failed: boolean, canceled: boolean, error: string) {

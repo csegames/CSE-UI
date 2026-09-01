@@ -64,7 +64,11 @@ export type KeybindCategory = 'actionslots' | 'interface' | 'game' | 'miscellane
 export enum KeybindSection {
   None,
   BasicControls,
+  Abilities,
+  Targeting,
   Social,
   Camera,
-  Advanced
+  UI,
+  Advanced,
+  Hide
 }

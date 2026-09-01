@@ -4,13 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {
-  ChampionInfo,
-  PerkDefGQL,
-  PerkType,
-  QuestDefGQL,
-  QuestGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -28,12 +22,10 @@ import {
   findChampionQuest,
   getUnlockedRuneModTierForChampion
 } from '../../../../helpers/characterHelpers';
-import { QuestType, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
 import { QuestXPButton } from '../QuestXPButton';
 import { StarBadge } from '../../../../../shared/components/StarBadge';
 import { createAlertsForCollectedQuestProgress } from '../../../../helpers/perkUtils';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { webConf } from '../../../../dataSources/networkConfiguration';
 import { refreshProfile } from '../../../../dataSources/profileNetworking';
@@ -45,6 +37,10 @@ import {
 } from '../../../../helpers/badgingUtils';
 import { AspectRatioDiv } from '../../../../../shared/components/AspectRatioDiv';
 import { PerkIcon } from '../Store/PerkIcon';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { PerkDef, PerkType } from '../../../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../../../dataSources/manifest/championManifest';
+import { QuestDef, QuestType } from '../../../../dataSources/manifest/questManifest';
 
 const Container = 'ChampionProfile-ChampionInfoDisplay-Container';
 const ChampionName = 'ChampionProfile-ChampionInfoDisplay-ChampionName';
@@ -95,11 +91,12 @@ const StringIDEmotes = 'ChampionInfoDisplayEmotesTitle';
 interface ReactProps {}
 
 interface InjectedProps {
-  selectedChampion: ChampionInfo;
-  champions: ChampionInfo[];
-  perksByID: Dictionary<PerkDefGQL>;
+  defaultChampionID: string;
+  selectedChampion: ChampionDef;
+  champions: ChampionDef[];
+  perksByID: Dictionary<PerkDef>;
   ownedPerks: Dictionary<number>;
-  selectedRuneMods: PerkDefGQL[];
+  selectedRuneMods: PerkDef[];
   newEquipment: Dictionary<boolean>;
   questsGQL: QuestGQL[];
   quests: QuestsByType;
@@ -376,6 +373,7 @@ class AChampionInfoDisplay extends React.Component<Props> {
   }
 
   private renderChampionButtons(): JSX.Element {
+    const alreadySetDefault = this.props.defaultChampionID === this.props.selectedChampion.id;
     if (!this.props.usingGamepad || !this.props.usingGamepadInMainMenu) {
       return (
         <div className={ButtonPosition}>
@@ -391,7 +389,7 @@ class AChampionInfoDisplay extends React.Component<Props> {
             text={getStringTableValue(StringIDChampionProfileSetAsDefault, this.props.stringTable)}
             styles={ChampionButton}
             onClick={this.onSetAsDefault.bind(this)}
-            disabled={false}
+            disabled={alreadySetDefault}
           />
         </div>
       );
@@ -419,34 +417,34 @@ class AChampionInfoDisplay extends React.Component<Props> {
           }
           styles={ConsoleSelectSpacing}
           onClick={this.onSetAsDefault.bind(this)}
-          disabled={false}
+          disabled={alreadySetDefault}
         />
       </div>
     );
   }
 
   private onMouseEnterCosmeticButton(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
   }
 
   private onMouseEnterRuneMods(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
   }
 
   private onWeaponSlotClick(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_WEAPONS_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_WEAPONS_CLICK);
     this.props.dispatch?.(setCosmeticTab(PerkType.Weapon));
     this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
   }
 
   private onSkinSlotClick(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_SKINS_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_SKINS_CLICK);
     this.props.dispatch?.(setCosmeticTab(PerkType.Costume));
     this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
   }
 
   private onEmoteSlotClick(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_EMOTE_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_EMOTE_CLICK);
     this.props.dispatch?.(setCosmeticTab(PerkType.Emote));
     this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
   }
@@ -456,18 +454,18 @@ class AChampionInfoDisplay extends React.Component<Props> {
   }
 
   private onRuneModClick(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_RUNEMENU_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_RUNEMENU_CLICK);
     this.props.dispatch(showOverlay(Overlay.RuneMods));
   }
 
   private onSprintClick(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_SPRINT_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_SPRINT_CLICK);
     this.props.dispatch?.(setCosmeticTab(PerkType.SprintFX));
     this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
   }
 
   private onPortraitClick(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_PORTRAIT_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_PORTRAIT_CLICK);
     this.props.dispatch?.(setCosmeticTab(PerkType.Portrait));
     this.props.dispatch(showOverlay(Overlay.ChampionSelectCosmetics));
   }
@@ -481,7 +479,7 @@ class AChampionInfoDisplay extends React.Component<Props> {
     clientAPI.setUnseenEquipment({});
   }
 
-  private renderRuneModTooltip(runeMod: PerkDefGQL): JSX.Element {
+  private renderRuneModTooltip(runeMod: PerkDef): JSX.Element {
     return (
       <div className={RuneModToolTipContainer}>
         <span className={RuneModToolTipTitle}>{runeMod.name}</span>
@@ -507,7 +505,7 @@ class AChampionInfoDisplay extends React.Component<Props> {
     }
   }
 
-  private async claimAllRewards(quest: QuestDefGQL, questProgress: QuestGQL) {
+  private async claimAllRewards(quest: QuestDef, questProgress: QuestGQL) {
     const res = await ProfileAPI.CollectQuestReward(webConf, quest.id);
     if (!res.ok) {
       console.error('failed to claim all progression rewards in championInfoDisplay');
@@ -525,11 +523,11 @@ class AChampionInfoDisplay extends React.Component<Props> {
 
   private onShowSkills() {
     this.props.dispatch(showOverlay(Overlay.ChampionDetails));
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
   }
 
   private async onSetAsDefault() {
-    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_SELECTDEFAULT_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_SELECTDEFAULT_CLICK);
 
     const res = await ProfileAPI.SetDefaultChampion(webConf, this.props.selectedChampion.id as any);
 
@@ -544,12 +542,14 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { perksByID, newEquipment } = state.store;
   const { selectedChampion, champions } = state.championInfo;
   const { ownedPerks, selectedRuneMods, quests } = state.profile;
+  const defaultChampionID = state.profile.defaultChampionID;
   const selectedRuneModsByChamp = selectedRuneMods[selectedChampion.id];
   const questsByType = state.quests.quests;
   const { stringTable } = state.stringTable;
 
   return {
     ...ownProps,
+    defaultChampionID,
     usingGamepad,
     usingGamepadInMainMenu,
     selectedChampion,

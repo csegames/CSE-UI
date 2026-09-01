@@ -7,7 +7,6 @@
 import * as React from 'react';
 
 import { PlayerView } from './PlayerView';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 
 import { NotificationList } from './NotificationList';
@@ -20,10 +19,9 @@ import {
   MatchAccess,
   MatchStatsGQL,
   PerkGQL,
-  QuestDefGQL,
   QuestGQL,
   Queue,
-  StringTableEntryDef
+  QueueEntry
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { updateGroupState } from '../../../../redux/teamJoinSlice';
 import { TeamJoinAPIError } from '../../../../dataSources/teamJoinNetworkingConstants';
@@ -42,7 +40,7 @@ import { QuestsByType } from '../../../../redux/questSlice';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
 import { shouldShowBattlePassSplashScreen } from '../BattlePass/BattlePassUtils';
-import { InitTopic } from '../../../../redux/initializationSlice';
+import { LoadingTopic } from '../../../../redux/loadingSlice';
 import { EventAdvertisementPanel } from '../../../shared/notifications/EventAdvertisementPanel';
 import { MOTDMessageData, setMOTDModalMessage } from '../../../../redux/notificationsSlice';
 import { webConf } from '../../../../dataSources/networkConfiguration';
@@ -50,6 +48,8 @@ import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI'
 import { GameModeDef } from '../../../../dataSources/manifest/gameModeManifest';
 import { getDefaultQueueGameModeDef } from '../../../../redux/matchSlice';
 import { getSelectedQueueID } from '../../../../helpers/queueHelpers';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { QuestDef } from '../../../../dataSources/manifest/questManifest';
 
 const Container = 'StartScreen-Play-Container';
 const LeftPanel = 'StartScreen-Play-LeftPanel';
@@ -69,6 +69,7 @@ const StringIDGroupsLeaveGroup = 'GroupsLeaveGroup';
 const StringIDPlayQuestsButton = 'PlayQuestsButton';
 const StringIDPlayButton = 'PlayButton';
 const StringIDPlayModeChange = 'PlayModeChange';
+const StringIDPlayModeInQueue = 'PlayModeInQueue';
 
 interface ReactProps {}
 
@@ -79,20 +80,23 @@ interface InjectedProps {
   lifetimeStats: MatchStatsGQL[];
   stringTable: Dictionary<StringTableEntryDef>;
   questsByType: QuestsByType;
-  currentBattlePass: QuestDefGQL;
-  previousBattlePass: QuestDefGQL;
-  nextBattlePass: QuestDefGQL;
+  currentBattlePass: QuestDef;
+  previousBattlePass: QuestDef;
+  nextBattlePass: QuestDef;
   questsProgress: QuestGQL[];
   overlays: OverlayInstance[];
-  initializationTopics: Dictionary<boolean>;
+  loadingTopics: Dictionary<boolean>;
+  accountID: string;
+  currentEntry: QueueEntry | null;
   quests: QuestGQL[];
   perks: PerkGQL[];
-  battlePassQuests: QuestDefGQL[];
+  battlePassQuests: QuestDef[];
   queues: Queue[];
   serverTimeDeltaMS: number;
   motdMessagesData: MOTDMessageData[];
   selectedQueueID: string | null;
   gameModes: Dictionary<GameModeDef>;
+  gameDefsLoaded: boolean;
   dispatch?: Dispatch;
 }
 
@@ -146,7 +150,7 @@ class APlay extends React.Component<Props> {
       return;
     }
 
-    if (this.props.initializationTopics[InitTopic.Store] && this.props.initializationTopics[InitTopic.Quests]) {
+    if (this.props.loadingTopics[LoadingTopic.Store] && this.props.gameDefsLoaded) {
       // If there is an unseen, recently ended battlepass, splash the end of season.
       if (
         this.props.previousBattlePass &&
@@ -163,11 +167,12 @@ class APlay extends React.Component<Props> {
           this.props.previousBattlePass,
           this.props.currentBattlePass,
           this.props.nextBattlePass,
-          this.props.initializationTopics,
+          this.props.loadingTopics,
           this.props.battlePassQuests,
           this.props.perks,
           this.props.quests,
-          this.props.serverTimeDeltaMS
+          this.props.serverTimeDeltaMS,
+          this.props.gameDefsLoaded
         )
       ) {
         this.props.dispatch(showOverlay(Overlay.ClaimBattlePassModal));
@@ -223,7 +228,7 @@ class APlay extends React.Component<Props> {
 
   private async onLeaveGroup() {
     // TODO : convert to request queue model
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
     const res = await TeamJoinAPI.LeaveV1(webConf);
     const success = res.ok;
 
@@ -248,19 +253,61 @@ class APlay extends React.Component<Props> {
   private getModesButton(): JSX.Element {
     const queueDisplay = this.getGameMode();
     if (!queueDisplay) return null;
+
+    const [modesString, shouldShowModes] = this.getIsQueued();
+    const disabledColor = shouldShowModes ? '' : 'queued';
     return (
       <div
         style={{ backgroundImage: `url(${queueDisplay.bannerImage})` }}
-        className={ModesButton}
-        onClick={this.showGameModeSelectionOverlay.bind(this)}
+        className={`${ModesButton} ${disabledColor}`}
+        onClick={this.showGameModeSelectionOverlay.bind(this, shouldShowModes)}
       >
         <div className={ModesButtonContent}>
           <span className={ModesHeading}>{queueDisplay.name}</span>
           <span className={ModeSubheading}>{queueDisplay.description}</span>
-          <span className={ModesChange}>{getStringTableValue(StringIDPlayModeChange, this.props.stringTable)}</span>
+          <span className={`${ModesChange} ${disabledColor}`}>{modesString}</span>
         </div>
       </div>
     );
+  }
+
+  private getIsQueued(): [string, boolean] {
+    switch (this.props.access) {
+      case MatchAccess.Forbidden:
+      case MatchAccess.Offline:
+        return [getStringTableValue(StringIDPlayModeChange, this.props.stringTable), false];
+    }
+
+    const isGroupLead = this.props.accountID === this.props.group?.leader.id;
+    const current = this.props.currentEntry;
+    const queueID = getSelectedQueueID(this.props.selectedQueueID, this.props.defaultQueueID, this.props.queues);
+    if (current) {
+      const enteredSolo = !this.props.group && this.props.accountID === current.enteredBy.id;
+      if (current.queueID !== queueID && current.userTag !== 'standard') {
+        // in another queue
+        return [getStringTableValue(StringIDPlayModeInQueue, this.props.stringTable), false];
+      }
+      if (enteredSolo || isGroupLead) {
+        return [getStringTableValue(StringIDPlayModeInQueue, this.props.stringTable), false];
+      }
+      return [getStringTableValue(StringIDPlayModeInQueue, this.props.stringTable), false];
+    }
+
+    const queue = this.props.queues.find((q) => q.queueID === queueID && q.enabled);
+    if (!queue) {
+      return [getStringTableValue(StringIDPlayModeChange, this.props.stringTable), false];
+    }
+
+    const numPlayers = this.props.group?.size ?? 1;
+    if (queue.maxEntrySize < numPlayers || queue.minEntrySize > numPlayers) {
+      return [getStringTableValue(StringIDPlayModeChange, this.props.stringTable), false];
+    }
+
+    if (this.props.group && !isGroupLead) {
+      return [getStringTableValue(StringIDPlayModeChange, this.props.stringTable), false];
+    }
+
+    return [getStringTableValue(StringIDPlayModeChange, this.props.stringTable), true];
   }
 
   private getGameMode(): GameModeDef | null {
@@ -291,35 +338,42 @@ class APlay extends React.Component<Props> {
     );
   }
 
-  private showGameModeSelectionOverlay(): void {
+  private showGameModeSelectionOverlay(isNotQueued: boolean): void {
+    if (!isNotQueued) {
+      return;
+    }
     this.props.dispatch(showOverlay(Overlay.GameModeSelection));
   }
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
+  const accountID = state.user.id;
   const { group } = state.teamJoin;
   const { quests: questsByType, currentBattlePass, previousBattlePass, nextBattlePass } = state.quests;
   const questsProgress = state.profile.quests;
-  const { defaultQueueID, access, queues, selectedQueueID, gameModes } = state.match;
+  const { currentEntry, defaultQueueID, access, queues, selectedQueueID, gameModes } = state.match;
   const lifetimeStats = state.profile.lifetimeStats;
   const { stringTable } = state.stringTable;
   const { overlays } = state.navigation;
-  const initializationTopics = state.initialization.componentStatus;
+  const loadingTopics = state.loading.componentStatus;
   const { perks, quests } = state.profile;
   const battlePassQuests = state.quests.quests?.BattlePass;
   const { serverTimeDeltaMS } = state.clock;
   const { motdMessagesData } = state.notifications;
+  const { gameDefsLoaded } = state.game;
 
   return {
     ...ownProps,
     access,
+    accountID,
+    currentEntry,
     defaultQueueID,
     group,
     lifetimeStats,
     questsByType,
     quests,
     perks,
-    initializationTopics,
+    loadingTopics,
     currentBattlePass,
     previousBattlePass,
     nextBattlePass,
@@ -331,7 +385,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     serverTimeDeltaMS,
     motdMessagesData,
     selectedQueueID,
-    gameModes
+    gameModes,
+    gameDefsLoaded
   };
 }
 

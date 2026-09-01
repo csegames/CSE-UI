@@ -8,22 +8,17 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { Dispatch } from 'redux';
-import {
-  ChampionInfo,
-  OvermindSummaryGQL,
-  PerkDefGQL,
-  PerkType,
-  QuestGQL,
-  QuestLinkDefGQL,
-  PerkRewardDefGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { OvermindSummaryGQL, QuestGQL, PerkRewardDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { QuestsByType } from '../../../../redux/questSlice';
 import { findChampionQuestProgress, findChampionQuest } from '../../../../helpers/characterHelpers';
 import { getRewardTypeText } from '../BattlePass/BattlePassUtils';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
 import { PerkIcon } from '../Store/PerkIcon';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { QuestLinkDef } from '../../../../dataSources/manifest/questManifest';
+import { PerkDef, PerkType } from '../../../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../../../dataSources/manifest/championManifest';
 
 const Container = 'ChampionProfile-ProgressionReward-Container';
 const Title = 'ChampionProfile-ProgressionReward-RewardTitle';
@@ -45,7 +40,7 @@ const StringIDRewardCollectionChampionLevelReward = 'RewardCollectionChampionLev
 interface RewardAndLevel {
   reward: PerkRewardDefGQL;
   level: number;
-  questLink: QuestLinkDefGQL;
+  questLink: QuestLinkDef;
 }
 
 interface ReactProps {
@@ -54,12 +49,12 @@ interface ReactProps {
 
 interface InjectedProps {
   overmindSummary: OvermindSummaryGQL;
-  selectedChampion: ChampionInfo;
+  selectedChampion: ChampionDef;
   questsGQL: QuestGQL[];
   quests: QuestsByType;
   playerName: string;
-  championIDToChampion: { [championID: string]: ChampionInfo };
-  perksByID: Dictionary<PerkDefGQL>;
+  championIDToChampion: { [championID: string]: ChampionDef };
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
   dispatch?: Dispatch;
 }
@@ -85,7 +80,7 @@ export class AProgressionReward extends React.Component<Props, State> {
   }
 
   public componentDidMount(): void {
-    let champion: ChampionInfo = null;
+    let champion: ChampionDef = null;
     if (this.props.selectedChampion) {
       champion = this.props.selectedChampion;
     } else if (this.props.overmindSummary) {
@@ -120,7 +115,12 @@ export class AProgressionReward extends React.Component<Props, State> {
       : getStringTableValue(StringIDRewardCollectionRewardUnlocked, this.props.stringTable);
     const endStatTitle = this.props.nextReward ? '' : 'EndStatTitle';
     const nextReward = this.props.nextReward ? 'NextReward' : '';
-    const rewardType = getRewardTypeText(this.state.reward.reward, this.props.stringTable, this.props.perksByID);
+    const rewardType = getRewardTypeText(
+      this.state.reward.reward,
+      this.props.stringTable,
+      this.props.perksByID,
+      this.props.championIDToChampion
+    );
 
     return (
       <div className={`${Container} ${nextReward}`}>
@@ -170,7 +170,7 @@ export class AProgressionReward extends React.Component<Props, State> {
     return perk?.description;
   }
 
-  private getSortedRewards(links: QuestLinkDefGQL[], questGQL: QuestGQL): RewardAndLevel[] {
+  private getSortedRewards(links: QuestLinkDef[], questGQL: QuestGQL): RewardAndLevel[] {
     if (this.state.sortedRewards.length <= 0 && links) {
       const currentQuestIndex = questGQL?.currentQuestIndex ?? 0;
       const nextCollection = questGQL?.nextCollection ?? 0;
@@ -296,7 +296,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { selectedChampion } = state.championInfo;
   const { quests } = state.profile;
   const questsByType = state.quests.quests;
-  const playerName = state.player.name;
+  const playerName = state.user.displayName;
   const { championIDToChampion } = state.championInfo;
   const { stringTable } = state.stringTable;
   const { perksByID } = state.store;

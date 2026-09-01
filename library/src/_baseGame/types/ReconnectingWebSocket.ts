@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import { EventEmitter } from './EventEmitter';
-import * as Raven from 'raven-js';
+import * as Sentry from '@sentry/browser';
 import { getBooleanEnv } from '../utils/env';
 import { isWebSocketUrl } from '../utils/urlUtils';
 import { RetryTracker } from '../utils/retryTracker';
@@ -45,13 +45,6 @@ export class ReconnectingWebSocket {
     this.settings = { ...defaultWebSocketOptions, ...settings };
     this.events = new EventEmitter(this.debugLog.bind(this));
     this.tracker = RetryTracker.create(START_DELAY, MAX_DELAY, MAX_RETRIES);
-
-    const urlString = this.settings.getUrl();
-    if (!isWebSocketUrl(urlString)) {
-      console.error('Trying to connect to a websocket using an invalid url: ' + this.settings.getUrl());
-      return;
-    }
-
     this.connect();
   }
 
@@ -109,12 +102,21 @@ export class ReconnectingWebSocket {
         break;
     }
 
-    this.log(`Connecting to ${this.settings.getUrl()} for [${this.settings.protocols?.join(',')}]`);
+    const url = this.settings.getUrl();
+    if (!url) {
+      this.log('Skipping web socket connection, no server specified');
+      return;
+    }
+    if (!isWebSocketUrl(url)) {
+      this.log(`Skipping web socket connection, invalid url specified: ${url}`);
+      return;
+    }
+    this.log(`Connecting to ${url} for [${this.settings.protocols?.join(',')}]`);
 
     try {
       window.clearTimeout(this.connectTimeoutHandle);
       this.connectTimeoutHandle = window.setTimeout(this.retryConnect.bind(this, true), COHERENT_SAFETY_NET_TIMEOUT);
-      this.socket = new WebSocket(this.settings.getUrl(), this.settings.protocols);
+      this.socket = new WebSocket(url, this.settings.protocols);
       this.socket.binaryType = 'arraybuffer';
       this.socket.onerror = this.errored.bind(this);
       this.socket.onmessage = this.message.bind(this);
@@ -157,12 +159,11 @@ export class ReconnectingWebSocket {
   }
 
   private async errored(e: ErrorEvent): Promise<void> {
-    Raven.captureException(e);
+    Sentry.captureException(e);
     this.events.trigger('errored', e);
   }
 
   private opened(e: Event): void {
-    console.log('opened');
     window.clearTimeout(this.connectTimeoutHandle);
     this.connectTimeoutHandle = 0;
     this.tracker = RetryTracker.create(START_DELAY, MAX_DELAY, MAX_RETRIES);

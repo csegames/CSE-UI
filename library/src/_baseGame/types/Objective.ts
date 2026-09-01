@@ -22,7 +22,7 @@ export enum ObjectiveUIVisibility {
   Compass = 1 << 1,
   Alert = 1 << 2,
   World = 1 << 3,
-  WorldDistance  = 1 << 4,
+  WorldDistance = 1 << 4,
   Map = 1 << 5,
   ScreenEdge = 1 << 6,
 

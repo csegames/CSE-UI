@@ -1,4 +1,4 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -6,15 +6,16 @@
 import { game } from '@csegames/library/dist/_baseGame';
 import { camelot } from '@csegames/library/dist/camelotunchained';
 import { SlashCommandRegistry } from '@csegames/library/dist/_baseGame/slashCommandRegistry';
-import { RootState } from '../redux/store';
+import { AppDispatch, RootState } from '../redux/store';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
+import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 
-export function registerClientSlashCommands(registry: SlashCommandRegistry<RootState>): ListenerHandle[] {
+export function registerClientSlashCommands(registry: SlashCommandRegistry<RootState, AppDispatch>): ListenerHandle[] {
   return [
     registry.add(
       'droplight',
       'drop a light at your location, options: (colors are 0-255) droplight <intensity> <radius> <red> <green> <blue>',
-      (state: RootState, argv: string[]) => {
+      (state: RootState, dispatch: AppDispatch, argv: string[]) => {
         if (argv.length > 0) {
           const intensity = argv.length >= 0 ? parseInt(argv[0]) : 1;
           const radius = argv.length > 1 ? parseInt(argv[1]) : 20;
@@ -30,21 +31,25 @@ export function registerClientSlashCommands(registry: SlashCommandRegistry<RootS
     registry.add(
       'removelight',
       'removes the closest dropped light to the player',
-      (state: RootState, argv: string[]) => {
+      (state: RootState, dispatch: AppDispatch, argv: string[]) => {
         game.dropLight.removeLast();
       }
     ),
 
-    registry.add('resetlights', 'removes all dropped lights from the world', (state: RootState, argv: string[]) => {
-      game.dropLight.clearAll();
-    }),
+    registry.add(
+      'resetlights',
+      'removes all dropped lights from the world',
+      (state: RootState, dispatch: AppDispatch, argv: string[]) => {
+        game.dropLight.clearAll();
+      }
+    ),
 
-    registry.add('exit', 'quit the game', () => game.quit()),
+    registry.add('exit', 'quit the game', () => clientAPI.quit()),
 
     registry.add(
       'replacesubstance',
       'replace blocks with type args[0] with blocks with type of args[1]',
-      (state: RootState, argv: string[]) => {
+      (state: RootState, dispatch: AppDispatch, argv: string[]) => {
         if (argv.length >= 2) {
           game.building.replaceMaterialsAsync(parseInt(argv[0]), parseInt(argv[1]), false);
         }
@@ -55,7 +60,7 @@ export function registerClientSlashCommands(registry: SlashCommandRegistry<RootS
     registry.add(
       'replaceshape',
       'replace blocks with shape args[0] with blocks with shape of args[1]',
-      (state: RootState, argv: string[]) => {
+      (state: RootState, dispatch: AppDispatch, argv: string[]) => {
         if (argv.length >= 2) {
           game.building.replaceShapesAsync(parseInt(argv[0]), parseInt(argv[1]), false);
         }
@@ -66,7 +71,7 @@ export function registerClientSlashCommands(registry: SlashCommandRegistry<RootS
     registry.add(
       'replaceselectedsubstance',
       'replace blocks with type args[0] with blocks with type of args[1] within selected range',
-      (state: RootState, argv: string[]) => {
+      (state: RootState, dispatch: AppDispatch, argv: string[]) => {
         if (argv.length >= 2) {
           game.building.replaceMaterialsAsync(parseInt(argv[0]), parseInt(argv[1]), true);
         }
@@ -77,7 +82,7 @@ export function registerClientSlashCommands(registry: SlashCommandRegistry<RootS
     registry.add(
       'replaceselectedshape',
       'replace blocks with shape args[0] to blocks with shape of args[1] within selected range',
-      (state: RootState, argv: string[]) => {
+      (state: RootState, dispatch: AppDispatch, argv: string[]) => {
         if (argv.length >= 2) {
           game.building.replaceShapesAsync(parseInt(argv[0]), parseInt(argv[1]), true);
         }
@@ -88,17 +93,16 @@ export function registerClientSlashCommands(registry: SlashCommandRegistry<RootS
     registry.add(
       'blocktypes',
       'prints out substance and shape of selected blocks',
-      (state: RootState, argv: string[]) => {
+      (state: RootState, dispatch: AppDispatch, argv: string[]) => {
         // TODO COHERENT BlockTypes is missing, potentially use materials property
         // client.BlockTypes();
-        // window.setTimeout(() => consolePrint(`${client.blockTypes}`), 1000);
       }
     ),
 
     registry.add(
       'rotatex',
       'rotate selected blocks 90 degrees around the x axis',
-      (state: RootState, argv: string[]) => {
+      (state: RootState, dispatch: AppDispatch, argv: string[]) => {
         game.triggerKeyAction(state.keyActions.CubeRotateBlockX);
       }
     ),
@@ -106,7 +110,7 @@ export function registerClientSlashCommands(registry: SlashCommandRegistry<RootS
     registry.add(
       'rotatey',
       'rotate selected blocks 90 degrees around the y axis',
-      (state: RootState, argv: string[]) => {
+      (state: RootState, dispatch: AppDispatch, argv: string[]) => {
         game.triggerKeyAction(state.keyActions.CubeRotateBlockY);
       }
     ),
@@ -114,19 +118,27 @@ export function registerClientSlashCommands(registry: SlashCommandRegistry<RootS
     registry.add(
       'rotatez',
       'rotate selected blocks 90 degrees around the z axis',
-      (state: RootState, argv: string[]) => {
+      (state: RootState, dispatch: AppDispatch, argv: string[]) => {
         game.triggerKeyAction(state.keyActions.CubeRotateBlockZ);
       }
     ),
 
-    registry.add('loopability', 'Loops specified Ability at Interval', (state: RootState, argv: string[]) => {
-      if (argv.length >= 2) {
-        camelot.game._cse_dev_beginTriggerKeyActionLoop(parseInt(argv[0]), parseInt(argv[1]));
+    registry.add(
+      'loopability',
+      'Loops specified Ability at Interval',
+      (state: RootState, dispatch: AppDispatch, argv: string[]) => {
+        if (argv.length >= 2) {
+          camelot.game._cse_dev_beginTriggerKeyActionLoop(parseInt(argv[0]), parseInt(argv[1]));
+        }
       }
-    }),
+    ),
 
-    registry.add('endloop', 'Loops specified Ability at Interval', (state: RootState, argv: string[]) => {
-      camelot.game._cse_dev_endTriggerKeyActionLoop();
-    })
+    registry.add(
+      'endloop',
+      'Loops specified Ability at Interval',
+      (state: RootState, dispatch: AppDispatch, argv: string[]) => {
+        camelot.game._cse_dev_endTriggerKeyActionLoop();
+      }
+    )
   ];
 }

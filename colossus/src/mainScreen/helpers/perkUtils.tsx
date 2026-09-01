@@ -4,20 +4,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {
-  ChampionGQL,
-  ChampionInfo,
-  PerkDefGQL,
-  PerkType,
-  QuestDefGQL,
-  QuestGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary, Dispatch } from '@reduxjs/toolkit';
 import { getStringTableValue } from './stringTableHelpers';
 import { updateStoreAddUnseenEquipment } from '../redux/storeSlice';
 import { isBadgeRelatedPerk } from './badgingUtils';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
+import { PerkDef, PerkType } from '../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../dataSources/manifest/championManifest';
+import { QuestDef } from '../dataSources/manifest/questManifest';
 
 const StringIDPerkTypesCurrency = 'PerkTypesCurrency';
 const StringIDPerkTypesCostume = 'PerkTypesCostume';
@@ -68,10 +64,10 @@ export function getPerkTypeLocalizedName(perkType: PerkType, stringTable: Dictio
 }
 
 export function calculateSelectedRuneMods(
-  runeMods: Dictionary<PerkDefGQL>,
+  runeMods: Dictionary<PerkDef>,
   champions: ChampionGQL[]
-): Dictionary<PerkDefGQL[]> {
-  const selectedRuneModsByChamp: Dictionary<PerkDefGQL[]> = {};
+): Dictionary<PerkDef[]> {
+  const selectedRuneModsByChamp: Dictionary<PerkDef[]> = {};
 
   // Check to see if all the expected data exists, and has values stored in it.
   if (!runeMods || Object.keys(runeMods).length === 0 || !champions || champions.length === 0) {
@@ -99,10 +95,10 @@ export function calculateSelectedRuneMods(
 }
 
 export function createAlertsForCollectedQuestProgress(
-  questDef: QuestDefGQL,
+  questDef: QuestDef,
   questProgress: QuestGQL,
-  perksByID: Dictionary<PerkDefGQL>,
-  champions: ChampionInfo[],
+  perksByID: Dictionary<PerkDef>,
+  champions: ChampionDef[],
   dispatch: Dispatch
 ) {
   if (!questDef || !questProgress) {

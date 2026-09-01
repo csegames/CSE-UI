@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { GameSettingsDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { GameOption } from '@csegames/library/dist/_baseGame/types/Options';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { GameSettingsDef } from '../dataSources/manifest/gameSettingsManifest';
 
 // BEGIN INTERFACES AND STATES
 
@@ -25,13 +25,8 @@ function generateDefaultGameSettingsState() {
     dailyQuestResetsAllowed: 1,
     expensivePurchaseGemThreshold: -1,
     hardDailyQuestCount: 1,
-    maxCharacterNameLength: 1,
     maxEmoteCount: 1,
-    minCharacterNameLength: 1,
     normalDailyQuestCount: 1,
-    startingAttributePoints: 1,
-    traitsMaxPoints: 1,
-    traitsMinPoints: 1,
     storeTabConfigs: [],
     // UI state additions.
     pendingSettingsChanges: {},

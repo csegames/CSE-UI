@@ -1,9 +1,3 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
 import { ListenerHandle } from './ListenerHandle';
 
 // Usage:
@@ -17,6 +11,7 @@ import { ListenerHandle } from './ListenerHandle';
 
 export interface RetryTracker extends ListenerHandle {
   readonly shouldRetry: boolean;
+  readonly failureCount: number;
   onFailed(): Promise<void>;
 }
 
@@ -35,7 +30,7 @@ export class BackOffRetryTracker implements RetryTracker {
   private delay: number;
   private remainingRetries: number;
   constructor(readonly startDelay: number, readonly maxDelay: number, readonly maxRetries?: number) {
-    this.delay = startDelay * ((Math.random() + 5) / 6);
+    this.delay = startDelay;
     this.remainingRetries = maxRetries ?? Number.MAX_SAFE_INTEGER;
   }
 
@@ -45,6 +40,10 @@ export class BackOffRetryTracker implements RetryTracker {
 
   public get shouldRetry(): boolean {
     return this.remainingRetries > 0;
+  }
+
+  public get failureCount(): number {
+    return this.remainingRetries - (this.maxRetries ?? Number.MAX_SAFE_INTEGER);
   }
 
   public onFailed(): Promise<void> {

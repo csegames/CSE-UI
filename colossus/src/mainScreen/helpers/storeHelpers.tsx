@@ -7,18 +7,18 @@
 import {
   ProfileLockDefGQL,
   PurchaseDefGQL,
-  PerkDefGQL,
   CostDefGQL,
-  QuestGQL,
-  ProgressionNodeDef,
-  StringTableEntryDef,
-  ChampionInfo,
-  QuestDefGQL
+  QuestGQL
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { getServerTimeMS } from '@csegames/library/dist/_baseGame/utils/timeUtils';
 import { getTokenizedStringTableValue } from './stringTableHelpers';
 import dateFormat from 'dateformat';
+import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
+import { PerkDef } from '../dataSources/manifest/perkManifest';
+import { ProgressionNodeDef } from '../dataSources/manifest/progressionNodeManifest';
+import { QuestDef } from '../dataSources/manifest/questManifest';
+import { ChampionDef } from '../dataSources/manifest/championManifest';
 
 const StringIDLocksRequiredItem = 'LocksRequiredItem';
 const StringIDLocksForbiddenItem = 'LocksForbiddenItem';
@@ -102,9 +102,9 @@ export function areLocksFulfilled(
 
 export function getLockDescription(
   lock: ProfileLockDefGQL,
-  perksByID: Dictionary<PerkDefGQL>,
-  questsById: Dictionary<QuestDefGQL>,
-  champions: ChampionInfo[],
+  perksByID: Dictionary<PerkDef>,
+  questsById: Dictionary<QuestDef>,
+  champions: ChampionDef[],
   progressionNodeDefsByID: Dictionary<ProgressionNodeDef>,
   stringTable: Dictionary<StringTableEntryDef>
 ): string {
@@ -186,7 +186,7 @@ export interface PurchaseOwnershipData {
 
 export function getPurchaseOwnershipData(
   purchase: PurchaseDefGQL,
-  perksByID: Dictionary<PerkDefGQL>,
+  perksByID: Dictionary<PerkDef>,
   ownedPerks: Dictionary<number>
 ): PurchaseOwnershipData {
   // Ownership status is based only on the "unique" items offered by a purchase.
@@ -229,7 +229,7 @@ export function getPurchaseOwnershipData(
 /** Checks if a particular purchase can be shown in the Store right now, */
 export function isPurchaseable(
   purchase: PurchaseDefGQL,
-  perksByID: Dictionary<PerkDefGQL>,
+  perksByID: Dictionary<PerkDef>,
   ownedPerks: Dictionary<number>,
   progressionNodes: string[],
   quests: QuestGQL[],
@@ -251,7 +251,7 @@ export function isFreeReward(purchase: PurchaseDefGQL): boolean {
 
 export function getFinalPurchaseCost(
   purchase: PurchaseDefGQL,
-  perksByID: Dictionary<PerkDefGQL>,
+  perksByID: Dictionary<PerkDef>,
   ownedPerks: Dictionary<number>
 ): CostDefGQL[] {
   // Only bundles have discounts (for when you already own part of the bundle), so if this isn't a bundle,

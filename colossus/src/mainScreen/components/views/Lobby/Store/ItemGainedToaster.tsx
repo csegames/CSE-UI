@@ -4,13 +4,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { PerkDefGQL, PerkType, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
 import { getPerkTypeLocalizedName, isChampionEquipmentPerk } from '../../../../helpers/perkUtils';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { PerkDef, PerkType } from '../../../../dataSources/manifest/perkManifest';
 
 const Container = 'StartScreen-Store-ItemGainedToaster-Container';
 const TextContainer = 'StartScreen-Store-ItemGainedToaster-TextContainer';
@@ -29,7 +30,7 @@ const StringIDStoreGainedDescriptionOther = 'StoreGainedDescriptionOther';
 const StringIDStoreGainedQuestXP = 'StoreGainedTitleQuestXP';
 
 interface ReactProps {
-  perk: PerkDefGQL;
+  perk: PerkDef;
   perkCount: number;
 }
 

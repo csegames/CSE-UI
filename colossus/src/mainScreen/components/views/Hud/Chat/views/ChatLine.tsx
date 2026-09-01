@@ -1,23 +1,23 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
 import * as React from 'react';
-import * as chat_proto from '@csegames/library/dist/_baseGame/chat/chat_proto';
+import * as chat_proto from '@csegames/library/dist/_baseGame/legacyChat/chat_proto';
 import { parseText } from '../parsers/parseText';
-import { chat } from '@csegames/library/dist/_baseGame/chat/chat_proto';
-import { TimedMessage } from '@csegames/library/dist/_baseGame/chat/CSEChat';
+import { chat } from '@csegames/library/dist/_baseGame/legacyChat/chat_proto';
+import { TimedMessage } from '@csegames/library/dist/_baseGame/legacyChat/CSEChat';
 import { RootState } from '../../../../../redux/store';
 import { connect } from 'react-redux';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { ChatOptionsState, RoomState } from '../../../../../redux/chatSlice';
 import { getTokenizedStringTableValue } from '../../../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { GameOption } from '@csegames/library/dist/_baseGame/types/Options';
 import { GameOptionIDs } from '../../../../../redux/gameOptionsSlice';
 import { filterDirtyWords } from '@csegames/library/dist/_baseGame/utils/textUtils';
+import { StringTableEntryDef } from '../../../../../dataSources/manifest/stringTableManifest';
 
 const Line = 'Chat-Views-ChatLine-Line';
 const Time = 'Chat-Views-ChatLine-Time';
@@ -122,7 +122,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { chatline } = theme;
   const { stringTable } = state.stringTable;
   const { gameOptions } = state.gameOptions;
-  const myUserName = state.player.name;
+  const myUserName = state.entities.self.name;
 
   return {
     ...ownProps,

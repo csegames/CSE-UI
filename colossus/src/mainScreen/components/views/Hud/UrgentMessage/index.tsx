@@ -2,8 +2,9 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
  */
+
+/* TODO_ANIMATION_REFACTOR
 
 import * as React from 'react';
 import { Dispatch } from 'redux';
@@ -25,10 +26,11 @@ import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { DeepImmutableObject } from '@csegames/library/dist/_baseGame/types/DeepImmutable';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { GameOption } from '@csegames/library/dist/_baseGame/types/Options';
 import { GameOptionIDs } from '../../../../redux/gameOptionsSlice';
 import { StatusDef } from '../../../../dataSources/manifest/statusManifest';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'UrgentMessage-Container';
 
@@ -185,13 +187,13 @@ class AUrgentMessage extends React.Component<Props, State> {
     if (optPlaySFX && optPlaySFX.value) {
       switch (type) {
         case MessageType.OnCooldown:
-          game.playGameSound(SoundEvents.PLAY_UI_ABILITY_COOLDOWN);
+          clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_COOLDOWN);
           break;
         case MessageType.NotEnoughResource:
-          game.playGameSound(SoundEvents.PLAY_UI_ABILITY_OUT_OF_RESOURCE);
+          clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_OUT_OF_RESOURCE);
           break;
         case MessageType.BlockedByStatus:
-          game.playGameSound(SoundEvents.PLAY_UI_ABILITY_DISABLED);
+          clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_DISABLED);
           break;
       }
     }
@@ -252,8 +254,8 @@ class AUrgentMessage extends React.Component<Props, State> {
 
 function mapStateToProps(state: RootState): Props {
   const characterRaceDefs = state.game.characterRaceDefs;
-  const playerRace = state.player.race;
-  const playerRaceDef = characterRaceDefs[playerRace];
+  const { race, statuses } = state.entities.self;
+  const playerRaceDef = characterRaceDefs[race];
   const { stringTable } = state.stringTable;
   const { gameOptions } = state.gameOptions;
 
@@ -263,7 +265,7 @@ function mapStateToProps(state: RootState): Props {
   }
 
   return {
-    playerStatuses: state.player.statuses,
+    playerStatuses: statuses,
     resourceName,
     statusDefs: state.game.statusDefsByNumericID,
     strongAbility: state.abilities[strongAbilityID],
@@ -275,3 +277,5 @@ function mapStateToProps(state: RootState): Props {
 }
 
 export const UrgentMessage = connect(mapStateToProps)(AUrgentMessage);
+
+*/

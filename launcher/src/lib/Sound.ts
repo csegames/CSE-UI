@@ -6,19 +6,29 @@
 
 import { globalEvents } from './EventEmitter';
 
-// New sounds can be added by inserting new ogg files into the build and then
-// updating this enumeration.
-export enum Sound {
-  Select = 'sounds/UI_Menu_GenericSelect_v1_02.ogg',
-  LaunchGame = 'sounds/UI_Patcher_PlayButton.ogg',
-  PatchComplete = 'sounds/patch-complete.ogg',
-  SelectChange = 'sounds/UI_Menu_CharacterSelect_Change_v1_01.ogg',
-  CreateCharacter = 'sounds/UI_Menu_CreateNewCharacter_v1_01.ogg',
-  RealmSelect = 'sounds/UI_Menu_SelectRealm_v1_01.ogg',
-  ResetTraits = 'sounds/UI_AbilityCrafting_Reset_v1_01.ogg',
-  BoonSelect = 'sounds/UI_Menu_BoonSelect_v1_01.ogg',
-  BaneSelect = 'sounds/UI_Menu_BaneSelect_v1_01.ogg'
-}
+import Select from '../sounds/UI_Menu_GenericSelect_v1_02.ogg';
+import LaunchGame from '../sounds/UI_Patcher_PlayButton.ogg';
+import PatchComplete from '../sounds/patch-complete.ogg';
+import SelectChange from '../sounds/UI_Menu_CharacterSelect_Change_v1_01.ogg';
+import RealmSelect from '../sounds/UI_Menu_SelectRealm_v1_01.ogg';
+import ResetTraits from '../sounds/UI_AbilityCrafting_Reset_v1_01.ogg';
+import BoonSelect from '../sounds/UI_Menu_BoonSelect_v1_01.ogg';
+import BaneSelect from '../sounds/UI_Menu_BaneSelect_v1_01.ogg';
+import Ambient from '../sounds/patcher-ambient.ogg';
+
+export const Sound = {
+  Ambient: Ambient,
+  Select: Select,
+  LaunchGame: LaunchGame,
+  PatchComplete: PatchComplete,
+  SelectChange: SelectChange,
+  RealmSelect: RealmSelect,
+  ResetTraits: ResetTraits,
+  BoonSelect: BoonSelect,
+  BaneSelect: BaneSelect
+} as const;
+
+export type Sound = (typeof Sound)[keyof typeof Sound];
 
 export function playSound(sound: Sound): void {
   globalEvents.trigger('play-sound', sound.toString());

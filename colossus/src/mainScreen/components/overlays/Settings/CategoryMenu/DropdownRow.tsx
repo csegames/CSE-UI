@@ -9,9 +9,9 @@ import { ItemContainer } from '../ItemContainer';
 import { DropDown } from '../../../shared/DropDownField';
 import { SelectOption, SelectValue } from '@csegames/library/dist/_baseGame/types/Options';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { game } from '@csegames/library/dist/_baseGame';
 import { toTitleCase } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { cloneDeep } from '@csegames/library/dist/_baseGame/utils/objectUtils';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const ListBoxStyles = 'Settings-CategoryMenu-DropdownRow-ListBoxStyles';
 
@@ -28,11 +28,11 @@ export function DropdownRow(props: Props) {
     };
 
     props.onChange(newOption);
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
   }
 
   function onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   return (

@@ -5,17 +5,27 @@
  */
 
 import * as React from 'react';
-import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppDispatch } from './store';
 
-export interface ContextMenuItem {
+export interface ContextMenuActionItem {
   title: string;
-  onClick: (dispatch: Dispatch) => void;
+  onClick: (dispatch: AppDispatch) => void;
   disabled?: boolean;
+  keepOpenAfterSelection?: boolean;
 }
+
+export interface ContextMenuSeparatorItem {
+  kind: 'separator';
+}
+
+export type ContextMenuItem = ContextMenuActionItem | ContextMenuSeparatorItem;
+
+export const CONTEXT_MENU_SEPARATOR: ContextMenuSeparatorItem = { kind: 'separator' };
 
 export interface ContextMenuParams {
   // An ID is required so we can close the menu if the ContextMenuSource gets unmounted.
-  id: string;
+  id: string | null;
   content: (() => React.ReactNode) | ContextMenuItem[] | null;
   mouseX?: number;
   mouseY?: number;

@@ -8,15 +8,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { Dispatch } from 'redux';
-import {
-  ChampionCostumeInfo,
-  ChampionGQL,
-  PerkDefGQL,
-  QuestGQL,
-  QuestLinkDefGQL,
-  StringTableEntryDef,
-  QuestDefGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { ResourceBar } from '../../../shared/ResourceBar';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
@@ -26,6 +18,10 @@ import { getStringTableValue, getTokenizedStringTableValue } from '../../../../h
 import { formatCountdown } from '../../../../helpers/timeHelpers';
 import { getServerTimeMS } from '@csegames/library/dist/_baseGame/utils/timeUtils';
 import { isBattlePassVisible } from '../BattlePass/BattlePassUtils';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { QuestDef, QuestLinkDef } from '../../../../dataSources/manifest/questManifest';
+import { PerkDef } from '../../../../dataSources/manifest/perkManifest';
+import { CostumeDef } from '../../../../dataSources/manifest/costumeManifest';
 
 const Root = 'LobbyBattlePassStatus-Root';
 const Row = 'Row';
@@ -48,15 +44,14 @@ const StringIDBattlePassStartsSoon = 'BattlePassStartsSoon';
 interface ReactProps {}
 
 interface InjectedProps {
-  currentBattlePass: QuestDefGQL;
-  nextBattlePass: QuestDefGQL;
+  currentBattlePass: QuestDef;
+  nextBattlePass: QuestDef;
   quests: QuestGQL[];
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   defaultChampionID: string;
   champions: ChampionGQL[];
-  championCostumes: ChampionCostumeInfo[];
+  championCostumes: CostumeDef[];
   stringTable: Dictionary<StringTableEntryDef>;
-  minuteTicker: number;
   serverTimeDeltaMS: number;
   dispatch?: Dispatch;
 }
@@ -135,7 +130,7 @@ class ALobbyBattlePassStatus extends React.Component<Props> {
     this.props.dispatch(navigateTo(LobbyView.BattlePass));
   }
 
-  private getStartDateText(battlePass: QuestDefGQL): string {
+  private getStartDateText(battlePass: QuestDef): string {
     const startDate = new Date(
       battlePass.questLock?.find((lock) => {
         return !!lock.startTime;
@@ -152,7 +147,7 @@ class ALobbyBattlePassStatus extends React.Component<Props> {
     }
   }
 
-  private getProgress(questGQL: QuestGQL, questLink: QuestLinkDefGQL, quest: QuestDefGQL): string {
+  private getProgress(questGQL: QuestGQL, questLink: QuestLinkDef, quest: QuestDef): string {
     if (questLink && questLink.progress) {
       return `${addCommasToNumber(questGQL?.currentQuestProgress ?? 0)} / ${addCommasToNumber(questLink.progress)} XP`;
     } else {
@@ -162,11 +157,11 @@ class ALobbyBattlePassStatus extends React.Component<Props> {
 
   private getBackgroundImageURL(): string {
     let defaultChampion = this.props.champions.find((c) => c.championID == this.props.defaultChampionID);
-    let defaultChampionCostume: ChampionCostumeInfo = null;
+    let defaultChampionCostume: CostumeDef = null;
     if (defaultChampion) {
       const costumePerk = this.props.perksByID[defaultChampion.costumePerkID];
       if (costumePerk) {
-        defaultChampionCostume = this.props.championCostumes.find((costume) => costume.id == costumePerk.costume.id);
+        defaultChampionCostume = this.props.championCostumes.find((costume) => costume.id == costumePerk.costumeID);
       }
     }
 
@@ -182,7 +177,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps) {
   const { perksByID } = state.store;
   const { championCostumes } = state.championInfo;
   const { stringTable } = state.stringTable;
-  const { minuteTicker, serverTimeDeltaMS } = state.clock;
+  const { serverTimeDeltaMS } = state.clock;
 
   return {
     ...ownProps,
@@ -194,7 +189,6 @@ function mapStateToProps(state: RootState, ownProps: ReactProps) {
     champions,
     championCostumes,
     stringTable,
-    minuteTicker,
     serverTimeDeltaMS
   };
 }

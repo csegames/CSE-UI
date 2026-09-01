@@ -8,12 +8,19 @@ import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../redux/store';
+import { requestAddImagesToCache } from '../dataSources/imageCacheService';
 
 const Root = 'HUD-Button-Root';
 const RootDisabled = 'HUD-Button-RootDisabled';
 
+requestAddImagesToCache(Root, [
+  'images/button/button-big-on.png',
+  'images/button/button-big-off.png',
+  'images/button/button-glow.png'
+]);
+
 interface ReactProps extends React.HTMLAttributes<HTMLDivElement> {
-  onClick: () => void;
+  onClick?: () => void;
   disabled?: boolean;
 }
 

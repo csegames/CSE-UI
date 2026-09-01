@@ -5,14 +5,14 @@
  */
 
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import ExternalDataSource from '../redux/externalDataSource';
-import { game } from '@csegames/library/dist/_baseGame';
+import { ExternalDataSource } from '../redux/externalDataSource';
 import { CombatEvent } from '@csegames/library/dist/_baseGame/types/CombatEvent';
 import { updateEvents } from '../redux/combatSlice';
+import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 
 export class CombatService extends ExternalDataSource {
   protected bind(): Promise<ListenerHandle[]> {
-    const handles = Promise.resolve([game.onCombatEvent(this.handleCombatEvent.bind(this))]);
+    const handles = Promise.resolve([clientAPI.bindCombatEventListener(this.handleCombatEvent.bind(this))]);
 
     return handles;
   }

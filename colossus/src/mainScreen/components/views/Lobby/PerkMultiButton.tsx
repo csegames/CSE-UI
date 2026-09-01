@@ -1,16 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import {
-  PerkDefGQL,
-  PurchaseDefGQL,
-  QuestGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PurchaseDefGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getChampionPerkUnlockQuestIndex } from '../../../helpers/characterHelpers';
 import { Button } from '../../shared/Button';
-import { ChampionInfo } from '@csegames/library/dist/hordetest/graphql/schema';
 import { QuestsByType } from '../../../redux/questSlice';
 import { isFreeReward, isPurchaseable } from '../../../helpers/storeHelpers';
 import { showRightPanel } from '../../../redux/navigationSlice';
@@ -25,24 +19,27 @@ import {
   getTokenizedStringTableValue
 } from '../../../helpers/stringTableHelpers';
 import { FeatureFlags } from '../../../redux/featureFlagsSlice';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
+import { PerkDef } from '../../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
 
 const ButtonStyle = 'ChampionProfile-MultiButton-ButtonStyle';
 const UnlockLevel = 'ChampionProfile-MultiButton-UnlockLevel';
 
 interface ReactProps {
   additionalClassNames?: string;
-  perk: PerkDefGQL;
+  perk: PerkDef;
   isSaving: boolean;
   onEquip: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 interface InjectedProps extends FeatureFlags.Source {
   ownedPerks: Dictionary<number>;
-  selectedChampion: ChampionInfo;
+  selectedChampion: ChampionDef;
   questsByType: QuestsByType;
   purchases: PurchaseDefGQL[];
   stringTable: Dictionary<StringTableEntryDef>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   progressionNodes: string[];
   quests: QuestGQL[];
   serverTimeDeltaMS: number;

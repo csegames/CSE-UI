@@ -5,11 +5,12 @@
  */
 
 import * as React from 'react';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { PerkGQL, PerkDefGQL, PerkRarity, PerkType } from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
+import { PerkDef, PerkRarity, PerkType } from '../../../../dataSources/manifest/perkManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'ChampionProfile-EquipmentItem-Container';
 const Image = 'ChampionProfile-EquipmentItem-Image';
@@ -19,16 +20,16 @@ const LockedOverlay = 'ChampionProfile-EquipmentItem-LockedOverlay';
 const CheckIcon = 'ChampionProfile-EquipmentItem-CheckIcon';
 
 interface ReactProps {
-  perk: PerkDefGQL;
+  perk: PerkDef;
   overrideBackgroundURL?: string;
 
   styles?: string;
   isSelected?: boolean;
   shouldShowStatus?: boolean;
   className?: string;
-  onClick?: (perk: PerkDefGQL) => void;
-  onDoubleClick?: (perk: PerkDefGQL) => void;
-  onMouseEnter?: (perk: PerkDefGQL) => void;
+  onClick?: (perk: PerkDef) => void;
+  onDoubleClick?: (perk: PerkDef) => void;
+  onMouseEnter?: (perk: PerkDef) => void;
   onMouseLeave?: () => void;
   children?: JSX.Element | JSX.Element[];
   disabled?: boolean;
@@ -106,7 +107,7 @@ class AEquipmentItem extends React.Component<Props> {
       this.props.onClick(this.props.perk);
     }
 
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
   }
 
   private onDoubleClick() {
@@ -120,7 +121,7 @@ class AEquipmentItem extends React.Component<Props> {
       this.props.onMouseEnter(this.props.perk);
     }
 
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 }
 

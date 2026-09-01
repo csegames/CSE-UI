@@ -4,138 +4,96 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { Item } from '@csegames/library/dist/camelotunchained/game/types/Items';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Item, MyInventory } from '@csegames/library/dist/camelotunchained/graphql/schema';
-import { ItemStatID } from '../components/items/itemData';
-import { MoveItemRequest } from '../components/items/itemUtils';
+
+export enum ItemActionTargetingTag {
+  Repair = 'Asset.Activation.SelectItem.Repair'
+}
+
+export interface ItemActionTargetingData {
+  /** The targeting tag of the item that instantiated this targeting action. */
+  tag: ItemActionTargetingTag;
+  /** The item whose targeting action is in progress (e.g. you're activating a Repair Kit). */
+  sourceItem: Item;
+  /**
+   * Returns true if the source item is able to act upon the target item (e.g. Repair Kit targets gear, not potions).
+   * If no function is specified, all items are presumed to be valid targets.
+   */
+  isValidTarget?: (sourceItem: Item, targetItem: Item) => boolean;
+  /**
+   * Gets triggered when an item is targeted, but before the item action is triggered (assuming a valid target).
+   *
+   * If an invalid target is passed in, this triggers, and the targeting action remains active.
+   *
+   * If you want an invalid target to cancel the targeting action, you must do so manually in this function, and
+   * you should also manually trigger `onTargetingCanceled()` in that case, and possibly clientAPI.setCursorOverrideURL('').
+   */
+  onItemTargeted?: (targetItem: Item, data: ItemActionTargetingData) => void;
+  /**
+   * Gets triggered when the user hits Escape during a targeting action, but before the
+   * itemActionTargetingData is cleared from Redux.
+   */
+  onTargetingCanceled?: () => void;
+}
 
 export interface InventoryStackSplit {
-  itemID: string;
+  itemInstanceID: string;
   amount: number;
 }
 
 interface InventoryState {
-  inventoryPendingRefreshes: number;
+  accountBank: Item[];
+  equipment: Item[];
+  primary: Item[];
   stackSplit: InventoryStackSplit | null;
-  itemCount: number | null;
-  items: (Item | null)[] | null;
-  nestedItemCount: number | null;
-  itemsPerRow: number | null;
-  emptyRows: number;
-  searchValue: string;
+  wallet: Item[];
+  /**
+   * When an item action requires an item target (i.e. repair kit needs to target a damaged item),
+   * this field tracks all data relevant to the in-progress targeting action.
+   */
+  itemActionTargetingData: ItemActionTargetingData | null;
 }
 
 const DefaultInventoryState: InventoryState = {
-  inventoryPendingRefreshes: 0,
+  accountBank: [],
+  equipment: [],
+  primary: [],
   stackSplit: null,
-  itemCount: null,
-  items: null,
-  nestedItemCount: null,
-  itemsPerRow: null,
-  emptyRows: 0,
-  searchValue: ''
+  wallet: [],
+  itemActionTargetingData: null
 };
 
 export const inventorySlice = createSlice({
   name: 'inventory',
   initialState: DefaultInventoryState,
   reducers: {
-    addInventoryPendingRefresh: (state) => {
-      state.inventoryPendingRefreshes++;
+    updateAccountBank: (state, action: PayloadAction<Item[]>) => {
+      state.accountBank = action.payload;
     },
-    resolveInventoryPendingRefresh: (state) => {
-      state.inventoryPendingRefreshes--;
+    updateEquipment: (state, action: PayloadAction<Item[]>) => {
+      state.equipment = action.payload;
     },
-    updateInventory: (state, action: PayloadAction<MyInventory>) => {
-      state.itemCount = action.payload.itemCount;
-      state.items = action.payload.items;
-      state.nestedItemCount = action.payload.nestedItemCount;
+    updatePrimaryInventory: (state, action: PayloadAction<Item[]>) => {
+      state.primary = action.payload;
     },
-    moveInventoryItems: (state, action: PayloadAction<[MoveItemRequest, Item][]>) => {
-      if (!state.items) {
-        return;
-      }
-      action.payload.forEach(([move, item]) => {
-        const endPosition = move.PositionTo;
-        const itemIndex = state.items.findIndex((inventoryItem) => inventoryItem.id === move.MoveItemID);
-        if (item.location.inventory) {
-          if (endPosition === -1) {
-            state.items.splice(itemIndex, 1);
-          } else {
-            const unitCount = item.statList.find((stat) => stat.statID === ItemStatID.UnitCount).value ?? 1;
-            const moveCount = state.stackSplit?.amount ?? unitCount;
-            state.items.push({
-              ...item,
-              location: {
-                ...item.location,
-                inventory: {
-                  ...item.location.inventory,
-                  position: endPosition
-                }
-              },
-              statList: [
-                ...item.statList.filter((stat) => stat.statID !== ItemStatID.UnitCount),
-                {
-                  statID: ItemStatID.UnitCount,
-                  value: moveCount
-                }
-              ]
-            });
-            if (unitCount - moveCount === 0) {
-              state.items.splice(itemIndex, 1);
-            } else {
-              state.items[itemIndex].statList = [
-                ...item.statList.filter((stat) => stat.statID !== ItemStatID.UnitCount),
-                {
-                  statID: ItemStatID.UnitCount,
-                  value: unitCount - moveCount
-                }
-              ];
-            }
-          }
-        } else if (item.location.equipped) {
-          state.items.push({
-            ...item,
-            location: {
-              ...item.location,
-              equipped: null,
-              inventory: {
-                ...item.location.inventory,
-                position: endPosition
-              }
-            }
-          });
-        }
-      });
-
-      state.itemCount = state.items.length;
-    },
-    updateStackSplit: (state, action: PayloadAction<InventoryStackSplit>) => {
+    updateStackSplit: (state, action: PayloadAction<InventoryStackSplit | null>) => {
       state.stackSplit = action.payload;
     },
-    modifyInventoryEmptyRows: (state, action: PayloadAction<number>) => {
-      state.emptyRows += action.payload;
+    updateWallet: (state, action: PayloadAction<Item[]>) => {
+      state.wallet = action.payload;
     },
-    updateInventoryEmptyRows: (state, action: PayloadAction<number>) => {
-      state.emptyRows = action.payload;
-    },
-    updateInventoryItemsPerRow: (state, action: PayloadAction<number>) => {
-      state.itemsPerRow = action.payload;
-    },
-    updateInventorySearchValue: (state, action: PayloadAction<string>) => {
-      state.searchValue = action.payload;
+    updateItemActionTargeting: (state, action: PayloadAction<ItemActionTargetingData | null>) => {
+      state.itemActionTargetingData = action.payload;
     }
   }
 });
 
 export const {
-  addInventoryPendingRefresh,
-  resolveInventoryPendingRefresh,
-  updateInventory,
-  moveInventoryItems,
+  updateAccountBank,
+  updateEquipment,
+  updatePrimaryInventory,
   updateStackSplit,
-  modifyInventoryEmptyRows,
-  updateInventoryEmptyRows,
-  updateInventoryItemsPerRow,
-  updateInventorySearchValue
+  updateWallet,
+  updateItemActionTargeting
 } = inventorySlice.actions;

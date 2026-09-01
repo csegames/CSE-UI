@@ -30,9 +30,6 @@ regMap[EE_OnGameOptionChanged] = 'onGameOptionChanged';
 export const EE_OnControllerSelect = 'select';
 regMap[EE_OnControllerSelect] = 'onControllerSelect';
 
-export const EE_OnNetworkFailure = 'networkFailure';
-regMap[EE_OnNetworkFailure] = 'onNetworkFailure';
-
 /**
  * Called when a Steam purchase transaction closes.
  */

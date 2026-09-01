@@ -2,7 +2,6 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
  */
 
 // This function will capitalize the beginning of each word and put a space between them.
@@ -26,10 +25,15 @@ export function toSentenceCase(obj: any): string {
     });
 }
 
+function getDesiredThousandsSeparator(): string {
+  const test = (0.1).toLocaleString();
+  return test.charAt(1) === '.' ? ',' : '.';
+}
+
 export function addCommasToNumber(num: number | string): string {
   const asString = typeof num === 'string' ? num : num.toString();
 
-  return asString.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return asString.replace(/\B(?=(\d{3})+(?!\d))/g, getDesiredThousandsSeparator());
 }
 
 // Formats a number in seconds as a string in the form "HH:MM:SS", with leading zeroes on all three fields if needed

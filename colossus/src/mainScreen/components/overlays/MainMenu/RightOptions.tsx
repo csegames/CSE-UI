@@ -8,9 +8,9 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { getVoiceChatStyle, updateMutedAll, updatePlayerToReport } from '../../../redux/voiceChatSlice';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { ChampionInfo, Group, PerkDefGQL, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { Group } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary, Dispatch } from '@reduxjs/toolkit';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
 import {
@@ -19,15 +19,18 @@ import {
 } from '@csegames/library/dist/_baseGame/types/VoiceChatMemberSettings';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { FriendsList } from '../../../redux/entitiesSlice';
-import { PlayerEntityStateModel } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
+import { PlayerEntityState } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { Overlay, showOverlay } from '../../../redux/navigationSlice';
 import { CharacterRaceDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
 import { IDLookupTable } from '../../../redux/gameSlice';
 import { updateAccountIDsToMute } from '../../../redux/localStorageSlice';
 import { UserState } from '../../../redux/userSlice';
 import { ProfileModel } from '../../../redux/profileSlice';
+import { PerkDef } from '../../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
 
 const Container = 'MenuModal-RightOptions-Container';
+const ErrorLine = 'MenuModal-RightOptions-ErrorLine';
 const ScrollableArea = 'MenuModal-RightOptions-ScrollableArea';
 const TitleContainer = 'MenuModal-RightOptions-TitleContainer';
 const SocialTitleContainer = 'MenuModal-RightOptions-SocialTitleContainer';
@@ -50,6 +53,7 @@ const SubMenu = 'MenuModal-RightOptions-SubMenu';
 const SubMenuItem = 'MenuModal-RightOptions-SubMenuItem';
 
 const StringIDMainMenuRightSocial = 'MainMenuRightSocial';
+const StringIDMainMenuRightVoiceChatError = 'MainMenuRightVoiceChatError';
 const StringIDMainMenuRightMuteAll = 'MainMenuRightMuteAll';
 const StringIDMainMenuRightUnMuteAll = 'MainMenuRightUnmuteAll';
 const StringIDMainMenuLeader = 'GroupsLeader';
@@ -58,12 +62,13 @@ const StringIDMainMenuRightReportPlayer = 'MainMenuRightReportPlayer';
 interface InjectedProps {
   friends: FriendsList;
   voiceChatMembers: Dictionary<VoiceChatMemberSettings>;
+  VoiceChatScope: string;
   mutedAll: boolean;
   stringTable: Dictionary<StringTableEntryDef>;
   group: Group;
-  champions: ChampionInfo[];
+  champions: ChampionDef[];
   profile: ProfileModel;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   raceDefs: IDLookupTable<CharacterRaceDef>;
   blockedList: Dictionary<number>;
   user: UserState;
@@ -91,7 +96,7 @@ class ARightOptions extends React.Component<Props, State> {
   }
 
   private onMouseEnter(index: number) {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
     this.setState({ hoveredPlayer: index });
   }
 
@@ -152,12 +157,12 @@ class ARightOptions extends React.Component<Props, State> {
     return !!this.props.blockedList[accountID];
   }
 
-  private onClickReportPlayer(friend: PlayerEntityStateModel) {
+  private onClickReportPlayer(friend: PlayerEntityState) {
     this.props.dispatch(updatePlayerToReport(friend));
     this.props.dispatch(showOverlay(Overlay.ReportPlayer));
   }
 
-  private renderInGamePlayerItem(friend: PlayerEntityStateModel, index: number): JSX.Element {
+  private renderInGamePlayerItem(friend: PlayerEntityState, index: number): JSX.Element {
     let settings: VoiceChatMemberSettings = this.props.voiceChatMembers[friend.accountID];
     if (!settings) {
       settings = { status: VoiceChatMemberStatus.Disabled, volume: 0 };
@@ -274,7 +279,7 @@ class ARightOptions extends React.Component<Props, State> {
     }
 
     // Only include voice chat participants that are friends (filters out the current player).
-    const membersToDisplay: PlayerEntityStateModel[] = [];
+    const membersToDisplay: PlayerEntityState[] = [];
     for (const friend of Object.values(this.props.friends)) {
       membersToDisplay.push(friend);
     }
@@ -284,8 +289,15 @@ class ARightOptions extends React.Component<Props, State> {
 
     const mutedAllStyle = this.props.mutedAll ? MuteAllButtonMuted : MuteAllButton;
 
+    const isNotConnectedToVoice = this.props.VoiceChatScope != 'Match';
+
     return (
       <div className={Container}>
+        {isNotConnectedToVoice && (
+          <div className={ErrorLine}>
+            {getStringTableValue(StringIDMainMenuRightVoiceChatError, this.props.stringTable)}
+          </div>
+        )}
         <div className={TitleContainer}>
           <div className={SocialTitleContainer}>
             <span className={MenuTitle}>
@@ -307,9 +319,11 @@ class ARightOptions extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ComponentProps): Props {
+  const { portraitURL, race } = state.entities.self;
   return {
     friends: state.entities.friends,
     voiceChatMembers: state.voiceChat.members,
+    VoiceChatScope: state.voiceChat.scope,
     mutedAll: state.voiceChat.mutedAll,
     stringTable: state.stringTable.stringTable,
     group: state.teamJoin.group,
@@ -319,8 +333,8 @@ function mapStateToProps(state: RootState, ownProps: ComponentProps): Props {
     raceDefs: state.game.characterRaceDefs,
     blockedList: state.localStorage.blockedList,
     user: state.user,
-    userPortraitURL: state.player.portraitURL,
-    userRace: state.player.race,
+    userPortraitURL: portraitURL,
+    userRace: race,
     ...ownProps
   };
 }

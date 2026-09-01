@@ -5,10 +5,9 @@
  */
 
 import { Keybind } from '@csegames/library/dist/_baseGame/types/Keybind';
-import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export type KeybindsState = Dictionary<Keybind>;
+export type KeybindsState = Record<string, Keybind>;
 
 function buildDefaultKeybindsState() {
   const DefaultKeybindsState: KeybindsState = {};

@@ -5,12 +5,12 @@
  */
 
 import * as React from 'react';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { RootState } from '../../../redux/store';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { hideRightPanel } from '../../../redux/navigationSlice';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'RightModal-Container';
 const ScreenOverlay = 'RightModal-ScreenOverlay';
@@ -30,10 +30,10 @@ type Props = ReactProps & InjectedProps;
 class ARightModal extends React.Component<Props> {
   public componentDidUpdate(prevProps: Readonly<Props>): void {
     if (this.props.content && !prevProps.content) {
-      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_SIDEBAR_OPEN);
+      clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_SIDEBAR_OPEN);
     }
     if (prevProps.content && !this.props.content) {
-      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_SIDEBAR_CLOSE);
+      clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_SIDEBAR_CLOSE);
     }
   }
 

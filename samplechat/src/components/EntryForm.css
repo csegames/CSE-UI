@@ -1,0 +1,24 @@
+.entry {
+  padding-top: 0.25em;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.25em;
+}
+
+.roomSelect {
+  width: fit-content;
+}
+
+.whisperName {
+  width: fit-content;
+}
+
+.textInput {
+  flex-grow: 1;
+}
+
+:disabled {
+  color: gray;
+}

@@ -8,6 +8,7 @@ import { genID } from '@csegames/library/dist/_baseGame/utils/idGen';
 import * as React from 'react';
 import { RootState } from '../../mainScreen/redux/store';
 import { connect } from 'react-redux';
+import { SimpleRect, simpleRectFromDOMRect } from '../../mainScreen/redux/dragAndDropSlice';
 
 const DefaultEntryAnimationDurationMS = 300;
 const DefaultExitAnimationDurationMS = 300;
@@ -23,6 +24,7 @@ const enum TransitionState {
 }
 
 interface State {
+  id: string;
   needsAnimationUpdate: boolean;
   transitionState: TransitionState;
   animationToggle: boolean;
@@ -52,7 +54,7 @@ class ACSETransition extends React.Component<Props, State> {
   private entryKeyframeId: string;
   private exitKeyframeId: string;
   private animationTimeout: number;
-  private animationInterval: any;
+  private animationInterval: number;
 
   private rootRef: HTMLDivElement;
 
@@ -63,7 +65,7 @@ class ACSETransition extends React.Component<Props, State> {
     this.entryKeyframeId = `Entry${id}`;
     this.exitKeyframeId = `Exit${id}`;
 
-    this.state = { needsAnimationUpdate: true, transitionState: TransitionState.NotReady, animationToggle: true };
+    this.state = { id, needsAnimationUpdate: true, transitionState: TransitionState.NotReady, animationToggle: true };
   }
 
   public render(): React.ReactNode {
@@ -100,6 +102,7 @@ class ACSETransition extends React.Component<Props, State> {
 
     return (
       <div
+        key={this.state.id}
         className={`${className} ${this.state.animationToggle}`}
         {...otherProps}
         style={finalStyle}
@@ -145,8 +148,8 @@ class ACSETransition extends React.Component<Props, State> {
     this.setState({ needsAnimationUpdate: false });
   }
 
-  getBoundingClientRect(): DOMRect {
-    return this.rootRef?.getBoundingClientRect();
+  getBoundingClientRect(): SimpleRect {
+    return simpleRectFromDOMRect(this.rootRef?.getBoundingClientRect());
   }
 
   componentWillUnmount(): void {
@@ -272,7 +275,7 @@ class ACSETransition extends React.Component<Props, State> {
           this.setState({ animationToggle: !this.state.animationToggle });
         }, 16);
         this.animationTimeout = window.setTimeout(() => {
-          // When the animation concludes, move to the Shown state!
+          // When the animation concludes, move to the Hidden state!
           this.animationTimeout = null;
           clearInterval(this.animationInterval);
           this.animationInterval = null;

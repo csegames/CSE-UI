@@ -9,3 +9,5 @@
 [Debugging](documentation/Debugging.md)
 
 [Deploying](documentation/Deploying.md)
+
+[Sample Chat Instructions](documentation/SampleChat.md)

@@ -9,12 +9,11 @@ import * as webAPI from '@csegames/library/dist/hordetest/webAPI/definitions';
 
 import { Button } from '../shared/Button';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { game } from '@csegames/library/dist/_baseGame';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { MiddleModalDisplay } from '../shared/MiddleModalDisplay';
 import { hideOverlay, Overlay } from '../../redux/navigationSlice';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary, Dispatch } from '@reduxjs/toolkit';
 import {
   getStringTableValue,
@@ -24,6 +23,7 @@ import {
 } from '../../helpers/stringTableHelpers';
 import { webConf } from '../../dataSources/networkConfiguration';
 import { refreshUser } from '../../dataSources/userNetworking';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Form = 'SetDisplayName-Form';
 const Title = 'SetDisplayName-Title';
@@ -68,7 +68,7 @@ class ASetDisplayName extends React.Component<Props, State> {
       const form = this.form.current;
       const newDisplayName: string = form['displayName'].value;
 
-      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
+      clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
       this.setState((s) => ({
         ...s,
         waitingOnRequest: true
@@ -98,7 +98,7 @@ class ASetDisplayName extends React.Component<Props, State> {
   }
 
   private onCancelClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
     this.onClose();
   }
 

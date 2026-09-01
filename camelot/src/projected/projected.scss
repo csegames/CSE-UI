@@ -1,0 +1,15 @@
+/**
+* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+// we don't use css in this view for anything other than font loading
+// because all actual rendering is via canvas.
+
+@font-face {
+  font-family: 'CaudexBold';
+  src: url(../fonts/Caudex/Caudex-Bold.ttf) format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}

@@ -8,7 +8,7 @@ import * as Sentry from '@sentry/browser';
 import { userQuery, UserQueryResult } from './userNetworkingConstants';
 import { updateUser } from '../redux/userSlice';
 import ExternalDataSource from '../redux/externalDataSource';
-import { InitTopic } from '../redux/initializationSlice';
+import { LoadingTopic } from '../redux/loadingSlice';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { EventEmitter } from '@csegames/library/dist/_baseGame/types/EventEmitter';
 
@@ -19,7 +19,7 @@ export class UserNetworkingService extends ExternalDataSource {
 
   protected async bind(): Promise<ListenerHandle[]> {
     userServiceEventEmitter.on('refresh', this.refresh.bind(this));
-    return [await this.query<UserQueryResult>({ query: userQuery }, this.handleUserData.bind(this), InitTopic.User)];
+    return [await this.query<UserQueryResult>({ query: userQuery }, this.handleUserData.bind(this), LoadingTopic.User)];
   }
 
   private handleUserData(result: UserQueryResult): void {
@@ -32,7 +32,7 @@ export class UserNetworkingService extends ExternalDataSource {
     this.refreshHandle = await this.query<UserQueryResult>(
       { query: userQuery },
       this.handleUserData.bind(this),
-      InitTopic.User
+      LoadingTopic.User
     );
   }
 }

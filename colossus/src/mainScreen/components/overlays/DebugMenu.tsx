@@ -21,21 +21,17 @@ import {
   getIsBadgedForStore
 } from '../../helpers/badgingUtils';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import {
-  ChampionInfo,
-  PerkDefGQL,
-  PerkGQL,
-  ProgressionNodeDef,
-  PurchaseDefGQL,
-  QuestDefGQL,
-  QuestGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkGQL, PurchaseDefGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { QuestsByType } from '../../redux/questSlice';
 import {
   updateSeenProgressionNodesForChampion,
   updateUnseenUnlockedProgressionNodesForChampion
 } from '../../redux/profileSlice';
 import { OverlayInstance } from '../../redux/navigationSlice';
+import { ChampionDef } from '../../dataSources/manifest/championManifest';
+import { PerkDef } from '../../dataSources/manifest/perkManifest';
+import { ProgressionNodeDef } from '../../dataSources/manifest/progressionNodeManifest';
+import { QuestDef } from '../../dataSources/manifest/questManifest';
 
 // Styles.
 const Root = 'DebugMenu-Root';
@@ -47,10 +43,10 @@ const ButtonStyle = 'DebugMenu-Button';
 interface ReactProps {}
 
 interface InjectedProps {
-  champions: ChampionInfo[];
+  champions: ChampionDef[];
   newEquipment: Dictionary<boolean>;
   ownedPerks: Dictionary<number>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   quests: QuestGQL[];
   purchases: PurchaseDefGQL[];
   newPurchases: Dictionary<boolean>;
@@ -58,7 +54,7 @@ interface InjectedProps {
   serverTimeDeltaMS: number;
   perks: PerkGQL[];
   questDefs: QuestsByType;
-  currentBattlePass: QuestDefGQL;
+  currentBattlePass: QuestDef;
   progressionNodeDefsByChampionID: Dictionary<ProgressionNodeDef[]>;
   overlays: OverlayInstance[];
   dispatch?: Dispatch;

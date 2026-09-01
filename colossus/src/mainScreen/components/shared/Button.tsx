@@ -5,14 +5,14 @@
  */
 
 import * as React from 'react';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { StarBadge } from '../../../shared/components/StarBadge';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { StringIDGeneralUnderMaintenace, getStringTableValue } from '../../helpers/stringTableHelpers';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'Button-Container';
 
@@ -80,7 +80,7 @@ export class AButton extends React.Component<Props> {
   }
 
   private onMouseEnter = () => {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   };
 
   private getUnderMaintenace(): JSX.Element {

@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
 
 // BEGIN INTERFACES AND STATES
 

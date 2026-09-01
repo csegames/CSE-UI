@@ -5,22 +5,20 @@
  */
 
 import * as React from 'react';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { ProfileModel } from '../../../../redux/profileSlice';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { updateSelectedChampion } from '../../../../redux/championInfoSlice';
 import { Dispatch } from 'redux';
-import {
-  ChampionCostumeInfo,
-  ChampionInfo,
-  PerkDefGQL,
-  QuestGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { StarBadge } from '../../../../../shared/components/StarBadge';
 import { getIsBadgedForChampionSelect } from '../../../../helpers/badgingUtils';
+import { ChampionDef } from '../../../../dataSources/manifest/championManifest';
+import { CostumeDef } from '../../../../dataSources/manifest/costumeManifest';
+import { PerkDef } from '../../../../dataSources/manifest/perkManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'ChampionProfile-ChampionSelect-Container';
 const ChampionContainer = 'ChampionProfile-ChampionSelect-ChampionContainer';
@@ -31,11 +29,11 @@ const StarIcon = 'ChampionProfile-ChampionSelect-StarIcon';
 interface ReactProps {}
 
 interface InjectedProps {
-  selectedChampion: ChampionInfo;
-  champions: ChampionInfo[];
-  championCostumes: ChampionCostumeInfo[];
+  selectedChampion: ChampionDef;
+  champions: ChampionDef[];
+  championCostumes: CostumeDef[];
   profile: ProfileModel;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   ownedPerks: Dictionary<number>;
   newEquipment: Dictionary<boolean>;
   quests: QuestGQL[];
@@ -80,33 +78,31 @@ class AChampionSelect extends React.Component<Props> {
     );
   }
 
-  private onChampionClick(champion: ChampionInfo) {
+  private onChampionClick(champion: ChampionDef) {
     this.props.dispatch(updateSelectedChampion(champion));
     if (champion.championSelectSound) {
-      game.playGameSound(champion.championSelectSound);
+      clientAPI.playGameSound(champion.championSelectSound);
     } else {
-      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
+      clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
     }
   }
 
   private onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
-  private getEquippedCostumeForChampion(champion: ChampionInfo): ChampionCostumeInfo {
+  private getEquippedCostumeForChampion(champion: ChampionDef): CostumeDef {
     const championGQL = this.props.profile.champions.find((c) => {
       return c.championID === champion.id;
     });
-    const allCostumesForChampion: ChampionCostumeInfo[] = this.props.championCostumes.filter(
-      (costume: ChampionCostumeInfo) => {
-        return costume.requiredChampionID === champion.id;
-      }
-    );
+    const allCostumesForChampion: CostumeDef[] = this.props.championCostumes.filter((costume: CostumeDef) => {
+      return costume.requiredChampionID === champion.id;
+    });
 
     const costumePerk = this.props.perksByID[championGQL?.costumePerkID];
 
     const equippedCostume = allCostumesForChampion.find((costume) => {
-      return costume.id === costumePerk?.costume?.id;
+      return costume.id === costumePerk?.costumeID;
     });
 
     return equippedCostume;

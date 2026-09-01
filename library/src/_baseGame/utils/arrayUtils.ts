@@ -92,3 +92,16 @@ export function removeWhere<T>(arr: T[], predicate: (o: T) => boolean): { result
 
   return { result, removed };
 }
+
+export function binarySearch<T>(value: T, array: T[], comp: (l?: T, r?: T) => number): number {
+  let low = 0;
+  let high = array.length - 1;
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2);
+    const diff = comp(array[mid], value);
+    if (diff === 0) return mid;
+    else if (diff < 0) low = mid + 1;
+    else high = mid - 1;
+  }
+  return -low - 1;
+}

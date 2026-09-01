@@ -4,18 +4,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { hordetest } from '@csegames/library/dist/hordetest';
-import { ConsumableItemsStateModel } from '@csegames/library/dist/hordetest/game/GameClientModels/ConsumableItemsState';
+import { ConsumableItemsState } from '@csegames/library/dist/hordetest/game/GameClientModels/ConsumableItemsState';
 import { CharacterClassDef, CharacterRaceDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
-import { ConsumableItem } from '@csegames/library/dist/hordetest/game/types/Consumables';
 import { EntityDirection } from '@csegames/library/dist/hordetest/game/types/EntityDirection';
 import { ObjectiveDetailCategory, ObjectiveDetailMessageState } from '@csegames/library/dist/_baseGame/types/Objective';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { GameInterface } from '@csegames/library/dist/hordetest/game/GameInterface';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AbilityDisplayDef } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
 import { StatusDef } from '../dataSources/manifest/statusManifest';
-import { StatDefinitionGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StatDef } from '../dataSources/manifest/statManifest';
+import { ItemDef } from '../dataSources/manifest/itemManifest';
+import { AbilityDisplayDef } from '../dataSources/manifest/abilityDisplayManifest';
+import { KillStreakDef } from '../dataSources/manifest/killStreakManifest';
 
 export interface IDLookupTable<T> {
   [id: number]: T;
@@ -26,30 +26,29 @@ export interface ObjectiveDetailsList {
 }
 
 interface CustomGameReduxState {
-  statDefs: Dictionary<StatDefinitionGQL>;
+  statDefs: Dictionary<StatDef>;
   statusDefsByID: Dictionary<StatusDef>;
   statusDefsByNumericID: IDLookupTable<StatusDef>; //hold a list of StatusDefinitions keyed by ID instead of as a blind array.
-  abilityDisplayDefs: IDLookupTable<AbilityDisplayDef>;
+  abilityDisplayDefsByID: IDLookupTable<AbilityDisplayDef>;
+  abilityDisplayDefsByNumericID: IDLookupTable<AbilityDisplayDef>;
   characterClassDefs: IDLookupTable<CharacterClassDef>; //hold a list of character class definitions by id.
   objectiveDetailsPrimary: ObjectiveDetailsList;
   objectiveDetailsQuest: ObjectiveDetailsList;
   characterRaceDefs: IDLookupTable<CharacterRaceDef>;
   playerDirections: Dictionary<EntityDirection>; // character name -> direction
   entityDirections: Dictionary<EntityDirection>; // entityID -> direction
+  killStreaks: KillStreakDef[];
   useClientResourceManifests: boolean;
+  itemsByID: Dictionary<ItemDef>;
+  gameDefsLoaded: boolean; // this not a LoadingTopic because gameDef data loads from a manifest. This manifest come from a coherent event, which currently goes off too late to be a loadingTopic
+  consumableItemsState: ConsumableItemsState;
 }
 
 type GameReduxState = CustomGameReduxState & Partial<GameInterface>;
 
 export function createDefaultItem(itemIndex: number): any {
-  const currentItem: ConsumableItem = hordetest.game.consumableItemsState
-    ? hordetest.game.consumableItemsState.items[itemIndex]
-    : undefined;
-
   return {
-    name: currentItem ? currentItem.name : '',
-    iconClass: currentItem ? currentItem.iconClass : '',
-    iconUrl: currentItem ? currentItem.iconUrl : ''
+    id: 0
   };
 }
 
@@ -58,40 +57,57 @@ const DefaultGameState: GameReduxState = {
   statDefs: {},
   statusDefsByID: {},
   statusDefsByNumericID: {},
-  abilityDisplayDefs: {},
+  abilityDisplayDefsByID: {},
+  abilityDisplayDefsByNumericID: {},
   characterClassDefs: {},
   objectiveDetailsPrimary: {},
   objectiveDetailsQuest: {},
   characterRaceDefs: {},
   //GameInterfaceFields
-  entities: {},
   consumableItemsState: {
-    activeIndex: hordetest.game.consumableItemsState ? hordetest.game.consumableItemsState.activeIndex : 0,
+    activeIndex: 0,
     items: {
       0: createDefaultItem(0),
       1: createDefaultItem(1),
       2: createDefaultItem(2),
       3: createDefaultItem(3),
       4: createDefaultItem(4)
-    },
-    // should I use this key?
-    isReady: false,
-    // unused keys
-    updateEventName: null,
-    onUpdated: null,
-    onReady: null
+    }
   },
   playerDirections: {},
   entityDirections: {},
-  useClientResourceManifests: true
+  itemsByID: {},
+  killStreaks: [],
+  useClientResourceManifests: true,
+  gameDefsLoaded: false
 };
 
 export const gameSlice = createSlice({
   name: 'game',
   initialState: DefaultGameState,
   reducers: {
-    updateAbilityDisplayDefs: (state: GameReduxState, action: PayloadAction<IDLookupTable<AbilityDisplayDef>>) => {
-      state.abilityDisplayDefs = action.payload;
+    updateAbilityDisplayDefs: {
+      reducer: (
+        state: GameReduxState,
+        action: PayloadAction<{
+          abilityDisplayDefsByID: Dictionary<AbilityDisplayDef>;
+          abilityDisplayDefsByNumericID: IDLookupTable<AbilityDisplayDef>;
+        }>
+      ) => {
+        state.abilityDisplayDefsByID = action.payload.abilityDisplayDefsByID;
+        state.abilityDisplayDefsByNumericID = action.payload.abilityDisplayDefsByNumericID;
+      },
+      prepare: (
+        abilityDisplayDefsByID: Dictionary<AbilityDisplayDef>,
+        abilityDisplayDefsByNumericID: IDLookupTable<AbilityDisplayDef>
+      ) => {
+        return {
+          payload: {
+            abilityDisplayDefsByID,
+            abilityDisplayDefsByNumericID
+          }
+        };
+      }
     },
     updateClassDefs: (state: GameReduxState, action: PayloadAction<IDLookupTable<CharacterClassDef>>) => {
       state.characterClassDefs = action.payload;
@@ -99,28 +115,18 @@ export const gameSlice = createSlice({
     updateRaceDefs: (state: GameReduxState, action: PayloadAction<IDLookupTable<CharacterRaceDef>>) => {
       state.characterRaceDefs = action.payload;
     },
-    updateStatDefs: (state: GameReduxState, action: PayloadAction<Dictionary<StatDefinitionGQL>>) => {
+    updateStatDefs: (state: GameReduxState, action: PayloadAction<Dictionary<StatDef>>) => {
       state.statDefs = action.payload;
     },
-    updateStatusDefs: {
-      reducer: (
-        state: GameReduxState,
-        action: PayloadAction<{
-          statusDefsByID: Dictionary<StatusDef>;
-          statusDefsByNumericID: IDLookupTable<StatusDef>;
-        }>
-      ) => {
-        state.statusDefsByID = action.payload.statusDefsByID;
-        state.statusDefsByNumericID = action.payload.statusDefsByNumericID;
-      },
-      prepare: (statusDefsByID: Dictionary<StatusDef>, statusDefsByNumericID: IDLookupTable<StatusDef>) => {
-        return {
-          payload: {
-            statusDefsByID,
-            statusDefsByNumericID
-          }
-        };
-      }
+    updateStatusDefs: (
+      state: GameReduxState,
+      action: PayloadAction<{
+        statusDefsByID: Dictionary<StatusDef>;
+        statusDefsByNumericID: IDLookupTable<StatusDef>;
+      }>
+    ) => {
+      state.statusDefsByID = action.payload.statusDefsByID;
+      state.statusDefsByNumericID = action.payload.statusDefsByNumericID;
     },
     updateObjectiveDetails: (state: GameReduxState, action: PayloadAction<ObjectiveDetailsList>) => {
       for (const messageID in action.payload) {
@@ -138,17 +144,16 @@ export const gameSlice = createSlice({
         delete state.objectiveDetailsQuest[messageID];
       });
     },
-    updateConsumables: (state: GameReduxState, action: PayloadAction<Partial<ConsumableItemsStateModel>>) => {
-      // Doing this up front so it doesn't get stomped before we read out the old item list.
+    updateConsumables: (state: GameReduxState, action: PayloadAction<ConsumableItemsState>) => {
+      // ensure we have all 5 item slots represented
       const items = {
         ...state.consumableItemsState.items,
         ...action.payload.items
       };
-      // Have to stomp on this because it is based off of a readonly interface.
+
       state.consumableItemsState = {
         ...state.consumableItemsState,
-        ...action.payload,
-        items
+        ...items
       };
     },
     updateCharacterRaceDefinitions: (state: GameReduxState, action: PayloadAction<IDLookupTable<CharacterRaceDef>>) => {
@@ -176,6 +181,15 @@ export const gameSlice = createSlice({
     },
     setUseClientResourceManifests: (state: GameReduxState, action: PayloadAction<boolean>) => {
       state.useClientResourceManifests = action.payload;
+    },
+    updateItemDefs: (state: GameReduxState, action: PayloadAction<Dictionary<ItemDef>>) => {
+      state.itemsByID = action.payload;
+    },
+    updateKillStreaks: (state: GameReduxState, action: PayloadAction<KillStreakDef[]>) => {
+      state.killStreaks = action.payload;
+    },
+    setGameDefsLoaded: (state: GameReduxState) => {
+      state.gameDefsLoaded = true;
     }
   }
 });
@@ -183,6 +197,7 @@ export const gameSlice = createSlice({
 export const {
   updateAbilityDisplayDefs,
   updateClassDefs,
+  updateItemDefs,
   updateRaceDefs,
   updateStatDefs,
   updateStatusDefs,
@@ -194,5 +209,7 @@ export const {
   removePlayerDirections,
   updateEntityDirections,
   removeEntityDirections,
-  setUseClientResourceManifests
+  setUseClientResourceManifests,
+  updateKillStreaks,
+  setGameDefsLoaded
 } = gameSlice.actions;

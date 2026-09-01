@@ -1,0 +1,22 @@
+#header {
+  align-items: baseline;
+  background-color: var(--background-light);
+  display: flex;
+  gap: 1em;
+  padding: 0.5em;
+
+  .title {
+    cursor: pointer;
+    font-size: 1.5rem;
+    img {
+      margin-bottom: 0.1em;
+      margin-right: 0.1em;
+      height: 1.5rem;
+      vertical-align: bottom;
+    }
+  }
+
+  .screenName {
+    flex-grow: 1;
+  }
+}

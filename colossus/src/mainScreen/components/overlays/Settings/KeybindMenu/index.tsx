@@ -18,12 +18,13 @@ import { game } from '@csegames/library/dist/_baseGame';
 import { MenuBody, MenuHeader } from '../Menu';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { cloneDeep } from '@csegames/library/dist/_baseGame/utils/objectUtils';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
 import { KeybindSection } from '@csegames/library/dist/_baseGame/types/Keybind';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'Settings-Keybinds-Container';
 const GroupName = 'Settings-Keybinds-GroupName';
@@ -230,7 +231,7 @@ export class AKeybindMenu extends React.Component<Props, State> {
   };
 
   private onStartBind = (keybind: Keybind, index: number) => {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP);
     this.setState({ keybindMode: KeybindMode.ListeningForKey, keybindListening: keybind, index });
     this.keybindListenPromise = game.listenForKeyBindingAsync();
 
@@ -241,7 +242,7 @@ export class AKeybindMenu extends React.Component<Props, State> {
   };
 
   private onRemoveBind = (keybind: Keybind, index: number) => {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP);
     this.setState({
       keybindMode: KeybindMode.ConfirmRemoveBind,
       keybindListening: keybind,

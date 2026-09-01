@@ -5,44 +5,37 @@
  */
 
 import React from 'react';
-import { styled } from '@csegames/linaria/react';
+import { RootState } from '../redux/store';
+import { connect } from 'react-redux';
 
-const Hero = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  align-content: stretch;
-  align-items: stretch;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  user-select: none !important;
-  -webkit-user-select: none !important;
-  transition: opacity 2s ease;
-`;
+import UCELogin from '../images/uce/login-uce.jpg';
 
-const Content = styled.div`
-  width: 100%;
-  height: 100%;
-  flex: 1 1 auto;
-`;
+const Root = 'ToolsHero-Root';
+const Content = 'ToolsHero-Content';
+const Logo = 'ToolsHero-Logo';
 
-const Logo = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`;
+interface ReactProps {}
 
-export function ToolsHero(props: {}) {
-  return (
-    <Hero>
-      <Content>
-        <Logo src='images/uce/login-uce.jpg' />
-      </Content>
-    </Hero>
-  );
+interface InjectedProps {}
+
+type Props = ReactProps & InjectedProps;
+
+class AToolsHero extends React.Component<Props> {
+  render(): React.ReactNode {
+    return (
+      <div className={Root}>
+        <div className={Content}>
+          <img className={Logo} src={UCELogin} />
+        </div>
+      </div>
+    );
+  }
 }
+
+const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
+  return {
+    ...ownProps
+  };
+};
+
+export const ToolsHero = connect(mapStateToProps)(AToolsHero);

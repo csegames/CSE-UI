@@ -8,52 +8,50 @@ import { NotificationListener } from '../../_baseGame/clientFunctions/ViewFuncti
 import { engine } from '../../_baseGame/engine';
 import { ListenerHandle } from '../../_baseGame/listenerHandle';
 import { KeyActionsModel } from '../game/GameClientModels/KeyActions';
-import { Euler3f, Vec3f } from '../../camelotunchained/graphql/schema';
-import { MoveItemRequestLocationType } from '../webAPI/definitions';
 import Store from '../../_baseGame/utils/local-storage';
 import { Dictionary } from '../../_baseGame/types/ObjectMap';
-import { HUDWidgetState } from '../game/types/HUDTypes';
+import { GroupPOIType, HUDWidgetState } from '../game/types/HUDTypes';
+import { MapDataType } from '../../_baseGame/GameClientModels/AnimationData';
+
+const setCursorOverrideURLCallbackName = 'system.setCursorOverrideURL';
 
 // All valid keys for use with this local store should be defined here.
 const keyHUDWidgetStates = 'WidgetStates';
 const keyHUDEditorOffset = 'HUDEditorOffset';
+const keyPOIsToHide = 'POIsToHide';
+const keyGroupPOIsToHide = 'GroupPOIsToHide';
+const keyNameplateStyle = 'NameplateStyle';
+const keyPartyLayout = 'PartyLayout';
+const keyUIScale = 'UIScale';
+const keyShowGameInfoAtStartup = 'ShowGameInfoAtStartup';
+const keyMinimapState = 'MinimapState';
+
+export const MIN_UI_SCALE = 0.5;
+export const MAX_UI_SCALE = 1.5;
+
+function clampUIScale(value: unknown): number {
+  if (typeof value !== 'number' || !isFinite(value)) return 1;
+  return Math.max(MIN_UI_SCALE, Math.min(value, MAX_UI_SCALE));
+}
+
+export type NameplateStyle = 'fancy' | 'simple';
+export type PartyLayout = 'horizontal' | 'vertical';
+
+export interface MinimapState {
+  zoom: number;
+}
 
 export type AnchorVisibilityChangedListener = (anchorID: number, visible: boolean) => void;
 export type KeyActionsUpdateListener = (keyActions: KeyActionsModel) => void;
+export type PartyLayoutChangedListener = (layout: PartyLayout) => void;
+export type UIScaleChangedListener = (scale: number) => void;
 
 export interface HUDFunctions {
   bindAnchorVisibilityChangedListener(listener: AnchorVisibilityChangedListener): ListenerHandle;
   bindKeyActionsUpdateListener(listener: KeyActionsUpdateListener): ListenerHandle;
   bindToggleHUDEditorListener(listener: NotificationListener): ListenerHandle;
-
-  performItemAction(
-    itemInstanceID: string,
-    itemEntityID: string,
-    actionID: string,
-    worldPosition: Vec3f,
-    rotation: Euler3f,
-    boneAlias: number
-  ): void;
-
-  moveItem(
-    moveItemID: string,
-    unitCount: number,
-    entityIDFrom: string,
-    characterIDFrom: string,
-    boneAliasFrom: number,
-    locationTo: MoveItemRequestLocationType,
-    entityIDTo: string,
-    characterIDTo: string,
-    positionTo: number,
-    containerIDTo: string,
-    drawerIndexTo: number,
-    gearSlotIDTo: number,
-    worldPositionTo: Vec3f,
-    rotationTo: Euler3f,
-    boneAliasTo: number
-  ): void;
-
-  setContainerColor(itemID: string, color: number);
+  bindPartyLayoutChangedListener(listener: PartyLayoutChangedListener): ListenerHandle;
+  bindUIScaleChangedListener(listener: UIScaleChangedListener): ListenerHandle;
 
   getWidgets(): Dictionary<HUDWidgetState>;
   updateWidgetState(widgetID: string, widget: HUDWidgetState): void;
@@ -61,14 +59,34 @@ export interface HUDFunctions {
   clearAllWidgetStates(): void;
   getHUDEditorOffset(): [number, number];
   setHUDEditorOffset(offset: [number, number]): void;
-}
+  getPOIsToHide(): MapDataType[];
+  setPOITypeVisibility(type: MapDataType, show: boolean): void;
+  getGroupPOIsToHide(): GroupPOIType[];
+  setGroupPOITypeVisibility(type: GroupPOIType, show: boolean): void;
 
-const performItemActionCallbackName = 'performItemAction';
-const moveItemCallbackName = 'moveItem';
-const setContainerColorCallbackName = 'setContainerColor';
+  getNameplateStyle(): NameplateStyle;
+  setNameplateStyle(style: NameplateStyle): void;
+
+  getPartyLayout(): PartyLayout;
+  setPartyLayout(layout: PartyLayout): void;
+
+  getUIScale(): number;
+  setUIScale(scale: number): void;
+
+  getShowGameInfoAtStartup(): boolean;
+  setShowGameInfoAtStartup(value: boolean): void;
+
+  getMinimapState(): MinimapState;
+  setMinimapState(state: MinimapState): void;
+
+  /** Pass an empty string to unset the override. */
+  setCursorOverrideURL(url: string): void;
+}
 
 class CoherentHUDFunctions implements HUDFunctions {
   private store = new Store('CUHUD');
+  private partyLayoutListeners: PartyLayoutChangedListener[] = [];
+  private uiScaleListeners: UIScaleChangedListener[] = [];
 
   bindAnchorVisibilityChangedListener(listener: AnchorVisibilityChangedListener): ListenerHandle {
     const innerHandle = engine.on('anchorVisibilityChanged', listener);
@@ -97,72 +115,22 @@ class CoherentHUDFunctions implements HUDFunctions {
     };
   }
 
-  performItemAction(
-    itemInstanceID: string,
-    itemEntityID: string,
-    actionID: string,
-    worldPosition: Vec3f,
-    rotation: Euler3f,
-    boneAlias: number
-  ): void {
-    engine.trigger(
-      performItemActionCallbackName,
-      itemInstanceID,
-      itemEntityID,
-      actionID,
-      worldPosition?.x ?? 0,
-      worldPosition?.y ?? 0,
-      worldPosition?.z ?? 0,
-      rotation?.roll ?? 0,
-      rotation?.pitch ?? 0,
-      rotation?.yaw ?? 0,
-      boneAlias
-    );
+  bindPartyLayoutChangedListener(listener: PartyLayoutChangedListener): ListenerHandle {
+    this.partyLayoutListeners.push(listener);
+    return {
+      close: () => {
+        this.partyLayoutListeners = this.partyLayoutListeners.filter((l) => l !== listener);
+      }
+    };
   }
 
-  moveItem(
-    moveItemID: string,
-    unitCount: number,
-    entityIDFrom: string,
-    characterIDFrom: string,
-    boneAliasFrom: number,
-    locationTo: MoveItemRequestLocationType,
-    entityIDTo: string,
-    characterIDTo: string,
-    positionTo: number,
-    containerIDTo: string,
-    drawerIndexTo: number,
-    gearSlotIDTo: number,
-    worldPositionTo: Vec3f,
-    rotationTo: Euler3f,
-    boneAliasTo: number
-  ): void {
-    engine.trigger(
-      moveItemCallbackName,
-      moveItemID,
-      unitCount,
-      entityIDFrom ?? '0000000000000000000000',
-      characterIDFrom ?? '0000000000000000000000',
-      boneAliasFrom,
-      locationTo,
-      entityIDTo ?? '0000000000000000000000',
-      characterIDTo ?? '0000000000000000000000',
-      positionTo,
-      containerIDTo ?? '0000000000000000000000',
-      drawerIndexTo ?? '',
-      gearSlotIDTo,
-      worldPositionTo?.x ?? 0,
-      worldPositionTo?.y ?? 0,
-      worldPositionTo?.z ?? 0,
-      rotationTo?.roll ?? 0,
-      rotationTo?.pitch ?? 0,
-      rotationTo?.yaw ?? 0,
-      boneAliasTo
-    );
-  }
-
-  setContainerColor(itemID: string, color: number): void {
-    engine.trigger(setContainerColorCallbackName, itemID, color);
+  bindUIScaleChangedListener(listener: UIScaleChangedListener): ListenerHandle {
+    this.uiScaleListeners.push(listener);
+    return {
+      close: () => {
+        this.uiScaleListeners = this.uiScaleListeners.filter((l) => l !== listener);
+      }
+    };
   }
 
   public getWidgets(): Dictionary<HUDWidgetState> {
@@ -194,9 +162,102 @@ class CoherentHUDFunctions implements HUDFunctions {
   public setHUDEditorOffset(offset: [number, number]): void {
     this.store.set(keyHUDEditorOffset, offset);
   }
+
+  getPOIsToHide(): MapDataType[] {
+    const types = this.store.get<MapDataType[]>(keyPOIsToHide) ?? [];
+    return types;
+  }
+  setPOITypeVisibility(type: MapDataType, show: boolean): void {
+    let types = this.getPOIsToHide();
+    if (show) {
+      if (types.includes(type)) {
+        this.store.set(
+          keyPOIsToHide,
+          types.filter((t) => t !== type)
+        );
+      }
+    } else {
+      if (!types.includes(type)) {
+        types.push(type);
+        this.store.set(keyPOIsToHide, types);
+      }
+    }
+  }
+
+  getGroupPOIsToHide(): GroupPOIType[] {
+    const types = this.store.get<GroupPOIType[]>(keyGroupPOIsToHide) ?? [];
+    return types;
+  }
+  setGroupPOITypeVisibility(type: GroupPOIType, show: boolean): void {
+    let types = this.getGroupPOIsToHide();
+    if (show) {
+      if (types.includes(type)) {
+        this.store.set(
+          keyGroupPOIsToHide,
+          types.filter((t) => t !== type)
+        );
+      }
+    } else {
+      if (!types.includes(type)) {
+        types.push(type);
+        this.store.set(keyGroupPOIsToHide, types);
+      }
+    }
+  }
+
+  getNameplateStyle(): NameplateStyle {
+    return this.store.get<NameplateStyle>(keyNameplateStyle) ?? 'fancy';
+  }
+
+  setNameplateStyle(style: NameplateStyle): void {
+    this.store.set(keyNameplateStyle, style);
+  }
+
+  getPartyLayout(): PartyLayout {
+    return this.store.get<PartyLayout>(keyPartyLayout) ?? 'vertical';
+  }
+
+  setPartyLayout(layout: PartyLayout): void {
+    this.store.set(keyPartyLayout, layout);
+    this.partyLayoutListeners.forEach((l) => l(layout));
+  }
+
+  getUIScale(): number {
+    return clampUIScale(this.store.get<number>(keyUIScale));
+  }
+
+  setUIScale(scale: number): void {
+    const clamped = clampUIScale(scale);
+    this.store.set(keyUIScale, clamped);
+    this.uiScaleListeners.forEach((l) => l(clamped));
+  }
+
+  getShowGameInfoAtStartup(): boolean {
+    return this.store.get<boolean>(keyShowGameInfoAtStartup) ?? true;
+  }
+
+  setShowGameInfoAtStartup(value: boolean): void {
+    this.store.set(keyShowGameInfoAtStartup, value);
+  }
+
+  getMinimapState(): MinimapState {
+    return this.store.get<MinimapState>(keyMinimapState) ?? { zoom: 1.0 };
+  }
+
+  setMinimapState(state: MinimapState): void {
+    this.store.set(keyMinimapState, state);
+  }
+
+  setCursorOverrideURL(url: string): void {
+    engine.trigger(setCursorOverrideURLCallbackName, url);
+  }
 }
 
 class BrowserHUDFunctions implements HUDFunctions {
+  private store = new Store('CUHUD');
+  private partyLayoutListeners: PartyLayoutChangedListener[] = [];
+  private uiScaleListeners: UIScaleChangedListener[] = [];
+
   bindAnchorVisibilityChangedListener(listener: AnchorVisibilityChangedListener): ListenerHandle {
     return { close() {} };
   }
@@ -209,34 +270,23 @@ class BrowserHUDFunctions implements HUDFunctions {
     return { close() {} };
   }
 
-  performItemAction(
-    itemInstanceID: string,
-    itemEntityID: string,
-    actionID: string,
-    worldPosition: Vec3f,
-    rotation: Euler3f,
-    boneAlias: number
-  ): void {}
+  bindPartyLayoutChangedListener(listener: PartyLayoutChangedListener): ListenerHandle {
+    this.partyLayoutListeners.push(listener);
+    return {
+      close: () => {
+        this.partyLayoutListeners = this.partyLayoutListeners.filter((l) => l !== listener);
+      }
+    };
+  }
 
-  moveItem(
-    moveItemID: string,
-    unitCount: number,
-    entityIDFrom: string,
-    characterIDFrom: string,
-    boneAliasFrom: number,
-    locationTo: MoveItemRequestLocationType,
-    entityIDTo: string,
-    characterIDTo: string,
-    positionTo: number,
-    containerIDTo: string,
-    drawerIndexTo: number,
-    gearSlotIDTo: number,
-    worldPositionTo: Vec3f,
-    rotationTo: Euler3f,
-    boneAliasTo: number
-  ): void {}
-
-  setContainerColor(itemID: string, color: number): void {}
+  bindUIScaleChangedListener(listener: UIScaleChangedListener): ListenerHandle {
+    this.uiScaleListeners.push(listener);
+    return {
+      close: () => {
+        this.uiScaleListeners = this.uiScaleListeners.filter((l) => l !== listener);
+      }
+    };
+  }
 
   getWidgets(): Dictionary<HUDWidgetState> {
     return {};
@@ -253,6 +303,61 @@ class BrowserHUDFunctions implements HUDFunctions {
   }
 
   setHUDEditorOffset(offset: [number, number]): void {}
+
+  getPOIsToHide(): MapDataType[] {
+    return [];
+  }
+
+  setPOITypeVisibility(type: MapDataType, show: boolean): void {}
+
+  getGroupPOIsToHide(): GroupPOIType[] {
+    return [];
+  }
+
+  setGroupPOITypeVisibility(type: GroupPOIType, show: boolean): void {}
+
+  getNameplateStyle(): NameplateStyle {
+    return 'fancy';
+  }
+
+  setNameplateStyle(_style: NameplateStyle): void {}
+
+  getPartyLayout(): PartyLayout {
+    return this.store.get<PartyLayout>(keyPartyLayout) ?? 'vertical';
+  }
+
+  setPartyLayout(layout: PartyLayout): void {
+    this.store.set(keyPartyLayout, layout);
+    this.partyLayoutListeners.forEach((l) => l(layout));
+  }
+
+  getUIScale(): number {
+    return clampUIScale(this.store.get<number>(keyUIScale));
+  }
+
+  setUIScale(scale: number): void {
+    const clamped = clampUIScale(scale);
+    this.store.set(keyUIScale, clamped);
+    this.uiScaleListeners.forEach((l) => l(clamped));
+  }
+
+  getShowGameInfoAtStartup(): boolean {
+    return this.store.get<boolean>(keyShowGameInfoAtStartup) ?? true;
+  }
+
+  setShowGameInfoAtStartup(value: boolean): void {
+    this.store.set(keyShowGameInfoAtStartup, value);
+  }
+
+  getMinimapState(): MinimapState {
+    return this.store.get<MinimapState>(keyMinimapState) ?? { zoom: 1.0 };
+  }
+
+  setMinimapState(state: MinimapState): void {
+    this.store.set(keyMinimapState, state);
+  }
+
+  setCursorOverrideURL(url: string): void {}
 }
 
 export const impl: HUDFunctions = engine.isAttached ? new CoherentHUDFunctions() : new BrowserHUDFunctions();

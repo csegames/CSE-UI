@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REFACTOR
+
 import * as React from 'react';
 
 import { StatusBar } from './StatusBar';
@@ -13,7 +15,6 @@ import { ActionButtons } from './ActionButtons';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { RuneType } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { hordetest } from '@csegames/library/dist/hordetest';
 import { LifeState } from '@csegames/library/dist/hordetest/game/types/LifeState';
 import { ArrayMap } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { EntityResource } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
@@ -56,6 +57,7 @@ interface InjectedProps {
   resources?: ArrayMap<EntityResource>;
   name?: string;
   currentDeaths: number;
+  race: number;
   maxDeaths: number;
   lifeState: LifeState;
   deathStartTime: number;
@@ -98,9 +100,6 @@ class ASelfHealthBar extends React.Component<Props, {}> {
             <span style={{ margin: '0px 0.25vmin' }}>/</span>
             <span className={`${RuneColor} ${colorClass}`}>{maxRunesAllowed[runeType]}</span>
           </div>
-          {/* JuddC: Temporarily hiding total bonus percentage in a way that makes it easy to turn back on later */}
-          {/* NB. If you re-enable this, reduce the font size in RuneItem slightly */}
-          {/*<Padded>({runeBonuses[runeType]}%)</Padded>*/}
         </div>
       );
     }
@@ -118,7 +117,7 @@ class ASelfHealthBar extends React.Component<Props, {}> {
             resources={this.props.resources}
             collectedRunes={this.props.collectedRunes}
             runeBonuses={this.props.runeBonuses}
-            raceID={hordetest.game.selfPlayerEntityState.race}
+            raceID={this.props.race}
             name={this.props.name}
             voiceChatIconSizeVmin={VOICE_CHAT_ICON_SIZE_VMIN}
             lifeState={this.props.lifeState}
@@ -149,21 +148,37 @@ class ASelfHealthBar extends React.Component<Props, {}> {
 }
 
 function mapStateToProps(state: RootState) {
+  const {
+    isAlive,
+    resources,
+    name,
+    race,
+    currentDeaths,
+    maxDeaths,
+    lifeState,
+    deathStartTime,
+    downedStateEndTime,
+    portraitURL
+  } = state.entities.self;
+
   return {
     accountID: state.user.id,
-    isAlive: state.player.isAlive,
-    resources: state.player.resources,
+    isAlive,
+    resources,
     collectedRunes: state.runes.collectedRunes,
     runeBonuses: state.runes.runeBonuses,
     maxRunesAllowed: state.runes.maxRunesAllowed,
-    name: state.player.name,
-    currentDeaths: isNaN(state.player.currentDeaths) ? 0 : state.player.currentDeaths,
-    maxDeaths: isNaN(state.player.maxDeaths) ? 0 : state.player.maxDeaths,
-    lifeState: state.player.lifeState,
-    deathStartTime: state.player.deathStartTime,
-    downedStateEndTime: state.player.downedStateEndTime,
-    portraitURL: state.player.portraitURL
+    name,
+    race,
+    currentDeaths: isNaN(currentDeaths) ? 0 : currentDeaths,
+    maxDeaths: isNaN(maxDeaths) ? 0 : maxDeaths,
+    lifeState,
+    deathStartTime,
+    downedStateEndTime,
+    portraitURL
   };
 }
 
 export const SelfHealthBar = connect(mapStateToProps)(ASelfHealthBar);
+
+*/

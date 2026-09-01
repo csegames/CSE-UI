@@ -8,11 +8,11 @@ import * as React from 'react';
 import { Button } from '../../shared/Button';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { Dispatch } from '@reduxjs/toolkit';
 import { GameStatsRequestState, ThumbsUp, revokeThumbsUp, setThumbsUp } from '../../../redux/gameStatsSlice';
 import { OvermindSummaryGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const ANIMATION_DURATION = 0.2;
 const ThumbsupButton = 'GameStats-ThumbsupButton';
@@ -175,12 +175,12 @@ export class AThumbsUpButton extends React.Component<Props, State> {
   }
 
   private async onThumbsUpClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
     this.props.dispatch(setThumbsUp(this.props.accountID));
   }
 
   private async onRevokeClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
     this.props.dispatch(revokeThumbsUp());
   }
 }

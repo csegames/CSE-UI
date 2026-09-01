@@ -10,20 +10,17 @@ import { formatDuration } from '@csegames/library/dist/_baseGame/utils/timeUtils
 import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numberUtils';
 import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
-import {
-  ChampionCostumeInfo,
-  ChampionInfo,
-  MatchStatsGQL,
-  ChampionGQL,
-  PerkDefGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { MatchStatsGQL, ChampionGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { ProfileModel } from '../../../../redux/profileSlice';
 import { Dispatch } from 'redux';
 import { getWornCostumeForChampion } from '../../../../../mainScreen/helpers/characterHelpers';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
 import { refreshProfile } from '../../../../dataSources/profileNetworking';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { ChampionDef } from '../../../../dataSources/manifest/championManifest';
+import { PerkDef } from '../../../../dataSources/manifest/perkManifest';
+import { CostumeDef } from '../../../../dataSources/manifest/costumeManifest';
 
 const Container = 'CareerStats-Container';
 const NoDataText = 'CareerStats-NoDataText';
@@ -76,13 +73,13 @@ const StringIDCareerStatsNoStats = 'CareerStatsNoStats';
 interface ReactProps {}
 
 interface InjectedProps {
-  championCostumes: ChampionCostumeInfo[];
-  championIDToChampion: { [championID: string]: ChampionInfo };
+  championCostumes: CostumeDef[];
+  championIDToChampion: { [championID: string]: ChampionDef };
   displayName: string;
   allTimeStats: MatchStatsGQL;
   profile: ProfileModel;
   champions: ChampionGQL[];
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
   dispatch?: Dispatch;
 }
@@ -295,17 +292,17 @@ class ACareerStats extends React.Component<Props> {
     }
 
     let mostTotalTimePlayed = 0;
-    let mostPlayedChampion: ChampionInfo = null;
+    let mostPlayedChampion: ChampionDef = null;
     let bestKills = 0;
-    let bestKillsChampion: ChampionInfo = null;
+    let bestKillsChampion: ChampionDef = null;
     let bestKillStreak = 0;
-    let bestKillStreakChampion: ChampionInfo = null;
+    let bestKillStreakChampion: ChampionDef = null;
     let bestLongestLife = 0;
-    let bestLongestLifeChampion: ChampionInfo = null;
+    let bestLongestLifeChampion: ChampionDef = null;
     let bestDamageTaken = 0;
-    let bestDamageTakenChampion: ChampionInfo = null;
+    let bestDamageTakenChampion: ChampionDef = null;
     let bestDamage = 0;
-    let bestDamageChampion: ChampionInfo = null;
+    let bestDamageChampion: ChampionDef = null;
 
     this.props.profile.champions.forEach((champ) => {
       const championInfo = this.props.championIDToChampion[champ.championID];
@@ -374,9 +371,9 @@ class ACareerStats extends React.Component<Props> {
     };
   }
 
-  private getChampionCardImage(championInfo: ChampionInfo) {
+  private getChampionCardImage(championInfo: ChampionDef) {
     if (championInfo) {
-      const costume: ChampionCostumeInfo = getWornCostumeForChampion(
+      const costume: CostumeDef = getWornCostumeForChampion(
         this.props.championCostumes,
         this.props.champions,
         this.props.perksByID,

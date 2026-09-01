@@ -10,10 +10,10 @@ import { MiddleModalDisplay } from '../shared/MiddleModalDisplay';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { game } from '@csegames/library/dist/_baseGame';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue } from '../../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'Error-Container';
 const BuildMismatchTitle = 'Error-BuildMismatchTitle';
@@ -45,7 +45,7 @@ class ABuildMismatchModal extends React.Component<Props> {
   }
 
   private onExitClick() {
-    game.quit();
+    clientAPI.quit();
   }
 
   public render() {

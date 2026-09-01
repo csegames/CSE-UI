@@ -4,14 +4,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { ScenarioDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ScenarioDef } from '../dataSources/manifest/scenarioManifest';
 
 // BEGIN INTERFACES AND STATES
 
 export interface ScenariosState {
-  scenarioDefs: Dictionary<ScenarioDefGQL>;
+  scenarioDefs: Dictionary<ScenarioDef>;
 }
 
 function generateDefaultScenariosState() {
@@ -25,7 +25,7 @@ export const scenariosSlice = createSlice({
   name: 'scenarios',
   initialState: generateDefaultScenariosState(),
   reducers: {
-    updateScenarioDefs: (state: ScenariosState, action: PayloadAction<Dictionary<ScenarioDefGQL>>) => {
+    updateScenarioDefs: (state: ScenariosState, action: PayloadAction<Dictionary<ScenarioDef>>) => {
       state.scenarioDefs = action.payload;
     }
   }

@@ -1,0 +1,11 @@
+#auth-form {
+  flex-grow: 0.5;
+  margin: auto;
+  > form {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.25rem;
+    gap: 0.5em;
+  }
+}

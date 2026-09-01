@@ -19,43 +19,20 @@
  *
  */
 import * as React from 'react';
-import styled from 'react-emotion';
 import { Quadrant, windowQuadrant } from '../lib/LayoutLib';
+import { RootState } from '../redux/store';
+import { connect } from 'react-redux';
 
-const Container = styled('div')`
-  display: inline-block;
-  position: relative;
-`;
+const Root = 'Tooltip-Root';
+const TooltipView = 'Tooltip-TooltipView';
 
-const TooltipView = styled('div')`
-  position: fixed;
-  background-color: #444;
-  border: 1px solid #4a4a4a;
-  color: #ececec;
-  padding: 2px 5px;
-  max-width: 200px;
-  z-index: 10;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-`;
-
-const TooltipFixedView = styled('div')`
-  position: fixed;
-  background-color: #444;
-  border: 1px solid #4a4a4a;
-  color: #ececec;
-  padding: 2px 5px;
-  max-width: 200px;
-  z-index: 10;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-`;
-
-export interface ToolTipStyle {
+interface ToolTipStyle {
   Tooltip: React.CSSProperties;
   tooltip: React.CSSProperties;
   tooltipFixed: React.CSSProperties;
 }
 
-export interface TooltipProps {
+interface ReactProps {
   content: string | ((props?: any) => JSX.Element);
   contentProps?: any;
   tooltipClassName?: string;
@@ -71,7 +48,11 @@ export interface TooltipProps {
   wndRegion?: Quadrant;
 }
 
-export interface TooltipState {
+interface InjectedProps {}
+
+type Props = ReactProps & InjectedProps;
+
+interface State {
   wndRegion: Quadrant;
   show: boolean;
   ttClassName: string;
@@ -81,13 +62,13 @@ export interface TooltipState {
   offsetBottom: number;
 }
 
-export class Tooltip extends React.Component<TooltipProps, TooltipState> {
+class ATooltip extends React.Component<Props, State> {
   private childRef: HTMLDivElement;
   private tooltipRef: HTMLDivElement;
   private windowDimensions: { innerHeight: number; innerWidth: number };
   private tooltipDimensions: { width: number; height: number };
 
-  constructor(props: TooltipProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       wndRegion: Quadrant.TopLeft || this.props.wndRegion,
@@ -106,7 +87,7 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
 
     const fixed = this.props.fixedMode || false;
     return (
-      <Container style={customStyles.Tooltip}>
+      <div className={Root} style={customStyles.Tooltip}>
         <div
           ref={(ref) => (this.childRef = ref)}
           onMouseEnter={this.onMouseEnter}
@@ -116,25 +97,19 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
           {this.props.children}
         </div>
         {showTooltip ? (
-          !fixed ? (
-            <TooltipView innerRef={(ref: any) => (this.tooltipRef = ref)} style={customStyles.tooltip}>
-              {typeof this.props.content === 'string' ? (
-                this.props.content
-              ) : (
-                <this.props.content {...this.props.contentProps} />
-              )}
-            </TooltipView>
-          ) : (
-            <TooltipFixedView innerRef={(ref: any) => (this.tooltipRef = ref)} style={customStyles.tooltipFixed}>
-              {typeof this.props.content === 'string' ? (
-                this.props.content
-              ) : (
-                <this.props.content {...this.props.contentProps} />
-              )}
-            </TooltipFixedView>
-          )
+          <div
+            className={TooltipView}
+            ref={(ref: any) => (this.tooltipRef = ref)}
+            style={fixed ? customStyles.tooltipFixed : customStyles.tooltip}
+          >
+            {typeof this.props.content === 'string' ? (
+              this.props.content
+            ) : (
+              <this.props.content {...this.props.contentProps} />
+            )}
+          </div>
         ) : null}
-      </Container>
+      </div>
     );
   }
 
@@ -282,4 +257,10 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
   };
 }
 
-export default Tooltip;
+const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
+  return {
+    ...ownProps
+  };
+};
+
+export const Tooltip = connect(mapStateToProps)(ATooltip);

@@ -6,22 +6,32 @@
 
 import * as React from 'react';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { SimpleRect } from './dragAndDropSlice';
 
-export enum TooltipPosition {
-  /** The tooltip will appear immediately adjacent to the current mouse cursor position.  This is the default behavior. */
-  AtMouse = 0,
-  /** The tooltip will appear near the current mouse cursor position, but outside the TooltipSource. */
-  OutsideSource
+export interface MouseRelativePosition {
+  type: 'mouse';
+  xOffset: number;
+  yOffset: number;
 }
+
+export interface SourceRelativePosition {
+  type: 'source';
+  sourceRect: SimpleRect;
+  xOffset: number;
+  yOffset: number;
+}
+
+type TooltipPosition = MouseRelativePosition | SourceRelativePosition;
+export type TooltipPositionType = TooltipPosition['type'];
 
 export interface TooltipParams {
   // An ID is required so we can close the tooltip if the TooltipSource gets unmounted.
-  id: string;
-  content: (() => React.ReactNode) | string | null;
-  disableBackground?: boolean;
-  mouseX?: number;
-  mouseY?: number;
-  position?: TooltipPosition;
+  id: string | null;
+  content: React.ReactNode;
+  position: TooltipPosition;
+  maxWidth?: string;
+  // When true, TooltipPane skips its default FactionBorder wrap, letting content supply its own border(s).
+  noOuterBorder?: boolean;
 }
 
 export interface TooltipState extends TooltipParams {}
@@ -29,7 +39,12 @@ export interface TooltipState extends TooltipParams {}
 function buildDefaultTooltipState() {
   const DefaultTooltipState: TooltipState = {
     id: null,
-    content: null
+    content: null,
+    position: {
+      type: 'mouse',
+      xOffset: 0,
+      yOffset: 0
+    }
   };
 
   return DefaultTooltipState;
@@ -43,14 +58,13 @@ export const tooltipSlice = createSlice({
       // Completely replace the existing state when starting a new tooltip.
       return action.payload;
     },
-    updateTooltip: (state: TooltipState, action: PayloadAction<Partial<TooltipParams>>) => {
-      Object.assign(state, action.payload);
-    },
-    hideTooltip: (state: TooltipState) => {
-      state.content = null;
-      state.id = null;
+    hideTooltip: (state: TooltipState, action: PayloadAction<string | undefined>) => {
+      // leave content for exit animation, but flag no active tooltip by nulling the id
+      if (action.payload === undefined || state.id === action.payload) {
+        state.id = null;
+      }
     }
   }
 });
 
-export const { showTooltip, updateTooltip, hideTooltip } = tooltipSlice.actions;
+export const { showTooltip, hideTooltip } = tooltipSlice.actions;

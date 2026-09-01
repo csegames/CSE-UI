@@ -7,8 +7,8 @@ import * as React from 'react';
 import { KeybindsState, KeybindIDs, getActiveBindForKey } from '../../../../redux/keybindsSlice';
 import { Binding } from '@csegames/library/dist/_baseGame/types/Keybind';
 import { getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 
 const KeybindIconClass = 'Announcements-Utils-KeybindIcon';
 const KeybindTextClass = 'Announcements-Utils-KeybindText';

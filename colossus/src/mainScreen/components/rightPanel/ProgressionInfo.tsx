@@ -8,13 +8,7 @@ import * as React from 'react';
 import { Button } from '../shared/Button';
 import { RootState } from '../../redux/store';
 import { connect } from 'react-redux';
-import {
-  ChampionInfo,
-  PerkDefGQL,
-  QuestGQL,
-  QuestLinkDefGQL,
-  QuestDefGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dispatch } from 'redux';
 import { hideRightPanel } from '../../redux/navigationSlice';
 import { ResourceBar } from '../shared/ResourceBar';
@@ -24,7 +18,10 @@ import { ProgressionReward } from '../views/Lobby/ChampionProfile/ProgressionRew
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { findChampionQuestProgress, findChampionQuest } from '../../helpers/characterHelpers';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
+import { PerkDef } from '../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../dataSources/manifest/championManifest';
+import { QuestDef, QuestLinkDef } from '../../dataSources/manifest/questManifest';
 
 const Container = 'ChampionProfile-SkillInfo-Container';
 const Title = 'ChampionProfile-ProgressionInfo-Title';
@@ -48,10 +45,10 @@ const StringIDProgressionInfoHideUI = 'ProgressionInfoHideUI';
 interface ReactProps {}
 
 interface InjectedProps {
-  selectedChampion: ChampionInfo;
+  selectedChampion: ChampionDef;
   questsGQL: QuestGQL[];
   quests: QuestsByType;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
   dispatch?: Dispatch;
 }
@@ -113,7 +110,7 @@ class AProgressionInfo extends React.Component<Props> {
     return notMaxLevel ? `${questGQL.currentQuestIndex + 1}` : `${questGQL.currentQuestIndex}`;
   }
 
-  private getProgress(questGQL: QuestGQL, questLink: QuestLinkDefGQL, quest: QuestDefGQL): string {
+  private getProgress(questGQL: QuestGQL, questLink: QuestLinkDef, quest: QuestDef): string {
     if (!quest) {
       return '';
     }
@@ -138,12 +135,12 @@ class AProgressionInfo extends React.Component<Props> {
     }
   }
 
-  private getMaxBarProgress(questLink: QuestLinkDefGQL): number {
+  private getMaxBarProgress(questLink: QuestLinkDef): number {
     // If there is no current link, then you have reached max level, so return a full bar.
     return questLink?.progress ?? 100;
   }
 
-  private getCurrentBarProgress(questGQL: QuestGQL, questLink: QuestLinkDefGQL): number {
+  private getCurrentBarProgress(questGQL: QuestGQL, questLink: QuestLinkDef): number {
     if (!questGQL) {
       return 0;
     }
@@ -164,7 +161,7 @@ class AProgressionInfo extends React.Component<Props> {
     this.props.dispatch(hideRightPanel());
   }
 
-  private getReward(questLink: QuestLinkDefGQL): JSX.Element {
+  private getReward(questLink: QuestLinkDef): JSX.Element {
     if (questLink && questLink.rewards.length > 0) {
       return <ProgressionReward nextReward={true} />;
     }

@@ -13,14 +13,8 @@ import { RootState } from '../../redux/store';
 import { hideAllOverlays, showError } from '../../redux/navigationSlice';
 import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import {
-  ChampionInfo,
-  PerkDefGQL,
-  PerkGQL,
-  QuestDefGQL,
-  QuestGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue } from '../../helpers/stringTableHelpers';
 import {
@@ -33,6 +27,10 @@ import { createAlertsForCollectedQuestProgress } from '../../helpers/perkUtils';
 import { ItemGrid } from '../shared/ItemGrid';
 import { webConf } from '../../dataSources/networkConfiguration';
 import { refreshProfile } from '../../dataSources/profileNetworking';
+import { QuestDef } from '../../dataSources/manifest/questManifest';
+import { PerkDef } from '../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../dataSources/manifest/championManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'ClaimBattlePassModal-Container';
 const Title = 'ClaimBattlePassModal-Title';
@@ -55,10 +53,10 @@ interface ReactProps {}
 interface InjectedProps {
   perks: PerkGQL[];
   quests: QuestGQL[];
-  battlePassQuests: QuestDefGQL[];
+  battlePassQuests: QuestDef[];
   stringTable: Dictionary<StringTableEntryDef>;
-  perksByID: Dictionary<PerkDefGQL>;
-  champions: ChampionInfo[];
+  perksByID: Dictionary<PerkDef>;
+  champions: ChampionDef[];
   dispatch?: Dispatch;
 }
 
@@ -103,11 +101,11 @@ class AClaimBattlePassModal extends React.Component<Props, State> {
       return;
     }
 
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
 
     this.setState({ isClaimingRewards: true });
 
-    const quests: QuestDefGQL[] = getBattlePassesWithUnclaimedRewards(
+    const quests: QuestDef[] = getBattlePassesWithUnclaimedRewards(
       this.props.battlePassQuests,
       this.props.perks,
       this.props.quests

@@ -4,13 +4,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REFACTOR
+
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { ObjectivesList } from '../../../../redux/entitiesSlice';
 import { Objective } from './Objective';
 import { ObjectiveUIVisibility } from '@csegames/library/dist/_baseGame/types/Objective';
-import { BaseEntityStateModel } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
+import { BaseEntityState } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 
 const objectiveContainerStyle = 'MainScreen-ObjectiveContainer';
 
@@ -38,7 +40,7 @@ class AObjectivesContainer extends React.Component<Props, {}> {
   private getObjectives() {
     //as this component is in the HUD instead of the WorldSpace-UI, we can ignore anything that isn't set to a visiblity state compatible with the hud.
     const objectiveIDS: string[] = Object.keys(this.props.objectives).filter((curObjectiveID: string): boolean => {
-      const curObjectiveState: BaseEntityStateModel = this.props.objectives[curObjectiveID];
+      const curObjectiveState: BaseEntityState = this.props.objectives[curObjectiveID];
 
       const visibilitySetToHUD: boolean = (curObjectiveState.objective.visibility & ObjectiveUIVisibility.Hud) !== 0;
 
@@ -67,3 +69,5 @@ function mapStateToProps(state: RootState, ownProps: ComponentProps): Props {
 }
 
 export const ObjectivesContainer = connect(mapStateToProps)(AObjectivesContainer);
+
+*/

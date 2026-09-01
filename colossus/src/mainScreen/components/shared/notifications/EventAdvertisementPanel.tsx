@@ -12,10 +12,9 @@ import {
   EventAdvertisementPanelMessageData,
   setEventAdvertisementPanelModalMessage
 } from '../../../redux/notificationsSlice';
-import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { Overlay, navigateTo, showOverlay } from '../../../redux/navigationSlice';
 import { updateSelectedChampion } from '../../../redux/championInfoSlice';
-import { ChampionInfo } from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
 
 const Container = 'Shared-EventAdvertisementPanel-Container';
 const Slide = 'Shared-EventAdvertisementPanel-Slide';
@@ -30,7 +29,7 @@ interface ReactProps {}
 
 interface InjectedProps {
   eventAdvertisementPanelMessagesData: EventAdvertisementPanelMessageData[];
-  champions: ChampionInfo[];
+  champions: ChampionDef[];
   dispatch?: Dispatch;
 }
 
@@ -74,7 +73,8 @@ class AEventAdvertisementPanel extends React.Component<Props, State> {
                 key={message.id}
                 onClick={() => {
                   if (message.link) {
-                    clientAPI.openBrowser(message.link);
+                    // FSR-4239
+                    // clientAPI.openBrowser(message.link);
                   }
                   if (message.modal) {
                     this.props.dispatch(setEventAdvertisementPanelModalMessage(message));

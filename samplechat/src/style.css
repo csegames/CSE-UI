@@ -1,0 +1,146 @@
+:root {
+  --background: rgb(16, 16, 16);
+  --foreground: white;
+  --foreground-dark: rgb(128, 128, 128);
+  --foreground-darker: rgb(96, 96, 96);
+  --background-light: rgb(32, 32, 32);
+  --background-healthy: rgb(9, 51, 9);
+  --background-healthy-light: rgb(13, 77, 13);
+  --background-header: rgb(64, 64, 64);
+  --background-missing: rgb(51, 9, 9);
+  --background-missing-light: rgb(77, 13, 13);
+  --background-outdated: rgb(51, 51, 9);
+  --background-outdated-light: rgb(77, 77, 13);
+  --background-unhealthy: rgb(51, 9, 9);
+  --background-unhealthy-light: rgb(77, 13, 13);
+  --background-unhealthy-bright: rgb(174, 30, 30);
+  --background-unknown: rgb(13, 26, 77);
+  --background-unknown-light: rgb(17, 34, 102);
+  --background-unreachable: rgb(51, 51, 9);
+  --background-unreachable-light: rgb(77, 77, 13);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: sans-serif;
+  font-size: 1em;
+}
+
+input,
+select,
+textarea {
+  background-color: var(--background-light);
+  border-color: var(--foreground-dark);
+  border-style: solid;
+  color: var(--foreground);
+  padding: 0.2em;
+}
+
+input[type='checkbox'] {
+  height: 1em;
+  width: 1em;
+}
+
+button {
+  color: var(--foreground);
+  background-color: var(--background-light);
+  border-color: var(--foreground-dark);
+  border-style: solid;
+  cursor: pointer;
+  &:disabled {
+    color: var(--foreground-dark);
+    cursor: default;
+  }
+}
+
+th {
+  background-color: var(--background-header);
+  text-align: center;
+  font-weight: bold;
+  padding: 0.75em;
+}
+
+td {
+  padding: 0.75em;
+  text-align: center;
+}
+
+.expandable,
+.link,
+.sortable {
+  text-decoration: underline;
+  cursor: pointer;
+  &.disabled {
+    text-decoration: none;
+    color: var(--foreground-dark);
+    cursor: default;
+  }
+}
+
+.alternate-color {
+  background-color: var(--background-light);
+  > .healthy {
+    background-color: var(--background-healthy-light);
+  }
+  > .missing {
+    background-color: var(--background-missing-light);
+  }
+  > .offline {
+    color: var(--foreground-dark);
+  }
+  > .outdated {
+    background-color: var(--background-outdated-light);
+  }
+  > .unknown {
+    background-color: var(--background-unknown-light);
+  }
+  > .unreachable {
+    background-color: var(--background-unreachable-light);
+  }
+  > .unhealthy {
+    background-color: var(--background-unhealthy-light);
+  }
+}
+
+.alternate-color:nth-child(even) {
+  background-color: var(--background);
+  > .healthy {
+    background-color: var(--background-healthy);
+  }
+  > .missing {
+    background-color: var(--background-missing);
+  }
+  > .offline {
+    color: var(--foreground-darker);
+  }
+  > .outdated {
+    background-color: var(--background-outdated);
+  }
+  > .unknown {
+    background-color: var(--background-unknown);
+  }
+  > .unreachable {
+    background-color: var(--background-unreachable);
+  }
+  > .unhealthy {
+    background-color: var(--background-unhealthy);
+  }
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#tool-section {
+  display: flex;
+  gap: 0.5em;
+  margin: 0.5em 0.5em 0 0.5em;
+}
+
+#tool {
+  flex-grow: 1;
+  margin: 0.5em;
+}

@@ -4,17 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import ExternalDataSource from '../redux/externalDataSource';
-import { questStaticDataQuery, QuestStaticDataQueryResult } from './questNetworkingConstants';
-import {
-  QuestStaticData,
-  updateCurrentBattlePass,
-  updateNextBattlePass,
-  updatePreviousBattlePass,
-  updateQuestStaticData
-} from '../redux/questSlice';
-import { QuestDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { updateCurrentBattlePass, updateNextBattlePass, updatePreviousBattlePass } from '../redux/questSlice';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import { InitTopic } from '../redux/initializationSlice';
 import {
   getBattlePassEndTimeMS,
   getBattlePassStartTimeMS,
@@ -40,52 +31,8 @@ export class QuestNetworkingService extends ExternalDataSource {
             this.battlePassTimeoutInitialized = false;
           }
         }
-      },
-      await this.query<QuestStaticDataQueryResult>(
-        { query: questStaticDataQuery },
-        this.handleStaticDataQueryResult.bind(this),
-        InitTopic.Quests
-      )
-    ];
-  }
-
-  private handleStaticDataQueryResult(result: QuestStaticDataQueryResult): void {
-    // Validate the result.
-    if (!result.game.quests) {
-      console.warn('Received invalid static data from Quest fetch.');
-      return;
-    }
-
-    const staticData: QuestStaticData = {
-      quests: {
-        Invalid: [],
-        Normal: [],
-        BattlePass: [],
-        DailyNormal: [],
-        DailyHard: [],
-        Champion: [],
-        SubQuest: []
-      },
-      questsById: {}
-    };
-
-    // Separate quests by type.  We almost never need to access more than a single type at a time.
-    result.game.quests.forEach((quest: QuestDefGQL) => {
-      if (staticData.quests[quest.questType]) {
-        staticData.quests[quest.questType].push(quest);
-      } else {
-        staticData.quests.Invalid.push(quest);
-        console.warn('Received static quest data with invalid questType', quest);
       }
-      staticData.questsById[quest.id] = quest;
-    });
-
-    // Sort quests by their start date (if specified).
-    staticData.quests.BattlePass.sort(this.sortQuestsByStartDate);
-    staticData.quests.DailyNormal.sort(this.sortQuestsByStartDate);
-    staticData.quests.DailyHard.sort(this.sortQuestsByStartDate);
-
-    this.dispatch(updateQuestStaticData(staticData));
+    ];
   }
 
   private handleBattlePassUpdate(): void {
@@ -149,35 +96,10 @@ export class QuestNetworkingService extends ExternalDataSource {
     }
   }
 
-  private sortQuestsByStartDate(a: QuestDefGQL, b: QuestDefGQL): number {
-    const aStartDateLock = a.questLock?.find((lock) => {
-      return lock.startTime != null;
-    });
-    const bStartDateLock = b.questLock?.find((lock) => {
-      return lock.startTime != null;
-    });
-
-    // Quests without start dates come first in the array, then sorted by start date.
-    if (!bStartDateLock) {
-      return 1;
-    } else if (!aStartDateLock) {
-      return -1;
-    }
-
-    const aStartDate: Date = new Date(aStartDateLock.startTime);
-    const bStartDate: Date = new Date(bStartDateLock.startTime);
-
-    return aStartDate.getTime() - bStartDate.getTime();
-  }
-
   protected onReduxUpdate(reduxState: RootState, dispatch: Dispatch): void {
     super.onReduxUpdate(reduxState, dispatch);
 
-    if (
-      !this.battlePassTimeoutInitialized &&
-      reduxState.initialization.componentStatus[InitTopic.ChampionInfo] &&
-      reduxState.initialization.componentStatus[InitTopic.Quests]
-    ) {
+    if (!this.battlePassTimeoutInitialized && reduxState.game.gameDefsLoaded) {
       this.battlePassTimeoutInitialized = true;
       this.handleBattlePassUpdate();
     }

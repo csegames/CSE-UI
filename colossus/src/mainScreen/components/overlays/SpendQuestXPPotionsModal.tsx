@@ -8,17 +8,9 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Dispatch } from 'redux';
-import {
-  ChampionCostumeInfo,
-  ChampionGQL,
-  ChampionInfo,
-  PerkDefGQL,
-  PerkGQL,
-  PerkType,
-  QuestDefGQL,
-  QuestGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionGQL, PerkGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { MiddleModalDisplay } from '../shared/MiddleModalDisplay';
 import { hideOverlay, Overlay, showError } from '../../redux/navigationSlice';
@@ -29,9 +21,8 @@ import {
   getStringTableValue,
   getTokenizedStringTableValue
 } from '../../helpers/stringTableHelpers';
-import { QuestStatus, QuestType } from '@csegames/library/dist/hordetest/graphql/schema';
+import { QuestStatus } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Button } from '../shared/Button';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
@@ -39,6 +30,11 @@ import { getWornCostumeForChampion } from '../../helpers/characterHelpers';
 import { ResourceBar } from '../shared/ResourceBar';
 import { webConf } from '../../dataSources/networkConfiguration';
 import { refreshProfile } from '../../dataSources/profileNetworking';
+import { PerkDef, PerkType } from '../../dataSources/manifest/perkManifest';
+import { CostumeDef } from '../../dataSources/manifest/costumeManifest';
+import { ChampionDef } from '../../dataSources/manifest/championManifest';
+import { QuestDef, QuestType } from '../../dataSources/manifest/questManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Title = 'SpendQuestXPPotionsModal-Title';
 const Description = 'SpendQuestXPPotionsModal-Description';
@@ -92,13 +88,13 @@ interface ReactProps {}
 
 interface InjectedProps {
   quests: QuestGQL[];
-  currentBattlePass: QuestDefGQL;
+  currentBattlePass: QuestDef;
   stringTable: Dictionary<StringTableEntryDef>;
-  quest: QuestDefGQL;
-  championCostumes: ChampionCostumeInfo[];
+  quest: QuestDef;
+  championCostumes: CostumeDef[];
   champions: ChampionGQL[];
-  championInfos: ChampionInfo[];
-  perksByID: Dictionary<PerkDefGQL>;
+  championInfos: ChampionDef[];
+  perksByID: Dictionary<PerkDef>;
   perks: PerkGQL[];
   dispatch?: Dispatch;
 }
@@ -135,7 +131,7 @@ class ASpendQuestXPPotionsModal extends React.Component<Props, State> {
     const questProgress = this.props.quests.find((q) => q.id == this.props.quest.id);
 
     if (perk && questProgress && questProgress.questStatus == QuestStatus.Running) {
-      const xpPerPerk = perk.xPAmount ?? 1;
+      const xpPerPerk = perk.xpAmount ?? 1;
       let amountRemaining: number = this.state.count * xpPerPerk;
 
       for (let i = questProgress.currentQuestIndex; i < this.props.quest.links.length; ++i) {
@@ -224,7 +220,7 @@ class ASpendQuestXPPotionsModal extends React.Component<Props, State> {
 
   private getMaxSpendAmount(): number {
     const remainingXP = this.getRemainingXP();
-    return Math.ceil(remainingXP / this.getPerk().xPAmount);
+    return Math.ceil(remainingXP / this.getPerk().xpAmount);
   }
 
   private getTitleText(): string {
@@ -233,7 +229,7 @@ class ASpendQuestXPPotionsModal extends React.Component<Props, State> {
       : getStringTableValue(StringIDSpendQuestXPPotionsModalTitleChampion, this.props.stringTable);
   }
 
-  private getDescriptionText(champion: ChampionInfo): string {
+  private getDescriptionText(champion: ChampionDef): string {
     const questProgress = this.props.quests.find((q) => q.id == this.props.quest.id);
     const currentLevel = (questProgress?.currentQuestIndex ?? 0) + 1;
 
@@ -253,7 +249,7 @@ class ASpendQuestXPPotionsModal extends React.Component<Props, State> {
     );
   }
 
-  private getQuestIcon(champion: ChampionInfo, quest: QuestGQL): JSX.Element {
+  private getQuestIcon(champion: ChampionDef, quest: QuestGQL): JSX.Element {
     const level = quest ? quest.currentQuestIndex + 1 : 1;
 
     if (this.props.quest.questType == QuestType.BattlePass) {
@@ -324,7 +320,7 @@ class ASpendQuestXPPotionsModal extends React.Component<Props, State> {
     );
   }
 
-  private getAvailablePotions(perk: PerkDefGQL, ownedAmount: number): JSX.Element {
+  private getAvailablePotions(perk: PerkDef, ownedAmount: number): JSX.Element {
     return (
       <div className={AvailablePotionsContainer}>
         <div className={AvailablePotionsTitle}>
@@ -379,7 +375,7 @@ class ASpendQuestXPPotionsModal extends React.Component<Props, State> {
   private getTotalXPAmount(): JSX.Element {
     const perk = this.getPerk();
     const remainingXP = this.getRemainingXP();
-    const amount = Math.min(this.state.count * perk.xPAmount, remainingXP);
+    const amount = Math.min(this.state.count * perk.xpAmount, remainingXP);
 
     return (
       <div className={TotalXPAmountContainer}>
@@ -445,12 +441,12 @@ class ASpendQuestXPPotionsModal extends React.Component<Props, State> {
     this.props.dispatch(hideOverlay(Overlay.SpendQuestXPPotions));
   }
 
-  private async onUsePotionClick(perk: PerkDefGQL) {
+  private async onUsePotionClick(perk: PerkDef) {
     if (this.state.count <= 0) {
       return;
     }
 
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
 
     this.setState({ isSpending: true });
     const res = await ProfileAPI.RedeemQuestXPPerk(webConf, perk?.id, this.props.quest.id, this.state.count);
@@ -463,7 +459,7 @@ class ASpendQuestXPPotionsModal extends React.Component<Props, State> {
     this.setState({ isSpending: false });
   }
 
-  private getPerk(): PerkDefGQL {
+  private getPerk(): PerkDef {
     return Object.values(this.props.perksByID).find((perkDef) => {
       return perkDef.perkType == PerkType.QuestXP && perkDef.questType == this.props.quest.questType;
     });

@@ -7,7 +7,7 @@
 import { KeyActionsModel } from '@csegames/library/dist/camelotunchained/game/GameClientModels/KeyActions';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import ExternalDataSource from '../redux/externalDataSource';
+import { ExternalDataSource } from '../redux/externalDataSource';
 import { updateKeyActions } from '../redux/keyActionsSlice';
 
 export class KeyActionsService extends ExternalDataSource {

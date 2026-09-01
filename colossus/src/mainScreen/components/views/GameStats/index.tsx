@@ -5,12 +5,8 @@
  */
 
 import * as React from 'react';
-import {
-  OvermindSummaryGQL,
-  ScenarioResolution,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
-
+import { OvermindSummaryGQL, ScenarioResolution } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { StatsList } from './StatsList';
 import { SummaryMVP } from './SummaryMVP';
 import { ScorePanelItem } from './ScorePanelItem';
@@ -23,11 +19,13 @@ import { RootState } from '../../../redux/store';
 import { Dispatch } from 'redux';
 import { MatchEndSequence, setMatchEnd } from '../../../redux/matchSlice';
 import { PlayerProgression } from './PlayerProgression';
-import { AccountID, ScenarioDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { AccountID } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../helpers/stringTableHelpers';
 import { updateMutedAll } from '../../../redux/voiceChatSlice';
 import { refreshProfile } from '../../../dataSources/profileNetworking';
+import { ScenarioDef } from '../../../dataSources/manifest/scenarioManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'GameStats-Container';
 const TopContainer = 'GameStats-TopContainer';
@@ -71,7 +69,7 @@ interface InjectedProps {
   overmindSummary: OvermindSummaryGQL;
   usingGamepad: boolean;
   usingGamepadInMainMenu: boolean;
-  scenarioDef: ScenarioDefGQL;
+  scenarioDef: ScenarioDef;
   accountID: AccountID;
   stringTable: Dictionary<StringTableEntryDef>;
   dispatch?: Dispatch;
@@ -366,11 +364,11 @@ class AGameStats extends React.Component<Props, State> {
 
   public componentDidMount() {
     game.releaseMouseCapture();
-    game.playGameSound(SoundEvents.PLAY_EPILOGUE_1);
+    clientAPI.playGameSound(SoundEvents.PLAY_EPILOGUE_1);
   }
 
   public componentWillUnmount() {
-    game.playGameSound(SoundEvents.PLAY_SCENARIO_RESET);
+    clientAPI.playGameSound(SoundEvents.PLAY_SCENARIO_RESET);
     window.clearTimeout(this.state.timeoutHandle);
   }
 

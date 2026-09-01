@@ -8,18 +8,13 @@ import * as React from 'react';
 
 import { Button } from '../shared/Button';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { game } from '@csegames/library/dist/_baseGame';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Dispatch } from 'redux';
 import { MiddleModalDisplay } from '../shared/MiddleModalDisplay';
 import { hideOverlay, Overlay, showError } from '../../redux/navigationSlice';
-import {
-  ChampionInfo,
-  QuestDefGQL,
-  QuestGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { QuestsByType } from '../../redux/questSlice';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { ProgressionReward } from '../views/Lobby/ChampionProfile/ProgressionReward';
@@ -28,9 +23,12 @@ import { findChampionQuestProgress, findChampionQuest } from '../../helpers/char
 import { getStringTableValue, getTokenizedStringTableValue } from '../../helpers/stringTableHelpers';
 import { Dictionary } from '@reduxjs/toolkit';
 import { createAlertsForCollectedQuestProgress } from '../../helpers/perkUtils';
-import { PerkDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { webConf } from '../../dataSources/networkConfiguration';
 import { refreshProfile } from '../../dataSources/profileNetworking';
+import { ChampionDef } from '../../dataSources/manifest/championManifest';
+import { PerkDef } from '../../dataSources/manifest/perkManifest';
+import { QuestDef } from '../../dataSources/manifest/questManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'RewardCollection-Container';
 const LevelUpTitle = 'RewardCollection-LevelUpTitle';
@@ -48,12 +46,12 @@ const StringIDRewardCollectionTitle = 'RewardCollectionTitle';
 interface ReactProps {}
 
 interface InjectedProps {
-  selectedChampion: ChampionInfo;
-  champions: ChampionInfo[];
+  selectedChampion: ChampionDef;
+  champions: ChampionDef[];
   questsGQL: QuestGQL[];
   quests: QuestsByType;
   stringTable: Dictionary<StringTableEntryDef>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   dispatch?: Dispatch;
 }
 
@@ -125,7 +123,7 @@ class ARewardCollection extends React.Component<Props, State> {
     );
   }
 
-  private async claimReward(quest: QuestDefGQL, questProgress: QuestGQL) {
+  private async claimReward(quest: QuestDef, questProgress: QuestGQL) {
     const res = await ProfileAPI.CollectQuestReward(webConf, quest.id);
     if (!res.ok) {
       this.props.dispatch(showError(res));
@@ -141,7 +139,7 @@ class ARewardCollection extends React.Component<Props, State> {
   }
 
   private onCloseClick() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
     refreshProfile();
     this.props.dispatch(hideOverlay(Overlay.RewardCollection));
   }

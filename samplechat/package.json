@@ -1,0 +1,96 @@
+{
+  "private": true,
+  "name": "cu-sample-chat",
+  "version": "1.0.0",
+  "description": "UCE Sample Chat",
+  "license": "MPL-2.0",
+  "main": "dist/hud.js",
+  "author": "Unchained Entertainment, LLC <support@unchained-entertainment.com>",
+  "contributors": [
+    {
+      "name": "Contributors",
+      "url": "https://github.com/csegames/Camelot-Unchained/graphs/contributors"
+    }
+  ],
+  "keywords": [
+    "Camelot",
+    "Unchained",
+    "cu",
+    "cu-ui"
+  ],
+  "files": [
+    "dist/",
+    "package.json",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/csegames/Camelot-Unchained.git"
+  },
+  "scripts": {
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+    "prettier": "prettier . --write",
+    "prestart": "npm run build:dev",
+    "start": "npx static-server -i index/dist.html -c \"*\""
+  },
+  "dependencies": {
+    "@csegames/library": "file:../library",
+    "@reduxjs/toolkit": "2.2.5",
+    "normalize.css": "8.0.1",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "react-redux": "^5.1.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.0.0-rc.1",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0-rc.1",
+    "@babel/plugin-syntax-jsx": "^7.0.0-rc.1",
+    "@babel/plugin-transform-modules-commonjs": "^7.0.0-rc.1",
+    "@babel/plugin-transform-react-jsx": "^7.0.0-rc.1",
+    "@babel/plugin-transform-runtime": "^7.0.0-rc.1",
+    "@babel/preset-env": "^7.0.0-rc.1",
+    "@babel/preset-typescript": "^7.3.3",
+    "@types/lodash": "^4.14.202",
+    "@types/node": "^6.0.0",
+    "@types/react": "^16.7.17",
+    "@types/react-dom": "^16.0.11",
+    "@types/react-redux": "^6.0.9",
+    "@types/react-transition-group": "^1.x",
+    "babel-eslint": "^8.2.6",
+    "babel-loader": "^8.0.0-beta",
+    "babel-plugin-graphql-tag": "^1.6.0",
+    "babel-plugin-transform-react-display-name": "^6.25.0",
+    "copy-webpack-plugin": "^4.5.2",
+    "copyfiles": "^1.0.0",
+    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.0",
+    "dotenv": "^6.0.0",
+    "download-cli": "^1.1.1",
+    "eslint": "^5.4.0",
+    "eslint-loader": "^2.1.0",
+    "eslint-plugin-graphql": "^2.1.1",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^4.0.0-alpha",
+    "mini-css-extract-plugin": "^0.4.2",
+    "node-sass": "^4.9.0",
+    "p-s": "^3.1.0",
+    "prettier": "^2.7.1",
+    "react-hot-loader": "^4.13.1",
+    "rimraf": "^2.6.1",
+    "static-server": "^2.2.1",
+    "ts-loader": "^4.4.2",
+    "ts-transform-graphql-tag": "^0.1.3",
+    "tslint": "^5.4.3",
+    "tslint-config-airbnb": "^5.3.0",
+    "tslint-eslint-rules": "^4.0.0",
+    "typescript": "^4.9.0",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0",
+    "write-file-webpack-plugin": "^4.3.2"
+  }
+}

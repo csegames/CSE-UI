@@ -7,12 +7,11 @@
 import * as React from 'react';
 import { ObjectiveState } from './index';
 import { ObjectiveState as ObjectiveStateEnum } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { isItem, ItemEntityStateModel } from '@csegames/library/dist/hordetest/game/GameClientModels/ItemEntityState';
+import { isItem, ItemEntityState } from '@csegames/library/dist/hordetest/game/GameClientModels/ItemEntityState';
 import '@csegames/library/dist/_baseGame/types/Objective';
 import '@csegames/library/dist/hordetest/webAPI/definitions';
 import { ProgressCircle, ProgressCircleUnit } from '../../shared/components/ProgressCircle';
 import {
-  BaseEntityStateModel,
   findEntityResource,
   WorldUIPositionModel
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
@@ -56,7 +55,7 @@ export class Objective extends React.Component<Props, State> {
 
     if (!isItem(entity)) {
       console.error(
-        'Objective.tsx assumes that Objectives are found only on ItemEntityStateModel.  If that is no longer true, please fix it!'
+        'Objective.tsx assumes that Objectives are found only on ItemEntityState.  If that is no longer true, please fix it!'
       );
       return null;
     }
@@ -124,7 +123,7 @@ export class Objective extends React.Component<Props, State> {
     return <span className={DistanceText}>{`${distance}m`}</span>;
   }
 
-  private getObjectiveColor(itemEntity: ItemEntityStateModel): string {
+  private getObjectiveColor(itemEntity: ItemEntityState): string {
     if (this.state.isDanger) {
       return `#FF0000`;
     } else if (this.isDisabled()) {
@@ -135,7 +134,7 @@ export class Objective extends React.Component<Props, State> {
   }
 
   private objectiveLabel(): JSX.Element {
-    const entity: BaseEntityStateModel = this.props.state.entity;
+    const entity = this.props.state.entity;
     if (!entity.objective || !entity.objective.indicatorLabel) {
       return null;
     }
@@ -153,7 +152,7 @@ export class Objective extends React.Component<Props, State> {
   }
 
   private isDisabled(): boolean {
-    const entity: BaseEntityStateModel = this.props.state.entity;
+    const entity = this.props.state.entity;
     return entity.objective && entity.objective.state == ObjectiveStateEnum.Canceled;
   }
 

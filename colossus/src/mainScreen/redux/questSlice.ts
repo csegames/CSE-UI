@@ -5,22 +5,22 @@
  */
 
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { QuestDefGQL, QuestType } from '@csegames/library/dist/hordetest/graphql/schema';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { QuestDef, QuestType } from '../dataSources/manifest/questManifest';
 
 // BEGIN INTERFACES AND STATES
 
-export type QuestsByType = { [key in QuestType]: QuestDefGQL[] };
+export type QuestsByType = { [key in QuestType]: QuestDef[] };
 
 export interface QuestStaticData {
   quests: QuestsByType;
-  questsById: Dictionary<QuestDefGQL>;
+  questsById: Dictionary<QuestDef>;
 }
 
 export interface QuestState extends QuestStaticData {
-  currentBattlePass: QuestDefGQL;
-  nextBattlePass: QuestDefGQL;
-  previousBattlePass: QuestDefGQL;
+  currentBattlePass: QuestDef;
+  nextBattlePass: QuestDef;
+  previousBattlePass: QuestDef;
 }
 
 function generateDefaultQuestState() {
@@ -52,13 +52,13 @@ export const questSlice = createSlice({
     updateQuestStaticData: (state: QuestState, action: PayloadAction<QuestStaticData>) => {
       Object.assign(state, action.payload);
     },
-    updateCurrentBattlePass: (state: QuestState, action: PayloadAction<QuestDefGQL>) => {
+    updateCurrentBattlePass: (state: QuestState, action: PayloadAction<QuestDef>) => {
       state.currentBattlePass = action.payload;
     },
-    updateNextBattlePass: (state: QuestState, action: PayloadAction<QuestDefGQL>) => {
+    updateNextBattlePass: (state: QuestState, action: PayloadAction<QuestDef>) => {
       state.nextBattlePass = action.payload;
     },
-    updatePreviousBattlePass: (state: QuestState, action: PayloadAction<QuestDefGQL>) => {
+    updatePreviousBattlePass: (state: QuestState, action: PayloadAction<QuestDef>) => {
       state.previousBattlePass = action.payload;
     }
   }

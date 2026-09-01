@@ -2,25 +2,20 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
  */
 
 import * as React from 'react';
-import {
-  ChampionCostumeInfo,
-  ChampionGQL,
-  ChampionInfo,
-  Group,
-  Member,
-  PerkDefGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionGQL, Group, Member } from '@csegames/library/dist/hordetest/graphql/schema';
 
 import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
 import { ProfileModel } from '../../../../redux/profileSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { ChampionDef } from '../../../../dataSources/manifest/championManifest';
+import { CostumeDef } from '../../../../dataSources/manifest/costumeManifest';
+import { PerkDef } from '../../../../dataSources/manifest/perkManifest';
 
 const Container = 'StartScreen-Play-PlayerView-Container';
 const PlayerPosition = 'StartScreen-Play-PlayerView-PlayerPosition';
@@ -37,8 +32,8 @@ const PlayerLabelText = 'StartScreen-Play-PlayerView-PlayerLabelText';
 const StringIDGroupsLeader = 'GroupsLeader';
 const StringIDPlayDefaultDisplayName = 'PlayDefaultDisplayName';
 
-export interface Champion extends ChampionInfo {
-  costumes: ChampionCostumeInfo[];
+export interface Champion extends ChampionDef {
+  costumes: CostumeDef[];
 }
 
 interface PlayerPortraitProps {
@@ -110,14 +105,14 @@ class PlayerPortrait extends React.Component<PlayerPortraitProps> {
 interface ReactProps {}
 
 interface InjectedProps {
-  championCostumes: ChampionCostumeInfo[];
-  champions: ChampionInfo[];
+  championCostumes: CostumeDef[];
+  champions: ChampionDef[];
   group: Group;
   selectedGroupMemberIndex: number;
   userID: string;
   displayName: string;
   profile: ProfileModel;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
 }
 
@@ -131,13 +126,13 @@ class APlayerView extends React.Component<Props> {
   render() {
     // This enormous Consumer tree will vanish as we move the individual contexts into Redux.
     let defaultChampion: ChampionGQL = null;
-    let defaultChampionCostume: ChampionCostumeInfo = null;
+    let defaultChampionCostume: CostumeDef = null;
     if (this.props.profile && this.props.profile.defaultChampionID) {
       defaultChampion = this.props.profile.champions.find((c) => c.championID == this.props.profile.defaultChampionID);
       if (defaultChampion) {
         const costumePerk = this.props.perksByID[defaultChampion.costumePerkID];
         if (costumePerk) {
-          defaultChampionCostume = this.props.championCostumes.find((costume) => costume.id == costumePerk.costume.id);
+          defaultChampionCostume = this.props.championCostumes.find((costume) => costume.id == costumePerk.costumeID);
         }
       }
     }
@@ -182,7 +177,7 @@ class APlayerView extends React.Component<Props> {
     return <div className={Container}>{portraits}</div>;
   }
 
-  private getChampionThumbnailURL(portraitID: string, costume: ChampionCostumeInfo): string {
+  private getChampionThumbnailURL(portraitID: string, costume: CostumeDef): string {
     if (portraitID) {
       const portraitPerk = this.props.perksByID[portraitID];
       if (portraitPerk) {
@@ -252,7 +247,7 @@ class APlayerView extends React.Component<Props> {
     let standingImage = 'images/hud/champions/berserker.png';
     let thumbnailImage = 'images/hud/champions/berserker-profile.png';
 
-    const costume: ChampionCostumeInfo = player.champion
+    const costume: CostumeDef = player.champion
       ? this.getCostumeInfo(player.champion.costumeID, player.champion.championID)
       : null;
     if (costume != null) {
@@ -277,7 +272,7 @@ class APlayerView extends React.Component<Props> {
     );
   }
 
-  private getCostumeInfo(costumeID: string, championID: string = ''): ChampionCostumeInfo {
+  private getCostumeInfo(costumeID: string, championID: string = ''): CostumeDef {
     if (costumeID && costumeID.length > 0) {
       const costumeInfo = this.props.championCostumes.find((costume) => costume.id == costumeID);
       if (costumeInfo && (championID.length == 0 || costumeInfo.requiredChampionID == championID)) {

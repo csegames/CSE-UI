@@ -1,4 +1,4 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -6,25 +6,6 @@
 
 import { EventEmitter } from './types/EventEmitter';
 import { ListenerHandle } from './listenerHandle';
-
-// look for clusters of non-space characters or any block in quotes
-const argFinder = /\"(?:\\\"|[^"])*\"|\'(?:\\\'|[^'])*\'|[^"'\s]+/g;
-
-function parseArgs(args: string): string[] {
-  const result: string[] = [];
-  const matches: string[] = argFinder.exec(args) ?? [''];
-  for (const match of matches.slice(1)) {
-    switch (match[0]) {
-      case '"':
-      case "'":
-        result.push(match.substring(1, match.length - 1));
-        break;
-      default:
-        result.push(match);
-    }
-  }
-  return result;
-}
 
 export interface SlashCommand {
   command: string;
@@ -40,14 +21,18 @@ interface CommandListenerHandle extends ListenerHandle {
   inner: ListenerHandle;
 }
 
-export class SlashCommandRegistry<State> {
+export class SlashCommandRegistry<State, Dispatch> {
   private readonly commandBus = new EventEmitter();
   private readonly commands = new Map<string, CommandEntry>();
   private nextId = 1;
 
-  constructor(readonly readState: () => State) {}
+  constructor(private readonly readState: () => State, private readonly dispatch: Dispatch) {}
 
-  public add(command: string, helpText: string, callback: (data: State, args: string[]) => void): ListenerHandle {
+  public add(
+    command: string,
+    helpText: string,
+    callback: (data: State, dispatch: Dispatch, args: string[]) => void
+  ): ListenerHandle {
     const cmd = command.toLowerCase();
     let entry = this.commands.get(cmd);
     if (!entry) {
@@ -72,14 +57,15 @@ export class SlashCommandRegistry<State> {
   // this function returns true a command has been executed and the line should be ignored
   // by downstream systems.
   public parse(message: string): boolean {
-    const wordEnd = message.indexOf(' ');
-    const [cmd, params] =
-      wordEnd === -1
-        ? [message.substring(wordEnd).toLowerCase(), '']
-        : [message.substring(1, wordEnd).toLowerCase(), message.substring(wordEnd + 1)];
+    if (message == null || message.length < 1 || message[0] != '/') {
+      return false;
+    }
 
+    // TODO : support for quotes
+    const segments = message.split(/\s+/);
+    const cmd = segments.shift().substring(1);
     if (this.commands.has(cmd)) {
-      this.commandBus.trigger(cmd, params);
+      this.commandBus.trigger(cmd, segments);
       return true;
     }
     return false;
@@ -93,8 +79,8 @@ export class SlashCommandRegistry<State> {
     return commands;
   }
 
-  private execute(callback: (data: State, args: string[]) => void, args: string): void {
-    callback(this.readState(), parseArgs(args));
+  private execute(callback: (data: State, dispatch: Dispatch, args: string[]) => void, args: string[]): void {
+    callback(this.readState(), this.dispatch, args);
   }
 
   private remove(cmd: string, id: number): void {

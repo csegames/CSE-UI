@@ -4,30 +4,47 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { RootState } from '../redux/store';
-import { hideTooltip, showTooltip, TooltipParams, TooltipPosition, updateTooltip } from '../redux/tooltipSlice';
+import { AddDispatch, RootState } from '../redux/store';
+import { hideTooltip, showTooltip, TooltipParams, TooltipPositionType } from '../redux/tooltipSlice';
+import { simpleRectFromDOMRect } from '../redux/dragAndDropSlice';
 
 // Styles
 const Root = 'TooltipSource-Root';
 
 interface ReactProps extends React.HTMLAttributes<HTMLDivElement> {
-  tooltipParams: TooltipParams;
+  tooltipID: string;
+  content: () => React.ReactNode;
+  positionType: TooltipPositionType;
+  active?: boolean;
+  xOffset?: number;
+  yOffset?: number;
+  maxWidth?: string;
+  noOuterBorder?: boolean;
 }
 
 interface InjectedProps {
   currentTooltipID: string;
-  dispatch?: Dispatch;
 }
 
-type Props = ReactProps & InjectedProps;
+interface State {
+  isEntered: boolean;
+}
 
-class TooltipSource extends React.Component<Props> {
-  private rootRef: HTMLDivElement = null;
+type Props = ReactProps & InjectedProps & AddDispatch;
+
+class TooltipSource extends React.Component<Props, State> {
+  private rootRef: HTMLDivElement | null = null;
+
+  constructor(props: Props) {
+    super(props);
+
+    this.state = { isEntered: false };
+  }
+
   public render(): React.ReactNode {
-    const { children, className, ...otherProps } = this.props;
+    const { children, className, onMouseEnter, onMouseLeave, ...otherProps } = this.props;
     return (
       <div
         className={`${Root} ${className}`}
@@ -36,7 +53,6 @@ class TooltipSource extends React.Component<Props> {
         }}
         {...otherProps}
         onMouseEnter={this.onMouseEnter.bind(this)}
-        onMouseMove={this.onMouseMove.bind(this)}
         onMouseLeave={this.onMouseLeave.bind(this)}
       >
         {children}
@@ -44,56 +60,60 @@ class TooltipSource extends React.Component<Props> {
     );
   }
 
-  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<{}>, snapshot?: any): void {
-    if (this.props.currentTooltipID === this.props.tooltipParams.id) {
-      // If the params changed while the tooltip is visible, we should update the tooltip!
-      this.props.dispatch(updateTooltip(this.props.tooltipParams));
+  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot?: any): void {
+    const idChanged = this.props.tooltipID !== prevProps.tooltipID;
+    const shouldDisplay = (this.props.active ?? true) && this.state.isEntered;
+    const wasDisplayed = (prevProps.active ?? true) && prevState.isEntered;
+
+    if (shouldDisplay === wasDisplayed && !idChanged) return;
+
+    if (shouldDisplay) {
+      this.props.dispatch(showTooltip(this.createParams()));
+    } else {
+      this.props.dispatch(hideTooltip(idChanged ? prevProps.tooltipID : this.props.tooltipID));
+    }
+  }
+
+  componentWillUnmount(): void {
+    if (this.props.currentTooltipID === this.props.tooltipID) {
+      this.props.dispatch(hideTooltip(this.props.tooltipID));
     }
   }
 
   private onMouseEnter(e: React.MouseEvent<HTMLDivElement>) {
     this.props.onMouseEnter?.(e);
-    const [mouseX, mouseY] = this.applyTooltipPositioning(e.clientX, e.clientY);
-    const newParams: TooltipParams = { ...this.props.tooltipParams, mouseX, mouseY };
-    this.props.dispatch(showTooltip(newParams));
+    this.setState({ isEntered: true });
   }
 
-  private onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-    this.props.onMouseMove?.(e);
-    const [mouseX, mouseY] = this.applyTooltipPositioning(e.clientX, e.clientY);
-    const newParams: Partial<TooltipParams> = { ...this.props.tooltipParams, mouseX, mouseY };
-    this.props.dispatch(updateTooltip(newParams));
+  private onMouseLeave(e: React.MouseEvent<HTMLDivElement>) {
+    this.props.onMouseLeave?.(e);
+    this.setState({ isEntered: false });
   }
 
-  private onMouseLeave() {
-    this.props.dispatch(hideTooltip());
-  }
-
-  componentWillUnmount(): void {
-    if (this.props.currentTooltipID === this.props.tooltipParams.id) {
-      this.props.dispatch(hideTooltip());
-    }
-  }
-
-  private applyTooltipPositioning(x: number, y: number): [number, number] {
-    const position = this.props.tooltipParams.position ?? TooltipPosition.AtMouse;
-    switch (position) {
-      case TooltipPosition.OutsideSource: {
-        // Adjusts the mouse "position" to be just outside of this TooltipSource on the right side.
-        // Note that this logic doesn't work out if the tooltip has to flip position in order to stay on screen.
-        const bounds = this.rootRef.getBoundingClientRect();
-        return [bounds.right, y];
-      }
-      case TooltipPosition.AtMouse:
-      default: {
-        // No changes.
-        return [x, y];
-      }
-    }
+  private createParams(): TooltipParams {
+    return {
+      id: this.props.tooltipID,
+      content: this.props.content(),
+      maxWidth: this.props.maxWidth,
+      noOuterBorder: this.props.noOuterBorder,
+      position:
+        this.props.positionType == 'mouse'
+          ? {
+              type: 'mouse',
+              xOffset: this.props.xOffset ?? 0,
+              yOffset: this.props.yOffset ?? 0
+            }
+          : {
+              type: 'source',
+              sourceRect: simpleRectFromDOMRect(this.rootRef?.getBoundingClientRect()),
+              xOffset: this.props.xOffset ?? 0,
+              yOffset: this.props.yOffset ?? 0
+            }
+    };
   }
 }
 
-function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
+function mapStateToProps(state: RootState, ownProps: ReactProps): ReactProps & InjectedProps {
   const currentTooltipID = state.tooltip.id;
   return {
     ...ownProps,

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import ExternalDataSource from '../redux/externalDataSource';
-import { InitTopic, setInitialized } from '../redux/initializationSlice';
+import { LoadingTopic, setInitialized, setLoadingPhaseName } from '../redux/loadingSlice';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { matchQuery, matchSubscription, MatchQueryResult, MatchSubscriptionResult } from './matchNetworkingConstants';
 import {
@@ -24,7 +24,9 @@ import {
   setQueues,
   setSelections,
   setConnectionError,
-  clearQueueEntries
+  clearQueueEntries,
+  setConnectionStatus,
+  LifecycleState
 } from '../redux/matchSlice';
 import {
   AccessChanged,
@@ -52,24 +54,16 @@ import { Dispatch } from 'redux';
 import { RootState } from '../redux/store';
 import { ActivitiesAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
-import { LoadingScreenReason } from '@csegames/library/dist/_baseGame/clientFunctions/LoadingScreenFunctions';
+import { ConnectionStatus } from '@csegames/library/dist/_baseGame/types/ConnectionStatus';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { getServerTimeMS } from '@csegames/library/dist/_baseGame/utils/timeUtils';
 import { updateServerTimeDelta } from '../redux/clockSlice';
 import { setStatsMatch } from '../redux/gameStatsSlice';
 import { webConf } from './networkConfiguration';
-
-const placeholderStringFindingServer = 'Finding server';
+import { getStringTableValue } from '../helpers/stringTableHelpers';
+import { ScenarioDef } from './manifest/scenarioManifest';
 
 let firstUpdate = true;
-
-type LifecycleState = {
-  access: MatchAccess;
-  currentEntry: QueueEntry | null;
-  currentSelection: ChampionSelection | null;
-  currentRound: Round | null;
-  matchEnds: Dictionary<MatchEndSequence>;
-};
 
 export class MatchService extends ExternalDataSource {
   protected async bind(): Promise<ListenerHandle[]> {
@@ -78,9 +72,11 @@ export class MatchService extends ExternalDataSource {
     }
 
     return [
+      clientAPI.bindConnectionStatusListener(this.onConnectionStatusUpdated.bind(this)),
       clientAPI.bindDefaultQueueListener(this.onDefaultQueueSelected.bind(this)),
       clientAPI.bindNetworkFailureListener(this.onNetworkFailure.bind(this)),
-      await this.query<MatchQueryResult>({ query: matchQuery }, this.handleStatus.bind(this), InitTopic.Matchmaking),
+      clientAPI.bindLoadingPhaseListener(this.onLoadingPhaseUpdated.bind(this)),
+      await this.query<MatchQueryResult>({ query: matchQuery }, this.handleStatus.bind(this), LoadingTopic.Matchmaking),
       await this.subscribe<MatchSubscriptionResult>(
         { operationName: 'activity', query: matchSubscription },
         this.handleSubscription.bind(this)
@@ -90,19 +86,18 @@ export class MatchService extends ExternalDataSource {
     ];
   }
 
-  private onNetworkFailure(errorMsg: string, errorCode: number, fatal: boolean) {
+  private onNetworkFailure(type: string, isAuth: boolean, isFatal: boolean) {
     const round = this.reduxState.match.currentRound;
-    this.dispatch(
-      setConnectionError({
-        errorMsg: errorMsg,
-        errorCode: errorCode,
-        fatal: fatal,
-        serverName: round?.gameServerAddress,
-        roundID: round?.roundID
-      })
-    );
-    if (fatal) {
-      this.dispatch(setMatchEnd({ matchID: round.roundID, sequence: MatchEndSequence.GotoLobby, refresh: false }));
+    if ((round?.roundID && isAuth) || isFatal) {
+      this.dispatch(setMatchEnd({ matchID: round?.roundID, sequence: MatchEndSequence.GotoLobby, refresh: false }));
+      this.dispatch(
+        showError({
+          severity: 'standard',
+          title: 'Server Connection Failure',
+          message: getStringTableValue(type, this.reduxState.stringTable.stringTable),
+          code: type
+        })
+      );
     }
   }
 
@@ -116,17 +111,26 @@ export class MatchService extends ExternalDataSource {
     window.setTimeout(this.handleRequests.bind(this, toProcess), 0);
   }
 
+  protected onConnectionStatusUpdated(status: ConnectionStatus): void {
+    this.updateLifecycle({ ...this.reduxState.match, connectionStatus: status });
+    this.dispatch(setConnectionStatus(status));
+  }
+
+  protected onLoadingPhaseUpdated(phaseName: string): void {
+    this.dispatch(setLoadingPhaseName(phaseName));
+  }
+
   private onDefaultQueueSelected(queueID: string): void {
     this.dispatch(setDefaultQueue(queueID));
   }
 
   private async refresh(): Promise<void> {
-    await this.query<MatchQueryResult>({ query: matchQuery }, this.handleStatus.bind(this), InitTopic.Matchmaking);
+    await this.query<MatchQueryResult>({ query: matchQuery }, this.handleStatus.bind(this), LoadingTopic.Matchmaking);
   }
 
   private async disconnected(): Promise<void> {
     const access = MatchAccess.Offline;
-    this.dispatch(setInitialized({ topic: InitTopic.Matchmaking, result: false }));
+    this.dispatch(setInitialized({ topic: LoadingTopic.Matchmaking, result: false }));
     this.dispatch(setMatchAccess(access));
     this.dispatch(resetMatchRequests());
     this.updateLifecycle({ ...this.reduxState.match, access });
@@ -232,6 +236,7 @@ export class MatchService extends ExternalDataSource {
       return 0;
     });
 
+    const { connectionStatus } = this.reduxState.match;
     const bestMatch = this.bestFitMatch(matches, this.reduxState.match.matchEnds);
     const currentEntry = this.oldestQueueEntry(entries);
     const currentSelection = this.matchingChampionSelection(bestMatch, selections);
@@ -245,6 +250,7 @@ export class MatchService extends ExternalDataSource {
 
     this.updateLifecycle({
       access: data.matchAccess,
+      connectionStatus,
       currentEntry,
       currentSelection,
       currentRound: bestMatch,
@@ -521,7 +527,7 @@ export class MatchService extends ExternalDataSource {
 
   private updateLifecycle(state: LifecycleState): void {
     const shouldBeConnected = this.shouldBeConnected(state.currentRound, state.matchEnds);
-    this.updateGameConnection(shouldBeConnected, state.currentRound);
+    this.updateGameConnection(shouldBeConnected, state.currentRound, state.connectionStatus);
 
     const phase = isDebugSession(state.currentRound)
       ? this.calcSessionLifecycle(state.currentRound, state.matchEnds)
@@ -529,7 +535,9 @@ export class MatchService extends ExternalDataSource {
 
     const prev = this.reduxState.navigation.lifecyclePhase;
     const hasOverride = this.reduxState.navigation.phaseOverride != null;
-    if (hasOverride || this.handleTransition(prev, phase)) {
+    const scenarioDef = this.reduxState.scenarios.scenarioDefs[state.currentRound?.scenarioID];
+
+    if (hasOverride || this.handleTransition(prev, phase, scenarioDef)) {
       this.dispatch(updateLifecycle(phase));
     }
   }
@@ -543,7 +551,7 @@ export class MatchService extends ExternalDataSource {
   }
 
   private calcMatchLifecycle(state: LifecycleState, shouldBeConnected: boolean): LifecyclePhase {
-    if (shouldBeConnected) return LifecyclePhase.Playing;
+    if (shouldBeConnected || state.connectionStatus === ConnectionStatus.Offline) return LifecyclePhase.Playing;
     if (state.currentSelection && state.access == MatchAccess.Online) return LifecyclePhase.ChampionSelect;
     if (state.matchEnds[state.currentRound?.roundID] === MatchEndSequence.GotoStats) return LifecyclePhase.GameStats;
     if (this.isRoundActive(state.currentRound, state.matchEnds)) return LifecyclePhase.Playing;
@@ -559,52 +567,64 @@ export class MatchService extends ExternalDataSource {
   }
 
   private shouldBeConnected(currentRound: Round, endSequences: Dictionary<MatchEndSequence>): boolean {
-    return currentRound?.gameServerAddress && this.isRoundActive(currentRound, endSequences);
+    return this.isRoundActive(currentRound, endSequences) && !!currentRound.gameServerAddress;
   }
 
-  private updateGameConnection(shouldBeConnected: boolean, currentRound: Round): void {
-    if (shouldBeConnected === game.isConnectedOrConnectingToServer) {
+  private updateGameConnection(
+    shouldBeConnected: boolean,
+    currentRound: Round,
+    connectionStatus: ConnectionStatus
+  ): void {
+    switch (connectionStatus) {
+      case ConnectionStatus.Unknown:
+        return; // get more information before making any decisions
+      case ConnectionStatus.Connected:
+      case ConnectionStatus.Connecting:
+        if (shouldBeConnected) return;
+        break;
+      case ConnectionStatus.Disconnected:
+      case ConnectionStatus.Disconnecting:
+        if (!shouldBeConnected) return;
+        break;
+      case ConnectionStatus.Offline:
+        return; // no server connections allowed
+    }
+
+    if (!shouldBeConnected) {
+      clientAPI.disconnect();
+      clientAPI.setVoiceChannel('none', '');
+      // TODO : disconnect chat
       return;
     }
 
-    if (shouldBeConnected) {
-      this.dispatch(setConnectionError(null));
-      const fragments = currentRound.gameServerAddress.split(':');
-      const host = fragments[0];
-      const port = Number(fragments[1]);
-      game.connectToServer(host, port);
-      clientAPI.setVoiceChannel('match', currentRound.roundID ?? '');
-      // TODO : connect chat
-      return;
-    }
-
-    if (game.isConnectedOrConnectingToServer) {
-      game.disconnectFromAllServers();
-    }
-    clientAPI.setVoiceChannel('none', '');
-    // TODO : disconnect chat
+    this.dispatch(setConnectionError(null));
+    const fragments = currentRound.gameServerAddress.split(':');
+    const host = fragments[0];
+    const port = Number(fragments[1]);
+    clientAPI.connect(host, port);
+    clientAPI.setVoiceChannel('match', currentRound.roundID ?? '');
+    // TODO : connect chat
   }
 
-  private handleTransition(from: LifecyclePhase, to: LifecyclePhase): boolean {
+  private handleTransition(from: LifecyclePhase, to: LifecyclePhase, scenarioDef: ScenarioDef): boolean {
     if (!firstUpdate && from === to) return false;
     firstUpdate = false;
-
-    if (LifecyclePhase.Playing === to && !game.isConnectedToServer) {
-      clientAPI.setLoadingScreenManually(LoadingScreenReason.Game, placeholderStringFindingServer);
-    } else {
-      clientAPI.clearManualLoadingScreen(LoadingScreenReason.Game);
-    }
 
     switch (to) {
       case LifecyclePhase.ChampionSelect:
         // Make sure there are no popups in the way.
         this.dispatch(hideAllOverlays());
-        game.playGameSound(SoundEvents.PLAY_USER_FLOW_CHAMP_SELECT);
+        clientAPI.playGameSound(SoundEvents.PLAY_USER_FLOW_CHAMP_SELECT);
         break;
       case LifecyclePhase.Playing:
         // Make sure there are no popups in the way.
         this.dispatch(hideAllOverlays());
-        game.playGameSound(SoundEvents.PLAY_USER_FLOW_LOADING_SCREEN);
+        clientAPI.playGameSound(SoundEvents.PLAY_USER_FLOW_LOADING_SCREEN);
+
+        if (scenarioDef && scenarioDef.loadingScreenAudioEventID) {
+          clientAPI.playGameSound(scenarioDef.loadingScreenAudioEventID);
+        }
+
         break;
       default:
         break;

@@ -4,14 +4,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REACTOR 
+
 import * as React from 'react';
 import { KillStreakCounterData } from '.';
 import { game } from '@csegames/library/dist/_baseGame';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
+import { KillStreakDef } from '../../../../dataSources/manifest/killStreakManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 
 const ANIMATION_DURATION = 0.3;
 const MESSAGE_ANIMATION_DURATION = 5;
@@ -26,16 +30,6 @@ const Fill = 'KillStreakCounter-Fill';
 const Message = 'KillStreakCounter-Message';
 
 const StringIDHUDKillCounterKills = 'HUDKillCounterKills';
-const StringIDHUDKillCounterLevel1 = 'HUDKillCounterLevel1';
-const StringIDHUDKillCounterLevel2 = 'HUDKillCounterLevel2';
-const StringIDHUDKillCounterLevel3 = 'HUDKillCounterLevel3';
-const StringIDHUDKillCounterLevel4 = 'HUDKillCounterLevel4';
-const StringIDHUDKillCounterLevel5 = 'HUDKillCounterLevel5';
-const StringIDHUDKillCounterLevel6 = 'HUDKillCounterLevel6';
-const StringIDHUDKillCounterLevel7 = 'HUDKillCounterLevel7';
-const StringIDHUDKillCounterLevel8 = 'HUDKillCounterLevel8';
-const StringIDHUDKillCounterLevel9 = 'HUDKillCounterLevel9';
-const StringIDHUDKillCounterLevel10 = 'HUDKillCounterLevel10';
 
 export interface ReactProps {
   killStreakCounter: KillStreakCounterData;
@@ -44,6 +38,7 @@ export interface ReactProps {
 
 interface InjectedProps {
   stringTable: Dictionary<StringTableEntryDef>;
+  killStreaks: KillStreakDef[];
 }
 
 type Props = ReactProps & InjectedProps;
@@ -53,7 +48,7 @@ export interface State {
   shouldPlayNumberChangeAnimation: boolean;
   shouldPlayBigNumberAnimation: boolean;
   shouldPlayMessageAnimation: boolean;
-  killStreakMessage: string;
+  killStreak: KillStreakDef;
 }
 
 export class ACounter extends React.Component<Props, State> {
@@ -68,7 +63,7 @@ export class ACounter extends React.Component<Props, State> {
       shouldPlayNumberChangeAnimation: false,
       shouldPlayBigNumberAnimation: false,
       shouldPlayMessageAnimation: false,
-      killStreakMessage: ''
+      killStreak: null
     };
   }
 
@@ -101,7 +96,7 @@ export class ACounter extends React.Component<Props, State> {
           <div className={Fill} style={{ width: `${this.state.timerProgress}%` }} />
         </div>
         <div className={`${Message} ${messageAnimationClass}`} style={{ textShadow: messageTextShadow }}>
-          {this.state.killStreakMessage}
+          {this.state.killStreak?.text}
         </div>
       </div>
     );
@@ -148,50 +143,22 @@ export class ACounter extends React.Component<Props, State> {
     }
   };
 
+  private killStreakIndex(killCount: number): number {
+    for (let i = this.props.killStreaks.length - 1; i >= 0; --i) {
+      if (killCount >= this.props.killStreaks[i].killCount) {
+        return i;
+      }
+    }
+
+    return -1;
+  }
+
   private checkForMessage = (prevProps?: Props) => {
-    let message = '';
-    if ((!prevProps || prevProps.killStreakCounter.newCount < 10) && this.props.killStreakCounter.newCount >= 10) {
-      message = getStringTableValue(StringIDHUDKillCounterLevel1, this.props.stringTable);
-    }
+    const prevIndex = !prevProps ? -1 : this.killStreakIndex(prevProps.killStreakCounter.newCount);
+    const newIndex = this.killStreakIndex(this.props.killStreakCounter.newCount);
 
-    if ((!prevProps || prevProps.killStreakCounter.newCount < 50) && this.props.killStreakCounter.newCount >= 50) {
-      message = getStringTableValue(StringIDHUDKillCounterLevel2, this.props.stringTable);
-    }
-
-    if ((!prevProps || prevProps.killStreakCounter.newCount < 100) && this.props.killStreakCounter.newCount >= 100) {
-      message = getStringTableValue(StringIDHUDKillCounterLevel3, this.props.stringTable);
-    }
-
-    if ((!prevProps || prevProps.killStreakCounter.newCount < 150) && this.props.killStreakCounter.newCount >= 150) {
-      message = getStringTableValue(StringIDHUDKillCounterLevel4, this.props.stringTable);
-    }
-
-    if ((!prevProps || prevProps.killStreakCounter.newCount < 200) && this.props.killStreakCounter.newCount >= 200) {
-      message = getStringTableValue(StringIDHUDKillCounterLevel5, this.props.stringTable);
-    }
-
-    if ((!prevProps || prevProps.killStreakCounter.newCount < 250) && this.props.killStreakCounter.newCount >= 250) {
-      message = getStringTableValue(StringIDHUDKillCounterLevel6, this.props.stringTable);
-    }
-
-    if ((!prevProps || prevProps.killStreakCounter.newCount < 300) && this.props.killStreakCounter.newCount >= 300) {
-      message = getStringTableValue(StringIDHUDKillCounterLevel7, this.props.stringTable);
-    }
-
-    if ((!prevProps || prevProps.killStreakCounter.newCount < 400) && this.props.killStreakCounter.newCount >= 400) {
-      message = getStringTableValue(StringIDHUDKillCounterLevel8, this.props.stringTable);
-    }
-
-    if ((!prevProps || prevProps.killStreakCounter.newCount < 600) && this.props.killStreakCounter.newCount >= 600) {
-      message = getStringTableValue(StringIDHUDKillCounterLevel9, this.props.stringTable);
-    }
-
-    if ((!prevProps || prevProps.killStreakCounter.newCount < 1000) && this.props.killStreakCounter.newCount >= 1000) {
-      message = getStringTableValue(StringIDHUDKillCounterLevel10, this.props.stringTable);
-    }
-
-    if (message !== '') {
-      this.playMessageAnimation(message);
+    if (newIndex != prevIndex && newIndex != -1) {
+      this.playMessageAnimation(this.props.killStreaks[newIndex]);
     }
   };
 
@@ -213,17 +180,25 @@ export class ACounter extends React.Component<Props, State> {
     }, ANIMATION_DURATION * 1000);
   };
 
-  private playMessageAnimation = (message: string) => {
+  private playMessageAnimation = (killStreakDef: KillStreakDef) => {
     window.clearTimeout(this.playMessageHandle);
     if (this.state.shouldPlayMessageAnimation) {
-      this.setState({ shouldPlayMessageAnimation: false, killStreakMessage: '' });
-      window.setTimeout(() => this.setState({ shouldPlayMessageAnimation: true, killStreakMessage: message }), 5);
+      this.setState({ shouldPlayMessageAnimation: false, killStreak: null });
+      window.setTimeout(() => {
+        if (killStreakDef.audioEventID) {
+          clientAPI.playGameSound(killStreakDef.audioEventID);
+        }
+        this.setState({ shouldPlayMessageAnimation: true, killStreak: killStreakDef });
+      }, 5);
     } else {
-      this.setState({ shouldPlayMessageAnimation: true, killStreakMessage: message });
+      if (killStreakDef.audioEventID) {
+        clientAPI.playGameSound(killStreakDef.audioEventID);
+      }
+      this.setState({ shouldPlayMessageAnimation: true, killStreak: killStreakDef });
     }
 
     this.playMessageHandle = window.setTimeout(() => {
-      this.setState({ shouldPlayMessageAnimation: false, killStreakMessage: '' });
+      this.setState({ shouldPlayMessageAnimation: false, killStreak: null });
     }, MESSAGE_ANIMATION_DURATION * 1000);
   };
 
@@ -274,11 +249,15 @@ export class ACounter extends React.Component<Props, State> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { stringTable } = state.stringTable;
+  const { killStreaks } = state.game;
 
   return {
     ...ownProps,
-    stringTable
+    stringTable,
+    killStreaks
   };
 }
 
 export const Counter = connect(mapStateToProps)(ACounter);
+
+*/

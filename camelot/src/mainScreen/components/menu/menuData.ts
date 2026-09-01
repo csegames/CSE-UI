@@ -20,9 +20,11 @@ export interface MenuSectionData {
   id: string;
   title: string;
   content?: MenuContentData;
+  onOpen?: () => void;
 }
 
 export interface FooterButtonData {
   text: string;
   onClick: () => void;
+  isDisabled?: boolean;
 }

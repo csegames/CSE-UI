@@ -9,19 +9,14 @@ import {
   updateStoreHasPurchasables,
   updateStoreNewEquipment,
   updateStoreNewPurchases,
-  updateStorePerksByID,
-  updateStoreRMTCurrencies,
   updateStoreStaticData
 } from '../redux/storeSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { Dispatch } from 'redux';
 import { RootState } from '../redux/store';
 import { isPurchaseable } from '../helpers/storeHelpers';
-import { PerkDefGQL, PerkType } from '@csegames/library/dist/hordetest/graphql/schema';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import { InitTopic } from '../redux/initializationSlice';
-import { calculateSelectedRuneMods } from '../helpers/perkUtils';
-import { updateSelectedRuneMods } from '../redux/profileSlice';
+import { LoadingTopic } from '../redux/loadingSlice';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 export class StoreNetworkingService extends ExternalDataSource {
@@ -30,22 +25,16 @@ export class StoreNetworkingService extends ExternalDataSource {
       await this.query<StoreStaticDataQueryResult>(
         { query: storeStaticDataQuery },
         this.handleStaticDataQueryResult.bind(this),
-        InitTopic.Store
+        LoadingTopic.Store
       )
     ];
   }
 
   private handleStaticDataQueryResult(result: StoreStaticDataQueryResult): void {
     // Validate the result.
-    if (!result?.game?.purchases || !result?.game?.perks) {
+    if (!result?.game?.purchases || !result?.game?.rMTPurchases) {
       console.warn('Received invalid static data from Store fetch.');
       return;
-    }
-
-    // Make it easy to find perks by ID
-    const perksByID: Dictionary<PerkDefGQL> = {};
-    for (const perk of result.game.perks) {
-      perksByID[perk.id] = perk;
     }
 
     // Calculate which Purchases are "new" so we can badge the Store UI.
@@ -66,46 +55,10 @@ export class StoreNetworkingService extends ExternalDataSource {
       }
     }
 
-    // Build the list of currencies that can be purchased via RMT.
-    const rmtCurrencyIds: Dictionary<boolean> = {};
-    for (const rMTPurchase of result.game.rMTPurchases) {
-      for (const grant of rMTPurchase.perks) {
-        const perk = perksByID[grant.perkID];
-        if (perk && perk.perkType === PerkType.Currency) {
-          rmtCurrencyIds[grant.perkID] = true;
-        }
-      }
-    }
-
-    // Calculate if there are any new Rewards
-    let hasPurchasables: boolean = false;
-    for (const purchase of result.game.purchases) {
-      if (
-        isPurchaseable(
-          purchase,
-          perksByID,
-          this.reduxState.profile.ownedPerks,
-          this.reduxState.profile.progressionNodes,
-          this.reduxState.profile.quests,
-          this.reduxState.clock.serverTimeDeltaMS
-        )
-      ) {
-        hasPurchasables = true;
-        break;
-      }
-    }
-
-    this.dispatch(updateStoreRMTCurrencies(rmtCurrencyIds));
     this.dispatch(updateStoreNewPurchases(newPurchases));
-    this.dispatch(updateStorePerksByID(perksByID));
-    this.dispatch(updateStoreHasPurchasables(hasPurchasables));
 
     // We want to do this one last because it sets the 'isDataFetched' flag.
     this.dispatch(updateStoreStaticData(result));
-
-    // this function gets called from multiple sevices, but will only be made after both the
-    // perks and profile has loaded.
-    this.dispatch(updateSelectedRuneMods(calculateSelectedRuneMods(perksByID, this.reduxState.profile?.champions)));
   }
 
   protected onReduxUpdate(reduxState: RootState, dispatch: Dispatch): void {
@@ -123,14 +76,40 @@ export class StoreNetworkingService extends ExternalDataSource {
   private oneTimeBadgingLogic = () => {
     // We need the store data AND the ownedPerks data in order to do these calculations, so make sure they are
     // both fresh before we start.
-    if (this.reduxState.store.isDataFetched && this.reduxState.profile.isProfileFetched) {
+    if (
+      this.reduxState.store.isDataFetched &&
+      this.reduxState.profile.isProfileFetched &&
+      this.reduxState.game.gameDefsLoaded
+    ) {
       this.calculateNewPurchases();
       this.initializeUnseenEquipment();
+      this.calculateNewRewards();
 
       // This logic only needs to run once per session, so clear the function pointer to save processor cycles.
       this.oneTimeBadgingLogic = null;
     }
   };
+
+  private calculateNewRewards(): void {
+    // Calculate if there are any new Rewards
+    let hasPurchasables: boolean = false;
+    for (const purchase of this.reduxState.store.purchases) {
+      if (
+        isPurchaseable(
+          purchase,
+          this.reduxState.store.perksByID,
+          this.reduxState.profile.ownedPerks,
+          this.reduxState.profile.progressionNodes,
+          this.reduxState.profile.quests,
+          this.reduxState.clock.serverTimeDeltaMS
+        )
+      ) {
+        hasPurchasables = true;
+        break;
+      }
+    }
+    this.dispatch(updateStoreHasPurchasables(hasPurchasables));
+  }
 
   private calculateNewPurchases(): void {
     // If there are no seen purchases, then this is the first login.

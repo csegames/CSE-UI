@@ -25,24 +25,29 @@ export interface EntityFunctions<Model> {
   bindEntityContextListener(listener: EntityContextListener): ListenerHandle;
   bindEntityRemovedListener(listener: EntityRemovedListener): ListenerHandle;
   bindEntityUpdatedListener(listener: EntityUpdatedListener<Model>): ListenerHandle;
-  bindEntityPositionMapUpdatedListener(listener: EntityPositionMapUpdatedListener): ListenerHandle;
   bindEntityShowItemActionsListener(listener: EntityShowItemActionsListener): ListenerHandle;
+  removeStatus(statusID: number): void;
+  requestEnemyTarget(target: EntityID): void;
+  requestFriendlyTarget(target: EntityID): void;
+  respawn(atEntity?: EntityID, atLocationPriority?: number): void;
 }
 
 export interface EntityMocks<Model> {
   triggerEntityContext(entityID: EntityID, context: EntityContext): void;
   triggerEntityRemoved(entityID: EntityID): void;
   triggerEntityUpdated(newState: Model): void;
-  triggerEntityPositionMapUpdated(newState: EntityPositionMapModel): void;
 }
 
 const contextEventName = 'entity.context';
 const updatedEventName = 'entity.updated';
 const removedEventName = 'entity.removed';
-const positionMapUpdatedEventName = 'entity.positionMapUpdated';
+const removeStatusCallbackName = 'player.removeStatus';
+const respawnCallbackName = 'player.respawn';
+const requestEnemyTargetCallbackName = 'player.requestEnemyTarget';
+const requestFriendlyTargetCallbackName = 'player.requestFriendlyTarget';
 const showItemActionsEventName = 'showItemActions';
 
-class EntityFunctionsBase<Model> implements EntityFunctions<Model>, EntityMocks<Model> {
+abstract class EntityFunctionsBase<Model> implements EntityFunctions<Model>, EntityMocks<Model> {
   private readonly events = new EventEmitter();
 
   public bindEntityContextListener(listener: EntityContextListener): ListenerHandle {
@@ -54,12 +59,15 @@ class EntityFunctionsBase<Model> implements EntityFunctions<Model>, EntityMocks<
   public bindEntityUpdatedListener(listener: EntityUpdatedListener<Model>): ListenerHandle {
     return this.events.on(updatedEventName, listener);
   }
-  public bindEntityPositionMapUpdatedListener(listener: EntityPositionMapUpdatedListener): ListenerHandle {
-    return this.events.on(positionMapUpdatedEventName, listener);
-  }
   public bindEntityShowItemActionsListener(listener: EntityShowItemActionsListener): ListenerHandle {
     return this.events.on(showItemActionsEventName, listener);
   }
+
+  public abstract removeStatus(statusID: number): void;
+  public abstract requestEnemyTarget(target: EntityID): void;
+  public abstract requestFriendlyTarget(target: EntityID): void;
+  public abstract respawn(atEntity?: EntityID, atLocationPriority?: number): void;
+
   triggerEntityContext(entityID: EntityID, context: EntityContext): void {
     this.events.trigger(updatedEventName, entityID, context);
   }
@@ -68,9 +76,6 @@ class EntityFunctionsBase<Model> implements EntityFunctions<Model>, EntityMocks<
   }
   triggerEntityUpdated(newState: Model): void {
     this.events.trigger(contextEventName, newState);
-  }
-  triggerEntityPositionMapUpdated(newState: EntityPositionMapModel): void {
-    this.events.trigger(positionMapUpdatedEventName, newState);
   }
   triggerEntityShowItemActions(message: ItemActionsMessage, entityState: BaseEntityStateModel): void {
     this.events.trigger(showItemActionsEventName, message, entityState);
@@ -111,17 +116,6 @@ class CoherentEntityFunctions<Model> extends EntityFunctionsBase<Model> {
     };
   }
 
-  public override bindEntityPositionMapUpdatedListener(listener: EntityPositionMapUpdatedListener): ListenerHandle {
-    const mockHandle = super.bindEntityPositionMapUpdatedListener(listener);
-    const engineHandle = engine.on(positionMapUpdatedEventName, listener);
-    return {
-      close() {
-        mockHandle.close();
-        engineHandle.clear();
-      }
-    };
-  }
-
   public override bindEntityShowItemActionsListener(listener: EntityShowItemActionsListener): ListenerHandle {
     const mockHandle = super.bindEntityShowItemActionsListener(listener);
     const engineHandle = engine.on(showItemActionsEventName, listener);
@@ -132,9 +126,35 @@ class CoherentEntityFunctions<Model> extends EntityFunctionsBase<Model> {
       }
     };
   }
+
+  public override removeStatus(statusID: number): void {
+    engine.trigger(removeStatusCallbackName, statusID ?? 0);
+  }
+  public override requestEnemyTarget(target: EntityID): void {
+    engine.trigger(requestEnemyTargetCallbackName, target);
+  }
+  public override requestFriendlyTarget(target: EntityID): void {
+    engine.trigger(requestFriendlyTargetCallbackName, target);
+  }
+  public override respawn(atEntity?: EntityID, atLocationPriority?: number): void {
+    engine.trigger(respawnCallbackName, atEntity ?? '', atLocationPriority ?? 0);
+  }
 }
 
-class BrowserEntityFunctions<Model> extends EntityFunctionsBase<Model> {}
+class BrowserEntityFunctions<Model> extends EntityFunctionsBase<Model> {
+  public override removeStatus(statusID: number): void {
+    console.log('remove status requested');
+  }
+  public override requestEnemyTarget(target: EntityID): void {
+    this.triggerEntityContext(target, 'target.enemy');
+  }
+  public override requestFriendlyTarget(target: EntityID): void {
+    this.triggerEntityContext(target, 'target.friendly');
+  }
+  public override respawn(at?: EntityID, atLocationPriority?: number): void {
+    console.log('respawn requested');
+  }
+}
 
 export function create<Model>(): EntityFunctions<Model> & EntityMocks<Model> {
   return engine.isAttached ? new CoherentEntityFunctions<Model>() : new BrowserEntityFunctions<Model>();

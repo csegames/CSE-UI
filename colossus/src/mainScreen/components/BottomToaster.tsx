@@ -10,9 +10,9 @@ import { Button } from './shared/Button';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { connect } from 'react-redux';
 import { RootState } from '../redux/store';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { StringIDGeneralHide, getStringTableValue } from '../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
 
 const kToasterAnimationDurationMS = 500;
 const kToasterDurationMS = 2000;

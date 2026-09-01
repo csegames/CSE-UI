@@ -10,7 +10,7 @@ import { Dispatch } from 'redux';
 import { hideOverlay, Overlay } from '../../redux/navigationSlice';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue } from '../../helpers/stringTableHelpers';
 

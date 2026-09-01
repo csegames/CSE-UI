@@ -11,16 +11,7 @@ import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
 import { StoreRoute, updateStoreNewPurchases } from '../../../../redux/storeSlice';
 import { Button } from '../../../shared/Button';
-import {
-  PerkDefGQL,
-  PerkType,
-  PurchaseDefGQL,
-  QuestGQL,
-  RMTPurchaseDefGQL,
-  StoreTab,
-  StoreTabConfig,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PurchaseDefGQL, QuestGQL, RMTPurchaseDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { StoreItemCell } from './StoreItemCell';
 import {
   OwnershipStatus,
@@ -42,6 +33,9 @@ import { StoreFeaturingLayout, StoreFeaturingLayoutItemCount, StoreFeaturingPage
 import { StoreFilters } from './StoreFilters';
 import { ConfirmPurchaseRewardPreviews } from '../../../rightPanel/ConfirmPurchaseRewardPreviews';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { StoreTab, StoreTabConfig } from '../../../../dataSources/manifest/gameSettingsManifest';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { PerkDef, PerkType } from '../../../../dataSources/manifest/perkManifest';
 
 const Container = 'StartScreen-Store-Container';
 const ItemsContainer = 'StartScreen-Store-ItemsContainer';
@@ -69,7 +63,7 @@ interface InjectedProps {
   purchases: PurchaseDefGQL[];
   rmtPurchases: RMTPurchaseDefGQL[];
   ownedPerks: Dictionary<number>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   championIDFilters: string[];
   hideOwnedPurchases: boolean;
   newPurchases: Dictionary<boolean>;
@@ -185,12 +179,12 @@ class AStore extends React.Component<Props, State> {
     clientAPI.setSeenPurchases(seenPurchases);
   }
 
-  private perkMatchesChampionFilter(perk: PerkDefGQL): boolean {
-    if (!perk.champion || this.props.championIDFilters.length === 0) {
+  private perkMatchesChampionFilter(perk: PerkDef): boolean {
+    if (!perk.championID || this.props.championIDFilters.length === 0) {
       return true;
     }
 
-    return this.props.championIDFilters.includes(perk.champion.id);
+    return this.props.championIDFilters.includes(perk.championID);
   }
 
   private getDisplayableItemsOfType(type: PerkType): PurchaseDefGQL[] {

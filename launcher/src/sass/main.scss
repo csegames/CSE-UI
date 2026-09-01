@@ -1,12 +1,12 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+@import './color-code-styles.scss';
+
 @import 'constants';
-@import 'mixins';
-@import 'shapes';
 
 html,
 body,
@@ -14,7 +14,6 @@ body,
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: url(../images/bg.png) repeat-x top center fixed;
   background-color: $color2;
   color: $color4;
 }
@@ -58,6 +57,36 @@ h4 {
   flex: 1 1 auto;
 }
 
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.textWithShadowOutline {
+  text-shadow: 0 0 0.4vmin black, 0 0 0.4vmin black, 0 0 0.4vmin black, 0 0 0.4vmin black, 0 0 0.4vmin black,
+    0.4vmin 0.4vmin 0.4vmin rgba(0, 0, 0, 0);
+}
+
+.absoluteCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.absoluteFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 #PatcherApp {
   display: flex;
   flex-flow: column;
@@ -76,30 +105,6 @@ input {
 }
 .allow-select-text {
   -webkit-user-select: text;
-}
-
-@font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Material Icons'), local('MaterialIcons-Regular'),
-    url(../font/material-design-icons/icons.woff2) format('woff2');
-}
-
-.material-icons {
-  font-family: 'Material Icons';
-  font-weight: normal;
-  font-style: normal;
-  font-size: 24px;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -webkit-font-feature-settings: 'liga';
-  -webkit-font-smoothing: antialiased;
 }
 
 .no-margin-bottom {
@@ -133,7 +138,6 @@ input {
   overflow-y: auto;
   opacity: 1;
   position: absolute;
-  z-index: 999;
   width: 100%;
   -webkit-user-select: none !important;
   cursor: pointer !important;
@@ -146,23 +150,1693 @@ input {
   width: 100%;
 }
 
-img {
-  zoom: 65%;
-}
-
 ::selection {
   background: rgb(181, 181, 181);
 }
 
 @import 'modaldialog';
-@import 'header';
 @import 'sidebar';
 @import 'content';
 @import 'footer';
 @import 'patchbutton';
 @import 'login';
 @import 'alerts';
-@import 'chat';
 
-// @import '../components/Chat/index.scss';
-// @import '@csegames/camelot-unchained/lib/components/Chat/index.scss';
+.BasicBorder-Root {
+  box-sizing: border-box;
+  border: 2px solid #aaa9a9;
+  background: url(./images/widgets/background-leather.png);
+  background-position: cover;
+}
+
+.BasicBorder-CornerTL {
+  position: absolute;
+  top: -18px;
+  left: -18px;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  background: url(./images/widgets/corner-tl.png);
+  background-size: contain;
+}
+
+.BasicBorder-CornerTR {
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  background: url(./images/widgets/corner-tr.png);
+  background-size: contain;
+}
+
+.BasicBorder-CornerBL {
+  position: absolute;
+  bottom: -18px;
+  left: -18px;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  background: url(./images/widgets/corner-bl.png);
+  background-size: contain;
+}
+
+.BasicBorder-CornerBR {
+  position: absolute;
+  bottom: -18px;
+  right: -18px;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  background: url(./images/widgets/corner-br.png);
+  background-size: contain;
+}
+
+.ModalPane-Root {
+  @extend .absoluteFill;
+  background-color: transparent;
+  opacity: 1;
+  pointer-events: none;
+
+  &.show {
+    background-color: #00000001;
+  }
+}
+
+.ModalPane-ModalRoot {
+  @extend .absoluteFill;
+}
+
+.ModalPane-Veil {
+  @extend .absoluteFill;
+  background-color: rgba(0, 0, 0, 0.8);
+  pointer-events: auto;
+}
+
+.ModalPane-Wrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.ModalPane-DefaultModalContainer {
+  min-width: 34vmin;
+}
+
+.ModalPane-ContentRoot {
+  @extend .column;
+  position: relative;
+}
+
+.ModalPane-BodyRoot {
+  max-height: 65vh;
+  margin: 30px 30px 10px 30px;
+  overflow-y: auto;
+}
+
+.ModalPane-TitleText {
+  font-size: 2.2rem;
+  color: white;
+  text-align: center;
+}
+
+.ModalPane-MessageText {
+  position: relative;
+  font-family: Caudex;
+  font-size: 1.8rem;
+  color: white;
+  text-align: center;
+  padding: 3.5vmin 3vmin 1vmin 3vmin;
+}
+
+.ModalPane-ButtonsSection {
+  @extend .row;
+  position: relative;
+  margin: 1vmin 2vmin 2vmin;
+  align-items: center;
+  justify-content: center;
+}
+
+.ModalPane-Button {
+  position: relative;
+  margin: 0 0.5vmin;
+}
+
+.TextArea-Root {
+  display: inline-block;
+  position: relative;
+}
+
+.TextArea-ClickDiv {
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: auto;
+}
+
+.TextArea-TextAreaElement {
+  &:focus::placeholder {
+    color: transparent;
+  }
+}
+
+.Spinner-Root {
+  border-radius: 50%;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 0.25rem solid rgba(255, 255, 255, 0.2);
+  border-top-color: #ececec;
+  transition: all 0.3s;
+  animation-name: s_spin;
+  -webkkit-animation-name: s_spin;
+  animation-duration: 1s;
+  -webkit-animation-duration: 1s;
+  animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-backface-visibility: hidden;
+
+  &:hover {
+    border-top-color: #3fd0b0;
+  }
+
+  @keyframes s_spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.Tooltip-Root {
+  display: inline-block;
+  position: relative;
+}
+
+.Tooltip-TooltipView {
+  position: fixed;
+  background-color: #444;
+  border: 1px solid #4a4a4a;
+  color: #ececec;
+  padding: 2px 5px;
+  max-width: 200px;
+  // This is tolerable for now because Tooltips are only used in CharacterCreation, which we will
+  // shortly move into the game UIs, where we have a proper Tooltip system to replace it with.
+  z-index: 10;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.GenericButton-Button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 172px;
+  height: 53.667px;
+  margin: 5px;
+  text-align: center;
+  font-family: CaudexBold;
+  font-weight: 800;
+  color: black;
+  cursor: pointer;
+  font-size: 18px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all ease 0.2s;
+
+  background: url(./images/widgets/patcher-main-button.png);
+  background-size: contain;
+
+  &.big {
+    width: 258px;
+    height: 80.5px;
+    font-size: 20px;
+  }
+
+  &.disabled {
+    filter: grayscale(90%) brightness(50%);
+  }
+
+  &.error {
+    filter: grayscale(0%) brightness(50%) hue-rotate(-45deg);
+  }
+
+  &:hover {
+    filter: brightness(120%);
+
+    &.disabled {
+      filter: grayscale(90%) brightness(60%);
+    }
+
+    &.error {
+      filter: grayscale(0%) brightness(60%) hue-rotate(-45deg);
+    }
+  }
+
+  &:hover:before {
+    content: '';
+    pointer-events: none;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 5px;
+    opacity: 0;
+    height: 85%;
+    width: 65px;
+    background: linear-gradient(transparent, rgba(255, 255, 255, 0.2));
+    clip-path: polygon(80% 0%, 100% 0%, 20% 100%, 0% 100%);
+    -webkit-clip-path: polygon(80% 0%, 100% 0%, 20% 100%, 0% 100%);
+    -webkit-animation: cpbpbs_shine 0.5s ease forwards;
+    animation: cpbpbs_shine 0.5s ease forwards;
+    animation-delay: 0.3s;
+    -webkit-animation-delay: 0.3s;
+  }
+
+  &:hover:after {
+    content: '';
+    pointer-events: none;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 5px;
+    opacity: 0;
+    height: 85%;
+    width: 85px;
+    background: linear-gradient(transparent, rgba(255, 255, 255, 0.2));
+    clip-path: polygon(80% 0%, 100% 0%, 20% 100%, 0% 100%);
+    -webkit-clip-path: polygon(80% 0%, 100% 0%, 20% 100%, 0% 100%);
+    -webkit-animation: cpbpbs_shine 0.5s ease forwards;
+    animation: cpbpbs_shine 0.5s ease forwards;
+  }
+
+  @keyframes cpbpbs_shine {
+    from {
+      left: 20px;
+      opacity: 1;
+    }
+    to {
+      left: 95%;
+      opacity: 0;
+    }
+  }
+}
+
+.PatcherApp-Root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  align-items: stretch;
+  align-content: stretch;
+}
+
+.PatcherApp-Content {
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.Login-VolumeControls-Root {
+  position: fixed;
+  bottom: 50px;
+  left: 50px;
+  height: 20px;
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.4);
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+.Login-VolumeControls-ImageButton {
+  margin: 2px 5px;
+  cursor: pointer;
+}
+
+.Header-Root {
+  margin: 50px 50px 10px 40px;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+.Header-Logo {
+  position: relative;
+  margin-left: 10px;
+  height: 100%;
+  cursor: pointer !important;
+
+  img {
+    height: 100%;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8));
+  }
+}
+
+.Header-Menu {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  color: #ececec;
+  font-family: 'Lato', sans-serif;
+}
+
+.Header-Menu-Item {
+  padding: 10px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    color: #d7bb4d;
+  }
+
+  &.active {
+    color: #d7bb4d;
+  }
+}
+
+.PatcherModal-Root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0px 0px 16px #111;
+  flex: 0 0 auto;
+  width: 500px;
+  background: radial-gradient($ModalHighlightStrong, $ModalHighlightWeak 60%, transparent) 0% -140px no-repeat,
+    url(./images/modal/modal-bg.jpg);
+  background-size: cover;
+  border-top: 1px solid $ModalAccent;
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    border-width: 1px;
+    border-style: solid;
+    border-image: linear-gradient(to bottom, $ModalAccent, transparent) 1 50%;
+  }
+
+  input {
+    width: calc(100% - 40px);
+    margin: 5px;
+    padding: 15px 10px;
+    border: 1px #2c2c2c solid;
+    color: #8f8f8f;
+    mask-image: url(./images/controller/button-mask.png);
+    mask-repeat: no-repeat;
+    mask-size: cover;
+    background: #2a2a2a;
+    font-family: 'Titillium Web';
+    font-size: 1em;
+    transition: border 0.2s;
+    border: 1px solid #111 !important;
+
+    &:focus {
+      border: 1px solid $ModalAccent !important;
+      box-shadow: 0 1px 2px $ModalAccent !important;
+      outline: none;
+    }
+
+    &::placeholder {
+      color: #6f6f6f;
+      opacity: 1;
+    }
+
+    &:-ms-input-placeholder {
+      color: #6f6f6f;
+    }
+
+    &::-ms-input-placeholder {
+      color: #6f6f6f;
+    }
+  }
+}
+
+.LoginView-Root {
+  position: fixed;
+  right: 50px;
+  bottom: 45px;
+  display: flex;
+  flex-direction: row;
+  height: 92px; // TODO: Probably won't need to keep this.
+}
+
+.LoginView-Column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  filter: drop-shadow(0 0 3px black);
+}
+
+.LoginView-Row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.LoginView-InputBorder {
+  position: relative;
+  margin: 5px;
+}
+
+.LoginView-Input {
+  width: 200px;
+  padding: 15px 10px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: #8f8f8f;
+  background: url(./images/widgets/background-leather.png);
+  background-size: 50%;
+  background-position: cover;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.9em;
+
+  &::-webkit-input-placeholder {
+    color: rgba(200, 200, 200, 0.2);
+  }
+}
+
+.LoginView-RememberMeContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: left;
+  margin: -4px 0 0 10px;
+  cursor: pointer;
+}
+
+.LoginView-RememberMeLabel {
+  margin-left: 10px;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.9em;
+  color: white;
+  user-select: none;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.LoginView-VersionNumber {
+  margin-right: 5px;
+  flex-grow: 1;
+  text-align: right;
+  font-size: 0.9em;
+  color: white;
+  font-family: 'Lato', sans-serif;
+  user-select: none;
+}
+
+.LoginView-HiddenCheckbox {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.LoginView-Checkbox {
+  width: 16px;
+  height: 16px;
+  background-color: black;
+  border: 2px solid #aaa9a9;
+}
+
+.LoginView-CheckMark {
+  margin: 2px 0 0 2px;
+  width: 12px;
+  height: 12px;
+  background-color: #aaa9a9;
+}
+
+.LoginView-ActionButton {
+  margin-bottom: 2px;
+}
+
+.Blog-Header-Title {
+  font-family: Caudex;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.Blog-Header-DescriptionText {
+  font-family: Titillium Web;
+  font-size: 10px;
+}
+
+.Blog-Header-TextureWrapper {
+  position: relative;
+  cursor: pointer;
+  filter: brightness(100%);
+  transition: all 0.3s;
+  transition: filter 0.2s ease;
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: url(./images/news/news-texture.png) repeat-y;
+  }
+
+  &:hover {
+    filter: brightness(120%);
+    img {
+      transform: scale(1.1);
+    }
+    .read-more {
+      bottom: 0px;
+    }
+    .children-container {
+      margin-top: -30px;
+    }
+  }
+}
+
+.Blog-Header-Container {
+  position: relative;
+  pointer-events: all;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 30px;
+  height: 150px;
+  border-left-width: 4px;
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 0px;
+  border-style: solid;
+  background-size: cover;
+  cursor: pointer;
+}
+
+.Blog-Header-Image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.2s;
+}
+
+.Blog-Header-Overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(to right, rgb(16, 16, 16), rgba(16, 16, 16, 0));
+  box-shadow: rgba(16, 16, 16, 0.5) 50px 505px 100px 15px inset;
+}
+
+.Blog-Header-ChildrenContainer {
+  position: relative;
+  margin-top: 0px;
+  transition: margin-top 0.2s;
+}
+
+.Blog-Header-ReadMore {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 0;
+  right: 0;
+  bottom: -31px;
+  height: 30px;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  transition: bottom 0.2s;
+}
+
+.Blog-Header-Arrow {
+  margin-left: 5px;
+  margin-bottom: -4px;
+}
+
+.Blog-FeaturedHeader-Divider {
+  position: relative;
+  background-color: $NewsColor;
+  width: 3px;
+  margin: 0 20px;
+  height: 150px;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background: url(./images/news/news-texture.png) repeat-y;
+  }
+}
+
+.Blog-FeaturedHeader-FeaturedContainer {
+  position: relative;
+  width: calc(100% - 10px);
+  height: 500px;
+  right: -5px;
+  background-color: #101010;
+  border: 1px solid #2e2e2e;
+  display: flex;
+  padding: 20px 0;
+  margin-bottom: 10px;
+  background: linear-gradient(to bottom, transparent, rgba(16, 16, 16, 0.5) 10%, rgba(16, 16, 16, 1) 60%),
+    linear-gradient(to right, transparent, rgba(16, 16, 16, 0.5) 10%, rgba(16, 16, 16, 1) 60%), #101010;
+}
+
+.Blog-FeaturedHeader-TitleContainer {
+  text-align: right;
+  flex: 1;
+  margin-left: 80px;
+}
+
+.Blog-FeaturedHeader-ContentContainer {
+  flex: 3;
+  margin-right: 6px;
+  padding-right: 75px;
+  overflow: hidden;
+  display: flow-root;
+}
+
+.Blog-FeaturedHeader-ContentImage {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+}
+
+.Blog-FeaturedHeader-Title {
+  font-family: Caudex;
+  font-size: 24px;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.Blog-FeaturedHeader-DescriptionText {
+  font-family: Titillium Web;
+  font-size: 14px;
+}
+
+.Blog-FeaturedHeader-ContentText {
+  font-family: Titillium Web;
+  font-size: 16px;
+  max-height: 130px;
+}
+
+.Blog-FeaturedHeader-CloseButton {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  pointer-events: all;
+  font-size: 14px;
+  color: #c3c3c3;
+  cursor: pointer;
+  transition: color 0.2s;
+  &:hover {
+    color: white;
+  }
+}
+
+.Blog-FeaturedHeader-ReadMoreButton {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: url(./images/news/read-more-bg.png);
+  width: 201px;
+  height: 43px;
+  font-family: Caudex;
+  font-size: 14px;
+  color: #939393;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  &:hover {
+    filter: brightness(120%);
+  }
+}
+
+.Blog-FeaturedHeader-ReadMoreText {
+  padding-right: 30px;
+}
+
+.Blog-FullWrapper {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.Blog-Root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background: url(./images/news/bg.png) no-repeat, black;
+  background-size: contain;
+}
+
+.Blog-Container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  a {
+    color: #3fd0b0;
+  }
+}
+
+.Blog-Content {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+  padding: 0 20px;
+  color: #ececec;
+  width: 75%;
+  margin: auto;
+  list-style-type: inherit;
+  margin-bottom: 15px;
+}
+
+.Blog-ContentItem {
+  flex: 1;
+  list-style-type: inherit;
+  display: inline-block;
+  margin-bottom: 8px;
+  overflow: hidden;
+  display: flow-root;
+  text-align: left;
+  margin-right: 5px;
+  margin-left: 5px;
+  margin-bottom: 10px;
+  flex-basis: 30%;
+}
+
+.Blog-LoadMore {
+  position: relative;
+  margin-bottom: 40px;
+  text-align: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: non;
+  font-size: 12px;
+  font-family: Caudex;
+  width: fit-content;
+  align-self: center;
+  padding: 0 5px;
+
+  &:hover {
+    filter: brightness(120%);
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 0;
+    width: 1px;
+    height: 12px;
+    background-color: #847b72;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 0;
+    width: 1px;
+    height: 12px;
+    background-color: #847b72;
+  }
+}
+
+.Blog-LoadMoreText {
+  @extend .Blog-LoadMore;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #847b72;
+}
+
+.Blog-LoadMoreLoading {
+  @extend .Blog-LoadMore;
+  font-weight: 700;
+  color: #847b72;
+}
+
+.Blog-Post-Divider {
+  position: relative;
+  background-color: $NewsColor;
+  width: 3px;
+  margin: 0 20px;
+  height: 150px;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background: url(./images/news/news-texture.png) repeat-y;
+  }
+}
+
+.Blog-Post-FullContainer {
+  position: relative;
+  top: 30px;
+  height: 80%;
+  width: 80%;
+  margin: auto;
+  background-color: #101010;
+  border: 1px solid #2e2e2e;
+  display: flex;
+  padding: 20px 0;
+  color: white;
+  pointer-events: all;
+  background: linear-gradient(to bottom, transparent, rgba(16, 16, 16, 0.5) 10%, rgba(16, 16, 16, 1) 60%),
+    linear-gradient(to right, transparent, rgba(16, 16, 16, 0.5) 10%, rgba(16, 16, 16, 1) 60%);
+}
+
+.Blog-Post-TitleContainer {
+  text-align: right;
+  flex: 1;
+  margin-left: 80px;
+}
+
+.Blog-Post-ContentContainer {
+  flex: 3;
+  margin-right: 6px;
+  padding-right: 75px;
+  overflow-y: auto;
+}
+
+.Blog-Post-Title {
+  font-family: Caudex;
+  font-size: 24px;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.Blog-Post-DescriptionText {
+  font-family: Titillium Web;
+  font-size: 14px;
+}
+
+.Blog-Post-ContentText {
+  font-family: Titillium Web;
+  font-size: 16px;
+  max-height: 130px;
+}
+
+.Blog-Post-CloseButton {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  pointer-events: all;
+  font-size: 14px;
+  color: #c3c3c3;
+  cursor: pointer;
+  transition: color 0.2s;
+  &:hover {
+    color: white;
+  }
+}
+
+.Controller-PatchButton-Root {
+  font-weight: 200;
+}
+
+.Controller-PatchButton-UpdateInfoContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.Controller-PatchButton-LastUpdatedText {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.9em;
+  color: #8f8f8f;
+  margin-left: 5px;
+  margin-bottom: 2px;
+}
+
+.ToolSelector-InfoContainer {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0px;
+  left: calc(50% - 90px);
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.ToolSelector-ToolButton {
+  cursor: pointer;
+  pointer-events: all;
+  color: white;
+  background-color: #131313;
+  padding: 2px 35px;
+  text-align: center;
+
+  &:hover {
+    filter: brightness(120%);
+  }
+
+  &:active {
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
+  }
+
+  &.activeTool {
+    filter: brightness(150%);
+  }
+}
+
+.Controller-PatchButton-UpdateMessage-Root {
+  @extend .column;
+  align-items: flex-start;
+  margin-top: 10px;
+  margin-left: 5px;
+}
+
+.Controller-PatchButton-UpdateMessage-UpdateLabel {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.75em;
+  color: white;
+  text-align: left;
+}
+
+.Controller-ProgressBar-ProgressBarView-BarContainer {
+  position: relative;
+  margin: 0px 5px 5px 5px;
+  height: 15px;
+  bottom: 0px;
+  left: 0px;
+  overflow: hidden;
+}
+
+.Controller-ProgressBar-ProgressBarView-Decoration {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  background: url(./images/widgets/loading-bar-frame.png) no-repeat;
+  background-position: right center;
+  background-size: contain;
+
+  &.left {
+    transform: scaleX(-1);
+  }
+}
+
+.Controller-ProgressBar-ProgressBarView-Bar {
+  position: relative;
+  display: flex;
+  width: 100%;
+  transition: all linear 0.5s;
+
+  &:before {
+    content: '';
+    background: url(./images/controller/loading-bar-repeat-h.png) repeat-x center;
+    flex-grow: 1;
+    height: 10px;
+    margin-top: 2px;
+    margin-right: -12px;
+  }
+
+  &:after {
+    content: '';
+    background: url(./images/controller/loading-bar-end.png) no-repeat center right;
+    width: 200px;
+    height: 10px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+}
+
+.Controller-ProgressBar-ProgressBarView-ButtonShine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 5px;
+  pointer-events: none;
+  opacity: 0;
+  height: 10px;
+  width: 85px;
+  background: linear-gradient(transparent, rgba(255, 255, 255, 1));
+  clip-path: polygon(80% 0%, 100% 0%, 20% 100%, 0% 100%);
+  -webkit-clip-path: polygon(80% 0%, 100% 0%, 20% 100%, 0% 100%);
+  -webkit-animation: shine 3s ease forwards;
+  animation: shine 3s ease forwards;
+
+  @keyframes shine {
+    from {
+      left: 95%;
+      opacity: 1;
+    }
+    to {
+      left: 20px;
+      opacity: 0;
+    }
+  }
+}
+
+.Controller-Login-LoginPrivacyModal-Container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.Controller-Login-LoginPrivacyModal-Modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+.Controller-Login-LoginPrivacyModal-ModalHeader {
+  position: relative;
+  font-family: Caudex;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 24px;
+  color: #ffd9d4;
+  margin: 0 15px 15px 15px;
+}
+
+.Controller-Login-LoginPrivacyModal-ModalText {
+  position: relative;
+  font-family: Titillium;
+  color: #ffd9d4;
+  font-size: 16px;
+  text-align: left;
+  margin: 0 15px 10px 15px;
+}
+
+.Controller-Login-LoginPrivacyModal-Section {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.Controller-Login-LoginLink {
+  font-family: 'Lato', sans-serif;
+  color: white;
+  transition: all 0.3s;
+  display: block;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    color: #dbc15e;
+  }
+}
+
+.Controller-Login-LoginButton-WaveText {
+  i {
+    font-style: normal;
+    animation: cllbwt_waveTextAnimation 1s infinite ease-in alternate;
+    -webkit-animation: cllbwt_waveTextAnimation 1s infinite ease-in alternate;
+  }
+
+  @for $i from 0 through 11 {
+    i:nth-child(#{$i}) {
+      animation-delay: 0.1s * $i;
+      -webkit-animation-delay: 0.1s * $i;
+    }
+  }
+
+  @keyframes cllbwt_waveTextAnimation {
+    0% {
+      opacity: 0.3;
+      color: #ececec;
+    }
+    80% {
+      opacity: 1;
+      color: #d7bb4d;
+    }
+    100% {
+      opacity: 1;
+      color: #d7bb4d;
+      font-size: 1.1em;
+    }
+  }
+}
+
+.Controller-Login-LoginButton-FailedButton {
+  background-color: rgba(112, 21, 30, 0.4);
+}
+
+.Controller-Login-LoginButton-ButtonGlow {
+  position: absolute;
+  right: 0;
+  left: 10%;
+  bottom: -60%;
+  width: 80%;
+  height: 60%;
+  border-radius: 60%;
+  box-shadow: 0 0 60px 20px rgba(184, 153, 105, 0.3);
+  -webkit-animation: cllbbg_verifyingAnim 1s ease infinite;
+  animation: cllbbg_verifyingAnim 1s ease infinite;
+
+  @keyframes cllbbg_verifyingAnim {
+    0% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.8;
+    }
+    100% {
+      opacity: 0.3;
+    }
+  }
+}
+
+.Controller-Login-LoginButton-HorizontalBorderShine {
+  &:before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -30px;
+    height: 3px;
+    width: 30px;
+    background-color: #f6efdd;
+    -webkit-animation: cllbhbs_horizontalShineAnim 1s infinite;
+    animation: cllbhbs_horizontalShineAnim 1s infinite;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: -30px;
+    height: 3px;
+    width: 30px;
+    background-color: #dbbd7d;
+    -webkit-animation: cllbhbs_horizontalShineAnim 1s infinite;
+    animation: cllbhbs_horizontalShineAnim 1s infinite;
+  }
+
+  @keyframes cllbhbs_horizontalShineAnim {
+    0% {
+      left: 0;
+    }
+    80% {
+      left: 100%;
+    }
+  }
+}
+
+.Controller-Login-LoginButton-VerticalBorderShine {
+  &:before {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: 0;
+    height: 15px;
+    width: 1px;
+    background-color: #f6efdd;
+    -webkit-animation: cllbvbs_verticalShineAnim 1s infinite;
+    animation: cllbvbs_verticalShineAnim 1s infinite;
+  }
+
+  @keyframes cllbvbs_verticalShineAnim {
+    0% {
+      top: 0;
+      opacity: 0.5;
+    }
+    75% {
+      top: 0;
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+      top: 100%;
+    }
+  }
+}
+
+.CollapsingList-Root {
+  height: 100%;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: all;
+  color: white;
+}
+
+.CollapsingList-Title {
+  cursor: pointer;
+}
+
+.CollapsingList-CollapseButton {
+  display: inline-block;
+  color: white;
+  width: 15px;
+}
+
+.CollapsingList-ListItem {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.CollapsingList-Body {
+  transition: 0.5s ease;
+  padding: 0 0 0 15px;
+
+  &.collapsed {
+    display: none;
+  }
+}
+
+.ToolsHero-Root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  transition: opacity 2s ease;
+}
+
+.ToolsHero-Content {
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+}
+
+.ToolsHero-Logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.GridStats-Root {
+  display: flex;
+}
+
+.GridStats-StatListSection {
+  flex: 1;
+}
+
+.ProductControls-Root {
+  position: fixed;
+  right: 50px;
+  bottom: 45px;
+  display: flex;
+  flex-direction: column;
+  filter: drop-shadow(0 0 3px black);
+}
+
+.ProductControls-Separator {
+  margin: 5px 0px;
+  width: 100%;
+  height: 2px;
+  background: url(./images/widgets/arthurian-bottom-taper-bar.png) no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.ProductControls-AccordionArrow {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  background: url(./images/widgets/factionless-arrow.png) no-repeat;
+  background-position: center;
+  background-size: contain;
+  transform: rotate(90deg);
+  transition: transform 0.3s ease;
+
+  &.open {
+    transform: rotate(0deg);
+  }
+}
+
+.ServerSelector-ExpandIcon {
+  font-family: 'CaudexBold';
+  font-weight: bold;
+  font-size: 2em;
+  color: #8f8f8f;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+  user-select: none;
+
+  &.open {
+    transform: rotate(45deg);
+  }
+}
+
+.ProductSelector-Root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ProductSelector-AccessLevelLabel {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.9em;
+  color: white;
+  text-align: left;
+}
+
+.ProductSelector-AccordionSelectionRow {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  &.canSelect {
+    cursor: pointer;
+  }
+}
+
+.ProductSelector-AccordionSelectionLabel {
+  font-family: 'Lato', sans-serif;
+  font-size: 1.1em;
+  color: white;
+  text-align: left;
+}
+
+.ProductSelector-AccordionCollapser {
+  width: 100%;
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+
+.ProductSelector-AccordionContents {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #00000040;
+}
+
+.ProductSelector-AccordionRow {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 3px 10px;
+  font-family: 'Lato', sans-serif;
+  font-size: 1em;
+  color: #ddd;
+  cursor: pointer;
+
+  &.selected {
+    color: #d7bb4d;
+  }
+
+  &:hover:not(.selected) {
+    color: #ddd;
+    box-shadow: inset 0 0 0 1px #ddd;
+  }
+}
+
+.ServerSelector-Root {
+  position: relative;
+  width: 100%;
+}
+
+.ServerSelector-ButtonRow {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  height: 30px;
+}
+
+.ServerSelector-ButtonLabel {
+  font-family: 'Lato', sans-serif;
+  font-size: 1.1em;
+  color: white;
+  text-align: left;
+}
+
+.ServerSelector-ServerList-Root {
+  position: absolute;
+  right: calc(100% + 50px);
+  bottom: 0;
+  width: 550px;
+  height: 60vh;
+  box-sizing: border-box;
+  padding: 25px;
+  background-color: #000000aa;
+  display: flex;
+  flex-direction: column;
+}
+
+.ServerSelector-ServerList-LegendRow {
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.ServerSelector-ServerList-ServerRow {
+  margin: 10px 0px;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  align-items: center;
+  cursor: pointer;
+  padding: 6px;
+
+  &:hover {
+    box-shadow: inset 0 0 0 1px #ddd;
+  }
+}
+
+.ServerSelector-ServerList-StatusColumn {
+  width: 25px;
+}
+
+.ServerSelector-ServerList-NameInfoColumn {
+  margin-left: 5px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ServerSelector-ServerList-PopulationColumn {
+  margin-left: 5px;
+  width: 90px;
+}
+
+.ServerSelector-ServerList-RealmColumn {
+  margin-left: 5px;
+  width: 90px;
+}
+
+.ServerSelector-ServerList-CharactersColumn {
+  margin-left: 5px;
+  width: 90px;
+}
+
+.ServerSelector-ServerList-LegendSeparator {
+  margin: 5px 0px;
+  width: 500px;
+  height: 2px;
+  background: url(./images/widgets/arthurian-bottom-taper-bar.png) no-repeat;
+  background-position: center;
+}
+
+.ServerSelector-ServerList-LegendLabel {
+  width: 100%;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.9em;
+  color: white;
+  text-align: center;
+  user-select: none;
+
+  &.left {
+    text-align: left;
+  }
+}
+
+.ServerSelector-ServerList-ListScroller {
+  flex-grow: 1;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ddd;
+  }
+}
+
+.ServerSelector-ServerList-StatusIcon {
+  width: 20px;
+  height: 20px;
+  align-self: center;
+  background: url(./images/widgets/realm-status-icon-red.png) no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  &.available {
+    background-image: url(./images/widgets/realm-status-icon-green.png);
+  }
+}
+
+.ServerSelector-ServerList-NameLabel {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.9em;
+  color: white;
+  text-align: left;
+  user-select: none;
+
+  &.selected {
+    color: #d7bb4d;
+  }
+}
+
+.ServerSelector-ServerList-InfoLabel {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.7em;
+  color: white;
+  text-align: left;
+  user-select: none;
+
+  &.selected {
+    color: #d7bb4d;
+  }
+}
+
+.ServerSelector-ServerList-DataLabel {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.9em;
+  color: white;
+  text-align: center;
+  user-select: none;
+
+  &.selected {
+    color: #d7bb4d;
+  }
+}
+
+.ServerSelector-ServerList-GearColumn {
+  position: relative;
+  margin-left: 5px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ServerSelector-ServerList-GearIcon {
+  width: 20px;
+  height: 20px;
+  background: url(./images/settings.png) no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.3s ease;
+}
+
+.ServerSelector-ServerList-ServerRow:hover .ServerSelector-ServerList-GearIcon {
+  opacity: 1;
+}
+
+.ServerSelector-ServerList-GearTooltip {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  box-sizing: border-box;
+  padding: 5px;
+  background-color: #000000aa;
+  background-image: url(./images/widgets/background-leather.png);
+  background-size: 50%;
+  border: 2px solid #aaa9a9;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.ServerSelector-ServerList-GearTooltipOption {
+  padding: 6px 15px;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.9em;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    color: #d7bb4d;
+  }
+}
+
+.ServerSelector-ServerList-GearIcon:hover {
+  transform: rotate(180deg);
+}
+
+.EUALA-Root {
+  background-color: white;
+  padding: 2em;
+  width: 50vw;
+}

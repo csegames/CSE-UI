@@ -7,7 +7,6 @@
 import { CharacterClassDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
 import { Status } from '@csegames/library/dist/hordetest/game/types/Status';
 import { game } from '@csegames/library/dist/_baseGame';
-import { CurrentMax } from '@csegames/library/dist/_baseGame/types/CurrentMax';
 import { DeepImmutableObject } from '@csegames/library/dist/_baseGame/types/DeepImmutable';
 import { Binding, Keybind } from '@csegames/library/dist/_baseGame/types/Keybind';
 import { ArrayMap, Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
@@ -16,19 +15,6 @@ import { connect } from 'react-redux';
 import { IDLookupTable } from '../../../../redux/gameSlice';
 import { RootState } from '../../../../redux/store';
 import {
-  ActionButtonContainer,
-  ActionIcon,
-  Button,
-  CooldownText,
-  DisabledSlash,
-  KeybindBox,
-  KeybindText,
-  CountBox,
-  CountText
-} from './ActionButtonElements';
-import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import {
-  AbilityDisplayDef,
   AbilityErrorFlags,
   AbilityStateFlags,
   AbilityStatus
@@ -41,8 +27,32 @@ import {
   findEntityResourceByNumericID
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { GameOption } from '@csegames/library/dist/_baseGame/types/Options';
-import { GameOptionIDs } from '../../../../redux/gameOptionsSlice';
 import { StatusDef } from '../../../../dataSources/manifest/statusManifest';
+import { AbilityDisplayDef } from '../../../../dataSources/manifest/abilityDisplayManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
+import { AnimationData } from '@csegames/library/dist/_baseGame/GameClientModels/AnimationData';
+import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
+import { GameOptionIDs } from '../../../../redux/gameOptionsSlice';
+
+const ActionButtonContainer = 'ActionButtons-ActionButtonElements-ActionButtonContainer';
+const Button = 'ActionButtons-ActionButtonElements-Button';
+const ActionIcon = 'ActionButtons-ActionButtonElements-ActionIcon';
+const CooldownText = 'ActionButtons-ActionButtonElements-CooldownText';
+const DisabledSlash = 'ActionButtons-ActionButtonElements-DisabledSlash';
+const KeybindBox = 'ActionButtons-ActionButtonElements-KeybindBox';
+const KeybindText = 'ActionButtons-ActionButtonElements-KeybindText';
+const CountBox = 'ActionButtons-ActionButtonElements-CountBox';
+const CountText = 'ActionButtons-ActionButtonElements-CountText';
+
+const CooldownAnimationDurationMS = 1000; // keep in sync with the css
+
+type DisplayState = 'active' | 'cooldown' | 'blocked' | 'starved' | 'unusable';
+
+interface DisabledData {
+  remaining: string;
+  overlayHeight: number;
+}
 
 interface ReactProps {
   type: string;
@@ -53,11 +63,10 @@ interface InjectedProps {
   classID: number;
   champions: ChampionInfoState;
   characterClassDefs: IDLookupTable<CharacterClassDef>;
-  abilityDisplayDefs: IDLookupTable<AbilityDisplayDef>;
+  abilityDisplayDefsByNumericID: IDLookupTable<AbilityDisplayDef>;
   ability: AbilityStatus;
   statuses: ArrayMap<Status>;
   statusDefs: IDLookupTable<StatusDef>;
-  worldTime: number;
   usingGamepad: boolean;
   resources: ArrayMap<EntityResource>;
   gameOptions: Dictionary<GameOption>;
@@ -65,232 +74,217 @@ interface InjectedProps {
 
 type Props = ReactProps & InjectedProps;
 
-interface State {}
+interface State {
+  animationHandle: ListenerHandle | null;
+  inCooldown: DisabledData | null;
+  cssAnimationEndTime: number | undefined;
+}
 
-class AActionButton extends React.Component<Partial<Props>, State> {
-  private abilityCooldownTimer: CurrentMax | null;
-  private blockingStatusTimer: CurrentMax | null;
-
-  private cooldownFinishedAnimationTimeout: number;
-  private shouldPlayCooldownFinishAnimation: boolean;
-
+class AActionButton extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
   }
 
-  public componentDidUpdate(prevProps: Props) {
-    const wasOnCooldown = !!(prevProps.ability.state & AbilityStateFlags.Cooldown);
-    const prevBlockedOrOnCooldown = wasOnCooldown || !!this.blockingStatusTimer;
-
-    this.blockingStatusTimer = this.createBlockingStatusTimer();
-    this.abilityCooldownTimer = this.isOnCooldown() ? this.createTimer(this.props.ability.timing) : null;
-
-    const currentOnCooldown = !!this.abilityCooldownTimer && this.abilityCooldownTimer.current !== 0;
-    const currentBlocked = !!this.blockingStatusTimer && this.blockingStatusTimer.current !== 0;
-
-    if (prevBlockedOrOnCooldown && !currentOnCooldown && !currentBlocked) {
-      const optPlayCooldownSFX = this.props.gameOptions[GameOptionIDs.PlayAbilityCooldownOverSFX];
-      if (optPlayCooldownSFX && optPlayCooldownSFX.value && wasOnCooldown && !this.isOnCooldown()) {
-        game.playGameSound(SoundEvents.PLAY_UI_ABILITY_COOLDOWN_OVER);
-      }
-
-      this.playCooldownFinishedAnimation();
-    }
-  }
-
-  public componentWillUnmount() {
-    if (this.cooldownFinishedAnimationTimeout) {
-      window.clearTimeout(this.cooldownFinishedAnimationTimeout);
-    }
-  }
-
   public render() {
+    const { inCooldown: disabled } = this.state;
+    const displayState = this.getDisplayState();
+    const displayCount = this.getDisplayCount();
+    const keybind = this.getKeybind();
+    const color = this.getRGBAColor();
+
     return (
       <div id={`ActionButtonContainer_${this.props.type}`} className={ActionButtonContainer}>
         <div
           id={`AbilityButton_${this.props.type}`}
-          className={`${this.getButtonClassList()}`}
-          style={this.getButtonClassStyle()}
+          className={`${Button} ${this.getButtonClassSuffix(displayState)}`}
+          style={this.getButtonStyle(displayState)}
         >
-          <span id={`AbilityActionIcon_${this.props.type}`} className={`${this.getActionIconClassList()}`} />
-          {this.getDisabledSlash()}
-          {this.getCooldownText()}
-          {this.getCountDiv()}
+          <span
+            id={`AbilityActionIcon_${this.props.type}`}
+            className={`${this.getActionIconClassList(displayState)}`}
+          />
+          {displayState == 'starved' && (
+            <img className={DisabledSlash} src='images/hud/actionbutton/disabled-resource.svg' />
+          )}
+          {displayState == 'unusable' && <img className={DisabledSlash} src='images/hud/actionbutton/disabled.svg' />}
+          {disabled && (
+            <div
+              className={`${CooldownText} ${this.getDisabledClassSuffix(displayState)}`}
+              style={{
+                backgroundPosition: `100% ${disabled.overlayHeight}vmin`
+              }}
+            >
+              {disabled.remaining}
+            </div>
+          )}
+          {displayCount && (
+            <div className={CountBox}>
+              <span className={`${CountText}`} style={{ color }}>
+                {displayCount}
+              </span>
+            </div>
+          )}
         </div>
         <div id={`KeybindBox_${this.props.type}`} className={KeybindBox}>
-          {this.getKeybindText()}
+          {keybind.iconClass ? (
+            <span className={`${KeybindText} ${keybind.iconClass}`} />
+          ) : (
+            <span className={KeybindText}>{keybind.name}</span>
+          )}
         </div>
       </div>
     );
   }
 
-  private getDisabledSlash(): JSX.Element {
-    if (this.isDisabled()) {
-      return <img className={DisabledSlash} src={this.getDisabledSlashIcon()} />;
+  public componentDidUpdate() {
+    if (this.shouldAnimate(this.getDisplayState()) && !this.state.animationHandle) {
+      this.setState({ animationHandle: clientAPI.startAnimation(this.animate.bind(this)) });
     }
-    return null;
   }
 
-  private getCooldownText(): JSX.Element {
-    if (this.isDisabled() && this.blockingStatusTimer) {
-      return (
-        <div
-          className={this.getDisabledReasonClass()}
-          style={{
-            backgroundPosition: `100% ${
-              (100 - this.getCooldownOverlayHeight(this.blockingStatusTimer)) * 0.01 * 6.95
-            }vmin`
-          }}
-        >
-          {Math.ceil(this.blockingStatusTimer.current)}
-        </div>
-      );
-    } else if (this.isOnCooldown() && this.abilityCooldownTimer) {
-      return (
-        <div
-          className={this.getDisabledReasonClass()}
-          style={{
-            backgroundPosition: ` ${100}% ${
-              (100 - this.getCooldownOverlayHeight(this.abilityCooldownTimer)) * 0.01 * 6.95
-            }vmin`
-          }}
-        >
-          {Math.ceil(this.abilityCooldownTimer.current)}
-        </div>
-      );
-    }
-
-    return null;
+  public componentWillUnmount() {
+    this.state.animationHandle?.close();
   }
 
-  private getCountDiv(): JSX.Element {
+  private shouldAnimate(displayState: DisplayState): boolean {
+    switch (displayState) {
+      case 'active':
+        return this.state.cssAnimationEndTime != null;
+      case 'cooldown':
+      case 'blocked':
+        return true;
+    }
+    return false;
+  }
+
+  private animate(data: AnimationData, _: DOMHighResTimeStamp): void {
+    const displayState = this.getDisplayState();
+    let timing: TimeRange = null;
+    switch (displayState) {
+      case 'active':
+        if (this.state.inCooldown && !this.state.cssAnimationEndTime) {
+          if (this.props.gameOptions[GameOptionIDs.PlayAbilityCooldownOverSFX]?.value) {
+            clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_COOLDOWN_OVER);
+          }
+          this.setState({ inCooldown: null, cssAnimationEndTime: data.worldTime + CooldownAnimationDurationMS });
+          return;
+        }
+        if (this.state.cssAnimationEndTime > data.worldTime) {
+          return;
+        }
+        this.clearState(true);
+        return;
+      case 'unusable':
+      case 'starved':
+        this.clearState(true);
+        return;
+      case 'cooldown':
+        timing = this.props.ability.timing;
+        break;
+      case 'blocked':
+        timing = this.getBlockedTiming()
+        break;
+    }
+
+    const elapsed = data.worldTime - timing.start;
+    const remaining = Math.ceil(timing.duration - elapsed).toFixed(0);
+    const overlayHeight = Math.max(0, (1 - (elapsed / timing.duration)) * 6.95);
+
+    if (this.state.cssAnimationEndTime || this.state.inCooldown?.remaining !== remaining || this.state.inCooldown.overlayHeight !== overlayHeight) {
+      this.setState({cssAnimationEndTime: null, inCooldown: { remaining, overlayHeight }});
+    }
+  }
+
+  private clearState(stopAnimation: boolean): void {
+    if (!this.state.inCooldown && !this.state.cssAnimationEndTime && (!stopAnimation || !this.state.animationHandle)) {
+      return;
+    }
+    const updated: State = { ...this.state, inCooldown: null, cssAnimationEndTime: null };
+    if (stopAnimation) {
+      this.state.animationHandle?.close();
+      updated.animationHandle = null;
+    }
+    this.setState(updated);
+  }
+
+  private getDisplayState(): DisplayState {
+    if (this.props.ability.state & AbilityStateFlags.Running) {
+      return 'active';
+    }
+    if (this.props.ability.state & AbilityStateFlags.Unusable) {
+      return 'unusable';
+    }
+    if (this.props.ability.state & AbilityStateFlags.Cooldown) {
+      return 'cooldown';
+    }
+    if (this.props.ability.errors & AbilityErrorFlags.NotEnoughResource) {
+      return 'starved';
+    }
+    if (this.props.ability.errors & AbilityErrorFlags.BlockedByStatus) {
+      return 'blocked';
+    }
+    return 'active';
+  }
+
+  private getDisplayCount(): string {
+    if (this.props.ability?.summonCount) {
+      return this.props.ability.summonCount.toFixed(0);
+    }
+
     const displayID = this.props.ability?.displayDefID;
-    const entityResourceID = this.props.abilityDisplayDefs[displayID]?.entityResourceID ?? 0;
-    let displayCount: string = null;
-
-    if (entityResourceID > 0) {
-      const resource = findEntityResourceByNumericID(this.props.resources, entityResourceID);
-      if (resource) {
-        displayCount = resource.current.toFixed(0);
-      }
-    } else {
-      const summonCount: number = this.props.ability.summonCount || 0;
-
-      if (summonCount > 0) {
-        displayCount = summonCount.toFixed(0);
-      }
-    }
-
-    if (displayCount != null) {
-      return (
-        <div className={CountBox}>
-          <span className={`${CountText}`} style={{ color: `${this.getRGBAColor()}` }}>
-            {displayCount}
-          </span>
-        </div>
-      );
-    }
-
-    return null;
-  }
-
-  private getKeybindText(): JSX.Element {
-    const keybind = this.getKeybind();
-
-    return keybind.iconClass ? (
-      <span className={`${KeybindText} ${keybind.iconClass}`} />
-    ) : (
-      <span className={KeybindText}>{keybind.name}</span>
-    );
-  }
-
-  private getButtonClassStyle(): React.CSSProperties {
-    if (
-      this.props.ability.state & AbilityStateFlags.Cooldown ||
-      this.isNotEnoughResource() ||
-      this.props.ability.errors & AbilityErrorFlags.BlockedByStatus
-    ) {
+    const entityResourceID = this.props.abilityDisplayDefsByNumericID[displayID]?.entityResourceID;
+    if (!entityResourceID) {
       return null;
     }
 
-    return { backgroundColor: `${this.getRGBAColor()}` };
+    const resource = findEntityResourceByNumericID(this.props.resources, entityResourceID);
+    return resource?.current.toFixed(0);
   }
 
-  private getButtonClassList(): string {
-    let classList: string = `${Button} `;
-
-    if (this.isDisabled()) {
-      classList += 'disabled ';
+  private getButtonStyle(displayState: DisplayState): React.CSSProperties {
+    switch (displayState) {
+      case 'active':
+      case 'unusable':
+      case 'starved':
+        return { backgroundColor: `${this.getRGBAColor()}` };
     }
-
-    if (this.props.ability.state & AbilityStateFlags.Cooldown) {
-      classList += 'cooldown ';
-    } else if (this.isNotEnoughResource()) {
-      classList += 'NotEnoughResource ';
-    } else if (this.props.ability.errors & AbilityErrorFlags.BlockedByStatus) {
-      classList += 'BlockedByStatus ';
-    }
-
-    if (this.shouldPlayCooldownFinishAnimation) {
-      classList += 'cooldownFinishedAnim ';
-    }
-
-    return classList;
+    return null;
   }
 
-  private getActionIconClassList(): string {
+  private getButtonClassSuffix(displayState: DisplayState): string {
+    switch (displayState) {
+      case 'unusable': return 'disabled';
+      case 'cooldown': return 'cooldown';
+      case 'starved': return 'NotEnoughResource';
+      case 'blocked': return 'BlockedByStatus';
+      case 'active': return this.state.cssAnimationEndTime ? 'cooldownFinishedAnim' : null;
+    }
+  }
+
+  private getDisabledClassSuffix(displayState: DisplayState): string {
+    switch (displayState) {
+      case 'starved': return 'NotEnoughResource';
+      case 'blocked': return 'BlockedByStatus';
+    }
+    return null;
+  }
+
+  private getActionIconClassList(displayState: DisplayState): string {
     const displayID = this.props.ability?.displayDefID;
-    const iconClass = displayID ? this.props.abilityDisplayDefs[displayID]?.iconClass : null;
+    const iconClass = displayID ? this.props.abilityDisplayDefsByNumericID[displayID]?.iconClass : null;
 
-    let classList: string = `${ActionIcon} ${iconClass} `;
-
-    if (this.props.ability.state & AbilityStateFlags.Unusable) {
-      classList += 'disabled ';
+    let classList: string = `${ActionIcon} ${iconClass}`;
+    switch (displayState) {
+      case 'unusable':
+        classList += ' disabled';
+        break;
+      case 'cooldown':
+        classList += ' cooldown';
+        break;
     }
-
-    if (this.props.ability.state & AbilityStateFlags.Cooldown) {
-      classList += 'cooldown ';
-    }
-
     return classList;
   }
 
-  private getDisabledReasonClass(): string {
-    let classList: string = `${CooldownText}`;
-    if (this.isNotEnoughResource()) {
-      return `${classList} NotEnoughResource `;
-    }
-
-    if (this.props.ability.errors & AbilityErrorFlags.BlockedByStatus) {
-      return `${classList} BlockedByStatus `;
-    }
-
-    return classList;
-  }
-
-  private isDisabled(): boolean {
-    if (this.props.ability.state & AbilityStateFlags.Running) {
-      return false;
-    }
-
-    return !!(this.props.ability.state & AbilityStateFlags.Unusable);
-  }
-
-  private isNotEnoughResource(): boolean {
-    return !!(this.props.ability.errors & AbilityErrorFlags.NotEnoughResource);
-  }
-
-  private isOnCooldown(): boolean {
-    return !!(this.props.ability.state & AbilityStateFlags.Cooldown);
-  }
-
-  private getDisabledSlashIcon = () => {
-    if (this.props.ability.errors & AbilityErrorFlags.NotEnoughResource) {
-      return 'images/hud/actionbutton/disabled-resource.svg';
-    }
-
-    return 'images/hud/actionbutton/disabled.svg';
-  };
 
   private getKeybind(): DeepImmutableObject<Binding> {
     // @TODO figure out a way to leverage the dictionary the binding is a part of.
@@ -301,89 +295,32 @@ class AActionButton extends React.Component<Partial<Props>, State> {
     return this.props.usingGamepad ? keybind.binds[1] : keybind.binds[0];
   }
 
-  private createBlockingStatusTimer(): CurrentMax | null {
-    let blockingStatus: Status;
+  private getBlockedTiming(): TimeRange | null {
+    let bestEndTime: number = null;
+    let bestStatus: Status = null;
+    for (const status of Object.values(this.props.statuses)) 
+    {
+      if (status.duration == Infinity) continue;
+      const statusDef = this.props.statusDefs[status.id];
+      if (!statusDef || !statusDef.blocksAbilities) continue;
 
-    const statuses: Status[] = Object.values(this.props.statuses);
-    for (let i: number = 0; i < statuses.length; i++) {
-      if (statuses[i].duration == Infinity) {
-        continue;
-      }
-
-      const statusDef: DeepImmutableObject<StatusDef> = this.props.statusDefs[statuses[i].id];
-
-      if (!statusDef || !(statusDef as any).blocksAbilities) {
-        continue;
-      }
-
-      if (blockingStatus == undefined) {
-        blockingStatus = statuses[i];
-        continue;
-      }
-
-      //only replace blockingStatus value if the next value has a longer remaining duration.
-      const blockingStatusDurationRemaining = blockingStatus.startTime + blockingStatus.duration - game.worldTime;
-      const currentStatusDurationRemaining = statuses[i].startTime + statuses[i].duration - game.worldTime;
-
-      if (currentStatusDurationRemaining > blockingStatusDurationRemaining) {
-        blockingStatus = statuses[i];
+      const endTime = status.startTime + status.duration;
+      if (!bestEndTime || bestEndTime < endTime)
+      {
+        bestEndTime = endTime;
+        bestStatus = status;
       }
     }
-
-    if (blockingStatus == undefined) {
-      return null;
-    }
-
-    if (blockingStatus.duration === Infinity || isNaN(blockingStatus.duration)) {
-      return null;
-    }
-
-    return this.createTimer({ start: blockingStatus.startTime, duration: blockingStatus.duration });
+    return bestStatus ? { start: bestStatus.startTime, duration: bestStatus.duration } : null;
   }
-
-  private createTimer(timing: TimeRange): CurrentMax | null {
-    if (!timing || timing.start <= 0 || timing.duration <= 0) {
-      return null;
-    }
-
-    // calculate time remaining
-    const current = timing.duration + (timing.start - game.worldTime);
-    if (current <= 0) {
-      return null;
-    }
-
-    return {
-      current,
-      max: timing.duration
-    };
-  }
-
-  private getCooldownOverlayHeight(cooldownTimer: CurrentMax): number {
-    const remaining = cooldownTimer.current / cooldownTimer.max;
-
-    return remaining * 100;
-  }
-
-  private playCooldownFinishedAnimation = () => {
-    if (this.cooldownFinishedAnimationTimeout) {
-      window.clearTimeout(this.cooldownFinishedAnimationTimeout);
-    }
-
-    this.shouldPlayCooldownFinishAnimation = true;
-
-    this.cooldownFinishedAnimationTimeout = window.setTimeout(() => {
-      this.shouldPlayCooldownFinishAnimation = false;
-      this.cooldownFinishedAnimationTimeout = null;
-    }, 1000);
-  };
 
   private getRGBAColor(): string {
     const classDef = this.props.characterClassDefs[this.props.classID];
     const championInfo = this.props.champions.championIDToChampion[classDef?.stringID || ''];
-    if (championInfo?.uIColor) {
-      const r = championInfo?.uIColor >> 16;
-      const g = (championInfo?.uIColor >> 8) & 0xff;
-      const b = championInfo?.uIColor & 0xff;
+    if (championInfo?.uiColor) {
+      const r = championInfo?.uiColor >> 16;
+      const g = (championInfo?.uiColor >> 8) & 0xff;
+      const b = championInfo?.uiColor & 0xff;
 
       return 'rgba(' + r + ', ' + g + ', ' + b + ', 0.85)';
     }
@@ -393,20 +330,19 @@ class AActionButton extends React.Component<Partial<Props>, State> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { abilityDisplayDefs, characterClassDefs, statusDefsByNumericID: statusDefs } = state.game;
-  const { worldTime, usingGamepad } = state.baseGame;
-  const { classID, statuses, resources } = state.player;
+  const { abilityDisplayDefsByNumericID, characterClassDefs, statusDefsByNumericID: statusDefs } = state.game;
+  const { usingGamepad } = state.baseGame;
+  const { classID, statuses, resources } = state.entities.self;
   const { gameOptions } = state.gameOptions;
 
   return {
     classID,
     champions: state.championInfo,
-    abilityDisplayDefs,
+    abilityDisplayDefsByNumericID,
     characterClassDefs,
     ability: state.abilities[ownProps.abilityIndex],
     statuses,
     statusDefs,
-    worldTime,
     usingGamepad,
     resources,
     gameOptions,

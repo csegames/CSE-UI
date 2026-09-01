@@ -1,0 +1,8 @@
+*
+!*.ts
+!*.tsx
+!*.scss
+!*.d.ts
+!*.json
+!*/
+!webpack.config.js

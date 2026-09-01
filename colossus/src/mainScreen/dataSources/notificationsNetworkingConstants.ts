@@ -9,9 +9,9 @@ import gql from 'graphql-tag';
 // Specify the subset of keys from CUQuery that we are interested in.
 export type NotificationsSubscriptionResult = Pick<CUSubscription, 'notifications'>;
 
-export const notificationsSubscription = (shardID: number) => gql`
+export const notificationsSubscription = gql`
   subscription NotificationsSubscription {
-    notifications(tags: ["shard-${shardID}"]) {
+    notifications {
       broadcastDuration
       content
       counter

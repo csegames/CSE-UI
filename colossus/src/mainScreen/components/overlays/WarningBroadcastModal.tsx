@@ -10,13 +10,13 @@ import { MiddleModalDisplay } from '../shared/MiddleModalDisplay';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../helpers/stringTableHelpers';
 import { WarningBroadcastMessageData, NotificationsSeverity } from '../../redux/notificationsSlice';
 import { MatchEndSequence, setMatchEnd } from '../../redux/matchSlice';
 import { updateMutedAll } from '../../redux/voiceChatSlice';
 import { refreshProfile } from '../../dataSources/profileNetworking';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 
 const StringIDLeaveMatch = 'GeneralLeaveMatch';
 const StringIDCountdownSingular = 'HUDWarningBroadcastCountdownSingular';

@@ -4,15 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {
-  QuestType,
-  PerkDefGQL,
-  StringTableEntryDef,
-  PerkGQL,
-  PerkType,
-  QuestDefGQL,
-  ChampionInfo
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { Dispatch } from '@reduxjs/toolkit';
@@ -20,13 +12,17 @@ import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import TooltipSource from '../../../../shared/components/TooltipSource';
 import { getTokenizedStringTableValue } from '../../../helpers/stringTableHelpers';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { updateSpendXPPotionQuest } from '../../../redux/storeSlice';
 import { findChampionQuest } from '../../../helpers/characterHelpers';
 import { Overlay, showOverlay } from '../../../redux/navigationSlice';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { QuestGQL, QuestStatus } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
+import { QuestDef, QuestType } from '../../../dataSources/manifest/questManifest';
+import { PerkDef, PerkType } from '../../../dataSources/manifest/perkManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'QuestXPButton-Container';
 const Icon = 'QuestXPButton-Icon';
@@ -41,17 +37,17 @@ const StringIDQuestXPButtonTooltipDescription = 'QuestXPButtonTooltipDescription
 
 interface ReactProps {
   questType: QuestType;
-  champion?: ChampionInfo;
+  champion?: ChampionDef;
   styles?: string;
 }
 
 interface InjectedProps {
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
   ownedPerks: PerkGQL[];
-  championQuests: QuestDefGQL[];
+  championQuests: QuestDef[];
   quests: QuestGQL[];
-  currentBattlePass: QuestDefGQL;
+  currentBattlePass: QuestDef;
   dispatch?: Dispatch;
 }
 
@@ -155,7 +151,7 @@ class AQuestXPButton extends React.Component<Props> {
 
     const tokens = {
       COUNT: count.toString(),
-      XP_AMOUNT: addCommasToNumber(perkDef.xPAmount)
+      XP_AMOUNT: addCommasToNumber(perkDef.xpAmount)
     };
 
     return (
@@ -183,11 +179,11 @@ class AQuestXPButton extends React.Component<Props> {
     if (quest) {
       this.props.dispatch(updateSpendXPPotionQuest(quest));
       this.props.dispatch(showOverlay(Overlay.SpendQuestXPPotions));
-      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_STORE_OPEN);
+      clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_STORE_OPEN);
     }
   }
 
-  private getQuestDef(): QuestDefGQL {
+  private getQuestDef(): QuestDef {
     if (this.props.questType == QuestType.BattlePass) {
       return this.props.currentBattlePass;
     }
@@ -195,7 +191,7 @@ class AQuestXPButton extends React.Component<Props> {
     return findChampionQuest(this.props.champion, this.props.championQuests);
   }
 
-  private getPerkDef(): PerkDefGQL | null {
+  private getPerkDef(): PerkDef | null {
     return (
       Object.values(this.props.perksByID).find((perkDef) => {
         return perkDef.perkType == PerkType.QuestXP && perkDef.questType == this.props.questType;
@@ -203,7 +199,7 @@ class AQuestXPButton extends React.Component<Props> {
     );
   }
 
-  private getCount(perkDef: PerkDefGQL): number {
+  private getCount(perkDef: PerkDef): number {
     return this.props.ownedPerks.find((p) => p.id == perkDef.id)?.qty ?? 0;
   }
 }

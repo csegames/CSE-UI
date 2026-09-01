@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REFACTOR
+
 import * as React from 'react';
 import { ResourceBar } from '../../../shared/ResourceBar';
 import { ChampionProfile } from './ChampionProfile';
@@ -215,7 +217,7 @@ export class HealthBar extends React.Component<Partial<Props>, State> {
     }
 
     const championResource = findEntityResource(this.props.resources, EntityResourceIDs.Blood);
-    /** @TODO handle 'flexEnd */
+    // @TODO handle 'flexEnd
     const noResourceInfo = !championResource || isNaN(championResource.current) || isNaN(championResource.max);
     return (
       <ResourceBar
@@ -250,3 +252,5 @@ export class HealthBar extends React.Component<Partial<Props>, State> {
     return { flex: 1, height: (heightVmin ? heightVmin : 2) + 'vmin', width: '100%', alignSelf: 'flex-start' };
   }
 }
+
+*/

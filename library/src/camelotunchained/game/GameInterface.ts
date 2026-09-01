@@ -1,4 +1,4 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -8,8 +8,8 @@ import * as webAPI from '../webAPI/definitions';
 // import { InternalGameInterfaceExt } from './InternalGameInterfaceExt';
 // import { KeyActions } from './GameClientModels/KeyActions';
 import { OfflineZoneSelectState } from './GameClientModels/OfflineZoneSelectState';
-import { Euler3f, Vec3f } from '../webAPI/definitions';
-import { ItemActionsMessage } from '../game/types/ItemActions';
+import { ItemActionsMessage } from './types/ItemActions';
+import { Euler3f, Vec3f } from '../graphql/schema';
 
 import { GameOption } from '../../_baseGame/types/Options';
 import { Keybind } from '../../_baseGame/types/Keybind';
@@ -58,19 +58,7 @@ export interface GameInterface extends GameModel {
    * @param {((scenarioID: string, roundID: string, didEnd: boolean, didWin: boolean) => any} callback
    * function to be executed when the scenario round ends
    */
-  onScenarioRoundEnded: (
-    callback: (
-      scenarioID: string,
-      roundID: string,
-      didEnd: boolean
-    ) => any
-  ) => ListenerHandle;
-
-  /**
-   * Subscribe to EntityState removes
-   * * @param {(entityID: string) => any} callback function to be executed with an Entity State remove
-   */
-  onEntityRemoved: (callback: (entityID: string) => any) => ListenerHandle;
+  onScenarioRoundEnded: (callback: (scenarioID: string, roundID: string, didEnd: boolean) => any) => ListenerHandle;
 
   /**
    * Client requests UI navigation for a specific target.
@@ -126,8 +114,6 @@ export interface GameInterface extends GameModel {
    * Called when the client keybind for "Replace Materal" is registered.
    */
   onWantReplaceMaterial: (callback: () => any) => ListenerHandle;
-
-  getKeybindSafe: (id: number) => Keybind;
 
   onShowItemActions: (
     callback: (message: ItemActionsMessage, entityState: BaseEntityStateModel) => void

@@ -1,4 +1,4 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -134,33 +134,6 @@
 .flex-row {
   display: flex;
   flex-direction: row;
-}
-
-.euala-modal {
-  position: relative;
-  min-width: 75%;
-  margin: 75px auto;
-  iframe {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    display: block;
-    bottom: 100px;
-    min-height: 100%;
-    min-width: 100%;
-    background-color: white;
-    overflow: auto;
-  }
-  .accept {
-    position: absolute;
-    bottom: -30px;
-  }
-  .decline {
-    position: absolute;
-    bottom: -30px;
-    left: 80px;
-  }
 }
 
 .cu-patcher-ui__character-creation {

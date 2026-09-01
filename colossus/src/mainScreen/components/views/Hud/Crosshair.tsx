@@ -28,7 +28,7 @@ class ACrosshair extends React.Component<Props, {}> {
 
 function mapStateToProps(state: RootState) {
   return {
-    isVisible: state.player.isAlive && state.navigation.overlays.length === 0
+    isVisible: state.entities.self.isAlive && state.navigation.overlays.length === 0
   };
 }
 

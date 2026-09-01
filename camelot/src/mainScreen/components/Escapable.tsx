@@ -9,10 +9,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { addOrUpdateEscapable, removeEscapable } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
+import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
+import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 
 interface ReactProps {
   escapeID: string;
   onEscape: (dispatch: Dispatch) => void;
+  sound?: SoundEvents;
 }
 
 interface InjectedProps {
@@ -30,7 +33,15 @@ class Escapable extends React.Component<Props> {
   componentDidMount(): void {
     // Register with Redux.
     this.props.dispatch(
-      addOrUpdateEscapable({ id: this.props.escapeID, onEscape: this.props.onEscape.bind(this, this.props.dispatch) })
+      addOrUpdateEscapable({
+        id: this.props.escapeID,
+        onEscape: (): void => {
+          if (this.props.sound) {
+            clientAPI.playGameSound(this.props.sound);
+          }
+          this.props.onEscape(this.props.dispatch);
+        }
+      })
     );
   }
 

@@ -4,11 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REFACTOR
+
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { HealthBar } from '../HealthBar';
 import { RootState } from '../../../../redux/store';
-import { PlayerEntityStateModel } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
+import { PlayerEntityState } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { LifeState } from '@csegames/library/dist/hordetest/game/types/LifeState';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import {
@@ -27,7 +29,7 @@ interface ReactProps {
 }
 
 interface InjectedProps {
-  friend: PlayerEntityStateModel;
+  friend: PlayerEntityState;
   voiceChatMembers: Dictionary<VoiceChatMemberSettings>;
 }
 
@@ -99,3 +101,5 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
 }
 
 export const FriendlyHealthBar = connect(mapStateToProps)(AFriendlyHealthBar);
+
+*/

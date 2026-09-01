@@ -11,8 +11,8 @@ import { NotificationData, NotificationAction, removeNotifications } from '../..
 import { RootState } from '../../../../redux/store';
 import { Dispatch } from 'redux';
 import { formatDurationSeconds } from '@csegames/library/dist/_baseGame/utils/textUtils';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 
 const NotificationListContainer = 'StartScreen-Play-NotificationList-NotificationListContainer';
 const NotificationOuter = 'StartScreen-Play-NotificationList-NotificationOuter';

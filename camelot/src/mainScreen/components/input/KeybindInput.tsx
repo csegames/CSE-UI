@@ -13,7 +13,9 @@ import { Binding, Keybind } from '@csegames/library/dist/_baseGame/types/Keybind
 import { CancellablePromise } from '@csegames/library/dist/_baseGame/clientTasks';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { KeybindSequencer } from './KeybindSequencer';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 
+// CSS classes
 const Container = 'HUD-KeybindInput-Container';
 const Values = 'HUD-KeybindInput-Values';
 const Description = 'HUD-KeybindInput-Description';
@@ -24,6 +26,7 @@ interface ReactProps {
 
 interface InjectedProps {
   keybinds: Dictionary<Keybind>;
+  stringTable: Dictionary<StringTableEntryDef>;
   dispatch?: Dispatch;
 }
 
@@ -64,7 +67,7 @@ class AKeybindInput extends React.Component<Props, State> {
   }
 
   openMenu(bindIndex: number): void {
-    const sequencer = new KeybindSequencer();
+    const sequencer = new KeybindSequencer(this.props.stringTable);
     sequencer.beginKeybindSequence(this.props.keybinds, this.props.keybind, bindIndex, this.props.dispatch);
   }
 }
@@ -72,7 +75,8 @@ class AKeybindInput extends React.Component<Props, State> {
 const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
   return {
     ...ownProps,
-    keybinds: state.keybinds
+    keybinds: state.keybinds,
+    stringTable: state.stringTable.stringTable
   };
 };
 

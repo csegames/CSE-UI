@@ -4,12 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REFACTOR
+
 import * as React from 'react';
 import { ObjectivesList } from '../../../../redux/entitiesSlice';
 import { ObjectiveTracker } from './ObjectiveTracker';
 import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
-import { BaseEntityStateModel } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { ObjectiveUIVisibility } from '@csegames/library/dist/_baseGame/types/Objective';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { EntityDirection } from '@csegames/library/dist/hordetest/game/types/EntityDirection';
@@ -41,7 +42,7 @@ class AObjectiveTracker extends React.Component<Props, {}> {
     const trackers: JSX.Element[] = [];
 
     for (let objectiveID in this.props.objectives) {
-      const obj: BaseEntityStateModel = this.props.objectives[objectiveID];
+      const obj = this.props.objectives[objectiveID];
       if (
         (obj.objective.visibility & ObjectiveUIVisibility.ScreenEdge) !== 0 &&
         this.props.entityDirections[objectiveID]
@@ -62,3 +63,5 @@ function mapStateToProps(state: RootState, ownProps: ComponentProps): Props {
 }
 
 export const ObjectiveTrackers = connect(mapStateToProps)(AObjectiveTracker);
+
+*/

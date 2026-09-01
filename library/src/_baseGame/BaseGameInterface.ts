@@ -12,10 +12,8 @@ import { Callback } from './GameClientModels/Updatable';
 import { BuildingMode } from './types/Building';
 import { CombatEvent } from './types/CombatEvent';
 import { UsingGamepadState } from './GameClientModels/UsingGamepadState';
-import { NamedString } from './types/NamedValues';
 import { Success, Failure } from './types/SuccessFailure';
 import { ItemPlacementTransformMode } from './types/ItemPlacementTransformMode';
-import { MockMode } from './types/MockMode';
 import { Binding, Keybind } from './types/Keybind';
 import { GameOption, OptionCategory } from './types/Options';
 import { Blueprint, Material, PotentialItem } from './types/Building';
@@ -37,11 +35,6 @@ import { ListenerHandle } from './listenerHandle';
  */
 export interface BaseGameModel {
   /**
-   * The Patch resource channel identification number.
-   */
-  patchResourceChannel: number;
-
-  /**
    * The current access token used to identify the user in requests to UCE services.
    */
   accessToken: string;
@@ -61,23 +54,6 @@ export interface BaseGameModel {
    * Character ID for whatever player you are logged in as
    */
   characterID: string;
-
-  /**
-   * Unique network Identifier (I think??)
-   * TODO: Should we remove this?
-   */
-  pktHash: string;
-
-  /**
-   * Time according to the game server.
-   */
-  worldTime: number;
-
-  /**
-   * Frames per second
-   */
-  fps: number;
-
   /**
    * Number of NPCS in the match (PlayerEntities - real people - bots)
    */
@@ -89,34 +65,9 @@ export interface BaseGameModel {
   isPublicBuild: boolean;
 
   /**
-   * The build number for the client
-   */
-  buildNumber: number;
-
-  /**
    * Whether or not client is showing the perfHUD
    */
   showPerfHUD: boolean;
-
-  /**
-   * Whether or not this is a CUBE build
-   */
-  isCUBE: boolean;
-
-  /**
-   * Should the UI behave in a certain "mock" state e.g. Complete Network Failure, etc.
-   */
-  uiMockMode: MockMode;
-
-  /**
-   * Forces the client to reload the entire UI
-   */
-  reloadUI: () => void;
-
-  /**
-   * Quit the game!
-   */
-  quit: () => void;
 
   /**
    * Triggers a client Key action using the id of that KeyBind. Essentially, acts as if the client keybind was pressed.
@@ -132,37 +83,10 @@ export interface BaseGameModel {
   sendSlashCommand: (command: string) => void;
   tabComplete: (command: string) => string;
 
-  addOfflineCharacter: (characterIndex: number, racePerkID: string, weaponPerkID: string) => void;
-  removeOfflineCharacter: (characterIndex: number) => void;
-  setOfflineCharacterAnimation: (characterIndex: number, perkID: string) => void;
-
-  /**
-   * Player a sound through the game audio engine
-   * @param {Number} soundID ID of the sound to play
-   * @return {Number} the duration of the played sound
-   */
-  playGameSound: (soundID: number) => number;
-
-  /* -------------------------------------------------- */
-  /* Client -> Server CONTROLLER                                 */
-  /* -------------------------------------------------- */
-  /**
-   * Called when matchmaking and champion select are finished to connect to a game server
-   */
-  connectToServer: (server: string, port: number) => void;
-
-  /**
-   * Called when player runs out of lives and clicks on Leave Match
-   */
-  disconnectFromAllServers: () => void;
-
   /**
    * Client -> Server status information
    */
   isAutoConnectEnabled: boolean;
-  isConnectedToServer: boolean;
-  isConnectedOrConnectingToServer: boolean;
-  isDisconnectingFromAllServers: boolean;
 
   /* -------------------------------------------------- */
   /* CONSOLE CONTROLLER                                 */
@@ -393,14 +317,6 @@ export interface BaseGameModelTasks {
   _cse_dev_setOptions: (options: GameOption[]) => TaskHandle;
 
   /**
-   * Test a single option without saving it, this allows preview of changes without saving them immediately
-   * When called, this method should change the setting on the client without saving it to file or the server
-   * @param {GameOption} option The option to test
-   * @return Whether or not the option was valid to test
-   */
-  _cse_dev_testOption: (option: GameOption) => TaskHandle;
-
-  /**
    * Take a screenshot
    * @return {Screenshot} Image & Path to screenshot
    */
@@ -455,14 +371,6 @@ export interface BaseGameInterface extends BaseGameModel {
    * @param {(message: string) => any} callback callback function to be executed when the game client wishes to begin chat.
    */
   onBeginChat: (callback: (message: string) => any) => ListenerHandle;
-  beginChat: (message: string) => void;
-
-  /**
-   * Subscribes a function to be executed when the game client wishes to append content to the chat window.
-   * @param {(content: string) => any} callback callback function to be executed when chat content is pushed.
-   */
-  onPushChat: (callback: (content: string) => any) => ListenerHandle;
-  pushChat: (content: string) => void;
 
   /**
    * Subscribe to client combat event messages
@@ -483,11 +391,6 @@ export interface BaseGameInterface extends BaseGameModel {
   onKeybindChanged: (callback: (keybind: Keybind) => any) => ListenerHandle;
 
   /**
-   * TODO: Write something about this. I have no idea what this is -AJ
-   */
-  getKeybindSafe: (id: number) => Keybind;
-
-  /**
    * Subscribe to client option changes.
    * @param {(option: GameOption) => any} callback function to be executed when a option has been changed.
    */
@@ -498,11 +401,6 @@ export interface BaseGameInterface extends BaseGameModel {
    * @param {(() => any)} callback function to be executed when a controllerSelect event is received
    */
   onControllerSelect: (callback: () => any) => ListenerHandle;
-
-  /**
-   * Subscribe to network failure events
-   */
-  onNetworkFailure: (callback: (errorMsg: string, errorCode: number, fatal: boolean) => any) => ListenerHandle;
 
   /**
    *  Anchor visibility changes ex.) When entering building mode

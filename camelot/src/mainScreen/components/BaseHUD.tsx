@@ -7,113 +7,112 @@
 import { AnyEntityStateModel } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, DispatchProp } from 'react-redux';
 import {
   EscapableParams,
   HUDLayer,
   HUDWidget,
-  HUDWidgetRegistration,
-  addMenuWidgetExiting,
+  addConditionalWidgetExiting,
   initializeWidget,
-  toggleMenuWidget,
+  showConditionalWidget,
+  toggleConditionalWidget,
   updateHUDSize,
-  updateMousePosition
+  hideHUDEditor
 } from '../redux/hudSlice';
 import { RootState } from '../redux/store';
+import { onToggleUIEditMode } from '../helpers/hudEditModeHelpers';
 import BaseHUDWidget from './BaseHUDWidget';
 import ContextMenuPane from './ContextMenuPane';
 import DragAndDropPane from './DragAndDropPane';
-import HUDEditor from './HUDEditor';
+import { HUDEditor } from './HUDEditor';
+import { SelectedWidgetGuide } from './SelectedWidgetGuide';
 import { HUDEditorStatusDisplay } from './HUDEditorStatusDisplay';
 import ModalPane from './ModalPane';
+import { ServerOfflineModal } from './ServerOfflineModal';
 import ToasterPane from './ToasterPane';
 import TooltipPane from './TooltipPane';
-import { WIDGET_NAME_GAME_MENU } from './GameMenu';
-import { WIDGET_NAME_RESPAWN } from './Respawn';
-import { WIDGET_NAME_ABILITY_BOOK } from './abilityBook/AbilityBook';
-import { WIDGET_NAME_ABILITY_BUILDER } from './abilityBuilder/AbilityBuilder';
-import { WIDGET_NAME_INVENTORY } from './inventory/Inventory';
-import { InteractiveAlert } from './InteractiveAlert';
-import { InteractiveAlert as IInteractiveAlert, removeInteractiveAlert } from '../redux/alertsSlice';
+import { WIDGET_ID_GAME_MENU } from './GameMenu';
+import { WIDGET_ID_RESPAWN } from './Respawn';
+import { WIDGET_ID_ABILITY_BOOK } from './abilityBook/AbilityBook';
 import { ErrorNotice } from './ErrorNotice';
 import { ErrorNotice as IErrorNotice, removeErrorNotice } from '../redux/errorNoticesSlice';
 import { PopUpAnnouncement } from './PopUpAnnouncement';
 import { PopUpAnnouncement as IPopUpAnnouncement, removePopUpAnnouncement } from '../redux/popUpAnnouncementsSlice';
 import { CSETransition } from '../../shared/components/CSETransition';
-import { WIDGET_NAME_EQUIPPED } from './equipped/Equipped';
-import { InitTopic } from '../redux/initializationSlice';
+import { LoadingTopic, ZONE_ID_NONE } from '../redux/loadingSlice';
+import { ConnectionStatus } from '@csegames/library/dist/_baseGame/types/ConnectionStatus';
+import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
+import { CharacterManagement } from './characterManagement/CharacterManagement';
+import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
+import { ItemActionTargetingData, updateItemActionTargeting } from '../redux/inventorySlice';
 
 // Styles
 const Root = 'MainScreen-Root';
 const Filter = 'MainScreen-Filter';
 const ErrorNotices = 'MainScreen-ErrorNotices';
 const PopUpAnnouncements = 'MainScreen-PopUpAnnouncements';
-const BetaWatermark = 'MainScreen-BetaWatermark';
 
 interface ReactProps {}
 
 interface InjectedProps {
   showMockData: boolean;
   widgets: Dictionary<HUDWidget>;
-  activeMenuIds: string[];
+  activeConditionalWidgetIDs: string[];
+  exitingConditionalWidgetIDs: string[];
   escapables: EscapableParams[];
-  selectedWidgetID: string;
+  selectedWidgetID: string | null;
+  selectedGroupMemberIDs: string[];
   initCompleted: boolean;
-  friendlyTarget: AnyEntityStateModel;
-  enemyTarget: AnyEntityStateModel;
+  friendlyTarget: AnyEntityStateModel | null;
+  enemyTarget: AnyEntityStateModel | null;
   isBindingKey: boolean;
-  isHUDEditingEnabled: boolean;
-  requestEnemyTarget: (id: string) => void;
-  requestFriendlyTarget: (id: string) => void;
+  isEditingHUD: boolean;
   isAlive: boolean;
-  interactiveAlerts: IInteractiveAlert[];
+  selfID: string | null;
   errorNotices: IErrorNotice[];
   popUpAnnouncements: IPopUpAnnouncement[];
-  uninitializedTopics: InitTopic[];
-  dispatch?: Dispatch;
+  uninitializedTopics: LoadingTopic[];
+  gameDefsLoaded: boolean;
+  isMouseUpNeeded: boolean;
+  connectionStatus: ConnectionStatus;
+  zoneID: string;
+  itemActionTargetingData: ItemActionTargetingData | null;
 }
 
 type Props = ReactProps & InjectedProps;
 
-export class BaseHUD extends React.Component<Props> {
+export class ABaseHUD extends React.Component<Props & DispatchProp> {
+  private listeners: ListenerHandle[] = [];
+
   public render(): React.ReactNode {
     this.reportCurrentSize();
     const popUpAnnouncement = this.props.popUpAnnouncements[this.props.popUpAnnouncements.length - 1];
     return (
       this.props.initCompleted && (
-        <div className={Root}>
+        <div className={`${Root} ${this.props.isMouseUpNeeded ? 'mouseUpNeeded' : ''}`}>
           <HUDEditorStatusDisplay />
+          <SelectedWidgetGuide />
           <div className={Filter} />
-          {this.getSortedWidgetsToRender().map((widget) => {
-            if (widget.state.visible && widget.registration) {
-              const widgetID = widget.registration.name;
-              return <BaseHUDWidget key={`HUDWidget.${widgetID}`} widgetID={widgetID}></BaseHUDWidget>;
-            } else {
-              return null;
-            }
-          })}
+          {this.renderWidgetsForLayer(HUDLayer.Bottom)}
+          {this.renderWidgetsForLayer(HUDLayer.HUD)}
+          {this.renderWidgetsForLayer(HUDLayer.Menus)}
+          {this.renderSelectedWidget()}
 
-          {this.props.isHUDEditingEnabled && <HUDEditor />}
+          {this.props.isEditingHUD && <HUDEditor />}
 
+          {this.props.zoneID === ZONE_ID_NONE &&
+            this.props.connectionStatus !== ConnectionStatus.Connected &&
+            this.props.connectionStatus !== ConnectionStatus.Offline && <CharacterManagement />}
+
+          {this.renderWidgetsForLayer(HUDLayer.Top)}
+
+          <ToasterPane />
+          <ModalPane />
+          <ServerOfflineModal />
           <DragAndDropPane />
           <TooltipPane />
           <ContextMenuPane />
-          <ToasterPane />
-          <ModalPane />
-
-          {this.props.interactiveAlerts.map((interactiveAlert) => (
-            <CSETransition
-              show={!interactiveAlert.isHidden}
-              onExitComplete={() => {
-                this.props.dispatch(removeInteractiveAlert(interactiveAlert.id));
-              }}
-              key={interactiveAlert.id}
-            >
-              <InteractiveAlert interactiveAlert={interactiveAlert} />
-            </CSETransition>
-          ))}
 
           <div className={ErrorNotices}>
             {[...this.props.errorNotices].reverse().map((errorNotice) => (
@@ -142,62 +141,96 @@ export class BaseHUD extends React.Component<Props> {
               </CSETransition>
             )}
           </div>
-
-          <div className={BetaWatermark}>{'Beta 1 - Do not stream or distribute.'}</div>
         </div>
       )
     );
   }
 
-  private getSortedWidgetsToRender(): HUDWidget[] {
-    // Non-menu items first.
-    // Exclude the selected widget so we can put it on top later.
-    const widgets: HUDWidget[] = Object.values(this.props.widgets)
-      .filter((widget) => {
-        return (
-          widget.registration &&
-          widget.registration.layer !== HUDLayer.Menus &&
-          widget.registration.name !== this.props.selectedWidgetID
-        );
-      })
-      .sort(this.compareWidgets.bind(this));
-
-    // Menu items next, as ordered by the explicit stack.
-    this.props.activeMenuIds.forEach((menuId) => {
-      // Selected widget is left out until the end.
-      if (this.props.selectedWidgetID !== menuId) {
-        widgets.push(this.props.widgets[menuId]);
+  private renderWidgetsForLayer(layer: HUDLayer): React.ReactNode {
+    const layerWidgets = Object.values(this.props.widgets).filter((w: HUDWidget) => {
+      if (!w.registration) {
+        return false;
       }
+      const isCorrectLayer = w.registration.layer === layer;
+      const isSelectedWidget = w.registration.id === this.props.selectedWidgetID;
+      const showConditionally =
+        !w.registration.isConditional || this.props.activeConditionalWidgetIDs.includes(w.registration.id);
+
+      // Selected widget gets rendered separately so we can always see it when in Edit Mode.
+      return isCorrectLayer && showConditionally && !isSelectedWidget;
     });
 
-    // Selected widget (if any) last, so it shows on top of everything else.
-    if (this.props.selectedWidgetID?.length > 0) {
-      widgets.push(this.props.widgets[this.props.selectedWidgetID]);
-    }
+    layerWidgets.sort((a, b) => {
+      // Non-conditional widgets are sorted by layerOffset, with higher values rendered later (thus visible on top of lower values).
+      let aScore = a.state.layerOffset ?? 0;
+      let bScore = b.state.layerOffset ?? 0;
 
-    return widgets;
+      if (a.registration && b.registration) {
+        // Conditional widgets are rendered on top of non-conditional widgets, in the order they were shown.
+        if (a.registration.isConditional !== b.registration.isConditional) {
+          return a.registration.isConditional ? 1 : -1;
+        }
+        if (a.registration.isConditional) {
+          aScore = this.props.activeConditionalWidgetIDs.indexOf(a.registration.id);
+          if (this.props.exitingConditionalWidgetIDs.includes(a.registration.id)) {
+            aScore = 100;
+          }
+          bScore = this.props.activeConditionalWidgetIDs.indexOf(b.registration.id);
+          if (this.props.exitingConditionalWidgetIDs.includes(b.registration.id)) {
+            bScore = 100;
+          }
+        }
+      }
+      return aScore - bScore;
+    });
+
+    return <>{layerWidgets.map(this.renderWidget.bind(this))}</>;
   }
 
-  private compareWidgets(a: HUDWidgetRegistration, b: HUDWidgetRegistration): number {
-    // After that, sort by Layer.
-    const aVal = a.layer + (a.layerOffset ?? 0);
-    const bVal = b.layer + (b.layerOffset ?? 0);
+  private renderWidget(widget: HUDWidget | undefined): React.ReactNode {
+    if (!widget || !widget.registration) {
+      return null;
+    }
+    if (widget.registration.requiresGameDefsLoaded && !this.props.gameDefsLoaded) {
+      return null;
+    }
+    const widgetID = widget.registration.id;
+    // Members of the actively-selected group are force-rendered while editing, even if hidden, so the
+    // user can see and arrange every widget in the group.
+    const isEditableGroupMember = this.props.isEditingHUD && this.props.selectedGroupMemberIDs.includes(widgetID);
+    if (!widget.state.visible && !isEditableGroupMember) {
+      return null;
+    }
+    return <BaseHUDWidget key={`HUDWidget.${widgetID}`} widgetID={widgetID}></BaseHUDWidget>;
+  }
 
-    return aVal - bVal;
+  private renderSelectedWidget(): React.ReactNode {
+    const widget = this.props.widgets[this.props.selectedWidgetID ?? ''];
+
+    return this.renderWidget(widget);
   }
 
   public componentDidMount(): void {
+    // BaseHUD should never unmount, but we have seen some cases where it happens and thus things were
+    // getting bound twice, so lets clear out any remnants.
+    this.listeners.forEach((l) => l.close());
+    this.listeners = [];
+
     // React doesn't inherently detect resizes in a way that triggers all of the updates we need,
     // so we listen at the window level, and anyone who cares can watch the size via Redux.
-    window.addEventListener('resize', this.reportCurrentSize.bind(this));
-    window.addEventListener('mousemove', this.reportMousePosition.bind(this));
+    const sizeFunc = this.reportCurrentSize.bind(this);
+    window.addEventListener('resize', sizeFunc);
+    this.listeners.push({ close: () => window.removeEventListener('resize', sizeFunc) });
 
-    clientAPI.bindToggleHUDEditorListener(this.onToggleHUDEditor.bind(this));
-    clientAPI.bindNavigateListener(this.onEscapePressed.bind(this), 'gamemenu');
-    clientAPI.bindNavigateListener(this.onToggleAbilityBook.bind(this), 'ability-book');
-    clientAPI.bindNavigateListener(this.onToggleAbilityBuilder.bind(this), 'ability-builder');
-    clientAPI.bindNavigateListener(this.onToggleInventory.bind(this), 'inventory');
-    clientAPI.bindNavigateListener(this.onToggleEquipped.bind(this), 'equippedgear');
+    this.listeners.push(clientAPI.bindShowWidgetListener(this.onShowWidget.bind(this)));
+    this.listeners.push(clientAPI.bindHideWidgetListener(this.onHideWidget.bind(this)));
+    this.listeners.push(clientAPI.bindToggleWidgetListener(this.onToggleWidget.bind(this)));
+    this.listeners.push(clientAPI.bindToggleHUDEditorListener(this.onToggleHUDEditor.bind(this)));
+  }
+
+  componentWillUnmount(): void {
+    this.listeners.forEach((l) => l.close());
+    this.listeners = [];
   }
 
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<{}>, snapshot?: any): void {
@@ -207,6 +240,7 @@ export class BaseHUD extends React.Component<Props> {
       if (
         widget.registration &&
         !widget.state.initialized &&
+        (!widget.registration.requiresGameDefsLoaded || this.props.gameDefsLoaded) &&
         (!widget.registration.initTopics ||
           widget.registration.initTopics.every((topic) => !this.props.uninitializedTopics.includes(topic)))
       ) {
@@ -214,18 +248,23 @@ export class BaseHUD extends React.Component<Props> {
       }
     }
 
-    // Show respawn menu if the player died
-    if (!this.props.isAlive && prevProps.isAlive && !this.props.activeMenuIds.includes(WIDGET_NAME_RESPAWN)) {
-      this.props.dispatch(
-        toggleMenuWidget({
-          widgetId: WIDGET_NAME_RESPAWN,
-          escapableId: WIDGET_NAME_RESPAWN
-        })
-      );
+    // Show respawn menu if the player died or logged in dead
+    if (
+      !this.props.isAlive &&
+      this.props.selfID &&
+      (prevProps.isAlive || !prevProps.selfID) &&
+      !this.props.activeConditionalWidgetIDs.includes(WIDGET_ID_RESPAWN)
+    ) {
+      this.props.dispatch(toggleConditionalWidget(WIDGET_ID_RESPAWN));
     }
-    // Hide respawn menu if the player is alive
-    if (this.props.isAlive && this.props.activeMenuIds.includes(WIDGET_NAME_RESPAWN)) {
-      this.props.dispatch(addMenuWidgetExiting(WIDGET_NAME_RESPAWN));
+    // Hide respawn menu if the player became alive
+    else if (
+      this.props.isAlive &&
+      this.props.selfID &&
+      !prevProps.isAlive &&
+      this.props.activeConditionalWidgetIDs.includes(WIDGET_ID_RESPAWN)
+    ) {
+      this.props.dispatch(addConditionalWidgetExiting(WIDGET_ID_RESPAWN));
     }
   }
 
@@ -235,20 +274,20 @@ export class BaseHUD extends React.Component<Props> {
     }
   }
 
-  private reportMousePosition(event: MouseEvent): void {
-    this.props.dispatch(updateMousePosition([event.clientX, event.clientY]));
-  }
-
-  private onToggleHUDEditor(): void {
-    clientAPI.requestEditMode(!this.props.isHUDEditingEnabled);
-  }
-
   private onEscapePressed(): void {
     if (!this.props.isBindingKey) {
       // If we are in HUD edit mode, escape should be prioritized to closing edit mode, as
       // the show/hide of individual widgets is under the HUDEditor's control at that time.
-      if (this.props.isHUDEditingEnabled) {
-        clientAPI.requestEditMode(false);
+      if (this.props.isEditingHUD) {
+        this.props.dispatch(hideHUDEditor());
+        if (!this.props.activeConditionalWidgetIDs.includes(WIDGET_ID_ABILITY_BOOK)) {
+          clientAPI.requestEditMode(false);
+        }
+      }
+      // If we were in the middle of an item targeting action, cancel it.
+      else if (this.props.itemActionTargetingData) {
+        this.props.itemActionTargetingData.onTargetingCanceled?.();
+        this.props.dispatch(updateItemActionTargeting(null));
       }
       // Trigger the top escape-able UI, if any.
       else if (this.props.escapables.length > 0) {
@@ -260,67 +299,122 @@ export class BaseHUD extends React.Component<Props> {
         this.props.escapables[this.props.escapables.length - 1].onEscape(this.props.dispatch);
       } else if (this.props.friendlyTarget || this.props.enemyTarget) {
         // De-select current target(s), if any.
-        this.props.requestEnemyTarget('');
-        this.props.requestFriendlyTarget('');
-      } else if (!this.props.activeMenuIds.includes(WIDGET_NAME_GAME_MENU)) {
-        this.props.dispatch(toggleMenuWidget({ widgetId: WIDGET_NAME_GAME_MENU, escapableId: WIDGET_NAME_GAME_MENU }));
+        clientAPI.requestEnemyTarget('');
+        clientAPI.requestFriendlyTarget('');
+      } else if (!this.props.activeConditionalWidgetIDs.includes(WIDGET_ID_GAME_MENU)) {
+        this.props.dispatch(toggleConditionalWidget(WIDGET_ID_GAME_MENU));
       }
     }
   }
 
-  private onToggleAbilityBook(): void {
-    this.props.dispatch(
-      toggleMenuWidget({ widgetId: WIDGET_NAME_ABILITY_BOOK, escapableId: WIDGET_NAME_ABILITY_BOOK })
-    );
+  private onShowWidget(name: string): void {
+    const widgetID = this.getWidgetIDForNativeID(name);
+    if (!widgetID) {
+      console.warn(`Received widget.show event for unknown widget '${name}'`);
+      return;
+    }
+    if (!this.props.activeConditionalWidgetIDs.includes(widgetID)) {
+      this.applyWidgetOpeningSideEffects(widgetID);
+    }
+    this.props.dispatch(showConditionalWidget(widgetID));
   }
 
-  private onToggleAbilityBuilder(): void {
-    this.props.dispatch(
-      toggleMenuWidget({ widgetId: WIDGET_NAME_ABILITY_BUILDER, escapableId: WIDGET_NAME_ABILITY_BUILDER })
-    );
+  private onHideWidget(name: string): void {
+    const widgetID = this.getWidgetIDForNativeID(name);
+    if (!widgetID) {
+      console.warn(`Received widget.hide event for unknown widget '${name}'`);
+      return;
+    }
+    if (
+      this.props.activeConditionalWidgetIDs.includes(widgetID) &&
+      !this.props.exitingConditionalWidgetIDs.includes(widgetID)
+    ) {
+      this.applyWidgetClosingSideEffects(widgetID);
+      this.props.dispatch(addConditionalWidgetExiting(widgetID));
+    }
   }
 
-  private onToggleInventory(): void {
-    this.props.dispatch(toggleMenuWidget({ widgetId: WIDGET_NAME_INVENTORY, escapableId: WIDGET_NAME_INVENTORY }));
+  private onToggleWidget(name: string): void {
+    const widgetID = this.getWidgetIDForNativeID(name);
+    if (!widgetID) {
+      console.warn(`Received widget.toggle event for unknown widget '${name}'`);
+      return;
+    }
+    // The game menu toggle doubles as the Escape key, which prioritizes closing other UI first.
+    if (widgetID === WIDGET_ID_GAME_MENU) {
+      this.onEscapePressed();
+      return;
+    }
+    if (this.props.activeConditionalWidgetIDs.includes(widgetID)) {
+      this.applyWidgetClosingSideEffects(widgetID);
+    } else {
+      this.applyWidgetOpeningSideEffects(widgetID);
+    }
+    this.props.dispatch(toggleConditionalWidget(widgetID));
   }
 
-  private onToggleEquipped(): void {
-    this.props.dispatch(toggleMenuWidget({ widgetId: WIDGET_NAME_EQUIPPED, escapableId: WIDGET_NAME_EQUIPPED }));
+  private getWidgetIDForNativeID(name: string): string | null {
+    const widget = Object.values(this.props.widgets).find((w) => w.registration?.nativeWidgetID === name);
+    return widget?.registration.id ?? null;
+  }
+
+  private applyWidgetOpeningSideEffects(widgetID: string): void {
+    if (widgetID === WIDGET_ID_ABILITY_BOOK) {
+      clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_WINDOW_CLOSED);
+      clientAPI.requestEditMode(true);
+    }
+  }
+
+  private applyWidgetClosingSideEffects(widgetID: string): void {
+    if (widgetID === WIDGET_ID_ABILITY_BOOK) {
+      clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_WINDOW_OPEN);
+      if (!this.props.isEditingHUD) {
+        clientAPI.requestEditMode(false);
+      }
+    }
+  }
+
+  private onToggleHUDEditor(): void {
+    onToggleUIEditMode(this.props.isEditingHUD, this.props.activeConditionalWidgetIDs, this.props.dispatch);
   }
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
-  const { showMockData, widgets, escapables } = state.hud;
-  const { selectedWidgetId: selectedWidgetID } = state.hud.editor;
-  const initCompleted = state.initialization.completed;
-  const { friendlyTarget, enemyTarget } = state.entities;
-  const { activeMenuIds, isBindingKey } = state.hud;
-  const { requestEnemyTarget, requestFriendlyTarget, isAlive } = state.player;
-  const isHUDEditingEnabled = state.abilities.editStatus.canEdit;
-  const { interactiveAlerts } = state.alerts;
+  const { showMockData, widgets, escapables, isMouseUpNeeded } = state.hud;
+  const { selectedWidgetID, selectedGroupMemberIDs } = state.hud.editor;
+  const initCompleted = state.loading.initCompleted;
+  const { friendlyTarget, enemyTarget, selfID } = state.entities;
+  const { activeConditionalWidgetIDs, exitingConditionalWidgetIDs, isBindingKey } = state.hud;
+  const { isAlive } = state.entities.self;
+  const isEditingHUD = state.hud.isEditingHUD;
   const { errorNotices } = state.errorNotices;
   const { popUpAnnouncements } = state.popUpAnnouncements;
-  const { uninitializedTopics } = state.initialization;
+  const { connectionStatus, gameDefsLoaded, uninitializedTopics, zoneID } = state.loading;
   return {
     ...ownProps,
     showMockData,
     widgets,
     escapables,
     selectedWidgetID,
+    selectedGroupMemberIDs,
     initCompleted,
     friendlyTarget,
     enemyTarget,
-    activeMenuIds,
+    activeConditionalWidgetIDs,
+    exitingConditionalWidgetIDs,
     isBindingKey,
-    isHUDEditingEnabled,
-    requestEnemyTarget,
-    requestFriendlyTarget,
+    isEditingHUD,
     isAlive,
-    interactiveAlerts,
+    selfID,
     errorNotices,
     popUpAnnouncements,
-    uninitializedTopics
+    uninitializedTopics,
+    gameDefsLoaded,
+    isMouseUpNeeded,
+    connectionStatus,
+    zoneID,
+    itemActionTargetingData: state.inventory.itemActionTargetingData
   };
 }
 
-export default connect(mapStateToProps)(BaseHUD);
+export const BaseHUD = connect(mapStateToProps)(ABaseHUD);

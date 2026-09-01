@@ -11,10 +11,12 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Overlay, hideOverlay } from '../../redux/navigationSlice';
-import { ChampionInfo, PerkDefGQL, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { StringIDGeneralClose, getStringTableValue } from '../../helpers/stringTableHelpers';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { ChampionDef } from '../../dataSources/manifest/championManifest';
+import { PerkDef } from '../../dataSources/manifest/perkManifest';
 
 const Root = 'RuneModsTutorialModal-Root';
 const Title = 'RuneModsTutorialModal-Title';
@@ -30,9 +32,9 @@ const StringIDRuneModsTutorialMessage3 = 'RuneModsTutorialMessage3';
 interface ReactProps {}
 
 interface InjectedProps {
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
-  selectedChampion: ChampionInfo;
+  selectedChampion: ChampionDef;
   dispatch?: Dispatch;
 }
 

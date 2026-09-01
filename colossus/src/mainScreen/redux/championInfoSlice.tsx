@@ -5,14 +5,17 @@
  */
 
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { ChampionCostumeInfo, ChampionInfo, ProgressionNodeDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { CostumeDef } from '../dataSources/manifest/costumeManifest';
+import { ChampionDef } from '../dataSources/manifest/championManifest';
+import { ProgressionNodeDef } from '../dataSources/manifest/progressionNodeManifest';
 
 export interface ChampionInfoStaticData {
   // Static / server data.
-  championCostumes: ChampionCostumeInfo[];
-  champions: ChampionInfo[];
-  championIDToChampion: Dictionary<ChampionInfo>;
+  championCostumes: CostumeDef[];
+  costumesByID: Dictionary<CostumeDef>;
+  champions: ChampionDef[];
+  championIDToChampion: Dictionary<ChampionDef>;
   progressionNodeDefsByID: Dictionary<ProgressionNodeDef>;
   progressionNodeDefsByChampionID: Dictionary<ProgressionNodeDef[]>;
 }
@@ -25,7 +28,7 @@ export interface ChampionXPData {
 
 export interface ChampionInfoUIData {
   // UI / local data.
-  selectedChampion: ChampionInfo;
+  selectedChampion: ChampionDef;
   selectedEmoteIndex: number;
   championIDToLastDisplayedXP: { [championID: string]: ChampionXPData };
 }
@@ -34,6 +37,7 @@ export type ChampionInfoState = ChampionInfoStaticData & ChampionInfoUIData;
 
 const defaultChampionInfoState: ChampionInfoState = {
   championCostumes: [],
+  costumesByID: {},
   champions: [],
   championIDToChampion: {},
   progressionNodeDefsByID: {},
@@ -47,12 +51,37 @@ export const championInfoSlice = createSlice({
   name: 'championInfo',
   initialState: defaultChampionInfoState,
   reducers: {
-    updateChampionInfo: (state: ChampionInfoState, action: PayloadAction<ChampionInfoStaticData>) => {
-      Object.entries(action.payload).forEach((entry) => {
-        state[entry[0] as keyof ChampionInfoStaticData] = entry[1];
-      });
+    updateChampions: (
+      state: ChampionInfoState,
+      action: PayloadAction<{
+        champions: ChampionDef[];
+        championIDToChampion: Dictionary<ChampionDef>;
+      }>
+    ) => {
+      state.champions = action.payload.champions;
+      state.championIDToChampion = action.payload.championIDToChampion;
     },
-    updateSelectedChampion: (state: ChampionInfoState, action: PayloadAction<ChampionInfo>) => {
+    updateCostumes: (
+      state: ChampionInfoState,
+      action: PayloadAction<{
+        costumes: CostumeDef[];
+        costumesByID: Dictionary<CostumeDef>;
+      }>
+    ) => {
+      state.championCostumes = action.payload.costumes;
+      state.costumesByID = action.payload.costumesByID;
+    },
+    updateProgressionNodes: (
+      state: ChampionInfoState,
+      action: PayloadAction<{
+        progressionNodeDefsByID: Dictionary<ProgressionNodeDef>;
+        progressionNodeDefsByChampionID: Dictionary<ProgressionNodeDef[]>;
+      }>
+    ) => {
+      state.progressionNodeDefsByID = action.payload.progressionNodeDefsByID;
+      state.progressionNodeDefsByChampionID = action.payload.progressionNodeDefsByChampionID;
+    },
+    updateSelectedChampion: (state: ChampionInfoState, action: PayloadAction<ChampionDef>) => {
       state.selectedChampion = action.payload;
     },
     updateSelectedEmoteIndex: (state: ChampionInfoState, action: PayloadAction<number>) => {
@@ -64,5 +93,11 @@ export const championInfoSlice = createSlice({
   }
 });
 
-export const { updateChampionInfo, updateSelectedChampion, updateSelectedEmoteIndex, updateLastDisplayedChampionXP } =
-  championInfoSlice.actions;
+export const {
+  updateChampions,
+  updateCostumes,
+  updateProgressionNodes,
+  updateSelectedChampion,
+  updateSelectedEmoteIndex,
+  updateLastDisplayedChampionXP
+} = championInfoSlice.actions;

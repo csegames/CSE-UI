@@ -6,14 +6,14 @@
 
 import * as React from 'react';
 import { Button } from '../../shared/Button';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { MiddleModalDisplay } from '../../shared/MiddleModalDisplay';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { StringIDGeneralNo, StringIDGeneralYes, getStringTableValue } from '../../../helpers/stringTableHelpers';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'Settings-ResetDialog-Container';
 const Title = 'Settings-ResetDialog-Title';
@@ -43,7 +43,7 @@ class AResetDialog extends React.Component<Props> {
 
   private onYesClick() {
     this.props.onYesClick();
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_YES);
   }
 
   private onClose() {
@@ -52,7 +52,7 @@ class AResetDialog extends React.Component<Props> {
 
   private onNoClick() {
     this.props.onNoClick();
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
   }
 
   render(): React.ReactNode {

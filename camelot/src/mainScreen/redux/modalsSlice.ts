@@ -10,6 +10,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface ModalButtonModel {
   text: string;
   onClick: () => void;
+  isDisabled?: boolean;
 }
 
 export interface ModalModel {
@@ -19,13 +20,15 @@ export interface ModalModel {
   buttons?: ModalButtonModel[];
 }
 
+export type ModalContent = ModalModel | ((params: ModalParams) => React.ReactNode);
 export interface ModalParams {
   id: string;
-  content: ModalModel;
+  content: ModalContent;
   // If true, this modal will close itself in response to the Escape key,
   // (or whichever key is bound to the Menu action).
   escapable?: boolean;
   hideCloseButton?: boolean;
+  maxWidth?: string;
   onClose?: () => void;
 }
 
@@ -50,16 +53,25 @@ export const modalsSlice = createSlice({
     },
     hideModal: (state: ModalsState) => {
       if (state.modals.length > 0) {
-        // Removes the first item from the array.
-        state.modals.shift();
+        // Removes the last item from the array.
+        state.modals.pop();
       }
     },
-    updateModalContent: (state: ModalsState, action: PayloadAction<ModalModel>) => {
-      if (state.modals.length > 0) {
-        state.modals[0].content = action.payload;
+    hideModalById: (state: ModalsState, action: PayloadAction<string>) => {
+      const idx = state.modals.findIndex((m) => m.id === action.payload);
+      if (idx >= 0) {
+        state.modals.splice(idx, 1);
+      }
+    },
+    updateModalContent: (state: ModalsState, action: PayloadAction<[string, ModalContent]>) => {
+      for (let index = 0; index < state.modals.length; ++index) {
+        if (state.modals[index].id == action.payload[0]) {
+          state.modals[index].content = action.payload[1];
+          return;
+        }
       }
     }
   }
 });
 
-export const { showModal, hideModal, updateModalContent } = modalsSlice.actions;
+export const { showModal, hideModal, hideModalById, updateModalContent } = modalsSlice.actions;

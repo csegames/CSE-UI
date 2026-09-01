@@ -8,14 +8,14 @@ import { RootState } from './store';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import { GraphQLQueryRequest, query } from '@csegames/library/dist/_baseGame/graphql/query';
+import { GraphQLQueryRequest, query } from '@csegames/library/dist/_baseGame/legacy_graphql/query';
 import { RetryTracker } from '@csegames/library/dist/_baseGame/utils/retryTracker';
 import {
   Subscriptions,
   SubscriptionRequest,
   SubscriptionResult
-} from '@csegames/library/dist/_baseGame/graphql/subscription';
-import { InitTopic, setInitialized } from './initializationSlice';
+} from '@csegames/library/dist/_baseGame/legacy_graphql/subscription';
+import { LoadingTopic, setInitialized } from './loadingSlice';
 import { queryConf, subsConf } from '../dataSources/networkConfiguration';
 
 const START_DELAY = 250;
@@ -122,8 +122,17 @@ export default abstract class ExternalDataSource<P = {}, S = {}, SS = any> exten
   protected async query<T>(
     request: GraphQLQueryRequest,
     handler: (result: T) => void,
-    topic?: InitTopic
+    topic?: LoadingTopic
   ): Promise<ListenerHandle> {
+    if (!queryConf().url) {
+      let topicString = '';
+      if (topic) {
+        this.dispatch(setInitialized({ topic, result: false }));
+        topicString = ` for topic ${topic}`;
+      }
+      console.warn(`Skipped query${topicString}, no url specified`);
+      return Promise.resolve({ close: () => {} });
+    }
     const tracker = RetryTracker.create(START_DELAY, MAX_DELAY, MAX_RETRIES);
     const result = await query<T>(request, queryConf);
     if (result.ok && result.data) {
@@ -160,7 +169,7 @@ export default abstract class ExternalDataSource<P = {}, S = {}, SS = any> exten
     handler: (result: T) => void,
     tracker: RetryTracker,
     msg: string,
-    topic?: InitTopic
+    topic?: LoadingTopic
   ): Promise<void> {
     do {
       if (msg) console.warn('Query failure', request, msg);

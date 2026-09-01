@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { chat } from '@csegames/library/dist/_baseGame/chat/chat_proto';
+import { chat } from '@csegames/library/dist/_baseGame/legacyChat/chat_proto';
 import { tryParseJSON } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { TimedMessage } from '@csegames/library/dist/_baseGame/chat/CSEChat';
+import { TimedMessage } from '@csegames/library/dist/_baseGame/legacyChat/CSEChat';
 import { CircularArray } from '@csegames/library/dist/_baseGame/types/CircularArray';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -157,8 +157,11 @@ export interface ChatParseRequest {
   content: string;
 }
 
-function getRoomColor(info: chat.IRoomInfo, opts: ChatOptionsState) {
+function getRoomColor(info: chat.IRoomInfo, opts: ChatOptionsState): string {
   // First check if a custom color has been assigned.
+  if (info.roomID === undefined || info.roomID === null) {
+    return opts.roomColors.general;
+  }
   let color = getCustomColor(info.roomID);
   if (color) {
     return color;
@@ -175,6 +178,8 @@ function getRoomColor(info: chat.IRoomInfo, opts: ChatOptionsState) {
       return opts.roomColors.custom[info.roomID] || opts.roomColors.campaign;
     case RoomCategory.CUSTOM:
       return opts.roomColors.custom[info.roomID] || opts.roomColors.general;
+    default:
+      return opts.roomColors.general;
   }
 }
 
@@ -361,6 +366,7 @@ export const chatSlice = createSlice({
     updateChatReceived: (state, action: PayloadAction<TimedMessage>) => {
       const message = action.payload;
       var roomID = message.targetID;
+      if (roomID === null || roomID === undefined) return;
       switch (message.type) {
         case chat.ChatMessage.MessageTypes.Error:
         case chat.ChatMessage.MessageTypes.Direct:
@@ -424,7 +430,7 @@ export const chatSlice = createSlice({
       state.sentMessageCounter = 0;
       state.sentMessages = new CircularArray<string>(SENT_HISTORY_LENGTH);
       state.systemMessages = [];
-      state.tabs.default.activeFilter = null;
+      state.tabs.default.activeFilter = '';
       if (state.rooms[DEFAULT_CHAT_ROOM_ID]) {
         state.rooms[DEFAULT_CHAT_ROOM_ID].messageCounter = 0;
         state.rooms[DEFAULT_CHAT_ROOM_ID].messages = new CircularArray<TimedMessage>(state.options.messageBufferSize);

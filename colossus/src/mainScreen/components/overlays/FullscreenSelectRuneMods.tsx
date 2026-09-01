@@ -5,15 +5,8 @@
  */
 
 import * as React from 'react';
-import {
-  ChampionInfo,
-  PerkDefGQL,
-  QuestGQL,
-  QuestDefGQL,
-  StringTableEntryDef,
-  PerkType,
-  PurchaseDefGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { QuestGQL, PurchaseDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -44,9 +37,11 @@ import TooltipSource from '../../../shared/components/TooltipSource';
 import { ResourceBar } from '../shared/ResourceBar';
 import { webConf } from '../../dataSources/networkConfiguration';
 import { refreshProfile } from '../../dataSources/profileNetworking';
-import { TooltipPosition } from '../../redux/tooltipSlice';
 import { GenericToaster } from '../GenericToaster';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { ChampionDef } from '../../dataSources/manifest/championManifest';
+import { PerkDef, PerkType } from '../../dataSources/manifest/perkManifest';
+import { QuestDef } from '../../dataSources/manifest/questManifest';
 
 const FullscreenContainer = 'ChampionProfile-SelectRuneMods-Container';
 const RuneModsBGImage = 'ChampionProfile-SelectRuneMods-BGImage';
@@ -119,12 +114,12 @@ const StringIDRuneModsFullscreenErrorNoPurchaseDef = 'RuneModsFullscreenErrorNoP
 interface ReactProps {}
 
 interface InjectedProps {
-  selectedChampion: ChampionInfo;
+  selectedChampion: ChampionDef;
   ownedPerks: Dictionary<number>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   runeModTiers: number;
-  selectedRuneMods: PerkDefGQL[];
-  questsById: Dictionary<QuestDefGQL>;
+  selectedRuneMods: PerkDef[];
+  questsById: Dictionary<QuestDef>;
   questsGQL: QuestGQL[];
   quests: QuestsByType;
   stringTable: Dictionary<StringTableEntryDef>;
@@ -141,7 +136,7 @@ interface State {
   // sub-section of the unlock process.
   shouldAnimateUnlock: boolean;
   runeIdToUnlock: string;
-  selectedRuneMods: PerkDefGQL[];
+  selectedRuneMods: PerkDef[];
   wideView: boolean;
 }
 
@@ -245,7 +240,7 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
     return window.innerHeight - vmin * 0.06;
   }
 
-  private atMaxLevel(questDef: QuestDefGQL, questProgress: QuestGQL): boolean {
+  private atMaxLevel(questDef: QuestDef, questProgress: QuestGQL): boolean {
     if (!questDef || !questProgress) {
       return false;
     }
@@ -272,7 +267,7 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
     const imageSize = `${height * 0.1052}px`;
 
     for (let i = 0; i < this.props.runeModTiers; ++i) {
-      const rune: PerkDefGQL = this.props.selectedRuneMods[i];
+      const rune: PerkDef = this.props.selectedRuneMods[i];
       if (rune) {
         // Rune tier unlocked, rune selected.
         selectedRunes.push(this.renderSelectedRune(rune, i, imageSize));
@@ -288,7 +283,7 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
     return selectedRunes;
   }
 
-  private renderSelectedRune(rune: PerkDefGQL, index: number, imageSize: string): JSX.Element {
+  private renderSelectedRune(rune: PerkDef, index: number, imageSize: string): JSX.Element {
     return (
       <div className={SelectedRuneContainer} key={`SelectedRune${index}`}>
         <div className={SelectedRuneIconContainer} style={{ width: imageSize, height: imageSize }}>
@@ -325,7 +320,7 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
       return (
         perk.perkType === PerkType.RuneModTierKey &&
         perk.runeModTier === index + 1 &&
-        perk.champion.id === this.props.selectedChampion.id
+        perk.championID === this.props.selectedChampion.id
       );
     });
     const unlockLevel =
@@ -349,7 +344,7 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
     );
   }
 
-  private getProgressBar(atMaxLevel: boolean, questDef: QuestDefGQL, questProgress: QuestGQL): JSX.Element {
+  private getProgressBar(atMaxLevel: boolean, questDef: QuestDef, questProgress: QuestGQL): JSX.Element {
     if (atMaxLevel || !questDef || !questProgress) {
       return null;
     }
@@ -398,7 +393,7 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
       if (
         perk.perkType == PerkType.RuneMod &&
         perk.runeModTier == runeTier &&
-        perk.champion.id === this.props.selectedChampion.id &&
+        perk.championID === this.props.selectedChampion.id &&
         (perk.showIfUnowned || this.props.ownedPerks[k])
       ) {
         sortedRunes.push(perk);
@@ -427,7 +422,7 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
     );
   }
 
-  private makeButton(height: number, isTierUnlocked: boolean, runeMod: PerkDefGQL): JSX.Element {
+  private makeButton(height: number, isTierUnlocked: boolean, runeMod: PerkDef): JSX.Element {
     if (this.state.selectedRuneMods.length <= 0) {
       this.setState({ selectedRuneMods: this.props.selectedRuneMods });
     }
@@ -456,8 +451,7 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
           style={{ borderWidth }}
           tooltipParams={{
             id: `${runeMod.id}`,
-            content: runeMod ? this.renderRuneModTooltip.bind(this, runeMod, locked) : null,
-            position: TooltipPosition.OutsideSource
+            content: runeMod ? this.renderRuneModTooltip.bind(this, runeMod, locked) : null
           }}
           onMouseEnter={this.onMouseEnterRune.bind(this)}
         >
@@ -484,7 +478,7 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
     );
   }
 
-  private async onUnlockClick(runeMod: PerkDefGQL): Promise<void> {
+  private async onUnlockClick(runeMod: PerkDef): Promise<void> {
     // If we're already unlocking, don't try again until we finish.
     if (this.state.isUnlocking) {
       return;
@@ -535,7 +529,7 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
     }
   }
 
-  private renderRuneModTooltip(runeMod: PerkDefGQL, locked: boolean): JSX.Element {
+  private renderRuneModTooltip(runeMod: PerkDef, locked: boolean): JSX.Element {
     return (
       <div className={ToolTipContainer}>
         <span className={ToolTipName}>{runeMod.name}</span>
@@ -550,10 +544,10 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
   }
 
   private onMouseEnterRune(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
   }
 
-  private compareRuneMods(a: PerkDefGQL, b: PerkDefGQL) {
+  private compareRuneMods(a: PerkDef, b: PerkDef) {
     // If an explicit sortOrder is set, use that.
     const aSortOrder = a.sortOrder ?? Number.MAX_SAFE_INTEGER;
     const bSortOrder = b.sortOrder ?? Number.MAX_SAFE_INTEGER;
@@ -565,8 +559,8 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
     return a.name.localeCompare(b.name);
   }
 
-  private async onRuneModClick(champion: string, runeMod: PerkDefGQL, isRuneLocked: boolean, isTierLocked: boolean) {
-    game.playGameSound(SoundEvents.PLAY_UI_RUNEMENU_RUNESELECTION_CLICK);
+  private async onRuneModClick(champion: string, runeMod: PerkDef, isRuneLocked: boolean, isTierLocked: boolean) {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_RUNEMENU_RUNESELECTION_CLICK);
 
     // If the tier is locked, you cannot interact with any of its buttons.  You will still see the tooltip, though.
     if (isTierLocked) {
@@ -580,7 +574,7 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
       // The rune is unlocked, so clicking it will activate it.
 
       // Make a copy of the current state so that it is mutable.
-      let newSelectedRuneMods: PerkDefGQL[] = [];
+      let newSelectedRuneMods: PerkDef[] = [];
       for (let i = 0; i < this.state.selectedRuneMods.length; i++) {
         newSelectedRuneMods.push(this.state.selectedRuneMods[i]);
       }
@@ -603,12 +597,12 @@ class AFullscreenSelectRuneMods extends React.Component<Props, State> {
   }
 
   private onBackClick(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_RUNEMENUPAGE_BACK_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_RUNEMENUPAGE_BACK_CLICK);
 
     // When the player visits the RuneMods page, we need to mark all "unseen" Rune-related items for the champion as seen.
     Object.keys(this.props.newEquipment).forEach((perkID) => {
       const perk = this.props.perksByID[perkID];
-      if (perk.champion.id === this.props.selectedChampion.id) {
+      if (perk.championID === this.props.selectedChampion.id) {
         if (
           perk.perkType === PerkType.RuneModTierKey ||
           perk.perkType === PerkType.RuneMod ||

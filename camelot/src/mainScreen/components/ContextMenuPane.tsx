@@ -4,13 +4,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { ContextMenuItem, ContextMenuState, hideContextMenu } from '../redux/contextMenuSlice';
-import { RootState } from '../redux/store';
+import { ContextMenuActionItem, ContextMenuState, hideContextMenu } from '../redux/contextMenuSlice';
+import { AddDispatch, RootState } from '../redux/store';
 import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import { BorderBackground, BorderType, FactionBorder } from './FactionBorder';
+import { getFactionData } from '../gameData/factionData';
 
 // If the mouse moves this far away from an open ContextMenu, we will close the menu.
 const MENU_CLOSE_DISTANCE_PX = 10;
@@ -20,9 +21,9 @@ const Root = 'HUD-ContextMenuPane-Root';
 const MenuWrapper = 'HUD-ContextMenuPane-MenuWrapper';
 const MenuItem = 'HUD-ContextMenuPane-MenuItem';
 const MenuItemDisabled = 'HUD-ContextMenuPane-MenuItemDisabled';
+const Separator = 'HUD-ContextMenuPane-Separator';
 
 interface State {
-  menuBounds: DOMRect;
   xAnchor: HUDHorizontalAnchor;
   yAnchor: HUDVerticalAnchor;
 }
@@ -34,21 +35,20 @@ interface InjectedProps {
   contextMenuState: ContextMenuState;
   hudWidth: number;
   hudHeight: number;
-  myFaction: Faction;
+  uiFactionID: string;
   dispatch?: Dispatch;
 }
 
-type Props = ReactProps & InjectedProps;
+type Props = ReactProps & InjectedProps & AddDispatch;
 
 class ContextMenuPane extends React.Component<Props, State> {
-  private menuRef: HTMLDivElement;
+  private menuRef: HTMLDivElement | null = null;
   private mouseMoveHandler: (e: MouseEvent) => void;
 
   constructor(props: Props) {
     super(props);
 
     this.state = {
-      menuBounds: null,
       // ContextMenus show to the bottom right of the mouse by default (i.e. the mouse cursor is the TopLeft anchor of the tooltip).
       xAnchor: HUDHorizontalAnchor.Left,
       yAnchor: HUDVerticalAnchor.Top
@@ -69,43 +69,72 @@ class ContextMenuPane extends React.Component<Props, State> {
       return null;
     }
 
+    const factionData = getFactionData(this.props.uiFactionID);
+
     return (
-      <div
+      <FactionBorder
         className={MenuWrapper}
-        ref={(r) => {
-          this.menuRef = r;
-          this.recalculateAnchors();
-        }}
+        type={BorderType.Secondary}
+        background={BorderBackground.PatternSmall}
         style={this.calculateMenuStyle()}
       >
+        <style>
+          {
+            // The 'aa' sets the hover background to a partially-transparent realm color, matching the map's FactionComboBox.
+            `.${MenuItem}:hover { background-color: ${factionData.borderColor}aa; }`
+          }
+        </style>
+        <div
+          className={'absoluteFill'}
+          ref={(r) => {
+            this.menuRef = r;
+            this.recalculateAnchors();
+          }}
+        />
         {typeof this.props.contextMenuState.content === 'function'
           ? this.props.contextMenuState.content()
           : this.renderContentItems()}
-      </div>
+      </FactionBorder>
     );
   }
 
   private renderContentItems(): React.ReactNode {
-    if (Array.isArray(this.props.contextMenuState.content)) {
-      const items: ContextMenuItem[] = this.props.contextMenuState.content;
-
-      return (
-        <>
-          {items.map((item) => {
-            return (
-              <div
-                className={!item.disabled ? MenuItem : `${MenuItem} ${MenuItemDisabled}`}
-                key={`ContextMenuItem:${item.title}`}
-                onClick={!item.disabled ? item.onClick.bind(item, this.props.dispatch) : undefined}
-              >
-                {item.title}
-              </div>
-            );
-          })}
-        </>
-      );
+    if (!Array.isArray(this.props.contextMenuState.content)) {
+      return null;
     }
-    return null;
+
+    return (
+      <>
+        {this.props.contextMenuState.content.map((item, index) =>
+          'kind' in item ? this.renderSeparator(index) : this.renderMenuItem(item)
+        )}
+      </>
+    );
+  }
+
+  private renderSeparator(index: number): React.ReactNode {
+    const separatorColor = getFactionData(this.props.uiFactionID).borderColor;
+    return <div className={Separator} key={`ContextMenuSeparator:${index}`} style={{ backgroundColor: separatorColor }} />;
+  }
+
+  private renderMenuItem(item: ContextMenuActionItem): React.ReactNode {
+    return (
+      <div
+        className={!item.disabled ? MenuItem : `${MenuItem} ${MenuItemDisabled}`}
+        key={`ContextMenuItem:${item.title}`}
+        onClick={!item.disabled ? this.handleItemClicked.bind(this, item) : undefined}
+      >
+        {item.title}
+      </div>
+    );
+  }
+
+  private handleItemClicked(item: ContextMenuActionItem): void {
+    item.onClick(this.props.dispatch);
+
+    if (!item.keepOpenAfterSelection) {
+      this.props.dispatch(hideContextMenu());
+    }
   }
 
   private calculateMenuStyle(): React.CSSProperties {
@@ -116,13 +145,13 @@ class ContextMenuPane extends React.Component<Props, State> {
     if (this.state.xAnchor === HUDHorizontalAnchor.Left) {
       finalStyle.left = `${this.props.contextMenuState.mouseX}px`;
     } else {
-      finalStyle.right = `${this.props.hudWidth - this.props.contextMenuState.mouseX}px`;
+      finalStyle.right = `${this.props.hudWidth - this.props.contextMenuState.mouseX!}px`;
     }
 
     if (this.state.yAnchor === HUDVerticalAnchor.Top) {
       finalStyle.top = `${this.props.contextMenuState.mouseY}px`;
     } else {
-      finalStyle.bottom = `${this.props.hudHeight - this.props.contextMenuState.mouseY}px`;
+      finalStyle.bottom = `${this.props.hudHeight - this.props.contextMenuState.mouseY!}px`;
     }
 
     return finalStyle;
@@ -170,7 +199,7 @@ class ContextMenuPane extends React.Component<Props, State> {
     }
   }
 
-  private handleMouseMove(e: React.MouseEvent): void {
+  private handleMouseMove(e: MouseEvent): void {
     if (!this.menuRef) {
       return;
     }
@@ -188,17 +217,16 @@ class ContextMenuPane extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
+function mapStateToProps(state: RootState, ownProps: ReactProps): ReactProps & InjectedProps {
   const contextMenuState = state.contextMenu;
-  const { hudWidth, hudHeight } = state.hud;
-  const myFaction = state.player.faction;
+  const { hudWidth, hudHeight, uiFactionID } = state.hud;
 
   return {
     ...ownProps,
     contextMenuState,
     hudWidth,
     hudHeight,
-    myFaction
+    uiFactionID
   };
 }
 

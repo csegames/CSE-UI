@@ -9,11 +9,12 @@ import {
   AbilityStatus,
   ButtonLayout,
   AbilityGroup,
-  AbilityEditStatus
+  AbilityEditStatus,
+  AbilityStateFlags
 } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 
-export interface Ability extends AbilityStatus {
+export interface AbilityWithActivation extends AbilityStatus {
   lastActivated?: Date;
 }
 
@@ -26,8 +27,12 @@ export interface AbilitiesReduxState {
   editStatus: AbilityEditStatus;
   layouts: Dictionary<ButtonLayout>;
   groups: Dictionary<AbilityGroup>;
-  abilities: Dictionary<Ability>;
-  nowEditingAbilityId: number | null;
+  abilities: Record<number, AbilityWithActivation>;
+  // Kept in sync with abilities' displayDefID fields; only touched when an ability's displayDefID
+  // actually changes (new ability, or a server-side ability swap/display update), not on routine
+  // activation/cooldown updates.
+  abilityIDsByDisplayDefID: Record<number, number>;
+  preparingAbilityID: number | null;
 }
 
 function buildDefaultAbilitiesReduxState(): AbilitiesReduxState {
@@ -40,7 +45,8 @@ function buildDefaultAbilitiesReduxState(): AbilitiesReduxState {
     layouts: {},
     groups: {},
     abilities: {},
-    nowEditingAbilityId: null
+    abilityIDsByDisplayDefID: {},
+    preparingAbilityID: null
   };
   return DefaultAbilitiesReduxState;
 }
@@ -64,25 +70,41 @@ export const abilitiesSlice = createSlice({
     deleteAbilityGroup: (state: AbilitiesReduxState, action: PayloadAction<number>) => {
       delete state.groups[action.payload];
     },
-    updateAbility: (state: AbilitiesReduxState, action: PayloadAction<Ability>) => {
-      if (state.abilities[action.payload.id]) {
-        Object.assign(state.abilities[action.payload.id], action.payload);
+    updateAbility: (state: AbilitiesReduxState, action: PayloadAction<AbilityWithActivation>) => {
+      const update = action.payload;
+      const existing = state.abilities[update.id];
+      if (existing) {
+        // Ability swaps (e.g. stance-based re-skins) can change an existing ability's displayDefID
+        // in place, so the old mapping needs to be dropped, not just the new one added.
+        if (existing.displayDefID !== update.displayDefID) {
+          delete state.abilityIDsByDisplayDefID[existing.displayDefID];
+          state.abilityIDsByDisplayDefID[update.displayDefID] = update.id;
+        }
+        Object.assign(existing, update);
       } else {
-        state.abilities[action.payload.id] = action.payload;
+        state.abilities[update.id] = update;
+        state.abilityIDsByDisplayDefID[update.displayDefID] = update.id;
+      }
+
+      if ((update.state & AbilityStateFlags.Preparation) === AbilityStateFlags.Preparation) {
+        state.preparingAbilityID = update.id;
+      } else if (state.preparingAbilityID === update.id) {
+        // This was the tracked ability leaving Preparation. Hand off to another ability still
+        // preparing (e.g. a second track cast alongside this one) instead of just clearing.
+        const stillPreparing = Object.values(state.abilities).find(
+          (a) => (a.state & AbilityStateFlags.Preparation) === AbilityStateFlags.Preparation
+        );
+        state.preparingAbilityID = stillPreparing?.id ?? null;
       }
     },
     updateAbilityActivated: (state: AbilitiesReduxState, action: PayloadAction<UpdateAbilityActivatedParams>) => {
       // Abilities can only be activated after we've received their updateAbility event, so no need to check for presence.
       state.abilities[action.payload.abilityId].lastActivated = action.payload.timestamp;
     },
-    deleteAbility: (state: AbilitiesReduxState, action: PayloadAction<number>) => {
-      delete state.abilities[action.payload];
-      if (state.nowEditingAbilityId === action.payload) {
-        state.nowEditingAbilityId = null;
-      }
-    },
-    setNowEditingAbilityId: (state: AbilitiesReduxState, action: PayloadAction<number>) => {
-      state.nowEditingAbilityId = action.payload;
+    clearAbilities: (state: AbilitiesReduxState) => {
+      state.abilities = {};
+      state.abilityIDsByDisplayDefID = {};
+      state.preparingAbilityID = null;
     }
   }
 });
@@ -95,6 +117,5 @@ export const {
   deleteAbilityGroup,
   updateAbility,
   updateAbilityActivated,
-  deleteAbility,
-  setNowEditingAbilityId
+  clearAbilities
 } = abilitiesSlice.actions;

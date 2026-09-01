@@ -1,4 +1,4 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -9,13 +9,12 @@ import { game } from '@csegames/library/dist/_baseGame';
 
 import { TabState, parseChatRequest } from '../../../../../redux/chatSlice';
 import { RootState } from '../../../../../redux/store';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { connect, DispatchProp } from 'react-redux';
 import { CircularArray } from '@csegames/library/dist/_baseGame/types/CircularArray';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { getStringTableValue } from '../../../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
+import { StringTableEntryDef } from '../../../../../dataSources/manifest/stringTableManifest';
 
 const Input = 'Chat-Views-ChatInput-Input';
 
@@ -31,7 +30,6 @@ interface InjectedProps {
   sentMessages: CircularArray<string>;
   dmSenderNames: string[];
   stringTable: Dictionary<StringTableEntryDef>;
-  dispatch?: Dispatch;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -42,7 +40,7 @@ export interface State {
   dmResponseIndex: number;
 }
 
-class AChatInput extends React.Component<Props, State> {
+class AChatInput extends React.Component<Props & DispatchProp, State> {
   state = { value: '', dmResponseIndex: -1 };
   private inputRef = React.createRef<HTMLTextAreaElement>();
   private handles: ListenerHandle[] = [];
@@ -174,14 +172,15 @@ class AChatInput extends React.Component<Props, State> {
 
   handleBeginChat(message: string) {
     let newValue: string = '';
-    if (this.inputRef?.current) {
+    const current = this.inputRef?.current;
+    if (current) {
       window.setTimeout(() => {
-        this.inputRef.current.focus();
-        this.inputRef.current.setSelectionRange(this.inputRef.current.value.length, this.inputRef.current.value.length);
-        this.updateHeight(this.inputRef.current);
+        current.focus();
+        current.setSelectionRange(current.value.length, current.value.length);
+        this.updateHeight(current);
       }, 1);
 
-      newValue = message ? message : this.inputRef.current.value;
+      newValue = message ? message : current.value;
     } else {
       newValue = message;
     }

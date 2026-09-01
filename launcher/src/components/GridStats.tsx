@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react';
-import * as _ from 'lodash';
-import styled from 'react-emotion';
+import { RootState } from '../redux/store';
+import { connect } from 'react-redux';
 
 export interface GridStatsStyles {
   statContainer: React.CSSProperties;
@@ -14,15 +14,10 @@ export interface GridStatsStyles {
   listItemContainer: React.CSSProperties;
 }
 
-const StatContainer = styled('div')`
-  display: flex;
-`;
+const Root = 'GridStats-Root';
+const StatListSection = 'GridStats-StatListSection';
 
-const StatListSection = styled('div')`
-  flex: 1;
-`;
-
-export interface GridStatsProps {
+interface ReactProps {
   styles?: Partial<GridStatsStyles>;
   sectionTitle?: string;
   renderHeaderItem?: () => JSX.Element;
@@ -33,43 +28,59 @@ export interface GridStatsProps {
   shouldRenderEmptyListItems?: boolean;
 }
 
-export const GridStats = (props: GridStatsProps) => {
-  const customStyles = props.styles || {};
-  const statArray = props.statArray;
-  const numberOfItemsInGrid = Math.ceil(statArray.length / props.howManyGrids);
-  const emptyListItems: any[] = props.shouldRenderEmptyListItems
-    ? _.fill(Array(numberOfItemsInGrid * props.howManyGrids - statArray.length), '')
-    : [];
+interface InjectedProps {}
 
-  let beginningArrayIndex = 0;
-  const arrayOfGrids = _.fill(Array(props.howManyGrids), '').map((ignore, index) => {
-    const isLastGrid = index + 1 === props.howManyGrids;
-    let grids = [];
-    if (isLastGrid) {
-      grids = statArray.slice(beginningArrayIndex, numberOfItemsInGrid * (index + 1)).concat(emptyListItems);
-    } else {
-      grids = statArray.slice(beginningArrayIndex, numberOfItemsInGrid * (index + 1));
-    }
-    beginningArrayIndex = numberOfItemsInGrid * (index + 1);
-    return grids;
-  });
+type Props = ReactProps & InjectedProps;
 
-  return (
-    <StatContainer style={customStyles.statContainer}>
-      {arrayOfGrids.map((grid, index) => {
-        return (
-          <StatListSection key={index} style={customStyles.statListSection}>
-            {props.renderHeaderItem && props.renderHeaderItem()}
-            {grid.map((item, i) => {
-              return (
-                <div key={i} style={customStyles.listItemContainer}>
-                  {props.renderListItem(item, i)}
-                </div>
-              );
-            })}
-          </StatListSection>
-        );
-      })}
-    </StatContainer>
-  );
+class AGridStats extends React.Component<Props> {
+  render(): React.ReactNode {
+    const customStyles = this.props.styles || {};
+    const statArray = this.props.statArray;
+    const numberOfItemsInGrid = Math.ceil(statArray.length / this.props.howManyGrids);
+    const emptyListItems: any[] = this.props.shouldRenderEmptyListItems
+      ? Array(numberOfItemsInGrid * this.props.howManyGrids - statArray.length).fill('')
+      : [];
+
+    let beginningArrayIndex = 0;
+    const arrayOfGrids = Array(this.props.howManyGrids)
+      .fill('')
+      .map((ignore, index) => {
+        const isLastGrid = index + 1 === this.props.howManyGrids;
+        let grids = [];
+        if (isLastGrid) {
+          grids = statArray.slice(beginningArrayIndex, numberOfItemsInGrid * (index + 1)).concat(emptyListItems);
+        } else {
+          grids = statArray.slice(beginningArrayIndex, numberOfItemsInGrid * (index + 1));
+        }
+        beginningArrayIndex = numberOfItemsInGrid * (index + 1);
+        return grids;
+      });
+
+    return (
+      <div className={Root} style={customStyles.statContainer}>
+        {arrayOfGrids.map((grid, index) => {
+          return (
+            <div className={StatListSection} key={index} style={customStyles.statListSection}>
+              {this.props.renderHeaderItem && this.props.renderHeaderItem()}
+              {grid.map((item, i) => {
+                return (
+                  <div key={i} style={customStyles.listItemContainer}>
+                    {this.props.renderListItem(item, i)}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
+  return {
+    ...ownProps
+  };
 };
+
+export const GridStats = connect(mapStateToProps)(AGridStats);

@@ -9,19 +9,18 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { CSSKey, getCSSVariable } from '../MainScreen-Styles-Variables';
 import { RootState } from '../redux/store';
-import { hideToaster, ToasterParams } from '../redux/toastersSlice';
-
-const DEFAULT_TOAST_DURATION_MILLIS = 2000;
+import { DEFAULT_TOAST_DURATION_MILLIS, hideToaster, ToasterParams } from '../redux/toastersSlice';
+import { BorderBackground, BorderType, FactionBorder } from './FactionBorder';
 
 // Styles.
 const Root = 'HUD-ToasterPane-Root';
 const PreviousWrapper = 'HUD-ToasterPane-PreviousToasterWrapper';
 const CurrentWrapper = 'HUD-ToasterPane-CurrentToasterWrapper';
+const EyebrowText = 'HUD-ToasterPane-EyebrowText';
 const TitleText = 'HUD-ToasterPane-TitleText';
 const MessageText = 'HUD-ToasterPane-MessageText';
 
 interface State {
-  shouldShow: boolean;
   // Stash the displayed modals so we can animate between modals if multiple are queued.
   currentToaster: ToasterParams;
   prevToaster: ToasterParams;
@@ -41,22 +40,35 @@ class ToasterPane extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      shouldShow: false,
       currentToaster: null,
       prevToaster: null
     };
   }
 
   public render(): React.ReactNode {
-    const toastClass = this.state.shouldShow ? 'show' : '';
+    const showBottom = this.state.currentToaster || this.state.prevToaster;
     return (
-      <div className={`${Root} ${toastClass}`}>
-        <div className={PreviousWrapper} key={`Prev${this.state.prevToaster?.id ?? 'None'}`}>
-          {this.renderToaster(this.state.prevToaster)}
-        </div>
-        <div className={CurrentWrapper} key={`Curr${this.state.currentToaster?.id ?? 'None'}`}>
-          {this.renderToaster(this.state.currentToaster)}
-        </div>
+      <div className={Root}>
+        {showBottom && (
+          <>
+            <FactionBorder
+              className={PreviousWrapper}
+              key={`Prev${this.state.prevToaster?.id ?? 'None'}`}
+              type={BorderType.Primary}
+              background={BorderBackground.Leather}
+            >
+              {this.renderToaster(this.state.prevToaster)}
+            </FactionBorder>
+            <FactionBorder
+              className={CurrentWrapper}
+              key={`Curr${this.state.currentToaster?.id ?? 'None'}`}
+              type={BorderType.Primary}
+              background={BorderBackground.Leather}
+            >
+              {this.renderToaster(this.state.currentToaster)}
+            </FactionBorder>
+          </>
+        )}
       </div>
     );
   }
@@ -71,29 +83,31 @@ class ToasterPane extends React.Component<Props, State> {
     } else {
       return (
         <>
-          {toaster.content.title && <div className={TitleText}>{toaster.content.title}</div>}
-          {toaster.content.message && <div className={MessageText}>{toaster.content.message}</div>}
+          {toaster.content.eyebrow && <div className={EyebrowText}>{toaster.content.eyebrow}</div>}
+          {toaster.content.title && (
+            <div className={`${TitleText}${toaster.content.isError ? ' error' : ''}`}>{toaster.content.title}</div>
+          )}
+          {toaster.content.message && (
+            <div className={`${MessageText}${toaster.content.isError ? ' error' : ''}`}>{toaster.content.message}</div>
+          )}
         </>
       );
     }
   }
 
-  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<{}>, snapshot?: any): void {
-    // If the current modal has changed, update state.
+  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot?: any): void {
+    // If the current toast has changed, update state.
     if (this.props.toasters[0]?.id != this.state.currentToaster?.id) {
       this.setState({ currentToaster: this.props.toasters[0], prevToaster: this.state.currentToaster });
 
       if (this.props.toasters.length > 0) {
-        if (!this.state.shouldShow) {
-          this.setState({ shouldShow: true });
-        }
-        // Queue up the exit for the top toaster.
+        // Queue up the exit for the top toast.
         window.setTimeout(() => {
-          this.props.dispatch(hideToaster());
+          this.props.dispatch(hideToaster(this.props.toasters[0].id));
         }, this.props.toasters[0].duration ?? DEFAULT_TOAST_DURATION_MILLIS);
       } else {
         window.setTimeout(() => {
-          this.setState({ shouldShow: false, prevToaster: null });
+          this.setState({ prevToaster: null });
         }, this.getFadeDurationMillis());
       }
     }

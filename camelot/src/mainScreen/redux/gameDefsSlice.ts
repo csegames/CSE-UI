@@ -4,84 +4,81 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {
-  AbilityComponentDefRef,
-  AbilityNetworkDef,
-  AbilityNetworkRequirementGQL,
-  CharacterStatField,
-  GameSettingsDef,
-  GearSlot,
-  ItemDefRef,
-  EntityResourceDefinitionGQL,
-  ItemStatDefinitionGQL,
-  ItemTooltipCategoryDef,
-  StatDefinitionGQL,
-  DamageTypeDefGQL,
-  ClassDefGQL,
-  RaceDefGQL,
-  GenderDefGQL
-} from '@csegames/library/dist/camelotunchained/graphql/schema';
-import {
-  AbilityBookTabsData,
-  AbilityNetworksData,
-  UserClassesData
-} from '@csegames/library/dist/_baseGame/clientFunctions/AssetFunctions';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AbilityBookTabDef } from '../dataSources/manifest/abilityBookTabManifest';
+import { AbilityComponentCategoryDef } from '../dataSources/manifest/abilityComponentCategoryManifest';
+import { AbilityComponentDef } from '../dataSources/manifest/abilityComponentManifest';
+import { AbilityDisplayDef } from '../dataSources/manifest/abilityDisplayManifest';
+import { AbilityNetworkDef } from '../dataSources/manifest/abilityNetworkManifest';
+import { ArmorCategoryDef } from '../dataSources/manifest/armorCategoryManifest';
+import { BodyTypeDef } from '../dataSources/manifest/bodyTypeManifest';
+import { ClassDef } from '../dataSources/manifest/classManifest';
+import { CraftingJobDef } from '../dataSources/manifest/craftingJobManifest';
+import { DamageTypeDef } from '../dataSources/manifest/damageTypeManifest';
+import { EntityResourceDef } from '../dataSources/manifest/entityResourceManifest';
 import { FactionDef } from '../dataSources/manifest/factionManifest';
+import { GameSettingsDef } from '../dataSources/manifest/gameSettingsManifest';
+import { GearSlotDef } from '../dataSources/manifest/gearSlotManifest';
+import { IngredientEffectDef } from '../dataSources/manifest/ingredientEffectManifest';
+import { ItemDef } from '../dataSources/manifest/itemManifest';
+import { ItemModSetDef } from '../dataSources/manifest/itemModSetManifest';
+import { ItemRecipeDef } from '../dataSources/manifest/itemRecipeManifest';
+import { ItemTooltipCategoryDef } from '../dataSources/manifest/itemTooltipCategoryManifest';
+import { RaceDef } from '../dataSources/manifest/raceManifest';
+import { RequirementDef } from '../dataSources/manifest/requirementManifest';
+import { StatLoadoutDef } from '../dataSources/manifest/statLoadoutManifest';
+import { StatDef } from '../dataSources/manifest/statManifest';
 import { StatusDef } from '../dataSources/manifest/statusManifest';
+import { WeaponCategoryDef } from '../dataSources/manifest/weaponCategoryManifest';
+import { WeaponClassDef } from '../dataSources/manifest/weaponClassManifest';
+import { WeaponTypeDef } from '../dataSources/manifest/weaponTypeManifest';
+import { ProgressionTrackDef } from '../dataSources/manifest/progressionTrackManifest';
+import { QuestDef } from '../dataSources/manifest/questDefManifest';
 
-export interface AbilityDisplayData {
-  id: number;
-  name: string;
-  description: string;
-  icon: string;
-  readOnly: boolean;
-  abilityComponentIds: string[];
-  abilityNetworkId: string | null;
-}
-
-export type AbilityNetworkDefData = AbilityNetworkDef & AbilityNetworksData;
-
-// To prevent recursion, we replace the component refs with a simple id that we can look up in the AbilityComponents list.
-export interface AbilityNetworkRequirementsGQLData
-  extends Omit<AbilityNetworkRequirementGQL, 'excludeComponent' | 'requireComponent'> {
-  excludeComponentId: string | null;
-  requireComponentId: string | null;
-}
-
-export interface AbilityComponentDefRefData extends Omit<AbilityComponentDefRef, 'networkRequirements'> {
-  networkRequirements: AbilityNetworkRequirementsGQLData[];
-}
-
-interface GameDefsState {
-  abilityBookTabs: AbilityBookTabsData[];
-  abilityComponents: Dictionary<AbilityComponentDefRefData>;
-  /** Static data relevant to displaying abilities in the UI (icon, etc.). */
-  abilityDisplayData: Dictionary<AbilityDisplayData>;
-  /** URLs for all approved icons that can be used when building abilities. */
-  abilityIconURLs: string[];
-  abilityNetworks: Dictionary<AbilityNetworkDefData>;
-  classesByStringID: Dictionary<ClassDefGQL>;
-  classesByNumericID: Dictionary<ClassDefGQL>;
-  classDynamicAssets: Dictionary<UserClassesData>;
-  damageTypes: Dictionary<DamageTypeDefGQL>;
-  entityResourcesByStringID: Dictionary<EntityResourceDefinitionGQL>;
-  entityResourcesByNumericID: Dictionary<EntityResourceDefinitionGQL>;
-  factions: Dictionary<FactionDef>;
-  gearSlots: Dictionary<GearSlot>;
-  itemStats: Dictionary<ItemStatDefinitionGQL>;
-  itemTooltipCategories: Dictionary<ItemTooltipCategoryDef>;
-  items: Dictionary<ItemDefRef>;
-  racesByStringID: Dictionary<RaceDefGQL>;
-  racesByNumericID: Dictionary<RaceDefGQL>;
-  gendersByStringID: Dictionary<GenderDefGQL>;
-  gendersByNumericID: Dictionary<GenderDefGQL>;
-  myStats: Dictionary<CharacterStatField>;
+export interface GameDefsState {
+  abilityBookTabs: AbilityBookTabDef[];
+  abilityComponents: Dictionary<AbilityComponentDef>;
+  abilityComponentCategories: Dictionary<AbilityComponentCategoryDef>;
+  abilityDisplayDefsByNumericID: Record<number, AbilityDisplayDef>;
+  abilityDisplayDefsByStringID: Record<string, AbilityDisplayDef>;
+  abilityNetworks: Dictionary<AbilityNetworkDef>;
+  armorCategories: Record<string, ArmorCategoryDef>;
+  bodyTypesByNumericID: Record<number, BodyTypeDef>;
+  bodyTypesByStringID: Record<string, BodyTypeDef>;
+  classesByNumericID: Record<number, ClassDef>;
+  classesByStringID: Record<string, ClassDef>;
+  craftingJobs: Dictionary<CraftingJobDef>;
+  damageTypesByNumericID: Record<number, DamageTypeDef>;
+  damageTypesByStringID: Record<string, DamageTypeDef>;
+  entityResourcesByNumericID: Record<number, EntityResourceDef>;
+  entityResourcesByStringID: Record<string, EntityResourceDef>;
+  factions: Record<string, FactionDef>;
+  gearSlots: Record<string, GearSlotDef>;
+  ingredientEffectsByStringID: Record<string, IngredientEffectDef>;
+  ingredientEffectsByNumericID: Record<number, IngredientEffectDef>;
+  itemRecipes: Record<string, ItemRecipeDef>;
+  itemsByNumericID: Record<number, ItemDef>;
+  itemsByStringID: Record<string, ItemDef>;
+  itemModSetsByStringID: Record<string, ItemModSetDef>;
+  itemModSetsByNumericID: Record<number, ItemModSetDef>;
+  itemTooltipCategories: Record<string, ItemTooltipCategoryDef>;
+  progressionTracks: Record<string, ProgressionTrackDef>;
+  questDefs: Record<string, QuestDef>;
+  racesByNumericID: Record<number, RaceDef>;
+  racesByStringID: Record<string, RaceDef>;
+  requirements: Dictionary<RequirementDef>;
   settings: GameSettingsDef;
-  stats: Dictionary<StatDefinitionGQL>;
-  statusesByStringID: Dictionary<StatusDef>;
+  statLoadouts: Record<string, StatLoadoutDef>;
+  stats: Record<string, StatDef>;
+  statsByNumericID: Record<number, StatDef>;
   statusesByNumericID: Dictionary<StatusDef>;
+  statusesByStringID: Dictionary<StatusDef>;
+  tagAffixByNumericID: Record<number, string>;
+  tagAffixIDByStringID: Record<string, number>;
+  weaponCategories: Record<string, WeaponCategoryDef>;
+  weaponClasses: Record<string, WeaponClassDef>;
+  weaponTypes: Record<string, WeaponTypeDef>;
   shouldRefetchMyCharacterAbilities: boolean;
   useClientResourceManifests: boolean;
 }
@@ -89,30 +86,47 @@ interface GameDefsState {
 function buildDefaultGameDefsState() {
   const DefaultGameDefsState: GameDefsState = {
     abilityBookTabs: [],
+    abilityComponentCategories: {},
     abilityComponents: {},
-    abilityDisplayData: {},
-    abilityIconURLs: [],
+    abilityDisplayDefsByStringID: {},
+    abilityDisplayDefsByNumericID: {},
     abilityNetworks: {},
-    classesByStringID: {},
+    armorCategories: {},
+    bodyTypesByNumericID: {},
+    bodyTypesByStringID: {},
     classesByNumericID: {},
-    classDynamicAssets: {},
-    damageTypes: {},
-    entityResourcesByStringID: {},
+    classesByStringID: {},
+    craftingJobs: {},
+    damageTypesByNumericID: {},
+    damageTypesByStringID: {},
     entityResourcesByNumericID: {},
+    entityResourcesByStringID: {},
     factions: {},
     gearSlots: {},
-    itemStats: {},
+    ingredientEffectsByStringID: {},
+    ingredientEffectsByNumericID: {},
+    itemRecipes: {},
+    itemsByNumericID: {},
+    itemsByStringID: {},
+    itemModSetsByNumericID: {},
+    itemModSetsByStringID: {},
     itemTooltipCategories: {},
-    items: {},
-    myStats: {},
-    racesByStringID: {},
+    progressionTracks: {},
+    questDefs: {},
     racesByNumericID: {},
-    gendersByStringID: {},
-    gendersByNumericID: {},
+    racesByStringID: {},
+    requirements: {},
     settings: null,
+    statLoadouts: {},
     stats: {},
-    statusesByStringID: {},
+    statsByNumericID: {},
     statusesByNumericID: {},
+    statusesByStringID: {},
+    tagAffixByNumericID: {},
+    tagAffixIDByStringID: {},
+    weaponCategories: {},
+    weaponClasses: {},
+    weaponTypes: {},
     shouldRefetchMyCharacterAbilities: false,
     useClientResourceManifests: true
   };
@@ -124,87 +138,156 @@ export const gameDefsSlice = createSlice({
   name: 'gameDefs',
   initialState: buildDefaultGameDefsState(),
   reducers: {
-    updateAbilityBookTabs: (state: GameDefsState, action: PayloadAction<AbilityBookTabsData[]>) => {
+    updateAbilityBookTabs: (state: GameDefsState, action: PayloadAction<AbilityBookTabDef[]>) => {
       state.abilityBookTabs = action.payload ?? [];
+    },
+    updateAbilityDisplayDefs: (
+      state: GameDefsState,
+      action: PayloadAction<{
+        abilityDisplayDefsByStringID: Record<string, AbilityDisplayDef>;
+        abilityDisplayDefsByNumericID: Record<number, AbilityDisplayDef>;
+      }>
+    ) => {
+      state.abilityDisplayDefsByStringID = action.payload.abilityDisplayDefsByStringID;
+      state.abilityDisplayDefsByNumericID = action.payload.abilityDisplayDefsByNumericID;
+    },
+    updateAbilityNetworks: (state: GameDefsState, action: PayloadAction<Dictionary<AbilityNetworkDef>>) => {
+      state.abilityNetworks = action.payload;
+    },
+    updateAbilityComponentCategories: (
+      state: GameDefsState,
+      action: PayloadAction<Dictionary<AbilityComponentCategoryDef>>
+    ) => {
+      state.abilityComponentCategories = action.payload;
+    },
+    updateAbilityComponents: (state: GameDefsState, action: PayloadAction<Dictionary<AbilityComponentDef>>) => {
+      state.abilityComponents = action.payload;
+    },
+    updateArmorCategories: (state: GameDefsState, action: PayloadAction<Record<string, ArmorCategoryDef>>) => {
+      state.armorCategories = action.payload ?? {};
+    },
+    updateBodyTypes: (
+      state: GameDefsState,
+      action: PayloadAction<[Record<string, BodyTypeDef>, Record<number, BodyTypeDef>]>
+    ) => {
+      const [byString, byNumber] = action.payload;
+      state.bodyTypesByStringID = byString ?? {};
+      state.bodyTypesByNumericID = byNumber ?? {};
     },
     updateClasses: (
       state: GameDefsState,
-      action: PayloadAction<[Dictionary<ClassDefGQL>, Dictionary<ClassDefGQL>]>
+      action: PayloadAction<[Record<string, ClassDef>, Record<number, ClassDef>]>
     ) => {
       const [byString, byNumber] = action.payload;
       state.classesByStringID = byString ?? {};
       state.classesByNumericID = byNumber ?? {};
     },
-    updateClassDynamicAssets: (state: GameDefsState, action: PayloadAction<Dictionary<UserClassesData>>) => {
-      state.classDynamicAssets = action.payload ?? {};
+    updateCraftingJobs: (state: GameDefsState, action: PayloadAction<Dictionary<CraftingJobDef>>) => {
+      state.craftingJobs = action.payload;
     },
-    updateRaces: (state: GameDefsState, action: PayloadAction<[Dictionary<RaceDefGQL>, Dictionary<RaceDefGQL>]>) => {
-      const [byString, byNumber] = action.payload;
-      state.racesByStringID = byString ?? {};
-      state.racesByNumericID = byNumber ?? {};
-    },
-    updateGenders: (
+    updateDamageTypes: (
       state: GameDefsState,
-      action: PayloadAction<[Dictionary<GenderDefGQL>, Dictionary<GenderDefGQL>]>
+      action: PayloadAction<[Record<string, DamageTypeDef>, Record<number, DamageTypeDef>]>
     ) => {
       const [byString, byNumber] = action.payload;
-      state.gendersByStringID = byString ?? {};
-      state.gendersByNumericID = byNumber ?? {};
+      state.damageTypesByStringID = byString ?? {};
+      state.damageTypesByNumericID = byNumber ?? {};
     },
     updateEntityResources: (
       state: GameDefsState,
-      action: PayloadAction<[Dictionary<EntityResourceDefinitionGQL>, Dictionary<EntityResourceDefinitionGQL>]>
+      action: PayloadAction<[Record<string, EntityResourceDef>, Record<number, EntityResourceDef>]>
     ) => {
       const [byString, byNumber] = action.payload;
       state.entityResourcesByStringID = byString ?? {};
       state.entityResourcesByNumericID = byNumber ?? {};
     },
-    updateFactions: (state: GameDefsState, action: PayloadAction<Dictionary<FactionDef>>) => {
+    updateFactions: (state: GameDefsState, action: PayloadAction<Record<string, FactionDef>>) => {
       state.factions = action.payload ?? {};
     },
-    updateGearSlots: (state: GameDefsState, action: PayloadAction<Dictionary<GearSlot>>) => {
+    updateGearSlots: (state: GameDefsState, action: PayloadAction<Record<string, GearSlotDef>>) => {
       state.gearSlots = action.payload ?? {};
     },
-    updateItems: (state: GameDefsState, action: PayloadAction<Dictionary<ItemDefRef>>) => {
-      state.items = action.payload ?? {};
+    updateIngredientEffects: (
+      state: GameDefsState,
+      action: PayloadAction<{
+        ingredientEffectsByNumericID: Record<number, IngredientEffectDef>;
+        ingredientEffectsByStringID: Record<string, IngredientEffectDef>;
+      }>
+    ) => {
+      state.ingredientEffectsByNumericID = action.payload.ingredientEffectsByNumericID ?? {};
+      state.ingredientEffectsByStringID = action.payload.ingredientEffectsByStringID ?? {};
     },
-    updateItemStats: (state: GameDefsState, action: PayloadAction<Dictionary<ItemStatDefinitionGQL>>) => {
-      state.itemStats = action.payload ?? {};
+    updateItems: (state: GameDefsState, action: PayloadAction<[Record<string, ItemDef>, Record<number, ItemDef>]>) => {
+      const [byString, byNumber] = action.payload;
+      state.itemsByStringID = byString ?? {};
+      state.itemsByNumericID = byNumber ?? {};
     },
-    updateItemTooltipCategories: (state: GameDefsState, action: PayloadAction<Dictionary<ItemTooltipCategoryDef>>) => {
+    updateItemModSets: (
+      state: GameDefsState,
+      action: PayloadAction<{
+        itemModSetsByNumericID: Record<number, ItemModSetDef>;
+        itemModSetsByStringID: Record<number, ItemModSetDef>;
+      }>
+    ) => {
+      state.itemModSetsByNumericID = action.payload.itemModSetsByNumericID ?? {};
+      state.itemModSetsByStringID = action.payload.itemModSetsByStringID ?? {};
+    },
+    updateItemRecipes: (state: GameDefsState, action: PayloadAction<Record<string, ItemRecipeDef>>) => {
+      const itemRecipes = action.payload;
+      state.itemRecipes = itemRecipes ?? {};
+    },
+    updateItemTooltipCategories: (
+      state: GameDefsState,
+      action: PayloadAction<Record<string, ItemTooltipCategoryDef>>
+    ) => {
       state.itemTooltipCategories = action.payload ?? {};
     },
-    updateMyStats: (state: GameDefsState, action: PayloadAction<Dictionary<CharacterStatField>>) => {
-      state.myStats = action.payload ?? {};
+    updateProgressionTracks: (state: GameDefsState, action: PayloadAction<Record<string, ProgressionTrackDef>>) => {
+      state.progressionTracks = action.payload;
+    },
+    updateQuestDefs: (state: GameDefsState, action: PayloadAction<Record<string, QuestDef>>) => {
+      state.questDefs = action.payload;
+    },
+    updateRaces: (state: GameDefsState, action: PayloadAction<[Record<string, RaceDef>, Record<number, RaceDef>]>) => {
+      const [byString, byNumber] = action.payload;
+      state.racesByStringID = byString ?? {};
+      state.racesByNumericID = byNumber ?? {};
+    },
+    updateRequirements: (state: GameDefsState, action: PayloadAction<Dictionary<RequirementDef>>) => {
+      state.requirements = action.payload;
     },
     updateSettings: (state: GameDefsState, action: PayloadAction<GameSettingsDef>) => {
       state.settings = action.payload;
     },
-    updateStats: (state: GameDefsState, action: PayloadAction<Dictionary<StatDefinitionGQL>>) => {
-      state.stats = action.payload ?? {};
+    updateStatLoadouts: (state: GameDefsState, action: PayloadAction<Record<string, StatLoadoutDef>>) => {
+      state.statLoadouts = action.payload ?? {};
+    },
+    updateStats: (
+      state: GameDefsState,
+      action: PayloadAction<[Record<string, StatDef>, Record<number, StatDef>]>
+    ) => {
+      const [byString, byNumber] = action.payload;
+      state.stats = byString ?? {};
+      state.statsByNumericID = byNumber ?? {};
     },
     updateStatuses: (state: GameDefsState, action: PayloadAction<[Dictionary<StatusDef>, Dictionary<StatusDef>]>) => {
       const [statusesByStringID, statusesByNumericID] = action.payload;
       state.statusesByStringID = statusesByStringID;
       state.statusesByNumericID = statusesByNumericID;
     },
-    updateAbilityDisplayData: (state: GameDefsState, action: PayloadAction<AbilityDisplayData>) => {
-      state.abilityDisplayData[action.payload.id] = action.payload;
+    updateTags: (state: GameDefsState, action: PayloadAction<[Record<number, string>, Record<string, number>]>) => {
+      const [tagAffixByNumericID, tagAffixIDByStringID] = action.payload;
+      state.tagAffixByNumericID = tagAffixByNumericID;
+      state.tagAffixIDByStringID = tagAffixIDByStringID;
     },
-    deleteAbilityDisplayData: (state: GameDefsState, action: PayloadAction<number>) => {
-      delete state.abilityDisplayData[action.payload];
+    updateWeaponCategories: (state: GameDefsState, action: PayloadAction<Record<string, WeaponCategoryDef>>) => {
+      state.weaponCategories = action.payload ?? {};
     },
-    updateAbilityNetworks: (state: GameDefsState, action: PayloadAction<Dictionary<AbilityNetworkDefData>>) => {
-      state.abilityNetworks = action.payload;
+    updateWeaponClasses: (state: GameDefsState, action: PayloadAction<Record<string, WeaponClassDef>>) => {
+      state.weaponClasses = action.payload ?? {};
     },
-    updateAbilityComponents: (state: GameDefsState, action: PayloadAction<Dictionary<AbilityComponentDefRefData>>) => {
-      state.abilityComponents = action.payload;
-    },
-    updateAbilityIconURLs: (state: GameDefsState, action: PayloadAction<string[]>) => {
-      state.abilityIconURLs = action.payload;
-    },
-    updateDamageTypes: (state: GameDefsState, action: PayloadAction<Dictionary<DamageTypeDefGQL>>) => {
-      state.damageTypes = action.payload;
+    updateWeaponTypes: (state: GameDefsState, action: PayloadAction<Record<string, WeaponTypeDef>>) => {
+      state.weaponTypes = action.payload ?? {};
     },
     setShouldRefetchMyCharacterAbilities: (state: GameDefsState, action: PayloadAction<boolean>) => {
       state.shouldRefetchMyCharacterAbilities = action.payload;
@@ -216,27 +299,36 @@ export const gameDefsSlice = createSlice({
 });
 
 export const {
+  setShouldRefetchMyCharacterAbilities,
+  setUseClientResourceManifests,
   updateAbilityBookTabs,
+  updateAbilityComponentCategories,
+  updateAbilityComponents,
+  updateAbilityDisplayDefs,
+  updateAbilityNetworks,
+  updateArmorCategories,
+  updateBodyTypes,
   updateClasses,
-  updateClassDynamicAssets,
-  updateRaces,
-  updateGenders,
+  updateCraftingJobs,
+  updateDamageTypes,
   updateEntityResources,
   updateFactions,
   updateGearSlots,
+  updateIngredientEffects,
+  updateItemRecipes,
   updateItems,
-  updateItemStats,
+  updateItemModSets,
   updateItemTooltipCategories,
-  updateMyStats,
+  updateProgressionTracks,
+  updateQuestDefs,
+  updateRaces,
+  updateRequirements,
   updateSettings,
+  updateStatLoadouts,
   updateStats,
   updateStatuses,
-  updateAbilityDisplayData,
-  deleteAbilityDisplayData,
-  updateAbilityComponents,
-  updateAbilityNetworks,
-  updateAbilityIconURLs,
-  updateDamageTypes,
-  setShouldRefetchMyCharacterAbilities,
-  setUseClientResourceManifests
+  updateTags,
+  updateWeaponCategories,
+  updateWeaponClasses,
+  updateWeaponTypes
 } = gameDefsSlice.actions;

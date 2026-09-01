@@ -4,10 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { MatchStatsGQL, PerkDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { MatchStatsGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { ProfileGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PerkDef } from '../dataSources/manifest/perkManifest';
 
 // BEGIN INTERFACES AND STATES
 
@@ -39,7 +40,7 @@ interface ProfileState extends ProfileModel {
    * Dictionary[Champion.id] = (PerkDefGQL[])
    * Dictionary of the different champions' selected rune mods
    */
-  selectedRuneMods: Dictionary<PerkDefGQL[]>;
+  selectedRuneMods: Dictionary<PerkDef[]>;
   isProfileFetched: boolean;
   /**
    * A locally-incremented value that tracks the number of times Profile has been updated from the server.
@@ -86,7 +87,7 @@ export const profileSlice = createSlice({
     updateOwnedPerks: (state: ProfileState, action: PayloadAction<Dictionary<number>>) => {
       state.ownedPerks = action.payload;
     },
-    updateSelectedRuneMods: (state: ProfileState, action: PayloadAction<Dictionary<PerkDefGQL[]>>) => {
+    updateSelectedRuneMods: (state: ProfileState, action: PayloadAction<Dictionary<PerkDef[]>>) => {
       state.selectedRuneMods = action.payload;
     },
     startProfileRefresh: (state: ProfileState, action: PayloadAction<(() => void) | undefined>) => {

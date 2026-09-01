@@ -5,17 +5,8 @@
  */
 
 import * as React from 'react';
-import {
-  ChampionInfo,
-  LAEOp,
-  PerkDefGQL,
-  PerkRewardDefGQL,
-  PerkType,
-  ProgressionNodeDef,
-  StatDefinitionGQL,
-  StatDisplayType,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkRewardDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -37,6 +28,10 @@ import { getProgressionNodeExtremes, ProgressionTreeDisplay } from './Progressio
 import TooltipSource from '../../../../shared/components/TooltipSource';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
+import { StatDef, StatDisplayType } from '../../../dataSources/manifest/statManifest';
+import { ProgressionNodeDef } from '../../../dataSources/manifest/progressionNodeManifest';
+import { LAEOp, PerkDef, PerkType } from '../../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
 
 const FullscreenContainer = 'ChampionProfile-ProgressionTree-Container';
 const TreeContainer = 'ChampionProfile-ProgressionTree-TreeContainer';
@@ -79,15 +74,15 @@ const StringIDProgressionTreeNoBonuses = 'ProgressionTreeNoBonuses';
 interface ReactProps {}
 
 interface InjectedProps {
-  selectedChampion: ChampionInfo;
+  selectedChampion: ChampionDef;
   ownedPerks: Dictionary<number>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
   newEquipment: Dictionary<boolean>;
   progressionNodeDefsByID: Dictionary<ProgressionNodeDef>;
   progressionNodes: string[];
   nodeDefs: ProgressionNodeDef[];
-  statDefs: Dictionary<StatDefinitionGQL>;
+  statDefs: Dictionary<StatDef>;
   dispatch?: Dispatch;
 }
 
@@ -434,7 +429,7 @@ class AFullscreenProgressionTree extends React.Component<Props, State> {
     return nodes;
   }
 
-  private renderStatusTooltip(perk: PerkDefGQL): React.ReactNode {
+  private renderStatusTooltip(perk: PerkDef): React.ReactNode {
     return (
       <div className={StatusTooltipRoot}>
         <div className={StatusTooltipName}>{perk.name}</div>
@@ -466,10 +461,11 @@ class AFullscreenProgressionTree extends React.Component<Props, State> {
   }
 
   private onBackClick(): void {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
     // When the player visits the ProgressionTree page, we need to mark all "unseen" Progression-related items for the champion as seen.
     Object.keys(this.props.newEquipment).forEach((perkID) => {
       const perk = this.props.perksByID[perkID];
-      if (perk.champion.id === this.props.selectedChampion.id) {
+      if (perk.championID === this.props.selectedChampion.id) {
         if (perk.id === this.props.selectedChampion.progressionCurrencyID) {
           markEquipmentSeen(perk.id, this.props.newEquipment, this.props.ownedPerks, this.props.dispatch);
         }

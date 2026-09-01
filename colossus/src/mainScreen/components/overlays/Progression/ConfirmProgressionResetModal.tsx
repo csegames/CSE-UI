@@ -8,9 +8,8 @@ import * as React from 'react';
 import * as webAPI from '@csegames/library/dist/hordetest/webAPI/definitions';
 
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { game } from '@csegames/library/dist/_baseGame';
 import { connect } from 'react-redux';
-import { ChampionInfo, StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary, Dispatch } from '@reduxjs/toolkit';
 import { RootState } from '../../../redux/store';
 import { MiddleModalDisplay } from '../../shared/MiddleModalDisplay';
@@ -19,6 +18,8 @@ import { Button } from '../../shared/Button';
 import { hideOverlay, Overlay } from '../../../redux/navigationSlice';
 import { webConf } from '../../../dataSources/networkConfiguration';
 import { refreshProfile } from '../../../dataSources/profileNetworking';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Title = 'ConfirmProgressionReset-Title';
 const Message = 'ConfirmProgressionReset-Message';
@@ -33,7 +34,7 @@ interface ReactProps {}
 interface InjectedProps {
   displayName?: string;
   stringTable: Dictionary<StringTableEntryDef>;
-  selectedChampion: ChampionInfo;
+  selectedChampion: ChampionDef;
   dispatch?: Dispatch;
 }
 
@@ -64,13 +65,14 @@ class AConfirmProgressionResetModal extends React.Component<Props> {
   }
 
   private async resetProgression(): Promise<void> {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
     await webAPI.ProfileAPI.RespecChampionProgression(webConf, this.props.selectedChampion.id);
     refreshProfile();
     this.onClose();
   }
 
   private onCancelClick(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CONFIRM_WINDOW_POPUP_NO);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
     this.onClose();
   }
 

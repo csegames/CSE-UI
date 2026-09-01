@@ -4,55 +4,50 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GraphQLActiveWarband, GroupMemberState } from '@csegames/library/dist/camelotunchained/graphql/schema';
+import { createSlice, Draft, PayloadAction } from '@reduxjs/toolkit';
+import { WarbandSnapshot } from '@csegames/library/dist/camelotunchained/game/GameClientModels/WarbandSnapshot';
+import { CallState, clearErrors } from '../helpers/rest/callState';
+import { callSetWarbandGroup } from '../helpers/rest/warbandsRestCalls';
+import { buildCallTracking } from '../helpers/rest/thunkUtils';
 
-interface WarbandState {
-  id: string | null;
-  members: (GroupMemberState | null)[];
+export interface Permissions {
+  canInvite: boolean;
+  canKick: boolean;
+  canPromote: boolean;
+  isLeader: boolean;
 }
 
-const DefaultWarbandState: WarbandState = {
-  id: null,
-  members: []
-};
+export interface WarbandState extends WarbandSnapshot, CallState {
+  isEditMode: boolean;
+}
+
+function onSuccess(state: Draft<WarbandState>) {
+  state.calls = clearErrors(state.calls);
+}
+
+function getInitialState(): WarbandState {
+  return {
+    groupID: '',
+    subgroups: [],
+    calls: {},
+    isEditMode: false
+  };
+}
 
 export const warbandSlice = createSlice({
   name: 'warband',
-  initialState: DefaultWarbandState,
+  initialState: getInitialState(),
   reducers: {
-    joinWarband: (state, action: PayloadAction<string>) => {
-      state.id = action.payload;
+    setWarband: (state, action: PayloadAction<WarbandSnapshot>) => {
+      Object.assign(state, action.payload);
     },
-    updateWarband: (state, action: PayloadAction<Partial<GraphQLActiveWarband>>) => {
-      state.id = action.payload.info?.id;
-      state.members = action.payload.members ?? [];
-    },
-    leaveWarband: (state) => {
-      state.id = null;
-      state.members = [];
-    },
-    addWarbandMember: (state, action: PayloadAction<GroupMemberState>) => {
-      if (state.members.every((member) => member.characterID !== action.payload.characterID)) {
-        state.members.push(action.payload);
-      }
-    },
-    updateWarbandMember: (state, action: PayloadAction<GroupMemberState>) => {
-      const memberIndex = state.members.findIndex((member) => member.characterID === action.payload.characterID);
-      if (memberIndex >= 0) {
-        state.members[memberIndex] = action.payload;
-      } else {
-        state.members.push(action.payload);
-      }
-    },
-    removeWarbandMember: (state, action: PayloadAction<string>) => {
-      const memberIndex = state.members.findIndex((member) => member.characterID === action.payload);
-      if (memberIndex >= 0) {
-        state.members.splice(memberIndex, 1);
-      }
+    setIsEditMode: (state, action: PayloadAction<boolean>) => {
+      state.isEditMode = action.payload;
     }
+  },
+  extraReducers: (builder) => {
+    buildCallTracking(builder, callSetWarbandGroup, onSuccess);
   }
 });
 
-export const { joinWarband, updateWarband, leaveWarband, addWarbandMember, updateWarbandMember, removeWarbandMember } =
-  warbandSlice.actions;
+export const { setWarband, setIsEditMode } = warbandSlice.actions;

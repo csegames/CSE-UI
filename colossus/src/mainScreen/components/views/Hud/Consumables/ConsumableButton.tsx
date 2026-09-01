@@ -7,6 +7,7 @@
 import * as React from 'react';
 import { ConsumableItem } from '@csegames/library/dist/hordetest/game/types/Consumables';
 import { Binding } from '@csegames/library/dist/_baseGame/types/Keybind';
+import { ItemDef } from '../../../../dataSources/manifest/itemManifest';
 
 const Container = 'Consumables-ConsumableButton-Container';
 const Image = 'Consumables-ConsumableButton-Image';
@@ -15,6 +16,7 @@ const KeybindBox = 'Consumables-ConsumableButton-KeybindBox';
 
 export interface Props {
   item: ConsumableItem;
+  itemDef: ItemDef;
   isActive: boolean;
   useKeybind: Binding;
 }
@@ -44,7 +46,7 @@ export default class ConsumableButton extends React.Component<Props, {}> {
       return;
     }
 
-    return <img className={Image} src={this.props.item.iconUrl} />;
+    return <img className={Image} src={this.props.itemDef.iconURL} />;
   }
 
   private getKeybind(): JSX.Element {
@@ -64,7 +66,7 @@ export default class ConsumableButton extends React.Component<Props, {}> {
   }
 
   private isPopulatedWithItem(): boolean {
-    return !!this.props.item && !!this.props.item.name;
+    return !!this.props.item && !!this.props.itemDef;
   }
 
   private isTrulyActive(): boolean {

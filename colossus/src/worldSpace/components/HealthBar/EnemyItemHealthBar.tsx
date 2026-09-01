@@ -15,7 +15,7 @@ const BarContainer = 'WorldSpace-HealthBar-EnemyItemHealthBar-BarContainer';
 
 const Bar = 'WorldSpace-HealthBar-EnemyItemHealthBar-Bar';
 
-export interface Props {
+interface Props {
   state: HealthBarState;
 }
 

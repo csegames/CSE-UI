@@ -5,16 +5,8 @@
  */
 
 import * as React from 'react';
-import {
-  ChampionCostumeInfo,
-  ChampionGQL,
-  ChampionInfo,
-  PerkDefGQL,
-  PerkType,
-  PurchaseDefGQL,
-  QuestGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionGQL, PurchaseDefGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -30,7 +22,6 @@ import {
   markEquipmentSeen
 } from '../../helpers/characterHelpers';
 import { StarBadge } from '../../../shared/components/StarBadge';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { PerkMultiButton } from '../views/Lobby/PerkMultiButton';
@@ -43,6 +34,10 @@ import { KeybindIDs, KeybindsState } from '../../redux/keybindsSlice';
 import { webConf } from '../../dataSources/networkConfiguration';
 import { refreshProfile } from '../../dataSources/profileNetworking';
 import { getIsBadgedForUnseenChampionEquipment } from '../../helpers/badgingUtils';
+import { CostumeDef } from '../../dataSources/manifest/costumeManifest';
+import { PerkDef, PerkType } from '../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../dataSources/manifest/championManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Root = 'ChampionSelectCosmetics-Root';
 const BackgroundBlurEdges = 'ChampionSelectCosmetics-BackgroundBlurEdges';
@@ -135,17 +130,17 @@ const tabIcons: { [type in PerkType]: string } = {
 interface ReactProps {}
 
 interface InjectedProps {
-  selectedChampion: ChampionInfo;
-  champions: ChampionInfo[];
+  selectedChampion: ChampionDef;
+  champions: ChampionDef[];
   ownedPerks: Dictionary<number>;
-  perks: PerkDefGQL[];
-  perksByID: Dictionary<PerkDefGQL>;
+  perks: PerkDef[];
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
   cosmeticTab: PerkType;
   profile: ProfileModel;
   newEquipment: Dictionary<boolean>;
   championsGQL: ChampionGQL[];
-  championCostumes: ChampionCostumeInfo[];
+  championCostumes: CostumeDef[];
   purchases: PurchaseDefGQL[];
   displayName: string;
   maxEmoteCount: number;
@@ -374,7 +369,7 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
   }
 
   private renderEmoteButtonContent(
-    emotePerk: PerkDefGQL | null,
+    emotePerk: PerkDef | null,
     index: number,
     isHovered: boolean,
     isSelected: boolean,
@@ -418,7 +413,7 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
     return style;
   }
 
-  private getSelectedPerk(): PerkDefGQL {
+  private getSelectedPerk(): PerkDef {
     const itemId = this.props.cosmeticTab === PerkType.Costume ? this.state.selectedSkinID : this.state.selectedPerkID;
     return this.props.perksByID[itemId];
   }
@@ -475,7 +470,7 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
       <div
         className={`${NavBarTab} ${selectedClass} ${tabIcons[tab]}`}
         onClick={() => {
-          game.playGameSound(this.getSoundEventForTab(tab));
+          clientAPI.playGameSound(this.getSoundEventForTab(tab));
           this.props.dispatch?.(setCosmeticTab(tab));
         }}
       >
@@ -501,7 +496,7 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
     }
   }
 
-  private renderCosmeticItem(item: PerkDefGQL): React.ReactNode {
+  private renderCosmeticItem(item: PerkDef): React.ReactNode {
     const equippedItemIDs = this.getEquippedCosmeticIDs();
     const isUnowned = this.props.ownedPerks[item.id] === undefined || this.props.ownedPerks[item.id] < 1;
     const isEquipped = equippedItemIDs.includes(item.id);
@@ -519,7 +514,7 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
         className={`${ItemContainer} ${selectedClass} ${ownedClass}`}
         key={item.id}
         onClick={() => {
-          game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_ITEM_CLICK);
+          clientAPI.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_ITEM_CLICK);
 
           // When the user clicks onto a "new" item, unbadge it.
           markEquipmentSeen(item.id, this.props.newEquipment, this.props.ownedPerks, this.props.dispatch);
@@ -542,7 +537,7 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
   }
 
   private async onEquipClick(itemId: string, index: number): Promise<void> {
-    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_EQUIP_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENU_EQUIP_CLICK);
 
     this.setState({ isSaving: true });
 
@@ -621,7 +616,7 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
   }
 
   private onBackClick(): void {
-    game.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENUPAGE_BACK_CLICK);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_CUSTOMIZEMENUPAGE_BACK_CLICK);
     this.props.dispatch(hideOverlay(Overlay.ChampionSelectCosmetics));
   }
 
@@ -654,12 +649,12 @@ class AChampionSelectCosmetics extends React.Component<Props, State> {
     }
   }
 
-  private getSortedCosmetics(type: PerkType): PerkDefGQL[] {
+  private getSortedCosmetics(type: PerkType): PerkDef[] {
     // We only want cosmetics that match the currently selected champion.
     const cosmetics = this.props.perks.filter((p) => {
       return (
         p.perkType === type &&
-        (!p.champion || p.champion.id === this.props.selectedChampion?.id) &&
+        (!p.championID || p.championID === this.props.selectedChampion?.id) &&
         (p.showIfUnowned || this.props.ownedPerks[p.id])
       );
     });

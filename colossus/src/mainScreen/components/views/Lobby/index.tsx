@@ -23,9 +23,11 @@ import { FeatureFlags } from '../../../redux/featureFlagsSlice';
 import { LobbyPartyHeader } from './LobbyPartyHeader';
 import { PinnedNotices } from '../../shared/notifications/PinnedNotices';
 import { getRaceIDFromCostumeForChampion } from '../../../helpers/characterHelpers';
-import { ChampionGQL, PerkDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { PerkDef } from '../../../dataSources/manifest/perkManifest';
+import { CostumeDef } from '../../../dataSources/manifest/costumeManifest';
 
 const Container = 'Fullscreen-Container'; // TODO : reorganize names
 const HideButton = 'Fullscreen-HideButton';
@@ -45,7 +47,8 @@ interface InjectedProps extends FeatureFlags.Source {
   dispatch?: Dispatch;
   defaultChampionID: string;
   champions: (ChampionGQL | null)[];
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
+  costumesByID: Dictionary<CostumeDef>;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -66,6 +69,7 @@ class ALobby extends React.Component<Props> {
     const raceID = getRaceIDFromCostumeForChampion(
       this.props.champions,
       this.props.perksByID,
+      this.props.costumesByID,
       this.props.defaultChampionID
     );
     clientAPI.setUIRaceState(raceID);
@@ -94,7 +98,7 @@ class ALobby extends React.Component<Props> {
 
   public componentDidMount() {
     // TODO : move once legacy matchmaking has been removed
-    game.playGameSound(SoundEvents.PLAY_USER_FLOW_LOBBY);
+    clientAPI.playGameSound(SoundEvents.PLAY_USER_FLOW_LOBBY);
   }
 
   private onHamburgerClick() {
@@ -136,6 +140,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
 
   const { defaultChampionID, champions } = state.profile;
   const { perksByID } = state.store;
+  const { costumesByID } = state.championInfo;
 
   return {
     ...ownProps,
@@ -143,7 +148,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     featureFlags: state.featureFlags,
     defaultChampionID,
     champions,
-    perksByID
+    perksByID,
+    costumesByID
   };
 }
 

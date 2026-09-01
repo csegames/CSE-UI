@@ -11,8 +11,9 @@ import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle'
 import { SlashCommandRegistry } from '@csegames/library/dist/_baseGame/slashCommandRegistry';
 import { RootState } from '../../redux/store';
 import { initUISlashCommands } from './uiCommands';
+import { Dispatch } from 'redux';
 
-export function initializeConsole(registry: SlashCommandRegistry<RootState>): ListenerHandle[] {
+export function initializeConsole(registry: SlashCommandRegistry<RootState, Dispatch>): ListenerHandle[] {
   // hook up for console messages to system messages
   game.onConsoleText((text: string) => {
     mockEvents.triggerAnnouncement(AnnouncementType.Text, text, '', '', 0);

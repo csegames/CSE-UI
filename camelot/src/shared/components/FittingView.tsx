@@ -14,6 +14,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   contentClassName?: string;
   horizontalAlignment?: FittingViewHorizontalAlignment;
   verticalAlignment?: FittingViewVerticalAlignment;
+  dontUpscale?: boolean;
 }
 
 interface State {
@@ -119,6 +120,10 @@ export class FittingView extends React.Component<Props, State> {
       } else {
         // Content is Tall, so height should match perfectly.
         sizeMultiplier = containerHeight / contentHeight;
+      }
+
+      if (this.props.dontUpscale) {
+        sizeMultiplier = Math.min(sizeMultiplier, 1.0);
       }
 
       requestAnimationFrame(() => {

@@ -23,6 +23,9 @@ export function convertLocalTimeToServerTime(localTimeMS: number, serverTimeDelt
 const zeroPad = (num: number, places: number) => String(num).padStart(places, '0');
 
 export function formatDuration(totalSeconds: number, alwaysShowHours?: boolean): string {
+  // Make sure we're dealing with integer seconds, else the seconds display will be weird.
+  totalSeconds = Math.floor(totalSeconds);
+
   const hours = zeroPad(Math.floor(totalSeconds / 3600), alwaysShowHours ? 2 : 1);
   const minutes = zeroPad(Math.floor(totalSeconds / 60) % 60, 2);
   const seconds = zeroPad(Math.floor(totalSeconds) % 60, 2);
@@ -30,4 +33,15 @@ export function formatDuration(totalSeconds: number, alwaysShowHours?: boolean):
     return `${hours}:${minutes}:${seconds}`;
   }
   return `${minutes}:${seconds}`;
+}
+
+/**
+ *
+ * @param timeString String in "hh:mm:ss" format.
+ * @returns Duration of the indicated time in milliseconds.
+ */
+export function timeStringToMs(timeString: string): number {
+  const [hours, minutes, seconds] = timeString.split(':').map(Number);
+
+  return hours * 3600000 + minutes * 60000 + seconds * 1000;
 }

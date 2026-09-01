@@ -8,15 +8,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import {
-  ChampionCostumeInfo,
-  ChampionGQL,
-  ChampionInfo,
-  Group,
-  Member,
-  PerkDefGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionGQL, Group, Member } from '@csegames/library/dist/hordetest/graphql/schema';
 import { ProfileModel } from '../../../redux/profileSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import TooltipSource from '../../../../shared/components/TooltipSource';
@@ -27,6 +19,10 @@ import { LobbyCurrencyHeader } from './LobbyCurrencyHeader';
 import { InviteFriendsButton } from './Play/InviteFriendsButton';
 import { setHasClickedInvite } from '../../../redux/teamJoinSlice';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
+import { PerkDef } from '../../../dataSources/manifest/perkManifest';
+import { CostumeDef } from '../../../dataSources/manifest/costumeManifest';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
 
 const Container = 'Lobby-PartyHeader-Container';
 const PlayerPortraitContainer = 'Lobby-PartyHeader-PlayerPortraitContainer';
@@ -41,11 +37,11 @@ const StringIDGroupsWaitingMessage = 'GroupsWaitingMessage';
 interface ReactProps {}
 
 interface InjectedProps {
-  championCostumes: ChampionCostumeInfo[];
-  champions: ChampionInfo[];
+  championCostumes: CostumeDef[];
+  champions: ChampionDef[];
   group: Group;
   displayName: string;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   profile: ProfileModel;
   defaultGroupCapacity: number;
   myCharacterId: string;
@@ -59,13 +55,13 @@ type Props = ReactProps & InjectedProps;
 class ALobbyPartyHeader extends React.Component<Props> {
   render(): React.ReactNode {
     let defaultChampion: ChampionGQL = null;
-    let defaultChampionCostume: ChampionCostumeInfo = null;
+    let defaultChampionCostume: CostumeDef = null;
     if (this.props.profile && this.props.profile.defaultChampionID) {
       defaultChampion = this.props.profile.champions.find((c) => c.championID == this.props.profile.defaultChampionID);
       if (defaultChampion) {
         const costumePerk = this.props.perksByID[defaultChampion.costumePerkID];
         if (costumePerk) {
-          defaultChampionCostume = this.props.championCostumes.find((costume) => costume.id == costumePerk.costume.id);
+          defaultChampionCostume = this.props.championCostumes.find((costume) => costume.id == costumePerk.costumeID);
         }
       }
     }
@@ -150,7 +146,7 @@ class ALobbyPartyHeader extends React.Component<Props> {
     return this.props.championCostumes[0];
   }
 
-  private getChampionThumbnailURL(portraitID: string, costume: ChampionCostumeInfo): string {
+  private getChampionThumbnailURL(portraitID: string, costume: CostumeDef): string {
     if (portraitID) {
       const portraitPerk = this.props.perksByID[portraitID];
       if (portraitPerk) {

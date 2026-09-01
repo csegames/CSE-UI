@@ -7,14 +7,15 @@
 import { ServersAPI, ZoneInfo } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { updateZones } from '../redux/zonesSlice';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { InitTopic } from '../redux/initializationSlice';
+import { LoadingTopic } from '../redux/loadingSlice';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import ExternalDataSource from '../redux/externalDataSource';
+import { ExternalDataSource } from '../redux/externalDataSource';
 import { RequestResult } from '@csegames/library/dist/_baseGame/types/Request';
+import { WithWebInterface } from '../redux/withWebInterface';
 
-export class ZonesService extends ExternalDataSource {
+export class ZonesService extends WithWebInterface(ExternalDataSource) {
   protected async bind(): Promise<ListenerHandle[]> {
-    return [await this.call(ServersAPI.GetAvailableZones, this.handleZoneData.bind(this), InitTopic.Zones)];
+    return [await this.call(ServersAPI.GetAvailableZones, this.handleZoneData.bind(this), LoadingTopic.Zones)];
   }
 
   private async handleZoneData(queryResult: RequestResult): Promise<boolean> {

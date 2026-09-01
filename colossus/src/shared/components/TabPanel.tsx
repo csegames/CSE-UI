@@ -184,7 +184,7 @@ export class TabPanel<TabData> extends React.Component<TabPanelProps<TabData>, T
 
   private selectIndex = (index: number, name: string, shouldTriggerNavEvent: boolean) => {
     if (shouldTriggerNavEvent) {
-      mockEvents.triggerNavigate(name);
+      mockEvents.triggerToggleWidget(name);
     }
     if (this.activeTabIndex === index) return;
     if (!this.props.activeTabIndex) {

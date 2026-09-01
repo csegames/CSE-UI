@@ -27,7 +27,7 @@ import {
 } from './debugSessionNetworkingConstants';
 import { RootState } from '../redux/store';
 import { Dispatch } from 'redux';
-import { InitTopic, setInitialized } from '../redux/initializationSlice';
+import { LoadingTopic, setInitialized } from '../redux/loadingSlice';
 import { webConf } from './networkConfiguration';
 
 const autoconnectSession: DebugSession = {
@@ -52,10 +52,11 @@ export class DebugSessionService extends ExternalDataSource {
   private lastConfig: DebugSessionConfig = null;
 
   protected async bind(): Promise<ListenerHandle[]> {
+    // TODO: bind autoConnect listener
     if (game.isAutoConnectEnabled) {
       this.dispatch(setMatchAccess(MatchAccess.Online));
       this.dispatch(setDebugSessions([[autoconnectSession], autoconnectSession]));
-      this.dispatch(setInitialized({ topic: InitTopic.Matchmaking, result: true }));
+      this.dispatch(setInitialized({ topic: LoadingTopic.Matchmaking, result: true }));
       return [];
     }
 
@@ -71,7 +72,7 @@ export class DebugSessionService extends ExternalDataSource {
   }
 
   protected onReduxUpdate(reduxState: RootState, dispatch: Dispatch): void {
-    const ready = this.lastConfig && reduxState.initialization.completed && !this.reduxState.initialization.completed;
+    const ready = this.lastConfig && reduxState.loading.initCompleted && !this.reduxState.loading.initCompleted;
     super.onReduxUpdate(reduxState, dispatch);
     if (ready && this.lastConfig) this.onDebugSessionConfig(this.lastConfig);
   }
@@ -80,7 +81,7 @@ export class DebugSessionService extends ExternalDataSource {
     this.lastConfig = config;
     if (
       game.isAutoConnectEnabled ||
-      !this.reduxState.initialization.completed ||
+      !this.reduxState.loading.initCompleted ||
       this.reduxState.match.currentRound ||
       !config.scenario
     ) {

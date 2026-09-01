@@ -7,9 +7,31 @@
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface DragStartParams {
-  draggableID: string;
-  draggingRender: () => JSX.Element;
+// We use this instead of DOMRect internally, since a DOMRect can misbehave when passed through Redux.
+export interface SimpleRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  top: number;
+  left: number;
+  right: number;
+  bottom: number;
+}
+
+export function simpleRectFromDOMRect(dom?: DOMRect): SimpleRect {
+  const simple: SimpleRect = {
+    x: (dom?.x ?? 0) + 0,
+    y: (dom?.y ?? 0) + 0,
+    width: dom?.width ?? 0,
+    height: dom?.height ?? 0,
+    top: dom?.y ?? 0,
+    left: dom?.x ?? 0,
+    right: (dom?.x ?? 0) + (dom?.width ?? 0),
+    bottom: (dom?.y ?? 0) + (dom?.height ?? 0)
+  };
+
+  return simple;
 }
 
 export interface DropTargetParams {
@@ -19,15 +41,20 @@ export interface DropTargetParams {
   element?: HTMLDivElement;
 }
 
+export interface DraggableRenderParams {
+  bounds: SimpleRect;
+  render: () => React.ReactNode;
+}
+
 interface DragAndDropState {
   /** The id of the single Draggable currently being dragged.  Else null. */
   currentDraggableID: string;
-  currentDraggableBounds: DOMRect;
+  currentDraggableBounds: SimpleRect;
   dragDelta: [number, number];
   forcedDraggableID: string;
   /** First key is a dropType.  Second key is a dropTargetID. */
   dropTargets: Dictionary<Dictionary<DropTargetParams>>;
-  currentDraggingRender: () => JSX.Element;
+  currentDraggingRender: () => React.ReactNode;
 }
 
 function buildDefaultDragAndDropState() {
@@ -47,9 +74,9 @@ export const dragAndDropSlice = createSlice({
   name: 'dragAndDrop',
   initialState: buildDefaultDragAndDropState(),
   reducers: {
-    startDrag: (state: DragAndDropState, action: PayloadAction<DragStartParams>) => {
-      state.currentDraggableID = action.payload.draggableID;
-      state.currentDraggingRender = action.payload.draggingRender;
+    startDrag: (state: DragAndDropState, action: PayloadAction<string>) => {
+      state.currentDraggableID = action.payload;
+      state.dragDelta = [0, 0];
     },
     endDrag: (state: DragAndDropState) => {
       state.currentDraggableID = null;
@@ -57,8 +84,9 @@ export const dragAndDropSlice = createSlice({
       state.currentDraggingRender = null;
       state.dragDelta = [0, 0];
     },
-    reportDraggableBounds: (state: DragAndDropState, action: PayloadAction<DOMRect>) => {
-      state.currentDraggableBounds = action.payload;
+    reportDraggableRenderData: (state: DragAndDropState, action: PayloadAction<DraggableRenderParams>) => {
+      state.currentDraggableBounds = action.payload.bounds;
+      state.currentDraggingRender = action.payload.render;
     },
     addDropTarget: (state: DragAndDropState, action: PayloadAction<DropTargetParams>) => {
       const { dropType, dropTargetID } = action.payload;
@@ -85,7 +113,7 @@ export const dragAndDropSlice = createSlice({
 export const {
   startDrag,
   endDrag,
-  reportDraggableBounds,
+  reportDraggableRenderData,
   addDropTarget,
   removeDropTarget,
   updateDragDelta,

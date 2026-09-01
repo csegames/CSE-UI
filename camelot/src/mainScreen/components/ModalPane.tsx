@@ -7,29 +7,37 @@
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { CSSKey, getCSSVariable } from '../MainScreen-Styles-Variables';
-import { hideModal, ModalParams } from '../redux/modalsSlice';
+import { hideModal, ModalButtonModel, ModalParams } from '../redux/modalsSlice';
 import { RootState } from '../redux/store';
-import { FooterButtonData } from './menu/menuData';
-import { Menu } from './menu/Menu';
+import Escapable from './Escapable';
+import { BorderBackground, BorderType, FactionBorder } from './FactionBorder';
+import { CornerButtonType, FactionCornerButton } from './FactionCornerButton';
+import { FactionButton } from './FactionButton';
+import { CSETransition } from '../../shared/components/CSETransition';
+import { getStringTableValue, StringIDGeneralOk } from '../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
 
 // Styles.
 const Root = 'HUD-ModalPane-Root';
-const PreviousWrapper = 'HUD-ModalPane-PreviousModalWrapper';
-const CurrentWrapper = 'HUD-ModalPane-CurrentModalWrapper';
+const ModalRoot = 'HUD-ModalPane-ModalRoot';
+const Veil = 'HUD-ModalPane-Veil';
+const Wrapper = 'HUD-ModalPane-Wrapper';
+const DefaultModalContainer = 'HUD-ModalPane-DefaultModalContainer';
+const ContentRoot = 'HUD-ModalPane-ContentRoot';
 const MessageText = 'HUD-ModalPane-MessageText';
+const ButtonsSection = 'HUD-ModalPane-ButtonsSection';
+const Button = 'HUD-ModalPane-Button';
 
 interface State {
-  shouldShow: boolean;
-  // Stash the displayed modals so we can animate between modals if multiple are queued.
-  currentModal: ModalParams | null;
-  prevModal: ModalParams | null;
+  shownModals: ModalParams[];
+  exitingModals: ModalParams[];
 }
 
 interface ReactProps {}
 
 interface InjectedProps {
   modals: ModalParams[];
+  stringTable: Record<string, StringTableEntryDef>;
   dispatch?: Dispatch;
 }
 
@@ -40,101 +48,151 @@ class ModalPane extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      shouldShow: false,
-      currentModal: null,
-      prevModal: null
+      shownModals: props.modals,
+      exitingModals: []
     };
   }
 
   public render(): React.ReactNode {
-    const modalClass = this.state.shouldShow ? 'show' : '';
+    const shouldShow = this.props.modals.length + this.state.exitingModals.length > 0;
+
+    // Weird quirk of React: it treats each .map() call as a separate hierarchy for DOM-replication purposes.
+    // That means that if we want old modals to be reused, we have to combine these arrays and only use a
+    // single .map() call, rather than mapping from each array sequentially.
+    const modals = [...this.props.modals, ...this.state.exitingModals];
+
+    return <div className={`${Root}${shouldShow ? ' show' : ''}`}>{modals.map(this.renderModal.bind(this))}</div>;
+  }
+
+  public static getDerivedStateFromProps(props: Props, state: State): State {
+    if (props.modals !== state.shownModals) {
+      // If the list of modals is shorter, we want to retain the exiting modals until they animate out.
+      if (props.modals.length < state.shownModals.length) {
+        const newExitingModals = state.shownModals.slice(props.modals.length);
+        const exitingModals = [...newExitingModals, ...state.exitingModals];
+        return { shownModals: props.modals, exitingModals };
+      }
+
+      return { shownModals: props.modals, exitingModals: state.exitingModals };
+    }
+
+    return state;
+  }
+
+  private buildWrapperStyle(params: ModalParams): React.CSSProperties {
+    const style: React.CSSProperties = {};
+
+    if (params?.maxWidth?.length > 0) {
+      style.maxWidth = params?.maxWidth;
+    }
+
+    return style;
+  }
+
+  private renderModal(modal: ModalParams | null, index: number): React.ReactNode {
+    if (!modal) {
+      return null;
+    }
+
+    const closeSelf = (): void => {
+      this.onEscape();
+    };
+
+    const globalIndex = index + (this.state.exitingModals.includes(modal) ? this.props.modals.length : 0);
+
+    // Show the veil if it is the top modal that should be shown right now.
+    // You are that top modal only if you are the top modal in the stack from props.
+    const isTopVeil = globalIndex === this.props.modals.length - 1;
+    // The modal itself should show only if props wants it.
+    const isRetained = globalIndex < this.props.modals.length;
+
     return (
-      <div className={`${Root} ${modalClass}`}>
-        <div className={PreviousWrapper} key={`Prev${this.state.prevModal?.id ?? 'None'}`}>
-          {this.renderModal(this.state.prevModal && { ...this.state.prevModal, escapable: false })}
-        </div>
-        <div className={CurrentWrapper} key={`Curr${this.state.currentModal?.id ?? 'None'}`}>
-          {this.renderModal(this.state.currentModal)}
+      <div className={ModalRoot} key={`ModalRoot${modal.id}`}>
+        <CSETransition show={isTopVeil} key={`Veil${modal.id}`}>
+          <div className={Veil}></div>
+        </CSETransition>
+        <div className={Wrapper} style={this.buildWrapperStyle(modal)} key={`Wrapper${modal.id}`}>
+          {isRetained && modal.escapable && <Escapable escapeID={modal.id} onEscape={closeSelf.bind(this)} />}
+          <CSETransition
+            key={`Content${modal.id}`}
+            show={isRetained}
+            onExitComplete={() => {
+              // Only an exiting modal will trigger this event.  Would love to fire them off individually,
+              // but if multiple happen to finish exiting on the same frame, state won't update properly.
+              // So instead we take the risk of some disappearing a fraction of a second early.
+              this.state.exitingModals.forEach((params) => {
+                params.onClose?.();
+              });
+              this.setState({ exitingModals: [] });
+            }}
+          >
+            {this.renderModalContent(modal)}
+          </CSETransition>
         </div>
       </div>
     );
   }
 
-  private renderModal(modal: ModalParams | null): React.ReactNode {
-    if (!modal) {
-      return null;
-    }
-    const getFooterButtons = (): FooterButtonData[] => {
-      const footerButtons: FooterButtonData[] = [];
-      if (modal.content.buttons) {
-        for (const extraButton of modal.content.buttons) {
-          footerButtons.push({
-            onClick: extraButton.onClick,
-            text: extraButton.text
-          });
-        }
-      }
-      return footerButtons;
-    };
-    const closeSelf = (): void => {
-      modal.onClose?.();
-      this.onEscape();
-    };
-    return (
-      <>
-        <Menu
-          menuID={`modalPane-${modal.id}`}
-          title={modal.content.title}
-          closeSelf={closeSelf.bind(this)}
-          escapable={modal.escapable}
-          hideCloseButton={modal.hideCloseButton}
-          getFooterButtons={getFooterButtons.bind(this)}
+  private renderModalContent(modal: ModalParams): React.ReactNode {
+    if (typeof modal.content === 'function') {
+      return modal.content(modal);
+    } else {
+      const buttonModels = modal.content.buttons?.length > 0 ? modal.content.buttons : this.getDefaultButtonModels();
+      return (
+        <FactionBorder
+          className={DefaultModalContainer}
+          key={`modalPane-${modal.id}`}
+          type={BorderType.Decorative}
+          background={BorderBackground.PatternLarge}
+          titleText={modal.content.title}
+          cornerButtons={
+            modal.hideCloseButton
+              ? []
+              : [
+                  <FactionCornerButton
+                    small
+                    type={CornerButtonType.Close}
+                    onClick={() => {
+                      this.props.dispatch?.(hideModal());
+                    }}
+                  />
+                ]
+          }
         >
-          <>
+          <div className={ContentRoot}>
             {modal.content.message && <div className={MessageText}>{modal.content.message}</div>}
             {modal.content.body}
-          </>
-        </Menu>
-      </>
-    );
+            <div className={ButtonsSection}>
+              {buttonModels.map((model, index) => {
+                return (
+                  <FactionButton
+                    className={Button}
+                    key={`FooterButton${index}`}
+                    disabled={model.isDisabled}
+                    onClick={model.onClick}
+                  >
+                    {model.text}
+                  </FactionButton>
+                );
+              })}
+            </div>
+          </div>
+        </FactionBorder>
+      );
+    }
   }
 
   private onEscape(): void {
-    // Hiding the modal will
     this.props.dispatch(hideModal());
   }
 
-  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot?: any): void {
-    // If content of current modal has changed, update state
-    if (
-      this.props.modals[0] &&
-      this.state.currentModal &&
-      prevState.currentModal &&
-      this.props.modals[0].id === this.state.currentModal.id &&
-      this.props.modals[0].content !== prevState.currentModal.content
-    ) {
-      this.setState({ currentModal: { ...this.state.currentModal, content: this.props.modals[0].content } });
-    }
-    // If the current modal has changed, update state.
-    if (this.props.modals[0]?.id != this.state.currentModal?.id) {
-      this.setState({ currentModal: this.props.modals[0], prevModal: this.state.currentModal });
-      if (this.props.modals.length > 0) {
-        if (!this.state.shouldShow) {
-          this.setState({ shouldShow: true });
-        }
-      } else {
-        window.setTimeout(() => {
-          this.setState({ shouldShow: false, prevModal: null });
-        }, this.getFadeDurationMillis());
+  private getDefaultButtonModels(): ModalButtonModel[] {
+    return [
+      {
+        text: getStringTableValue(StringIDGeneralOk, this.props.stringTable),
+        onClick: () => this.props.dispatch?.(hideModal())
       }
-    }
-  }
-
-  private getFadeDurationMillis(): number {
-    // Get rid of anything non-numeric so we can convert safely.
-    const stringDuration = getCSSVariable(CSSKey.ModalFadeDuration).replace(/[^0-9\.]+/g, '');
-    const duration = +stringDuration * 1000;
-    return duration;
+    ];
   }
 }
 
@@ -143,7 +201,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
 
   return {
     ...ownProps,
-    modals
+    modals,
+    stringTable: state.stringTable.stringTable
   };
 }
 

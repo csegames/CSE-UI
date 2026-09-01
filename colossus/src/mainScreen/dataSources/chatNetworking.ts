@@ -6,8 +6,8 @@
 
 import ExternalDataSource from '../redux/externalDataSource';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import { CSEChat, TimedMessage } from '@csegames/library/dist/_baseGame/chat/CSEChat';
-import { chat } from '@csegames/library/dist/_baseGame/chat/chat_proto';
+import { CSEChat, TimedMessage } from '@csegames/library/dist/_baseGame/legacyChat/CSEChat';
+import { chat } from '@csegames/library/dist/_baseGame/legacyChat/chat_proto';
 import { Dispatch } from 'redux';
 import { RootState } from '../redux/store';
 import { FeatureFlags } from '../redux/featureFlagsSlice';
@@ -39,7 +39,7 @@ const RoomCategory = chat.RoomInfo.RoomCategory;
 const DEFAULT_CHAT_SERVER_PORT = 4543;
 
 interface ReactProps {
-  slashCommands: SlashCommandRegistry<RootState>;
+  slashCommands: SlashCommandRegistry<RootState, Dispatch>;
 }
 
 interface ChatServerRecord {
@@ -123,9 +123,9 @@ export class ChatService extends ExternalDataSource<ReactProps> implements Liste
   protected onReduxUpdate(reduxState: RootState, dispatch: Dispatch): void {
     super.onReduxUpdate(reduxState, dispatch);
 
-    const { initialization } = this.reduxState;
+    const { loading } = this.reduxState;
 
-    if (initialization.completed && !this.connecting) {
+    if (loading.initCompleted && !this.connecting) {
       this.setup();
     }
 
@@ -143,22 +143,23 @@ export class ChatService extends ExternalDataSource<ReactProps> implements Liste
       return;
     }
 
-    if (!isMatch(this.reduxState.match.currentRound)) {
+    const round = this.reduxState.match?.currentRound;
+    if (!round) {
       return;
     }
 
-    const chatServerAddress = this.reduxState.match.currentRound?.chatServerAddress;
-    if (chatServerAddress) {
+    if (isMatch(round) && round.chatServerAddress) {
       this.connecting = true;
-      const fragments = chatServerAddress.split(':');
+      const fragments = round.chatServerAddress.split(':');
       const host = fragments[0];
       const port = Number(fragments[1]);
       window.setTimeout(this.connect.bind(this, host, port), 0);
       return;
     }
-    if (game.isAutoConnectEnabled && game.serverHost) {
+
+    if (round.gameServerAddress) {
       this.connecting = true;
-      window.setTimeout(this.connect.bind(this, game.serverHost, DEFAULT_CHAT_SERVER_PORT), 0);
+      window.setTimeout(this.connect.bind(this, round.gameServerAddress, DEFAULT_CHAT_SERVER_PORT), 0);
       return;
     }
   }
@@ -231,7 +232,7 @@ export class ChatService extends ExternalDataSource<ReactProps> implements Liste
     // For DMs, also keep track of senders so we can /r at them.
     if (message.type === chat.ChatMessage.MessageTypes.Direct) {
       // But don't add yourself to the sender list.
-      if (this.reduxState.player.name !== message.senderName) {
+      if (this.reduxState.entities.self.name !== message.senderName) {
         this.dispatch(addDMSenderName(message.senderName));
       }
     }

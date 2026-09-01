@@ -6,15 +6,9 @@
 
 import * as React from 'react';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import {
-  ChampionCostumeInfo,
-  ChampionGQL,
-  ChampionInfo,
-  PerkDefGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { CharacterClassDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
-import { AbilityDisplayDef } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Dispatch } from '@reduxjs/toolkit';
@@ -36,6 +30,10 @@ import {
 } from '../../redux/abilitySlice';
 import { IDLookupTable } from '../../redux/gameSlice';
 import { getWornCostumeForChampion } from '../../helpers/characterHelpers';
+import { AbilityDisplayDef } from '../../dataSources/manifest/abilityDisplayManifest';
+import { PerkDef } from '../../dataSources/manifest/perkManifest';
+import { CostumeDef } from '../../dataSources/manifest/costumeManifest';
+import { ChampionDef } from '../../dataSources/manifest/championManifest';
 
 const Container = 'ChampionProfile-ChampionDetails-Container';
 const Background = 'ChampionProfile-ChampionDetails-Background';
@@ -57,13 +55,13 @@ const AbilityKeybindText = 'ChampionProfile-ChampionDetails-AbilityKeybindText';
 interface ReactProps {}
 
 interface InjectedProps {
-  selectedChampion: ChampionInfo;
+  selectedChampion: ChampionDef;
   stringTable: Dictionary<StringTableEntryDef>;
   characterClassDefs: IDLookupTable<CharacterClassDef>;
-  abilityDisplayDefs: IDLookupTable<AbilityDisplayDef>;
-  championCostumes: ChampionCostumeInfo[];
+  abilityDisplayDefsByNumericID: IDLookupTable<AbilityDisplayDef>;
+  championCostumes: CostumeDef[];
   champions: ChampionGQL[];
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   usingGamepadInMainMenu: boolean;
   dispatch?: Dispatch;
 }
@@ -115,7 +113,7 @@ class AFullScreenChampionDetails extends React.Component<Props> {
     }
 
     const keybindInfo = getKeybindInfoForAbility(type, this.props.usingGamepadInMainMenu);
-    const display = this.props.abilityDisplayDefs[abilityDisplayIDs[abilityID]];
+    const display = this.props.abilityDisplayDefsByNumericID[abilityDisplayIDs[abilityID]];
     if (!display || !keybindInfo) {
       return null;
     }
@@ -158,7 +156,7 @@ class AFullScreenChampionDetails extends React.Component<Props> {
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { selectedChampion, championCostumes } = state.championInfo;
   const { stringTable } = state.stringTable;
-  const { abilityDisplayDefs, characterClassDefs } = state.game;
+  const { abilityDisplayDefsByNumericID, characterClassDefs } = state.game;
   const { usingGamepadInMainMenu } = state.baseGame;
   const { champions } = state.profile;
   const { perksByID } = state.store;
@@ -168,7 +166,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     selectedChampion,
     stringTable,
     characterClassDefs,
-    abilityDisplayDefs,
+    abilityDisplayDefsByNumericID,
     championCostumes,
     champions,
     perksByID,

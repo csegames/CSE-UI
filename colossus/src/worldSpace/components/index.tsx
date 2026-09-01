@@ -14,18 +14,13 @@ import { LifeState } from '@csegames/library/dist/hordetest/game/types/LifeState
 import { ItemGameplayType } from '@csegames/library/dist/hordetest/game/types/ItemGameplayType';
 import { Binding } from '@csegames/library/dist/_baseGame/types/Keybind';
 import {
-  BaseEntityStateModel,
+  BaseEntityState,
   EntityResource,
-  findEntityResource,
   WorldUIPositionMapModel,
   WorldUIPositionModel
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
-import { CharacterKind } from '@csegames/library/dist/hordetest/game/types/CharacterKind';
-import { clientAPI } from '@csegames/library/dist/hordetest/WorldSpaceClientAPI';
-import { cloneDeep } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { ArrayMap } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { EntityResourceIDs } from '@csegames/library/dist/hordetest/game/types/EntityResourceIDs';
 import { VoiceChatMemberStatus } from '@csegames/library/dist/_baseGame/types/VoiceChatMemberSettings';
 
 const WorldUIContainer = 'WorldSpace-WorldUIContainer';
@@ -107,7 +102,7 @@ export interface PlayerDifferentiatorState extends WorldUIState {
 
 export interface ObjectiveState extends WorldUIState {
   type: WorldUIWidgetType.Objective;
-  entity: BaseEntityStateModel;
+  entity: BaseEntityState;
   indicator: string;
   lastDecreaseDate: Date;
 }
@@ -150,19 +145,6 @@ export class WorldUI extends React.Component<{}, State> {
         )}
       </>
     );
-  }
-
-  public componentDidMount() {
-    this.handles = [
-      clientAPI.bindDamageTextListener(this.handleUpdateDamageText),
-      clientAPI.bindHealthBarListener(this.handleUpdateHealthBar),
-      clientAPI.bindInteractionBarListener(this.handleUpdateInteractionBar),
-      clientAPI.bindObjectiveListener(this.handleUpdateObjective),
-      clientAPI.bindProgressBarListener(this.handleUpdateProgressBar),
-      clientAPI.bindWorldUIRemovedListener(this.handleRemoveWorldUI),
-      clientAPI.bindWorldUIUpdatedListener(this.handleUpdateWorldUI),
-      clientAPI.bindWorldUIPositionMapUpdatedListener(this.handleUpdateWorldUIPositionMap)
-    ];
   }
 
   public componentWillUnmount(): void {
@@ -233,195 +215,5 @@ export class WorldUI extends React.Component<{}, State> {
         );
       }
     }
-  };
-
-  private handleUpdateWorldUI = (id: number, x: number, y: number, width: number, height: number, html: string) => {
-    const newWorldUIState: WorldUIState = { type: WorldUIWidgetType.Default, id, x, y, width, height, html };
-    this.createOrUpdateWorldUI(newWorldUIState);
-  };
-
-  private handleRemoveWorldUI = (id: number) => {
-    this.removeWorldUI(id);
-  };
-
-  private handleUpdateWorldUIPositionMap = (newState: WorldUIPositionMapModel) => {
-    this.updateWorldUIPositionMap(newState);
-  };
-
-  private handleUpdateProgressBar = (
-    id: number,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    percent: number
-  ) => {
-    this.createOrUpdateWorldUI({ type: WorldUIWidgetType.ProgressBar, id, x, y, width, height, percent });
-  };
-
-  private handleUpdateHealthBar = (
-    id: number,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    name: string,
-    kind: HealthBarKind,
-    voiceChatStatus: VoiceChatMemberStatus,
-    voiceChatVolume: number,
-    barColor: number,
-    isShielded: boolean,
-    healthBarIcon: string,
-    rank: CharacterKind,
-    lifeState: LifeState,
-    deathStartTime: number,
-    downedStateEndTime: number,
-    interactionName: string,
-    interactionEnabled: boolean,
-    interactionDisabledReason: string,
-    interactionRange: number,
-    bindingName: string,
-    bindingIconClass: string,
-    worldTime: number,
-    resources: ArrayMap<EntityResource>
-  ) => {
-    this.createOrUpdateWorldUI({
-      type: WorldUIWidgetType.HealthBar,
-      id,
-      x,
-      y,
-      width,
-      height,
-      name,
-      kind,
-      voiceChatStatus,
-      voiceChatVolume,
-      barColor,
-      isShielded,
-      healthBarIcon,
-      rank,
-      lifeState,
-      deathStartTime,
-      downedStateEndTime,
-      interactionName,
-      interactionEnabled,
-      interactionDisabledReason,
-      interactionRange,
-      bindingName,
-      bindingIconClass,
-      worldTime,
-      resources
-    });
-  };
-
-  private handleUpdateInteractionBar = (
-    id: number,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    name: string,
-    description: string,
-    gameplayType: ItemGameplayType,
-    title: string,
-    enabled: boolean,
-    disabledReason?: string,
-    progress?: number,
-    keybind?: Binding
-  ) => {
-    const keybindCopy = keybind ? cloneDeep(keybind) : undefined;
-    this.createOrUpdateWorldUI({
-      type: WorldUIWidgetType.InteractionBar,
-      id,
-      x,
-      y,
-      width,
-      height,
-      name,
-      description,
-      gameplayType,
-      title,
-      enabled,
-      disabledReason,
-      progress,
-      keybind: keybindCopy
-    });
-  };
-
-  private handleUpdateObjective = (
-    id: number,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    currentWorldTime: number,
-    entity: BaseEntityStateModel
-  ) => {
-    //this code cannot trust that the entity information from the game client for an objective is set completely,
-    // so I'm adding a bunch of defensive code to account for it here until the great worldspace refactoring! --DM
-    if (!entity || !entity.objective) {
-      console.warn(
-        'Either objectiveState is undefined or objectiveState.objective is undefined.  This could possibly generate an error state: ',
-        entity
-      );
-    }
-
-    // The worldspace ui does not seem to know the current game time from moment to moment
-    // we'll use the information that we get from this update to figure out how long ago the decrease happened
-    // and store it in a way we can check against it later on.
-    const lastDecreaseDate = new Date();
-    const lastDecreaseTime =
-      findEntityResource(entity.resources, EntityResourceIDs.CaptureProgress)?.lastDecreaseTime ?? 0;
-    lastDecreaseDate.setSeconds(lastDecreaseDate.getSeconds() - currentWorldTime + lastDecreaseTime);
-
-    let indicator: string;
-    if (!entity.objective || isNaN(+entity.objective.indicator)) {
-      indicator = '';
-    } else {
-      indicator = String.fromCharCode(entity.objective.indicator);
-    }
-
-    const newObjectiveState: ObjectiveState = {
-      type: WorldUIWidgetType.Objective,
-      id,
-      x,
-      y,
-      width,
-      height,
-      entity,
-      lastDecreaseDate,
-      indicator
-    };
-
-    this.createOrUpdateWorldUI(newObjectiveState);
-  };
-
-  private handleUpdateDamageText = (id: number, x: number, y: number, width: number, height: number, text: string) => {
-    const newWorldUIState: DamageTextState = {
-      type: WorldUIWidgetType.DamageText,
-      id,
-      x,
-      y,
-      width,
-      height,
-      text
-    };
-    this.createOrUpdateWorldUI(newWorldUIState);
-  };
-
-  private createOrUpdateWorldUI = (newWorldUI: WorldUIType) => {
-    const worldUIs = cloneDeep(this.state.worldUIs);
-    worldUIs[newWorldUI.id] = newWorldUI;
-    this.setState({ worldUIs, worldUIPositionMap: this.state.worldUIPositionMap });
-  };
-
-  private removeWorldUI = (id: number) => {
-    const worldUIs = cloneDeep(this.state.worldUIs);
-    delete worldUIs[id];
-    this.setState({ worldUIs, worldUIPositionMap: this.state.worldUIPositionMap });
-  };
-
-  private updateWorldUIPositionMap = (newMap: WorldUIPositionMapModel) => {
-    this.setState({ worldUIs: this.state.worldUIs, worldUIPositionMap: newMap });
   };
 }

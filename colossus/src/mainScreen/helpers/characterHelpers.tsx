@@ -2,48 +2,26 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
  */
 
-import { CharacterClassDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
-import { IDLookupTable } from '../redux/gameSlice';
-import {
-  ChampionCostumeInfo,
-  ChampionGQL,
-  PerkDefGQL,
-  ClassDefRef,
-  ChampionInfo,
-  QuestGQL,
-  QuestDefGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { PerkType } from '@csegames/library/dist/hordetest/graphql/schema';
 import { updateStoreRemoveUnseenEquipment } from '../redux/storeSlice';
 import { Dispatch } from '@reduxjs/toolkit';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
-
-export function getCharacterClassStringIDForNumericID(classes: IDLookupTable<CharacterClassDef>, numericID: number) {
-  const classDef = classes[numericID];
-  if (classDef) {
-    return classDef.stringID;
-  }
-
-  return null;
-}
+import { CostumeDef } from '../dataSources/manifest/costumeManifest';
+import { PerkDef, PerkType } from '../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../dataSources/manifest/championManifest';
+import { QuestDef } from '../dataSources/manifest/questManifest';
 
 export function getThumbnailURLForChampion(
-  championCostumes: ChampionCostumeInfo[],
+  championCostumes: CostumeDef[],
   champions: ChampionGQL[],
-  perksByID: Dictionary<PerkDefGQL>,
-  champion: ClassDefRef
+  perksByID: Dictionary<PerkDef>,
+  champion: ChampionDef
 ): string {
   if (champion) {
-    const playerCostume: ChampionCostumeInfo = getWornCostumeForChampion(
-      championCostumes,
-      champions,
-      perksByID,
-      champion.id
-    );
+    const playerCostume: CostumeDef = getWornCostumeForChampion(championCostumes, champions, perksByID, champion.id);
     if (playerCostume) {
       return playerCostume.thumbnailURL;
     }
@@ -55,9 +33,9 @@ export function getThumbnailURLForChampion(
 export function getEquippedEmotesForChampion(
   championID: string,
   champions: ChampionGQL[],
-  perksByID: Dictionary<PerkDefGQL>,
+  perksByID: Dictionary<PerkDef>,
   maxEmoteCount: number
-): PerkDefGQL[] {
+): PerkDef[] {
   const champ = champions.find((c) => c.championID == championID);
   const equippedEmotes = champ?.emotePerkIDs?.map((epid) => perksByID[epid] ?? null) ?? [];
   while (equippedEmotes.length < maxEmoteCount) {
@@ -67,11 +45,11 @@ export function getEquippedEmotesForChampion(
 }
 
 export function getWornCostumeForChampion(
-  championCostumes: ChampionCostumeInfo[],
+  championCostumes: CostumeDef[],
   champions: ChampionGQL[],
-  perksByID: Dictionary<PerkDefGQL>,
+  perksByID: Dictionary<PerkDef>,
   championID: string
-): ChampionCostumeInfo {
+): CostumeDef {
   if (!championID) {
     return null;
   }
@@ -86,12 +64,13 @@ export function getWornCostumeForChampion(
     return null;
   }
 
-  return championCostumes.find((costume) => costume.id === costumePerk.costume.id);
+  return championCostumes.find((costume) => costume.id === costumePerk.costumeID);
 }
 
 export function getRaceIDFromCostumeForChampion(
   champions: ChampionGQL[],
-  perksByID: Dictionary<PerkDefGQL>,
+  perksByID: Dictionary<PerkDef>,
+  costumes: Dictionary<CostumeDef>,
   championID: string
 ): number {
   if (!championID) {
@@ -104,11 +83,12 @@ export function getRaceIDFromCostumeForChampion(
   }
 
   const costumePerk = perksByID[playerChampion.costumePerkID];
+  const costume = costumes[costumePerk?.costumeID];
 
-  return costumePerk?.costume?.numericID ?? 0;
+  return costume?.numericID ?? 0;
 }
 
-export function findChampionQuestProgress(champion: ChampionInfo, quests: QuestGQL[]): QuestGQL {
+export function findChampionQuestProgress(champion: ChampionDef, quests: QuestGQL[]): QuestGQL {
   if (champion && quests) {
     return quests.find((quest) => quest.id === champion.questID);
   }
@@ -116,7 +96,7 @@ export function findChampionQuestProgress(champion: ChampionInfo, quests: QuestG
   return null;
 }
 
-export function findChampionQuest(champion: ChampionInfo, quests: QuestDefGQL[]): QuestDefGQL {
+export function findChampionQuest(champion: ChampionDef, quests: QuestDef[]): QuestDef {
   if (champion && quests) {
     return quests.find((quest) => quest.id === champion.questID);
   }
@@ -124,7 +104,7 @@ export function findChampionQuest(champion: ChampionInfo, quests: QuestDefGQL[])
   return null;
 }
 
-export function getChampionPerkUnlockQuestIndex(champion: ChampionInfo, quests: QuestDefGQL[], perkID: string): number {
+export function getChampionPerkUnlockQuestIndex(champion: ChampionDef, quests: QuestDef[], perkID: string): number {
   const quest = findChampionQuest(champion, quests);
 
   if (quest) {
@@ -137,7 +117,7 @@ export function getChampionPerkUnlockQuestIndex(champion: ChampionInfo, quests: 
   return -1;
 }
 
-export function isChampionPendingLevelUp(champion: ChampionInfo, quests: QuestGQL[]): boolean {
+export function isChampionPendingLevelUp(champion: ChampionDef, quests: QuestGQL[]): boolean {
   // If this champion's quest has not been claimed to the current link...
   const questGQL = findChampionQuestProgress(champion, quests);
   if (questGQL && questGQL.currentQuestIndex > questGQL.nextCollection) {
@@ -183,8 +163,8 @@ export function markEquipmentSeen(
 }
 
 export function getUnlockedRuneModTierForChampion(
-  champion: ChampionInfo,
-  perksByID: Dictionary<PerkDefGQL>,
+  champion: ChampionDef,
+  perksByID: Dictionary<PerkDef>,
   ownedPerks: Dictionary<number>
 ): number {
   if (!champion) {
@@ -204,7 +184,7 @@ export function getUnlockedRuneModTierForChampion(
     }
 
     // If it's not for this champion, we don't care about it.
-    if (perk?.champion?.id !== champion.id) {
+    if (perk?.championID !== champion.id) {
       return highestTier;
     }
 

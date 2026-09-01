@@ -23,11 +23,11 @@ interface BorderStyle {
   healthBarBorderColor: string;
 }
 
-export interface Props {
+interface Props {
   state: HealthBarState;
 }
 
-export interface State {
+interface State {
   backFillPercentage: number;
 }
 

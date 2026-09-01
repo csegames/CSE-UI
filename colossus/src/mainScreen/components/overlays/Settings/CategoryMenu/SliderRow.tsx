@@ -7,10 +7,10 @@
 import * as React from 'react';
 import { ItemContainer } from '../ItemContainer';
 import { IntRangeOption } from '@csegames/library/dist/_baseGame/types/Options';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { toTitleCase } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { cloneDeep } from '@csegames/library/dist/_baseGame/utils/objectUtils';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const SliderContainer = 'Settings-CategoryMenu-SliderRow-SliderContainer';
 const Slider = 'Settings-CategoryMenu-SliderRow-Slider';
@@ -30,7 +30,7 @@ export function SliderRow(props: Props) {
   }
 
   function onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   return (

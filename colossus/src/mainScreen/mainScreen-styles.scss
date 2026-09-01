@@ -3157,6 +3157,18 @@
   height: 100%;
 }
 
+.MenuModal-RightOptions-ErrorLine {
+  position: absolute;
+  display: flex;
+  align-self: center;
+  width: 80%;
+  color: $ErrorRed;
+  font-family: Lato;
+  font-weight: bold;
+  font-size: 1.5vmin;
+  margin-top: 1.75vmin;
+}
+
 .MenuModal-RightOptions-ScrollableArea {
   display: flex;
   position: relative;
@@ -4412,6 +4424,8 @@
 
 .Settings-DefaultButtonPosition {
   position: absolute;
+  display: flex;
+  flex-direction: row;
   left: 3.7vmin;
   bottom: 3.7vmin;
 }
@@ -7695,10 +7709,18 @@
   margin-bottom: 0.375vw;
   background-position: center;
   background-size: cover;
+
+  &.queued {
+    border-color: $DisabledGray;
+  }
 }
 
 .StartScreen-Play-ModesButton:hover {
   border-color: rgb(249, 205, 5);
+
+  &.queued {
+    border-color: $DisabledGray;
+  }
 }
 
 .StartScreen-Play-ModesButtonContent {
@@ -7744,10 +7766,18 @@
   background-color: rgb(225, 138, 6);
   font-size: 1.25rem;
   padding: 0.25vw 0.5vw;
+
+  &.queued {
+    background-color: $DisabledGray;
+  }
 }
 
 .StartScreen-Play-ModesButton:hover .StartScreen-Play-ModesChange {
   background-color: rgb(249, 205, 5);
+
+  &.queued {
+    background-color: $DisabledGray;
+  }
 }
 
 .StartScreen-Play-Container {
@@ -8194,7 +8224,6 @@
   height: 1.7vmin;
   border: 0.2vmin solid #54c4e8;
   background-color: #00000000;
-  transform: rotate(45deg);
   padding: 0;
   margin-top: 1vmin;
 
@@ -10988,24 +11017,26 @@
   left: 0;
   display: flex;
   flex-direction: column;
-  width: 28vmin;
-  padding-top: 1.1vmin;
-  padding-bottom: 1.1vmin;
-  padding-left: 4.63vmin;
-  padding-right: 1.1vmin;
-  background-image: url(../images/hud/backgrounds/objective-details-bg.png);
-  background-size: 100% 100%;
+  width: 35vmin;
   text-shadow: 0 0 0.926vmin black, 0 0 0.926vmin black;
 }
 
 .ObjectiveDetails-ObjectiveGroupContainer {
   margin-top: 0.926vmin;
   margin-bottom: 0.926vmin;
+  padding-top: 1.1vmin;
+  padding-bottom: 1.1vmin;
+  padding-left: 6vmin;
+  padding-right: 1.1vmin;
+  background-image: url(../images/hud/backgrounds/objective-details-bg.png);
+  background-size: 100% 100%;
 }
 
 .ObjectiveDetails-ObjectiveContainer {
   transition: opacity 0.4s;
-  margin-bottom: 1vmin;
+  &:not(:last-child) {
+    margin-bottom: 1.25vmin;
+  }
 }
 
 .ObjectiveDetails-ObjectiveTitle {
@@ -11018,22 +11049,34 @@
   letter-spacing: 0.15rem;
 }
 
+.ObjectiveDetails-ObjectiveContainer.MainQuest .ObjectiveDetails-ObjectiveTitle {
+  font-size: 1.65rem;
+}
+
 .ObjectiveDetails-ObjectiveState {
   position: absolute;
-  margin-left: -1.85vmin;
-
-  &.no-text {
-    margin-top: 0.55vmin;
-  }
   display: block;
-  font-size: 1.35rem;
 
-  &.is-success {
-    color: rgba(43, 158, 5, 1);
+  &.MainQuest {
+    margin-left: -4.5vmin;
+    margin-top: -1.25vmin;
+    display: block;
+    width: 5vmin;
+
+    &.no-text {
+      margin-top: -1.25vmin;
+    }
   }
 
-  &.is-failure {
-    color: rgba(224, 0, 3, 1);
+  &.SideQuest {
+    margin-left: -4vmin;
+    margin-top: -1vmin;
+    display: block;
+    width: 4vmin;
+
+    &.no-text {
+      margin-top: -0.85vmin;
+    }
   }
 }
 
@@ -11047,6 +11090,10 @@
   &.no-title {
     padding: 0;
   }
+}
+
+.ObjectiveDetails-ObjectiveContainer.MainQuest .ObjectiveDetails-ObjectiveText {
+  font-size: 1.65rem;
 }
 
 .ObjectiveDetails-ObjectiveDetailsProgressBarWrap {
@@ -13012,6 +13059,8 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
 }
 
 .SpendQuestXPPotionsModal-ButtonContainer {
+  display: flex;
+  flex-direction: row;
   margin-top: 1vmin;
 }
 
@@ -13364,11 +13413,9 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
 }
 
 .HUD-TooltipPane-TooltipBackground {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  position: relative;
+  padding: 0.5vmin;
+  margin: -0.5vmin;
   background-color: #1f1f41;
   box-shadow: inset 0 0 0 0.25vmin #4443a1;
 }
@@ -13794,6 +13841,181 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
   }
 }
 
+.LoadingScreen-Container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: black;
+  background-size: 100% 100%;
+  background-repeat: 'no-repeat';
+}
+
+.LoadingScreen-ScenarioBackgroundImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.LoadingScreen-Champions {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 110vmin;
+  position: absolute;
+  top: 10vmin;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  @media (max-aspect-ratio: 4 / 3) {
+    width: 90vmin;
+  }
+}
+
+.LoadingScreen-ChampionsCentered {
+  justify-content: center;
+}
+
+.LoadingScreen-Champion {
+  margin-bottom: 2vmin;
+  margin-left: 2vmin;
+  margin-right: 2vmin;
+  width: 23.5vmin;
+  @media (max-aspect-ratio: 4 / 3) {
+    width: 18.5vmin;
+  }
+}
+
+.LoadingScreen-ChampionPortrait {
+  position: relative;
+  width: 100%;
+}
+
+.LoadingScreen-ChampionPortraitImage {
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+  height: 29.5vmin;
+  @media (max-aspect-ratio: 4 / 3) {
+    height: 23.125vmin;
+  }
+}
+
+.LoadingScreen-ChampionPortraitShadow {
+  background: linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(0, 0, 0, 0.747) 100%);
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.LoadingScreen-ChampionPortraitName {
+  font-family: Colus;
+  line-height: 1;
+  position: absolute;
+  bottom: 0;
+  color: white;
+  font-size: 2rem;
+  padding: 1vmin;
+}
+
+.LoadingScreen-ChampionNameContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1vmin;
+  background-color: #101326;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.LoadingScreen-ChampionName {
+  font-family: Lato;
+  line-height: 1;
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-align: center;
+  color: white;
+  text-overflow: ellipsis;
+}
+
+.LoadingScreen-VoiceChat-TeamJoinIcon {
+  color: white;
+  font-size: 2.5rem;
+}
+
+.LoadingScreen-Logo {
+  position: fixed;
+  left: 5.55vmin;
+  bottom: 2.95vmin;
+  width: 23.35vmin;
+  height: 6.1vmin;
+  background-image: url('../images/fullscreen/loadingscreen/logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.LoadingScreen-LoadingTextPosition {
+  position: fixed;
+  right: 1.85vmin;
+  bottom: 0.926vmin;
+  display: flex;
+  align-items: center;
+}
+
+.LoadingScreen-Text {
+  width: fit-content;
+  text-align: right;
+  font-size: 1.35rem;
+  color: white;
+  font-family: Lato;
+  font-weight: bold;
+  margin-right: 2.778vmin;
+  max-width: 28.7vmin;
+}
+
+.LoadingScreen-HintContainer {
+  min-height: 9.25vmin;
+  min-width: 45.55vmin;
+  max-width: 55.55vmin;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  background-image: url('../images/hud/backgrounds/BlackBackground80.png');
+  background-repeat: repeat;
+  outline-offset: -0.45vmin;
+  outline: 1px solid rgba(72, 72, 72, 1);
+  position: absolute;
+  bottom: 2.778vmin;
+  left: 50%;
+  transform: translate(-50%, 0%);
+}
+
+.LoadingScreen-HintText {
+  position: relative;
+  font-size: 1.35rem;
+  color: white;
+  font-family: Lato;
+  margin-right: 2vmin;
+  margin-left: 2vmin;
+}
+
+.LoadingScreen-Sprite {
+  display: inline-block;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  width: 9.25vmin;
+  height: 9.25vmin;
+}
+
 .LobbyChampionStatus-Root {
   @extend .Column;
   position: relative;
@@ -14098,52 +14320,6 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
   margin-right: 1rem;
   background-size: contain;
   background-image: url(../images/battlepass/lock_icon_black.png);
-}
-
-.LoadingScreen-VoiceChat-Container {
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  left: 4vmin;
-  top: 4vmin;
-}
-
-.LoadingScreen-VoiceChat-Item {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5vmin;
-  height: 5vmin;
-  width: 25vmin;
-  margin: 0.5vmin;
-  background-color: rgb(0, 0, 0, 0.5);
-
-  &:hover {
-    background-color: rgb(0, 0, 0, 0.8);
-  }
-}
-
-.LoadingScreen-VoiceChat-NameContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-  width: 90%;
-}
-
-.LoadingScreen-VoiceChat-Name {
-  color: white;
-  font-size: 2rem;
-  margin-left: 1vmin;
-  overflow: hidden;
-  white-space: nowrap;
-  font-family: Lato;
-}
-
-.LoadingScreen-VoiceChat-TeamJoinIcon {
-  color: white;
-  font-size: 2.5rem;
 }
 
 .StarBadge-Icon {
@@ -16511,6 +16687,7 @@ td.ObjectiveDetails-SegmentedProgressBarSegment {
   font-size: 2rem;
   color: white;
 }
+
 .ChampionProfile-ProgressionTree-StatusTooltip-Description {
   position: relative;
   margin-top: 0.5vmin;

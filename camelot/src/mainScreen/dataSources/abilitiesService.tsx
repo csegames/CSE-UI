@@ -7,12 +7,13 @@
 import * as React from 'react';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import ExternalDataSource from '../redux/externalDataSource';
+import { ExternalDataSource } from '../redux/externalDataSource';
 import {
   AbilityStatus,
   ButtonLayout,
   AbilityGroup,
-  AbilityEditStatus
+  AbilityEditStatus,
+  AbilityStateFlags
 } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
 import {
   deleteAbilityButtonLayout,
@@ -24,7 +25,7 @@ import {
   updateAbilityEditStatus,
   updateAbilityGroup
 } from '../redux/abilitiesSlice';
-import { InitTopic, setInitialized } from '../redux/initializationSlice';
+import { LoadingTopic, setInitialized } from '../redux/loadingSlice';
 import { HUDLayer, HUDWidgetRegistration, setSelectedWidget } from '../redux/hudSlice';
 import { registerHUDWidget } from './hudService';
 import { AbilityBar } from '../components/abilityBars/AbilityBar';
@@ -33,6 +34,12 @@ import {
   HUDVerticalAnchor,
   HUDWidgetState
 } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import { addPopUpAnnouncement, hidePopUpAnnouncements } from '../redux/popUpAnnouncementsSlice';
+import { getStringTableValue } from '../helpers/stringTableHelpers';
+import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
+
+// String IDs
+const StringIDPopUpAnnouncementAbilityFailCooldown = 'PopUpAnnouncementAbilityFailCooldown';
 
 export class AbilitiesService extends ExternalDataSource {
   protected bind(): Promise<ListenerHandle[]> {
@@ -48,7 +55,7 @@ export class AbilitiesService extends ExternalDataSource {
 
     // Have to make sure we're registered for ability events before the client starts
     // sending those events!
-    this.dispatch(setInitialized({ topic: InitTopic.Abilities, result: true }));
+    this.dispatch(setInitialized({ topic: LoadingTopic.Abilities, result: true }));
 
     return handles;
   }
@@ -61,6 +68,23 @@ export class AbilitiesService extends ExternalDataSource {
       timestamp: new Date()
     };
     this.dispatch(updateAbilityActivated(params));
+    const ability = this.reduxState.abilities.abilities[abilityId];
+    if (ability.state & AbilityStateFlags.Cooldown) {
+      clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_COOLDOWN);
+      this.dispatch(hidePopUpAnnouncements());
+      this.dispatch(
+        addPopUpAnnouncement([
+          getStringTableValue(StringIDPopUpAnnouncementAbilityFailCooldown, this.reduxState.stringTable.stringTable),
+          '#f60000'
+        ])
+      );
+    } else if (ability.disabledReason) {
+      clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_FAILURE);
+      this.dispatch(hidePopUpAnnouncements());
+      this.dispatch(addPopUpAnnouncement([ability.disabledReason, '#f60000']));
+    } else {
+      clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_CLICK);
+    }
   }
 
   private handleAbilityEditStatusUpdated(newStatus: AbilityEditStatus): void {
@@ -81,32 +105,44 @@ export class AbilitiesService extends ExternalDataSource {
     // The client will send us an update event for every layout post-init.  When that happens, we register
     // the layouts with the HUD Widget system, which allows us to set a default position.
 
-    let widgetName: string = `Bar: Abilities ${layout.id}`;
+    let id: string = `Bar: Abilities ${layout.id}`;
+    let nameStringID = 'HUDEditorWidgetNameBarAbilities';
+    let nameStringTokens = { LAYOUT_ID: String(layout.id) };
 
     // If this layout has not yet been registered with the HUD, register it!
-    if (!this.reduxState.hud.widgets[widgetName] || !this.reduxState.hud.widgets[widgetName].registration) {
+    if (!this.reduxState.hud.widgets[id] || !this.reduxState.hud.widgets[id].registration) {
       let defaults: HUDWidgetState = {
         xAnchor: HUDHorizontalAnchor.Center,
         yAnchor: HUDVerticalAnchor.Bottom,
-        yOffset: 30 //vmin
+        yOffset: 3.75
       };
 
-      if (layout.id === -2) {
-        widgetName = 'Bar: Siege Engine';
-        defaults.yOffset = 10; //vmin
+      if (layout.id >= 1) {
+        defaults.yOffset += (layout.id - 1) * 6;
+      } else if (layout.id === -3) {
+        id = 'Bar: Dynamic Abilities';
+        nameStringID = 'HUDEditorWidgetNameBarDynamicAbilities';
+        nameStringTokens = undefined;
+        defaults.yOffset += 12;
+      } else if (layout.id === -2) {
+        id = 'Bar: Siege Engine';
+        nameStringID = 'HUDEditorWidgetNameBarSiegeEngine';
+        nameStringTokens = undefined;
       } else if (layout.id === -1) {
-        widgetName = 'Bar: Build Mode';
-        defaults.yOffset = 10; //vmin
-      } else if (layout.id === 1) {
-        defaults.yOffset = 5;
+        id = 'Bar: Build Mode';
+        nameStringID = 'HUDEditorWidgetNameBarBuildMode';
+        nameStringTokens = undefined;
       }
 
       const registry: HUDWidgetRegistration = {
-        name: widgetName,
+        id,
+        nameStringID,
+        nameStringTokens,
         defaults,
+        requiresGameDefsLoaded: true,
         layer: HUDLayer.HUD,
-        render: () => {
-          return <AbilityBar layoutId={layout.id} widgetId={widgetName} />;
+        render: (isDragCopy: boolean) => {
+          return <AbilityBar isDragCopy={isDragCopy} layoutId={layout.id} widgetId={id} />;
         }
       };
       registerHUDWidget(registry);

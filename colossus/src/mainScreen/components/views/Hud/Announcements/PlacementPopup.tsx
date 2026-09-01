@@ -7,9 +7,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 
 const Container = 'PlacementPopup-Container';
 const ContainerMinimized = 'PlacementPopup-ContainerMinimized';
@@ -76,7 +76,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   return {
     ...ownProps,
     stringTable: state.stringTable.stringTable,
-    rank: state.player.rank
+    rank: state.entities.self.rank
   };
 }
 

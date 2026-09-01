@@ -11,19 +11,16 @@ import { ThumbsUpButton } from './ThumbsUpButton';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numberUtils';
-import {
-  ChampionCostumeInfo,
-  ChampionInfo as ChampionInfoData,
-  OvermindCharacter,
-  OvermindSummaryGQL,
-  PerkDefGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { OvermindCharacter, OvermindSummaryGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { QuestsByType } from '../../../redux/questSlice';
 import { AccountID } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
 import { Dispatch } from '@reduxjs/toolkit';
+import { CostumeDef } from '../../../dataSources/manifest/costumeManifest';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
+import { PerkDef } from '../../../dataSources/manifest/perkManifest';
 
 const Container = 'GameStats-StatsListItem-Container';
 const Level = 'GameStats-StatsListItem-Level';
@@ -54,9 +51,9 @@ interface ReactProps {
 
 interface InjectedProps {
   overmindSummary: OvermindSummaryGQL;
-  championCostumes: ChampionCostumeInfo[];
-  champions: ChampionInfoData[];
-  perksByID: Dictionary<PerkDefGQL>;
+  championCostumes: CostumeDef[];
+  champions: ChampionDef[];
+  perksByID: Dictionary<PerkDef>;
   quests: QuestsByType;
   accountID: AccountID;
   stringTable: Dictionary<StringTableEntryDef>;

@@ -8,22 +8,20 @@ import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import {
-  PerkDefGQL,
-  PerkType,
-  RMTPurchaseDefGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { RMTPurchaseDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { PerkGQL, QuestType } from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { navigateTo, LobbyView, showOverlay, Overlay } from '../../../redux/navigationSlice';
 import { updateStoreCurrentRoute, StoreRoute } from '../../../redux/storeSlice';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { BUX_PERK_ID } from '../../../helpers/storeHelpers';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import TooltipSource from '../../../../shared/components/TooltipSource';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
+import { PerkDef, PerkType } from '../../../dataSources/manifest/perkManifest';
+import { QuestType } from '../../../dataSources/manifest/questManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'Lobby-CurrencyHeader-Container';
 const CurrencyContainer = 'Lobby-CurrencyHeader-CurrencyContainer';
@@ -44,7 +42,7 @@ const StringIDLobbyCurrencyTooltipBattlePassXPDescription = 'LobbyCurrencyToolti
 interface ReactProps {}
 
 interface InjectedProps {
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   rmtPurchases: RMTPurchaseDefGQL[];
   stringTable: Dictionary<StringTableEntryDef>;
   ownedPerks: PerkGQL[];
@@ -71,7 +69,7 @@ class ALobbyCurrencyHeader extends React.Component<Props> {
   }
 
   private getQuestXPPotions(questType: QuestType): JSX.Element {
-    const perk: PerkDefGQL = Object.values(this.props.perksByID).find((perkDef) => {
+    const perk: PerkDef = Object.values(this.props.perksByID).find((perkDef) => {
       return perkDef.perkType == PerkType.QuestXP && perkDef.questType == questType;
     });
 
@@ -96,14 +94,14 @@ class ALobbyCurrencyHeader extends React.Component<Props> {
     // Only open the PurchaseGems overlay if there are actually gems available to purchase!
     if ((this.props.rmtPurchases?.length ?? 0) > 0) {
       this.props.dispatch(showOverlay(Overlay.PurchaseGems));
-      game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_STORE_OPEN);
+      clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_STORE_OPEN);
     }
   }
 
   private onQuestXPClick(): void {
     this.props.dispatch(updateStoreCurrentRoute(StoreRoute.QuestXP));
     this.props.dispatch(navigateTo(LobbyView.Store));
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_STORE_OPEN);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_STORE_OPEN);
   }
 
   private getHardCurrencyIconURL(): string {
@@ -131,7 +129,7 @@ class ALobbyCurrencyHeader extends React.Component<Props> {
   }
 
   private questXPTooltipDetails(questType: QuestType, descriptionStringID: string): JSX.Element {
-    const perk: PerkDefGQL = Object.values(this.props.perksByID).find((perkDef) => {
+    const perk: PerkDef = Object.values(this.props.perksByID).find((perkDef) => {
       return perkDef.perkType == PerkType.QuestXP && perkDef.questType == questType;
     });
 

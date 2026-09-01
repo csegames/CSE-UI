@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REFACTOR
+
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
@@ -95,8 +97,10 @@ class ASprintBar extends React.Component<Props, State> {
 
 function mapStateToProps(state: RootState) {
   return {
-    resources: state.player.resources
+    resources: state.entities.self.resources
   };
 }
 
 export const SprintBar = connect(mapStateToProps)(ASprintBar);
+
+*/

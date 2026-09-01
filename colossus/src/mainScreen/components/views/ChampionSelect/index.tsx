@@ -2,7 +2,6 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
  */
 
 import * as React from 'react';
@@ -12,18 +11,10 @@ import { PlayerList } from './PlayerList';
 import { LockButton } from './LockButton';
 
 import { TransitionAnimation } from '../../shared/TransitionAnimation';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import { RootState } from '../../../redux/store';
 import { connect } from 'react-redux';
-import {
-  ChampionCostumeInfo,
-  ChampionInfo,
-  ChampionSelection,
-  PerkDefGQL,
-  ScenarioDefGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { ChampionSelection } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { Header } from '../../shared/Header';
 import { MatchRequestState, selectChampion, SelectionRequest } from '../../../redux/matchSlice';
@@ -32,6 +23,11 @@ import { ProfileModel } from '../../../redux/profileSlice';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { getRaceIDFromCostumeForChampion } from '../../../helpers/characterHelpers';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
+import { PerkDef } from '../../../dataSources/manifest/perkManifest';
+import { ScenarioDef } from '../../../dataSources/manifest/scenarioManifest';
+import { CostumeDef } from '../../../dataSources/manifest/costumeManifest';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
 
 const Container = 'ChampionSelect-PlayerSelect-Container';
 const HeaderContainer = 'ChampionSelect-PlayerSelect-HeaderContainer';
@@ -64,15 +60,16 @@ export interface ReactProps {}
 
 interface InjectedProps {
   accountID: string;
-  costumes: ChampionCostumeInfo[];
-  champions: ChampionInfo[];
+  costumes: CostumeDef[];
+  costumesByID: Dictionary<CostumeDef>;
+  champions: ChampionDef[];
   currentSelection: ChampionSelection;
   dispatch?: Dispatch;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   profile: ProfileModel;
   requests: MatchRequestState;
   usingGamepadInMainMenu: boolean;
-  scenarioDefs: Dictionary<ScenarioDefGQL>;
+  scenarioDefs: Dictionary<ScenarioDef>;
   stringTable: Dictionary<StringTableEntryDef>;
 }
 
@@ -91,7 +88,12 @@ class AChampionSelect extends React.Component<Props> {
     const scenarioName = this.props.scenarioDefs[this.props.currentSelection.scenarioID]?.name ?? '';
 
     // Update default champion audio state
-    const raceID = getRaceIDFromCostumeForChampion(this.props.profile.champions, this.props.perksByID, champion.id);
+    const raceID = getRaceIDFromCostumeForChampion(
+      this.props.profile.champions,
+      this.props.perksByID,
+      this.props.costumesByID,
+      champion.id
+    );
     clientAPI.setUIRaceState(raceID);
 
     return (
@@ -187,10 +189,10 @@ class AChampionSelect extends React.Component<Props> {
     return this.getChampionCostumeInfo(championID).thumbnailURL;
   }
 
-  private getChampionCostumeInfo(championID: string): ChampionCostumeInfo {
+  private getChampionCostumeInfo(championID: string): CostumeDef {
     const champ = this.props.profile.champions.find((champ) => champ.championID === championID);
     const costumePerk = this.props.perksByID[champ?.costumePerkID ?? ''];
-    const costume = this.props.costumes.find((c) => c.id === costumePerk?.costume.id);
+    const costume = this.props.costumes.find((c) => c.id === costumePerk?.costumeID);
     return costume ?? this.props.costumes[0];
   }
 
@@ -199,14 +201,14 @@ class AChampionSelect extends React.Component<Props> {
     this.props.dispatch(selectChampion({ reservationID, championID, locked: false }));
     const champ = this.props.champions.find((c) => c.id == championID);
     if (champ?.championSelectSound) {
-      game.playGameSound(champ.championSelectSound);
+      clientAPI.playGameSound(champ.championSelectSound);
     }
   }
 
   private async onLockIn(championID: string) {
     const reservationID = this.props.currentSelection.reservationID;
     this.props.dispatch(selectChampion({ reservationID, championID, locked: true }));
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CHARACTER_SELECT_LOCK_IN);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CHARACTER_SELECT_LOCK_IN);
   }
 }
 
@@ -214,7 +216,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { id } = state.user;
   const { requests, currentSelection } = state.match;
   const { usingGamepadInMainMenu } = state.baseGame;
-  const { championCostumes, champions } = state.championInfo;
+  const { championCostumes, champions, costumesByID } = state.championInfo;
   const { perksByID } = state.store;
   const { profile } = state;
   const { scenarioDefs } = state.scenarios;
@@ -231,7 +233,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     requests,
     usingGamepadInMainMenu,
     scenarioDefs,
-    stringTable
+    stringTable,
+    costumesByID
   };
 }
 

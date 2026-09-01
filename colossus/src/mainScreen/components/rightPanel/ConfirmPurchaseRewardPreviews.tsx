@@ -7,16 +7,13 @@
 import * as React from 'react';
 import { RootState } from '../../redux/store';
 import { connect } from 'react-redux';
-import {
-  PerkDefGQL,
-  PerkType,
-  PurchaseDefGQL,
-  PurchaseRewardDefGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PurchaseDefGQL, PurchaseRewardDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dispatch } from 'redux';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { updateConfirmPurchaseSelectedRewardIndex } from '../../redux/storeSlice';
+import { PerkDef, PerkType } from '../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../dataSources/manifest/championManifest';
 
 const Root = 'StartScreen-Store-ConfirmPurchase-RewardPreviews-Root';
 const PreviewContainer = 'StartScreen-Store-ConfirmPurchase-RewardPreviews-PreviewContainer';
@@ -33,9 +30,10 @@ interface ReactProps {
 
 interface InjectedProps {
   dispatch?: Dispatch;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
   confirmPurchaseSelectedRewardIndex: number;
+  championIDToChampion: Dictionary<ChampionDef>;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -72,7 +70,7 @@ class AConfirmPurchaseRewardPreviews extends React.Component<Props> {
   }
 
   private renderRewardCell(reward: PurchaseRewardDefGQL, index: number): React.ReactNode {
-    const perk: PerkDefGQL = this.props.perksByID[reward.perkID];
+    const perk: PerkDef = this.props.perksByID[reward.perkID];
 
     return (
       <div className={PreviewCell} key={index}>
@@ -82,15 +80,16 @@ class AConfirmPurchaseRewardPreviews extends React.Component<Props> {
     );
   }
 
-  private getPerkDisplayName(perk: PerkDefGQL): string {
-    if (perk && perk.isUnique && perk.champion) {
-      return `${perk.name} ${perk.champion.name}`;
+  private getPerkDisplayName(perk: PerkDef): string {
+    if (perk && perk.isUnique && perk.championID) {
+      const champion = this.props.championIDToChampion[perk.championID];
+      return `${perk.name} ${champion?.name}`;
     } else {
       return perk.name;
     }
   }
 
-  private getPerkImageURL(perk: PerkDefGQL): string {
+  private getPerkImageURL(perk: PerkDef): string {
     if (
       this.props.purchase.iconURL &&
       this.props.purchase.iconURL.length > 0 &&
@@ -125,12 +124,14 @@ class AConfirmPurchaseRewardPreviews extends React.Component<Props> {
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { perksByID, confirmPurchaseSelectedRewardIndex } = state.store;
   const { stringTable } = state.stringTable;
+  const { championIDToChampion } = state.championInfo;
 
   return {
     ...ownProps,
     perksByID,
     stringTable,
-    confirmPurchaseSelectedRewardIndex
+    confirmPurchaseSelectedRewardIndex,
+    championIDToChampion
   };
 }
 

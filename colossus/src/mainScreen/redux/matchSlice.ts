@@ -17,6 +17,7 @@ import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { cloneDeep } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { GameModeDef } from '../dataSources/manifest/gameModeManifest';
+import { ConnectionStatus } from '@csegames/library/dist/_baseGame/types/ConnectionStatus';
 
 export const AUTOCONNECT_MATCH_PLACEHOLDER = 'autoconnect-match-placeholder';
 // HACK : the client is currently authoritative over this data -- once the
@@ -68,7 +69,7 @@ export interface MatchRequestState {
 }
 
 export const getDefaultQueueGameModeDef = (defaultQueueID: string): GameModeDef => ({
-  id: "default",
+  id: 'default',
   name: defaultQueueID,
   description: 'Default queue from command line argument.',
   bannerImage: '/images/game-modes/scenarios-banner.jpg',
@@ -121,23 +122,27 @@ export function isDebugSession(round: Round): round is DebugSession {
   return round && (round as DebugSession).createdBy !== undefined;
 }
 
-interface MatchState {
+export type LifecycleState = {
   access: MatchAccess;
+  connectionStatus: ConnectionStatus;
   currentEntry: QueueEntry | null;
   currentRound: Round | null;
   currentSelection: ChampionSelection | null;
+  matchEnds: Dictionary<MatchEndSequence>;
+};
+
+interface MatchState extends LifecycleState {
+  connectionError: ConnectionError | null;
   defaultQueueID: string;
   debugSessions: DebugSession[];
   entries: QueueEntry[];
+  gameModes: Dictionary<GameModeDef>;
   matches: Match[];
-  matchEnds: Dictionary<MatchEndSequence>;
   modes: GameMode[];
   queues: Queue[];
-  selections: ChampionSelection[];
-  connectionError: ConnectionError | null;
   requests: MatchRequestState;
+  selections: ChampionSelection[];
   selectedQueueID: string | null;
-  gameModes: Dictionary<GameModeDef>;
 }
 
 const defaultMatchState: MatchState = {
@@ -154,6 +159,7 @@ const defaultMatchState: MatchState = {
   queues: [],
   selections: [],
   connectionError: null,
+  connectionStatus: ConnectionStatus.Unknown,
   requests: {
     queued: null,
     active: null
@@ -207,6 +213,9 @@ export const matchSlice = createSlice({
     setConnectionError: (state: MatchState, action: PayloadAction<ConnectionError>) => {
       state.connectionError = action.payload;
       state.requests.queued = mergeRequests(state.requests.queued, { recalculate: true });
+    },
+    setConnectionStatus: (state: MatchState, action: PayloadAction<ConnectionStatus>) => {
+      state.connectionStatus = action.payload;
     },
     setDebugSessions: (state: MatchState, action: PayloadAction<[DebugSession[], DebugSession]>) => {
       state.debugSessions = action.payload[0];
@@ -275,6 +284,7 @@ export const {
   leaveQueue,
   selectChampion,
   setConnectionError,
+  setConnectionStatus,
   setDebugSessions,
   setDefaultQueue,
   setGameModes,

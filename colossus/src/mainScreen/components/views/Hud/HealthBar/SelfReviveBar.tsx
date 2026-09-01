@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REFACTOR
+
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
@@ -14,11 +16,11 @@ import { game } from '@csegames/library/dist/_baseGame';
 import { Button } from '../../../shared/Button';
 import { Keybind } from '@csegames/library/dist/_baseGame/types/Keybind';
 import { getActiveBindForKey, KeybindIDs } from '../../../../redux/keybindsSlice';
-import { hordetest } from '@csegames/library/dist/hordetest';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { ArrayMap } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { EntityResource, findEntityResource } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { EntityResourceIDs } from '@csegames/library/dist/hordetest/game/types/EntityResourceIDs';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const SelfReviveBarContainer = 'HealthBar-SelfReviveBar-Container';
 const SelfReviveText = 'HealthBar-SelfReviveBar-Text';
@@ -160,7 +162,7 @@ class ASelfReviveBar extends React.Component<Props, State> {
   }
 
   private releaseDownedState() {
-    hordetest.game.selfPlayerState.respawn('-1');
+    clientAPI.respawn();
   }
 
   private connectControllerSelectButton() {
@@ -176,18 +178,20 @@ class ASelfReviveBar extends React.Component<Props, State> {
 function mapStateToProps(state: RootState, ownProps: ReactProps) {
   const keybindsState = state.keybinds;
   const keybindToRevive = keybindsState[KeybindIDs.UISelect];
-
+  const { lifeState, resources, deathStartTime, downedStateEndTime, currentDeaths, maxDeaths } = state.entities.self;
   return {
-    lifeState: state.player.lifeState,
-    resources: state.player.resources,
-    deathStartTime: state.player.deathStartTime,
-    downedStateEndTime: state.player.downedStateEndTime,
+    lifeState,
+    resources,
+    deathStartTime,
+    downedStateEndTime,
     usingGamepad: state.baseGame.usingGamepad,
     keybindToRevive: keybindToRevive,
-    currentDeaths: state.player.currentDeaths,
-    maxDeaths: state.player.maxDeaths,
+    currentDeaths,
+    maxDeaths,
     ...ownProps
   };
 }
 
 export const SelfReviveBar = connect(mapStateToProps)(ASelfReviveBar);
+
+*/

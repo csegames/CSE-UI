@@ -99,7 +99,7 @@ class AFervorStatus extends React.Component<Props> {
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   return {
     ...ownProps,
-    resources: state.player.resources
+    resources: state.entities.self.resources
   };
 }
 

@@ -8,11 +8,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { Dispatch } from 'redux';
-import { QuestGQL, PerkDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { QuestsByType } from '../../../../redux/questSlice';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { LobbyView, navigateTo } from '../../../../redux/navigationSlice';
-import { game } from '@csegames/library/dist/_baseGame';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
 import TooltipSource from '../../../../../shared/components/TooltipSource';
 import {
@@ -20,12 +19,14 @@ import {
   findChampionQuestProgress,
   getUnlockedRuneModTierForChampion
 } from '../../../../helpers/characterHelpers';
-import { ChampionInfo } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { ChampionXPData, updateLastDisplayedChampionXP } from '../../../../redux/championInfoSlice';
 import { ExperienceBar } from '../../../shared/ExperienceBar';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { PerkDef } from '../../../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../../../dataSources/manifest/championManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Root = 'LobbyChampionStatus-Root';
 const Loading = 'LobbyChampionStatus-Loading';
@@ -62,12 +63,12 @@ interface ReactProps {}
 interface InjectedProps {
   questsGQL: QuestGQL[];
   quests: QuestsByType;
-  runeMods: PerkDefGQL[];
-  champion: ChampionInfo;
+  runeMods: PerkDef[];
+  champion: ChampionDef;
   championIDToLastDisplayedXP: Dictionary<ChampionXPData>;
   stringTable: Dictionary<StringTableEntryDef>;
   ownedPerks: Dictionary<number>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   dispatch?: Dispatch;
 }
 
@@ -206,7 +207,7 @@ class ALobbyChampionStatus extends React.Component<Props, State> {
     );
   }
 
-  private renderRuneModTooltip(runeMod: PerkDefGQL): React.ReactNode {
+  private renderRuneModTooltip(runeMod: PerkDef): React.ReactNode {
     return (
       <div className={RuneTooltipContainer}>
         <div className={RuneTooltipTitle}>{runeMod.name}</div>
@@ -218,7 +219,7 @@ class ALobbyChampionStatus extends React.Component<Props, State> {
   private onChampionInfoClick(): void {
     // Go to Champions tab.
     this.props.dispatch(navigateTo(LobbyView.Champions));
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_CHAMPION_OPEN);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_CHAMPION_OPEN);
   }
 
   private getProgressText(): string {

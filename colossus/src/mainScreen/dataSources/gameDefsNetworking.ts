@@ -5,36 +5,58 @@
  */
 
 import ExternalDataSource from '../redux/externalDataSource';
-import { InitTopic } from '../redux/initializationSlice';
-import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import { StatDefinitionGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import { gameDefsQuery, GameDefsQueryResult } from './gameDefsNetworkingConstants';
-import { updateStatDefs } from '../redux/gameSlice';
+import {
+  gameDefsQuery,
+  GameDefsQueryResult,
+  manifestUpdateSubscription,
+  ManifestUpdateSubscriptionResult
+} from './gameDefsNetworkingConstants';
+import { setGameDefsLoaded, setUseClientResourceManifests } from '../redux/gameSlice';
+import { processManifest } from './manifest/manifestDefService';
 
 export class GameDefsService extends ExternalDataSource {
   protected async bind(): Promise<ListenerHandle[]> {
     return [
       await this.query<GameDefsQueryResult>(
         { query: gameDefsQuery },
-        this.handleGameDefs.bind(this),
-        InitTopic.GameDefs
+        this.handleGameDefs.bind(this)
+      ),
+      await this.subscribe<ManifestUpdateSubscriptionResult>(
+        { query: manifestUpdateSubscription },
+        this.handleMySubscriptionUpdate.bind(this)
       )
     ];
   }
 
   private handleGameDefs(result: GameDefsQueryResult): void {
-    if (!result.game || !result.game.stats) {
+    if (!result.game || !result.game.manifests) {
       console.error('Missing data from GameDefs query');
       return;
     }
 
-    const stats = result.game.stats;
-    const statDefs: Dictionary<StatDefinitionGQL> = {};
-    stats.forEach((sd) => {
-      statDefs[sd.id] = sd;
-    });
+    // manifests - manfiest list will only be filled with entries if the server is running its gameplayDefs
+    // off of the disk instead of from the DB.  If we get any manifest from this query, we want to use them
+    // instead of the ones from the client resource.
+    if (result.game.manifests.length > 0) {
+      this.dispatch(setUseClientResourceManifests(false));
+      for (const manifest of result.game.manifests) {
+        processManifest(this.dispatch, manifest.id, manifest.contents, manifest.schemaVersion, this.reduxState);
+      }
 
-    this.dispatch(updateStatDefs(statDefs));
+      this.dispatch(setGameDefsLoaded());
+    }
+  }
+
+  private handleMySubscriptionUpdate(manifestUpdateResult: ManifestUpdateSubscriptionResult): void {
+    const result = manifestUpdateResult?.manifestUpdates?.manifests;
+    if (!result) {
+      console.warn('Got invalid response from ManifestUpdate subscription.', result);
+      return;
+    }
+
+    for (const manifest of manifestUpdateResult.manifestUpdates.manifests) {
+      processManifest(this.dispatch, manifest.id, manifest.contents, manifest.schemaVersion, this.reduxState);
+    }
   }
 }

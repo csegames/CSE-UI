@@ -11,7 +11,7 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Overlay, hideOverlay } from '../../redux/navigationSlice';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { StringIDGeneralDone, getStringTableValue } from '../../helpers/stringTableHelpers';
 import { MOTDMessageData, removeMOTDMessageData, setSeenMOTD } from '../../redux/notificationsSlice';

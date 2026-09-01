@@ -8,7 +8,7 @@ import { CUQuery } from '@csegames/library/dist/hordetest/graphql/schema';
 import gql from 'graphql-tag';
 
 // Specify the subset of keys from CUQuery that we are interested in.
-export type ProfileQueryResult = Pick<CUQuery, 'colossusProfile'>;
+export type ProfileQueryResult = Pick<CUQuery, 'colossusProfile' | 'serverTimestamp'>;
 
 export const profileQuery = gql`
   query ProfileContextQuery {
@@ -78,5 +78,6 @@ export const profileQuery = gql`
 
       timeOffsetSeconds
     }
+    serverTimestamp
   }
 `;

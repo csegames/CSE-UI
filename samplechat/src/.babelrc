@@ -1,0 +1,55 @@
+{
+  "env": {
+    "development": {
+      "presets": [
+        [
+          "@babel/env",
+          {
+            "useBuiltIns": "entry",
+            "targets": {
+              "chrome": 35.0
+            }
+          }
+        ],
+        "@babel/typescript"
+      ],
+      "plugins": [
+        "react-hot-loader/babel",
+        "@babel/plugin-syntax-dynamic-import",
+        "@babel/plugin-syntax-jsx",
+        "@babel/plugin-transform-react-jsx",
+        "babel-plugin-transform-react-display-name",
+        "@babel/plugin-transform-runtime",
+        "@babel/plugin-transform-modules-commonjs",
+        "@babel/proposal-class-properties",
+        "@babel/proposal-object-rest-spread"
+      ]
+    },
+    "production": {
+      "presets": [
+        [
+          "@babel/env",
+          {
+            "useBuiltIns": "entry",
+            "corejs": "2.6.12",
+            "targets": {
+              "chrome": 35.0
+            }
+          }
+        ],
+        "@babel/typescript"
+      ],
+      "plugins": [
+        "react-hot-loader/babel",
+        "@babel/plugin-syntax-dynamic-import",
+        "@babel/plugin-syntax-jsx",
+        "@babel/plugin-transform-react-jsx",
+        "babel-plugin-transform-react-display-name",
+        "@babel/plugin-transform-runtime",
+        "@babel/plugin-transform-modules-commonjs",
+        "@babel/proposal-class-properties",
+        "@babel/proposal-object-rest-spread"
+      ]
+    }
+  }
+}

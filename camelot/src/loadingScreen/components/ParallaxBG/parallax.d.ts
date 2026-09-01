@@ -1,1 +1,0 @@
-declare module "parallax-js/dist/parallax";

@@ -11,6 +11,7 @@ export interface PopUpAnnouncement {
   id: string;
   isHidden: boolean;
   text: string;
+  color: string;
 }
 
 interface AState {
@@ -25,18 +26,27 @@ export const popUpAnnouncementsSlice = createSlice({
   name: 'popUpAnnouncements',
   initialState: DefaultAState,
   reducers: {
-    addPopUpAnnouncement: (state, action: PayloadAction<string>) => {
+    addPopUpAnnouncement: (state, action: PayloadAction<[string, string]>) => {
+      const [text, color] = action.payload;
       state.popUpAnnouncements.push({
         id: genID(),
         isHidden: false,
-        text: action.payload
+        text,
+        color
       });
     },
     hidePopUpAnnouncement: (state, action: PayloadAction<string>) => {
       const popUpAnnouncement = state.popUpAnnouncements.find(
         (popUpAnnouncement) => popUpAnnouncement.id === action.payload
       );
-      popUpAnnouncement.isHidden = true;
+      if (popUpAnnouncement) {
+        popUpAnnouncement.isHidden = true;
+      }
+    },
+    hidePopUpAnnouncements: (state) => {
+      for (const popUpAnnouncement of state.popUpAnnouncements) {
+        popUpAnnouncement.isHidden = true;
+      }
     },
     removePopUpAnnouncement: (state, action: PayloadAction<string>) => {
       const popUpAnnouncementIndex = state.popUpAnnouncements.findIndex(
@@ -47,4 +57,5 @@ export const popUpAnnouncementsSlice = createSlice({
   }
 });
 
-export const { addPopUpAnnouncement, hidePopUpAnnouncement, removePopUpAnnouncement } = popUpAnnouncementsSlice.actions;
+export const { addPopUpAnnouncement, hidePopUpAnnouncement, hidePopUpAnnouncements, removePopUpAnnouncement } =
+  popUpAnnouncementsSlice.actions;

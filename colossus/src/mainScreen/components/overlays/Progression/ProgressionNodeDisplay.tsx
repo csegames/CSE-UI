@@ -5,19 +5,8 @@
  */
 
 import * as React from 'react';
-import {
-  ChampionInfo,
-  LAEOp,
-  PerkDefGQL,
-  PerkRewardDefGQL,
-  PerkType,
-  ProgressionNodeDef,
-  QuestDefGQL,
-  QuestGQL,
-  StatDefinitionGQL,
-  StatDisplayType,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkRewardDefGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -31,7 +20,6 @@ import {
   StringIDGeneralUnlock
 } from '../../../helpers/stringTableHelpers';
 import { PerkIcon } from '../../views/Lobby/Store/PerkIcon';
-import { TooltipPosition } from '../../../redux/tooltipSlice';
 import { FormattedTextDiv } from '../../../../shared/components/FormattedTextDiv';
 import { ProfileAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { webConf } from '../../../dataSources/networkConfiguration';
@@ -40,6 +28,11 @@ import { showError } from '../../../redux/navigationSlice';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { StarBadge } from '../../../../shared/components/StarBadge';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
+import { StatDef, StatDisplayType } from '../../../dataSources/manifest/statManifest';
+import { ProgressionNodeDef } from '../../../dataSources/manifest/progressionNodeManifest';
+import { QuestDef } from '../../../dataSources/manifest/questManifest';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
+import { LAEOp, PerkDef, PerkType } from '../../../dataSources/manifest/perkManifest';
 
 const UNLOCK_DURATION_MS = 200;
 
@@ -86,17 +79,17 @@ interface ReactProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 interface InjectedProps {
-  selectedChampion: ChampionInfo;
-  champions: ChampionInfo[];
+  selectedChampion: ChampionDef;
+  champions: ChampionDef[];
   ownedPerks: Dictionary<number>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
   progressionNodes: string[];
   quests: QuestGQL[];
   serverTimeDeltaMS: number;
   progressionNodeDefsByID: Dictionary<ProgressionNodeDef>;
-  questsById: Dictionary<QuestDefGQL>;
-  statDefs: Dictionary<StatDefinitionGQL>;
+  questsById: Dictionary<QuestDef>;
+  statDefs: Dictionary<StatDef>;
   dispatch?: Dispatch;
 }
 
@@ -167,8 +160,7 @@ class AProgressionNodeDisplay extends React.Component<Props, State> {
           className={`${Button} ${status} ${animating}`}
           tooltipParams={{
             id: `Node${def.id}`,
-            content: this.renderNodeTooltip.bind(this, status),
-            position: TooltipPosition.OutsideSource
+            content: this.renderNodeTooltip.bind(this, status)
           }}
           onMouseDown={this.onMouseDown.bind(this, status)}
           onMouseUp={this.onMouseUp.bind(this)}

@@ -8,7 +8,7 @@ import { CUQuery } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Pick2 } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 
 // Specify the subset of keys from CUQuery that we are interested in.
-export type StoreStaticDataQueryResult = Pick2<CUQuery, 'game', 'purchases' | 'rMTPurchases' | 'perks'>;
+export type StoreStaticDataQueryResult = Pick2<CUQuery, 'game', 'purchases' | 'rMTPurchases'>;
 
 export const storeStaticDataQuery = gql`
   query StoreStaticDataQuery {
@@ -61,39 +61,6 @@ export const storeStaticDataQuery = gql`
           perkID
           qty
         }
-      }
-      perks {
-        champion {
-          id
-          name
-        }
-        costume {
-          description
-          id
-          numericID
-          name
-        }
-        description
-        iconURL
-        iconClass
-        iconClassColor
-        backgroundURL
-        id
-        isUnique
-        name
-        perkType
-        portraitChampionSelectImageUrl
-        portraitThumbnailURL
-        showIfUnowned
-        rarity
-        videoURL
-        questType
-        runeModTier
-        xPAmount
-        statAmount
-        statID
-        statOperation
-        weaponID
       }
     }
   }

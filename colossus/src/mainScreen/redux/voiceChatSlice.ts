@@ -9,7 +9,7 @@ import {
   VoiceChatMemberSettings,
   VoiceChatMemberStatus
 } from '@csegames/library/dist/_baseGame/types/VoiceChatMemberSettings';
-import { PlayerEntityStateModel } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
+import { PlayerEntityState } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const VoiceChatIconStyle = 'VoiceChatIcon';
@@ -88,9 +88,10 @@ interface VoiceChatReportUpdate {
 
 export interface VoiceChatState {
   members: Dictionary<VoiceChatMemberSettings>;
-  playerToReport: PlayerEntityStateModel;
+  playerToReport: PlayerEntityState;
   reports: Dictionary<VoiceChatReport>;
   mutedAll: boolean;
+  scope: string;
 }
 
 interface VoiceChatMemberUpdate {
@@ -102,7 +103,8 @@ const defaultVoiceChatState: VoiceChatState = {
   members: {},
   playerToReport: null,
   reports: {},
-  mutedAll: false
+  mutedAll: false,
+  scope: ''
 };
 
 export const voiceChatSlice = createSlice({
@@ -115,11 +117,14 @@ export const voiceChatSlice = createSlice({
     removeVoiceChatMember: (state: VoiceChatState, action: PayloadAction<string>) => {
       delete state.members[action.payload];
     },
+    updateVoiceChatScope: (state: VoiceChatState, action: PayloadAction<string>) => {
+      state.scope = action.payload;
+    },
     clearVoiceChatMembers: (state: VoiceChatState) => {
       // Only need a return because we are replacing the existing state.
       state.members = {};
     },
-    updatePlayerToReport: (state: VoiceChatState, action: PayloadAction<PlayerEntityStateModel>) => {
+    updatePlayerToReport: (state: VoiceChatState, action: PayloadAction<PlayerEntityState>) => {
       state.playerToReport = action.payload;
     },
     clearPlayerToReport: (state: VoiceChatState) => {
@@ -137,6 +142,7 @@ export const voiceChatSlice = createSlice({
 export const {
   updateVoiceChatMember,
   removeVoiceChatMember,
+  updateVoiceChatScope,
   clearVoiceChatMembers,
   updatePlayerToReport,
   clearPlayerToReport,

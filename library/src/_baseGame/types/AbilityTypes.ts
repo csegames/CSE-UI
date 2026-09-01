@@ -61,23 +61,18 @@ export interface AbilityEditStatus {
   requestedCanEdit: boolean;
 }
 
-export interface AbilityDisplayDef {
-  id: number;
-  name: string;
-  iconClass: string;
-  description: string;
-  entityResourceID: number;
-}
-
 export interface AbilityStatus {
   id: number;
   state: AbilityStateFlags;
+  disabledReason: string;
   errors: AbilityErrorFlags;
   tracks: AbilityTrackFlags;
   summonCount: number;
   displayDefID: number;
-  timing: TimeRange;
+  castTiming: TimeRange;
+  cooldownTiming: TimeRange;
   disruption: CurrentMax;
+  stats: Record<string, number>;
 }
 
 // ability length is variable and adjustable with the setVisibleAbilitySlots call

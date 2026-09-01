@@ -1,4 +1,4 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -9,7 +9,7 @@ import { ListenerHandle } from '../../_baseGame/listenerHandle';
 import { Binding } from '../../_baseGame/types/Keybind';
 import { ArrayMap } from '../../_baseGame/types/ObjectMap';
 import { VoiceChatMemberStatus } from '../../_baseGame/types/VoiceChatMemberSettings';
-import { BaseEntityStateModel, EntityResource, WorldUIPositionMapModel } from '../game/GameClientModels/EntityState';
+import { BaseEntityState, EntityResource, WorldUIPositionMapModel } from '../game/GameClientModels/EntityState';
 import { CharacterKind } from '../game/types/CharacterKind';
 import { HealthBarKind } from '../game/types/HealthBarKind';
 import { ItemGameplayType } from '../game/types/ItemGameplayType';
@@ -85,7 +85,7 @@ export type ObjectiveListener = (
   width: number,
   height: number,
   currentWorldTime: number,
-  entityState: BaseEntityStateModel
+  entityState: BaseEntityState
 ) => void;
 
 export type WorldUIPositionMapUpdatedListener = (newMap: WorldUIPositionMapModel) => void;

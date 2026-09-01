@@ -17,13 +17,9 @@ import {
   ultimateAbilityID,
   weakAbilityID
 } from '../../../redux/abilitySlice';
-import { AbilityDisplayDef } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
 import { ScenarioRoundState } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { ProfileModel } from '../../../redux/profileSlice';
-import { PerkDefGQL, ScenarioDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary, Dispatch } from '@reduxjs/toolkit';
-import { getCharacterClassStringIDForNumericID } from '../../../helpers/characterHelpers';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import {
   StringIDGeneralAbilities,
   StringIDGeneralAttacks,
@@ -32,6 +28,10 @@ import {
 import { AbilityType, getKeybindInfoForAbility } from '../../../helpers/abilityhelpers';
 import { Overlay, hideOverlay } from '../../../redux/navigationSlice';
 import { Round } from '../../../redux/matchSlice';
+import { AbilityDisplayDef } from '../../../dataSources/manifest/abilityDisplayManifest';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
+import { ScenarioDef } from '../../../dataSources/manifest/scenarioManifest';
+import { PerkDef } from '../../../dataSources/manifest/perkManifest';
 
 const Container = 'MenuModal-AbilityInfo-Container';
 const Section = 'MenuModal-AbilityInfo-Section';
@@ -52,15 +52,15 @@ interface ReactProps {}
 
 interface InjectedProps {
   abilities: AbilityState;
-  abilityDisplayDefs: IDLookupTable<AbilityDisplayDef>;
+  abilityDisplayDefsByNumericID: IDLookupTable<AbilityDisplayDef>;
   characterClassDefs: IDLookupTable<CharacterClassDef>;
   scenarioRoundState: ScenarioRoundState;
   profile: ProfileModel;
   usingGamepadInMainMenu: boolean;
-  selectedRuneMods: Dictionary<PerkDefGQL[]>;
-  inMatchClassID: number;
+  selectedRuneMods: Dictionary<PerkDef[]>;
+  championID: string;
   stringTable: Dictionary<StringTableEntryDef>;
-  scenarioDefs: Dictionary<ScenarioDefGQL>;
+  scenarioDefs: Dictionary<ScenarioDef>;
   currentRound: Round;
   dispatch?: Dispatch;
 }
@@ -129,7 +129,7 @@ class AAbilityInfo extends React.Component<Props> {
     return runeMods.map((runeMod, index) => this.renderRuneMod(runeMod, index));
   }
 
-  private renderRuneMod(runeMod: PerkDefGQL, index: Number): React.ReactNode {
+  private renderRuneMod(runeMod: PerkDef, index: Number): React.ReactNode {
     if (!runeMod) {
       return null;
     }
@@ -147,7 +147,7 @@ class AAbilityInfo extends React.Component<Props> {
 
   private renderAbility(type: AbilityType, displayDefID: number): React.ReactNode {
     const keybindInfo = getKeybindInfoForAbility(type, this.props.usingGamepadInMainMenu);
-    const display = this.props.abilityDisplayDefs[displayDefID];
+    const display = this.props.abilityDisplayDefsByNumericID[displayDefID];
     if (!display || !keybindInfo) {
       return null;
     }
@@ -169,10 +169,8 @@ class AAbilityInfo extends React.Component<Props> {
     );
   }
 
-  private getRuneMods(): PerkDefGQL[] {
-    const selectedChampion = this.props.inMatchClassID
-      ? getCharacterClassStringIDForNumericID(this.props.characterClassDefs, this.props.inMatchClassID)
-      : this.props.profile.defaultChampionID;
+  private getRuneMods(): PerkDef[] {
+    const selectedChampion = this.props.championID ?? this.props.profile.defaultChampionID;
     return this.props.selectedRuneMods[selectedChampion];
   }
 
@@ -208,8 +206,8 @@ class AAbilityInfo extends React.Component<Props> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { usingGamepadInMainMenu } = state.baseGame;
-  const { abilityDisplayDefs, characterClassDefs } = state.game;
-  const { scenarioRoundState, classID } = state.player;
+  const { abilityDisplayDefsByNumericID, characterClassDefs } = state.game;
+  const { scenarioRoundState, classID } = state.entities.self;
   const { selectedRuneMods } = state.profile;
   const { stringTable } = state.stringTable;
   const { scenarioDefs } = state.scenarios;
@@ -217,12 +215,12 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
 
   return {
     ...ownProps,
-    abilityDisplayDefs,
+    abilityDisplayDefsByNumericID,
     abilities: state.abilities,
     selectedRuneMods: selectedRuneMods,
     characterClassDefs,
     profile: state.profile,
-    inMatchClassID: classID,
+    championID: characterClassDefs[classID]?.stringID,
     scenarioRoundState,
     usingGamepadInMainMenu,
     stringTable,

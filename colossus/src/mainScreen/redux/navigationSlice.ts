@@ -8,8 +8,8 @@ import { RequestResult } from '@csegames/library/dist/_baseGame/types/Request';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { ErrorData, convertRequestResult, isErrorData } from '../helpers/errorConversionHelpers';
-import { PerkType } from '@csegames/library/dist/hordetest/graphql/schema';
 import { genID } from '@csegames/library/dist/_baseGame/utils/idGen';
+import { PerkType } from '../dataSources/manifest/perkManifest';
 
 // BEGIN INTERFACES AND STATES
 

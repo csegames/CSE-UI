@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REFACTOR
+
 import { hordetest } from '@csegames/library/dist/hordetest';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import * as React from 'react';
@@ -69,3 +71,5 @@ export class KillStreakCounter extends React.Component<{}, State> {
     });
   };
 }
+
+*/

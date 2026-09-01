@@ -1,22 +1,14 @@
 module.exports = {
+  retainLines: true,
   presets: [
+    '@babel/preset-react',
     [
-      '@babel/env',
+      '@babel/preset-env',
       {
-        useBuiltIns: 'usage',
-        corejs: 2,
         targets: {
-          chrome: 35.0
+          chrome: '49'
         }
       }
     ]
-  ],
-  plugins: [
-    '@babel/syntax-jsx',
-    '@babel/transform-react-jsx',
-    '@babel/transform-runtime',
-    '@babel/transform-modules-commonjs',
-    '@babel/proposal-class-properties',
-    '@babel/proposal-object-rest-spread'
   ]
 };

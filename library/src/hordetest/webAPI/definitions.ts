@@ -8,68 +8,12 @@
 
 import { ColossusProgressionNodeDefRef, ClassDefRef, PerkDefRef, PurchaseDefRef, RequestConfig, RequestResult, QuestDefRef, xhrRequest } from './prerequisites'
 
-export type AbilityInstanceID = number;
 export type AccountID = string;
-export type ActivityID = string;
-export type ChannelID = number;
 export type CharacterID = string;
-export type CriterionID = string;
 export type EntityID = string;
-export type FeatureFlag = string;
-export type ID128 = string;
-export type ItemInstanceID = string;
-export type MatchQueueInstanceID = string;
 export type ProfileID = string;
-export type QueueID = string;
-export type RoleID = string;
 export type ScenarioInstanceID = string;
-export type ScenarioTeamID = string;
 export type ShardID = number;
-export type SpawnPointID = string;
-export type StringID = string;
-export type TeamID = string;
-export type ZoneInstanceID = any;
-export enum AccessType {
-  Public = 0,
-  Live = 1,
-  Beta3 = 2,
-  Beta2 = 3,
-  Beta1 = 4,
-  Alpha = 5,
-  InternalTest = 6,
-  Employees = 7,
-}
-
-export enum ActionErrorCode {
-  UnspecifiedError = 0,
-  ServerException = 1,
-  TokenAuthorizationFailed = 2,
-  NoActionRequired = 3,
-  GeneralDatabaseError = 4,
-  PermissionDenied = 5,
-  CharacterNotFound = 6,
-  GroupNotFound = 7,
-  WrongGroupType = 8,
-  WrongFaction = 9,
-  NameLength = 10,
-  NameContainsInvalidCharacters = 11,
-  NameContainsNaughtyWords = 12,
-  NameContainsReservedWords = 13,
-  NameAlreadyInUse = 14,
-  ActiveWarbandAlreadyExists = 15,
-  AlreadyAnOrderMember = 16,
-  MemberLimitReached = 17,
-  InviteCodeNotFound = 18,
-  InviteRequirementsNotMet = 19,
-  InviteExpired = 20,
-  InviteRevoked = 21,
-  InviteUsageLimitReached = 22,
-  RankLimitReached = 23,
-  InvalidRankLevel = 24,
-  AlreadyReady = 25,
-  AlreadyNotReady = 26,
-}
-
 export enum AnnouncementType {
   Text = 1,
   PopUp = 2,
@@ -81,174 +25,6 @@ export enum AnnouncementType {
   ObjectiveSuccess = 128,
   ObjectiveFail = 256,
   ALL = -1,
-}
-
-export enum AuthActionErrorCode {
-  Unknown = 0,
-  Unauthorized = 1,
-  InvalidToken = 2,
-  CharacterNotFound = 3,
-  PermissionExpired = 4,
-  RenewalTimerExpired = 5,
-  TokenGenerationFailed = 6,
-  InvalidEmailOrPassword = 7,
-  RequirePrivacyPolicyAcceptance = 8,
-  Throttled = 9,
-  NoScreenName = 10,
-  InvalidScreenName = 11,
-  ScreenNameTaken = 12,
-}
-
-export enum BoneAlias {
-  Unknown = 0,
-  BodyPelvis = 1,
-  Attachment1 = 2,
-  Attachment2 = 3,
-  Attachment3 = 4,
-  Attachment4 = 5,
-  Attachment5 = 6,
-  Attachment6 = 7,
-  Attachment7 = 8,
-  SpineSacral = 9,
-  SpineLumbar = 10,
-  SpineThoracic = 11,
-  SpineCervical = 12,
-  BodyTorso = 13,
-  BodyNeck = 14,
-  BodyHead = 15,
-  HairScalp = 16,
-  HairBody = 17,
-  HairEnd = 18,
-  TailBase = 19,
-  TailMiddle = 20,
-  TailEnd = 21,
-  ArmLeftClavical = 22,
-  ArmLeftPauldron = 23,
-  ArmLeftHumerus = 24,
-  ArmLeftElbow = 25,
-  ArmLeftUlna = 26,
-  HandLeftPalm = 27,
-  HandLeftThumbProximal = 28,
-  HandLeftThumbMiddle = 29,
-  HandLeftThumbPhalanx = 30,
-  HandLeftIndexFingerProximal = 31,
-  HandLeftIndexFingerMiddle = 32,
-  HandLeftIndexFingerPhalanx = 33,
-  HandLeftMiddleFingerProximal = 34,
-  HandLeftMiddleFingerMiddle = 35,
-  HandLeftMiddleFingerPhalanx = 36,
-  HandLeftRingFingerProximal = 37,
-  HandLeftRingFingerMiddle = 38,
-  HandLeftRingFingerPhalanx = 39,
-  HandLeftPinkyProximal = 40,
-  HandLeftPinkyMiddle = 41,
-  HandLeftPinkyPhalanx = 42,
-  ArmRightClavical = 43,
-  ArmRightPauldron = 44,
-  ArmRightHumerus = 45,
-  ArmRightElbow = 46,
-  ArmRightUlna = 47,
-  HandRightPalm = 48,
-  HandRightThumbProximal = 49,
-  HandRightThumbMiddle = 50,
-  HandRightThumbPhalanx = 51,
-  HandRightIndexFingerProximal = 52,
-  HandRightIndexFingerMiddle = 53,
-  HandRightIndexFingerPhalanx = 54,
-  HandRightMiddleFingerProximal = 55,
-  HandRightMiddleFingerMiddle = 56,
-  HandRightMiddleFingerPhalanx = 57,
-  HandRightRingFingerProximal = 58,
-  HandRightRingFingerMiddle = 59,
-  HandRightRingFingerPhalanx = 60,
-  HandRightPinkyProximal = 61,
-  HandRightPinkyMiddle = 62,
-  HandRightPinkyPhalanx = 63,
-  TabardLower = 64,
-  TabardUpper = 65,
-  CapeTop = 66,
-  CapeUpperMiddle = 67,
-  CapeLowerMiddle = 68,
-  CapeEnd = 69,
-  CapeLeftTail = 70,
-  CapeRightTail = 71,
-  LegLeftThigh = 72,
-  LegLeftCalf = 73,
-  FootLeftAnkle = 74,
-  FootLeftToes = 75,
-  LegRightThigh = 76,
-  LegRightCalf = 77,
-  FootRightAnkle = 78,
-  FootRightToes = 79,
-  SkirtBackUpper = 80,
-  SkirtBackMiddle = 81,
-  SkirtBackLower = 82,
-  SkirtFrontUpper = 83,
-  SkirtFrontMiddle = 84,
-  SkirtFrontLower = 85,
-  SkirtLeftUpper = 86,
-  SkirtLeftMiddle = 87,
-  SkirtLeftLower = 88,
-  SkirtRightUpper = 89,
-  SkirtRightMiddle = 90,
-  SkirtRightLower = 91,
-  TassetLeftUpper = 92,
-  TassetLeftLower = 93,
-  TassetRightUpper = 94,
-  TassetRightLower = 95,
-  WingRoot = 96,
-  WingLeftBase = 97,
-  WingLeftMiddle = 98,
-  WingLeftTip = 99,
-  WingRightBase = 100,
-  WingRightMiddle = 101,
-  WingRightTip = 102,
-  SiegeRotate = 103,
-  SiegePitch = 104,
-  SiegeCharacterCenter = 105,
-  SiegeCharacterCenter2 = 106,
-  SiegeCharacterCenter3 = 107,
-  SiegeCharacterCenter4 = 108,
-  SiegeCharacterCenter5 = 109,
-  SiegeCharacterCenter6 = 110,
-  SiegeCharacterCenter7 = 111,
-  SiegeCharacterCenter8 = 112,
-  Hinge1 = 113,
-  Hinge2 = 114,
-  CollisionAttach1 = 115,
-  CollisionAttach2 = 116,
-  CollisionAttach3 = 117,
-  CollisionAttach4 = 118,
-  BuildingAttachWall = 119,
-  BuildingAttachCeiling = 120,
-  TrailSlashStart01 = 121,
-  TrailSlashEnd01 = 122,
-  TrailSlashStart02 = 123,
-  TrailSlashEnd02 = 124,
-  TrailPierceStart01 = 125,
-  TrailPierceEnd01 = 126,
-  TrailPierceStart02 = 127,
-  TrailPierceEnd02 = 128,
-  TrailCrushStart01 = 129,
-  TrailCrushEnd01 = 130,
-  TrailCrushStart02 = 131,
-  TrailCrushEnd02 = 132,
-  TrailGripStart01 = 133,
-  TrailGripEnd01 = 134,
-  TrailShaftStart01 = 135,
-  TrailShaftEnd01 = 136,
-  TrailMotionStart = 137,
-  TrailMotionEnd = 138,
-  PointStringTop = 139,
-  PointStringBottom = 140,
-  PointKnock = 141,
-  PointPommel01 = 142,
-  PointVfx01 = 143,
-  PointVfxCenter01 = 144,
-  PointVfxRadius01 = 145,
-  PointFocusSource = 146,
-  GameplayCameraFocus = 147,
-  GameplayProjectileOrigin = 148,
 }
 
 export enum FieldCodes {
@@ -299,23 +75,9 @@ export enum FieldCodes {
   ModifyProfileError = 4021,
   UnspecifiedServiceUnavailable = 5000,
   DatabaseUnavailable = 5001,
-  GroupServiceUnavailable = 5002,
   GameServiceUnavailable = 5003,
   PresenceServiceUnavailable = 5004,
   InvalidModel = 30001,
-}
-
-export enum GenderNumericID {
-  None = 0,
-}
-
-export enum NPCRank {
-  None = 0,
-  Elite = 1,
-  StrongElite = 2,
-  Unique = 3,
-  MiniBoss = 4,
-  Boss = 5,
 }
 
 export enum ObjectiveState {
@@ -323,25 +85,6 @@ export enum ObjectiveState {
   Active = 1,
   Complete = 2,
   Canceled = 3,
-}
-
-export enum PatchPermissions {
-  Public = 0,
-  AllBackers = 1,
-  InternalTest = 2,
-  Development = 4,
-  Alpha = 8,
-  Beta1 = 16,
-  Beta2 = 32,
-  Beta3 = 64,
-  Live = 128,
-}
-
-export enum PerkRarity {
-  Default = 0,
-  Common = 1,
-  Rare = 2,
-  Unique = 3,
 }
 
 export enum PerkType {
@@ -380,12 +123,6 @@ export enum ScenarioRoundState {
   Epilogue = 7,
   Ended = 8,
   COUNT = 9,
-}
-
-export enum ServerStatus {
-  Offline = 0,
-  Starting = 1,
-  Online = 2,
 }
 
 export const ActivitiesAPI = {
@@ -448,77 +185,6 @@ export const ActivitiesAPI = {
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
-
-  SetPlayerVote: function(config: RequestConfig, roundID: string, playerID: string): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/activities/player_vote',
-      { roundID, playerID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  ClearPlayerVote: function(config: RequestConfig, roundID: string, playerID: string): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'delete',
-      conf.url + 'v1/activities/player_vote',
-      { roundID, playerID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  FindProxyByMatchHost: function(config: RequestConfig, matchHost: string): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/activities/find_proxy_by_match_host',
-      { matchHost },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-}
-
-export interface ApiErrorResponse {
-  Code: number;
-  Message: string;
-  FieldCodes: IFieldCode[];
-}
-
-export interface APIKeyAuthorizationFailed {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface ArchetypeInfo {
-  description: string;
-  id: number;
-  numericID: number;
-  stringID: string;
-  name: string;
-  importantStats: string[];
-}
-
-export interface AuthActionErrorFieldCode {
-  Action: IAuthActionError;
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface BadRequestFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface BaseContentModel {
-  ID: string;
-  UtcDisplayStart: string;
-  UtcDisplayEnd: string;
-  UtcCreated: string;
 }
 
 export interface Champion {
@@ -529,43 +195,6 @@ export interface Champion {
   CostumePerkID: string;
   EmotePerkIDs: string[];
   RuneModPerkIDs: string[];
-}
-
-export interface Channel {
-  ID: number;
-  Name: string;
-  Description: string;
-  Permissions: PatchPermissions;
-}
-
-export interface Character {
-  archetype: string;
-  attributes: { [key: string]: number; };
-  traitIDs: string[];
-  gender: string;
-  id: string;
-  lastLogin: string;
-  name: string;
-  race: string;
-  shardID: number;
-}
-
-export const ContentAPI = {
-  PatcherHeroContentV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/patcherherocontent',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-}
-
-export interface DatabaseUnavailable {
-  Code: FieldCodes;
-  Message: string;
 }
 
 export const DisplayNameAPI = {
@@ -581,16 +210,6 @@ export const DisplayNameAPI = {
   },
 }
 
-export interface DisplayNameErrorFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface DoesNotExist {
-  Code: FieldCodes;
-  Message: string;
-}
-
 export interface Euler3f {
   roll: number;
   pitch: number;
@@ -598,133 +217,6 @@ export interface Euler3f {
   x: number;
   y: number;
   z: number;
-}
-
-export interface ExecutionErrorFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface FactionInfo {
-  description: string;
-  id: number;
-  name: string;
-  shortName: string;
-}
-
-export const GameDataAPI = {
-  GetFactionInfoV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/gamedata/factionInfo',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GetFactionsV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/gamedata/factions',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GetArchetypesV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/gamedata/archetypes',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GetRacesV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/gamedata/races',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GetOrderPermissionsV1: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/gamedata/orderPermissions',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GetChatAddressV1: function(config: RequestConfig, shard: ShardID): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/gamedata/getchataddress',
-      { shard },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-}
-
-export interface GameServiceUnavailable {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface GroupActionError {
-  Actions: IActionError[];
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface IActionError {
-  Code: ActionErrorCode;
-  Message: string;
-}
-
-export interface IAuthActionError {
-  Code: AuthActionErrorCode;
-  Message: string;
-}
-
-export interface IFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface InternalAction {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface LoginFailed {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface LoginSuccess {
-  Token: string;
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface LoginThrottled {
-  Code: FieldCodes;
-  Message: string;
 }
 
 export const ModerationAPI = {
@@ -740,51 +232,9 @@ export const ModerationAPI = {
   },
 }
 
-export interface NotAllowedFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface PatcherHero {
-  HTMLContent: string;
-  Priority: number;
-  ID: string;
-  UtcDisplayStart: string;
-  UtcDisplayEnd: string;
-  UtcCreated: string;
-}
-
-export interface PatcherHeroContent {
-  content: string;
-  id: string;
-  priority: number;
-  utcDateEnd: string;
-  utcDateStart: string;
-}
-
-export interface PatchNote {
-  Channels: ChannelID[];
-  ChannelsAsLongs: number[];
-  HTMLContent: string;
-  JSONContent: string;
-  Title: string;
-  PatchNumber: string;
-  ID: string;
-  UtcDisplayStart: string;
-  UtcDisplayEnd: string;
-  UtcCreated: string;
-}
-
 export interface Perk {
   ID: string;
   Qty: number;
-}
-
-export interface PlayerPresence {
-  characterID: CharacterID;
-  connectedZoneInstanceIDs: number[];
-  activeZoneInstanceID: number;
-  desiredZoneInstanceID: number;
 }
 
 export const PresenceAPI = {
@@ -793,6 +243,17 @@ export const PresenceAPI = {
     return xhrRequest(
       'get',
       conf.url + 'v1/presence/startingServer',
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  GetBestServer: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'get',
+      conf.url + 'v1/presence/bestServer',
       {},
       null,
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
@@ -853,11 +314,31 @@ export const PresenceAPI = {
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
-}
 
-export interface PresenceServiceUnavailable {
-  Code: FieldCodes;
-  Message: string;
+  RestartZone: function(config: RequestConfig, name?: string, zoneInstanceID?: string): Promise<RequestResult> {
+    const conf = config();
+    const parameters: {[key:string]: any} = {};
+    if (name !== undefined) parameters["name"] = name;
+    if (zoneInstanceID !== undefined) parameters["zoneInstanceID"] = zoneInstanceID;
+    return xhrRequest(
+      'post',
+      conf.url + 'v1/presence/restartzone',
+      parameters,
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
+
+  RestartAllZones: function(config: RequestConfig): Promise<RequestResult> {
+    const conf = config();
+    return xhrRequest(
+      'post',
+      conf.url + 'v1/presence/restartallzones',
+      {},
+      null,
+      { headers: { ...conf.headers, 'Accept': 'application/json'}}
+    );
+  },
 }
 
 export interface Profile {
@@ -1153,17 +634,6 @@ export const ProfileAPI = {
     );
   },
 
-  GracefulDisconnect: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'post',
-      conf.url + 'v1/profile/disconnect',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
   Load: function(config: RequestConfig, profileID: string): Promise<RequestResult> {
     const conf = config();
     return xhrRequest(
@@ -1244,33 +714,6 @@ export const ProfileAPI = {
   },
 }
 
-export interface ProfileLog {
-  Head: string;
-  Offset: number;
-  Entries: ProfileLogEntry[];
-  MissingEntries: { [key: string]: number; };
-}
-
-export interface ProfileLogEntry {
-  HistoryID: string;
-  Notes: ProfileLogNote[];
-  RealMoneyTransactions: ProfileLogRMT[];
-  PerkDeltas: { [key: string]: number; };
-  Purchases: { [key: string]: number; };
-  QuestDeltas: { [key: string]: string; };
-  Reasons: string[];
-}
-
-export interface ProfileLogNote {
-  AccountID: string;
-  Text: string;
-}
-
-export interface ProfileLogRMT {
-  Vendor: string;
-  OrderID: string;
-}
-
 export interface Quest {
   ID: string;
   NextCollection: number;
@@ -1280,20 +723,6 @@ export interface Quest {
   TotalProgress: number;
   Granted: string;
   QuestStatus: string;
-}
-
-export interface RaceInfo {
-  name: string;
-  description: string;
-  id: number;
-  stringID: string;
-  numericID: number;
-}
-
-export interface RateLimitExceeded {
-  Retry: number;
-  Code: FieldCodes;
-  Message: string;
 }
 
 export const ReportAPI = {
@@ -1312,10 +741,6 @@ export const ReportAPI = {
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
-}
-
-export interface ReportCrashResult {
-  ID: string;
 }
 
 export const ScenarioAPI = {
@@ -1340,31 +765,6 @@ export const ScenarioAPI = {
       { headers: { ...conf.headers, 'Accept': 'application/json'}}
     );
   },
-}
-
-export interface ServerModel {
-  accessLevel: AccessType;
-  channelID: number;
-  channelPatchPermissions: number;
-  name: string;
-  shardID: number;
-  status: ServerStatus;
-  apiHost: string;
-}
-
-export interface ServiceUnavailableFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface SimpleCharacter {
-  archetype: string;
-  gender: string;
-  id: CharacterID;
-  lastLogin: string;
-  name: string;
-  race: string;
-  shardID: ShardID;
 }
 
 export const TeamJoinAPI = {
@@ -1507,42 +907,6 @@ export const TeamJoinAPI = {
   },
 }
 
-export interface TimeoutError {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface UnauthorizedFieldCode {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface UnhandledExecutionException {
-  Exception: string;
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface UnspecifiedAuthorizationDenied {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface UnspecifiedExecutionError {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface UnspecifiedNotAllowed {
-  Code: FieldCodes;
-  Message: string;
-}
-
-export interface UnspecifiedRequestError {
-  Code: FieldCodes;
-  Message: string;
-}
-
 export interface Vec2f {
   x: number;
   y: number;
@@ -1552,37 +916,6 @@ export interface Vec3f {
   x: number;
   y: number;
   z: number;
-}
-
-export const VivoxAccessAPI = {
-  GetLoginToken: function(config: RequestConfig): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/voice/tokens/login',
-      {},
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-
-  GetJoinMatchToken: function(config: RequestConfig, matchID: string): Promise<RequestResult> {
-    const conf = config();
-    return xhrRequest(
-      'get',
-      conf.url + 'v1/voice/tokens/joinMatch',
-      { matchID },
-      null,
-      { headers: { ...conf.headers, 'Accept': 'application/json'}}
-    );
-  },
-}
-
-export interface ZoneInfo {
-  ID: string;
-  Name: string;
-  Address: string;
-  Bounds: string;
 }
 
 

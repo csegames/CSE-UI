@@ -10,7 +10,11 @@ import { RootState } from '../../redux/store';
 import { Dispatch } from '@reduxjs/toolkit';
 import { InputBox } from './InputBox';
 import { CloseButton } from '../../../shared/components/CloseButton';
+import { getStringTableValue, StringIDGeneralSearch } from '../../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
+import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 
+// CSS classes
 const Root = 'HUD-SearchInput-Root';
 const Input = 'HUD-SearchInput-Input';
 const CloseButtonPosition = `HUD-SearchInput-CloseButtonPosition`;
@@ -21,6 +25,7 @@ interface ReactProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 interface InjectedProps {
+  stringTable: Dictionary<StringTableEntryDef>;
   dispatch?: Dispatch;
 }
 
@@ -39,7 +44,7 @@ class ASearchInput extends React.Component<Props> {
           <input
             className={Input}
             type='text'
-            placeholder='Search...'
+            placeholder={getStringTableValue(StringIDGeneralSearch, this.props.stringTable)}
             value={value}
             onChange={this.handleSearchChange.bind(this)}
           />
@@ -61,7 +66,8 @@ class ASearchInput extends React.Component<Props> {
 
 const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
   return {
-    ...ownProps
+    ...ownProps,
+    stringTable: state.stringTable.stringTable
   };
 };
 

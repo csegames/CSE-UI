@@ -1,0 +1,4 @@
+{
+  "typescript.tsdk": "camelot\\node_modules\\typescript\\lib",
+  "js/ts.tsdk.path": "camelot\\node_modules\\typescript\\lib"
+}

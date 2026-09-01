@@ -19,7 +19,7 @@
   font-family: 'Lato';
   font-style: normal;
   font-weight: normal;
-  src: url('../font/Lato/Lato-Regular.ttf') format('truetype');
+  src: url('./font/Lato/Lato-Regular.ttf') format('truetype');
 }
 
 html,
@@ -30,24 +30,12 @@ body,
   overflow: hidden;
   margin: 0;
   padding: 0;
-  background: url(../images/bg.png) repeat-x top center fixed;
+  background: url(./images/factionless-loading-screen-bg.png) no-repeat center;
+  background-size: cover;
   background-color: $color2;
   color: $color4;
   font-family: 'Lato', sans-serif;
   font-size: 16px;
-}
-
-.introjs-overlay {
-  pointer-events: none !important;
-}
-
-.help-highlight {
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  pointer-events: none !important;
-}
-
-.help-tooltip {
-  direction: ltr !important;
 }
 
 ::-webkit-scrollbar {
@@ -121,32 +109,28 @@ input {
   font-family: 'Caudex';
   font-style: normal;
   font-weight: normal;
-  src: url('../font/Caudex/Caudex-Regular.ttf') format('truetype');
+  src: url('./font/Caudex/Caudex-Regular.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Material Icons'), local('MaterialIcons-Regular'),
-    url(../font/material-design-icons/icons.woff2) format('woff2');
-}
-
-.material-icons {
-  font-family: 'Material Icons';
+  font-family: 'CaudexItalic';
+  src: url('./font/Caudex/Caudex-Italic.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  font-feature-settings: 'liga';
-  -webkit-font-feature-settings: 'liga';
-  -webkit-font-smoothing: antialiased;
+}
+
+@font-face {
+  font-family: 'CaudexBold';
+  src: url('./font/Caudex/Caudex-Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CaudexBoldItalic';
+  src: url('./font/Caudex/Caudex-BoldItalic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
 .no-margin-bottom {
@@ -209,7 +193,7 @@ input {
 .cse-ui-scroller-grey::-webkit-scrollbar-thumb:vertical {
   border: 35px solid #404040;
   border-width: 35px 4px 35px 4px;
-  border-image: url(../images/scrollbar-thumb-ends.png);
+  border-image: url(./images/scrollbar-thumb-ends.png);
   border-image-slice: 35 4 35 4;
   min-height: 100px;
   box-shadow: none;
@@ -230,7 +214,7 @@ input {
 .cse-ui-scroller-brown::-webkit-scrollbar-thumb:vertical {
   border: 35px solid #404040;
   border-width: 35px 4px 35px 4px;
-  border-image: url(../images/scrollbar-thumb-ends-brown.png);
+  border-image: url(./images/scrollbar-thumb-ends-brown.png);
   border-image-slice: 35 4 35 4;
   min-height: 100px;
   box-shadow: none;
@@ -265,10 +249,6 @@ input {
   width: 16.666%;
 }
 
-// img {
-//   zoom: 65%;
-// }
-
 ::selection {
   background: rgb(181, 181, 181);
 }
@@ -293,14 +273,3 @@ input {
 }
 
 @import './sass/modaldialog';
-
-// components
-@import './components/WindowHeader/index';
-@import './components/Header/index';
-@import './components/App/index';
-@import './components/CUHero/index';
-@import './components/QuickSelect/index';
-@import './components/OverlayView/index';
-
-// widgets
-@import './widgets/CharacterCreation/index';

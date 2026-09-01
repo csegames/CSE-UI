@@ -2,8 +2,9 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
  */
+
+/* TODO_ANIMATION_REFACTOR
 
 import * as React from 'react';
 import { game } from '@csegames/library/dist/_baseGame';
@@ -67,3 +68,5 @@ export class TimerBar extends React.Component<Props, State> {
     this.progressCountdownTimeout = window.setTimeout(this.progressCountdownTick, 66);
   };
 }
+
+*/

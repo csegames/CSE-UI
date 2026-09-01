@@ -11,10 +11,8 @@ import { parseAnnouncementText } from './Utils';
 import { RootState } from '../../../../redux/store';
 import { KeybindsState } from '../../../../redux/keybindsSlice';
 import { DialogueEntry } from '../../../../redux/announcementsSlice';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
-// wonder if I can get rid of this:
-//import { CSSTransitionGroup } from 'react-transition-group';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 
 const Container = 'Announcements-Dialogue-Container';
 const DialogueBox = 'Announcements-Dialogue-DialogueBox';

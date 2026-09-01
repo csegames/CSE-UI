@@ -5,48 +5,33 @@
  */
 
 import * as React from 'react';
-import styled, { keyframes } from 'react-emotion';
+import { RootState } from '../redux/store';
+import { connect } from 'react-redux';
 
 export interface SpinnerStyle {
   spinner: React.CSSProperties;
 }
 
-const spin = keyframes`
-  from: {
-    transform: rotate(0deg);
-  }
-  to: {
-    transform: rotate(360deg)
-  }
-`;
+const Root = 'Spinner-Root';
 
-const SpinnerView = styled('div')`
-  border-radius: 50%;
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  border: 0.25rem solid rgba(255, 255, 255, 0.2);
-  border-top-color: #ececec;
-  transition: all 0.3s;
-  animation-name: ${spin};
-  -webkkit-animation-name: ${spin};
-  animation-duration: 1s;
-  -webkit-animation-duration: 1s;
-  animation-iteration-count: infinite;
-  -webkit-animation-iteration-count: infinite;
-  -webkit-backface-visibility: hidden;
-  &:hover {
-    border-top-color: #3fd0b0;
-  }
-`;
-
-export interface SpinnerProps {
+interface ReactProps {
   styles?: Partial<SpinnerStyle>;
 }
 
-export const Spinner = (props: SpinnerProps) => {
-  const customStyles = props.styles || {};
-  return <SpinnerView style={customStyles.spinner} />;
+interface InjectedProps {}
+
+type Props = ReactProps & InjectedProps;
+
+class ASpinner extends React.Component<Props> {
+  render(): React.ReactNode {
+    return <div className={Root} style={this.props.styles?.spinner ?? {}} />;
+  }
+}
+
+const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
+  return {
+    ...ownProps
+  };
 };
 
-export default Spinner;
+export const Spinner = connect(mapStateToProps)(ASpinner);

@@ -32,8 +32,7 @@ import {
   Invitation,
   Member,
   OfferEvent,
-  OfferPermissionSettings,
-  StringTableEntryDef
+  OfferPermissionSettings
 } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getServerTimeMS } from '@csegames/library/dist/_baseGame/utils/timeUtils';
 import { getAccountID } from '@csegames/library/dist/_baseGame/utils/accountUtils';
@@ -44,6 +43,7 @@ import { Dictionary, Dispatch } from '@reduxjs/toolkit';
 import { getStringTableValue, getTokenizedStringTableValue } from '../helpers/stringTableHelpers';
 import { RootState } from '../redux/store';
 import { GameOptionIDs } from '../redux/gameOptionsSlice';
+import { StringTableEntryDef } from './manifest/stringTableManifest';
 
 const StringIDGroupsNotificationGroupDisbanded = 'GroupsNotificationGroupDisbanded';
 const StringIDGroupsNotificationJoined = 'GroupsNotificationJoined';

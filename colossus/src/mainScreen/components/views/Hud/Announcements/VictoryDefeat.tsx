@@ -7,7 +7,6 @@
 import * as React from 'react';
 import { CSSTransitionGroup } from 'react-transition-group';
 import { AnnouncementType } from '@csegames/library/dist/hordetest/webAPI/definitions';
-import { game } from '@csegames/library/dist/_baseGame';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 
@@ -111,7 +110,7 @@ export class VictoryDefeatAnnouncement extends React.Component<Props, State> {
     }
 
     if (soundID !== 0) {
-      game.playGameSound(soundID);
+      clientAPI.playGameSound(soundID);
     }
 
     window.clearTimeout(this.clearMessageTimeout);

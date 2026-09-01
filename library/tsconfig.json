@@ -4,6 +4,7 @@
     "noImplicitAny": false,
     "downlevelIteration": true,
     "removeComments": false,
+    "rootDir": "./src",
     "outDir": "./dist",
     "sourceMap": true,
     "jsx": "react",
@@ -15,5 +16,5 @@
       "dom"
     ]
   },
-  "include": [ "./src" ]
+  "include": [ "./src", "src/_baseGame/types/CombatEventTypes/.ts" ]
 }

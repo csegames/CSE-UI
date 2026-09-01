@@ -16,7 +16,8 @@ import { LifecyclePhase, Overlay, showOverlay } from '../../../redux/navigationS
 import { Group, Queue } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
 import { Dictionary } from '@reduxjs/toolkit';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'MenuModal-LeftOptions-Container';
 const MenuTitle = 'MenuModal-LeftOptions-MenuTitle';
@@ -68,7 +69,7 @@ class ALeftOptions extends React.Component<Props> {
   }
 
   private onExitClick(): void {
-    game.quit();
+    clientAPI.quit();
   }
 
   private showChangeDisplayName(): void {
@@ -84,7 +85,7 @@ class ALeftOptions extends React.Component<Props> {
   }
 
   private onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   private renderChangeNameOption() {

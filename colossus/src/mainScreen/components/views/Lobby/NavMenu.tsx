@@ -10,15 +10,7 @@ import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEv
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
-import {
-  ChampionInfo,
-  PerkDefGQL,
-  PerkGQL,
-  PurchaseDefGQL,
-  QuestDefGQL,
-  QuestGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkGQL, PurchaseDefGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { navigateTo, LobbyView } from '../../../redux/navigationSlice';
 import { FeatureFlags } from '../../../redux/featureFlagsSlice';
 import { updateSelectedChampion } from '../../../redux/championInfoSlice';
@@ -36,6 +28,11 @@ import {
   getIsBadgedForBattlePass,
   getIsBadgedForStore
 } from '../../../helpers/badgingUtils';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
+import { PerkDef } from '../../../dataSources/manifest/perkManifest';
+import { QuestDef } from '../../../dataSources/manifest/questManifest';
+import { ChampionDef } from '../../../dataSources/manifest/championManifest';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'StartScreen-NavMenu-Container';
 const ContentSizer = 'StartScreen-NavMenu-ContentSizer';
@@ -61,21 +58,20 @@ interface InjectedProps extends FeatureFlags.Source {
   selectedView: LobbyView;
   newPurchases: Dictionary<boolean>;
   purchases: PurchaseDefGQL[];
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   perks: PerkGQL[];
   ownedPerks: Dictionary<number>;
   newEquipment: Dictionary<boolean>;
   hasPurchasables: boolean;
   questDefs: QuestsByType;
   quests: QuestGQL[];
-  currentBattlePass: QuestDefGQL;
-  nextBattlePass: QuestDefGQL;
-  previousBattlePass: QuestDefGQL;
+  currentBattlePass: QuestDef;
+  nextBattlePass: QuestDef;
+  previousBattlePass: QuestDef;
   stringTable: Dictionary<StringTableEntryDef>;
-  minuteTicker: number;
   serverTimeDeltaMS: number;
   progressionNodes: string[];
-  champions: ChampionInfo[];
+  champions: ChampionDef[];
   dispatch?: Dispatch;
 }
 
@@ -133,7 +129,7 @@ class ANavMenu extends React.Component<Props> {
     return null;
   }
 
-  private getBattlePassCountdown(bp: QuestDefGQL): string {
+  private getBattlePassCountdown(bp: QuestDef): string {
     const startDate = new Date(
       bp.questLock?.find((lock) => {
         return !!lock.startTime;
@@ -161,26 +157,26 @@ class ANavMenu extends React.Component<Props> {
 
     switch (view) {
       case LobbyView.Champions: {
-        game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_CHAMPION_OPEN);
+        clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_CHAMPION_OPEN);
         break;
       }
       case LobbyView.CareerStats: {
-        game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_CAREER_OPEN);
+        clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_CAREER_OPEN);
         break;
       }
       case LobbyView.Store: {
-        game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_STORE_OPEN);
+        clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_TAB_STORE_OPEN);
         break;
       }
       default: {
-        game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
+        clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_CLICK);
         break;
       }
     }
   }
 
   private onMouseEnterRoute() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_HOVER);
   }
 
   private renderRouteButton(view: LobbyView, extraJSX?: JSX.Element | JSX.Element[]) {
@@ -318,7 +314,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const questDefs = state.quests.quests;
   const { currentBattlePass, nextBattlePass, previousBattlePass } = state.quests;
   const { stringTable } = state.stringTable;
-  const { minuteTicker, serverTimeDeltaMS } = state.clock;
+  const { serverTimeDeltaMS } = state.clock;
   const { champions } = state.championInfo;
 
   return {
@@ -340,7 +336,6 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     nextBattlePass,
     previousBattlePass,
     stringTable,
-    minuteTicker,
     serverTimeDeltaMS,
     progressionNodes,
     champions

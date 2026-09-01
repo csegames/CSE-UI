@@ -11,14 +11,8 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Overlay, hideAllOverlays, hideOverlay, hideRightPanel, showError } from '../../redux/navigationSlice';
-import {
-  PerkDefGQL,
-  PerkGQL,
-  PurchaseDefGQL,
-  QuestDefGQL,
-  QuestGQL,
-  StringTableEntryDef
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PerkGQL, PurchaseDefGQL, QuestGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import {
   StringIDGeneralDone,
@@ -34,6 +28,8 @@ import { ItemGrid } from '../shared/ItemGrid';
 import { webConf } from '../../dataSources/networkConfiguration';
 import { refreshProfile } from '../../dataSources/profileNetworking';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { PerkDef } from '../../dataSources/manifest/perkManifest';
+import { QuestDef } from '../../dataSources/manifest/questManifest';
 
 const Container = 'PurchaseProcessingModal-Container';
 const Title = 'PurchaseProcessingModal-Title';
@@ -55,9 +51,9 @@ interface ReactProps {}
 interface InjectedProps {
   perks: PerkGQL[];
   quests: QuestGQL[];
-  battlePassQuests: QuestDefGQL[];
+  battlePassQuests: QuestDef[];
   stringTable: Dictionary<StringTableEntryDef>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   purchases: PurchaseDefGQL[];
   purchaseIdToProcess: string;
   suppressAlertStar: boolean;

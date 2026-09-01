@@ -1,4 +1,4 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -7,7 +7,6 @@
 import initGameInterface from './game/initGameInterface';
 import { CamelotUnchainedModel } from './game/CamelotUnchainedModel';
 import { _devGame, loadGame } from '../_baseGame';
-import { engine } from '../_baseGame/engine';
 
 /**
  * Initializes the game client <-> UI communication layer.
@@ -15,10 +14,10 @@ import { engine } from '../_baseGame/engine';
  */
 const loadPromise = loadGame().then(() => {
   if (camelot) {
-    throw new Error('hordetest initialization has run twice, which should no longer be possible');
+    throw new Error('camelot initialization has run twice, which should no longer be possible');
   }
   if (!_devGame) {
-    throw new Error('out-of-order initialization between base game and hordetest detected');
+    throw new Error('out-of-order initialization between base game and camelot detected');
   }
   camelot = initGameInterface(_devGame);
   return camelot;

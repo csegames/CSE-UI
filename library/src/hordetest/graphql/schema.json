@@ -1370,8 +1370,8 @@
         },
         {
           "kind": "OBJECT",
-          "name": "ClassDefRef",
-          "description": "CSE.GameplayDefs.ClassDefRef",
+          "name": "ClassDef",
+          "description": "CSE.GameplayDefs.ClassDef",
           "fields": [
             {
               "name": "id",
@@ -1417,8 +1417,8 @@
         },
         {
           "kind": "OBJECT",
-          "name": "RaceDefRef",
-          "description": "CSE.GameplayDefs.RaceDefRef",
+          "name": "RaceDef",
+          "description": "CSE.GameplayDefs.RaceDef",
           "fields": [
             {
               "name": "description",
@@ -1458,348 +1458,6 @@
             },
             {
               "name": "numericID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "DisplayInfoDef",
-          "description": "CSE.GameplayDefs.DisplayInfoDef",
-          "fields": [
-            {
-              "name": "description",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "DisplayInfoDescription",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "iconClass",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "iconURL",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "CUDisplayInfoIcon",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "DisplayInfoName",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "SCALAR",
-          "name": "DisplayInfoName",
-          "description": "CSEUtilsNET.Strings.DisplayInfoName",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "SCALAR",
-          "name": "DisplayInfoDescription",
-          "description": "CSEUtilsNET.Strings.DisplayInfoDescription",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "SCALAR",
-          "name": "CUDisplayInfoIcon",
-          "description": "CSEUtilsNET.Strings.CUDisplayInfoIcon",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "StoreTab",
-          "description": "CSE.GameplayDefs.StoreTab",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "Invalid",
-              "description": "Invalid",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Bundle",
-              "description": "Bundle",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Costume",
-              "description": "Costume",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Weapon",
-              "description": "Weapon",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "SprintFX",
-              "description": "SprintFX",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Emote",
-              "description": "Emote",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Portrait",
-              "description": "Portrait",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "QuestXP",
-              "description": "QuestXP",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "StoreTabConfig",
-          "description": "CSE.GameplayDefs.GameSettingsDef+StoreTabConfig",
-          "fields": [
-            {
-              "name": "layout",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "tab",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "StoreTab",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "GameSettingsDef",
-          "description": "CSE.GameplayDefs.GameSettingsDef",
-          "fields": [
-            {
-              "name": "dailyQuestResetsAllowed",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "expensivePurchaseGemThreshold",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "hardDailyQuestCount",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "maxCharacterNameLength",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "maxEmoteCount",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "minCharacterNameLength",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "normalDailyQuestCount",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "runeModTiers",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "startingAttributePoints",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "storeTabConfigs",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "StoreTabConfig",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "traitsMaxPoints",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "traitsMinPoints",
               "description": "",
               "args": [],
               "type": {
@@ -1916,176 +1574,6 @@
                   "name": "Rank",
                   "ofType": null
                 }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "StatusDurationModification",
-          "description": "CSE.GameplayDefs.StatusStackingDef+StatusDurationModification",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "RefreshDuration",
-              "description": "RefreshDuration",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "AddAmountToDuration",
-              "description": "AddAmountToDuration",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "SetNewDuration",
-              "description": "SetNewDuration",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "SetNewDurationIfGreater",
-              "description": "SetNewDurationIfGreater",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "DoNothing",
-              "description": "DoNothing",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "StatusRemovalOrder",
-          "description": "CSE.GameplayDefs.StatusStackingDef+StatusRemovalOrder",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "Invalid",
-              "description": "Invalid",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "KeepOldest",
-              "description": "KeepOldest",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "KeepNewest",
-              "description": "KeepNewest",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "KeepOldestFromSource",
-              "description": "KeepOldestFromSource",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ApplyOldest",
-              "description": "ApplyOldest",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ApplyNewest",
-              "description": "ApplyNewest",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "StatusStackingDef",
-          "description": "CSE.GameplayDefs.StatusStackingDef",
-          "fields": [
-            {
-              "name": "group",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "removalOrder",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "StatusRemovalOrder",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "statusDurationModType",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "StatusDurationModification",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "StringTableEntryDef",
-          "description": "CSE.GameplayDefs.StringTableEntryDef",
-          "fields": [
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "value",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -2217,7 +1705,7 @@
         {
           "kind": "OBJECT",
           "name": "ManifestDef",
-          "description": "ServerLib.GraphQL.Types.ManifestDefGQL",
+          "description": "CU.WebApi.Models.ManifestDefGQL",
           "fields": [
             {
               "name": "contents",
@@ -2251,33 +1739,6 @@
                 "kind": "SCALAR",
                 "name": "Int",
                 "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "ManifestUpdate",
-          "description": "ServerLib.GraphQL.Models.ManifestUpdate",
-          "fields": [
-            {
-              "name": "manifests",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ManifestDef",
-                  "ofType": null
-                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -4034,53 +3495,6 @@
         },
         {
           "kind": "OBJECT",
-          "name": "TeamMember",
-          "description": "CU.WebApi.Models.Matchmaking.Member",
-          "fields": [
-            {
-              "name": "champion",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Champion",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "displayName",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
           "name": "Roster",
           "description": "CU.WebApi.Models.Matchmaking.Roster",
           "fields": [
@@ -4102,6 +3516,53 @@
             },
             {
               "name": "teamID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "PlayerStat",
+          "description": "CU.WebApi.Models.Matchmaking.FieldResolvers.PlayerStat",
+          "fields": [
+            {
+              "name": "accountID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "value",
               "description": "",
               "args": [],
               "type": {
@@ -4227,6 +3688,94 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "globalStats",
+              "description": "Admin view of global match statistics",
+              "args": [
+                {
+                  "name": "names",
+                  "description": "Names of stats to retrieve (optional)",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Field",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "isBackfillEnabled",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "playerStats",
+              "description": "Admin view of player match statistics",
+              "args": [
+                {
+                  "name": "names",
+                  "description": "Names of stats to retrieve (optional)",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": "null"
+                },
+                {
+                  "name": "players",
+                  "description": "List of players to query (optional)",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": "null"
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PlayerStat",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -5565,100 +5114,6 @@
           "possibleTypes": null
         },
         {
-          "kind": "OBJECT",
-          "name": "NumberValue",
-          "description": "CU.WebApi.Models.Matchmaking.NumberValue",
-          "fields": [
-            {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "value",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Decimal",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "GlobalStats",
-          "description": "CU.WebApi.Models.Matchmaking.GlobalStats",
-          "fields": [
-            {
-              "name": "counts",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "NumberValue",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "labels",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Field",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "scores",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "NumberValue",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
           "kind": "INTERFACE",
           "name": "IMatchUpdate",
           "description": "CU.WebApi.Models.Matchmaking.IMatchUpdate",
@@ -5871,65 +5326,29 @@
         },
         {
           "kind": "OBJECT",
-          "name": "PlayerStats",
-          "description": "CU.WebApi.Models.Matchmaking.PlayerStats",
+          "name": "NumberValue",
+          "description": "CU.WebApi.Models.Matchmaking.NumberValue",
           "fields": [
             {
-              "name": "counts",
+              "name": "name",
               "description": "",
               "args": [],
               "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "NumberValue",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "labels",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Field",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "player",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Player",
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "scores",
+              "name": "value",
               "description": "",
               "args": [],
               "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "NumberValue",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "Decimal",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -6762,53 +6181,58 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "StatType",
+          "description": "CSE.GameplayDefs.StatType",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "None",
+              "description": "None",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Primary",
+              "description": "Primary",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Secondary",
+              "description": "Secondary",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Derived",
+              "description": "Derived",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Hidden",
+              "description": "Hidden",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
-          "name": "ChampionCostumeInfo",
-          "description": "CU.WebApi.GraphQL.ChampionCostumeInfo",
+          "name": "StatDefinitionGQL",
+          "description": "CU.WebApi.GraphQL.StatDefinitionGQL",
           "fields": [
             {
-              "name": "backgroundImageURL",
+              "name": "addPointsAtCharacterCreation",
               "description": "",
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "cardImageURL",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "championSelectedFlareImageURL",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "championSelectImageURL",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
+                "name": "Boolean",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -6839,78 +6263,7 @@
               "deprecationReason": null
             },
             {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "requiredChampionID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "standingImageURL",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "thumbnailURL",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "ChampionAbility",
-          "description": "CU.WebApi.GraphQL.ChampionAbility",
-          "fields": [
-            {
-              "name": "description",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "iconClass",
+              "name": "itemRequirementStat",
               "description": "",
               "args": [],
               "type": {
@@ -6932,6 +6285,42 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "operation",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "showAtCharacterCreation",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "statType",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "StatType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -6941,27 +6330,46 @@
         },
         {
           "kind": "OBJECT",
-          "name": "ChampionInfo",
-          "description": "CU.WebApi.GraphQL.ChampionInfo",
+          "name": "StatBonusGQL",
+          "description": "CU.WebApi.GraphQL.StatBonusGQL",
           "fields": [
             {
-              "name": "abilities",
+              "name": "amount",
               "description": "",
               "args": [],
               "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ChampionAbility",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "Decimal",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "championSelectSound",
+              "name": "stat",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "RaceStatBonuses",
+          "description": "CU.WebApi.GraphQL.RaceStatBonuses",
+          "fields": [
+            {
+              "name": "race",
               "description": "",
               "args": [],
               "type": {
@@ -6973,7 +6381,34 @@
               "deprecationReason": null
             },
             {
-              "name": "description",
+              "name": "statBonuses",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "StatBonusGQL",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ProfileLockDefGQL",
+          "description": "ServerLib.GraphQL.Models.ProfileLockDefGQL",
+          "fields": [
+            {
+              "name": "endTime",
               "description": "",
               "args": [],
               "type": {
@@ -6985,7 +6420,19 @@
               "deprecationReason": null
             },
             {
-              "name": "id",
+              "name": "invertConditions",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "perkID",
               "description": "",
               "args": [],
               "type": {
@@ -6997,19 +6444,7 @@
               "deprecationReason": null
             },
             {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "progressionCurrencyID",
+              "name": "progressionNodeID",
               "description": "",
               "args": [],
               "type": {
@@ -7033,19 +6468,7 @@
               "deprecationReason": null
             },
             {
-              "name": "runeModUnlockCurrencyID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "sortOrder",
+              "name": "questLevel",
               "description": "",
               "args": [],
               "type": {
@@ -7057,7 +6480,42 @@
               "deprecationReason": null
             },
             {
-              "name": "uIColor",
+              "name": "startTime",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CostDefGQL",
+          "description": "ServerLib.GraphQL.Models.CostDefGQL",
+          "fields": [
+            {
+              "name": "perkID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "qty",
               "description": "",
               "args": [],
               "type": {
@@ -7076,11 +6534,11 @@
         },
         {
           "kind": "OBJECT",
-          "name": "GroupMemberStatus",
-          "description": "CU.WebApi.GraphQL.GroupMemberStatus",
+          "name": "PurchaseRewardDefGQL",
+          "description": "ServerLib.GraphQL.Models.PurchaseRewardDefGQL",
           "fields": [
             {
-              "name": "description",
+              "name": "bundleDiscountPerkID",
               "description": "",
               "args": [],
               "type": {
@@ -7092,12 +6550,99 @@
               "deprecationReason": null
             },
             {
-              "name": "duration",
+              "name": "bundleDiscountPerkQty",
               "description": "",
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Decimal",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "perkID",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "qty",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "PurchaseDefGQL",
+          "description": "ServerLib.GraphQL.Models.PurchaseDefGQL",
+          "fields": [
+            {
+              "name": "backgroundURL",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "bonusDescription",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "costs",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CostDefGQL",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -7128,6 +6673,22 @@
               "deprecationReason": null
             },
             {
+              "name": "locks",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ProfileLockDefGQL",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
               "description": "",
               "args": [],
@@ -7140,12 +6701,28 @@
               "deprecationReason": null
             },
             {
-              "name": "startTime",
+              "name": "perks",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PurchaseRewardDefGQL",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sortOrder",
               "description": "",
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Decimal",
+                "name": "Int",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -7159,23 +6736,11 @@
         },
         {
           "kind": "OBJECT",
-          "name": "GroupMemberResource",
-          "description": "CU.WebApi.GraphQL.GroupMemberResource",
+          "name": "PerkRewardDefGQL",
+          "description": "ServerLib.GraphQL.Models.PerkRewardDefGQL",
           "fields": [
             {
-              "name": "current",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Decimal",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
+              "name": "perkID",
               "description": "",
               "args": [],
               "type": {
@@ -7187,13 +6752,262 @@
               "deprecationReason": null
             },
             {
-              "name": "max",
+              "name": "qty",
               "description": "",
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Decimal",
+                "name": "Int",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "RMTPurchaseDefGQL",
+          "description": "ServerLib.GraphQL.Models.RMTPurchaseDefGQL",
+          "fields": [
+            {
+              "name": "bonusDescription",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "centCost",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "iconURL",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "locks",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ProfileLockDefGQL",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "perks",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PerkRewardDefGQL",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "GameDefsGQLData",
+          "description": "CU.WebApi.GraphQL.GameDefsGQLData",
+          "fields": [
+            {
+              "name": "baseStatValues",
+              "description": "Base stat values which apply to all races",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "StatBonusGQL",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "manifests",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ManifestDef",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "purchases",
+              "description": "Static information about possible purchases",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PurchaseDefGQL",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "raceStatMods",
+              "description": "Stat modifiers that are applied additively to the base stat value for each Race",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "RaceStatBonuses",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "rMTPurchases",
+              "description": "Static information about possible RMT purchases",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "RMTPurchaseDefGQL",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "stats",
+              "description": "Array of definitions for all available stats",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "StatDefinitionGQL",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ManifestUpdate",
+          "description": "CU.WebApi.GraphQL.ManifestUpdate",
+          "fields": [
+            {
+              "name": "manifests",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ManifestDef",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -7375,718 +7189,6 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "ConnectedServices",
-          "description": "ServerLib.GraphQL.ConnectedServices",
-          "fields": [],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "ServerUpdateType",
-          "description": "ServerLib.GraphQL.ServerUpdateType",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "None",
-              "description": "None",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Updated",
-              "description": "Updated",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "UpdatedAll",
-              "description": "UpdatedAll",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "UnavailableAll",
-              "description": "UnavailableAll",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "INTERFACE",
-          "name": "IServerUpdate",
-          "description": "ServerLib.GraphQL.IServerUpdate",
-          "fields": [
-            {
-              "name": "type",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "ServerUpdateType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": [
-            {
-              "kind": "OBJECT",
-              "name": "ServerUpdated",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "ServerUpdatedAll",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "ServerUnavailableAllUpdate",
-              "ofType": null
-            }
-          ]
-        },
-        {
-          "kind": "ENUM",
-          "name": "AccessType",
-          "description": "AccessType",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "Public",
-              "description": "Public",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Live",
-              "description": "Live",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Beta3",
-              "description": "Beta3",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Beta2",
-              "description": "Beta2",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Beta1",
-              "description": "Beta1",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Alpha",
-              "description": "Alpha",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "InternalTest",
-              "description": "InternalTest",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Employees",
-              "description": "Employees",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Invalid",
-              "description": "Invalid",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "ServerStatus",
-          "description": "ServerLib.ApiModels.ServerStatus",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "Offline",
-              "description": "Offline",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Starting",
-              "description": "Starting",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Online",
-              "description": "Online",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "ServerModel",
-          "description": "ServerLib.ApiModels.ServerModel",
-          "fields": [
-            {
-              "name": "accessLevel",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "AccessType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "apiHost",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "channelID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "channelPatchPermissions",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "shardID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "status",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "ServerStatus",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "ServerUpdated",
-          "description": "ServerLib.GraphQL.ServerUpdated",
-          "fields": [
-            {
-              "name": "server",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "ServerModel",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "type",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "ServerUpdateType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "IServerUpdate",
-              "ofType": null
-            }
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "ServerUpdatedAll",
-          "description": "ServerLib.GraphQL.ServerUpdatedAll",
-          "fields": [
-            {
-              "name": "server",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "ServerModel",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "type",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "ServerUpdateType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "IServerUpdate",
-              "ofType": null
-            }
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "ServerUnavailableAllUpdate",
-          "description": "ServerLib.GraphQL.ServerUnavailableAllUpdate",
-          "fields": [
-            {
-              "name": "type",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "ServerUpdateType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "IServerUpdate",
-              "ofType": null
-            }
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "ProfileLockDefGQL",
-          "description": "ServerLib.GraphQL.Models.ProfileLockDefGQL",
-          "fields": [
-            {
-              "name": "endTime",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "invertConditions",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "perkID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "progressionNodeID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "questID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "questLevel",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "startTime",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CostDefGQL",
-          "description": "ServerLib.GraphQL.Models.CostDefGQL",
-          "fields": [
-            {
-              "name": "perkID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "qty",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "PerkRewardDefGQL",
-          "description": "ServerLib.GraphQL.Models.PerkRewardDefGQL",
-          "fields": [
-            {
-              "name": "perkID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "qty",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "ProgressionNodeDef",
-          "description": "ServerLib.GraphQL.Types.ColossusProgressionNodeDefGQL",
-          "fields": [
-            {
-              "name": "championID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "childrenIDs",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "costs",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CostDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "icon",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "locks",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ProfileLockDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "parentIDs",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "positionX",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Decimal",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "positionY",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Decimal",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "rewards",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PerkRewardDefGQL",
-                  "ofType": null
-                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -8883,125 +7985,6 @@
           "possibleTypes": null
         },
         {
-          "kind": "OBJECT",
-          "name": "ScenarioDefGQL",
-          "description": "ServerLib.GraphQL.Types.ScenarioDefGQL",
-          "fields": [
-            {
-              "name": "applyChampionUpgrades",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "description",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "loadingBackgroundImage",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "showLeaderboardTab",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "showPlayerProgressionTab",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "showScoreAsRank",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "summaryBackgroundImage",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
           "kind": "ENUM",
           "name": "AlertCategory",
           "description": "ServerLib.GraphQL.Models.AlertCategory",
@@ -9067,1674 +8050,8 @@
         },
         {
           "kind": "ENUM",
-          "name": "PerkType",
-          "description": "CSE.GameplayDefs.PerkType",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "Invalid",
-              "description": "Invalid",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Currency",
-              "description": "Currency",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Costume",
-              "description": "Costume",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Key",
-              "description": "Key",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Portrait",
-              "description": "Portrait",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Weapon",
-              "description": "Weapon",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "CurrentBattlePassXP",
-              "description": "CurrentBattlePassXP",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Emote",
-              "description": "Emote",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "RuneMod",
-              "description": "RuneMod",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "QuestXP",
-              "description": "QuestXP",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "SprintFX",
-              "description": "SprintFX",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "RuneModTierKey",
-              "description": "RuneModTierKey",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "StatusMod",
-              "description": "StatusMod",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "StatMod",
-              "description": "StatMod",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "PerkRarity",
-          "description": "CSE.GameplayDefs.PerkRarity",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "Default",
-              "description": "Default",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Common",
-              "description": "Common",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Rare",
-              "description": "Rare",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Unique",
-              "description": "Unique",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "QuestType",
-          "description": "CSE.GameplayDefs.QuestType",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "Invalid",
-              "description": "Invalid",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Normal",
-              "description": "Normal",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "BattlePass",
-              "description": "BattlePass",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "DailyNormal",
-              "description": "DailyNormal",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "DailyHard",
-              "description": "DailyHard",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Champion",
-              "description": "Champion",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "SubQuest",
-              "description": "SubQuest",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "LAEOp",
-          "description": "CSE.GameplayDefs.LAEOp",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "Add",
-              "description": "Add",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Multiply",
-              "description": "Multiply",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "AddPercent",
-              "description": "AddPercent",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "UpperBoundValue",
-              "description": "UpperBoundValue",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "LowerBoundValue",
-              "description": "LowerBoundValue",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "UpperBoundMultiplier",
-              "description": "UpperBoundMultiplier",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "LowerBoundMultiplier",
-              "description": "LowerBoundMultiplier",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Set",
-              "description": "Set",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "PerkDefGQL",
-          "description": "ServerLib.GraphQL.Models.PerkDefGQL",
-          "fields": [
-            {
-              "name": "backgroundURL",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "champion",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "ClassDefRef",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "costume",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "RaceDefRef",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "description",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "iconClass",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "iconClassColor",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "iconURL",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "isUnique",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "perkType",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "PerkType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "portraitChampionSelectImageUrl",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "portraitThumbnailURL",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "questType",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "QuestType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "rarity",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "PerkRarity",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "runeModTier",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "showIfUnowned",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "sortOrder",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "statAmount",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Decimal",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "statID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "statOperation",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "LAEOp",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "videoURL",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "weaponID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "xPAmount",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "PurchaseRewardDefGQL",
-          "description": "ServerLib.GraphQL.Models.PurchaseRewardDefGQL",
-          "fields": [
-            {
-              "name": "bundleDiscountPerkID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "bundleDiscountPerkQty",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "perkID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "qty",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "PurchaseDefGQL",
-          "description": "ServerLib.GraphQL.Models.PurchaseDefGQL",
-          "fields": [
-            {
-              "name": "backgroundURL",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "bonusDescription",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "costs",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CostDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "description",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "iconURL",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "locks",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ProfileLockDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "perks",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PurchaseRewardDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "sortOrder",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "QuestLinkDefGQL",
-          "description": "ServerLib.GraphQL.Models.QuestLinkDefGQL",
-          "fields": [
-            {
-              "name": "premiumRewardDescriptionOverride",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "premiumRewardImageOverride",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "premiumRewardNameOverride",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "premiumRewards",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PerkRewardDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "progress",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "rewardDescriptionOverride",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "rewardImageOverride",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "rewardNameOverride",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "rewards",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PerkRewardDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "QuestDefGQL",
-          "description": "ServerLib.GraphQL.Models.QuestDefGQL",
-          "fields": [
-            {
-              "name": "comingSoonImage",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "currentBackgroundImage",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "description",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "displaySubQuests",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "endedSplashImage",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "expiredImage",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "links",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "QuestLinkDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "premiumLock",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ProfileLockDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "previewDate",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "questLock",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ProfileLockDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "questType",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "QuestType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "shortName",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "startedSplashImage",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "subQuestIDs",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "RMTPurchaseDefGQL",
-          "description": "ServerLib.GraphQL.Models.RMTPurchaseDefGQL",
-          "fields": [
-            {
-              "name": "bonusDescription",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "centCost",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "description",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "iconURL",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "locks",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ProfileLockDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "perks",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PerkRewardDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "StatType",
-          "description": "CSE.GameplayDefs.StatType",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "None",
-              "description": "None",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Primary",
-              "description": "Primary",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Secondary",
-              "description": "Secondary",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Derived",
-              "description": "Derived",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Hidden",
-              "description": "Hidden",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "StatDisplayType",
-          "description": "CSE.GameplayDefs.StatDisplayType",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "Value",
-              "description": "Value",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Percent",
-              "description": "Percent",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "IconOnly",
-              "description": "IconOnly",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "StatDefinitionGQL",
-          "description": "ServerLib.Game.StatDefinitionGQL",
-          "fields": [
-            {
-              "name": "addPointsAtCharacterCreation",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "description",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "displayType",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "StatDisplayType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "itemRequirementStat",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "operation",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "showAtCharacterCreation",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "statType",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "StatType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "StatBonusGQL",
-          "description": "ServerLib.Game.StatBonusGQL",
-          "fields": [
-            {
-              "name": "amount",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Decimal",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "stat",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "RaceStatBonuses",
-          "description": "ServerLib.Game.RaceStatBonuses",
-          "fields": [
-            {
-              "name": "race",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "statBonuses",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "StatBonusGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "GameDefsGQLData",
-          "description": "ServerLib.Game.GameDefsGQLData",
-          "fields": [
-            {
-              "name": "baseStatValues",
-              "description": "Base stat values which apply to all races",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "StatBonusGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "manifests",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ManifestDef",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "perks",
-              "description": "Static information about perks",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PerkDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "progressionNodes",
-              "description": "Static information about progression nodes",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ProgressionNodeDef",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "purchases",
-              "description": "Static information about possible purchases",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PurchaseDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "quests",
-              "description": "Static information about quests",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "QuestDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "raceStatMods",
-              "description": "Stat modifiers that are applied additively to the base stat value for each Race",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "RaceStatBonuses",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "rMTPurchases",
-              "description": "Static information about possible RMT purchases",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "RMTPurchaseDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "scenarios",
-              "description": "Static information about scenarios",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ScenarioDefGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "settings",
-              "description": "Static information about game settings",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "GameSettingsDef",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "stats",
-              "description": "Array of definitions for all available stats",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "StatDefinitionGQL",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "stringTable",
-              "description": "Static information about string table entries",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "StringTableEntryDef",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
           "name": "PatchPermissions",
-          "description": "CU.Databases.Channels.PatchPermissions",
+          "description": "CSEUtilsNET.PatchPermissions",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -10857,281 +8174,9 @@
         },
         {
           "kind": "OBJECT",
-          "name": "SimpleCharacter",
-          "description": "ServerLib.ApiModels.SimpleCharacter",
-          "fields": [
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "CharacterID",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "lastLogin",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "shardID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "ShardID",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "PatcherCharacterUpdateType",
-          "description": "ServerLib.ApiModels.PatcherCharacterUpdateType",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "None",
-              "description": "None",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Updated",
-              "description": "Updated",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "Removed",
-              "description": "Removed",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "INTERFACE",
-          "name": "IPatcherCharacterUpdate",
-          "description": "ServerLib.ApiModels.IPatcherCharacterUpdate",
-          "fields": [
-            {
-              "name": "shard",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "ShardID",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "type",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "PatcherCharacterUpdateType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": [
-            {
-              "kind": "OBJECT",
-              "name": "CharacterUpdate",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "CharacterRemovedUpdate",
-              "ofType": null
-            }
-          ]
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CharacterUpdate",
-          "description": "ServerLib.ApiModels.CharacterUpdate",
-          "fields": [
-            {
-              "name": "character",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "SimpleCharacter",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "shard",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "ShardID",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "type",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "PatcherCharacterUpdateType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "IPatcherCharacterUpdate",
-              "ofType": null
-            }
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CharacterRemovedUpdate",
-          "description": "ServerLib.ApiModels.CharacterRemovedUpdate",
-          "fields": [
-            {
-              "name": "characterID",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "CharacterID",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "shard",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "ShardID",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "type",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "PatcherCharacterUpdateType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "IPatcherCharacterUpdate",
-              "ofType": null
-            }
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
           "name": "CUQuery",
           "description": "The root query object.",
           "fields": [
-            {
-              "name": "championCostumes",
-              "description": "Gets information about champion costumes",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ChampionCostumeInfo",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "champions",
-              "description": "Gets information about champions",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ChampionInfo",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
             {
               "name": "channels",
               "description": "List all channels.",
@@ -11188,18 +8233,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "ProfileGQL",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "connectedServices",
-              "description": "Status information for connected services",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "ConnectedServices",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -11333,18 +8366,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "ActivitiesAdminData",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "myCharacter",
-              "description": "Get the character of the currently logged in user.",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "CUCharacter",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -11758,41 +8779,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "PassiveAlert",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "serverUpdates",
-              "description": "Subscription for updates to servers",
-              "args": [],
-              "type": {
-                "kind": "INTERFACE",
-                "name": "IServerUpdate",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "shardCharacterUpdates",
-              "description": "Subscription for simple updates to characters on a shard",
-              "args": [
-                {
-                  "name": "onShard",
-                  "description": "Shard ID of the server you'd like to subscribe to for character updates",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": "null"
-                }
-              ],
-              "type": {
-                "kind": "INTERFACE",
-                "name": "IPatcherCharacterUpdate",
                 "ofType": null
               },
               "isDeprecated": false,

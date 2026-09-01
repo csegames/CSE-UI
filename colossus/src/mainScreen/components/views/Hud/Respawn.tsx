@@ -1,4 +1,4 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -12,14 +12,14 @@ import { RootState } from '../../../redux/store';
 import { Binding, Keybind } from '@csegames/library/dist/_baseGame/types/Keybind';
 import { CharacterRaceDef } from '@csegames/library/dist/hordetest/game/types/CharacterDef';
 import { game } from '@csegames/library/dist/_baseGame';
-import { hordetest } from '@csegames/library/dist/hordetest';
 import { ScenarioRoundState } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { Dispatch } from 'redux';
 import { Button } from '../../shared/Button';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../helpers/stringTableHelpers';
+import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 
 const Container = 'Respawn-Container';
 const DeadTextWrapper = 'Respawn-DeadTextWrapper';
@@ -262,7 +262,7 @@ class ARespawn extends React.Component<Props, {}> {
   }
 
   private onRespawn = () => {
-    hordetest.game.selfPlayerState.respawn('-1');
+    clientAPI.respawn();
   };
 
   private onLeaveMatch = () => {
@@ -308,20 +308,22 @@ function mapStateToProps(state: RootState, ownProps: ReactProps) {
   const keybindToCyclePrevObserver = keybindsState[KeybindIDs.PlayerObserverCamPrevCycle];
   const usingGamepad = state.baseGame.usingGamepad;
   const { stringTable } = state.stringTable;
+  const { isAlive, currentDeaths, maxDeaths, killersRace, killersName, survivedTime, scenarioRoundState, scenarioID } =
+    state.entities.self;
 
   return {
     keybindToRevive: keybindToRevive,
     keybindToCycleNextObserver: keybindToCycleNextObserver,
     keybindToCyclePrevObserver: keybindToCyclePrevObserver,
     usingGamepad: usingGamepad,
-    isAlive: state.player.isAlive,
-    currentDeaths: state.player.currentDeaths ? state.player.currentDeaths : 0,
-    maxDeaths: state.player.maxDeaths ? state.player.maxDeaths : 0,
-    killersRaceDef: state.game.characterRaceDefs[state.player.killersRace],
-    killersName: state.player.killersName,
-    survivedTime: state.player.survivedTime ? state.player.survivedTime : 0,
-    scenarioRoundState: state.player.scenarioRoundState,
-    scenarioID: state.player.scenarioID,
+    isAlive,
+    currentDeaths: currentDeaths ?? 0,
+    maxDeaths: maxDeaths ?? 0,
+    killersRaceDef: state.game.characterRaceDefs[killersRace],
+    killersName,
+    survivedTime: survivedTime ?? 0,
+    scenarioRoundState,
+    scenarioID,
     stringTable: stringTable,
     ...ownProps
   };

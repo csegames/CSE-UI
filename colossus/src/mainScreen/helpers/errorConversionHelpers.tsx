@@ -10,7 +10,7 @@ import { RequestResult } from '@csegames/library/dist/_baseGame/types/Request';
 
 // This is the target format used for our error dialogs
 
-type ErrorSeverity = 'standard' | 'critical';
+export type ErrorSeverity = 'standard' | 'critical';
 
 export interface ErrorData {
   severity: ErrorSeverity;

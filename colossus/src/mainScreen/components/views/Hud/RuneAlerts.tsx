@@ -10,7 +10,7 @@ import { RootState } from '../../../redux/store';
 import { RuneType } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { RuneAlertBox } from '../../../redux/runesSlice';
 import { Dictionary } from '@reduxjs/toolkit';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
+import { StringTableEntryDef } from '../../../dataSources/manifest/stringTableManifest';
 import { getStringTableValue } from '../../../helpers/stringTableHelpers';
 
 const IconSizeVmin = 4.65;

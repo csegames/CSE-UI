@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import { EntityList } from '../../../../redux/entitiesSlice';
 import {
-  PlayerEntityStateModel,
+  PlayerEntityState,
   findEntityResource
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { CharacterKind } from '@csegames/library/dist/hordetest/game/types/CharacterKind';
@@ -123,7 +123,7 @@ class ABossHealthBars extends React.Component<Props, {}> {
     return result;
   }
 
-  private getBossHealthBarPercent(boss: PlayerEntityStateModel): number {
+  private getBossHealthBarPercent(boss: PlayerEntityState): number {
     const health = findEntityResource(boss.resources, EntityResourceIDs.Health);
 
     // if dead show an empty bar

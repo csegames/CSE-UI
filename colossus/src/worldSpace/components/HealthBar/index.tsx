@@ -14,7 +14,7 @@ import { HealthBarKind } from '@csegames/library/dist/hordetest/game/types/Healt
 import { BossHealthBar } from './BossHealthBar';
 import { WorldUIPositionModel } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 
-export interface Props {
+interface Props {
   state: HealthBarState;
   position: WorldUIPositionModel;
 }

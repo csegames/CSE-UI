@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/* TODO_ANIMATION_REFACTOR
+
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -14,12 +16,11 @@ import { Vec3f } from '@csegames/library/dist/hordetest/graphql/schema';
 import { ObjectiveState, Vec2f } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { distanceVec3 } from '@csegames/library/dist/_baseGame/utils/distance';
 import {
-  BaseEntityStateModel,
+  BaseEntityState,
   EntityResource,
   findEntityResource
 } from '@csegames/library/dist/hordetest/game/GameClientModels/EntityState';
 import { isItem } from '@csegames/library/dist/hordetest/game/GameClientModels/ItemEntityState';
-import { getBearingDegreesForWorldLocation } from '../../../../redux/playerSlice';
 import { ArrayMap } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { EntityResourceIDs } from '@csegames/library/dist/hordetest/game/types/EntityResourceIDs';
 
@@ -60,9 +61,6 @@ interface InjectedProps {
   indicatorLabel: string;
   objectivePosition: Vec3f;
   objectiveState: ObjectiveState;
-  playerPosition: Vec3f;
-  viewBearing: number;
-  viewOrigin: Vec3f;
   resources: ArrayMap<EntityResource>;
   //dispatch is added implicitly by the connect function
   dispatch?: Dispatch;
@@ -341,12 +339,11 @@ class AObjective extends React.Component<Props, State> {
 }
 
 function mapStateToProps(rootState: RootState, ownProps: ComponentProps): Props {
-  const entity: BaseEntityStateModel = rootState.entities.objectives[ownProps.objectiveID];
+  const entity: BaseEntityState = rootState.entities.objectives[ownProps.objectiveID];
   const position: Vec3f = rootState.entities.positions[ownProps.objectiveID];
-  const { viewBearing, viewOrigin } = rootState.player;
-  const playerPosition = rootState.entities.positions[rootState.player.entityID];
   const { footprintRadius, indicator, indicatorLabel, state } = entity.objective;
   return {
+    ...ownProps,
     footprintRadius,
     iconClass: isItem(entity) ? entity.iconClass : '',
     iconClassColor: isItem(entity) ? entity.iconClassColor : 0xffffff,
@@ -354,13 +351,10 @@ function mapStateToProps(rootState: RootState, ownProps: ComponentProps): Props 
     indicatorLabel,
     objectivePosition: position,
     objectiveState: state,
-    playerPosition: playerPosition,
-    resources: entity.resources,
-    viewBearing,
-    viewOrigin,
-
-    ...ownProps
+    resources: entity.resources
   };
 }
 
 export const Objective = connect(mapStateToProps)(AObjective);
+
+*/

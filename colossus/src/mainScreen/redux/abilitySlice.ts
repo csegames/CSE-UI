@@ -48,7 +48,9 @@ function createDefaultAbility(id: number): Ability {
       max: NaN
     },
     summonCount: 0,
-    displayDefID: 0
+    displayDefID: 0,
+    disabledReason: null,
+    stats: {}
   };
 }
 

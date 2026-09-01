@@ -14,10 +14,10 @@ import * as React from 'react';
 import { TeamJoinAPI } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { convertServerTimeToLocalTime } from '@csegames/library/dist/_baseGame/utils/timeUtils';
 import { createSlice, Dictionary, PayloadAction } from '@reduxjs/toolkit';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue } from '../helpers/stringTableHelpers';
 import { webConf } from '../dataSources/networkConfiguration';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
 
 const StringIDGroupsNotificationAccept = 'GroupsNotificationAccept';
 const StringIDGroupsNotificationDecline = 'GroupsNotificationDecline';

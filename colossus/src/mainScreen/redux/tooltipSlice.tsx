@@ -8,10 +8,13 @@ import * as React from 'react';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export enum TooltipPosition {
-  /** The tooltip will appear immediately adjacent to the current mouse cursor position.  This is the default behavior. */
+  /** The tooltip will appear immediately adjacent to the current mouse cursor position. */
   AtMouse = 0,
-  /** The tooltip will appear near the current mouse cursor position, but outside the TooltipSource. */
-  OutsideSource
+  /** The tooltip will appear adjacent to the source.  To the right if possible, left if it doesn't fit.  Top of tooltip
+   * aligned to the top of the source unless it doesn't fit, in which case it will move up just enough to put the bottom
+   * of the tooltip on screen.
+   */
+  Fixed
 }
 
 export interface TooltipParams {
@@ -19,6 +22,7 @@ export interface TooltipParams {
   id: string;
   content: (() => React.ReactNode) | string | null;
   disableBackground?: boolean;
+  sourceRect?: DOMRect;
   mouseX?: number;
   mouseY?: number;
   position?: TooltipPosition;

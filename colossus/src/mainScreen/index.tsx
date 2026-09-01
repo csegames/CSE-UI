@@ -1,4 +1,4 @@
-/**
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -13,17 +13,15 @@ import * as ReactDom from 'react-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 import * as Sentry from '@sentry/browser';
 
-import { ErrorBoundary } from '@csegames/library/dist/_baseGame/types/ErrorBoundary';
+import { ErrorBoundary } from '../shared/components/ErrorBoundary';
 import { SharedContextProviders } from './components/context/index';
-import { LoadingScreen } from '../loadingScreen/components/LoadingScreen';
+import { LoadingScreen } from './components/loading';
 import { store } from './redux/store';
 import { game } from '@csegames/library/dist/_baseGame';
 import LifecycleViews from './components/LifecycleViews';
 import TooltipPane from '../shared/components/TooltipPane';
-import { VoiceChatOverlay } from './components/loading/VoiceChatOverlay';
 import { Warnings } from './Warnings';
 import { ChampionCards } from './components/loading/ChampionCards';
-import { ScenarioBackgroundImage } from './components/loading/ScenarioBackgroundImage';
 
 initializeSentry();
 
@@ -32,10 +30,8 @@ ReactDom.render(
     <ReduxProvider store={store}>
       <SharedContextProviders store={store}>
         <LifecycleViews />
-        <LoadingScreen showLogo={true}>
-          <ScenarioBackgroundImage />
+        <LoadingScreen>
           <ChampionCards />
-          <VoiceChatOverlay />
         </LoadingScreen>
         <Warnings />
         <TooltipPane />

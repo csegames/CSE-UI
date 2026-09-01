@@ -8,14 +8,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { parseAnnouncementText } from './Utils';
 import { CSSTransitionGroup } from 'react-transition-group';
-import { game } from '@csegames/library/dist/_baseGame';
 import { AnnouncementType } from '@csegames/library/dist/hordetest/webAPI/definitions';
 import { RootState } from '../../../../redux/store';
 import { KeybindsState } from '../../../../redux/keybindsSlice';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 
 const Container = 'Announcements-ClientPopups-Container';
 const PopupMessage = 'Announcements-ClientPopups-PopupMessage';
@@ -147,7 +146,7 @@ class AClientAnnouncementPopups extends React.Component<Props, State> {
 
     if (soundID !== 0) {
       window.setTimeout(() => {
-        game.playGameSound(soundID);
+        clientAPI.playGameSound(soundID);
       }, TransitionEnterSeconds * 1000);
     }
 

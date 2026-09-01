@@ -7,179 +7,209 @@
 import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { HUDLayer, HUDWidgetRegistration, addMenuWidgetExiting } from '../../redux/hudSlice';
-import Escapable from '../Escapable';
 import { RootState } from '../../redux/store';
-import { BarHeader } from '../BarHeader';
-import { Item } from '@csegames/library/dist/camelotunchained/graphql/schema';
-import { SearchInput } from '../input/SearchInput';
-import { ItemIcon } from '../items/ItemIcon';
-import { CloseButton } from '../../../shared/components/CloseButton';
-import { refreshItems } from '../items/itemUtils';
-import { InitTopic } from '../../redux/initializationSlice';
-import { InventoryFooter } from './InventoryFooter';
-import { getInventoryMinEmptyRows, getInventoryUnpaddedGridItems } from './inventoryUtils';
-import {
-  updateInventoryEmptyRows,
-  updateInventoryItemsPerRow,
-  updateInventorySearchValue
-} from '../../redux/inventorySlice';
+import { addConditionalWidgetExiting, HUDLayer, HUDWidgetRegistration } from '../../redux/hudSlice';
+import Escapable from '../Escapable';
+import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
+import { getStringTableValue } from '../../helpers/stringTableHelpers';
+import { Item, ItemLocationType } from '@csegames/library/dist/camelotunchained/game/types/Items';
+import { ItemDef } from '../../dataSources/manifest/itemManifest';
+import { FactionBorder, BorderType, BorderBackground } from '../FactionBorder';
+import { InventorySearchBar } from './InventorySearchBar';
+import { CornerButtonType, FactionCornerButton } from '../FactionCornerButton';
+import { FactionStorageGrid } from './FactionStorageGrid';
+import { BaseHUDWidgetDraggableHandle } from '../BaseHUDWidgetDraggableHandle';
+import { MoneyDisplay } from '../../../shared/components/MoneyDisplay';
+import { CurrencyID, getCurrency } from '../../helpers/itemHelpers';
+import { FactionScrollArea } from '../FactionScrollArea';
 
 // Images are imported so that WebPack can find them (and give us errors if they are missing).
-import ItemSlotURL from '../../../images/inventory/item-slot.png';
-import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import BackpackIconURL from '../../../images/icons/inventory/icon-storage-backpack.png';
+import { requestAddImagesToCache } from '../../dataSources/imageCacheService';
 
+// CSS classes
 const Root = 'HUD-Inventory-Root';
-const Container = 'HUD-Inventory-Container';
-const Header = 'HUD-Inventory-Header';
-const HeaderOverlay = 'HUD-Inventory-HeaderOverlay';
-const Filter = 'HUD-Inventory-Filter';
-const GridWrapper = 'HUD-Inventory-GridWrapper';
-const Grid = 'HUD-Inventory-Grid';
-const Scroller = 'Scroller-ThumbOnly';
-const TopRightCloseButton = 'HUD-TopRightCloseButton';
+const RootContent = 'HUD-Inventory-RootContent';
+const BagSlotsSection = 'HUD-Inventory-BagSlotsSection';
+const BagSlotRoot = 'HUD-Inventory-BagSlotRoot';
+const BackpackIcon = 'HUD-Inventory-BackpackIcon';
+const Search = 'HUD-Inventory-Search';
+const Gold = 'HUD-Inventory-Gold';
+const ScrollArea = 'HUD-Inventory-ScrollArea';
+const ScrollAreaContent = 'HUD-Inventory-ScrollAreaContent';
+const StorageRow = 'HUD-Inventory-StorageRow';
+const StorageIconContainer = 'HUD-Inventory-StorageIconContainer';
+const StorageGrid = 'HUD-Inventory-StorageGrid';
+const Handle = 'HUD-FancyBorder-HeaderHandle';
 
-interface ReactProps {}
+requestAddImagesToCache(Root, [BackpackIconURL]);
+
+// String IDs
+const StringIDInventoryTitle = 'InventoryTitle';
+
+interface State {
+  searchValue: string;
+}
+
+interface ReactProps {
+  isDragCopy: boolean;
+}
 
 interface InjectedProps {
+  inventoryCapacityBase: number;
   inventoryItems: Item[];
-  hudWidth: number;
-  hudHeight: number;
-  itemsPerRow: number | null;
-  emptyRows: number;
-  searchValue: string;
+  wallet: Item[];
+  itemsByNumericID: Record<number, ItemDef>;
+  stringTable: Record<string, StringTableEntryDef>;
   dispatch?: Dispatch;
 }
 
 type Props = ReactProps & InjectedProps;
 
-class AInventory extends React.Component<Props> {
-  gridElement?: HTMLDivElement;
+class AInventory extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+
+    this.state = { searchValue: '' };
+  }
 
   render(): JSX.Element {
-    const gridItems = this.getGridItems();
     return (
-      <div className={Root}>
-        <div className={Container}>
-          <Escapable escapeID={WIDGET_NAME_INVENTORY} onEscape={this.closeSelf.bind(this)} />
-          <CloseButton className={TopRightCloseButton} onClick={this.closeSelf.bind(this)} />
-          <BarHeader className={Header} overlayClassName={HeaderOverlay}>
-            Inventory
-          </BarHeader>
-          <div className={Filter}>
-            <SearchInput value={this.props.searchValue} setValue={this.setSearchValue.bind(this)} />
-          </div>
-          <div
-            className={`${GridWrapper} ${Scroller}`}
-            ref={(gridElement) => {
-              if (gridElement) {
-                const lastGridElement = this.gridElement;
-                this.gridElement = gridElement;
-                if (!lastGridElement) {
-                  this.updateItemsPerRow();
-                }
-              }
+      <FactionBorder
+        className={Root}
+        type={BorderType.FancyHeader}
+        background={BorderBackground.Leather}
+        titleText={getStringTableValue(StringIDInventoryTitle, this.props.stringTable)}
+        cornerButtons={[
+          <FactionCornerButton
+            type={CornerButtonType.Close}
+            onClick={() => {
+              this.closeSelf();
             }}
-          >
-            <div className={Grid}>
-              {gridItems.map((items, itemIndex) => (
-                <ItemIcon
-                  items={items}
-                  size={`${100 / this.props.itemsPerRow - 1}%`}
-                  inventoryIndex={itemIndex}
-                  slotImageURL={ItemSlotURL}
-                  key={itemIndex}
-                />
-              ))}
-            </div>
-          </div>
-          <InventoryFooter gridElement={this.gridElement} />
+          />
+        ]}
+      >
+        {!this.props.isDragCopy && <Escapable escapeID={WIDGET_ID_INVENTORY} onEscape={this.closeSelf.bind(this)} />}
+        <div className={RootContent}>
+          {this.renderBagSlotsSection()}
+          <InventorySearchBar
+            className={Search}
+            value={this.state.searchValue}
+            onValueChanged={(newValue) => this.setState({ searchValue: newValue })}
+          />
+          <MoneyDisplay
+            className={Gold}
+            sizeOverrideVmin={3}
+            amount={getCurrency(CurrencyID.Gold, this.props.wallet, this.props.itemsByNumericID)?.unitCount ?? 0}
+          />
+          {this.renderStorageSection()}
         </div>
+        <BaseHUDWidgetDraggableHandle className={Handle} widgetID={WIDGET_ID_INVENTORY} />
+      </FactionBorder>
+    );
+  }
+
+  private renderBagSlotsSection(): React.ReactNode {
+    return (
+      <div className={BagSlotsSection}>
+        <FactionBorder className={BagSlotRoot} type={BorderType.Decorative} background={BorderBackground.PatternSmall}>
+          <img className={BackpackIcon} src={BackpackIconURL} />
+        </FactionBorder>
+        <FactionBorder
+          className={`${BagSlotRoot} disabled`}
+          type={BorderType.Decorative}
+          background={BorderBackground.PatternSmall}
+        ></FactionBorder>
+        <FactionBorder
+          className={`${BagSlotRoot} disabled`}
+          type={BorderType.Decorative}
+          background={BorderBackground.PatternSmall}
+        />
+        <FactionBorder
+          className={`${BagSlotRoot} disabled`}
+          type={BorderType.Decorative}
+          background={BorderBackground.PatternSmall}
+        />
+        <FactionBorder
+          className={`${BagSlotRoot} disabled`}
+          type={BorderType.Decorative}
+          background={BorderBackground.PatternSmall}
+        />
+        <FactionBorder
+          className={`${BagSlotRoot} disabled`}
+          type={BorderType.Decorative}
+          background={BorderBackground.PatternSmall}
+        />
+        <FactionBorder
+          className={`${BagSlotRoot} disabled`}
+          type={BorderType.Decorative}
+          background={BorderBackground.PatternSmall}
+        />
       </div>
     );
   }
 
-  componentDidMount(): void {
-    refreshItems();
+  private renderStorageSection(): React.ReactNode {
+    return (
+      <FactionScrollArea className={ScrollArea}>
+        <div className={ScrollAreaContent}>
+          <div className={StorageRow}>
+            <FactionBorder
+              className={StorageIconContainer}
+              type={BorderType.Decorative}
+              background={BorderBackground.PatternSmall}
+            >
+              <img className={BackpackIcon} src={BackpackIconURL} />
+            </FactionBorder>
+            <FactionStorageGrid
+              type={ItemLocationType.Inventory}
+              className={StorageGrid}
+              maxSlots={this.props.inventoryCapacityBase}
+              cellsPerRow={8}
+              items={this.props.inventoryItems}
+              searchValue={this.state.searchValue}
+            />
+          </div>
+        </div>
+      </FactionScrollArea>
+    );
   }
 
-  componentDidUpdate(prevProps: Props): void {
-    if (prevProps.hudWidth !== this.props.hudWidth || prevProps.hudHeight !== this.props.hudHeight) {
-      this.updateItemsPerRow();
-    }
-  }
-
-  closeSelf(): void {
-    this.props.dispatch(addMenuWidgetExiting(WIDGET_NAME_INVENTORY));
-  }
-
-  setSearchValue(searchValue: string): void {
-    this.props.dispatch(updateInventorySearchValue(searchValue));
-  }
-
-  getGridItems(): Item[][] {
-    let gridItems: Item[][] = [];
-
-    if (this.props.itemsPerRow) {
-      gridItems = getInventoryUnpaddedGridItems(
-        this.props.inventoryItems,
-        this.props.searchValue,
-        this.props.itemsPerRow
-      );
-      for (let i: number = 0; i < this.props.itemsPerRow * this.props.emptyRows; i++) {
-        gridItems.push([]);
-      }
-    }
-
-    return gridItems;
-  }
-
-  updateItemsPerRow(): void {
-    if (this.gridElement) {
-      const min = Math.min(this.props.hudWidth, this.props.hudHeight);
-      const itemsPerRow = Math.floor(this.gridElement.offsetWidth / (min / 15));
-      const minEmptyRows = this.gridElement
-        ? getInventoryMinEmptyRows(
-            this.gridElement,
-            this.props.inventoryItems,
-            this.props.searchValue,
-            itemsPerRow,
-            this.props.hudWidth,
-            this.props.hudHeight
-          )
-        : 0;
-      this.props.dispatch(updateInventoryItemsPerRow(itemsPerRow));
-      this.props.dispatch(updateInventoryEmptyRows(minEmptyRows));
-    }
+  private closeSelf(): void {
+    this.props.dispatch(addConditionalWidgetExiting(WIDGET_ID_INVENTORY));
   }
 }
 
 const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
+  const { wallet, primary: inventoryItems } = state.inventory;
   return {
     ...ownProps,
-    inventoryItems: state.inventory.items ?? [],
-    hudWidth: state.hud.hudWidth,
-    hudHeight: state.hud.hudHeight,
-    itemsPerRow: state.inventory.itemsPerRow,
-    emptyRows: state.inventory.emptyRows,
-    searchValue: state.inventory.searchValue
+    inventoryCapacityBase: state.gameDefs.settings.inventoryCapacityBase,
+    inventoryItems,
+    wallet,
+    itemsByNumericID: state.gameDefs.itemsByNumericID,
+    stringTable: state.stringTable.stringTable
   };
 };
 
 const Inventory = connect(mapStateToProps)(AInventory);
 
-export const WIDGET_NAME_INVENTORY = 'Inventory';
+export const WIDGET_ID_INVENTORY = 'Inventory';
 export const inventoryRegistry: HUDWidgetRegistration = {
-  name: WIDGET_NAME_INVENTORY,
+  id: WIDGET_ID_INVENTORY,
+  nameStringID: 'HUDEditorWidgetNameInventory',
+  nativeWidgetID: 'inventory',
   defaults: {
     xAnchor: HUDHorizontalAnchor.Right,
     yAnchor: HUDVerticalAnchor.Top,
-    xOffset: 3,
-    yOffset: 4.5
+    xOffset: 5,
+    yOffset: 7
   },
-  initTopics: [InitTopic.GameDefs, InitTopic.EquippedItems, InitTopic.Inventory, InitTopic.MyCharacterStats],
   layer: HUDLayer.Menus,
-  render: () => {
-    return <Inventory />;
+  requiresGameDefsLoaded: true,
+  isConditional: true,
+  render: (isDragCopy: boolean) => {
+    return <Inventory isDragCopy={isDragCopy} />;
   }
 };

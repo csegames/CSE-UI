@@ -64,11 +64,13 @@ export function merge<T extends {}>(source: T, ...args: any[]): T {
   return Object.assign(source, ...args);
 }
 
-export function tryParseJSON<T>(json: string, logError: boolean = false): T {
+export function tryParseJSON<T>(json: string, logError: boolean = false): T | null {
   try {
     return JSON.parse(json);
   } catch (e) {
-    if (logError) console.error(`Failed to parse json. | ${json}`);
+    if (logError) {
+      console.error(`Failed to parse json. | ${json}`);
+    }
     return null;
   }
 }
@@ -78,3 +80,13 @@ export type Pick2<T, K1 extends keyof T, K2 extends keyof T[K1]> = { [P1 in K1]:
 export type Pick3<T, K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]> = {
   [P1 in K1]: { [P2 in K2]: { [P3 in K3]: T[K1][K2][P3] } };
 };
+
+export function typedObjectKeys<T extends object>(obj: T): (keyof T)[] {
+  // We use a type assertion within the function where we know it's safe
+  return Object.keys(obj) as (keyof T)[];
+}
+
+export function typedObjectEntries<T extends object>(obj: T): [keyof T, T[keyof T]][] {
+  // We use a type assertion within the function where we know it's safe
+  return Object.entries(obj) as [keyof T, T[keyof T]][];
+}

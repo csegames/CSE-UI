@@ -6,26 +6,20 @@
 
 import * as React from 'react';
 import { SoundEvents } from '@csegames/library/dist/hordetest/game/types/SoundEvents';
-import { game } from '@csegames/library/dist/_baseGame';
 import { StoreRoute, updateStoreCurrentRoute, updateStoreNewPurchases } from '../../../../redux/storeSlice';
 import { Dispatch } from 'redux';
 import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
-import {
-  PerkDefGQL,
-  PerkType,
-  PurchaseDefGQL,
-  QuestGQL,
-  RMTPurchaseDefGQL
-} from '@csegames/library/dist/hordetest/graphql/schema';
+import { PurchaseDefGQL, QuestGQL, RMTPurchaseDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { isFreeReward, isPurchaseable } from '../../../../helpers/storeHelpers';
 import { Header } from '../../../shared/Header';
 import { Button } from '../../../shared/Button';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
 import { Overlay, showOverlay } from '../../../../redux/navigationSlice';
 import { clientAPI } from '@csegames/library/dist/hordetest/MainScreenClientAPI';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { PerkDef, PerkType } from '../../../../dataSources/manifest/perkManifest';
 
 const Container = 'StartScreen-Store-StoreNavMenu-Container';
 const HeaderStyles = 'StartScreen-Store-StoreNavMenu-HeaderStyles';
@@ -71,9 +65,9 @@ interface InjectedProps {
   purchases: PurchaseDefGQL[];
   rmtPurchases: RMTPurchaseDefGQL[];
   newPurchases: Dictionary<boolean>;
-  perks: PerkDefGQL[];
+  perks: PerkDef[];
   ownedPerks: Dictionary<number>;
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   stringTable: Dictionary<StringTableEntryDef>;
   progressionNodes: string[];
   quests: QuestGQL[];
@@ -154,12 +148,12 @@ class AStoreNavMenu extends React.Component<Props> {
   }
 
   private onMouseEnter() {
-    game.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_MAINMENU_MOUSEOVER);
   }
 
   private onClick(route: StoreRoute) {
     this.props.dispatch(updateStoreCurrentRoute(route));
-    game.playGameSound(TabSounds[route]);
+    clientAPI.playGameSound(TabSounds[route]);
   }
 
   private hasUnclaimedRewards(): boolean {

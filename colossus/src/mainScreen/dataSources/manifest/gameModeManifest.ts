@@ -1,6 +1,12 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { Dispatch } from '@reduxjs/toolkit';
 import { updateGameModes } from '../../redux/matchSlice';
+import { isDataArray } from './manifestDefService';
 
 export const gameModeManifestID = 'gamemodes';
 
@@ -13,7 +19,7 @@ export interface GameModeDef {
 }
 
 export function processGameModes(dispatch: Dispatch, json: any, version: number): void {
-  if (!isGameModesDataArray(json.defs)) {
+  if (!isDataArray(json.defs, version, isGameModeData)) {
     console.error('Invalid gamemodes manifest file');
     return;
   }
@@ -26,30 +32,23 @@ export function processGameModes(dispatch: Dispatch, json: any, version: number)
   dispatch(updateGameModes(factions));
 }
 
-function isGameModeData(obj: any): obj is GameModeDef {
-  const isCorrectType =
-    Object.keys(obj).length === 5 &&
-    'id' in obj &&
-    'name' in obj &&
-    'description' in obj &&
-    'bannerImage' in obj &&
-    'cardImage' in obj;
+function isGameModeData(obj: any, version: number): obj is GameModeDef {
+  switch (version) {
+    case 1:
+      const isCorrectType =
+        Object.keys(obj).length === 5 &&
+        'id' in obj &&
+        'name' in obj &&
+        'description' in obj &&
+        'bannerImage' in obj &&
+        'cardImage' in obj;
 
-  if (!isCorrectType) {
-    console.error(`Found invalid GameMode object`, obj);
-  }
-  return isCorrectType;
-}
-
-function isGameModesDataArray(obj: any): obj is GameModeDef[] {
-  if (!Array.isArray(obj)) {
-    return false;
-  } else {
-    // Are there any items in the array that aren't the correct type?
-    return (
-      obj.find((arrayEntry) => {
-        return !isGameModeData(arrayEntry);
-      }) === undefined
-    );
+      if (!isCorrectType) {
+        console.error(`Found invalid GameMode object`, obj);
+      }
+      return isCorrectType;
+    default:
+      console.error(`Found invalid GameMode version ${version}`);
+      return;
   }
 }

@@ -9,9 +9,9 @@ import { LifeState } from '@csegames/library/dist/hordetest/game/types/LifeState
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../redux/store';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@reduxjs/toolkit';
 import { getStringTableValue } from '../../../../helpers/stringTableHelpers';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
 
 const KilledByContainer = 'Announcements-KilledBy-Container';
 const KilledByIcon = 'Announcements-KilledBy-Icon';
@@ -72,15 +72,13 @@ class AKilledBy extends React.Component<Props, {}> {
 }
 
 function mapStateToProps(state: RootState) {
-  const killersName: string = state.player.killersName;
-  const killersRaceDef: CharacterRaceDef = state.game.characterRaceDefs[state.player.killersRace];
-  const playerIcon: string = state.player.portraitURL;
-  const lifeState: LifeState = state.player.lifeState;
+  const { killersName, killersRace, portraitURL, lifeState } = state.entities.self;
+  const killersRaceDef: CharacterRaceDef = state.game.characterRaceDefs[killersRace];
   const { stringTable } = state.stringTable;
   return {
     killersName,
     killersRaceDef,
-    playerIcon,
+    playerIcon: portraitURL,
     lifeState,
     stringTable
   };

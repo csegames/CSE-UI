@@ -5,11 +5,10 @@
  */
 
 import * as React from 'react';
-import { PurchaseDefGQL, ChampionGQL, PerkDefGQL, CostDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
+import { PurchaseDefGQL, ChampionGQL, CostDefGQL } from '@csegames/library/dist/hordetest/graphql/schema';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { RootState } from '../../../../redux/store';
 import { connect } from 'react-redux';
-import { StringTableEntryDef } from '@csegames/library/dist/hordetest/graphql/schema';
 import { getStringTableValue, getTokenizedStringTableValue } from '../../../../helpers/stringTableHelpers';
 import {
   BUX_PERK_ID,
@@ -21,6 +20,9 @@ import {
 } from '../../../../helpers/storeHelpers';
 import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
 import { PerkIcon } from './PerkIcon';
+import { StringTableEntryDef } from '../../../../dataSources/manifest/stringTableManifest';
+import { PerkDef } from '../../../../dataSources/manifest/perkManifest';
+import { ChampionDef } from '../../../../dataSources/manifest/championManifest';
 
 const Root = 'StartScreen-Store-StoreItemInfo-Root';
 const Name = 'StartScreen-Store-StoreItemInfo-Name';
@@ -45,9 +47,10 @@ interface ReactProps {
 
 interface InjectedProps {
   champions: ChampionGQL[];
-  perksByID: Dictionary<PerkDefGQL>;
+  perksByID: Dictionary<PerkDef>;
   ownedPerks: Dictionary<number>;
   stringTable: Dictionary<StringTableEntryDef>;
+  championIDToChampion: Dictionary<ChampionDef>;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -144,12 +147,12 @@ class AStoreItemInfo extends React.Component<Props> {
     if (
       uniquePerks.length > 0 &&
       !uniquePerks.find((perk) => {
-        return perk.champion?.id !== uniquePerks[0].champion?.id;
+        return perk.championID !== uniquePerks[0].championID;
       }) &&
-      uniquePerks[0].champion?.name
+      this.props.championIDToChampion[uniquePerks[0].championID]
     ) {
       // All for one champion!
-      return `${packageName} ${uniquePerks[0].champion.name}`;
+      return `${packageName} ${this.props.championIDToChampion[uniquePerks[0].championID].name}`;
     } else {
       // Not all for one champion, so just show the package name.
       return packageName;
@@ -161,13 +164,15 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { perksByID } = state.store;
   const { champions, ownedPerks } = state.profile;
   const { stringTable } = state.stringTable;
+  const { championIDToChampion } = state.championInfo;
 
   return {
     ...ownProps,
     champions,
     perksByID,
     stringTable,
-    ownedPerks
+    ownedPerks,
+    championIDToChampion
   };
 }
 

@@ -8,7 +8,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../mainScreen/redux/store';
-import { TooltipParams, TooltipState } from '../../mainScreen/redux/tooltipSlice';
+import { TooltipParams, TooltipPosition, TooltipState } from '../../mainScreen/redux/tooltipSlice';
 import { CSETransition } from '../../shared/components/CSETransition';
 
 // We offset the tooltip slightly so you can still see what you're hovering the mouse over.
@@ -31,6 +31,7 @@ interface InjectedProps {
   tooltipState: TooltipState;
   hudWidth: number;
   hudHeight: number;
+  vminPx: number;
   dispatch?: Dispatch;
 }
 
@@ -78,8 +79,13 @@ class TooltipPane extends React.Component<Props, State> {
         style={this.calculateTooltipStyle()}
         removeWhenHidden={true}
       >
-        {this.state.displayedTooltip.disableBackground ? null : <div className={Background} />}
-        <div className={typeof content === 'string' ? TextWrapper : ContentWrapper}>{content}</div>
+        {this.state.displayedTooltip.disableBackground ? (
+          <div className={typeof content === 'string' ? TextWrapper : ContentWrapper}>{content}</div>
+        ) : (
+          <div className={Background}>
+            <div className={typeof content === 'string' ? TextWrapper : ContentWrapper}>{content}</div>
+          </div>
+        )}
       </CSETransition>
     );
   }
@@ -92,6 +98,55 @@ class TooltipPane extends React.Component<Props, State> {
       return finalStyle;
     }
 
+    switch (this.state.displayedTooltip.position) {
+      case TooltipPosition.AtMouse: {
+        this.addMousePositionStyles(finalStyle);
+        break;
+      }
+      case TooltipPosition.Fixed:
+      default: {
+        this.addFixedPositionStyles(finalStyle);
+        break;
+      }
+    }
+
+    return finalStyle;
+  }
+
+  private addFixedPositionStyles(finalStyle: React.CSSProperties): void {
+    // Defaults to the right of the source, but flips to the left if it overflows.
+    // Default aligns the top of the tooltip to the top of the source, but will move up
+    //   the smallest amount possible to avoid overflowing off the bottom of the window.
+    const tooltipRect = this.tooltipRef.getBoundingClientRect();
+    const sourceRect = this.props.tooltipState.sourceRect;
+    const offsetPx = TOOLTIP_OFFSET_VMIN * this.props.vminPx;
+
+    let leftValue: string = '0';
+    let topValue: string = '0';
+
+    // Horizontal positioning.
+    if (sourceRect.right + offsetPx + tooltipRect.width > this.props.hudWidth) {
+      // The tooltip is too big to fit to the right of the source, so put it on the left of the source.
+      leftValue = `${sourceRect.left - offsetPx - tooltipRect.width}px`;
+    } else {
+      // The tooltip fits to the right of the source, so that's where we want it.
+      leftValue = `${sourceRect.right + offsetPx}px`;
+    }
+
+    // Vertical positioning.
+    const verticalOverflow = sourceRect.top + tooltipRect.height - this.props.hudHeight;
+    if (verticalOverflow > 0) {
+      // The tooltip overflows the bottom of the screen, so raise it.
+      topValue = `${sourceRect.top - verticalOverflow}px`;
+    } else {
+      // The tooltip fits fine vertically.
+      topValue = `${sourceRect.top}px`;
+    }
+
+    finalStyle.transform = `translate(${leftValue}, ${topValue})`;
+  }
+
+  private addMousePositionStyles(finalStyle: React.CSSProperties): void {
     const rightOverflow = Math.max(
       this.props.tooltipState.mouseX + this.tooltipRef.offsetWidth - this.props.hudWidth,
       0
@@ -148,8 +203,6 @@ class TooltipPane extends React.Component<Props, State> {
     }
 
     finalStyle.transform = `translate(${leftValue}, ${topValue})`;
-
-    return finalStyle;
   }
 
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot?: any): void {
@@ -167,13 +220,14 @@ class TooltipPane extends React.Component<Props, State> {
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const tooltipState = state.tooltip;
-  const { hudWidth, hudHeight } = state.hud;
+  const { hudWidth, hudHeight, vminPx } = state.hud;
 
   return {
     ...ownProps,
     tooltipState,
     hudWidth,
-    hudHeight
+    hudHeight,
+    vminPx
   };
 }
 

@@ -5,46 +5,30 @@
  */
 
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
-import ExternalDataSource from '../redux/externalDataSource';
+import { ExternalDataSource } from '../redux/externalDataSource';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import { AnnouncementType } from '@csegames/library/dist/_baseGame/types/localDefinitions';
-import { receiveAnnouncementText } from '../redux/chatSlice';
 import { addPopUpAnnouncement } from '../redux/popUpAnnouncementsSlice';
-
-export const chatGlobalRoomID = '_global';
-export const chatCombatRoomID = 'combat';
-export const chatSystemRoomID = 'system';
+import { getStringTableValue } from '../helpers/stringTableHelpers';
 
 export class AnnouncementsService extends ExternalDataSource {
-  private announcementHandle: ListenerHandle | null = null;
-
   protected bind(): Promise<ListenerHandle[]> {
-    this.listenForAnnouncement();
-
-    return Promise.resolve([
-      {
-        close: () => {
-          this.closeAnnouncementHandle();
-        }
-      }
-    ]);
+    return Promise.resolve([this.listenForAnnouncement()]);
   }
 
-  private listenForAnnouncement(): void {
-    this.announcementHandle = clientAPI.bindAnnouncementListener((announcementType, announcementText) => {
-      if (announcementType === AnnouncementType.Text) {
-        this.dispatch(receiveAnnouncementText(announcementText));
-      }
+  private localizeText(text: string): string {
+    return getStringTableValue(text, this.reduxState.stringTable.stringTable);
+  }
+
+  private listenForAnnouncement(): ListenerHandle {
+    return clientAPI.bindAnnouncementListener((announcementType, announcementText) => {
       if (announcementType === AnnouncementType.PopUp) {
-        this.dispatch(addPopUpAnnouncement(announcementText));
+        const localizedText = this.localizeText(announcementText);
+        this.dispatch(addPopUpAnnouncement([localizedText, 'rgb(225, 225, 225)']));
+      } else if (announcementType === AnnouncementType.ObjectiveFail) {
+        const localizedText = this.localizeText(announcementText);
+        this.dispatch(addPopUpAnnouncement([localizedText, '#f60000']));
       }
     });
-  }
-
-  private closeAnnouncementHandle(): void {
-    if (this.announcementHandle) {
-      this.announcementHandle.close();
-      this.announcementHandle = null;
-    }
   }
 }

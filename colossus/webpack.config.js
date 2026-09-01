@@ -12,7 +12,7 @@ const WriteFilePlugin = require('write-file-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-module.exports = function(e, argv = { isProduction }) {
+module.exports = function (e, argv = { isProduction }) {
   const MODE = argv.mode || 'development';
   const NODE_ENV = process.env.NODE_ENV || MODE;
   process.env.NODE_ENV = NODE_ENV;
@@ -36,7 +36,6 @@ module.exports = function(e, argv = { isProduction }) {
     },
     devtool: 'cheap-source-map',
     entry: {
-      loadingScreen: path.resolve(__dirname, 'src/loadingScreen/index.tsx'),
       mainScreen: path.resolve(__dirname, 'src/mainScreen/preload.ts'),
       protectedScreen: path.resolve(__dirname, 'src/protectedScreen/preload.ts'),
       worldSpace: path.resolve(__dirname, 'src/worldSpace/index.tsx')
@@ -143,11 +142,6 @@ module.exports = function(e, argv = { isProduction }) {
         }, {})
       }),
       new HtmlWebpackPlugin({
-        filename: 'loadingScreen.html',
-        template: 'src/loadingScreen/loadingScreen.html',
-        chunks: ['loadingScreen']
-      }),
-      new HtmlWebpackPlugin({
         filename: 'mainScreen.html',
         template: 'src/mainScreen/mainScreen.html',
         chunks: ['mainScreen']
@@ -186,10 +180,7 @@ module.exports = function(e, argv = { isProduction }) {
 function getGitRevision() {
   let GIT_REVISION = 'unknown';
   try {
-    GIT_REVISION = require('child_process')
-      .execSync('git rev-parse HEAD')
-      .toString()
-      .trim();
+    GIT_REVISION = require('child_process').execSync('git rev-parse HEAD').toString().trim();
   } catch (e) {
     console.error(e);
   }
