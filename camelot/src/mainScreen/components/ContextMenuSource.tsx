@@ -8,7 +8,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ContextMenuParams, hideContextMenu, showContextMenu } from '../redux/contextMenuSlice';
 import { AddDispatch, RootState } from '../redux/store';
-import { hideTooltip } from '../redux/tooltipSlice';
+import { hideTooltip } from '../helpers/tooltipController';
 
 // Styles
 const Root = 'ContextMenuSource-Root';
@@ -48,7 +48,7 @@ class ContextMenuSource extends React.Component<Props> {
       const newParams: ContextMenuParams = { ...this.props.menuParams, mouseX: e.clientX, mouseY: e.clientY };
       this.props.dispatch(showContextMenu(newParams));
       // For items with both a tooltip and a context menu, the context menu  takes precedence.
-      this.props.dispatch(hideTooltip());
+      hideTooltip();
       // We are the final handler if we summon a context menu.
       e.stopPropagation();
     }

@@ -39,7 +39,7 @@ import { StatDef } from '../../dataSources/manifest/statManifest';
 import { FormattedTextDiv } from '../../../shared/components/FormattedTextDiv';
 import { FactionNumberSelector } from '../FactionNumberSelector';
 import { BorderBackground } from '../FactionBorder';
-import TooltipSource from '../TooltipSource';
+import { TooltipSource } from '../TooltipSource';
 import { StatLoadoutDef } from '../../dataSources/manifest/statLoadoutManifest';
 import { hideModal, showModal } from '../../redux/modalsSlice';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
@@ -84,7 +84,7 @@ interface InjectedProps {
   classesByStringID: Record<string, ClassDef>;
   racesByStringID: Record<string, RaceDef>;
   bodyTypesByStringID: Record<string, BodyTypeDef>;
-  characterCreationState: CharacterCreationState;
+  characterCreationState: CharacterCreationState | null;
   stats: Record<string, StatDef>;
   startingAttributePoints: number;
   statLoadouts: Record<string, StatLoadoutDef>;
@@ -109,7 +109,7 @@ class ACharacterBuilder extends React.Component<Props> {
 
     const selectableSpecIDs: string[] = this.props.classesByStringID[classID]?.statLoadoutIDs ?? [];
 
-    const statLoadout = this.props.statLoadouts[this.props.characterCreationState.statLoadoutID];
+    const statLoadout = this.props.statLoadouts[this.props.characterCreationState!.statLoadoutID];
 
     return (
       <div className={Root}>
@@ -154,7 +154,11 @@ class ACharacterBuilder extends React.Component<Props> {
   private getEditableStats(): StatDef[] {
     return Object.values(this.props.stats)
       .filter((stat) => stat.addPointsAtCharacterCreation)
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) =>
+        getStringTableValue(a.name, this.props.stringTable).localeCompare(
+          getStringTableValue(b.name, this.props.stringTable)
+        )
+      );
   }
 
   private getRacialBonusForStat(statID: string, raceID: string): number {
@@ -163,15 +167,15 @@ class ACharacterBuilder extends React.Component<Props> {
   }
 
   private renderStatCell(def: StatDef, index: number): React.ReactNode {
-    const points = this.props.characterCreationState.statsPoints[def.id] ?? 0;
+    const points = this.props.characterCreationState!.statsPoints[def.id] ?? 0;
 
-    const statLoadout = this.props.statLoadouts[this.props.characterCreationState.statLoadoutID];
+    const statLoadout = this.props.statLoadouts[this.props.characterCreationState!.statLoadoutID];
     if (!statLoadout) {
       return null;
     }
 
     const stat = statLoadout.stats.find((s) => s.statID === def.id);
-    const bonus = this.getRacialBonusForStat(def.id, this.props.characterCreationState.raceID);
+    const bonus = this.getRacialBonusForStat(def.id, this.props.characterCreationState!.raceID);
     const minValue = (stat?.min ?? 10) + bonus;
     const maxValue = (stat?.max ?? 50) + bonus;
 
@@ -181,12 +185,12 @@ class ACharacterBuilder extends React.Component<Props> {
           className={StatSelector}
           value={points}
           onValueChanged={(newValue) => {
-            const diff = newValue - this.props.characterCreationState.statsPoints[def.id];
+            const diff = newValue - this.props.characterCreationState!.statsPoints[def.id];
             this.props.dispatch(setStatsPoints({ [def.id]: newValue }));
-            this.props.dispatch(setAvailableStatPoints(this.props.characterCreationState.availableStatPoints - diff));
+            this.props.dispatch(setAvailableStatPoints(this.props.characterCreationState!.availableStatPoints - diff));
           }}
           minValue={minValue}
-          maxValue={Math.min(maxValue, points + this.props.characterCreationState.availableStatPoints)}
+          maxValue={Math.min(maxValue, points + this.props.characterCreationState!.availableStatPoints)}
           soundEventPlusClicked={SoundEvents.PLAY_UI_SFX_CC_CHOOSE_POINTS_RIGHT}
           soundEventPlusShiftClicked={SoundEvents.PLAY_UI_SFX_CC_CHOOSE_POINTS_SHIFT_RIGHT}
           soundEventMinusClicked={SoundEvents.PLAY_UI_SFX_CC_CHOOSE_POINTS_LEFT}
@@ -225,20 +229,20 @@ class ACharacterBuilder extends React.Component<Props> {
       >
         <FactionBorderSelectable
           className={RaceButton}
-          isSelected={def.id === this.props.characterCreationState.raceID}
+          isSelected={def.id === this.props.characterCreationState!.raceID}
           onSelected={() => {
             clientAPI.playGameSound(SoundEvents.PLAY_UI_SFX_CC_CHOOSE_RACE);
             this.props.dispatch(selectRace(def.id));
             // If stats are displayed, we'll need to update those as well to account for racial bonus changes.
-            if (this.props.characterCreationState.classID) {
-              this.applyStatLoadout(this.props.statLoadouts[this.props.characterCreationState.statLoadoutID], def.id);
+            if (this.props.characterCreationState!.classID) {
+              this.applyStatLoadout(this.props.statLoadouts[this.props.characterCreationState!.statLoadoutID], def.id);
             }
           }}
         >
           <img
             className={ButtonImage}
             src={
-              raceData?.portraits?.find((p) => p.bodyTypeID === this.props.characterCreationState.bodyTypeID)?.image ??
+              raceData?.portraits?.find((p) => p.bodyTypeID === this.props.characterCreationState!.bodyTypeID)?.image ??
               '/images/MissingAsset.png'
             }
           />
@@ -267,7 +271,7 @@ class ACharacterBuilder extends React.Component<Props> {
         key={`BodyType${def.id}`}
         background={BorderBackground.PatternSmall}
         className={BodyTypeButton}
-        isSelected={def.id === this.props.characterCreationState.bodyTypeID}
+        isSelected={def.id === this.props.characterCreationState!.bodyTypeID}
         onSelected={() => {
           clientAPI.playGameSound(SoundEvents.PLAY_UI_SFX_CC_CHOOSE_GENDER);
           this.props.dispatch(selectBodyType(def.id));
@@ -280,7 +284,7 @@ class ACharacterBuilder extends React.Component<Props> {
 
   private renderClassButton(def: ClassDef): React.ReactNode {
     // When we want to show a class as "coming soon", we can put their IDs in a list like this.
-    const isDisabled = ['Spectre', 'Wisp', 'Arisen'].includes(def.id);
+    const isDisabled = ([] as string[]).includes(def.id);
 
     //const isDisabled = false;
 
@@ -304,13 +308,13 @@ class ACharacterBuilder extends React.Component<Props> {
         <FactionBorderSelectable
           key={`Class${def.id}`}
           className={ClassButton}
-          isSelected={def.id === this.props.characterCreationState.classID}
+          isSelected={def.id === this.props.characterCreationState!.classID}
           onSelected={() => {
             clientAPI.playGameSound(SoundEvents.PLAY_UI_SFX_CC_CHOOSE_CLASS);
             this.props.dispatch(selectClass(def.id));
             this.applyStatLoadout(
               this.props.statLoadouts[def.statLoadoutIDs[0]],
-              this.props.characterCreationState.raceID
+              this.props.characterCreationState!.raceID
             );
           }}
           isDisabled={isDisabled}
@@ -341,10 +345,10 @@ class ACharacterBuilder extends React.Component<Props> {
         key={`Spec${def.id}`}
         className={SpecButton}
         background={BorderBackground.PatternSmall}
-        isSelected={def.id === this.props.characterCreationState.statLoadoutID}
+        isSelected={def.id === this.props.characterCreationState!.statLoadoutID}
         onSelected={() => {
           clientAPI.playGameSound(SoundEvents.PLAY_UI_SFX_CC_CHOOSE_STATS);
-          this.applyStatLoadout(def, this.props.characterCreationState.raceID);
+          this.applyStatLoadout(def, this.props.characterCreationState!.raceID);
           if (def.freePoints > 0) {
             this.props.dispatch(
               showModal({

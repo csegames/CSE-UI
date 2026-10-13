@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
 import { FactionData, getFactionData } from '../gameData/factionData';
 import { FactionBorder, BorderType } from './FactionBorder';
-import TooltipSource from './TooltipSource';
+import { TooltipSource } from './TooltipSource';
 import { genID } from '@csegames/library/dist/_baseGame/utils/idGen';
 
 const Root = 'HUD-FactionButton-Root';

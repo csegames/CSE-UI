@@ -49,9 +49,13 @@ export class GuildService extends WithWebInterface(ExternalDataSource) {
   }
 
   private handleGuildQuery(result: GuildQueryResult): void {
-    this.dispatch(updateServerTimeDelta(result.serverTimestamp));
-    for (const invite of result.guildOffers.invitations) {
-      this.queueOffer(invite);
+    this.dispatch(updateServerTimeDelta(result.serverTimestamp ?? ''));
+    if (result.guildOffers?.invitations) {
+      for (const invite of result.guildOffers.invitations) {
+        if (invite) {
+          this.queueOffer(invite);
+        }
+      }
     }
   }
 
@@ -67,7 +71,7 @@ export class GuildService extends WithWebInterface(ExternalDataSource) {
   }
 
   private queueOffer(offer: GuildInvitation) {
-    if (!offer) {
+    if (!offer || !offer.from || !offer.from.id) {
       return;
     }
 
@@ -79,10 +83,10 @@ export class GuildService extends WithWebInterface(ExternalDataSource) {
     const content: ModalModel = {
       message: isNewGuild
         ? getTokenizedStringTableValue(StringIDGuildsCreateGuildMessage, this.reduxState.stringTable.stringTable, {
-            NAME: offer.from?.displayName
+            NAME: offer.from?.displayName ?? ''
           })
         : getTokenizedStringTableValue(StringIDGuildsJoinGuildMessage, this.reduxState.stringTable.stringTable, {
-            NAME: offer.from?.displayName,
+            NAME: offer.from?.displayName ?? '',
             // TODO: Eventually, a guild name should be part of the offer data.
             GUILDNAME: '(NYI: GuildName)'
           }),
@@ -90,14 +94,14 @@ export class GuildService extends WithWebInterface(ExternalDataSource) {
         {
           text: getStringTableValue(StringIDGeneralReject, this.reduxState.stringTable.stringTable),
           onClick: () => {
-            this.dispatch(callRejectGuildInvitation(offer.from.id));
+            this.dispatch(callRejectGuildInvitation(offer.from!.id!));
             this.dispatch(hideModal());
           }
         },
         {
           text: getStringTableValue(StringIDGeneralAccept, this.reduxState.stringTable.stringTable),
           onClick: () => {
-            this.dispatch(callAcceptGuildInvitation(offer.from.id));
+            this.dispatch(callAcceptGuildInvitation(offer.from!.id!));
             this.dispatch(hideModal());
           }
         }
@@ -120,7 +124,7 @@ export class GuildService extends WithWebInterface(ExternalDataSource) {
       );
     }
 
-    const remainingMs = getMSUntil(this.reduxState.clock, offer.expires);
+    const remainingMs = getMSUntil(this.reduxState.clock, offer.expires ?? '');
     if (remainingMs <= 0) {
       removeOffer();
       return;
@@ -131,13 +135,13 @@ export class GuildService extends WithWebInterface(ExternalDataSource) {
   }
 
   private removeOffer(offer: GuildInvitation) {
-    window.clearTimeout(this.reduxState.party.inviteTimeouts[offer.from.id]);
-    this.dispatch(dropInviteTimeout(offer.from.id));
+    window.clearTimeout(this.reduxState.party.inviteTimeouts[offer.from!.id!]);
+    this.dispatch(dropInviteTimeout(offer.from!.id!));
 
     const modalID = this.getModalID(offer);
     const content: ModalModel = {
       // TODO: Localized text, duh.
-      message: `A party invite from ${offer.from.displayName} has expired`,
+      message: `A party invite from ${offer.from!.displayName} has expired`,
       buttons: [
         {
           text: 'OK',
@@ -150,6 +154,6 @@ export class GuildService extends WithWebInterface(ExternalDataSource) {
   }
 
   private getModalID(offer: GuildInvitation): string {
-    return `guildInvite-${offer.from.id}`;
+    return `guildInvite-${offer.from?.id}`;
   }
 }

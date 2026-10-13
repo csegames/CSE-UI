@@ -44,6 +44,9 @@ const StringIDCharacterManagementPlay = 'CharacterManagementPlay';
 const StringIDCharacterCreationWelcomeHeader = 'CharacterCreationWelcomeHeader';
 const StringIDCharacterCreationWelcomeBody = 'CharacterCreationWelcomeBody';
 const StringIDLoadingPhaseFindingServer = 'LoadingPhaseFindingServer';
+const StringIDCharacterCreationNoSlots = 'CharacterCreationNoSlots';
+const StringIDCharacterCreationDefsNotReady = 'CharacterCreationDefsNotReady';
+const StringIDCharacterCreationShardUnavailable = 'CharacterCreationShardUnavailable';
 
 // CSS classes
 const Root = 'HUD-CharacterSelection-Root';
@@ -71,6 +74,7 @@ interface InjectedProps {
   gameDefsLoaded: boolean;
   isShardOffline: boolean;
   subscribedToQueues: boolean;
+  maxCharacterSlots: number;
 }
 
 type Props = ReactProps & InjectedProps & AddDispatch;
@@ -80,7 +84,7 @@ class ACharacterSelection extends WithWebInterface(React.Component<Props, State>
     super(props);
 
     this.state = {
-      playButtonPressed: false,
+      playButtonPressed: false
     };
   }
 
@@ -111,7 +115,7 @@ class ACharacterSelection extends WithWebInterface(React.Component<Props, State>
     this.props.characters.forEach((character) => this.clientRenderPaperDoll(character));
     const selectedCharacter = this.props.characters.find((c) => c.id === this.props.selectedCharacterID);
     if (selectedCharacter) {
-      clientAPI.pauseAllPaperDollExcept(selectedCharacter.name);
+      clientAPI.pauseAllPaperDollExcept(selectedCharacter.name ?? '');
     }
   }
 
@@ -122,7 +126,7 @@ class ACharacterSelection extends WithWebInterface(React.Component<Props, State>
 
       let newSet = new Set(this.props.characters);
       const removedCharacters = prevProps.characters.filter((x) => !newSet.has(x));
-      removedCharacters.forEach((character) => clientAPI.deletePaperDoll(character.name));
+      removedCharacters.forEach((character) => clientAPI.deletePaperDoll(character.name ?? ''));
     }
 
     if (this.props.subscribedToQueues && !prevProps.subscribedToQueues) {
@@ -134,7 +138,7 @@ class ACharacterSelection extends WithWebInterface(React.Component<Props, State>
   }
 
   componentWillUnmount(): void {
-    this.props.characters.forEach((character) => clientAPI.deletePaperDoll(character.name));
+    this.props.characters.forEach((character) => clientAPI.deletePaperDoll(character.name ?? ''));
   }
 
   private clientRenderPaperDoll(character: SimpleCharacter): void {
@@ -153,7 +157,7 @@ class ACharacterSelection extends WithWebInterface(React.Component<Props, State>
             const animation = paperDollImage.characterSelectAnimation;
 
             clientAPI.renderPaperDoll(
-              character.name,
+              character.name ?? '',
               characterClass.numericID,
               characterRace.numericID,
               characterBodyType.numericID,
@@ -232,9 +236,16 @@ class ACharacterSelection extends WithWebInterface(React.Component<Props, State>
   }
 
   private renderCreateCharacterButton(): React.ReactNode {
+    let disabledTooltipKey = '';
+    const noSlots = this.props.characters.length >= this.props.maxCharacterSlots;
+    if (noSlots) disabledTooltipKey = StringIDCharacterCreationNoSlots;
+    else if (!this.props.gameDefsLoaded) disabledTooltipKey = StringIDCharacterCreationDefsNotReady;
+    else if (this.props.isShardOffline) disabledTooltipKey = StringIDCharacterCreationShardUnavailable;
+
     return (
       <FactionButton
-        disabled={!this.props.gameDefsLoaded || this.props.isShardOffline}
+        disabled={!this.props.gameDefsLoaded || this.props.isShardOffline || noSlots}
+        disabledTooltip={getStringTableValue(disabledTooltipKey, this.props.stringTable)}
         onClick={() => {
           clientAPI.playGameSound(SoundEvents.PLAY_UI_SFX_CC_GENERIC_SELECT);
           this.props.dispatch(startCharacterCreation());
@@ -307,7 +318,8 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): ReactProps & I
     gameDefsLoaded: state.loading.gameDefsLoaded,
     // Confirmed shard query failure (tri-state: null = loading, true = ok, false = failed).
     isShardOffline: state.loading.componentStatus[LoadingTopic.ShardCharacters] === false,
-    subscribedToQueues: state.loading.subscribedToQueues
+    subscribedToQueues: state.loading.subscribedToQueues,
+    maxCharacterSlots: state.characters.restrictions?.maxSlots ?? Number.MAX_SAFE_INTEGER
   };
 };
 

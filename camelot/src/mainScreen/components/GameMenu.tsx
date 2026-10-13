@@ -9,7 +9,6 @@ import { connect, DispatchProp } from 'react-redux';
 import {
   HUDLayer,
   HUDWidgetRegistration,
-  addAllConditionalWidgetsExiting,
   addConditionalWidgetExiting,
   toggleConditionalWidget
 } from '../redux/hudSlice';
@@ -45,6 +44,7 @@ interface InjectedProps {
   connectionStatus: ConnectionStatus;
   isEditingHUD: boolean;
   activeConditionalWidgetIDs: string[];
+  logoutCompleteTime: number;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -54,6 +54,7 @@ class AGameMenu extends WithWebInterface(React.Component<Props & DispatchProp>) 
     const isLoggedOut =
       this.props.connectionStatus !== ConnectionStatus.Connected &&
       this.props.connectionStatus !== ConnectionStatus.Offline;
+    const canLogOut = !isLoggedOut && !this.props.logoutCompleteTime;
 
     return (
       <div className={Root}>
@@ -73,7 +74,7 @@ class AGameMenu extends WithWebInterface(React.Component<Props & DispatchProp>) 
                 {getStringTableValue(StringIDGameMenuEditUI, this.props.stringTable)}
               </FactionButton>
             )}
-            {!isLoggedOut && (
+            {canLogOut && (
               <FactionButton className={MenuButton} onClick={this.logOut.bind(this)}>
                 {getStringTableValue(StringIDGameMenuLogOut, this.props.stringTable)}
               </FactionButton>
@@ -103,11 +104,9 @@ class AGameMenu extends WithWebInterface(React.Component<Props & DispatchProp>) 
   }
 
   private logOut(): void {
-    this.props.dispatch?.(addAllConditionalWidgetsExiting());
     this.closeSelf();
-    clientAPI.disconnect();
     clientAPI.playGameSound(SoundEvents.PLAY_UI_GAME_MENU_SELECT);
-    clientAPI.setCharacter('').then(() => this.resetGraphQL());
+    clientAPI.startLogout();
   }
 
   private quitGame(): void {
@@ -122,7 +121,8 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
     stringTable: state.stringTable.stringTable,
     connectionStatus: state.loading.connectionStatus,
     isEditingHUD: state.hud.isEditingHUD,
-    activeConditionalWidgetIDs: state.hud.activeConditionalWidgetIDs
+    activeConditionalWidgetIDs: state.hud.activeConditionalWidgetIDs,
+    logoutCompleteTime: state.entities.self?.logoutCompleteTime ?? 0
   };
 };
 

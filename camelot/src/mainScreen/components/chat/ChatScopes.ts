@@ -23,7 +23,7 @@ export const allChatScopeDisplayData: Record<ChatScope, ChatScopeDisplayData> = 
     nameStringID: 'ChatScopeNameCombat',
     descriptionStringID: 'ChatScopeDescriptionCombat',
     missingStringID: 'ChatScopeMissingCombat',
-    color: '#808080',
+    color: '#ffffff',
     selectionType: SelectionType.Visible
   },
   [ChatScopes.Console]: {

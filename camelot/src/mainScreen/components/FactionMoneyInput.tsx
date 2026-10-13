@@ -8,7 +8,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
 import { FactionBorder, BorderType, BorderBackground } from './FactionBorder';
-import TooltipSource from './TooltipSource';
+import { TooltipSource } from './TooltipSource';
 
 // Images are imported so that WebPack can find them (and give us errors if they are missing).
 import GoldCoinURL from '../../images/icons/coin-gold.png';

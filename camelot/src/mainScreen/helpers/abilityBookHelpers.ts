@@ -11,6 +11,7 @@ import { AbilityWithActivation } from '../redux/abilitiesSlice';
 
 export const TAG_PREFIX_ARCHETYPE_CLASS = 'Asset.Class.';
 export const TAG_PREFIX_SPECIALIZATION = 'Asset.Specialization.';
+export const TAG_PREFIX_TRADESKILL = 'Tradeskill.';
 
 // Character level minus levels already spent on specialization tracks; mirrors the "Available
 // Points" the Ability Book shows per-class.

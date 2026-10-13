@@ -7,12 +7,18 @@
 import { ActiveEffectAction } from './ActiveEffectAction';
 import { AbilityTrackFlags } from './AbilityTypes';
 
+// keep in sync with UIBindings.cpp CoherentBind(netmessages::CombatLogMessage*)
 export interface CombatEvent {
   fromName: string;
   fromFaction: any;
 
   toName: string;
   toFaction: any;
+
+  // def ID of the instigating status or ability
+  source?: string;
+  // set when this event killed the subject
+  kill?: boolean;
   // damage against an abilities disruption health, high enough disruption damage causes and interrupt
   disruption?: {
     sent: number;
@@ -41,6 +47,17 @@ export interface CombatEvent {
     sent: number;
     received: number;
   };
+
+  // gathering results, one entry per granted item stack
+  harvests?: {
+    track: string;
+    progressChange: number;
+    currentProgress: number;
+    maxProgress: number;
+    item: string; // display name of the rewarded item def
+    unitCount: number;
+    quality: number; // whole number
+  }[];
 
   activeEffects?: {
     name: string;

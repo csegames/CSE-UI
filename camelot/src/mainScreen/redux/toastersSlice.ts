@@ -14,7 +14,7 @@ export const DEFAULT_TOAST_DURATION_MILLIS = 3000;
 
 export interface ToasterRewardModel {
   name: string;
-  amount: number;
+  amount?: number; // Optional quantity prefix ("3x [name]"). Generally omitted when amount is baked into the name string.
   iconUrl?: string; // Item icon rendered between the plus and the name. Omitted when unset.
   isGold?: boolean; // Gold renders as a coin MoneyDisplay instead of text.
 }

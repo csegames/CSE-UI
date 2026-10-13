@@ -38,7 +38,7 @@ import { RaceDef } from '../../dataSources/manifest/raceManifest';
 import { ClassDef } from '../../dataSources/manifest/classManifest';
 import { BodyTypeDef } from '../../dataSources/manifest/bodyTypeManifest';
 import { StatDef } from '../../dataSources/manifest/statManifest';
-import TooltipSource from '../TooltipSource';
+import { TooltipSource } from '../TooltipSource';
 import { convertRequestResult } from '../../helpers/errorConversionHelpers';
 
 const StringIDCharacterManagementNameCharacterTitle = 'CharacterManagementNameCharacterTitle';

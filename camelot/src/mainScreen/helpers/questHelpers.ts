@@ -4,15 +4,29 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { addCommasToNumber } from '@csegames/library/dist/_baseGame/utils/textUtils';
+import { ProgressState } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
 import { ItemDef } from '../dataSources/manifest/itemManifest';
+import { ProgressionTrackDef } from '../dataSources/manifest/progressionTrackManifest';
 import { QuestDef } from '../dataSources/manifest/questDefManifest';
+import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
 import { QuestDisplayCategory, QuestStateEx } from '../redux/questSlice';
 import { EquipmentRequirementOperator, EquipRequirement } from './itemHelpers';
+import { getStringTableValue, getTokenizedStringTableValue } from './stringTableHelpers';
 
 const ItemRewardPrefix = 'Item.';
+const XPTrackTagRewardPrefix = 'XPTrackTag.';
+const StringIDQuestRewardXP = 'QuestRewardXP';
 
 export interface QuestItemReward {
   itemID: string;
+  name: string;
+  iconUrl?: string;
+  amount: number;
+}
+
+export interface QuestXPReward {
+  trackID: string;
   name: string;
   iconUrl?: string;
   amount: number;
@@ -29,6 +43,57 @@ export function getItemRewards(def: QuestDef, itemsByStringID: Record<string, It
     rewards.push({ itemID, name: itemDef?.name ?? itemID, iconUrl: itemDef?.iconUrl, amount: reward.amount });
   }
   return rewards;
+}
+
+// First progression track on the entity that matches tag (mirrors server behavior - see ProgressionComponent)
+export function findOwnedTrackByTag(
+  tag: string,
+  progressionTracks: Record<string, ProgressionTrackDef>,
+  selfProgression: Record<string, ProgressState> | undefined
+): ProgressionTrackDef | undefined {
+  for (const trackID of Object.keys(selfProgression ?? {})) {
+    const track = progressionTracks[trackID];
+    if (track?.tags.some((t) => t === tag || t.startsWith(`${tag}.`))) {
+      return track;
+    }
+  }
+  return undefined;
+}
+
+// Progression track names are stringtable keys
+// Rewards that don't match any tracks on the player are not shown
+export function getXPRewards(
+  def: QuestDef | undefined,
+  progressionTracks: Record<string, ProgressionTrackDef>,
+  stringTable: Record<string, StringTableEntryDef>,
+  selfProgression: Record<string, ProgressState> | undefined
+): QuestXPReward[] {
+  const rewards: QuestXPReward[] = [];
+  for (const reward of def?.rewards ?? []) {
+    if (!reward.id.startsWith(XPTrackTagRewardPrefix)) {
+      continue;
+    }
+    const tag = reward.id.slice(XPTrackTagRewardPrefix.length);
+    const track = findOwnedTrackByTag(tag, progressionTracks, selfProgression);
+    if (!track) {
+      continue;
+    }
+    rewards.push({
+      trackID: track.id,
+      name: getStringTableValue(track.nameKey, stringTable),
+      iconUrl: track.iconURL || undefined,
+      amount: reward.amount
+    });
+  }
+  return rewards;
+}
+
+// e.g. "250 Fishing XP"
+export function getXPRewardText(reward: QuestXPReward, stringTable: Record<string, StringTableEntryDef>): string {
+  return getTokenizedStringTableValue(StringIDQuestRewardXP, stringTable, {
+    AMOUNT: addCommasToNumber(reward.amount.toFixed(0)),
+    NAME: reward.name
+  });
 }
 
 // Same string IDs the QuestLog uses for its section headers.
@@ -119,4 +184,29 @@ export function getQuestsForDisplayCategory(
     return true;
   });
   return quests;
+}
+
+export const WorkOrderDisplayCategories: QuestDisplayCategory[] = [
+  QuestDisplayCategory.TurnInArmor,
+  QuestDisplayCategory.TurnInWeapons,
+  QuestDisplayCategory.TurnInMisc
+];
+
+export function getLoggedQuestsForDisplayCategories(
+  categories: QuestDisplayCategory[],
+  loggedQuestIDs: string[],
+  allQuests: Record<string, QuestStateEx>,
+  questDefs: Record<string, QuestDef>,
+  itemDefs: Record<string, ItemDef>,
+  playerFactionID: string
+): QuestStateEx[] {
+  return categories.reduce<QuestStateEx[]>(
+    (logged, category) =>
+      logged.concat(
+        getQuestsForDisplayCategory(category, allQuests, questDefs, itemDefs, playerFactionID).filter((q) =>
+          loggedQuestIDs.includes(q.instanceID)
+        )
+      ),
+    []
+  );
 }

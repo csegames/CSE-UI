@@ -24,7 +24,7 @@ import {
 import { AddDispatch, RootState } from '../redux/store';
 import Draggable from './Draggable';
 import DraggableHandle, { DropHandlerDraggableData } from './DraggableHandle';
-import TooltipSource from './TooltipSource';
+import { TooltipSource } from './TooltipSource';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
 import { hideModal, showModal } from '../redux/modalsSlice';
@@ -54,11 +54,11 @@ import { WIDGET_ID_NAV_MENU } from './HUDNavMenu';
 import { WIDGET_ID_PARTY } from './party/Party';
 import { WIDGET_ID_WORLD_MAP } from './WorldMap';
 import { WIDGET_ID_WORLD_MAP as WIDGET_ID_MINI_MAP } from './MiniMap';
-import { WIDGET_ID_REPAIRWARNING } from './repairWarning/RepairWarning';
+import { WIDGET_ID_PLAYERWARNINGICONS } from './playerWarningIcons/PlayerWarningIcons';
 import { WIDGET_ID_RESPAWN } from './Respawn';
 import { WIDGET_ID_WARBAND } from './warband/Warband';
 import { WIDGET_ID_CHAT } from './chat/Chat';
-import { WIDGET_ID_GUILD } from './guild/Guild';
+import { WIDGET_ID_SOCIAL } from './social/Social';
 import { WIDGET_ID_ZONENAME } from './zoneName/ZoneName';
 import { WIDGET_ID_QUESTLOG } from './quests/QuestLog';
 import { WIDGET_ID_QUESTTRACKER } from './quests/QuestTracker';
@@ -276,7 +276,7 @@ const HUDEditorWidgetGroups: HUDEditorWidgetGroup[] = [
         WIDGET_ID_EQUIPPED,
         WIDGET_ID_LEVEL_BARS,
         WIDGET_ID_LEVEL_NOTIFICATIONS,
-        WIDGET_ID_REPAIRWARNING,
+        WIDGET_ID_PLAYERWARNINGICONS,
         WIDGET_ID_RESPAWN
       ].includes(id)
   },
@@ -296,7 +296,7 @@ const HUDEditorWidgetGroups: HUDEditorWidgetGroup[] = [
     key: 'social-group',
     labelStringID: StringIDHUDEditorSocialGroupName,
     fallbackLabel: 'Social',
-    match: (id) => [WIDGET_ID_PARTY, WIDGET_ID_WARBAND, WIDGET_ID_CHAT, WIDGET_ID_GUILD, WIDGET_ID_MAIL].includes(id)
+    match: (id) => [WIDGET_ID_PARTY, WIDGET_ID_WARBAND, WIDGET_ID_CHAT, WIDGET_ID_SOCIAL, WIDGET_ID_MAIL].includes(id)
   },
   {
     key: 'quests-group',
@@ -332,9 +332,9 @@ interface InjectedProps {
   hudWidth: number;
   hudHeight: number;
   widgets: Dictionary<HUDWidget>;
-  selectedWidgetID: string;
-  selectedGroupKey: string;
-  selectedWidgetBounds: SimpleRect;
+  selectedWidgetID: string | null;
+  selectedGroupKey: string | null;
+  selectedWidgetBounds: SimpleRect | null;
   editStatus: AbilityEditStatus;
   layouts: Dictionary<ButtonLayout>;
   groups: Dictionary<AbilityGroup>;
@@ -613,7 +613,7 @@ class AHUDEditor extends React.Component<Props, State> {
     const isExpanded =
       this.state.searchQuery.trim().length > 0 || this.state.expandAll || !!this.state.expandedGroups[group.key];
     const isGroupSelected = this.props.selectedGroupKey === group.key;
-    const anyMemberSelected = memberIDs.includes(this.props.selectedWidgetID);
+    const anyMemberSelected = memberIDs.includes(this.props.selectedWidgetID ?? '');
     const dividerImage = factionData.dividerVerticalSimpleImage;
 
     return (
@@ -739,7 +739,7 @@ class AHUDEditor extends React.Component<Props, State> {
 
   private renderNameplateStyleControls(factionData: FactionData): React.ReactNode {
     const plateIDs = [WIDGET_ID_SELF, WIDGET_ID_FRIENDLY, WIDGET_ID_ENEMY];
-    if (!plateIDs.includes(this.props.selectedWidgetID)) {
+    if (!plateIDs.includes(this.props.selectedWidgetID ?? '')) {
       return null;
     }
     const isSimple = this.props.nameplateStyle === 'simple';
@@ -784,7 +784,7 @@ class AHUDEditor extends React.Component<Props, State> {
       return null;
     }
 
-    const selectedLayoutId = +this.props.selectedWidgetID.slice(AbilitiesBarIDPrefixLength);
+    const selectedLayoutId = +(this.props.selectedWidgetID ?? '').slice(AbilitiesBarIDPrefixLength);
     const selectedLayout: ButtonLayout = this.props.layouts[selectedLayoutId];
     if (!selectedLayout) {
       return null;
@@ -970,7 +970,7 @@ class AHUDEditor extends React.Component<Props, State> {
 
   private renderWidgetControls(factionData: FactionData): JSX.Element {
     if ((this.props.selectedWidgetID?.length ?? 0) > 0) {
-      const widget = this.props.widgets[this.props.selectedWidgetID];
+      const widget = this.props.widgets[this.props.selectedWidgetID ?? ''];
       return (
         <>
           <div className={SelectedWidgetHeader}>
@@ -1038,7 +1038,9 @@ class AHUDEditor extends React.Component<Props, State> {
               {this.renderChatFontSizeControls(factionData)}
             </>
           )}
-          {[WIDGET_ID_QUEST_NOTIFICATIONS, WIDGET_ID_LEVEL_NOTIFICATIONS].includes(this.props.selectedWidgetID) && (
+          {[WIDGET_ID_QUEST_NOTIFICATIONS, WIDGET_ID_LEVEL_NOTIFICATIONS].includes(
+            this.props.selectedWidgetID ?? ''
+          ) && (
             <>
               <div className={SelectedWidgetDivider} style={{ backgroundColor: factionData.borderColor }} />
               {this.renderToastDurationControls()}
@@ -1097,7 +1099,7 @@ class AHUDEditor extends React.Component<Props, State> {
   }
 
   private renderAnchorControls(): JSX.Element {
-    const widget = this.props.widgets[this.props.selectedWidgetID];
+    const widget = this.props.widgets[this.props.selectedWidgetID!];
     const t = widget.state.yAnchor === HUDVerticalAnchor.Top;
     const m = widget.state.yAnchor === HUDVerticalAnchor.Center;
     const b = widget.state.yAnchor === HUDVerticalAnchor.Bottom;
@@ -1166,7 +1168,7 @@ class AHUDEditor extends React.Component<Props, State> {
   }
 
   private renderLayerControls(): JSX.Element {
-    const widget = this.props.widgets[this.props.selectedWidgetID];
+    const widget = this.props.widgets[this.props.selectedWidgetID!];
 
     return (
       <TooltipSource
@@ -1183,16 +1185,16 @@ class AHUDEditor extends React.Component<Props, State> {
           value={widget.state.layerOffset ?? 0}
           onValueChanged={(newValue: number) => {
             // Copy the original state.
-            const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
+            const state = { ...this.props.widgets[this.props.selectedWidgetID!].state };
 
             // Update the value.
             state.layerOffset = newValue;
 
             // Save to HUDLocalStore.
-            clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
+            clientAPI.updateWidgetState(this.props.selectedWidgetID!, state);
             // Save to Redux.
             const delta: Record<string, HUDWidgetState> = {};
-            delta[this.props.selectedWidgetID] = state;
+            delta[this.props.selectedWidgetID!] = state;
             this.props.dispatch(updateWidgetStates(delta));
           }}
         />
@@ -1227,7 +1229,7 @@ class AHUDEditor extends React.Component<Props, State> {
   }
 
   private renderChatFontSizeControls(factionData: FactionData): JSX.Element {
-    const widget = this.props.widgets[this.props.selectedWidgetID];
+    const widget = this.props.widgets[this.props.selectedWidgetID!];
     const value = widget.state.chatFontSize ?? ChatFontSizeDefault;
     return (
       <div className={OptionRow}>
@@ -1253,7 +1255,7 @@ class AHUDEditor extends React.Component<Props, State> {
   }
 
   private renderToastDurationControls(): JSX.Element {
-    const widget = this.props.widgets[this.props.selectedWidgetID];
+    const widget = this.props.widgets[this.props.selectedWidgetID!];
     const value = widget.state.toastDurationSeconds ?? ToastDurationSecondsDefault;
     return (
       <div className={OptionRow}>
@@ -1275,11 +1277,11 @@ class AHUDEditor extends React.Component<Props, State> {
   }
 
   private setToastDuration(value: number): void {
-    const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
+    const state = { ...this.props.widgets[this.props.selectedWidgetID!].state };
     state.toastDurationSeconds = Math.max(ToastDurationSecondsMin, Math.min(value, ToastDurationSecondsMax));
-    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
+    clientAPI.updateWidgetState(this.props.selectedWidgetID!, state);
     const update: Record<string, HUDWidgetState> = {};
-    update[this.props.selectedWidgetID] = state;
+    update[this.props.selectedWidgetID!] = state;
     this.props.dispatch(updateWidgetStates(update));
   }
 
@@ -1365,16 +1367,16 @@ class AHUDEditor extends React.Component<Props, State> {
   }
 
   private setChatFontSize(value: number): void {
-    const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
+    const state = { ...this.props.widgets[this.props.selectedWidgetID!].state };
     state.chatFontSize = Math.max(ChatFontSizeMin, Math.min(value, ChatFontSizeMax));
-    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
+    clientAPI.updateWidgetState(this.props.selectedWidgetID!, state);
     const update: Record<string, HUDWidgetState> = {};
-    update[this.props.selectedWidgetID] = state;
+    update[this.props.selectedWidgetID!] = state;
     this.props.dispatch(updateWidgetStates(update));
   }
 
   private getHorizontalMove(delta: number): [number, number] {
-    const state = this.props.widgets[this.props.selectedWidgetID].state;
+    const state = this.props.widgets[this.props.selectedWidgetID!].state;
     if (state.xAnchor === HUDHorizontalAnchor.Right) {
       return [-delta, 0];
     } else {
@@ -1383,7 +1385,7 @@ class AHUDEditor extends React.Component<Props, State> {
   }
 
   private getVerticalMove(delta: number): [number, number] {
-    const state = this.props.widgets[this.props.selectedWidgetID].state;
+    const state = this.props.widgets[this.props.selectedWidgetID!].state;
     if (state.yAnchor === HUDVerticalAnchor.Bottom) {
       return [0, -delta];
     } else {
@@ -1421,40 +1423,42 @@ class AHUDEditor extends React.Component<Props, State> {
   }
 
   private setOpacity(opacity: number): void {
-    const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
+    const state = { ...this.props.widgets[this.props.selectedWidgetID!].state };
     state.opacity = Math.max(0, Math.min(opacity, 1));
-    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
+    clientAPI.updateWidgetState(this.props.selectedWidgetID!, state);
     const delta: Dictionary<HUDWidgetState> = {};
-    delta[this.props.selectedWidgetID] = state;
+    delta[this.props.selectedWidgetID!] = state;
     this.props.dispatch(updateWidgetStates(delta));
   }
 
   private setScale(scale: number): void {
-    const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
+    const state = { ...this.props.widgets[this.props.selectedWidgetID!].state };
     state.scale = Math.max(MinWidgetScale, Math.min(scale, MaxWidgetScale));
-    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
+    clientAPI.updateWidgetState(this.props.selectedWidgetID!, state);
     const delta: Dictionary<HUDWidgetState> = {};
-    delta[this.props.selectedWidgetID] = state;
+    delta[this.props.selectedWidgetID!] = state;
     this.props.dispatch(updateWidgetStates(delta));
   }
 
   private changePosition(pDelta: [number, number]): void {
     // Copy the original state.
-    const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
+    const state = { ...this.props.widgets[this.props.selectedWidgetID!].state };
     // Modify the state.
     state.xOffset = Math.round(((state.xOffset ?? 0) + pDelta[0]) * 100) / 100;
     state.yOffset = Math.round(((state.yOffset ?? 0) + pDelta[1]) * 100) / 100;
     // Save to HUDLocalStore.
-    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
+    clientAPI.updateWidgetState(this.props.selectedWidgetID!, state);
     // Save to Redux.
     const delta: Dictionary<HUDWidgetState> = {};
-    delta[this.props.selectedWidgetID] = state;
+    delta[this.props.selectedWidgetID!] = state;
     this.props.dispatch(updateWidgetStates(delta));
   }
 
   private changeAnchors(xAnchor: HUDHorizontalAnchor, yAnchor: HUDVerticalAnchor): void {
+    if (!this.props.selectedWidgetBounds) return;
+
     // Copy the original state.
-    const state = { ...this.props.widgets[this.props.selectedWidgetID].state };
+    const state = { ...this.props.widgets[this.props.selectedWidgetID!].state };
 
     const pxToVmin = Math.min(this.props.hudHeight, this.props.hudWidth) / 100;
 
@@ -1487,18 +1491,18 @@ class AHUDEditor extends React.Component<Props, State> {
     state.xAnchor = xAnchor;
     state.yAnchor = yAnchor;
     // Save to HUDLocalStore.
-    clientAPI.updateWidgetState(this.props.selectedWidgetID, state);
+    clientAPI.updateWidgetState(this.props.selectedWidgetID!, state);
     // Save to Redux.
     const delta: Record<string, HUDWidgetState> = {};
-    delta[this.props.selectedWidgetID] = state;
+    delta[this.props.selectedWidgetID!] = state;
     this.props.dispatch(updateWidgetStates(delta));
   }
 
   private onResetWidgetClicked(): void {
     // Clear in HUDLocalStore.
-    clientAPI.clearWidgetState(this.props.selectedWidgetID);
+    clientAPI.clearWidgetState(this.props.selectedWidgetID!);
     // Clear in Redux.
-    this.props.dispatch(resetWidget(this.props.selectedWidgetID));
+    this.props.dispatch(resetWidget(this.props.selectedWidgetID!));
   }
 
   private onResetAllClicked(): void {

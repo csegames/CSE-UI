@@ -67,8 +67,8 @@ export type MainScreenClientAPI = AbilityFunctions &
   ProgressionFunctions &
   QuestFunctions &
   SceneRenderFunctions &
-  TradeFunctions &
   SystemFunctions &
+  TradeFunctions &
   ViewFunctions &
   WarbandFunctions;
 
@@ -219,6 +219,8 @@ export const clientAPI: MainScreenClientAPI = {
   isOfflineMode: nf.isOfflineMode.bind(nf),
   connect: nf.connect.bind(nf),
   disconnect: nf.disconnect.bind(nf),
+  startLogout: nf.startLogout.bind(nf),
+  cancelLogout: nf.cancelLogout.bind(nf),
   // Party
   bindPartyListener: pf.bindPartyListener.bind(pf),
   // PerformanceWarnings
@@ -241,6 +243,12 @@ export const clientAPI: MainScreenClientAPI = {
   renderPaperDoll: srf.renderPaperDoll.bind(srf),
   deletePaperDoll: srf.deletePaperDoll.bind(srf),
   pauseAllPaperDollExcept: srf.pauseAllPaperDollExcept.bind(srf),
+  // System
+  openBrowser: sysf.openBrowser.bind(sysf),
+  quit: sysf.quit.bind(sysf),
+  reloadUI: sysf.reloadUI.bind(sysf),
+  requestAddImageToCache: sysf.requestAddImageToCache.bind(sysf),
+  requestRemoveImageFromCache: sysf.requestRemoveImageFromCache.bind(sysf),
   // Trade
   bindTradeInviteAddedListener: stf.bindTradeInviteAddedListener.bind(stf),
   bindTradeInviteRemovedListener: stf.bindTradeInviteRemovedListener.bind(stf),
@@ -256,12 +264,6 @@ export const clientAPI: MainScreenClientAPI = {
   moveTradeItem: stf.moveTradeItem.bind(stf),
   confirmTradeItems: stf.confirmTradeItems.bind(stf),
   cancelTrade: stf.cancelTrade.bind(stf),
-  // System
-  openBrowser: sysf.openBrowser.bind(sysf),
-  quit: sysf.quit.bind(sysf),
-  reloadUI: sysf.reloadUI.bind(sysf),
-  requestAddImageToCache: sysf.requestAddImageToCache.bind(sysf),
-  requestRemoveImageFromCache: sysf.requestRemoveImageFromCache.bind(sysf),
   // View
   setInitializationComplete: vf.setInitializationComplete.bind(vf),
   bindShowWidgetListener: vf.bindShowWidgetListener.bind(vf),
@@ -298,8 +300,6 @@ export const mockEvents: MainScreenClientMocks = {
   triggerCharacterClassDefsLoaded: df.triggerCharacterClassDefsLoaded.bind(df),
   triggerCharacterRaceDefsLoaded: df.triggerCharacterRaceDefsLoaded.bind(df),
   triggerManifestDefsLoaded: df.triggerManifestDefsLoaded.bind(df),
-  // Guild
-  triggerGuildUpdated: gf.triggerGuildUpdated.bind(gf),
   // Inventory
   triggerInventoryUpdated: ivf.triggerInventoryUpdated.bind(ivf),
   // Network
@@ -313,6 +313,8 @@ export const mockEvents: MainScreenClientMocks = {
   triggerPerformanceWarnings: pwf.triggerPerformanceWarnings.bind(pwf),
   // Quests
   triggerQuestsUpdated: qf.triggerQuestsUpdated.bind(qf),
+  // Social
+  triggerGuildUpdated: gf.triggerGuildUpdated.bind(gf),
   // Trade
   triggerTradeInviteAdded: stf.triggerTradeInviteAdded.bind(stf),
   triggerTradeInviteRemoved: stf.triggerTradeInviteRemoved.bind(stf),

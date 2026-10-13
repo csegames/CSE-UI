@@ -31,7 +31,7 @@ export const getRemainingStatPoints = (
   );
 };
 
-export const getSelectableRaces = (factionID: Faction, racesByStringID: Record<string, RaceDef>): RaceDef[] =>
+export const getSelectableRaces = (factionID: Faction | null, racesByStringID: Record<string, RaceDef>): RaceDef[] =>
   Object.values(racesByStringID)
     .filter((race) => race.factionID === factionID && race.playerCreatable)
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -42,7 +42,7 @@ export const getSelectedRace = (
   racesByStringID: Record<string, RaceDef>
 ): RaceDef | undefined => racesByStringID[raceID] ?? getSelectableRaces(factionID, racesByStringID)[0];
 
-export const getValidClasses = (classesByStringID: Record<string, ClassDef>, factionID: Faction): ClassDef[] =>
+export const getValidClasses = (classesByStringID: Record<string, ClassDef>, factionID: Faction | null): ClassDef[] =>
   Object.values(classesByStringID)
     .filter((classObj) => classObj.playerCreatable)
     .sort((a, b) => {
@@ -57,7 +57,10 @@ export const getValidClasses = (classesByStringID: Record<string, ClassDef>, fac
       return a.name.localeCompare(b.name);
     });
 
-export const getSelectableClasses = (factionID: Faction, classesByStringID: Record<string, ClassDef>): ClassDef[] =>
+export const getSelectableClasses = (
+  factionID: Faction | null,
+  classesByStringID: Record<string, ClassDef>
+): ClassDef[] =>
   getValidClasses(classesByStringID, factionID).filter((validClass) => validClass.factionID === factionID);
 
 export const getSelectedClass = (

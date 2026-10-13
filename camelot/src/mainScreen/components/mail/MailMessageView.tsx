@@ -15,7 +15,7 @@ import { FactionButton } from '../FactionButton';
 import { MailMessage } from '../../redux/mailSlice';
 import { ItemDef } from '../../dataSources/manifest/itemManifest';
 import { FactionScrollArea } from '../FactionScrollArea';
-import TooltipSource from '../TooltipSource';
+import { TooltipSource } from '../TooltipSource';
 import { Item } from '@csegames/library/dist/camelotunchained/game/types/Items';
 import { ItemTooltip } from '../items/ItemTooltip';
 

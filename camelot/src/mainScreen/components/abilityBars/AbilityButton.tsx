@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { AbilityWithActivation } from '../../redux/abilitiesSlice';
 import { RootState } from '../../redux/store';
 import Draggable from '../Draggable';
-import TooltipSource from '../TooltipSource';
+import { TooltipSource } from '../TooltipSource';
 import { AbilityStateFlags, ButtonLayout, AbilityGroup } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
 import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { Keybind } from '@csegames/library/dist/_baseGame/types/Keybind';
@@ -121,8 +121,10 @@ class AAbilityButton extends React.Component<Props> {
         {!unusable && !!this.props.abilityStatus.errors && <div className={OverlayError} />}
         <CooldownOverlay abilityID={this.props.abilityID} />
         {keybindText && <div className={KeybindInfo}>{keybindText}</div>}
-        {!hasActiveEffect && <div className={queued ? `${Border} ${BorderQueued}` : Border} />}
+        {!hasActiveEffect && !queued && <div className={Border} />}
         <div className={hasActiveEffect ? `${OverlayActive} ${OverlayActiveVisible}` : OverlayActive} />
+        {/* Render the "queued" border above the "active" overlay to make it clearer when queuing the same ability. */}
+        {queued && <div className={`${Border} ${BorderQueued}`} />}
       </>
     );
   }

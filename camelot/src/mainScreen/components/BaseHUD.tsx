@@ -34,6 +34,7 @@ import ToasterPane from './ToasterPane';
 import TooltipPane from './TooltipPane';
 import { WIDGET_ID_GAME_MENU } from './GameMenu';
 import { WIDGET_ID_RESPAWN } from './Respawn';
+import { MODAL_ID_LOGGINGOUT, LoggingOut } from './LoggingOut';
 import { WIDGET_ID_ABILITY_BOOK } from './abilityBook/AbilityBook';
 import { ErrorNotice } from './ErrorNotice';
 import { ErrorNotice as IErrorNotice, removeErrorNotice } from '../redux/errorNoticesSlice';
@@ -42,10 +43,11 @@ import { PopUpAnnouncement as IPopUpAnnouncement, removePopUpAnnouncement } from
 import { CSETransition } from '../../shared/components/CSETransition';
 import { LoadingTopic, ZONE_ID_NONE } from '../redux/loadingSlice';
 import { ConnectionStatus } from '@csegames/library/dist/_baseGame/types/ConnectionStatus';
-import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
 import { CharacterManagement } from './characterManagement/CharacterManagement';
 import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { ItemActionTargetingData, updateItemActionTargeting } from '../redux/inventorySlice';
+import { hideModalById, ModalParams, showModal } from '../redux/modalsSlice';
+import { clientManagedModals } from '../dataSources/hudService';
 
 // Styles
 const Root = 'MainScreen-Root';
@@ -69,6 +71,7 @@ interface InjectedProps {
   isBindingKey: boolean;
   isEditingHUD: boolean;
   isAlive: boolean;
+  logoutCompleteTime: number;
   selfID: string | null;
   errorNotices: IErrorNotice[];
   popUpAnnouncements: IPopUpAnnouncement[];
@@ -78,6 +81,7 @@ interface InjectedProps {
   connectionStatus: ConnectionStatus;
   zoneID: string;
   itemActionTargetingData: ItemActionTargetingData | null;
+  modals: ModalParams[];
 }
 
 type Props = ReactProps & InjectedProps;
@@ -266,6 +270,21 @@ export class ABaseHUD extends React.Component<Props & DispatchProp> {
     ) {
       this.props.dispatch(addConditionalWidgetExiting(WIDGET_ID_RESPAWN));
     }
+    
+    // Show logout menu if the player has a logout timer
+    if (
+      this.props.logoutCompleteTime &&
+      this.props.selfID &&
+      (!prevProps.logoutCompleteTime || !prevProps.selfID)
+    ) {
+      const params: ModalParams = {
+        id: MODAL_ID_LOGGINGOUT,
+        content: (p: ModalParams) => (
+          <LoggingOut/>
+        )
+      };
+      this.props.dispatch(showModal(params));
+    }
   }
 
   private reportCurrentSize(): void {
@@ -307,19 +326,36 @@ export class ABaseHUD extends React.Component<Props & DispatchProp> {
     }
   }
 
+  private shouldShowWidgetAsModal(id: string): boolean {
+    return !!clientManagedModals[id];
+  }
+
   private onShowWidget(name: string): void {
+    // Is this widget a modal?
+    if (this.shouldShowWidgetAsModal(name)) {
+      if (!this.isModalOpen(name)) {
+        this.props.dispatch(showModal(clientManagedModals[name].showParams));
+      }
+      return;
+    }
+
+    // If not, then it's a conditional widget.
     const widgetID = this.getWidgetIDForNativeID(name);
     if (!widgetID) {
       console.warn(`Received widget.show event for unknown widget '${name}'`);
       return;
     }
-    if (!this.props.activeConditionalWidgetIDs.includes(widgetID)) {
-      this.applyWidgetOpeningSideEffects(widgetID);
-    }
     this.props.dispatch(showConditionalWidget(widgetID));
   }
 
   private onHideWidget(name: string): void {
+    // Is this widget a modal?
+    if (this.shouldShowWidgetAsModal(name)) {
+      this.props.dispatch(hideModalById(name));
+      return;
+    }
+
+    // If not, then it's a conditional widget.
     const widgetID = this.getWidgetIDForNativeID(name);
     if (!widgetID) {
       console.warn(`Received widget.hide event for unknown widget '${name}'`);
@@ -329,12 +365,22 @@ export class ABaseHUD extends React.Component<Props & DispatchProp> {
       this.props.activeConditionalWidgetIDs.includes(widgetID) &&
       !this.props.exitingConditionalWidgetIDs.includes(widgetID)
     ) {
-      this.applyWidgetClosingSideEffects(widgetID);
       this.props.dispatch(addConditionalWidgetExiting(widgetID));
     }
   }
 
   private onToggleWidget(name: string): void {
+    // Is this widget a modal?
+    if (this.shouldShowWidgetAsModal(name)) {
+      if (this.isModalOpen(name)) {
+        this.props.dispatch(hideModalById(clientManagedModals[name].showParams.id));
+      } else {
+        this.props.dispatch(showModal(clientManagedModals[name].showParams));
+      }
+      return;
+    }
+
+    // If not, then it's a conditional widget.
     const widgetID = this.getWidgetIDForNativeID(name);
     if (!widgetID) {
       console.warn(`Received widget.toggle event for unknown widget '${name}'`);
@@ -345,33 +391,16 @@ export class ABaseHUD extends React.Component<Props & DispatchProp> {
       this.onEscapePressed();
       return;
     }
-    if (this.props.activeConditionalWidgetIDs.includes(widgetID)) {
-      this.applyWidgetClosingSideEffects(widgetID);
-    } else {
-      this.applyWidgetOpeningSideEffects(widgetID);
-    }
     this.props.dispatch(toggleConditionalWidget(widgetID));
   }
 
   private getWidgetIDForNativeID(name: string): string | null {
     const widget = Object.values(this.props.widgets).find((w) => w.registration?.nativeWidgetID === name);
-    return widget?.registration.id ?? null;
+    return widget?.registration?.id ?? null;
   }
 
-  private applyWidgetOpeningSideEffects(widgetID: string): void {
-    if (widgetID === WIDGET_ID_ABILITY_BOOK) {
-      clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_WINDOW_CLOSED);
-      clientAPI.requestEditMode(true);
-    }
-  }
-
-  private applyWidgetClosingSideEffects(widgetID: string): void {
-    if (widgetID === WIDGET_ID_ABILITY_BOOK) {
-      clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_WINDOW_OPEN);
-      if (!this.props.isEditingHUD) {
-        clientAPI.requestEditMode(false);
-      }
-    }
+  private isModalOpen(modalID: string): boolean {
+    return this.props.modals.some((modal) => modal.id === modalID);
   }
 
   private onToggleHUDEditor(): void {
@@ -385,7 +414,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const initCompleted = state.loading.initCompleted;
   const { friendlyTarget, enemyTarget, selfID } = state.entities;
   const { activeConditionalWidgetIDs, exitingConditionalWidgetIDs, isBindingKey } = state.hud;
-  const { isAlive } = state.entities.self;
+  const { isAlive, logoutCompleteTime } = state.entities.self;
   const isEditingHUD = state.hud.isEditingHUD;
   const { errorNotices } = state.errorNotices;
   const { popUpAnnouncements } = state.popUpAnnouncements;
@@ -405,6 +434,7 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     isBindingKey,
     isEditingHUD,
     isAlive,
+    logoutCompleteTime,
     selfID,
     errorNotices,
     popUpAnnouncements,
@@ -413,7 +443,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     isMouseUpNeeded,
     connectionStatus,
     zoneID,
-    itemActionTargetingData: state.inventory.itemActionTargetingData
+    itemActionTargetingData: state.inventory.itemActionTargetingData,
+    modals: state.modals.modals
   };
 }
 

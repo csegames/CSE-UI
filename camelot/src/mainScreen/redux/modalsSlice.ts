@@ -11,13 +11,15 @@ export interface ModalButtonModel {
   text: string;
   onClick: () => void;
   isDisabled?: boolean;
+  disabledTooltip?: string;
 }
 
 export interface ModalModel {
   title?: string;
   body?: React.ReactNode;
   message?: string;
-  buttons?: ModalButtonModel[];
+  // If undefined, shows a default Okay button.  If null, shows NO buttons.
+  buttons?: ModalButtonModel[] | null;
 }
 
 export type ModalContent = ModalModel | ((params: ModalParams) => React.ReactNode);

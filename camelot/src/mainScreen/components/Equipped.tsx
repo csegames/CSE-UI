@@ -29,7 +29,7 @@ import { BorderBackground, BorderType, FactionBorder } from './FactionBorder';
 import { CornerButtonType, FactionCornerButton } from './FactionCornerButton';
 import { BaseHUDWidgetDraggableHandle } from './BaseHUDWidgetDraggableHandle';
 import { FactionSlidingPanel } from './FactionSlidingPanel';
-import TooltipSource from './TooltipSource';
+import { TooltipSource } from './TooltipSource';
 import { ClassDef } from '../dataSources/manifest/classManifest';
 
 // CSS classes
@@ -114,6 +114,7 @@ const UTILITY_STAT_GROUPS: StatGroup[] = [
   { primaryId: 'HealthRegeneration' },
   { primaryId: 'BaseHealingMultiplier' },
   { primaryId: 'DetectionRange' },
+  { primaryId: 'ActionSpeed' },
   // Right col
   { primaryId: 'BuffDurationMultiplier' },
   { primaryId: 'BuffEffectMultiplier' },

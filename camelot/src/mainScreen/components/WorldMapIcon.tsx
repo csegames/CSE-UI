@@ -16,7 +16,8 @@ import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest
 import { getStringTableValue } from '../helpers/stringTableHelpers';
 import { MapElementIcon } from './MapElementIcon';
 import { mapGroupIconImages } from './WorldMap';
-import TooltipSource from './TooltipSource';
+import { TooltipSource } from './TooltipSource';
+import { store } from '../redux/store';
 
 const StringIDPrefixMapPOIName = 'MapPOIName_';
 const StringIDPrefixMapPOIDescription = 'MapPOIDescription_';
@@ -25,6 +26,7 @@ const StringIDPrefixMapPOIOwnership = 'MapPOIOwnership_';
 // CSS classes
 const WorldMapPoint = 'HUD-WorldMapIcons-Point';
 const Icon = 'HUD-WorldMapIcons-Icon';
+const HotSpotPulse = 'HUD-WorldMapIcons-HotSpotPulse';
 const Pips = 'HUD-WorldMapIcons-Pips';
 const Pip = 'HUD-WorldMapIcons-Pip';
 
@@ -69,6 +71,11 @@ export class WorldMapIcon extends React.Component<Props> {
       return null;
     }
 
+    // Veil Fractures are only shown to you if they are owned by your faction.
+    if (entry.type === MapDataType.VeilFracture && entry.faction !== store.getState().entities.self?.faction) {
+      return null;
+    }
+
     const factionData = getFactionData(Faction[entry.faction]);
     const iconImage = groupPOIType ? mapGroupIconImages[groupPOIType] : factionData.mapIconImages[entry.type];
     if (iconImage === null) {
@@ -76,8 +83,7 @@ export class WorldMapIcon extends React.Component<Props> {
       return null;
     }
     const size = getElementIconSize(entry.type);
-    // TODO: Pip count should be part of MapElementIcon.
-    const numPips = 0;
+    const numPips = Math.floor(entry.tier);
 
     return (
       <div
@@ -96,7 +102,7 @@ export class WorldMapIcon extends React.Component<Props> {
           positionType='mouse'
           content={this.renderIconTooltip.bind(this)}
         >
-          <img className={Icon} src={iconImage} />
+          <img className={`${Icon}${entry.type === MapDataType.HotSpot ? ` ${HotSpotPulse}` : ''}`} src={iconImage} />
           {numPips > 0 && (
             <div className={Pips}>
               {new Array(numPips).fill(0).map((_, index) => (
@@ -151,9 +157,7 @@ export class WorldMapIcon extends React.Component<Props> {
     const factionID = Faction[entry.faction];
     const factionData = getFactionData(factionID);
     const iconImage = factionData.mapIconImages[entry.type];
-
-    // TODO: Pip count should be part of MapElementIcon.
-    const numPips = 0;
+    const numPips = Math.floor(entry.tier);
 
     const nameText = getStringTableValue(StringIDPrefixMapPOIName + MapDataType[entry.type], this.props.stringTable);
     const descriptionKey = StringIDPrefixMapPOIDescription + MapDataType[entry.type];
@@ -165,9 +169,11 @@ export class WorldMapIcon extends React.Component<Props> {
         <img className={POITooltipIcon} src={iconImage} />
         <div className={POITooltipName}>{nameText}</div>
         {descriptionText && <div className={POITooltipDescription}>{descriptionText}</div>}
-        <div className={POITooltipOwnership}>
-          {getStringTableValue(StringIDPrefixMapPOIOwnership + factionID, this.props.stringTable)}
-        </div>
+        {entry.type !== MapDataType.HotSpot && (
+          <div className={POITooltipOwnership}>
+            {getStringTableValue(StringIDPrefixMapPOIOwnership + factionID, this.props.stringTable)}
+          </div>
+        )}
         {numPips > 0 && (
           <div className={POITooltipPips}>
             {new Array(numPips).fill(0).map((_, index) => (

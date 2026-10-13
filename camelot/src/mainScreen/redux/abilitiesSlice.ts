@@ -23,16 +23,22 @@ export interface UpdateAbilityActivatedParams {
   timestamp: Date;
 }
 
+export interface SlotPressedParams {
+  buttonFunction: number;
+  timestamp: number;
+}
+
 export interface AbilitiesReduxState {
   editStatus: AbilityEditStatus;
   layouts: Dictionary<ButtonLayout>;
   groups: Dictionary<AbilityGroup>;
   abilities: Record<number, AbilityWithActivation>;
-  // Kept in sync with abilities' displayDefID fields; only touched when an ability's displayDefID
-  // actually changes (new ability, or a server-side ability swap/display update), not on routine
+  // displayDefID -> ability ID for every def an ability has had (current or previously swapped).
+  // Never pruned on swap. Only touched when an ability's displayDefID changes, not on routine
   // activation/cooldown updates.
   abilityIDsByDisplayDefID: Record<number, number>;
   preparingAbilityID: number | null;
+  slotPressTimestamps: Record<number, number>; // <button slot, timestamp>
 }
 
 function buildDefaultAbilitiesReduxState(): AbilitiesReduxState {
@@ -46,7 +52,8 @@ function buildDefaultAbilitiesReduxState(): AbilitiesReduxState {
     groups: {},
     abilities: {},
     abilityIDsByDisplayDefID: {},
-    preparingAbilityID: null
+    preparingAbilityID: null,
+    slotPressTimestamps: {}
   };
   return DefaultAbilitiesReduxState;
 }
@@ -75,9 +82,9 @@ export const abilitiesSlice = createSlice({
       const existing = state.abilities[update.id];
       if (existing) {
         // Ability swaps (e.g. stance-based re-skins) can change an existing ability's displayDefID
-        // in place, so the old mapping needs to be dropped, not just the new one added.
+        // in place. Keep the old mapping too, so UI keyed off the base def (the Ability Book) can
+        // still find the ability while it's swapped.
         if (existing.displayDefID !== update.displayDefID) {
-          delete state.abilityIDsByDisplayDefID[existing.displayDefID];
           state.abilityIDsByDisplayDefID[update.displayDefID] = update.id;
         }
         Object.assign(existing, update);
@@ -101,6 +108,9 @@ export const abilitiesSlice = createSlice({
       // Abilities can only be activated after we've received their updateAbility event, so no need to check for presence.
       state.abilities[action.payload.abilityId].lastActivated = action.payload.timestamp;
     },
+    slotPressed: (state: AbilitiesReduxState, action: PayloadAction<SlotPressedParams>) => {
+      state.slotPressTimestamps[action.payload.buttonFunction] = action.payload.timestamp;
+    },
     clearAbilities: (state: AbilitiesReduxState) => {
       state.abilities = {};
       state.abilityIDsByDisplayDefID = {};
@@ -117,5 +127,6 @@ export const {
   deleteAbilityGroup,
   updateAbility,
   updateAbilityActivated,
+  slotPressed,
   clearAbilities
 } = abilitiesSlice.actions;

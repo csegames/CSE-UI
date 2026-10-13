@@ -31,11 +31,15 @@ export interface NetworkFunctions {
   isOfflineMode(): Promise<boolean>;
   connect(server?: string, port?: number): void;
   disconnect(): void;
+  startLogout(): void;
+  cancelLogout(): void;
 }
 
 // UI -> client (see UIViewListener.cpp)
 const connectCallbackName = 'network.Connect';
 const disconnectCallbackName = 'network.Disconnect';
+const startLogoutCallbackName = 'network.StartLogout';
+const cancelLogoutCallbackName = 'network.CancelLogout';
 const isOfflineModeName = 'network.IsOfflineMode';
 // client -> UI (see UIEvents.h)
 const connectionStatusEventName = 'network.connectionStatus';
@@ -65,6 +69,8 @@ abstract class NetworkFunctionsBase implements NetworkFunctions, NetworkEventMoc
   abstract isOfflineMode(): Promise<boolean>;
   abstract connect(server?: string, port?: number): void;
   abstract disconnect(): void;
+  abstract startLogout(): void;
+  abstract cancelLogout(): void;
 
   triggerConnectionStatus(status: ConnectionStatus): void {
     this.events.trigger(connectionStatusEventName, status);
@@ -147,10 +153,19 @@ class CoherentNetworkFunctions extends NetworkFunctionsBase {
   override disconnect(): void {
     engine.trigger(disconnectCallbackName);
   }
+
+  override startLogout(): void {
+    engine.trigger(startLogoutCallbackName);
+  }
+
+  override cancelLogout(): void {
+    engine.trigger(cancelLogoutCallbackName);
+  }
 }
 
 class BrowserNetworkFunctions extends NetworkFunctionsBase {
   private status = ConnectionStatus.Unknown;
+  private logoutTimer: number = 0;
 
   override isOfflineMode(): Promise<boolean> {
     return Promise.resolve(false);
@@ -175,6 +190,27 @@ class BrowserNetworkFunctions extends NetworkFunctionsBase {
         this.status = ConnectionStatus.Disconnected;
         this.triggerConnectionStatus(ConnectionStatus.Disconnecting);
         window.setTimeout(() => this.triggerConnectionStatus(ConnectionStatus.Disconnected), 500);
+        break;
+    }
+  }
+
+  override startLogout(): void {
+    switch (this.status) {
+      case ConnectionStatus.Connected:
+        if (this.logoutTimer === 0) {
+          this.logoutTimer = window.setTimeout(() => this.disconnect(), 10000);
+        }
+        break;
+    }
+  }
+
+  override cancelLogout(): void {
+    switch (this.status) {
+      case ConnectionStatus.Connected:
+        if (this.logoutTimer) {
+          window.clearTimeout(this.logoutTimer);
+          this.logoutTimer = 0;
+        }
         break;
     }
   }

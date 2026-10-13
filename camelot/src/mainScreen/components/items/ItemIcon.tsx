@@ -31,7 +31,7 @@ import {
 } from '../../helpers/itemHelpers';
 import { ContextMenuItem, ContextMenuParams, hideContextMenu } from '../../redux/contextMenuSlice';
 import { Faction, MoveItemRequestLocationType } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
-import TooltipSource from '../TooltipSource';
+import { TooltipSource } from '../TooltipSource';
 import { ModalModel, hideModal, showModal, updateModalContent } from '../../redux/modalsSlice';
 import { NumberInput } from '../input/NumberInput';
 import { ItemCompareTooltip } from './ItemCompareTooltip';
@@ -446,16 +446,7 @@ class AItemIcon extends React.Component<Props> {
     if (moveErrors.length > 0) {
       return ItemMoveColor.Invalid;
     }
-    if (
-      this.props.items?.[0] &&
-      canItemsStack(
-        this.props.items[0],
-        item,
-        this.props.defs.itemsByNumericID,
-        this.props.defs.stats,
-        this.props.defs.entityResourcesByStringID
-      )
-    ) {
+    if (this.props.items?.[0] && canItemsStack(this.props.items[0], item, this.props.defs.itemsByNumericID)) {
       return ItemMoveColor.Stack;
     }
     return ItemMoveColor.Valid;

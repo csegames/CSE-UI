@@ -96,6 +96,9 @@ class AChat extends React.Component<Props, State, Snapshot> implements ChatServi
       isActive: false,
       hasUnseenMessages: false
     };
+
+    // We expose this as a static function so we can trigger whispers from unit frames and context menus.
+    Chat.requestWhisper = this.startWhisper.bind(this);
   }
 
   onJoined(room: RoomRecord): void {
@@ -361,6 +364,10 @@ class AChat extends React.Component<Props, State, Snapshot> implements ChatServi
       chatService.sendMessage(room, text);
     }
   }
+
+  public static requestWhisper: (name: string) => void = (name: string) => {
+    // Until Chat is initialized, we use a no-op function.
+  };
 }
 
 const mapStateToProps = (state: RootState, ownProps: ReactProps): ReactProps & InjectedProps => {
@@ -375,7 +382,7 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): ReactProps & I
   };
 };
 
-const Chat = connect(mapStateToProps)(AChat);
+export const Chat = connect(mapStateToProps)(AChat);
 
 export const WIDGET_ID_CHAT = 'Chat';
 export const chatRegistry: HUDWidgetRegistration = {

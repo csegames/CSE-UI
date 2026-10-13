@@ -26,6 +26,8 @@ import {
   getItemRewards,
   getQuestSectionTitleStringID,
   getQuestsForDisplayCategory,
+  getXPRewards,
+  getXPRewardText,
   isGenericQuestDisplay
 } from '../helpers/questHelpers';
 import { showToaster, ToasterParams } from '../redux/toastersSlice';
@@ -112,7 +114,8 @@ export class QuestService extends WithWebInterface(ExternalDataSource) {
     oldQuests: Record<string, QuestStateEx>,
     newQuests: Record<string, QuestStateEx>
   ): void {
-    const { gameDefs, stringTable } = this.reduxState;
+    const { gameDefs, stringTable, entities } = this.reduxState;
+    const selfProgression = entities.self?.progression;
 
     // Batch toasters so all completed appear before accepted
     const completedToasts: ToasterParams[] = [];
@@ -161,12 +164,19 @@ export class QuestService extends WithWebInterface(ExternalDataSource) {
       }
 
       if (isNewlyRewarded) {
-        const rewards = getItemRewards(def, gameDefs.itemsByStringID).map((reward) => ({
+        const itemRewards = getItemRewards(def, gameDefs.itemsByStringID).map((reward) => ({
           name: reward.name,
           amount: reward.amount,
           iconUrl: reward.iconUrl,
           isGold: reward.itemID === CurrencyID.Gold
         }));
+        const xpRewards = getXPRewards(def, gameDefs.progressionTracks, stringTable.stringTable, selfProgression).map(
+          (reward) => ({
+            name: getXPRewardText(reward, stringTable.stringTable)
+            // Amount is packed into 'name'. Icon intentionally omitted.
+          })
+        );
+        const rewards = [...itemRewards, ...xpRewards];
 
         completedToasts.push({
           id: `QuestRewarded${quest.instanceID}`,

@@ -2,6 +2,7 @@ import { engine } from '@csegames/library/dist/_baseGame/engine';
 import { CaptureInterfaceHandler } from './handlers/captureInterfaceHandler';
 import { CombatFlytextHandler } from './handlers/combatFlytextHandler';
 import { CraftingStationNameplateHandler } from './handlers/craftingStationNameplateHandler';
+import { InteractionPromptHandler } from './handlers/interactionPromptHandler';
 import { GatherInterfaceHandler } from './handlers/gatherInterfaceHandler';
 import { InteractableGatherInterfaceHandler } from './handlers/interactableGatherInterfaceHandler';
 import { HealthBarHandler } from './handlers/healthBarHandler';
@@ -25,6 +26,7 @@ import './projected.scss';
 const captureInterface = new CaptureInterfaceHandler();
 const combatInfo = new CombatFlytextHandler();
 const craftingStationNameplate = new CraftingStationNameplateHandler();
+const interactionPrompt = new InteractionPromptHandler();
 const gatherInterface = new GatherInterfaceHandler();
 const interactableGatherInterface = new InteractableGatherInterfaceHandler();
 const healthBar = new HealthBarHandler();
@@ -53,6 +55,8 @@ async function draw(region: Native.Region, content: Native.Content): Promise<voi
       return captureInterface.draw(region, content);
     case 'CraftingStationNameplateInterface':
       return craftingStationNameplate.draw(region, content);
+    case 'InteractionPromptInterface':
+      return interactionPrompt.draw(region, content);
     case 'CombatFlytext':
       return combatInfo.draw(region, content);
     case 'GatherInterface':

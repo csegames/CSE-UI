@@ -8,7 +8,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
 import { getFactionData } from '../gameData/factionData';
-import TooltipSource from './TooltipSource';
+import { TooltipSource } from './TooltipSource';
 import { genID } from '@csegames/library/dist/_baseGame/utils/idGen';
 
 const Root = 'HUD-FactionPlusButton-Root';

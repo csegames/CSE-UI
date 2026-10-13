@@ -26,6 +26,7 @@ import { getFactionData } from '../gameData/factionData';
 import { WorldMapContinentLayer } from './WorldMapContinentLayer';
 
 const Root           = 'HUD-WorldMapFullView-Root';
+const RootHovering   = 'HUD-WorldMapFullView-Root--hovering';
 const BaseImage      = 'HUD-WorldMapFullView-BaseImage';
 const TooltipWrapper        = 'HUD-WorldMapFullView-TooltipWrapper';
 const TooltipWrapperVisible = 'HUD-WorldMapFullView-TooltipWrapper--visible';
@@ -405,7 +406,7 @@ class AWorldMapFullView extends React.Component<Props, State> {
     const interactiveKeys = this.getInteractiveKeys();
     return (
       <div
-        className={Root}
+        className={hoveredContinentKey ? `${Root} ${RootHovering}` : Root}
         ref={this.containerRef}
         onMouseMove={this.onMouseMove}
         onMouseLeave={this.onMouseLeave}

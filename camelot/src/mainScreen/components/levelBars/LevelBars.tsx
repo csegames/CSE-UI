@@ -25,7 +25,7 @@ import {
 import { getFactionData } from '../../gameData/factionData';
 import { showToaster } from '../../redux/toastersSlice';
 import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
-import { TAG_PREFIX_ARCHETYPE_CLASS } from '../../helpers/abilityBookHelpers';
+import { TAG_PREFIX_ARCHETYPE_CLASS, TAG_PREFIX_TRADESKILL } from '../../helpers/abilityBookHelpers';
 
 // String IDs
 const StringIDProgressionNewLevelMessage = 'ProgressionNewLevelMessage';
@@ -48,6 +48,10 @@ interface State {
   /** The state used for display, and to detect changes. */
   progression: Record<string, ProgressState>;
   progress: ProgressState[];
+  /** State persists across logout, which is a general gotcha for HUD components
+   *  Tracking characterID is necessary to differentiate
+   */
+  characterID: string;
   /** Any tracks that recently leveled up and should play a LevelUp animation. */
   levelUpTrackIDs: string[];
 }
@@ -73,10 +77,9 @@ class ALevelBars extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-
     // Constructor runs under CharacterSelect, so initial state has no data.
-
     this.state = {
+      characterID: '',
       progression: {},
       progress: [],
       levelUpTrackIDs: []
@@ -147,7 +150,7 @@ class ALevelBars extends React.Component<Props, State> {
   public static getDerivedStateFromProps(props: Props, state: State): State {
     // If there is no self, then there is no progression or progress to compare.
     if (!props.self) {
-      return { progression: {}, progress: [], levelUpTrackIDs: [] };
+      return { characterID: '', progression: {}, progress: [], levelUpTrackIDs: [] };
     }
 
     if (props.self.progression !== state.progression) {
@@ -159,94 +162,87 @@ class ALevelBars extends React.Component<Props, State> {
         return props.self.progression[ptID] ?? { id: ptID, level: 0, progress: 0, total: 1 };
       });
 
-      // For all progression tracks, if a level-up occurred, push it into the toaster system.
-      Object.values(props.self.progression).forEach((prog) => {
-        if (prog.level > state.progression[prog.id]?.level) {
-          const track = props.progressionTracks[prog.id];
-          if (track) {
-            // Push a right toaster for the track level up event.
-            let stringTable = store.getState().stringTable.stringTable;
-            // Only the archetype/character track grants a new ability point; spending one on a
-            // specialization track also raises its level, but isn't a gain.
-            const isArchetypeTrack = track.tags.some((tag) => tag.startsWith(TAG_PREFIX_ARCHETYPE_CLASS));
-            store.dispatch?.(
-              showToaster({
-                id: `LevelUp${prog.id}`,
-                content: {
-                  // Same layout as the quest toasts: eyebrow banner over an icon + title row.
-                  eyebrow: getStringTableValue(StringIDProgressionNotificationLevelUp, stringTable),
-                  titleIconURL: track.iconURL,
-                  title: getStringTableValue(track.nameKey, stringTable),
-                  message: getTokenizedStringTableValue(StringIDProgressionNewLevelMessage, stringTable, {
-                    LEVEL: (prog.level + 1).toFixed(0)
-                  }),
-                  rewards: isArchetypeTrack
-                    ? [{ name: getStringTableValue(StringIDProgressionAbilityPointGained, stringTable), amount: 1 }]
-                    : undefined,
-                  isSmall: true
-                },
-                position: 'level',
-                soundEvent: SoundEvents.PLAY_UI_SPECIALIZATION_UP
-              })
-            );
-            // Scan for new unlocks at the new level.  Add small right toasters for those.
-            Object.entries(track.abilityUnlocks).forEach(([abilityID, unlockAtLevel]) => {
-              if (unlockAtLevel === prog.level) {
-                const ability = store.getState().gameDefs.abilityDisplayDefsByStringID[abilityID];
-                if (ability) {
-                  store.dispatch?.(
-                    showToaster({
-                      id: `AbilityUnlock${ability.id}`,
-                      content: {
-                        // Same layout as the quest toasts: eyebrow banner over an icon + title row.
-                        eyebrow: getStringTableValue(StringIDGeneralUnlocked, stringTable),
-                        titleIconURL: ability.iconURL,
-                        title: ability.name,
-                        isSmall: true
-                      },
-                      position: 'level',
-                      soundEvent: SoundEvents.PLAY_UI_ABILITY_LEVEL_UP
-                    })
-                  );
+      const isNewCharacter = props.self.characterID !== state.characterID;
+      let newState: State = {
+        characterID: props.self.characterID,
+        progression: props.self.progression,
+        progress: archetypeProgress,
+        levelUpTrackIDs: isNewCharacter ? [] : state.levelUpTrackIDs
+      };
+
+      if (isNewCharacter === false) {
+        // For all progression tracks, if a level-up occurred, push it into the toaster system.
+        Object.values(props.self.progression).forEach((prog) => {
+          if (prog.level > state.progression[prog.id]?.level) {
+            const track = props.progressionTracks[prog.id];
+            if (track) {
+              // Push a toaster for the track level up event.
+              let stringTable = store.getState().stringTable.stringTable;
+              // Only the archetype/character track grants a new ability point; spending one on a
+              // specialization track also raises its level, but isn't a gain.
+              const isArchetypeTrack = track.tags.some((tag) => tag.startsWith(TAG_PREFIX_ARCHETYPE_CLASS));
+
+              const isTradeskillTrack = track.tags.some((tag) => tag.startsWith(TAG_PREFIX_TRADESKILL));
+              const displayLevel = isTradeskillTrack ? prog.level : prog.level + 1;
+              store.dispatch?.(
+                showToaster({
+                  id: `LevelUp${prog.id}`,
+                  content: {
+                    // Same layout as the quest toasts: eyebrow banner over an icon + title row.
+                    eyebrow: getStringTableValue(StringIDProgressionNotificationLevelUp, stringTable),
+                    titleIconURL: track.iconURL,
+                    title: getStringTableValue(track.nameKey, stringTable),
+                    message: getTokenizedStringTableValue(StringIDProgressionNewLevelMessage, stringTable, {
+                      LEVEL: displayLevel.toFixed(0)
+                    }),
+                    rewards: isArchetypeTrack
+                      ? [{ name: getStringTableValue(StringIDProgressionAbilityPointGained, stringTable) }]
+                      : undefined,
+                    isSmall: true
+                  },
+                  position: 'level',
+                  soundEvent: SoundEvents.PLAY_UI_SPECIALIZATION_UP
+                })
+              );
+              // Scan for new unlocks at the new level.  Add small right toasters for those.
+              Object.entries(track.abilityUnlocks).forEach(([abilityID, unlockAtLevel]) => {
+                if (unlockAtLevel === prog.level) {
+                  const ability = store.getState().gameDefs.abilityDisplayDefsByStringID[abilityID];
+                  if (ability) {
+                    store.dispatch?.(
+                      showToaster({
+                        id: `AbilityUnlock${ability.id}`,
+                        content: {
+                          // Same layout as the quest toasts: eyebrow banner over an icon + title row.
+                          eyebrow: getStringTableValue(StringIDGeneralUnlocked, stringTable),
+                          titleIconURL: ability.iconURL,
+                          title: ability.name,
+                          isSmall: true
+                        },
+                        position: 'level',
+                        soundEvent: SoundEvents.PLAY_UI_ABILITY_LEVEL_UP
+                      })
+                    );
+                  }
                 }
-              }
-            });
-          }
-        }
-      });
-
-      // For archetype progress in particular, update our local state.
-      if (state.progress.length === 0) {
-        const newState: State = {
-          progression: props.self.progression,
-          progress: archetypeProgress,
-          levelUpTrackIDs: []
-        };
-        // If this is the initial login update for the character, just stash their values.  No animations.
-        return newState;
-      } else {
-        // This is an update that may contain level ups!  Check for those, and maybe do animations.
-        let newState: State = {
-          progression: props.self.progression,
-          progress: archetypeProgress,
-          levelUpTrackIDs: state.levelUpTrackIDs
-        };
-
-        state.progress.forEach((oldProgress) => {
-          const newProgress = props.self.progression[oldProgress.id];
-
-          if (newProgress && oldProgress.id === newProgress.id) {
-            if (newProgress.level > oldProgress.level) {
-              // Queue the level-up animation for this track!
-              newState.levelUpTrackIDs.push(newProgress.id);
-              // This is a static function, but the timeout for the animation has to be specific to the widget instance,
-              // so we set it up in `animateLevelUps()` when the instance detects new levelUpTrackIDs.
+              });
             }
           }
         });
 
-        return newState;
+        state.progress.forEach((oldProgress) => {
+          const newProgress = props.self.progression[oldProgress.id];
+
+          if (newProgress && newProgress.level > oldProgress.level) {
+            // Queue the level-up animation for this track!
+            newState.levelUpTrackIDs.push(newProgress.id);
+            // This is a static function, but the timeout for the animation has to be specific to the widget instance,
+            // so we set it up in `animateLevelUps()` when the instance detects new levelUpTrackIDs.
+          }
+        });
       }
+
+      return newState;
     }
 
     return state;

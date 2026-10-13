@@ -19,7 +19,7 @@ import { getStringTableValue, StringIDGeneralCancel, StringIDGeneralConfirm } fr
 import { Item, ItemLocationType } from '@csegames/library/dist/camelotunchained/game/types/Items';
 import { hideModal, ModalModel, ModalParams, showModal } from '../../redux/modalsSlice';
 import { MoneyDisplay } from '../../../shared/components/MoneyDisplay';
-import TooltipSource from '../TooltipSource';
+import { TooltipSource } from '../TooltipSource';
 import { InventorySearchBar } from '../inventory/InventorySearchBar';
 import { FactionScrollArea } from '../FactionScrollArea';
 import { FactionStorageGrid } from '../inventory/FactionStorageGrid';

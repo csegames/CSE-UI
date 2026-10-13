@@ -71,6 +71,13 @@ export interface CraftingStationNameplateInterface {
   interactionKey: string;
 }
 
+export interface InteractionPromptInterface {
+  type: 'InteractionPromptInterface';
+  name: string;
+  canInteract: boolean;
+  interactionKey: string;
+}
+
 export interface GatherInterface {
   type: 'GatherInterface';
   name: string;
@@ -113,6 +120,7 @@ export type Content =
   | CaptureInterface
   | CombatFlytext
   | CraftingStationNameplateInterface
+  | InteractionPromptInterface
   | GatherInterface
   | InteractableGatherInterface
   | HealthBar

@@ -26,10 +26,12 @@ import { getFactionData } from '../../gameData/factionData';
 // CSS classes
 const Root = 'HUD-AbilityBarSlot-Root';
 const EmptySlot = 'HUD-AbilityBarSlot-EmptySlot';
+const EmptySlotHitArea = 'HUD-AbilityBarSlot-EmptySlotHitArea';
 const GoToAbilityBookButton = 'HUD-AbilityBarSlot-GoToAbilityBookButton';
 const AbilityButtonWrapper = 'HUD-AbilityBarSlot-AbilityButtonWrapper';
 const DecorationBack = 'HUD-AbilityBarSlot-DecorationBack';
 const DecorationFront = 'HUD-AbilityBarSlot-DecorationFront';
+const PressFlash = 'HUD-AbilityBarSlot-PressFlash';
 
 // String IDs
 const StringIDAbilityBarBindKey = 'AbilityBarBindKey';
@@ -54,6 +56,7 @@ interface InjectedProps {
   keybinds: Dictionary<Keybind>;
   activeConditionalWidgetIDs: string[];
   stringTable: Dictionary<StringTableEntryDef>;
+  pressTimestamp: number | undefined;
   dispatch?: Dispatch;
 }
 
@@ -87,6 +90,9 @@ class AAbilityBarSlot extends React.Component<Props> {
               {getStringTableValue(StringIDGeneralPlus, this.props.stringTable)}
             </div>
           </>
+        ) : this.props.abilityId === NoAbilityId ? (
+          // Empty slots are clickable so clicking can trigger the "pressed" fx.
+          <div className={EmptySlotHitArea} onClick={this.onEmptySlotClick.bind(this)} />
         ) : (
           this.props.abilityId !== NoAbilityId && (
             <ContextMenuSource
@@ -109,9 +115,23 @@ class AAbilityBarSlot extends React.Component<Props> {
             </ContextMenuSource>
           )
         )}
+        {this.isPressFlashFresh() && (
+          // Keyed on timestamp so each press restarts the flash.
+          <div className={PressFlash} key={`flash${this.props.pressTimestamp}`} />
+        )}
         <img className={DecorationFront} src={factionData.abilityBarCenterFrontImage} />
       </DropTarget>
     );
+  }
+
+  private onEmptySlotClick(e: React.MouseEvent<HTMLDivElement>): void {
+    if (e.button === 0) {
+      clientAPI.executeAbility(this.props.groupID, this.props.slotIndex);
+    }
+  }
+
+  private isPressFlashFresh(): boolean {
+    return this.props.pressTimestamp !== undefined && Date.now() - this.props.pressTimestamp < 500;
   }
 
   private onChangeKeybindClick(dispatch: Dispatch): void {
@@ -146,7 +166,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     inEditMode: state.abilities.editStatus.canEdit,
     keybinds,
     activeConditionalWidgetIDs: state.hud.activeConditionalWidgetIDs,
-    stringTable
+    stringTable,
+    pressTimestamp: state.abilities.slotPressTimestamps[layout.keybindBegin + ownProps.slotIndex]
   };
 }
 

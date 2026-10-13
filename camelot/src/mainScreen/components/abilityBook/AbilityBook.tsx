@@ -24,7 +24,7 @@ import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManif
 import { getStringTableValue, StringIDGeneralComingSoon } from '../../helpers/stringTableHelpers';
 import { AbilityWithActivation } from '../../redux/abilitiesSlice';
 import { AbilityDisplayDef } from '../../dataSources/manifest/abilityDisplayManifest';
-import TooltipSource from '../TooltipSource';
+import { TooltipSource } from '../TooltipSource';
 import { getFactionData } from '../../gameData/factionData';
 import { BorderBackground, BorderType, FactionBorder } from '../FactionBorder';
 import { Faction } from '@csegames/library/dist/camelotunchained/graphql/schema';
@@ -179,11 +179,23 @@ class AAbilityBook extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
+    // Early out for the drag copy, since it is intended to be non-functional.
+    if (this.props.isDragCopy) return;
+
     requestAddImagesToCache(Root, this.getProgressionIconURLs());
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_WINDOW_CLOSED);
+    clientAPI.requestEditMode(true);
   }
 
   componentWillUnmount(): void {
+    // Early out for the drag copy, since it is intended to be non-functional.
+    if (this.props.isDragCopy) return;
+
     requestRemoveImagesFromCache(Root, this.getProgressionIconURLs());
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_WINDOW_OPEN);
+    if (!this.props.isEditingHUD) {
+      clientAPI.requestEditMode(false);
+    }
   }
 
   private renderClassSkillsTab(): React.ReactNode {
@@ -229,7 +241,9 @@ class AAbilityBook extends React.Component<Props, State> {
           tooltipID={TRADESKILL_TAB_ID}
           content={() => (
             <div className={TooltipRoot}>
-              <div className={TooltipHeader}>{getStringTableValue(StringIDTradeskillTabName, this.props.stringTable)}</div>
+              <div className={TooltipHeader}>
+                {getStringTableValue(StringIDTradeskillTabName, this.props.stringTable)}
+              </div>
             </div>
           )}
           positionType='mouse'

@@ -24,12 +24,20 @@ import { FactionBorder, BorderType, BorderBackground } from '../FactionBorder';
 import { CornerButtonType, FactionCornerButton } from '../FactionCornerButton';
 import { FactionDivider } from '../FactionDivider';
 import { FactionBorderSelectable } from '../FactionBorderSelectable';
-import TooltipSource from '../TooltipSource';
+import { TooltipSource } from '../TooltipSource';
 import { FactionData, getFactionData } from '../../gameData/factionData';
 import { FactionProgressBarCircle } from '../FactionProgressBarCircle';
 import { FactionButton } from '../FactionButton';
 import { MoneyDisplay } from '../../../shared/components/MoneyDisplay';
-import { getQuestsForDisplayCategory } from '../../helpers/questHelpers';
+import { XPRewardDisplay } from '../../../shared/components/XPRewardDisplay';
+import {
+  getLoggedQuestsForDisplayCategories,
+  getQuestsForDisplayCategory,
+  getXPRewards,
+  getXPRewardText,
+  QuestXPReward,
+  WorkOrderDisplayCategories
+} from '../../helpers/questHelpers';
 import {
   addLoggedQuestID,
   QuestDisplayCategory,
@@ -38,16 +46,18 @@ import {
   removeTrackedQuestID
 } from '../../redux/questSlice';
 import { QuestDef } from '../../dataSources/manifest/questDefManifest';
+import { ProgressionTrackDef } from '../../dataSources/manifest/progressionTrackManifest';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import { FactionPageSwitcher } from '../FactionPageSwitcher';
 import { ItemDef } from '../../dataSources/manifest/itemManifest';
 import { getItemCount } from '../../helpers/inventoryHelpers';
 import { Item } from '@csegames/library/dist/camelotunchained/game/types/Items';
+import { ProgressState } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
 import { StatDef } from '../../dataSources/manifest/statManifest';
 import { BaseHUDWidgetDraggableHandle } from '../BaseHUDWidgetDraggableHandle';
 import { requestAddImagesToCache, requestRemoveImagesFromCache } from '../../dataSources/imageCacheService';
 import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
-import { MAX_LOGGED_QUESTS } from '../quests/QuestLog';
+import { MAX_LOGGED_WORK_ORDERS } from '../quests/QuestLog';
 import { CurrencyID } from '../../helpers/itemHelpers';
 
 // CSS classes
@@ -67,6 +77,7 @@ const KingsTaskCenterPanel = 'HUD-Vendor-KingsTask-CenterPanel';
 const KingsTaskCountdownLabel = 'HUD-Vendor-KingsTask-CountdownLabel';
 const KingsTaskRewardRow = 'HUD-Vendor-KingsTask-RewardRow';
 const KingsTaskRewardLabel = 'HUD-Vendor-KingsTask-RewardLabel';
+const KingsTaskRewardXP = 'HUD-Vendor-KingsTask-RewardXP';
 const KingsTaskCollectButton = 'HUD-Vendor-KingsTask-CollectButton';
 const KingsTaskNoQuestLabel = 'HUD-Vendor-KingsTask-NoQuestLabel';
 const SellItemsQuestsContainer = 'HUD-Vendor-SellItemsQuests-Container';
@@ -138,6 +149,8 @@ interface InjectedProps {
   questDefs: Record<string, QuestDef>;
   rolloverTime: string;
   itemsByStringID: Record<string, ItemDef>;
+  progressionTracks: Record<string, ProgressionTrackDef>;
+  selfProgression: Record<string, ProgressState> | undefined;
   inventory: Item[];
   statsByStringID: Record<string, StatDef>;
   loggedQuestIDs: string[];
@@ -206,10 +219,45 @@ class AVendor extends React.Component<Props, State> {
         if (itemDef) {
           urls.push(itemDef.iconUrl);
         }
+
+        // Progression track icons for any XP rewards.
+        for (const reward of getXPRewards(
+          def,
+          this.props.progressionTracks,
+          this.props.stringTable,
+          this.props.selfProgression
+        )) {
+          if (reward.iconUrl) {
+            urls.push(reward.iconUrl);
+          }
+        }
       }
     });
 
     return urls;
+  }
+
+  private renderXPRewards(
+    quest: QuestStateEx,
+    xpRewards: QuestXPReward[],
+    className: string,
+    progressPercent?: number
+  ): React.ReactNode {
+    return xpRewards.map((reward) => {
+      const displayed: QuestXPReward =
+        progressPercent !== undefined ? { ...reward, amount: Math.floor(reward.amount * progressPercent) } : reward;
+      return (
+        <TooltipSource
+          key={reward.trackID}
+          className={className}
+          tooltipID={`${WIDGET_ID_VENDOR}_xp_${quest.instanceID}_${reward.trackID}`}
+          content={() => getXPRewardText(displayed, this.props.stringTable)}
+          positionType='mouse'
+        >
+          <XPRewardDisplay amount={displayed.amount} iconUrl={displayed.iconUrl} />
+        </TooltipSource>
+      );
+    });
   }
 
   componentDidMount(): void {
@@ -314,7 +362,14 @@ class AVendor extends React.Component<Props, State> {
     const targetValue = def.targets[0].amount;
     const curValue = questToDisplay!.progress[def.targets[0].id] ?? 0;
     const progressPercent = curValue / targetValue;
-    const rewardAmount = Math.floor(def.rewards[0].amount * progressPercent);
+    const goldAmount = def.rewards?.find((r) => r.id === `Item.${CurrencyID.Gold}`)?.amount ?? 0;
+    const rewardAmount = Math.floor(goldAmount * progressPercent);
+    const xpRewards = getXPRewards(
+      def,
+      this.props.progressionTracks,
+      this.props.stringTable,
+      this.props.selfProgression
+    );
     const canCollect = !!collectibleQuest;
 
     return (
@@ -338,7 +393,9 @@ class AVendor extends React.Component<Props, State> {
                 this.props.stringTable
               )}
             </div>
-            <MoneyDisplay amount={rewardAmount} />
+            {/* Keep the old always-visible money display unless XP is the only reward. */}
+            {(goldAmount > 0 || xpRewards.length === 0) && <MoneyDisplay amount={rewardAmount} />}
+            {this.renderXPRewards(questToDisplay!, xpRewards, KingsTaskRewardXP, progressPercent)}
           </div>
           <FactionDivider />
           <FactionButton
@@ -430,11 +487,20 @@ class AVendor extends React.Component<Props, State> {
     }
 
     const factionData = getFactionData(this.props.uiFactionID);
+    const canLogMoreWorkOrders =
+      getLoggedQuestsForDisplayCategories(
+        WorkOrderDisplayCategories,
+        this.props.loggedQuestIDs,
+        this.props.quests,
+        this.props.questDefs,
+        this.props.itemsByStringID,
+        this.props.uiFactionID
+      ).length < MAX_LOGGED_WORK_ORDERS;
 
     return (
       <>
         <div className={SellItemsQuestsContainer}>
-          {questsToDisplay.map(this.renderSellCell.bind(this, questsToDisplay.length))}
+          {questsToDisplay.map(this.renderSellCell.bind(this, questsToDisplay.length, canLogMoreWorkOrders))}
           <div
             className={SellItemsQuestsDivider}
             style={{ backgroundImage: `url(${factionData.edgeDecorativeLeftImage})` }}
@@ -489,7 +555,12 @@ class AVendor extends React.Component<Props, State> {
     return (aItemDef?.name ?? '').localeCompare(bItemDef?.name ?? '');
   }
 
-  private renderSellCell(numCells: number, quest: QuestStateEx, index: number): React.ReactNode {
+  private renderSellCell(
+    numCells: number,
+    canLogMoreWorkOrders: boolean,
+    quest: QuestStateEx,
+    index: number
+  ): React.ReactNode {
     const factionData = getFactionData(this.props.uiFactionID);
     // Last two cells are the last row.
     const isLastRow = index >= numCells - 2;
@@ -501,18 +572,24 @@ class AVendor extends React.Component<Props, State> {
     const itemDef = this.props.itemsByStringID[itemID];
     const ownedCount = itemDef ? getItemCount(itemDef.numericID, this.props.inventory) : 0;
     const rewardAmount = questDef?.rewards?.find((r) => r.id === `Item.${CurrencyID.Gold}`)?.amount ?? 0;
+    const xpRewards = getXPRewards(
+      questDef,
+      this.props.progressionTracks,
+      this.props.stringTable,
+      this.props.selfProgression
+    );
+    const hasReward = rewardAmount > 0 || xpRewards.length > 0;
 
     const isRowDisabled = !quest || quest.isRewarded;
     const canTurnIn = ownedCount >= itemCount;
     const isLogged = this.props.loggedQuestIDs.includes(quest?.instanceID);
-    const canTrackMoreQuests = this.props.loggedQuestIDs.length < MAX_LOGGED_QUESTS;
 
     return (
       <div className={SellCell} key={quest?.questDataID ?? index}>
         <div className={SellCellContents}>
           {!isRowDisabled && quest ? (
             <TooltipSource
-              className={`${TrackButton}${!canTrackMoreQuests && !isLogged ? ' disabled' : ''}`}
+              className={`${TrackButton}${!canLogMoreWorkOrders && !isLogged ? ' disabled' : ''}`}
               tooltipID={`${WIDGET_ID_VENDOR}_track_${quest.instanceID}`}
               content={() =>
                 getStringTableValue(
@@ -529,7 +606,7 @@ class AVendor extends React.Component<Props, State> {
                   clientAPI.removeTrackedQuestID(quest.instanceID);
                   this.props.dispatch!(removeLoggedQuestID(quest.instanceID));
                   this.props.dispatch!(removeTrackedQuestID(quest.instanceID));
-                } else if (canTrackMoreQuests) {
+                } else if (canLogMoreWorkOrders) {
                   // Start logging (but not necessarily tracking).
                   clientAPI.playGameSound(SoundEvents.PLAY_UI_MENU_CHOOSE_PLUS);
                   clientAPI.addLoggedQuestID(quest.instanceID);
@@ -559,11 +636,12 @@ class AVendor extends React.Component<Props, State> {
               {!isRowDisabled && rewardAmount > 0 && (
                 <MoneyDisplay className={QuestRewardDisplay} amount={rewardAmount} />
               )}
+              {!isRowDisabled && quest && this.renderXPRewards(quest, xpRewards, QuestRewardDisplay)}
             </div>
           </div>
 
           <div className={QuestButtonColumn}>
-            {!isRowDisabled && rewardAmount > 0 && (
+            {!isRowDisabled && hasReward && (
               <div
                 className={`${QuestTurnInButton}${canTurnIn ? '' : ' disabled'}`}
                 onClick={
@@ -617,8 +695,8 @@ class AVendor extends React.Component<Props, State> {
 }
 
 const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
-  const { questDefs, itemsByStringID, stats: statsByStringID } = state.gameDefs;
-  const { quests, rolloverTime } = state.quests;
+  const { questDefs, itemsByStringID, progressionTracks, stats: statsByStringID } = state.gameDefs;
+  const { quests, rolloverTime, loggedQuestIDs } = state.quests;
   return {
     ...ownProps,
     stringTable: state.stringTable.stringTable,
@@ -627,9 +705,11 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
     questDefs,
     rolloverTime,
     itemsByStringID,
+    progressionTracks,
+    selfProgression: state.entities.self?.progression,
     inventory: state.inventory.primary,
     statsByStringID,
-    loggedQuestIDs: state.quests.loggedQuestIDs
+    loggedQuestIDs
   };
 };
 

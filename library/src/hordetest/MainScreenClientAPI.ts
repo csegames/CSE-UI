@@ -173,6 +173,8 @@ export const clientAPI: MainScreenClientAPI = {
   isOfflineMode: nf.isOfflineMode.bind(nf),
   connect: nf.connect.bind(nf),
   disconnect: nf.disconnect.bind(nf),
+  startLogout: nf.startLogout.bind(nf),
+  cancelLogout: nf.cancelLogout.bind(nf),
   // ObjectiveDetails
   bindObjectiveDetailListener: odf.bindObjectiveDetailListener.bind(odf),
   // PerformanceWarnings

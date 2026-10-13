@@ -4,9 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, DispatchProp } from 'react-redux';
 import { hideModal, ModalButtonModel, ModalParams } from '../redux/modalsSlice';
 import { RootState } from '../redux/store';
 import Escapable from './Escapable';
@@ -38,13 +37,12 @@ interface ReactProps {}
 interface InjectedProps {
   modals: ModalParams[];
   stringTable: Record<string, StringTableEntryDef>;
-  dispatch?: Dispatch;
 }
 
 type Props = ReactProps & InjectedProps;
 
-class ModalPane extends React.Component<Props, State> {
-  constructor(props: Props) {
+class ModalPane extends React.Component<Props & DispatchProp, State> {
+  constructor(props: Props & DispatchProp) {
     super(props);
 
     this.state = {
@@ -82,7 +80,7 @@ class ModalPane extends React.Component<Props, State> {
   private buildWrapperStyle(params: ModalParams): React.CSSProperties {
     const style: React.CSSProperties = {};
 
-    if (params?.maxWidth?.length > 0) {
+    if ((params?.maxWidth?.length ?? 0) > 0) {
       style.maxWidth = params?.maxWidth;
     }
 
@@ -137,7 +135,10 @@ class ModalPane extends React.Component<Props, State> {
     if (typeof modal.content === 'function') {
       return modal.content(modal);
     } else {
-      const buttonModels = modal.content.buttons?.length > 0 ? modal.content.buttons : this.getDefaultButtonModels();
+      const buttonModels =
+        modal.content.buttons === null || (modal.content.buttons?.length ?? 0) > 0
+          ? modal.content.buttons
+          : this.getDefaultButtonModels();
       return (
         <FactionBorder
           className={DefaultModalContainer}
@@ -162,20 +163,23 @@ class ModalPane extends React.Component<Props, State> {
           <div className={ContentRoot}>
             {modal.content.message && <div className={MessageText}>{modal.content.message}</div>}
             {modal.content.body}
-            <div className={ButtonsSection}>
-              {buttonModels.map((model, index) => {
-                return (
-                  <FactionButton
-                    className={Button}
-                    key={`FooterButton${index}`}
-                    disabled={model.isDisabled}
-                    onClick={model.onClick}
-                  >
-                    {model.text}
-                  </FactionButton>
-                );
-              })}
-            </div>
+            {buttonModels && (
+              <div className={ButtonsSection}>
+                {buttonModels.map((model, index) => {
+                  return (
+                    <FactionButton
+                      className={Button}
+                      key={`FooterButton${index}`}
+                      disabled={model.isDisabled}
+                      disabledTooltip={model.disabledTooltip}
+                      onClick={model.onClick}
+                    >
+                      {model.text}
+                    </FactionButton>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </FactionBorder>
       );

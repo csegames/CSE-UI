@@ -9,7 +9,8 @@ import { EventEmitter } from '../../_baseGame/types/EventEmitter';
 import { ListenerHandle } from '../../_baseGame/listenerHandle';
 import { AbilityEditStatus, AbilityGroup, AbilityStatus, ButtonLayout } from '../types/AbilityTypes';
 
-export type AbilityActivatedListener = (abilityID: number) => void;
+// buttonFunction corresponds to the ability bar slot/native Input::ButtonFunction
+export type AbilityActivatedListener = (abilityID: number, buttonFunction?: number) => void;
 export type AbilityEditStatusListener = (status: AbilityEditStatus) => void;
 export type AbilityGroupUpdatedListener = (group: AbilityGroup) => void;
 export type AbilityGroupDeletedListener = (groupID: number) => void;
@@ -73,7 +74,7 @@ export interface AbilityFunctions {
 }
 
 export interface AbilityMocks {
-  triggerAbilityActivated(abilityID: number): void;
+  triggerAbilityActivated(abilityID: number, buttonFunction?: number): void;
   triggerAbilityEditStatus(status: AbilityEditStatus): void;
   triggerAbilityGroupUpdated(group: AbilityGroup): void;
   triggerAbilityStatusUpdated(status: AbilityStatus): void;
@@ -125,8 +126,8 @@ abstract class AbilityFunctionsBase implements AbilityFunctions, AbilityMocks {
   abstract moveAbility(groupID: number, srcPos: number, destPos: number): void;
   abstract setAbility(groupID: number, pos: number, abilityID: number): void;
 
-  triggerAbilityActivated(abilityID: number): void {
-    this.events.trigger(abilityActivatedEventName, abilityID);
+  triggerAbilityActivated(abilityID: number, buttonFunction?: number): void {
+    this.events.trigger(abilityActivatedEventName, abilityID, buttonFunction);
   }
 
   triggerAbilityEditStatus(status: AbilityEditStatus): void {

@@ -55,7 +55,8 @@ export const camelotMocks: CamelotMockDataGenerators = {
       flags: SnapshotFlags.None,
       isKeepAvailable: false,
       respawnTimestamp: 0,
-      idleRespawnTimestamp: 0
+      idleRespawnTimestamp: 0,
+      logoutCompleteTime: 0
     };
 
     if (overrides) {

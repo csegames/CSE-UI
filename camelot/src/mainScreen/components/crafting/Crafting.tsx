@@ -58,12 +58,13 @@ import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/
 // Images are imported so that WebPack can find them (and give us errors if they are missing).
 import ProgressBarURL from '../../../images/crafting/bar-crafting.png';
 import { StatDef } from '../../dataSources/manifest/statManifest';
+import { CraftingJobDef } from '../../dataSources/manifest/craftingJobManifest';
 import { EntityStat, TagState } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
 import { getStringFromTagAffixIDs } from '../../helpers/tagHelpers';
 import { FactionSlidingPanel } from '../FactionSlidingPanel';
 import { FactionSearchBar } from '../FactionSearchBar';
 import { FactionCheckbox } from '../FactionCheckbox';
-import TooltipSource from '../TooltipSource';
+import { TooltipSource } from '../TooltipSource';
 import { ItemCompareTooltip } from '../items/ItemCompareTooltip';
 
 const JOB_CELL_SIZE_VMIN = 7;
@@ -90,6 +91,8 @@ const JobActionButton = 'HUD-Crafting-JobActionButton';
 const RecipesTabContainer = 'HUD-Crafting-RecipesTabContainer';
 const RecipesAccordionContainer = 'HUD-Crafting-RecipesAccordionContainer';
 const RecipesAccordionHeader = 'HUD-Crafting-RecipesAccordionHeader';
+const StationMaxLevelLabel = 'HUD-Crafting-StationMaxLevelLabel';
+const StationMaxLevelValue = 'HUD-Crafting-StationMaxLevelValue';
 const RecipesAccordionScroller = 'HUD-Crafting-RecipesAccordionScroller';
 const RecipesAccordion = 'HUD-Crafting-RecipesAccordion';
 const SearchAccordion = 'HUD-Crafting-SearchAccordion';
@@ -157,6 +160,9 @@ const StringIDCraftingErrorNoJobSlotsAvailable = 'CraftingErrorNoJobSlotsAvailab
 const StringIDCraftingErrorInsufficientSkill = 'CraftingErrorInsufficientSkill';
 const StringIDCraftingErrorIngredientsNotSelected = 'CraftingErrorIngredientsNotSelected';
 const StringIDCraftingErrorNotEnoughIngredients = 'CraftingErrorNotEnoughIngredients';
+const StringIDCraftingErrorRecipeLevelTooHigh = 'CraftingErrorRecipeLevelTooHigh';
+const StringIDCraftingStationMaxLevel = 'CraftingStationMaxLevel';
+const StringIDCraftingStationMaxLevelHelp = 'CraftingStationMaxLevelHelp';
 const StringIDCraftingSearchRow = 'CraftingSearchRow';
 const StringIDCraftingFiltersTitle = 'CraftingFiltersTitle';
 const StringIDCraftingFiltersHasIngredients = 'CraftingFiltersHasIngredients';
@@ -202,6 +208,7 @@ interface InjectedProps {
   uiFactionID: string;
   serverTimeDeltaMS: number;
   statDefs: Record<string, StatDef>;
+  craftingJobs: Record<string, CraftingJobDef>;
   selfStats: Record<number, EntityStat>;
   selfTags: Record<number, TagState>;
   selfInventory: Item[];
@@ -479,10 +486,16 @@ class ACrafting extends React.Component<Props, State> {
     const factionData = getFactionData(this.props.uiFactionID);
     const recipeRows = this.getRecipeRows();
     const searchRows = this.getSearchResultRows(recipeRows);
+    const maxRecipeLevel = this.getMaxRecipeLevel();
 
     return (
       <div className={RecipesTabContainer}>
         <div className={RecipesAccordionContainer}>
+          {maxRecipeLevel > 0 && (
+            <div className={StationMaxLevelLabel}>
+              {this.renderStationMaxLevelText(maxRecipeLevel, factionData.targetBorderColor)}
+            </div>
+          )}
           <div className={RecipesAccordionHeader}>
             <FactionSearchBar
               heightOverrideVmin={2.8}
@@ -847,6 +860,11 @@ class ACrafting extends React.Component<Props, State> {
       return false;
     }
 
+    // Check if recipe level is allowed
+    if (this.state.selectedRecipe && !this.isRecipeLevelAllowed(this.state.selectedRecipe)) {
+      return false;
+    }
+
     // Didn't select all the required items?
     if (!this.getAreAllIngredientsSpecified()) {
       return false;
@@ -905,6 +923,49 @@ class ACrafting extends React.Component<Props, State> {
 
       return statValue >= req.MinVal;
     });
+  }
+
+  private getRecipeLevel(recipeDef: ItemRecipeDef): number {
+    const skillStatID = this.props.craftingJobs[recipeDef.jobID]?.skillStatID;
+    if (!skillStatID) {
+      return 0;
+    }
+
+    const skillRequirement = recipeDef.requirements.find(
+      (req: AnyRequirementData) => req.Kind === RequirementKind.Stat && req.Stat === skillStatID
+    ) as RequirementDataStat;
+
+    return skillRequirement?.MinVal ?? 0;
+  }
+
+  private getMaxRecipeLevel(): number {
+    return this.props.stationItemDef?.craftingStationConfig?.maxRecipeLevel ?? 0;
+  }
+
+  private renderStationMaxLevelText(maxRecipeLevel: number, valueColor: string): React.ReactNode {
+    const template = getStringTableValue(StringIDCraftingStationMaxLevel, this.props.stringTable);
+    const [prefix, suffix] = template.split('{LEVEL}');
+
+    return (
+      <>
+        {prefix}
+        <TooltipSource
+          className={StationMaxLevelValue}
+          style={{ color: valueColor }}
+          tooltipID='CraftingStationMaxLevel'
+          content={() => getStringTableValue(StringIDCraftingStationMaxLevelHelp, this.props.stringTable)}
+          positionType='mouse'
+        >
+          Level {maxRecipeLevel.toFixed(0)}
+        </TooltipSource>
+        {suffix}
+      </>
+    );
+  }
+
+  private isRecipeLevelAllowed(recipeDef: ItemRecipeDef): boolean {
+    const maxRecipeLevel = this.getMaxRecipeLevel();
+    return maxRecipeLevel <= 0 || this.getRecipeLevel(recipeDef) <= maxRecipeLevel;
   }
 
   private onCraftClicked(): void {
@@ -1016,6 +1077,11 @@ class ACrafting extends React.Component<Props, State> {
         return;
       }
 
+      // Never show recipes above the station's level cap
+      if (!this.isRecipeLevelAllowed(recipeDef)) {
+        return;
+      }
+
       // Also check tag requirements!
       let meetsTagRequirements = true;
       recipeDef.requirements.forEach((req) => {
@@ -1116,41 +1182,44 @@ class ACrafting extends React.Component<Props, State> {
         );
         const raceDef = this.props.racesByNumericID[this.props.selfRace];
         const classDef = this.props.classesByNumericID[this.props.selfClassID];
-        if (!requirements.every((requirement) => {
-          let characterValue: string | null = null;
-          let itemValue: string = '';
-          let fieldMatched = false;
-          if (requirement.Faction) {
-            fieldMatched = true;
-            characterValue = this.props.uiFactionID;
-            itemValue = requirement.Faction;
-          } else if (requirement.Race) {
-            fieldMatched = true;
-            characterValue = raceDef?.id ?? null;
-            itemValue = requirement.Race;
-          } else if (requirement.Class) {
-            fieldMatched = true;
-            characterValue = classDef?.id ?? null;
-            itemValue = requirement.Class;
-          } else if (requirement.Tag) {
-            fieldMatched = true;
-            const requiredTag =
-              typeof requirement.Tag === 'string'
-                ? requirement.Tag
-                : getStringFromTagAffixIDs(requirement.Tag.Affixes, this.props.tagAffixByNumericID);
-            characterValue = tagStrings.includes(requiredTag) ? requiredTag : null;
-            itemValue = requiredTag;
-          }
-          if (!fieldMatched) return true;
-          switch (requirement.Operator) {
-            case EquipmentRequirementOperator.Equals:
-              return characterValue === itemValue;
-            case EquipmentRequirementOperator.NotEquals:
-              return characterValue !== itemValue;
-            default:
-              return true;
-          }
-        })) return false;
+        if (
+          !requirements.every((requirement) => {
+            let characterValue: string | null = null;
+            let itemValue: string = '';
+            let fieldMatched = false;
+            if (requirement.Faction) {
+              fieldMatched = true;
+              characterValue = this.props.uiFactionID;
+              itemValue = requirement.Faction;
+            } else if (requirement.Race) {
+              fieldMatched = true;
+              characterValue = raceDef?.id ?? null;
+              itemValue = requirement.Race;
+            } else if (requirement.Class) {
+              fieldMatched = true;
+              characterValue = classDef?.id ?? null;
+              itemValue = requirement.Class;
+            } else if (requirement.Tag) {
+              fieldMatched = true;
+              const requiredTag =
+                typeof requirement.Tag === 'string'
+                  ? requirement.Tag
+                  : getStringFromTagAffixIDs(requirement.Tag.Affixes, this.props.tagAffixByNumericID);
+              characterValue = tagStrings.includes(requiredTag) ? requiredTag : null;
+              itemValue = requiredTag;
+            }
+            if (!fieldMatched) return true;
+            switch (requirement.Operator) {
+              case EquipmentRequirementOperator.Equals:
+                return characterValue === itemValue;
+              case EquipmentRequirementOperator.NotEquals:
+                return characterValue !== itemValue;
+              default:
+                return true;
+            }
+          })
+        )
+          return false;
       }
     }
 
@@ -1273,6 +1342,10 @@ class ACrafting extends React.Component<Props, State> {
       return getStringTableValue(StringIDCraftingErrorInsufficientSkill, this.props.stringTable);
     }
 
+    if (this.state.selectedRecipe && !this.isRecipeLevelAllowed(this.state.selectedRecipe)) {
+      return getStringTableValue(StringIDCraftingErrorRecipeLevelTooHigh, this.props.stringTable);
+    }
+
     // If not all ingredients selected, show that error.
     if (!this.getAreAllIngredientsSpecified()) {
       return getStringTableValue(StringIDCraftingErrorIngredientsNotSelected, this.props.stringTable);
@@ -1306,7 +1379,7 @@ class ACrafting extends React.Component<Props, State> {
     jobIDs.forEach((jid) => (categorySetsByJobID[jid] = new Set<string>()));
 
     Object.values(this.props.itemRecipeDefs).forEach((recipeDef) => {
-      if (jobIDs.includes(recipeDef.jobID)) {
+      if (jobIDs.includes(recipeDef.jobID) && this.isRecipeLevelAllowed(recipeDef)) {
         const category = recipeDef.tags.find((tag) => tag.startsWith('Crafting.Category.'));
         if (category) {
           categorySetsByJobID[recipeDef.jobID].add(category.slice(18));
@@ -1488,6 +1561,7 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): ReactProps & I
     uiFactionID: state.hud.uiFactionID,
     serverTimeDeltaMS: state.clock.serverTimeDeltaMS,
     statDefs: state.gameDefs.stats,
+    craftingJobs: state.gameDefs.craftingJobs,
     selfStats: state.entities.self.stats,
     selfTags: state.entities.self.tags,
     selfInventory,

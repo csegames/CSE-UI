@@ -22,7 +22,7 @@ import { ItemDef } from '../../dataSources/manifest/itemManifest';
 import { getFactionData } from '../../gameData/factionData';
 import { FactionMoneyInput } from '../FactionMoneyInput';
 import { FactionButton } from '../FactionButton';
-import TooltipSource from '../TooltipSource';
+import { TooltipSource } from '../TooltipSource';
 import { TradeSnapshot, TradeState } from '@csegames/library/dist/camelotunchained/game/GameClientModels/TradeSnapshot';
 import { ItemCompareTooltip } from '../items/ItemCompareTooltip';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';

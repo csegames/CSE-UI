@@ -40,6 +40,14 @@ class APopUpAnnouncement extends React.Component<Props> {
     this.closeTimeout = window.setTimeout(this.closeSelf.bind(this), 5000);
   }
 
+  componentDidUpdate(prevProps: Props) {
+    // Repeated messages extend duration rather than creating a new announcement
+    if (this.props.popUpAnnouncement.refreshedAt !== prevProps.popUpAnnouncement.refreshedAt) {
+      window.clearTimeout(this.closeTimeout);
+      this.closeTimeout = window.setTimeout(this.closeSelf.bind(this), 5000);
+    }
+  }
+
   componentWillUnmount() {
     window.clearTimeout(this.closeTimeout);
   }

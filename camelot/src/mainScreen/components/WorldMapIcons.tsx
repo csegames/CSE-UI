@@ -201,12 +201,13 @@ class AWorldMapIcons extends React.Component<Props, State> {
       const type = mapData.type[i];
       const x = getMapIconXPercent(mapData.xpos[i], bounds);
       const y = getMapIconYPercent(mapData.ypos[i], bounds);
+      const tier = mapData.tier[i];
 
       const existing = this.icons.get(id);
       if (existing) {
-        existing.update(faction, type, x, y);
+        existing.update(faction, type, x, y, tier);
       } else {
-        this.icons.set(id, new MapElementIcon(id, faction, type, x, y));
+        this.icons.set(id, new MapElementIcon(id, faction, type, x, y, tier));
       }
     }
 

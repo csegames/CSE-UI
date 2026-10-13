@@ -4,11 +4,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { Dispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { ListenerHandle } from '@csegames/library/dist/_baseGame/listenerHandle';
 import { RootState } from '../redux/store';
-import { MouseRelativePosition, SourceRelativePosition, TooltipState } from '../redux/tooltipSlice';
+import {
+  getTooltipState,
+  MouseRelativePosition,
+  SourceRelativePosition,
+  subscribeTooltip,
+  TooltipState
+} from '../helpers/tooltipController';
 import { CSETransition } from '../../shared/components/CSETransition';
 import { BorderBackground, FactionBorder, BorderType } from './FactionBorder';
 
@@ -25,21 +31,21 @@ export const ContentWrapper = 'HUD-TooltipPane-ContentWrapper';
 
 interface State {
   moveCounter: number;
+  tooltipState: TooltipState;
 }
 
 interface InjectedProps {
-  // We use ALL of the fields in this class, so just take them all directly.
-  tooltipState: TooltipState;
   hudWidth: number;
   hudHeight: number;
   vminPx: number;
-  dispatch?: Dispatch;
 }
 
 type Props = InjectedProps;
 
 class TooltipPane extends React.Component<Props, State> {
   private readonly handleMouseMove = this.onMouseMove.bind(this);
+  private readonly handleTooltipChanged = this.onTooltipChanged.bind(this);
+  private tooltipHandle: ListenerHandle = null;
   private tooltipRef: HTMLDivElement = null;
   private lastPosition: MouseEvent = null;
 
@@ -47,20 +53,27 @@ class TooltipPane extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      moveCounter: 0
+      moveCounter: 0,
+      tooltipState: getTooltipState()
     };
   }
 
   componentDidMount() {
     window.addEventListener('mousemove', this.handleMouseMove);
+    this.tooltipHandle = subscribeTooltip(this.handleTooltipChanged);
   }
 
   componentWillUnmount() {
     window.removeEventListener('mousemove', this.handleMouseMove);
+    this.tooltipHandle?.close();
+  }
+
+  private onTooltipChanged(tooltipState: TooltipState): void {
+    this.setState({ tooltipState });
   }
 
   public render(): React.ReactNode {
-    const { id, content } = this.props.tooltipState;
+    const { id, content } = this.state.tooltipState;
 
     if (!content) {
       // only true until the first tooltip is set
@@ -81,7 +94,7 @@ class TooltipPane extends React.Component<Props, State> {
 
     return (
       <CSETransition
-        // We read off of Redux directly to know if we ought to show or hide the content.
+        // We read off the tooltip controller directly to know if we ought to show or hide the content.
         show={!!id}
         className={TooltipWrapper}
         ref={(r) => {
@@ -96,7 +109,7 @@ class TooltipPane extends React.Component<Props, State> {
   }
 
   private renderContent(content: React.ReactNode): React.ReactNode {
-    if (this.props.tooltipState.noOuterBorder) {
+    if (this.state.tooltipState.noOuterBorder) {
       return content;
     }
     return (
@@ -132,7 +145,7 @@ class TooltipPane extends React.Component<Props, State> {
   private onMouseMove(e: MouseEvent) {
     this.lastPosition = e; // Cache off the position for style calculation without forcing another render eval.
 
-    if (FOLLOW_MOUSE_MOVEMENT && this.props.tooltipState.position.type === 'mouse' && this.props.tooltipState.id) {
+    if (FOLLOW_MOUSE_MOVEMENT && this.state.tooltipState.position.type === 'mouse' && this.state.tooltipState.id) {
       // If we have an active mouse relative tooltip, force render to update the position.
       this.setState({ moveCounter: (this.state.moveCounter + 1) % 100 });
     }
@@ -141,13 +154,13 @@ class TooltipPane extends React.Component<Props, State> {
   private calculateTooltipStyle(): React.CSSProperties {
     const finalStyle: React.CSSProperties = {};
 
-    const { maxWidth, position } = this.props.tooltipState;
+    const { maxWidth, position } = this.state.tooltipState;
 
     if (maxWidth?.length > 0) {
       finalStyle.maxWidth = maxWidth;
     }
 
-    if (!this.tooltipRef || !this.props.tooltipState.id) {
+    if (!this.tooltipRef || !this.state.tooltipState.id) {
       finalStyle.visibility = 'hidden';
       return finalStyle;
     }
@@ -281,11 +294,9 @@ class TooltipPane extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: RootState): Props {
-  const tooltipState = state.tooltip;
   const { hudWidth, hudHeight, vminPx } = state.hud;
 
   return {
-    tooltipState,
     hudWidth,
     hudHeight,
     vminPx

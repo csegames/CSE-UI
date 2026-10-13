@@ -6,10 +6,8 @@
 
 import { Euler3f, Vec3f } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { MoveItemRequestLocationType, Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
-import { ItemResourceID, ItemStatID } from '../components/items/itemData';
 import { InventoryStackSplit } from '../redux/inventorySlice';
 import { Dispatch } from '@reduxjs/toolkit';
-import { Dictionary } from '@csegames/library/dist/_baseGame/types/ObjectMap';
 import { hideContextMenu } from '../redux/contextMenuSlice';
 import { addConditionalWidgetExiting } from '../redux/hudSlice';
 import { WIDGET_ID_INVENTORY } from '../components/inventory/Inventory';
@@ -327,13 +325,7 @@ export const getItemsUnitCount = (items?: Item[]): number => {
   return items?.reduce<number>((soFar: number, item: Item) => soFar + item.unitCount, 0) ?? 0;
 };
 
-export const canItemsStack = (
-  itemA: Item,
-  itemB: Item,
-  itemsByNumericID: Record<number, ItemDef>,
-  statDefsByStringID: Dictionary<StatDef>,
-  resourceDefsByStringID: Dictionary<EntityResourceDef>
-): boolean => {
+export const canItemsStack = (itemA: Item, itemB: Item, itemsByNumericID: Record<number, ItemDef>): boolean => {
   if (itemA.defID !== itemB.defID) {
     return false;
   }
@@ -343,44 +335,13 @@ export const canItemsStack = (
     return false;
   }
 
-  // Infusions, reagents, and solvents stack if they are the same item type
-  if (
-    itemDef.itemType == ItemType.Infusion ||
-    itemDef.itemType == ItemType.Solvent ||
-    itemDef.itemType == ItemType.Reagent
-  ) {
-    return true;
-  }
-
-  // Two alchemy containers of the same type can stack as long as they are both empty
-  if (
-    itemDef.itemType == ItemType.AlchemyContainer &&
-    getItemResourceValue(itemA, resourceDefsByStringID[ItemResourceID.Doses]) == 0 &&
-    getItemResourceValue(itemB, resourceDefsByStringID[ItemResourceID.Doses]) == 0
-  ) {
-    return true;
-  }
-
-  if (
-    (itemDef.itemType === ItemType.Substance ||
-      itemDef.itemType === ItemType.Block ||
-      itemDef.itemType === ItemType.CraftingMaterial) &&
-    getItemStatValue(itemA, statDefsByStringID[ItemStatID.Quality]) ===
-      getItemStatValue(itemB, statDefsByStringID[ItemStatID.Quality])
-  ) {
-    return true;
-  }
-
-  if (itemDef.itemType === ItemType.Ammo || itemDef.itemType === ItemType.Alloy) {
-    return itemA.stackHash === itemB.stackHash;
-  }
-
-  // Currency of the same type can always stack
+  // Currency of the same type can always stack -- keeping this as a special case outside of the isStackableItem check
   if (itemDef.itemType === ItemType.Currency) {
     return true;
   }
 
-  return false;
+  // Rely on the server logic to determine if an item is stackable
+  return itemDef.isStackableItem && itemA.stackHash === itemB.stackHash;
 };
 
 export const getMoveErrors = (
@@ -432,7 +393,7 @@ export const getMoveErrors = (
       targetItem &&
       item?.defID === targetItem.defID &&
       itemDef?.isStackableItem &&
-      !canItemsStack(item, targetItem, defs.itemsByNumericID, defs.stats, defs.entityResourcesByStringID)
+      !canItemsStack(item, targetItem, defs.itemsByNumericID)
     ) {
       errors.push(
         getTokenizedStringTableValue(StringIDItemIconErrorSplitDiffering, stringTable, {

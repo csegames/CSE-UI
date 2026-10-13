@@ -19,7 +19,7 @@ import {
 } from '../../helpers/stringTableHelpers';
 import { AbilityWithActivation } from '../../redux/abilitiesSlice';
 import { AbilityGroup } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
-import TooltipSource from '../TooltipSource';
+import { TooltipSource } from '../TooltipSource';
 import Draggable from '../Draggable';
 import DraggableHandle, { DropHandlerDraggableData } from '../DraggableHandle';
 import { DropTypeAbilityButton } from '../abilityBars/AbilityButton';
@@ -322,6 +322,12 @@ class AAbilityPageClass extends React.Component<Props, State> {
     // Lines are drawn after cells, so if the NEXT cell should animate, then this LINE should animate.
     const shouldAnimateLine = isLevelUpTrack && (all[index + 1]?.unlockedAtLevel ?? 0) === trackLevel;
 
+    // Swaps change the ability's displayDefID in place, so derive the icon from the live ability
+    // (same as AbilityButton), falling back to the track's base def.
+    const liveDisplayDef = data.ability
+      ? this.props.defs.abilityDisplayDefsByNumericID[data.ability.displayDefID] ?? data.displayDef
+      : data.displayDef;
+      
     return (
       <div className={`${AbilityContainer}${lastClass}`}>
         <TooltipSource
@@ -340,7 +346,7 @@ class AAbilityPageClass extends React.Component<Props, State> {
               className={`${AbilitiesListEntryDraggable}${lastClass}`}
               draggableID={draggableId}
               draggingRender={() => (
-                <img className={`${AbilitiesListEntryIconDraggable}${lastClass}`} src={data.displayDef.iconURL} />
+                <img className={`${AbilitiesListEntryIconDraggable}${lastClass}`} src={liveDisplayDef.iconURL} />
               )}
             >
               <DraggableHandle
@@ -351,7 +357,7 @@ class AAbilityPageClass extends React.Component<Props, State> {
                 dropType={DropTypeAbilityButton}
                 isDisabled={!data.ability}
               >
-                <img className={AbilitiesListEntryIcon} src={data.displayDef.iconURL} />
+                <img className={AbilitiesListEntryIcon} src={liveDisplayDef.iconURL} />
               </DraggableHandle>
             </Draggable>
           </FactionBorder>

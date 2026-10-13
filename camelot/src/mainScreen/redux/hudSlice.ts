@@ -176,7 +176,7 @@ export const hudSlice = createSlice({
         );
         if (duplicate) {
           console.warn(
-            `Widgets '${duplicate.registration.id}' and '${action.payload.id}' duplicate nativeWidgetID ` +
+            `Widgets '${duplicate.registration?.id}' and '${action.payload.id}' duplicate nativeWidgetID ` +
               `'${action.payload.nativeWidgetID}'. Client events will only affect one of them.`
           );
         }

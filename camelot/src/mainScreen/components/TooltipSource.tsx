@@ -5,15 +5,13 @@
  */
 
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { AddDispatch, RootState } from '../redux/store';
-import { hideTooltip, showTooltip, TooltipParams, TooltipPositionType } from '../redux/tooltipSlice';
+import { getTooltipState, hideTooltip, showTooltip, TooltipParams, TooltipPositionType } from '../helpers/tooltipController';
 import { simpleRectFromDOMRect } from '../redux/dragAndDropSlice';
 
 // Styles
 const Root = 'TooltipSource-Root';
 
-interface ReactProps extends React.HTMLAttributes<HTMLDivElement> {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
   tooltipID: string;
   content: () => React.ReactNode;
   positionType: TooltipPositionType;
@@ -24,17 +22,11 @@ interface ReactProps extends React.HTMLAttributes<HTMLDivElement> {
   noOuterBorder?: boolean;
 }
 
-interface InjectedProps {
-  currentTooltipID: string;
-}
-
 interface State {
   isEntered: boolean;
 }
 
-type Props = ReactProps & InjectedProps & AddDispatch;
-
-class TooltipSource extends React.Component<Props, State> {
+export class TooltipSource extends React.Component<Props, State> {
   private rootRef: HTMLDivElement | null = null;
 
   constructor(props: Props) {
@@ -68,15 +60,15 @@ class TooltipSource extends React.Component<Props, State> {
     if (shouldDisplay === wasDisplayed && !idChanged) return;
 
     if (shouldDisplay) {
-      this.props.dispatch(showTooltip(this.createParams()));
+      showTooltip(this.createParams());
     } else {
-      this.props.dispatch(hideTooltip(idChanged ? prevProps.tooltipID : this.props.tooltipID));
+      hideTooltip(idChanged ? prevProps.tooltipID : this.props.tooltipID);
     }
   }
 
   componentWillUnmount(): void {
-    if (this.props.currentTooltipID === this.props.tooltipID) {
-      this.props.dispatch(hideTooltip(this.props.tooltipID));
+    if (getTooltipState().id === this.props.tooltipID) {
+      hideTooltip(this.props.tooltipID);
     }
   }
 
@@ -112,13 +104,3 @@ class TooltipSource extends React.Component<Props, State> {
     };
   }
 }
-
-function mapStateToProps(state: RootState, ownProps: ReactProps): ReactProps & InjectedProps {
-  const currentTooltipID = state.tooltip.id;
-  return {
-    ...ownProps,
-    currentTooltipID
-  };
-}
-
-export default connect(mapStateToProps)(TooltipSource);

@@ -10,11 +10,13 @@ import LoadingScreenYggdraForestURL from '../../images/loading-screens/viking-yg
 
 import { ZoneInfo } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { MapDataType } from '@csegames/library/dist/_baseGame/GameClientModels/AnimationData';
-import { StringIDGeneralHyphen, StringIDGeneralUnnamed } from './stringTableHelpers';
+import { getStringTableValue, StringIDGeneralHyphen, StringIDGeneralUnnamed } from './stringTableHelpers';
 import { Faction } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { PartyMember } from '@csegames/library/dist/camelotunchained/game/GameClientModels/PartySnapshot';
 import { WarbandSubgroup } from '@csegames/library/dist/camelotunchained/game/GameClientModels/WarbandSnapshot';
 import { requestAddImagesToCache } from '../dataSources/imageCacheService';
+import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
+import { typedObjectKeys } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 
 requestAddImagesToCache('MapHelpers', [
   LoadingScreenCamelotHillsURL,
@@ -34,27 +36,27 @@ export interface ContinentDetails {
 }
 
 export const allContinents: ContinentDetails[] = [
-  { key: 'world-map-camelot',              faction: 'Arthurian', mapID: 'cu2_camelot_home_island_v1' },
-  { key: 'world-map-camelot-hills',        faction: 'Arthurian', mapID: 'camelothills_v02' },
-  { key: 'world-map-lyonesse',             faction: 'Arthurian' },
-  { key: 'world-map-forest-sauvage',       faction: 'Arthurian', mapID: 'cu2_sauvage_forest_zone_v3' },
-  { key: 'world-map-penning-mountains',    faction: 'Arthurian' },
-  { key: 'world-map-snowdonia',            faction: 'Arthurian' },
-  { key: 'world-map-jamtland-mountains',   faction: 'Viking' },
-  { key: 'world-map-uppland',              faction: 'Viking' },
-  { key: 'world-map-niefilheim',           faction: 'Viking',    mapID: 'cu2_niefelheim_viking_home_v01' },
-  { key: 'world-map-yggdra-forest',        faction: 'Viking',    mapID: 'yggdra_forest_v01a' },
-  { key: 'world-map-myrkwood-forest',      faction: 'Viking' },
-  { key: 'world-map-skona-ravine',         faction: 'Viking' },
-  { key: 'world-map-shannon-estuary',      faction: 'TDD' },
-  { key: 'world-map-eriu',                 faction: 'TDD',       mapID: 'cu2_eriu_tdd_homeisland_v01' },
-  { key: 'world-map-emain-macha',          faction: 'TDD' },
-  { key: 'world-map-lough-gur',            faction: 'TDD' },
-  { key: 'world-map-louch-derg',           faction: 'TDD' },
-  { key: 'world-map-silvermine-mountains', faction: 'TDD',       mapID: 'cu2_silvermine_mountains_v02a' }
+  { key: 'world-map-camelot', faction: 'Arthurian', mapID: 'cu2_camelot_home_island_v1' },
+  { key: 'world-map-camelot-hills', faction: 'Arthurian', mapID: 'camelothills_v02' },
+  { key: 'world-map-lyonesse', faction: 'Arthurian' },
+  { key: 'world-map-forest-sauvage', faction: 'Arthurian', mapID: 'cu2_sauvage_forest_zone_v3' },
+  { key: 'world-map-penning-mountains', faction: 'Arthurian' },
+  { key: 'world-map-snowdonia', faction: 'Arthurian' },
+  { key: 'world-map-jamtland-mountains', faction: 'Viking' },
+  { key: 'world-map-uppland', faction: 'Viking' },
+  { key: 'world-map-niefilheim', faction: 'Viking', mapID: 'cu2_niefelheim_viking_home_v01' },
+  { key: 'world-map-yggdra-forest', faction: 'Viking', mapID: 'yggdra_forest_v01a' },
+  { key: 'world-map-myrkwood-forest', faction: 'Viking' },
+  { key: 'world-map-skona-ravine', faction: 'Viking' },
+  { key: 'world-map-shannon-estuary', faction: 'TDD' },
+  { key: 'world-map-eriu', faction: 'TDD', mapID: 'cu2_eriu_tdd_homeisland_v01' },
+  { key: 'world-map-emain-macha', faction: 'TDD' },
+  { key: 'world-map-lough-gur', faction: 'TDD' },
+  { key: 'world-map-louch-derg', faction: 'TDD' },
+  { key: 'world-map-silvermine-mountains', faction: 'TDD', mapID: 'cu2_silvermine_mountains_v02a' }
 ];
 
-export enum MapDisplayCategory {
+enum MapDisplayCategory {
   General,
   Structures,
   ResourceNodes,
@@ -73,7 +75,8 @@ let typesByDisplayCategory: Record<MapDisplayCategory, MapDataType[]> = {
     MapDataType.KeepTowerChurch,
     MapDataType.KeepTowerStable,
     MapDataType.PortalLocal,
-    MapDataType.PortalZone
+    MapDataType.PortalZone,
+    MapDataType.VeilFracture
   ],
   [MapDisplayCategory.ResourceNodes]: [
     MapDataType.ResourceEssence,
@@ -96,8 +99,36 @@ let typesByDisplayCategory: Record<MapDisplayCategory, MapDataType[]> = {
     MapDataType.CraftingWoodworking
   ]
 };
-export function getMapDataTypesForCategory(cat: MapDisplayCategory): MapDataType[] {
+function getMapDataTypesForCategory(cat: MapDisplayCategory): MapDataType[] {
   return typesByDisplayCategory[cat];
+}
+
+export const StringIDPrefixMapPOIName = 'MapPOIName_';
+
+export interface MapPOICategories {
+  poisStructures: MapDataType[];
+  poisResourceNodes: MapDataType[];
+  poisCraftingStations: MapDataType[];
+}
+
+let poiCategoriesCache: { stringTable: Record<string, StringTableEntryDef>; categories: MapPOICategories } | undefined;
+export function getMapPOICategories(stringTable: Record<string, StringTableEntryDef>): MapPOICategories {
+  if (poiCategoriesCache?.stringTable !== stringTable) {
+    const alphySort = (a: MapDataType, b: MapDataType) => {
+      const aName = getStringTableValue(StringIDPrefixMapPOIName + MapDataType[a], stringTable);
+      const bName = getStringTableValue(StringIDPrefixMapPOIName + MapDataType[b], stringTable);
+      return aName.localeCompare(bName);
+    };
+    poiCategoriesCache = {
+      stringTable,
+      categories: {
+        poisStructures: getMapDataTypesForCategory(MapDisplayCategory.Structures).sort(alphySort),
+        poisResourceNodes: getMapDataTypesForCategory(MapDisplayCategory.ResourceNodes).sort(alphySort),
+        poisCraftingStations: getMapDataTypesForCategory(MapDisplayCategory.CraftingStations).sort(alphySort)
+      }
+    };
+  }
+  return poiCategoriesCache.categories;
 }
 
 interface MapDetails {
@@ -194,6 +225,78 @@ export const allMapDetails: Record<string, MapDetails> = {
     bounds: { x: -5300, y: -3775, width: 9500, height: 7250 }
   }
 };
+
+let mapRegionNamesCache: { stringTable: Record<string, StringTableEntryDef>; names: string[] } | undefined;
+export function getMapRegionNames(stringTable: Record<string, StringTableEntryDef>): string[] {
+  if (mapRegionNamesCache?.stringTable !== stringTable) {
+    const names = typedObjectKeys(allMapRegions).map((regionStringID: string) =>
+      getStringTableValue(regionStringID, stringTable)
+    );
+    names.sort();
+    mapRegionNamesCache = { stringTable, names };
+  }
+  return mapRegionNamesCache.names;
+}
+
+// Hide other realms' home islands; you can never travel to them. Shared by getMapNamesByRegion/getAllMapNames.
+let visibleMapIDsByRegionCache: { uiFactionID: string; byRegion: Record<string, string[]> } | undefined;
+function getVisibleMapIDsByRegion(uiFactionID: string): Record<string, string[]> {
+  if (visibleMapIDsByRegionCache?.uiFactionID !== uiFactionID) {
+    const byRegion: Record<string, string[]> = {};
+    for (const regionID of typedObjectKeys(allMapRegions)) {
+      byRegion[regionID] = allMapRegions[regionID].filter((mapID: string) => isMapVisibleToFaction(mapID, uiFactionID));
+    }
+    visibleMapIDsByRegionCache = { uiFactionID, byRegion };
+  }
+  return visibleMapIDsByRegionCache.byRegion;
+}
+
+let mapNamesByRegionCache:
+  | { uiFactionID: string; stringTable: Record<string, StringTableEntryDef>; byRegion: Record<string, string[]> }
+  | undefined;
+export function getMapNamesByRegion(
+  uiFactionID: string,
+  stringTable: Record<string, StringTableEntryDef>
+): Record<string, string[]> {
+  if (mapNamesByRegionCache?.uiFactionID !== uiFactionID || mapNamesByRegionCache?.stringTable !== stringTable) {
+    const visibleByRegion = getVisibleMapIDsByRegion(uiFactionID);
+    const byRegion: Record<string, string[]> = {};
+    for (const regionID of typedObjectKeys(allMapRegions)) {
+      const names = visibleByRegion[regionID].map((mapID: string) =>
+        getStringTableValue(allMapDetails[mapID]?.nameStringID ?? StringIDGeneralUnnamed, stringTable)
+      );
+      names.sort();
+      byRegion[regionID] = names;
+    }
+    mapNamesByRegionCache = { uiFactionID, stringTable, byRegion };
+  }
+  return mapNamesByRegionCache.byRegion;
+}
+
+// Deduplicated map names across all regions except MAP_REGION_WORLD (used by the world-view dropdown).
+let allMapNamesCache:
+  | { uiFactionID: string; stringTable: Record<string, StringTableEntryDef>; names: string[] }
+  | undefined;
+export function getAllMapNames(uiFactionID: string, stringTable: Record<string, StringTableEntryDef>): string[] {
+  if (allMapNamesCache?.uiFactionID !== uiFactionID || allMapNamesCache?.stringTable !== stringTable) {
+    const visibleByRegion = getVisibleMapIDsByRegion(uiFactionID);
+    const seen = new Set<string>();
+    const names: string[] = [];
+    for (const regionID of typedObjectKeys(allMapRegions)) {
+      if (regionID === MAP_REGION_WORLD) continue;
+      for (const mapID of visibleByRegion[regionID]) {
+        if (seen.has(mapID)) continue;
+        seen.add(mapID);
+        const details = allMapDetails[mapID];
+        if (!details) continue;
+        names.push(getStringTableValue(details.nameStringID ?? StringIDGeneralUnnamed, stringTable));
+      }
+    }
+    names.sort();
+    allMapNamesCache = { uiFactionID, stringTable, names };
+  }
+  return allMapNamesCache.names;
+}
 
 export function getMapDetails(zone: ZoneInfo): MapDetails {
   if (allMapDetails[zone.Name]) {

@@ -144,6 +144,7 @@ export interface PlayerEntityStateModel extends BaseEntityStateModel {
   isKeepAvailable: boolean;
   respawnTimestamp: number;
   idleRespawnTimestamp: number;
+  logoutCompleteTime: number;
 }
 
 export function isEntityPlayer(entity: BaseEntityStateModel | null): entity is PlayerEntityStateModel {

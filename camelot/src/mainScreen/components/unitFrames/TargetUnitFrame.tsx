@@ -11,7 +11,7 @@ import {
   PlayerEntityStateModel,
   isEntityItem
 } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
-import { tagsMatch, getTagFromString } from '../../helpers/tagHelpers';
+import { MatchMode, tagsMatch, getTagFromString } from '../../helpers/tagHelpers';
 import { HUDLayer, HUDWidgetRegistration } from '../../redux/hudSlice';
 import { RootState } from '../../redux/store';
 import PlayerUnitFrame from './PlayerUnitFrame';
@@ -20,8 +20,10 @@ import { Dictionary } from '@reduxjs/toolkit';
 import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 import { ClassDef } from '../../dataSources/manifest/classManifest';
 import { ResourceNodeUnitFrame } from './ResourceNodeUnitFrame';
-import { GateUnitFrame } from './GateUnitFrame';
+import { ItemUnitFrame } from './ItemUnitFrame';
 import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
+import GateIconURL from '../../../images/resource-unit-frames/Resource-unit-frame-icon-gate.png';
+import SiegeIconURL from '../../../images/resource-unit-frames/Siege-unit-frame-icon.png';
 import StatusEffects from './StatusEffects';
 import { TargetPosition } from './TargetPosition';
 import { WarbandSnapshot } from '@csegames/library/dist/camelotunchained/game/GameClientModels/WarbandSnapshot';
@@ -42,6 +44,7 @@ const Position = 'HUD-TargetUnitFrame-Position';
 // Tags
 const GateTag = 'Asset.Nameplate.Attack';
 const ResourceNodeTag = 'Asset.Nameplate.Gather';
+const SiegeTag = 'Asset.Item.SiegeEngine';
 
 interface ReactProps {
   isDragCopy: boolean;
@@ -69,8 +72,7 @@ class ATargetUnitFrame extends React.Component<Props> {
     const widgetID = this.props.isFriendly ? WIDGET_ID_FRIENDLY : WIDGET_ID_ENEMY;
     // Show the mock frame while this widget is being edited directly, or while it's a member of the
     // actively-selected HUD Editor group (so the whole Health Bars group can be arranged at once).
-    const isEditing =
-      this.props.selectedWidgetID === widgetID || this.props.selectedGroupMemberIDs.includes(widgetID);
+    const isEditing = this.props.selectedWidgetID === widgetID || this.props.selectedGroupMemberIDs.includes(widgetID);
 
     if (!this.props.target && !isEditing) {
       return null;
@@ -81,15 +83,24 @@ class ATargetUnitFrame extends React.Component<Props> {
     const isGate = isItem && tagsMatch(target.tags, [getTagFromString(GateTag, this.props.tagAffixIDByStringID)]);
     const isResourceNode =
       isItem && tagsMatch(target.tags, [getTagFromString(ResourceNodeTag, this.props.tagAffixIDByStringID)]);
+    // The siege tag goes first so it can prefix-match the longer Asset.Item.SiegeEngine.* subtype tags.
+    const isSiege =
+      isItem &&
+      tagsMatch(
+        { 0: getTagFromString(SiegeTag, this.props.tagAffixIDByStringID) },
+        Object.values(target.tags ?? {}),
+        MatchMode.Any
+      );
     const targetAsPlayer = target as PlayerEntityStateModel;
 
     return (
       <div className={Root}>
-        {isGate ? (
-          <GateUnitFrame
+        {isGate || isSiege ? (
+          <ItemUnitFrame
             entity={target}
             isFriendly={this.props.isFriendly}
             nameplateStyle={this.props.nameplateStyle}
+            iconURL={isSiege ? SiegeIconURL : GateIconURL}
           />
         ) : isResourceNode ? (
           <ResourceNodeUnitFrame

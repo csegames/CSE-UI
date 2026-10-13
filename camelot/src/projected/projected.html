@@ -8,8 +8,9 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
   <meta charset="UTF-8">
 </head>
 <body>
-  <!-- Coherent won't load a font if it's *only* used in a canvas; draw under the canvas here to allow registration -->
-  <div style="font-family: CaudexBold">.</div>
+  <!-- Coherent won't load a font if it's *only* used in a canvas. 
+       Hidden still keeps the element in layout and triggers the load. -->
+  <div style="font-family: CaudexBold; visibility: hidden">.</div>
   <canvas style="position: fixed; top: 0; left: 0" id="drawn" />
 </body>
 </html>

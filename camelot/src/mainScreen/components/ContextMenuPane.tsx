@@ -114,7 +114,9 @@ class ContextMenuPane extends React.Component<Props, State> {
 
   private renderSeparator(index: number): React.ReactNode {
     const separatorColor = getFactionData(this.props.uiFactionID).borderColor;
-    return <div className={Separator} key={`ContextMenuSeparator:${index}`} style={{ backgroundColor: separatorColor }} />;
+    return (
+      <div className={Separator} key={`ContextMenuSeparator:${index}`} style={{ backgroundColor: separatorColor }} />
+    );
   }
 
   private renderMenuItem(item: ContextMenuActionItem): React.ReactNode {
@@ -129,7 +131,8 @@ class ContextMenuPane extends React.Component<Props, State> {
     );
   }
 
-  private handleItemClicked(item: ContextMenuActionItem): void {
+  private handleItemClicked(item: ContextMenuActionItem, e: React.MouseEvent<HTMLDivElement>): void {
+    e.stopPropagation();
     item.onClick(this.props.dispatch);
 
     if (!item.keepOpenAfterSelection) {

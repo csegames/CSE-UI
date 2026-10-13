@@ -38,9 +38,11 @@ export enum MapDataType {
   CraftingSmithy = 23,
   CraftingTailoring = 24,
   CraftingWoodworking = 25,
+  HotSpot = 26,
+  VeilFracture = 27,
 
   // Any POI with unsupported tags will show as INVALID
-  INVALID = 26
+  INVALID = 28
 }
 
 export interface MapData {

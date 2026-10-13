@@ -51,6 +51,7 @@ import { GameDefsState } from '../../redux/gameDefsSlice';
 // CSS classes
 const Root = 'HUD-PlayerUnitFrame-Root';
 const FrameRoot = 'HUD-PlayerUnitFrame-FrameRoot';
+const HitRegion = 'HUD-PlayerUnitFrame-HitRegion';
 const FrameBackground = 'HUD-PlayerUnitFrame-FrameBackground';
 const Marker = 'HUD-PlayerUnitFrame-Marker';
 const MarkerHealth = 'HUD-PlayerUnitFrame-MarkerHealth';
@@ -150,18 +151,17 @@ class PlayerUnitFrame extends React.Component<Props> {
     return (
       <div className={`${Root}${this.props.isSimple ? ' simple' : ''}`}>
         <div
-          onClick={this.props.onTarget}
           className={`${FrameRoot}${this.props.isSimple ? ' simple' : ''}${
             this.props.isSimple && this.props.faction === Faction.Factionless ? ' factionless-simple' : ''
           }${!this.props.isSimple && isNPC ? ' npc' : ''}`}
         >
+          {entity && this.props.isOnline && this.getEntityContent(entity, name, faction)}
+          {!entity && this.getOutOfZoneContent(name, faction, this.props.isSimple)}
           <ContextMenuSource
-            className={`${FrameRoot}${this.props.isSimple ? ' simple' : ''}`}
+            className={`${HitRegion}${this.props.isSimple ? ' simple' : ''}${isNPC ? ' npc' : ''}`}
+            onClick={this.props.onTarget}
             menuParams={this.getContextMenuParams()}
-          >
-            {entity && this.props.isOnline && this.getEntityContent(entity, name, faction)}
-            {!entity && this.getOutOfZoneContent(name, faction, this.props.isSimple)}
-          </ContextMenuSource>
+          />
         </div>
         {this.props.children}
       </div>

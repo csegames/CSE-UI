@@ -1,5 +1,8 @@
 import { MapDataType } from '@csegames/library/dist/_baseGame/GameClientModels/AnimationData';
 
+// Hot spots are always reported as Factionless, so every faction shares this one icon.
+const HOT_SPOT_ICON_URL = '/dynamic/factions/assets/map-icon-hotspot-factionless.png';
+
 export interface FactionData {
   id: string;
   backgroundBookImage: string;
@@ -92,6 +95,8 @@ export interface FactionData {
   hudnavIconMailImage: string;
   hudnavIconGuildImage: string;
   hudnavIconQuestLogImage: string;
+  hudnavIconFriendsImage: string;
+  hudnavIconSocialImage: string;
   hudnavEndImage: string;
   sendButtonImage: string;
   gearSlotImages: {
@@ -205,6 +210,7 @@ export const allFactionData: FactionData[] = [
       [MapDataType.CraftingSmithy]: '/dynamic/factions/assets/map-icon-blacksmithing-station-factionless.png',
       [MapDataType.CraftingTailoring]: '/dynamic/factions/assets/map-icon-textile-station-factionless.png',
       [MapDataType.CraftingWoodworking]: '/dynamic/factions/assets/map-icon-woodworking-station-factionless.png',
+      [MapDataType.HotSpot]: HOT_SPOT_ICON_URL,
       [MapDataType.KeepBank]: '/dynamic/factions/assets/map-icon-personal-bank-factionless.png',
       [MapDataType.KeepMain]: '/dynamic/factions/assets/map-icon-keep-factionless.png',
       [MapDataType.KeepRoyalVendor]: '/dynamic/factions/assets/map-icon-royal-vendor-factionless.png',
@@ -222,7 +228,8 @@ export const allFactionData: FactionData[] = [
       [MapDataType.ResourceLogging]: '/dynamic/factions/assets/map-icon-logging-factionless.png',
       [MapDataType.ResourceMinerals]: '/dynamic/factions/assets/map-icon-minerals-factionless.png',
       [MapDataType.ResourceMining]: '/dynamic/factions/assets/map-icon-mining-factionless.png',
-      [MapDataType.Self]: '/images/MissingAsset.png'
+      [MapDataType.Self]: '/images/MissingAsset.png',
+      [MapDataType.VeilFracture]: '/dynamic/factions/assets/map-icon-veil-fracture-factionless.png'
     },
     mapPipImage: '/dynamic/factions/assets/map-icon-tier-pip-factionless.png',
     scrollbarImage: '/images/MissingAsset.png',
@@ -267,6 +274,8 @@ export const allFactionData: FactionData[] = [
     hudnavIconMailImage: '/images/MissingAsset.png',
     hudnavIconGuildImage: '/images/MissingAsset.png',
     hudnavIconQuestLogImage: '/images/MissingAsset.png',
+    hudnavIconFriendsImage: '/images/MissingAsset.png',
+    hudnavIconSocialImage: '/images/MissingAsset.png',
     hudnavEndImage: '/images/MissingAsset.png',
     sendButtonImage: '/images/MissingAsset.png',
     gearSlotImages: [],
@@ -373,6 +382,7 @@ export const allFactionData: FactionData[] = [
       [MapDataType.CraftingSmithy]: '/dynamic/factions/assets/map-icon-blacksmithing-station-tdd.png',
       [MapDataType.CraftingTailoring]: '/dynamic/factions/assets/map-icon-textile-station-tdd.png',
       [MapDataType.CraftingWoodworking]: '/dynamic/factions/assets/map-icon-woodworking-station-tdd.png',
+      [MapDataType.HotSpot]: HOT_SPOT_ICON_URL,
       [MapDataType.KeepBank]: '/dynamic/factions/assets/map-icon-personal-bank-tdd.png',
       [MapDataType.KeepMain]: '/dynamic/factions/assets/map-icon-keep-tdd.png',
       [MapDataType.KeepRoyalVendor]: '/dynamic/factions/assets/map-icon-royal-vendor-tdd.png',
@@ -390,7 +400,8 @@ export const allFactionData: FactionData[] = [
       [MapDataType.ResourceLogging]: '/dynamic/factions/assets/map-icon-logging-tdd.png',
       [MapDataType.ResourceMinerals]: '/dynamic/factions/assets/map-icon-minerals-tdd.png',
       [MapDataType.ResourceMining]: '/dynamic/factions/assets/map-icon-mining-tdd.png',
-      [MapDataType.Self]: '/dynamic/factions/assets/map-icon-player-tdd.png'
+      [MapDataType.Self]: '/dynamic/factions/assets/map-icon-player-tdd.png',
+      [MapDataType.VeilFracture]: '/dynamic/factions/assets/map-icon-veil-fracture-tdd.png'
     },
     mapPipImage: '/dynamic/factions/assets/map-icon-tier-pip-tdd.png',
     scrollbarImage: '/dynamic/factions/assets/scrollbar-tdd.png',
@@ -435,6 +446,8 @@ export const allFactionData: FactionData[] = [
     hudnavIconMailImage: '/dynamic/factions/assets/hudnav-icon-mail-tdd.png',
     hudnavIconGuildImage: '/dynamic/factions/assets/hudnav-icon-guild-tdd.png',
     hudnavIconQuestLogImage: '/dynamic/factions/assets/hudnav-icon-questlog-tdd.png',
+    hudnavIconFriendsImage: '/dynamic/factions/assets/hudnav-icon-friends-tdd.png',
+    hudnavIconSocialImage: '/dynamic/factions/assets/hudnav-icon-social-tdd.png',
     hudnavEndImage: '/dynamic/factions/assets/hudnav-end-tdd.png',
     sendButtonImage: '/dynamic/factions/assets/send-button-tdd.png',
     gearSlotImages: [
@@ -557,6 +570,7 @@ export const allFactionData: FactionData[] = [
       [MapDataType.CraftingSmithy]: '/dynamic/factions/assets/map-icon-blacksmithing-station-viking.png',
       [MapDataType.CraftingTailoring]: '/dynamic/factions/assets/map-icon-textile-station-viking.png',
       [MapDataType.CraftingWoodworking]: '/dynamic/factions/assets/map-icon-woodworking-station-viking.png',
+      [MapDataType.HotSpot]: HOT_SPOT_ICON_URL,
       [MapDataType.KeepBank]: '/dynamic/factions/assets/map-icon-personal-bank-viking.png',
       [MapDataType.KeepMain]: '/dynamic/factions/assets/map-icon-keep-viking.png',
       [MapDataType.KeepRoyalVendor]: '/dynamic/factions/assets/map-icon-royal-vendor-viking.png',
@@ -574,7 +588,8 @@ export const allFactionData: FactionData[] = [
       [MapDataType.ResourceLogging]: '/dynamic/factions/assets/map-icon-logging-viking.png',
       [MapDataType.ResourceMinerals]: '/dynamic/factions/assets/map-icon-minerals-viking.png',
       [MapDataType.ResourceMining]: '/dynamic/factions/assets/map-icon-mining-viking.png',
-      [MapDataType.Self]: '/dynamic/factions/assets/map-icon-player-viking.png'
+      [MapDataType.Self]: '/dynamic/factions/assets/map-icon-player-viking.png',
+      [MapDataType.VeilFracture]: '/dynamic/factions/assets/map-icon-veil-fracture-viking.png'
     },
     mapPipImage: '/dynamic/factions/assets/map-icon-tier-pip-viking.png',
     scrollbarImage: '/dynamic/factions/assets/scrollbar-viking.png',
@@ -619,6 +634,8 @@ export const allFactionData: FactionData[] = [
     hudnavIconMailImage: '/dynamic/factions/assets/hudnav-icon-mail-viking.png',
     hudnavIconGuildImage: '/dynamic/factions/assets/hudnav-icon-guild-viking.png',
     hudnavIconQuestLogImage: '/dynamic/factions/assets/hudnav-icon-questlog-viking.png',
+    hudnavIconFriendsImage: '/dynamic/factions/assets/hudnav-icon-friends-viking.png',
+    hudnavIconSocialImage: '/dynamic/factions/assets/hudnav-icon-social-viking.png',
     hudnavEndImage: '/dynamic/factions/assets/hudnav-end-viking.png',
     sendButtonImage: '/dynamic/factions/assets/send-button-viking.png',
     gearSlotImages: [
@@ -741,6 +758,7 @@ export const allFactionData: FactionData[] = [
       [MapDataType.CraftingSmithy]: '/dynamic/factions/assets/map-icon-blacksmithing-station-arthurian.png',
       [MapDataType.CraftingTailoring]: '/dynamic/factions/assets/map-icon-textile-station-arthurian.png',
       [MapDataType.CraftingWoodworking]: '/dynamic/factions/assets/map-icon-woodworking-station-arthurian.png',
+      [MapDataType.HotSpot]: HOT_SPOT_ICON_URL,
       [MapDataType.KeepBank]: '/dynamic/factions/assets/map-icon-personal-bank-arthurian.png',
       [MapDataType.KeepMain]: '/dynamic/factions/assets/map-icon-keep-arthurian.png',
       [MapDataType.KeepRoyalVendor]: '/dynamic/factions/assets/map-icon-royal-vendor-arthurian.png',
@@ -758,7 +776,8 @@ export const allFactionData: FactionData[] = [
       [MapDataType.ResourceLogging]: '/dynamic/factions/assets/map-icon-logging-arthurian.png',
       [MapDataType.ResourceMinerals]: '/dynamic/factions/assets/map-icon-minerals-arthurian.png',
       [MapDataType.ResourceMining]: '/dynamic/factions/assets/map-icon-mining-arthurian.png',
-      [MapDataType.Self]: '/dynamic/factions/assets/map-icon-player-arthurian.png'
+      [MapDataType.Self]: '/dynamic/factions/assets/map-icon-player-arthurian.png',
+      [MapDataType.VeilFracture]: '/dynamic/factions/assets/map-icon-veil-fracture-arthurian.png'
     },
     mapPipImage: '/dynamic/factions/assets/map-icon-tier-pip-arthurian.png',
     scrollbarImage: '/dynamic/factions/assets/scrollbar-arthurian.png',
@@ -803,6 +822,8 @@ export const allFactionData: FactionData[] = [
     hudnavIconMailImage: '/dynamic/factions/assets/hudnav-icon-mail-arthurian.png',
     hudnavIconGuildImage: '/dynamic/factions/assets/hudnav-icon-guild-arthurian.png',
     hudnavIconQuestLogImage: '/dynamic/factions/assets/hudnav-icon-questlog-arthurian.png',
+    hudnavIconFriendsImage: '/dynamic/factions/assets/hudnav-icon-friends-arthurian.png',
+    hudnavIconSocialImage: '/dynamic/factions/assets/hudnav-icon-social-arthurian.png',
     hudnavEndImage: '/dynamic/factions/assets/hudnav-end-arthurian.png',
     sendButtonImage: '/dynamic/factions/assets/send-button-arthurian.png',
     gearSlotImages: [

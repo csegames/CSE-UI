@@ -19,7 +19,7 @@ import {
 } from '../../helpers/stringTableHelpers';
 import { AbilityWithActivation } from '../../redux/abilitiesSlice';
 import { AbilityGroup } from '@csegames/library/dist/_baseGame/types/AbilityTypes';
-import TooltipSource from '../TooltipSource';
+import { TooltipSource } from '../TooltipSource';
 import Draggable from '../Draggable';
 import DraggableHandle, { DropHandlerDraggableData } from '../DraggableHandle';
 import { DropTypeAbilityButton } from '../abilityBars/AbilityButton';

@@ -81,7 +81,8 @@ export const DefaultSelf: PlayerEntityStateModel = {
   accountBank: {},
   isKeepAvailable: false,
   respawnTimestamp: 0,
-  idleRespawnTimestamp: 0
+  idleRespawnTimestamp: 0,
+  logoutCompleteTime: 0
 };
 
 interface EntitiesState {

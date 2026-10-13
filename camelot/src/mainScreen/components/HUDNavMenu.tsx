@@ -30,9 +30,9 @@ import { getStringTableValue } from '../helpers/stringTableHelpers';
 import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
 import { ResizeDetector } from '../../shared/components/ResizeDetector';
 import { WIDGET_ID_MAIL } from './mail/Mail';
-import { WIDGET_ID_GUILD } from './guild/Guild';
 import { WIDGET_ID_QUESTLOG } from './quests/QuestLog';
 import { getAvailableAbilityPoints } from '../helpers/abilityBookHelpers';
+import { WIDGET_ID_SOCIAL } from './social/Social';
 
 // CSS classes
 const Root = 'HUD-NavMenu-Root';
@@ -48,7 +48,7 @@ const StringIDHUDEditorWidgetNameInventory = 'HUDEditorWidgetNameInventory';
 const StringIDHUDEditorWidgetNameGameInfo = 'HUDEditorWidgetNameGameInfo';
 const StringIDHUDEditorWidgetNameAbilityBook = 'HUDEditorWidgetNameAbilityBook';
 const StringIDHUDEditorWidgetNameMail = 'HUDEditorWidgetNameMail';
-const StringIDHUDEditorWidgetNameGuild = 'HUDEditorWidgetNameGuild';
+const StringIDHUDEditorWidgetNameSocial = 'HUDEditorWidgetNameSocial';
 const StringIDHUDEditorWidgetNameQuestLog = 'HUDEditorWidgetNameQuestLog';
 
 // Keybind IDs - must match values from Input.h in the client repo.
@@ -164,10 +164,10 @@ class AHUDNavMenu extends React.Component<Props & DispatchProp, State> {
                 onClick={this.onQuestLogClicked.bind(this)}
               />
               <HUDNavMenuButton
-                tooltipContent={getStringTableValue(StringIDHUDEditorWidgetNameGuild, this.props.stringTable)}
-                tooltipID={'HUDNav-Guild'}
-                icon={factionData.hudnavIconGuildImage}
-                onClick={this.onGuildClicked.bind(this)}
+                tooltipContent={getStringTableValue(StringIDHUDEditorWidgetNameSocial, this.props.stringTable)}
+                tooltipID={'HUDNav-Social'}
+                icon={factionData.hudnavIconSocialImage}
+                onClick={this.onSocialClicked.bind(this)}
               />
               <HUDNavMenuButton
                 tooltipContent={getStringTableValue(StringIDHUDEditorWidgetNameGameInfo, this.props.stringTable)}
@@ -267,9 +267,9 @@ class AHUDNavMenu extends React.Component<Props & DispatchProp, State> {
     this.props.dispatch(toggleConditionalWidget(WIDGET_ID_QUESTLOG));
   }
 
-  private onGuildClicked(): void {
+  private onSocialClicked(): void {
     clientAPI.playGameSound(SoundEvents.PLAY_UI_QUICK_MENU_SELECT);
-    this.props.dispatch(toggleConditionalWidget(WIDGET_ID_GUILD));
+    this.props.dispatch(toggleConditionalWidget(WIDGET_ID_SOCIAL));
   }
 
   private onBarLayout(newWidth: number, newHeight: number, oldWidth: number, oldHeight: number): void {

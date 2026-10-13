@@ -65,6 +65,7 @@ interface InjectedProps {
   racesByStringID: Record<string, RaceDef>;
   bodyTypesByStringID: Record<string, BodyTypeDef>;
   gameDefsLoaded: boolean;
+  maxCharacterSlots: number;
 }
 
 type Props = ReactProps & InjectedProps & AddDispatch;
@@ -80,7 +81,8 @@ class ACharacterList extends React.Component<Props> {
         <FormattedTextDiv
           textAlign={'center'}
           text={getTokenizedStringTableValue(StringIDCharacterManagementCharactersCount, this.props.stringTable, {
-            COUNT: String(this.props.characters.length)
+            COUNT: String(this.props.characters.length),
+            MAX: this.props.maxCharacterSlots.toFixed(0)
           })}
           className={CharacterCountLabel}
           textClasses={[CharacterCountNumber]}
@@ -207,7 +209,8 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): ReactProps & I
     classesByStringID: state.gameDefs.classesByStringID,
     racesByStringID: state.gameDefs.racesByStringID,
     bodyTypesByStringID: state.gameDefs.bodyTypesByStringID,
-    gameDefsLoaded: state.loading.gameDefsLoaded
+    gameDefsLoaded: state.loading.gameDefsLoaded,
+    maxCharacterSlots: state.characters.restrictions?.maxSlots ?? Number.MAX_SAFE_INTEGER
   };
 };
 

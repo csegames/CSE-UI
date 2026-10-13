@@ -31,7 +31,6 @@ import { GuildSnapshot } from '@csegames/library/dist/camelotunchained/game/Game
 import { GroupPermission } from '@csegames/library/dist/_baseGame/types/GroupPermission';
 import { callCreateGuildInvitation, callGuildKick, callLeaveGuild } from './rest/guildsRestCalls';
 import { showConditionalWidget } from '../redux/hudSlice';
-import { WIDGET_ID_GUILD } from '../components/guild/Guild';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import { EntityID } from '@csegames/library/dist/_baseGame/types/localDefinitions';
 import {
@@ -39,6 +38,9 @@ import {
   PlayerEntityStateModel
 } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
 import { CharacterKind } from '@csegames/library/dist/camelotunchained/game/types/CharacterKind';
+import { WIDGET_ID_SOCIAL } from '../components/social/Social';
+import { Chat } from '../components/chat/Chat';
+import { store } from '../redux/store';
 
 // String IDs
 const StringIDUnitFrameContextUpgradeParty = 'UnitFrameContextUpgradeParty';
@@ -60,6 +62,7 @@ const StringIDUnitFrameContextOpenTrade = 'UnitFrameContextOpenTrade';
 const StringIDGuildsNameNeeded = 'GuildsNameNeeded';
 const StringIDGuildsConfirmLeave = 'GuildsConfirmLeave';
 const StringIDGuildsConfirmKick = 'GuildsConfirmKick';
+const StringIDChatScopeNameWhisper = 'ChatScopeNameWhisper';
 
 export function getUnitFrameContextMenuItems(
   party: PartyState,
@@ -247,9 +250,18 @@ function getOtherUnitFrameContextMenuItems(
   const canPromote = party.canPromote || selfIsLeader;
   const canDemote = selfIsLeader && selfInWarband;
 
+  menuItems.push({
+    title: getStringTableValue(StringIDChatScopeNameWhisper, stringTable),
+    onClick: (dispatch) => {
+      const name = store.getState().entities.entities[targetEntityID]?.name;
+      if (name) {
+        Chat.requestWhisper(name);
+      }
+    }
+  });
+
   // There is also a distance check on the server, but we don't have access to that data so we can't check it here.
   const canTradeInvite = targetEntityID?.length > 0;
-
   if (canTradeInvite) {
     menuItems.push({
       title: getStringTableValue(StringIDUnitFrameContextOpenTrade, stringTable),
@@ -346,7 +358,7 @@ function getOtherUnitFrameContextMenuItems(
                 onClick: () => {
                   dispatch(hideModal());
                   // Make sure the Guild UI is shown.  It will force a guild rename.
-                  dispatch(showConditionalWidget(WIDGET_ID_GUILD));
+                  dispatch(showConditionalWidget(WIDGET_ID_SOCIAL));
                 }
               }
             ]

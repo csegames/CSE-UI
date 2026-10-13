@@ -101,3 +101,29 @@
     }
   }
 }
+
+.Shared-XPRewardDisplay-Root {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.Shared-XPRewardDisplay-Icon {
+  position: relative;
+  margin-left: 0.5vmin;
+  width: 2vmin;
+  height: 2vmin;
+  object-fit: contain;
+}
+
+.Shared-XPRewardDisplay-Label {
+  position: relative;
+  font-family: Caudex;
+  font-size: 1.5rem;
+  color: white;
+
+  &.suffix {
+    margin-left: 0.5vmin;
+  }
+}

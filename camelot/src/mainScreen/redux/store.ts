@@ -29,7 +29,6 @@ import { performanceWarningsSlice } from './performanceWarningsSlice';
 import { popUpAnnouncementsSlice } from './popUpAnnouncementsSlice';
 import { stringTableSlice } from './stringTableSlice';
 import { toastersSlice } from './toastersSlice';
-import { tooltipSlice } from './tooltipSlice';
 import { warbandSlice } from './warbandSlice';
 import { zonesSlice } from './zonesSlice';
 import { questSlice } from './questSlice';
@@ -65,7 +64,6 @@ export const store = configureStore({
     stringTable: stringTableSlice.reducer,
     toasters: toastersSlice.reducer,
     trade: tradeSlice.reducer,
-    tooltip: tooltipSlice.reducer,
     warband: warbandSlice.reducer,
     zones: zonesSlice.reducer
   },

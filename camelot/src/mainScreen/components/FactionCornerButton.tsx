@@ -9,7 +9,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../redux/store';
 import { getFactionData } from '../gameData/factionData';
-import TooltipSource from './TooltipSource';
+import { TooltipSource } from './TooltipSource';
 import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 

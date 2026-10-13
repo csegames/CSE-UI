@@ -27,7 +27,15 @@ import { CornerButtonType, FactionCornerButton } from '../FactionCornerButton';
 import { addConditionalWidgetExiting, HUDLayer, HUDWidgetRegistration } from '../../redux/hudSlice';
 import { getFactionData } from '../../gameData/factionData';
 import { FactionScrollArea } from '../FactionScrollArea';
-import { getQuestsForDisplayCategory, isGenericQuestDisplay } from '../../helpers/questHelpers';
+import {
+  getLoggedQuestsForDisplayCategories,
+  getQuestsForDisplayCategory,
+  getXPRewards,
+  getXPRewardText,
+  isGenericQuestDisplay,
+  QuestXPReward,
+  WorkOrderDisplayCategories
+} from '../../helpers/questHelpers';
 import {
   addTrackedQuestID,
   QuestDisplayCategory,
@@ -39,24 +47,26 @@ import { GameDefsState } from '../../redux/gameDefsSlice';
 import { CollapsingDrawer } from '../CollapsingDrawer';
 import { QuestDef } from '../../dataSources/manifest/questDefManifest';
 import { FactionCheckbox } from '../FactionCheckbox';
-import TooltipSource from '../TooltipSource';
+import { TooltipSource } from '../TooltipSource';
 import ContextMenuSource from '../ContextMenuSource';
 import { ContextMenuItem } from '../../redux/contextMenuSlice';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
 import { getItemCount } from '../../helpers/inventoryHelpers';
 import { Item } from '@csegames/library/dist/camelotunchained/game/types/Items';
+import { ProgressState } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
 import { MoneyDisplay } from '../../../shared/components/MoneyDisplay';
+import { XPRewardDisplay } from '../../../shared/components/XPRewardDisplay';
 import { CurrencyID, getItemCountForIngredient } from '../../helpers/itemHelpers';
 
-export const MAX_LOGGED_QUESTS = 20;
+export const MAX_LOGGED_WORK_ORDERS = 20;
+const MAX_LOGGED_MILITARY_SERVICE_QUESTS = 20;
 
 // CSS classes
 const Root = 'HUD-QuestLog-Root';
 const RootContent = 'HUD-QuestLog-RootContent';
 const HeaderSection = 'HUD-QuestLog-HeaderSection';
 const BountyTimer = 'HUD-QuestLog-BountyTimer';
-const QuestCounter = 'HUD-QuestLog-QuestCounter';
 const Scroller = 'HUD-QuestLog-Scroller';
 const ScrollerContent = 'HUD-QuestLog-ScrollerContent';
 const Handle = 'HUD-FancyBorder-HeaderHandle';
@@ -84,6 +94,7 @@ const QuestObjectiveCheck = 'HUD-QuestLog-QuestObjectiveCheck';
 const IngredientCheck = 'HUD-QuestLog-IngredientCheck';
 const QuestProgressLabel = 'HUD-QuestLog-QuestProgressLabel';
 const QuestRewardDisplayGold = 'HUD-QuestLog-QuestRewardDisplayGold';
+const QuestRewardDisplayXP = 'HUD-QuestLog-QuestRewardDisplayXP';
 const KingsQuestRewardIcon = 'HUD-QuestLog-KingsQuestRewardIcon';
 const QuestProgressBarContainer = 'HUD-QuestLog-QuestProgressBar-Container';
 const QuestProgressBarClipper = 'HUD-QuestLog-QuestProgressBar-Clipper';
@@ -143,6 +154,7 @@ interface InjectedProps {
   quests: Record<string, QuestStateEx>;
   defs: GameDefsState;
   inventory: Item[];
+  selfProgression: Record<string, ProgressState> | undefined;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -181,12 +193,6 @@ class AQuestLog extends React.Component<Props & DispatchProp, State> {
             <div className={BountyTimer} style={{ color: factionData.mailSenderColor }}>
               {getTokenizedStringTableValue(StringIDQuestLogKingsBountyTimer, this.props.stringTable, {
                 TIME: this.getTimeRemainingText()
-              })}
-            </div>
-            <div className={QuestCounter}>
-              {getTokenizedStringTableValue(StringIDQuestLogTrackedQuestCount, this.props.stringTable, {
-                CURRENT: this.props.loggedQuestIDs.length.toFixed(0),
-                MAX: MAX_LOGGED_QUESTS.toFixed(0)
               })}
             </div>
           </div>
@@ -278,13 +284,7 @@ class AQuestLog extends React.Component<Props & DispatchProp, State> {
   private renderMilitaryServiceSection(): React.ReactNode {
     const sectionID = QuestDisplayCategory.MilitaryService;
 
-    const quests = getQuestsForDisplayCategory(
-      QuestDisplayCategory.MilitaryService,
-      this.props.quests,
-      this.props.defs.questDefs,
-      this.props.defs.itemsByStringID,
-      this.props.uiFactionID
-    ).filter((q) => this.props.loggedQuestIDs.includes(q.instanceID));
+    const quests = this.getLoggedQuests([QuestDisplayCategory.MilitaryService]);
 
     if (quests.length === 0) {
       return null;
@@ -292,7 +292,11 @@ class AQuestLog extends React.Component<Props & DispatchProp, State> {
 
     return (
       <div className={PrimarySection}>
-        {this.renderSectionHeader(sectionID, StringIDQuestLogSectionTitleMilitaryService)}
+        {this.renderSectionHeader(
+          sectionID,
+          StringIDQuestLogSectionTitleMilitaryService,
+          this.getQuestCountText(quests.length, MAX_LOGGED_MILITARY_SERVICE_QUESTS)
+        )}
         <CollapsingDrawer isOpen={!this.state.closedSections.includes(sectionID)}>
           <FactionBorder
             className={PrimarySectionTable}
@@ -310,29 +314,7 @@ class AQuestLog extends React.Component<Props & DispatchProp, State> {
   private renderWorkOrdersSection(): React.ReactNode {
     const sectionID = QuestDisplayCategory.TurnInMisc;
 
-    let quests = [
-      ...getQuestsForDisplayCategory(
-        QuestDisplayCategory.TurnInArmor,
-        this.props.quests,
-        this.props.defs.questDefs,
-        this.props.defs.itemsByStringID,
-        this.props.uiFactionID
-      ),
-      ...getQuestsForDisplayCategory(
-        QuestDisplayCategory.TurnInWeapons,
-        this.props.quests,
-        this.props.defs.questDefs,
-        this.props.defs.itemsByStringID,
-        this.props.uiFactionID
-      ),
-      ...getQuestsForDisplayCategory(
-        QuestDisplayCategory.TurnInMisc,
-        this.props.quests,
-        this.props.defs.questDefs,
-        this.props.defs.itemsByStringID,
-        this.props.uiFactionID
-      )
-    ].filter((q) => this.props.loggedQuestIDs.includes(q.instanceID));
+    const quests = this.getLoggedQuests(WorkOrderDisplayCategories);
 
     if (quests.length === 0) {
       return null;
@@ -340,7 +322,11 @@ class AQuestLog extends React.Component<Props & DispatchProp, State> {
 
     return (
       <div className={PrimarySection}>
-        {this.renderSectionHeader(sectionID, StringIDQuestLogSectionTitleWorkOrders)}
+        {this.renderSectionHeader(
+          sectionID,
+          StringIDQuestLogSectionTitleWorkOrders,
+          this.getQuestCountText(quests.length, MAX_LOGGED_WORK_ORDERS)
+        )}
         <CollapsingDrawer isOpen={!this.state.closedSections.includes(sectionID)}>
           <FactionBorder
             className={PrimarySectionTable}
@@ -355,15 +341,34 @@ class AQuestLog extends React.Component<Props & DispatchProp, State> {
     );
   }
 
-  private renderSectionHeader(sectionID: string, title: string): React.ReactNode {
+  private getLoggedQuests(categories: QuestDisplayCategory[]): QuestStateEx[] {
+    return getLoggedQuestsForDisplayCategories(
+      categories,
+      this.props.loggedQuestIDs,
+      this.props.quests,
+      this.props.defs.questDefs,
+      this.props.defs.itemsByStringID,
+      this.props.uiFactionID
+    );
+  }
+
+  private getQuestCountText(current: number, max: number): string {
+    return getTokenizedStringTableValue(StringIDQuestLogTrackedQuestCount, this.props.stringTable, {
+      CURRENT: current.toFixed(0),
+      MAX: max.toFixed(0)
+    });
+  }
+
+  private renderSectionHeader(sectionID: string, title: string, questCountText?: string): React.ReactNode {
     const factionData = getFactionData(this.props.uiFactionID);
+    const titleText = getStringTableValue(title, this.props.stringTable);
     return (
       <div className={PrimarySectionHeader} onMouseDown={this.toggleSection.bind(this, sectionID)}>
         <img
           className={`${PrimaryArrow}${this.state.closedSections.includes(sectionID) ? ' closed' : ''}`}
           src={factionData.arrowPointerImage}
         />
-        <div className={PrimarySectionTitle}>{getStringTableValue(title, this.props.stringTable)}</div>
+        <div className={PrimarySectionTitle}>{questCountText ? `${titleText} ${questCountText}` : titleText}</div>
       </div>
     );
   }
@@ -655,15 +660,29 @@ class AQuestLog extends React.Component<Props & DispatchProp, State> {
   }
 
   private renderRewardContent(quest: QuestStateEx, def: QuestDef): React.ReactNode {
+    const goldAmount = this.getGoldRewardAmount(def);
+    const xpRewards = getXPRewards(
+      def,
+      this.props.defs.progressionTracks,
+      this.props.stringTable,
+      this.props.selfProgression
+    );
+
     if (def.tags.includes(QuestDisplayCategory.KingsTask)) {
       if (!quest.isRewarded) {
         if (quest.isCollectible) {
-          // Last week's quest.  Show how much money they (probably) earned.
+          // Last week's quest.  Show how much they (probably) earned, pro-rated like the server does.
           const targetValue = def.targets[0].amount;
           const curValue = quest.progress[def.targets[0].id] ?? 0;
           const progressPercent = curValue / targetValue;
-          const rewardAmount = Math.floor(def.rewards[0].amount * progressPercent);
-          return <MoneyDisplay className={QuestRewardDisplayGold} amount={rewardAmount} />;
+          return (
+            <>
+              {goldAmount > 0 && (
+                <MoneyDisplay className={QuestRewardDisplayGold} amount={Math.floor(goldAmount * progressPercent)} />
+              )}
+              {this.renderXPRewards(quest, xpRewards, progressPercent)}
+            </>
+          );
         } else {
           // This week's quest.  Show the treasure chest icon, since there is no fixed amount.
           return (
@@ -679,16 +698,39 @@ class AQuestLog extends React.Component<Props & DispatchProp, State> {
       }
     }
 
-    // If the quest grants gold, show the gold!
-    const rewardAmount =
-      def?.rewards?.find((entry) => {
-        return entry.id === `Item.${CurrencyID.Gold}`;
-      })?.amount ?? 0;
-    if (rewardAmount > 0) {
-      return <MoneyDisplay className={QuestRewardDisplayGold} amount={rewardAmount} />;
+    // If the quest grants gold and/or XP, show them!
+    if (goldAmount > 0 || xpRewards.length > 0) {
+      return (
+        <>
+          {goldAmount > 0 && <MoneyDisplay className={QuestRewardDisplayGold} amount={goldAmount} />}
+          {this.renderXPRewards(quest, xpRewards)}
+        </>
+      );
     }
 
     return null;
+  }
+
+  private getGoldRewardAmount(def: QuestDef): number {
+    return def?.rewards?.find((entry) => entry.id === `Item.${CurrencyID.Gold}`)?.amount ?? 0;
+  }
+
+  private renderXPRewards(quest: QuestStateEx, xpRewards: QuestXPReward[], progressPercent?: number): React.ReactNode {
+    return xpRewards.map((reward) => {
+      const displayed: QuestXPReward =
+        progressPercent !== undefined ? { ...reward, amount: Math.floor(reward.amount * progressPercent) } : reward;
+      return (
+        <TooltipSource
+          key={reward.trackID}
+          className={QuestRewardDisplayXP}
+          tooltipID={`${WIDGET_ID_QUESTLOG}_xp_${quest.instanceID}_${reward.trackID}`}
+          content={() => getXPRewardText(displayed, this.props.stringTable)}
+          positionType='mouse'
+        >
+          <XPRewardDisplay amount={displayed.amount} iconUrl={displayed.iconUrl} />
+        </TooltipSource>
+      );
+    });
   }
 
   private renderQuestProgressBar(quest: QuestStateEx, def: QuestDef): React.ReactNode {
@@ -837,16 +879,18 @@ class AQuestLog extends React.Component<Props & DispatchProp, State> {
 }
 
 const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
+  const { loggedQuestIDs, trackedQuestIDs, rolloverTime, quests } = state.quests;
   return {
     ...ownProps,
     stringTable: state.stringTable.stringTable,
     uiFactionID: state.hud.uiFactionID,
-    loggedQuestIDs: state.quests.loggedQuestIDs,
-    trackedQuestIDs: state.quests.trackedQuestIDs,
-    rolloverTime: state.quests.rolloverTime,
-    quests: state.quests.quests,
+    loggedQuestIDs,
+    trackedQuestIDs,
+    rolloverTime,
+    quests,
     defs: state.gameDefs,
-    inventory: state.inventory.primary
+    inventory: state.inventory.primary,
+    selfProgression: state.entities.self?.progression
   };
 };
 

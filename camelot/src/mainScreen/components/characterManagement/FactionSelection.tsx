@@ -49,6 +49,8 @@ import { FactionSplitter } from '../FactionSplitter';
 const StringIDCharacterManagementLeaveTitle = 'CharacterManagementLeaveTitle';
 const StringIDCharacterManagementLeaveMessage = 'CharacterManagementLeaveMessage';
 const StringIDCharacterManagementHeaderRealm = 'CharacterManagementHeaderRealm';
+const StringIDCharacterManagementFactionLockedFlavor = 'CharacterManagementFactionLockedFlavor';
+const StringIDCharacterManagementFactionLockedRules = 'CharacterManagementFactionLockedRules';
 
 // CSS classes
 const Root = 'HUD-FactionSelection-Root';
@@ -69,6 +71,9 @@ const FactionDescriptionLabel = 'HUD-FactionSelection-FactionDescriptionLabel';
 const Splitter = 'HUD-FactionSelection-Splitter';
 const BottomBorder = 'HUD-FactionSelection-BottomBorder';
 const TopBorder = 'HUD-FactionSelection-TopBorder';
+const LockInfoRoot = 'HUD-FactionSelection-LockInfo-Root';
+const LockInfoFlavorText = 'HUD-FactionSelection-LockInfo-FlavorText';
+const LockInfoRuleText = 'HUD-FactionSelection-LockInfo-RuleText';
 
 interface State {
   selectedFactionID: Faction | null;
@@ -84,6 +89,7 @@ interface InjectedProps {
   bodyTypesByStringID: Record<string, BodyTypeDef>;
   characters: SimpleCharacter[];
   selectedCharacterID: string | null;
+  allowCrossFaction: boolean;
 }
 
 type Props = ReactProps & InjectedProps & AddDispatch;
@@ -93,12 +99,15 @@ class AFactionSelection extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      selectedFactionID: null
+      // If the account is faction-locked, this auto-selects that faction.
+      selectedFactionID: this.getLockedFaction(props)
     };
   }
 
   render(): React.ReactNode {
     const borderFactionData = getFactionData(Faction.Factionless);
+
+    const lockedFaction = this.getLockedFaction(this.props);
 
     return (
       <div className={Root}>
@@ -112,15 +121,15 @@ class AFactionSelection extends React.Component<Props, State> {
         <div className={MainContent}>
           <div className={TopBorder} style={{ backgroundImage: `url(${borderFactionData.edgeDecorativeTopImage})` }} />
 
-          {this.renderFactionSection(Faction.Arthurian)}
+          {this.renderFactionSection(Faction.Arthurian, !lockedFaction || lockedFaction === Faction.Arthurian)}
 
           <FactionSplitter className={`${Splitter} ${Faction.Factionless}`} factionIDOverride={Faction.Factionless} />
 
-          {this.renderFactionSection(Faction.TDD)}
+          {this.renderFactionSection(Faction.TDD, !lockedFaction || lockedFaction === Faction.TDD)}
 
           <FactionSplitter className={`${Splitter} ${Faction.Factionless}`} factionIDOverride={Faction.Factionless} />
 
-          {this.renderFactionSection(Faction.Viking)}
+          {this.renderFactionSection(Faction.Viking, !lockedFaction || lockedFaction === Faction.Viking)}
 
           <div
             className={BottomBorder}
@@ -130,6 +139,14 @@ class AFactionSelection extends React.Component<Props, State> {
         <CharacterManagementFooter leftButtons={[this.renderLeaveButton()]} rightButtons={[this.renderNextButton()]} />
       </div>
     );
+  }
+
+  private getLockedFaction(props: Props): Faction | null {
+    if (!props.allowCrossFaction && props.characters.length > 0) {
+      return props.characters[0].factionID;
+    }
+
+    return null;
   }
 
   private getImagesToCache(factionID: string): string[] {
@@ -165,15 +182,19 @@ class AFactionSelection extends React.Component<Props, State> {
     requestRemoveImagesFromCache(Root, this.getImagesToCache(Faction.Factionless));
   }
 
-  private renderFactionSection(factionID: Faction): React.ReactNode {
+  private renderFactionSection(factionID: Faction, canSelect: boolean): React.ReactNode {
     const factionData = getFactionData(factionID);
     const isSelected = factionID === this.state.selectedFactionID;
     const faction = this.props.factionsByStringID[factionID];
 
     return (
       <div
-        className={`${FactionSection}${isSelected ? ' selected' : ''}`}
+        className={`${FactionSection}${isSelected ? ' selected' : ''}${canSelect ? '' : ' disabled'}`}
         onClick={() => {
+          if (!canSelect) {
+            return;
+          }
+
           if (this.state.selectedFactionID !== factionID) {
             this.setState({ selectedFactionID: factionID });
             this.props.dispatch(setUIFactionID(factionID));
@@ -214,6 +235,21 @@ class AFactionSelection extends React.Component<Props, State> {
           <FactionTitle className={FactionName} heightOverrideVmin={20} factionIDOverride={factionID}>
             {getStringTableValue(faction?.name ?? StringIDGeneralUnknownFaction, this.props.stringTable)}
           </FactionTitle>
+          {!canSelect && (
+            <FactionBorder
+              className={LockInfoRoot}
+              type={BorderType.Decorative}
+              background={BorderBackground.PatternSmall}
+              factionIDOverride={factionID}
+            >
+              <div className={LockInfoFlavorText}>
+                {getStringTableValue(StringIDCharacterManagementFactionLockedFlavor, this.props.stringTable)}
+              </div>
+              <div className={LockInfoRuleText}>
+                {getStringTableValue(StringIDCharacterManagementFactionLockedRules, this.props.stringTable)}
+              </div>
+            </FactionBorder>
+          )}
         </div>
         <div className={FactionShadow} />
       </div>
@@ -306,7 +342,8 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): ReactProps & I
     racesByStringID: state.gameDefs.racesByStringID,
     bodyTypesByStringID: state.gameDefs.bodyTypesByStringID,
     characters: state.characters.characters,
-    selectedCharacterID: state.characters.selectedCharacterID
+    selectedCharacterID: state.characters.selectedCharacterID,
+    allowCrossFaction: state.characters.restrictions?.allowCrossFaction ?? false
   };
 };
 

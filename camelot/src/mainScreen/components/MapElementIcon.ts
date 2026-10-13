@@ -14,6 +14,7 @@ export class MapElementIcon {
   public type: MapDataType;
   public x: number;
   public y: number;
+  public tier: number;
 
   private ref: HTMLDivElement | null = null;
   private onDataChanged: (() => void) | null = null;
@@ -22,11 +23,12 @@ export class MapElementIcon {
   private lastWrittenX: number | null = null;
   private lastWrittenY: number | null = null;
 
-  constructor(public readonly id: string, faction: number, type: MapDataType, x: number, y: number) {
+  constructor(public readonly id: string, faction: number, type: MapDataType, x: number, y: number, tier: number) {
     this.faction = faction;
     this.type = type;
     this.x = x;
     this.y = y;
+    this.tier = tier;
   }
 
   // Called by the owning component's ref callback so position writes have a DOM node to target.
@@ -37,18 +39,19 @@ export class MapElementIcon {
     this.writePosition();
   }
 
-  // Called by the owning component to be notified when faction/type change (icon image, tooltip),
+  // Called by the owning component to be notified when faction/type/tier change (icon image, tooltip),
   // which position writes alone don't cover.
   bindDataChanged(callback: (() => void) | null): void {
     this.onDataChanged = callback;
   }
 
-  update(faction: number, type: MapDataType, x: number, y: number): void {
-    const needsRerender = faction !== this.faction || type !== this.type;
+  update(faction: number, type: MapDataType, x: number, y: number, tier: number): void {
+    const needsRerender = faction !== this.faction || type !== this.type || tier !== this.tier;
     this.faction = faction;
     this.type = type;
     this.x = x;
     this.y = y;
+    this.tier = tier;
     this.writePosition();
     if (needsRerender) {
       this.onDataChanged?.();

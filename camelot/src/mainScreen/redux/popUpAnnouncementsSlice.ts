@@ -12,6 +12,7 @@ export interface PopUpAnnouncement {
   isHidden: boolean;
   text: string;
   color: string;
+  refreshedAt?: number;
 }
 
 interface AState {
@@ -35,6 +36,13 @@ export const popUpAnnouncementsSlice = createSlice({
         color
       });
     },
+    refreshPopUpAnnouncement: (state, action: PayloadAction<[string, number]>) => {
+      const [id, refreshedAt] = action.payload;
+      const popUpAnnouncement = state.popUpAnnouncements.find((popUpAnnouncement) => popUpAnnouncement.id === id);
+      if (popUpAnnouncement) {
+        popUpAnnouncement.refreshedAt = refreshedAt;
+      }
+    },
     hidePopUpAnnouncement: (state, action: PayloadAction<string>) => {
       const popUpAnnouncement = state.popUpAnnouncements.find(
         (popUpAnnouncement) => popUpAnnouncement.id === action.payload
@@ -57,5 +65,10 @@ export const popUpAnnouncementsSlice = createSlice({
   }
 });
 
-export const { addPopUpAnnouncement, hidePopUpAnnouncement, hidePopUpAnnouncements, removePopUpAnnouncement } =
-  popUpAnnouncementsSlice.actions;
+export const {
+  addPopUpAnnouncement,
+  refreshPopUpAnnouncement,
+  hidePopUpAnnouncement,
+  hidePopUpAnnouncements,
+  removePopUpAnnouncement
+} = popUpAnnouncementsSlice.actions;

@@ -7,7 +7,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
-import TooltipSource from './TooltipSource';
+import { TooltipSource } from './TooltipSource';
 import { BorderBackground, BorderType, FactionBorder } from './FactionBorder';
 import { getFactionData } from '../gameData/factionData';
 import { genID } from '@csegames/library/dist/_baseGame/utils/idGen';

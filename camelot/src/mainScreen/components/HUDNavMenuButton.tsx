@@ -8,7 +8,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../redux/store';
 import { FactionBorder, BorderType } from './FactionBorder';
-import TooltipSource from './TooltipSource';
+import { TooltipSource } from './TooltipSource';
 import { getFactionData } from '../gameData/factionData';
 
 // CSS classes

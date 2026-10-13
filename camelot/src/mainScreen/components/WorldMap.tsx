@@ -40,11 +40,14 @@ import { CornerButtonType, FactionCornerButton } from './FactionCornerButton';
 import {
   allMapDetails,
   allMapRegions,
-  getMapDataTypesForCategory,
+  getAllMapNames,
   getMapDetails,
+  getMapNamesByRegion,
+  getMapPOICategories,
+  getMapRegionNames,
   isMapVisibleToFaction,
   MAP_REGION_WORLD,
-  MapDisplayCategory
+  StringIDPrefixMapPOIName
 } from '../helpers/mapHelpers';
 import { BaseHUDWidgetDraggableHandle } from './BaseHUDWidgetDraggableHandle';
 import { FactionDivider } from './FactionDivider';
@@ -59,7 +62,7 @@ import { typedObjectKeys } from '@csegames/library/dist/_baseGame/utils/objectUt
 import { FactionComboBox } from './FactionComboBox';
 import { requestAddImagesToCache } from '../dataSources/imageCacheService';
 import { WorldMapFullView } from './WorldMapFullView';
-import TooltipSource from './TooltipSource';
+import { TooltipSource } from './TooltipSource';
 
 export const mapGroupIconImages: Record<GroupPOIType, string> = {
   [GroupPOIType.PartyMember]: GroupPOIPartyMemberURL,
@@ -76,7 +79,6 @@ const ERROR_ZONE: ZoneInfo = {
   Bounds: '-4500,-3375 - 4500,3375'
 };
 
-const StringIDPrefixMapPOIName = 'MapPOIName_';
 const StringIDPrefixMapGroupPOIName = 'MapGroupPOIName_';
 const StringIDMapLegendSliderButton = 'MapLegendSliderButton';
 const StringIDWidgetNameWorldMap = 'HUDEditorWidgetNameWorldMap';
@@ -171,17 +173,9 @@ class AWorldMap extends React.Component<Props, State> {
     const selfWidget = this.props.widgets[WIDGET_ID_WORLD_MAP];
     const isMaximized = !!selfWidget?.state?.resizable?.isMaximized;
 
-    const alphySort = (a: MapDataType, b: MapDataType) => {
-      const aName = getStringTableValue(StringIDPrefixMapPOIName + MapDataType[a], this.props.stringTable);
-      const bName = getStringTableValue(StringIDPrefixMapPOIName + MapDataType[b], this.props.stringTable);
-      return aName.localeCompare(bName);
-    };
+    const { poisStructures, poisResourceNodes, poisCraftingStations } = getMapPOICategories(this.props.stringTable);
 
-    const poisStructures = getMapDataTypesForCategory(MapDisplayCategory.Structures).sort(alphySort);
-    const poisResourceNodes = getMapDataTypesForCategory(MapDisplayCategory.ResourceNodes).sort(alphySort);
-    const poisCraftingStations = getMapDataTypesForCategory(MapDisplayCategory.CraftingStations).sort(alphySort);
-
-    const availableMapNames = this.getAvailableMapNames();
+    const availableMapNames = selection.isWorldView ? [] : this.getAvailableMapNames();
 
     return (
       <div className={Root}>
@@ -346,12 +340,7 @@ class AWorldMap extends React.Component<Props, State> {
   }
 
   private getAvailableRegionNames(): string[] {
-    const names: string[] = typedObjectKeys(allMapRegions).map((regionStringID: string) =>
-      getStringTableValue(regionStringID, this.props.stringTable)
-    );
-    names.sort();
-
-    return names;
+    return getMapRegionNames(this.props.stringTable);
   }
 
   private getSelectedRegionName(): string {
@@ -378,19 +367,9 @@ class AWorldMap extends React.Component<Props, State> {
   }
 
   private getAvailableMapNames(): string[] {
-    const names: string[] = (allMapRegions[this.getSelection().regionID] ?? [])
-      // Hide other realms' home islands; you can never travel to them.
-      .filter((mapID: string) => isMapVisibleToFaction(mapID, this.props.uiFactionID))
-      .map((mapID: string) => {
-        return getStringTableValue(
-          allMapDetails[mapID]?.nameStringID ?? StringIDGeneralUnnamed,
-          this.props.stringTable
-        );
-      });
-
-    names.sort();
-
-    return names;
+    const { uiFactionID, stringTable } = this.props;
+    const regionID = this.getSelection().regionID;
+    return getMapNamesByRegion(uiFactionID, stringTable)[regionID] ?? [];
   }
 
   private getSelectedMapName(): string {
@@ -401,21 +380,7 @@ class AWorldMap extends React.Component<Props, State> {
   }
 
   private getAllAvailableMapNames(): string[] {
-    const seen = new Set<string>();
-    const names: string[] = [];
-    for (const regionID of typedObjectKeys(allMapRegions)) {
-      if (regionID === MAP_REGION_WORLD) continue;
-      for (const mapID of allMapRegions[regionID]) {
-        if (seen.has(mapID)) continue;
-        seen.add(mapID);
-        const details = allMapDetails[mapID];
-        if (!details) continue;
-        if (!isMapVisibleToFaction(mapID, this.props.uiFactionID)) continue;
-        names.push(getStringTableValue(details.nameStringID ?? StringIDGeneralUnnamed, this.props.stringTable));
-      }
-    }
-    names.sort();
-    return names;
+    return getAllMapNames(this.props.uiFactionID, this.props.stringTable);
   }
 
   private onMapSelected(mapName: string): void {

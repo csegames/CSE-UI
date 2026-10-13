@@ -10,6 +10,7 @@ export const StringIDGeneralYes = 'GeneralYes';
 export const StringIDGeneralNo = 'GeneralNo';
 export const StringIDGeneralOk = 'GeneralOk';
 export const StringIDGeneralConfirm = 'GeneralConfirm';
+export const StringIDGeneralConfirmation = 'GeneralConfirmation';
 export const StringIDGeneralCancel = 'GeneralCancel';
 export const StringIDGeneralBack = 'GeneralBack';
 export const StringIDGeneralLeave = 'GeneralLeave';
@@ -68,6 +69,10 @@ export const StringIDGeneralUnlocked = 'GeneralUnlocked';
 export const StringIDGeneralFilters = 'GeneralFilters';
 export const StringIDGeneralSubmit = 'GeneralSubmit';
 export const StringIDGeneralMax = 'GeneralMax';
+export const StringIDGeneralReset = 'GeneralReset';
+export const StringIDGeneralReassign = 'GeneralReassign';
+export const StringIDGeneralNotEnoughGold = 'GeneralNotEnoughGold';
+export const StringIDGeneralRemove = 'GeneralRemove';
 
 const reported = new Set<string>();
 

@@ -215,7 +215,7 @@ class ANotificationToasts extends React.Component<Props & DispatchProp, State> {
                     {getStringTableValue(StringIDGeneralPlus, this.props.stringTable)}
                   </div>
                   {reward.isGold ? (
-                    <MoneyDisplay className={RewardGold} amount={reward.amount} sizeOverrideVmin={1.5} />
+                    <MoneyDisplay className={RewardGold} amount={reward.amount ?? 0} sizeOverrideVmin={1.5} />
                   ) : (
                     <>
                       {(reward.iconUrl?.length ?? 0) > 0 && (
@@ -228,7 +228,7 @@ class ANotificationToasts extends React.Component<Props & DispatchProp, State> {
                         </FactionBorder>
                       )}
                       <div className={RewardName}>
-                        {`${reward.amount > 1 ? `${reward.amount}x ` : ''}${reward.name}`}
+                        {`${(reward.amount ?? 0) > 1 ? `${reward.amount}x ` : ''}${reward.name}`}
                       </div>
                     </>
                   )}

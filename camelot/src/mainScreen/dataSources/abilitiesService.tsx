@@ -18,6 +18,7 @@ import {
 import {
   deleteAbilityButtonLayout,
   deleteAbilityGroup,
+  slotPressed,
   updateAbility,
   updateAbilityActivated,
   UpdateAbilityActivatedParams,
@@ -34,7 +35,11 @@ import {
   HUDVerticalAnchor,
   HUDWidgetState
 } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
-import { addPopUpAnnouncement, hidePopUpAnnouncements } from '../redux/popUpAnnouncementsSlice';
+import {
+  addPopUpAnnouncement,
+  hidePopUpAnnouncements,
+  refreshPopUpAnnouncement
+} from '../redux/popUpAnnouncementsSlice';
 import { getStringTableValue } from '../helpers/stringTableHelpers';
 import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
 
@@ -60,30 +65,48 @@ export class AbilitiesService extends ExternalDataSource {
     return handles;
   }
 
-  private handleAbilityActivated(abilityId: number): void {
-    // The game client just tells us that an ability was activated.  We need to track
-    // the activation time so we can display cooldowns, etc.
+  private handleAbilityActivated(abilityId: number, buttonFunction?: number): void {
+    if (this.reduxState.abilities.editStatus.canEdit) {
+      return;
+    }
+
+    // Every press plays fx
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_CLICK);
+    if (buttonFunction !== undefined) {
+      this.dispatch(slotPressed({ buttonFunction, timestamp: Date.now() }));
+    }
+
+    const ability = this.reduxState.abilities.abilities[abilityId];
+    if (!ability) {
+      return;
+    }
+
     const params: UpdateAbilityActivatedParams = {
       abilityId,
       timestamp: new Date()
     };
     this.dispatch(updateAbilityActivated(params));
-    const ability = this.reduxState.abilities.abilities[abilityId];
+
     if (ability.state & AbilityStateFlags.Cooldown) {
       clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_COOLDOWN);
-      this.dispatch(hidePopUpAnnouncements());
-      this.dispatch(
-        addPopUpAnnouncement([
-          getStringTableValue(StringIDPopUpAnnouncementAbilityFailCooldown, this.reduxState.stringTable.stringTable),
-          '#f60000'
-        ])
+      this.showOrRefreshAnnouncement(
+        getStringTableValue(StringIDPopUpAnnouncementAbilityFailCooldown, this.reduxState.stringTable.stringTable)
       );
     } else if (ability.disabledReason) {
       clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_FAILURE);
-      this.dispatch(hidePopUpAnnouncements());
-      this.dispatch(addPopUpAnnouncement([ability.disabledReason, '#f60000']));
+      this.showOrRefreshAnnouncement(ability.disabledReason);
+    }
+  }
+
+  private showOrRefreshAnnouncement(text: string): void {
+    const existing = this.reduxState.popUpAnnouncements.popUpAnnouncements.find(
+      (announcement) => !announcement.isHidden && announcement.text === text
+    );
+    if (existing) {
+      this.dispatch(refreshPopUpAnnouncement([existing.id, Date.now()]));
     } else {
-      clientAPI.playGameSound(SoundEvents.PLAY_UI_ABILITY_CLICK);
+      this.dispatch(hidePopUpAnnouncements());
+      this.dispatch(addPopUpAnnouncement([text, '#f60000']));
     }
   }
 

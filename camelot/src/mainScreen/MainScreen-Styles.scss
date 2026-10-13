@@ -389,6 +389,19 @@ $ResizingHandleSize: 5px;
   left: 0;
 }
 
+.HUD-ComingSoon-Root {
+  @extend .absoluteFill;
+  background-color: #000000b0;
+}
+
+.HUD-ComingSoon-Label {
+  @extend .absoluteCenter;
+  font-family: Caudex;
+  font-size: 4rem;
+  color: yellow;
+  white-space: nowrap;
+}
+
 .FormattedTextDiv-WordsContainer {
   display: flex;
   flex-direction: column;
@@ -973,6 +986,49 @@ $ResizingHandleSize: 5px;
   }
 }
 
+.HUD-LoggingOut-Root {
+  position: relative;
+  pointer-events: all;
+  width: 35vmin;
+  padding: 3vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.HUD-LoggingOut-Buttons {
+  @extend .row;
+  position: relative;
+  margin: 1vmin 2vmin 0 2vmin;
+}
+
+.HUD-LoggingOut-Button {
+  position: relative;
+  margin: 0 0.75vmin;
+}
+
+.HUD-LoggingOut-CountdownContainer {
+  position: relative;
+  margin: 0 3vmin 1.5vmin 3vmin;
+}
+
+.HUD-LoggingOut-CountdownText {
+  position: relative;
+  font-family: Caudex;
+  color: white;
+  font-size: 1.5rem;
+  @extend .textWithShadowOutline;
+}
+
+.HUD-LoggingOut-CountdownNumber {
+  position: relative;
+  font-family: Caudex;
+  color: yellow;
+  font-size: 1.5rem;
+  @extend .textWithShadowOutline;
+}
+
 .HUD-TooltipPane-TooltipWrapper {
   position: absolute;
   top: 0;
@@ -1119,13 +1175,47 @@ $ResizingHandleSize: 5px;
 
 .HUD-PlayerUnitFrame-FrameRoot {
   position: relative;
-  cursor: pointer !important;
   width: 33vmin;
   height: 14.85vmin;
 
   &.simple {
     height: 16.5vmin;
     overflow: hidden;
+  }
+}
+
+// The only part of the frame that responds to clicks/hovers. Shrunk down to just the drawn
+// pixels instead of the full frame box.
+.HUD-PlayerUnitFrame-HitRegion {
+  @extend .absoluteFill;
+  cursor: pointer;
+
+  // Fancy layout: box around the name/icon/bars/pips below. Same size with or without a compass,
+  // wide enough for both plus a variable judgement pip count.
+  top: 4.28vmin;
+  left: 2.65vmin;
+  width: 29.35vmin;
+  height: 6.3vmin;
+
+  &.simple {
+    // Simple layout: box around the icon/name/bars. A bit wider than self needs, so it also
+    // covers the distance diamond on targets.
+    top: 5vmin;
+    left: 1.4vmin;
+    width: 25vmin;
+    height: 4.4vmin;
+  }
+
+  // Fancy only: NPCs just show one health bar, so their plaque is shorter. Simple mode doesn't
+  // have this gap, so &.simple.npc below resets it.
+  &.npc {
+    top: 4.3vmin;
+    height: 4.3vmin;
+  }
+
+  &.simple.npc {
+    top: 5vmin;
+    height: 4.4vmin;
   }
 }
 
@@ -1838,6 +1928,9 @@ $StatusEffectNeutralColor: white;
   position: absolute;
   top: 5.58vmin;
   left: 26vmin;
+  // Just a distance/bearing readout, but it renders after FrameRoot so it sits on top and was
+  // stealing its clicks/hover.
+  pointer-events: none;
   @extend %fancy-compass-arrow;
 
   &.npc:not(.simple) {
@@ -1959,20 +2052,38 @@ $StatusEffectNeutralColor: white;
   }
 }
 
-.HUD-GateUnitFrame-Root {
+.HUD-ItemUnitFrame-FrameRoot {
   position: relative;
   width: 33vmin;
   height: 14.85vmin;
   pointer-events: none;
 }
 
-.HUD-GateUnitFrame-Background {
+// "npc" is for some types of NPCs that are actually implemented as items
+.HUD-ItemUnitFrame-Root .HUD-StatusEffects-Root,
+.HUD-ItemUnitFrame-Root .HUD-StatusEffects-Root.npc {
+  left: 8.3vmin;
+  top: -6.3vmin;
+}
+
+.HUD-ItemUnitFrame-Root.simple .HUD-StatusEffects-Root,
+.HUD-ItemUnitFrame-Root.simple .HUD-StatusEffects-Root.npc {
+  left: 5.5vmin;
+  top: -8.5vmin;
+}
+
+.HUD-ItemUnitFrame-Root.simple .HUD-StatusEffectsIcon-Root {
+  width: 1.9vmin;
+  height: 1.9vmin;
+}
+
+.HUD-ItemUnitFrame-Background {
   @extend .absoluteFill;
   width: 100%;
   height: 100%;
 }
 
-.HUD-GateUnitFrame-Name {
+.HUD-ItemUnitFrame-Name {
   position: absolute;
   top: 4.58vmin;
   left: 9vmin;
@@ -1984,7 +2095,7 @@ $StatusEffectNeutralColor: white;
     1vmin 1vmin 1vmin rgba(0, 0, 0, 0);
 }
 
-.HUD-GateUnitFrame-GateIcon {
+.HUD-ItemUnitFrame-Icon {
   position: absolute;
   height: 2.7vmin;
   left: 4.75vmin;
@@ -1993,7 +2104,7 @@ $StatusEffectNeutralColor: white;
   z-index: 2;
 }
 
-.HUD-GateUnitFrame-HealthBarContainer {
+.HUD-ItemUnitFrame-HealthBarContainer {
   position: absolute;
   left: 8.3vmin;
   top: 6.39vmin;
@@ -2002,14 +2113,14 @@ $StatusEffectNeutralColor: white;
   overflow: hidden;
 }
 
-.HUD-GateUnitFrame-HealthBarFill {
+.HUD-ItemUnitFrame-HealthBarFill {
   display: block;
   height: 100%;
   object-fit: cover;
   object-position: top left;
 }
 
-.HUD-GateUnitFrame-Marker {
+.HUD-ItemUnitFrame-Marker {
   height: 100%;
   width: 0.284vmin;
   position: absolute;
@@ -2017,29 +2128,29 @@ $StatusEffectNeutralColor: white;
   background-color: white;
 }
 
-.HUD-GateUnitFrame-Frame {
+.HUD-ItemUnitFrame-Frame {
   @extend .absoluteFill;
   width: 100%;
   height: 100%;
 }
 
-.HUD-GateUnitFrame-Position {
+.HUD-ItemUnitFrame-Position {
   position: absolute;
   top: 4.32vmin;
   left: 26vmin;
   @extend %fancy-compass-arrow;
 }
 
-.HUD-GateUnitFrame-SimpleForegroundRight {
+.HUD-ItemUnitFrame-SimpleForegroundRight {
   @extend .absoluteFill;
 }
 
-.HUD-GateUnitFrame-Root.simple {
+.HUD-ItemUnitFrame-FrameRoot.simple {
   width: 33vmin;
   height: 16.5vmin;
   overflow: hidden;
 
-  .HUD-GateUnitFrame-Name {
+  .HUD-ItemUnitFrame-Name {
     top: 5.5vmin;
     left: 6.4vmin;
     width: 14.5vmin;
@@ -2048,20 +2159,20 @@ $StatusEffectNeutralColor: white;
     padding-bottom: 0.3em;
   }
 
-  .HUD-GateUnitFrame-GateIcon {
+  .HUD-ItemUnitFrame-Icon {
     height: 2.2vmin;
     left: 2.5vmin;
     top: 6.1vmin;
   }
 
-  .HUD-GateUnitFrame-HealthBarContainer {
+  .HUD-ItemUnitFrame-HealthBarContainer {
     top: 5.3vmin;
     left: 5.5vmin;
     width: 16.8vmin;
     height: 2.265vmin;
   }
 
-  .HUD-GateUnitFrame-Position {
+  .HUD-ItemUnitFrame-Position {
     top: 5.55vmin;
     left: 19.5vmin;
     @extend %simple-compass-arrow;
@@ -2347,6 +2458,7 @@ $StatusEffectNeutralColor: white;
   font-size: 1.8rem;
   color: white;
   text-align: center;
+  white-space: pre-wrap;
   padding: 3.5vmin 3vmin 1vmin 3vmin;
 }
 
@@ -4593,6 +4705,45 @@ $StatusEffectNeutralColor: white;
   left: -0.25vmin;
 }
 
+.HUD-AbilityBarSlot-EmptySlotHitArea {
+  @extend .blankMouseTarget;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: -0.25vmin;
+}
+
+// Generic flash to trigger any time an ability bar button is pressed
+@keyframes abilityBarSlotPressFlash {
+  0% {
+    border-color: #f1ece7;
+    box-shadow: 0 0 0.4vmin #f1ece7, inset 0 0 0.3vmin #d4c4b8;
+    opacity: 0.65;
+  }
+  35% {
+    border-color: #d4c4b8;
+    box-shadow: 0 0 0.3vmin #d4c4b8, inset 0 0 0.3vmin #d4c4b8;
+    opacity: 0.65;
+  }
+  100% {
+    border-color: transparent;
+    box-shadow: none;
+    opacity: 0;
+  }
+}
+
+.HUD-AbilityBarSlot-PressFlash {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: -0.25vmin;
+  box-sizing: border-box;
+  border: 0.2vmin solid transparent;
+  pointer-events: none;
+  opacity: 0;
+  animation: abilityBarSlotPressFlash 0.15s ease-out forwards;
+}
+
 .HUD-AbilityBarSlot-DecorationBack {
   position: absolute;
   top: 0;
@@ -4600,6 +4751,7 @@ $StatusEffectNeutralColor: white;
   margin: auto;
   width: 6vmin;
   left: -1.25vmin;
+  pointer-events: none;
 }
 
 .HUD-AbilityBarSlot-DecorationFront {
@@ -4609,6 +4761,7 @@ $StatusEffectNeutralColor: white;
   margin: auto;
   width: 6vmin;
   left: -1.25vmin;
+  pointer-events: none;
 }
 
 .HUD-AbilityButton-Root {
@@ -4625,7 +4778,8 @@ $StatusEffectNeutralColor: white;
 }
 
 .HUD-AbilityButton-BorderQueued {
-  border: 0.4vmin solid #ffc37e;
+  border: 0.25vmin solid #ffc37ecc;
+  box-shadow: 0 0 0.4vmin #ffc37e88, inset 0 0 0.3vmin #ffc37e66;
 }
 
 .HUD-AbilityButton-FaithRim {
@@ -4813,11 +4967,11 @@ $StatusEffectNeutralColor: white;
   opacity: 0;
   box-sizing: border-box;
   border: 0.2vmin solid #d4c4b8;
-  animation: abilityButtonActivePulse 0.75s linear infinite;
 }
 
 .HUD-AbilityButton-OverlayActiveVisible {
   opacity: 1;
+  animation: abilityButtonActivePulse 0.75s linear infinite;
 }
 
 .HUD-AbilityTooltip-Root {
@@ -6542,6 +6696,9 @@ $StatusEffectNeutralColor: white;
     .HUD-FactionSelection-FactionShadow {
       opacity: 0;
     }
+    .HUD-FactionSelection-LockInfo-Root {
+      opacity: 1;
+    }
   }
 
   &.selected {
@@ -6554,6 +6711,11 @@ $StatusEffectNeutralColor: white;
     .HUD-FactionSelection-FactionShadow {
       opacity: 0;
     }
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    filter: grayscale(100%);
   }
 }
 
@@ -6667,6 +6829,38 @@ $StatusEffectNeutralColor: white;
   background-size: contain;
   // z-index is needed so this border sits behind the splitter endcaps which overlap the bottom border
   z-index: 1;
+}
+
+.HUD-FactionSelection-LockInfo-Root {
+  @extend .column;
+  align-items: center;
+  position: absolute;
+  top: calc(100% + 5vmin);
+  left: 50%;
+  width: 30vmin;
+  padding: 1.5vmin;
+  box-shadow: 0 0 2vmin 1vmin red;
+  transition: opacity 0.2s;
+  opacity: 0;
+  transform: translateX(-50%);
+  filter: grayscale(0%);
+}
+
+.HUD-FactionSelection-LockInfo-FlavorText {
+  position: relative;
+  font-family: Caudex;
+  font-size: 1.25rem;
+  color: #aaaaaa;
+  text-align: center;
+}
+
+.HUD-FactionSelection-LockInfo-RuleText {
+  position: relative;
+  margin-top: 2vmin;
+  font-family: Caudex;
+  font-size: 1.25rem;
+  color: white;
+  text-align: center;
 }
 
 .HUD-ZoneName-Root {
@@ -7241,6 +7435,23 @@ $StatusEffectNeutralColor: white;
   filter: drop-shadow(0 0 0.35vmin black);
 }
 
+// opacity + transform only (compositor-only, no repaint) so this stays cheap with multiple hot spots on screen.
+@keyframes hotSpotIconPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.2);
+  }
+}
+
+.HUD-WorldMapIcons-HotSpotPulse {
+  animation: hotSpotIconPulse 1.2s ease-in-out infinite;
+}
+
 .HUD-WorldMapIcons-Pips {
   @extend .row;
   position: absolute;
@@ -7350,6 +7561,10 @@ $StatusEffectNeutralColor: white;
 .HUD-WorldMapFullView-Root {
   @extend .absoluteFill;
   overflow: hidden;
+
+  &.HUD-WorldMapFullView-Root--hovering {
+    cursor: pointer;
+  }
 }
 
 .HUD-WorldMapFullView-BaseImage {
@@ -8632,6 +8847,25 @@ $minimap-circle-clip: circle(closest-side at 50% 50%);
   flex-shrink: 0;
 }
 
+.HUD-Crafting-StationMaxLevelLabel {
+  position: relative;
+  top: -1vmin;
+  margin-left: 2.5vmin;
+  margin-right: 1vmin;
+  margin-bottom: 0.5vmin;
+  font-family: Caudex;
+  font-size: 1.1rem;
+  color: #ddd;
+  text-align: center;
+  cursor: default;
+}
+
+.HUD-Crafting-StationMaxLevelValue {
+  display: inline-block;
+  font-weight: bold;
+  cursor: help;
+}
+
 .HUD-Crafting-RecipesAccordionScroller {
   position: relative;
   margin-top: 0.5vmin;
@@ -9478,10 +9712,8 @@ $minimap-circle-clip: circle(closest-side at 50% 50%);
 }
 
 .HUD-Guild-Root {
+  @extend .absoluteFill;
   @extend .column;
-  position: relative;
-  width: 71vmin;
-  height: 68vmin;
 }
 
 .HUD-Guild-NoGuild-Container {
@@ -10126,6 +10358,15 @@ $minimap-circle-clip: circle(closest-side at 50% 50%);
 
 .HUD-Vendor-QuestRewardDisplay .Shared-MoneyDisplay-Label {
   font-size: 1.25rem;
+}
+
+.HUD-Vendor-QuestRewardDisplay .Shared-XPRewardDisplay-Label {
+  font-size: 1.25rem;
+}
+
+.HUD-Vendor-KingsTask-RewardXP {
+  position: relative;
+  margin-left: 1.5vmin;
 }
 
 .HUD-Vendor-QuestButtonColumn {
@@ -10931,11 +11172,19 @@ $minimap-circle-clip: circle(closest-side at 50% 50%);
   margin-top: 0.5vmin;
 }
 
-.HUD-RepairWarning-Root {
+.HUD-PlayerWarningIcons-Root {
+  @extend .row;
+  min-width: 7vmin;
+  min-height: 7vmin;
+  pointer-events: none;
+}
+
+.HUD-PlayerWarningIcons-Icon {
+  position: relative;
   width: 7vmin;
   height: 7vmin;
   object-fit: contain;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .HUD-QuestLog-Root {
@@ -10960,12 +11209,6 @@ $minimap-circle-clip: circle(closest-side at 50% 50%);
 .HUD-QuestLog-BountyTimer {
   font-family: Caudex;
   font-size: 1.25rem;
-}
-
-.HUD-QuestLog-QuestCounter {
-  font-family: Caudex;
-  font-size: 1.25rem;
-  color: white;
 }
 
 .HUD-QuestLog-Scroller {
@@ -11092,6 +11335,10 @@ $minimap-circle-clip: circle(closest-side at 50% 50%);
   display: flex;
   align-items: center;
   justify-content: center;
+
+  > * + * {
+    margin-left: 1vmin;
+  }
 }
 
 .HUD-QuestLog-QuestCell {
@@ -11168,6 +11415,14 @@ $minimap-circle-clip: circle(closest-side at 50% 50%);
 }
 
 .HUD-QuestLog-QuestRewardDisplayGold .Shared-MoneyDisplay-Label {
+  font-size: 1.25rem;
+}
+
+.HUD-QuestLog-QuestRewardDisplayXP {
+  position: relative;
+}
+
+.HUD-QuestLog-QuestRewardDisplayXP .Shared-XPRewardDisplay-Label {
   font-size: 1.25rem;
 }
 
@@ -12202,4 +12457,529 @@ $minimap-circle-clip: circle(closest-side at 50% 50%);
       height: 2vmin;
     }
   }
+}
+
+.HUD-CharacterResetModal-Root {
+  @extend .row;
+  position: relative;
+  width: 78vmin;
+}
+
+.HUD-CharacterResetModal-ResetAbilitiesSection {
+  @extend .column;
+  align-items: center;
+  position: relative;
+  margin: 2.5vmin 0 2.5vmin 2vmin;
+  width: 36vmin;
+  box-sizing: border-box;
+  padding: 3vmin;
+}
+
+.HUD-CharacterResetModal-ResetAttributesSection {
+  @extend .column;
+  align-items: center;
+  position: relative;
+  margin: 2.5vmin 2vmin;
+  width: 36vmin;
+  box-sizing: border-box;
+  padding: 3vmin;
+}
+
+.HUD-CharacterResetModal-SectionIconContainer {
+  position: relative;
+  width: 5vmin;
+  height: 5vmin;
+}
+
+.HUD-CharacterResetModal-SectionIcon {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.HUD-CharacterResetModal-SectionTitle {
+  position: relative;
+  margin-top: 0.5vmin;
+  text-align: center;
+  white-space: pre-wrap;
+  font-family: Caudex;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.HUD-CharacterResetModal-SectionDescription {
+  position: relative;
+  margin-top: 0.5vmin;
+  height: 5vmin;
+  text-align: center;
+  white-space: pre-wrap;
+  font-family: Caudex;
+  font-size: 1.25rem;
+  color: white;
+}
+
+.HUD-CharacterResetModal-PointsHeader {
+  @extend .row;
+  position: relative;
+  margin-top: 2vmin;
+  align-items: center;
+}
+
+.HUD-CharacterResetModal-PointsHeaderLabel {
+  position: relative;
+  font-family: Caudex;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.HUD-CharacterResetModal-PointsResetButton {
+  position: relative;
+  margin-left: 1vmin;
+  width: 2vmin;
+  height: 2vmin;
+  cursor: pointer;
+  background-image: url(../images/hudeditor/refresh-icon.png);
+  background-size: contain;
+  opacity: 0.8;
+  filter: brightness(0) invert(1);
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:active {
+    opacity: 1;
+  }
+}
+
+.HUD-CharacterResetModal-SpecsRow {
+  @extend .row;
+  position: relative;
+  margin: 1.5vmin 0;
+  width: 120%;
+  justify-content: space-evenly;
+}
+
+.HUD-CharacterResetModal-SpecDetails {
+  @extend .column;
+  position: relative;
+  align-items: center;
+  flex: 1;
+}
+
+.HUD-CharacterResetModal-SpecIconContainer {
+  position: relative;
+  width: 5vmin;
+  height: 5vmin;
+}
+
+.HUD-CharacterResetModal-SpecIcon {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.HUD-CharacterResetModal-SpecName {
+  position: relative;
+  margin-top: 1vmin;
+  font-family: Caudex;
+  font-size: 1rem;
+  color: white;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.HUD-CharacterResetModal-SpecPoints {
+  position: relative;
+  font-family: Caudex;
+  font-size: 0.9rem;
+  color: white;
+}
+
+.HUD-CharacterResetModal-LevelBorder {
+  @extend .row;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+.HUD-CharacterResetModal-LevelLabel {
+  position: relative;
+  margin: 0.2vmin 0.5vmin;
+  font-family: Caudex;
+  font-size: 0.85rem;
+  color: white;
+  text-align: center;
+}
+
+.HUD-CharacterResetModal-FeeBlock {
+  @extend .column;
+  position: relative;
+  width: 100%;
+  margin-top: auto;
+}
+
+.HUD-CharacterResetModal-FeeDivider {
+  position: relative;
+  margin: 0.25vmin 0;
+}
+
+.HUD-CharacterResetModal-FeeRow {
+  @extend .row;
+  position: relative;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.HUD-CharacterResetModal-FeeRowLabel {
+  position: relative;
+  font-family: Caudex;
+  font-size: 1.25rem;
+  color: white;
+}
+
+.HUD-Social-Root {
+  @extend .column;
+  position: relative;
+  width: 71vmin;
+  height: 68vmin;
+}
+
+.HUD-Social-RootBorder {
+  @extend .absoluteFill;
+  @extend .column;
+}
+
+.HUD-Social-TabContent {
+  @extend .column;
+  position: relative;
+  flex-grow: 1;
+}
+
+.HUD-Social-Tabs {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  left: calc(100% + 0.6vmin);
+  top: 10vmin;
+}
+
+.HUD-Social-TabButton {
+  position: relative;
+  width: 6vmin;
+  height: 6vmin;
+  margin-top: 1vmin;
+}
+
+.HUD-Social-TabIcon {
+  @extend .absoluteFill;
+}
+
+.HUD-FriendFoeList-Root {
+  @extend .absoluteFill;
+  @extend .column;
+}
+
+.HUD-FriendFoeList-NavTabs {
+  @extend .row;
+  position: relative;
+  align-self: center;
+}
+
+.HUD-FriendFoeList-NavTab {
+  position: relative;
+  margin: 0 1vmin;
+}
+
+.HUD-FriendFoeList-TabLabel {
+  position: relative;
+  margin: 0.5vmin 1.5vmin;
+  font-family: Caudex;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.HUD-FriendFoeList-Roster-MemberListSection {
+  @extend .column;
+  position: relative;
+  margin: 3vmin;
+  flex-grow: 1;
+}
+
+.HUD-FriendFoeList-TaperBar {
+  position: relative;
+  width: 100%;
+  height: 0.3vmin;
+  object-fit: contain;
+}
+
+.HUD-FriendFoeList-Roster-MemberList-TabNav {
+  @extend .column;
+  position: relative;
+  margin-bottom: 2vmin;
+}
+
+.HUD-FriendFoeList-Roster-MemberList-Header {
+  @extend .row;
+  align-items: baseline;
+  flex-shrink: 0;
+}
+
+.HUD-FriendFoeList-Roster-MemberList-SortButton {
+  @extend .row;
+  position: relative;
+  background-color: #00000001;
+  pointer-events: all;
+  cursor: pointer;
+  align-items: center;
+}
+
+.HUD-FriendFoeList-Roster-MemberList-MemberIndexCell {
+  position: relative;
+  box-sizing: border-box;
+  margin-left: 2vmin;
+  width: 5.1vmin;
+  padding: 0.25vmin 1vmin;
+}
+
+.HUD-FriendFoeList-Roster-MemberList-MemberNameCell {
+  position: relative;
+  box-sizing: border-box;
+  width: 20.1vmin;
+  padding: 0.25vmin 1vmin;
+}
+
+.HUD-FriendFoeList-Roster-MemberList-MemberLevelCell {
+  position: relative;
+  box-sizing: border-box;
+  width: 7.5vmin;
+  padding: 0.25vmin 1vmin;
+}
+
+.HUD-FriendFoeList-Roster-MemberList-MemberClassCell {
+  position: relative;
+  box-sizing: border-box;
+  width: 15vmin;
+  padding: 0.25vmin 1vmin;
+}
+
+.HUD-FriendFoeList-Roster-MemberList-MemberNoteCell {
+  position: relative;
+  box-sizing: border-box;
+  width: 15vmin;
+  padding: 0.25vmin 1vmin;
+}
+
+.HUD-FriendFoeList-Roster-MemberList-LegendText {
+  position: relative;
+  font-family: Caudex;
+  font-size: 1rem;
+  color: white;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.HUD-FriendFoeList-Roster-MemberList-SortDirectionIndicator {
+  position: relative;
+  margin-left: 1vmin;
+  width: 1.5vmin;
+  height: 1.5vmin;
+  object-fit: contain;
+  opacity: 0;
+
+  &.up {
+    opacity: 1;
+    transform: rotate(90deg);
+  }
+
+  &.down {
+    opacity: 1;
+    transform: rotate(-90deg);
+  }
+}
+
+.HUD-FriendFoeList-Roster-MemberList-ScrollRegion {
+  position: relative;
+  flex-grow: 1;
+}
+
+.HUD-FriendFoeList-Roster-MemberList-ScrollArea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% + 3vmin);
+  height: 100%;
+}
+
+.HUD-FriendFoeList-Roster-MemberList-Content {
+  @extend .column;
+  position: relative;
+}
+
+.HUD-FriendFoeList-Roster-MemberList-Row {
+  @extend .row;
+  position: relative;
+  margin-right: 0.5vmin;
+  padding: 0.5vmin 0;
+  align-items: baseline;
+  flex-shrink: 0;
+  background-color: #ffffff20;
+
+  &.odd {
+    background-color: #00000080;
+  }
+}
+
+.HUD-FriendFoeList-Roster-MemberList-DataText {
+  position: relative;
+  font-family: Caudex;
+  font-size: 1.25rem;
+  color: white;
+  text-align: left;
+
+  &.center {
+    text-align: center;
+  }
+}
+
+.HUD-FriendFoeList-AddButton {
+  position: relative;
+  margin-top: 2vmin;
+  align-self: center;
+}
+
+.HUD-CharacterResetModal-RespecButton {
+  position: relative;
+  margin-top: 1vmin;
+}
+
+.HUD-CharacterResetModal-ConfirmationModalMoney {
+  position: relative;
+  align-self: center;
+}
+
+.HUD-CharacterResetModal-StatsList {
+  @extend .row;
+  position: relative;
+  flex-wrap: wrap;
+  margin-bottom: 1.5vmin;
+}
+
+.HUD-CharacterResetModal-StatCell {
+  @extend .row;
+  position: relative;
+  margin: 0.5vmin 1vmin;
+  width: calc(50% - 2vmin);
+  align-items: center;
+}
+
+.HUD-CharacterResetModal-StatSelector {
+  position: relative;
+}
+
+.HUD-CharacterResetModal-StatNameLabel {
+  position: relative;
+  margin-left: 1vmin;
+  flex: 1;
+  min-width: 0;
+  font-family: Caudex;
+  font-size: 1.1rem;
+  color: white;
+}
+
+.HUD-CharacterResetModal-TooltipContent {
+  @extend .column;
+  position: relative;
+}
+
+.HUD-CharacterResetModal-TooltipTitle {
+  position: relative;
+  font-family: Caudex;
+  font-size: 1.75rem;
+  color: white;
+  @extend .textWithShadowOutline;
+}
+
+.HUD-CharacterResetModal-TooltipMessage {
+  position: relative;
+  font-family: Caudex;
+  font-size: 1.25rem;
+  color: white;
+  @extend .textWithShadowOutline;
+}
+
+.HUD-AddFriendFoeDialog-Root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 2vmin;
+}
+
+.HUD-AddFriendFoeDialog-NameInputContainer {
+  position: relative;
+  width: 29vmin;
+  margin-top: 1vmin;
+}
+
+.HUD-AddFriendFoeDialog-NameCharacterInput {
+  position: relative;
+  font-size: 1.5rem;
+}
+
+.HUD-AddFriendFoeDialog-InputStatus {
+  position: relative;
+  height: 1.1rem;
+  color: #aaa;
+  font-family: Caudex;
+  font-style: italic;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.HUD-AddFriendFoeDialog-ButtonSection {
+  @extend .row;
+  position: relative;
+  margin-top: 2vmin;
+  align-self: center;
+}
+
+.HUD-AddFriendFoeDialog-ActionButton {
+  position: relative;
+  margin: 0 1vmin;
+}
+
+.HUD-AddEditFriendFoeNoteDialog-Root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 2vmin;
+}
+
+.HUD-AddEditFriendFoeNoteDialog-NoteInputContainer {
+  position: relative;
+  width: 29vmin;
+  margin-bottom: 1vmin;
+  align-self: center;
+}
+
+.HUD-AddEditFriendFoeNoteDialog-NoteCharacterInput {
+  position: relative;
+  font-size: 1.5rem;
+  height: 11vmin;
+}
+
+.HUD-AddEditFriendFoeNoteDialog-ButtonSection {
+  @extend .row;
+  position: relative;
+  margin-top: 2vmin;
+  align-self: center;
+}
+
+.HUD-AddEditFriendFoeNoteDialog-ActionButton {
+  position: relative;
+  margin: 0 1vmin;
 }
