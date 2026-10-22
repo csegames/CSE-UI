@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MessageRendererOptions } from '@csegames/library/dist/chat/messageRendererOptions';
+import { MessageRendererOptions } from '@csegames/library/dist/chat/MessageRendererOptions';
 
 export class ChatMessageRendererOptions implements MessageRendererOptions<React.ReactChild> {
   public static Instance: ChatMessageRendererOptions = new ChatMessageRendererOptions();
