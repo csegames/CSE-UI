@@ -43,9 +43,10 @@ import {
   getAbilityByDisplayDefID,
   getAbilityIconBorderProps,
   getAvailableAbilityPoints,
+  isArchetypeTrack,
   isSpecializationTrack,
+  playStagedLevelChangeSound,
   StringIDAbilityBookClassProgression,
-  TAG_PREFIX_ARCHETYPE_CLASS,
   TAG_PREFIX_PASSIVE
 } from '../../helpers/abilityBookHelpers';
 import { ProgressionTrackDef } from '../../dataSources/manifest/progressionTrackManifest';
@@ -120,8 +121,7 @@ class AAbilityPageClass extends React.Component<Props, State> {
     const classDef = this.props.myClass;
 
     const archetypeTracks = classDef.progressionTracks.filter((ptID) => {
-      const progressionTrack = this.props.defs.progressionTracks[ptID];
-      return progressionTrack.tags.some((tag) => tag.startsWith(TAG_PREFIX_ARCHETYPE_CLASS));
+      return isArchetypeTrack(this.props.defs.progressionTracks[ptID]);
     });
 
     const specializationTracks = classDef.progressionTracks.filter((ptID) => {
@@ -453,13 +453,7 @@ class AAbilityPageClass extends React.Component<Props, State> {
       return;
     }
 
-    if (stagedLevelChange > 1) {
-      clientAPI.playGameSound(SoundEvents.PLAY_CP_ABILITY_MULTI_SELECT);
-    } else if (stagedLevelChange === 1) {
-      clientAPI.playGameSound(SoundEvents.PLAY_CP_UI_ABILITY_STAGING);
-    } else {
-      clientAPI.playGameSound(SoundEvents.PLAY_CP_ABILITY_DESELECT);
-    }
+    playStagedLevelChangeSound(stagedLevelChange);
 
     this.setState({
       stagedLevelsByTrackID: { ...this.state.stagedLevelsByTrackID, [ptID]: newStagedTrackLevel - trackLevel }

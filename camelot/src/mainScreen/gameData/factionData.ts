@@ -19,18 +19,11 @@ export interface FactionData {
   paperdollBaseImage: string;
   factionSelectBackgroundImage: string;
   factionSelectEmblemImage: string;
-  unitFrameBackgroundImage: string;
-  unitFrameForegroundImage: string;
-  unitFrameForegroundTargetImage?: string;
-  unitFrameForegroundPartyMemberImage: string;
-  unitFrameForegroundPartyLeaderImage: string;
   unitFrameResourceDividerImage: string;
   unitFrameResourcePipBackground: string;
-  simpleUnitFrameBackgroundImage?: string;
-  simpleUnitFrameForegroundImage?: string;
-  simpleUnitFrameForegroundRightImage?: string;
-  simpleUnitFrameForegroundPartyMemberImage?: string;
-  simpleUnitFrameForegroundPartyLeaderImage?: string;
+  unitFrameClassGemImage: string;
+  unitFrameDecor1Image: string;
+  unitFrameDecor2Image: string;
   abilityBarLeftEndImage: string;
   abilityBarRightEndImage: string;
   abilityBarCenterDecorTopImage: string;
@@ -144,8 +137,6 @@ export interface FactionData {
   taperBarImage: string;
   mapGlobeImage: string;
   // Shared frame art for non-player nameplates: NPCs, resource nodes, and gates.
-  universalUnitFrameForegroundImage: string;
-  universalUnitFrameBackgroundImage: string;
 }
 
 export const allFactionData: FactionData[] = [
@@ -164,17 +155,11 @@ export const allFactionData: FactionData[] = [
     paperdollBaseImage: '/images/MissingAsset.png',
     factionSelectBackgroundImage: '/images/MissingAsset.png',
     factionSelectEmblemImage: '/images/MissingAsset.png',
-    unitFrameBackgroundImage: '/dynamic/factions/assets/unit-frame-back-factionless.png',
-    unitFrameForegroundImage: '/dynamic/factions/assets/unit-frame-front-factionless.png',
-    unitFrameForegroundPartyMemberImage: '/images/MissingAsset.png',
-    unitFrameForegroundPartyLeaderImage: '/images/MissingAsset.png',
     unitFrameResourceDividerImage: '/images/MissingAsset.png',
     unitFrameResourcePipBackground: '/images/MissingAsset.png',
-    simpleUnitFrameBackgroundImage: '/dynamic/factions/assets/unit-frame-back-simple-factionless.png',
-    simpleUnitFrameForegroundImage: '/dynamic/factions/assets/unit-frame-front-simple-factionless.png',
-    simpleUnitFrameForegroundRightImage: '/dynamic/factions/assets/unit-frame-front-simple-right-factionless.png',
-    simpleUnitFrameForegroundPartyMemberImage: '/dynamic/factions/assets/unit-frame-front-simple-factionless.png',
-    simpleUnitFrameForegroundPartyLeaderImage: '/dynamic/factions/assets/unit-frame-front-simple-factionless.png',
+    unitFrameClassGemImage: '/dynamic/factions/assets/unit-frame-class-gem-factionless.png',
+    unitFrameDecor1Image: '/dynamic/factions/assets/unit-frame-decor1-factionless.png',
+    unitFrameDecor2Image: '/dynamic/factions/assets/unit-frame-decor2-factionless.png',
     abilityBarLeftEndImage: '/images/MissingAsset.png',
     abilityBarRightEndImage: '/images/MissingAsset.png',
     abilityBarCenterDecorTopImage: '/images/MissingAsset.png',
@@ -228,14 +213,14 @@ export const allFactionData: FactionData[] = [
     scrollbarImage: '/images/MissingAsset.png',
     scrollbarShortImage: '/images/MissingAsset.png',
     miniMapImage: '/images/MissingAsset.png',
-    cornerPrimaryTopLeftImage: '/images/MissingAsset.png',
-    cornerPrimaryTopRightImage: '/images/MissingAsset.png',
-    cornerPrimaryBottomLeftImage: '/images/MissingAsset.png',
-    cornerPrimaryBottomRightImage: '/images/MissingAsset.png',
-    cornerSecondaryTopLeftImage: '/images/MissingAsset.png',
-    cornerSecondaryTopRightImage: '/images/MissingAsset.png',
-    cornerSecondaryBottomLeftImage: '/images/MissingAsset.png',
-    cornerSecondaryBottomRightImage: '/images/MissingAsset.png',
+    cornerPrimaryTopLeftImage: '/dynamic/factions/assets/corner-secondary-tl-factionless.png',
+    cornerPrimaryTopRightImage: '/dynamic/factions/assets/corner-secondary-tr-factionless.png',
+    cornerPrimaryBottomLeftImage: '/dynamic/factions/assets/corner-secondary-bl-factionless.png',
+    cornerPrimaryBottomRightImage: '/dynamic/factions/assets/corner-secondary-br-factionless.png',
+    cornerSecondaryTopLeftImage: '/dynamic/factions/assets/corner-secondary-tl-factionless.png',
+    cornerSecondaryTopRightImage: '/dynamic/factions/assets/corner-secondary-tr-factionless.png',
+    cornerSecondaryBottomLeftImage: '/dynamic/factions/assets/corner-secondary-bl-factionless.png',
+    cornerSecondaryBottomRightImage: '/dynamic/factions/assets/corner-secondary-br-factionless.png',
     cornerDecorativeTopLeftImage: '/dynamic/factions/assets/corner-decorative-tl-factionless.png',
     cornerDecorativeTopRightImage: '/dynamic/factions/assets/corner-decorative-tr-factionless.png',
     cornerDecorativeTopRightEmptyImage: '/dynamic/factions/assets/corner-decorative-tr-factionless.png',
@@ -252,10 +237,10 @@ export const allFactionData: FactionData[] = [
     edgeDecorativeRightImage: '/dynamic/factions/assets/edge-decorative-right-factionless.png',
     edgeDecorativeBottomImage: '/dynamic/factions/assets/edge-decorative-bottom-factionless.png',
     edgeFancyTopImage: '/images/MissingAsset.png',
-    headerFancyBookendImage: '/images/MissingAsset.png',
-    borderColor: '#727272',
+    headerFancyBookendImage: '/dynamic/factions/assets/header-fancy-bookend-factionless.png',
+    borderColor: '#2f2f2f',
     targetBorderColor: 'white',
-    squareBackgroundImage: '/images/MissingAsset.png',
+    squareBackgroundImage: '/dynamic/factions/assets/square-background-factionless.png',
     bagBackgroundImage: '/images/MissingAsset.png',
     searchBackgroundColor: 'transparent',
     hudnavIconGameMenuImage: '/images/MissingAsset.png',
@@ -273,8 +258,6 @@ export const allFactionData: FactionData[] = [
     sendButtonImage: '/images/MissingAsset.png',
     gearSlotImages: [],
     prospectingBackgroundImage: '/images/MissingAsset.png',
-    universalUnitFrameForegroundImage: '/dynamic/factions/assets/unit-frame-front-universal-factionless.png',
-    universalUnitFrameBackgroundImage: '/dynamic/factions/assets/unit-frame-back-universal-factionless.png',
     arrowLeftImage: '/images/MissingAsset.png',
     arrowPointerImage: '/images/MissingAsset.png',
     buttonBackgroundImage: '/images/MissingAsset.png',
@@ -331,18 +314,11 @@ export const allFactionData: FactionData[] = [
     paperdollBaseImage: '/dynamic/factions/assets/tdd-base.png',
     factionSelectBackgroundImage: '/dynamic/factions/assets/faction-select-bg-tdd.jpg',
     factionSelectEmblemImage: '/dynamic/factions/assets/faction-select-emblem-tdd.png',
-    unitFrameBackgroundImage: '/dynamic/factions/assets/unit-frame-back-tdd.png',
-    unitFrameForegroundImage: '/dynamic/factions/assets/unit-frame-front-tdd.png',
-    unitFrameForegroundTargetImage: '/dynamic/factions/assets/unit-frame-front-target-tdd.png',
-    unitFrameForegroundPartyMemberImage: '/dynamic/factions/assets/unit-frame-front-party-member-tdd.png',
-    unitFrameForegroundPartyLeaderImage: '/dynamic/factions/assets/unit-frame-front-party-leader-tdd.png',
     unitFrameResourcePipBackground: '/dynamic/factions/assets/unit-frame-judgement-pip-tdd.png',
+    unitFrameClassGemImage: '/dynamic/factions/assets/unit-frame-class-gem-tdd.png',
+    unitFrameDecor1Image: '/dynamic/factions/assets/unit-frame-decor1-tdd.png',
+    unitFrameDecor2Image: '/dynamic/factions/assets/unit-frame-decor2-tdd.png',
     unitFrameResourceDividerImage: '/dynamic/factions/assets/unit-frame-resource-divider-tdd.png',
-    simpleUnitFrameBackgroundImage: '/dynamic/factions/assets/unit-frame-back-simple-tdd.png',
-    simpleUnitFrameForegroundImage: '/dynamic/factions/assets/unit-frame-front-simple-tdd.png',
-    simpleUnitFrameForegroundRightImage: '/dynamic/factions/assets/unit-frame-front-simple-right-tdd.png',
-    simpleUnitFrameForegroundPartyMemberImage: '/dynamic/factions/assets/unit-frame-front-simple-tdd.png',
-    simpleUnitFrameForegroundPartyLeaderImage: '/dynamic/factions/assets/unit-frame-front-simple-tdd.png',
     abilityBarLeftEndImage: '/dynamic/factions/assets/ability-bar-left-end-tdd.png',
     abilityBarRightEndImage: '/dynamic/factions/assets/ability-bar-right-end-tdd.png',
     abilityBarCenterDecorTopImage: '/dynamic/factions/assets/ability-bar-center-decor-top-tdd.png',
@@ -456,8 +432,6 @@ export const allFactionData: FactionData[] = [
       { gearSlotID: 'OneHandedWeaponRight', image: '/dynamic/factions/assets/gear-slot-main-hand-tdd.png' }
     ],
     prospectingBackgroundImage: '/dynamic/factions/assets/prospecting-background-tdd.png',
-    universalUnitFrameForegroundImage: '/dynamic/factions/assets/unit-frame-front-universal-tdd.png',
-    universalUnitFrameBackgroundImage: '/dynamic/factions/assets/unit-frame-back-universal-tdd.png',
     arrowLeftImage: '/dynamic/factions/assets/arrow-left-tdd.png',
     arrowPointerImage: '/dynamic/factions/assets/arrow-pointer-tdd.png',
     buttonBackgroundImage: '/dynamic/factions/assets/button-background-tdd.png',
@@ -515,18 +489,11 @@ export const allFactionData: FactionData[] = [
     paperdollBaseImage: '/dynamic/factions/assets/vik-base.png',
     factionSelectBackgroundImage: '/dynamic/factions/assets/faction-select-bg-vik.jpg',
     factionSelectEmblemImage: '/dynamic/factions/assets/faction-select-emblem-vik.png',
-    unitFrameBackgroundImage: '/dynamic/factions/assets/unit-frame-back-viking.png',
-    unitFrameForegroundImage: '/dynamic/factions/assets/unit-frame-front-viking.png',
-    unitFrameForegroundTargetImage: '/dynamic/factions/assets/unit-frame-front-target-viking.png',
-    unitFrameForegroundPartyMemberImage: '/dynamic/factions/assets/unit-frame-front-party-member-viking.png',
-    unitFrameForegroundPartyLeaderImage: '/dynamic/factions/assets/unit-frame-front-party-leader-viking.png',
     unitFrameResourcePipBackground: '/dynamic/factions/assets/unit-frame-judgement-pip-viking.png',
+    unitFrameClassGemImage: '/dynamic/factions/assets/unit-frame-class-gem-viking.png',
+    unitFrameDecor1Image: '/dynamic/factions/assets/unit-frame-decor1-viking.png',
+    unitFrameDecor2Image: '/dynamic/factions/assets/unit-frame-decor2-viking.png',
     unitFrameResourceDividerImage: '/dynamic/factions/assets/unit-frame-resource-divider-viking.png',
-    simpleUnitFrameBackgroundImage: '/dynamic/factions/assets/unit-frame-back-simple-viking.png',
-    simpleUnitFrameForegroundImage: '/dynamic/factions/assets/unit-frame-front-simple-viking.png',
-    simpleUnitFrameForegroundRightImage: '/dynamic/factions/assets/unit-frame-front-simple-right-viking.png',
-    simpleUnitFrameForegroundPartyMemberImage: '/dynamic/factions/assets/unit-frame-front-simple-viking.png',
-    simpleUnitFrameForegroundPartyLeaderImage: '/dynamic/factions/assets/unit-frame-front-simple-viking.png',
     abilityBarLeftEndImage: '/dynamic/factions/assets/ability-bar-left-end-viking.png',
     abilityBarRightEndImage: '/dynamic/factions/assets/ability-bar-right-end-viking.png',
     abilityBarCenterDecorTopImage: '/dynamic/factions/assets/ability-bar-center-decor-top-viking.png',
@@ -640,8 +607,6 @@ export const allFactionData: FactionData[] = [
       { gearSlotID: 'OneHandedWeaponRight', image: '/dynamic/factions/assets/gear-slot-main-hand-viking.png' }
     ],
     prospectingBackgroundImage: '/dynamic/factions/assets/prospecting-background-viking.png',
-    universalUnitFrameForegroundImage: '/dynamic/factions/assets/unit-frame-front-universal-viking.png',
-    universalUnitFrameBackgroundImage: '/dynamic/factions/assets/unit-frame-back-universal-viking.png',
     arrowLeftImage: '/dynamic/factions/assets/arrow-left-viking.png',
     arrowPointerImage: '/dynamic/factions/assets/arrow-pointer-viking.png',
     buttonBackgroundImage: '/dynamic/factions/assets/button-background-viking.png',
@@ -699,18 +664,11 @@ export const allFactionData: FactionData[] = [
     paperdollBaseImage: '/dynamic/factions/assets/art-base.png',
     factionSelectBackgroundImage: '/dynamic/factions/assets/faction-select-bg-art.jpg',
     factionSelectEmblemImage: '/dynamic/factions/assets/faction-select-emblem-art.png',
-    unitFrameBackgroundImage: '/dynamic/factions/assets/unit-frame-back-arthurian.png',
-    unitFrameForegroundImage: '/dynamic/factions/assets/unit-frame-front-arthurian.png',
-    unitFrameForegroundTargetImage: '/dynamic/factions/assets/unit-frame-front-target-arthurian.png',
-    unitFrameForegroundPartyMemberImage: '/dynamic/factions/assets/unit-frame-front-party-member-arthurian.png',
-    unitFrameForegroundPartyLeaderImage: '/dynamic/factions/assets/unit-frame-front-party-leader-arthurian.png',
     unitFrameResourcePipBackground: '/dynamic/factions/assets/unit-frame-judgement-pip-arthurian.png',
+    unitFrameClassGemImage: '/dynamic/factions/assets/unit-frame-class-gem-arthurian.png',
+    unitFrameDecor1Image: '/dynamic/factions/assets/unit-frame-decor1-arthurian.png',
+    unitFrameDecor2Image: '/dynamic/factions/assets/unit-frame-decor2-arthurian.png',
     unitFrameResourceDividerImage: '/dynamic/factions/assets/unit-frame-resource-divider-arthurian.png',
-    simpleUnitFrameBackgroundImage: '/dynamic/factions/assets/unit-frame-back-simple-arthurian.png',
-    simpleUnitFrameForegroundImage: '/dynamic/factions/assets/unit-frame-front-simple-arthurian.png',
-    simpleUnitFrameForegroundRightImage: '/dynamic/factions/assets/unit-frame-front-simple-right-arthurian.png',
-    simpleUnitFrameForegroundPartyMemberImage: '/dynamic/factions/assets/unit-frame-front-simple-arthurian.png',
-    simpleUnitFrameForegroundPartyLeaderImage: '/dynamic/factions/assets/unit-frame-front-simple-arthurian.png',
     abilityBarLeftEndImage: '/dynamic/factions/assets/ability-bar-left-end-arthurian.png',
     abilityBarRightEndImage: '/dynamic/factions/assets/ability-bar-right-end-arthurian.png',
     abilityBarCenterDecorTopImage: '/dynamic/factions/assets/ability-bar-center-decor-top-arthurian.png',
@@ -824,8 +782,6 @@ export const allFactionData: FactionData[] = [
       { gearSlotID: 'OneHandedWeaponRight', image: '/dynamic/factions/assets/gear-slot-main-hand-arthurian.png' }
     ],
     prospectingBackgroundImage: '/dynamic/factions/assets/prospecting-background-arthurian.png',
-    universalUnitFrameForegroundImage: '/dynamic/factions/assets/unit-frame-front-universal-arthurian.png',
-    universalUnitFrameBackgroundImage: '/dynamic/factions/assets/unit-frame-back-universal-arthurian.png',
     arrowLeftImage: '/dynamic/factions/assets/arrow-left-arthurian.png',
     arrowPointerImage: '/dynamic/factions/assets/arrow-pointer-arthurian.png',
     buttonBackgroundImage: '/dynamic/factions/assets/button-background-arthurian.png',

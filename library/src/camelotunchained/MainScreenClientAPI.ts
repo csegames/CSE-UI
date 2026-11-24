@@ -204,8 +204,6 @@ export const clientAPI: MainScreenClientAPI = {
   setProgressionTrackTracked: hf.setProgressionTrackTracked.bind(hf),
   getTradeskillTrackerMinimized: hf.getTradeskillTrackerMinimized.bind(hf),
   setTradeskillTrackerMinimized: hf.setTradeskillTrackerMinimized.bind(hf),
-  getNameplateStyle: hf.getNameplateStyle.bind(hf),
-  setNameplateStyle: hf.setNameplateStyle.bind(hf),
   getPartyLayout: hf.getPartyLayout.bind(hf),
   setPartyLayout: hf.setPartyLayout.bind(hf),
   getUIScale: hf.getUIScale.bind(hf),
@@ -226,6 +224,7 @@ export const clientAPI: MainScreenClientAPI = {
   useInventoryItem: ivf.useInventoryItem.bind(ivf),
   moveItem: ivf.moveItem.bind(ivf),
   setContainerColor: ivf.setContainerColor.bind(ivf),
+  purchaseBankTab: ivf.purchaseBankTab.bind(ivf),
   // Keybinds
   getKeybindSetIDs: kbf.getKeybindSetIDs.bind(kbf),
   setKeybindSetIDs: kbf.setKeybindSetIDs.bind(kbf),

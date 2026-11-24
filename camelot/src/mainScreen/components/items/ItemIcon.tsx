@@ -106,15 +106,23 @@ enum ItemMoveColor {
   Stack = 'rgba(234, 211, 171, 0.4)'
 }
 
+/** Bank tab (or container drawer) an item sits in. */
+export function getItemDrawerIndex(item: Item): number {
+  return item.location?.drawerIndex ?? 0;
+}
+
 export interface ItemIconDropData {
   type: ItemLocationType;
   slotIndex: number | null;
   slotID: string | null;
+  /** Bank tab of the target cell. Omitted means 0. */
+  drawerIndex?: number;
 }
 
 interface ReactProps {
   size: string;
   type: ItemLocationType;
+  drawerIndex?: number;
   items?: Item[];
   slotIndex?: number;
   slotID?: string;
@@ -424,14 +432,17 @@ class AItemIcon extends React.Component<Props> {
     return {
       type: this.props.type,
       slotIndex: this.props.slotIndex ?? null,
-      slotID: this.props.slotID ?? null
+      slotID: this.props.slotID ?? null,
+      drawerIndex: this.props.drawerIndex ?? 0
     };
   }
 
-  getDropDataItem({ type, slotIndex, slotID }: ItemIconDropData): Item | undefined {
+  getDropDataItem({ type, slotIndex, slotID, drawerIndex }: ItemIconDropData): Item | undefined {
     switch (type) {
       case ItemLocationType.AccountBank: {
-        return this.props.accountBank.find((item) => item.location.position === slotIndex);
+        return this.props.accountBank.find(
+          (item) => item.location.position === slotIndex && getItemDrawerIndex(item) === (drawerIndex ?? 0)
+        );
       }
       case ItemLocationType.Equipped: {
         return getItemEquippedInGearSlot(this.props.equippedItems, this.props.defs.itemsByNumericID, slotID ?? '');
@@ -803,7 +814,7 @@ class AItemIcon extends React.Component<Props> {
   }
 
   getDragItemMoves(item: Item, data: ItemIconDropData): MoveItemRequest[] {
-    const { type, slotIndex, slotID } = data;
+    const { type, slotIndex, slotID, drawerIndex } = data;
     const targetItem = this.getDropDataItem(data);
     const moves: MoveItemRequest[] = [];
 
@@ -816,9 +827,9 @@ class AItemIcon extends React.Component<Props> {
       LocationTo: this.getMoveType(type),
       EntityIDTo: this.props.entityID,
       CharacterIDTo: game.characterID,
-      PositionTo: slotID !== null ? -1 : slotIndex,
+      PositionTo: slotID !== null ? -1 : slotIndex ?? -1,
       ContainerIDTo: null,
-      DrawerIndexTo: 0,
+      DrawerIndexTo: drawerIndex ?? 0,
       GearSlotIDTo: slotID,
       WorldPositionTo: null,
       RotationTo: null,
@@ -844,7 +855,7 @@ class AItemIcon extends React.Component<Props> {
         PositionTo: item.location.position,
         ContainerIDTo: null,
         CharacterIDTo: game.characterID,
-        DrawerIndexTo: 0,
+        DrawerIndexTo: getItemDrawerIndex(item),
         GearSlotIDTo:
           item.location.type == ItemLocationType.Equipped && itemDef?.gearSlotSets?.[item.location.position]
             ? itemDef.gearSlotSets[item.location.position][0]
@@ -904,7 +915,7 @@ class AItemIcon extends React.Component<Props> {
         PositionTo: item.location.position,
         ContainerIDTo: null,
         CharacterIDTo: characterID,
-        DrawerIndexTo: 0,
+        DrawerIndexTo: getItemDrawerIndex(item),
         GearSlotIDTo: null,
         WorldPositionTo: null,
         RotationTo: null,

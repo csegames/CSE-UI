@@ -5,12 +5,10 @@
  */
 
 import * as React from 'react';
-import { TooltipSource } from '../TooltipSource';
+import { UnitFrameTextTooltip } from './UnitFrameTextTooltip';
 import { ClassDef } from '../../dataSources/manifest/classManifest';
 import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { getStringTableValue } from '../../helpers/stringTableHelpers';
-
-const Name = 'HUD-ClassIconTooltip-Name';
 
 interface Props {
   className: string;
@@ -19,20 +17,15 @@ interface Props {
   stringTable: Record<string, StringTableEntryDef>;
 }
 
-// Hover target only; the owning frame draws the icon. PureComponent so the frame's resource ticks skip this.
+// PureComponent so the frame's resource ticks skip the string table lookup.
 export class ClassIconTooltip extends React.PureComponent<Props> {
   render(): JSX.Element {
     return (
-      <TooltipSource
+      <UnitFrameTextTooltip
         className={this.props.className}
         tooltipID={this.props.tooltipID}
-        positionType='mouse'
-        content={this.renderTooltip.bind(this)}
+        text={getStringTableValue(this.props.classDef.name, this.props.stringTable)}
       />
     );
-  }
-
-  private renderTooltip(): React.ReactNode {
-    return <div className={Name}>{getStringTableValue(this.props.classDef.name, this.props.stringTable)}</div>;
   }
 }

@@ -41,11 +41,23 @@ import { TooltipSource } from '../TooltipSource';
 import { StatLoadoutDef } from '../../dataSources/manifest/statLoadoutManifest';
 import { ComingSoon } from '../ComingSoon';
 import { FactionDivider } from '../FactionDivider';
+import {
+  findRealmProgressionTrack,
+  getPoolUnlockTrackID,
+  getSpentRealmProgressionPoints
+} from '../../helpers/abilityBookHelpers';
+import {
+  ProgressionPoolDef,
+  ProgressionPoolUnlockDef,
+  ProgressionTrackDef
+} from '../../dataSources/manifest/progressionTrackManifest';
+import { typedObjectEntries } from '@csegames/library/dist/_baseGame/utils/objectUtils';
 
 // CSS classes
 const Root = 'HUD-CharacterResetModal-Root';
 const ResetAbilitiesSection = 'HUD-CharacterResetModal-ResetAbilitiesSection';
 const ResetAttributesSection = 'HUD-CharacterResetModal-ResetAttributesSection';
+const ResetRealmRenownSection = 'HUD-CharacterResetModal-ResetRealmRenownSection';
 const SectionIconContainer = 'HUD-CharacterResetModal-SectionIconContainer';
 const SectionIcon = 'HUD-CharacterResetModal-SectionIcon';
 const SectionTitle = 'HUD-CharacterResetModal-SectionTitle';
@@ -74,6 +86,8 @@ const StatNameLabel = 'HUD-CharacterResetModal-StatNameLabel';
 const TooltipContent = 'HUD-CharacterResetModal-TooltipContent';
 const TooltipTitle = 'HUD-CharacterResetModal-TooltipTitle';
 const TooltipMessage = 'HUD-CharacterResetModal-TooltipMessage';
+const CategoryNameContainer = 'HUD-CharacterResetModal-CategoryNameContainer';
+const CategoryNameLabel = 'HUD-CharacterResetModal-CategoryNameLabel';
 
 // String IDs
 const StringIDCharacterResetModalTitle = 'CharacterResetModalTitle';
@@ -81,17 +95,22 @@ const StringIDCharacterResetModalResetAbilitiesTitle = 'CharacterResetModalReset
 const StringIDCharacterResetModalResetAbilitiesDescription = 'CharacterResetModalResetAbilitiesDescription';
 const StringIDCharacterResetModalResetAttributesTitle = 'CharacterResetModalResetAttributesTitle';
 const StringIDCharacterResetModalResetAttributesDescription = 'CharacterResetModalResetAttributesDescription';
+const StringIDCharacterResetModalResetRealmRenownTitle = 'CharacterResetModalResetRealmRenownTitle';
+const StringIDCharacterResetModalResetRealmRenownDescription = 'CharacterResetModalResetRealmRenownDescription';
 const StringIDCharacterResetModalCurrentBuild = 'CharacterResetModalCurrentBuild';
 const StringIDCharacterResetModalSpentPoints = 'CharacterResetModalSpentPoints';
 const StringIDCharacterResetModalPointsAvailable = 'CharacterResetModalPointsAvailable';
 const StringIDCharacterResetModalConfirmAbilityReset = 'CharacterResetModalConfirmAbilityReset';
 const StringIDCharacterResetModalConfirmAttributeReset = 'CharacterResetModalConfirmAttributeReset';
+const StringIDCharacterResetModalConfirmRealmRenownReset = 'CharacterResetModalConfirmRealmRenownReset';
 const StringIDCharacterResetModalThisActionIsFinal = 'CharacterResetModalThisActionIsFinal';
 const StringIDCharacterResetModalNoPointsAssigned = 'CharacterResetModalNoPointsAssigned';
 const StringIDCharacterResetModalNoAttributeChanges = 'CharacterResetModalNoAttributeChanges';
 const StringIDCharacterResetModalUnassignedAttributes = 'CharacterResetModalUnassignedAttributes';
 const StringIDCharacterResetModalAbilityResetFeeLabel = 'CharacterResetModalAbilityResetFeeLabel';
 const StringIDCharacterResetModalAttributeReassignFeeLabel = 'CharacterResetModalAttributeReassignFeeLabel';
+
+const StringIDAbilityBookRealmProgressionCategoryPrefix = 'AbilityBookRealmProgressionCategory_';
 
 interface State {
   pendingStats: Record<string, number>;
@@ -108,6 +127,7 @@ interface InjectedProps {
   uiFactionID: string;
   wallet: Item[];
   abilityProgressionRespecCostPerLevel: number;
+  realmTrack: ProgressionTrackDef | undefined;
 }
 
 type Props = ReactProps & InjectedProps & AddDispatch;
@@ -142,7 +162,8 @@ class ACharacterResetModal extends React.Component<Props, State> {
       >
         <Escapable escapeID={`CharacterResetModal`} onEscape={this.closeSelf.bind(this)} />
         {this.renderAbilitySection()}
-        {this.renderAttributeSection()}
+        {false && this.renderAttributeSection()}
+        {this.renderRealmRenownSection()}
       </FactionBorder>
     );
   }
@@ -259,6 +280,48 @@ class ACharacterResetModal extends React.Component<Props, State> {
                   };
                 });
                 clientAPI.applySpecAllocation(deltas);
+                this.props.dispatch(hideModal());
+              }
+            }
+          ]
+        },
+        escapable: true,
+        maxWidth: '50vmin'
+      })
+    );
+  }
+
+  private onResetRealmRenownClicked(respecPrice: number): void {
+    this.props.dispatch(
+      showModal({
+        id: 'ConfirmResetRealmRenown',
+        content: {
+          title: getStringTableValue(StringIDGeneralConfirmation, this.props.stringTable),
+          message:
+            getStringTableValue(StringIDCharacterResetModalConfirmRealmRenownReset, this.props.stringTable) +
+            '\n' +
+            getStringTableValue(StringIDCharacterResetModalThisActionIsFinal, this.props.stringTable),
+          body: <MoneyDisplay sizeOverrideVmin={3.5} className={ConfirmationModalMoney} amount={respecPrice} />,
+          buttons: [
+            {
+              text: getStringTableValue(StringIDGeneralCancel, this.props.stringTable),
+              onClick: () => this.props.dispatch(hideModal())
+            },
+            {
+              text: getStringTableValue(StringIDGeneralReset, this.props.stringTable),
+              onClick: () => {
+                // The API applies deltas, and automatically charges for negative deltas.
+                if (this.props.realmTrack) {
+                  const renownPrefix = this.props.realmTrack.id + '.';
+                  const deltas: ProgressionTrackDelta[] = typedObjectEntries(this.props.self.progression)
+                    .filter(([id, state]) => {
+                      return id.startsWith(renownPrefix);
+                    })
+                    .map(([id, state]) => {
+                      return { trackID: id, delta: -state.level };
+                    });
+                  clientAPI.applySpecAllocation(deltas);
+                }
                 this.props.dispatch(hideModal());
               }
             }
@@ -422,6 +485,133 @@ class ACharacterResetModal extends React.Component<Props, State> {
     this.setState({ availableStatPoints: statLoadout.freePoints, pendingStats });
   }
 
+  private renderRealmRenownSection(): React.ReactNode {
+    const factionData = getFactionData(this.props.uiFactionID);
+
+    const spentPoints = getSpentRealmProgressionPoints(this.props.realmTrack, this.props.self.progression);
+    const respecPrice = spentPoints * this.props.abilityProgressionRespecCostPerLevel;
+
+    const availableGold =
+      getCurrency(CurrencyID.Gold, this.props.wallet, this.props.defs.itemsByNumericID)?.unitCount ?? 0;
+
+    const canAfford = availableGold >= respecPrice;
+
+    const isDisabled = !canAfford || respecPrice === 0;
+    const disabledTooltip = getStringTableValue(
+      canAfford ? StringIDCharacterResetModalNoPointsAssigned : StringIDGeneralNotEnoughGold,
+      this.props.stringTable
+    );
+
+    return (
+      <FactionBorder
+        className={ResetRealmRenownSection}
+        type={BorderType.Primary}
+        background={BorderBackground.PatternLarge}
+      >
+        <FactionBorder
+          className={SectionIconContainer}
+          type={BorderType.Secondary}
+          background={BorderBackground.Darken}
+        >
+          <img className={SectionIcon} src={factionData.hudnavIconAbilityBookImage} />
+        </FactionBorder>
+        <div className={SectionTitle}>
+          {getStringTableValue(StringIDCharacterResetModalResetRealmRenownTitle, this.props.stringTable)}
+        </div>
+        <div className={SectionDescription}>
+          {getStringTableValue(StringIDCharacterResetModalResetRealmRenownDescription, this.props.stringTable)}
+        </div>
+        <div className={PointsHeader}>
+          <div className={PointsHeaderLabel}>
+            {getTokenizedStringTableValue(StringIDCharacterResetModalCurrentBuild, this.props.stringTable, {
+              POINTS: spentPoints.toFixed(0)
+            })}
+          </div>
+        </div>
+        <div className={SpecsRow}>
+          {typedObjectEntries(this.props.realmTrack?.poolsByCategory ?? {}).map(
+            this.renderRealmRenownCategoryDetails.bind(this)
+          )}
+        </div>
+        <div className={FeeBlock}>
+          <FactionDivider simple className={FeeDivider} />
+          <div className={FeeRow}>
+            <div className={FeeRowLabel}>
+              {getStringTableValue(StringIDCharacterResetModalAbilityResetFeeLabel, this.props.stringTable)}
+            </div>
+            <MoneyDisplay amount={respecPrice} />
+          </div>
+          <FactionDivider simple className={FeeDivider} />
+        </div>
+        <FactionButton
+          className={RespecButton}
+          size={'m'}
+          onClick={this.onResetRealmRenownClicked.bind(this, respecPrice)}
+          disabled={isDisabled}
+          disabledTooltip={disabledTooltip}
+        >
+          {getStringTableValue(StringIDGeneralReset, this.props.stringTable)}
+        </FactionButton>
+      </FactionBorder>
+    );
+  }
+
+  private renderRealmRenownCategoryDetails(entry: [string, ProgressionPoolDef[]]): React.ReactNode {
+    const categoryName = getStringTableValue(
+      `${StringIDAbilityBookRealmProgressionCategoryPrefix}${entry[0]}`,
+      this.props.stringTable
+    );
+
+    return (
+      <div className={SpecDetails} key={entry[0]}>
+        <FactionBorder
+          className={CategoryNameContainer}
+          type={BorderType.Secondary}
+          background={BorderBackground.PatternSmall}
+        >
+          <div className={CategoryNameLabel}>{categoryName}</div>
+        </FactionBorder>
+        <FactionBorder
+          className={LevelBorder}
+          type={BorderType.Secondary}
+          background={BorderBackground.PatternSmall}
+          includeTop={false}
+        >
+          <div className={LevelLabel}>
+            {getTokenizedStringTableValue(StringIDGeneralLevelShort, this.props.stringTable, {
+              LEVEL: this.getLevelForCategory(entry[0]).toFixed()
+            })}
+          </div>
+        </FactionBorder>
+      </div>
+    );
+  }
+
+  private getLevelForCategory(id: string): number {
+    if (this.props.realmTrack && this.props.realmTrack.poolsByCategory[id]) {
+      // Combined value of all pools in this category.
+      return this.props.realmTrack.poolsByCategory[id].reduce<number>((soFar: number, poolDef: ProgressionPoolDef) => {
+        // For each pool, that means how many levels are in any of its subordinate unlocks.
+        return (
+          soFar +
+          poolDef.unlocks.reduce<number>((uSoFar: number, unlockDef: ProgressionPoolUnlockDef) => {
+            return uSoFar + this.getUnlockLevel(unlockDef.unlockID);
+          }, 0)
+        );
+      }, 0);
+    } else {
+      return 0;
+    }
+  }
+
+  private buildTrackID(unlockID: string): string {
+    return getPoolUnlockTrackID(this.props.realmTrack?.id ?? '', unlockID);
+  }
+
+  private getUnlockLevel(unlockID: string): number {
+    return this.props.self.progression[this.buildTrackID(unlockID)]?.level ?? 0;
+  }
+
   private closeSelf(): void {
     this.props.dispatch(hideModal());
   }
@@ -514,7 +704,11 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): ReactProps & I
     selfStats: state.entities.entityStats[state.entities.self.entityID] ?? {},
     uiFactionID: state.hud.uiFactionID,
     wallet: state.inventory.wallet,
-    abilityProgressionRespecCostPerLevel: state.gameDefs.settings.abilityProgressionRespecCostPerLevel
+    abilityProgressionRespecCostPerLevel: state.gameDefs.settings.abilityProgressionRespecCostPerLevel,
+    realmTrack: findRealmProgressionTrack(
+      state.gameDefs.classesByNumericID[state.entities.self.classID],
+      state.gameDefs.progressionTracks
+    )
   };
 };
 

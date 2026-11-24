@@ -14,7 +14,6 @@ import {
   isWidgetHidden,
   resetAllWidgets,
   resetWidget,
-  setNameplateStyle,
   setSelectedWidget,
   setSelectedWidgetGroup,
   setSnapEnabled,
@@ -36,7 +35,11 @@ import {
   CompassHeadingSource,
   HUDHorizontalAnchor,
   HUDVerticalAnchor,
-  HUDWidgetState
+  HUDWidgetState,
+  NameplateAlignment,
+  NameplateDecor,
+  NameplateDecorFlags,
+  ProgressionInfoPosition
 } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 import {
   getStringTableValue,
@@ -53,7 +56,8 @@ import { WIDGET_ID_BANK } from './bank/Bank';
 import { WIDGET_ID_CRAFTING } from './crafting/Crafting';
 import { WIDGET_ID_EQUIPPED } from './Equipped';
 import { WIDGET_ID_INVENTORY } from './inventory/Inventory';
-import { WIDGET_ID_LEVEL_BARS } from './levelBars/LevelBars';
+import { WIDGET_ID_CLASS_PROGRESSION_BAR } from './levelBars/ClassProgressionBar';
+import { WIDGET_ID_REALM_RENOWN_PROGRESSION_BAR } from './levelBars/RealmRenownProgressionBar';
 import { WIDGET_ID_TRADESKILL_TRACKER } from './tradeskillTracker/TradeskillTracker';
 import { WIDGET_ID_NAV_MENU } from './HUDNavMenu';
 import { WIDGET_ID_PARTY } from './party/Party';
@@ -80,11 +84,7 @@ import { WIDGET_ID_SETTINGS } from './Settings';
 import { WIDGET_ID_WARNING_ICONS } from './WarningIcons';
 import { WIDGET_ID_SELF } from './unitFrames/SelfUnitFrame';
 import { WIDGET_ID_FRIENDLY, WIDGET_ID_ENEMY } from './unitFrames/TargetUnitFrame';
-import {
-  MAX_UI_SCALE,
-  MIN_UI_SCALE,
-  NameplateStyle
-} from '@csegames/library/dist/camelotunchained/clientFunctions/HUDFunctions';
+import { MAX_UI_SCALE, MIN_UI_SCALE } from '@csegames/library/dist/camelotunchained/clientFunctions/HUDFunctions';
 // import { getAbilityBarsCount } from '../helpers/abilityBarHelpers';
 import { getAbilityBarWidgetID, isAbilityBarDecorShown, isAbilityBarWidgetID } from '../helpers/abilityBarHelpers';
 import { AbilitySlotSpacingDefault } from './abilityBars/AbilityBar';
@@ -147,6 +147,7 @@ const ToolbarControls = 'HUD-HUDEditor-ToolbarItemControls';
 const ToolbarText = 'HUD-HUDEditor-ToolbarItemControls-Text';
 const OptionRow = 'HUD-HUDEditor-OptionRow';
 const OptionLabel = 'HUD-HUDEditor-OptionLabel';
+const OptionCheckboxLabel = 'HUD-HUDEditor-OptionCheckboxLabel';
 const DisplayPrioritySelector = 'HUD-HUDEditor-DisplayPrioritySelector';
 const SelectedWidgetHeader = 'HUD-HUDEditor-SelectedWidgetHeader';
 const SelectedWidgetDivider = 'HUD-HUDEditor-SelectedWidgetDivider';
@@ -239,8 +240,13 @@ const StringIDHUDEditorSocialGroupName = 'HUDEditorSocialGroupName';
 const StringIDHUDEditorQuestsGroupName = 'HUDEditorQuestsGroupName';
 const StringIDHUDEditorTradeGroupName = 'HUDEditorTradeGroupName';
 const StringIDHUDEditorSystemGroupName = 'HUDEditorSystemGroupName';
-const StringIDHUDEditorTargetPlatesSimple = 'HUDEditorTargetPlatesSimple';
-const StringIDHUDEditorTargetPlatesFancy = 'HUDEditorTargetPlatesFancy';
+const StringIDHUDEditorNameplateAlignment = 'HUDEditorNameplateAlignment';
+const StringIDHUDEditorNameplateAlignmentLeft = 'HUDEditorNameplateAlignmentLeft';
+const StringIDHUDEditorNameplateAlignmentRight = 'HUDEditorNameplateAlignmentRight';
+const StringIDHUDEditorNameplateDecor = 'HUDEditorNameplateDecor';
+const StringIDHUDEditorNameplateDecorBase = 'HUDEditorNameplateDecorBase';
+const StringIDHUDEditorNameplateDecor1 = 'HUDEditorNameplateDecor1';
+const StringIDHUDEditorNameplateDecor2 = 'HUDEditorNameplateDecor2';
 const StringIDHUDEditorChatFontSize = 'HUDEditorChatFontSize';
 const StringIDHUDEditorToastDuration = 'HUDEditorToastDuration';
 const StringIDHUDEditorAbilitySlotSpacing = 'HUDEditorAbilitySlotSpacing';
@@ -253,6 +259,10 @@ const StringIDHUDEditorCompassWidth = 'HUDEditorCompassWidth';
 const StringIDHUDEditorCompassHeading = 'HUDEditorCompassHeading';
 const StringIDHUDEditorCompassHeadingCamera = 'HUDEditorCompassHeadingCamera';
 const StringIDHUDEditorCompassHeadingCharacter = 'HUDEditorCompassHeadingCharacter';
+const StringIDHUDEditorProgressionInfoAlwaysShow = 'HUDEditorProgressionInfoAlwaysShow';
+const StringIDHUDEditorProgressionInfoPosition = 'HUDEditorProgressionInfoPosition';
+const StringIDHUDEditorProgressionInfoPositionTop = 'HUDEditorProgressionInfoPositionTop';
+const StringIDHUDEditorProgressionInfoPositionBottom = 'HUDEditorProgressionInfoPositionBottom';
 const StringIDHUDEditorExpandAll = 'HUDEditorExpandAll';
 const StringIDHUDEditorCollapseAll = 'HUDEditorCollapseAll';
 const StringIDHUDEditorSelectedWidgetOpacity = 'HUDEditorSelectedWidgetOpacity';
@@ -272,8 +282,16 @@ const ToastDurationSecondsDefault = 5;
 const AbilitySlotSpacingMin = 0;
 const AbilitySlotSpacingMax = 15;
 
+const NameplateDecorButtons: { decor: NameplateDecor; labelStringID: string }[] = [
+  { decor: 'background', labelStringID: StringIDHUDEditorNameplateDecorBase },
+  { decor: 'decor1', labelStringID: StringIDHUDEditorNameplateDecor1 },
+  { decor: 'decor2', labelStringID: StringIDHUDEditorNameplateDecor2 }
+];
+
 const CompassWidthMin = 25;
 const CompassWidthMax = 100;
+
+const OptionCheckboxHeightVmin = 1.8;
 
 const AbilityBarDecorButtons: { decor: AbilityBarDecor; labelStringID: string; fallbackLabel: string }[] = [
   { decor: AbilityBarDecor.Left, labelStringID: StringIDHUDEditorAbilityBarDecorLeft, fallbackLabel: 'Left' },
@@ -285,6 +303,11 @@ const AbilityBarDecorButtons: { decor: AbilityBarDecor; labelStringID: string; f
 const CompassHeadingButtons: { source: CompassHeadingSource; labelStringID: string }[] = [
   { source: CompassHeadingSource.Camera, labelStringID: StringIDHUDEditorCompassHeadingCamera },
   { source: CompassHeadingSource.Character, labelStringID: StringIDHUDEditorCompassHeadingCharacter }
+];
+
+const ProgressionInfoPositionButtons: { position: ProgressionInfoPosition; labelStringID: string }[] = [
+  { position: ProgressionInfoPosition.Top, labelStringID: StringIDHUDEditorProgressionInfoPositionTop },
+  { position: ProgressionInfoPosition.Bottom, labelStringID: StringIDHUDEditorProgressionInfoPositionBottom }
 ];
 
 const DraggableID = 'HUDEditor';
@@ -317,10 +340,11 @@ const HUDEditorWidgetGroups: HUDEditorWidgetGroup[] = [
     fallbackLabel: 'Character',
     match: (id) =>
       [
+        WIDGET_ID_CLASS_PROGRESSION_BAR,
         WIDGET_ID_EQUIPPED,
-        WIDGET_ID_LEVEL_BARS,
         WIDGET_ID_LEVEL_NOTIFICATIONS,
         WIDGET_ID_PLAYERWARNINGICONS,
+        WIDGET_ID_REALM_RENOWN_PROGRESSION_BAR,
         WIDGET_ID_RESPAWN,
         WIDGET_ID_TRADESKILL_TRACKER
       ].includes(id)
@@ -387,7 +411,6 @@ interface InjectedProps {
   stringTable: Record<string, StringTableEntryDef>;
   uiFactionID: string;
   isPartyHorizontal: boolean;
-  nameplateStyle: NameplateStyle;
   uiScale: number;
   snapEnabled: boolean;
   guidesEnabled: boolean;
@@ -521,7 +544,7 @@ class AHUDEditor extends React.Component<Props, State> {
         </div>
         {this.renderAbilityBarControls(factionData)}
         {this.renderPartyControls(factionData)}
-        {this.renderNameplateStyleControls(factionData)}
+        {this.renderNameplateControls(factionData)}
         <div className={ResetSection} style={{ borderTopColor: factionData.borderColor }}>
           <FactionButton className={ActionButton} onClick={this.onResetAllClicked.bind(this)} widthOverrideVmin={8}>
             {getStringTableValue(StringIDHUDEditorResetAll, this.props.stringTable)}
@@ -782,39 +805,40 @@ class AHUDEditor extends React.Component<Props, State> {
     );
   }
 
-  private renderNameplateStyleControls(factionData: FactionData): React.ReactNode {
+  private renderNameplateControls(factionData: FactionData): React.ReactNode {
     const plateIDs = [WIDGET_ID_SELF, WIDGET_ID_FRIENDLY, WIDGET_ID_ENEMY];
     if (!plateIDs.includes(this.props.selectedWidgetID ?? '')) {
       return null;
     }
-    const isSimple = this.props.nameplateStyle === 'simple';
 
     return (
       <div className={PartySection} style={{ borderTopColor: factionData.borderColor }}>
-        <div className={PartySectionButtonRow}>
-          <div className={PartySectionLabel}>
-            {getStringTableValue(StringIDHUDEditorTargetPlatesGroupName, this.props.stringTable) || 'Health Bars'}
-          </div>
-          <div className={ToolbarControls}>
-            <FlatButton
-              className={`${PartyLayoutButton}${!isSimple ? ` ${ModSelected}` : ''}`}
-              onClick={() => {
-                this.props.dispatch(setNameplateStyle('fancy'));
-                clientAPI.setNameplateStyle('fancy');
-              }}
-            >
-              {getStringTableValue(StringIDHUDEditorTargetPlatesFancy, this.props.stringTable) || 'Fancy'}
-            </FlatButton>
-            <FlatButton
-              className={`${PartyLayoutButton}${isSimple ? ` ${ModSelected}` : ''}`}
-              onClick={() => {
-                this.props.dispatch(setNameplateStyle('simple'));
-                clientAPI.setNameplateStyle('simple');
-              }}
-            >
-              {getStringTableValue(StringIDHUDEditorTargetPlatesSimple, this.props.stringTable) || 'Simple'}
-            </FlatButton>
-          </div>
+        {this.renderNameplateAlignmentControls()}
+        {this.renderNameplateDecorControls()}
+      </div>
+    );
+  }
+
+  private renderNameplateAlignmentControls(): JSX.Element {
+    const isRight = this.props.widgets[this.props.selectedWidgetID!].state.nameplateAlignment === 'right';
+    return (
+      <div className={PartySectionButtonRow}>
+        <div className={PartySectionLabel}>
+          {getStringTableValue(StringIDHUDEditorNameplateAlignment, this.props.stringTable)}
+        </div>
+        <div className={ToolbarControls}>
+          <FlatButton
+            className={`${PartyLayoutButton}${!isRight ? ` ${ModSelected}` : ''}`}
+            onClick={() => this.setNameplateAlignment('left')}
+          >
+            {getStringTableValue(StringIDHUDEditorNameplateAlignmentLeft, this.props.stringTable)}
+          </FlatButton>
+          <FlatButton
+            className={`${PartyLayoutButton}${isRight ? ` ${ModSelected}` : ''}`}
+            onClick={() => this.setNameplateAlignment('right')}
+          >
+            {getStringTableValue(StringIDHUDEditorNameplateAlignmentRight, this.props.stringTable)}
+          </FlatButton>
         </div>
       </div>
     );
@@ -1108,6 +1132,16 @@ class AHUDEditor extends React.Component<Props, State> {
               {this.renderCompassHeadingControls()}
             </>
           )}
+          {[WIDGET_ID_CLASS_PROGRESSION_BAR, WIDGET_ID_REALM_RENOWN_PROGRESSION_BAR].includes(
+            this.props.selectedWidgetID ?? ''
+          ) && (
+            <>
+              <div className={SelectedWidgetDivider} style={{ backgroundColor: factionData.borderColor }} />
+              {this.renderProgressionInfoAlwaysShownControls()}
+              <div className={SelectedWidgetDivider} style={{ backgroundColor: factionData.borderColor }} />
+              {this.renderProgressionInfoPositionControls()}
+            </>
+          )}
         </>
       );
     } else {
@@ -1262,7 +1296,7 @@ class AHUDEditor extends React.Component<Props, State> {
           <FactionCheckbox
             isChecked={this.props.snapEnabled}
             onCheckedChanged={() => this.props.dispatch(setSnapEnabled(!this.props.snapEnabled))}
-            heightOverrideVmin={1.8}
+            heightOverrideVmin={OptionCheckboxHeightVmin}
           />
           <div className={OptionLabel}>
             {getStringTableValue(StringIDHUDEditorToggleGridSnapping, this.props.stringTable)}
@@ -1271,7 +1305,7 @@ class AHUDEditor extends React.Component<Props, State> {
           <FactionCheckbox
             isChecked={this.props.guidesEnabled}
             onCheckedChanged={() => this.props.dispatch(setGuidesEnabled(!this.props.guidesEnabled))}
-            heightOverrideVmin={1.8}
+            heightOverrideVmin={OptionCheckboxHeightVmin}
           />
           <div className={OptionLabel}>
             {getStringTableValue(StringIDHUDEditorToggleGuides, this.props.stringTable)}
@@ -1434,6 +1468,58 @@ class AHUDEditor extends React.Component<Props, State> {
     this.saveSelectedWidgetState(state);
   }
 
+  private renderProgressionInfoAlwaysShownControls(): JSX.Element {
+    const isAlwaysShown = this.props.widgets[this.props.selectedWidgetID!].state.progressionInfoAlwaysShown ?? false;
+    return (
+      <div className={OptionRow}>
+        <FactionCheckbox
+          isChecked={isAlwaysShown}
+          onCheckedChanged={this.setProgressionInfoAlwaysShown.bind(this)}
+          heightOverrideVmin={OptionCheckboxHeightVmin}
+        />
+        <div className={OptionCheckboxLabel}>
+          {getStringTableValue(StringIDHUDEditorProgressionInfoAlwaysShow, this.props.stringTable)}
+        </div>
+      </div>
+    );
+  }
+
+  private setProgressionInfoAlwaysShown(isAlwaysShown: boolean): void {
+    const state = { ...this.props.widgets[this.props.selectedWidgetID!].state };
+    state.progressionInfoAlwaysShown = isAlwaysShown;
+    this.saveSelectedWidgetState(state);
+  }
+
+  private renderProgressionInfoPositionControls(): JSX.Element {
+    const widget = this.props.widgets[this.props.selectedWidgetID!];
+    const selectedPosition =
+      widget.state.progressionInfoPosition ?? widget.registration?.defaults.progressionInfoPosition;
+    return (
+      <div className={OptionRow}>
+        <div className={OptionLabel}>
+          {getStringTableValue(StringIDHUDEditorProgressionInfoPosition, this.props.stringTable)}
+        </div>
+        <div className={OptionButtons}>
+          {ProgressionInfoPositionButtons.map(({ position, labelStringID }) => (
+            <FlatButton
+              key={position}
+              className={position === selectedPosition ? `${OptionButton} ${ModSelected}` : OptionButton}
+              onClick={this.setProgressionInfoPosition.bind(this, position)}
+            >
+              {getStringTableValue(labelStringID, this.props.stringTable)}
+            </FlatButton>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  private setProgressionInfoPosition(position: ProgressionInfoPosition): void {
+    const state = { ...this.props.widgets[this.props.selectedWidgetID!].state };
+    state.progressionInfoPosition = position;
+    this.saveSelectedWidgetState(state);
+  }
+
   private renderAbilityBarDecorControls(): JSX.Element {
     const widgetID = this.props.selectedWidgetID!;
     const widgetState = this.props.widgets[widgetID].state;
@@ -1550,6 +1636,51 @@ class AHUDEditor extends React.Component<Props, State> {
     if (next !== this.props.uiScale) {
       clientAPI.setUIScale(next);
     }
+  }
+
+  private renderNameplateDecorControls(): JSX.Element {
+    const decorFlags = this.props.widgets[this.props.selectedWidgetID!].state.nameplateDecor;
+    return (
+      <div className={PartySectionButtonRow}>
+        <div className={PartySectionLabel}>
+          {getStringTableValue(StringIDHUDEditorNameplateDecor, this.props.stringTable)}
+        </div>
+        <div className={ToolbarControls}>
+          {NameplateDecorButtons.map(({ decor, labelStringID }) => {
+            const isShown = !!decorFlags?.[decor];
+            return (
+              <FlatButton
+                key={decor}
+                className={`${PartyLayoutButton}${isShown ? ` ${ModSelected}` : ''}`}
+                onClick={this.setNameplateDecor.bind(this, decor, !isShown)}
+              >
+                {getStringTableValue(labelStringID, this.props.stringTable)}
+              </FlatButton>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // Decor 1 and 2 sit on the background box, so showing either shows the box, and hiding the box hides both.
+  private setNameplateDecor(decor: NameplateDecor, isShown: boolean): void {
+    const state = { ...this.props.widgets[this.props.selectedWidgetID!].state };
+    let decorFlags: NameplateDecorFlags = { ...state.nameplateDecor, [decor]: isShown };
+    if (isShown) {
+      decorFlags.background = true;
+    } else if (decor === 'background') {
+      decorFlags = {};
+    }
+    state.nameplateDecor = decorFlags;
+    this.saveSelectedWidgetState(state);
+  }
+
+  private setNameplateAlignment(alignment: NameplateAlignment): void {
+    this.saveSelectedWidgetState({
+      ...this.props.widgets[this.props.selectedWidgetID!].state,
+      nameplateAlignment: alignment
+    });
   }
 
   private setChatFontSize(value: number): void {
@@ -1708,7 +1839,7 @@ class AHUDEditor extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: RootState, ownProps: ReactProps): ReactProps & InjectedProps {
-  const { hudWidth, hudHeight, widgets, activeConditionalWidgetIDs, uiFactionID, nameplateStyle, uiScale } = state.hud;
+  const { hudWidth, hudHeight, widgets, activeConditionalWidgetIDs, uiFactionID, uiScale } = state.hud;
   const { selectedWidgetID, selectedGroupKey, selectedWidgetBounds, snapEnabled, guidesEnabled } = state.hud.editor;
   const { editStatus, layouts, groups } = state.abilities;
   return {
@@ -1726,7 +1857,6 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): ReactProps & I
     stringTable: state.stringTable.stringTable,
     uiFactionID,
     isPartyHorizontal: state.party.isHorizontal,
-    nameplateStyle,
     uiScale,
     snapEnabled,
     guidesEnabled

@@ -26,6 +26,7 @@ import { ItemModSetDef } from '../dataSources/manifest/itemModSetManifest';
 import { ItemRecipeDef } from '../dataSources/manifest/itemRecipeManifest';
 import { ItemTooltipCategoryDef } from '../dataSources/manifest/itemTooltipCategoryManifest';
 import { MailTemplateDef } from '../dataSources/manifest/mailTemplateManifest';
+import { ParticipationEventDef } from '../dataSources/manifest/participationEventManifest';
 import { ProgressionTrackDef } from '../dataSources/manifest/progressionTrackManifest';
 import { QuestDef } from '../dataSources/manifest/questDefManifest';
 import { RaceDef } from '../dataSources/manifest/raceManifest';
@@ -66,6 +67,8 @@ export interface GameDefsState {
   itemTooltipCategories: Record<string, ItemTooltipCategoryDef>;
   mailTemplatesByNumericID: Record<number, MailTemplateDef>;
   mailTemplatesByStringID: Record<string, MailTemplateDef>;
+  participationEventsByNumericID: Record<number, ParticipationEventDef>;
+  participationEventsByStringID: Record<string, ParticipationEventDef>;
   progressionTracks: Record<string, ProgressionTrackDef>;
   questDefs: Record<string, QuestDef>;
   racesByNumericID: Record<number, RaceDef>;
@@ -116,6 +119,8 @@ function buildDefaultGameDefsState() {
     itemTooltipCategories: {},
     mailTemplatesByNumericID: {},
     mailTemplatesByStringID: {},
+    participationEventsByNumericID: {},
+    participationEventsByStringID: {},
     progressionTracks: {},
     questDefs: {},
     racesByNumericID: {},
@@ -252,6 +257,11 @@ export const gameDefsSlice = createSlice({
       state.mailTemplatesByStringID = byString ?? {};
       state.mailTemplatesByNumericID = byNumber ?? {};
     },
+    updateParticipationEvents: (state: GameDefsState, action: PayloadAction<[Record<string, ParticipationEventDef>, Record<number, ParticipationEventDef>]>) => {
+      const [byString, byNumber] = action.payload;
+      state.participationEventsByStringID = byString ?? {};
+      state.participationEventsByNumericID = byNumber ?? {};
+    },
     updateProgressionTracks: (state: GameDefsState, action: PayloadAction<Record<string, ProgressionTrackDef>>) => {
       state.progressionTracks = action.payload;
     },
@@ -330,6 +340,7 @@ export const {
   updateItemModSets,
   updateItemTooltipCategories,
   updateMailTemplates,
+  updateParticipationEvents,
   updateProgressionTracks,
   updateQuestDefs,
   updateRaces,

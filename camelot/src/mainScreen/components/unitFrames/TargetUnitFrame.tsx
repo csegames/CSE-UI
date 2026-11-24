@@ -17,7 +17,12 @@ import { RootState } from '../../redux/store';
 import PlayerUnitFrame from './PlayerUnitFrame';
 import { camelotMocks } from '@csegames/library/dist/camelotunchained/camelotMockData';
 import { Dictionary } from '@reduxjs/toolkit';
-import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import {
+  HUDHorizontalAnchor,
+  HUDVerticalAnchor,
+  NameplateAlignment,
+  NameplateDecorFlags
+} from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 import { ClassDef } from '../../dataSources/manifest/classManifest';
 import { ResourceNodeUnitFrame } from './ResourceNodeUnitFrame';
 import { ItemUnitFrame } from './ItemUnitFrame';
@@ -28,14 +33,14 @@ import StatusEffects from './StatusEffects';
 import { TargetPosition } from './TargetPosition';
 import { WarbandSnapshot } from '@csegames/library/dist/camelotunchained/game/GameClientModels/WarbandSnapshot';
 import { PartyState } from '../../redux/partySlice';
-import { NameplateStyle } from '@csegames/library/dist/camelotunchained/clientFunctions/HUDFunctions';
+import { getNameplateAlignmentClass } from './UnitFrameChrome';
 import {
   getIsCharacterDeputy,
   getIsCharacterLeader,
-  getIsEntityNPC,
   getUnitFrameContextMenuItems
 } from '../../helpers/characterHelpers';
 import { GuildSnapshot } from '@csegames/library/dist/camelotunchained/game/GameClientModels/GuildSnapshot';
+import { cacheTargetUnitFrameImages } from '../../helpers/imageCacheHelpers';
 import { Friend } from '@csegames/library/dist/camelotunchained/graphql/schema';
 
 // CSS Classes
@@ -64,14 +69,19 @@ interface InjectedProps {
   friends: (Friend | null)[] | null;
   stringTable: Record<string, StringTableEntryDef>;
   tagAffixIDByStringID: Record<string, number>;
-  nameplateStyle: NameplateStyle;
+  nameplateAlignment?: NameplateAlignment;
+  nameplateDecor?: NameplateDecorFlags;
 }
 
 type Props = ReactProps & InjectedProps;
 
 class ATargetUnitFrame extends React.Component<Props> {
+  componentDidMount(): void {
+    cacheTargetUnitFrameImages();
+  }
+
   render(): JSX.Element | null {
-    const widgetID = this.props.isFriendly ? WIDGET_ID_FRIENDLY : WIDGET_ID_ENEMY;
+    const widgetID = getTargetWidgetID(this.props.isFriendly);
     // Show the mock frame while this widget is being edited directly, or while it's a member of the
     // actively-selected HUD Editor group (so the whole Health Bars group can be arranged at once).
     const isEditing = this.props.selectedWidgetID === widgetID || this.props.selectedGroupMemberIDs.includes(widgetID);
@@ -96,19 +106,19 @@ class ATargetUnitFrame extends React.Component<Props> {
     const targetAsPlayer = target as PlayerEntityStateModel;
 
     return (
-      <div className={Root}>
+      <div className={`${Root}${getNameplateAlignmentClass(this.props.nameplateAlignment)}`}>
         {isGate || isSiege ? (
           <ItemUnitFrame
             entity={target}
             isFriendly={this.props.isFriendly}
-            nameplateStyle={this.props.nameplateStyle}
+            nameplateDecor={this.props.nameplateDecor}
             iconURL={isSiege ? SiegeIconURL : GateIconURL}
           />
         ) : isResourceNode ? (
           <ResourceNodeUnitFrame
             entity={target}
             isFriendly={this.props.isFriendly}
-            nameplateStyle={this.props.nameplateStyle}
+            nameplateDecor={this.props.nameplateDecor}
           />
         ) : (
           <PlayerUnitFrame
@@ -117,7 +127,7 @@ class ATargetUnitFrame extends React.Component<Props> {
             name={target.name}
             faction={target.faction}
             classID={targetAsPlayer?.classID}
-            isSimple={this.props.nameplateStyle === 'simple'}
+            nameplateDecor={this.props.nameplateDecor}
             hasCompass={target.entityID !== this.props.player?.entityID}
             contextMenu={getUnitFrameContextMenuItems(
               this.props.party,
@@ -140,11 +150,7 @@ class ATargetUnitFrame extends React.Component<Props> {
             isDeputy={getIsCharacterDeputy(targetAsPlayer?.characterID, this.props.party, this.props.warband)}
             isOnline={true}
           >
-            <div
-              className={`${Position} ${getIsEntityNPC(target) ? 'npc' : ''} ${
-                this.props.nameplateStyle === 'simple' ? 'simple' : ''
-              }`}
-            >
+            <div className={Position}>
               {target.entityID !== this.props.player?.entityID && (
                 <TargetPosition isFriendly={this.props.isFriendly} faction={target.faction} />
               )}
@@ -157,9 +163,14 @@ class ATargetUnitFrame extends React.Component<Props> {
   }
 }
 
+function getTargetWidgetID(isFriendly: boolean): string {
+  return isFriendly ? WIDGET_ID_FRIENDLY : WIDGET_ID_ENEMY;
+}
+
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { selectedWidgetID, selectedGroupMemberIDs } = state.hud.editor;
   const { stringTable } = state.stringTable;
+  const widgetState = state.hud.widgets[getTargetWidgetID(ownProps.isFriendly)]?.state;
   return {
     ...ownProps,
     target: ownProps.isFriendly ? state.entities.friendlyTarget : state.entities.enemyTarget,
@@ -173,7 +184,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     friends: state.social.friends.friends,
     stringTable,
     tagAffixIDByStringID: state.gameDefs.tagAffixIDByStringID,
-    nameplateStyle: state.hud.nameplateStyle
+    nameplateAlignment: widgetState?.nameplateAlignment,
+    nameplateDecor: widgetState?.nameplateDecor
   };
 }
 

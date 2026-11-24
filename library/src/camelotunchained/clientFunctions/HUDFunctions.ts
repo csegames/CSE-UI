@@ -20,7 +20,6 @@ const keyHUDWidgetStates = 'WidgetStates';
 const keyHUDEditorOffset = 'HUDEditorOffset';
 const keyPOIsToHide = 'POIsToHide';
 const keyGroupPOIsToHide = 'GroupPOIsToHide';
-const keyNameplateStyle = 'NameplateStyle';
 const keyPartyLayout = 'PartyLayout';
 const keyUIScale = 'UIScale';
 const keyShowGameInfoAtStartup = 'ShowGameInfoAtStartup';
@@ -61,7 +60,6 @@ function storeProgressionTrackTracked(
   return newTrackIDs;
 }
 
-export type NameplateStyle = 'fancy' | 'simple';
 export type PartyLayout = 'horizontal' | 'vertical';
 
 export interface MinimapState {
@@ -106,9 +104,6 @@ export interface HUDFunctions {
   setPOITypeVisibility(type: MapDataType, show: boolean): void;
   getGroupPOIsToHide(): GroupPOIType[];
   setGroupPOITypeVisibility(type: GroupPOIType, show: boolean): void;
-
-  getNameplateStyle(): NameplateStyle;
-  setNameplateStyle(style: NameplateStyle): void;
 
   getPartyLayout(): PartyLayout;
   setPartyLayout(layout: PartyLayout): void;
@@ -316,14 +311,6 @@ class CoherentHUDFunctions implements HUDFunctions {
         this.store.set(keyGroupPOIsToHide, types);
       }
     }
-  }
-
-  getNameplateStyle(): NameplateStyle {
-    return this.store.get<NameplateStyle>(keyNameplateStyle) ?? 'fancy';
-  }
-
-  setNameplateStyle(style: NameplateStyle): void {
-    this.store.set(keyNameplateStyle, style);
   }
 
   getPartyLayout(): PartyLayout {
@@ -535,12 +522,6 @@ class BrowserHUDFunctions implements HUDFunctions {
   }
 
   setGroupPOITypeVisibility(type: GroupPOIType, show: boolean): void {}
-
-  getNameplateStyle(): NameplateStyle {
-    return 'fancy';
-  }
-
-  setNameplateStyle(_style: NameplateStyle): void {}
 
   getPartyLayout(): PartyLayout {
     return this.store.get<PartyLayout>(keyPartyLayout) ?? 'vertical';

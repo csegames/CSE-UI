@@ -7,6 +7,8 @@
 import { Dictionary } from '@reduxjs/toolkit';
 import { TagState } from '../../../../library/dist/camelotunchained/game/GameClientModels/EntityState';
 
+export const TagVeilPlane = 'Granted.State.Plane.Veil';
+
 export enum MatchMode {
   All,
   Any,

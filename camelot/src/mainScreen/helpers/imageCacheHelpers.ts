@@ -5,7 +5,7 @@
  */
 
 import { Faction, SimpleCharacter } from '@csegames/library/dist/camelotunchained/graphql/schema';
-import { FactionData, getFactionData } from '../gameData/factionData';
+import { allFactionData, FactionData, getFactionData } from '../gameData/factionData';
 import { requestAddImagesToCache, requestRemoveImagesFromCache } from '../dataSources/imageCacheService';
 import { getRaceData } from '../gameData/raceData';
 import { ClassDef } from '../dataSources/manifest/classManifest';
@@ -54,6 +54,33 @@ export function cacheImagesForFaction(faction: Faction): void {
     requestor,
     factionData.gearSlotImages.map(({ gearSlotID, image }) => image)
   );
+}
+
+let areTargetUnitFrameImagesCached = false;
+const targetUnitFrameRequestor = 'TargetUnitFrames';
+export function cacheTargetUnitFrameImages(): void {
+  if (areTargetUnitFrameImagesCached) {
+    return;
+  }
+  areTargetUnitFrameImagesCached = true;
+
+  allFactionData.forEach((factionData) => {
+    requestAddImagesToCache(targetUnitFrameRequestor, [
+      factionData.squareBackgroundImage,
+      factionData.cornerPrimaryTopLeftImage,
+      factionData.cornerPrimaryTopRightImage,
+      factionData.cornerPrimaryBottomLeftImage,
+      factionData.cornerPrimaryBottomRightImage,
+      factionData.cornerSecondaryTopLeftImage,
+      factionData.cornerSecondaryTopRightImage,
+      factionData.cornerSecondaryBottomLeftImage,
+      factionData.cornerSecondaryBottomRightImage,
+      factionData.headerFancyBookendImage,
+      factionData.unitFrameClassGemImage,
+      factionData.unitFrameDecor1Image,
+      factionData.unitFrameDecor2Image
+    ]);
+  });
 }
 
 let cachedRaceID: string | null = null;

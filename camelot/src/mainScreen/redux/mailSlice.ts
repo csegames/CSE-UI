@@ -44,7 +44,8 @@ export const mailStateMockData: MailState = {
       templateID: 1,
       attachmentIDs: [2621639, 23935788],
       money: 11.36,
-      resolvedStringTokens: { Foo: "Bar" }
+      resolvedStringTokens: { Foo: "Bar" },
+      participationEvents: []
     },
     {
       id: 2,
@@ -57,7 +58,8 @@ export const mailStateMockData: MailState = {
       templateID: 1,
       attachmentIDs: [],
       money: 0,
-      resolvedStringTokens: { Foo: "Bar" }
+      resolvedStringTokens: { Foo: "Bar" },
+      participationEvents: []
     },
     {
       id: 3,
@@ -70,7 +72,8 @@ export const mailStateMockData: MailState = {
       templateID: 1,
       attachmentIDs: [],
       money: 1000,
-      resolvedStringTokens: { Foo: "Bar" }
+      resolvedStringTokens: { Foo: "Bar" },
+      participationEvents: []
     }
   ]
 };

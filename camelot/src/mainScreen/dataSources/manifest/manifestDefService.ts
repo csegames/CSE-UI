@@ -33,6 +33,7 @@ import { itemModSetManifestID, processItemModSets } from './itemModSetManifest';
 import { itemRecipeManifestID, processItemRecipes } from './itemRecipeManifest';
 import { itemTooltipCategoriesManifestID, processItemTooltipCategories } from './itemTooltipCategoryManifest';
 import { mailTemplateManifestID, processMailTemplates } from './mailTemplateManifest';
+import { participationEventManifestID, processParticipationEvents } from './participationEventManifest';
 import { performanceWarningManifestID, processPerformanceWarning } from './performanceWarningManifest';
 import { progressionTrackManifestID, processProgressionTracks } from './progressionTrackManifest';
 import { processRaces, racesManifestID } from './raceManifest';
@@ -145,6 +146,10 @@ export function processManifest(dispatch: Dispatch, id: string, contents: string
     }
     case mailTemplateManifestID: {
       processMailTemplates(dispatch, json, version);
+      break;
+    }
+    case participationEventManifestID: {
+      processParticipationEvents(dispatch, json, version);
       break;
     }
     case performanceWarningManifestID: {

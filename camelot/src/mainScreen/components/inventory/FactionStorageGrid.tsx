@@ -26,6 +26,8 @@ const ItemIconWrapper = 'HUD-FactionStorageGrid-ItemIconWrapper';
 
 interface ReactProps extends React.HTMLAttributes<HTMLDivElement> {
   type: ItemLocationType;
+  /** Bank tab (or container drawer) this grid shows. Defaults to 0. */
+  drawerIndex?: number;
   maxSlots: number;
   items: Item[];
   searchValue: string;
@@ -51,6 +53,7 @@ class AFactionStorageGrid extends React.Component<Props> {
   render(): React.ReactNode {
     const {
       type,
+      drawerIndex,
       maxSlots,
       items,
       searchValue,
@@ -88,6 +91,7 @@ class AFactionStorageGrid extends React.Component<Props> {
                   <FactionBorder className={ItemIconWrapper} type={BorderType.Secondary}>
                     <ItemIcon
                       type={type}
+                      drawerIndex={drawerIndex ?? 0}
                       slotImageURL={factionData.squareBackgroundImage}
                       items={items}
                       size={`${BASE_CELL_SIZE_VMIN}vmin`}

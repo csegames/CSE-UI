@@ -9,7 +9,6 @@ import * as React from 'react';
 import {
   HUDWidgetRegistration,
   registerWidget,
-  setNameplateStyle,
   setUIScale,
   updateGroupPOIsToHide,
   updatePOIsToHide,
@@ -52,7 +51,8 @@ import { craftingRegistry } from '../components/crafting/Crafting';
 import { socialRegistry } from '../components/social/Social';
 import { vendorRegistry } from '../components/vendor/Vendor';
 import { bankRegistry } from '../components/bank/Bank';
-import { levelBarsRegistry } from '../components/levelBars/LevelBars';
+import { classProgressionBarRegistry } from '../components/levelBars/ClassProgressionBar';
+import { realmRenownProgressionBarRegistry } from '../components/levelBars/RealmRenownProgressionBar';
 import { tradeRegistry } from '../components/trade/Trade';
 import { tradeRequestsRegistry } from '../components/trade/TradeRequests';
 import { serverMessagesRegistry } from '../components/serverMessages/ServerMessages';
@@ -102,7 +102,6 @@ export class HUDService extends ExternalDataSource {
 
     this.dispatch(setPersonalMapMarkerVisible(clientAPI.getPersonalMapMarkerVisibility()));
 
-    this.dispatch(setNameplateStyle(clientAPI.getNameplateStyle()));
     this.dispatch(setPartyLayoutHorizontal(clientAPI.getPartyLayout() === 'horizontal'));
     this.dispatch(setUIScale(clientAPI.getUIScale()));
 
@@ -138,7 +137,8 @@ export class HUDService extends ExternalDataSource {
     registerHUDWidget(gameMenuRegistry);
     registerHUDWidget(hudNavMenuRegistry);
     registerHUDWidget(inventoryRegistry);
-    registerHUDWidget(levelBarsRegistry);
+    registerHUDWidget(classProgressionBarRegistry);
+    registerHUDWidget(realmRenownProgressionBarRegistry);
     registerHUDWidget(mailRegistry);
     registerHUDWidget(levelNotificationsRegistry);
     registerHUDWidget(miniMapRegistry);

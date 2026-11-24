@@ -13,28 +13,25 @@ import {
   isEntityPlayer,
   PlayerEntityStateModel
 } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
-import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numberUtils';
 import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import ContextMenuSource from '../ContextMenuSource';
 import { ContextMenuItem, ContextMenuParams } from '../../redux/contextMenuSlice';
-import { FactionDef } from '../../dataSources/manifest/factionManifest';
 import {
   getStringTableValue,
   getTokenizedStringTableValue,
   StringIDGeneralComma
 } from '../../helpers/stringTableHelpers';
+import { printWithSeparator } from '@csegames/library/dist/_baseGame/utils/numberUtils';
 import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import { FactionData, getFactionData } from '../../gameData/factionData';
-import { CharacterKind } from '@csegames/library/dist/camelotunchained/game/types/CharacterKind';
 import { getIsEntityNPC, getLockedResourceRatio, getShieldRatio } from '../../helpers/characterHelpers';
-import {
-  PlayerUnitFrameChrome,
-  ClassIcon,
-  FrameForeground,
-  LevelForeground,
-  NameForeground
-} from './PlayerUnitFrameChrome';
+import { getNPCTierIconImage } from '../../helpers/npcTierHelpers';
+import { isClassLevelNumberShown, UnitFrameGemState, UnitFrameChrome } from './UnitFrameChrome';
+import { UnitFrameChromeFront } from './UnitFrameChromeFront';
+import { getTagFromString, tagsMatch, TagVeilPlane } from '../../helpers/tagHelpers';
+import { UnitFrameBar, UnitFrameBarLayout } from './UnitFrameBar';
 import { ClassIconTooltip } from './ClassIconTooltip';
+import { UnitFrameTextTooltip } from './UnitFrameTextTooltip';
 import { DETERMINATION_BUFF_STRING_ID, DETERMINATION_PIP_STACK_THRESHOLDS } from '../../helpers/statusHelpers';
 
 // Images are imported so that WebPack can find them (and give us errors if they are missing).
@@ -47,23 +44,19 @@ import Focus from '../../../images/unit-frames/unit-frame-focus.png';
 import Faith from '../../../images/unit-frames/unit-frame-faith.png';
 import Determination from '../../../images/unit-frames/unit-frame-determination.png';
 import Panic from '../../../images/unit-frames/unit-frame-panic.png';
-import NPCTierIconMinor from '../../../images/unit-frames/npc-tier-icon-minor.png';
-import NPCTierIconElite from '../../../images/unit-frames/npc-tier-icon-elite.png';
-import NPCTierIconStrongElite from '../../../images/unit-frames/npc-tier-icon-strongelite.png';
-import NPCTierIconUnique from '../../../images/unit-frames/npc-tier-icon-unique.png';
-import NPCTierIconMiniboss from '../../../images/unit-frames/npc-tier-icon-miniboss.png';
-import NPCTierIconBoss from '../../../images/unit-frames/npc-tier-icon-boss.png';
 import JudgementPipFull from '../../../images/unit-frames/unit-frame-judgement-pip-full.png';
 import DeterminationPipFull from '../../../images/unit-frames/unit-frame-determination-pip-full.png';
 import { GameDefsState } from '../../redux/gameDefsSlice';
-import { ClassIconSize, getClassIconSize } from '../../helpers/classIconHelpers';
+import { ClassIconSize, getClassIconSize, getUnitFrameTransparentClassIconImage } from '../../helpers/classIconHelpers';
+import { NameplateDecorFlags } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 
 // CSS classes
 const Root = 'HUD-PlayerUnitFrame-Root';
 const FrameRoot = 'HUD-PlayerUnitFrame-FrameRoot';
 const HitRegion = 'HUD-PlayerUnitFrame-HitRegion';
 const ClassIconHitRegion = 'HUD-PlayerUnitFrame-ClassIconHitRegion';
-const FrameBackground = 'HUD-PlayerUnitFrame-FrameBackground';
+const RealmRenownHitRegion = 'HUD-PlayerUnitFrame-RealmRenownHitRegion';
+const GemHitRegion = 'HUD-PlayerUnitFrame-GemHitRegion';
 const Marker = 'HUD-PlayerUnitFrame-Marker';
 const MarkerHealth = 'HUD-PlayerUnitFrame-MarkerHealth';
 const MarkerLockedHealth = 'HUD-PlayerUnitFrame-MarkerLockedHealth';
@@ -73,42 +66,54 @@ const MarkerMana = 'HUD-PlayerUnitFrame-MarkerMana';
 const MarkerFocus = 'HUD-PlayerUnitFrame-MarkerFocus';
 const MarkerFaith = 'HUD-PlayerUnitFrame-MarkerFaith';
 const MarkerDetermination = 'HUD-PlayerUnitFrame-MarkerDetermination';
-const PanicContainer = 'HUD-PlayerUnitFrame-PanicContainer';
+const MarkerPanic = 'HUD-PlayerUnitFrame-MarkerPanic';
 const PanicBar = 'HUD-PlayerUnitFrame-PanicBar';
-const SimplePanicContainer = 'HUD-PlayerUnitFrame-SimplePanicContainer';
-const SimplePanicBar = 'HUD-PlayerUnitFrame-SimplePanicBar';
-const PrimaryMiddle = 'HUD-PlayerUnitFrame-PrimaryMiddle';
 const PrimaryMiddleBar = 'HUD-PlayerUnitFrame-PrimaryMiddleBar';
 const LockedHealthBar = 'HUD-PlayerUnitFrame-LockedHealthBar';
 const ShieldBar = 'HUD-PlayerUnitFrame-ShieldBar';
-const SimplePrimaryMiddle = 'HUD-PlayerUnitFrame-SimplePrimaryMiddle';
-const SimpleSecondaryMiddle = 'HUD-PlayerUnitFrame-SimpleSecondaryMiddle';
-const PrimaryResourceText = 'HUD-PlayerUnitFrame-PrimaryResourceText';
-const SecondaryMiddle = 'HUD-PlayerUnitFrame-SecondaryMiddle';
 const SecondaryMiddleBar = 'HUD-PlayerUnitFrame-SecondaryMiddleBar';
+const PrimaryResourceText = 'HUD-PlayerUnitFrame-PrimaryResourceText';
 const SecondaryResourceText = 'HUD-PlayerUnitFrame-SecondaryResourceText';
-const SimpleNameForeground = 'HUD-PlayerUnitFrame-SimpleNameForeground';
-const SimpleLevelNumber = 'HUD-PlayerUnitFrame-SimpleLevelNumber';
-const SimpleNameText = 'HUD-PlayerUnitFrame-SimpleNameText';
-const SimplePrimaryResourceText = 'HUD-PlayerUnitFrame-SimplePrimaryResourceText';
-const SimpleSecondaryResourceText = 'HUD-PlayerUnitFrame-SimpleSecondaryResourceText';
 const ResourcePips = 'HUD-PlayerUnitFrame-ResourcePips';
 const ResourcePip = 'HUD-PlayerUnitFrame-ResourcePip';
 const ResourcePipContent = 'HUD-PlayerUnitFrame-ResourcePipContent';
 const ResourcePipBackground = 'HUD-PlayerUnitFrame-ResourcePipBackground';
 const ResourcePipFill = 'HUD-PlayerUnitFrame-ResourcePipFill';
+const NameText = 'HUD-PlayerUnitFrame-NameText';
+const SecondaryFill = 'HUD-PlayerUnitFrame-SecondaryFill';
 
 // String IDs
 const StringIDUnitFrameCorpse = 'UnitFrameCorpse';
-const StringIDUnitFrameOffline = 'UnitFrameOffline';
-const StringIDUnitFramePartyLeader = 'UnitFramePartyLeader';
-const StringIDUnitFrameWarbandDeputy = 'UnitFrameWarbandDeputy';
+const StringIDUnitFrameRealmRenownRank = 'UnitFrameRealmRenownRank';
+const StringIDUnitFrameClassLevel = 'UnitFrameClassLevel';
+const StringIDUnitFrameClassLevelMax = 'UnitFrameClassLevelMax';
+const StringIDUnitFrameGemDead = 'UnitFrameGemDead';
+const StringIDUnitFrameGemPanicked = 'UnitFrameGemPanicked';
+const StringIDUnitFrameGemVeil = 'UnitFrameGemVeil';
 const StringIDUnitFrameResourceHealth = 'UnitFrameResourceHealth';
 const StringIDUnitFrameResourceMana = 'UnitFrameResourceMana';
 const StringIDUnitFrameResourceFocus = 'UnitFrameResourceFocus';
 const StringIDUnitFrameResourceCourage = 'UnitFrameResourceCourage';
 const StringIDUnitFrameResourceFaith = 'UnitFrameResourceFaith';
 const StringIDUnitFrameResourceDetermination = 'UnitFrameResourceDetermination';
+const StringIDUnitFrameOffline = 'UnitFrameOffline';
+const StringIDUnitFramePartyLeader = 'UnitFramePartyLeader';
+const StringIDUnitFrameWarbandDeputy = 'UnitFrameWarbandDeputy';
+
+const MISSING_ASSET_IMAGE = '/images/MissingAsset.png';
+
+// Tags
+const TagPanicked = 'Granted.State.Panicked';
+
+function getRealmIconURL(faction: Faction): string {
+  return `/dynamic/userclasses/assets/${Faction[faction]}-transparency-Realm.png`;
+}
+
+const GemStateTooltipStringIDs: Record<UnitFrameGemState, string> = {
+  dead: StringIDUnitFrameGemDead,
+  panicked: StringIDUnitFrameGemPanicked,
+  veil: StringIDUnitFrameGemVeil
+};
 
 interface ReactProps {
   entityID: string;
@@ -119,11 +124,10 @@ interface ReactProps {
   isLeader: boolean;
   isDeputy: boolean;
   isOnline: boolean;
-  isParty?: boolean;
   classID?: number;
   onTarget?: () => void;
-  isSimple?: boolean;
   hasCompass?: boolean;
+  nameplateDecor?: NameplateDecorFlags;
 }
 
 interface InjectedProps {
@@ -141,11 +145,14 @@ type Props = ReactProps & InjectedProps;
 
 class PlayerUnitFrame extends React.PureComponent<Props> {
   render(): JSX.Element {
-    const faction = this.props.defs.factions[Faction[this.props.faction]];
+    const factionData = getFactionData(this.props.defs.factions[Faction[this.props.faction]].id);
 
     const entity = this.props.entity;
-    const isNPC = getIsEntityNPC(entity);
     const hasClassIconTooltip = !!entity && this.props.isOnline && this.hasClassIcon();
+    const onlineEntity = this.props.isOnline ? entity : undefined;
+    const hasRealmRenownTooltip = !!onlineEntity && this.getRealmRenown(onlineEntity) != null;
+    const gemState = onlineEntity ? this.getGemState(onlineEntity) : undefined;
+    const gemTooltip = onlineEntity ? this.getGemTooltip(onlineEntity, gemState) : undefined;
 
     let name = this.props.name;
     if (!this.props.isAlive && this.props.entityID?.length > 0) {
@@ -162,25 +169,36 @@ class PlayerUnitFrame extends React.PureComponent<Props> {
     }
 
     return (
-      <div className={`${Root}${this.props.isSimple ? ' simple' : ''}`}>
-        <div
-          className={`${FrameRoot}${this.props.isSimple ? ' simple' : ''}${
-            this.props.isSimple && this.props.faction === Faction.Factionless ? ' factionless-simple' : ''
-          }${!this.props.isSimple && isNPC ? ' npc' : ''}`}
-        >
-          {entity && this.props.isOnline && this.getEntityContent(entity, name, faction)}
-          {!entity && this.getOutOfZoneContent(name, faction, this.props.isSimple)}
+      <div className={Root}>
+        <div className={FrameRoot}>
+          {onlineEntity && this.getEntityContent(onlineEntity, name, factionData, gemState)}
+          {!entity && this.getOutOfZoneContent(name, factionData)}
           <ContextMenuSource
-            className={`${HitRegion}${this.props.isSimple ? ' simple' : ''}${isNPC ? ' npc' : ''}`}
+            className={HitRegion}
             onClick={this.props.onTarget}
             menuParams={this.getContextMenuParams()}
           >
             {hasClassIconTooltip && (
               <ClassIconTooltip
-                className={`${ClassIconHitRegion}${this.props.isSimple ? ' simple' : ''}`}
+                className={ClassIconHitRegion}
                 tooltipID={`UnitFrameClass_${this.props.entityID}`}
                 classDef={this.props.defs.classesByNumericID[this.props.classID]}
                 stringTable={this.props.stringTable}
+              />
+            )}
+            {hasRealmRenownTooltip && (
+              <UnitFrameTextTooltip
+                className={RealmRenownHitRegion}
+                tooltipID={`UnitFrameRealmRenown_${this.props.entityID}`}
+                text={getStringTableValue(StringIDUnitFrameRealmRenownRank, this.props.stringTable)}
+              />
+            )}
+            {gemTooltip && (
+              // The text is in the ID so an open tooltip refreshes when the gem changes under the cursor.
+              <UnitFrameTextTooltip
+                className={GemHitRegion}
+                tooltipID={`UnitFrameGem_${this.props.entityID}_${gemTooltip}`}
+                text={gemTooltip}
               />
             )}
           </ContextMenuSource>
@@ -190,262 +208,130 @@ class PlayerUnitFrame extends React.PureComponent<Props> {
     );
   }
 
-  private getEntityContent(entity: PlayerEntityStateModel, name: string, faction: FactionDef): JSX.Element {
-    const isFactionless = this.props.faction === Faction.Factionless;
-    const factionData = getFactionData(faction.id);
+  private getClassLevel(entity: PlayerEntityStateModel): number | undefined {
+    return !getIsEntityNPC(entity) && entity.characterLevel != null ? entity.characterLevel + 1 : undefined;
+  }
 
-    if (this.props.isSimple) {
-      return this.getSimpleEntityContent(entity, name, factionData);
+  private getRealmRenown(entity: PlayerEntityStateModel): string | undefined {
+    return !getIsEntityNPC(entity) && entity.realmRank != null ? String(entity.realmRank) : undefined;
+  }
+
+  private getGemState(entity: PlayerEntityStateModel): UnitFrameGemState | undefined {
+    if (!this.props.isAlive) {
+      return 'dead';
     }
+    const { tagAffixIDByStringID } = this.props.defs;
+    if (tagsMatch(entity.tags, [getTagFromString(TagPanicked, tagAffixIDByStringID)])) {
+      return 'panicked';
+    }
+    if (tagsMatch(entity.tags, [getTagFromString(TagVeilPlane, tagAffixIDByStringID)])) {
+      return 'veil';
+    }
+    return undefined;
+  }
 
-    const health = this.props.resources[EntityResourceIDs.Health];
-    const mana = this.props.resources[EntityResourceIDs.Mana];
-    const focus = this.props.resources[EntityResourceIDs.Focus];
-    const focusCharger = this.props.resources[EntityResourceIDs.FocusCharger];
-    const courage = this.props.resources[EntityResourceIDs.Courage];
-    const faith = this.props.resources[EntityResourceIDs.Faith];
-    const determination = this.props.resources[EntityResourceIDs.Determination];
-    const panic = this.props.resources[EntityResourceIDs.Panic];
+  private getGemTooltip(entity: PlayerEntityStateModel, gemState: UnitFrameGemState | undefined): string | undefined {
+    if (gemState) {
+      return getStringTableValue(GemStateTooltipStringIDs[gemState], this.props.stringTable);
+    }
+    const classLevel = this.getClassLevel(entity);
+    if (classLevel == null) {
+      return undefined;
+    }
+    return isClassLevelNumberShown(classLevel)
+      ? getStringTableValue(StringIDUnitFrameClassLevel, this.props.stringTable)
+      : getStringTableValue(StringIDUnitFrameClassLevelMax, this.props.stringTable);
+  }
 
-    const healthRatio = health ? health.current / health.max : 0;
-    const manaRatio = mana ? mana.current / mana.max : 0;
-    const focusRatio = focus ? focus.current / focus.max : 0;
-    let focusChargerRatio = focusCharger ? focusCharger.current / focusCharger.max : 0;
-    // If focus is full, charger shows as full.
-    if (focusRatio >= 1) focusChargerRatio = 1;
-    const courageRatio = courage ? courage.current / courage.max : 0;
-    const faithRatio = faith ? faith.current / faith.max : 0;
-    const determinationRatio = determination ? determination.current / determination.max : 0;
-    const panicRatio = panic ? panic.current / panic.max : 0;
-
+  private getEntityContent(
+    entity: PlayerEntityStateModel,
+    name: string,
+    factionData: FactionData,
+    gemState: UnitFrameGemState | undefined
+  ): JSX.Element {
     const isNPC = getIsEntityNPC(entity);
-    const isRealmNPC = !isFactionless && isNPC;
-    // For now, NPCs don't have a level to display (their icon occupies the level slot).
-    let levelString: string = '';
-    if (!isNPC && isEntityPlayer(entity) && entity.characterLevel != null) {
-      levelString = (entity.characterLevel + 1).toFixed(0);
-    }
+    const panic = this.props.resources[EntityResourceIDs.Panic];
+    const panicRatio = panic ? panic.current / panic.max : 0;
+    const barLayout: UnitFrameBarLayout = isNPC ? 'two-bars' : 'three-bars';
 
     return (
       <>
-        {/* Background */}
-        <img
-          className={FrameBackground}
-          src={isRealmNPC ? factionData.universalUnitFrameBackgroundImage : factionData.unitFrameBackgroundImage}
+        <UnitFrameChrome
+          factionID={factionData.id}
+          realmRenown={this.getRealmRenown(entity)}
+          classLevel={this.getClassLevel(entity)}
+          gemState={gemState}
+          hasBottomDiamond={!!this.props.hasCompass}
+          layout={barLayout}
+          decor={this.props.nameplateDecor}
         />
-        {/* Middle */}
-        <div className={PrimaryMiddle}>
-          {/* Health bar */}
-          {health && (
-            <>
-              {this.renderLockedHealth(health)}
-              <img className={PrimaryMiddleBar} src={Health} style={{ width: `${healthRatio * 100}%` }} />
-              {this.renderShield(health)}
-              <div className={PrimaryResourceText}>
-                {getTokenizedStringTableValue(StringIDUnitFrameResourceHealth, this.props.stringTable, {
-                  CURRENT: printWithSeparator(
-                    health.current,
-                    getStringTableValue(StringIDGeneralComma, this.props.stringTable)
-                  ),
-                  MAX: printWithSeparator(health.max, getStringTableValue(StringIDGeneralComma, this.props.stringTable))
-                })}
-              </div>
-              {healthRatio && (
-                <div
-                  className={`${Marker} ${MarkerHealth}`}
-                  style={{
-                    right: `calc(100% - ${healthRatio * 100}%)`
-                  }}
-                />
-              )}
-            </>
+        <UnitFrameBar slot='name' layout={barLayout} factionID={factionData.id}>
+          {panic && <img className={PanicBar} style={{ width: `${panicRatio * 100}%` }} src={Panic} />}
+          {panicRatio > 0 && (
+            <div className={`${Marker} ${MarkerPanic}`} style={{ right: `calc(100% - ${panicRatio * 100}%)` }} />
           )}
-        </div>
-        <div className={SecondaryMiddle}>
-          {/* Courage bar */}
-          {courage && (
-            <>
-              <img className={SecondaryMiddleBar} src={Courage} style={{ width: `${courageRatio * 100}%` }} />
-              <div className={SecondaryResourceText}>
-                {getTokenizedStringTableValue(StringIDUnitFrameResourceCourage, this.props.stringTable, {
-                  CURRENT: printWithSeparator(
-                    courage.current,
-                    getStringTableValue(StringIDGeneralComma, this.props.stringTable)
-                  ),
-                  MAX: printWithSeparator(
-                    courage.max,
-                    getStringTableValue(StringIDGeneralComma, this.props.stringTable)
-                  )
-                })}
-              </div>
-              {courageRatio && (
-                <div
-                  className={`${Marker} ${MarkerCourage}`}
-                  style={{ right: `calc(100% - ${courageRatio * 100}%)` }}
-                />
-              )}
-            </>
-          )}
-          {/* Mana bar */}
-          {mana && (
-            <>
-              <img className={SecondaryMiddleBar} src={Mana} style={{ width: `${manaRatio * 100}%` }} />
-              <div className={SecondaryResourceText}>
-                {getTokenizedStringTableValue(StringIDUnitFrameResourceMana, this.props.stringTable, {
-                  CURRENT: printWithSeparator(
-                    mana.current,
-                    getStringTableValue(StringIDGeneralComma, this.props.stringTable)
-                  ),
-                  MAX: printWithSeparator(mana.max, getStringTableValue(StringIDGeneralComma, this.props.stringTable))
-                })}
-              </div>
-              {manaRatio && (
-                <div className={`${Marker} ${MarkerMana}`} style={{ right: `calc(100% - ${manaRatio * 100}%)` }} />
-              )}
-            </>
-          )}
-          {/* Focus bar */}
-          {focus && (
-            <>
-              <img className={`${SecondaryMiddleBar} top`} src={Focus} style={{ width: `${focusRatio * 100}%` }} />
-              <img
-                className={`${SecondaryMiddleBar} bottom`}
-                src={Focus}
-                style={{ width: `${focusChargerRatio * 100}%` }}
-              />
-              {focusChargerRatio > 0 && (
-                <div
-                  className={`${Marker} ${MarkerFocus}`}
-                  style={{ right: `calc(100% - ${focusChargerRatio * 100}%)` }}
-                />
-              )}
-              <div className={SecondaryResourceText}>
-                {getTokenizedStringTableValue(StringIDUnitFrameResourceFocus, this.props.stringTable, {
-                  CURRENT: printWithSeparator(
-                    focus.current,
-                    getStringTableValue(StringIDGeneralComma, this.props.stringTable)
-                  ),
-                  MAX: printWithSeparator(focus.max, getStringTableValue(StringIDGeneralComma, this.props.stringTable))
-                })}
-              </div>
-              {focusRatio && (
-                <div className={`${Marker} ${MarkerFocus}`} style={{ right: `calc(100% - ${focusRatio * 100}%)` }} />
-              )}
-            </>
-          )}
-          {/* Faith bar */}
-          {faith && (
-            <>
-              <img className={SecondaryMiddleBar} src={Faith} style={{ width: `${faithRatio * 100}%` }} />
-              <div className={SecondaryResourceText}>
-                {getTokenizedStringTableValue(StringIDUnitFrameResourceFaith, this.props.stringTable, {
-                  CURRENT: printWithSeparator(
-                    faith.current,
-                    getStringTableValue(StringIDGeneralComma, this.props.stringTable)
-                  ),
-                  MAX: printWithSeparator(faith.max, getStringTableValue(StringIDGeneralComma, this.props.stringTable))
-                })}
-              </div>
-              {faithRatio && (
-                <div className={`${Marker} ${MarkerFaith}`} style={{ right: `calc(100% - ${faithRatio * 100}%)` }} />
-              )}
-            </>
-          )}
-
-          {/* Determination bar */}
-          {determination && (
-            <>
-              <img
-                className={SecondaryMiddleBar}
-                src={Determination}
-                style={{ width: `${determinationRatio * 100}%` }}
-              />
-              <div className={SecondaryResourceText}>
-                {getTokenizedStringTableValue(StringIDUnitFrameResourceDetermination, this.props.stringTable, {
-                  CURRENT: printWithSeparator(
-                    determination.current,
-                    getStringTableValue(StringIDGeneralComma, this.props.stringTable)
-                  ),
-                  MAX: printWithSeparator(
-                    determination.max,
-                    getStringTableValue(StringIDGeneralComma, this.props.stringTable)
-                  )
-                })}
-              </div>
-              {determinationRatio && (
-                <div
-                  className={`${Marker} ${MarkerDetermination}`}
-                  style={{ right: `calc(100% - ${determinationRatio * 100}%)` }}
-                />
-              )}
-            </>
-          )}
-        </div>
-        <div className={PanicContainer}>
-          <img className={PanicBar} style={{ width: `${panicRatio * 100}%` }} src={Panic} />
-        </div>
-        {/* Foreground */}
-        <PlayerUnitFrameChrome
-          isSimple={false}
-          isParty={!!this.props.isParty}
-          isLeader={this.props.isLeader}
-          hasCompass={!!this.props.hasCompass}
-          faction={this.props.faction}
-          factionData={factionData}
-          isFactionless={isFactionless}
-          isNPC={isNPC}
-          isRealmNPC={isRealmNPC}
-          classID={this.props.classID}
-          classDef={this.props.defs.classesByNumericID[this.props.classID!]}
-          classIconSize={this.props.classIconSize}
-          hasClassIcon={this.hasClassIcon()}
-          name={name}
-          levelString={levelString}
-          npcTierIconSource={this.getNPCTierIconSource()}
-        />
+          <div className={NameText}>{name}</div>
+        </UnitFrameBar>
+        <UnitFrameBar slot='health' layout={barLayout} factionID={factionData.id}>
+          {this.renderHealthContent()}
+        </UnitFrameBar>
+        {!isNPC && (
+          <UnitFrameBar slot='secondary' layout='three-bars' factionID={factionData.id}>
+            <div className={SecondaryFill}>{this.renderSecondaryContent()}</div>
+          </UnitFrameBar>
+        )}
         {this.renderResourcePips(factionData)}
+        <UnitFrameChromeFront
+          factionID={factionData.id}
+          iconURL={this.getIconURL(isNPC)}
+          layout={barLayout}
+          decor={this.props.nameplateDecor}
+        />
       </>
     );
   }
 
-  private getNPCTierIconSource(): string {
-    // We already know this is a "player", so the conversion should be reliable.
-    switch (this.props.entity?.characterKind) {
-      case CharacterKind.MinorNPC:
-        return NPCTierIconMinor;
-      case CharacterKind.EliteNPC:
-        return NPCTierIconElite;
-      case CharacterKind.StrongEliteNPC:
-        return NPCTierIconStrongElite;
-      case CharacterKind.UniqueNPC:
-        return NPCTierIconUnique;
-      case CharacterKind.MiniBossNPC:
-        return NPCTierIconMiniboss;
-      case CharacterKind.BossNPC:
-        return NPCTierIconBoss;
+  private getIconURL(isNPC: boolean): string | null {
+    if (this.hasClassIcon() || (isNPC && this.hasNPCClassIcon())) {
+      return getUnitFrameTransparentClassIconImage(
+        this.props.defs.classesByNumericID[this.props.classID],
+        this.props.classIconSize
+      );
     }
-
-    // If unsure, give them the most basic icon.
-    return NPCTierIconMinor;
+    if (this.props.faction === Faction.Factionless) {
+      return getNPCTierIconImage(this.props.entity?.characterKind);
+    }
+    return isNPC ? getRealmIconURL(this.props.faction) : null;
   }
 
-  private getSimpleEntityContent(entity: PlayerEntityStateModel, name: string, factionData: FactionData): JSX.Element {
-    const isFactionless = this.props.faction === Faction.Factionless;
-    const isNPC = getIsEntityNPC(entity);
-    let levelString = '';
-    if (!isNPC && isEntityPlayer(entity) && entity.characterLevel != null) {
-      levelString = (entity.characterLevel + 1).toFixed(0);
-    }
+  private renderHealthContent(): JSX.Element | null {
     const health = this.props.resources[EntityResourceIDs.Health];
+    if (!health) {
+      return null;
+    }
+
+    const healthRatio = health.current / health.max;
+    return (
+      <>
+        {this.renderLockedHealth(health)}
+        <img className={PrimaryMiddleBar} src={Health} style={{ width: `${healthRatio * 100}%` }} />
+        {this.renderShield(health)}
+        {healthRatio > 0 && (
+          <div className={`${Marker} ${MarkerHealth}`} style={{ right: `calc(100% - ${healthRatio * 100}%)` }} />
+        )}
+        <div className={PrimaryResourceText}>{this.getResourceText(StringIDUnitFrameResourceHealth, health)}</div>
+      </>
+    );
+  }
+
+  private renderSecondaryContent(): JSX.Element {
     const mana = this.props.resources[EntityResourceIDs.Mana];
     const focus = this.props.resources[EntityResourceIDs.Focus];
     const focusCharger = this.props.resources[EntityResourceIDs.FocusCharger];
     const courage = this.props.resources[EntityResourceIDs.Courage];
     const faith = this.props.resources[EntityResourceIDs.Faith];
     const determination = this.props.resources[EntityResourceIDs.Determination];
-    const panic = this.props.resources[EntityResourceIDs.Panic];
 
-    const healthRatio = health ? health.current / health.max : 0;
     const manaRatio = mana ? mana.current / mana.max : 0;
     const focusRatio = focus ? focus.current / focus.max : 0;
     let focusChargerRatio = focusCharger ? focusCharger.current / focusCharger.max : 0;
@@ -453,159 +339,105 @@ class PlayerUnitFrame extends React.PureComponent<Props> {
     const courageRatio = courage ? courage.current / courage.max : 0;
     const faithRatio = faith ? faith.current / faith.max : 0;
     const determinationRatio = determination ? determination.current / determination.max : 0;
-    const panicRatio = panic ? panic.current / panic.max : 0;
 
-    const healthLabel = health ? `Health  ${Math.floor(health.current)} / ${Math.floor(health.max)}` : null;
     let secondaryLabel: string | null = null;
-    if (courage) secondaryLabel = `Courage  ${Math.floor(courage.current)} / ${Math.floor(courage.max)}`;
-    else if (mana) secondaryLabel = `Mana  ${Math.floor(mana.current)} / ${Math.floor(mana.max)}`;
-    else if (focus) secondaryLabel = `Focus  ${Math.floor(focus.current)} / ${Math.floor(focus.max)}`;
-    else if (faith) secondaryLabel = `Faith  ${Math.floor(faith.current)} / ${Math.floor(faith.max)}`;
+    if (courage) secondaryLabel = this.getResourceText(StringIDUnitFrameResourceCourage, courage);
+    else if (mana) secondaryLabel = this.getResourceText(StringIDUnitFrameResourceMana, mana);
+    else if (focus) secondaryLabel = this.getResourceText(StringIDUnitFrameResourceFocus, focus);
+    else if (faith) secondaryLabel = this.getResourceText(StringIDUnitFrameResourceFaith, faith);
     else if (determination)
-      secondaryLabel = `Determination  ${Math.floor(determination.current)} / ${Math.floor(determination.max)}`;
+      secondaryLabel = this.getResourceText(StringIDUnitFrameResourceDetermination, determination);
 
     return (
       <>
-        <img className={FrameBackground} src={factionData.simpleUnitFrameBackgroundImage} />
-        <div className={SimplePrimaryMiddle}>
-          {health && (
-            <>
-              {this.renderLockedHealth(health)}
-              <img className={PrimaryMiddleBar} src={Health} style={{ width: `${healthRatio * 100}%` }} />
-              {this.renderShield(health)}
-              {healthRatio && (
-                <div className={`${Marker} ${MarkerHealth}`} style={{ right: `calc(100% - ${healthRatio * 100}%)` }} />
-              )}
-            </>
-          )}
-          {healthLabel && <div className={SimplePrimaryResourceText}>{healthLabel}</div>}
-        </div>
-        <div className={SimpleSecondaryMiddle}>
-          {courage && (
-            <>
-              <img className={SecondaryMiddleBar} src={Courage} style={{ width: `${courageRatio * 100}%` }} />
-              {courageRatio > 0 && (
-                <div
-                  className={`${Marker} ${MarkerCourage}`}
-                  style={{ right: `calc(100% - ${courageRatio * 100}%)` }}
-                />
-              )}
-            </>
-          )}
-          {mana && (
-            <>
-              <img className={SecondaryMiddleBar} src={Mana} style={{ width: `${manaRatio * 100}%` }} />
-              {manaRatio > 0 && (
-                <div className={`${Marker} ${MarkerMana}`} style={{ right: `calc(100% - ${manaRatio * 100}%)` }} />
-              )}
-            </>
-          )}
-          {focus && (
-            <>
-              <img className={`${SecondaryMiddleBar} top`} src={Focus} style={{ width: `${focusRatio * 100}%` }} />
-              {focusRatio > 0 && (
-                <div className={`${Marker} ${MarkerFocus}`} style={{ right: `calc(100% - ${focusRatio * 100}%)` }} />
-              )}
-              <img
-                className={`${SecondaryMiddleBar} bottom`}
-                src={Focus}
-                style={{ width: `${focusChargerRatio * 100}%` }}
-              />
-              {focusChargerRatio > 0 && (
-                <div
-                  className={`${Marker} ${MarkerFocus}`}
-                  style={{ right: `calc(100% - ${focusChargerRatio * 100}%)` }}
-                />
-              )}
-            </>
-          )}
-          {faith && (
-            <>
-              <img className={SecondaryMiddleBar} src={Faith} style={{ width: `${faithRatio * 100}%` }} />
-              {faithRatio > 0 && (
-                <div className={`${Marker} ${MarkerFaith}`} style={{ right: `calc(100% - ${faithRatio * 100}%)` }} />
-              )}
-            </>
-          )}
-          {determination && (
-            <>
-              <img
-                className={SecondaryMiddleBar}
-                src={Determination}
-                style={{ width: `${determinationRatio * 100}%` }}
-              />
-              {determinationRatio > 0 && (
-                <div
-                  className={`${Marker} ${MarkerDetermination}`}
-                  style={{ right: `calc(100% - ${determinationRatio * 100}%)` }}
-                />
-              )}
-            </>
-          )}
-          {secondaryLabel && <div className={SimpleSecondaryResourceText}>{secondaryLabel}</div>}
-        </div>
-        <PlayerUnitFrameChrome
-          isSimple={true}
-          isParty={!!this.props.isParty}
-          isLeader={this.props.isLeader}
-          hasCompass={!!this.props.hasCompass}
-          faction={this.props.faction}
-          factionData={factionData}
-          isFactionless={isFactionless}
-          isNPC={isNPC}
-          isRealmNPC={!isFactionless && isNPC}
-          classID={this.props.classID}
-          classDef={this.props.defs.classesByNumericID[this.props.classID!]}
-          classIconSize={this.props.classIconSize}
-          hasClassIcon={this.hasClassIcon()}
-          name={name}
-          levelString={levelString}
-          npcTierIconSource={this.getNPCTierIconSource()}
-        />
-        {panic && (
-          <div className={SimplePanicContainer}>
-            <img className={SimplePanicBar} style={{ height: `${panicRatio * 100}%` }} src={Panic} />
-          </div>
+        {courage && (
+          <>
+            <img className={SecondaryMiddleBar} src={Courage} style={{ width: `${courageRatio * 100}%` }} />
+            {courageRatio > 0 && (
+              <div className={`${Marker} ${MarkerCourage}`} style={{ right: `calc(100% - ${courageRatio * 100}%)` }} />
+            )}
+          </>
         )}
-        <div className={SimpleNameForeground}>
-          {levelString ? (
-            <>
-              [<span className={SimpleLevelNumber}>{levelString}</span>] <span className={SimpleNameText}>{name}</span>
-            </>
-          ) : (
-            name
-          )}
-        </div>
-        {this.renderResourcePips(factionData)}
+        {mana && (
+          <>
+            <img className={SecondaryMiddleBar} src={Mana} style={{ width: `${manaRatio * 100}%` }} />
+            {manaRatio > 0 && (
+              <div className={`${Marker} ${MarkerMana}`} style={{ right: `calc(100% - ${manaRatio * 100}%)` }} />
+            )}
+          </>
+        )}
+        {focus && (
+          <>
+            <img className={`${SecondaryMiddleBar} top`} src={Focus} style={{ width: `${focusRatio * 100}%` }} />
+            {focusRatio > 0 && (
+              <div className={`${Marker} ${MarkerFocus}`} style={{ right: `calc(100% - ${focusRatio * 100}%)` }} />
+            )}
+            <img
+              className={`${SecondaryMiddleBar} bottom`}
+              src={Focus}
+              style={{ width: `${focusChargerRatio * 100}%` }}
+            />
+            {focusChargerRatio > 0 && (
+              <div
+                className={`${Marker} ${MarkerFocus}`}
+                style={{ right: `calc(100% - ${focusChargerRatio * 100}%)` }}
+              />
+            )}
+          </>
+        )}
+        {faith && (
+          <>
+            <img className={SecondaryMiddleBar} src={Faith} style={{ width: `${faithRatio * 100}%` }} />
+            {faithRatio > 0 && (
+              <div className={`${Marker} ${MarkerFaith}`} style={{ right: `calc(100% - ${faithRatio * 100}%)` }} />
+            )}
+          </>
+        )}
+        {determination && (
+          <>
+            <img className={SecondaryMiddleBar} src={Determination} style={{ width: `${determinationRatio * 100}%` }} />
+            {determinationRatio > 0 && (
+              <div
+                className={`${Marker} ${MarkerDetermination}`}
+                style={{ right: `calc(100% - ${determinationRatio * 100}%)` }}
+              />
+            )}
+          </>
+        )}
+        {secondaryLabel && <div className={SecondaryResourceText}>{secondaryLabel}</div>}
       </>
     );
   }
 
-  private getOutOfZoneContent(name: string, faction: FactionDef, isSimple?: boolean): JSX.Element {
-    const factionData = getFactionData(faction.id);
-    const bgImage = isSimple ? factionData.simpleUnitFrameBackgroundImage : factionData.unitFrameBackgroundImage;
-    const fgImage = isSimple
-      ? !this.props.isParty
-        ? factionData.simpleUnitFrameForegroundImage
-        : this.props.isLeader
-        ? factionData.simpleUnitFrameForegroundPartyLeaderImage
-        : factionData.simpleUnitFrameForegroundPartyMemberImage
-      : !this.props.isParty
-      ? this.props.hasCompass && factionData.unitFrameForegroundTargetImage
-        ? factionData.unitFrameForegroundTargetImage
-        : factionData.unitFrameForegroundImage
-      : this.props.isLeader
-      ? factionData.unitFrameForegroundPartyLeaderImage
-      : factionData.unitFrameForegroundPartyMemberImage;
+  private getResourceText(stringID: string, resource: EntityResource): string {
+    const separator = getStringTableValue(StringIDGeneralComma, this.props.stringTable);
+    return getTokenizedStringTableValue(stringID, this.props.stringTable, {
+      CURRENT: printWithSeparator(Math.floor(resource.current), separator),
+      MAX: printWithSeparator(Math.floor(resource.max), separator)
+    });
+  }
+
+  private getOutOfZoneContent(name: string, factionData: FactionData): JSX.Element {
+    const classDef = this.props.defs.classesByNumericID[this.props.classID];
     return (
       <>
-        <img className={FrameBackground} src={bgImage} />
-        {this.props.isParty && this.props.classID && (
-          <img className={ClassIcon} src={this.props.defs.classesByNumericID[this.props.classID].unitFrameIconImage} />
-        )}
-        <img className={FrameForeground} src={fgImage} />
-        <div className={LevelForeground} />
-        <div className={NameForeground}>{name}</div>
+        <UnitFrameChrome
+          factionID={factionData.id}
+          hasBottomDiamond={!!this.props.hasCompass}
+          layout='three-bars'
+          decor={this.props.nameplateDecor}
+        />
+        <UnitFrameBar slot='name' layout='three-bars' factionID={factionData.id}>
+          <div className={NameText}>{name}</div>
+        </UnitFrameBar>
+        <UnitFrameBar slot='health' layout='three-bars' factionID={factionData.id} />
+        <UnitFrameBar slot='secondary' layout='three-bars' factionID={factionData.id} />
+        <UnitFrameChromeFront
+          factionID={factionData.id}
+          iconURL={classDef ? getUnitFrameTransparentClassIconImage(classDef, this.props.classIconSize) : null}
+          layout='three-bars'
+          decor={this.props.nameplateDecor}
+        />
       </>
     );
   }
@@ -614,7 +446,7 @@ class PlayerUnitFrame extends React.PureComponent<Props> {
     const content = this.props.contextMenu;
     if (content && content.length > 0) {
       const params: ContextMenuParams = {
-        id: `UnitFrame_${this.props.entityID}_${this.props.isParty}`,
+        id: `UnitFrame_${this.props.entityID}`,
         content
       };
       return params;
@@ -691,15 +523,15 @@ class PlayerUnitFrame extends React.PureComponent<Props> {
     );
   }
 
-  // The fancy party layout draws its class icon outside the slot the other layouts share, so it doesn't count.
   private hasClassIcon(): boolean {
     const classDef = this.props.defs.classesByNumericID[this.props.classID];
-    return (
-      (this.props.isSimple || !this.props.isParty) &&
-      !getIsEntityNPC(this.props.entity) &&
-      !!this.props.classID &&
-      !!classDef?.unitFrameIconImage
-    );
+    return !getIsEntityNPC(this.props.entity) && !!this.props.classID && !!classDef?.unitFrameIconImage;
+  }
+
+  // NPC classes without art point at the missing-asset image, and keep the realm icon instead.
+  private hasNPCClassIcon(): boolean {
+    const icon = this.props.defs.classesByNumericID[this.props.classID]?.unitFrameIconImage;
+    return !!icon && icon !== MISSING_ASSET_IMAGE;
   }
 }
 

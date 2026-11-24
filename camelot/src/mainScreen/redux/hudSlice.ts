@@ -19,7 +19,6 @@ import { MapDataType } from '@csegames/library/dist/_baseGame/GameClientModels/A
 import {
   MAX_UI_SCALE,
   MIN_UI_SCALE,
-  NameplateStyle,
   PersonalMapMarker
 } from '@csegames/library/dist/camelotunchained/clientFunctions/HUDFunctions';
 
@@ -118,7 +117,6 @@ interface HUDState {
   // Keyed by zoneID.
   personalMapMarkers: Record<string, PersonalMapMarker>;
   personalMapMarkerVisible: boolean;
-  nameplateStyle: NameplateStyle;
   uiScale: number;
   worldMapSelection: WorldMapSelection;
 }
@@ -152,7 +150,6 @@ function buildDefaultHUDState() {
     groupPOIsToHide: [],
     personalMapMarkers: {},
     personalMapMarkerVisible: true,
-    nameplateStyle: 'fancy',
     uiScale: 1,
     worldMapSelection: { regionID: '', mapID: '', isWorldView: false }
   };
@@ -463,9 +460,6 @@ export const hudSlice = createSlice({
     setUIFactionID: (state: HUDState, action: PayloadAction<string>) => {
       state.uiFactionID = action.payload;
     },
-    setNameplateStyle: (state: HUDState, action: PayloadAction<NameplateStyle>) => {
-      state.nameplateStyle = action.payload;
-    },
     updatePOIsToHide: (state: HUDState, action: PayloadAction<MapDataType[]>) => {
       state.poisToHide = action.payload;
     },
@@ -551,7 +545,6 @@ export const {
   removeImageFromCache,
   setUIFactionID,
   setUIScale,
-  setNameplateStyle,
   updatePOIsToHide,
   showPOIType,
   hidePOIType,

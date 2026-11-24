@@ -53,6 +53,8 @@ import {
 import { FactionCheckbox } from '../FactionCheckbox';
 import { splitFriendInvites } from '../../dataSources/socialService';
 import { showCallErrorModalIfFailed } from '../../helpers/errorConversionHelpers';
+import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
+import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
 
 interface PlayerDisplayData {
   account: Account;
@@ -187,6 +189,7 @@ class AFriendFoeList extends React.Component<Props, State> {
           labelText={getStringTableValue(StringIDFriendFoeBlockInvites, this.props.stringTable)}
           isChecked={this.getAreInvitesBlocked()}
           onCheckedChanged={this.onInviteBlockingChanged.bind(this)}
+          soundEventClicked={SoundEvents.PLAY_UI_CHAT_CHECKBOX}
         />
       </div>
     );
@@ -211,7 +214,7 @@ class AFriendFoeList extends React.Component<Props, State> {
       <FactionBorderSelectable
         className={NavTab}
         isSelected={this.state.listType === listType}
-        onSelected={() => this.setState({ listType })}
+        onSelected={this.onNavTabSelected.bind(this, listType)}
         background={BorderBackground.PatternSmall}
         includeBottom={false}
       >
@@ -430,6 +433,7 @@ class AFriendFoeList extends React.Component<Props, State> {
   }
 
   private async onInviteAccept(invite: FriendInvite): Promise<void> {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_SOCIAL_ACCEPT_IGNORE);
     // You received this invite, and you are accepting it.
     const params: AcceptFriendInviteParams = {
       inviteID: invite.id,
@@ -440,6 +444,7 @@ class AFriendFoeList extends React.Component<Props, State> {
   }
 
   private async onInviteIgnore(invite: FriendInvite): Promise<void> {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_SOCIAL_ACCEPT_IGNORE);
     // You received this invite, and you are rejecting it.
     const params: RejectFriendInviteParams = {
       inviteID: invite.id,
@@ -449,7 +454,13 @@ class AFriendFoeList extends React.Component<Props, State> {
     showCallErrorModalIfFailed(this.props.dispatch, this.props.stringTable, result);
   }
 
+  private onNavTabSelected(listType: ListType): void {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_CHAT_TAB);
+    this.setState({ listType });
+  }
+
   private onAddClicked(isFriend: boolean): void {
+    clientAPI.playGameSound(isFriend ? SoundEvents.PLAY_UI_SOCIAL_ADD_FRIEND : SoundEvents.PLAY_UI_SOCIAL_ADD_FOE);
     // A sent invite is listed under Invitations; a new block already shows in the Block List.
     const onAdded = isFriend ? () => this.setState({ listType: ListType.Invitations }) : undefined;
     showAddFriendFoeModal(this.props.dispatch, this.props.stringTable, { isFoe: !isFriend, onAdded });
@@ -720,6 +731,7 @@ class AFriendFoeList extends React.Component<Props, State> {
   }
 
   private async onRejectAllClicked(): Promise<void> {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_SOCIAL_REJECT_ALL);
     const result = await this.props.dispatch(callRejectAllFriendInvites());
     showCallErrorModalIfFailed(this.props.dispatch, this.props.stringTable, result);
   }

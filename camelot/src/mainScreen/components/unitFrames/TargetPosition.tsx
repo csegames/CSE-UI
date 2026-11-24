@@ -18,6 +18,7 @@ import { floatEquals } from '@csegames/library/dist/_baseGame/utils/mathExtensio
 import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { FactionDef } from '../../dataSources/manifest/factionManifest';
 import { getFactionData } from '../../gameData/factionData';
+import { BorderBackground, BorderType, FactionBorder } from '../FactionBorder';
 
 // CSS classes
 const Root = 'HUD-UnitFramePosition-Root';
@@ -25,6 +26,9 @@ const Distance = 'HUD-UnitFramePosition-Distance';
 const DirectionalIndicator = 'HUD-UnitFramePosition-DirectionalIndicator';
 const DirectionalIndicatorRadius = 'HUD-UnitFramePosition-DirectionalIndicatorRadius';
 const DirectionalIndicatorRadiusInner = 'HUD-UnitFramePosition-DirectionalIndicatorRadiusInner';
+const DistanceText = 'HUD-UnitFramePosition-DistanceText';
+
+const DISTANCE_CORNER_SIZE = '0.7vmin';
 
 interface ReactProps {
   isFriendly: boolean;
@@ -69,7 +73,15 @@ class ATargetPosition extends React.Component<Props, State> {
             <img className={DirectionalIndicatorRadiusInner} src={factionData.compassNeedleImage} />
           </div>
         </div>
-        <div className={Distance}>{this.state.distance}</div>
+        <FactionBorder
+          className={Distance}
+          type={BorderType.Secondary}
+          cornerSize={DISTANCE_CORNER_SIZE}
+          background={BorderBackground.Black}
+          factionIDOverride={faction.id}
+        >
+          <div className={DistanceText}>{this.state.distance}</div>
+        </FactionBorder>
       </div>
     );
   }

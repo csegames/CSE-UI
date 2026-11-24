@@ -16,6 +16,7 @@ import { MailMessage } from '@csegames/library/dist/camelotunchained/game/GameCl
 import { resolveSenderName } from '../../redux/mailSlice';
 import { ItemDef } from '../../dataSources/manifest/itemManifest';
 import { MailTemplateDef } from '../../dataSources/manifest/mailTemplateManifest';
+import { ParticipationEventDef } from '../../dataSources/manifest/participationEventManifest';
 import { FactionScrollArea } from '../FactionScrollArea';
 import { TooltipSource } from '../TooltipSource';
 import { Item } from '@csegames/library/dist/camelotunchained/game/types/Items';
@@ -51,6 +52,11 @@ const StringIDMailFrom = 'MailFrom';
 const StringIDMailSubject = 'MailSubject';
 const StringIDMailForward = 'MailForward';
 const StringIDMailReply = 'MailReply';
+const StringIDParticipationSummaryPoints = 'ParticipationSummaryPoints';
+
+// MailTemplate tag names
+const TagNameParticipationPoints = 'ParticipationPoints';
+const TagNameParticipationSummary = 'ParticipationSummary';
 
 const ATTACHMENTS_PER_MESSAGE = 6;
 const FOOTER_BUTTON_WIDTH_VMIN = 12.25;
@@ -69,6 +75,7 @@ interface InjectedProps {
   stringTable: Record<string, StringTableEntryDef>;
   itemsByNumericID: Record<number, ItemDef>;
   mailTemplatesByNumericID: Record<number, MailTemplateDef>;
+  participationEventsByNumericID: Record<number, ParticipationEventDef>;
   dispatch?: Dispatch;
 }
 
@@ -86,7 +93,11 @@ class AMailMessageView extends React.Component<Props, State> {
     const m = this.props.message;
     const factionData = getFactionData(this.props.uiFactionID);
     const mailTemplateDef = this.props.mailTemplatesByNumericID[this.props.message.templateID];
-    const messageStringTokens = {...this.props.commonMessageStringTokens, ...m.resolvedStringTokens}
+    const messageStringTokens : Record<string, string> = {
+      ...this.props.commonMessageStringTokens,
+      ...m.resolvedStringTokens,
+      ...this.resolveParticipationStringTokens(mailTemplateDef)
+    };
 
     return (
       <div className={PageContainer}>
@@ -105,7 +116,7 @@ class AMailMessageView extends React.Component<Props, State> {
         <div className={MessageContainer}>
           <img className={MessageBackground} src={factionData.mailMessageBackgroundImage} />
           <FactionScrollArea className={MessageScrollArea} topFadeAmount={'10%'} bottomFadeAmount={'10%'}>
-            <div className={MessageText}>{replaceStringTokens(mailTemplateDef.body, messageStringTokens)}</div>
+            <div className={MessageText}>{this.unescapeNewlines(replaceStringTokens(mailTemplateDef.body, messageStringTokens))}</div>
           </FactionScrollArea>
         </div>
         <div className={MessageFooter} style={{ borderTopColor: factionData.mailDividerColor }}>
@@ -150,6 +161,33 @@ class AMailMessageView extends React.Component<Props, State> {
         </div>
       </div>
     );
+  }
+
+  private unescapeNewlines(text: string): string {
+    return text.replace(/\\n/g, '\n');
+  }
+
+  private resolveParticipationStringTokens(mailTemplateDef : MailTemplateDef): Record<string, string> {
+    const resolvedStringTokens : Record<string, string> = {};
+
+    if (!mailTemplateDef.tagNames.includes(TagNameParticipationSummary) && !mailTemplateDef.tagNames.includes(TagNameParticipationPoints)) {
+      return resolvedStringTokens;
+    }
+
+    const pointsString = getStringTableValue(StringIDParticipationSummaryPoints, this.props.stringTable).toLowerCase();
+    const summaryLines: string[] = [];
+    let totalPoints : number = 0;
+    Object.entries(this.props.message.participationEvents).forEach((eventCountEntry) => {
+      const eventDef = this.props.participationEventsByNumericID[Number(eventCountEntry[0])];
+      const eventDescription = getStringTableValue(eventDef.descriptionStringKey, this.props.stringTable);
+      const eventCount = eventCountEntry[1];
+      summaryLines.push(`${eventDescription}: ${eventCount} (x${eventDef.coefficient} ${pointsString})`);
+      totalPoints += eventCount * eventDef.coefficient;
+    });
+    
+    resolvedStringTokens[TagNameParticipationSummary] = summaryLines.join('\n');
+    resolvedStringTokens[TagNameParticipationPoints] = totalPoints.toString();
+    return resolvedStringTokens;
   }
 
   private onMessageCollectClicked(message: MailMessage): void {
@@ -204,7 +242,8 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): Props => {
     uiFactionID: state.hud.uiFactionID,
     stringTable: state.stringTable.stringTable,
     itemsByNumericID: state.gameDefs.itemsByNumericID,
-    mailTemplatesByNumericID: state.gameDefs.mailTemplatesByNumericID
+    mailTemplatesByNumericID: state.gameDefs.mailTemplatesByNumericID,
+    participationEventsByNumericID: state.gameDefs.participationEventsByNumericID
   };
 };
 

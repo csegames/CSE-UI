@@ -21,14 +21,17 @@ import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenCli
 import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
 import { ClassDef } from '../../dataSources/manifest/classManifest';
 import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
-import { getStringTableValue, StringIDGeneralComingSoon } from '../../helpers/stringTableHelpers';
+import { getStringTableValue } from '../../helpers/stringTableHelpers';
 import { AbilityWithActivation } from '../../redux/abilitiesSlice';
 import { AbilityDisplayDef } from '../../dataSources/manifest/abilityDisplayManifest';
 import { TooltipSource } from '../TooltipSource';
 import { FactionTabBadge } from '../FactionTabBadge';
 import {
+  findRealmProgressionTrack,
   getAvailableAbilityPoints,
+  getAvailableRealmProgressionPoints,
   StringIDAbilityBookClassProgression,
+  StringIDAbilityBookRealmProgression,
   StringIDAbilityBookTradeskillProgression
 } from '../../helpers/abilityBookHelpers';
 import { BorderBackground, BorderType, FactionBorder } from '../FactionBorder';
@@ -41,6 +44,7 @@ import { BaseHUDWidgetDraggableHandle } from '../BaseHUDWidgetDraggableHandle';
 import { AbilityPageTradeskills } from './AbilityPageTradeskills';
 import { AbilityPageClass } from './AbilityPageClass';
 import { GameDefsState } from '../../redux/gameDefsSlice';
+import { AbilityPageRealmProgression } from './AbilityPageRealmProgression';
 
 // CSS classes
 const Root = 'HUD-AbilityBook-Root';
@@ -57,7 +61,6 @@ const TooltipDescription = 'HUD-AbilityBook-TooltipDescription';
 
 // String IDs
 const StringIDAbilityBookTitle = 'AbilityBookTitle';
-const StringIDRealmProgressionTabName = 'RealmProgressionTabName';
 
 const TRADESKILL_TAB_ID = 'Tradeskills';
 const REALM_PROGRESSION_TAB_ID = 'RealmProgression';
@@ -144,7 +147,9 @@ class AAbilityBook extends React.Component<Props, State> {
             <Escapable escapeID={WIDGET_ID_ABILITY_BOOK} onEscape={this.closeSelf.bind(this)} />
           )}
           <div className={Page}>
-            {this.state.tabID === TRADESKILL_TAB_ID ? <AbilityPageTradeskills /> : <AbilityPageClass />}
+            {this.state.tabID === this.props.myClass.id ? <AbilityPageClass /> : null}
+            {this.state.tabID === TRADESKILL_TAB_ID ? <AbilityPageTradeskills /> : null}
+            {this.state.tabID === REALM_PROGRESSION_TAB_ID ? <AbilityPageRealmProgression /> : null}
           </div>
         </FactionBorder>
         <BaseHUDWidgetDraggableHandle className={Handle} widgetID={WIDGET_ID_ABILITY_BOOK} />
@@ -205,16 +210,18 @@ class AAbilityBook extends React.Component<Props, State> {
           badgeCount: getAvailableAbilityPoints(classDef, this.props.defs, this.props.self)
         })}
         {this.renderSideTab({
+          tabID: REALM_PROGRESSION_TAB_ID,
+          iconURL: RealmProgressionTabIconByFactionID[this.props.uiFactionID],
+          title: getStringTableValue(StringIDAbilityBookRealmProgression, this.props.stringTable),
+          badgeCount: getAvailableRealmProgressionPoints(
+            findRealmProgressionTrack(classDef, this.props.defs.progressionTracks),
+            this.props.self.progression
+          )
+        })}
+        {this.renderSideTab({
           tabID: TRADESKILL_TAB_ID,
           iconURL: TradeskillTabIconURL,
           title: getStringTableValue(StringIDAbilityBookTradeskillProgression, this.props.stringTable)
-        })}
-        {this.renderSideTab({
-          tabID: REALM_PROGRESSION_TAB_ID,
-          iconURL: RealmProgressionTabIconByFactionID[this.props.uiFactionID],
-          title: getStringTableValue(StringIDRealmProgressionTabName, this.props.stringTable),
-          description: getStringTableValue(StringIDGeneralComingSoon, this.props.stringTable),
-          isDisabled: true
         })}
       </div>
     );
@@ -249,10 +256,8 @@ class AAbilityBook extends React.Component<Props, State> {
   }
 
   private onTabSelected(tabID: string): void {
-    if (tabID !== this.state.tabID) {
-      clientAPI.playGameSound(SoundEvents.PLAY_CP_ABILITY_TAB);
-      this.setState({ tabID });
-    }
+    clientAPI.playGameSound(SoundEvents.PLAY_CP_ABILITY_TAB);
+    this.setState({ tabID });
   }
 
   private closeSelf(): void {

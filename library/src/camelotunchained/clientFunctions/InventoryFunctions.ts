@@ -16,6 +16,7 @@ const performItemActionCallbackName = 'performItemAction';
 const useInventoryItemCallbackName = 'useInventoryItem';
 const moveItemCallbackName = 'moveItem';
 const setContainerColorCallbackName = 'setContainerColor';
+const purchaseBankTabCallbackName = 'bank.PurchaseTab';
 
 export type InventoryUpdatedListener = (name: string, content: Item[]) => void;
 
@@ -56,6 +57,8 @@ export interface InventoryFunctions {
   ): void;
 
   setContainerColor(itemID: string, color: number);
+
+  purchaseBankTab(): void;
 }
 
 abstract class InventoryFunctionsBase implements InventoryFunctions, InventoryMocks {
@@ -99,6 +102,8 @@ abstract class InventoryFunctionsBase implements InventoryFunctions, InventoryMo
   ): void;
 
   abstract setContainerColor(itemID: string, color: number);
+
+  abstract purchaseBankTab(): void;
 }
 
 class CoherentInventoryFunctions extends InventoryFunctionsBase {
@@ -169,7 +174,7 @@ class CoherentInventoryFunctions extends InventoryFunctionsBase {
       characterIDTo ?? '0000000000000000000000',
       positionTo,
       containerIDTo ?? '0000000000000000000000',
-      drawerIndexTo ?? '',
+      drawerIndexTo ?? 0,
       gearSlotIDTo,
       worldPositionTo?.x ?? 0,
       worldPositionTo?.y ?? 0,
@@ -183,6 +188,11 @@ class CoherentInventoryFunctions extends InventoryFunctionsBase {
 
   setContainerColor(itemID: string, color: number): void {
     engine.trigger(setContainerColorCallbackName, itemID, color);
+  }
+
+  purchaseBankTab(): void {
+  // The server picks the next tab and its price, so there is nothing to send but the request
+    engine.trigger(purchaseBankTabCallbackName);
   }
 }
 
@@ -223,6 +233,8 @@ class BrowserInventoryFunctions extends InventoryFunctionsBase {
   ): void {}
 
   setContainerColor(itemID: string, color: number): void {}
+
+  purchaseBankTab(): void {}
 }
 
 export const impl: InventoryFunctions & InventoryMocks = engine.isAttached

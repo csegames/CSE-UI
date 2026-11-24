@@ -17,7 +17,7 @@ import ContextMenuSource from '../ContextMenuSource';
 import { ContextMenuItem } from '../../redux/contextMenuSlice';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
 import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
-import { LEVEL_UP_BLING_DURATION_MS } from '../levelBars/LevelBars';
+import { LEVEL_UP_BLING_DURATION_MS } from '../levelBars/ProgressionLevelBar';
 
 const Root = 'HUD-TradeskillTrackerRow-Root';
 const IconContainer = 'HUD-TradeskillTrackerRow-IconContainer';

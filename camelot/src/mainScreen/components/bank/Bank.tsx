@@ -55,6 +55,17 @@ const StringIDBankExpansionTitle = 'BankExpansionTitle';
 const StringIDBankExpansionPrompt = 'BankExpansionPrompt';
 const StringIDBankExpansionTooltip = 'BankExpansionTooltip';
 
+/*
+// TODO: Sort out design for how to use this data to show tabs and their slots
+const BankUnlockTab = 255; // The token counting purchased bank tabs lives in tab 255
+function getBankTab(item: Item): number {
+  return item.location?.drawerIndex ?? 0;
+}
+function getUnitCount(item: Item): number {
+  return item.unitCount ?? 0;
+}
+*/
+
 interface State {
   searchValue: string;
 }
@@ -68,6 +79,8 @@ interface InjectedProps {
   itemsByNumericID: Record<number, ItemDef>;
   accountBank: Item[];
   accountBankCapacityBase: number;
+  accountBankTabCost: number;
+  accountBankMaxPurchasableTabs: number;
 }
 
 type Props = ReactProps & InjectedProps & AddDispatch;
@@ -118,6 +131,14 @@ class ABank extends React.Component<Props, State> {
   componentWillUnmount(): void {
     clientAPI.playGameSound(SoundEvents.PLAY_UI_VENDOR_WINDOW_CLOSE);
   }
+
+  /*
+  // TODO: Sort out design for how to use this data to show tabs and their slots
+  private getPurchasedTabCount(): number {
+    // The unlock token is the only item the server allows in the reserved tab
+    const token = this.props.accountBank.find((item) => getBankTab(item) === BankUnlockTab);
+    return token ? getUnitCount(token) : 0;
+  }*/
 
   private renderStorageSection(): React.ReactNode {
     return (
@@ -197,8 +218,7 @@ class ABank extends React.Component<Props, State> {
   private onBuyBagSlotClicked(): void {
     clientAPI.playGameSound(SoundEvents.PLAY_UI_METAL_VAULT_DOOR);
 
-    // TODO: Use real info once we build the back end for bank bags!
-    const cost = 150;
+    const cost = this.props.accountBankTabCost;
     // TODO: Check if the user can afford the slot.
     const canAfford = false;
 
@@ -244,7 +264,9 @@ const mapStateToProps = (state: RootState, ownProps: ReactProps): ReactProps & I
     stringTable: state.stringTable.stringTable,
     itemsByNumericID: state.gameDefs.itemsByNumericID,
     accountBank: state.inventory.accountBank,
-    accountBankCapacityBase: state.gameDefs.settings.accountBankCapacityBase
+    accountBankCapacityBase: state.gameDefs.settings.accountBankCapacityBase,
+    accountBankTabCost: state.gameDefs.settings.accountBankTabCost,
+    accountBankMaxPurchasableTabs: state.gameDefs.settings.accountBankMaxPurchasableTabs
   };
 };
 

@@ -20,4 +20,5 @@ export interface MailMessage {
   attachmentIDs: number[];
   money: number;
   resolvedStringTokens: Record<string, string>;
+  participationEvents: Record<number, number>;
 }

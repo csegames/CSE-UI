@@ -11,7 +11,12 @@ import { HUDLayer, HUDWidgetRegistration } from '../../redux/hudSlice';
 import { RootState } from '../../redux/store';
 import PlayerUnitFrame from './PlayerUnitFrame';
 import { camelotMocks } from '@csegames/library/dist/camelotunchained/camelotMockData';
-import { HUDHorizontalAnchor, HUDVerticalAnchor } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
+import {
+  HUDHorizontalAnchor,
+  HUDVerticalAnchor,
+  NameplateAlignment,
+  NameplateDecorFlags
+} from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 import { ClassDef } from '../../dataSources/manifest/classManifest';
 import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
 import StatusEffects from './StatusEffects';
@@ -26,7 +31,7 @@ import { GuildSnapshot } from '@csegames/library/dist/camelotunchained/game/Game
 import { Friend } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { getTagFromString, tagMatchesAny } from '../../helpers/tagHelpers';
 import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
-import { NameplateStyle } from '@csegames/library/dist/camelotunchained/clientFunctions/HUDFunctions';
+import { getNameplateAlignmentClass } from './UnitFrameChrome';
 
 // CSS classes
 const Root = 'HUD-SelfUnitFrame-Root';
@@ -44,7 +49,8 @@ interface InjectedProps {
   classesByNumericID: Record<number, ClassDef>;
   stringTable: Record<string, StringTableEntryDef>;
   tagAffixIDByStringID: Record<string, number>;
-  nameplateStyle: NameplateStyle;
+  nameplateAlignment?: NameplateAlignment;
+  nameplateDecor?: NameplateDecorFlags;
 }
 
 type Props = ReactProps & InjectedProps;
@@ -57,14 +63,16 @@ class ASelfUnitFrame extends React.Component<Props> {
     const inCombat = tagMatchesAny(player.tags, combatTag);
 
     return (
-      <div className={`${Root}${inCombat ? ' inCombat' : ''}`}>
+      <div
+        className={`${Root}${inCombat ? ' inCombat' : ''}${getNameplateAlignmentClass(this.props.nameplateAlignment)}`}
+      >
         <PlayerUnitFrame
           entityID={player.entityID}
           isAlive={player.isAlive}
           name={player.name}
           faction={player.faction}
           classID={player.classID}
-          isSimple={this.props.nameplateStyle === 'simple'}
+          nameplateDecor={this.props.nameplateDecor}
           onTarget={() => {
             clientAPI.requestFriendlyTarget(player.entityID);
           }}
@@ -99,6 +107,7 @@ class ASelfUnitFrame extends React.Component<Props> {
 function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
   const { guild, party, warband } = state;
   const { stringTable } = state.stringTable;
+  const widgetState = state.hud.widgets[WIDGET_ID_SELF]?.state;
   return {
     ...ownProps,
     player: state.entities.self,
@@ -109,7 +118,8 @@ function mapStateToProps(state: RootState, ownProps: ReactProps): Props {
     classesByNumericID: state.gameDefs.classesByNumericID,
     stringTable,
     tagAffixIDByStringID: state.gameDefs.tagAffixIDByStringID,
-    nameplateStyle: state.hud.nameplateStyle
+    nameplateAlignment: widgetState?.nameplateAlignment,
+    nameplateDecor: widgetState?.nameplateDecor
   };
 }
 

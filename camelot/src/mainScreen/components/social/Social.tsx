@@ -23,6 +23,8 @@ import { Guild } from './Guild';
 import { FriendFoeList } from './FriendFoeList';
 import { FriendInvite } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { splitFriendInvites } from '../../dataSources/socialService';
+import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
+import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
 
 // CSS classes
 const Root = 'HUD-Social-Root';
@@ -89,7 +91,13 @@ class ASocial extends React.Component<Props & DispatchProp, State> {
           titleText={getStringTableValue(StringIDSocialTitle, this.props.stringTable)}
           cornerButtons={[<FactionCornerButton type={CornerButtonType.Close} onClick={this.closeSelf.bind(this)} />]}
         >
-          {!this.props.isDragCopy && <Escapable escapeID={WIDGET_ID_SOCIAL} onEscape={this.closeSelf.bind(this)} />}
+          {!this.props.isDragCopy && (
+            <Escapable
+              escapeID={WIDGET_ID_SOCIAL}
+              onEscape={this.closeSelf.bind(this)}
+              sound={SoundEvents.PLAY_UI_GENERIC_CLOSEX}
+            />
+          )}
           <div className={TabContent}>{this.renderTabContent()}</div>
           <BaseHUDWidgetDraggableHandle className={Handle} widgetID={WIDGET_ID_SOCIAL} />
         </FactionBorder>
@@ -105,9 +113,7 @@ class ASocial extends React.Component<Props & DispatchProp, State> {
         key={tab}
         className={TabButton}
         isSelected={tab === this.state.primaryTab}
-        onSelected={() => {
-          this.setState({ primaryTab: tab });
-        }}
+        onSelected={this.onTabSelected.bind(this, tab)}
         includeLeft={false}
         background={BorderBackground.Leather}
       >
@@ -121,6 +127,11 @@ class ASocial extends React.Component<Props & DispatchProp, State> {
         />
       </FactionBorderSelectable>
     );
+  }
+
+  private onTabSelected(tab: SocialTab): void {
+    clientAPI.playGameSound(SoundEvents.PLAY_UI_SOCIAL_SIDE_TAB_SELECT);
+    this.setState({ primaryTab: tab });
   }
 
   private getTabBadgeCount(tab: SocialTab): number {

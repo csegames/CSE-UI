@@ -13,25 +13,23 @@ import StatusEffects from './StatusEffects';
 import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { getStringTableValue } from '../../helpers/stringTableHelpers';
 import { StringTableEntryDef } from '../../dataSources/manifest/stringTableManifest';
-import { NameplateStyle } from '@csegames/library/dist/camelotunchained/clientFunctions/HUDFunctions';
-import { getFactionData } from '../../gameData/factionData';
+import { NameplateDecorFlags } from '@csegames/library/dist/camelotunchained/game/types/HUDTypes';
 import HealthArtURL from '../../../images/resource-unit-frames/Resource-unit-frame-health-arthurian.png';
 import HealthTDDURL from '../../../images/resource-unit-frames/Resource-unit-frame-health-tdd.png';
 import HealthVikingURL from '../../../images/resource-unit-frames/Resource-unit-frame-health-viking.png';
 import HealthFactionlessURL from '../../../images/resource-unit-frames/Resource-unit-frame-health-factionless.png';
+import { UnitFrameChrome } from './UnitFrameChrome';
+import { UnitFrameChromeFront } from './UnitFrameChromeFront';
+import { UnitFrameBar } from './UnitFrameBar';
 
 // CSS classes
 const Root = 'HUD-ItemUnitFrame-Root';
 const FrameRoot = 'HUD-ItemUnitFrame-FrameRoot';
-const Background = 'HUD-ItemUnitFrame-Background';
-const Frame = 'HUD-ItemUnitFrame-Frame';
 const Name = 'HUD-ItemUnitFrame-Name';
 const HealthBarContainer = 'HUD-ItemUnitFrame-HealthBarContainer';
 const HealthBarFill = 'HUD-ItemUnitFrame-HealthBarFill';
-const Icon = 'HUD-ItemUnitFrame-Icon';
 const Marker = 'HUD-ItemUnitFrame-Marker';
 const Position = 'HUD-ItemUnitFrame-Position';
-const SimpleForegroundRight = 'HUD-ItemUnitFrame-SimpleForegroundRight';
 
 const FULL_HEALTH_PERCENT = 1;
 
@@ -45,7 +43,7 @@ const healthImageByFaction: Record<string, string> = {
 interface ReactProps {
   entity: AnyEntityStateModel;
   isFriendly: boolean;
-  nameplateStyle: NameplateStyle;
+  nameplateDecor?: NameplateDecorFlags;
   iconURL: string;
 }
 
@@ -62,10 +60,37 @@ function getHealthPercent(entity: AnyEntityStateModel): number {
 
 class AItemUnitFrame extends React.Component<Props> {
   render(): JSX.Element {
-    if (this.props.nameplateStyle === 'simple') {
-      return this.renderSimple(this.props.entity);
-    }
-    return this.renderFancy(this.props.entity);
+    const { entity } = this.props;
+    const factionID = Faction[entity.faction];
+
+    return (
+      <div className={Root}>
+        <div className={FrameRoot}>
+          <UnitFrameChrome
+            factionID={factionID}
+            hasBottomDiamond={true}
+            layout='two-bars'
+            decor={this.props.nameplateDecor}
+          />
+          <UnitFrameBar slot='name' layout='two-bars' factionID={factionID}>
+            <div className={Name}>{getStringTableValue(entity.name, this.props.stringTable)}</div>
+          </UnitFrameBar>
+          <UnitFrameBar slot='health' layout='two-bars' factionID={factionID}>
+            {this.renderHealthBar(entity)}
+          </UnitFrameBar>
+          <div className={Position}>
+            <TargetPosition isFriendly={this.props.isFriendly} faction={entity.faction} />
+          </div>
+          <UnitFrameChromeFront
+            factionID={factionID}
+            iconURL={this.props.iconURL}
+            layout='two-bars'
+            decor={this.props.nameplateDecor}
+          />
+        </div>
+        <StatusEffects entityID={entity.entityID} />
+      </div>
+    );
   }
 
   private renderHealthBar(entity: AnyEntityStateModel): JSX.Element {
@@ -78,49 +103,6 @@ class AItemUnitFrame extends React.Component<Props> {
         {healthPercent < FULL_HEALTH_PERCENT && (
           <div className={Marker} style={{ right: `calc(100% - ${healthPercent * 100}%)` }} />
         )}
-      </div>
-    );
-  }
-
-  private renderSimple(entity: AnyEntityStateModel): JSX.Element {
-    const factionData = getFactionData(Faction[entity.faction]);
-
-    return (
-      <div className={`${Root} simple`}>
-        <div className={`${FrameRoot} simple`}>
-          <img src={factionData.simpleUnitFrameBackgroundImage} className={Background} />
-          {this.renderHealthBar(entity)}
-          <img src={factionData.simpleUnitFrameForegroundImage} className={Frame} />
-          <img src={this.props.iconURL} className={Icon} />
-          {factionData.simpleUnitFrameForegroundRightImage && (
-            <img className={SimpleForegroundRight} src={factionData.simpleUnitFrameForegroundRightImage} />
-          )}
-          <div className={Name}>{getStringTableValue(entity.name, this.props.stringTable)}</div>
-          <div className={Position}>
-            <TargetPosition isFriendly={this.props.isFriendly} faction={entity.faction} />
-          </div>
-        </div>
-        <StatusEffects entityID={entity.entityID} />
-      </div>
-    );
-  }
-
-  private renderFancy(entity: AnyEntityStateModel): JSX.Element {
-    const factionData = getFactionData(Faction[entity.faction]);
-
-    return (
-      <div className={Root}>
-        <div className={FrameRoot}>
-          <img src={factionData.universalUnitFrameBackgroundImage} className={Background} />
-          {this.renderHealthBar(entity)}
-          <img src={factionData.universalUnitFrameForegroundImage} className={Frame} />
-          <div className={Name}>{getStringTableValue(entity.name, this.props.stringTable)}</div>
-          <img src={this.props.iconURL} className={Icon} />
-          <div className={Position}>
-            <TargetPosition isFriendly={this.props.isFriendly} faction={entity.faction} />
-          </div>
-        </div>
-        <StatusEffects entityID={entity.entityID} />
       </div>
     );
   }

@@ -7,7 +7,10 @@
 import { ClassDef } from '../dataSources/manifest/classManifest';
 import { ProgressionTrackDef } from '../dataSources/manifest/progressionTrackManifest';
 import { GameDefsState } from '../redux/gameDefsSlice';
-import { PlayerEntityStateModel } from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
+import {
+  PlayerEntityStateModel,
+  ProgressState
+} from '@csegames/library/dist/camelotunchained/game/GameClientModels/EntityState';
 import { AbilityWithActivation } from '../redux/abilitiesSlice';
 import { BorderType } from '../components/FactionBorder';
 import { StringTableEntryDef } from '../dataSources/manifest/stringTableManifest';
@@ -17,11 +20,14 @@ import {
   StringIDGeneralLevel,
   StringIDGeneralParenthesis
 } from './stringTableHelpers';
+import { clientAPI } from '@csegames/library/dist/camelotunchained/MainScreenClientAPI';
+import { SoundEvents } from '@csegames/library/dist/camelotunchained/game/types/SoundEvents';
 
 export const TAG_PREFIX_ARCHETYPE_CLASS = 'Asset.Class.';
 export const TAG_PREFIX_SPECIALIZATION = 'Asset.Specialization.';
 export const TAG_PREFIX_PASSIVE = 'Asset.Passive.';
 const TAG_PREFIX_TRADESKILL = 'Tradeskill.';
+const TAG_REALM_PROGRESSION = 'UI.Progression.Realm';
 
 // Corners scale with the icon, since their 4vmin/2vmin defaults would cover most of a small one.
 const LEARNED_ICON_CORNER_RATIO = 0.6;
@@ -30,9 +36,31 @@ const LOCKED_ICON_CORNER_RATIO = 0.4;
 // String IDs
 export const StringIDAbilityBookClassProgression = 'AbilityBookClassProgression';
 export const StringIDAbilityBookTradeskillProgression = 'AbilityBookTradeskillProgression';
+export const StringIDAbilityBookRealmProgression = 'AbilityBookRealmProgression';
+
+export function isArchetypeTrack(track: ProgressionTrackDef): boolean {
+  return track.tags.some((tag) => tag.startsWith(TAG_PREFIX_ARCHETYPE_CLASS));
+}
 
 export function isTradeskillTrack(track: ProgressionTrackDef): boolean {
   return track.tags.some((tag) => tag.startsWith(TAG_PREFIX_TRADESKILL));
+}
+
+function isRealmProgressionTrack(track: ProgressionTrackDef): boolean {
+  return track.tags.includes(TAG_REALM_PROGRESSION);
+}
+
+// Tradeskill levels and realm renown ranks are shown as-is. Every other track shows level 0 as level 1.
+export function getTrackDisplayLevel(track: ProgressionTrackDef, level: number): number {
+  return isTradeskillTrack(track) || isRealmProgressionTrack(track) ? level : level + 1;
+}
+
+export function findClassProgressionTrack(
+  classDef: ClassDef,
+  progressionTracks: Record<string, ProgressionTrackDef>,
+  isMatch: (track: ProgressionTrackDef) => boolean
+): ProgressionTrackDef | undefined {
+  return classDef.progressionTracks.map((ptID) => progressionTracks[ptID]).find((track) => !!track && isMatch(track));
 }
 
 export function isSpecializationTrack(track: ProgressionTrackDef): boolean {
@@ -84,6 +112,65 @@ export function getAvailableAbilityPoints(
   }, 0);
 
   return characterLevel - spentPoints;
+}
+
+export function findRealmProgressionTrack(
+  classDef: ClassDef,
+  progressionTracks: Record<string, ProgressionTrackDef>
+): ProgressionTrackDef | undefined {
+  return findClassProgressionTrack(classDef, progressionTracks, isRealmProgressionTrack);
+}
+
+// Each trained pool unlock arrives in self.progression as its own entry, keyed "<trackID>.<unlockID>".
+export function getPoolUnlockTrackID(trackID: string, unlockID: string): string {
+  return `${trackID}.${unlockID}`;
+}
+
+// Realm Renown points earned (the realm track's level) minus the tier costs already paid for its unlocks.
+export function getAvailableRealmProgressionPoints(
+  realmTrack: ProgressionTrackDef | undefined,
+  progression: Record<string, ProgressState>
+): number {
+  if (!realmTrack) {
+    return 0;
+  }
+
+  const spentPoints = getSpentRealmProgressionPoints(realmTrack, progression);
+
+  return (progression[realmTrack.id]?.level ?? 0) - spentPoints;
+}
+
+export function getSpentRealmProgressionPoints(
+  realmTrack: ProgressionTrackDef | undefined,
+  progression: Record<string, ProgressState>
+): number {
+  if (!realmTrack) {
+    return 0;
+  }
+
+  let spentPoints = 0;
+  Object.values(realmTrack.poolsByCategory).forEach((pools) => {
+    pools.forEach((pool) => {
+      pool.unlocks.forEach((unlock) => {
+        const unlockLevel = progression[getPoolUnlockTrackID(realmTrack.id, unlock.unlockID)]?.level ?? 0;
+        for (let i = 0; i < unlockLevel && i < unlock.costByTier.length; ++i) {
+          spentPoints += unlock.costByTier[i];
+        }
+      });
+    });
+  });
+
+  return spentPoints;
+}
+
+export function playStagedLevelChangeSound(stagedLevelChange: number): void {
+  if (stagedLevelChange > 1) {
+    clientAPI.playGameSound(SoundEvents.PLAY_CP_ABILITY_MULTI_SELECT);
+  } else if (stagedLevelChange === 1) {
+    clientAPI.playGameSound(SoundEvents.PLAY_CP_UI_ABILITY_STAGING);
+  } else if (stagedLevelChange < 0) {
+    clientAPI.playGameSound(SoundEvents.PLAY_CP_ABILITY_DESELECT);
+  }
 }
 
 export function getAbilityByDisplayDefID(

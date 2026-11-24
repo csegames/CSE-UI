@@ -28,7 +28,6 @@ export function getNPCTierIconImage(characterKind: CharacterKind | undefined): s
     case CharacterKind.BossNPC:
       return NPCTierIconBoss;
     default:
-      // If unsure, give them the most basic icon.
       return NPCTierIconMinor;
   }
 }

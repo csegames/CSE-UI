@@ -53,7 +53,7 @@ import { GuildSnapshot } from '@csegames/library/dist/camelotunchained/game/Game
 import { Friend } from '@csegames/library/dist/camelotunchained/graphql/schema';
 import { Faction } from '@csegames/library/dist/camelotunchained/webAPI/definitions';
 import { StatusState } from '@csegames/library/dist/camelotunchained/game/GameClientModels/StatusState';
-import { getTagFromString, tagsMatch } from '../../helpers/tagHelpers';
+import { getTagFromString, tagsMatch, TagVeilPlane } from '../../helpers/tagHelpers';
 import { ClassIconSize, getClassIconSize } from '../../helpers/classIconHelpers';
 
 // CSS classes
@@ -91,7 +91,6 @@ const RoleIndicator = 'HUD-PartyMemberFrame-RoleIndicator';
 const TargetBorder = 'HUD-PartyMemberFrame-TargetBorder';
 // Tags
 const TagUIHidden = 'UI.Hidden';
-const TagVeilPlane = 'Granted.State.Plane.Veil';
 
 // String IDs
 const StringIDUnitFrameCorpse = 'UnitFrameCorpse';

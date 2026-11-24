@@ -17,9 +17,18 @@ export enum AbilityBarDecor {
   Bottom = 'bottom'
 }
 
+export type NameplateAlignment = 'left' | 'right';
+export type NameplateDecor = 'background' | 'decor1' | 'decor2';
+export type NameplateDecorFlags = Partial<Record<NameplateDecor, boolean>>;
+
 export enum CompassHeadingSource {
   Camera = 'camera',
   Character = 'character'
+}
+
+export enum ProgressionInfoPosition {
+  Top = 'top',
+  Bottom = 'bottom'
 }
 
 export interface HUDResizableParams {
@@ -51,10 +60,18 @@ export interface HUDWidgetState {
   abilitySlotSpacing?: number;
   /** Ability bars only: which decorative ornaments are shown. Unset entries use the bar's default. */
   abilityBarDecor?: Partial<Record<AbilityBarDecor, boolean>>;
+  /** Health bar widgets only: which side the diamonds sit on. Unset is left. */
+  nameplateAlignment?: NameplateAlignment;
+  /** Health bar widgets only: which decorations are shown. Unset entries are hidden. */
+  nameplateDecor?: NameplateDecorFlags;
   /** Compass-only: integer percentage (25 to 100, default 33) of the compass bar's full width. */
   compassWidth?: number;
   /** Compass-only: whether the compass follows the camera or the character's facing (default camera). */
   compassHeadingSource?: CompassHeadingSource;
+  /** Progression bars only: whether the level and XP text stays shown instead of only on hover (default off). */
+  progressionInfoAlwaysShown?: boolean;
+  /** Progression bars only: whether the level and XP text sits above or below the bar. */
+  progressionInfoPosition?: ProgressionInfoPosition;
 }
 
 // These are pseudo-MapDataType entries, split off from MapDataType.Player.
